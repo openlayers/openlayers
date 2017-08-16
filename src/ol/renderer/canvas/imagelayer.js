@@ -1,8 +1,10 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
 goog.require('ol.transform');
 
@@ -11,6 +13,7 @@ goog.require('ol.transform');
  * @constructor
  * @extends {ol.renderer.canvas.IntermediateCanvas}
  * @param {ol.layer.Image} imageLayer Single image layer.
+ * @api
  */
 ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
@@ -30,6 +33,28 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
 };
 ol.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.IntermediateCanvas);
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @param {ol.renderer.Type} type The renderer type.
+ * @param {ol.layer.Layer} layer The candidate layer.
+ * @return {boolean} The renderer can render the layer.
+ */
+ol.renderer.canvas.ImageLayer['handles'] = function(type, layer) {
+  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.IMAGE;
+};
+
+
+/**
+ * Create a layer renderer.
+ * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
+ */
+ol.renderer.canvas.ImageLayer['create'] = function(mapRenderer, layer) {
+  return new ol.renderer.canvas.ImageLayer(/** @type {ol.layer.Image} */ (layer));
+};
 
 
 /**

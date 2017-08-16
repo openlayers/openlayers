@@ -79,7 +79,8 @@ if (ol.ENABLE_WEBGL) {
     var outerRing = new ol.structs.LinkedList();
     var rtree = new ol.structs.RBush();
     // Initialize the outer ring
-    var maxX = this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+    this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
+    var maxCoords = this.getMaxCoords_(outerRing);
 
     // Eliminate holes, if there are any
     if (holeFlatCoordinates.length) {
@@ -88,15 +89,18 @@ if (ol.ENABLE_WEBGL) {
       for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
         var holeList = {
           list: new ol.structs.LinkedList(),
-          maxX: undefined,
+          maxCoords: undefined,
           rtree: new ol.structs.RBush()
         };
         holeLists.push(holeList);
-        holeList.maxX = this.processFlatCoordinates_(holeFlatCoordinates[i],
+        this.processFlatCoordinates_(holeFlatCoordinates[i],
             stride, holeList.list, holeList.rtree, false);
+        this.classifyPoints_(holeList.list, holeList.rtree, true);
+        holeList.maxCoords = this.getMaxCoords_(holeList.list);
       }
       holeLists.sort(function(a, b) {
-        return b.maxX[0] === a.maxX[0] ? a.maxX[1] - b.maxX[1] : b.maxX[0] - a.maxX[0];
+        return b.maxCoords[0] === a.maxCoords[0] ?
+          a.maxCoords[1] - b.maxCoords[1] : b.maxCoords[0] - a.maxCoords[0];
       });
       for (i = 0; i < holeLists.length; ++i) {
         var currList = holeLists[i].list;
@@ -104,6 +108,7 @@ if (ol.ENABLE_WEBGL) {
         var currItem = start;
         var intersection;
         do {
+          //TODO: Triangulate holes when they intersect the outer ring.
           if (this.getIntersections_(currItem, rtree).length) {
             intersection = true;
             break;
@@ -111,8 +116,7 @@ if (ol.ENABLE_WEBGL) {
           currItem = currList.nextItem();
         } while (start !== currItem);
         if (!intersection) {
-          this.classifyPoints_(currList, holeLists[i].rtree, true);
-          if (this.bridgeHole_(currList, holeLists[i].maxX[0], outerRing, maxX[0], rtree)) {
+          if (this.bridgeHole_(currList, holeLists[i].maxCoords[0], outerRing, maxCoords[0], rtree)) {
             rtree.concat(holeLists[i].rtree);
             this.classifyPoints_(outerRing, rtree, false);
           }
@@ -133,13 +137,12 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.structs.LinkedList} list Linked list.
    * @param {ol.structs.RBush} rtree R-Tree of the polygon.
    * @param {boolean} clockwise Coordinate order should be clockwise.
-   * @return {Array.<number>} X and Y coords of maximum X value.
    */
   ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
       flatCoordinates, stride, list, rtree, clockwise) {
     var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates,
         0, flatCoordinates.length, stride);
-    var i, ii, maxXX, maxXY;
+    var i, ii;
     var n = this.vertices.length / 2;
     /** @type {ol.WebglPolygonVertex} */
     var start;
@@ -152,17 +155,11 @@ if (ol.ENABLE_WEBGL) {
     if (clockwise === isClockwise) {
       start = this.createPoint_(flatCoordinates[0], flatCoordinates[1], n++);
       p0 = start;
-      maxXX = flatCoordinates[0];
-      maxXY = flatCoordinates[1];
       for (i = stride, ii = flatCoordinates.length; i < ii; i += stride) {
         p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
         segments.push(this.insertItem_(p0, p1, list));
         extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
           Math.max(p0.y, p1.y)]);
-        if (flatCoordinates[i] > maxXX) {
-          maxXX = flatCoordinates[i];
-          maxXY = flatCoordinates[i + 1];
-        }
         p0 = p1;
       }
       segments.push(this.insertItem_(p1, start, list));
@@ -172,17 +169,11 @@ if (ol.ENABLE_WEBGL) {
       var end = flatCoordinates.length - stride;
       start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
       p0 = start;
-      maxXX = flatCoordinates[end];
-      maxXY = flatCoordinates[end + 1];
       for (i = end - stride, ii = 0; i >= ii; i -= stride) {
         p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
         segments.push(this.insertItem_(p0, p1, list));
         extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
           Math.max(p0.y, p1.y)]);
-        if (flatCoordinates[i] > maxXX) {
-          maxXX = flatCoordinates[i];
-          maxXY = flatCoordinates[i + 1];
-        }
         p0 = p1;
       }
       segments.push(this.insertItem_(p1, start, list));
@@ -190,8 +181,28 @@ if (ol.ENABLE_WEBGL) {
         Math.max(p0.y, p1.y)]);
     }
     rtree.load(extents, segments);
+  };
 
-    return [maxXX, maxXY];
+
+  /**
+   * Returns the rightmost coordinates of a polygon on the X axis.
+   * @private
+   * @param {ol.structs.LinkedList} list Polygons ring.
+   * @return {Array.<number>} Max X coordinates.
+   */
+  ol.render.webgl.PolygonReplay.prototype.getMaxCoords_ = function(list) {
+    var start = list.firstItem();
+    var seg = start;
+    var maxCoords = [seg.p0.x, seg.p0.y];
+
+    do {
+      seg = list.nextItem();
+      if (seg.p0.x > maxCoords[0]) {
+        maxCoords = [seg.p0.x, seg.p0.y];
+      }
+    } while (seg !== start);
+
+    return maxCoords;
   };
 
 
@@ -325,7 +336,7 @@ if (ol.ENABLE_WEBGL) {
           if (!this.classifyPoints_(list, rtree, ccw)) {
             // Due to the behavior of OL's PIP algorithm, the ear clipping cannot
             // introduce touching segments. However, the original data may have some.
-            if (!this.resolveLocalSelfIntersections_(list, rtree, true)) {
+            if (!this.resolveSelfIntersections_(list, rtree, true)) {
               break;
             }
           }
@@ -335,7 +346,7 @@ if (ol.ENABLE_WEBGL) {
           // We ran out of ears, try to reclassify.
           if (!this.classifyPoints_(list, rtree, ccw)) {
             // We have a bad polygon, try to resolve local self-intersections.
-            if (!this.resolveLocalSelfIntersections_(list, rtree)) {
+            if (!this.resolveSelfIntersections_(list, rtree)) {
               simple = this.isSimple_(list, rtree);
               if (!simple) {
                 // We have a really bad polygon, try more time consuming methods.
@@ -382,10 +393,15 @@ if (ol.ENABLE_WEBGL) {
       p2 = s2.p1;
       if (p1.reflex === false) {
         // We might have a valid ear
-        var diagonalIsInside = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0,
-            s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
+        var variableCriterion;
+        if (simple) {
+          variableCriterion = this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0;
+        } else {
+          variableCriterion = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0,
+              s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
+        }
         if ((simple || this.getIntersections_({p0: p0, p1: p2}, rtree).length === 0) &&
-            diagonalIsInside && this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0) {
+            variableCriterion) {
           //The diagonal is completely inside the polygon
           if (simple || p0.reflex === false || p2.reflex === false ||
               ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
@@ -420,7 +436,7 @@ if (ol.ENABLE_WEBGL) {
    * @param {boolean=} opt_touch Resolve touching segments.
    * @return {boolean} There were resolved intersections.
   */
-  ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = function(
+  ol.render.webgl.PolygonReplay.prototype.resolveSelfIntersections_ = function(
       list, rtree, opt_touch) {
     var start = list.firstItem();
     list.nextItem();

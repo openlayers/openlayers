@@ -205,6 +205,67 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(style2.getStroke().getLineDashOffset()).to.be(2);
       expect(lineDashOffset).to.be(4);
     });
+
+    it('calls the renderer function configured for the style', function() {
+      var calls = [];
+      var style = new ol.style.Style({
+        renderer: function(coords, state) {
+          calls.push({
+            coords: coords,
+            geometry: state.geometry,
+            feature: state.feature,
+            context: state.context,
+            pixelRatio: state.pixelRatio,
+            rotation: state.rotation,
+            resolution: state.resolution
+          });
+        }
+      });
+      var point = new ol.Feature(new ol.geom.Point([45, 90]));
+      var multipoint = new ol.Feature(new ol.geom.MultiPoint(
+          [[45, 90], [90, 45]]));
+      var linestring = new ol.Feature(new ol.geom.LineString(
+          [[45, 90], [45, 45], [90, 45]]));
+      var multilinestring = new ol.Feature(new ol.geom.MultiLineString(
+          [linestring.getGeometry().getCoordinates(), linestring.getGeometry().getCoordinates()]));
+      var polygon = feature1;
+      var multipolygon = new ol.Feature(new ol.geom.MultiPolygon(
+          [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
+      var geometrycollection = new ol.Feature(new ol.geom.GeometryCollection(
+          [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
+      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, true);
+      ol.renderer.vector.renderFeature(replay, point, style, 1);
+      ol.renderer.vector.renderFeature(replay, multipoint, style, 1);
+      ol.renderer.vector.renderFeature(replay, linestring, style, 1);
+      ol.renderer.vector.renderFeature(replay, multilinestring, style, 1);
+      ol.renderer.vector.renderFeature(replay, polygon, style, 1);
+      ol.renderer.vector.renderFeature(replay, multipolygon, style, 1);
+      ol.renderer.vector.renderFeature(replay, geometrycollection, style, 1);
+      ol.transform.scale(transform, 0.1, 0.1);
+      replay.replay(context, 1, transform, 0, {});
+      expect(calls.length).to.be(9);
+      expect(calls[0].geometry).to.be(point.getGeometry());
+      expect(calls[0].feature).to.be(point);
+      expect(calls[0].context).to.be(context);
+      expect(calls[0].pixelRatio).to.be(1);
+      expect(calls[0].rotation).to.be(0);
+      expect(calls[0].resolution).to.be(1);
+      expect(calls[0].coords).to.eql([4.5, 9]);
+      expect(calls[1].feature).to.be(multipoint);
+      expect(calls[1].coords[0]).to.eql([4.5, 9]);
+      expect(calls[2].feature).to.be(linestring);
+      expect(calls[2].coords[0]).to.eql([4.5, 9]);
+      expect(calls[3].feature).to.be(multilinestring);
+      expect(calls[3].coords[0][0]).to.eql([4.5, 9]);
+      expect(calls[4].feature).to.be(polygon);
+      expect(calls[4].coords[0][0]).to.eql([-9, -4.5]);
+      expect(calls[5].feature).to.be(multipolygon);
+      expect(calls[5].coords[0][0][0]).to.eql([-9, -4.5]);
+      expect(calls[6].feature).to.be(geometrycollection);
+      expect(calls[6].geometry.getCoordinates()).to.eql([45, 90]);
+      expect(calls[7].geometry.getCoordinates()[0]).to.eql([45, 90]);
+      expect(calls[8].geometry.getCoordinates()[0][0]).to.eql([-90, -45]);
+    });
   });
 
 });

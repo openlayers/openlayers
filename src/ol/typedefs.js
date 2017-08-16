@@ -79,6 +79,7 @@ ol.CanvasFunctionType;
 /**
  * @typedef {{lineCap: string,
  *            lineDash: Array.<number>,
+ *            lineDashOffset: number,
  *            lineJoin: string,
  *            lineWidth: number,
  *            miterLimit: number,
@@ -364,13 +365,12 @@ ol.LRUCacheEntry;
 
 
 /**
- * @typedef {{controls: ol.Collection.<ol.control.Control>,
- *            interactions: ol.Collection.<ol.interaction.Interaction>,
+ * @typedef {{controls: (ol.Collection.<ol.control.Control>|undefined),
+ *            interactions: (ol.Collection.<ol.interaction.Interaction>|undefined),
  *            keyboardEventTarget: (Element|Document),
  *            logos: (Object.<string, (string|Element)>),
  *            overlays: ol.Collection.<ol.Overlay>,
- *            rendererConstructor:
- *                function(new: ol.renderer.Map, Element, ol.Map),
+ *            mapRendererPlugin: olx.MapRendererPlugin,
  *            values: Object.<string, *>}}
  */
 ol.MapOptionsInternal;
@@ -404,7 +404,7 @@ ol.Pixel;
 
 
 /**
- * @typedef {function(ol.Map, ?olx.FrameState): boolean}
+ * @typedef {function(ol.PluggableMap, ?olx.FrameState): boolean}
  */
 ol.PostRenderFunction;
 
@@ -414,7 +414,7 @@ ol.PostRenderFunction;
  * with the {@link ol.Map} as first and an optional {@link olx.FrameState} as
  * second argument. Return `true` to keep this function for the next frame,
  * `false` to remove it.
- * @typedef {function(ol.Map, ?olx.FrameState): boolean}
+ * @typedef {function(ol.PluggableMap, ?olx.FrameState): boolean}
  */
 ol.PreRenderFunction;
 
@@ -623,6 +623,17 @@ ol.StyleFunction;
  *     (ol.geom.Geometry|ol.render.Feature|undefined)}
  */
 ol.StyleGeometryFunction;
+
+
+/**
+ * Custom renderer function. Takes two arguments:
+ *
+ * 1. The pixel coordinates of the geometry in GeoJSON notation.
+ * 2. The {@link olx.render.State} of the layer renderer.
+ *
+ * @typedef {function((ol.Coordinate|Array<ol.Coordinate>|Array.<Array.<ol.Coordinate>>),olx.render.State)}
+ */
+ol.StyleRenderFunction;
 
 
 /**

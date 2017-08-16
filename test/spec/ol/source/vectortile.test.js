@@ -6,13 +6,11 @@ goog.require('ol.proj');
 goog.require('ol.source.VectorTile');
 goog.require('ol.tilegrid');
 
-
 describe('ol.source.VectorTile', function() {
 
   var format = new ol.format.MVT();
   var source = new ol.source.VectorTile({
     format: format,
-    tileGrid: ol.tilegrid.createXYZ({tileSize: 512}),
     tilePixelRatio: 8,
     url: 'spec/ol/data/{z}-{x}-{y}.vector.pbf'
   });
@@ -22,8 +20,15 @@ describe('ol.source.VectorTile', function() {
     it('sets the format on the instance', function() {
       expect(source.format_).to.equal(format);
     });
+
     it('uses ol.VectorTile as default tileClass', function() {
       expect(source.tileClass).to.equal(ol.VectorTile);
+    });
+
+    it('creates a 512 XYZ tilegrid by default', function() {
+      var tileGrid = ol.tilegrid.createXYZ({tileSize: 512});
+      expect(source.tileGrid.tileSize_).to.equal(tileGrid.tileSize_);
+      expect(source.tileGrid.extent_).to.equal(tileGrid.extent_);
     });
   });
 

@@ -7,8 +7,6 @@ goog.require('ol.source.VectorTile');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
-goog.require('ol.tilegrid');
-
 
 var key = 'vector-tiles-5eJz6JX';
 
@@ -70,7 +68,7 @@ var map = new ol.Map({
           layerName: 'layer',
           layers: ['water', 'roads', 'buildings']
         }),
-        tileGrid: ol.tilegrid.createXYZ({maxZoom: 19}),
+        maxZoom: 19,
         url: 'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=' + key
       }),
       style: function(feature, resolution) {

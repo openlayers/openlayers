@@ -7,6 +7,7 @@ goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.events');
+goog.require('ol.has');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -27,7 +28,8 @@ if (ol.ENABLE_WEBGL) {
    * @constructor
    * @extends {ol.renderer.Map}
    * @param {Element} container Container.
-   * @param {ol.Map} map Map.
+   * @param {ol.PluggableMap} map Map.
+   * @api
    */
   ol.renderer.webgl.Map = function(container, map) {
     ol.renderer.Map.call(this, container, map);
@@ -131,7 +133,7 @@ if (ol.ENABLE_WEBGL) {
 
 
     /**
-     * @param {ol.Map} map Map.
+     * @param {ol.PluggableMap} map Map.
      * @param {?olx.FrameState} frameState Frame state.
      * @return {boolean} false.
      * @this {ol.renderer.webgl.Map}
@@ -160,6 +162,27 @@ if (ol.ENABLE_WEBGL) {
     this.initializeGL_();
   };
   ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+
+
+  /**
+   * Determine if this renderer handles the provided layer.
+   * @param {ol.renderer.Type} type The renderer type.
+   * @return {boolean} The renderer can render the layer.
+   */
+  ol.renderer.webgl.Map['handles'] = function(type) {
+    return ol.has.WEBGL && type === ol.renderer.Type.WEBGL;
+  };
+
+
+  /**
+   * Create the map renderer.
+   * @param {Element} container Container.
+   * @param {ol.PluggableMap} map Map.
+   * @return {ol.renderer.webgl.Map} The map renderer.
+   */
+  ol.renderer.webgl.Map['create'] = function(container, map) {
+    return new ol.renderer.webgl.Map(container, map);
+  };
 
 
   /**
@@ -278,7 +301,7 @@ if (ol.ENABLE_WEBGL) {
 
 
   /**
-   * @param {ol.Map} map Map.
+   * @param {ol.PluggableMap} map Map.
    * @param {olx.FrameState} frameState Frame state.
    * @private
    */

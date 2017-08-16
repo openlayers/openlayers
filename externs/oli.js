@@ -94,6 +94,17 @@ oli.DrawEvent.prototype.feature;
 /**
  * @interface
  */
+oli.ExtentEvent = function() {};
+
+
+/**
+ * @type {ol.Extent}
+ */
+oli.ExtentEvent.prototype.extent;
+
+/**
+ * @interface
+ */
 oli.ModifyEvent = function() {};
 
 
@@ -170,7 +181,7 @@ oli.MapEvent = function() {};
 
 
 /**
- * @type {ol.Map}
+ * @type {ol.PluggableMap}
  */
 oli.MapEvent.prototype.map;
 
@@ -218,7 +229,7 @@ oli.control.Control = function() {};
 
 
 /**
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @return {undefined} Undefined.
  */
 oli.control.Control.prototype.setMap = function(map) {};

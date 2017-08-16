@@ -192,6 +192,33 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(ol.xml.parse(text));
         });
 
+
+        it('can write properties', function() {
+          var lineString = new ol.geom.LineString([[1, 2], [3, 4]]);
+          lineString.set('extrude', false);
+          lineString.set('tessellate', true);
+          lineString.set('altitudeMode', 'clampToGround');
+          lineString.set('unsupportedProperty', 'foo');
+          var features = [new ol.Feature(lineString)];
+          var node = format.writeFeaturesNode(features);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <LineString>' +
+              '      <extrude>0</extrude>' +
+              '      <tessellate>1</tessellate>' +
+              '      <altitudeMode>clampToGround</altitudeMode>' +
+              '      <coordinates>1,2 3,4</coordinates>' +
+              '    </LineString>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
         it('can read Point geometries', function() {
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -412,6 +439,7 @@ describe('ol.format.KML', function() {
               '    <LineString>' +
               '      <coordinates>1,2,3 4,5,6</coordinates>' +
               '      <extrude>0</extrude>' +
+              '      <tessellate>1</tessellate>' +
               '      <altitudeMode>absolute</altitudeMode>' +
               '    </LineString>' +
               '  </Placemark>' +
@@ -424,6 +452,7 @@ describe('ol.format.KML', function() {
           expect(g).to.be.an(ol.geom.LineString);
           expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
           expect(g.get('extrude')).to.be(false);
+          expect(g.get('tessellate')).to.be(true);
           expect(g.get('altitudeMode')).to.be('absolute');
         });
 
@@ -964,6 +993,7 @@ describe('ol.format.KML', function() {
               '    <MultiGeometry>' +
               '      <LineString>' +
               '        <extrude>0</extrude>' +
+              '        <tessellate>0</tessellate>' +
               '        <altitudeMode>absolute</altitudeMode>' +
               '        <coordinates>1,2,3 4,5,6</coordinates>' +
               '      </LineString>' +
@@ -985,6 +1015,10 @@ describe('ol.format.KML', function() {
           expect(g.get('extrude')).to.have.length(2);
           expect(g.get('extrude')[0]).to.be(false);
           expect(g.get('extrude')[1]).to.be(undefined);
+          expect(g.get('tessellate')).to.be.an('array');
+          expect(g.get('tessellate')).to.have.length(2);
+          expect(g.get('tessellate')[0]).to.be(false);
+          expect(g.get('tessellate')[1]).to.be(undefined);
           expect(g.get('altitudeMode')).to.be.an('array');
           expect(g.get('altitudeMode')).to.have.length(2);
           expect(g.get('altitudeMode')[0]).to.be('absolute');

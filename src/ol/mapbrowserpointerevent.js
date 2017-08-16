@@ -8,7 +8,7 @@ goog.require('ol.MapBrowserEvent');
  * @constructor
  * @extends {ol.MapBrowserEvent}
  * @param {string} type Event type.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @param {boolean=} opt_dragging Is the map currently being dragged?
  * @param {?olx.FrameState=} opt_frameState Frame state.

@@ -121,6 +121,18 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       spy2.restore();
     });
 
+    it('renders replays with custom renderers as direct replays', function() {
+      layer.renderMode_ = 'image';
+      layer.setStyle(new ol.style.Style({
+        renderer: function() {}
+      }));
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'getReplayTransform_');
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
+      spy.restore();
+    });
+
     it('gives precedence to feature styles over layer styles', function() {
       var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
           'renderFeature');
@@ -172,6 +184,14 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(spy2.callCount).to.be(2);
       spy1.restore();
       spy2.restore();
+    });
+
+    it('uses the extent of the source tile', function() {
+      var renderer = map.getRenderer().getLayerRenderer(layer);
+      var tile = new ol.VectorTile([0, 0, 0], 2);
+      tile.setExtent([0, 0, 4096, 4096]);
+      var tilePixelRatio = renderer.getTilePixelRatio_(source, tile);
+      expect(tilePixelRatio).to.be(16);
     });
 
   });
@@ -278,6 +298,42 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });
-  });
 
+    it('does not give false positives when overzoomed', function(done) {
+      var target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      var extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
+      var source = new ol.source.VectorTile({
+        format: new ol.format.MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14
+      });
+      var map = new ol.Map({
+        target: target,
+        layers: [
+          new ol.layer.VectorTile({
+            extent: extent,
+            source: source
+          })
+        ],
+        view: new ol.View({
+          center: ol.extent.getCenter(extent),
+          zoom: 19
+        })
+      });
+      source.on('tileloadend', function() {
+        setTimeout(function() {
+          var features = map.getFeaturesAtPixel([96, 96]);
+          document.body.removeChild(target);
+          map.dispose();
+          expect(features).to.be(null);
+          done();
+        }, 200);
+      });
+    });
+
+  });
 });

@@ -78,8 +78,42 @@ if (ol.ENABLE_WEBGL) {
      */
     this.strokeStyle_ = null;
 
+    /**
+     * @private
+     * @type {ol.style.Text}
+     */
+    this.textStyle_ = null;
+
   };
   ol.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
+
+
+  /**
+   * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
+   * @param {Array.<number>} flatCoordinates Flat coordinates.
+   * @param {number} offset Offset.
+   * @param {number} end End.
+   * @param {number} stride Stride.
+   * @private
+   */
+  ol.render.webgl.Immediate.prototype.drawText_ = function(replayGroup,
+      flatCoordinates, offset, end, stride) {
+    var context = this.context_;
+    var replay = /** @type {ol.render.webgl.TextReplay} */ (
+      replayGroup.getReplay(0, ol.render.ReplayType.TEXT));
+    replay.setTextStyle(this.textStyle_);
+    replay.drawText(flatCoordinates, offset, end, stride, null, null);
+    replay.finish(context);
+    // default colors
+    var opacity = 1;
+    var skippedFeatures = {};
+    var featureCallback;
+    var oneByOne = false;
+    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
+        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
+        oneByOne);
+    replay.getDeleteResourcesFunction(context)();
+  };
 
 
   /**
@@ -93,6 +127,7 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.Immediate.prototype.setStyle = function(style) {
     this.setFillStrokeStyle(style.getFill(), style.getStroke());
     this.setImageStyle(style.getImage());
+    this.setTextStyle(style.getText());
   };
 
 
@@ -184,6 +219,12 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      var flatCoordinates = geometry.getFlatCoordinates();
+      var stride = geometry.getStride();
+      this.drawText_(replayGroup, flatCoordinates, 0, flatCoordinates.length, stride);
+    }
   };
 
 
@@ -206,6 +247,12 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      var flatCoordinates = geometry.getFlatCoordinates();
+      var stride = geometry.getStride();
+      this.drawText_(replayGroup, flatCoordinates, 0, flatCoordinates.length, stride);
+    }
   };
 
 
@@ -228,6 +275,11 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      var flatMidpoint = geometry.getFlatMidpoint();
+      this.drawText_(replayGroup, flatMidpoint, 0, 2, 2);
+    }
   };
 
 
@@ -250,6 +302,11 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      var flatMidpoints = geometry.getFlatMidpoints();
+      this.drawText_(replayGroup, flatMidpoints, 0, flatMidpoints.length, 2);
+    }
   };
 
 
@@ -272,6 +329,11 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      var flatInteriorPoint = geometry.getFlatInteriorPoint();
+      this.drawText_(replayGroup, flatInteriorPoint, 0, 2, 2);
+    }
   };
 
 
@@ -294,6 +356,11 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      var flatInteriorPoints = geometry.getFlatInteriorPoints();
+      this.drawText_(replayGroup, flatInteriorPoints, 0, flatInteriorPoints.length, 2);
+    }
   };
 
 
@@ -316,6 +383,10 @@ if (ol.ENABLE_WEBGL) {
         this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
         oneByOne);
     replay.getDeleteResourcesFunction(context)();
+
+    if (this.textStyle_) {
+      this.drawText_(replayGroup, geometry.getCenter(), 0, 2, 2);
+    }
   };
 
 
@@ -333,6 +404,14 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
     this.fillStyle_ = fillStyle;
     this.strokeStyle_ = strokeStyle;
+  };
+
+
+  /**
+   * @inheritDoc
+   */
+  ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
+    this.textStyle_ = textStyle;
   };
 
 }

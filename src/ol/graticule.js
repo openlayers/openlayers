@@ -24,7 +24,7 @@ ol.Graticule = function(opt_options) {
   var options = opt_options || {};
 
   /**
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    * @private
    */
   this.map_ = null;
@@ -469,7 +469,7 @@ ol.Graticule.prototype.getInterval_ = function(resolution) {
 
 /**
  * Get the map associated with this graticule.
- * @return {ol.Map} The map.
+ * @return {ol.PluggableMap} The map.
  * @api
  */
 ol.Graticule.prototype.getMap = function() {
@@ -519,7 +519,7 @@ ol.Graticule.prototype.getMeridians = function() {
 ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
     squaredTolerance, index) {
   var flatCoordinates = ol.geom.flat.geodesic.parallel(lat,
-      this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
+      minLon, maxLon, this.projection_, squaredTolerance);
   var lineString = this.parallels_[index] !== undefined ?
     this.parallels_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
@@ -558,23 +558,6 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
 
   if (updateProjectionInfo) {
     this.updateProjectionInfo_(projection);
-  }
-
-  //Fix the extent if wrapped.
-  //(note: this is the same extent as vectorContext.extent_)
-  var offsetX = 0;
-  if (projection.canWrapX()) {
-    var projectionExtent = projection.getExtent();
-    var worldWidth = ol.extent.getWidth(projectionExtent);
-    var x = frameState.focus[0];
-    if (x < projectionExtent[0] || x > projectionExtent[2]) {
-      var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
-      offsetX = worldWidth * worldsAway;
-      extent = [
-        extent[0] + offsetX, extent[1],
-        extent[2] + offsetX, extent[3]
-      ];
-    }
   }
 
   this.createGraticule_(extent, center, resolution, squaredTolerance);
@@ -659,7 +642,7 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
 /**
  * Set the map for this graticule.  The graticule will be rendered on the
  * provided map.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @api
  */
 ol.Graticule.prototype.setMap = function(map) {

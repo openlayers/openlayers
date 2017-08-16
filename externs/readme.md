@@ -53,7 +53,7 @@ For custom subclasses in applications, which can be created using `ol.inherits`,
 oli.control.Control = function() {};
 
 /**
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @return {undefined} Undefined.
  */
 oli.control.Control.prototype.setMap = function(map) {};
@@ -74,7 +74,7 @@ ol.control.Control = function(options) {
 
 /**
  * Application subclasses may override this.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @api
  */
 ol.control.Control.prototype.setMap = function(map) {

@@ -212,6 +212,33 @@ describe('ol.proj', function() {
 
   });
 
+  describe('getPointResolution()', function() {
+    it('returns the correct point resolution for EPSG:4326', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 0]);
+      expect (pointResolution).to.be(1);
+      pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 52]);
+      expect (pointResolution).to.be(1);
+    });
+    it('returns the correct point resolution for EPSG:4326 with custom units', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 0], 'm');
+      expect(pointResolution).to.roughlyEqual(111195.0802335329, 1e-5);
+      pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 52], 'm');
+      expect(pointResolution).to.roughlyEqual(89826.53390979706, 1e-5);
+    });
+    it('returns the correct point resolution for EPSG:3857', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:3857', 1, [0, 0]);
+      expect(pointResolution).to.be(1);
+      pointResolution = ol.proj.getPointResolution('EPSG:3857', 1, ol.proj.fromLonLat([0, 52]));
+      expect(pointResolution).to.roughlyEqual(0.615661, 1e-5);
+    });
+    it('returns the correct point resolution for EPSG:3857 with custom units', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:3857', 1, [0, 0], 'degrees');
+      expect(pointResolution).to.be(1);
+      pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, ol.proj.fromLonLat([0, 52]), 'degrees');
+      expect(pointResolution).to.be(1);
+    });
+  });
+
   describe('Proj4js integration', function() {
 
     var proj4 = window.proj4;

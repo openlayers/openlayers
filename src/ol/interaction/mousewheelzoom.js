@@ -244,7 +244,7 @@ ol.interaction.MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
 
 /**
  * @private
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  */
 ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   var view = map.getView();

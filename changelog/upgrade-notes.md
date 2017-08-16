@@ -1,6 +1,53 @@
 ## Upgrade notes
 
-### Next release
+### Next Release
+
+### v4.3.0
+
+#### `ol.source.VectorTile` no longer requires a `tileGrid` option
+
+By default, the `ol.source.VectorTile` constructor creates an XYZ tile grid (in Web Mercator) for 512 pixel tiles and assumes a max zoom level of 22.  If you were creating a vector tile source with an explicit `tileGrid` option, you can now remove this.
+
+Before:
+```js
+var source = new ol.source.VectorTile({
+  tileGrid: ol.tilegrid.createXYZ({tileSize: 512, maxZoom: 22}),
+  url: url
+});
+```
+
+After:
+```js
+var source = new ol.source.VectorTile({
+  url: url
+});
+```
+
+If you need to change the max zoom level, you can pass the source a `maxZoom` option.  If you need to change the tile size, you can pass the source a `tileSize` option.  If you need a completely custom tile grid, you can still pass the source a `tileGrid` option.
+
+#### `ol.interaction.Modify` deletes with `alt` key only
+
+To delete features with the modify interaction, press the `alt` key while clicking on an existing vertex.  If you want to configure the modify interaction with a different delete condition, use the `deleteCondition` option.  For example, to allow deletion on a single click with no modifier keys, configure the interaction like this:
+```js
+var interaction = new ol.interaction.Modify({
+  source: source,
+  deleteCondition: function(event) {
+    return ol.events.condition.noModifierKeys(event) && ol.events.condition.singleClick(event);
+  }
+});
+```
+
+The motivation for this change is to make the modify, draw, and snap interactions all work well together.  Previously, the use of these interactions with the default configuration would make it so you couldn't reliably add new vertices (click with no modifier) and delete existing vertices (click with no modifier).
+
+#### `ol.source.VectorTile` no longer has a `tilePixelRatio` option
+
+The `tilePixelRatio` option was only used for tiles in projections with `tile-pixels` as units. For tiles read with `ol.format.MVT` and the default tile loader, or tiles with the default pixel size of 4096 pixels, no changes are necessary. For the very rare cases that do not fall under these categories, a custom `tileLoadFunction` now needs to be configured on the `ol.source.VectorTile`. In addition to calling `tile.setFeatures()` and `tile.setProjection()`, it also needs to contain code like the following:
+```js
+var extent = tile.getFormat() instanceof ol.format.MVT ?
+  tile.getLastExtent() :
+  [0, 0, tilePixelRatio * tileSize, tilePixelRatio * tileSize];
+tile.setExtent(extent);
+```
 
 #### `ol.animate` now takes the shortest arc for rotation animation
 

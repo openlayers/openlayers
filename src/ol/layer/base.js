@@ -51,17 +51,24 @@ ol.layer.Base = function(options) {
     managed: true
   });
 
+  /**
+   * The layer type.
+   * @type {ol.LayerType}
+   * @protected;
+   */
+  this.type;
+
 };
 ol.inherits(ol.layer.Base, ol.Object);
 
 
 /**
- * Create a renderer for this layer.
- * @abstract
- * @param {ol.renderer.Map} mapRenderer The map renderer.
- * @return {ol.renderer.Layer} A layer renderer.
+ * Get the layer type (used when creating a layer renderer).
+ * @return {ol.LayerType} The layer type.
  */
-ol.layer.Base.prototype.createRenderer = function(mapRenderer) {};
+ol.layer.Base.prototype.getType = function() {
+  return this.type;
+};
 
 
 /**

@@ -1,9 +1,11 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.render.webgl.ReplayGroup');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.transform');
@@ -16,6 +18,7 @@ if (ol.ENABLE_WEBGL) {
    * @extends {ol.renderer.webgl.Layer}
    * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
    * @param {ol.layer.Vector} vectorLayer Vector layer.
+   * @api
    */
   ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
 
@@ -66,6 +69,31 @@ if (ol.ENABLE_WEBGL) {
 
   };
   ol.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
+
+
+  /**
+   * Determine if this renderer handles the provided layer.
+   * @param {ol.renderer.Type} type The renderer type.
+   * @param {ol.layer.Layer} layer The candidate layer.
+   * @return {boolean} The renderer can render the layer.
+   */
+  ol.renderer.webgl.VectorLayer['handles'] = function(type, layer) {
+    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.VECTOR;
+  };
+
+
+  /**
+   * Create a layer renderer.
+   * @param {ol.renderer.Map} mapRenderer The map renderer.
+   * @param {ol.layer.Layer} layer The layer to be rendererd.
+   * @return {ol.renderer.webgl.VectorLayer} The layer renderer.
+   */
+  ol.renderer.webgl.VectorLayer['create'] = function(mapRenderer, layer) {
+    return new ol.renderer.webgl.VectorLayer(
+        /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+        /** @type {ol.layer.Vector} */ (layer)
+    );
+  };
 
 
   /**

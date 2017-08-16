@@ -67,6 +67,13 @@ ol.format.GML3 = function(opt_options) {
   this.schemaLocation = options.schemaLocation ?
     options.schemaLocation : ol.format.GML3.schemaLocation_;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.hasZ = options.hasZ !== undefined ?
+    options.hasZ : false;
+
 };
 ol.inherits(ol.format.GML3, ol.format.GMLBase);
 

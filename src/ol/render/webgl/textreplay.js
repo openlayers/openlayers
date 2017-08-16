@@ -129,8 +129,8 @@ if (ol.ENABLE_WEBGL) {
       var lines = this.text_.split('\n');
       var textSize = this.getTextSize_(lines);
       var i, ii, j, jj, currX, currY, charArr, charInfo;
-      var anchorX = Math.round(textSize[0] * this.textAlign_ + this.offsetX_);
-      var anchorY = Math.round(textSize[1] * this.textBaseline_ + this.offsetY_);
+      var anchorX = Math.round(textSize[0] * this.textAlign_ - this.offsetX_);
+      var anchorY = Math.round(textSize[1] * this.textBaseline_ - this.offsetY_);
       var lineWidth = (this.state_.lineWidth / 2) * this.state_.scale;
 
       for (i = 0, ii = lines.length; i < ii; ++i) {

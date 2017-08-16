@@ -29,7 +29,7 @@ describe('ol.VectorImageTile', function() {
     });
   });
 
-  it('sets ERROR state when source tiles fail to load', function(done) {
+  it('sets LOADED state when source tiles fail to load', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
@@ -41,7 +41,52 @@ describe('ol.VectorImageTile', function() {
     tile.load();
 
     ol.events.listen(tile, 'change', function(e) {
-      expect(tile.getState()).to.be(ol.TileState.ERROR);
+      expect(tile.getState()).to.be(ol.TileState.EMPTY);
+      done();
+    });
+  });
+
+  it('sets LOADED state when previously failed source tiles are loaded', function(done) {
+    var format = new ol.format.GeoJSON();
+    var url = 'spec/ol/data/unavailable.json';
+    var sourceTile;
+    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
+        function(tile, url) {
+          sourceTile = tile;
+          ol.VectorImageTile.defaultLoadFunction(tile, url);
+        }, [0, 0, 0], function() {
+          return url;
+        }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+
+    tile.load();
+    var calls = 0;
+    ol.events.listen(tile, 'change', function(e) {
+      ++calls;
+      expect(tile.getState()).to.be(calls == 2 ? ol.TileState.LOADED : ol.TileState.EMPTY);
+      if (calls == 2) {
+        done();
+      } else {
+        setTimeout(function() {
+          sourceTile.setState(ol.TileState.LOADED);
+        }, 0);
+      }
+    });
+  });
+
+  it('sets EMPTY state when all source tiles fail to load', function(done) {
+    var format = new ol.format.GeoJSON();
+    var url = 'spec/ol/data/unavailable.json';
+    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
+          return url;
+        }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+
+    tile.load();
+
+    ol.events.listen(tile, 'change', function(e) {
+      expect(tile.getState()).to.be(ol.TileState.EMPTY);
       done();
     });
   });

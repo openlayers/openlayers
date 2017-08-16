@@ -161,7 +161,7 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
  *
  * To add the layer to a map and have it managed by the map, use
  * {@link ol.Map#addLayer} instead.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @api
  */
 ol.layer.Layer.prototype.setMap = function(map) {

@@ -1,12 +1,10 @@
 goog.provide('ol.layer.Tile');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.TileProperty');
 goog.require('ol.obj');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.canvas.TileLayer');
-goog.require('ol.renderer.webgl.TileLayer');
 
 
 /**
@@ -35,23 +33,16 @@ ol.layer.Tile = function(opt_options) {
   this.setPreload(options.preload !== undefined ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
     options.useInterimTilesOnError : true);
+
+  /**
+   * The layer type.
+   * @protected
+   * @type {ol.LayerType}
+   */
+  this.type = ol.LayerType.TILE;
+
 };
 ol.inherits(ol.layer.Tile, ol.layer.Layer);
-
-
-/**
- * @inheritDoc
- */
-ol.layer.Tile.prototype.createRenderer = function(mapRenderer) {
-  var renderer = null;
-  var type = mapRenderer.getType();
-  if (ol.ENABLE_CANVAS && type === ol.renderer.Type.CANVAS) {
-    renderer = new ol.renderer.canvas.TileLayer(this);
-  } else if (ol.ENABLE_WEBGL && type === ol.renderer.Type.WEBGL) {
-    renderer = new ol.renderer.webgl.TileLayer(/** @type {ol.renderer.webgl.Map} */ (mapRenderer), this);
-  }
-  return renderer;
-};
 
 
 /**

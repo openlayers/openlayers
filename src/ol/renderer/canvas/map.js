@@ -21,7 +21,8 @@ goog.require('ol.source.State');
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
+ * @api
  */
 ol.renderer.canvas.Map = function(container, map) {
 
@@ -59,6 +60,27 @@ ol.renderer.canvas.Map = function(container, map) {
 
 };
 ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @param {ol.renderer.Type} type The renderer type.
+ * @return {boolean} The renderer can render the layer.
+ */
+ol.renderer.canvas.Map['handles'] = function(type) {
+  return type === ol.renderer.Type.CANVAS;
+};
+
+
+/**
+ * Create the map renderer.
+ * @param {Element} container Container.
+ * @param {ol.PluggableMap} map Map.
+ * @return {ol.renderer.canvas.Map} The map renderer.
+ */
+ol.renderer.canvas.Map['create'] = function(container, map) {
+  return new ol.renderer.canvas.Map(container, map);
+};
 
 
 /**

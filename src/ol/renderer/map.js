@@ -7,6 +7,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.layer.Layer');
+goog.require('ol.plugins');
 goog.require('ol.style');
 goog.require('ol.transform');
 
@@ -16,7 +17,7 @@ goog.require('ol.transform');
  * @abstract
  * @extends {ol.Disposable}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @struct
  */
 ol.renderer.Map = function(container, map) {
@@ -26,7 +27,7 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    */
   this.map_ = map;
 
@@ -77,7 +78,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
 
 
 /**
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
@@ -206,12 +207,24 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {
-    var layerRenderer = layer.createRenderer(this);
-    this.layerRenderers_[layerKey] = layerRenderer;
-    this.layerRendererListeners_[layerKey] = ol.events.listen(layerRenderer,
-        ol.events.EventType.CHANGE, this.handleLayerRendererChange_, this);
-
-    return layerRenderer;
+    var layerRendererPlugins = ol.plugins.getLayerRendererPlugins();
+    var renderer;
+    var type = this.getType();
+    for (var i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {
+      var plugin = layerRendererPlugins[i];
+      if (plugin.handles(type, layer)) {
+        renderer = plugin.create(this, layer);
+        break;
+      }
+    }
+    if (renderer) {
+      this.layerRenderers_[layerKey] = renderer;
+      this.layerRendererListeners_[layerKey] = ol.events.listen(renderer,
+          ol.events.EventType.CHANGE, this.handleLayerRendererChange_, this);
+    } else {
+      throw new Error('Unable to create renderer for layer: ' + layer.getType());
+    }
+    return renderer;
   }
 };
 
@@ -236,7 +249,7 @@ ol.renderer.Map.prototype.getLayerRenderers = function() {
 
 
 /**
- * @return {ol.Map} Map.
+ * @return {ol.PluggableMap} Map.
  */
 ol.renderer.Map.prototype.getMap = function() {
   return this.map_;
@@ -245,7 +258,7 @@ ol.renderer.Map.prototype.getMap = function() {
 
 /**
  * @abstract
- * @return {string} Type
+ * @return {ol.renderer.Type} Type
  */
 ol.renderer.Map.prototype.getType = function() {};
 
@@ -283,7 +296,7 @@ ol.renderer.Map.prototype.renderFrame = ol.nullFunction;
 
 
 /**
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */

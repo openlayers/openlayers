@@ -11,7 +11,7 @@ goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
- * @param {ol.Map} map The map with the viewport to listen to events on.
+ * @param {ol.PluggableMap} map The map with the viewport to listen to events on.
  * @param {number|undefined} moveTolerance The minimal distance the pointer must travel to trigger a move.
  * @constructor
  * @extends {ol.events.EventTarget}
@@ -22,7 +22,7 @@ ol.MapBrowserEventHandler = function(map, moveTolerance) {
 
   /**
    * This is the element that we will listen to the real events on.
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    * @private
    */
   this.map_ = map;

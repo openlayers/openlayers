@@ -10,12 +10,15 @@ goog.require('ol.style.Stroke');
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.OSM()
+      source: new ol.source.OSM({
+        wrapX: false
+      })
     })
   ],
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([4.8, 47.75]),
+    extent: ol.proj.get('EPSG:3857').getExtent(),
     zoom: 5
   })
 });

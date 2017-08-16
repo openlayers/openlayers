@@ -1,13 +1,12 @@
 goog.provide('ol.layer.VectorTile');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.asserts');
 goog.require('ol.layer.TileProperty');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorTileRenderType');
 goog.require('ol.obj');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.canvas.VectorTileLayer');
 
 
 /**
@@ -47,21 +46,15 @@ ol.layer.VectorTile = function(opt_options) {
    */
   this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
 
+  /**
+   * The layer type.
+   * @protected
+   * @type {ol.LayerType}
+   */
+  this.type = ol.LayerType.VECTOR_TILE;
+
 };
 ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
-
-
-/**
- * @inheritDoc
- */
-ol.layer.VectorTile.prototype.createRenderer = function(mapRenderer) {
-  var renderer = null;
-  var type = mapRenderer.getType();
-  if (ol.ENABLE_CANVAS && type === ol.renderer.Type.CANVAS) {
-    renderer = new ol.renderer.canvas.VectorTileLayer(this);
-  }
-  return renderer;
-};
 
 
 /**
@@ -116,3 +109,12 @@ ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTil
   this.set(
       ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
+
+
+/**
+ * Return the associated {@link ol.source.VectorTile vectortilesource} of the layer.
+ * @function
+ * @return {ol.source.VectorTile} Source.
+ * @api
+ */
+ol.layer.VectorTile.prototype.getSource;
