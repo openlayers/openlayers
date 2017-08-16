@@ -58,16 +58,16 @@ module.exports = function(karma) {
       SL_Firefox: {
         base: 'SauceLabs',
         browserName: 'firefox'
-      },
-      SL_Edge: {
-        base: 'SauceLabs',
-        platform: 'Windows 10',
-        browserName: 'MicrosoftEdge'
-      },
-      SL_Safari: {
-        base: 'SauceLabs',
-        platform: 'macos 10.12',
-        browserName: 'safari'
+      // },
+      // SL_Edge: {
+      //   base: 'SauceLabs',
+      //   platform: 'Windows 10',
+      //   browserName: 'MicrosoftEdge'
+      // },
+      // SL_Safari: {
+      //   base: 'SauceLabs',
+      //   platform: 'macos 10.12',
+      //   browserName: 'safari'
       }
     };
     karma.set({
