@@ -14,18 +14,16 @@ goog.require('ol.style.Stroke');
 
 describe('ol.rendering.style.RegularShape', function() {
 
-  var target, map, vectorSource;
+  var map, vectorSource;
 
   function createMap(renderer) {
-    target = createMapDiv(50, 50);
-
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -34,11 +32,16 @@ describe('ol.rendering.style.RegularShape', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  function createFeatures(stroke, fill) {
+  afterEach(function() {
+    if (map) {
+      disposeMap(map);
+      map = null;
+    }
+  });
 
+  function createFeatures(stroke, fill) {
     var feature;
     feature = new ol.Feature({
       geometry: new ol.geom.Point([-15, 15])
@@ -109,38 +112,34 @@ describe('ol.rendering.style.RegularShape', function() {
     var stroke = new ol.style.Stroke({width: 2});
     var fill = new ol.style.Fill({color: 'red'});
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas.png', 9.4, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas.png', 9.4, done);
     });
 
     it('supports lineDash', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures(new ol.style.Stroke({
         lineDash: [10, 5]
       }));
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-linedash.png', 5, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedash.png', 5, done);
     });
 
     it('supports lineDashOffset', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures(new ol.style.Stroke({
         lineDash: [10, 5],
         lineDashOffset: 5
       }));
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-linedashoffset.png', 5, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedashoffset.png', 5, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-webgl.png', 8.2, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-webgl.png', 8.2, done);
     });
   });
 
@@ -148,21 +147,17 @@ describe('ol.rendering.style.RegularShape', function() {
     var stroke = new ol.style.Stroke();
     var fill = new ol.style.Fill();
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-webgl-default-style.png', 3.0, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-webgl-default-style.png', 3.0, done);
     });
   });
 });

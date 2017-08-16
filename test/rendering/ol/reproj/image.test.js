@@ -38,7 +38,7 @@ describe('ol.rendering.reproj.Image', function() {
   describe('image reprojections from EPSG:3857', function() {
     beforeEach(function() {
       source = new ol.source.ImageStatic({
-        url: 'spec/ol/data/tiles/osm/5/5/12.png',
+        url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: ol.tilegrid.createXYZ().getTileCoordExtent([5, 5, -13]),
         projection: ol.proj.get('EPSG:3857')
       });
@@ -48,7 +48,7 @@ describe('ol.rendering.reproj.Image', function() {
       testSingleImage(source, 'EPSG:3857',
           ol.tilegrid.createXYZ().getTileCoordExtent([5, 5, -13]),
           2 * ol.proj.EPSG3857.HALF_SIZE / (256 * (1 << 5)), 1,
-          'spec/ol/data/tiles/osm/5/5/12.png', done);
+          'rendering/ol/data/tiles/osm/5/5/12.png', done);
     });
 
     it('to EPSG:4326', function(done) {
@@ -56,7 +56,7 @@ describe('ol.rendering.reproj.Image', function() {
           ol.tilegrid.createForProjection('EPSG:4326').
               getTileCoordExtent([6, 10, -10]),
           360 / (256 * (1 << 4)), 1,
-          'spec/ol/reproj/expected/image-3857-to-4326.png', done);
+          'rendering/ol/reproj/expected/image-3857-to-4326.png', done);
     });
   });
 });

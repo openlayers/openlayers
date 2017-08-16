@@ -6,19 +6,17 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.proj');
 
 describe('ol.control.ScaleLine', function() {
-  var mapDiv;
   var map;
   beforeEach(function() {
-    mapDiv = document.createElement('div');
-    document.body.appendChild(mapDiv);
+    var target = document.createElement('div');
+    document.body.appendChild(target);
     map = new ol.Map({
-      target: mapDiv
+      target: target
     });
   });
   afterEach(function() {
-    map.dispose();
-    mapDiv.parentNode.removeChild(mapDiv);
-    mapDiv = null;
+    disposeMap(map);
+    map = null;
   });
 
   describe('constructor', function() {
@@ -34,7 +32,7 @@ describe('ol.control.ScaleLine', function() {
       it('defaults to "ol-scale-line"', function() {
         var ctrl = new ol.control.ScaleLine();
         ctrl.setMap(map);
-        var element = document.querySelector('.ol-scale-line', mapDiv);
+        var element = document.querySelector('.ol-scale-line', map.getTarget());
         expect(element).to.not.be(null);
         expect(element).to.be.a(HTMLDivElement);
       });
@@ -45,10 +43,10 @@ describe('ol.control.ScaleLine', function() {
         ctrl.setMap(map);
 
         // check that the default was not chosen
-        var element1 = document.querySelector('.ol-scale-line', mapDiv);
+        var element1 = document.querySelector('.ol-scale-line', map.getTarget());
         expect(element1).to.be(null);
         // check if the configured classname was chosen
-        var element2 = document.querySelector('.humpty-dumpty', mapDiv);
+        var element2 = document.querySelector('.humpty-dumpty', map.getTarget());
         expect(element2).to.not.be(null);
         expect(element2).to.be.a(HTMLDivElement);
       });

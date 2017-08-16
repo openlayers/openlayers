@@ -4,6 +4,7 @@ goog.require('ol.Feature');
 goog.require('ol.format.GML2');
 goog.require('ol.format.WFS');
 goog.require('ol.format.filter');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');

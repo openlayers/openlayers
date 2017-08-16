@@ -4,6 +4,7 @@ goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
 goog.require('ol.interaction.DragRotateAndZoom');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');

@@ -3,6 +3,7 @@ goog.provide('ol.test.TileQueue');
 goog.require('ol.ImageTile');
 goog.require('ol.Tile');
 goog.require('ol.TileQueue');
+goog.require('ol.TileState');
 goog.require('ol.source.Image');
 goog.require('ol.structs.PriorityQueue');
 

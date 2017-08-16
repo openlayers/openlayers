@@ -6,9 +6,6 @@ SRC_SHADER_JS := $(patsubst %shader.glsl,%shader.js,$(SRC_GLSL))
 SRC_JS := $(filter-out $(SRC_SHADER_JS),$(shell find src -name '*.js'))
 SRC_JSDOC = $(shell find src -type f -name '*.jsdoc')
 
-SPEC_JS := $(shell find test/spec -type f -name '*.js')
-SPEC_RENDERING_JS := $(shell find test_rendering/spec -name '*.js')
-
 EXAMPLES := $(shell find examples -type f)
 EXAMPLES_HTML := $(filter-out examples/index.html,$(shell find examples -maxdepth 1 -type f -name '*.html'))
 EXAMPLES_JS := $(patsubst %.html,%.js,$(EXAMPLES_HTML))
@@ -56,7 +53,6 @@ help:
 	@echo "Other less frequently used targets are:"
 	@echo
 	@echo "- build                   Build ol.js, ol-debug.js, ol.js.map and ol.css"
-	@echo "- lint                    Check the code with the linter"
 	@echo "- ci                      Run the full continuous integration process"
 	@echo "- apidoc                  Build the API documentation using JSDoc"
 	@echo "- cleanall                Remove all the build artefacts"
@@ -70,7 +66,7 @@ apidoc: build/timestamps/jsdoc-$(BRANCH)-timestamp
 build: build/ol.css build/ol.js build/ol-debug.js build/ol.js.map
 
 .PHONY: check
-check: lint build/ol.js test
+check: build/ol.js test
 
 .PHONY: check-examples
 check-examples: $(CHECK_EXAMPLE_TIMESTAMPS)
@@ -86,21 +82,18 @@ check-deps:
 	done ;\
 
 .PHONY: ci
-ci: lint build test test-rendering package compile-examples check-examples apidoc
+ci: build test package compile-examples check-examples apidoc
 
 .PHONY: compile-examples
 compile-examples: build/compiled-examples/all.combined.js
 
 .PHONY: clean
 clean:
-	rm -f build/timestamps/eslint-timestamp
 	rm -f build/timestamps/check-*-timestamp
 	rm -f build/ol.css
 	rm -f build/ol.js
 	rm -f build/ol.js.map
 	rm -f build/ol-debug.js
-	rm -f build/test_requires.js
-	rm -f build/test_rendering_requires.js
 	rm -rf build/examples
 	rm -rf build/compiled-examples
 	rm -rf build/package
@@ -119,9 +112,6 @@ examples: $(BUILD_EXAMPLES)
 .PHONY: install
 install: build/timestamps/node-modules-timestamp
 
-.PHONY: lint
-lint: build/timestamps/eslint-timestamp
-
 .PHONY: npm-install
 npm-install: build/timestamps/node-modules-timestamp
 
@@ -129,24 +119,12 @@ npm-install: build/timestamps/node-modules-timestamp
 shaders: $(SRC_SHADER_JS)
 
 .PHONY: serve
-serve: build/test_requires.js build/test_rendering_requires.js
+serve:
 	node tasks/serve.js
 
 .PHONY: test
-test: build/timestamps/node-modules-timestamp build/test_requires.js
-	node tasks/test.js
-
-.PHONY: test-coverage
-test-coverage: build/timestamps/node-modules-timestamp
-	node tasks/test-coverage.js
-
-.PHONY: test-rendering
-test-rendering: build/timestamps/node-modules-timestamp \
-                build/test_rendering_requires.js
-	@rm -rf build/slimerjs-profile
-	@mkdir -p build/slimerjs-profile
-	@cp -r test_rendering/slimerjs-profile/* build/slimerjs-profile/
-	node tasks/test-rendering.js
+test: build/timestamps/node-modules-timestamp
+	npm test
 
 .PHONY: host-examples
 host-examples: $(BUILD_HOSTED_EXAMPLES) \
@@ -248,14 +226,6 @@ $(BUILD_HOSTED)/build/ol-deps.js: host-libraries
            --root_with_prefix "$(BUILD_HOSTED)/closure-library/third_party ../../third_party" \
            --output_file $@
 
-build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
-                                   $(TASKS_JS) $(EXAMPLES_JS) \
-                                   build/timestamps/node-modules-timestamp
-	@mkdir -p $(@D)
-	@echo "Running eslint..."
-	@./node_modules/.bin/eslint tasks test test_rendering src examples
-	@touch $@
-
 build/timestamps/node-modules-timestamp: package.json
 	@mkdir -p $(@D)
 	npm install
@@ -290,14 +260,6 @@ build/ol-debug.js: config/ol-debug.json $(SRC_JS) $(SRC_SHADER_JS) \
 	@gzip /tmp/ol-debug.js
 	@$(STAT_COMPRESSED) /tmp/ol-debug.js.gz
 	@rm /tmp/ol-debug.js.gz
-
-build/test_requires.js: $(SPEC_JS) $(SRC_JS)
-	@mkdir -p $(@D)
-	@node tasks/generate-requires.js $^ > $@
-
-build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
-	@mkdir -p $(@D)
-	@node tasks/generate-requires.js $^ > $@
 
 %shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@

@@ -11,24 +11,22 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
+function getContext() {
+  return document.createElement('canvas').getContext('2d');
+}
 
 describe('ol.render', function() {
-
-  var context;
-
-  beforeEach(function() {
-    context = document.createElement('canvas').getContext('2d');
-  });
 
   describe('ol.render.toContext()', function() {
 
     it('creates a vector context from a Canvas 2d context', function() {
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(getContext(), {size: [100, 100]});
       expect(vectorContext).to.be.a(ol.render.VectorContext);
       expect(vectorContext).to.be.a(ol.render.canvas.Immediate);
     });
 
     it('can be used to render a point geometry', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -44,11 +42,12 @@ describe('ol.render', function() {
       vectorContext.drawGeometry(new ol.geom.Point([50, 50]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('can be used to render a linestring geometry', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -64,11 +63,12 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('respects lineCap for linestring', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -85,11 +85,12 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('respects lineJoin for linestring', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -106,11 +107,12 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('can be used to render a polygon geometry', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -131,11 +133,12 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('supports lineDash styles', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -152,11 +155,12 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('supports lineDashOffset', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -174,7 +178,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
 
     });
 

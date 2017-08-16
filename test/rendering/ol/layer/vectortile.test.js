@@ -11,22 +11,24 @@ goog.require('ol.tilegrid');
 
 describe('ol.rendering.layer.VectorTile', function() {
 
-  var target, map;
+  var map;
 
   function createMap(renderer, opt_pixelRatio) {
-    target = createMapDiv(50, 50);
-
     map = new ol.Map({
       pixelRatio: opt_pixelRatio,
-      target: target,
+      target: createMapDiv(50, 50),
       renderer: renderer,
       view: new ol.View({
         center: [1825927.7316762917, 6143091.089223046],
         zoom: 14
       })
     });
-    return map;
   }
+
+  afterEach(function() {
+    disposeMap(map);
+    map = null;
+  });
 
   function waitForTiles(source, layerOptions, onTileLoaded) {
     var tilesLoading = 0;
@@ -64,44 +66,40 @@ describe('ol.rendering.layer.VectorTile', function() {
         format: new ol.format.MVT(),
         tileGrid: ol.tilegrid.createXYZ(),
         tilePixelRatio: 16,
-        url: 'spec/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf'
+        url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf'
       });
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('renders correctly with the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas.png',
-            11.7, done);
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas.png',
+            22, done);
       });
     });
 
     it('renders rotated view correctly with the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-rotated.png',
-            13.4, done);
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated.png',
+            14, done);
       });
     });
 
     it('renders correctly with the canvas renderer (HiDPI)', function(done) {
-      map = createMap('canvas', 2);
+      createMap('canvas', 2);
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-hidpi.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-hidpi.png',
             11.3, done);
       });
     });
 
     it('renders rotated view correctly with the canvas renderer (HiDPI)', function(done) {
-      map = createMap('canvas', 2);
+      createMap('canvas', 2);
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
             14.8, done);
       });
     });

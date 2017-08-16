@@ -12,11 +12,9 @@ goog.require('ol.style.Stroke');
 
 describe('ol.rendering.style.LineString', function() {
 
-  var target, map, vectorSource;
+  var map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
-    target = createMapDiv(50, 50);
-
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
@@ -24,7 +22,7 @@ describe('ol.rendering.style.LineString', function() {
 
     map = new ol.Map({
       pixelRatio: opt_pixelRatio || 1,
-      target: target,
+      target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -33,13 +31,16 @@ describe('ol.rendering.style.LineString', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  describe('different strokes', function() {
-    afterEach(function() {
+  afterEach(function() {
+    if (map) {
       disposeMap(map);
-    });
+      map = null;
+    }
+  });
+
+  describe('different strokes', function() {
 
     function createFeatures() {
       var feature;
@@ -111,25 +112,25 @@ describe('ol.rendering.style.LineString', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/linestring-strokes-canvas.png',
+          map, 'rendering/ol/style/expected/linestring-strokes-canvas.png',
           3.0, done);
     });
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/linestring-strokes-webgl.png',
+      expectResemble(map, 'rendering/ol/style/expected/linestring-strokes-webgl.png',
           14.6, done);
     });
 
     it('tests the canvas renderer (HiDPI)', function(done) {
-      map = createMap('canvas', 2);
+      createMap('canvas', 2);
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/linestring-strokes-canvas-hidpi.png',
+          map, 'rendering/ol/style/expected/linestring-strokes-canvas-hidpi.png',
           3.0, done);
     });
   });

@@ -1,3 +1,8 @@
+goog.require('ol.array');
+goog.require('ol.has');
+goog.require('ol.renderer.canvas.Map');
+goog.require('ol.renderer.webgl.Map');
+
 // FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
 
 // helper functions for async testing and other utility functions.
@@ -368,8 +373,10 @@
   global.disposeMap = function(map) {
     var target = map.getTarget();
     map.setTarget(null);
+    if (target && target.parentNode) {
+      target.parentNode.removeChild(target);
+    }
     map.dispose();
-    document.body.removeChild(target);
   };
 
   global.assertWebGL = function(map) {
@@ -465,7 +472,8 @@
     ArrayBuffer: 'ArrayBuffer' in global,
     'ArrayBuffer.isView': 'ArrayBuffer' in global && !!ArrayBuffer.isView,
     FileReader: 'FileReader' in global,
-    Uint8ClampedArray: ('Uint8ClampedArray' in global)
+    Uint8ClampedArray: ('Uint8ClampedArray' in global),
+    WebGL: false
   };
 
   /**
@@ -481,8 +489,17 @@
       throw new Error('where() called with unknown key: ' + key);
     }
     return {
-      describe: features[key] ? global.describe : global.xdescribe
+      describe: features[key] ? global.describe : global.xdescribe,
+      it: features[key] ? global.id : global.xit
     };
   };
+
+  // throw if anybody appends a div to the body and doesn't remove it
+  afterEach(function() {
+    var garbage = document.body.getElementsByTagName('div');
+    if (garbage.length) {
+      throw new Error('Found extra <div> elements in the body');
+    }
+  });
 
 })(this);

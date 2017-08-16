@@ -13,11 +13,10 @@ goog.require('ol.style.Stroke');
 
 describe('ol.rendering.style.Polygon', function() {
 
-  var target, map, vectorSource;
+  var map, vectorSource;
 
   function createMap(renderer, opt_size) {
     var size = opt_size || 50;
-    target = createMapDiv(size, size);
 
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
@@ -25,7 +24,7 @@ describe('ol.rendering.style.Polygon', function() {
     });
 
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(size, size),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -34,13 +33,16 @@ describe('ol.rendering.style.Polygon', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  describe('different types', function() {
-    afterEach(function() {
+  afterEach(function() {
+    if (map) {
       disposeMap(map);
-    });
+      map = null;
+    }
+  });
+
+  describe('different types', function() {
 
     function createFeatures() {
       var fill = new ol.style.Fill({color: 'red'});
@@ -86,24 +88,21 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas.png',
+      expectResemble(map, 'rendering/ol/style/expected/polygon-types-canvas.png',
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
-      map = createMap('webgl');
+    where('WebGL').it('tests the webgl renderer', function(done) {
+      createMap('webgl');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/polygon-types-webgl.png',
+      expectResemble(map, 'rendering/ol/style/expected/polygon-types-webgl.png',
           IMAGE_TOLERANCE, done);
     });
   });
 
   describe('different types with stroke', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     function createFeatures() {
       var stroke = new ol.style.Stroke({
@@ -154,26 +153,23 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas', 100);
+      createMap('canvas', 100);
       map.getView().setResolution(0.5);
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas-stroke.png',
+      expectResemble(map, 'rendering/ol/style/expected/polygon-types-canvas-stroke.png',
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
-      map = createMap('webgl', 100);
+    where('WebGL').it('tests the webgl renderer', function(done) {
+      createMap('webgl', 100);
       map.getView().setResolution(0.5);
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/polygon-types-webgl-stroke.png',
+      expectResemble(map, 'rendering/ol/style/expected/polygon-types-webgl-stroke.png',
           IMAGE_TOLERANCE, done);
     });
   });
 
   describe('z-index', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     function createFeatures() {
       var feature;
@@ -216,24 +212,21 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/polygon-zindex-canvas.png',
+      expectResemble(map, 'rendering/ol/style/expected/polygon-zindex-canvas.png',
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
-      map = createMap('webgl');
+    where('WebGL').it('tests the webgl renderer', function(done) {
+      createMap('webgl');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/polygon-zindex-webgl.png',
+      expectResemble(map, 'rendering/ol/style/expected/polygon-zindex-webgl.png',
           IMAGE_TOLERANCE, done);
     });
   });
 
   describe('different fills and strokes', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     function createFeatures() {
       var feature;
@@ -275,26 +268,23 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/polygon-fill-and-strokes-canvas.png',
+          map, 'rendering/ol/style/expected/polygon-fill-and-strokes-canvas.png',
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
-      map = createMap('webgl');
+    where('WebGL').it('tests the webgl renderer', function(done) {
+      createMap('webgl');
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/polygon-fill-and-strokes-webgl.png',
+          map, 'rendering/ol/style/expected/polygon-fill-and-strokes-webgl.png',
           5.76, done);
     });
   });
 
   describe('CanvasPattern and LinearGradient as fills and strokes', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     function createRainbowGradient() {
       var canvas = document.createElement('canvas');
@@ -340,10 +330,10 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/polygon-pattern-gradient-canvas.png',
+          map, 'rendering/ol/style/expected/polygon-pattern-gradient-canvas.png',
           2.75, done);
     });
   });

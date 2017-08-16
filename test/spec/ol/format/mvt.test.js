@@ -3,6 +3,7 @@ goog.provide('ol.test.format.MVT');
 goog.require('ol.Feature');
 goog.require('ol.ext.PBF');
 goog.require('ol.ext.vectortile.VectorTile');
+goog.require('ol.extent');
 goog.require('ol.format.MVT');
 goog.require('ol.geom.Point');
 goog.require('ol.render.Feature');
@@ -92,7 +93,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       var format = new ol.format.MVT();
       format.readFeatures(data);
       var extent = format.getLastExtent();
-      expect(extent.getWidth()).to.be(4096);
+      expect(ol.extent.getWidth(extent)).to.be(4096);
     });
 
   });
