@@ -5,8 +5,6 @@ node_js:
 cache:
   directories:
   - node_modules
-env:
-- DISPLAY=:99.0
 before_script:
 - rm src/ol/renderer/webgl/*shader.js
 script: make ci

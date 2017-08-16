@@ -1,5 +1,7 @@
-var path = require('path');
-var pkg = require('../package.json');
+/* eslint-env node, es6 */
+
+const path = require('path');
+const pkg = require('../package.json');
 
 /**
  * The config below is not enough to run Karma.  In addition, we need to add
@@ -48,9 +50,13 @@ module.exports = function(karma) {
   });
 
   if (process.env.TRAVIS) {
+    const testName = process.env.TRAVIS_PULL_REQUEST ?
+      `https://github.com/openlayers/openlayers/pull/${process.env.TRAVIS_PULL_REQUEST}` :
+      `${pkg.name}@${pkg.version} (${process.env.TRAVIS_COMMIT})`;
+
     // see https://wiki.saucelabs.com/display/DOCS/Platform+Configurator
     // for platform and browserName options (Selenium API, node.js code)
-    var customLaunchers = {
+    const customLaunchers = {
       SL_Chrome: {
         base: 'SauceLabs',
         browserName: 'chrome'
@@ -72,7 +78,7 @@ module.exports = function(karma) {
     };
     karma.set({
       sauceLabs: {
-        testName: pkg.name + '@' + pkg.version,
+        testName: testName,
         recordScreenshots: false,
         connectOptions: {
           port: 5757
