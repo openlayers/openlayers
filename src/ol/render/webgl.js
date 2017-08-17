@@ -1,7 +1,5 @@
 goog.provide('ol.render.webgl');
 
-goog.require('ol');
-
 
 /**
  * @const

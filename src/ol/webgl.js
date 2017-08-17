@@ -1,9 +1,7 @@
 goog.provide('ol.webgl');
 
-goog.require('ol');
-
-
-/** Constants taken from goog.webgl
+/**
+ * Constants taken from goog.webgl
  */
 
 
