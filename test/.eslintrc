@@ -14,7 +14,7 @@
     "expect": false,
     "expectResemble": false,
     "proj4": false,
-    "resemble": false,
+    "pixelmatch": false,
     "resembleCanvas": false,
     "sinon": false,
     "where": false
