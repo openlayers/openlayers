@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.CircleReplay');
+
 
 goog.require('ol');
 goog.require('ol.Feature');

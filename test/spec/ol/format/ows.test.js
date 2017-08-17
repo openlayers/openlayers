@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.OWS');
+
 
 goog.require('ol.format.OWS');
 goog.require('ol.xml');

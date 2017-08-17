@@ -1,4 +1,4 @@
-goog.provide('ol.test.VectorImageTile');
+
 
 goog.require('ol.TileState');
 goog.require('ol.VectorImageTile');

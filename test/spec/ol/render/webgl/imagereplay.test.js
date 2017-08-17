@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.ImageReplay');
+
 
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');

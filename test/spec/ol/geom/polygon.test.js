@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.Polygon');
+
 
 goog.require('ol.extent');
 goog.require('ol.geom.Circle');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.transform');
+
 
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.SimpleGeometry');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.dom');
+
 
 goog.require('ol.dom');
 

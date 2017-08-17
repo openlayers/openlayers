@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.WFS');
+
 
 goog.require('ol.Feature');
 goog.require('ol.format.GML2');

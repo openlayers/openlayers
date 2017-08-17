@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.ScaleLine');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');

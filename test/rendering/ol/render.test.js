@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.render');
+
 
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');

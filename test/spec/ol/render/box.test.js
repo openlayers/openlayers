@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.Box');
+
 
 goog.require('ol.Disposable');
 goog.require('ol.Map');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.canvas.Map');
+
 
 goog.require('ol');
 goog.require('ol.Feature');

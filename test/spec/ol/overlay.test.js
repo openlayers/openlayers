@@ -1,4 +1,4 @@
-goog.provide('ol.test.Overlay');
+
 
 goog.require('ol.Map');
 goog.require('ol.Overlay');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.reproj.Image');
+
 
 goog.require('ol.events');
 goog.require('ol.proj');

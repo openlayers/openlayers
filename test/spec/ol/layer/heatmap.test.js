@@ -1,4 +1,4 @@
-goog.provide('ol.test.layer.Heatmap');
+
 
 goog.require('ol.layer.Heatmap');
 

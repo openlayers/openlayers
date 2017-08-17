@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.Stamen');
+
 
 goog.require('ol.source.Stamen');
 

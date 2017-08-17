@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.orient');
+
 
 goog.require('ol.geom.flat.orient');
 

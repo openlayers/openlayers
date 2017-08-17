@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.GPX');
+
 
 goog.require('ol.Feature');
 goog.require('ol.format.GPX');

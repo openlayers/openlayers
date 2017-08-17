@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.deflate');
+
 
 goog.require('ol.geom.flat.deflate');
 

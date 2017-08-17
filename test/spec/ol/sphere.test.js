@@ -1,7 +1,6 @@
 // See http://www.movable-type.co.uk/scripts/latlong.html
 // FIXME add tests for offset
 
-goog.provide('ol.test.Sphere');
 
 goog.require('ol.Sphere');
 goog.require('ol.format.WKT');

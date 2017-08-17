@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.inflate');
+
 
 goog.require('ol.geom.flat.inflate');
 

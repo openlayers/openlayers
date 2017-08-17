@@ -1,4 +1,4 @@
-goog.provide('ol.test.View');
+
 
 goog.require('ol');
 goog.require('ol.Map');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.Geolocation');
+
 
 goog.require('ol.Geolocation');
 

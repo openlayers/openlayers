@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.TileSource');
+goog.provide('ol.test.source.TileSource'); // eslint-disable-line openlayers-internal/valid-provide
 
 goog.require('ol');
 goog.require('ol.Tile');

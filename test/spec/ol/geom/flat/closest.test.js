@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.closest');
+
 
 goog.require('ol.geom.flat.closest');
 

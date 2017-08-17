@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.LineStringReplay');
+
 
 goog.require('ol');
 goog.require('ol.Feature');

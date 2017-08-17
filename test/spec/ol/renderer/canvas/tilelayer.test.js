@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.canvas.TileLayer');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');

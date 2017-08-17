@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.reproj.Tile');
+
 
 goog.require('ol.TileState');
 goog.require('ol.events');

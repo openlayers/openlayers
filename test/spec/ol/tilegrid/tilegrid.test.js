@@ -1,4 +1,4 @@
-goog.provide('ol.test.TileGrid');
+
 
 goog.require('ol');
 goog.require('ol.TileRange');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.structs.RBush');
+
 
 goog.require('ol.structs.RBush');
 

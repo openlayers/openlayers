@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.source.TileWMS');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');

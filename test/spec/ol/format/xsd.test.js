@@ -1,4 +1,4 @@
-goog.provide('ol.test.XSD');
+
 
 goog.require('ol.format.XSD');
 

@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.Zoomify');
+
 
 goog.require('ol.dom');
 goog.require('ol.events');

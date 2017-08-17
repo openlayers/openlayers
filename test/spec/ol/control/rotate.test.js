@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.Rotate');
+
 
 goog.require('ol.control.Rotate');
 

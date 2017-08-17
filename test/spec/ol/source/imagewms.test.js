@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.ImageWMS');
+
 
 goog.require('ol.source.ImageWMS');
 goog.require('ol.proj');

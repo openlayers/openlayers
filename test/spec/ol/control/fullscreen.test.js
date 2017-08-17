@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.FullScreen');
+
 
 goog.require('ol.control.FullScreen');
 

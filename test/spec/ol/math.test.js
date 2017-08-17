@@ -1,4 +1,4 @@
-goog.provide('ol.test.math');
+
 
 goog.require('ol.math');
 

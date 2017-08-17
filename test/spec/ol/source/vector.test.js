@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.Vector');
+
 
 goog.require('ol.events');
 goog.require('ol.Collection');

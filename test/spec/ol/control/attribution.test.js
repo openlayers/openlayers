@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.Attribution');
+
 
 goog.require('ol.Map');
 goog.require('ol.Tile');

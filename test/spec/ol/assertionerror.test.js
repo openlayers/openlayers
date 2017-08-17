@@ -1,4 +1,4 @@
-goog.provide('ol.AssertionError.test');
+
 
 goog.require('ol');
 goog.require('ol.AssertionError');

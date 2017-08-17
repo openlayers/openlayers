@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.layer.VectorTile');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');

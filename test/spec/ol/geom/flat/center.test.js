@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.center');
+
 
 goog.require('ol.geom.flat.center');
 goog.require('ol.geom.MultiPolygon');

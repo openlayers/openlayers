@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.Immediate');
+
 
 goog.require('ol.Feature');
 goog.require('ol.geom.Circle');

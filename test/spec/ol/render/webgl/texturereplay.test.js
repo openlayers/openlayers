@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.TextureReplay');
+
 
 goog.require('ol.render.webgl.TextureReplay');
 goog.require('ol.render.webgl.texturereplay.defaultshader');

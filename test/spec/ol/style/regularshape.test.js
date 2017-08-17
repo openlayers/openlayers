@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.RegularShape');
+
 
 goog.require('ol.style.AtlasManager');
 goog.require('ol.style.RegularShape');

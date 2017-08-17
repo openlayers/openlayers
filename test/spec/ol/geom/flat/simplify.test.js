@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.simplify');
+
 
 goog.require('ol.geom.flat.simplify');
 

@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.KML');
+
 
 goog.require('ol.Feature');
 goog.require('ol.array');

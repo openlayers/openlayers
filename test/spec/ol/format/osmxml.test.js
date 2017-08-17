@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.OSMXML');
+
 
 goog.require('ol.Feature');
 goog.require('ol.format.OSMXML');

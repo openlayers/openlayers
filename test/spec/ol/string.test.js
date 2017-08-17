@@ -1,4 +1,4 @@
-goog.provide('ol.test.string');
+
 
 goog.require('ol.string');
 

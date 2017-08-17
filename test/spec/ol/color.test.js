@@ -1,4 +1,4 @@
-goog.provide('ol.test.color');
+
 
 goog.require('ol.color');
 goog.require('ol');

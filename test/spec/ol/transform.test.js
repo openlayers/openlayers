@@ -1,4 +1,4 @@
-goog.provide('ol.test.transform');
+
 
 goog.require('ol.transform');
 

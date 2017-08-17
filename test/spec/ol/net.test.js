@@ -1,4 +1,4 @@
-goog.provide('ol.test.net');
+
 
 goog.require('ol');
 goog.require('ol.net');

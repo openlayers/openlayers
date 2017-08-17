@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.Draw');
+
 
 goog.require('ol.Feature');
 goog.require('ol.Map');

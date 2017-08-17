@@ -1,4 +1,4 @@
-goog.provide('ol.test.reader.EsriJSON');
+
 
 goog.require('ol.Feature');
 goog.require('ol.extent');

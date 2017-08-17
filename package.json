@@ -12,7 +12,7 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "lint": "eslint tasks test src examples",
+    "lint": "eslint tasks test src examples transforms",
     "lint-package": "eslint --fix build/package",
     "pretest": "npm run lint",
     "test": "npm run karma -- --single-run",

@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.vector');
+
 
 goog.require('ol');
 goog.require('ol.events');

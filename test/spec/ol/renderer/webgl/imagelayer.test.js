@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.webgl.ImageLayer');
+
 
 goog.require('ol.transform');
 goog.require('ol.Map');

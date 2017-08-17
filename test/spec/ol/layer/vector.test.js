@@ -1,4 +1,4 @@
-goog.provide('ol.test.layer.Vector');
+
 
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Vector');

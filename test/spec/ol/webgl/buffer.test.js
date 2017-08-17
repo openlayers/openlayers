@@ -1,4 +1,4 @@
-goog.provide('ol.test.webgl.Buffer');
+
 
 goog.require('ol.webgl.Buffer');
 

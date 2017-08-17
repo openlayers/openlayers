@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.MultiPolygon');
+
 
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');

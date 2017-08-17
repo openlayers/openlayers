@@ -1,4 +1,4 @@
-goog.provide('ol.test.events.EventTarget');
+
 
 goog.require('ol.Disposable');
 goog.require('ol.events');

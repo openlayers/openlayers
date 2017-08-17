@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.GeometryCollection');
+
 
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryCollection');

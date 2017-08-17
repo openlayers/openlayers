@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.canvas.ReplayGroup');
+
 
 goog.require('ol.render.canvas.ReplayGroup');
 

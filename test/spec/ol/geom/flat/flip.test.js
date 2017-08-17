@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.flip');
+
 
 goog.require('ol.geom.flat.flip');
 

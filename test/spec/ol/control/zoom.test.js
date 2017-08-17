@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.Zoom');
+
 
 goog.require('ol.control.Zoom');
 

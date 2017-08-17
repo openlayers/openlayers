@@ -1,4 +1,4 @@
-goog.provide('ol.test.reproj.Triangulation');
+
 
 goog.require('ol.proj');
 goog.require('ol.reproj.Triangulation');

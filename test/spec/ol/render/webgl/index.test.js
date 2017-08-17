@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.Replay');
+
 
 goog.require('ol.render.webgl.Replay');
 

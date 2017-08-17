@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.PolygonReplay');
+
 
 goog.require('ol');
 goog.require('ol.Feature');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.Source');
+
 
 goog.require('ol.Attribution');
 goog.require('ol.proj');
