@@ -2,7 +2,6 @@ goog.provide('ol.test.events');
 
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
-goog.require('ol');
 
 describe('ol.events', function() {
   var add, remove, target;
@@ -45,7 +44,7 @@ describe('ol.events', function() {
         bindTo: bindTo,
         callOnce: true
       };
-      var unlistenSpy = sinon.spy(ol.events, 'unlistenByKey');
+      var unlistenSpy = sinon.spy(ol.events, 'unlistenByKey'); // eslint-disable-line openlayers-internal/no-missing-requires
       listenerObj.listener = function() {
         expect(this).to.equal(bindTo);
         expect(unlistenSpy.firstCall.args[0]).to.eql(listenerObj);
