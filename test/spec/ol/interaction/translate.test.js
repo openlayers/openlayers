@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.Translate');
+
 
 goog.require('ol.Collection');
 goog.require('ol.Feature');

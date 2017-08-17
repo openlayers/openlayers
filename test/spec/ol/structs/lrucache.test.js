@@ -1,4 +1,4 @@
-goog.provide('ol.test.LRUCache');
+
 
 goog.require('ol.structs.LRUCache');
 

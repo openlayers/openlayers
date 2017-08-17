@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.layer.Vector');
+
 
 goog.require('ol.Feature');
 goog.require('ol.Map');

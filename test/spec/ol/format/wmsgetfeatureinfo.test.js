@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.WMSGetFeatureInfo');
+
 
 goog.require('ol.format.WMSGetFeatureInfo');
 

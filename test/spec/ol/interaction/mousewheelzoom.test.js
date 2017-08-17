@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.MouseWheelZoom');
+
 
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');

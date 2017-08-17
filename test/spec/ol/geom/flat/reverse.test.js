@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.reverse');
+
 
 goog.require('ol.geom.flat.reverse');
 

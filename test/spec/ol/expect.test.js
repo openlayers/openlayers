@@ -1,4 +1,3 @@
-goog.provide('ol.test.expect.js');
 
 
 describe('expect.js', function() {

@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.GML');
+
 
 goog.require('ol.Feature');
 goog.require('ol.format.GML');

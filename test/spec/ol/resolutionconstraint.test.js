@@ -1,4 +1,4 @@
-goog.provide('ol.test.ResolutionConstraint');
+
 
 goog.require('ol.ResolutionConstraint');
 

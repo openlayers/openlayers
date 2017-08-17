@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.DragZoom');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');

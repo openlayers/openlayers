@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.contains');
+
 
 goog.require('ol.geom.flat.contains');
 

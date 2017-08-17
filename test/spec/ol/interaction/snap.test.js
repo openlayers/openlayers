@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.Snap');
+
 
 goog.require('ol.Collection');
 goog.require('ol.Feature');

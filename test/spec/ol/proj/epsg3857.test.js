@@ -1,4 +1,4 @@
-goog.provide('ol.test.proj.EPSG3857');
+
 
 goog.require('ol.proj');
 

@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.Polyline');
+
 
 goog.require('ol.Feature');
 goog.require('ol.format.Polyline');

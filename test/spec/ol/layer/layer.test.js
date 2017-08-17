@@ -1,4 +1,4 @@
-goog.provide('ol.test.layer.Layer');
+
 
 goog.require('ol');
 goog.require('ol.Map');

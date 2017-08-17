@@ -1,4 +1,4 @@
-goog.provide('ol.test.reader.GeoJSON');
+
 
 goog.require('ol.Feature');
 goog.require('ol.extent');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.TileUrlFunction');
+
 
 goog.require('ol.TileUrlFunction');
 goog.require('ol.tilegrid');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.extent');
+
 
 goog.require('ol.extent');
 goog.require('ol.proj');

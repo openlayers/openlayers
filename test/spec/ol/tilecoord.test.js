@@ -1,4 +1,4 @@
-goog.provide('ol.test.TileCoord');
+
 
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');

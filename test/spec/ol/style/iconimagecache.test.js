@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.IconImageCache');
+
 
 goog.require('ol');
 goog.require('ol.events');

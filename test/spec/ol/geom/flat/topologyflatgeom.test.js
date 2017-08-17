@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.topology');
+
 
 goog.require('ol.geom.flat.topology');
 

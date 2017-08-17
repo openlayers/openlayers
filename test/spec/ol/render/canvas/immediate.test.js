@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.canvas.Immediate');
+
 
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryCollection');

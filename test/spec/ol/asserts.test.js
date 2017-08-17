@@ -1,4 +1,4 @@
-goog.provide('ol.asserts.asserts.test');
+
 
 goog.require('ol.asserts');
 

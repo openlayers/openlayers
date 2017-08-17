@@ -2,9 +2,6 @@
   "env": {
     "mocha": true
   },
-  "rules": {
-    "openlayers-internal/valid-provide": 0
-  },
   "globals": {
     "IMAGE_TOLERANCE": false,
     "afterLoadText": false,

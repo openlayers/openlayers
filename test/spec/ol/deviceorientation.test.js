@@ -1,4 +1,4 @@
-goog.provide('ol.test.DeviceOrientation');
+
 
 goog.require('ol.DeviceOrientation');
 

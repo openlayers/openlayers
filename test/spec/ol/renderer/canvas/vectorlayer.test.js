@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.canvas.VectorLayer');
+
 
 goog.require('ol');
 goog.require('ol.Feature');

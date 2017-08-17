@@ -1,4 +1,4 @@
-goog.provide('ol.test.layer.Group');
+
 
 goog.require('ol');
 goog.require('ol.array');

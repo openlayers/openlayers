@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.KeyboardPan');
+
 
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');

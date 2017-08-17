@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.RasterSource');
+
 
 goog.require('ol.Map');
 goog.require('ol.TileState');

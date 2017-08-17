@@ -1,4 +1,4 @@
-goog.provide('ol.test.size');
+
 
 goog.require('ol.size');
 

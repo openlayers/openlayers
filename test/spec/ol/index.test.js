@@ -1,4 +1,4 @@
-goog.provide('ol.test');
+
 goog.require('ol');
 
 describe('getUid()', function() {

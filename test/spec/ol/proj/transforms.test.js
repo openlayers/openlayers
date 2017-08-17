@@ -1,4 +1,4 @@
-goog.provide('ol.test.proj.transforms');
+
 
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.transforms');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.Control');
+
 
 goog.require('ol.Map');
 goog.require('ol.control.Control');

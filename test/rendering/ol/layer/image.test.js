@@ -1,4 +1,4 @@
-goog.provide('ol.test.rendering.layer.Image');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');

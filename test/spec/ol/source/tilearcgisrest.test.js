@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.TileArcGISRest');
+
 
 goog.require('ol.ImageTile');
 goog.require('ol.source.TileArcGISRest');

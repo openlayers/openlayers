@@ -1,4 +1,4 @@
-goog.provide('ol.test.Graticule');
+
 
 goog.require('ol.Graticule');
 goog.require('ol.Map');

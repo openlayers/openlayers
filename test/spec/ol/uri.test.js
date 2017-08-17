@@ -1,4 +1,4 @@
-goog.provide('ol.test.uri');
+
 
 goog.require('ol.uri');
 

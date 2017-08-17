@@ -1,4 +1,4 @@
-goog.provide('ol.test.featureloader');
+
 
 goog.require('ol.featureloader');
 goog.require('ol.format.GeoJSON');

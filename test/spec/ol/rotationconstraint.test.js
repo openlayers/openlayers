@@ -1,4 +1,4 @@
-goog.provide('ol.test.RotationConstraint');
+
 
 goog.require('ol.RotationConstraint');
 

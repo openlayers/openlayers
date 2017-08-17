@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.ImageStatic');
+
 
 goog.require('ol.source.ImageStatic');
 goog.require('ol.proj');

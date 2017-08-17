@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.ImageArcGISRest');
+
 
 goog.require('ol.source.ImageArcGISRest');
 goog.require('ol.proj');

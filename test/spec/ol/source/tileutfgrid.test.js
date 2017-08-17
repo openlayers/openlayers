@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.TileUTFGrid');
+
 
 goog.require('ol.proj');
 goog.require('ol.source.Tile');

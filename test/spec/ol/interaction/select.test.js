@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.Select');
+
 
 goog.require('ol.Collection');
 goog.require('ol.Feature');

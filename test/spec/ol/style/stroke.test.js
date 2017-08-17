@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.Stroke');
+
 
 goog.require('ol.style.Stroke');
 

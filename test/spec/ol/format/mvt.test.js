@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.MVT');
+
 
 goog.require('ol.Feature');
 goog.require('ol.ext.PBF');

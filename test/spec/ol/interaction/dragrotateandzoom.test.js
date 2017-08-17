@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.DragRotateAndZoom');
+
 
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');

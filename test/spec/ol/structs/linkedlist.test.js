@@ -1,4 +1,4 @@
-goog.provide('ol.test.structs.LinkedList');
+
 
 goog.require('ol.structs.LinkedList');
 

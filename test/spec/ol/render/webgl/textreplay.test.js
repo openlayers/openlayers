@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.webgl.TextReplay');
+
 
 goog.require('ol.dom');
 goog.require('ol.render.webgl.TextReplay');

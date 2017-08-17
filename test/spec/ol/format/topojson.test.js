@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.TopoJSON');
+
 
 goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
