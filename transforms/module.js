@@ -42,6 +42,10 @@ function resolve(fromName, toName) {
       return packageName;
     }
   }
+  if (fromParts[0] === 'examples' || fromParts[0] === 'test') {
+    fromParts.unshift('root');
+    toParts.unshift('root', 'src');
+  }
   const fromLength = fromParts.length;
   let commonDepth = 1;
   while (commonDepth < fromLength - 2) {
@@ -58,6 +62,12 @@ function resolve(fromName, toName) {
     relative += 'index';
   }
   return relative;
+}
+
+function getUnprovided(path) {
+  path = path.replace(/\.(test\.)?js$/, '');
+  const parts = path.split('/');
+  return parts.join('.');
 }
 
 function getGoogExpressionStatement(identifier) {
@@ -151,7 +161,7 @@ module.exports = function(info, api) {
       });
 
   // remove goog.provide()
-  let provide;
+  let provide, unprovided;
   root.find(j.ExpressionStatement, getGoogExpressionStatement('provide'))
       .forEach(path => {
         if (provide) {
@@ -163,31 +173,31 @@ module.exports = function(info, api) {
         }
       }).remove();
 
-  if (!provide) {
-    throw new Error(`No provide found in ${info.path}`);
-  }
-  replacements[provide] = rename(provide);
+  if (provide) {
+    replacements[provide] = rename(provide);
+    // replace provide assignment with variable declarator
+    // e.g. `ol.foo.Bar = function() {}` -> `var _ol_foo_Bar_ = function() {}`
+    let declaredProvide = false;
+    root.find(j.ExpressionStatement, getMemberExpressionAssignment(provide))
+        .replaceWith(path => {
+          declaredProvide = true;
+          const statement = j.variableDeclaration('var', [
+            j.variableDeclarator(j.identifier(rename(provide)), path.value.expression.right)
+          ]);
+          statement.comments = path.value.comments;
+          return statement;
+        });
 
-  // replace provide assignment with variable declarator
-  // e.g. `ol.foo.Bar = function() {}` -> `var _ol_foo_Bar_ = function() {}`
-  let declaredProvide = false;
-  root.find(j.ExpressionStatement, getMemberExpressionAssignment(provide))
-      .replaceWith(path => {
-        declaredProvide = true;
-        const statement = j.variableDeclaration('var', [
-          j.variableDeclarator(j.identifier(rename(provide)), path.value.expression.right)
-        ]);
-        statement.comments = path.value.comments;
-        return statement;
-      });
-
-  if (!declaredProvide) {
-    const body = root.find(j.Program).get('body');
-    body.unshift(
-        j.variableDeclaration('var', [
-          j.variableDeclarator(j.identifier(rename(provide)), j.objectExpression([]))
-        ])
-    );
+    if (!declaredProvide) {
+      const body = root.find(j.Program).get('body');
+      body.unshift(
+          j.variableDeclaration('var', [
+            j.variableDeclarator(j.identifier(rename(provide)), j.objectExpression([]))
+          ])
+      );
+    }
+  } else {
+    unprovided = getUnprovided(info.path);
   }
 
   // replace `goog.require('foo')` with `import foo from 'foo'`
@@ -200,7 +210,7 @@ module.exports = function(info, api) {
         }
         const renamed = rename(name);
         replacements[name] = renamed;
-        const resolved = resolve(provide, name);
+        const resolved = resolve(provide || unprovided, name);
         let specifier, source;
         if (Array.isArray(resolved)) {
         // import {imported as renamed} from 'source';
@@ -230,9 +240,11 @@ module.exports = function(info, api) {
   });
 
   // add export declaration
-  root.find(j.Program).get('body').push(
-      j.exportDefaultDeclaration(j.identifier(rename(provide)))
-  );
+  if (provide) {
+    root.find(j.Program).get('body').push(
+        j.exportDefaultDeclaration(j.identifier(rename(provide)))
+    );
+  }
 
   // replace any initial comments
   root.get().node.comments = comments;
