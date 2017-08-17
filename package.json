@@ -78,7 +78,7 @@
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
     "serve-files": "1.0.1",
-    "sinon": "3.2.0",
+    "sinon": "3.2.1",
     "slimerjs": "0.10.3"
   },
   "eslintConfig": {
