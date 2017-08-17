@@ -140,18 +140,16 @@ describe('ol.control.ScaleLine', function() {
   });
 
   describe('static method `render`', function() {
-    it('calls `updateElement_` on render', function(done) {
+    it('updates the rendered text', function() {
       var ctrl = new ol.control.ScaleLine();
-      var spy = sinon.spy(ctrl, 'updateElement_');
+      expect(ctrl.element.innerText).to.be('');
       ctrl.setMap(map);
       map.setView(new ol.View({
         center: [0, 0],
         zoom: 0
       }));
-      map.once('postrender', function() {
-        expect(spy.called).to.be(true);
-        done();
-      });
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('10000 km');
     });
   });
 
@@ -176,9 +174,18 @@ describe('ol.control.ScaleLine', function() {
   describe('#setUnits', function() {
     it('triggers rerendering', function() {
       var ctrl = new ol.control.ScaleLine();
-      var spy = sinon.spy(ctrl, 'updateElement_');
+      map.setView(new ol.View({
+        center: [0, 0],
+        zoom: 0
+      }));
+      ctrl.setMap(map);
+
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('10000 km');
+
       ctrl.setUnits('nautical');
-      expect(spy.called).to.be(true);
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('10000 nm');
     });
   });
 
