@@ -72,7 +72,7 @@ describe('ol.ImageTile', function() {
         var state = tile.getState();
         if (state == ol.TileState.ERROR) {
           expect(state).to.be(ol.TileState.ERROR);
-          expect(tile.image_).to.be(ol.ImageTile.blankImage);
+          expect(tile.image_.src).to.be(ol.ImageTile.blankImageUrl);
           done();
         }
       });
@@ -94,7 +94,7 @@ describe('ol.ImageTile', function() {
       expect(tile.getState()).to.be(ol.TileState.LOADING);
       tile.dispose();
       expect(tile.getState()).to.be(ol.TileState.ABORT);
-      expect(tile.getImage().src).to.be(ol.ImageTile.blankImage.toDataURL('image/png'));
+      expect(tile.getImage().src).to.be(ol.ImageTile.blankImageUrl);
     });
 
   });
