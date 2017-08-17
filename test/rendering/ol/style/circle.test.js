@@ -23,6 +23,7 @@ describe('ol.rendering.style.Circle', function() {
     });
 
     map = new ol.Map({
+      pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],

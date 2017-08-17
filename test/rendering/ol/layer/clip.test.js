@@ -41,6 +41,7 @@ describe('layer clipping', function() {
     var map = null;
     beforeEach(function() {
       map = new ol.Map({
+        pixelRatio: 1,
         target: createMapDiv(256, 256),
         view: new ol.View({
           center: [0, 0],

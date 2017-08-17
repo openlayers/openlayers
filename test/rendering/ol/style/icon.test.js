@@ -30,6 +30,7 @@ describe('ol.rendering.style.Icon', function() {
     });
 
     map = new ol.Map({
+      pixelRatio: 1,
       target: createMapDiv(width ? width : 50, height ? height : 50),
       renderer: renderer,
       layers: [vectorLayer],

@@ -21,6 +21,7 @@ describe('ol.rendering.layer.Vector', function() {
   var map;
   function createMap(renderer) {
     map = new ol.Map({
+      pixelRatio: 1,
       target: createMapDiv(80, 80),
       renderer: renderer,
       view: new ol.View({
@@ -249,12 +250,12 @@ describe('ol.rendering.layer.Vector', function() {
       map.once('postrender', function() {
         var canvas = map.getRenderer().canvas_;
         // take a snapshot of this `overlaps: true` image
-        var referenceImage = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+        var referenceImage = canvas.toDataURL('image/png');
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
-        // result should be similar to `overlaps: true`
-        map.once('postrender', function() {
-          expectResemble(map, referenceImage, 2, done);
+        // result should be the same as with `overlaps: true`
+        map.once('postrender', function(e) {
+          expectResemble(map, referenceImage, 1e-9, done);
         });
       });
     });
@@ -300,12 +301,12 @@ describe('ol.rendering.layer.Vector', function() {
       map.once('postrender', function() {
         var canvas = map.getRenderer().canvas_;
         // take a snapshot of this `overlaps: true` image
-        var referenceImage = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+        var referenceImage = canvas.toDataURL('image/png');
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
         // result should be exactly the same as with `overlaps: true`
         map.once('postrender', function() {
-          expectResemble(map, referenceImage, 0, done);
+          expectResemble(map, referenceImage, 1e-9, done);
         });
       });
     });
@@ -316,6 +317,7 @@ describe('ol.rendering.layer.Vector', function() {
     var map2;
     beforeEach(function() {
       map2 = new ol.Map({
+        pixelRatio: 1,
         target: createMapDiv(128, 128),
         view: new ol.View({
           center: [0, 0],
@@ -404,6 +406,7 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map3 = new ol.Map({
+        pixelRatio: 1,
         layers: [layer],
         target: createMapDiv(100, 100),
         view: view
