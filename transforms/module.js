@@ -2,7 +2,8 @@ const parentPackage = require('../package.json');
 const thisPackage = require('../package/package.json');
 
 const defines = {
-  'ol.ENABLE_WEBGL': false
+  // Compiler defines go here, e.g.
+  // 'ol.ENABLE_WEBGL': false
 };
 
 function rename(name) {
