@@ -29,7 +29,7 @@ in Chrome by default).
 # Rendering tests
 
 The `test/rendering` directory contains rendering tests which compare a rendered map with a
-reference image using [resemble.js](http://huddle.github.io/Resemble.js/).
+reference image using [pixelmatch](https://github.com/mapbox/pixelmatch).
 
 To run the tests in the browser, make sure the development server is running
 (`make serve`) and open the URL

@@ -15,7 +15,7 @@ describe('ol.rendering.layer.VectorTile', function() {
 
   function createMap(renderer, opt_pixelRatio) {
     map = new ol.Map({
-      pixelRatio: opt_pixelRatio,
+      pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
       view: new ol.View({

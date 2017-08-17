@@ -20,14 +20,20 @@ describe('ol.render', function() {
   describe('ol.render.toContext()', function() {
 
     it('creates a vector context from a Canvas 2d context', function() {
-      var vectorContext = ol.render.toContext(getContext(), {size: [100, 100]});
+      var vectorContext = ol.render.toContext(getContext(), {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
       expect(vectorContext).to.be.a(ol.render.VectorContext);
       expect(vectorContext).to.be.a(ol.render.canvas.Immediate);
     });
 
     it('can be used to render a point geometry', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         image: new ol.style.Circle({
@@ -48,7 +54,10 @@ describe('ol.render', function() {
 
     it('can be used to render a linestring geometry', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -69,7 +78,10 @@ describe('ol.render', function() {
 
     it('respects lineCap for linestring', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -91,7 +103,10 @@ describe('ol.render', function() {
 
     it('respects lineJoin for linestring', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -113,7 +128,10 @@ describe('ol.render', function() {
 
     it('can be used to render a polygon geometry', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -139,7 +157,10 @@ describe('ol.render', function() {
 
     it('supports lineDash styles', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         stroke: new ol.style.Stroke({
@@ -161,7 +182,10 @@ describe('ol.render', function() {
 
     it('supports lineDashOffset', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(context, {
+        pixelRatio: 1,
+        size: [100, 100]
+      });
 
       var style = new ol.style.Style({
         stroke: new ol.style.Stroke({

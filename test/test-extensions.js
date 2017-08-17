@@ -386,35 +386,47 @@ goog.require('ol.renderer.webgl.Map');
   };
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
-    if (showMap) {
-      var wrapper = document.createElement('div');
-      wrapper.style.width = canvas.width + 'px';
-      wrapper.style.height = canvas.height + 'px';
-      wrapper.appendChild(canvas);
-      document.body.appendChild(wrapper);
-      document.body.appendChild(document.createTextNode(referenceImage));
-    }
-
-    resemble(referenceImage)
-        .compareTo(canvas.getContext('2d').getImageData(
-            0, 0, canvas.width, canvas.height))
-        .onComplete(function(data) {
-          if (!data.isSameDimensions) {
-            expect().fail(
-                'The dimensions of the reference image and ' +
-            'the test canvas are not the same.');
-          }
-
-          if (data.misMatchPercentage > tolerance) {
-            if (showDiff) {
-              var diffImage = new Image();
-              diffImage.src = data.getImageDataUrl();
-              document.body.appendChild(diffImage);
-            }
-            expect(data.misMatchPercentage).to.be.below(tolerance);
-          }
-          done();
-        });
+    var width = canvas.width;
+    var height = canvas.height;
+    var image = new Image();
+    image.addEventListener('load', function() {
+      expect(image.width).to.be(width);
+      expect(image.height).to.be(height);
+      var referenceCanvas = document.createElement('CANVAS');
+      referenceCanvas.width = image.width;
+      referenceCanvas.height = image.height;
+      var referenceContext = referenceCanvas.getContext('2d');
+      referenceContext.drawImage(image, 0, 0, image.width, image.height);
+      if (showMap) {
+        var wrapper = document.createElement('div');
+        wrapper.style.width = canvas.width + 'px';
+        wrapper.style.height = canvas.height + 'px';
+        wrapper.appendChild(canvas);
+        document.body.appendChild(wrapper);
+        document.body.appendChild(document.createTextNode(referenceImage));
+      }
+      var context = canvas.getContext('2d');
+      var output = context.createImageData(canvas.width, canvas.height);
+      var mismatchPx = pixelmatch(
+          context.getImageData(0, 0, width, height).data,
+          referenceContext.getImageData(0, 0, width, height).data,
+          output.data, width, height);
+      var mismatchPct = mismatchPx / (width * height) * 100;
+      if (showDiff && mismatchPct > tolerance) {
+        var diffCanvas = document.createElement('canvas');
+        diffCanvas.width = width;
+        diffCanvas.height = height;
+        diffCanvas.getContext('2d').putImageData(output, 0, 0);
+        document.body.appendChild(diffCanvas);
+      }
+      expect(mismatchPct).to.be.below(tolerance);
+      done();
+    });
+    image.addEventListener('error', function() {
+      expect().fail('Reference image could not be loaded');
+      done();
+    });
+    image.src = referenceImage;
   }
   global.resembleCanvas = resembleCanvas;
 

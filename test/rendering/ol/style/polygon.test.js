@@ -24,6 +24,7 @@ describe('ol.rendering.style.Polygon', function() {
     });
 
     map = new ol.Map({
+      pixelRatio: 1,
       target: createMapDiv(size, size),
       renderer: renderer,
       layers: [vectorLayer],

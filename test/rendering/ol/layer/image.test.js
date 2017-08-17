@@ -15,6 +15,7 @@ describe('ol.rendering.layer.Image', function() {
 
   function createMap(renderer) {
     map = new ol.Map({
+      pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
       view: new ol.View({

@@ -22,6 +22,7 @@ describe('ol.rendering.style.Text', function() {
     });
 
     map = new ol.Map({
+      pixelRatio: 1,
       target: createMapDiv(200, 200),
       renderer: renderer,
       layers: [vectorLayer],
