@@ -760,7 +760,7 @@ describe('ol.View', function() {
         expect(view.getAnimating()).to.be(true);
         view.animate({
           zoom: 2,
-          duration: 25
+          duration: 50
         }, function() {
           expect(calls).to.be(1);
           expect(view.getZoom()).to.be(2);
