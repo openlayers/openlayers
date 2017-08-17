@@ -1063,6 +1063,18 @@ describe('ol.format.EsriJSON', function() {
       expect(esrijson.attributes).to.eql({});
     });
 
+    it('adds the projection inside the geometry correctly', function() {
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
+      var esrijson = format.writeFeaturesObject(array, {
+        featureProjection: 'EPSG:4326'
+      });
+      esrijson.features.forEach(function(feature) {
+        var spatialReference = feature.geometry.spatialReference;
+        expect(Number(spatialReference.wkid)).to.equal(4326);
+      });
+    });
+
   });
 
 });
