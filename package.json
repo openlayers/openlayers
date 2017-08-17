@@ -34,7 +34,7 @@
   ],
   "dependencies": {
     "async": "2.5.0",
-    "closure-util": "1.22.0",
+    "closure-util": "1.23.0",
     "fs-extra": "4.0.1",
     "jsdoc": "3.5.4",
     "nomnom": "1.8.1",
