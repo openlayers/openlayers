@@ -1,4 +1,4 @@
-goog.provide('layer clipping');
+goog.provide('ol.test.rendering.layer.Clipping');
 
 goog.require('ol.Map');
 goog.require('ol.View');
