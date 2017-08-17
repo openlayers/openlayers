@@ -18,6 +18,12 @@ Run the tests once:
 
     npm test
 
+This will run tests in Chrome.  If you do not have Chrome installed, you can run tests on Firefox instead:
+
+    npm test -- --browsers Firefox
+
+To run tests in other browsers, you need to install [additional Karma launchers](http://karma-runner.github.io/1.0/config/browsers.html).
+
 To run the tests continuously:
 
     npm run karma
