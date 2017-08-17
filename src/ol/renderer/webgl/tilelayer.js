@@ -361,10 +361,10 @@ if (ol.ENABLE_WEBGL) {
     var texCoordMatrix = this.texCoordMatrix;
     ol.transform.reset(texCoordMatrix);
     ol.transform.translate(texCoordMatrix,
-        (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) /
-            (framebufferExtent[2] - framebufferExtent[0]),
-        (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) /
-            (framebufferExtent[3] - framebufferExtent[1]));
+        (tileResolution * (Math.round(center[0] / tileResolution) + (frameState.size[0] % 2) / 2) -
+        framebufferExtent[0]) / (framebufferExtent[2] - framebufferExtent[0]),
+        (tileResolution * (Math.round(center[1] / tileResolution) + (frameState.size[1] % 2) / 2) -
+        framebufferExtent[1]) / (framebufferExtent[3] - framebufferExtent[1]));
     if (viewState.rotation !== 0) {
       ol.transform.rotate(texCoordMatrix, viewState.rotation);
     }
