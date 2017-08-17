@@ -1,6 +1,5 @@
 goog.provide('ol.webgl.Shader');
 
-goog.require('ol');
 goog.require('ol.functions');
 
 
