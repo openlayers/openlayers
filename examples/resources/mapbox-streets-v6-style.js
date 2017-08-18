@@ -1,20 +1,28 @@
 // Styles for the mapbox-streets-v6 vector tile data set. Loosely based on
 // http://a.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6.json
 
-function createMapboxStreetsV6Style() {
-  var fill = new ol.style.Fill({color: ''});
-  var stroke = new ol.style.Stroke({color: '', width: 1});
-  var polygon = new ol.style.Style({fill: fill});
-  var strokedPolygon = new ol.style.Style({fill: fill, stroke: stroke});
-  var line = new ol.style.Style({stroke: stroke});
-  var text = new ol.style.Style({text: new ol.style.Text({
+/**
+ * @param {function(olx.StyleOptions):ol.style.Style} Style constructor.
+ * @param {function(olx.FillOptions):ol.style.fill} Fill constructor.
+ * @param {function(olx.StrokeOptions):ol.style.Stroke} Stroke constructor.
+ * @param {function(olx.IconOptions):ol.style.Icon} Icon constructor.
+ * @param {function(olx.TextOptions):ol.style.Text} Text constructor.
+ * @return {function((ol.Feature|ol.render.Feature), number): (ol.style.Style|Array.<ol.style.Style>|undefined)} Style function.
+ */
+function createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text) {
+  var fill = new Fill({color: ''});
+  var stroke = new Stroke({color: '', width: 1});
+  var polygon = new Style({fill: fill});
+  var strokedPolygon = new Style({fill: fill, stroke: stroke});
+  var line = new Style({stroke: stroke});
+  var text = new Style({text: new Text({
     text: '', fill: fill, stroke: stroke
   })});
   var iconCache = {};
   function getIcon(iconName) {
     var icon = iconCache[iconName];
     if (!icon) {
-      icon = new ol.style.Style({image: new ol.style.Icon({
+      icon = new Style({image: new Icon({
         src: 'https://cdn.rawgit.com/mapbox/maki/master/icons/' + iconName + '-15.svg',
         imgSize: [15, 15]
       })});

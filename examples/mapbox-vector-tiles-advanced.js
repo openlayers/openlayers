@@ -1,4 +1,3 @@
-/* eslint-disable openlayers-internal/no-unused-requires */
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.MVT');
@@ -11,6 +10,7 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 goog.require('ol.tilegrid.TileGrid');
+goog.require('createMapboxStreetsV6Style');
 
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
@@ -46,7 +46,8 @@ var map = new ol.Map({
         }),
         tileUrlFunction: tileUrlFunction
       }),
-      style: createMapboxStreetsV6Style()
+      style: createMapboxStreetsV6Style(
+          ol.style.Style, ol.style.Fill, ol.style.Stroke, ol.style.Icon, ol.style.Text)
     })
   ],
   target: 'map',
@@ -56,6 +57,3 @@ var map = new ol.Map({
     zoom: 2
   })
 });
-
-// ol.style.Fill, ol.style.Icon, ol.style.Stroke, ol.style.Style and
-// ol.style.Text are required for createMapboxStreetsV6Style()
