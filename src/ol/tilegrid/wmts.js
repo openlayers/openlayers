@@ -111,6 +111,11 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
     if (matrixLimits.length > 0) {
       matrixAvailable = ol.array.find(matrixLimits,
           function(elt_ml, index_ml, array_ml) {
+            // Fix for tileMatrix identifiers that don't get prefixed
+            // by their tileMatrixSet identifiers.
+            if (elt[identifierPropName].indexOf(':') === -1) {
+              return (matrixSet[identifierPropName] + ':' + elt[identifierPropName]) == elt_ml[matrixIdsPropName];
+            }
             return elt[identifierPropName] == elt_ml[matrixIdsPropName];
           });
     } else {
