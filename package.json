@@ -20,9 +20,8 @@
     "karma": "node tasks/test.js start test/karma.config.js",
     "transform-src": "jscodeshift --transform transforms/module.js src",
     "transform-examples": "jscodeshift --transform transforms/module.js examples",
-    "transform-test-spec": "jscodeshift --transform transforms/module.js test/spec",
-    "transform-test-rendering": "jscodeshift --transform transforms/module.js test/rendering",
-    "transform": "npm run transform-src && npm run transform-examples && npm run transform-test-spec && npm run transform-test-rendering && npm run lint -- --fix"
+    "transform-test": "jscodeshift --transform transforms/module.js test",
+    "transform": "npm run transform-src && npm run transform-examples && npm run transform-test && npm run lint -- --fix"
   },
   "main": "dist/ol.js",
   "repository": {
