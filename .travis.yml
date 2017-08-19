@@ -8,6 +8,8 @@ cache:
 before_script:
 - rm src/ol/renderer/webgl/*shader.js
 script: make ci
+after_success:
+- cat coverage/lcov.info | coveralls
 branches:
   only:
   - master
