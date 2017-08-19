@@ -502,7 +502,7 @@ goog.require('ol.renderer.webgl.Map');
     }
     return {
       describe: features[key] ? global.describe : global.xdescribe,
-      it: features[key] ? global.id : global.xit
+      it: features[key] ? global.it : global.xit
     };
   };
 
