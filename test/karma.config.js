@@ -56,7 +56,7 @@ module.exports = function(karma) {
       // (these files will be instrumented by Istanbul)
       '../src/**/*.js': ['coverage']
     },
-    reporters: ['coverage'],
+    reporters: ['progress', 'coverage'],
     coverageReporter: {
       reporters: [
         {
