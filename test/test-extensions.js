@@ -514,4 +514,4 @@ goog.require('ol.renderer.webgl.Map');
     }
   });
 
-})(this);
+})(window);

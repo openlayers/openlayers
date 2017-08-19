@@ -29,7 +29,7 @@ describe('ol.style.IconImageCache', function() {
 
       for (i = 0; i < 4; ++i) {
         src = i + '';
-        iconImage = new ol.style.IconImage(src, null);
+        iconImage = new ol.style.IconImage(null, src);
         cache.set(src, null, null, iconImage);
       }
 
