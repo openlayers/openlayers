@@ -4,9 +4,9 @@ goog.require('ol');
 goog.require('ol.AssertionError');
 
 describe('ol.AssertionError', function() {
-  it('generates a message', function() {
+  it('generates an error', function() {
     var error = new ol.AssertionError(42);
-    expect(error.message).to.be('Assertion failed. See https://openlayers.org/en/latest/doc/errors/#42 for details.');
+    expect(error).to.be.an(Error);
   });
 
   it('generates a message with a versioned url', function() {
