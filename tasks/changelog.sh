@@ -44,16 +44,18 @@ main() {
   git log --first-parent --format='%aN|%s %b' ${1} |
   {
     while read l; do
-      if [[ ${l} =~ ${MERGE_RE} ]] ; then
-        number="${BASH_REMATCH[1]}"
-        author="${BASH_REMATCH[2]}"
-        summary="${BASH_REMATCH[3]}"
-        echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([@${author}](${GITHUB_URL}/${author}))"
-      elif [[ ${l} =~ ${SQUASH_RE} ]] ; then
-        number="${BASH_REMATCH[3]}"
-        author="${BASH_REMATCH[1]}"
-        summary="${BASH_REMATCH[2]}"
-        echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([${author}](${GITHUB_URL}/search?q=${author}&type=Users))"
+      if ! [[ ${l} =~ "openlayers/greenkeeper" ]] ; then
+        if [[ ${l} =~ ${MERGE_RE} ]] ; then
+          number="${BASH_REMATCH[1]}"
+          author="${BASH_REMATCH[2]}"
+          summary="${BASH_REMATCH[3]}"
+          echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([@${author}](${GITHUB_URL}/${author}))"
+        elif [[ ${l} =~ ${SQUASH_RE} ]] ; then
+          number="${BASH_REMATCH[3]}"
+          author="${BASH_REMATCH[1]}"
+          summary="${BASH_REMATCH[2]}"
+          echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([${author}](${GITHUB_URL}/search?q=${author}&type=Users))"
+        fi
       fi
     done
   }
