@@ -469,7 +469,7 @@ goog.require('ol.has');
     'ArrayBuffer.isView': 'ArrayBuffer' in global && !!ArrayBuffer.isView,
     FileReader: 'FileReader' in global,
     Uint8ClampedArray: ('Uint8ClampedArray' in global),
-    WebGL: false
+    WebGL: ol.has.WEBGL
   };
 
   /**
