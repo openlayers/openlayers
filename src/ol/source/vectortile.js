@@ -101,6 +101,13 @@ ol.source.VectorTile.prototype.getOverlaps = function() {
   return this.overlaps_;
 };
 
+/**
+ * clear {@link ol.TileCache} and delete all source tiles
+ */
+ol.source.VectorTile.prototype.clear = function() {
+  this.tileCache.clear();
+  this.sourceTiles_ = {};
+};
 
 /**
  * @inheritDoc
