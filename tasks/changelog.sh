@@ -44,18 +44,27 @@ main() {
   git log --first-parent --format='%aN|%s %b' ${1} |
   {
     while read l; do
+      output="`[[ ${l} =~ "openlayers/greenkeeper" ]] && echo greenkeeper || echo main`_output"
       if [[ ${l} =~ ${MERGE_RE} ]] ; then
         number="${BASH_REMATCH[1]}"
         author="${BASH_REMATCH[2]}"
         summary="${BASH_REMATCH[3]}"
-        echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([@${author}](${GITHUB_URL}/${author}))"
+        declare $output+=" * [#${number}](${PULLS_URL}/${number}) - ${summary} ([@${author}](${GITHUB_URL}/${author}))\n"
       elif [[ ${l} =~ ${SQUASH_RE} ]] ; then
         number="${BASH_REMATCH[3]}"
         author="${BASH_REMATCH[1]}"
         summary="${BASH_REMATCH[2]}"
-        echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([${author}](${GITHUB_URL}/search?q=${author}&type=Users))"
+        declare $output+=" * [#${number}](${PULLS_URL}/${number}) - ${summary} ([${author}](${GITHUB_URL}/search?q=${author}&type=Users))\n"
       fi
     done
+
+    echo -e "$main_output"
+
+    if [ -n "$greenkeeper_output" ]; then
+      echo
+      echo "Additionally a number of updates where made to our dependencies:"
+      echo -e "$greenkeeper_output"
+    fi
   }
 }
 
