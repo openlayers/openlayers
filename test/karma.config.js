@@ -49,6 +49,25 @@ module.exports = function(karma) {
     proxies: {
       '/rendering/': '/base/rendering/',
       '/spec/': '/base/spec/'
+    },
+    preprocessors: {
+      // source files, that you wanna generate coverage for
+      // do not include tests or libraries
+      // (these files will be instrumented by Istanbul)
+      '../src/**/*.js': ['coverage']
+    },
+    reporters: ['progress', 'coverage'],
+    coverageReporter: {
+      reporters: [
+        {
+          type: 'lcov', // produces HTML output and lcov
+          dir: '../coverage/',
+          subdir: '.'
+        },
+        {
+          type: 'text-summary' // prints the textual summary to the terminal
+        }
+      ]
     }
   });
 
@@ -91,11 +110,23 @@ module.exports = function(karma) {
         username: 'openlayers',
         accessKey: process.env.SAUCE_ACCESS_KEY
       },
-      reporters: ['dots', 'saucelabs'],
+      reporters: ['dots', 'saucelabs', 'coverage'],
       captureTimeout: 240000,
       browserNoActivityTimeout: 240000,
       customLaunchers: customLaunchers,
-      browsers: Object.keys(customLaunchers)
+      browsers: Object.keys(customLaunchers),
+      coverageReporter: {
+        reporters: [
+          {
+            type: 'lcovonly', // that's enough for coveralls, no HTML
+            dir: '../coverage/',
+            subdir: '.'
+          },
+          {
+            type: 'text-summary' // prints the textual summary to the terminal
+          }
+        ]
+      }
     });
   } else {
     karma.set({
