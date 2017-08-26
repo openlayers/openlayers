@@ -52,7 +52,6 @@
         <div class="span12">
           <p id="shortdesc">{{ shortdesc }}</p>
           <div id="docs">{{ md docs }}</div>
-          <div id="api-links">Related API documentation: {{{ js.apiHtml }}}</div>
         </div>
       </div>
 
@@ -105,7 +104,7 @@
     var branchSearch = url.match(/\/([^\/]*)\/examples\//);
     var cookieText = 'dismissed=-' + latestVersion + '-';
     var dismissed = document.cookie.indexOf(cookieText) != -1;
-    if (!dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && '{{ olVersion }}' != latestVersion) {
+    if (branchSearch && !dismissed && /^v[0-9\.]*$/.test(branchSearch[1]) && '{{ olVersion }}' != latestVersion) {
       var link = url.replace(branchSearch[0], '/latest/examples/');
       fetch(link, {method: 'head'}).then(function(response) {
         var a = document.getElementById('latest-link');
