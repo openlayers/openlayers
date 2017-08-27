@@ -22,7 +22,8 @@
     "transform-examples": "jscodeshift --transform transforms/module.js examples",
     "transform-test": "jscodeshift --transform transforms/module.js test",
     "transform": "npm run transform-src && npm run transform-examples && npm run transform-test && npm run lint -- --fix",
-    "build-examples": "webpack --config examples/webpack/config.js"
+    "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --watch & serve build/examples",
+    "build-examples": "webpack --config examples/webpack/config.js --env=prod"
   },
   "main": "dist/ol.js",
   "repository": {
@@ -54,6 +55,7 @@
     "walk": "2.3.9"
   },
   "devDependencies": {
+    "babili-webpack-plugin": "^0.1.2",
     "clean-css-cli": "4.1.9",
     "copy-webpack-plugin": "^4.0.1",
     "coveralls": "2.13.1",
@@ -85,12 +87,14 @@
     "phantomjs-prebuilt": "2.1.15",
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
+    "serve": "^6.0.6",
     "serve-files": "1.0.1",
     "sinon": "3.2.1",
     "slimerjs": "0.10.3",
     "url-polyfill": "^1.0.7",
     "webpack": "^3.5.5",
-    "webpack-dev-server": "^2.7.1"
+    "webpack-dev-server": "^2.7.1",
+    "webpack-merge": "^4.1.0"
   },
   "eslintConfig": {
     "extends": "openlayers",
