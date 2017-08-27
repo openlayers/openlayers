@@ -1,4 +1,4 @@
-import _ol_ from '../../../src/ol.js';
+import _ol_ from '../../../src/ol/index.js';
 import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
 import _ol_TileState_ from '../../../src/ol/TileState.js';

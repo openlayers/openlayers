@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol.js';
+import _ol_ from '../../../../src/ol/index.js';
 import _ol_style_ from '../../../../src/ol/style.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_IconImage_ from '../../../../src/ol/style/IconImage.js';

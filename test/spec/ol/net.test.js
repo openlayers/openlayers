@@ -1,4 +1,4 @@
-import _ol_ from '../../../src/ol.js';
+import _ol_ from '../../../src/ol/index.js';
 import _ol_net_ from '../../../src/ol/net.js';
 
 describe('ol.net', function() {

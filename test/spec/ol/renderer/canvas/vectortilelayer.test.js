@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol.js';
+import _ol_ from '../../../../../src/ol/index.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../../src/ol/Map.js';

@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol.js';
+import _ol_ from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
 import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';

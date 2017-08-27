@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol.js';
+import _ol_ from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';

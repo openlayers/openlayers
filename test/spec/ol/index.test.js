@@ -1,4 +1,4 @@
-import _ol_ from '../../../src/ol.js';
+import _ol_ from '../../../src/ol/index.js';
 
 describe('getUid()', function() {
   it('is constant once generated', function() {

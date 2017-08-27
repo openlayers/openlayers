@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol.js';
+import _ol_ from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';

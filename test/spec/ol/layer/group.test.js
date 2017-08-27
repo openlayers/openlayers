@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol.js';
+import _ol_ from '../../../../src/ol/index.js';
 import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_extent_ from '../../../../src/ol/extent.js';

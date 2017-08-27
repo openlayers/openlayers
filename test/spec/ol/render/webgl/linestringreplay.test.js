@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol.js';
+import _ol_ from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';

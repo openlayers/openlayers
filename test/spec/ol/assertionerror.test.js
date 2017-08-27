@@ -1,4 +1,4 @@
-import _ol_ from '../../../src/ol.js';
+import _ol_ from '../../../src/ol/index.js';
 import _ol_AssertionError_ from '../../../src/ol/AssertionError.js';
 
 describe('ol.AssertionError', function() {

@@ -1,5 +1,5 @@
 import _ol_color_ from '../../../src/ol/color.js';
-import _ol_ from '../../../src/ol.js';
+import _ol_ from '../../../src/ol/index.js';
 
 
 describe('ol.color', function() {
