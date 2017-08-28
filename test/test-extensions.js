@@ -1,11 +1,8 @@
 goog.require('ol.array');
 goog.require('ol.has');
-goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.webgl.Map');
+// avoid importing anything that results in an instanceof check
+// since these extensions are global, instanceof checks fail with modules
 
-// FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
-
-// helper functions for async testing and other utility functions.
 (function(global) {
 
   // show generated maps for rendering tests
@@ -430,37 +427,6 @@ goog.require('ol.renderer.webgl.Map');
   }
   global.resembleCanvas = resembleCanvas;
 
-  function expectResembleCanvas(map, referenceImage, tolerance, done) {
-    map.render();
-    map.on('postcompose', function(event) {
-      var canvas = event.context.canvas;
-      resembleCanvas(canvas, referenceImage, tolerance, done);
-    });
-  }
-
-  function expectResembleWebGL(map, referenceImage, tolerance, done) {
-    map.render();
-    map.on('postcompose', function(event) {
-      if (event.frameState.animate) {
-        // make sure the tile-queue is empty
-        return;
-      }
-
-      var webglCanvas = event.glContext.getCanvas();
-      expect(webglCanvas).to.be.a(HTMLCanvasElement);
-
-      // draw the WebGL canvas on a new canvas, because we can not create
-      // a 2d context for that canvas because there is already a webgl context.
-      var canvas = document.createElement('canvas');
-      canvas.width = webglCanvas.width;
-      canvas.height = webglCanvas.height;
-      canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
-          webglCanvas.width, webglCanvas.height);
-
-      resembleCanvas(canvas, referenceImage, tolerance, done);
-    });
-  }
-
   /**
    * Assert that the given map resembles a reference image.
    *
@@ -470,14 +436,32 @@ goog.require('ol.renderer.webgl.Map');
    * @param {function} done A callback to indicate that the test is done.
    */
   global.expectResemble = function(map, referenceImage, tolerance, done) {
-    if (map.getRenderer() instanceof ol.renderer.canvas.Map) {
-      expectResembleCanvas(map, referenceImage, tolerance, done);
-    } else if (map.getRenderer() instanceof ol.renderer.webgl.Map) {
-      expectResembleWebGL(map, referenceImage, tolerance, done);
-    } else {
-      expect().fail(
-          'resemble only works with the canvas and WebGL renderer.');
-    }
+    map.render();
+    map.on('postcompose', function(event) {
+      if (event.frameState.animate) {
+        // make sure the tile-queue is empty
+        return;
+      }
+
+      var canvas;
+      if (event.glContext) {
+        var webglCanvas = event.glContext.getCanvas();
+        expect(webglCanvas).to.be.a(HTMLCanvasElement);
+
+        // draw the WebGL canvas on a new canvas, because we can not create
+        // a 2d context for that canvas because there is already a webgl context.
+        canvas = document.createElement('canvas');
+        canvas.width = webglCanvas.width;
+        canvas.height = webglCanvas.height;
+        canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
+            webglCanvas.width, webglCanvas.height);
+      } else {
+        canvas = event.context.canvas;
+      }
+      expect(canvas).to.be.a(HTMLCanvasElement);
+
+      resembleCanvas(canvas, referenceImage, tolerance, done);
+    });
   };
 
   var features = {
