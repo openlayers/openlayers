@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.TileState');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
-goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.tilegrid');
 goog.require('ol.source.UrlTile');
