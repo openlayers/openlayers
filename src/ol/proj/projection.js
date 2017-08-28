@@ -43,18 +43,27 @@ ol.proj.Projection = function(options) {
   this.code_ = options.code;
 
   /**
+   * Units of projected coordinates. When set to `ol.proj.Units.TILE_PIXELS`, a
+   * `this.extent_` and `this.worldExtent_` must be configured properly for each
+   * tile.
    * @private
    * @type {ol.proj.Units}
    */
   this.units_ = /** @type {ol.proj.Units} */ (options.units);
 
   /**
+   * Validity extent of the projection in projected coordinates. For projections
+   * with `ol.proj.Units.TILE_PIXELS` units, this is the extent of the tile in
+   * tile pixel space.
    * @private
    * @type {ol.Extent}
    */
   this.extent_ = options.extent !== undefined ? options.extent : null;
 
   /**
+   * Extent of the world in EPSG:4326. For projections with
+   * `ol.proj.Units.TILE_PIXELS` units, this is the extent of the tile in
+   * projected coordinate space.
    * @private
    * @type {ol.Extent}
    */

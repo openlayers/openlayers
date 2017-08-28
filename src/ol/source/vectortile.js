@@ -86,10 +86,6 @@ ol.source.VectorTile = function(options) {
    */
   this.tileGrids_ = {};
 
-  if (!this.tileGrid) {
-    this.tileGrid = this.getTileGridForProjection(ol.proj.get(options.projection || 'EPSG:3857'));
-  }
-
 };
 ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
 

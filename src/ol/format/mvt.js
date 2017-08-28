@@ -38,7 +38,7 @@ ol.format.MVT = function(opt_options) {
    * @type {ol.proj.Projection}
    */
   this.defaultDataProjection = new ol.proj.Projection({
-    code: '',
+    code: 'EPSG:3857',
     units: ol.proj.Units.TILE_PIXELS
   });
 

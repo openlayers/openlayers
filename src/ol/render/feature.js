@@ -3,12 +3,14 @@ goog.provide('ol.render.Feature');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.flat.transform');
+goog.require('ol.transform');
 
 
 /**
  * Lightweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
- * structure, optimized for rendering and styling. Geometry access through the
- * API is limited to getting the type and extent of the geometry.
+ * structure, optimized for vector tile rendering and styling. Geometry access
+ * through the API is limited to getting the type and extent of the geometry.
  *
  * @constructor
  * @param {ol.geom.GeometryType} type Geometry type.
@@ -54,6 +56,13 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
    * @type {Object.<string, *>}
    */
   this.properties_ = properties;
+
+
+  /**
+   * @private
+   * @type {ol.Transform}
+   */
+  this.tmpTransform_ = ol.transform.create();
 };
 
 
@@ -71,7 +80,8 @@ ol.render.Feature.prototype.get = function(key) {
 /**
  * @return {Array.<number>|Array.<Array.<number>>} Ends or endss.
  */
-ol.render.Feature.prototype.getEnds = function() {
+ol.render.Feature.prototype.getEnds =
+ol.render.Feature.prototype.getEndss = function() {
   return this.ends_;
 };
 
@@ -168,4 +178,24 @@ ol.render.Feature.prototype.getStyleFunction = ol.nullFunction;
  */
 ol.render.Feature.prototype.getType = function() {
   return this.type_;
+};
+
+/**
+ * Transform geometry coordinates from tile pixel space to projected.
+ * The SRS of the source and destination are expected to be the same.
+ *
+ * @param {ol.ProjectionLike} source The current projection
+ * @param {ol.ProjectionLike} destination The desired projection.
+ */
+ol.render.Feature.prototype.transform = function(source, destination) {
+  var pixelExtent = source.getExtent();
+  var projectedExtent = source.getWorldExtent();
+  var scale = ol.extent.getHeight(projectedExtent) / ol.extent.getHeight(pixelExtent);
+  var transform = this.tmpTransform_;
+  ol.transform.compose(transform,
+      projectedExtent[0], projectedExtent[3],
+      scale, -scale, 0,
+      0, 0);
+  ol.geom.flat.transform.transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
+      transform, this.flatCoordinates_);
 };

@@ -13,6 +13,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
+goog.require('ol.render.Feature');
 goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.VectorTile');
 goog.require('ol.style.Style');
@@ -24,7 +25,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('constructor', function() {
 
-    var map, layer, source, feature1, feature2, target, tileCallback;
+    var map, layer, source, feature1, feature2, feature3, target, tileCallback;
 
     beforeEach(function() {
       tileCallback = function() {};
@@ -51,11 +52,12 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       })];
       feature1 = new ol.Feature(new ol.geom.Point([1, -1]));
       feature2 = new ol.Feature(new ol.geom.Point([0, 0]));
+      feature3 = new ol.render.Feature('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
       var TileClass = function() {
         ol.VectorTile.apply(this, arguments);
         this.setState('loaded');
-        this.setFeatures([feature1, feature2]);
+        this.setFeatures([feature1, feature2, feature3]);
         this.setProjection(ol.proj.get('EPSG:4326'));
         tileCallback(this);
       };
@@ -106,7 +108,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('does not render replays for pure image rendering', function() {
       layer.renderMode_ = 'image';
       var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'getReplayTransform_');
+          'getTransform');
       map.renderSync();
       expect(spy.callCount).to.be(0);
       spy.restore();
@@ -114,7 +116,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('renders both replays and images for hybrid rendering', function() {
       var spy1 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'getReplayTransform_');
+          'getTransform');
       var spy2 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
           'renderTileImage_');
       map.renderSync();
@@ -130,7 +132,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         renderer: function() {}
       }));
       var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'getReplayTransform_');
+          'getTransform');
       map.renderSync();
       expect(spy.callCount).to.be(1);
       spy.restore();
@@ -142,6 +144,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       map.renderSync();
       expect(spy.getCall(0).args[2]).to.be(layer.getStyle());
       expect(spy.getCall(1).args[2]).to.be(feature2.getStyle());
+      spy.restore();
     });
 
     it('transforms geometries when tile and view projection are different', function() {
@@ -155,16 +158,17 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           ol.proj.fromLonLat([1, -1]));
     });
 
-    it('leaves geometries untouched when units are tile-pixels', function() {
-      var proj = new ol.proj.Projection({code: '', units: 'tile-pixels'});
+    it('Geometries are transformed from tile-pixels', function() {
+      var proj = new ol.proj.Projection({code: 'EPSG:3857', units: 'tile-pixels'});
       var tile;
       tileCallback = function(t) {
         t.setProjection(proj);
         tile = t;
       };
       map.renderSync();
-      expect(tile.getProjection()).to.equal(proj);
-      expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);
+      expect(tile.getProjection()).to.equal(ol.proj.get('EPSG:3857'));
+      expect(feature1.getGeometry().getCoordinates()).to.eql([-20027724.40316874, 20047292.282409746]);
+      expect(feature3.flatCoordinates_).to.eql([-20027724.40316874, 20047292.282409746]);
     });
 
     it('works for multiple layers that use the same source', function() {
@@ -187,14 +191,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(spy2.callCount).to.be(2);
       spy1.restore();
       spy2.restore();
-    });
-
-    it('uses the extent of the source tile', function() {
-      var renderer = map.getRenderer().getLayerRenderer(layer);
-      var tile = new ol.VectorTile([0, 0, 0], 2);
-      tile.setExtent([0, 0, 4096, 4096]);
-      var tilePixelRatio = renderer.getTilePixelRatio_(source, tile);
-      expect(tilePixelRatio).to.be(16);
     });
 
   });

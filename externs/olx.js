@@ -1870,6 +1870,7 @@ olx.format;
 
 /**
  * @typedef {{dataProjection: ol.ProjectionLike,
+ *     extent: (ol.Extent|undefined),
  *     featureProjection: ol.ProjectionLike,
  *     rightHanded: (boolean|undefined)}}
  */
@@ -1886,6 +1887,15 @@ olx.format.ReadOptions;
  * @api
  */
 olx.format.ReadOptions.prototype.dataProjection;
+
+
+/**
+ * Tile extent of the tile being read. This is only used and required for
+ * {@link ol.format.MVT}.
+ * @type {ol.Extent}
+ * @api
+ */
+olx.format.ReadOptions.prototype.extent;
 
 
 /**
@@ -5094,10 +5104,11 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  *   tile.setLoader(function() {
  *     var data = // ... fetch data
  *     var format = tile.getFormat();
- *     tile.setFeatures(format.readFeatures(data));
- *     tile.setProjection(format.readProjection(data));
- *     // uncomment the line below for ol.format.MVT only
- *     //tile.setExtent(format.getLastExtent());
+ *     tile.setFeatures(format.readFeatures(data, {
+ *       // uncomment the line below for ol.format.MVT only
+ *       extent: tile.getExtent(),
+ *       featureProjection: map.getView().getProjection()
+ *     }));
  *   };
  * });
  * ```
