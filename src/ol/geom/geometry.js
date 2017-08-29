@@ -4,7 +4,10 @@ goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.extent');
 goog.require('ol.functions');
+goog.require('ol.geom.flat.transform');
 goog.require('ol.proj');
+goog.require('ol.proj.Units');
+goog.require('ol.transform');
 
 
 /**
@@ -54,6 +57,12 @@ ol.geom.Geometry = function() {
    * @type {number}
    */
   this.simplifiedGeometryRevision = 0;
+
+  /**
+   * @private
+   * @type {ol.Transform}
+   */
+  this.tmpTransform_ = ol.transform.create();
 
 };
 ol.inherits(ol.geom.Geometry, ol.Object);
@@ -244,6 +253,22 @@ ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
  * @api
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
-  this.applyTransform(ol.proj.getTransform(source, destination));
+  var tmpTransform = this.tmpTransform_;
+  source = ol.proj.get(source);
+  var transformFn = source.getUnits() == ol.proj.Units.TILE_PIXELS ?
+    function(inCoordinates, outCoordinates, stride) {
+      var pixelExtent = source.getExtent();
+      var projectedExtent = source.getWorldExtent();
+      var scale = ol.extent.getHeight(projectedExtent) / ol.extent.getHeight(pixelExtent);
+      ol.transform.compose(tmpTransform,
+          projectedExtent[0], projectedExtent[3],
+          scale, -scale, 0,
+          0, 0);
+      ol.geom.flat.transform.transform2D(inCoordinates, 0, inCoordinates.length, stride,
+          tmpTransform, outCoordinates);
+      return ol.proj.getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+    } :
+    ol.proj.getTransform(source, destination);
+  this.applyTransform(transformFn);
   return this;
 };

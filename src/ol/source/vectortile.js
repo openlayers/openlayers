@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.TileState');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
-goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.tilegrid');
 goog.require('ol.source.UrlTile');
@@ -85,10 +84,6 @@ ol.source.VectorTile = function(options) {
    * @type {Object.<string,ol.tilegrid.TileGrid>}
    */
   this.tileGrids_ = {};
-
-  if (!this.tileGrid) {
-    this.tileGrid = this.getTileGridForProjection(ol.proj.get(options.projection || 'EPSG:3857'));
-  }
 
 };
 ol.inherits(ol.source.VectorTile, ol.source.UrlTile);

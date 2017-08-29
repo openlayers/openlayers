@@ -75,6 +75,11 @@ TopoJSONGeometry.prototype.type;
 TopoJSONGeometry.prototype.id;
 
 
+/**
+ * @type {Object.<string, *>|undefined}
+ */
+TopoJSONGeometry.prototype.properties;
+
 
 /**
  * @constructor

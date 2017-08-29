@@ -50,7 +50,6 @@
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
     "temp": "0.8.3",
-    "@mapbox/vector-tile": "1.3.0",
     "walk": "2.3.9"
   },
   "devDependencies": {
@@ -148,11 +147,6 @@
     {
       "module": "pixelworks",
       "import": "Processor"
-    },
-    {
-      "module": "@mapbox/vector-tile",
-      "name": "vectortile",
-      "import": "VectorTile"
     }
   ]
 }
