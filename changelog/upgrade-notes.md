@@ -31,6 +31,12 @@ tile.setLoader(function() {
 );
 ```
 
+#### Deprecation of `ol.DeviceOrientation`
+
+`ol.DeviceOrientation` is deprecated and will be removed in the next major version.
+The device-orientation example has been updated to use the (gyronorm.js)[https://github.com/dorukeker/gyronorm.js] library.
+
+
 ### v4.3.0
 
 #### `ol.source.VectorTile` no longer requires a `tileGrid` option

@@ -6,6 +6,7 @@
     "createMapboxStreetsV6Style": false,
     "d3": false,
     "geojsonvt": false,
+    "GyroNorm": false,
     "jsPDF": false,
     "jsts": false,
     "saveAs": false,
