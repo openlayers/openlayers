@@ -41,9 +41,9 @@ goog.require('ol.math');
  * much the device has been rotated around the Y axis, or how much it is tilted
  * from left to right.
  *
- * For most browsers, the `alpha` value returns the compass heading so if the
- * device points north, it will be 0.  With Safari on iOS, the 0 value of
- * `alpha` is calculated from when device orientation was first requested.
+ * For some browsers, the `alpha` value returns the compass heading so if the
+ * device points north, it will be 0.  With Google Chrome and Safari on iOS, the
+ * value of `alpha` is relative to when device orientation was first requested.
  * ol.DeviceOrientation provides the `heading` property which normalizes this
  * behavior across all browsers for you.
  *
@@ -66,7 +66,9 @@ ol.DeviceOrientation = function(opt_options) {
 
   ol.Object.call(this);
 
-  var options = opt_options ? opt_options : {};
+  var options = opt_options ? opt_options : {
+    absolute: false
+  };
 
   /**
    * @private
@@ -80,6 +82,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
+  this.absolute_ = options.absolute;
 };
 ol.inherits(ol.DeviceOrientation, ol.Object);
 
@@ -194,7 +197,13 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.DEVICE_ORIENTATION) {
     var tracking = this.getTracking();
     if (tracking && !this.listenerKey_) {
-      this.listenerKey_ = ol.events.listen(window, 'deviceorientation',
+      var eventType;
+      if (this.absolute_ && ol.has.DEVICE_ORIENTATION_ABSOLUTE) {
+        eventType = 'deviceorientationabsolute';
+      } else {
+        eventType = 'deviceorientation';
+      }
+      this.listenerKey_ = ol.events.listen(window, eventType,
           this.orientationChange_, this);
     } else if (!tracking && this.listenerKey_ !== null) {
       ol.events.unlistenByKey(this.listenerKey_);

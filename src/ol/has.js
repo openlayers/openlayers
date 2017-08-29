@@ -89,6 +89,16 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
 
 
 /**
+ * Indicates if the `deviceorientationabsolute` DOM event is supported in the
+ * user's browser.
+ * @const
+ * @type {boolean}
+ * @api
+ */
+ol.has.DEVICE_ORIENTATION_ABSOLUTE = 'ondeviceorientationabsolute' in window;
+
+
+/**
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}

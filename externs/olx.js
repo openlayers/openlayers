@@ -39,7 +39,8 @@ olx.AttributionOptions.prototype.html;
 
 
 /**
- * @typedef {{tracking: (boolean|undefined)}}
+ * @typedef {{tracking: (boolean|undefined),
+ *    absolute: (boolean|undefined)}}
  */
 olx.DeviceOrientationOptions;
 
@@ -50,6 +51,15 @@ olx.DeviceOrientationOptions;
  * @api
  */
 olx.DeviceOrientationOptions.prototype.tracking;
+
+
+/**
+ * Utilize the `deviceorientationabsolute` event on supported
+ * browsers. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.DeviceOrientationOptions.prototype.absolute;
 
 
 /**
