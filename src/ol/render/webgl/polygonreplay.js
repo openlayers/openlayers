@@ -9,6 +9,7 @@ goog.require('ol.geom.flat.contains');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.render.webgl.polygonreplay.defaultshader');
+goog.require('ol.render.webgl.polygonreplay.defaultshader.Locations');
 goog.require('ol.render.webgl.LineStringReplay');
 goog.require('ol.render.webgl.Replay');
 goog.require('ol.render.webgl');
@@ -884,7 +885,6 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, siz
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
-    // eslint-disable-next-line openlayers-internal/no-missing-requires
     locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {

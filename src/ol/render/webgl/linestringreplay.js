@@ -11,6 +11,7 @@ goog.require('ol.obj');
 goog.require('ol.render.webgl');
 goog.require('ol.render.webgl.Replay');
 goog.require('ol.render.webgl.linestringreplay.defaultshader');
+goog.require('ol.render.webgl.linestringreplay.defaultshader.Locations');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 
@@ -447,7 +448,6 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, 
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
-    // eslint-disable-next-line openlayers-internal/no-missing-requires
     locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {

@@ -3,7 +3,8 @@ BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
 SRC_GLSL := $(shell find src -type f -name '*.glsl')
 SRC_SHADER_JS := $(patsubst %shader.glsl,%shader.js,$(SRC_GLSL))
-SRC_JS := $(filter-out $(SRC_SHADER_JS),$(shell find src -name '*.js'))
+SRC_SHADERLOCATIONS_JS := $(patsubst %shader.glsl,%shader/locations.js,$(SRC_GLSL))
+SRC_JS := $(filter-out $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS),$(shell find src -name '*.js'))
 SRC_JSDOC = $(shell find src -type f -name '*.jsdoc')
 
 EXAMPLES := $(shell find examples -type f)
@@ -116,7 +117,7 @@ install: build/timestamps/node-modules-timestamp
 npm-install: build/timestamps/node-modules-timestamp
 
 .PHONY: shaders
-shaders: $(SRC_SHADER_JS)
+shaders: $(SRC_SHADER_JS $(SRC_SHADERLOCATIONS_JS)
 
 .PHONY: serve
 serve:
@@ -167,7 +168,7 @@ build/compiled-examples/all.js: $(EXAMPLES_JS)
 	@python bin/combine-examples.py $^ > $@
 
 build/compiled-examples/all.combined.js: config/examples-all.json build/compiled-examples/all.js \
-                                         $(SRC_JS) $(SRC_SHADER_JS) \
+                                         $(SRC_JS) $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS) \
                                          build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	node tasks/build.js $< $@
@@ -178,14 +179,14 @@ build/compiled-examples/%.json: config/example.json build/examples/%.js \
 	@sed -e 's|{{id}}|$*|' $< > $@
 
 build/compiled-examples/%.combined.js: build/compiled-examples/%.json \
-                                       $(SRC_JS) $(SRC_SHADER_JS) \
+                                       $(SRC_JS) $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS)\
                                        build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	node tasks/build.js $< $@
 
 build/timestamps/jsdoc-$(BRANCH)-timestamp: config/jsdoc/api/index.md \
                                             config/jsdoc/api/conf.json $(SRC_JS) \
-                                            $(SRC_SHADER_JS) \
+                                            $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS) \
                                             $(shell find config/jsdoc/api/template -type f) \
                                             build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
@@ -236,7 +237,7 @@ build/ol.css: css/ol.css build/timestamps/node-modules-timestamp
 	@echo "Running cleancss..."
 	@./node_modules/.bin/cleancss $< > $@
 
-build/ol.js: config/ol.json $(SRC_JS) $(SRC_SHADER_JS) \
+build/ol.js: config/ol.json $(SRC_JS) $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS) \
              build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	node tasks/build.js $< $@
@@ -246,12 +247,12 @@ build/ol.js: config/ol.json $(SRC_JS) $(SRC_SHADER_JS) \
 	@$(STAT_COMPRESSED) /tmp/ol.js.gz
 	@rm /tmp/ol.js.gz
 
-build/ol.js.map: config/ol.json $(SRC_JS) $(SRC_SHADER_JS) \
+build/ol.js.map: config/ol.json $(SRC_JS) $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS) \
                  build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	node tasks/build.js $< $@
 
-build/ol-debug.js: config/ol-debug.json $(SRC_JS) $(SRC_SHADER_JS) \
+build/ol-debug.js: config/ol-debug.json $(SRC_JS) $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS) \
                    build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	node tasks/build.js $< $@
@@ -263,6 +264,10 @@ build/ol-debug.js: config/ol-debug.json $(SRC_JS) $(SRC_SHADER_JS) \
 
 %shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
+
+%shader/locations.js: %shader.glsl src/ol/webgl/shaderlocations.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
+	@mkdir -p $(@D)
+	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shaderlocations.mustache > $@
 
 .PHONY: package
 package:

@@ -7,6 +7,7 @@ cache:
   - node_modules
 before_script:
 - rm src/ol/renderer/webgl/*shader.js
+- rm src/ol/renderer/webgl/*shader/locations.js
 script: make ci
 after_success:
 - cat coverage/lcov.info | coveralls

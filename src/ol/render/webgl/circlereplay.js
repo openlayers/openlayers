@@ -7,6 +7,7 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.render.webgl.circlereplay.defaultshader');
+goog.require('ol.render.webgl.circlereplay.defaultshader.Locations');
 goog.require('ol.render.webgl.Replay');
 goog.require('ol.render.webgl');
 goog.require('ol.webgl');
@@ -202,7 +203,6 @@ ol.render.webgl.CircleReplay.prototype.setUpProgram = function(gl, context, size
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
-    // eslint-disable-next-line openlayers-internal/no-missing-requires
     locations = new ol.render.webgl.circlereplay.defaultshader.Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {

@@ -13,6 +13,7 @@ goog.require('ol.math');
 goog.require('ol.renderer.Type');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayershader');
+goog.require('ol.renderer.webgl.tilelayershader.Locations');
 goog.require('ol.size');
 goog.require('ol.transform');
 goog.require('ol.webgl');
@@ -222,7 +223,6 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
     var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
     if (!this.locations_) {
-      // eslint-disable-next-line openlayers-internal/no-missing-requires
       this.locations_ = new ol.renderer.webgl.tilelayershader.Locations(gl, program);
     }
 
