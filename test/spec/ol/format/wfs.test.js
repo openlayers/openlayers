@@ -525,7 +525,7 @@ describe('ol.format.WFS', function() {
           '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml">' +
           '        <gml:exterior>' +
           '          <gml:LinearRing>' +
-          '            <gml:posList>' +
+          '            <gml:posList srsDimension="2">' +
           '              10 20 10 25 15 25 15 20 10 20' +
           '            </gml:posList>' +
           '          </gml:LinearRing>' +
@@ -562,7 +562,7 @@ describe('ol.format.WFS', function() {
           '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml">' +
           '        <gml:exterior>' +
           '          <gml:LinearRing>' +
-          '            <gml:posList>' +
+          '            <gml:posList srsDimension="2">' +
           '              10 20 10 25 15 25 15 20 10 20' +
           '            </gml:posList>' +
           '          </gml:LinearRing>' +

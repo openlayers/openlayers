@@ -354,7 +354,7 @@ describe('ol.format.GML3', function() {
         var text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
-            '  <gml:pos>1 2</gml:pos>' +
+            '  <gml:pos srsDimension="2">1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Point);
@@ -424,7 +424,7 @@ describe('ol.format.GML3', function() {
         var text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:pos>2 1</gml:pos>' +
+            '  <gml:pos srsDimension="2">2 1</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(formatWGS84, text);
         expect(g).to.be.an(ol.geom.Point);
@@ -441,7 +441,7 @@ describe('ol.format.GML3', function() {
         var text =
             '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
-            '  <gml:posList>1 2 3 4</gml:posList>' +
+            '  <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
@@ -480,7 +480,7 @@ describe('ol.format.GML3', function() {
         var text =
             '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-            '  <gml:posList>2 1 4 3</gml:posList>' +
+            '  <gml:posList srsDimension="2">2 1 4 3</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(formatWGS84, text);
         expect(g).to.be.an(ol.geom.LineString);
@@ -499,7 +499,7 @@ describe('ol.format.GML3', function() {
         var text =
                 '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-                '  <gml:posList>-90 -180 90 180</gml:posList>' +
+                ' <gml:posList srsDimension="2">-90 -180 90 180</gml:posList>' +
                 '</gml:LineString>';
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LineString);
@@ -513,7 +513,7 @@ describe('ol.format.GML3', function() {
             var text =
                 '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
-                '  <gml:pos>-90 -180</gml:pos>' +
+                '  <gml:pos srsDimension="2">-90 -180</gml:pos>' +
                 '</gml:Point>';
             var g = readGeometry(format, text);
             expect(g).to.be.an(ol.geom.Point);
@@ -532,7 +532,8 @@ describe('ol.format.GML3', function() {
                 '      <gml:exterior>' +
                 '        <gml:LinearRing srsName=' +
                 '          "urn:x-ogc:def:crs:EPSG:4326">' +
-                '          <gml:posList>38.9661 -77.0081 38.9931 -77.0421 ' +
+                '          <gml:posList srsDimension="2">' +
+                '          38.9661 -77.0081 38.9931 -77.0421 ' +
                 '          38.9321 -77.1221 38.9151 -77.0781 38.8861 ' +
                 '          -77.0671 38.8621 -77.0391 38.8381 -77.0401 ' +
                 '          38.8291 -77.0451 38.8131 -77.0351 38.7881 ' +
@@ -576,7 +577,7 @@ describe('ol.format.GML3', function() {
         var text =
             '<gml:LinearRing xmlns:gml="http://www.opengis.net/gml" ' +
             '    srsName="CRS:84">' +
-            '  <gml:posList>1 2 3 4 5 6 1 2</gml:posList>' +
+            '  <gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.LinearRing);
@@ -596,17 +597,17 @@ describe('ol.format.GML3', function() {
             '    srsName="CRS:84">' +
             '  <gml:exterior>' +
             '    <gml:LinearRing srsName="CRS:84">' +
-            '      <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '     <gml:posList srsDimension="2">1 2 3 2 3 4 1 2</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:exterior>' +
             '  <gml:interior>' +
             '    <gml:LinearRing srsName="CRS:84">' +
-            '      <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '     <gml:posList srsDimension="2">2 3 2 5 4 5 2 3</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
             '  <gml:interior>' +
             '    <gml:LinearRing srsName="CRS:84">' +
-            '      <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '     <gml:posList srsDimension="2">3 4 3 6 5 6 3 4</gml:posList>' +
             '    </gml:LinearRing>' +
             '  </gml:interior>' +
             '</gml:Polygon>';
@@ -631,17 +632,23 @@ describe('ol.format.GML3', function() {
             '    <gml:PolygonPatch>' +
             '      <gml:exterior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            1 2 3 2 3 4 1 2' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            2 3 2 5 4 5 2 3' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            3 4 3 6 5 6 3 4' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:PolygonPatch>' +
@@ -667,7 +674,7 @@ describe('ol.format.GML3', function() {
             '    srsName="CRS:84">' +
             '  <gml:segments>' +
             '    <gml:LineStringSegment>' +
-            '      <gml:posList>1 2 3 4</gml:posList>' +
+            '      <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
             '    </gml:LineStringSegment>' +
             '  </gml:segments>' +
             '</gml:Curve>';
@@ -704,17 +711,17 @@ describe('ol.format.GML3', function() {
             '    srsName="CRS:84">' +
             '  <gml:pointMember>' +
             '    <gml:Point srsName="CRS:84">' +
-            '      <gml:pos>1 2</gml:pos>' +
+            '      <gml:pos srsDimension="2">1 2</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '  <gml:pointMember>' +
             '    <gml:Point srsName="CRS:84">' +
-            '      <gml:pos>2 3</gml:pos>' +
+            '      <gml:pos srsDimension="2">2 3</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '  <gml:pointMember>' +
             '    <gml:Point srsName="CRS:84">' +
-            '      <gml:pos>3 4</gml:pos>' +
+            '      <gml:pos srsDimension="2">3 4</gml:pos>' +
             '    </gml:Point>' +
             '  </gml:pointMember>' +
             '</gml:MultiPoint>';
@@ -756,12 +763,12 @@ describe('ol.format.GML3', function() {
             '    srsName="CRS:84">' +
             '  <gml:lineStringMember>' +
             '    <gml:LineString srsName="CRS:84">' +
-            '      <gml:posList>1 2 2 3</gml:posList>' +
+            '      <gml:posList srsDimension="2">1 2 2 3</gml:posList>' +
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
             '  <gml:lineStringMember>' +
             '    <gml:LineString srsName="CRS:84">' +
-            '      <gml:posList>3 4 4 5</gml:posList>' +
+            '      <gml:posList srsDimension="2">3 4 4 5</gml:posList>' +
             '    </gml:LineString>' +
             '  </gml:lineStringMember>' +
             '</gml:MultiLineString>';
@@ -805,17 +812,23 @@ describe('ol.format.GML3', function() {
             '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            1 2 3 2 3 4 1 2' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            2 3 2 5 4 5 2 3' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            3 4 3 6 5 6 3 4' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:Polygon>' +
@@ -824,7 +837,9 @@ describe('ol.format.GML3', function() {
             '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            1 2 3 2 3 4 1 2' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '    </gml:Polygon>' +
@@ -893,12 +908,12 @@ describe('ol.format.GML3', function() {
                 '    srsName="CRS:84">' +
                 '  <gml:curveMember>' +
                 '    <gml:LineString srsName="CRS:84">' +
-                '      <gml:posList>1 2 2 3</gml:posList>' +
+                '      <gml:posList srsDimension="2">1 2 2 3</gml:posList>' +
                 '    </gml:LineString>' +
                 '  </gml:curveMember>' +
                 '  <gml:curveMember>' +
                 '    <gml:LineString srsName="CRS:84">' +
-                '      <gml:posList>3 4 4 5</gml:posList>' +
+                '      <gml:posList srsDimension="2">3 4 4 5</gml:posList>' +
                 '    </gml:LineString>' +
                 '  </gml:curveMember>' +
                 '</gml:MultiCurve>';
@@ -918,7 +933,7 @@ describe('ol.format.GML3', function() {
             '    <gml:Curve srsName="CRS:84">' +
             '      <gml:segments>' +
             '        <gml:LineStringSegment>' +
-            '          <gml:posList>1 2 2 3</gml:posList>' +
+            '          <gml:posList srsDimension="2">1 2 2 3</gml:posList>' +
             '        </gml:LineStringSegment>' +
             '      </gml:segments>' +
             '    </gml:Curve>' +
@@ -927,7 +942,7 @@ describe('ol.format.GML3', function() {
             '    <gml:Curve srsName="CRS:84">' +
             '      <gml:segments>' +
             '        <gml:LineStringSegment>' +
-            '          <gml:posList>3 4 4 5</gml:posList>' +
+            '          <gml:posList srsDimension="2">3 4 4 5</gml:posList>' +
             '        </gml:LineStringSegment>' +
             '      </gml:segments>' +
             '    </gml:Curve>' +
@@ -954,17 +969,23 @@ describe('ol.format.GML3', function() {
             '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            1 2 3 2 3 4 1 2' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '      <gml:interior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            2 3 2 5 4 5 2 3' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '      <gml:interior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            3 4 3 6 5 6 3 4' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:interior>' +
             '    </gml:Polygon>' +
@@ -973,7 +994,9 @@ describe('ol.format.GML3', function() {
             '    <gml:Polygon srsName="CRS:84">' +
             '      <gml:exterior>' +
             '        <gml:LinearRing srsName="CRS:84">' +
-            '          <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '          <gml:posList srsDimension="2">' +
+            '            1 2 3 2 3 4 1 2' +
+            '          </gml:posList>' +
             '        </gml:LinearRing>' +
             '      </gml:exterior>' +
             '    </gml:Polygon>' +
@@ -1042,17 +1065,23 @@ describe('ol.format.GML3', function() {
             '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
             '            <gml:LinearRing srsName="CRS:84">' +
-            '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '              <gml:posList srsDimension="2">' +
+            '                1 2 3 2 3 4 1 2' +
+            '              </gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:exterior>' +
             '          <gml:interior>' +
             '            <gml:LinearRing srsName="CRS:84">' +
-            '              <gml:posList>2 3 2 5 4 5 2 3</gml:posList>' +
+            '              <gml:posList srsDimension="2">' +
+            '                2 3 2 5 4 5 2 3' +
+            '              </gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:interior>' +
             '          <gml:interior>' +
             '            <gml:LinearRing srsName="CRS:84">' +
-            '              <gml:posList>3 4 3 6 5 6 3 4</gml:posList>' +
+            '              <gml:posList srsDimension="2">' +
+            '                3 4 3 6 5 6 3 4' +
+            '              </gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:interior>' +
             '        </gml:PolygonPatch>' +
@@ -1065,7 +1094,9 @@ describe('ol.format.GML3', function() {
             '        <gml:PolygonPatch>' +
             '          <gml:exterior>' +
             '            <gml:LinearRing srsName="CRS:84">' +
-            '              <gml:posList>1 2 3 2 3 4 1 2</gml:posList>' +
+            '              <gml:posList srsDimension="2">' +
+            '                1 2 3 2 3 4 1 2' +
+            '              </gml:posList>' +
             '            </gml:LinearRing>' +
             '          </gml:exterior>' +
             '        </gml:PolygonPatch>' +
