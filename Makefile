@@ -262,12 +262,12 @@ build/ol-debug.js: config/ol-debug.json $(SRC_JS) $(SRC_SHADER_JS) $(SRC_SHADERL
 	@$(STAT_COMPRESSED) /tmp/ol-debug.js.gz
 	@rm /tmp/ol-debug.js.gz
 
-%shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
-	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
+%shader.js: %shader.glsl src/ol/webgl/shader.mustache tasks/glslunit.js build/timestamps/node-modules-timestamp
+	@node tasks/glslunit.js --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
 
-%shader/locations.js: %shader.glsl src/ol/webgl/shaderlocations.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
+%shader/locations.js: %shader.glsl src/ol/webgl/shaderlocations.mustache tasks/glslunit.js build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
-	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shaderlocations.mustache > $@
+	@node tasks/glslunit.js --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shaderlocations.mustache > $@
 
 .PHONY: package
 package:
