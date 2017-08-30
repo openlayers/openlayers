@@ -67,7 +67,7 @@
     "istanbul": "0.4.5",
     "jquery": "3.2.1",
     "jscodeshift": "^0.3.30",
-    "karma": "^1.7.0",
+    "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.1.1",
     "karma-coverage": "^1.1.1",
     "karma-firefox-launcher": "^1.0.1",
