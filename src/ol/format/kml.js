@@ -488,8 +488,12 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false).trim();
-  if (node.baseURI && node.baseURI !== 'about:blank') {
-    var url = new URL(s, node.baseURI);
+  var baseURI = node.baseURI;
+  if (!baseURI || baseURI == 'about:blank') {
+    baseURI = window.location.href;
+  }
+  if (baseURI) {
+    var url = new URL(s, baseURI);
     return url.href;
   } else {
     return s;
@@ -1744,8 +1748,12 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (style) {
       var styleUri;
-      if (node.baseURI && node.baseURI !== 'about:blank') {
-        var url = new URL('#' + id, node.baseURI);
+      var baseURI = node.baseURI;
+      if (!baseURI || baseURI == 'about:blank') {
+        baseURI = window.location.href;
+      }
+      if (baseURI) {
+        var url = new URL('#' + id, baseURI);
         styleUri = url.href;
       } else {
         styleUri = '#' + id;
@@ -1771,8 +1779,12 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     return;
   }
   var styleUri;
-  if (node.baseURI && node.baseURI !== 'about:blank') {
-    var url = new URL('#' + id, node.baseURI);
+  var baseURI = node.baseURI;
+  if (!baseURI || baseURI == 'about:blank') {
+    baseURI = window.location.href;
+  }
+  if (baseURI) {
+    var url = new URL('#' + id, baseURI);
     styleUri = url.href;
   } else {
     styleUri = '#' + id;
