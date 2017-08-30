@@ -1,5 +1,4 @@
 //! NAMESPACE=ol.render.webgl.texturereplay.defaultshader
-//! CLASS=ol.render.webgl.texturereplay.defaultshader
 
 
 //! COMMON

@@ -6,6 +6,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.defaultmapshader');
+goog.require('ol.renderer.webgl.defaultmapshader.Locations');
 goog.require('ol.transform');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
@@ -154,7 +155,6 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
 
   var locations;
   if (!this.defaultLocations_) {
-    // eslint-disable-next-line openlayers-internal/no-missing-requires
     locations = new ol.renderer.webgl.defaultmapshader.Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {

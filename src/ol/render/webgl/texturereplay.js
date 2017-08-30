@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.render.webgl.texturereplay.defaultshader');
+goog.require('ol.render.webgl.texturereplay.defaultshader.Locations');
 goog.require('ol.render.webgl.Replay');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
@@ -275,7 +276,6 @@ ol.render.webgl.TextureReplay.prototype.setUpProgram = function(gl, context, siz
   // get the locations
   var locations;
   if (!this.defaultLocations) {
-    // eslint-disable-next-line openlayers-internal/no-missing-requires
     locations = new ol.render.webgl.texturereplay.defaultshader.Locations(gl, program);
     this.defaultLocations = locations;
   } else {
