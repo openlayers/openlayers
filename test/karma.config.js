@@ -15,9 +15,16 @@ module.exports = function(karma) {
   karma.set({
     frameworks: ['mocha'],
     client: {
-      runInParent: true
+      runInParent: true,
+      mocha: {
+        timeout: 2500
+      }
     },
     files: [
+      {
+        pattern: path.resolve(__dirname, require.resolve('url-polyfill/url-polyfill.js')),
+        watched: false
+      },
       {
         pattern: 'module-global.js',
         watched: false
@@ -86,31 +93,34 @@ module.exports = function(karma) {
       SL_Firefox: {
         base: 'SauceLabs',
         browserName: 'firefox'
-      // },
+      },
       // SL_Edge: {
       //   base: 'SauceLabs',
       //   platform: 'Windows 10',
       //   browserName: 'MicrosoftEdge'
       // },
-      // SL_Safari: {
-      //   base: 'SauceLabs',
-      //   platform: 'macos 10.12',
-      //   browserName: 'safari'
+      SL_Safari: {
+        base: 'SauceLabs',
+        platform: 'macOS 10.12',
+        browserName: 'safari'
       }
     };
     karma.set({
       sauceLabs: {
         testName: testName,
         recordScreenshots: false,
-        connectOptions: {
-          port: 5757
-        },
-        startConnect: false,
+        startConnect: true,
         tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
         username: 'openlayers',
-        accessKey: process.env.SAUCE_ACCESS_KEY
+        accessKey: process.env.SAUCE_ACCESS_KEY,
+        connectOptions: {
+          noSslBumpDomains: 'all'
+        }
       },
+      hostname: 'travis.dev',
       reporters: ['dots', 'saucelabs', 'coverage'],
+      browserDisconnectTimeout: 10000,
+      browserDisconnectTolerance: 1,
       captureTimeout: 240000,
       browserNoActivityTimeout: 240000,
       customLaunchers: customLaunchers,
