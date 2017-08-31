@@ -388,7 +388,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
           context.clip();
         }
       }
-      replayGroup.replay(context, pixelRatio, transform, rotation, {}, replays);
+      replayGroup.replay(context, transform, rotation, {}, replays);
       context.restore();
       clips.push(currentClip);
       zs.push(currentZ);
@@ -461,7 +461,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
       ol.transform.scale(transform, pixelScale, -pixelScale);
       ol.transform.translate(transform, -tileExtent[0], -tileExtent[3]);
       var replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-      replayGroup.replay(context, pixelRatio, transform, 0, {}, replays, true);
+      replayGroup.replay(context, transform, 0, {}, replays, true);
     }
   }
 };

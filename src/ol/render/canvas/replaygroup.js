@@ -320,7 +320,6 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
@@ -328,7 +327,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
  *     to replay. Default is {@link ol.render.replay.ORDER}
  */
-ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
+ol.render.canvas.ReplayGroup.prototype.replay = function(context,
     transform, viewRotation, skippedFeaturesHash, opt_replayTypes) {
 
   /** @type {Array.<number>} */
@@ -353,8 +352,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
     for (j = 0, jj = replayTypes.length; j < jj; ++j) {
       replay = replays[replayTypes[j]];
       if (replay !== undefined) {
-        replay.replay(context, pixelRatio, transform, viewRotation,
-            skippedFeaturesHash);
+        replay.replay(context, transform, viewRotation, skippedFeaturesHash);
       }
     }
   }

@@ -51,6 +51,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
    * @type {number}
    */
   this.pixelRatio = pixelRatio;
+
   /**
    * @protected
    * @type {number}
@@ -131,6 +132,19 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
   this.resetTransform_ = ol.transform.create();
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
+
+
+/**
+ * @protected
+ * @param {Array.<number>} dashArray Dash array.
+ * @return {Array.<number>} Dash array with pixel ratio applied
+ */
+ol.render.canvas.Replay.prototype.applyPixelRatio = function(dashArray) {
+  var pixelRatio = this.pixelRatio;
+  return pixelRatio == 1 ? dashArray : dashArray.map(function(dash) {
+    return dash * pixelRatio;
+  });
+};
 
 
 /**
@@ -293,7 +307,6 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
@@ -307,7 +320,7 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay_ = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesHash,
+    context, transform, viewRotation, skippedFeaturesHash,
     instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
@@ -336,7 +349,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
 
   var state = /** @type {olx.render.State} */ ({
     context: context,
-    pixelRatio: pixelRatio,
+    pixelRatio: this.pixelRatio,
     resolution: this.resolution,
     rotation: viewRotation
   });
@@ -422,16 +435,16 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         dd = /** @type {number} */ (instruction[2]);
         var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
             (instruction[3]);
+        var scale = /** @type {number} */ (instruction[12]);
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
-        var anchorX = /** @type {number} */ (instruction[4]) * pixelRatio;
-        var anchorY = /** @type {number} */ (instruction[5]) * pixelRatio;
+        var anchorX = /** @type {number} */ (instruction[4]) * scale;
+        var anchorY = /** @type {number} */ (instruction[5]) * scale;
         var height = /** @type {number} */ (instruction[6]);
         var opacity = /** @type {number} */ (instruction[7]);
         var originX = /** @type {number} */ (instruction[8]);
         var originY = /** @type {number} */ (instruction[9]);
         var rotateWithView = /** @type {boolean} */ (instruction[10]);
         var rotation = /** @type {number} */ (instruction[11]);
-        var scale = /** @type {number} */ (instruction[12]);
         var snapToPixel = /** @type {boolean} */ (instruction[13]);
         var width = /** @type {number} */ (instruction[14]);
         if (rotateWithView) {
@@ -444,11 +457,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             x = Math.round(x);
             y = Math.round(y);
           }
-          if (scale != 1 || rotation !== 0) {
+          if (rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
             ol.transform.compose(localTransform,
-                centerX, centerY, scale, scale, rotation, -centerX, -centerY);
+                centerX, centerY, 1, 1, rotation, -centerX, -centerY);
             context.setTransform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
@@ -460,12 +473,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           var h = (height + originY > image.height) ? image.height - originY : height;
 
           context.drawImage(image, originX, originY, w, h,
-              x, y, w * pixelRatio, h * pixelRatio);
+              x, y, w * scale, h * scale);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
           }
-          if (scale != 1 || rotation !== 0) {
+          if (rotation !== 0) {
             context.setTransform.apply(context, resetTransform);
           }
         }
@@ -530,34 +543,18 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        var usePixelRatio = instruction[8] !== undefined ?
-          instruction[8] : true;
-        var renderedPixelRatio = instruction[9];
-
-        var lineWidth = /** @type {number} */ (instruction[2]);
         if (pendingStroke) {
           context.stroke();
           pendingStroke = 0;
         }
         context.strokeStyle = /** @type {ol.ColorLike} */ (instruction[1]);
-        context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
+        context.lineWidth = /** @type {number} */ (instruction[2]);
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
         if (ol.has.CANVAS_LINE_DASH) {
-          var lineDash = /** @type {Array.<number>} */ (instruction[6]);
-          var lineDashOffset = /** @type {number} */ (instruction[7]);
-          if (usePixelRatio && pixelRatio !== renderedPixelRatio) {
-            lineDash = lineDash.map(function(dash) {
-              return dash * pixelRatio / renderedPixelRatio;
-            });
-            lineDashOffset *= pixelRatio / renderedPixelRatio;
-            instruction[6] = lineDash;
-            instruction[7] = lineDashOffset;
-            instruction[9] = pixelRatio;
-          }
-          context.lineDashOffset = lineDashOffset;
-          context.setLineDash(lineDash);
+          context.lineDashOffset = /** @type {number} */ (instruction[7]);
+          context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
         }
         ++i;
         break;
@@ -586,16 +583,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  */
 ol.render.canvas.Replay.prototype.replay = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+    context, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
-  this.replay_(context, pixelRatio, transform, viewRotation,
+  this.replay_(context, transform, viewRotation,
       skippedFeaturesHash, instructions, undefined, undefined);
 };
 
@@ -617,7 +613,7 @@ ol.render.canvas.Replay.prototype.replayHitDetection = function(
     context, transform, viewRotation, skippedFeaturesHash,
     opt_featureCallback, opt_hitExtent) {
   var instructions = this.hitDetectionInstructions;
-  return this.replay_(context, 1, transform, viewRotation,
+  return this.replay_(context, transform, viewRotation,
       skippedFeaturesHash, instructions, opt_featureCallback, opt_hitExtent);
 };
 

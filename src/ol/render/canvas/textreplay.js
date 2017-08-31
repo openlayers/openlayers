@@ -210,16 +210,18 @@ ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offse
   var anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
   var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
 
-  var drawTextInstruction = [
+  this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, label,
-    anchorX - this.textOffsetX_ * pixelRatio, anchorY - this.textOffsetY_ * pixelRatio,
+    (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-    this.textScale_ / pixelRatio, //FIXME missing HiDPI support in DRAW_IMAGE
-    true, label.width
-  ];
-
-  this.instructions.push(drawTextInstruction);
-  this.hitDetectionInstructions.push(drawTextInstruction);
+    this.textScale_, true, label.width
+  ]);
+  this.hitDetectionInstructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, label,
+    (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
+    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.textScale_ / pixelRatio, true, label.width
+  ]);
 
   this.endGeometry(geometry, feature);
 };
