@@ -11,11 +11,12 @@ goog.require('ol.render.canvas.Replay');
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, overlaps) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
 
   /**
    * @private

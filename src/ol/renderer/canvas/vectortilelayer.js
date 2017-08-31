@@ -167,7 +167,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
     }
     replayState.dirty = false;
     var replayGroup = new ol.render.canvas.ReplayGroup(0, sharedExtent,
-        resolution, source.getOverlaps(), layer.getRenderBuffer());
+        resolution, pixelRatio, source.getOverlaps(), layer.getRenderBuffer());
     var squaredTolerance = ol.renderer.vector.getSquaredTolerance(
         resolution, pixelRatio);
 

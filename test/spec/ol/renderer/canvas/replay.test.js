@@ -30,7 +30,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     beforeEach(function() {
       transform = ol.transform.create();
-      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, false);
+      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new ol.Feature(new ol.geom.Polygon(
           [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new ol.Feature(new ol.geom.Polygon(
@@ -174,7 +174,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not batch when overlaps is set to true', function() {
-      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, true);
+      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
       ol.renderer.vector.renderFeature(replay, feature1, style1, 1);
       ol.renderer.vector.renderFeature(replay, feature2, style1, 1);
       ol.renderer.vector.renderFeature(replay, feature3, style1, 1);
@@ -240,7 +240,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
           [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
       var geometrycollection = new ol.Feature(new ol.geom.GeometryCollection(
           [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
-      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, true);
+      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
       ol.renderer.vector.renderFeature(replay, point, style, 1);
       ol.renderer.vector.renderFeature(replay, multipoint, style, 1);
       ol.renderer.vector.renderFeature(replay, linestring, style, 1);
@@ -284,7 +284,7 @@ describe('ol.render.canvas.Replay', function() {
     it('creates a new replay batch', function() {
       var tolerance = 10;
       var extent = [-180, -90, 180, 90];
-      var replay = new ol.render.canvas.Replay(tolerance, extent, 1, true);
+      var replay = new ol.render.canvas.Replay(tolerance, extent, 1, 1, true);
       expect(replay).to.be.a(ol.render.canvas.Replay);
     });
 
@@ -294,7 +294,7 @@ describe('ol.render.canvas.Replay', function() {
 
     var replay;
     beforeEach(function() {
-      replay = new ol.render.canvas.Replay(1, [-180, -90, 180, 90], 1, true);
+      replay = new ol.render.canvas.Replay(1, [-180, -90, 180, 90], 1, 1, true);
     });
 
     it('appends coordinates that are within the max extent', function() {

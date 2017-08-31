@@ -10,8 +10,14 @@ goog.require('ol.asserts');
  * @constructor
  * @struct
  * @template T
+ * @param {number=} opt_highWaterMark High water mark.
  */
-ol.structs.LRUCache = function() {
+ol.structs.LRUCache = function(opt_highWaterMark) {
+
+  /**
+   * @type {number}
+   */
+  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
 
   /**
    * @private
@@ -37,6 +43,14 @@ ol.structs.LRUCache = function() {
    */
   this.newest_ = null;
 
+};
+
+
+/**
+ * @return {boolean} Can expire cache.
+ */
+ol.structs.LRUCache.prototype.canExpireCache = function() {
+  return this.getCount() > this.highWaterMark;
 };
 
 
