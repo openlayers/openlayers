@@ -67,8 +67,8 @@
     "jquery": "3.2.1",
     "jscodeshift": "^0.3.30",
     "karma": "^1.7.0",
-    "karma-coverage": "^1.1.1",
     "karma-chrome-launcher": "^2.1.1",
+    "karma-coverage": "^1.1.1",
     "karma-firefox-launcher": "^1.0.1",
     "karma-mocha": "^1.3.0",
     "karma-sauce-launcher": "^1.1.0",
@@ -83,7 +83,8 @@
     "proj4": "2.4.4",
     "serve-files": "1.0.1",
     "sinon": "3.2.1",
-    "slimerjs": "0.10.3"
+    "slimerjs": "0.10.3",
+    "url-polyfill": "^1.0.7"
   },
   "eslintConfig": {
     "extends": "openlayers",
