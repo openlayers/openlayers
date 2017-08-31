@@ -94,11 +94,11 @@ module.exports = function(karma) {
         base: 'SauceLabs',
         browserName: 'firefox'
       },
-      // SL_Edge: {
-      //   base: 'SauceLabs',
-      //   platform: 'Windows 10',
-      //   browserName: 'MicrosoftEdge'
-      // },
+      SL_Edge: {
+        base: 'SauceLabs',
+        platform: 'Windows 10',
+        browserName: 'MicrosoftEdge'
+      },
       SL_Safari: {
         base: 'SauceLabs',
         platform: 'macOS 10.12',
