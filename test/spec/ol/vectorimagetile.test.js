@@ -15,8 +15,8 @@ describe('ol.VectorImageTile', function() {
   it('configures loader that sets features on the source tile', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
+    var tile = new ol.VectorImageTile([0, 0, -1], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
@@ -35,8 +35,8 @@ describe('ol.VectorImageTile', function() {
   it('sets LOADED state when source tiles fail to load', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
+    var tile = new ol.VectorImageTile([0, 0, -1], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
@@ -53,11 +53,11 @@ describe('ol.VectorImageTile', function() {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var sourceTile;
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
+    var tile = new ol.VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
         function(tile, url) {
           sourceTile = tile;
           ol.VectorImageTile.defaultLoadFunction(tile, url);
-        }, [0, 0, 0], function() {
+        }, [0, 0, -1], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
@@ -80,8 +80,8 @@ describe('ol.VectorImageTile', function() {
   it('sets EMPTY state when all source tiles fail to load', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
+    var tile = new ol.VectorImageTile([0, 0, -1], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
@@ -97,8 +97,8 @@ describe('ol.VectorImageTile', function() {
   it('sets EMPTY state when tile has only empty source tiles', function(done) {
     var format = new ol.format.GeoJSON();
     var url = '';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {},
+    var tile = new ol.VectorImageTile([0, 0, -1], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {},
         ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
 
@@ -133,8 +133,8 @@ describe('ol.VectorImageTile', function() {
   it('#dispose() while loading', function() {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
+    var tile = new ol.VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ({tileSize: 512}), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
@@ -153,8 +153,8 @@ describe('ol.VectorImageTile', function() {
   it('#dispose() when loaded', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
+    var tile = new ol.VectorImageTile([0, 0, -1], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ({tileSize: 512}), {},
         1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
