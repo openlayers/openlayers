@@ -7,6 +7,7 @@ goog.require('ol.events');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.proj');
 goog.require('ol.tilegrid');
+goog.require('ol.tilegrid.TileGrid');
 
 
 describe('ol.VectorImageTile', function() {
@@ -107,6 +108,26 @@ describe('ol.VectorImageTile', function() {
       expect(tile.getState()).to.be(ol.TileState.EMPTY);
       done();
     });
+  });
+
+  it('only loads tiles within the source tileGrid\'s extent', function() {
+    var format = new ol.format.GeoJSON();
+    var url = 'spec/ol/data/point.json';
+    var tileGrid = new ol.tilegrid.TileGrid({
+      resolutions: [0.02197265625, 0.010986328125, 0.0054931640625],
+      origin: [-180, 90],
+      extent: [-88, 35, -87, 36]
+    });
+    var sourceTiles = {};
+    var tile = new ol.VectorImageTile([1, 0, -1], 0, url, format,
+        ol.VectorImageTile.defaultLoadFunction, [1, 0, -1], function(zxy) {
+          return url;
+        }, tileGrid,
+        ol.tilegrid.createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
+        sourceTiles, 1, ol.proj.get('EPSG:4326'), ol.VectorTile, function() {});
+    tile.load();
+    expect(tile.tileKeys.length).to.be(1);
+    expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, -10]);
   });
 
   it('#dispose() while loading', function() {
