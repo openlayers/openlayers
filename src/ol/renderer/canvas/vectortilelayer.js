@@ -187,9 +187,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
         }
       }
       if (styles) {
-        if (!Array.isArray(styles)) {
-          styles = [styles];
-        }
         var dirty = this.renderFeature(feature, squaredTolerance, styles,
             replayGroup);
         this.dirty_ = this.dirty_ || dirty;
