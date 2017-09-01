@@ -57,6 +57,8 @@ goog.require('ol.math');
  *
  * @see {@link http://www.w3.org/TR/orientation-event/}
  *
+ * @deprecated This class is deprecated and will removed in the next major release.
+ *
  * @constructor
  * @extends {ol.Object}
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
