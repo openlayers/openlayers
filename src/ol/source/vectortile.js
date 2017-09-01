@@ -84,7 +84,7 @@ ol.source.VectorTile = function(options) {
    * @type {Object.<string,ol.tilegrid.TileGrid>}
    */
   this.tileGrids_ = {};
-
+  this.tileGrids_[projection] = tileGrid;
 };
 ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
 
