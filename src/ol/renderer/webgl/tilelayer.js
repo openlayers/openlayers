@@ -186,8 +186,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 
   var center = viewState.center;
   var extent = frameState.extent;
-  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      extent, tileResolution);
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
   var framebufferExtent;
   if (this.renderedTileRange_ &&

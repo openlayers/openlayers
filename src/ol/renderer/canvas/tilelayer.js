@@ -147,8 +147,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     return false;
   }
 
-  var tileRange = tileGrid.getTileRangeForExtentAndResolution(
-      extent, tileResolution);
+  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
   var imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
 
   var tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
