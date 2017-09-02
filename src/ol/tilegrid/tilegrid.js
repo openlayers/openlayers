@@ -37,6 +37,30 @@ ol.tilegrid.TileGrid = function(options) {
     return b - a;
   }, true), 17); // `resolutions` must be sorted in descending order
 
+
+  // check if we've got a consistent zoom factor and origin
+  var zoomFactor;
+  if (!options.origins) {
+    for (var i = 0, ii = this.resolutions_.length - 1; i < ii; ++i) {
+      if (!zoomFactor) {
+        zoomFactor = this.resolutions_[i] / this.resolutions_[i + 1];
+      } else {
+        if (this.resolutions_[i] / this.resolutions_[i + 1] !== zoomFactor) {
+          zoomFactor = undefined;
+          break;
+        }
+      }
+    }
+  }
+
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.zoomFactor_ = zoomFactor;
+
+
   /**
    * @protected
    * @type {number}
@@ -248,12 +272,16 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRange, opt_extent) {
   if (tileCoord[0] < this.maxZoom) {
+    if (this.zoomFactor_ === 2) {
+      var minX = tileCoord[1] * 2;
+      var minY = tileCoord[2] * 2;
+      return ol.TileRange.createOrUpdate(minX, minX + 1, minY, minY + 1, opt_tileRange);
+    }
     var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     return this.getTileRangeForExtentAndZ(
         tileCoordExtent, tileCoord[0] + 1, opt_tileRange);
-  } else {
-    return null;
   }
+  return null;
 };
 
 
