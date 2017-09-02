@@ -57,13 +57,7 @@ module.exports = function(karma) {
       '/rendering/': '/base/rendering/',
       '/spec/': '/base/spec/'
     },
-    preprocessors: {
-      // source files, that you wanna generate coverage for
-      // do not include tests or libraries
-      // (these files will be instrumented by Istanbul)
-      '../src/**/*.js': ['coverage']
-    },
-    reporters: ['progress', 'coverage'],
+    reporters: ['progress'],
     coverageReporter: {
       reporters: [
         {
@@ -125,6 +119,12 @@ module.exports = function(karma) {
       browserNoActivityTimeout: 240000,
       customLaunchers: customLaunchers,
       browsers: Object.keys(customLaunchers),
+      preprocessors: {
+        // source files, that you wanna generate coverage for
+        // do not include tests or libraries
+        // (these files will be instrumented by Istanbul)
+        '../src/**/*.js': ['coverage']
+      },
       coverageReporter: {
         reporters: [
           {
