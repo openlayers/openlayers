@@ -15,12 +15,13 @@ goog.require('ol.render.canvas.Replay');
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, overlaps) {
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
 
   /**
    * @private
@@ -129,7 +130,8 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
     state.lastStroke = 0;
     this.instructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, lineDashOffset, true, 1
+      strokeStyle, lineWidth * this.pixelRatio, lineCap, lineJoin, miterLimit,
+      this.applyPixelRatio(lineDash), lineDashOffset * this.pixelRatio
     ], [
       ol.render.canvas.Instruction.BEGIN_PATH
     ]);
@@ -159,7 +161,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
+    state.miterLimit, state.lineDash, state.lineDashOffset
   ], [
     ol.render.canvas.Instruction.BEGIN_PATH
   ]);
@@ -186,7 +188,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
+    state.miterLimit, state.lineDash, state.lineDashOffset
   ], [
     ol.render.canvas.Instruction.BEGIN_PATH
   ]);

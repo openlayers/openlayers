@@ -167,7 +167,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
     }
     replayState.dirty = false;
     var replayGroup = new ol.render.canvas.ReplayGroup(0, sharedExtent,
-        resolution, source.getOverlaps(), layer.getRenderBuffer());
+        resolution, pixelRatio, source.getOverlaps(), layer.getRenderBuffer());
     var squaredTolerance = ol.renderer.vector.getSquaredTolerance(
         resolution, pixelRatio);
 
@@ -187,9 +187,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
         }
       }
       if (styles) {
-        if (!Array.isArray(styles)) {
-          styles = [styles];
-        }
         var dirty = this.renderFeature(feature, squaredTolerance, styles,
             replayGroup);
         this.dirty_ = this.dirty_ || dirty;
@@ -388,7 +385,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
           context.clip();
         }
       }
-      replayGroup.replay(context, pixelRatio, transform, rotation, {}, replays);
+      replayGroup.replay(context, transform, rotation, {}, replays);
       context.restore();
       clips.push(currentClip);
       zs.push(currentZ);
@@ -461,7 +458,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
       ol.transform.scale(transform, pixelScale, -pixelScale);
       ol.transform.translate(transform, -tileExtent[0], -tileExtent[3]);
       var replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
-      replayGroup.replay(context, pixelRatio, transform, 0, {}, replays, true);
+      replayGroup.replay(context, transform, 0, {}, replays, true);
     }
   }
 };

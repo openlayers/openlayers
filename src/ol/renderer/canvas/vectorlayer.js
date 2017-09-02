@@ -157,8 +157,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var height = frameState.size[1] * pixelRatio;
     ol.render.canvas.rotateAtOffset(replayContext, -rotation,
         width / 2, height / 2);
-    replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-        skippedFeatureUids);
+    replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
         !ol.extent.containsExtent(projectionExtent, extent)) {
       var startX = extent[0];
@@ -169,8 +168,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         --world;
         offsetX = worldWidth * world;
         transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-            skippedFeatureUids);
+        replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
         startX += worldWidth;
       }
       world = 0;
@@ -179,8 +177,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         ++world;
         offsetX = worldWidth * world;
         transform = this.getTransform(frameState, offsetX);
-        replayGroup.replay(replayContext, pixelRatio, transform, rotation,
-            skippedFeatureUids);
+        replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
         startX -= worldWidth;
       }
       // restore original transform for render and compose events
@@ -321,8 +318,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
   this.dirty_ = false;
 
   var replayGroup = new ol.render.canvas.ReplayGroup(
-      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-      resolution, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
+      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution,
+      pixelRatio, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.

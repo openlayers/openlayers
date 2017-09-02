@@ -17,12 +17,13 @@ goog.require('ol.render.canvas.Replay');
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, overlaps) {
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
 
   /**
    * @private
@@ -141,7 +142,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
+      state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
@@ -183,7 +184,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
+      state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
   }
   var ends = polygonGeometry.getEnds();
@@ -215,7 +216,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
+      state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
   }
   var endss = multiPolygonGeometry.getEndss();
@@ -352,7 +353,8 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
         state.currentMiterLimit != miterLimit) {
       this.instructions.push([
         ol.render.canvas.Instruction.SET_STROKE_STYLE,
-        strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, lineDashOffset, true, 1
+        strokeStyle, lineWidth * this.pixelRatio, lineCap, lineJoin, miterLimit,
+        this.applyPixelRatio(lineDash), lineDashOffset * this.pixelRatio
       ]);
       state.currentStrokeStyle = strokeStyle;
       state.currentLineCap = lineCap;
