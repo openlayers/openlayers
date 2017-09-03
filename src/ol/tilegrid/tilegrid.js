@@ -186,11 +186,24 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoord = function(extent, zoom, callbac
  * @template T
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-  var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  var tileRange, x, y;
+  var tileCoordExtent = null;
   var z = tileCoord[0] - 1;
+  if (this.zoomFactor_ === 2) {
+    x = tileCoord[1];
+    y = tileCoord[2];
+  } else {
+    tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  }
   while (z >= this.minZoom) {
-    if (callback.call(opt_this, z,
-        this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
+    if (this.zoomFactor_ === 2) {
+      x = Math.floor(x / 2);
+      y = Math.floor(y / 2);
+      tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
+    } else {
+      tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+    }
+    if (callback.call(opt_this, z, tileRange)) {
       return true;
     }
     --z;
