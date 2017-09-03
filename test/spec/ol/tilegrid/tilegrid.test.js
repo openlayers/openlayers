@@ -287,6 +287,26 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('#zoomFactor_', function() {
+    it('is set for a consistent zoom factor', function() {
+      var grid = new ol.tilegrid.TileGrid({
+        resolutions: [10, 5, 2.5, 1.25],
+        origin: origin,
+        tileSize: tileSize
+      });
+      expect(grid.zoomFactor_).to.be(2);
+    });
+
+    it('is not set for an inconsistent zoom factor', function() {
+      var grid = new ol.tilegrid.TileGrid({
+        resolutions: [10, 5, 3, 1.25],
+        origin: origin,
+        tileSize: tileSize
+      });
+      expect(grid.zoomFactor_).to.be(undefined);
+    });
+  });
+
   describe('createForProjection', function() {
 
     it('allows easier creation of a tile grid', function() {
