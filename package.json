@@ -53,7 +53,7 @@
     "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css-cli": "4.1.6",
+    "clean-css-cli": "4.1.7",
     "coveralls": "2.13.1",
     "debounce": "^1.0.0",
     "eslint": "4.6.0",
