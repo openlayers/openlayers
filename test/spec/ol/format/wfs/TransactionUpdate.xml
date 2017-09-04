@@ -8,7 +8,7 @@
             <Value><MultiLineString xmlns="http://www.opengis.net/gml" srsName="EPSG:900913">
                     <lineStringMember>
                         <LineString srsName="EPSG:900913">
-                            <posList>-12279454 6741885 -12064207
+                            <posList srsDimension="2">-12279454 6741885 -12064207
                                 6732101 -11941908 6595126
                                 -12240318 6507071 -12416429
                                 6604910</posList>

@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.Circle');
+
 
 goog.require('ol.geom.Circle');
 

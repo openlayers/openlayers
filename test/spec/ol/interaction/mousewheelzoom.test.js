@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.MouseWheelZoom');
+
 
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
@@ -35,15 +35,16 @@ describe('ol.interaction.MouseWheelZoom', function() {
   describe('timeout duration', function() {
     var clock;
     beforeEach(function() {
+      sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
       clock = sinon.useFakeTimers();
     });
 
     afterEach(function() {
       clock.restore();
+      ol.interaction.Interaction.zoomByDelta.restore();
     });
 
     it('works with the defaut value', function(done) {
-      var spy = sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
       var event = new ol.MapBrowserEvent('mousewheel', map, {
         type: 'mousewheel',
         target: map.getViewport(),
@@ -52,11 +53,10 @@ describe('ol.interaction.MouseWheelZoom', function() {
       map.handleMapBrowserEvent(event);
       clock.tick(50);
       // default timeout is 80 ms, not called yet
-      expect(spy.called).to.be(false);
+      expect(ol.interaction.Interaction.zoomByDelta.called).to.be(false);
       clock.tick(30);
-      expect(spy.called).to.be(true);
+      expect(ol.interaction.Interaction.zoomByDelta.called).to.be(true);
 
-      ol.interaction.Interaction.zoomByDelta.restore();
       done();
     });
 
@@ -102,66 +102,74 @@ describe('ol.interaction.MouseWheelZoom', function() {
       map.handleMapBrowserEvent(event);
     });
 
-    it('works in DOM_DELTA_LINE mode (wheel)', function(done) {
-      var spy = sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
-      map.once('postrender', function() {
-        expect(spy.getCall(0).args[1]).to.be(-1);
-        expect(spy.getCall(0).args[2]).to.eql([0, 0]);
+    describe('spying on ol.interaction.Interaction.zoomByDelta', function() {
+      beforeEach(function() {
+        sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
+      });
+      afterEach(function() {
         ol.interaction.Interaction.zoomByDelta.restore();
-        done();
       });
-      var event = new ol.MapBrowserEvent('wheel', map, {
-        type: 'wheel',
-        deltaMode: WheelEvent.DOM_DELTA_LINE,
-        deltaY: 3.714599609375,
-        target: map.getViewport(),
-        preventDefault: ol.events.Event.prototype.preventDefault
+
+      it('works in DOM_DELTA_LINE mode (wheel)', function(done) {
+        map.once('postrender', function() {
+          var call = ol.interaction.Interaction.zoomByDelta.getCall(0);
+          expect(call.args[1]).to.be(-1);
+          expect(call.args[2]).to.eql([0, 0]);
+          done();
+        });
+        var event = new ol.MapBrowserEvent('wheel', map, {
+          type: 'wheel',
+          deltaMode: WheelEvent.DOM_DELTA_LINE,
+          deltaY: 3.714599609375,
+          target: map.getViewport(),
+          preventDefault: ol.events.Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+        map.handleMapBrowserEvent(event);
       });
-      event.coordinate = [0, 0];
-      map.handleMapBrowserEvent(event);
+
+      it('works on Safari (wheel)', function(done) {
+        var origHasSafari = ol.has.SAFARI;
+        ol.has.SAFARI = true;
+        map.once('postrender', function() {
+          var call = ol.interaction.Interaction.zoomByDelta.getCall(0);
+          expect(call.args[1]).to.be(-1);
+          expect(call.args[2]).to.eql([0, 0]);
+          ol.has.SAFARI = origHasSafari;
+          done();
+        });
+        var event = new ol.MapBrowserEvent('mousewheel', map, {
+          type: 'mousewheel',
+          wheelDeltaY: -50,
+          target: map.getViewport(),
+          preventDefault: ol.events.Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+        map.handleMapBrowserEvent(event);
+      });
+
+      it('works on other browsers (wheel)', function(done) {
+        var origHasSafari = ol.has.SAFARI;
+        ol.has.SAFARI = false;
+        map.once('postrender', function() {
+          var call = ol.interaction.Interaction.zoomByDelta.getCall(0);
+          expect(call.args[1]).to.be(-1);
+          expect(call.args[2]).to.eql([0, 0]);
+          ol.has.SAFARI = origHasSafari;
+          done();
+        });
+        var event = new ol.MapBrowserEvent('mousewheel', map, {
+          type: 'mousewheel',
+          wheelDeltaY: -120,
+          target: map.getViewport(),
+          preventDefault: ol.events.Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+        map.handleMapBrowserEvent(event);
+      });
+
     });
 
-    it('works on Safari (wheel)', function(done) {
-      var origHasSafari = ol.has.SAFARI;
-      ol.has.SAFARI = true;
-      var spy = sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
-      map.once('postrender', function() {
-        expect(spy.getCall(0).args[1]).to.be(-1);
-        expect(spy.getCall(0).args[2]).to.eql([0, 0]);
-        ol.interaction.Interaction.zoomByDelta.restore();
-        ol.has.SAFARI = origHasSafari;
-        done();
-      });
-      var event = new ol.MapBrowserEvent('mousewheel', map, {
-        type: 'mousewheel',
-        wheelDeltaY: -50,
-        target: map.getViewport(),
-        preventDefault: ol.events.Event.prototype.preventDefault
-      });
-      event.coordinate = [0, 0];
-      map.handleMapBrowserEvent(event);
-    });
-
-    it('works on other browsers (wheel)', function(done) {
-      var origHasSafari = ol.has.SAFARI;
-      ol.has.SAFARI = false;
-      var spy = sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
-      map.once('postrender', function() {
-        expect(spy.getCall(0).args[1]).to.be(-1);
-        expect(spy.getCall(0).args[2]).to.eql([0, 0]);
-        ol.interaction.Interaction.zoomByDelta.restore();
-        ol.has.SAFARI = origHasSafari;
-        done();
-      });
-      var event = new ol.MapBrowserEvent('mousewheel', map, {
-        type: 'mousewheel',
-        wheelDeltaY: -120,
-        target: map.getViewport(),
-        preventDefault: ol.events.Event.prototype.preventDefault
-      });
-      event.coordinate = [0, 0];
-      map.handleMapBrowserEvent(event);
-    });
   });
 
 });

@@ -1,4 +1,4 @@
-goog.provide('ol.test.reproj');
+
 
 goog.require('ol.reproj');
 goog.require('ol.proj');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.array');
+
 
 goog.require('ol.array');
 

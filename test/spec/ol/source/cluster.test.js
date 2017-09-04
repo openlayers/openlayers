@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.ClusterSource');
+
 
 goog.require('ol.Feature');
 goog.require('ol.geom.LineString');

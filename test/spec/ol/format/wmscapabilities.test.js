@@ -1,4 +1,4 @@
-goog.provide('ol.test.format.WMSCapabilities');
+
 
 goog.require('ol.format.WMSCapabilities');
 

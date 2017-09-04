@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.Control');
+
 
 goog.require('ol.Map');
 goog.require('ol.control.Control');
@@ -16,7 +16,9 @@ describe('ol.control.Control', function() {
   });
 
   afterEach(function() {
-    map.dispose();
+    disposeMap(map);
+    map = null;
+    control = null;
   });
 
   describe('dispose', function() {
@@ -36,6 +38,7 @@ describe('ol.control.Control\'s target', function() {
       var ctrl = new ol.control.Control({target: 'mycontrol'});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
+      target.parentNode.removeChild(target);
     });
     it('accepts element for target', function() {
       var target = document.createElement('div');
@@ -44,6 +47,7 @@ describe('ol.control.Control\'s target', function() {
       var ctrl = new ol.control.Control({target: target});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
+      target.parentNode.removeChild(target);
     });
     it('ignores non-existing target id', function() {
       var ctrl = new ol.control.Control({target: 'doesnotexist'});

@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.area');
+
 
 goog.require('ol.geom.flat.area');
 

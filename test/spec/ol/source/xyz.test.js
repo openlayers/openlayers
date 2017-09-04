@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.XYZ');
+
 
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileImage');

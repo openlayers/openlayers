@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.BingMaps');
+
 
 goog.require('ol.net');
 goog.require('ol.source.BingMaps');

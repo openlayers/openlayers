@@ -1,4 +1,4 @@
-goog.provide('ol.test.Overlay');
+
 
 goog.require('ol.Map');
 goog.require('ol.Overlay');
@@ -91,8 +91,7 @@ describe('ol.Overlay', function() {
         position: [0, 0]
       });
       map.addOverlay(overlay);
-      expect(overlay.element_.style.display).to.be('none');
-      overlay.setVisible(true);
+      map.renderSync();
       expect(overlay.element_.style.display).not.to.be('none');
       overlay.setVisible(false);
       expect(overlay.element_.style.display).to.be('none');

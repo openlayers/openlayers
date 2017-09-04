@@ -1,6 +1,7 @@
-goog.provide('ol.test.color');
+
 
 goog.require('ol.color');
+goog.require('ol');
 
 
 describe('ol.color', function() {
@@ -57,7 +58,8 @@ describe('ol.color', function() {
     });
 
     after(function() {
-      ol.color.fromStringInternal_.restore();
+      var spy = ol.color.fromStringInternal_;
+      spy.restore();
     });
 
     if (ol.ENABLE_NAMED_COLORS) {
@@ -119,11 +121,12 @@ describe('ol.color', function() {
     });
 
     it('caches parsed values', function() {
-      var count = ol.color.fromStringInternal_.callCount;
+      var spy = ol.color.fromStringInternal_;
+      var count = spy.callCount;
       ol.color.fromString('aquamarine');
-      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+      expect(spy.callCount).to.be(count + 1);
       ol.color.fromString('aquamarine');
-      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+      expect(spy.callCount).to.be(count + 1);
     });
 
     it('throws an error on invalid colors', function() {

@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.MousePosition');
+
 
 goog.require('ol.control.MousePosition');
 

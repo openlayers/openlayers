@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.Icon');
+
 
 goog.require('ol');
 goog.require('ol.style');

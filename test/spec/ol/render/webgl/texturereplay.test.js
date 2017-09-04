@@ -1,7 +1,8 @@
-goog.provide('ol.test.render.webgl.TextureReplay');
+
 
 goog.require('ol.render.webgl.TextureReplay');
 goog.require('ol.render.webgl.texturereplay.defaultshader');
+goog.require('ol.render.webgl.texturereplay.defaultshader.Locations');
 
 describe('ol.render.webgl.TextureReplay', function() {
   var replay;

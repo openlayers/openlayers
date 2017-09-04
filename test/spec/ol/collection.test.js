@@ -1,4 +1,4 @@
-goog.provide('ol.test.Collection');
+
 
 goog.require('ol.events');
 goog.require('ol.Collection');

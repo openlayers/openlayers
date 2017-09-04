@@ -5,7 +5,7 @@
                 <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
                     <gml:pointMember>
                         <gml:Point>
-                            <gml:pos>1 2 3</gml:pos>
+                            <gml:pos srsDimension="3">1 2 3</gml:pos>
                         </gml:Point>
                     </gml:pointMember>
                 </gml:MultiPoint>
@@ -20,7 +20,7 @@
                 <gml:MultiPoint xmlns:gml="http://www.opengis.net/gml">
                     <gml:pointMember>
                         <gml:Point>
-                            <gml:pos>1 2 3</gml:pos>
+                            <gml:pos srsDimension="3">1 2 3</gml:pos>
                         </gml:Point>
                     </gml:pointMember>
                 </gml:MultiPoint>

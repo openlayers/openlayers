@@ -225,7 +225,7 @@ var modify = new ol.interaction.Modify({
   style: overlayStyle,
   insertVertexCondition: function() {
     // prevent new vertices to be added to the polygons
-    return !this.features_.getArray().every(function(feature) {
+    return !select.getFeatures().getArray().every(function(feature) {
       return feature.getGeometry().getType().match(/Polygon/);
     });
   }

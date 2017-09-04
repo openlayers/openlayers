@@ -1,11 +1,12 @@
-goog.provide('ol.test.interaction.Draw');
 
-goog.require('ol.array');
-goog.require('ol.events');
+
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
+goog.require('ol.array');
+goog.require('ol.events');
+goog.require('ol.events.condition');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');

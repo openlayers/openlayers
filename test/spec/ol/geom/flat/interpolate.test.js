@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.interpolate');
+
 
 goog.require('ol.geom.flat.interpolate');
 

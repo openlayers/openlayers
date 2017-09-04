@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.Style');
+
 
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');

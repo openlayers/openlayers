@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.CartoDBSource');
+
 
 goog.require('ol.source.CartoDB');
 goog.require('ol.source.XYZ');

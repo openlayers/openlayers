@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.AtlasManager');
+
 
 goog.require('ol.style.Atlas');
 goog.require('ol.style.AtlasManager');

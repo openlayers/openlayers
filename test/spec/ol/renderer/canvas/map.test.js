@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.canvas.Map');
+
 
 goog.require('ol');
 goog.require('ol.Feature');
@@ -10,7 +10,8 @@ goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.source.Vector');
-
+goog.require('ol.style.Icon');
+goog.require('ol.style.Style');
 
 describe('ol.renderer.canvas.Map', function() {
 

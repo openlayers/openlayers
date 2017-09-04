@@ -1,4 +1,4 @@
-goog.provide('ol.test.reproj.Tile');
+
 
 goog.require('ol.ImageTile');
 goog.require('ol.events');

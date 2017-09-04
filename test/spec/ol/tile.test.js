@@ -1,5 +1,7 @@
-goog.provide('ol.test.Tile');
 
+
+goog.require('ol');
+goog.require('ol.ImageTile');
 goog.require('ol.TileState');
 
 describe('ol.Tile', function() {

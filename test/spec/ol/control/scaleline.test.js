@@ -1,4 +1,4 @@
-goog.provide('ol.test.control.ScaleLine');
+
 
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -6,19 +6,17 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.proj');
 
 describe('ol.control.ScaleLine', function() {
-  var mapDiv;
   var map;
   beforeEach(function() {
-    mapDiv = document.createElement('div');
-    document.body.appendChild(mapDiv);
+    var target = document.createElement('div');
+    document.body.appendChild(target);
     map = new ol.Map({
-      target: mapDiv
+      target: target
     });
   });
   afterEach(function() {
-    map.dispose();
-    mapDiv.parentNode.removeChild(mapDiv);
-    mapDiv = null;
+    disposeMap(map);
+    map = null;
   });
 
   describe('constructor', function() {
@@ -34,7 +32,7 @@ describe('ol.control.ScaleLine', function() {
       it('defaults to "ol-scale-line"', function() {
         var ctrl = new ol.control.ScaleLine();
         ctrl.setMap(map);
-        var element = document.querySelector('.ol-scale-line', mapDiv);
+        var element = document.querySelector('.ol-scale-line', map.getTarget());
         expect(element).to.not.be(null);
         expect(element).to.be.a(HTMLDivElement);
       });
@@ -45,10 +43,10 @@ describe('ol.control.ScaleLine', function() {
         ctrl.setMap(map);
 
         // check that the default was not chosen
-        var element1 = document.querySelector('.ol-scale-line', mapDiv);
+        var element1 = document.querySelector('.ol-scale-line', map.getTarget());
         expect(element1).to.be(null);
         // check if the configured classname was chosen
-        var element2 = document.querySelector('.humpty-dumpty', mapDiv);
+        var element2 = document.querySelector('.humpty-dumpty', map.getTarget());
         expect(element2).to.not.be(null);
         expect(element2).to.be.a(HTMLDivElement);
       });
@@ -142,18 +140,16 @@ describe('ol.control.ScaleLine', function() {
   });
 
   describe('static method `render`', function() {
-    it('calls `updateElement_` on render', function(done) {
+    it('updates the rendered text', function() {
       var ctrl = new ol.control.ScaleLine();
-      var spy = sinon.spy(ctrl, 'updateElement_');
+      expect(ctrl.element.innerText).to.be('');
       ctrl.setMap(map);
       map.setView(new ol.View({
         center: [0, 0],
         zoom: 0
       }));
-      map.once('postrender', function() {
-        expect(spy.called).to.be(true);
-        done();
-      });
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('10000 km');
     });
   });
 
@@ -178,9 +174,18 @@ describe('ol.control.ScaleLine', function() {
   describe('#setUnits', function() {
     it('triggers rerendering', function() {
       var ctrl = new ol.control.ScaleLine();
-      var spy = sinon.spy(ctrl, 'updateElement_');
+      map.setView(new ol.View({
+        center: [0, 0],
+        zoom: 0
+      }));
+      ctrl.setMap(map);
+
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('10000 km');
+
       ctrl.setUnits('nautical');
-      expect(spy.called).to.be(true);
+      map.renderSync();
+      expect(ctrl.element.innerText).to.be('10000 nm');
     });
   });
 

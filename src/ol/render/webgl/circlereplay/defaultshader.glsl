@@ -1,5 +1,4 @@
 //! NAMESPACE=ol.render.webgl.circlereplay.defaultshader
-//! CLASS=ol.render.webgl.circlereplay.defaultshader
 
 
 //! COMMON

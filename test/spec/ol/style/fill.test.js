@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.Fill');
+
 
 goog.require('ol.style.Fill');
 

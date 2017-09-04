@@ -1,0 +1,33 @@
+<wfs:FeatureCollection xmlns:wfs="http://www.opengis.net/wfs" xmlns:cite="http://www.opengeospatial.net/cite" xmlns:gml="http://www.opengis.net/gml" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" numberOfFeatures="8" timeStamp="2017-08-14T13:29:50.356Z" xsi:schemaLocation="http://www.opengeospatial.net/cite http://localhost:8080/geoserver/wfs?service=WFS&amp;version=1.1.0&amp;request=DescribeFeatureType&amp;typeName=cite%3Ageoserver_layer http://www.opengis.net/wfs http://localhost:8080/geoserver/schemas/wfs/1.1.0/wfs.xsd">
+   <gml:featureMembers>
+      <cite:geoserver_layer gml:id="geoserver_layer.1">
+         <cite:geom>
+            <gml:LineString srsName="urn:x-ogc:def:crs:EPSG:4326" srsDimension="3">
+                <gml:posList>
+                  51.91122415 4.46386854 46.04679351 51.91120839 4.46382399 46.04679382
+                </gml:posList>
+            </gml:LineString>
+         </cite:geom>
+      </cite:geoserver_layer>
+      <cite:geoserver_layer gml:id="geoserver_layer.2">
+         <cite:geom>
+            <gml:Polygon srsName="urn:x-ogc:def:crs:EPSG:4326" srsDimension="3">
+               <gml:exterior>
+                  <gml:LinearRing>
+                    <gml:posList>
+                      51.91119276 4.46385491 46.06074531 51.91118582 4.4638264 46.06074609 51.91121772 4.46380612 46.06074168 51.91122465 4.46383463 46.06074089 51.91119276 4.46385491 46.06074531
+                    </gml:posList>
+                  </gml:LinearRing>
+               </gml:exterior>
+            </gml:Polygon>
+         </cite:geom>
+      </cite:geoserver_layer>
+      <cite:geoserver_layer gml:id="geoserver_layer.3">
+         <cite:geom>
+            <gml:Point srsName="urn:x-ogc:def:crs:EPSG:4326" srsDimension="3">
+               <gml:pos>51.91125849 4.46383715 46.04679348</gml:pos>
+            </gml:Point>
+         </cite:geom>
+      </cite:geoserver_layer>
+   </gml:featureMembers>
+</wfs:FeatureCollection>

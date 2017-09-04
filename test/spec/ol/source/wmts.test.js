@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.WMTS');
+
 
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.proj');

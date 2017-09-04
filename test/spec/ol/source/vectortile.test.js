@@ -1,6 +1,7 @@
-goog.provide('ol.test.source.VectorTile');
+
 
 goog.require('ol.VectorImageTile');
+goog.require('ol.VectorTile');
 goog.require('ol.format.MVT');
 goog.require('ol.proj');
 goog.require('ol.source.VectorTile');

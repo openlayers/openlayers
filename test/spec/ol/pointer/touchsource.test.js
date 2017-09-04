@@ -1,4 +1,4 @@
-goog.provide('ol.test.pointer.TouchSource');
+
 
 goog.require('ol.events');
 goog.require('ol.events.Event');

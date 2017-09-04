@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.RasterSource');
+
 
 goog.require('ol.Map');
 goog.require('ol.TileState');
@@ -22,7 +22,7 @@ var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
 
 where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
-  var target, map, redSource, greenSource, blueSource, raster;
+  var map, target, redSource, greenSource, blueSource, raster;
 
   beforeEach(function() {
     target = document.createElement('div');
@@ -79,13 +79,14 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   });
 
   afterEach(function() {
-    map.setTarget(null);
-    map.dispose();
+    if (map) {
+      disposeMap(map);
+    }
+    map = null;
     raster.dispose();
     greenSource.dispose();
     redSource.dispose();
     blueSource.dispose();
-    document.body.removeChild(target);
   });
 
   describe('constructor', function() {
@@ -304,9 +305,10 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   });
 
   describe('tile loading', function() {
-    beforeEach(function() {
-      map.setTarget(null);
-      map.dispose();
+    var map2;
+    afterEach(function() {
+      disposeMap(map2);
+      map2 = null;
     });
 
     it('is initiated on the underlying source', function(done) {
@@ -323,7 +325,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         }
       });
 
-      map = new ol.Map({
+      map2 = new ol.Map({
         target: target,
         view: new ol.View({
           center: [0, 0],
@@ -340,7 +342,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
       expect(tileCache.getCount()).to.equal(0);
 
-      map.once('moveend', function() {
+      map2.once('moveend', function() {
         expect(tileCache.getCount()).to.equal(1);
         var state = tileCache.peekLast().getState();
         expect(state === ol.TileState.LOADED || state === ol.TileState.LOADED).to.be(true);

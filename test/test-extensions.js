@@ -1,6 +1,8 @@
-// FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
+goog.require('ol.array');
+goog.require('ol.has');
+// avoid importing anything that results in an instanceof check
+// since these extensions are global, instanceof checks fail with modules
 
-// helper functions for async testing and other utility functions.
 (function(global) {
 
   // show generated maps for rendering tests
@@ -368,8 +370,10 @@
   global.disposeMap = function(map) {
     var target = map.getTarget();
     map.setTarget(null);
+    if (target && target.parentNode) {
+      target.parentNode.removeChild(target);
+    }
     map.dispose();
-    document.body.removeChild(target);
   };
 
   global.assertWebGL = function(map) {
@@ -379,68 +383,49 @@
   };
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
-    if (showMap) {
-      var wrapper = document.createElement('div');
-      wrapper.style.width = canvas.width + 'px';
-      wrapper.style.height = canvas.height + 'px';
-      wrapper.appendChild(canvas);
-      document.body.appendChild(wrapper);
-      document.body.appendChild(document.createTextNode(referenceImage));
-    }
-
-    resemble(referenceImage)
-        .compareTo(canvas.getContext('2d').getImageData(
-            0, 0, canvas.width, canvas.height))
-        .onComplete(function(data) {
-          if (!data.isSameDimensions) {
-            expect().fail(
-                'The dimensions of the reference image and ' +
-            'the test canvas are not the same.');
-          }
-
-          if (data.misMatchPercentage > tolerance) {
-            if (showDiff) {
-              var diffImage = new Image();
-              diffImage.src = data.getImageDataUrl();
-              document.body.appendChild(diffImage);
-            }
-            expect(data.misMatchPercentage).to.be.below(tolerance);
-          }
-          done();
-        });
+    var width = canvas.width;
+    var height = canvas.height;
+    var image = new Image();
+    image.addEventListener('load', function() {
+      expect(image.width).to.be(width);
+      expect(image.height).to.be(height);
+      var referenceCanvas = document.createElement('CANVAS');
+      referenceCanvas.width = image.width;
+      referenceCanvas.height = image.height;
+      var referenceContext = referenceCanvas.getContext('2d');
+      referenceContext.drawImage(image, 0, 0, image.width, image.height);
+      if (showMap) {
+        var wrapper = document.createElement('div');
+        wrapper.style.width = canvas.width + 'px';
+        wrapper.style.height = canvas.height + 'px';
+        wrapper.appendChild(canvas);
+        document.body.appendChild(wrapper);
+        document.body.appendChild(document.createTextNode(referenceImage));
+      }
+      var context = canvas.getContext('2d');
+      var output = context.createImageData(canvas.width, canvas.height);
+      var mismatchPx = pixelmatch(
+          context.getImageData(0, 0, width, height).data,
+          referenceContext.getImageData(0, 0, width, height).data,
+          output.data, width, height);
+      var mismatchPct = mismatchPx / (width * height) * 100;
+      if (showDiff && mismatchPct > tolerance) {
+        var diffCanvas = document.createElement('canvas');
+        diffCanvas.width = width;
+        diffCanvas.height = height;
+        diffCanvas.getContext('2d').putImageData(output, 0, 0);
+        document.body.appendChild(diffCanvas);
+      }
+      expect(mismatchPct).to.be.below(tolerance);
+      done();
+    });
+    image.addEventListener('error', function() {
+      expect().fail('Reference image could not be loaded');
+      done();
+    });
+    image.src = referenceImage;
   }
   global.resembleCanvas = resembleCanvas;
-
-  function expectResembleCanvas(map, referenceImage, tolerance, done) {
-    map.render();
-    map.on('postcompose', function(event) {
-      var canvas = event.context.canvas;
-      resembleCanvas(canvas, referenceImage, tolerance, done);
-    });
-  }
-
-  function expectResembleWebGL(map, referenceImage, tolerance, done) {
-    map.render();
-    map.on('postcompose', function(event) {
-      if (event.frameState.animate) {
-        // make sure the tile-queue is empty
-        return;
-      }
-
-      var webglCanvas = event.glContext.getCanvas();
-      expect(webglCanvas).to.be.a(HTMLCanvasElement);
-
-      // draw the WebGL canvas on a new canvas, because we can not create
-      // a 2d context for that canvas because there is already a webgl context.
-      var canvas = document.createElement('canvas');
-      canvas.width = webglCanvas.width;
-      canvas.height = webglCanvas.height;
-      canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
-          webglCanvas.width, webglCanvas.height);
-
-      resembleCanvas(canvas, referenceImage, tolerance, done);
-    });
-  }
 
   /**
    * Assert that the given map resembles a reference image.
@@ -451,21 +436,40 @@
    * @param {function} done A callback to indicate that the test is done.
    */
   global.expectResemble = function(map, referenceImage, tolerance, done) {
-    if (map.getRenderer() instanceof ol.renderer.canvas.Map) {
-      expectResembleCanvas(map, referenceImage, tolerance, done);
-    } else if (map.getRenderer() instanceof ol.renderer.webgl.Map) {
-      expectResembleWebGL(map, referenceImage, tolerance, done);
-    } else {
-      expect().fail(
-          'resemble only works with the canvas and WebGL renderer.');
-    }
+    map.render();
+    map.on('postcompose', function(event) {
+      if (event.frameState.animate) {
+        // make sure the tile-queue is empty
+        return;
+      }
+
+      var canvas;
+      if (event.glContext) {
+        var webglCanvas = event.glContext.getCanvas();
+        expect(webglCanvas).to.be.a(HTMLCanvasElement);
+
+        // draw the WebGL canvas on a new canvas, because we can not create
+        // a 2d context for that canvas because there is already a webgl context.
+        canvas = document.createElement('canvas');
+        canvas.width = webglCanvas.width;
+        canvas.height = webglCanvas.height;
+        canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
+            webglCanvas.width, webglCanvas.height);
+      } else {
+        canvas = event.context.canvas;
+      }
+      expect(canvas).to.be.a(HTMLCanvasElement);
+
+      resembleCanvas(canvas, referenceImage, tolerance, done);
+    });
   };
 
   var features = {
     ArrayBuffer: 'ArrayBuffer' in global,
     'ArrayBuffer.isView': 'ArrayBuffer' in global && !!ArrayBuffer.isView,
     FileReader: 'FileReader' in global,
-    Uint8ClampedArray: ('Uint8ClampedArray' in global)
+    Uint8ClampedArray: ('Uint8ClampedArray' in global),
+    WebGL: false
   };
 
   /**
@@ -481,8 +485,17 @@
       throw new Error('where() called with unknown key: ' + key);
     }
     return {
-      describe: features[key] ? global.describe : global.xdescribe
+      describe: features[key] ? global.describe : global.xdescribe,
+      it: features[key] ? global.it : global.xit
     };
   };
 
-})(this);
+  // throw if anybody appends a div to the body and doesn't remove it
+  afterEach(function() {
+    var garbage = document.body.getElementsByTagName('div');
+    if (garbage.length) {
+      throw new Error('Found extra <div> elements in the body');
+    }
+  });
+
+})(window);

@@ -1,4 +1,4 @@
-goog.provide('ol.test.proj.transforms');
+
 
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.transforms');
@@ -24,13 +24,14 @@ describe('ol.proj.transforms.remove()', function() {
       return input;
     };
     ol.proj.transforms.add(foo, bar, transform);
-    expect(ol.proj.transforms.cache_).not.to.be(undefined);
-    expect(ol.proj.transforms.cache_.foo).not.to.be(undefined);
-    expect(ol.proj.transforms.cache_.foo.bar).to.be(transform);
+    var cache = ol.proj.transforms.cache_;
+    expect(cache).not.to.be(undefined);
+    expect(cache.foo).not.to.be(undefined);
+    expect(cache.foo.bar).to.be(transform);
 
     var removed = ol.proj.transforms.remove(foo, bar);
     expect(removed).to.be(transform);
-    expect(ol.proj.transforms.cache_.foo).to.be(undefined);
+    expect(cache.foo).to.be(undefined);
   });
 
 });

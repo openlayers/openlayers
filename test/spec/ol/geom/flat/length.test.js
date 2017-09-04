@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.flat.length');
+
 
 goog.require('ol.geom.flat.length');
 

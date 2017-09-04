@@ -1,4 +1,4 @@
-goog.provide('ol.test.tilegrid.WMTS');
+
 
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.tilegrid.WMTS');

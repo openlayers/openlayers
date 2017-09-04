@@ -2,6 +2,41 @@
 
 ### Next Release
 
+#### Minor change for custom `tileLoadFunction` with `ol.source.VectorTile`
+
+It is no longer necessary to set the projection on the tile. Instead, the `readFeatures` method must be called with the tile's extent as `extent` option and the view's projection as `featureProjection`.
+
+Before:
+```js
+tile.setLoader(function() {
+  var data = // ... fetch data
+  var format = tile.getFormat();
+  tile.setFeatures(format.readFeatures(data));
+  tile.setProjection(format.readProjection(data));
+  // uncomment the line below for ol.format.MVT only
+  //tile.setExtent(format.getLastExtent());
+});
+```
+
+After:
+```js
+tile.setLoader(function() {
+  var data = // ... fetch data
+  var format = tile.getFormat();
+  tile.setFeatures(format.readFeatures(data, {
+    featureProjection: map.getView().getProjection(),
+    // uncomment the line below for ol.format.MVT only
+    //extent: tile.getExtent()
+  }));
+);
+```
+
+#### Deprecation of `ol.DeviceOrientation`
+
+`ol.DeviceOrientation` is deprecated and will be removed in the next major version.
+The device-orientation example has been updated to use the (gyronorm.js)[https://github.com/dorukeker/gyronorm.js] library.
+
+
 ### v4.3.0
 
 #### `ol.source.VectorTile` no longer requires a `tileGrid` option

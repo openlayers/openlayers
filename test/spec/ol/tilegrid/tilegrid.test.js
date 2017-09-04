@@ -1,4 +1,4 @@
-goog.provide('ol.test.TileGrid');
+
 
 goog.require('ol');
 goog.require('ol.TileRange');
@@ -11,14 +11,12 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 describe('ol.tilegrid.TileGrid', function() {
-  var extent;
   var resolutions;
   var origin;
   var tileSize;
 
   beforeEach(function() {
     resolutions = [1000, 500, 250, 100];
-    extent = [0, 0, 100000, 100000];
     origin = [0, 0];
     tileSize = 100;
   });
@@ -286,6 +284,26 @@ describe('ol.tilegrid.TileGrid', function() {
       var resolutions = grid.getResolutions();
       expect(resolutions.length).to.be(ol.DEFAULT_MAX_ZOOM + 1);
       expect(grid.getOrigin()).to.eql([-100, 100]);
+    });
+  });
+
+  describe('#zoomFactor_', function() {
+    it('is set for a consistent zoom factor', function() {
+      var grid = new ol.tilegrid.TileGrid({
+        resolutions: [10, 5, 2.5, 1.25],
+        origin: origin,
+        tileSize: tileSize
+      });
+      expect(grid.zoomFactor_).to.be(2);
+    });
+
+    it('is not set for an inconsistent zoom factor', function() {
+      var grid = new ol.tilegrid.TileGrid({
+        resolutions: [10, 5, 3, 1.25],
+        origin: origin,
+        tileSize: tileSize
+      });
+      expect(grid.zoomFactor_).to.be(undefined);
     });
   });
 
@@ -812,45 +830,6 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(tileCoordExtent[1]).to.eql(90000);
       expect(tileCoordExtent[2]).to.eql(10000);
       expect(tileCoordExtent[3]).to.eql(100000);
-    });
-  });
-
-  describe('getTileRangeForExtentAndResolution', function() {
-    it('returns the expected TileRange', function() {
-      var tileGrid = new ol.tilegrid.TileGrid({
-        resolutions: resolutions,
-        origin: origin,
-        tileSize: tileSize
-      });
-      var tileRange;
-
-      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
-          resolutions[0]);
-      expect(tileRange.minY).to.eql(0);
-      expect(tileRange.minX).to.eql(0);
-      expect(tileRange.maxX).to.eql(0);
-      expect(tileRange.maxY).to.eql(0);
-
-      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
-          resolutions[1]);
-      expect(tileRange.minX).to.eql(0);
-      expect(tileRange.minY).to.eql(0);
-      expect(tileRange.maxX).to.eql(1);
-      expect(tileRange.maxY).to.eql(1);
-
-      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
-          resolutions[2]);
-      expect(tileRange.minX).to.eql(0);
-      expect(tileRange.minY).to.eql(0);
-      expect(tileRange.maxX).to.eql(3);
-      expect(tileRange.maxY).to.eql(3);
-
-      tileRange = tileGrid.getTileRangeForExtentAndResolution(extent,
-          resolutions[3]);
-      expect(tileRange.minX).to.eql(0);
-      expect(tileRange.minY).to.eql(0);
-      expect(tileRange.maxX).to.eql(9);
-      expect(tileRange.maxY).to.eql(9);
     });
   });
 

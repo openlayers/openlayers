@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.Layer');
+
 
 goog.require('ol.Image');
 goog.require('ol.layer.Layer');

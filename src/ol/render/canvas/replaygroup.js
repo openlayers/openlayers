@@ -22,12 +22,13 @@ goog.require('ol.transform');
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay group can have overlapping geometries.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
  * @struct
  */
 ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, overlaps, opt_renderBuffer) {
+    tolerance, maxExtent, resolution, pixelRatio, overlaps, opt_renderBuffer) {
   ol.render.ReplayGroup.call(this);
 
   /**
@@ -47,6 +48,12 @@ ol.render.canvas.ReplayGroup = function(
    * @type {boolean}
    */
   this.overlaps_ = overlaps;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = pixelRatio;
 
   /**
    * @private
@@ -296,7 +303,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
   if (replay === undefined) {
     var Constructor = ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
     replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_, this.overlaps_);
+        this.resolution_, this.pixelRatio_, this.overlaps_);
     replays[replayType] = replay;
   }
   return replay;
@@ -313,7 +320,6 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
@@ -321,7 +327,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
  *     to replay. Default is {@link ol.render.replay.ORDER}
  */
-ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
+ol.render.canvas.ReplayGroup.prototype.replay = function(context,
     transform, viewRotation, skippedFeaturesHash, opt_replayTypes) {
 
   /** @type {Array.<number>} */
@@ -346,8 +352,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
     for (j = 0, jj = replayTypes.length; j < jj; ++j) {
       replay = replays[replayTypes[j]];
       if (replay !== undefined) {
-        replay.replay(context, pixelRatio, transform, viewRotation,
-            skippedFeaturesHash);
+        replay.replay(context, transform, viewRotation, skippedFeaturesHash);
       }
     }
   }
@@ -402,7 +407,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @private
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number, boolean)>}
+ *                number, number, boolean)>}
  */
 ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': ol.render.canvas.PolygonReplay,

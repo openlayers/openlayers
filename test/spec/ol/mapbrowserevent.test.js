@@ -1,10 +1,10 @@
-goog.provide('ol.test.MapBrowserEventHandler');
 
-goog.require('ol.events');
+
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEventHandler');
+goog.require('ol.events');
+goog.require('ol.has');
 goog.require('ol.pointer.PointerEvent');
-
 
 describe('ol.MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {

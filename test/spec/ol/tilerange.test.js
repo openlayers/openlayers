@@ -1,4 +1,4 @@
-goog.provide('ol.test.TileRange');
+
 
 goog.require('ol.TileRange');
 

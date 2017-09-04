@@ -110,6 +110,7 @@ ol.Sphere.DEFAULT_RADIUS = 6371008.8;
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
  * @return {number} The spherical length (in meters).
+ * @api
  */
 ol.Sphere.getLength = function(geometry, opt_options) {
   var options = opt_options || {};
@@ -205,6 +206,7 @@ ol.Sphere.getDistance_ = function(c1, c2, radius) {
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
  * @return {number} The spherical area (in square meters).
+ * @api
  */
 ol.Sphere.getArea = function(geometry, opt_options) {
   var options = opt_options || {};

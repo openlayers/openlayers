@@ -2,7 +2,8 @@ const parentPackage = require('../package.json');
 const thisPackage = require('../package/package.json');
 
 const defines = {
-  'ol.ENABLE_WEBGL': false
+  // Compiler defines go here, e.g.
+  // 'ol.ENABLE_WEBGL': false
 };
 
 function rename(name) {
@@ -41,6 +42,10 @@ function resolve(fromName, toName) {
       return packageName;
     }
   }
+  if (fromParts[0] === 'examples' || fromParts[0] === 'test') {
+    fromParts.unshift('root');
+    toParts.unshift('root', 'src');
+  }
   const fromLength = fromParts.length;
   let commonDepth = 1;
   while (commonDepth < fromLength - 2) {
@@ -57,6 +62,12 @@ function resolve(fromName, toName) {
     relative += 'index';
   }
   return relative;
+}
+
+function getUnprovided(path) {
+  path = path.replace(/\.(test\.)?js$/, '');
+  const parts = path.split('/');
+  return parts.join('.');
 }
 
 function getGoogExpressionStatement(identifier) {
@@ -131,85 +142,90 @@ module.exports = function(info, api) {
 
   // replace `ol.VERSION = ''` with correct version
   root.find(j.ExpressionStatement, getMemberExpressionAssignment('ol.VERSION'))
-    .forEach(path => {
-      path.value.expression.right = j.literal('v' + thisPackage.version);
-    });
+      .forEach(path => {
+        path.value.expression.right = j.literal('v' + thisPackage.version);
+      });
 
   const replacements = {};
 
   // replace all uses of defines
   root.find(j.MemberExpression, defineMemberExpression)
-    .filter(path => {
-      const node = path.value;
-      const name = `${node.object.name}.${node.property.name}`;
-      return (name in defines) && path.parentPath.value.type !== 'AssignmentExpression';
-    })
-    .replaceWith(path => {
-      const name = `${path.value.object.name}.${path.value.property.name}`;
-      return j.literal(defines[name]);
-    });
+      .filter(path => {
+        const node = path.value;
+        const name = `${node.object.name}.${node.property.name}`;
+        return (name in defines) && path.parentPath.value.type !== 'AssignmentExpression';
+      })
+      .replaceWith(path => {
+        const name = `${path.value.object.name}.${path.value.property.name}`;
+        const expression = j.literal(defines[name]);
+        expression.comments = path.value.comments;
+        return expression;
+      });
 
   // remove goog.provide()
-  let provide;
+  let provide, unprovided;
   root.find(j.ExpressionStatement, getGoogExpressionStatement('provide'))
-    .forEach(path => {
-      if (provide) {
-        throw new Error(`Multiple provides in ${info.path}`);
-      }
-      provide = path.value.expression.arguments[0].value;
-    }).remove();
+      .forEach(path => {
+        if (provide) {
+          throw new Error(`Multiple provides in ${info.path}`);
+        }
+        provide = path.value.expression.arguments[0].value;
+        if (provide.indexOf(' ') > -1) {
+          throw new Error(`Space in provide "${provide}" in ${info.path}`);
+        }
+      }).remove();
 
-  if (!provide) {
-    throw new Error(`No provide found in ${info.path}`);
-  }
-  replacements[provide] = rename(provide);
+  if (provide) {
+    replacements[provide] = rename(provide);
+    // replace provide assignment with variable declarator
+    // e.g. `ol.foo.Bar = function() {}` -> `var _ol_foo_Bar_ = function() {}`
+    let declaredProvide = false;
+    root.find(j.ExpressionStatement, getMemberExpressionAssignment(provide))
+        .replaceWith(path => {
+          declaredProvide = true;
+          const statement = j.variableDeclaration('var', [
+            j.variableDeclarator(j.identifier(rename(provide)), path.value.expression.right)
+          ]);
+          statement.comments = path.value.comments;
+          return statement;
+        });
 
-  // replace provide assignment with variable declarator
-  // e.g. `ol.foo.Bar = function() {}` -> `var _ol_foo_Bar_ = function() {}`
-  let declaredProvide = false;
-  root.find(j.ExpressionStatement, getMemberExpressionAssignment(provide))
-    .replaceWith(path => {
-      declaredProvide = true;
-      const statement = j.variableDeclaration('var', [
-        j.variableDeclarator(j.identifier(rename(provide)), path.value.expression.right)
-      ]);
-      statement.comments = path.value.comments;
-      return statement;
-    });
-
-  if (!declaredProvide) {
-    const body = root.find(j.Program).get('body');
-    body.unshift(
-      j.variableDeclaration('var', [
-        j.variableDeclarator(j.identifier(rename(provide)), j.objectExpression([]))
-      ])
-    );
+    if (!declaredProvide) {
+      const body = root.find(j.Program).get('body');
+      body.unshift(
+          j.variableDeclaration('var', [
+            j.variableDeclarator(j.identifier(rename(provide)), j.objectExpression([]))
+          ])
+      );
+    }
+  } else {
+    unprovided = getUnprovided(info.path);
   }
 
   // replace `goog.require('foo')` with `import foo from 'foo'`
   const imports = [];
   root.find(j.ExpressionStatement, getGoogExpressionStatement('require'))
-    .forEach(path => {
-      const name = path.value.expression.arguments[0].value;
-      if (name in replacements) {
-        throw new Error(`Duplicate require found in ${info.path}: ${name}`);
-      }
-      const renamed = rename(name);
-      replacements[name] = renamed;
-      const resolved = resolve(provide, name);
-      let specifier, source;
-      if (Array.isArray(resolved)) {
+      .forEach(path => {
+        const name = path.value.expression.arguments[0].value;
+        if (name in replacements) {
+          throw new Error(`Duplicate require found in ${info.path}: ${name}`);
+        }
+        const renamed = rename(name);
+        replacements[name] = renamed;
+        const resolved = resolve(provide || unprovided, name);
+        let specifier, source;
+        if (Array.isArray(resolved)) {
         // import {imported as renamed} from 'source';
-        specifier = j.importSpecifier(j.identifier(resolved[1]), j.identifier(renamed));
-        source = resolved[0];
-      } else {
+          specifier = j.importSpecifier(j.identifier(resolved[1]), j.identifier(renamed));
+          source = resolved[0];
+        } else {
         // import renamed from 'source';
-        specifier = j.importDefaultSpecifier(j.identifier(renamed));
-        source = resolved;
-      }
-      imports.push(j.importDeclaration([specifier], j.literal(source)));
-    })
-    .remove();
+          specifier = j.importDefaultSpecifier(j.identifier(renamed));
+          source = resolved;
+        }
+        imports.push(j.importDeclaration([specifier], j.literal(source)));
+      })
+      .remove();
 
   const body = root.find(j.Program).get('body');
   body.unshift.apply(body, imports);
@@ -218,17 +234,27 @@ module.exports = function(info, api) {
   Object.keys(replacements).sort().reverse().forEach(name => {
     if (name.indexOf('.') > 0) {
       root.find(j.MemberExpression, getMemberExpression(name))
-        .replaceWith(j.identifier(replacements[name]));
+          .replaceWith(path => {
+            const expression = j.identifier(replacements[name]);
+            expression.comments = path.value.comments;
+            return expression;
+          });
     } else {
       root.find(j.Identifier, {name: name})
-        .replaceWith(j.identifier(replacements[name]));
+          .replaceWith(path => {
+            const identifier = j.identifier(replacements[name]);
+            identifier.comments = path.value.comments;
+            return identifier;
+          });
     }
   });
 
   // add export declaration
-  root.find(j.Program).get('body').push(
-    j.exportDefaultDeclaration(j.identifier(rename(provide)))
-  );
+  if (provide) {
+    root.find(j.Program).get('body').push(
+        j.exportDefaultDeclaration(j.identifier(rename(provide)))
+    );
+  }
 
   // replace any initial comments
   root.get().node.comments = comments;

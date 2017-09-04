@@ -1,11 +1,12 @@
-goog.provide('ol.test.render.webgl.LineStringReplay');
+
 
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
-goog.require('ol.render.webgl.linestringreplay.defaultshader');
 goog.require('ol.render.webgl.LineStringReplay');
+goog.require('ol.render.webgl.linestringreplay.defaultshader');
+goog.require('ol.render.webgl.linestringreplay.defaultshader.Locations');
 goog.require('ol.style.Stroke');
 
 describe('ol.render.webgl.LineStringReplay', function() {

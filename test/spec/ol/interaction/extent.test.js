@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.Extent');
+
 
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
@@ -7,22 +7,13 @@ goog.require('ol.interaction.Extent');
 goog.require('ol.pointer.PointerEvent');
 
 describe('ol.interaction.Extent', function() {
-
-  var target, map, interaction;
+  var map, interaction;
 
   var width = 360;
   var height = 180;
 
-  beforeEach(function(done) {
-    target = document.createElement('div');
-
-    var style = target.style;
-    style.position = 'absolute';
-    style.left = '-1000px';
-    style.top = '-1000px';
-    style.width = width + 'px';
-    style.height = height + 'px';
-    document.body.appendChild(target);
+  beforeEach(function() {
+    var target = createMapDiv(width, height);
 
     map = new ol.Map({
       target: target,
@@ -33,18 +24,18 @@ describe('ol.interaction.Extent', function() {
         resolution: 1
       })
     });
-
-    map.once('postrender', function() {
-      done();
-    });
+    map.renderSync();
 
     interaction = new ol.interaction.Extent();
     map.addInteraction(interaction);
   });
 
   afterEach(function() {
-    map.dispose();
-    document.body.removeChild(target);
+    if (map) {
+      disposeMap(map);
+    }
+    map = null;
+    interaction = null;
   });
 
   /**
@@ -92,6 +83,7 @@ describe('ol.interaction.Extent', function() {
       expect(interaction.snapToVertex_([230, 40], map)).to.eql([50, 50]);
       expect(interaction.snapToVertex_([231, 41], map)).to.eql([50, 50]);
     });
+
     it('snap to edge works', function() {
       interaction.setExtent([-50, -50, 50, 50]);
 

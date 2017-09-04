@@ -94,6 +94,10 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
       var sharedExtent = ol.extent.getIntersection(extent,
           sourceTileGrid.getTileCoordExtent(sourceTileCoord));
+      var sourceExtent = sourceTileGrid.getExtent();
+      if (sourceExtent) {
+        sharedExtent = ol.extent.getIntersection(sharedExtent, sourceExtent);
+      }
       if (ol.extent.getWidth(sharedExtent) / resolution >= 0.5 &&
           ol.extent.getHeight(sharedExtent) / resolution >= 0.5) {
         // only include source tile if overlap is at least 1 pixel

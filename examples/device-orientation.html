@@ -4,16 +4,15 @@ title: Device Orientation
 shortdesc: Listen to DeviceOrientation events.
 docs: >
   This example shows how to track changes in device orientation.
-tags: "orientation, openstreetmap"
+  [gyronorm.js](https://github.com/dorukeker/gyronorm.js) library is used to access and
+  normalize the events from the browser.
+tags: "device, orientation, gyronorm"
+resources:
+  - https://cdn.rawgit.com/dorukeker/gyronorm.js/v2.0.6/dist/gyronorm.complete.min.js
 ---
 <div id="map" class="map"></div>
-<label>
-  track changes
-  <input id="track" type="checkbox"/>
-</label>
 <p>
-  α : <code id="alpha"></code>&nbsp;&nbsp;
-  β : <code id="beta"></code>&nbsp;&nbsp;
-  γ : <code id="gamma"></code>&nbsp;&nbsp;
-  heading : <code id="heading"></code>
+  <div>α : <code id="alpha"></code></div>
+  <div>β : <code id="beta"></code></div>
+  <div>γ : <code id="gamma"></code></div>
 </p>

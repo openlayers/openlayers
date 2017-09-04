@@ -1,33 +1,22 @@
 sudo: false
-
 language: node_js
-
 node_js:
-  - "6.1"
-
-addons:
-  firefox: "52.0"
-
+- '8'
 cache:
   directories:
-    - node_modules
-env:
-  - DISPLAY=:99.0
-
-before_install:
-  - "npm prune"
-
+  - node_modules
 before_script:
-  - "rm src/ol/renderer/webgl/*shader.js"
-  - "sh -e /etc/init.d/xvfb start"
-  - "npm ls || true"
-
-script: "make ci"
-
+- rm src/ol/renderer/webgl/*shader.js
+- rm src/ol/renderer/webgl/*shader/locations.js
+script: make ci
 after_success:
-  - "make test-coverage"
-  - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
-
+- cat coverage/lcov.info | coveralls
 branches:
   only:
-    - master
+  - master
+addons:
+  hosts:
+    - travis.dev
+  jwt:
+    # This is the encrypted SAUCE_ACCESS_KEY
+    secure: bb2Ibzu9RLe6ZlIG7JVcuH7IoLMxa/i3LTM7t8mbsPjVOGs5ycyJ7M9MbvqB/F2EzbeV4XB2c9ufI4TkaLYceY5kdWjfZVN8iasr+GFqKMv1uR4i6bpu8KmHJ+blxwfY1QOQ/cGwEx+fbeycMtpTc3Y3GyXaPlCQLhbZvesMg88=

@@ -1,10 +1,11 @@
-goog.provide('ol.test.render.webgl.CircleReplay');
+
 
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.geom.Circle');
-goog.require('ol.render.webgl.circlereplay.defaultshader');
 goog.require('ol.render.webgl.CircleReplay');
+goog.require('ol.render.webgl.circlereplay.defaultshader');
+goog.require('ol.render.webgl.circlereplay.defaultshader.Locations');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 

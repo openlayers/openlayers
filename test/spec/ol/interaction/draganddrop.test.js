@@ -1,4 +1,4 @@
-goog.provide('ol.test.interaction.DragAndDrop');
+
 
 goog.require('ol');
 goog.require('ol.View');

@@ -1,4 +1,4 @@
-goog.provide('ol.test.object');
+
 
 goog.require('ol.obj');
 

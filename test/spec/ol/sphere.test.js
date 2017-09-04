@@ -1,10 +1,14 @@
 // See http://www.movable-type.co.uk/scripts/latlong.html
 // FIXME add tests for offset
 
-goog.provide('ol.test.Sphere');
 
 goog.require('ol.Sphere');
 goog.require('ol.format.WKT');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');
 goog.require('ol.proj.EPSG4326');
 
 

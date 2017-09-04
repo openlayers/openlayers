@@ -1,4 +1,4 @@
-goog.provide('ol.test.Disposable');
+
 
 goog.require('ol.Disposable');
 

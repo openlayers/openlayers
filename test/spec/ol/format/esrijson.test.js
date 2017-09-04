@@ -1,4 +1,4 @@
-goog.provide('ol.test.reader.EsriJSON');
+
 
 goog.require('ol.Feature');
 goog.require('ol.extent');
@@ -1061,6 +1061,18 @@ describe('ol.format.EsriJSON', function() {
       var feature = new ol.Feature(new ol.geom.Point([5, 10]));
       var esrijson = format.writeFeatureObject(feature);
       expect(esrijson.attributes).to.eql({});
+    });
+
+    it('adds the projection inside the geometry correctly', function() {
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
+      var esrijson = format.writeFeaturesObject(array, {
+        featureProjection: 'EPSG:4326'
+      });
+      esrijson.features.forEach(function(feature) {
+        var spatialReference = feature.geometry.spatialReference;
+        expect(Number(spatialReference.wkid)).to.equal(4326);
+      });
     });
 
   });

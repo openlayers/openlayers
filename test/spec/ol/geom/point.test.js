@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.Point');
+
 
 goog.require('ol.geom.Point');
 

@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.TileImageSource');
+
 
 goog.require('ol.ImageTile');
 goog.require('ol.TileUrlFunction');

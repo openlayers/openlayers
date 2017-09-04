@@ -1,11 +1,12 @@
-goog.provide('ol.test.VectorTile');
 
-goog.require('ol.events');
+
+goog.require('ol.Feature');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
-goog.require('ol.Feature');
+goog.require('ol.events');
 goog.require('ol.format.TextFeature');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 
 
 describe('ol.VectorTile', function() {

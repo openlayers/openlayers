@@ -2,9 +2,12 @@ goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('ol');
 goog.require('ol.colorlike');
+goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Instruction');
 goog.require('ol.render.canvas.Replay');
+goog.require('ol.render.replay');
+goog.require('ol.structs.LRUCache');
 
 
 /**
@@ -13,30 +16,13 @@ goog.require('ol.render.canvas.Replay');
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, overlaps) {
+ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
-
-  /**
-   * @private
-   * @type {?ol.CanvasFillState}
-   */
-  this.replayFillState_ = null;
-
-  /**
-   * @private
-   * @type {?ol.CanvasStrokeState}
-   */
-  this.replayStrokeState_ = null;
-
-  /**
-   * @private
-   * @type {?ol.CanvasTextState}
-   */
-  this.replayTextState_ = null;
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
 
   /**
    * @private
@@ -92,137 +78,152 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, overlap
    */
   this.textState_ = null;
 
+  while (ol.render.canvas.TextReplay.labelCache_.canExpireCache()) {
+    ol.render.canvas.TextReplay.labelCache_.pop();
+  }
+
 };
 ol.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
+
+
+/**
+ * @private
+ * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
+ */
+ol.render.canvas.TextReplay.labelCache_ = new ol.structs.LRUCache();
+
+
+/**
+ * @param {string} font Font to use for measuring.
+ * @param {Array.<string>} lines Lines to measure.
+ * @param {Array.<number>} widths Array will be populated with the widths of
+ * each line.
+ * @return {ol.Size} Measuremnt.
+ */
+ol.render.canvas.TextReplay.measureText = (function() {
+  var textContainer;
+  return function(font, lines, widths) {
+    if (!textContainer) {
+      textContainer = document.createElement('span');
+      textContainer.style.visibility = 'hidden';
+      textContainer.style.whiteSpace = 'nowrap';
+    }
+    textContainer.style.font = font;
+    document.body.appendChild(textContainer);
+    var numLines = lines.length;
+    var width = 0;
+    var currentWidth, i;
+    for (i = 0; i < numLines; ++i) {
+      textContainer.textContent = lines[i];
+      currentWidth = textContainer.offsetWidth;
+      width = Math.max(width, currentWidth);
+      widths.push(currentWidth);
+    }
+    var measurement = [width, textContainer.offsetHeight * numLines];
+    document.body.removeChild(textContainer);
+    return measurement;
+  };
+})();
 
 
 /**
  * @inheritDoc
  */
 ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, feature) {
-  if (this.text_ === '' || !this.textState_ ||
-      (!this.textFillState_ && !this.textStrokeState_)) {
+  var fillState = this.textFillState_;
+  var strokeState = this.textStrokeState_;
+  var textState = this.textState_;
+  if (this.text_ === '' || !textState || (!fillState && !strokeState)) {
     return;
   }
-  if (this.textFillState_) {
-    this.setReplayFillState_(this.textFillState_);
-  }
-  if (this.textStrokeState_) {
-    this.setReplayStrokeState_(this.textStrokeState_);
-  }
-  this.setReplayTextState_(this.textState_);
   this.beginGeometry(geometry, feature);
+
   var myBegin = this.coordinates.length;
   var myEnd =
       this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
-  var fill = !!this.textFillState_;
-  var stroke = !!this.textStrokeState_;
-  var drawTextInstruction = [
-    ol.render.canvas.Instruction.DRAW_TEXT, myBegin, myEnd, this.text_,
-    this.textOffsetX_, this.textOffsetY_, this.textRotation_, this.textScale_,
-    fill, stroke, this.textRotateWithView_];
-  this.instructions.push(drawTextInstruction);
-  this.hitDetectionInstructions.push(drawTextInstruction);
+  var fill = !!fillState;
+  var stroke = !!strokeState;
+  var pixelRatio = this.pixelRatio;
+  var textAlign = textState.textAlign;
+  var align = ol.render.replay.TEXT_ALIGN[textAlign];
+  var textBaseline = textState.textBaseline;
+  var baseline = ol.render.replay.TEXT_ALIGN[textBaseline];
+  var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
+
+  var label;
+  var text = this.text_;
+  var key =
+    (stroke ?
+      (typeof strokeState.strokeStyle == 'string' ? strokeState.strokeStyle : ol.getUid(strokeState.strokeStyle)) +
+      strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeWidth +
+      strokeState.lineJoin + strokeState.miterLimit +
+      '[' + strokeState.lineDash.join() + ']' : '') +
+    textState.font + textAlign + text +
+    (fill ?
+      (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + ol.getUid(fillState.fillStyle))) : '');
+
+  var lines = text.split('\n');
+  var numLines = lines.length;
+
+  if (!ol.render.canvas.TextReplay.labelCache_.containsKey(key)) {
+    label = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+    ol.render.canvas.TextReplay.labelCache_.set(key, label);
+    var context = label.getContext('2d');
+    var widths = [];
+    var metrics = ol.render.canvas.TextReplay.measureText(textState.font, lines, widths);
+    var lineHeight = metrics[1] / numLines;
+    label.width = Math.ceil(metrics[0] + 2 * strokeWidth) * pixelRatio;
+    label.height = Math.ceil(metrics[1] + 2 * strokeWidth) * pixelRatio;
+    context.scale(pixelRatio, pixelRatio);
+    context.font = textState.font;
+    if (stroke) {
+      context.strokeStyle = strokeState.strokeStyle;
+      context.lineWidth = strokeState.lineWidth;
+      context.lineCap = strokeState.lineCap;
+      context.lineJoin = strokeState.lineJoin;
+      context.miterLimit = strokeState.miterLimit;
+      if (ol.has.CANVAS_LINE_DASH) {
+        context.setLineDash(strokeState.lineDash);
+        context.lineDashOffset = strokeState.lineDashOffset;
+      }
+    }
+    if (fill) {
+      context.fillStyle = fillState.fillStyle;
+    }
+    context.textBaseline = 'top';
+    context.textAlign = 'left';
+    var x = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+    var i;
+    if (stroke) {
+      for (i = 0; i < numLines; ++i) {
+        context.strokeText(lines[i], x - align * widths[i], strokeWidth + i * lineHeight);
+      }
+    }
+    if (fill) {
+      for (i = 0; i < numLines; ++i) {
+        context.fillText(lines[i], x - align * widths[i], strokeWidth + i * lineHeight);
+      }
+    }
+  }
+  label = ol.render.canvas.TextReplay.labelCache_.get(key);
+
+  var anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
+  var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
+
+  this.instructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, label,
+    (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
+    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.textScale_, true, label.width
+  ]);
+  this.hitDetectionInstructions.push([
+    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, label,
+    (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
+    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.textScale_ / pixelRatio, true, label.width
+  ]);
+
   this.endGeometry(geometry, feature);
-};
-
-
-/**
- * @param {ol.CanvasFillState} fillState Fill state.
- * @private
- */
-ol.render.canvas.TextReplay.prototype.setReplayFillState_ = function(fillState) {
-  var replayFillState = this.replayFillState_;
-  if (replayFillState &&
-      replayFillState.fillStyle == fillState.fillStyle) {
-    return;
-  }
-  var setFillStyleInstruction =
-      [ol.render.canvas.Instruction.SET_FILL_STYLE, fillState.fillStyle];
-  this.instructions.push(setFillStyleInstruction);
-  this.hitDetectionInstructions.push(setFillStyleInstruction);
-  if (!replayFillState) {
-    this.replayFillState_ = {
-      fillStyle: fillState.fillStyle
-    };
-  } else {
-    replayFillState.fillStyle = fillState.fillStyle;
-  }
-};
-
-
-/**
- * @param {ol.CanvasStrokeState} strokeState Stroke state.
- * @private
- */
-ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ = function(strokeState) {
-  var replayStrokeState = this.replayStrokeState_;
-  if (replayStrokeState &&
-      replayStrokeState.lineCap == strokeState.lineCap &&
-      replayStrokeState.lineDash == strokeState.lineDash &&
-      replayStrokeState.lineDashOffset == strokeState.lineDashOffset &&
-      replayStrokeState.lineJoin == strokeState.lineJoin &&
-      replayStrokeState.lineWidth == strokeState.lineWidth &&
-      replayStrokeState.miterLimit == strokeState.miterLimit &&
-      replayStrokeState.strokeStyle == strokeState.strokeStyle) {
-    return;
-  }
-  var setStrokeStyleInstruction = [
-    ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeState.strokeStyle,
-    strokeState.lineWidth, strokeState.lineCap, strokeState.lineJoin,
-    strokeState.miterLimit, strokeState.lineDash, strokeState.lineDashOffset, false, 1
-  ];
-  this.instructions.push(setStrokeStyleInstruction);
-  this.hitDetectionInstructions.push(setStrokeStyleInstruction);
-  if (!replayStrokeState) {
-    this.replayStrokeState_ = {
-      lineCap: strokeState.lineCap,
-      lineDash: strokeState.lineDash,
-      lineDashOffset: strokeState.lineDashOffset,
-      lineJoin: strokeState.lineJoin,
-      lineWidth: strokeState.lineWidth,
-      miterLimit: strokeState.miterLimit,
-      strokeStyle: strokeState.strokeStyle
-    };
-  } else {
-    replayStrokeState.lineCap = strokeState.lineCap;
-    replayStrokeState.lineDash = strokeState.lineDash;
-    replayStrokeState.lineDashOffset = strokeState.lineDashOffset;
-    replayStrokeState.lineJoin = strokeState.lineJoin;
-    replayStrokeState.lineWidth = strokeState.lineWidth;
-    replayStrokeState.miterLimit = strokeState.miterLimit;
-    replayStrokeState.strokeStyle = strokeState.strokeStyle;
-  }
-};
-
-
-/**
- * @param {ol.CanvasTextState} textState Text state.
- * @private
- */
-ol.render.canvas.TextReplay.prototype.setReplayTextState_ = function(textState) {
-  var replayTextState = this.replayTextState_;
-  if (replayTextState &&
-      replayTextState.font == textState.font &&
-      replayTextState.textAlign == textState.textAlign &&
-      replayTextState.textBaseline == textState.textBaseline) {
-    return;
-  }
-  var setTextStyleInstruction = [ol.render.canvas.Instruction.SET_TEXT_STYLE,
-    textState.font, textState.textAlign, textState.textBaseline];
-  this.instructions.push(setTextStyleInstruction);
-  this.hitDetectionInstructions.push(setTextStyleInstruction);
-  if (!replayTextState) {
-    this.replayTextState_ = {
-      font: textState.font,
-      textAlign: textState.textAlign,
-      textBaseline: textState.textBaseline
-    };
-  } else {
-    replayTextState.font = textState.font;
-    replayTextState.textAlign = textState.textAlign;
-    replayTextState.textBaseline = textState.textBaseline;
-  }
 };
 
 

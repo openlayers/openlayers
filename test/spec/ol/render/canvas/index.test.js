@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.canvas');
+
 
 goog.require('ol.render.canvas');
 

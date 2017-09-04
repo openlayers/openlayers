@@ -1,11 +1,12 @@
-goog.provide('ol.test.render.webgl.PolygonReplay');
+
 
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
-goog.require('ol.render.webgl.polygonreplay.defaultshader');
 goog.require('ol.render.webgl.PolygonReplay');
+goog.require('ol.render.webgl.polygonreplay.defaultshader');
+goog.require('ol.render.webgl.polygonreplay.defaultshader.Locations');
 goog.require('ol.structs.LinkedList');
 goog.require('ol.structs.RBush');
 goog.require('ol.style.Fill');

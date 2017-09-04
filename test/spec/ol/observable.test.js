@@ -1,4 +1,4 @@
-goog.provide('ol.test.Observable');
+
 
 goog.require('ol.events.EventTarget');
 goog.require('ol.Observable');

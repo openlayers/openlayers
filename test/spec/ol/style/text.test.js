@@ -1,6 +1,7 @@
-goog.provide('ol.test.style.Text');
+
 
 goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.style.Text');
 
 

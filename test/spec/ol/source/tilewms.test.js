@@ -1,4 +1,4 @@
-goog.provide('ol.test.source.TileWMS');
+
 
 goog.require('ol.ImageTile');
 goog.require('ol.proj');

@@ -1,15 +1,17 @@
-goog.provide('ol.test.render.webgl.Immediate');
 
-goog.require('ol.geom.GeometryCollection');
+
+goog.require('ol.Feature');
 goog.require('ol.geom.Circle');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.GeometryCollection');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.Polygon');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
-goog.require('ol.render.webgl.ImageReplay');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 goog.require('ol.render.webgl.CircleReplay');
+goog.require('ol.render.webgl.ImageReplay');
+goog.require('ol.render.webgl.Immediate');
 goog.require('ol.render.webgl.LineStringReplay');
 goog.require('ol.render.webgl.PolygonReplay');
 goog.require('ol.style.Circle');

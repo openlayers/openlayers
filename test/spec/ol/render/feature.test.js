@@ -1,4 +1,4 @@
-goog.provide('ol.test.render.Feature');
+
 
 goog.require('ol.render.Feature');
 

@@ -1,4 +1,4 @@
-goog.provide('ol.test.style.Circle');
+
 
 goog.require('ol.style.AtlasManager');
 goog.require('ol.style.Circle');

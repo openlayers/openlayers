@@ -1,4 +1,4 @@
-goog.provide('ol.test.geom.LineString');
+
 
 goog.require('ol.extent');
 goog.require('ol.geom.LineString');

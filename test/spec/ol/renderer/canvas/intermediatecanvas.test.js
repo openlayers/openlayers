@@ -1,4 +1,4 @@
-goog.provide('ol.test.renderer.canvas.Layer');
+
 
 goog.require('ol.transform');
 goog.require('ol.layer.Image');

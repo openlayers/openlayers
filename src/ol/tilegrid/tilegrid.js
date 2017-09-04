@@ -37,6 +37,30 @@ ol.tilegrid.TileGrid = function(options) {
     return b - a;
   }, true), 17); // `resolutions` must be sorted in descending order
 
+
+  // check if we've got a consistent zoom factor and origin
+  var zoomFactor;
+  if (!options.origins) {
+    for (var i = 0, ii = this.resolutions_.length - 1; i < ii; ++i) {
+      if (!zoomFactor) {
+        zoomFactor = this.resolutions_[i] / this.resolutions_[i + 1];
+      } else {
+        if (this.resolutions_[i] / this.resolutions_[i + 1] !== zoomFactor) {
+          zoomFactor = undefined;
+          break;
+        }
+      }
+    }
+  }
+
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.zoomFactor_ = zoomFactor;
+
+
   /**
    * @protected
    * @type {number}
@@ -138,7 +162,7 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
  * Call a function with each tile coordinate for a given extent and zoom level.
  *
  * @param {ol.Extent} extent Extent.
- * @param {number} zoom Zoom level.
+ * @param {number} zoom Integer zoom level.
  * @param {function(ol.TileCoord)} callback Function called with each tile coordinate.
  * @api
  */
@@ -162,11 +186,24 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoord = function(extent, zoom, callbac
  * @template T
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
-  var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  var tileRange, x, y;
+  var tileCoordExtent = null;
   var z = tileCoord[0] - 1;
+  if (this.zoomFactor_ === 2) {
+    x = tileCoord[1];
+    y = tileCoord[2];
+  } else {
+    tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
+  }
   while (z >= this.minZoom) {
-    if (callback.call(opt_this, z,
-        this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
+    if (this.zoomFactor_ === 2) {
+      x = Math.floor(x / 2);
+      y = Math.floor(y / 2);
+      tileRange = ol.TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
+    } else {
+      tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
+    }
+    if (callback.call(opt_this, z, tileRange)) {
       return true;
     }
     --z;
@@ -206,7 +243,7 @@ ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
 
 /**
  * Get the origin for the grid at the given zoom level.
- * @param {number} z Z.
+ * @param {number} z Integer zoom level.
  * @return {ol.Coordinate} Origin.
  * @api
  */
@@ -221,7 +258,7 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
 
 /**
  * Get the resolution for the given zoom level.
- * @param {number} z Z.
+ * @param {number} z Integer zoom level.
  * @return {number} Resolution.
  * @api
  */
@@ -248,17 +285,22 @@ ol.tilegrid.TileGrid.prototype.getResolutions = function() {
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRange, opt_extent) {
   if (tileCoord[0] < this.maxZoom) {
+    if (this.zoomFactor_ === 2) {
+      var minX = tileCoord[1] * 2;
+      var minY = tileCoord[2] * 2;
+      return ol.TileRange.createOrUpdate(minX, minX + 1, minY, minY + 1, opt_tileRange);
+    }
     var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     return this.getTileRangeForExtentAndZ(
         tileCoordExtent, tileCoord[0] + 1, opt_tileRange);
-  } else {
-    return null;
   }
+  return null;
 };
 
 
 /**
- * @param {number} z Z.
+ * Get the extent for a tile range.
+ * @param {number} z Integer zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @param {ol.Extent=} opt_extent Temporary ol.Extent object.
  * @return {ol.Extent} Extent.
@@ -276,34 +318,20 @@ ol.tilegrid.TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_e
 
 
 /**
+ * Get a tile range for the given extent and integer zoom level.
  * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
- * @return {ol.TileRange} Tile range.
- */
-ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(extent, resolution, opt_tileRange) {
-  var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
-  this.getTileCoordForXYAndResolution_(
-      extent[0], extent[1], resolution, false, tileCoord);
-  var minX = tileCoord[1];
-  var minY = tileCoord[2];
-  this.getTileCoordForXYAndResolution_(
-      extent[2], extent[3], resolution, true, tileCoord);
-  return ol.TileRange.createOrUpdate(
-      minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
-};
-
-
-/**
- * @param {ol.Extent} extent Extent.
- * @param {number} z Z.
+ * @param {number} z Integer zoom level.
  * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
  * @return {ol.TileRange} Tile range.
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange) {
-  var resolution = this.getResolution(z);
-  return this.getTileRangeForExtentAndResolution(
-      extent, resolution, opt_tileRange);
+  var tileCoord = ol.tilegrid.TileGrid.tmpTileCoord_;
+  this.getTileCoordForXYAndZ_(extent[0], extent[1], z, false, tileCoord);
+  var minX = tileCoord[1];
+  var minY = tileCoord[2];
+  this.getTileCoordForXYAndZ_(extent[2], extent[3], z, true, tileCoord);
+  return ol.TileRange.createOrUpdate(
+      minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
 };
 
 
@@ -360,9 +388,11 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndResolution = function(coor
 
 
 /**
+ * Note that this method should not be called for resolutions that correspond
+ * to an integer zoom level.  Instead call the `getTileCoordForXYAndZ_` method.
  * @param {number} x X.
  * @param {number} y Y.
- * @param {number} resolution Resolution.
+ * @param {number} resolution Resolution (for a non-integer zoom level).
  * @param {boolean} reverseIntersectionPolicy Instead of letting edge
  *     intersections go to the higher tile coordinate, let edge intersections
  *     go to the lower tile coordinate.
@@ -397,6 +427,45 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
 
 
 /**
+ * Although there is repetition between this method and `getTileCoordForXYAndResolution_`,
+ * they should have separate implementations.  This method is for integer zoom
+ * levels.  The other method should only be called for resolutions corresponding
+ * to non-integer zoom levels.
+ * @param {number} x Map x coordinate.
+ * @param {number} y Map y coordinate.
+ * @param {number} z Integer zoom level.
+ * @param {boolean} reverseIntersectionPolicy Instead of letting edge
+ *     intersections go to the higher tile coordinate, let edge intersections
+ *     go to the lower tile coordinate.
+ * @param {ol.TileCoord=} opt_tileCoord Temporary ol.TileCoord object.
+ * @return {ol.TileCoord} Tile coordinate.
+ * @private
+ */
+ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectionPolicy, opt_tileCoord) {
+  var origin = this.getOrigin(z);
+  var resolution = this.getResolution(z);
+  var tileSize = ol.size.toSize(this.getTileSize(z), this.tmpSize_);
+
+  var adjustX = reverseIntersectionPolicy ? 0.5 : 0;
+  var adjustY = reverseIntersectionPolicy ? 0 : 0.5;
+  var xFromOrigin = Math.floor((x - origin[0]) / resolution + adjustX);
+  var yFromOrigin = Math.floor((y - origin[1]) / resolution + adjustY);
+  var tileCoordX = xFromOrigin / tileSize[0];
+  var tileCoordY = yFromOrigin / tileSize[1];
+
+  if (reverseIntersectionPolicy) {
+    tileCoordX = Math.ceil(tileCoordX) - 1;
+    tileCoordY = Math.ceil(tileCoordY) - 1;
+  } else {
+    tileCoordX = Math.floor(tileCoordX);
+    tileCoordY = Math.floor(tileCoordY);
+  }
+
+  return ol.tilecoord.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+};
+
+
+/**
  * Get a tile coordinate given a map coordinate and zoom level.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} z Zoom level.
@@ -405,9 +474,8 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
  * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ = function(coordinate, z, opt_tileCoord) {
-  var resolution = this.getResolution(z);
-  return this.getTileCoordForXYAndResolution_(
-      coordinate[0], coordinate[1], resolution, false, opt_tileCoord);
+  return this.getTileCoordForXYAndZ_(
+      coordinate[0], coordinate[1], z, false, opt_tileCoord);
 };
 
 
