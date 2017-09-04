@@ -111,7 +111,7 @@ describe('ol.source.Zoomify', function() {
 
     it('creates a tileGrid for both protocols', function() {
       var sources = [getZoomifySource(), getIIPSource()];
-      for(var i=0; i<sources.length; i++) {
+      for (var i = 0; i < sources.length; i++) {
         var tileGrid = sources[i].getTileGrid();
         expect(tileGrid).to.be.a(ol.tilegrid.TileGrid);
       }
@@ -123,7 +123,7 @@ describe('ol.source.Zoomify', function() {
 
     it('has expected extent', function() {
       var sources = [getZoomifySource(), getIIPSource()];
-      for(var i=0; i<sources.length; i++) {
+      for (var i = 0; i < sources.length; i++) {
         var tileGrid = sources[i].getTileGrid();
         var expectedExtent = [0, -h, w, 0];
         expect(tileGrid.getExtent()).to.eql(expectedExtent);
@@ -132,7 +132,7 @@ describe('ol.source.Zoomify', function() {
 
     it('has expected origin', function() {
       var sources = [getZoomifySource(), getIIPSource()];
-      for(var i=0; i<sources.length; i++) {
+      for (var i = 0; i < sources.length; i++) {
         var tileGrid = sources[i].getTileGrid();
         var expectedOrigin = [0, 0];
         expect(tileGrid.getOrigin()).to.eql(expectedOrigin);
@@ -141,7 +141,7 @@ describe('ol.source.Zoomify', function() {
 
     it('has expected resolutions', function() {
       var sources = [getZoomifySource(), getIIPSource()];
-      for(var i=0; i<sources.length; i++) {
+      for (var i = 0; i < sources.length; i++) {
         var tileGrid = sources[i].getTileGrid();
         var expectedResolutions = [4, 2, 1];
         expect(tileGrid.getResolutions()).to.eql(expectedResolutions);

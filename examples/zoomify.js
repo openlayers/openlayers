@@ -21,7 +21,7 @@ var layer = new ol.layer.Tile({
 var extent = [0, -imgHeight, imgWidth, 0];
 
 var map = new ol.Map({
-  layers: [ layer ],
+  layers: [layer],
   target: 'map',
   view: new ol.View({
     // adjust zoom levels to those provided by the source
@@ -35,13 +35,13 @@ map.getView().fit(extent);
 var control = document.getElementById('zoomifyProtocol');
 control.addEventListener('change', function(event) {
   var value = event.currentTarget.value;
-  if(value === 'iip') {
+  if (value === 'iip') {
     layer.setSource(new ol.source.Zoomify({
       url: iipUrl,
       size: [imgWidth, imgHeight],
       crossOrigin: 'anonymous'
     }));
-  } else if(value === 'zoomify') {
+  } else if (value === 'zoomify') {
     layer.setSource(new ol.source.Zoomify({
       url: zoomifyUrl,
       size: [imgWidth, imgHeight],
