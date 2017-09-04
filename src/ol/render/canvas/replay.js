@@ -268,7 +268,7 @@ ol.render.canvas.Replay.prototype.drawCustom = function(geometry, feature, rende
     instruction = [ol.render.canvas.Instruction.CUSTOM,
       replayBegin, replayEnd, geometry, renderer];
   }
-  if(instruction) {
+  if (instruction) {
     this.instructions.push(instruction);
     this.hitDetectionInstructions.push(instruction);
   }
