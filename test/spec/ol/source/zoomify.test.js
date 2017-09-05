@@ -11,8 +11,8 @@ describe('ol.source.Zoomify', function() {
   var w = 1024;
   var h = 512;
   var size = [w, h];
-  var zoomifyUrl = 'zoomify-url/{TileGroup}/{z}-{x}-{y}.jpg';
-  var iipUrl = 'zoomify-url?JTL={z},{tileIndex}';
+  var zoomifyUrl = 'spec/ol/source/images/zoomify/{TileGroup}/{z}-{x}-{y}.jpg';
+  var iipUrl = 'spec/ol/source/images/zoomify?JTL={z},{tileIndex}';
   var proj = new ol.proj.Projection({
     code: 'ZOOMIFY',
     units: 'pixels',
