@@ -200,12 +200,12 @@ describe('ol.source.Zoomify', function() {
       var source = getIIPSource();
       var tileUrlFunction = source.getTileUrlFunction();
       // zoomlevel 0
-      expect(tileUrlFunction([0, 0, -1])).to.eql('zoomify-url?JTL=0,0');
+      expect(tileUrlFunction([0, 0, -1])).to.eql('spec/ol/source/images/zoomify?JTL=0,0');
       // zoomlevel 1
-      expect(tileUrlFunction([1, 0, -1])).to.eql('zoomify-url?JTL=1,0');
-      expect(tileUrlFunction([1, 1, -1])).to.eql('zoomify-url?JTL=1,1');
-      expect(tileUrlFunction([1, 0, -2])).to.eql('zoomify-url?JTL=1,2');
-      expect(tileUrlFunction([1, 1, -2])).to.eql('zoomify-url?JTL=1,3');
+      expect(tileUrlFunction([1, 0, -1])).to.eql('spec/ol/source/images/zoomify?JTL=1,0');
+      expect(tileUrlFunction([1, 1, -1])).to.eql('spec/ol/source/images/zoomify?JTL=1,1');
+      expect(tileUrlFunction([1, 0, -2])).to.eql('spec/ol/source/images/zoomify?JTL=1,2');
+      expect(tileUrlFunction([1, 1, -2])).to.eql('spec/ol/source/images/zoomify?JTL=1,3');
     });
 
     it('creates an expected tileUrlFunction without template', function() {
