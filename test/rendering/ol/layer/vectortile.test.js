@@ -1,12 +1,12 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.MVT');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.obj');
-goog.require('ol.source.VectorTile');
-goog.require('ol.tilegrid');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_format_MVT_ from '../../../../src/ol/format/mvt';
+import _ol_layer_VectorTile_ from '../../../../src/ol/layer/vectortile';
+import _ol_obj_ from '../../../../src/ol/obj';
+import _ol_source_VectorTile_ from '../../../../src/ol/source/vectortile';
+import _ol_tilegrid_ from '../../../../src/ol/tilegrid';
 
 
 describe('ol.rendering.layer.VectorTile', function() {
@@ -14,11 +14,11 @@ describe('ol.rendering.layer.VectorTile', function() {
   var map;
 
   function createMap(renderer, opt_pixelRatio) {
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
-      view: new ol.View({
+      view: new _ol_View_({
         center: [1825927.7316762917, 6143091.089223046],
         zoom: 14
       })
@@ -54,17 +54,17 @@ describe('ol.rendering.layer.VectorTile', function() {
     var options = {
       source: source
     };
-    ol.obj.assign(options, layerOptions);
-    map.addLayer(new ol.layer.VectorTile(options));
+    _ol_obj_.assign(options, layerOptions);
+    map.addLayer(new _ol_layer_VectorTile_(options));
   }
 
   describe('vector tile layer', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.VectorTile({
-        format: new ol.format.MVT(),
-        tileGrid: ol.tilegrid.createXYZ(),
+      source = new _ol_source_VectorTile_({
+        format: new _ol_format_MVT_(),
+        tileGrid: _ol_tilegrid_.createXYZ(),
         tilePixelRatio: 16,
         url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf'
       });

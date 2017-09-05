@@ -1,43 +1,43 @@
 // NOCOMPILE
 // this example uses topolis and toastr for which we don't have an externs file.
 
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Snap');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Text');
-goog.require('ol.control.MousePosition');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_geom_Polygon_ from '../src/ol/geom/polygon';
+import _ol_interaction_Draw_ from '../src/ol/interaction/draw';
+import _ol_interaction_Snap_ from '../src/ol/interaction/snap';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Style_ from '../src/ol/style/style';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Text_ from '../src/ol/style/text';
+import _ol_control_MousePosition_ from '../src/ol/control/mouseposition';
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var nodes = new ol.source.Vector({wrapX: false});
-var nodesLayer = new ol.layer.Vector({
+var nodes = new _ol_source_Vector_({wrapX: false});
+var nodesLayer = new _ol_layer_Vector_({
   source: nodes,
   style: function(f) {
-    var style = new ol.style.Style({
-      image: new ol.style.Circle({
+    var style = new _ol_style_Style_({
+      image: new _ol_style_Circle_({
         radius: 8,
-        fill: new ol.style.Fill({color: 'rgba(255, 0, 0, 0.2)'}),
-        stroke: new ol.style.Stroke({color: 'red', width: 1})
+        fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.2)'}),
+        stroke: new _ol_style_Stroke_({color: 'red', width: 1})
       }),
-      text: new ol.style.Text({
+      text: new _ol_style_Text_({
         text: f.get('node').id.toString(),
-        fill: new ol.style.Fill({color: 'red'}),
-        stroke: new ol.style.Stroke({
+        fill: new _ol_style_Fill_({color: 'red'}),
+        stroke: new _ol_style_Stroke_({
           color: 'white',
           width: 3
         })
@@ -47,19 +47,19 @@ var nodesLayer = new ol.layer.Vector({
   }
 });
 
-var edges = new ol.source.Vector({wrapX: false});
-var edgesLayer = new ol.layer.Vector({
+var edges = new _ol_source_Vector_({wrapX: false});
+var edgesLayer = new _ol_layer_Vector_({
   source: edges,
   style: function(f) {
-    var style = new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    var style = new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: 'blue',
         width: 1
       }),
-      text: new ol.style.Text({
+      text: new _ol_style_Text_({
         text: f.get('edge').id.toString(),
-        fill: new ol.style.Fill({color: 'blue'}),
-        stroke: new ol.style.Stroke({
+        fill: new _ol_style_Fill_({color: 'blue'}),
+        stroke: new _ol_style_Stroke_({
           color: 'white',
           width: 2
         })
@@ -69,23 +69,23 @@ var edgesLayer = new ol.layer.Vector({
   }
 });
 
-var faces = new ol.source.Vector({wrapX: false});
-var facesLayer = new ol.layer.Vector({
+var faces = new _ol_source_Vector_({wrapX: false});
+var facesLayer = new _ol_layer_Vector_({
   source: faces,
   style: function(f) {
-    var style = new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    var style = new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: 'black',
         width: 1
       }),
-      fill: new ol.style.Fill({
+      fill: new _ol_style_Fill_({
         color: 'rgba(0, 255, 0, 0.2)'
       }),
-      text: new ol.style.Text({
+      text: new _ol_style_Text_({
         font: 'bold 12px sans-serif',
         text: f.get('face').id.toString(),
-        fill: new ol.style.Fill({color: 'green'}),
-        stroke: new ol.style.Stroke({
+        fill: new _ol_style_Fill_({color: 'green'}),
+        stroke: new _ol_style_Stroke_({
           color: 'white',
           width: 2
         })
@@ -95,10 +95,10 @@ var facesLayer = new ol.layer.Vector({
   }
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, facesLayer, edgesLayer, nodesLayer],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-11000000, 4600000],
     zoom: 16
   })
@@ -113,7 +113,7 @@ topo.on('removenode', function(e) {
 topo.on('addedge', edgeToFeature);
 topo.on('modedge', function(e) {
   var feature = edges.getFeatureById(e.id);
-  feature.setGeometry(new ol.geom.LineString(e.coordinates));
+  feature.setGeometry(new _ol_geom_LineString_(e.coordinates));
 });
 topo.on('removeedge', function(e) {
   removeElementFeature(edges, e);
@@ -129,8 +129,8 @@ function removeElementFeature(source, element) {
 }
 
 function nodeToFeature(node) {
-  var feature = new ol.Feature({
-    geometry: new ol.geom.Point(node.coordinate),
+  var feature = new _ol_Feature_({
+    geometry: new _ol_geom_Point_(node.coordinate),
     node: node
   });
   feature.setId(node.id);
@@ -138,8 +138,8 @@ function nodeToFeature(node) {
 }
 
 function edgeToFeature(edge) {
-  var feature = new ol.Feature({
-    geometry: new ol.geom.LineString(edge.coordinates),
+  var feature = new _ol_Feature_({
+    geometry: new _ol_geom_LineString_(edge.coordinates),
     edge: edge
   });
   feature.setId(edge.id);
@@ -148,8 +148,8 @@ function edgeToFeature(edge) {
 
 function faceToFeature(face) {
   var coordinates = topo.getFaceGeometry(face);
-  var feature = new ol.Feature({
-    geometry: new ol.geom.Polygon(coordinates),
+  var feature = new _ol_Feature_({
+    geometry: new _ol_geom_Polygon_(coordinates),
     face: face
   });
   feature.setId(face.id);
@@ -204,13 +204,13 @@ function onDrawend(e) {
   }
 }
 
-var draw = new ol.interaction.Draw({
+var draw = new _ol_interaction_Draw_({
   type: 'LineString'
 });
 draw.on('drawend', onDrawend);
 map.addInteraction(draw);
-var snap = new ol.interaction.Snap({
+var snap = new _ol_interaction_Snap_({
   source: edges
 });
 map.addInteraction(snap);
-map.addControl(new ol.control.MousePosition());
+map.addControl(new _ol_control_MousePosition_());

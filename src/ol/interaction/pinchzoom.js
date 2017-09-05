@@ -1,11 +1,8 @@
-goog.provide('ol.interaction.PinchZoom');
-
-goog.require('ol');
-goog.require('ol.ViewHint');
-goog.require('ol.functions');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Pointer');
-
+import _ol_ from '../index';
+import _ol_ViewHint_ from '../viewhint';
+import _ol_functions_ from '../functions';
+import _ol_interaction_Interaction_ from '../interaction/interaction';
+import _ol_interaction_Pointer_ from '../interaction/pointer';
 
 /**
  * @classdesc
@@ -17,12 +14,12 @@ goog.require('ol.interaction.Pointer');
  * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
  * @api
  */
-ol.interaction.PinchZoom = function(opt_options) {
+var _ol_interaction_PinchZoom_ = function(opt_options) {
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.PinchZoom.handleDownEvent_,
-    handleDragEvent: ol.interaction.PinchZoom.handleDragEvent_,
-    handleUpEvent: ol.interaction.PinchZoom.handleUpEvent_
+  _ol_interaction_Pointer_.call(this, {
+    handleDownEvent: _ol_interaction_PinchZoom_.handleDownEvent_,
+    handleDragEvent: _ol_interaction_PinchZoom_.handleDragEvent_,
+    handleUpEvent: _ol_interaction_PinchZoom_.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -58,7 +55,8 @@ ol.interaction.PinchZoom = function(opt_options) {
   this.lastScaleDelta_ = 1;
 
 };
-ol.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
+
+_ol_.inherits(_ol_interaction_PinchZoom_, _ol_interaction_Pointer_);
 
 
 /**
@@ -66,7 +64,7 @@ ol.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
+_ol_interaction_PinchZoom_.handleDragEvent_ = function(mapBrowserEvent) {
   var scaleDelta = 1.0;
 
   var touch0 = this.targetPointers[0];
@@ -103,14 +101,14 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   // scale anchor point.
   var viewportPosition = map.getViewport().getBoundingClientRect();
-  var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
+  var centroid = _ol_interaction_Pointer_.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.left;
   centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
 
   // scale, bypass the resolution constraint
   map.render();
-  ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+  _ol_interaction_Interaction_.zoomWithoutConstraints(view, newResolution, this.anchor_);
 };
 
 
@@ -120,11 +118,11 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
+_ol_interaction_PinchZoom_.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(_ol_ViewHint_.INTERACTING, -1);
     var resolution = view.getResolution();
     if (this.constrainResolution_ ||
         resolution < view.getMinResolution() ||
@@ -133,7 +131,7 @@ ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
       // direction not to zoom out/in if user was pinching in/out.
       // Direction is > 0 if pinching out, and < 0 if pinching in.
       var direction = this.lastScaleDelta_ - 1;
-      ol.interaction.Interaction.zoom(view, resolution,
+      _ol_interaction_Interaction_.zoom(view, resolution,
           this.anchor_, this.duration_, direction);
     }
     return false;
@@ -149,14 +147,14 @@ ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
+_ol_interaction_PinchZoom_.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
     if (!this.handlingDownUpSequence) {
-      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+      map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
     }
     return true;
   } else {
@@ -168,4 +166,5 @@ ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.PinchZoom.prototype.shouldStopEvent = ol.functions.FALSE;
+_ol_interaction_PinchZoom_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+export default _ol_interaction_PinchZoom_;

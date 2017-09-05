@@ -1,10 +1,10 @@
-goog.require('ol.Map');
-goog.require('ol.Overlay');
-goog.require('ol.View');
-goog.require('ol.coordinate');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.TileJSON');
+import _ol_Map_ from '../src/ol/map';
+import _ol_Overlay_ from '../src/ol/overlay';
+import _ol_View_ from '../src/ol/view';
+import _ol_coordinate_ from '../src/ol/coordinate';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_TileJSON_ from '../src/ol/source/tilejson';
 
 
 /**
@@ -18,7 +18,7 @@ var closer = document.getElementById('popup-closer');
 /**
  * Create an overlay to anchor the popup to the map.
  */
-var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
+var overlay = new _ol_Overlay_(/** @type {olx.OverlayOptions} */ ({
   element: container,
   autoPan: true,
   autoPanAnimation: {
@@ -41,10 +41,10 @@ closer.onclick = function() {
 /**
  * Create the map.
  */
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.TileJSON({
+    new _ol_layer_Tile_({
+      source: new _ol_source_TileJSON_({
         url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
         crossOrigin: 'anonymous'
       })
@@ -52,7 +52,7 @@ var map = new ol.Map({
   ],
   overlays: [overlay],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
@@ -64,7 +64,7 @@ var map = new ol.Map({
  */
 map.on('singleclick', function(evt) {
   var coordinate = evt.coordinate;
-  var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+  var hdms = _ol_coordinate_.toStringHDMS(_ol_proj_.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));
 
   content.innerHTML = '<p>You clicked here:</p><code>' + hdms +

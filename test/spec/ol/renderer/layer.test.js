@@ -1,8 +1,8 @@
 
 
-goog.require('ol.Image');
-goog.require('ol.layer.Layer');
-goog.require('ol.renderer.Layer');
+import _ol_Image_ from '../../../../src/ol/image';
+import _ol_layer_Layer_ from '../../../../src/ol/layer/layer';
+import _ol_renderer_Layer_ from '../../../../src/ol/renderer/layer';
 
 
 describe('ol.renderer.Layer', function() {
@@ -10,8 +10,8 @@ describe('ol.renderer.Layer', function() {
   var eventType = 'change';
 
   beforeEach(function() {
-    var layer = new ol.layer.Layer({});
-    renderer = new ol.renderer.Layer(layer);
+    var layer = new _ol_layer_Layer_({});
+    renderer = new _ol_renderer_Layer_(layer);
   });
 
   describe('#loadImage', function() {
@@ -26,7 +26,7 @@ describe('ol.renderer.Layer', function() {
       var src = '';
       var crossOrigin = '';
       imageLoadFunction = sinon.spy();
-      image = new ol.Image(extent, resolution, pixelRatio, attributions,
+      image = new _ol_Image_(extent, resolution, pixelRatio, attributions,
           src, crossOrigin, imageLoadFunction);
     });
 

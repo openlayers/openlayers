@@ -1,12 +1,9 @@
-goog.provide('ol.interaction.PinchRotate');
-
-goog.require('ol');
-goog.require('ol.ViewHint');
-goog.require('ol.functions');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Pointer');
-goog.require('ol.RotationConstraint');
-
+import _ol_ from '../index';
+import _ol_ViewHint_ from '../viewhint';
+import _ol_functions_ from '../functions';
+import _ol_interaction_Interaction_ from '../interaction/interaction';
+import _ol_interaction_Pointer_ from '../interaction/pointer';
+import _ol_RotationConstraint_ from '../rotationconstraint';
 
 /**
  * @classdesc
@@ -18,12 +15,12 @@ goog.require('ol.RotationConstraint');
  * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
  * @api
  */
-ol.interaction.PinchRotate = function(opt_options) {
+var _ol_interaction_PinchRotate_ = function(opt_options) {
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.PinchRotate.handleDownEvent_,
-    handleDragEvent: ol.interaction.PinchRotate.handleDragEvent_,
-    handleUpEvent: ol.interaction.PinchRotate.handleUpEvent_
+  _ol_interaction_Pointer_.call(this, {
+    handleDownEvent: _ol_interaction_PinchRotate_.handleDownEvent_,
+    handleDragEvent: _ol_interaction_PinchRotate_.handleDragEvent_,
+    handleUpEvent: _ol_interaction_PinchRotate_.handleUpEvent_
   });
 
   var options = opt_options || {};
@@ -65,7 +62,8 @@ ol.interaction.PinchRotate = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
-ol.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
+
+_ol_.inherits(_ol_interaction_PinchRotate_, _ol_interaction_Pointer_);
 
 
 /**
@@ -73,7 +71,7 @@ ol.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
  * @this {ol.interaction.PinchRotate}
  * @private
  */
-ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
+_ol_interaction_PinchRotate_.handleDragEvent_ = function(mapBrowserEvent) {
   var rotationDelta = 0.0;
 
   var touch0 = this.targetPointers[0];
@@ -97,7 +95,7 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  if (view.getConstraints().rotation === ol.RotationConstraint.disable) {
+  if (view.getConstraints().rotation === _ol_RotationConstraint_.disable) {
     return;
   }
 
@@ -105,7 +103,7 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = map.getViewport().getBoundingClientRect();
-  var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
+  var centroid = _ol_interaction_Pointer_.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.left;
   centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -114,7 +112,7 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.rotating_) {
     var rotation = view.getRotation();
     map.render();
-    ol.interaction.Interaction.rotateWithoutConstraints(view,
+    _ol_interaction_Interaction_.rotateWithoutConstraints(view,
         rotation + rotationDelta, this.anchor_);
   }
 };
@@ -126,14 +124,14 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchRotate}
  * @private
  */
-ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
+_ol_interaction_PinchRotate_.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(_ol_ViewHint_.INTERACTING, -1);
     if (this.rotating_) {
       var rotation = view.getRotation();
-      ol.interaction.Interaction.rotate(
+      _ol_interaction_Interaction_.rotate(
           view, rotation, this.anchor_, this.duration_);
     }
     return false;
@@ -149,7 +147,7 @@ ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchRotate}
  * @private
  */
-ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
+_ol_interaction_PinchRotate_.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
@@ -157,7 +155,7 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
     if (!this.handlingDownUpSequence) {
-      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+      map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
     }
     return true;
   } else {
@@ -169,4 +167,5 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.PinchRotate.prototype.shouldStopEvent = ol.functions.FALSE;
+_ol_interaction_PinchRotate_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+export default _ol_interaction_PinchRotate_;

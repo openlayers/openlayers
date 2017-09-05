@@ -1,6 +1,5 @@
-goog.provide('ol.geom.flat.topology');
-
-goog.require('ol.geom.flat.area');
+import _ol_geom_flat_area_ from '../flat/area';
+var _ol_geom_flat_topology_ = {};
 
 /**
  * Check if the linestring is a boundary.
@@ -10,11 +9,12 @@ goog.require('ol.geom.flat.area');
  * @param {number} stride Stride.
  * @return {boolean} The linestring is a boundary.
  */
-ol.geom.flat.topology.lineStringIsClosed = function(flatCoordinates, offset, end, stride) {
+_ol_geom_flat_topology_.lineStringIsClosed = function(flatCoordinates, offset, end, stride) {
   var lastCoord = end - stride;
   if (flatCoordinates[offset] === flatCoordinates[lastCoord] &&
       flatCoordinates[offset + 1] === flatCoordinates[lastCoord + 1] && (end - offset) / stride > 3) {
-    return !!ol.geom.flat.area.linearRing(flatCoordinates, offset, end, stride);
+    return !!_ol_geom_flat_area_.linearRing(flatCoordinates, offset, end, stride);
   }
   return false;
 };
+export default _ol_geom_flat_topology_;

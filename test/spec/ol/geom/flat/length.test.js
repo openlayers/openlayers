@@ -1,6 +1,6 @@
 
 
-goog.require('ol.geom.flat.length');
+import _ol_geom_flat_length_ from '../../../../../src/ol/geom/flat/length';
 
 
 describe('ol.geom.flat.length', function() {
@@ -15,7 +15,7 @@ describe('ol.geom.flat.length', function() {
         var offset = 0;
         var end = 8;
         var expected = 3;
-        var got = ol.geom.flat.length.lineString(flatCoords, offset, end, stride);
+        var got = _ol_geom_flat_length_.lineString(flatCoords, offset, end, stride);
         expect(got).to.be(expected);
       });
 
@@ -23,7 +23,7 @@ describe('ol.geom.flat.length', function() {
         var offset = 2;
         var end = 8;
         var expected = 2;
-        var got = ol.geom.flat.length.lineString(flatCoords, offset, end, stride);
+        var got = _ol_geom_flat_length_.lineString(flatCoords, offset, end, stride);
         expect(got).to.be(expected);
       });
 
@@ -31,7 +31,7 @@ describe('ol.geom.flat.length', function() {
         var offset = 0;
         var end = 4;
         var expected = 1;
-        var got = ol.geom.flat.length.lineString(flatCoords, offset, end, stride);
+        var got = _ol_geom_flat_length_.lineString(flatCoords, offset, end, stride);
         expect(got).to.be(expected);
       });
 
@@ -45,7 +45,7 @@ describe('ol.geom.flat.length', function() {
         var offset = 0;
         var end = 12;
         var expected = 3;
-        var got = ol.geom.flat.length.lineString(flatCoords, offset, end, stride);
+        var got = _ol_geom_flat_length_.lineString(flatCoords, offset, end, stride);
         expect(got).to.be(expected);
       });
 
@@ -53,7 +53,7 @@ describe('ol.geom.flat.length', function() {
         var offset = 3;
         var end = 12;
         var expected = 2;
-        var got = ol.geom.flat.length.lineString(flatCoords, offset, end, stride);
+        var got = _ol_geom_flat_length_.lineString(flatCoords, offset, end, stride);
         expect(got).to.be(expected);
       });
 
@@ -61,7 +61,7 @@ describe('ol.geom.flat.length', function() {
         var offset = 0;
         var end = 6;
         var expected = 1;
-        var got = ol.geom.flat.length.lineString(flatCoords, offset, end, stride);
+        var got = _ol_geom_flat_length_.lineString(flatCoords, offset, end, stride);
         expect(got).to.be(expected);
       });
 
@@ -76,7 +76,7 @@ describe('ol.geom.flat.length', function() {
       var offset = 0;
       var end = 8;
       var expected = 4;
-      var got = ol.geom.flat.length.linearRing(flatCoords, offset, end, stride);
+      var got = _ol_geom_flat_length_.linearRing(flatCoords, offset, end, stride);
       expect(got).to.be(expected);
     });
 
@@ -86,7 +86,7 @@ describe('ol.geom.flat.length', function() {
       var offset = 0;
       var end = 14;
       var expected = 8;
-      var got = ol.geom.flat.length.linearRing(flatCoords, offset, end, stride);
+      var got = _ol_geom_flat_length_.linearRing(flatCoords, offset, end, stride);
       expect(got).to.be(expected);
     });
 

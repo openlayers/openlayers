@@ -1,16 +1,16 @@
 
 
-goog.require('ol.dom');
-goog.require('ol.render.webgl.TextReplay');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Text');
+import _ol_dom_ from '../../../../../src/ol/dom';
+import _ol_render_webgl_TextReplay_ from '../../../../../src/ol/render/webgl/textreplay';
+import _ol_style_Fill_ from '../../../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../../../src/ol/style/stroke';
+import _ol_style_Text_ from '../../../../../src/ol/style/text';
 
 describe('ol.render.webgl.TextReplay', function() {
   var replay;
 
   var createTextStyle = function(fillStyle, strokeStyle, text) {
-    var textStyle = new ol.style.Text({
+    var textStyle = new _ol_style_Text_({
       rotateWithView: true,
       rotation: 1.5,
       scale: 2,
@@ -29,7 +29,7 @@ describe('ol.render.webgl.TextReplay', function() {
   beforeEach(function() {
     var tolerance = 0.1;
     var maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new ol.render.webgl.TextReplay(tolerance, maxExtent);
+    replay = new _ol_render_webgl_TextReplay_(tolerance, maxExtent);
   });
 
   describe('#setTextStyle', function() {
@@ -38,10 +38,10 @@ describe('ol.render.webgl.TextReplay', function() {
 
     beforeEach(function() {
       textStyle1 = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [0, 0, 0, 1]
           }),
-          new ol.style.Stroke({
+          new _ol_style_Stroke_({
             width: 1,
             color: [0, 0, 0, 1],
             lineCap: 'butt',
@@ -52,10 +52,10 @@ describe('ol.render.webgl.TextReplay', function() {
           }),
           'someText');
       textStyle2 = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [255, 255, 255, 1]
           }),
-          new ol.style.Stroke({
+          new _ol_style_Stroke_({
             width: 1,
             color: [255, 255, 255, 1]
           }),
@@ -63,10 +63,10 @@ describe('ol.render.webgl.TextReplay', function() {
       );
       textStyle3 = createTextStyle(null, null, 'someText');
       textStyle4 = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [0, 0, 0, 1]
           }),
-          new ol.style.Stroke({
+          new _ol_style_Stroke_({
             width: 1,
             color: [0, 0, 0, 1]
           }),
@@ -116,7 +116,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#drawText', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');
@@ -172,7 +172,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#addCharToAtlas_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');
@@ -210,7 +210,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#getTextSize_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');
@@ -243,7 +243,7 @@ describe('ol.render.webgl.TextReplay', function() {
 
     it('returns the size of the label\'s bounding box in pixels', function() {
       var size;
-      var mCtx = ol.dom.createCanvasContext2D(0, 0);
+      var mCtx = _ol_dom_.createCanvasContext2D(0, 0);
       mCtx.font = '12px Arial';
       var width = mCtx.measureText('someText').width;
       var width2 = mCtx.measureText('anEvenLongerLine').width;
@@ -262,7 +262,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#getAtlas_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new ol.style.Fill({
+          new _ol_style_Fill_({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');

@@ -1,11 +1,11 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Icon_ from '../src/ol/style/icon';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
 var iconInfo = [{
@@ -44,7 +44,7 @@ var iconCount = iconInfo.length;
 var icons = new Array(iconCount);
 for (i = 0; i < iconCount; ++i) {
   var info = iconInfo[i];
-  icons[i] = new ol.style.Icon({
+  icons[i] = new _ol_style_Icon_({
     offset: info.offset,
     opacity: info.opacity,
     rotateWithView: info.rotateWithView,
@@ -61,29 +61,29 @@ var features = new Array(featureCount);
 var feature, geometry;
 var e = 25000000;
 for (i = 0; i < featureCount; ++i) {
-  geometry = new ol.geom.Point(
+  geometry = new _ol_geom_Point_(
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
-  feature = new ol.Feature(geometry);
+  feature = new _ol_Feature_(geometry);
   feature.setStyle(
-      new ol.style.Style({
+      new _ol_style_Style_({
         image: icons[i % (iconCount - 1)]
       })
   );
   features[i] = feature;
 }
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   features: features
 });
-var vector = new ol.layer.Vector({
+var vector = new _ol_layer_Vector_({
   source: vectorSource
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
   layers: [vector],
   target: document.getElementById('map'),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 5
   })
@@ -96,12 +96,12 @@ for (i = 0; i < featureCount; i += 30) {
   overlayFeatures.push(clone);
 }
 
-new ol.layer.Vector({
+new _ol_layer_Vector_({
   map: map,
-  source: new ol.source.Vector({
+  source: new _ol_source_Vector_({
     features: overlayFeatures
   }),
-  style: new ol.style.Style({
+  style: new _ol_style_Style_({
     image: icons[iconCount - 1]
   })
 });

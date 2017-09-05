@@ -1,19 +1,19 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Stamen');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_interaction_Select_ from '../src/ol/interaction/select';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Stamen_ from '../src/ol/source/stamen';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Icon_ from '../src/ol/style/icon';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
 function createStyle(src, img) {
-  return new ol.style.Style({
-    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+  return new _ol_style_Style_({
+    image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
       anchor: [0.5, 0.96],
       crossOrigin: 'anonymous',
       src: src,
@@ -23,30 +23,30 @@ function createStyle(src, img) {
   });
 }
 
-var iconFeature = new ol.Feature(new ol.geom.Point([0, 0]));
+var iconFeature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
 iconFeature.set('style', createStyle('data/icon.png', undefined));
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.Stamen({layer: 'watercolor'})
+    new _ol_layer_Tile_({
+      source: new _ol_source_Stamen_({layer: 'watercolor'})
     }),
-    new ol.layer.Vector({
+    new _ol_layer_Vector_({
       style: function(feature) {
         return feature.get('style');
       },
-      source: new ol.source.Vector({features: [iconFeature]})
+      source: new _ol_source_Vector_({features: [iconFeature]})
     })
   ],
   target: document.getElementById('map'),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 3
   })
 });
 
 var selectStyle = {};
-var select = new ol.interaction.Select({
+var select = new _ol_interaction_Select_({
   style: function(feature) {
     var image = feature.get('style').getImage().getImage();
     if (!selectStyle[image.src]) {

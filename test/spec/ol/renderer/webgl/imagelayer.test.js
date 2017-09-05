@@ -1,10 +1,10 @@
 
 
-goog.require('ol.transform');
-goog.require('ol.Map');
-goog.require('ol.layer.Image');
-goog.require('ol.source.Image');
-goog.require('ol.renderer.webgl.ImageLayer');
+import _ol_transform_ from '../../../../../src/ol/transform';
+import _ol_Map_ from '../../../../../src/ol/map';
+import _ol_layer_Image_ from '../../../../../src/ol/layer/image';
+import _ol_source_Image_ from '../../../../../src/ol/source/image';
+import _ol_renderer_webgl_ImageLayer_ from '../../../../../src/ol/renderer/webgl/imagelayer';
 
 
 describe('ol.renderer.webgl.ImageLayer', function() {
@@ -20,15 +20,15 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     var imageExtent;
 
     beforeEach(function() {
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: document.createElement('div')
       });
-      var layer = new ol.layer.Image({
-        source: new ol.source.Image({
+      var layer = new _ol_layer_Image_({
+        source: new _ol_source_Image_({
           extent: [0, 0, 1, 1]
         })
       });
-      renderer = new ol.renderer.webgl.ImageLayer(map.renderer_, layer);
+      renderer = new _ol_renderer_webgl_ImageLayer_(map.renderer_, layer);
 
       // input params
       canvasWidth = 512;
@@ -54,23 +54,23 @@ describe('ol.renderer.webgl.ImageLayer', function() {
           pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
       var matrix = renderer.getProjectionMatrix();
 
-      var output = ol.transform.apply(matrix, [-1, -1]);
+      var output = _ol_transform_.apply(matrix, [-1, -1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(-6);
 
-      output = ol.transform.apply(matrix, [1, -1]);
+      output = _ol_transform_.apply(matrix, [1, -1]);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(-6);
 
-      output = ol.transform.apply(matrix, [-1, 1]);
+      output = _ol_transform_.apply(matrix, [-1, 1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(6);
 
-      output = ol.transform.apply(matrix, [1, 1]);
+      output = _ol_transform_.apply(matrix, [1, 1]);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(6);
 
-      output = ol.transform.apply(matrix, [0, 0]);
+      output = _ol_transform_.apply(matrix, [0, 0]);
       expect(output[0]).to.eql(-2);
       expect(output[1]).to.eql(0);
     });

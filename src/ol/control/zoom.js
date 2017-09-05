@@ -1,12 +1,9 @@
-goog.provide('ol.control.Zoom');
-
-goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.control.Control');
-goog.require('ol.css');
-goog.require('ol.easing');
-
+import _ol_ from '../index';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_control_Control_ from '../control/control';
+import _ol_css_ from '../css';
+import _ol_easing_ from '../easing';
 
 /**
  * @classdesc
@@ -19,7 +16,7 @@ goog.require('ol.easing');
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
  * @api
  */
-ol.control.Zoom = function(opt_options) {
+var _ol_control_Zoom_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -43,8 +40,8 @@ ol.control.Zoom = function(opt_options) {
       typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
   );
 
-  ol.events.listen(inElement, ol.events.EventType.CLICK,
-      ol.control.Zoom.prototype.handleClick_.bind(this, delta));
+  _ol_events_.listen(inElement, _ol_events_EventType_.CLICK,
+      _ol_control_Zoom_.prototype.handleClick_.bind(this, delta));
 
   var outElement = document.createElement('button');
   outElement.className = className + '-out';
@@ -54,17 +51,17 @@ ol.control.Zoom = function(opt_options) {
       typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
   );
 
-  ol.events.listen(outElement, ol.events.EventType.CLICK,
-      ol.control.Zoom.prototype.handleClick_.bind(this, -delta));
+  _ol_events_.listen(outElement, _ol_events_EventType_.CLICK,
+      _ol_control_Zoom_.prototype.handleClick_.bind(this, -delta));
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL;
+  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
+      _ol_css_.CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(inElement);
   element.appendChild(outElement);
 
-  ol.control.Control.call(this, {
+  _ol_control_Control_.call(this, {
     element: element,
     target: options.target
   });
@@ -76,7 +73,8 @@ ol.control.Zoom = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
-ol.inherits(ol.control.Zoom, ol.control.Control);
+
+_ol_.inherits(_ol_control_Zoom_, _ol_control_Control_);
 
 
 /**
@@ -84,7 +82,7 @@ ol.inherits(ol.control.Zoom, ol.control.Control);
  * @param {Event} event The event to handle
  * @private
  */
-ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
+_ol_control_Zoom_.prototype.handleClick_ = function(delta, event) {
   event.preventDefault();
   this.zoomByDelta_(delta);
 };
@@ -94,7 +92,7 @@ ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
  * @param {number} delta Zoom delta.
  * @private
  */
-ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
+_ol_control_Zoom_.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
   var view = map.getView();
   if (!view) {
@@ -112,10 +110,11 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
       view.animate({
         resolution: newResolution,
         duration: this.duration_,
-        easing: ol.easing.easeOut
+        easing: _ol_easing_.easeOut
       });
     } else {
       view.setResolution(newResolution);
     }
   }
 };
+export default _ol_control_Zoom_;

@@ -1,11 +1,11 @@
-goog.require('ol');
-goog.require('ol.Tile');
-goog.require('ol.TileRange');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.Source');
-goog.require('ol.source.Tile');
-goog.require('ol.tilegrid.TileGrid');
+import _ol_ from '../../../../src/ol';
+import _ol_Tile_ from '../../../../src/ol/tile';
+import _ol_TileRange_ from '../../../../src/ol/tilerange';
+import _ol_proj_ from '../../../../src/ol/proj';
+import _ol_proj_Projection_ from '../../../../src/ol/proj/projection';
+import _ol_source_Source_ from '../../../../src/ol/source/source';
+import _ol_source_Tile_ from '../../../../src/ol/source/tile';
+import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/tilegrid';
 
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
@@ -17,23 +17,23 @@ goog.require('ol.tilegrid.TileGrid');
  *     tile state.
  */
 var MockTile = function(tileStates) {
-  var tileGrid = new ol.tilegrid.TileGrid({
+  var tileGrid = new _ol_tilegrid_TileGrid_({
     resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
     origin: [-180, -180],
     tileSize: 256
   });
 
-  ol.source.Tile.call(this, {
-    projection: ol.proj.get('EPSG:4326'),
+  _ol_source_Tile_.call(this, {
+    projection: _ol_proj_.get('EPSG:4326'),
     tileGrid: tileGrid
   });
 
   for (var key in tileStates) {
-    this.tileCache.set(key, new ol.Tile(key.split('/'), tileStates[key]));
+    this.tileCache.set(key, new _ol_Tile_(key.split('/'), tileStates[key]));
   }
 
 };
-ol.inherits(MockTile, ol.source.Tile);
+_ol_.inherits(MockTile, _ol_source_Tile_);
 
 
 /**
@@ -44,7 +44,7 @@ MockTile.prototype.getTile = function(z, x, y) {
   if (this.tileCache.containsKey(key)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(key));
   } else {
-    var tile = new ol.Tile(key, 0); // IDLE
+    var tile = new _ol_Tile_(key, 0); // IDLE
     this.tileCache.set(key, tile);
     return tile;
   }
@@ -54,15 +54,15 @@ describe('ol.source.Tile', function() {
 
   describe('constructor', function() {
     it('returns a tile source', function() {
-      var source = new ol.source.Tile({
-        projection: ol.proj.get('EPSG:4326')
+      var source = new _ol_source_Tile_({
+        projection: _ol_proj_.get('EPSG:4326')
       });
-      expect(source).to.be.a(ol.source.Source);
-      expect(source).to.be.a(ol.source.Tile);
+      expect(source).to.be.a(_ol_source_Source_);
+      expect(source).to.be.a(_ol_source_Tile_);
     });
     it('sets a custom cache size', function() {
-      var projection = ol.proj.get('EPSG:4326');
-      var source = new ol.source.Tile({
+      var projection = _ol_proj_.get('EPSG:4326');
+      var source = new _ol_source_Tile_({
         projection: projection,
         cacheSize: 42
       });
@@ -72,7 +72,7 @@ describe('ol.source.Tile', function() {
 
   describe('#setKey()', function() {
     it('sets the source key', function() {
-      var source = new ol.source.Tile({});
+      var source = new _ol_source_Tile_({});
       expect(source.getKey()).to.equal('');
 
       var key = 'foo';
@@ -83,7 +83,7 @@ describe('ol.source.Tile', function() {
 
   describe('#setKey()', function() {
     it('dispatches a change event', function(done) {
-      var source = new ol.source.Tile({});
+      var source = new _ol_source_Tile_({});
 
       var key = 'foo';
       source.once('change', function() {
@@ -93,7 +93,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('does not dispatch change if key does not change', function(done) {
-      var source = new ol.source.Tile({});
+      var source = new _ol_source_Tile_({});
 
       var key = 'foo';
       source.once('change', function() {
@@ -152,7 +152,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new ol.TileRange(0, 1, 0, 1);
+      var range = new _ol_TileRange_(0, 1, 0, 1);
 
       source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(callback.callCount).to.be(3);
@@ -168,7 +168,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new ol.TileRange(0, 1, 0, 1);
+      var range = new _ol_TileRange_(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
           source.getProjection(), zoom, range,
@@ -188,7 +188,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new ol.TileRange(0, 1, 0, 1);
+      var range = new _ol_TileRange_(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
           source.getProjection(), zoom,
@@ -208,7 +208,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new ol.TileRange(0, 1, 0, 1);
+      var range = new _ol_TileRange_(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
           source.getProjection(), zoom, range,
@@ -223,7 +223,7 @@ describe('ol.source.Tile', function() {
   describe('#getTileCoordForTileUrlFunction()', function() {
 
     it('returns the expected tile coordinate - {wrapX: true}', function() {
-      var tileSource = new ol.source.Tile({
+      var tileSource = new _ol_source_Tile_({
         projection: 'EPSG:3857',
         wrapX: true
       });
@@ -239,7 +239,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('returns the expected tile coordinate - {wrapX: false}', function() {
-      var tileSource = new ol.source.Tile({
+      var tileSource = new _ol_source_Tile_({
         projection: 'EPSG:3857',
         wrapX: false
       });
@@ -255,8 +255,8 @@ describe('ol.source.Tile', function() {
     });
 
     it('works with wrapX and custom projection without extent', function() {
-      var tileSource = new ol.source.Tile({
-        projection: new ol.proj.Projection({
+      var tileSource = new _ol_source_Tile_({
+        projection: new _ol_proj_Projection_({
           code: 'foo',
           global: true,
           units: 'm'
@@ -277,7 +277,7 @@ describe('ol.source.Tile', function() {
       });
       // check the loaded tile is there
       var tile = source.getTile(1, 0, 0);
-      expect(tile).to.be.a(ol.Tile);
+      expect(tile).to.be.a(_ol_Tile_);
       // check tile cache is filled
       expect(source.tileCache.getCount()).to.eql(1);
       // refresh the source
@@ -295,7 +295,7 @@ describe('MockTile', function() {
   describe('constructor', function() {
     it('creates a tile source', function() {
       var source = new MockTile({});
-      expect(source).to.be.a(ol.source.Tile);
+      expect(source).to.be.a(_ol_source_Tile_);
       expect(source).to.be.a(MockTile);
     });
   });
@@ -310,17 +310,17 @@ describe('MockTile', function() {
 
       // check a loaded tile
       tile = source.getTile(0, 0, 0);
-      expect(tile).to.be.a(ol.Tile);
+      expect(tile).to.be.a(_ol_Tile_);
       expect(tile.state).to.be(2); // LOADED
 
       // check a tile that is not loaded
       tile = source.getTile(1, 0, -1);
-      expect(tile).to.be.a(ol.Tile);
+      expect(tile).to.be.a(_ol_Tile_);
       expect(tile.state).to.be(0); // IDLE
 
       // check another loaded tile
       tile = source.getTile(1, 0, 0);
-      expect(tile).to.be.a(ol.Tile);
+      expect(tile).to.be.a(_ol_Tile_);
       expect(tile.state).to.be(2); // LOADED
 
     });

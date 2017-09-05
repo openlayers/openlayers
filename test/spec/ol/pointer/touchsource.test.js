@@ -1,25 +1,25 @@
 
 
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventTarget');
-goog.require('ol.has');
-goog.require('ol.obj');
-goog.require('ol.pointer.PointerEventHandler');
+import _ol_events_ from '../../../../src/ol/events';
+import _ol_events_Event_ from '../../../../src/ol/events/event';
+import _ol_events_EventTarget_ from '../../../../src/ol/events/eventtarget';
+import _ol_has_ from '../../../../src/ol/has';
+import _ol_obj_ from '../../../../src/ol/obj';
+import _ol_pointer_PointerEventHandler_ from '../../../../src/ol/pointer/pointereventhandler';
 describe('ol.pointer.TouchSource', function() {
   var handler;
   var target;
   var eventSpy;
 
   beforeEach(function() {
-    target = new ol.events.EventTarget();
+    target = new _ol_events_EventTarget_();
 
     // make sure that a mouse and touch event source is used
-    ol.has.POINTER = false;
-    ol.has.MSPOINTER = false;
-    ol.has.TOUCH = true;
+    _ol_has_.POINTER = false;
+    _ol_has_.MSPOINTER = false;
+    _ol_has_.TOUCH = true;
 
-    handler = new ol.pointer.PointerEventHandler(target);
+    handler = new _ol_pointer_PointerEventHandler_(target);
     eventSpy = sinon.spy();
   });
 
@@ -29,7 +29,7 @@ describe('ol.pointer.TouchSource', function() {
 
   describe('pointer event creation', function() {
     it('generates pointer events for each touch contact', function() {
-      ol.events.listen(handler, 'pointerdown', eventSpy);
+      _ol_events_.listen(handler, 'pointerdown', eventSpy);
 
       simulateTouchEvent('touchstart', [
         {identifier: 3, clientX: 10, clientY: 11},
@@ -56,7 +56,7 @@ describe('ol.pointer.TouchSource', function() {
     });
 
     it('creates the right pointer events', function() {
-      ol.events.listen(handler, 'pointerdown', eventSpy);
+      _ol_events_.listen(handler, 'pointerdown', eventSpy);
 
       // first touch
       simulateTouchEvent('touchstart', [
@@ -75,7 +75,7 @@ describe('ol.pointer.TouchSource', function() {
 
       // first touch moves
       var moveEventSpy = sinon.spy();
-      ol.events.listen(handler, 'pointermove', moveEventSpy);
+      _ol_events_.listen(handler, 'pointermove', moveEventSpy);
 
       simulateTouchEvent('touchmove', [
         {identifier: 3, clientX: 15, clientY: 16}
@@ -85,7 +85,7 @@ describe('ol.pointer.TouchSource', function() {
 
       // and then both touches go up
       var upEventSpy = sinon.spy();
-      ol.events.listen(handler, 'pointerup', upEventSpy);
+      _ol_events_.listen(handler, 'pointerup', upEventSpy);
 
       simulateTouchEvent('touchend', [
         {identifier: 3, clientX: 15, clientY: 16},
@@ -97,7 +97,7 @@ describe('ol.pointer.TouchSource', function() {
     });
 
     it('handles flawed touches', function() {
-      ol.events.listen(handler, 'pointerdown', eventSpy);
+      _ol_events_.listen(handler, 'pointerdown', eventSpy);
 
       // first touch
       simulateTouchEvent('touchstart', [
@@ -108,7 +108,7 @@ describe('ol.pointer.TouchSource', function() {
 
       // second touch, but the first touch has disappeared
       var cancelEventSpy = sinon.spy();
-      ol.events.listen(handler, 'pointercancel', cancelEventSpy);
+      _ol_events_.listen(handler, 'pointercancel', cancelEventSpy);
       simulateTouchEvent('touchstart', [
         {identifier: 4, clientX: 30, clientY: 45}
       ], [{identifier: 4}]
@@ -124,8 +124,8 @@ describe('ol.pointer.TouchSource', function() {
   function simulateTouchEvent(type, changedTouches, touches) {
     touches = touches !== undefined ? touches : changedTouches;
 
-    var event = new ol.events.Event(type);
-    ol.obj.assign(event, {
+    var event = new _ol_events_Event_(type);
+    _ol_obj_.assign(event, {
       touches: touches,
       changedTouches: changedTouches
     });

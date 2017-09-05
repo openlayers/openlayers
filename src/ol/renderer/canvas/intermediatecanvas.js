@@ -1,12 +1,9 @@
-goog.provide('ol.renderer.canvas.IntermediateCanvas');
-
-goog.require('ol');
-goog.require('ol.coordinate');
-goog.require('ol.dom');
-goog.require('ol.extent');
-goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.transform');
-
+import _ol_ from '../../index';
+import _ol_coordinate_ from '../../coordinate';
+import _ol_dom_ from '../../dom';
+import _ol_extent_ from '../../extent';
+import _ol_renderer_canvas_Layer_ from '../canvas/layer';
+import _ol_transform_ from '../../transform';
 
 /**
  * @constructor
@@ -14,15 +11,15 @@ goog.require('ol.transform');
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.layer.Layer} layer Layer.
  */
-ol.renderer.canvas.IntermediateCanvas = function(layer) {
+var _ol_renderer_canvas_IntermediateCanvas_ = function(layer) {
 
-  ol.renderer.canvas.Layer.call(this, layer);
+  _ol_renderer_canvas_Layer_.call(this, layer);
 
   /**
    * @protected
    * @type {ol.Transform}
    */
-  this.coordinateToCanvasPixelTransform = ol.transform.create();
+  this.coordinateToCanvasPixelTransform = _ol_transform_.create();
 
   /**
    * @private
@@ -31,13 +28,14 @@ ol.renderer.canvas.IntermediateCanvas = function(layer) {
   this.hitCanvasContext_ = null;
 
 };
-ol.inherits(ol.renderer.canvas.IntermediateCanvas, ol.renderer.canvas.Layer);
+
+_ol_.inherits(_ol_renderer_canvas_IntermediateCanvas_, _ol_renderer_canvas_Layer_);
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.composeFrame = function(frameState, layerState, context) {
+_ol_renderer_canvas_IntermediateCanvas_.prototype.composeFrame = function(frameState, layerState, context) {
 
   this.preCompose(context, frameState);
 
@@ -47,8 +45,8 @@ ol.renderer.canvas.IntermediateCanvas.prototype.composeFrame = function(frameSta
     // clipped rendering if layer extent is set
     var extent = layerState.extent;
     var clipped = extent !== undefined &&
-        !ol.extent.containsExtent(extent, frameState.extent) &&
-        ol.extent.intersects(extent, frameState.extent);
+        !_ol_extent_.containsExtent(extent, frameState.extent) &&
+        _ol_extent_.intersects(extent, frameState.extent);
     if (clipped) {
       this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
     }
@@ -83,20 +81,20 @@ ol.renderer.canvas.IntermediateCanvas.prototype.composeFrame = function(frameSta
  * @abstract
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.getImage = function() {};
+_ol_renderer_canvas_IntermediateCanvas_.prototype.getImage = function() {};
 
 
 /**
  * @abstract
  * @return {!ol.Transform} Image transform.
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.getImageTransform = function() {};
+_ol_renderer_canvas_IntermediateCanvas_.prototype.getImageTransform = function() {};
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+_ol_renderer_canvas_IntermediateCanvas_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -117,21 +115,21 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate = fun
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+_ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
 
-  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== ol.nullFunction) {
+  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== _ol_.nullFunction) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    return ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
+    return _ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {
-    var pixel = ol.transform.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
-    ol.coordinate.scale(pixel, frameState.viewState.resolution / this.renderedResolution);
+    var pixel = _ol_transform_.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
+    _ol_coordinate_.scale(pixel, frameState.viewState.resolution / this.renderedResolution);
 
     if (!this.hitCanvasContext_) {
-      this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
+      this.hitCanvasContext_ = _ol_dom_.createCanvasContext2D(1, 1);
     }
 
     this.hitCanvasContext_.clearRect(0, 0, 1, 1);
@@ -145,3 +143,4 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = funct
     }
   }
 };
+export default _ol_renderer_canvas_IntermediateCanvas_;

@@ -1,12 +1,12 @@
 // NOCOMPILE
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.source.OSM');
-goog.require('ol.source.VectorTile');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.proj.Projection');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_VectorTile_ from '../src/ol/source/vectortile';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_VectorTile_ from '../src/ol/layer/vectortile';
+import _ol_proj_Projection_ from '../src/ol/proj/projection';
 
 
 var replacer = function(key, value) {
@@ -48,19 +48,19 @@ var replacer = function(key, value) {
   }
 };
 
-var tilePixels = new ol.proj.Projection({
+var tilePixels = new _ol_proj_Projection_({
   code: 'TILE_PIXELS',
   units: 'tile-pixels'
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
@@ -74,8 +74,8 @@ fetch(url).then(function(response) {
     extent: 4096,
     debug: 1
   });
-  var vectorSource = new ol.source.VectorTile({
-    format: new ol.format.GeoJSON(),
+  var vectorSource = new _ol_source_VectorTile_({
+    format: new _ol_format_GeoJSON_(),
     tileLoadFunction: function(tile) {
       var format = tile.getFormat();
       var tileCoord = tile.getTileCoord();
@@ -93,7 +93,7 @@ fetch(url).then(function(response) {
     },
     url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
   });
-  var vectorLayer = new ol.layer.VectorTile({
+  var vectorLayer = new _ol_layer_VectorTile_({
     source: vectorSource
   });
   map.addLayer(vectorLayer);

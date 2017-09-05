@@ -1,20 +1,17 @@
-goog.provide('ol.render.webgl.LineStringReplay');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.color');
-goog.require('ol.extent');
-goog.require('ol.geom.flat.orient');
-goog.require('ol.geom.flat.transform');
-goog.require('ol.geom.flat.topology');
-goog.require('ol.obj');
-goog.require('ol.render.webgl');
-goog.require('ol.render.webgl.Replay');
-goog.require('ol.render.webgl.linestringreplay.defaultshader');
-goog.require('ol.render.webgl.linestringreplay.defaultshader.Locations');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Buffer');
-
+import _ol_ from '../../index';
+import _ol_array_ from '../../array';
+import _ol_color_ from '../../color';
+import _ol_extent_ from '../../extent';
+import _ol_geom_flat_orient_ from '../../geom/flat/orient';
+import _ol_geom_flat_transform_ from '../../geom/flat/transform';
+import _ol_geom_flat_topology_ from '../../geom/flat/topology';
+import _ol_obj_ from '../../obj';
+import _ol_render_webgl_ from '../webgl';
+import _ol_render_webgl_Replay_ from '../webgl/replay';
+import _ol_render_webgl_linestringreplay_defaultshader_ from '../webgl/linestringreplay/defaultshader';
+import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../webgl/linestringreplay/defaultshader/locations';
+import _ol_webgl_ from '../../webgl';
+import _ol_webgl_Buffer_ from '../../webgl/buffer';
 
 /**
  * @constructor
@@ -23,8 +20,8 @@ goog.require('ol.webgl.Buffer');
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
-  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+var _ol_render_webgl_LineStringReplay_ = function(tolerance, maxExtent) {
+  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -67,7 +64,8 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
   };
 
 };
-ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
+
+_ol_.inherits(_ol_render_webgl_LineStringReplay_, _ol_render_webgl_Replay_);
 
 
 /**
@@ -78,7 +76,7 @@ ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+_ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
 
   var i, ii;
   var numVertices = this.vertices.length;
@@ -90,7 +88,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     this.state_.lineJoin === 'miter' ? 1 : 2;
   var lineCap = this.state_.lineCap === 'butt' ? 0 :
     this.state_.lineCap === 'square' ? 1 : 2;
-  var closed = ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, offset, end, stride);
+  var closed = _ol_geom_flat_topology_.lineStringIsClosed(flatCoordinates, offset, end, stride);
   var startCoords, sign, n;
   var lastIndex = numIndices;
   var lastSign = 1;
@@ -106,7 +104,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     //First vertex.
     if (i === offset) {
       p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
-      if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
+      if (end - offset === stride * 2 && _ol_array_.equals(p1, p2)) {
         break;
       }
       if (closed) {
@@ -120,10 +118,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
         if (lineCap) {
           numVertices = this.addVertices_([0, 0], p1, p2,
-              lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+              lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_([0, 0], p1, p2,
-              -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+              -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -136,10 +134,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         }
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-            lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+            lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-            -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+            -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
 
         lastIndex = numVertices / 7 - 1;
 
@@ -155,10 +153,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-            lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
+            lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-            -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
+            -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE * (lineCap || 1), numVertices);
 
         this.indices[numIndices++] = n;
         this.indices[numIndices++] = lastIndex - 1;
@@ -170,10 +168,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
         if (lineCap) {
           numVertices = this.addVertices_(p0, p1, [0, 0],
-              lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
+              lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_(p0, p1, [0, 0],
-              -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
+              -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -192,17 +190,17 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     }
 
     // We group CW and straight lines, thus the not so inituitive CCW checking function.
-    sign = ol.render.webgl.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
+    sign = _ol_render_webgl_.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
       ? -1 : 1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+        sign * _ol_render_webgl_LineStringReplay_.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
+        sign * _ol_render_webgl_LineStringReplay_.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+        -sign * _ol_render_webgl_LineStringReplay_.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     if (i > offset) {
       this.indices[numIndices++] = n;
@@ -224,7 +222,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     //Add miter
     if (lineJoin) {
       numVertices = this.addVertices_(p0, p1, p2,
-          sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_TOP * lineJoin, numVertices);
+          sign * _ol_render_webgl_LineStringReplay_.Instruction_.MITER_TOP * lineJoin, numVertices);
 
       this.indices[numIndices++] = n + 1;
       this.indices[numIndices++] = n + 3;
@@ -234,14 +232,14 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
   if (closed) {
     n = n || numVertices / 7;
-    sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
+    sign = _ol_geom_flat_orient_.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
       ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+        sign * _ol_render_webgl_LineStringReplay_.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+        -sign * _ol_render_webgl_LineStringReplay_.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     this.indices[numIndices++] = n;
     this.indices[numIndices++] = lastIndex - 1;
@@ -262,7 +260,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
  * @return {number} Vertex counter.
  * @private
  */
-ol.render.webgl.LineStringReplay.prototype.addVertices_ = function(p0, p1, p2, product, numVertices) {
+_ol_render_webgl_LineStringReplay_.prototype.addVertices_ = function(p0, p1, p2, product, numVertices) {
   this.vertices[numVertices++] = p0[0];
   this.vertices[numVertices++] = p0[1];
   this.vertices[numVertices++] = p1[0];
@@ -283,14 +281,14 @@ ol.render.webgl.LineStringReplay.prototype.addVertices_ = function(p0, p1, p2, p
  * @return {boolean} The linestring can be drawn.
  * @private
  */
-ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
+_ol_render_webgl_LineStringReplay_.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
   var range = end - offset;
   if (range < stride * 2) {
     return false;
   } else if (range === stride * 2) {
     var firstP = [flatCoordinates[offset], flatCoordinates[offset + 1]];
     var lastP = [flatCoordinates[offset + stride], flatCoordinates[offset + stride + 1]];
-    return !ol.array.equals(firstP, lastP);
+    return !_ol_array_.equals(firstP, lastP);
   }
 
   return true;
@@ -300,11 +298,11 @@ ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, 
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
+_ol_render_webgl_LineStringReplay_.prototype.drawLineString = function(lineStringGeometry, feature) {
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-    flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+    flatCoordinates = _ol_geom_flat_transform_.translate(flatCoordinates, 0, flatCoordinates.length,
         stride, -this.origin[0], -this.origin[1]);
     if (this.state_.changed) {
       this.styleIndices_.push(this.indices.length);
@@ -321,7 +319,7 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
+_ol_render_webgl_LineStringReplay_.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
   var indexCount = this.indices.length;
   var ends = multiLineStringGeometry.getEnds();
   ends.unshift(0);
@@ -331,7 +329,7 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
   if (ends.length > 1) {
     for (i = 1, ii = ends.length; i < ii; ++i) {
       if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
-        var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
+        var lineString = _ol_geom_flat_transform_.translate(flatCoordinates, ends[i - 1], ends[i],
             stride, -this.origin[0], -this.origin[1]);
         this.drawCoordinates_(
             lineString, 0, lineString.length, stride);
@@ -354,9 +352,9 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
  * @param {Array.<Array.<number>>} holeFlatCoordinates Hole flat coordinates.
  * @param {number} stride Stride.
  */
-ol.render.webgl.LineStringReplay.prototype.drawPolygonCoordinates = function(
+_ol_render_webgl_LineStringReplay_.prototype.drawPolygonCoordinates = function(
     flatCoordinates, holeFlatCoordinates, stride) {
-  if (!ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, 0,
+  if (!_ol_geom_flat_topology_.lineStringIsClosed(flatCoordinates, 0,
       flatCoordinates.length, stride)) {
     flatCoordinates.push(flatCoordinates[0]);
     flatCoordinates.push(flatCoordinates[1]);
@@ -365,7 +363,7 @@ ol.render.webgl.LineStringReplay.prototype.drawPolygonCoordinates = function(
   if (holeFlatCoordinates.length) {
     var i, ii;
     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-      if (!ol.geom.flat.topology.lineStringIsClosed(holeFlatCoordinates[i], 0,
+      if (!_ol_geom_flat_topology_.lineStringIsClosed(holeFlatCoordinates[i], 0,
           holeFlatCoordinates[i].length, stride)) {
         holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
         holeFlatCoordinates[i].push(holeFlatCoordinates[i][1]);
@@ -381,7 +379,7 @@ ol.render.webgl.LineStringReplay.prototype.drawPolygonCoordinates = function(
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number=} opt_index Index count.
  */
-ol.render.webgl.LineStringReplay.prototype.setPolygonStyle = function(feature, opt_index) {
+_ol_render_webgl_LineStringReplay_.prototype.setPolygonStyle = function(feature, opt_index) {
   var index = opt_index === undefined ? this.indices.length : opt_index;
   this.startIndices.push(index);
   this.startIndicesFeature.push(feature);
@@ -395,7 +393,7 @@ ol.render.webgl.LineStringReplay.prototype.setPolygonStyle = function(feature, o
 /**
  * @return {number} Current index.
  */
-ol.render.webgl.LineStringReplay.prototype.getCurrentIndex = function() {
+_ol_render_webgl_LineStringReplay_.prototype.getCurrentIndex = function() {
   return this.indices.length;
 };
 
@@ -403,12 +401,12 @@ ol.render.webgl.LineStringReplay.prototype.getCurrentIndex = function() {
 /**
  * @inheritDoc
  **/
-ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
+_ol_render_webgl_LineStringReplay_.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
 
   this.startIndices.push(this.indices.length);
 
@@ -425,7 +423,7 @@ ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function(context) {
+_ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction = function(context) {
   var verticesBuffer = this.verticesBuffer;
   var indicesBuffer = this.indicesBuffer;
   return function() {
@@ -438,17 +436,17 @@ ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+_ol_render_webgl_LineStringReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
   var fragmentShader, vertexShader;
-  fragmentShader = ol.render.webgl.linestringreplay.defaultshader.fragment;
-  vertexShader = ol.render.webgl.linestringreplay.defaultshader.vertex;
+  fragmentShader = _ol_render_webgl_linestringreplay_defaultshader_.fragment;
+  vertexShader = _ol_render_webgl_linestringreplay_defaultshader_.vertex;
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
-    locations = new ol.render.webgl.linestringreplay.defaultshader.Locations(gl, program);
+    locations = new _ol_render_webgl_linestringreplay_defaultshader_Locations_(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;
@@ -458,19 +456,19 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, 
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_lastPos);
-  gl.vertexAttribPointer(locations.a_lastPos, 2, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_lastPos, 2, _ol_webgl_.FLOAT,
       false, 28, 0);
 
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
       false, 28, 8);
 
   gl.enableVertexAttribArray(locations.a_nextPos);
-  gl.vertexAttribPointer(locations.a_nextPos, 2, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_nextPos, 2, _ol_webgl_.FLOAT,
       false, 28, 16);
 
   gl.enableVertexAttribArray(locations.a_direction);
-  gl.vertexAttribPointer(locations.a_direction, 1, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_direction, 1, _ol_webgl_.FLOAT,
       false, 28, 24);
 
   // Enable renderer specific uniforms.
@@ -484,7 +482,7 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, 
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.shutDownProgram = function(gl, locations) {
+_ol_render_webgl_LineStringReplay_.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_lastPos);
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_nextPos);
@@ -495,7 +493,7 @@ ol.render.webgl.LineStringReplay.prototype.shutDownProgram = function(gl, locati
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+_ol_render_webgl_LineStringReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
   var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
   var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
@@ -506,7 +504,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
     gl.depthFunc(gl.NOTEQUAL);
   }
 
-  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     //Draw by style groups to minimize drawElements() calls.
@@ -537,7 +535,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
-ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+_ol_render_webgl_LineStringReplay_.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -550,7 +548,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, co
         this.startIndices[featureIndex] >= groupStart) {
       featureStart = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = ol.getUid(feature).toString();
+      featureUid = _ol_.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid]) {
         if (start !== end) {
@@ -574,7 +572,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, co
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
+_ol_render_webgl_LineStringReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
@@ -588,11 +586,11 @@ ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne = func
         this.startIndices[featureIndex] >= groupStart) {
       start = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = ol.getUid(feature).toString();
+      featureUid = _ol_.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
-          (opt_hitExtent === undefined || ol.extent.intersects(
+          (opt_hitExtent === undefined || _ol_extent_.intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -620,7 +618,7 @@ ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne = func
  * @param {number} lineWidth Line width.
  * @param {number} miterLimit Miter limit.
  */
-ol.render.webgl.LineStringReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
+_ol_render_webgl_LineStringReplay_.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
   gl.uniform4fv(this.defaultLocations_.u_color, color);
   gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
   gl.uniform1f(this.defaultLocations_.u_miterLimit, miterLimit);
@@ -630,35 +628,35 @@ ol.render.webgl.LineStringReplay.prototype.setStrokeStyle_ = function(gl, color,
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+_ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   var strokeStyleLineCap = strokeStyle.getLineCap();
   this.state_.lineCap = strokeStyleLineCap !== undefined ?
-    strokeStyleLineCap : ol.render.webgl.defaultLineCap;
+    strokeStyleLineCap : _ol_render_webgl_.defaultLineCap;
   var strokeStyleLineDash = strokeStyle.getLineDash();
   this.state_.lineDash = strokeStyleLineDash ?
-    strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+    strokeStyleLineDash : _ol_render_webgl_.defaultLineDash;
   var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
   this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-    strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+    strokeStyleLineDashOffset : _ol_render_webgl_.defaultLineDashOffset;
   var strokeStyleLineJoin = strokeStyle.getLineJoin();
   this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
-    strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
+    strokeStyleLineJoin : _ol_render_webgl_.defaultLineJoin;
   var strokeStyleColor = strokeStyle.getColor();
   if (!(strokeStyleColor instanceof CanvasGradient) &&
       !(strokeStyleColor instanceof CanvasPattern)) {
-    strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
+    strokeStyleColor = _ol_color_.asArray(strokeStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
-    }) || ol.render.webgl.defaultStrokeStyle;
+    }) || _ol_render_webgl_.defaultStrokeStyle;
   } else {
-    strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
+    strokeStyleColor = _ol_render_webgl_.defaultStrokeStyle;
   }
   var strokeStyleWidth = strokeStyle.getWidth();
   strokeStyleWidth = strokeStyleWidth !== undefined ?
-    strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+    strokeStyleWidth : _ol_render_webgl_.defaultLineWidth;
   var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
   strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
-    strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
-  if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
+    strokeStyleMiterLimit : _ol_render_webgl_.defaultMiterLimit;
+  if (!this.state_.strokeColor || !_ol_array_.equals(this.state_.strokeColor, strokeStyleColor) ||
       this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
     this.state_.changed = true;
     this.state_.strokeColor = strokeStyleColor;
@@ -672,7 +670,7 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
  * @enum {number}
  * @private
  */
-ol.render.webgl.LineStringReplay.Instruction_ = {
+_ol_render_webgl_LineStringReplay_.Instruction_ = {
   ROUND: 2,
   BEGIN_LINE: 3,
   END_LINE: 5,
@@ -683,3 +681,4 @@ ol.render.webgl.LineStringReplay.Instruction_ = {
   MITER_BOTTOM: 19,
   MITER_TOP: 23
 };
+export default _ol_render_webgl_LineStringReplay_;

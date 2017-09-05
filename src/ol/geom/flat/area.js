@@ -1,4 +1,4 @@
-goog.provide('ol.geom.flat.area');
+var _ol_geom_flat_area_ = {};
 
 
 /**
@@ -8,7 +8,7 @@ goog.provide('ol.geom.flat.area');
  * @param {number} stride Stride.
  * @return {number} Area.
  */
-ol.geom.flat.area.linearRing = function(flatCoordinates, offset, end, stride) {
+_ol_geom_flat_area_.linearRing = function(flatCoordinates, offset, end, stride) {
   var twiceArea = 0;
   var x1 = flatCoordinates[end - stride];
   var y1 = flatCoordinates[end - stride + 1];
@@ -30,12 +30,12 @@ ol.geom.flat.area.linearRing = function(flatCoordinates, offset, end, stride) {
  * @param {number} stride Stride.
  * @return {number} Area.
  */
-ol.geom.flat.area.linearRings = function(flatCoordinates, offset, ends, stride) {
+_ol_geom_flat_area_.linearRings = function(flatCoordinates, offset, ends, stride) {
   var area = 0;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    area += ol.geom.flat.area.linearRing(flatCoordinates, offset, end, stride);
+    area += _ol_geom_flat_area_.linearRing(flatCoordinates, offset, end, stride);
     offset = end;
   }
   return area;
@@ -49,14 +49,15 @@ ol.geom.flat.area.linearRings = function(flatCoordinates, offset, ends, stride) 
  * @param {number} stride Stride.
  * @return {number} Area.
  */
-ol.geom.flat.area.linearRingss = function(flatCoordinates, offset, endss, stride) {
+_ol_geom_flat_area_.linearRingss = function(flatCoordinates, offset, endss, stride) {
   var area = 0;
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     area +=
-        ol.geom.flat.area.linearRings(flatCoordinates, offset, ends, stride);
+        _ol_geom_flat_area_.linearRings(flatCoordinates, offset, ends, stride);
     offset = ends[ends.length - 1];
   }
   return area;
 };
+export default _ol_geom_flat_area_;

@@ -1,9 +1,9 @@
 
 
-goog.require('ol.Disposable');
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventTarget');
+import _ol_Disposable_ from '../../../../src/ol/disposable';
+import _ol_events_ from '../../../../src/ol/events';
+import _ol_events_Event_ from '../../../../src/ol/events/event';
+import _ol_events_EventTarget_ from '../../../../src/ol/events/eventtarget';
 
 
 describe('ol.events.EventTarget', function() {
@@ -19,13 +19,13 @@ describe('ol.events.EventTarget', function() {
     spy1 = spy.bind({id: 1});
     spy2 = spy.bind({id: 2});
     spy3 = spy.bind({id: 3});
-    eventTarget = new ol.events.EventTarget();
+    eventTarget = new _ol_events_EventTarget_();
   });
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      expect(eventTarget).to.be.a(ol.events.EventTarget);
-      expect(eventTarget).to.be.a(ol.Disposable);
+      expect(eventTarget).to.be.a(_ol_events_EventTarget_);
+      expect(eventTarget).to.be.a(_ol_Disposable_);
     });
     it('creates an empty listeners_ object', function() {
       expect(Object.keys(eventTarget.listeners_)).to.have.length(0);
@@ -107,7 +107,7 @@ describe('ol.events.EventTarget', function() {
     it('passes a default ol.events.Event object to listeners', function() {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.dispatchEvent('foo');
-      expect(events[0]).to.be.a(ol.events.Event);
+      expect(events[0]).to.be.a(_ol_events_Event_);
       expect(events[0].type).to.be('foo');
       expect(events[0].target).to.equal(eventTarget);
     });
@@ -156,7 +156,7 @@ describe('ol.events.EventTarget', function() {
 
   describe('#dispose()', function() {
     it('cleans up foreign references', function() {
-      ol.events.listen(eventTarget, 'foo', spy1, document);
+      _ol_events_.listen(eventTarget, 'foo', spy1, document);
       expect(eventTarget.hasListener('foo')).to.be(true);
       eventTarget.dispose();
       expect(eventTarget.hasListener('foo')).to.be(false);

@@ -1,16 +1,16 @@
 
 
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.interaction.Translate');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');
+import _ol_Collection_ from '../../../../src/ol/collection';
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/mapbrowserpointerevent';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_interaction_Translate_ from '../../../../src/ol/interaction/translate';
+import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/interaction';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
 
 
 describe('ol.interaction.Translate', function() {
@@ -28,18 +28,18 @@ describe('ol.interaction.Translate', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new ol.source.Vector();
-    features = [new ol.Feature({
-      geometry: new ol.geom.Point([10, -20])
-    }), new ol.Feature({
-      geometry: new ol.geom.Point([20, -30])
+    source = new _ol_source_Vector_();
+    features = [new _ol_Feature_({
+      geometry: new _ol_geom_Point_([10, -20])
+    }), new _ol_Feature_({
+      geometry: new _ol_geom_Point_([20, -30])
     })];
     source.addFeatures(features);
-    var layer = new ol.layer.Vector({source: source});
-    map = new ol.Map({
+    var layer = new _ol_layer_Vector_({source: source});
+    map = new _ol_Map_({
       target: target,
       layers: [layer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -68,8 +68,8 @@ describe('ol.interaction.Translate', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new ol.MapBrowserPointerEvent(type, map,
-        new ol.pointer.PointerEvent(type, {
+    var event = new _ol_MapBrowserPointerEvent_(type, map,
+        new _ol_pointer_PointerEvent_(type, {
           clientX: position.left + x + width / 2,
           clientY: position.top + y + height / 2,
           shiftKey: shiftKey
@@ -111,11 +111,11 @@ describe('ol.interaction.Translate', function() {
     var endevent = events[events.length - 1];
 
     // first event should be translatestart
-    expect(startevent).to.be.an(ol.interaction.Translate.Event);
+    expect(startevent).to.be.an(_ol_interaction_Translate_.Event);
     expect(startevent.type).to.eql('translatestart');
 
     // last event should be translateend
-    expect(endevent).to.be.an(ol.interaction.Translate.Event);
+    expect(endevent).to.be.an(_ol_interaction_Translate_.Event);
     expect(endevent.type).to.eql('translateend');
 
     // make sure we get change events to events array
@@ -134,11 +134,11 @@ describe('ol.interaction.Translate', function() {
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var translate = new ol.interaction.Translate({
+      var translate = new _ol_interaction_Translate_({
         features: features
       });
-      expect(translate).to.be.a(ol.interaction.Translate);
-      expect(translate).to.be.a(ol.interaction.Interaction);
+      expect(translate).to.be.a(_ol_interaction_Translate_);
+      expect(translate).to.be.a(_ol_interaction_Interaction_);
     });
 
   });
@@ -146,7 +146,7 @@ describe('ol.interaction.Translate', function() {
   describe('setActive', function() {
 
     it('works when the map is not set', function() {
-      var translate = new ol.interaction.Translate({
+      var translate = new _ol_interaction_Translate_({
         features: features
       });
       expect(translate.getActive()).to.be(true);
@@ -160,8 +160,8 @@ describe('ol.interaction.Translate', function() {
     var translate;
 
     beforeEach(function() {
-      translate = new ol.interaction.Translate({
-        features: new ol.Collection([features[0]])
+      translate = new _ol_interaction_Translate_({
+        features: new _ol_Collection_([features[0]])
       });
       map.addInteraction(translate);
     });
@@ -174,7 +174,7 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Point);
+      expect(geometry).to.be.a(_ol_geom_Point_);
       expect(geometry.getCoordinates()).to.eql([50, 40]);
 
       validateEvents(events, [features[0]]);
@@ -188,7 +188,7 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       var geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Point);
+      expect(geometry).to.be.a(_ol_geom_Point_);
       expect(geometry.getCoordinates()).to.eql([20, -30]);
 
       expect(events).to.be.empty();
@@ -199,7 +199,7 @@ describe('ol.interaction.Translate', function() {
     var translate;
 
     beforeEach(function() {
-      translate = new ol.interaction.Translate();
+      translate = new _ol_interaction_Translate_();
       map.addInteraction(translate);
     });
 
@@ -221,7 +221,7 @@ describe('ol.interaction.Translate', function() {
     var element, translate;
 
     beforeEach(function() {
-      translate = new ol.interaction.Translate();
+      translate = new _ol_interaction_Translate_();
       map.addInteraction(translate);
       element = map.getViewport();
     });

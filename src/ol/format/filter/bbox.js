@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.Bbox');
-
-goog.require('ol');
-goog.require('ol.format.filter.Filter');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Filter_ from '../filter/filter';
 
 /**
  * @classdesc
@@ -17,9 +14,9 @@ goog.require('ol.format.filter.Filter');
  * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.filter.Bbox = function(geometryName, extent, opt_srsName) {
+var _ol_format_filter_Bbox_ = function(geometryName, extent, opt_srsName) {
 
-  ol.format.filter.Filter.call(this, 'BBOX');
+  _ol_format_filter_Filter_.call(this, 'BBOX');
 
   /**
    * @public
@@ -39,4 +36,6 @@ ol.format.filter.Bbox = function(geometryName, extent, opt_srsName) {
    */
   this.srsName = opt_srsName;
 };
-ol.inherits(ol.format.filter.Bbox, ol.format.filter.Filter);
+
+_ol_.inherits(_ol_format_filter_Bbox_, _ol_format_filter_Filter_);
+export default _ol_format_filter_Bbox_;

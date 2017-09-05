@@ -1,5 +1,3 @@
-goog.provide('ol.structs.LinkedList');
-
 /**
  * Creates an empty linked list structure.
  *
@@ -8,7 +6,7 @@ goog.provide('ol.structs.LinkedList');
  * @param {boolean=} opt_circular The last item is connected to the first one,
  * and the first item to the last one. Default is true.
  */
-ol.structs.LinkedList = function(opt_circular) {
+var _ol_structs_LinkedList_ = function(opt_circular) {
 
   /**
    * @private
@@ -46,7 +44,7 @@ ol.structs.LinkedList = function(opt_circular) {
  *
  * @param {?} data Item data.
  */
-ol.structs.LinkedList.prototype.insertItem = function(data) {
+_ol_structs_LinkedList_.prototype.insertItem = function(data) {
 
   /** @type {ol.LinkedListItem} */
   var item = {
@@ -87,7 +85,7 @@ ol.structs.LinkedList.prototype.insertItem = function(data) {
  * Removes the current item from the list. Sets the cursor to the next item,
  * if possible.
  */
-ol.structs.LinkedList.prototype.removeItem = function() {
+_ol_structs_LinkedList_.prototype.removeItem = function() {
   var head = this.head_;
   if (head) {
     var next = head.next;
@@ -118,7 +116,7 @@ ol.structs.LinkedList.prototype.removeItem = function() {
  *
  * @return {?} Item data.
  */
-ol.structs.LinkedList.prototype.firstItem = function() {
+_ol_structs_LinkedList_.prototype.firstItem = function() {
   this.head_ = this.first_;
   if (this.head_) {
     return this.head_.data;
@@ -131,7 +129,7 @@ ol.structs.LinkedList.prototype.firstItem = function() {
 *
 * @return {?} Item data.
 */
-ol.structs.LinkedList.prototype.lastItem = function() {
+_ol_structs_LinkedList_.prototype.lastItem = function() {
   this.head_ = this.last_;
   if (this.head_) {
     return this.head_.data;
@@ -144,7 +142,7 @@ ol.structs.LinkedList.prototype.lastItem = function() {
  *
  * @return {?} Item data.
  */
-ol.structs.LinkedList.prototype.nextItem = function() {
+_ol_structs_LinkedList_.prototype.nextItem = function() {
   if (this.head_ && this.head_.next) {
     this.head_ = this.head_.next;
     return this.head_.data;
@@ -157,7 +155,7 @@ ol.structs.LinkedList.prototype.nextItem = function() {
  *
  * @return {?} Item data.
  */
-ol.structs.LinkedList.prototype.getNextItem = function() {
+_ol_structs_LinkedList_.prototype.getNextItem = function() {
   if (this.head_ && this.head_.next) {
     return this.head_.next.data;
   }
@@ -169,7 +167,7 @@ ol.structs.LinkedList.prototype.getNextItem = function() {
  *
  * @return {?} Item data.
  */
-ol.structs.LinkedList.prototype.prevItem = function() {
+_ol_structs_LinkedList_.prototype.prevItem = function() {
   if (this.head_ && this.head_.prev) {
     this.head_ = this.head_.prev;
     return this.head_.data;
@@ -182,7 +180,7 @@ ol.structs.LinkedList.prototype.prevItem = function() {
  *
  * @return {?} Item data.
  */
-ol.structs.LinkedList.prototype.getPrevItem = function() {
+_ol_structs_LinkedList_.prototype.getPrevItem = function() {
   if (this.head_ && this.head_.prev) {
     return this.head_.prev.data;
   }
@@ -194,7 +192,7 @@ ol.structs.LinkedList.prototype.getPrevItem = function() {
  *
  * @return {?} Item data.
  */
-ol.structs.LinkedList.prototype.getCurrItem = function() {
+_ol_structs_LinkedList_.prototype.getCurrItem = function() {
   if (this.head_) {
     return this.head_.data;
   }
@@ -205,7 +203,7 @@ ol.structs.LinkedList.prototype.getCurrItem = function() {
  * Sets the first item of the list. This only works for circular lists, and sets
  * the last item accordingly.
  */
-ol.structs.LinkedList.prototype.setFirstItem = function() {
+_ol_structs_LinkedList_.prototype.setFirstItem = function() {
   if (this.circular_ && this.head_) {
     this.first_ = this.head_;
     this.last_ = this.head_.prev;
@@ -216,7 +214,7 @@ ol.structs.LinkedList.prototype.setFirstItem = function() {
  * Concatenates two lists.
  * @param {ol.structs.LinkedList} list List to merge into the current list.
  */
-ol.structs.LinkedList.prototype.concat = function(list) {
+_ol_structs_LinkedList_.prototype.concat = function(list) {
   if (list.head_) {
     if (this.head_) {
       var end = this.head_.next;
@@ -243,6 +241,7 @@ ol.structs.LinkedList.prototype.concat = function(list) {
  *
  * @return {number} Length.
  */
-ol.structs.LinkedList.prototype.getLength = function() {
+_ol_structs_LinkedList_.prototype.getLength = function() {
   return this.length_;
 };
+export default _ol_structs_LinkedList_;

@@ -1,11 +1,11 @@
 // NOCOMPILE
 // this example uses d3 for which we don't have an externs file.
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.BingMaps');
-goog.require('ol.source.Raster');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_source_BingMaps_ from '../src/ol/source/bingmaps';
+import _ol_source_Raster_ from '../src/ol/source/raster';
 
 var minVgi = 0;
 var maxVgi = 0.25;
@@ -49,7 +49,7 @@ function summarize(value, counts) {
 /**
  * Use aerial imagery as the input data for the raster source.
  */
-var bing = new ol.source.BingMaps({
+var bing = new _ol_source_BingMaps_({
   key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
   imagerySet: 'Aerial'
 });
@@ -59,7 +59,7 @@ var bing = new ol.source.BingMaps({
  * Create a raster source where pixels with VGI values above a threshold will
  * be colored green.
  */
-var raster = new ol.source.Raster({
+var raster = new _ol_source_Raster_({
   sources: [bing],
   /**
    * Run calculations on pixel data.
@@ -110,17 +110,17 @@ raster.on('afteroperations', function(event) {
   schedulePlot(event.resolution, event.data.counts, event.data.threshold);
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
+    new _ol_layer_Tile_({
       source: bing
     }),
-    new ol.layer.Image({
+    new _ol_layer_Image_({
       source: raster
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-9651695, 4937351],
     zoom: 13,
     minZoom: 12,

@@ -1,17 +1,17 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.control.Control');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_control_Control_ from '../../../../src/ol/control/control';
 
 describe('ol.control.Control', function() {
   var map, control;
 
   beforeEach(function() {
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: document.createElement('div')
     });
     var element = document.createElement('DIV');
-    control = new ol.control.Control({element: element});
+    control = new _ol_control_Control_({element: element});
     control.setMap(map);
   });
 
@@ -35,7 +35,7 @@ describe('ol.control.Control\'s target', function() {
       var target = document.createElement('div');
       target.id = 'mycontrol';
       document.body.appendChild(target);
-      var ctrl = new ol.control.Control({target: 'mycontrol'});
+      var ctrl = new _ol_control_Control_({target: 'mycontrol'});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
       target.parentNode.removeChild(target);
@@ -44,13 +44,13 @@ describe('ol.control.Control\'s target', function() {
       var target = document.createElement('div');
       target.id = 'mycontrol';
       document.body.appendChild(target);
-      var ctrl = new ol.control.Control({target: target});
+      var ctrl = new _ol_control_Control_({target: target});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
       target.parentNode.removeChild(target);
     });
     it('ignores non-existing target id', function() {
-      var ctrl = new ol.control.Control({target: 'doesnotexist'});
+      var ctrl = new _ol_control_Control_({target: 'doesnotexist'});
       expect(ctrl.target_).to.equal(null);
       ctrl.dispose();
     });

@@ -1,6 +1,6 @@
 
 
-goog.require('ol.webgl.Buffer');
+import _ol_webgl_Buffer_ from '../../../../src/ol/webgl/buffer';
 
 
 describe('ol.webgl.Buffer', function() {
@@ -11,7 +11,7 @@ describe('ol.webgl.Buffer', function() {
 
       var b;
       beforeEach(function() {
-        b = new ol.webgl.Buffer();
+        b = new _ol_webgl_Buffer_();
       });
 
       it('constructs an empty instance', function() {
@@ -24,7 +24,7 @@ describe('ol.webgl.Buffer', function() {
 
       var b;
       beforeEach(function() {
-        b = new ol.webgl.Buffer([0, 1, 2, 3]);
+        b = new _ol_webgl_Buffer_([0, 1, 2, 3]);
       });
 
       it('constructs a populated instance', function() {
@@ -39,7 +39,7 @@ describe('ol.webgl.Buffer', function() {
 
     var b;
     beforeEach(function() {
-      b = new ol.webgl.Buffer();
+      b = new _ol_webgl_Buffer_();
     });
 
     describe('getArray', function() {

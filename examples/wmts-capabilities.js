@@ -1,6 +1,6 @@
-goog.require('ol.format.WMTSCapabilities');
+import _ol_format_WMTSCapabilities_ from '../src/ol/format/wmtscapabilities';
 
-var parser = new ol.format.WMTSCapabilities();
+var parser = new _ol_format_WMTSCapabilities_();
 
 fetch('data/WMTSCapabilities.xml').then(function(response) {
   return response.text();

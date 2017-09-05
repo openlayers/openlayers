@@ -1,35 +1,35 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.TopoJSON');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.TileJSON');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_TopoJSON_ from '../src/ol/format/topojson';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_TileJSON_ from '../src/ol/source/tilejson';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.TileJSON({
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure'
   })
 });
 
-var style = new ol.style.Style({
-  fill: new ol.style.Fill({
+var style = new _ol_style_Style_({
+  fill: new _ol_style_Fill_({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
-  stroke: new ol.style.Stroke({
+  stroke: new _ol_style_Stroke_({
     color: '#319FD3',
     width: 1
   })
 });
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/topojson/world-110m.json',
-    format: new ol.format.TopoJSON({
+    format: new _ol_format_TopoJSON_({
       // don't want to render the full world polygon (stored as 'land' layer),
       // which repeats all countries
       layers: ['countries']
@@ -39,10 +39,10 @@ var vector = new ol.layer.Vector({
   style: style
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 1
   })

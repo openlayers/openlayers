@@ -1,9 +1,6 @@
-goog.provide('ol.render.webgl.ImageReplay');
-
-goog.require('ol');
-goog.require('ol.render.webgl.TextureReplay');
-goog.require('ol.webgl.Buffer');
-
+import _ol_ from '../../index';
+import _ol_render_webgl_TextureReplay_ from '../webgl/texturereplay';
+import _ol_webgl_Buffer_ from '../../webgl/buffer';
 
 /**
  * @constructor
@@ -12,8 +9,8 @@ goog.require('ol.webgl.Buffer');
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
-  ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
+var _ol_render_webgl_ImageReplay_ = function(tolerance, maxExtent) {
+  _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
 
   /**
    * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
@@ -40,13 +37,14 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.hitDetectionTextures_ = [];
 
 };
-ol.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.TextureReplay);
+
+_ol_.inherits(_ol_render_webgl_ImageReplay_, _ol_render_webgl_TextureReplay_);
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
+_ol_render_webgl_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
   this.startIndices.push(this.indices.length);
   this.startIndicesFeature.push(feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -59,7 +57,7 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(multiPointGeomet
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
+_ol_render_webgl_ImageReplay_.prototype.drawPoint = function(pointGeometry, feature) {
   this.startIndices.push(this.indices.length);
   this.startIndicesFeature.push(feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -72,19 +70,19 @@ ol.render.webgl.ImageReplay.prototype.drawPoint = function(pointGeometry, featur
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.finish = function(context) {
+_ol_render_webgl_ImageReplay_.prototype.finish = function(context) {
   var gl = context.getGL();
 
   this.groupIndices.push(this.indices.length);
   this.hitDetectionGroupIndices.push(this.indices.length);
 
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
   var indices = this.indices;
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new ol.webgl.Buffer(indices);
+  this.indicesBuffer = new _ol_webgl_Buffer_(indices);
 
   // create textures
   /** @type {Object.<string, WebGLTexture>} */
@@ -97,14 +95,14 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
   this.images_ = null;
   this.hitDetectionImages_ = null;
-  ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+  _ol_render_webgl_TextureReplay_.prototype.finish.call(this, context);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
+_ol_render_webgl_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
   var anchor = imageStyle.getAnchor();
   var image = imageStyle.getImage(1);
   var imageSize = imageStyle.getImageSize();
@@ -121,7 +119,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     this.images_.push(image);
   } else {
     currentImage = this.images_[this.images_.length - 1];
-    if (ol.getUid(currentImage) != ol.getUid(image)) {
+    if (_ol_.getUid(currentImage) != _ol_.getUid(image)) {
       this.groupIndices.push(this.indices.length);
       this.images_.push(image);
     }
@@ -132,7 +130,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   } else {
     currentImage =
         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-    if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
+    if (_ol_.getUid(currentImage) != _ol_.getUid(hitDetectionImage)) {
       this.hitDetectionGroupIndices.push(this.indices.length);
       this.hitDetectionImages_.push(hitDetectionImage);
     }
@@ -156,7 +154,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.getTextures = function(opt_all) {
+_ol_render_webgl_ImageReplay_.prototype.getTextures = function(opt_all) {
   return opt_all ? this.textures_.concat(this.hitDetectionTextures_) : this.textures_;
 };
 
@@ -164,6 +162,7 @@ ol.render.webgl.ImageReplay.prototype.getTextures = function(opt_all) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.getHitDetectionTextures = function() {
+_ol_render_webgl_ImageReplay_.prototype.getHitDetectionTextures = function() {
   return this.hitDetectionTextures_;
 };
+export default _ol_render_webgl_ImageReplay_;

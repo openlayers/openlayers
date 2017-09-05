@@ -1,19 +1,19 @@
 
 
-goog.require('ol.TileRange');
+import _ol_TileRange_ from '../../../src/ol/tilerange';
 
 
 describe('ol.TileRange', function() {
 
   describe('constructor', function() {
     it('creates a range', function() {
-      var range = new ol.TileRange(1, 3, 2, 4);
-      expect(range).to.be.a(ol.TileRange);
+      var range = new _ol_TileRange_(1, 3, 2, 4);
+      expect(range).to.be.a(_ol_TileRange_);
     });
 
     it('can represent a range of one tile', function() {
-      var range = new ol.TileRange(2, 2, 3, 3);
-      expect(range).to.be.a(ol.TileRange);
+      var range = new _ol_TileRange_(2, 2, 3, 3);
+      expect(range).to.be.a(_ol_TileRange_);
       expect(range.getHeight()).to.be(1);
       expect(range.getWidth()).to.be(1);
     });
@@ -21,7 +21,7 @@ describe('ol.TileRange', function() {
 
   describe('contains', function() {
     it('returns the expected value', function() {
-      var tileRange = new ol.TileRange(1, 3, 1, 3);
+      var tileRange = new _ol_TileRange_(1, 3, 1, 3);
       expect(tileRange.contains([0, 0, 0])).to.not.be();
       expect(tileRange.contains([0, 0, 1])).to.not.be();
       expect(tileRange.contains([0, 0, 2])).to.not.be();
@@ -52,12 +52,12 @@ describe('ol.TileRange', function() {
 
   describe('equals', function() {
     it('determines equivalence of two ranges', function() {
-      var one = new ol.TileRange(0, 2, 1, 4);
-      var same = new ol.TileRange(0, 2, 1, 4);
-      var diff1 = new ol.TileRange(0, 2, 1, 5);
-      var diff2 = new ol.TileRange(0, 3, 1, 4);
-      var diff3 = new ol.TileRange(0, 2, 2, 4);
-      var diff4 = new ol.TileRange(1, 2, 1, 4);
+      var one = new _ol_TileRange_(0, 2, 1, 4);
+      var same = new _ol_TileRange_(0, 2, 1, 4);
+      var diff1 = new _ol_TileRange_(0, 2, 1, 5);
+      var diff2 = new _ol_TileRange_(0, 3, 1, 4);
+      var diff3 = new _ol_TileRange_(0, 2, 2, 4);
+      var diff4 = new _ol_TileRange_(1, 2, 1, 4);
       expect(one.equals(same)).to.be(true);
       expect(one.equals(diff1)).to.be(false);
       expect(one.equals(diff2)).to.be(false);
@@ -68,8 +68,8 @@ describe('ol.TileRange', function() {
 
   describe('extent', function() {
     it('modifies range so it includes another', function() {
-      var one = new ol.TileRange(0, 2, 1, 4);
-      var other = new ol.TileRange(-1, -3, 10, 12);
+      var one = new _ol_TileRange_(0, 2, 1, 4);
+      var other = new _ol_TileRange_(-1, -3, 10, 12);
       one.extend(other);
 
       expect(one.minX).to.be(-1);
@@ -82,7 +82,7 @@ describe('ol.TileRange', function() {
 
   describe('getSize', function() {
     it('returns the expected size', function() {
-      var tileRange = new ol.TileRange(0, 2, 1, 4);
+      var tileRange = new _ol_TileRange_(0, 2, 1, 4);
       var size = tileRange.getSize();
       expect(size).to.eql([3, 4]);
     });
@@ -90,20 +90,20 @@ describe('ol.TileRange', function() {
 
   describe('intersects', function() {
     it('determines if two ranges overlap', function() {
-      var one = new ol.TileRange(0, 2, 1, 4);
-      var overlapsRight = new ol.TileRange(2, 4, 1, 4);
-      var overlapsLeft = new ol.TileRange(-3, 0, 1, 4);
-      var overlapsTop = new ol.TileRange(0, 2, 4, 5);
-      var overlapsBottom = new ol.TileRange(0, 2, -3, 1);
+      var one = new _ol_TileRange_(0, 2, 1, 4);
+      var overlapsRight = new _ol_TileRange_(2, 4, 1, 4);
+      var overlapsLeft = new _ol_TileRange_(-3, 0, 1, 4);
+      var overlapsTop = new _ol_TileRange_(0, 2, 4, 5);
+      var overlapsBottom = new _ol_TileRange_(0, 2, -3, 1);
       expect(one.intersects(overlapsLeft)).to.be(true);
       expect(one.intersects(overlapsRight)).to.be(true);
       expect(one.intersects(overlapsTop)).to.be(true);
       expect(one.intersects(overlapsBottom)).to.be(true);
 
-      var right = new ol.TileRange(3, 5, 1, 4);
-      var left = new ol.TileRange(-3, -1, 1, 4);
-      var above = new ol.TileRange(0, 2, 5, 6);
-      var below = new ol.TileRange(0, 2, -3, 0);
+      var right = new _ol_TileRange_(3, 5, 1, 4);
+      var left = new _ol_TileRange_(-3, -1, 1, 4);
+      var above = new _ol_TileRange_(0, 2, 5, 6);
+      var below = new _ol_TileRange_(0, 2, -3, 0);
       expect(one.intersects(right)).to.be(false);
       expect(one.intersects(left)).to.be(false);
       expect(one.intersects(above)).to.be(false);

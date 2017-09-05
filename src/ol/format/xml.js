@@ -1,7 +1,4 @@
-goog.provide('ol.format.XML');
-
-goog.require('ol.xml');
-
+import _ol_xml_ from '../xml';
 
 /**
  * @classdesc
@@ -11,7 +8,7 @@ goog.require('ol.xml');
  * @abstract
  * @struct
  */
-ol.format.XML = function() {
+var _ol_format_XML_ = function() {
 };
 
 
@@ -19,13 +16,13 @@ ol.format.XML = function() {
  * @param {Document|Node|string} source Source.
  * @return {Object} The parsed result.
  */
-ol.format.XML.prototype.read = function(source) {
-  if (ol.xml.isDocument(source)) {
+_ol_format_XML_.prototype.read = function(source) {
+  if (_ol_xml_.isDocument(source)) {
     return this.readFromDocument(/** @type {Document} */ (source));
-  } else if (ol.xml.isNode(source)) {
+  } else if (_ol_xml_.isNode(source)) {
     return this.readFromNode(/** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    var doc = ol.xml.parse(source);
+    var doc = _ol_xml_.parse(source);
     return this.readFromDocument(doc);
   } else {
     return null;
@@ -38,7 +35,7 @@ ol.format.XML.prototype.read = function(source) {
  * @param {Document} doc Document.
  * @return {Object} Object
  */
-ol.format.XML.prototype.readFromDocument = function(doc) {};
+_ol_format_XML_.prototype.readFromDocument = function(doc) {};
 
 
 /**
@@ -46,4 +43,5 @@ ol.format.XML.prototype.readFromDocument = function(doc) {};
  * @param {Node} node Node.
  * @return {Object} Object
  */
-ol.format.XML.prototype.readFromNode = function(node) {};
+_ol_format_XML_.prototype.readFromNode = function(node) {};
+export default _ol_format_XML_;

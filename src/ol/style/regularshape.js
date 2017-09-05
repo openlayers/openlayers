@@ -1,13 +1,10 @@
-goog.provide('ol.style.RegularShape');
-
-goog.require('ol');
-goog.require('ol.colorlike');
-goog.require('ol.dom');
-goog.require('ol.has');
-goog.require('ol.ImageState');
-goog.require('ol.render.canvas');
-goog.require('ol.style.Image');
-
+import _ol_ from '../index';
+import _ol_colorlike_ from '../colorlike';
+import _ol_dom_ from '../dom';
+import _ol_has_ from '../has';
+import _ol_ImageState_ from '../imagestate';
+import _ol_render_canvas_ from '../render/canvas';
+import _ol_style_Image_ from '../style/image';
 
 /**
  * @classdesc
@@ -20,7 +17,7 @@ goog.require('ol.style.Image');
  * @extends {ol.style.Image}
  * @api
  */
-ol.style.RegularShape = function(options) {
+var _ol_style_RegularShape_ = function(options) {
   /**
    * @private
    * @type {Array.<string>}
@@ -126,7 +123,7 @@ ol.style.RegularShape = function(options) {
   var rotateWithView = options.rotateWithView !== undefined ?
     options.rotateWithView : false;
 
-  ol.style.Image.call(this, {
+  _ol_style_Image_.call(this, {
     opacity: 1,
     rotateWithView: rotateWithView,
     rotation: options.rotation !== undefined ? options.rotation : 0,
@@ -134,7 +131,8 @@ ol.style.RegularShape = function(options) {
     snapToPixel: snapToPixel
   });
 };
-ol.inherits(ol.style.RegularShape, ol.style.Image);
+
+_ol_.inherits(_ol_style_RegularShape_, _ol_style_Image_);
 
 
 /**
@@ -142,8 +140,8 @@ ol.inherits(ol.style.RegularShape, ol.style.Image);
  * @return {ol.style.RegularShape} The cloned style.
  * @api
  */
-ol.style.RegularShape.prototype.clone = function() {
-  var style = new ol.style.RegularShape({
+_ol_style_RegularShape_.prototype.clone = function() {
+  var style = new _ol_style_RegularShape_({
     fill: this.getFill() ? this.getFill().clone() : undefined,
     points: this.getPoints(),
     radius: this.getRadius(),
@@ -165,7 +163,7 @@ ol.style.RegularShape.prototype.clone = function() {
  * @inheritDoc
  * @api
  */
-ol.style.RegularShape.prototype.getAnchor = function() {
+_ol_style_RegularShape_.prototype.getAnchor = function() {
   return this.anchor_;
 };
 
@@ -175,7 +173,7 @@ ol.style.RegularShape.prototype.getAnchor = function() {
  * @return {number} Shape's rotation in radians.
  * @api
  */
-ol.style.RegularShape.prototype.getAngle = function() {
+_ol_style_RegularShape_.prototype.getAngle = function() {
   return this.angle_;
 };
 
@@ -185,7 +183,7 @@ ol.style.RegularShape.prototype.getAngle = function() {
  * @return {ol.style.Fill} Fill style.
  * @api
  */
-ol.style.RegularShape.prototype.getFill = function() {
+_ol_style_RegularShape_.prototype.getFill = function() {
   return this.fill_;
 };
 
@@ -193,7 +191,7 @@ ol.style.RegularShape.prototype.getFill = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.getHitDetectionImage = function(pixelRatio) {
+_ol_style_RegularShape_.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.hitDetectionCanvas_;
 };
 
@@ -202,7 +200,7 @@ ol.style.RegularShape.prototype.getHitDetectionImage = function(pixelRatio) {
  * @inheritDoc
  * @api
  */
-ol.style.RegularShape.prototype.getImage = function(pixelRatio) {
+_ol_style_RegularShape_.prototype.getImage = function(pixelRatio) {
   return this.canvas_;
 };
 
@@ -210,7 +208,7 @@ ol.style.RegularShape.prototype.getImage = function(pixelRatio) {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.getImageSize = function() {
+_ol_style_RegularShape_.prototype.getImageSize = function() {
   return this.imageSize_;
 };
 
@@ -218,7 +216,7 @@ ol.style.RegularShape.prototype.getImageSize = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.getHitDetectionImageSize = function() {
+_ol_style_RegularShape_.prototype.getHitDetectionImageSize = function() {
   return this.hitDetectionImageSize_;
 };
 
@@ -226,8 +224,8 @@ ol.style.RegularShape.prototype.getHitDetectionImageSize = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.getImageState = function() {
-  return ol.ImageState.LOADED;
+_ol_style_RegularShape_.prototype.getImageState = function() {
+  return _ol_ImageState_.LOADED;
 };
 
 
@@ -235,7 +233,7 @@ ol.style.RegularShape.prototype.getImageState = function() {
  * @inheritDoc
  * @api
  */
-ol.style.RegularShape.prototype.getOrigin = function() {
+_ol_style_RegularShape_.prototype.getOrigin = function() {
   return this.origin_;
 };
 
@@ -245,7 +243,7 @@ ol.style.RegularShape.prototype.getOrigin = function() {
  * @return {number} Number of points for stars and regular polygons.
  * @api
  */
-ol.style.RegularShape.prototype.getPoints = function() {
+_ol_style_RegularShape_.prototype.getPoints = function() {
   return this.points_;
 };
 
@@ -255,7 +253,7 @@ ol.style.RegularShape.prototype.getPoints = function() {
  * @return {number} Radius.
  * @api
  */
-ol.style.RegularShape.prototype.getRadius = function() {
+_ol_style_RegularShape_.prototype.getRadius = function() {
   return this.radius_;
 };
 
@@ -265,7 +263,7 @@ ol.style.RegularShape.prototype.getRadius = function() {
  * @return {number|undefined} Radius2.
  * @api
  */
-ol.style.RegularShape.prototype.getRadius2 = function() {
+_ol_style_RegularShape_.prototype.getRadius2 = function() {
   return this.radius2_;
 };
 
@@ -274,7 +272,7 @@ ol.style.RegularShape.prototype.getRadius2 = function() {
  * @inheritDoc
  * @api
  */
-ol.style.RegularShape.prototype.getSize = function() {
+_ol_style_RegularShape_.prototype.getSize = function() {
   return this.size_;
 };
 
@@ -284,7 +282,7 @@ ol.style.RegularShape.prototype.getSize = function() {
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
-ol.style.RegularShape.prototype.getStroke = function() {
+_ol_style_RegularShape_.prototype.getStroke = function() {
   return this.stroke_;
 };
 
@@ -292,26 +290,26 @@ ol.style.RegularShape.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.listenImageChange = function(listener, thisArg) {};
+_ol_style_RegularShape_.prototype.listenImageChange = function(listener, thisArg) {};
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.load = function() {};
+_ol_style_RegularShape_.prototype.load = function() {};
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.unlistenImageChange = function(listener, thisArg) {};
+_ol_style_RegularShape_.prototype.unlistenImageChange = function(listener, thisArg) {};
 
 
 /**
  * @protected
  * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
-ol.style.RegularShape.prototype.render_ = function(atlasManager) {
+_ol_style_RegularShape_.prototype.render_ = function(atlasManager) {
   var imageSize;
   var lineCap = '';
   var lineJoin = '';
@@ -324,30 +322,30 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   if (this.stroke_) {
     strokeStyle = this.stroke_.getColor();
     if (strokeStyle === null) {
-      strokeStyle = ol.render.canvas.defaultStrokeStyle;
+      strokeStyle = _ol_render_canvas_.defaultStrokeStyle;
     }
-    strokeStyle = ol.colorlike.asColorLike(strokeStyle);
+    strokeStyle = _ol_colorlike_.asColorLike(strokeStyle);
     strokeWidth = this.stroke_.getWidth();
     if (strokeWidth === undefined) {
-      strokeWidth = ol.render.canvas.defaultLineWidth;
+      strokeWidth = _ol_render_canvas_.defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
     lineDashOffset = this.stroke_.getLineDashOffset();
-    if (!ol.has.CANVAS_LINE_DASH) {
+    if (!_ol_has_.CANVAS_LINE_DASH) {
       lineDash = null;
       lineDashOffset = 0;
     }
     lineJoin = this.stroke_.getLineJoin();
     if (lineJoin === undefined) {
-      lineJoin = ol.render.canvas.defaultLineJoin;
+      lineJoin = _ol_render_canvas_.defaultLineJoin;
     }
     lineCap = this.stroke_.getLineCap();
     if (lineCap === undefined) {
-      lineCap = ol.render.canvas.defaultLineCap;
+      lineCap = _ol_render_canvas_.defaultLineCap;
     }
     miterLimit = this.stroke_.getMiterLimit();
     if (miterLimit === undefined) {
-      miterLimit = ol.render.canvas.defaultMiterLimit;
+      miterLimit = _ol_render_canvas_.defaultMiterLimit;
     }
   }
 
@@ -367,7 +365,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
   if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
-    var context = ol.dom.createCanvasContext2D(size, size);
+    var context = _ol_dom_.createCanvasContext2D(size, size);
     this.canvas_ = context.canvas;
 
     // canvas.width and height are rounded to the closest integer
@@ -421,7 +419,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
-ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
+_ol_style_RegularShape_.prototype.draw_ = function(renderOptions, context, x, y) {
   var i, angle0, radiusC;
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
@@ -454,9 +452,9 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   if (this.fill_) {
     var color = this.fill_.getColor();
     if (color === null) {
-      color = ol.render.canvas.defaultFillStyle;
+      color = _ol_render_canvas_.defaultFillStyle;
     }
-    context.fillStyle = ol.colorlike.asColorLike(color);
+    context.fillStyle = _ol_colorlike_.asColorLike(color);
     context.fill();
   }
   if (this.stroke_) {
@@ -479,7 +477,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
  * @private
  * @param {ol.RegularShapeRenderOptions} renderOptions Render options.
  */
-ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
+_ol_style_RegularShape_.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
   if (this.fill_) {
     this.hitDetectionCanvas_ = this.canvas_;
@@ -488,7 +486,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptio
 
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
-  var context = ol.dom.createCanvasContext2D(renderOptions.size, renderOptions.size);
+  var context = _ol_dom_.createCanvasContext2D(renderOptions.size, renderOptions.size);
   this.hitDetectionCanvas_ = context.canvas;
 
   this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
@@ -502,7 +500,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptio
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
-ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions, context, x, y) {
+_ol_style_RegularShape_.prototype.drawHitDetectionCanvas_ = function(renderOptions, context, x, y) {
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -531,7 +529,7 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
     }
   }
 
-  context.fillStyle = ol.render.canvas.defaultFillStyle;
+  context.fillStyle = _ol_render_canvas_.defaultFillStyle;
   context.fill();
   if (this.stroke_) {
     context.strokeStyle = renderOptions.strokeStyle;
@@ -549,7 +547,7 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
 /**
  * @return {string} The checksum.
  */
-ol.style.RegularShape.prototype.getChecksum = function() {
+_ol_style_RegularShape_.prototype.getChecksum = function() {
   var strokeChecksum = this.stroke_ ?
     this.stroke_.getChecksum() : '-';
   var fillChecksum = this.fill_ ?
@@ -575,3 +573,4 @@ ol.style.RegularShape.prototype.getChecksum = function() {
 
   return this.checksums_[0];
 };
+export default _ol_style_RegularShape_;

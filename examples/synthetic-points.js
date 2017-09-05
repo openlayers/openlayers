@@ -1,22 +1,22 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
 var count = 20000;
 var features = new Array(count);
 var e = 18000000;
 for (var i = 0; i < count; ++i) {
-  features[i] = new ol.Feature({
-    'geometry': new ol.geom.Point(
+  features[i] = new _ol_Feature_({
+    'geometry': new _ol_geom_Point_(
         [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
     'i': i,
     'size': i % 2 ? 10 : 20
@@ -24,37 +24,37 @@ for (var i = 0; i < count; ++i) {
 }
 
 var styles = {
-  '10': new ol.style.Style({
-    image: new ol.style.Circle({
+  '10': new _ol_style_Style_({
+    image: new _ol_style_Circle_({
       radius: 5,
-      fill: new ol.style.Fill({color: '#666666'}),
-      stroke: new ol.style.Stroke({color: '#bada55', width: 1})
+      fill: new _ol_style_Fill_({color: '#666666'}),
+      stroke: new _ol_style_Stroke_({color: '#bada55', width: 1})
     })
   }),
-  '20': new ol.style.Style({
-    image: new ol.style.Circle({
+  '20': new _ol_style_Style_({
+    image: new _ol_style_Circle_({
       radius: 10,
-      fill: new ol.style.Fill({color: '#666666'}),
-      stroke: new ol.style.Stroke({color: '#bada55', width: 1})
+      fill: new _ol_style_Fill_({color: '#666666'}),
+      stroke: new _ol_style_Stroke_({color: '#bada55', width: 1})
     })
   })
 };
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   features: features,
   wrapX: false
 });
-var vector = new ol.layer.Vector({
+var vector = new _ol_layer_Vector_({
   source: vectorSource,
   style: function(feature) {
     return styles[feature.get('size')];
   }
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [vector],
   target: document.getElementById('map'),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
@@ -71,12 +71,12 @@ var displaySnap = function(coordinate) {
     var geometry = closestFeature.getGeometry();
     var closestPoint = geometry.getClosestPoint(coordinate);
     if (point === null) {
-      point = new ol.geom.Point(closestPoint);
+      point = new _ol_geom_Point_(closestPoint);
     } else {
       point.setCoordinates(closestPoint);
     }
     if (line === null) {
-      line = new ol.geom.LineString([coordinate, closestPoint]);
+      line = new _ol_geom_LineString_([coordinate, closestPoint]);
     } else {
       line.setCoordinates([coordinate, closestPoint]);
     }
@@ -96,13 +96,13 @@ map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
-var stroke = new ol.style.Stroke({
+var stroke = new _ol_style_Stroke_({
   color: 'rgba(255,255,0,0.9)',
   width: 3
 });
-var style = new ol.style.Style({
+var style = new _ol_style_Style_({
   stroke: stroke,
-  image: new ol.style.Circle({
+  image: new _ol_style_Circle_({
     radius: 10,
     stroke: stroke
   })

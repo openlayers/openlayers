@@ -1,6 +1,6 @@
 
 
-goog.require('ol.geom.flat.closest');
+import _ol_geom_flat_closest_ from '../../../../../src/ol/geom/flat/closest';
 
 
 describe('ol.geom.flat.closest', function() {
@@ -12,7 +12,7 @@ describe('ol.geom.flat.closest', function() {
     describe('ol.geom.flat.closest.getMaxSquaredDelta', function() {
 
       it('returns the expected value in simple cases', function() {
-        expect(ol.geom.flat.closest.getMaxSquaredDelta(
+        expect(_ol_geom_flat_closest_.getMaxSquaredDelta(
             flatCoordinates, 0, flatCoordinates.length, 2, 0)).to.be(9);
       });
 
@@ -21,23 +21,23 @@ describe('ol.geom.flat.closest', function() {
     describe('ol.geom.flat.closest.getClosestPoint', function() {
 
       it('returns the expected value', function() {
-        var maxDelta = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
+        var maxDelta = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
             flatCoordinates, 0, flatCoordinates.length, 2, 0));
         expect(maxDelta).to.be(3);
         var closestPoint = [NaN, NaN];
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 0, 0, closestPoint, Infinity)).to.be(0);
         expect(closestPoint).to.eql([0, 0]);
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 4, 1, closestPoint, Infinity)).to.be(1);
         expect(closestPoint).to.eql([4, 0]);
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 5, 2, closestPoint, Infinity)).to.be(4);
         expect(closestPoint).to.eql([5, 0]);
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 10, 100, closestPoint, Infinity)).to.be(10000);
         expect(closestPoint).to.eql([10, 0]);
@@ -80,7 +80,7 @@ describe('ol.geom.flat.closest', function() {
     describe('ol.geom.closet.maSquaredDelta', function() {
 
       it('returns the expected value', function() {
-        expect(ol.geom.flat.closest.getMaxSquaredDelta(
+        expect(_ol_geom_flat_closest_.getMaxSquaredDelta(
             flatCoordinates, 0, flatCoordinates.length, 2, 0)).
             to.roughlyEqual(1389.1058, 1e-9);
       });
@@ -90,21 +90,21 @@ describe('ol.geom.flat.closest', function() {
     describe('ol.geom.flat.closest.getClosestPoint', function() {
 
       it('returns the expected value', function() {
-        var maxDelta = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
+        var maxDelta = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
             flatCoordinates, 0, flatCoordinates.length, 2, 0));
         expect(maxDelta).to.roughlyEqual(Math.sqrt(1389.1058), 1e-9);
         var closestPoint = [NaN, NaN];
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 0, 0, closestPoint, Infinity)).
             to.roughlyEqual(110902.405, 1e-9);
         expect(closestPoint).to.eql([292.41, 159.37]);
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 500, 500, closestPoint, Infinity)).
             to.roughlyEqual(106407.905, 1e-9);
         expect(closestPoint).to.eql([671.55, 222.55]);
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, 2,
             maxDelta, false, 1000, 500, closestPoint, Infinity)).
             to.roughlyEqual(18229.4425, 1e-9);
@@ -123,11 +123,11 @@ describe('ol.geom.flat.closest', function() {
     describe('ol.geom.flat.closest.getClosestPoint', function() {
 
       it('interpolates M coordinates', function() {
-        var maxDelta = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
+        var maxDelta = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
             flatCoordinates, 0, flatCoordinates.length, stride, 0));
         expect(maxDelta).to.roughlyEqual(Math.sqrt(8), 1e-9);
         var closestPoint = [NaN, NaN];
-        expect(ol.geom.flat.closest.getClosestPoint(
+        expect(_ol_geom_flat_closest_.getClosestPoint(
             flatCoordinates, 0, flatCoordinates.length, stride,
             maxDelta, false, 1, 1, closestPoint, Infinity)).
             to.roughlyEqual(0, 1e-9);

@@ -1,9 +1,7 @@
-goog.provide('ol.layer.Property');
-
 /**
  * @enum {string}
  */
-ol.layer.Property = {
+var _ol_layer_Property_ = {
   OPACITY: 'opacity',
   VISIBLE: 'visible',
   EXTENT: 'extent',
@@ -12,3 +10,5 @@ ol.layer.Property = {
   MIN_RESOLUTION: 'minResolution',
   SOURCE: 'source'
 };
+
+export default _ol_layer_Property_;

@@ -1,31 +1,31 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
+import _ol_Feature_ from '../../../src/ol/feature';
+import _ol_geom_Point_ from '../../../src/ol/geom/point';
+import _ol_Map_ from '../../../src/ol/map';
+import _ol_View_ from '../../../src/ol/view';
+import _ol_layer_Vector_ from '../../../src/ol/layer/vector';
+import _ol_source_Vector_ from '../../../src/ol/source/vector';
 
 
 describe('ol.rendering.Map', function() {
 
   var map;
   function createMap(renderer) {
-    var vectorLayer = new ol.layer.Vector({
-      source: new ol.source.Vector({
-        features: [new ol.Feature({
-          geometry: new ol.geom.Point([0, 0])
+    var vectorLayer = new _ol_layer_Vector_({
+      source: new _ol_source_Vector_({
+        features: [new _ol_Feature_({
+          geometry: new _ol_geom_Point_([0, 0])
         })]
       })
     });
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

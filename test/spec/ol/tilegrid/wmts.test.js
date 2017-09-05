@@ -1,13 +1,13 @@
 
 
-goog.require('ol.format.WMTSCapabilities');
-goog.require('ol.tilegrid.WMTS');
+import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/wmtscapabilities';
+import _ol_tilegrid_WMTS_ from '../../../../src/ol/tilegrid/wmts';
 
 
 describe('ol.tilegrid.WMTS', function() {
 
   describe('when creating tileGrid from capabilities', function() {
-    var parser = new ol.format.WMTSCapabilities();
+    var parser = new _ol_format_WMTSCapabilities_();
     var capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ogcsample.xml', function(xml) {
@@ -24,7 +24,7 @@ describe('ol.tilegrid.WMTS', function() {
         function() {
           var matrixSetObj = capabilities.Contents.TileMatrixSet[0];
           var tileGrid;
-          tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
+          tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
               matrixSetObj);
           expect(tileGrid.matrixIds_).to.be.an('array');
           expect(tileGrid.matrixIds_).to.have.length(20);
@@ -62,7 +62,7 @@ describe('ol.tilegrid.WMTS', function() {
 
   describe('when creating tileGrid from capabilities with and without TileMatrixSetLimits',
       function() {
-        var parser = new ol.format.WMTSCapabilities();
+        var parser = new _ol_format_WMTSCapabilities_();
         var capabilities;
         before(function(done) {
           afterLoadText('spec/ol/format/wmts/ign.xml', function(xml) {
@@ -79,7 +79,7 @@ describe('ol.tilegrid.WMTS', function() {
             function() {
               var matrixSetObj = capabilities.Contents.TileMatrixSet[0];
               var tileGrid;
-              tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
+              tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
                   matrixSetObj);
               expect(tileGrid.matrixIds_).to.be.an('array');
               expect(tileGrid.matrixIds_).to.have.length(22);
@@ -120,7 +120,7 @@ describe('ol.tilegrid.WMTS', function() {
               var matrixLimitArray = capabilities.Contents.Layer[0]
                   .TileMatrixSetLink[0].TileMatrixSetLimits;
               var tileGrid;
-              tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
+              tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
                   matrixSetObj, undefined, matrixLimitArray);
               expect(tileGrid.matrixIds_).to.be.an('array');
               expect(tileGrid.matrixIds_).to.have.length(20);

@@ -1,14 +1,14 @@
 
 
-goog.require('ol.extent');
-goog.require('ol.geom.LineString');
+import _ol_extent_ from '../../../../src/ol/extent';
+import _ol_geom_LineString_ from '../../../../src/ol/geom/linestring';
 
 
 describe('ol.geom.LineString', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      return new ol.geom.LineString(null);
+      return new _ol_geom_LineString_(null);
     }).not.to.throwException();
   });
 
@@ -16,7 +16,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString([]);
+      lineString = new _ol_geom_LineString_([]);
     });
 
     it('defaults to layout XY', function() {
@@ -28,7 +28,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has an empty extent', function() {
-      expect(ol.extent.isEmpty(lineString.getExtent())).to.be(true);
+      expect(_ol_extent_.isEmpty(lineString.getExtent())).to.be(true);
     });
 
     it('has empty flat coordinates', function() {
@@ -52,7 +52,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString([[1, 2], [3, 4]]);
+      lineString = new _ol_geom_LineString_([[1, 2], [3, 4]]);
     });
 
     it('has the expected layout', function() {
@@ -113,7 +113,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString([[1, 2, 3], [4, 5, 6]]);
+      lineString = new _ol_geom_LineString_([[1, 2, 3], [4, 5, 6]]);
     });
 
     it('has the expected layout', function() {
@@ -158,7 +158,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString(
+      lineString = new _ol_geom_LineString_(
           [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
@@ -204,7 +204,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString([[1, 2, 3, 4], [5, 6, 7, 8]]);
+      lineString = new _ol_geom_LineString_([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
     it('has the expected layout', function() {
@@ -248,21 +248,21 @@ describe('ol.geom.LineString', function() {
   describe('#scale()', function() {
 
     it('scales a linestring', function() {
-      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      var geom = new _ol_geom_LineString_([[-10, -20], [10, 20]]);
       geom.scale(10);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-100, -200], [100, 200]]);
     });
 
     it('accepts sx and sy', function() {
-      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      var geom = new _ol_geom_LineString_([[-10, -20], [10, 20]]);
       geom.scale(2, 3);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-20, -60], [20, 60]]);
     });
 
     it('accepts an anchor', function() {
-      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      var geom = new _ol_geom_LineString_([[-10, -20], [10, 20]]);
       geom.scale(3, 2, [10, 20]);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-50, -60], [10, 20]]);
@@ -274,7 +274,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString(
+      lineString = new _ol_geom_LineString_(
           [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
     });
 
@@ -310,7 +310,7 @@ describe('ol.geom.LineString', function() {
 
       it('returns a simplified geometry', function() {
         var simplified = lineString.simplify(1);
-        expect(simplified).to.be.an(ol.geom.LineString);
+        expect(simplified).to.be.an(_ol_geom_LineString_);
         expect(simplified.getCoordinates()).to.eql(
             [[0, 0], [3, 3], [5, 1], [7, 5]]);
       });
@@ -333,7 +333,7 @@ describe('ol.geom.LineString', function() {
 
       it('returns the expectedResult', function() {
         var simplifiedGeometry = lineString.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry).to.be.an(ol.geom.LineString);
+        expect(simplifiedGeometry).to.be.an(_ol_geom_LineString_);
         expect(simplifiedGeometry.getCoordinates()).to.eql(
             [[0, 0], [3, 3], [5, 1], [7, 5]]);
       });
@@ -386,7 +386,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString(
+      lineString = new _ol_geom_LineString_(
           [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
@@ -415,7 +415,7 @@ describe('ol.geom.LineString', function() {
 
     var lineString;
     beforeEach(function() {
-      lineString = new ol.geom.LineString([
+      lineString = new _ol_geom_LineString_([
         [0, 0, 0, 0],
         [1, -1, 2, 1],
         [2, -2, 4, 2],

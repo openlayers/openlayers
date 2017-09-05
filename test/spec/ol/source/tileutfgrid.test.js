@@ -1,9 +1,9 @@
 
 
-goog.require('ol.proj');
-goog.require('ol.source.Tile');
-goog.require('ol.source.TileUTFGrid');
-goog.require('ol.tilegrid.TileGrid');
+import _ol_proj_ from '../../../../src/ol/proj';
+import _ol_source_Tile_ from '../../../../src/ol/source/tile';
+import _ol_source_TileUTFGrid_ from '../../../../src/ol/source/tileutfgrid';
+import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/tilegrid';
 
 
 describe('ol.source.TileUTFGrid', function() {
@@ -30,7 +30,7 @@ describe('ol.source.TileUTFGrid', function() {
   });
 
   function getTileUTFGrid() {
-    return new ol.source.TileUTFGrid({
+    return new _ol_source_TileUTFGrid_({
       url: url
     });
   }
@@ -39,28 +39,28 @@ describe('ol.source.TileUTFGrid', function() {
 
     it('needs to be constructed with url option', function() {
 
-      var source = new ol.source.TileUTFGrid({url: url});
-      expect(source).to.be.an(ol.source.TileUTFGrid);
-      expect(source).to.be.an(ol.source.Tile);
+      var source = new _ol_source_TileUTFGrid_({url: url});
+      expect(source).to.be.an(_ol_source_TileUTFGrid_);
+      expect(source).to.be.an(_ol_source_Tile_);
 
       expect(function() {
         // no options: will throw
-        return new ol.source.TileUTFGrid();
+        return new _ol_source_TileUTFGrid_();
       }).to.throwException();
 
       expect(function() {
         // no url-option: will throw
-        return new ol.source.TileUTFGrid({});
+        return new _ol_source_TileUTFGrid_({});
       }).to.throwException();
 
-      expect(getTileUTFGrid()).to.be.an(ol.source.TileUTFGrid);
+      expect(getTileUTFGrid()).to.be.an(_ol_source_TileUTFGrid_);
     });
 
   });
 
   describe('change event (ready)', function() {
     it('is fired when the source is ready', function(done) {
-      var source = new ol.source.TileUTFGrid({
+      var source = new _ol_source_TileUTFGrid_({
         url: url
       });
       expect(source.getState()).to.be('loading');
@@ -68,7 +68,7 @@ describe('ol.source.TileUTFGrid', function() {
 
       source.on('change', function(event) {
         if (source.getState() === 'ready') {
-          expect(source.tileGrid).to.be.an(ol.tilegrid.TileGrid);
+          expect(source.tileGrid).to.be.an(_ol_tilegrid_TileGrid_);
           done();
         }
       });
@@ -77,7 +77,7 @@ describe('ol.source.TileUTFGrid', function() {
 
   describe('change event (error)', function(done) {
     it('is fired when the source fails to initialize', function(done) {
-      var source = new ol.source.TileUTFGrid({
+      var source = new _ol_source_TileUTFGrid_({
         url: 'Bogus UTFGrid URL'
       });
       expect(source.getState()).to.be('loading');
@@ -103,7 +103,7 @@ describe('ol.source.TileUTFGrid', function() {
 
       var tileGrid = source.getTileGrid();
       expect(tileGrid).to.not.be(null);
-      expect(tileGrid).to.be.an(ol.tilegrid.TileGrid);
+      expect(tileGrid).to.be.an(_ol_tilegrid_TileGrid_);
     });
 
     it('sets up a tilegrid with expected extent', function() {
@@ -115,10 +115,10 @@ describe('ol.source.TileUTFGrid', function() {
       var tileGrid = source.getTileGrid();
       var extent = tileGrid.getExtent();
 
-      var proj4326 = ol.proj.get('EPSG:4326');
-      var proj3857 = ol.proj.get('EPSG:3857');
+      var proj4326 = _ol_proj_.get('EPSG:4326');
+      var proj3857 = _ol_proj_.get('EPSG:3857');
       var expectedExtent4326 = tileJson.bounds;
-      var expectedExtent3857 = ol.proj.transformExtent(
+      var expectedExtent3857 = _ol_proj_.transformExtent(
           expectedExtent4326, proj4326, proj3857
       );
       expect(extent).to.eql(proj3857.getExtent());
@@ -197,7 +197,7 @@ describe('ol.source.TileUTFGrid', function() {
 
   describe('#forDataAtCoordinateAndResolution', function() {
     var source = null;
-    var bonn3857 = ol.proj.fromLonLat([7.099814, 50.733992]);
+    var bonn3857 = _ol_proj_.fromLonLat([7.099814, 50.733992]);
     var noState3857 = [0, 0];
     var resolutionZoom1 = 78271.51696402048;
 
@@ -236,7 +236,7 @@ describe('ol.source.TileUTFGrid', function() {
         var urlTileCoord =
             this.getTileCoordForTileUrlFunction(tileCoord, projection);
         var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-        var tile = new ol.source.TileUTFGrid.Tile_(
+        var tile = new _ol_source_TileUTFGrid_.Tile_(
             tileCoord,
             tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
             tileUrl !== undefined ? tileUrl : '',

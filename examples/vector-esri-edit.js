@@ -1,26 +1,26 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.EsriJSON');
-goog.require('ol.interaction');
-goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Modify');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.loadingstrategy');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');
-goog.require('ol.source.XYZ');
-goog.require('ol.tilegrid');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_EsriJSON_ from '../src/ol/format/esrijson';
+import _ol_interaction_ from '../src/ol/interaction';
+import _ol_interaction_Draw_ from '../src/ol/interaction/draw';
+import _ol_interaction_Modify_ from '../src/ol/interaction/modify';
+import _ol_interaction_Select_ from '../src/ol/interaction/select';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_loadingstrategy_ from '../src/ol/loadingstrategy';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_source_XYZ_ from '../src/ol/source/xyz';
+import _ol_tilegrid_ from '../src/ol/tilegrid';
 
 
 var serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
     'services/PDX_Pedestrian_Districts/FeatureServer/';
 var layer = '0';
 
-var esrijsonFormat = new ol.format.EsriJSON();
+var esrijsonFormat = new _ol_format_EsriJSON_();
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   loader: function(extent, resolution, projection) {
     var url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
@@ -44,17 +44,17 @@ var vectorSource = new ol.source.Vector({
       }
     }});
   },
-  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+  strategy: _ol_loadingstrategy_.tile(_ol_tilegrid_.createXYZ({
     tileSize: 512
   }))
 });
 
-var vector = new ol.layer.Vector({
+var vector = new _ol_layer_Vector_({
   source: vectorSource
 });
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.XYZ({
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_XYZ_({
     attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
@@ -62,26 +62,26 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var draw = new ol.interaction.Draw({
+var draw = new _ol_interaction_Draw_({
   source: vectorSource,
   type: /** @type {ol.geom.GeometryType} */ ('Polygon')
 });
 
-var select = new ol.interaction.Select();
+var select = new _ol_interaction_Select_();
 select.setActive(false);
 var selected = select.getFeatures();
 
-var modify = new ol.interaction.Modify({
+var modify = new _ol_interaction_Modify_({
   features: selected
 });
 modify.setActive(false);
 
-var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([draw, select, modify]),
+var map = new _ol_Map_({
+  interactions: _ol_interaction_.defaults().extend([draw, select, modify]),
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View({
-    center: ol.proj.transform([-122.619, 45.512], 'EPSG:4326', 'EPSG:3857'),
+  view: new _ol_View_({
+    center: _ol_proj_.transform([-122.619, 45.512], 'EPSG:4326', 'EPSG:3857'),
     zoom: 12
   })
 });

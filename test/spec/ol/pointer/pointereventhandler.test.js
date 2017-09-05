@@ -1,11 +1,11 @@
 
 
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');
-goog.require('ol.has');
-goog.require('ol.pointer.MouseSource');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.pointer.PointerEventHandler');
+import _ol_events_ from '../../../../src/ol/events';
+import _ol_events_EventTarget_ from '../../../../src/ol/events/eventtarget';
+import _ol_has_ from '../../../../src/ol/has';
+import _ol_pointer_MouseSource_ from '../../../../src/ol/pointer/mousesource';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
+import _ol_pointer_PointerEventHandler_ from '../../../../src/ol/pointer/pointereventhandler';
 
 
 describe('ol.pointer.PointerEventHandler', function() {
@@ -14,13 +14,13 @@ describe('ol.pointer.PointerEventHandler', function() {
   var eventSpy;
 
   beforeEach(function() {
-    target = new ol.events.EventTarget();
+    target = new _ol_events_EventTarget_();
 
     // make sure that a mouse event source is used
-    ol.has.POINTER = false;
-    ol.has.MSPOINTER = false;
+    _ol_has_.POINTER = false;
+    _ol_has_.MSPOINTER = false;
 
-    handler = new ol.pointer.PointerEventHandler(target);
+    handler = new _ol_pointer_PointerEventHandler_(target);
     eventSpy = sinon.spy();
   });
 
@@ -32,7 +32,7 @@ describe('ol.pointer.PointerEventHandler', function() {
   describe('constructor', function() {
     it('registers a least one event source', function() {
       expect(handler.eventSourceList_.length).to.be.greaterThan(0);
-      expect(handler.eventSourceList_[0]).to.be.a(ol.pointer.MouseSource);
+      expect(handler.eventSourceList_[0]).to.be.a(_ol_pointer_MouseSource_);
     });
   });
 
@@ -48,12 +48,12 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer down', function() {
     it('fires pointerdown events', function() {
-      ol.events.listen(handler, 'pointerdown', eventSpy);
+      _ol_events_.listen(handler, 'pointerdown', eventSpy);
       simulateEvent('mousedown', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
 
       var pointerEvent = eventSpy.firstCall.args[0];
-      expect(pointerEvent).to.be.a(ol.pointer.PointerEvent);
+      expect(pointerEvent).to.be.a(_ol_pointer_PointerEvent_);
       expect(pointerEvent.type).to.be('pointerdown');
       expect(pointerEvent.pointerId).to.be(1);
       expect(pointerEvent.pointerType).to.be('mouse');
@@ -62,7 +62,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer up', function() {
     it('fires pointerup events', function() {
-      ol.events.listen(handler, 'pointerup', eventSpy);
+      _ol_events_.listen(handler, 'pointerup', eventSpy);
       simulateEvent('mousedown', 0, 0);
       simulateEvent('mouseup', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
@@ -71,7 +71,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer move', function() {
     it('fires pointermove events', function() {
-      ol.events.listen(handler, 'pointermove', eventSpy);
+      _ol_events_.listen(handler, 'pointermove', eventSpy);
       simulateEvent('mousemove', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
     });
@@ -82,8 +82,8 @@ describe('ol.pointer.PointerEventHandler', function() {
       var enterEventSpy = sinon.spy();
       var overEventSpy = sinon.spy();
 
-      ol.events.listen(handler, 'pointerenter', enterEventSpy);
-      ol.events.listen(handler, 'pointerover', overEventSpy);
+      _ol_events_.listen(handler, 'pointerenter', enterEventSpy);
+      _ol_events_.listen(handler, 'pointerover', overEventSpy);
 
       simulateEvent('mouseover', 0, 0);
 
@@ -97,8 +97,8 @@ describe('ol.pointer.PointerEventHandler', function() {
       var leaveEventSpy = sinon.spy();
       var outEventSpy = sinon.spy();
 
-      ol.events.listen(handler, 'pointerleave', leaveEventSpy);
-      ol.events.listen(handler, 'pointerout', outEventSpy);
+      _ol_events_.listen(handler, 'pointerleave', leaveEventSpy);
+      _ol_events_.listen(handler, 'pointerout', outEventSpy);
 
       simulateEvent('mouseout', 0, 0);
 
@@ -162,7 +162,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
       expect(pointerEvent.preventDefault).to.be.ok();
 
-      expect(pointerEvent).to.be.a(ol.pointer.PointerEvent);
+      expect(pointerEvent).to.be.a(_ol_pointer_PointerEvent_);
     });
   });
 

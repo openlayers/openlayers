@@ -1,6 +1,5 @@
-goog.provide('ol.RotationConstraint');
-
-goog.require('ol.math');
+import _ol_math_ from './math';
+var _ol_RotationConstraint_ = {};
 
 
 /**
@@ -8,7 +7,7 @@ goog.require('ol.math');
  * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-ol.RotationConstraint.disable = function(rotation, delta) {
+_ol_RotationConstraint_.disable = function(rotation, delta) {
   if (rotation !== undefined) {
     return 0;
   } else {
@@ -22,7 +21,7 @@ ol.RotationConstraint.disable = function(rotation, delta) {
  * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-ol.RotationConstraint.none = function(rotation, delta) {
+_ol_RotationConstraint_.none = function(rotation, delta) {
   if (rotation !== undefined) {
     return rotation + delta;
   } else {
@@ -35,7 +34,7 @@ ol.RotationConstraint.none = function(rotation, delta) {
  * @param {number} n N.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
-ol.RotationConstraint.createSnapToN = function(n) {
+_ol_RotationConstraint_.createSnapToN = function(n) {
   var theta = 2 * Math.PI / n;
   return (
     /**
@@ -58,8 +57,8 @@ ol.RotationConstraint.createSnapToN = function(n) {
  * @param {number=} opt_tolerance Tolerance.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
-ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
-  var tolerance = opt_tolerance || ol.math.toRadians(5);
+_ol_RotationConstraint_.createSnapToZero = function(opt_tolerance) {
+  var tolerance = opt_tolerance || _ol_math_.toRadians(5);
   return (
     /**
      * @param {number|undefined} rotation Rotation.
@@ -78,3 +77,4 @@ ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
       }
     });
 };
+export default _ol_RotationConstraint_;

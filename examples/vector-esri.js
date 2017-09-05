@@ -1,64 +1,64 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.EsriJSON');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.loadingstrategy');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');
-goog.require('ol.source.XYZ');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.tilegrid');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_EsriJSON_ from '../src/ol/format/esrijson';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_loadingstrategy_ from '../src/ol/loadingstrategy';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_source_XYZ_ from '../src/ol/source/xyz';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
+import _ol_tilegrid_ from '../src/ol/tilegrid';
 
 
 var serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
     'Petroleum/KSFields/FeatureServer/';
 var layer = '0';
 
-var esrijsonFormat = new ol.format.EsriJSON();
+var esrijsonFormat = new _ol_format_EsriJSON_();
 
 var styleCache = {
-  'ABANDONED': new ol.style.Style({
-    fill: new ol.style.Fill({
+  'ABANDONED': new _ol_style_Style_({
+    fill: new _ol_style_Fill_({
       color: 'rgba(225, 225, 225, 255)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: 'rgba(0, 0, 0, 255)',
       width: 0.4
     })
   }),
-  'GAS': new ol.style.Style({
-    fill: new ol.style.Fill({
+  'GAS': new _ol_style_Style_({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255, 0, 0, 255)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: 'rgba(110, 110, 110, 255)',
       width: 0.4
     })
   }),
-  'OIL': new ol.style.Style({
-    fill: new ol.style.Fill({
+  'OIL': new _ol_style_Style_({
+    fill: new _ol_style_Fill_({
       color: 'rgba(56, 168, 0, 255)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: 'rgba(110, 110, 110, 255)',
       width: 0
     })
   }),
-  'OILGAS': new ol.style.Style({
-    fill: new ol.style.Fill({
+  'OILGAS': new _ol_style_Style_({
+    fill: new _ol_style_Fill_({
       color: 'rgba(168, 112, 0, 255)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: 'rgba(110, 110, 110, 255)',
       width: 0.4
     })
   })
 };
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   loader: function(extent, resolution, projection) {
     var url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
@@ -82,12 +82,12 @@ var vectorSource = new ol.source.Vector({
       }
     }});
   },
-  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
+  strategy: _ol_loadingstrategy_.tile(_ol_tilegrid_.createXYZ({
     tileSize: 512
   }))
 });
 
-var vector = new ol.layer.Vector({
+var vector = new _ol_layer_Vector_({
   source: vectorSource,
   style: function(feature) {
     var classify = feature.get('activeprod');
@@ -95,8 +95,8 @@ var vector = new ol.layer.Vector({
   }
 });
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.XYZ({
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_XYZ_({
     attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
@@ -104,11 +104,11 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View({
-    center: ol.proj.transform([-97.6114, 38.8403], 'EPSG:4326', 'EPSG:3857'),
+  view: new _ol_View_({
+    center: _ol_proj_.transform([-97.6114, 38.8403], 'EPSG:4326', 'EPSG:3857'),
     zoom: 7
   })
 });

@@ -1,13 +1,13 @@
 
 
-goog.require('ol.geom.Point');
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
 
 
 describe('ol.geom.Point', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      return new ol.geom.Point(null);
+      return new _ol_geom_Point_(null);
     }).not.to.throwException();
   });
 
@@ -15,7 +15,7 @@ describe('ol.geom.Point', function() {
 
     var point;
     beforeEach(function() {
-      point = new ol.geom.Point([1, 2]);
+      point = new _ol_geom_Point_([1, 2]);
     });
 
     it('has the expected layout', function() {
@@ -52,7 +52,7 @@ describe('ol.geom.Point', function() {
 
     var point;
     beforeEach(function() {
-      point = new ol.geom.Point([1, 2, 3], 'XYM');
+      point = new _ol_geom_Point_([1, 2, 3], 'XYM');
     });
 
     it('has the expected layout', function() {
@@ -89,7 +89,7 @@ describe('ol.geom.Point', function() {
 
     var point;
     beforeEach(function() {
-      point = new ol.geom.Point([1, 2, 3, 4]);
+      point = new _ol_geom_Point_([1, 2, 3, 4]);
     });
 
     it('has the expected layout', function() {
@@ -134,21 +134,21 @@ describe('ol.geom.Point', function() {
   describe('#scale()', function() {
 
     it('scales a point', function() {
-      var geom = new ol.geom.Point([1, 2]);
+      var geom = new _ol_geom_Point_([1, 2]);
       geom.scale(10e6);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([1, 2]);
     });
 
     it('accepts sx and sy', function() {
-      var geom = new ol.geom.Point([1, 2]);
+      var geom = new _ol_geom_Point_([1, 2]);
       geom.scale(1e6, -42);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([1, 2]);
     });
 
     it('accepts an anchor', function() {
-      var geom = new ol.geom.Point([1, 2]);
+      var geom = new _ol_geom_Point_([1, 2]);
       geom.scale(10, 15, [0, 0]);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([10, 30]);
@@ -160,7 +160,7 @@ describe('ol.geom.Point', function() {
 
     var point, transform;
     beforeEach(function() {
-      point = new ol.geom.Point([1, 2]);
+      point = new _ol_geom_Point_([1, 2]);
       transform = sinon.spy();
     });
 
@@ -195,10 +195,10 @@ describe('ol.geom.Point', function() {
   describe('#transform()', function() {
 
     it('transforms a geometry given CRS identifiers', function() {
-      var point = new ol.geom.Point([-111, 45]).transform(
+      var point = new _ol_geom_Point_([-111, 45]).transform(
           'EPSG:4326', 'EPSG:3857');
 
-      expect(point).to.be.a(ol.geom.Point);
+      expect(point).to.be.a(_ol_geom_Point_);
 
       var coords = point.getCoordinates();
 
@@ -207,7 +207,7 @@ describe('ol.geom.Point', function() {
     });
 
     it('modifies the original', function() {
-      var point = new ol.geom.Point([-111, 45]);
+      var point = new _ol_geom_Point_([-111, 45]);
       point.transform('EPSG:4326', 'EPSG:3857');
       var coords = point.getCoordinates();
 

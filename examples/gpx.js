@@ -1,63 +1,63 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GPX');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.BingMaps');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_GPX_ from '../src/ol/format/gpx';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_BingMaps_ from '../src/ol/source/bingmaps';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.BingMaps({
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_BingMaps_({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
 });
 
 var style = {
-  'Point': new ol.style.Style({
-    image: new ol.style.Circle({
-      fill: new ol.style.Fill({
+  'Point': new _ol_style_Style_({
+    image: new _ol_style_Circle_({
+      fill: new _ol_style_Fill_({
         color: 'rgba(255,255,0,0.4)'
       }),
       radius: 5,
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: '#ff0',
         width: 1
       })
     })
   }),
-  'LineString': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'LineString': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: '#f00',
       width: 3
     })
   }),
-  'MultiLineString': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'MultiLineString': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: '#0f0',
       width: 3
     })
   })
 };
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/gpx/fells_loop.gpx',
-    format: new ol.format.GPX()
+    format: new _ol_format_GPX_()
   }),
   style: function(feature) {
     return style[feature.getGeometry().getType()];
   }
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-7916041.528716288, 5228379.045749711],
     zoom: 12
   })

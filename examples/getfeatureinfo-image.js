@@ -1,26 +1,26 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.source.ImageWMS');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_source_ImageWMS_ from '../src/ol/source/imagewms';
 
 
-var wmsSource = new ol.source.ImageWMS({
+var wmsSource = new _ol_source_ImageWMS_({
   url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'ne:ne'},
   serverType: 'geoserver',
   crossOrigin: 'anonymous'
 });
 
-var wmsLayer = new ol.layer.Image({
+var wmsLayer = new _ol_layer_Image_({
   source: wmsSource
 });
 
-var view = new ol.View({
+var view = new _ol_View_({
   center: [0, 0],
   zoom: 1
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [wmsLayer],
   target: 'map',
   view: view

@@ -1,6 +1,6 @@
 
 
-goog.require('ol.structs.PriorityQueue');
+import _ol_structs_PriorityQueue_ from '../../../../src/ol/structs/priorityqueue';
 
 
 describe('ol.structs.PriorityQueue', function() {
@@ -13,7 +13,7 @@ describe('ol.structs.PriorityQueue', function() {
 
     var pq;
     beforeEach(function() {
-      pq = new ol.structs.PriorityQueue(identity, identity);
+      pq = new _ol_structs_PriorityQueue_(identity, identity);
     });
 
     it('is empty', function() {
@@ -41,7 +41,7 @@ describe('ol.structs.PriorityQueue', function() {
     var elements, pq;
     beforeEach(function() {
       elements = [];
-      pq = new ol.structs.PriorityQueue(
+      pq = new _ol_structs_PriorityQueue_(
           identity, identity);
       var element, i;
       for (i = 0; i < 32; ++i) {
@@ -67,7 +67,7 @@ describe('ol.structs.PriorityQueue', function() {
     var pq, target;
     beforeEach(function() {
       target = 0.5;
-      pq = new ol.structs.PriorityQueue(function(element) {
+      pq = new _ol_structs_PriorityQueue_(function(element) {
         return Math.abs(element - target);
       }, identity);
       var i;
@@ -105,7 +105,7 @@ describe('ol.structs.PriorityQueue', function() {
         if (i++ % 2 === 0) {
           return Math.abs(element - target);
         } else {
-          return ol.structs.PriorityQueue.DROP;
+          return _ol_structs_PriorityQueue_.DROP;
         }
       };
       pq.reprioritize();
@@ -125,7 +125,7 @@ describe('ol.structs.PriorityQueue', function() {
 
     var pq;
     beforeEach(function() {
-      pq = new ol.structs.PriorityQueue(
+      pq = new _ol_structs_PriorityQueue_(
           identity, identity);
       pq.enqueue('a');
       pq.enqueue('b');

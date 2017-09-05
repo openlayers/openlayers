@@ -1,25 +1,25 @@
 
 
-goog.require('ol.layer.Layer');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
+import _ol_layer_Layer_ from '../../../../src/ol/layer/layer';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
+import _ol_style_Style_ from '../../../../src/ol/style/style';
 
 
 describe('ol.layer.Vector', function() {
 
   describe('constructor', function() {
-    var source = new ol.source.Vector();
-    var style = new ol.style.Style();
+    var source = new _ol_source_Vector_();
+    var style = new _ol_style_Style_();
 
     it('creates a new layer', function() {
-      var layer = new ol.layer.Vector({source: source});
-      expect(layer).to.be.a(ol.layer.Vector);
-      expect(layer).to.be.a(ol.layer.Layer);
+      var layer = new _ol_layer_Vector_({source: source});
+      expect(layer).to.be.a(_ol_layer_Vector_);
+      expect(layer).to.be.a(_ol_layer_Layer_);
     });
 
     it('accepts a style option with a single style', function() {
-      var layer = new ol.layer.Vector({
+      var layer = new _ol_layer_Vector_({
         source: source,
         style: style
       });
@@ -29,7 +29,7 @@ describe('ol.layer.Vector', function() {
     });
 
     it('accepts a style option with an array of styles', function() {
-      var layer = new ol.layer.Vector({
+      var layer = new _ol_layer_Vector_({
         source: source,
         style: [style]
       });
@@ -39,7 +39,7 @@ describe('ol.layer.Vector', function() {
     });
 
     it('accepts a style option with a style function', function() {
-      var layer = new ol.layer.Vector({
+      var layer = new _ol_layer_Vector_({
         source: source,
         style: function(feature, resolution) {
           return [style];
@@ -57,10 +57,10 @@ describe('ol.layer.Vector', function() {
     var layer, style;
 
     beforeEach(function() {
-      layer = new ol.layer.Vector({
-        source: new ol.source.Vector()
+      layer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_()
       });
-      style = new ol.style.Style();
+      style = new _ol_style_Style_();
     });
 
     it('allows the style to be set after construction', function() {
@@ -76,10 +76,10 @@ describe('ol.layer.Vector', function() {
     });
 
     it('updates the internal style function', function() {
-      expect(layer.getStyleFunction()).to.be(ol.style.Style.defaultFunction);
+      expect(layer.getStyleFunction()).to.be(_ol_style_Style_.defaultFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          ol.style.Style.defaultFunction);
+          _ol_style_Style_.defaultFunction);
     });
 
     it('allows setting an null style', function() {
@@ -91,23 +91,23 @@ describe('ol.layer.Vector', function() {
     it('sets the default style when passing undefined', function() {
       layer.setStyle(style);
       layer.setStyle(undefined);
-      expect(layer.getStyle()).to.be(ol.style.Style.defaultFunction);
-      expect(layer.getStyleFunction()).to.be(ol.style.Style.defaultFunction);
+      expect(layer.getStyle()).to.be(_ol_style_Style_.defaultFunction);
+      expect(layer.getStyleFunction()).to.be(_ol_style_Style_.defaultFunction);
     });
 
   });
 
   describe('#getStyle()', function() {
 
-    var source = new ol.source.Vector();
-    var style = new ol.style.Style();
+    var source = new _ol_source_Vector_();
+    var style = new _ol_style_Style_();
 
     it('returns what is provided to setStyle', function() {
-      var layer = new ol.layer.Vector({
+      var layer = new _ol_layer_Vector_({
         source: source
       });
 
-      expect(layer.getStyle()).to.be(ol.style.Style.defaultFunction);
+      expect(layer.getStyle()).to.be(_ol_style_Style_.defaultFunction);
 
       layer.setStyle(style);
       expect(layer.getStyle()).to.be(style);

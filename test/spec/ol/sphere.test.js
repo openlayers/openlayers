@@ -2,19 +2,19 @@
 // FIXME add tests for offset
 
 
-goog.require('ol.Sphere');
-goog.require('ol.format.WKT');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.Point');
-goog.require('ol.proj.EPSG4326');
+import _ol_Sphere_ from '../../../src/ol/sphere';
+import _ol_format_WKT_ from '../../../src/ol/format/wkt';
+import _ol_geom_GeometryCollection_ from '../../../src/ol/geom/geometrycollection';
+import _ol_geom_LineString_ from '../../../src/ol/geom/linestring';
+import _ol_geom_MultiLineString_ from '../../../src/ol/geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../../../src/ol/geom/multipoint';
+import _ol_geom_Point_ from '../../../src/ol/geom/point';
+import _ol_proj_EPSG4326_ from '../../../src/ol/proj/epsg4326';
 
 
 describe('ol.Sphere', function() {
 
-  var sphere = new ol.Sphere(6371);
+  var sphere = new _ol_Sphere_(6371);
   var expected = [{
     c1: [0, 0],
     c2: [0, 0],
@@ -95,7 +95,7 @@ describe('ol.Sphere', function() {
     before(function(done) {
       afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
         try {
-          var format = new ol.format.WKT();
+          var format = new _ol_format_WKT_();
           geometry = format.readGeometry(wkt);
         } catch (e) {
           done(e);
@@ -106,7 +106,7 @@ describe('ol.Sphere', function() {
 
     it('results match the expected area of Ilinois', function() {
       var coords = geometry.getPolygon(0).getLinearRing(0).getCoordinates();
-      var sphere = new ol.Sphere(ol.proj.EPSG4326.RADIUS);
+      var sphere = new _ol_Sphere_(_ol_proj_EPSG4326_.RADIUS);
       expect(sphere.geodesicArea(coords)).to.equal(145978332359.37125);
     });
   });
@@ -115,13 +115,13 @@ describe('ol.Sphere', function() {
 
 describe('ol.Sphere.getLength()', function() {
   var cases = [{
-    geometry: new ol.geom.Point([0, 0]),
+    geometry: new _ol_geom_Point_([0, 0]),
     length: 0
   }, {
-    geometry: new ol.geom.MultiPoint([[0, 0], [1, 1]]),
+    geometry: new _ol_geom_MultiPoint_([[0, 0], [1, 1]]),
     length: 0
   }, {
-    geometry: new ol.geom.LineString([
+    geometry: new _ol_geom_LineString_([
       [12801741.441226462, -3763310.627144653],
       [14582853.293918837, -2511525.2348457114],
       [15918687.18343812, -2875744.624352243],
@@ -129,7 +129,7 @@ describe('ol.Sphere.getLength()', function() {
     ]),
     length: 4407939.124914191
   }, {
-    geometry: new ol.geom.LineString([
+    geometry: new _ol_geom_LineString_([
       [115, -32],
       [131, -22],
       [143, -25],
@@ -138,7 +138,7 @@ describe('ol.Sphere.getLength()', function() {
     options: {projection: 'EPSG:4326'},
     length: 4407939.124914191
   }, {
-    geometry: new ol.geom.MultiLineString([
+    geometry: new _ol_geom_MultiLineString_([
       [
         [115, -32],
         [131, -22],
@@ -154,14 +154,14 @@ describe('ol.Sphere.getLength()', function() {
     options: {projection: 'EPSG:4326'},
     length: 2 * 4407939.124914191
   }, {
-    geometry: new ol.geom.GeometryCollection([
-      new ol.geom.LineString([
+    geometry: new _ol_geom_GeometryCollection_([
+      new _ol_geom_LineString_([
         [115, -32],
         [131, -22],
         [143, -25],
         [150, -34]
       ]),
-      new ol.geom.LineString([
+      new _ol_geom_LineString_([
         [115, -32],
         [131, -22],
         [143, -25],
@@ -175,7 +175,7 @@ describe('ol.Sphere.getLength()', function() {
   cases.forEach(function(c, i) {
     it('works for case ' + i, function() {
       var c = cases[i];
-      var length = ol.Sphere.getLength(c.geometry, c.options);
+      var length = _ol_Sphere_.getLength(c.geometry, c.options);
       expect(length).to.equal(c.length);
     });
   });
@@ -187,7 +187,7 @@ describe('ol.Sphere.getArea()', function() {
   before(function(done) {
     afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
       try {
-        var format = new ol.format.WKT();
+        var format = new _ol_format_WKT_();
         geometry = format.readGeometry(wkt);
       } catch (e) {
         done(e);
@@ -197,7 +197,7 @@ describe('ol.Sphere.getArea()', function() {
   });
 
   it('calculates the area of Ilinois', function() {
-    var area = ol.Sphere.getArea(geometry, {projection: 'EPSG:4326'});
+    var area = _ol_Sphere_.getArea(geometry, {projection: 'EPSG:4326'});
     expect(area).to.equal(145652224192.4434);
   });
 });

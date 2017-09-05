@@ -1,40 +1,40 @@
-goog.require('ol.Map');
-goog.require('ol.Observable');
-goog.require('ol.Overlay');
-goog.require('ol.Sphere');
-goog.require('ol.View');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Draw');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_Observable_ from '../src/ol/observable';
+import _ol_Overlay_ from '../src/ol/overlay';
+import _ol_Sphere_ from '../src/ol/sphere';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_geom_Polygon_ from '../src/ol/geom/polygon';
+import _ol_interaction_Draw_ from '../src/ol/interaction/draw';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var source = new ol.source.Vector();
+var source = new _ol_source_Vector_();
 
-var vector = new ol.layer.Vector({
+var vector = new _ol_layer_Vector_({
   source: source,
-  style: new ol.style.Style({
-    fill: new ol.style.Fill({
+  style: new _ol_style_Style_({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255, 255, 255, 0.2)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: '#ffcc33',
       width: 2
     }),
-    image: new ol.style.Circle({
+    image: new _ol_style_Circle_({
       radius: 7,
-      fill: new ol.style.Fill({
+      fill: new _ol_style_Fill_({
         color: '#ffcc33'
       })
     })
@@ -104,9 +104,9 @@ var pointerMoveHandler = function(evt) {
 
   if (sketch) {
     var geom = (sketch.getGeometry());
-    if (geom instanceof ol.geom.Polygon) {
+    if (geom instanceof _ol_geom_Polygon_) {
       helpMsg = continuePolygonMsg;
-    } else if (geom instanceof ol.geom.LineString) {
+    } else if (geom instanceof _ol_geom_LineString_) {
       helpMsg = continueLineMsg;
     }
   }
@@ -118,10 +118,10 @@ var pointerMoveHandler = function(evt) {
 };
 
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-11000000, 4600000],
     zoom: 15
   })
@@ -144,7 +144,7 @@ var draw; // global so we can remove it later
  * @return {string} The formatted length.
  */
 var formatLength = function(line) {
-  var length = ol.Sphere.getLength(line);
+  var length = _ol_Sphere_.getLength(line);
   var output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) +
@@ -163,7 +163,7 @@ var formatLength = function(line) {
  * @return {string} Formatted area.
  */
 var formatArea = function(polygon) {
-  var area = ol.Sphere.getArea(polygon);
+  var area = _ol_Sphere_.getArea(polygon);
   var output;
   if (area > 10000) {
     output = (Math.round(area / 1000000 * 100) / 100) +
@@ -177,24 +177,24 @@ var formatArea = function(polygon) {
 
 function addInteraction() {
   var type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
-  draw = new ol.interaction.Draw({
+  draw = new _ol_interaction_Draw_({
     source: source,
     type: /** @type {ol.geom.GeometryType} */ (type),
-    style: new ol.style.Style({
-      fill: new ol.style.Fill({
+    style: new _ol_style_Style_({
+      fill: new _ol_style_Fill_({
         color: 'rgba(255, 255, 255, 0.2)'
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: 'rgba(0, 0, 0, 0.5)',
         lineDash: [10, 10],
         width: 2
       }),
-      image: new ol.style.Circle({
+      image: new _ol_style_Circle_({
         radius: 5,
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: 'rgba(0, 0, 0, 0.7)'
         }),
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: 'rgba(255, 255, 255, 0.2)'
         })
       })
@@ -217,10 +217,10 @@ function addInteraction() {
         listener = sketch.getGeometry().on('change', function(evt) {
           var geom = evt.target;
           var output;
-          if (geom instanceof ol.geom.Polygon) {
+          if (geom instanceof _ol_geom_Polygon_) {
             output = formatArea(geom);
             tooltipCoord = geom.getInteriorPoint().getCoordinates();
-          } else if (geom instanceof ol.geom.LineString) {
+          } else if (geom instanceof _ol_geom_LineString_) {
             output = formatLength(geom);
             tooltipCoord = geom.getLastCoordinate();
           }
@@ -238,7 +238,7 @@ function addInteraction() {
         // unset tooltip so that a new one can be created
         measureTooltipElement = null;
         createMeasureTooltip();
-        ol.Observable.unByKey(listener);
+        _ol_Observable_.unByKey(listener);
       }, this);
 }
 
@@ -252,7 +252,7 @@ function createHelpTooltip() {
   }
   helpTooltipElement = document.createElement('div');
   helpTooltipElement.className = 'tooltip hidden';
-  helpTooltip = new ol.Overlay({
+  helpTooltip = new _ol_Overlay_({
     element: helpTooltipElement,
     offset: [15, 0],
     positioning: 'center-left'
@@ -270,7 +270,7 @@ function createMeasureTooltip() {
   }
   measureTooltipElement = document.createElement('div');
   measureTooltipElement.className = 'tooltip tooltip-measure';
-  measureTooltip = new ol.Overlay({
+  measureTooltip = new _ol_Overlay_({
     element: measureTooltipElement,
     offset: [0, -15],
     positioning: 'bottom-center'

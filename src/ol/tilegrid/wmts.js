@@ -1,10 +1,7 @@
-goog.provide('ol.tilegrid.WMTS');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.proj');
-goog.require('ol.tilegrid.TileGrid');
-
+import _ol_ from '../index';
+import _ol_array_ from '../array';
+import _ol_proj_ from '../proj';
+import _ol_tilegrid_TileGrid_ from '../tilegrid/tilegrid';
 
 /**
  * @classdesc
@@ -16,7 +13,7 @@ goog.require('ol.tilegrid.TileGrid');
  * @struct
  * @api
  */
-ol.tilegrid.WMTS = function(options) {
+var _ol_tilegrid_WMTS_ = function(options) {
   /**
    * @private
    * @type {!Array.<string>}
@@ -24,7 +21,7 @@ ol.tilegrid.WMTS = function(options) {
   this.matrixIds_ = options.matrixIds;
   // FIXME: should the matrixIds become optional?
 
-  ol.tilegrid.TileGrid.call(this, {
+  _ol_tilegrid_TileGrid_.call(this, {
     extent: options.extent,
     origin: options.origin,
     origins: options.origins,
@@ -34,14 +31,15 @@ ol.tilegrid.WMTS = function(options) {
     sizes: options.sizes
   });
 };
-ol.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
+
+_ol_.inherits(_ol_tilegrid_WMTS_, _ol_tilegrid_TileGrid_);
 
 
 /**
  * @param {number} z Z.
  * @return {string} MatrixId..
  */
-ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
+_ol_tilegrid_WMTS_.prototype.getMatrixId = function(z) {
   return this.matrixIds_[z];
 };
 
@@ -51,7 +49,7 @@ ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
  * @return {Array.<string>} MatrixIds.
  * @api
  */
-ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
+_ol_tilegrid_WMTS_.prototype.getMatrixIds = function() {
   return this.matrixIds_;
 };
 
@@ -68,7 +66,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
  * @api
  */
-ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent,
+_ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent,
     opt_matrixLimits) {
 
   /** @type {!Array.<number>} */
@@ -93,7 +91,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
   var tileHeightPropName = 'TileHeight';
 
   var projection;
-  projection = ol.proj.get(matrixSet[supportedCRSPropName].replace(
+  projection = _ol_proj_.get(matrixSet[supportedCRSPropName].replace(
       /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'));
   var metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
@@ -109,7 +107,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = ol.array.find(matrixLimits,
+      matrixAvailable = _ol_array_.find(matrixLimits,
           function(elt_ml, index_ml, array_ml) {
             return elt[identifierPropName] == elt_ml[matrixIdsPropName];
           });
@@ -136,7 +134,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
     }
   });
 
-  return new ol.tilegrid.WMTS({
+  return new _ol_tilegrid_WMTS_({
     extent: opt_extent,
     origins: origins,
     resolutions: resolutions,
@@ -145,3 +143,4 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
     sizes: sizes
   });
 };
+export default _ol_tilegrid_WMTS_;

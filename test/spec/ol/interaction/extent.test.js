@@ -1,10 +1,10 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.interaction.Extent');
-goog.require('ol.pointer.PointerEvent');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/mapbrowserpointerevent';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_interaction_Extent_ from '../../../../src/ol/interaction/extent';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
 
 describe('ol.interaction.Extent', function() {
   var map, interaction;
@@ -15,10 +15,10 @@ describe('ol.interaction.Extent', function() {
   beforeEach(function() {
     var target = createMapDiv(width, height);
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: target,
       layers: [],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -26,7 +26,7 @@ describe('ol.interaction.Extent', function() {
     });
     map.renderSync();
 
-    interaction = new ol.interaction.Extent();
+    interaction = new _ol_interaction_Extent_();
     map.addInteraction(interaction);
   });
 
@@ -52,14 +52,14 @@ describe('ol.interaction.Extent', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var pointerEvent = new ol.pointer.PointerEvent(type, {
+    var pointerEvent = new _ol_pointer_PointerEvent_(type, {
       type: type,
       button: button,
       clientX: position.left + x + width / 2,
       clientY: position.top - y + height / 2,
       shiftKey: shiftKey
     });
-    var event = new ol.MapBrowserPointerEvent(type, map, pointerEvent);
+    var event = new _ol_MapBrowserPointerEvent_(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
@@ -68,7 +68,7 @@ describe('ol.interaction.Extent', function() {
 
     it('can be configured with an extent', function() {
       expect(function() {
-        new ol.interaction.Extent({
+        new _ol_interaction_Extent_({
           extent: [-10, -10, 10, 10]
         });
       }).to.not.throwException();

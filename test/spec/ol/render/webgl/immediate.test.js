@@ -1,40 +1,40 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.render.webgl.CircleReplay');
-goog.require('ol.render.webgl.ImageReplay');
-goog.require('ol.render.webgl.Immediate');
-goog.require('ol.render.webgl.LineStringReplay');
-goog.require('ol.render.webgl.PolygonReplay');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../../../../../src/ol/feature';
+import _ol_geom_Circle_ from '../../../../../src/ol/geom/circle';
+import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/geometrycollection';
+import _ol_geom_LineString_ from '../../../../../src/ol/geom/linestring';
+import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/multipolygon';
+import _ol_geom_Point_ from '../../../../../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../../../../../src/ol/geom/polygon';
+import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/circlereplay';
+import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/imagereplay';
+import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/immediate';
+import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/linestringreplay';
+import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/polygonreplay';
+import _ol_style_Circle_ from '../../../../../src/ol/style/circle';
+import _ol_style_Fill_ from '../../../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../../../src/ol/style/stroke';
+import _ol_style_Style_ from '../../../../../src/ol/style/style';
 
 describe('ol.render.webgl.Immediate', function() {
   var context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
   beforeEach(function() {
-    context = new ol.render.webgl.Immediate({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
-    style = new ol.style.Style({
-      image: new ol.style.Circle(),
-      fill: new ol.style.Fill(),
-      stroke: new ol.style.Stroke()
+    context = new _ol_render_webgl_Immediate_({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
+    style = new _ol_style_Style_({
+      image: new _ol_style_Circle_(),
+      fill: new _ol_style_Fill_(),
+      stroke: new _ol_style_Stroke_()
     });
-    circle = new ol.geom.Circle([0, 0], 5);
-    line = new ol.geom.LineString([[0, 0], [5, 5]]);
-    multiLine = new ol.geom.MultiLineString([[[0, 0], [5, 5]]]);
-    point = new ol.geom.Point([0, 0]);
-    multiPoint = new ol.geom.MultiPoint([[0, 0]]);
-    polygon = new ol.geom.Polygon([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
-    multiPolygon = new ol.geom.MultiPolygon([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
+    circle = new _ol_geom_Circle_([0, 0], 5);
+    line = new _ol_geom_LineString_([[0, 0], [5, 5]]);
+    multiLine = new _ol_geom_MultiLineString_([[[0, 0], [5, 5]]]);
+    point = new _ol_geom_Point_([0, 0]);
+    multiPoint = new _ol_geom_MultiPoint_([[0, 0]]);
+    polygon = new _ol_geom_Polygon_([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
+    multiPolygon = new _ol_geom_MultiPolygon_([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
   });
 
   describe('#setStyle', function() {
@@ -49,7 +49,7 @@ describe('ol.render.webgl.Immediate', function() {
   describe('#drawFeature', function() {
     var feat;
     beforeEach(function() {
-      feat = new ol.Feature({
+      feat = new _ol_Feature_({
         geometry: circle
       });
       context.setStyle = function() {};
@@ -69,15 +69,15 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     it('does nothing if no geometry is provided', function() {
-      feat = new ol.Feature();
+      feat = new _ol_Feature_();
       context.drawFeature(feat, style);
       expect(context.setStyle.called).to.be(false);
       expect(context.drawGeometry.called).to.be(false);
     });
 
     it('does nothing if geometry is out of bounds', function() {
-      feat = new ol.Feature({
-        geometry: new ol.geom.Circle([540, 540], 1)
+      feat = new _ol_Feature_({
+        geometry: new _ol_geom_Circle_([540, 540], 1)
       });
       context.drawFeature(feat, style);
       expect(context.setStyle.called).to.be(false);
@@ -88,7 +88,7 @@ describe('ol.render.webgl.Immediate', function() {
   describe('#drawGeometryCollection', function() {
     var geomColl;
     beforeEach(function() {
-      geomColl = new ol.geom.GeometryCollection([circle, point, multiPoint,
+      geomColl = new _ol_geom_GeometryCollection_([circle, point, multiPoint,
         line, multiLine, polygon, multiPolygon]);
     });
 
@@ -113,7 +113,7 @@ describe('ol.render.webgl.Immediate', function() {
         return function() {};
       });
       sinon.spy(ctor.prototype.getDeleteResourcesFunction);
-      if (ctor === ol.render.webgl.ImageReplay) {
+      if (ctor === _ol_render_webgl_ImageReplay_) {
         tmpObj.setImageStyle = ctor.prototype.setImageStyle;
         ctor.prototype.setImageStyle = sinon.spy();
       } else {
@@ -134,140 +134,140 @@ describe('ol.render.webgl.Immediate', function() {
     describe('#drawPoint', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.ImageReplay, 'drawPoint');
+        tmpObj = mock(_ol_render_webgl_ImageReplay_, 'drawPoint');
       });
 
       it('draws a point', function() {
         context.drawGeometry(point);
-        expect(ol.render.webgl.ImageReplay.prototype.setImageStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.drawPoint.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.setImageStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.drawPoint.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.ImageReplay, tmpObj);
+        restore(_ol_render_webgl_ImageReplay_, tmpObj);
       });
     });
 
     describe('#drawMultiPoint', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.ImageReplay, 'drawMultiPoint');
+        tmpObj = mock(_ol_render_webgl_ImageReplay_, 'drawMultiPoint');
       });
 
       it('draws a multi point', function() {
         context.drawGeometry(multiPoint);
-        expect(ol.render.webgl.ImageReplay.prototype.setImageStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.drawMultiPoint.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.setImageStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.drawMultiPoint.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_ImageReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.ImageReplay, tmpObj);
+        restore(_ol_render_webgl_ImageReplay_, tmpObj);
       });
     });
 
     describe('#drawLineString', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.LineStringReplay, 'drawLineString');
+        tmpObj = mock(_ol_render_webgl_LineStringReplay_, 'drawLineString');
       });
 
       it('draws a line string', function() {
         context.drawGeometry(line);
-        expect(ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.drawLineString.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.drawLineString.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.LineStringReplay, tmpObj);
+        restore(_ol_render_webgl_LineStringReplay_, tmpObj);
       });
     });
 
     describe('#drawMultiLineString', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.LineStringReplay, 'drawMultiLineString');
+        tmpObj = mock(_ol_render_webgl_LineStringReplay_, 'drawMultiLineString');
       });
 
       it('draws a multi line string', function() {
         context.drawGeometry(multiLine);
-        expect(ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.drawMultiLineString.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.drawMultiLineString.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.LineStringReplay, tmpObj);
+        restore(_ol_render_webgl_LineStringReplay_, tmpObj);
       });
     });
 
     describe('#drawPolygon', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.PolygonReplay, 'drawPolygon');
+        tmpObj = mock(_ol_render_webgl_PolygonReplay_, 'drawPolygon');
       });
 
       it('draws a polygon', function() {
         context.drawGeometry(polygon);
-        expect(ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.drawPolygon.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.drawPolygon.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.PolygonReplay, tmpObj);
+        restore(_ol_render_webgl_PolygonReplay_, tmpObj);
       });
     });
 
     describe('#drawMultiPolygon', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.PolygonReplay, 'drawMultiPolygon');
+        tmpObj = mock(_ol_render_webgl_PolygonReplay_, 'drawMultiPolygon');
       });
 
       it('draws a multi polygon', function() {
         context.drawGeometry(multiPolygon);
-        expect(ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.drawMultiPolygon.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_PolygonReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.PolygonReplay, tmpObj);
+        restore(_ol_render_webgl_PolygonReplay_, tmpObj);
       });
     });
 
     describe('#drawCircle', function() {
       var tmpObj;
       beforeEach(function() {
-        tmpObj = mock(ol.render.webgl.CircleReplay, 'drawCircle');
+        tmpObj = mock(_ol_render_webgl_CircleReplay_, 'drawCircle');
       });
 
       it('draws a circle', function() {
         context.drawGeometry(circle);
-        expect(ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.drawCircle.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(_ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_CircleReplay_.prototype.drawCircle.calledOnce).to.be(true);
+        expect(_ol_render_webgl_CircleReplay_.prototype.finish.calledOnce).to.be(true);
+        expect(_ol_render_webgl_CircleReplay_.prototype.replay.calledOnce).to.be(true);
+        expect(_ol_render_webgl_CircleReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(ol.render.webgl.CircleReplay, tmpObj);
+        restore(_ol_render_webgl_CircleReplay_, tmpObj);
       });
     });
   });

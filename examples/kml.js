@@ -1,32 +1,32 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.KML');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.proj');
-goog.require('ol.source.BingMaps');
-goog.require('ol.source.Vector');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_KML_ from '../src/ol/format/kml';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_BingMaps_ from '../src/ol/source/bingmaps';
+import _ol_source_Vector_ from '../src/ol/source/vector';
 
-var projection = ol.proj.get('EPSG:3857');
+var projection = _ol_proj_.get('EPSG:3857');
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.BingMaps({
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_BingMaps_({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
 });
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/kml/2012-02-10.kml',
-    format: new ol.format.KML()
+    format: new _ol_format_KML_()
   })
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [876970.8463461736, 5859807.853963373],
     projection: projection,
     zoom: 10

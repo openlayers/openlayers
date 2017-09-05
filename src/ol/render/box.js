@@ -1,18 +1,15 @@
 // FIXME add rotation
 
-goog.provide('ol.render.Box');
-
-goog.require('ol');
-goog.require('ol.Disposable');
-goog.require('ol.geom.Polygon');
-
+import _ol_ from '../index';
+import _ol_Disposable_ from '../disposable';
+import _ol_geom_Polygon_ from '../geom/polygon';
 
 /**
  * @constructor
  * @extends {ol.Disposable}
  * @param {string} className CSS class name.
  */
-ol.render.Box = function(className) {
+var _ol_render_Box_ = function(className) {
 
   /**
    * @type {ol.geom.Polygon}
@@ -47,13 +44,14 @@ ol.render.Box = function(className) {
   this.endPixel_ = null;
 
 };
-ol.inherits(ol.render.Box, ol.Disposable);
+
+_ol_.inherits(_ol_render_Box_, _ol_Disposable_);
 
 
 /**
  * @inheritDoc
  */
-ol.render.Box.prototype.disposeInternal = function() {
+_ol_render_Box_.prototype.disposeInternal = function() {
   this.setMap(null);
 };
 
@@ -61,7 +59,7 @@ ol.render.Box.prototype.disposeInternal = function() {
 /**
  * @private
  */
-ol.render.Box.prototype.render_ = function() {
+_ol_render_Box_.prototype.render_ = function() {
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var px = 'px';
@@ -76,7 +74,7 @@ ol.render.Box.prototype.render_ = function() {
 /**
  * @param {ol.PluggableMap} map Map.
  */
-ol.render.Box.prototype.setMap = function(map) {
+_ol_render_Box_.prototype.setMap = function(map) {
   if (this.map_) {
     this.map_.getOverlayContainer().removeChild(this.element_);
     var style = this.element_.style;
@@ -93,7 +91,7 @@ ol.render.Box.prototype.setMap = function(map) {
  * @param {ol.Pixel} startPixel Start pixel.
  * @param {ol.Pixel} endPixel End pixel.
  */
-ol.render.Box.prototype.setPixels = function(startPixel, endPixel) {
+_ol_render_Box_.prototype.setPixels = function(startPixel, endPixel) {
   this.startPixel_ = startPixel;
   this.endPixel_ = endPixel;
   this.createOrUpdateGeometry();
@@ -104,7 +102,7 @@ ol.render.Box.prototype.setPixels = function(startPixel, endPixel) {
 /**
  * Creates or updates the cached geometry.
  */
-ol.render.Box.prototype.createOrUpdateGeometry = function() {
+_ol_render_Box_.prototype.createOrUpdateGeometry = function() {
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var pixels = [
@@ -117,7 +115,7 @@ ol.render.Box.prototype.createOrUpdateGeometry = function() {
   // close the polygon
   coordinates[4] = coordinates[0].slice();
   if (!this.geometry_) {
-    this.geometry_ = new ol.geom.Polygon([coordinates]);
+    this.geometry_ = new _ol_geom_Polygon_([coordinates]);
   } else {
     this.geometry_.setCoordinates([coordinates]);
   }
@@ -127,6 +125,7 @@ ol.render.Box.prototype.createOrUpdateGeometry = function() {
 /**
  * @return {ol.geom.Polygon} Geometry.
  */
-ol.render.Box.prototype.getGeometry = function() {
+_ol_render_Box_.prototype.getGeometry = function() {
   return this.geometry_;
 };
+export default _ol_render_Box_;

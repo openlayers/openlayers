@@ -1,17 +1,17 @@
 
 
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');
+import _ol_Collection_ from '../../../../src/ol/collection';
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_MapBrowserEventType_ from '../../../../src/ol/mapbrowsereventtype';
+import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/mapbrowserpointerevent';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_geom_Polygon_ from '../../../../src/ol/geom/polygon';
+import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/interaction';
+import _ol_interaction_Select_ from '../../../../src/ol/interaction/select';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
 
 
 describe('ol.interaction.Select', function() {
@@ -31,40 +31,40 @@ describe('ol.interaction.Select', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
 
-    var geometry = new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
+    var geometry = new _ol_geom_Polygon_([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
 
     // Four overlapping features, two features of type "foo" and two features
     // of type "bar". The rendering order is, from top to bottom, foo -> bar
     // -> foo -> bar.
     var features = [];
     features.push(
-        new ol.Feature({
+        new _ol_Feature_({
           geometry: geometry,
           type: 'bar'
         }),
-        new ol.Feature({
+        new _ol_Feature_({
           geometry: geometry,
           type: 'foo'
         }),
-        new ol.Feature({
+        new _ol_Feature_({
           geometry: geometry,
           type: 'bar'
         }),
-        new ol.Feature({
+        new _ol_Feature_({
           geometry: geometry,
           type: 'foo'
         }));
 
-    source = new ol.source.Vector({
+    source = new _ol_source_Vector_({
       features: features
     });
 
-    layer = new ol.layer.Vector({source: source});
+    layer = new _ol_layer_Vector_({source: source});
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: target,
       layers: [layer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -94,27 +94,27 @@ describe('ol.interaction.Select', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new ol.pointer.PointerEvent(type, {
+    var event = new _ol_pointer_PointerEvent_(type, {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
     });
-    map.handleMapBrowserEvent(new ol.MapBrowserPointerEvent(type, map, event));
+    map.handleMapBrowserEvent(new _ol_MapBrowserPointerEvent_(type, map, event));
   }
 
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var select = new ol.interaction.Select();
-      expect(select).to.be.a(ol.interaction.Select);
-      expect(select).to.be.a(ol.interaction.Interaction);
+      var select = new _ol_interaction_Select_();
+      expect(select).to.be.a(_ol_interaction_Select_);
+      expect(select).to.be.a(_ol_interaction_Interaction_);
     });
 
     describe('user-provided collection', function() {
 
       it('uses the user-provided collection', function() {
-        var features = new ol.Collection();
-        var select = new ol.interaction.Select({features: features});
+        var features = new _ol_Collection_();
+        var select = new _ol_interaction_Select_({features: features});
         expect(select.getFeatures()).to.be(features);
       });
 
@@ -126,7 +126,7 @@ describe('ol.interaction.Select', function() {
     var select;
 
     beforeEach(function() {
-      select = new ol.interaction.Select();
+      select = new _ol_interaction_Select_();
       map.addInteraction(select);
     });
 
@@ -150,7 +150,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, -10, -10);
+      simulateEvent(_ol_MapBrowserEventType_.SINGLECLICK, -10, -10);
 
       expect(listenerSpy.callCount).to.be(0);
 
@@ -164,8 +164,8 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, 10, -20);
-      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, 9, -21);
+      simulateEvent(_ol_MapBrowserEventType_.SINGLECLICK, 10, -20);
+      simulateEvent(_ol_MapBrowserEventType_.SINGLECLICK, 9, -21);
 
       expect(listenerSpy.callCount).to.be(1);
 
@@ -192,7 +192,7 @@ describe('ol.interaction.Select', function() {
     var select;
 
     beforeEach(function() {
-      select = new ol.interaction.Select({
+      select = new _ol_interaction_Select_({
         multi: true
       });
       map.addInteraction(select);
@@ -241,7 +241,7 @@ describe('ol.interaction.Select', function() {
     var select;
 
     beforeEach(function() {
-      select = new ol.interaction.Select({
+      select = new _ol_interaction_Select_({
         multi: true
       });
       map.addInteraction(select);
@@ -274,7 +274,7 @@ describe('ol.interaction.Select', function() {
     describe('with multi set to true', function() {
 
       it('only selects features that pass the filter', function() {
-        var select = new ol.interaction.Select({
+        var select = new _ol_interaction_Select_({
           multi: true,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -291,7 +291,7 @@ describe('ol.interaction.Select', function() {
 
       it('only selects features that pass the filter ' +
          'using shift single-click', function() {
-        var select = new ol.interaction.Select({
+        var select = new _ol_interaction_Select_({
           multi: true,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -311,7 +311,7 @@ describe('ol.interaction.Select', function() {
     describe('with multi set to false', function() {
 
       it('only selects the first feature that passes the filter', function() {
-        var select = new ol.interaction.Select({
+        var select = new _ol_interaction_Select_({
           multi: false,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -326,7 +326,7 @@ describe('ol.interaction.Select', function() {
 
       it('only selects the first feature that passes the filter ' +
          'using shift single-click', function() {
-        var select = new ol.interaction.Select({
+        var select = new _ol_interaction_Select_({
           multi: false,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -346,7 +346,7 @@ describe('ol.interaction.Select', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new ol.interaction.Select();
+      interaction = new _ol_interaction_Select_();
       map.addInteraction(interaction);
     });
     afterEach(function() {
@@ -358,8 +358,8 @@ describe('ol.interaction.Select', function() {
         var feature = e.selected[0];
         var layer_ = interaction.getLayer(feature);
         expect(e.selected).to.have.length(1);
-        expect(feature).to.be.a(ol.Feature);
-        expect(layer_).to.be.a(ol.layer.Vector);
+        expect(feature).to.be.a(_ol_Feature_);
+        expect(layer_).to.be.a(_ol_layer_Vector_);
         expect(layer_).to.equal(layer);
       });
       interaction.on('select', listenerSpy);
@@ -374,7 +374,7 @@ describe('ol.interaction.Select', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new ol.interaction.Select();
+      interaction = new _ol_interaction_Select_();
 
       expect(interaction.getActive()).to.be(true);
 
@@ -414,7 +414,7 @@ describe('ol.interaction.Select', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new ol.interaction.Select();
+      interaction = new _ol_interaction_Select_();
       expect(interaction.getActive()).to.be(true);
     });
 

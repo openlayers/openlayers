@@ -28,12 +28,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-goog.provide('ol.pointer.PointerEvent');
-
-
-goog.require('ol');
-goog.require('ol.events.Event');
-
+import _ol_ from '../index';
+import _ol_events_Event_ from '../events/event';
 
 /**
  * A class for pointer events.
@@ -48,8 +44,8 @@ goog.require('ol.events.Event');
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
-ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
-  ol.events.Event.call(this, type);
+var _ol_pointer_PointerEvent_ = function(type, originalEvent, opt_eventDict) {
+  _ol_events_Event_.call(this, type);
 
   /**
    * @const
@@ -192,7 +188,8 @@ ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
     };
   }
 };
-ol.inherits(ol.pointer.PointerEvent, ol.events.Event);
+
+_ol_.inherits(_ol_pointer_PointerEvent_, _ol_events_Event_);
 
 
 /**
@@ -200,7 +197,7 @@ ol.inherits(ol.pointer.PointerEvent, ol.events.Event);
  * @param {Object.<string, ?>} eventDict The event dictionary.
  * @return {number} Button indicator.
  */
-ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
+_ol_pointer_PointerEvent_.prototype.getButtons_ = function(eventDict) {
   // According to the w3c spec,
   // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
   // MouseEvent.button == 0 can mean either no mouse button depressed, or the
@@ -223,7 +220,7 @@ ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
   //
   // This is fixed with DOM Level 4's use of buttons
   var buttons;
-  if (eventDict.buttons || ol.pointer.PointerEvent.HAS_BUTTONS) {
+  if (eventDict.buttons || _ol_pointer_PointerEvent_.HAS_BUTTONS) {
     buttons = eventDict.buttons;
   } else {
     switch (eventDict.which) {
@@ -243,7 +240,7 @@ ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
  * @param {number} buttons Button indicator.
  * @return {number} The pressure.
  */
-ol.pointer.PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
+_ol_pointer_PointerEvent_.prototype.getPressure_ = function(eventDict, buttons) {
   // Spec requires that pointers without pressure specified use 0.5 for down
   // state and 0 for up state.
   var pressure = 0;
@@ -260,7 +257,7 @@ ol.pointer.PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
  * Is the `buttons` property supported?
  * @type {boolean}
  */
-ol.pointer.PointerEvent.HAS_BUTTONS = false;
+_ol_pointer_PointerEvent_.HAS_BUTTONS = false;
 
 
 /**
@@ -269,8 +266,9 @@ ol.pointer.PointerEvent.HAS_BUTTONS = false;
 (function() {
   try {
     var ev = new MouseEvent('click', {buttons: 1});
-    ol.pointer.PointerEvent.HAS_BUTTONS = ev.buttons === 1;
+    _ol_pointer_PointerEvent_.HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
     // pass
   }
 })();
+export default _ol_pointer_PointerEvent_;

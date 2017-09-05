@@ -1,6 +1,3 @@
-goog.provide('ol.format.filter.Filter');
-
-
 /**
  * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
@@ -11,7 +8,7 @@ goog.provide('ol.format.filter.Filter');
  * @struct
  * @api
  */
-ol.format.filter.Filter = function(tagName) {
+var _ol_format_filter_Filter_ = function(tagName) {
 
   /**
    * @private
@@ -24,6 +21,7 @@ ol.format.filter.Filter = function(tagName) {
  * The XML tag name for a filter.
  * @returns {!string} Name.
  */
-ol.format.filter.Filter.prototype.getTagName = function() {
+_ol_format_filter_Filter_.prototype.getTagName = function() {
   return this.tagName_;
 };
+export default _ol_format_filter_Filter_;

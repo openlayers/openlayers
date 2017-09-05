@@ -1,32 +1,32 @@
 
 
-goog.require('ol');
-goog.require('ol.ImageTile');
-goog.require('ol.TileState');
+import _ol_ from '../../../src/ol';
+import _ol_ImageTile_ from '../../../src/ol/imagetile';
+import _ol_TileState_ from '../../../src/ol/tilestate';
 
 describe('ol.Tile', function() {
   describe('interimChain', function() {
     var head, renderTile;
     beforeEach(function() {
       var tileCoord = [0, 0, 0];
-      head = new ol.ImageTile(tileCoord, ol.TileState.IDLE);
-      ol.getUid(head);
+      head = new _ol_ImageTile_(tileCoord, _ol_TileState_.IDLE);
+      _ol_.getUid(head);
 
       var addToChain = function(tile, state) {
-        var next = new ol.ImageTile(tileCoord, state);
-        ol.getUid(next);
+        var next = new _ol_ImageTile_(tileCoord, state);
+        _ol_.getUid(next);
         tile.interimTile = next;
         return next;
       };
-      var tail = addToChain(head, ol.TileState.IDLE); //discard, deprecated by head
-      tail = addToChain(tail, ol.TileState.LOADING); //keep, request already going
-      tail = addToChain(tail, ol.TileState.IDLE); //discard, deprecated by head
-      tail = addToChain(tail, ol.TileState.LOADED); //keep, use for rendering
+      var tail = addToChain(head, _ol_TileState_.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, _ol_TileState_.LOADING); //keep, request already going
+      tail = addToChain(tail, _ol_TileState_.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, _ol_TileState_.LOADED); //keep, use for rendering
       renderTile = tail; //store this tile for later tests
-      tail = addToChain(tail, ol.TileState.IDLE);  //rest of list outdated by tile above
-      tail = addToChain(tail, ol.TileState.LOADED);
-      tail = addToChain(tail, ol.TileState.LOADING);
-      tail = addToChain(tail, ol.TileState.LOADED);
+      tail = addToChain(tail, _ol_TileState_.IDLE);  //rest of list outdated by tile above
+      tail = addToChain(tail, _ol_TileState_.LOADED);
+      tail = addToChain(tail, _ol_TileState_.LOADING);
+      tail = addToChain(tail, _ol_TileState_.LOADED);
 
     });
 
@@ -63,7 +63,7 @@ describe('ol.Tile', function() {
       head.refreshInterimChain();
       while (head.interimTile !== null) {
         //use property of ol.getUid returning increasing id's.
-        expect(ol.getUid(head) < ol.getUid(head.interimTile));
+        expect(_ol_.getUid(head) < _ol_.getUid(head.interimTile));
         head = head.interimTile;
       }
       done();

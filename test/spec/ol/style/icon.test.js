@@ -1,9 +1,9 @@
 
 
-goog.require('ol');
-goog.require('ol.style');
-goog.require('ol.style.Icon');
-goog.require('ol.style.IconImage');
+import _ol_ from '../../../../src/ol';
+import _ol_style_ from '../../../../src/ol/style';
+import _ol_style_Icon_ from '../../../../src/ol/style/icon';
+import _ol_style_IconImage_ from '../../../../src/ol/style/iconimage';
 
 
 describe('ol.style.Icon', function() {
@@ -15,16 +15,16 @@ describe('ol.style.Icon', function() {
 
     it('caches canvas images with a uid as src', function() {
       var canvas = document.createElement('canvas');
-      new ol.style.Icon({
+      new _ol_style_Icon_({
         img: canvas,
         imgSize: size
       });
-      expect(ol.style.IconImage.get(
-          canvas, ol.getUid(canvas), size, '').getImage()).to.eql(canvas);
+      expect(_ol_style_IconImage_.get(
+          canvas, _ol_.getUid(canvas), size, '').getImage()).to.eql(canvas);
     });
 
     it('imgSize overrides img.width and img.height', function(done) {
-      var style = new ol.style.Icon({
+      var style = new _ol_style_Icon_({
         src: src,
         imgSize: size
       });
@@ -41,17 +41,17 @@ describe('ol.style.Icon', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Icon', function() {
-      var original = new ol.style.Icon({
+      var original = new _ol_style_Icon_({
         src: src
       });
       var clone = original.clone();
-      expect(clone).to.be.an(ol.style.Icon);
+      expect(clone).to.be.an(_ol_style_Icon_);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values ', function() {
       var canvas = document.createElement('canvas');
-      var original = new ol.style.Icon({
+      var original = new _ol_style_Icon_({
         anchor: [1, 0],
         anchorOrigin: 'bottom-right',
         anchorXUnits: 'pixels',
@@ -87,7 +87,7 @@ describe('ol.style.Icon', function() {
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
       expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
 
-      var original2 = new ol.style.Icon({
+      var original2 = new _ol_style_Icon_({
         src: src
       });
       var clone2 = original2.clone();
@@ -96,7 +96,7 @@ describe('ol.style.Icon', function() {
 
     it('the clone does not reference the same objects as the original', function() {
       var canvas = document.createElement('canvas');
-      var original = new ol.style.Icon({
+      var original = new _ol_style_Icon_({
         anchor: [1, 0],
         color: [1, 2, 3, 0.4],
         img: canvas,
@@ -128,7 +128,7 @@ describe('ol.style.Icon', function() {
     var fractionAnchor = [0.25, 0.25];
 
     it('uses fractional units by default', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor
@@ -137,7 +137,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses pixels units', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         anchor: [2, 18],
@@ -148,7 +148,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses a bottom left anchor origin', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
@@ -158,7 +158,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses a bottom right anchor origin', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
@@ -168,7 +168,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses a top right anchor origin', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
@@ -183,7 +183,7 @@ describe('ol.style.Icon', function() {
     var imageSize = [144, 192];
 
     it('uses a top left offset origin (default)', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         offset: offset
@@ -192,7 +192,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses a bottom left offset origin', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         offset: offset,
@@ -203,7 +203,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses a bottom right offset origin', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         offset: offset,
@@ -214,7 +214,7 @@ describe('ol.style.Icon', function() {
     });
 
     it('uses a top right offset origin', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png',
         size: size,
         offset: offset,
@@ -231,19 +231,19 @@ describe('ol.style.Icon', function() {
     it('takes the real image size', function() {
       // pretend that the image is already in the cache,
       // this image will be used for the icon.
-      var cache = ol.style.iconImageCache;
+      var cache = _ol_style_.iconImageCache;
       var src = 'test.png';
-      var iconImage = new ol.style.IconImage(null, 'test.png', imgSize);
+      var iconImage = new _ol_style_IconImage_(null, 'test.png', imgSize);
       cache.set(src, null, null, iconImage);
 
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         src: 'test.png'
       });
       expect(iconStyle.getImageSize()).to.eql(imgSize);
     });
 
     it('uses the given image size', function() {
-      var iconStyle = new ol.style.Icon({
+      var iconStyle = new _ol_style_Icon_({
         img: {src: 'test.png'},
         imgSize: imgSize
       });

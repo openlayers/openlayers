@@ -1,8 +1,7 @@
-goog.provide('ol.proj.EPSG4326');
-
-goog.require('ol');
-goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
+import _ol_ from '../index';
+import _ol_proj_Projection_ from '../proj/projection';
+import _ol_proj_Units_ from '../proj/units';
+var _ol_proj_EPSG4326_ = {};
 
 
 /**
@@ -19,18 +18,18 @@ goog.require('ol.proj.Units');
  * @param {string=} opt_axisOrientation Axis orientation.
  * @private
  */
-ol.proj.EPSG4326.Projection_ = function(code, opt_axisOrientation) {
-  ol.proj.Projection.call(this, {
+_ol_proj_EPSG4326_.Projection_ = function(code, opt_axisOrientation) {
+  _ol_proj_Projection_.call(this, {
     code: code,
-    units: ol.proj.Units.DEGREES,
-    extent: ol.proj.EPSG4326.EXTENT,
+    units: _ol_proj_Units_.DEGREES,
+    extent: _ol_proj_EPSG4326_.EXTENT,
     axisOrientation: opt_axisOrientation,
     global: true,
-    metersPerUnit: ol.proj.EPSG4326.METERS_PER_UNIT,
-    worldExtent: ol.proj.EPSG4326.EXTENT
+    metersPerUnit: _ol_proj_EPSG4326_.METERS_PER_UNIT,
+    worldExtent: _ol_proj_EPSG4326_.EXTENT
   });
 };
-ol.inherits(ol.proj.EPSG4326.Projection_, ol.proj.Projection);
+_ol_.inherits(_ol_proj_EPSG4326_.Projection_, _ol_proj_Projection_);
 
 
 /**
@@ -39,7 +38,7 @@ ol.inherits(ol.proj.EPSG4326.Projection_, ol.proj.Projection);
  * @const
  * @type {number}
  */
-ol.proj.EPSG4326.RADIUS = 6378137;
+_ol_proj_EPSG4326_.RADIUS = 6378137;
 
 
 /**
@@ -48,14 +47,14 @@ ol.proj.EPSG4326.RADIUS = 6378137;
  * @const
  * @type {ol.Extent}
  */
-ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
+_ol_proj_EPSG4326_.EXTENT = [-180, -90, 180, 90];
 
 
 /**
  * @const
  * @type {number}
  */
-ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.proj.EPSG4326.RADIUS / 180;
+_ol_proj_EPSG4326_.METERS_PER_UNIT = Math.PI * _ol_proj_EPSG4326_.RADIUS / 180;
 
 
 /**
@@ -64,13 +63,14 @@ ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.proj.EPSG4326.RADIUS / 180;
  * @const
  * @type {Array.<ol.proj.Projection>}
  */
-ol.proj.EPSG4326.PROJECTIONS = [
-  new ol.proj.EPSG4326.Projection_('CRS:84'),
-  new ol.proj.EPSG4326.Projection_('EPSG:4326', 'neu'),
-  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:EPSG::4326', 'neu'),
-  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
-  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:OGC:1.3:CRS84'),
-  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:OGC:2:84'),
-  new ol.proj.EPSG4326.Projection_('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
-  new ol.proj.EPSG4326.Projection_('urn:x-ogc:def:crs:EPSG:4326', 'neu')
+_ol_proj_EPSG4326_.PROJECTIONS = [
+  new _ol_proj_EPSG4326_.Projection_('CRS:84'),
+  new _ol_proj_EPSG4326_.Projection_('EPSG:4326', 'neu'),
+  new _ol_proj_EPSG4326_.Projection_('urn:ogc:def:crs:EPSG::4326', 'neu'),
+  new _ol_proj_EPSG4326_.Projection_('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
+  new _ol_proj_EPSG4326_.Projection_('urn:ogc:def:crs:OGC:1.3:CRS84'),
+  new _ol_proj_EPSG4326_.Projection_('urn:ogc:def:crs:OGC:2:84'),
+  new _ol_proj_EPSG4326_.Projection_('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
+  new _ol_proj_EPSG4326_.Projection_('urn:x-ogc:def:crs:EPSG:4326', 'neu')
 ];
+export default _ol_proj_EPSG4326_;

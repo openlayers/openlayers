@@ -1,11 +1,8 @@
-goog.provide('ol.extent.Relationship');
-
-
 /**
  * Relationship to an extent.
  * @enum {number}
  */
-ol.extent.Relationship = {
+var _ol_extent_Relationship_ = {
   UNKNOWN: 0,
   INTERSECTING: 1,
   ABOVE: 2,
@@ -13,3 +10,5 @@ ol.extent.Relationship = {
   BELOW: 8,
   LEFT: 16
 };
+
+export default _ol_extent_Relationship_;

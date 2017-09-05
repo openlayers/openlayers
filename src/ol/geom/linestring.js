@@ -1,20 +1,17 @@
-goog.provide('ol.geom.LineString');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat.closest');
-goog.require('ol.geom.flat.deflate');
-goog.require('ol.geom.flat.inflate');
-goog.require('ol.geom.flat.interpolate');
-goog.require('ol.geom.flat.intersectsextent');
-goog.require('ol.geom.flat.length');
-goog.require('ol.geom.flat.segments');
-goog.require('ol.geom.flat.simplify');
-
+import _ol_ from '../index';
+import _ol_array_ from '../array';
+import _ol_extent_ from '../extent';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_SimpleGeometry_ from '../geom/simplegeometry';
+import _ol_geom_flat_closest_ from '../geom/flat/closest';
+import _ol_geom_flat_deflate_ from '../geom/flat/deflate';
+import _ol_geom_flat_inflate_ from '../geom/flat/inflate';
+import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate';
+import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent';
+import _ol_geom_flat_length_ from '../geom/flat/length';
+import _ol_geom_flat_segments_ from '../geom/flat/segments';
+import _ol_geom_flat_simplify_ from '../geom/flat/simplify';
 
 /**
  * @classdesc
@@ -26,9 +23,9 @@ goog.require('ol.geom.flat.simplify');
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-ol.geom.LineString = function(coordinates, opt_layout) {
+var _ol_geom_LineString_ = function(coordinates, opt_layout) {
 
-  ol.geom.SimpleGeometry.call(this);
+  _ol_geom_SimpleGeometry_.call(this);
 
   /**
    * @private
@@ -57,7 +54,8 @@ ol.geom.LineString = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-ol.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
+
+_ol_.inherits(_ol_geom_LineString_, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -65,11 +63,11 @@ ol.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
  * @param {ol.Coordinate} coordinate Coordinate.
  * @api
  */
-ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
+_ol_geom_LineString_.prototype.appendCoordinate = function(coordinate) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {
-    ol.array.extend(this.flatCoordinates, coordinate);
+    _ol_array_.extend(this.flatCoordinates, coordinate);
   }
   this.changed();
 };
@@ -81,8 +79,8 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
  * @override
  * @api
  */
-ol.geom.LineString.prototype.clone = function() {
-  var lineString = new ol.geom.LineString(null);
+_ol_geom_LineString_.prototype.clone = function() {
+  var lineString = new _ol_geom_LineString_(null);
   lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return lineString;
 };
@@ -91,17 +89,17 @@ ol.geom.LineString.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+_ol_geom_LineString_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
-      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.flat.closest.getClosestPoint(
+  return _ol_geom_flat_closest_.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
 };
@@ -120,8 +118,8 @@ ol.geom.LineString.prototype.closestPointXY = function(x, y, closestPoint, minSq
  * @template T,S
  * @api
  */
-ol.geom.LineString.prototype.forEachSegment = function(callback, opt_this) {
-  return ol.geom.flat.segments.forEach(this.flatCoordinates, 0,
+_ol_geom_LineString_.prototype.forEachSegment = function(callback, opt_this) {
+  return _ol_geom_flat_segments_.forEach(this.flatCoordinates, 0,
       this.flatCoordinates.length, this.stride, callback, opt_this);
 };
 
@@ -140,13 +138,13 @@ ol.geom.LineString.prototype.forEachSegment = function(callback, opt_this) {
  * @return {ol.Coordinate} Coordinate.
  * @api
  */
-ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
-  if (this.layout != ol.geom.GeometryLayout.XYM &&
-      this.layout != ol.geom.GeometryLayout.XYZM) {
+_ol_geom_LineString_.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
+  if (this.layout != _ol_geom_GeometryLayout_.XYM &&
+      this.layout != _ol_geom_GeometryLayout_.XYZM) {
     return null;
   }
   var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
-  return ol.geom.flat.interpolate.lineStringCoordinateAtM(this.flatCoordinates, 0,
+  return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(this.flatCoordinates, 0,
       this.flatCoordinates.length, this.stride, m, extrapolate);
 };
 
@@ -157,8 +155,8 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
  * @override
  * @api
  */
-ol.geom.LineString.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflate.coordinates(
+_ol_geom_LineString_.prototype.getCoordinates = function() {
+  return _ol_geom_flat_inflate_.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -173,8 +171,8 @@ ol.geom.LineString.prototype.getCoordinates = function() {
  * @return {ol.Coordinate} Coordinate of the interpolated point.
  * @api
  */
-ol.geom.LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
-  return ol.geom.flat.interpolate.lineString(
+_ol_geom_LineString_.prototype.getCoordinateAt = function(fraction, opt_dest) {
+  return _ol_geom_flat_interpolate_.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       fraction, opt_dest);
 };
@@ -185,8 +183,8 @@ ol.geom.LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
  * @return {number} Length (on projected plane).
  * @api
  */
-ol.geom.LineString.prototype.getLength = function() {
-  return ol.geom.flat.length.lineString(
+_ol_geom_LineString_.prototype.getLength = function() {
+  return _ol_geom_flat_length_.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -194,7 +192,7 @@ ol.geom.LineString.prototype.getLength = function() {
 /**
  * @return {Array.<number>} Flat midpoint.
  */
-ol.geom.LineString.prototype.getFlatMidpoint = function() {
+_ol_geom_LineString_.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
     this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
     this.flatMidpointRevision_ = this.getRevision();
@@ -206,14 +204,14 @@ ol.geom.LineString.prototype.getFlatMidpoint = function() {
 /**
  * @inheritDoc
  */
-ol.geom.LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+_ol_geom_LineString_.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
+  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
-  var simplifiedLineString = new ol.geom.LineString(null);
+  var simplifiedLineString = new _ol_geom_LineString_(null);
   simplifiedLineString.setFlatCoordinates(
-      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates);
+      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates);
   return simplifiedLineString;
 };
 
@@ -222,8 +220,8 @@ ol.geom.LineString.prototype.getSimplifiedGeometryInternal = function(squaredTol
  * @inheritDoc
  * @api
  */
-ol.geom.LineString.prototype.getType = function() {
-  return ol.geom.GeometryType.LINE_STRING;
+_ol_geom_LineString_.prototype.getType = function() {
+  return _ol_geom_GeometryType_.LINE_STRING;
 };
 
 
@@ -231,8 +229,8 @@ ol.geom.LineString.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-ol.geom.LineString.prototype.intersectsExtent = function(extent) {
-  return ol.geom.flat.intersectsextent.lineString(
+_ol_geom_LineString_.prototype.intersectsExtent = function(extent) {
+  return _ol_geom_flat_intersectsextent_.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       extent);
 };
@@ -245,15 +243,15 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
  * @override
  * @api
  */
-ol.geom.LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
+_ol_geom_LineString_.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
+    this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }
@@ -264,7 +262,8 @@ ol.geom.LineString.prototype.setCoordinates = function(coordinates, opt_layout) 
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-ol.geom.LineString.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+_ol_geom_LineString_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
+export default _ol_geom_LineString_;

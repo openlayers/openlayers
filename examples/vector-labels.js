@@ -1,15 +1,15 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
+import _ol_style_Text_ from '../src/ol/style/text';
 
 
 var myDom = {
@@ -92,13 +92,13 @@ var createTextStyle = function(feature, resolution, dom) {
   var outlineColor = dom.outline.value;
   var outlineWidth = parseInt(dom.outlineWidth.value, 10);
 
-  return new ol.style.Text({
+  return new _ol_style_Text_({
     textAlign: align,
     textBaseline: baseline,
     font: font,
     text: getText(feature, resolution, dom),
-    fill: new ol.style.Fill({color: fillColor}),
-    stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth}),
+    fill: new _ol_style_Fill_({color: fillColor}),
+    stroke: new _ol_style_Stroke_({color: outlineColor, width: outlineWidth}),
     offsetX: offsetX,
     offsetY: offsetY,
     rotation: rotation
@@ -108,22 +108,22 @@ var createTextStyle = function(feature, resolution, dom) {
 
 // Polygons
 function polygonStyleFunction(feature, resolution) {
-  return new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  return new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'blue',
       width: 1
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(0, 0, 255, 0.1)'
     }),
     text: createTextStyle(feature, resolution, myDom.polygons)
   });
 }
 
-var vectorPolygons = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vectorPolygons = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/geojson/polygon-samples.geojson',
-    format: new ol.format.GeoJSON()
+    format: new _ol_format_GeoJSON_()
   }),
   style: polygonStyleFunction
 });
@@ -131,8 +131,8 @@ var vectorPolygons = new ol.layer.Vector({
 
 // Lines
 function lineStyleFunction(feature, resolution) {
-  return new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  return new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 2
     }),
@@ -140,10 +140,10 @@ function lineStyleFunction(feature, resolution) {
   });
 }
 
-var vectorLines = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vectorLines = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/geojson/line-samples.geojson',
-    format: new ol.format.GeoJSON()
+    format: new _ol_format_GeoJSON_()
   }),
   style: lineStyleFunction
 });
@@ -151,35 +151,35 @@ var vectorLines = new ol.layer.Vector({
 
 // Points
 function pointStyleFunction(feature, resolution) {
-  return new ol.style.Style({
-    image: new ol.style.Circle({
+  return new _ol_style_Style_({
+    image: new _ol_style_Circle_({
       radius: 10,
-      fill: new ol.style.Fill({color: 'rgba(255, 0, 0, 0.1)'}),
-      stroke: new ol.style.Stroke({color: 'red', width: 1})
+      fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.1)'}),
+      stroke: new _ol_style_Stroke_({color: 'red', width: 1})
     }),
     text: createTextStyle(feature, resolution, myDom.points)
   });
 }
 
-var vectorPoints = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vectorPoints = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/geojson/point-samples.geojson',
-    format: new ol.format.GeoJSON()
+    format: new _ol_format_GeoJSON_()
   }),
   style: pointStyleFunction
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     }),
     vectorPolygons,
     vectorLines,
     vectorPoints
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-8161939, 6095025],
     zoom: 8
   })

@@ -1,4 +1,4 @@
-goog.provide('ol.easing');
+var _ol_easing_ = {};
 
 
 /**
@@ -7,7 +7,7 @@ goog.provide('ol.easing');
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.easeIn = function(t) {
+_ol_easing_.easeIn = function(t) {
   return Math.pow(t, 3);
 };
 
@@ -18,8 +18,8 @@ ol.easing.easeIn = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.easeOut = function(t) {
-  return 1 - ol.easing.easeIn(1 - t);
+_ol_easing_.easeOut = function(t) {
+  return 1 - _ol_easing_.easeIn(1 - t);
 };
 
 
@@ -29,7 +29,7 @@ ol.easing.easeOut = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.inAndOut = function(t) {
+_ol_easing_.inAndOut = function(t) {
   return 3 * t * t - 2 * t * t * t;
 };
 
@@ -40,7 +40,7 @@ ol.easing.inAndOut = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.linear = function(t) {
+_ol_easing_.linear = function(t) {
   return t;
 };
 
@@ -53,10 +53,11 @@ ol.easing.linear = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.upAndDown = function(t) {
+_ol_easing_.upAndDown = function(t) {
   if (t < 0.5) {
-    return ol.easing.inAndOut(2 * t);
+    return _ol_easing_.inAndOut(2 * t);
   } else {
-    return 1 - ol.easing.inAndOut(2 * (t - 0.5));
+    return 1 - _ol_easing_.inAndOut(2 * (t - 0.5));
   }
 };
+export default _ol_easing_;

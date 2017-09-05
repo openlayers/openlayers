@@ -1,8 +1,5 @@
-goog.provide('ol.style.Fill');
-
-goog.require('ol');
-goog.require('ol.color');
-
+import _ol_ from '../index';
+import _ol_color_ from '../color';
 
 /**
  * @classdesc
@@ -12,7 +9,7 @@ goog.require('ol.color');
  * @param {olx.style.FillOptions=} opt_options Options.
  * @api
  */
-ol.style.Fill = function(opt_options) {
+var _ol_style_Fill_ = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -35,9 +32,9 @@ ol.style.Fill = function(opt_options) {
  * @return {ol.style.Fill} The cloned style.
  * @api
  */
-ol.style.Fill.prototype.clone = function() {
+_ol_style_Fill_.prototype.clone = function() {
   var color = this.getColor();
-  return new ol.style.Fill({
+  return new _ol_style_Fill_({
     color: (color && color.slice) ? color.slice() : color || undefined
   });
 };
@@ -48,7 +45,7 @@ ol.style.Fill.prototype.clone = function() {
  * @return {ol.Color|ol.ColorLike} Color.
  * @api
  */
-ol.style.Fill.prototype.getColor = function() {
+_ol_style_Fill_.prototype.getColor = function() {
   return this.color_;
 };
 
@@ -59,7 +56,7 @@ ol.style.Fill.prototype.getColor = function() {
  * @param {ol.Color|ol.ColorLike} color Color.
  * @api
  */
-ol.style.Fill.prototype.setColor = function(color) {
+_ol_style_Fill_.prototype.setColor = function(color) {
   this.color_ = color;
   this.checksum_ = undefined;
 };
@@ -68,18 +65,19 @@ ol.style.Fill.prototype.setColor = function(color) {
 /**
  * @return {string} The checksum.
  */
-ol.style.Fill.prototype.getChecksum = function() {
+_ol_style_Fill_.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
     if (
       this.color_ instanceof CanvasPattern ||
         this.color_ instanceof CanvasGradient
     ) {
-      this.checksum_ = ol.getUid(this.color_).toString();
+      this.checksum_ = _ol_.getUid(this.color_).toString();
     } else {
       this.checksum_ = 'f' + (this.color_ ?
-        ol.color.asString(this.color_) : '-');
+        _ol_color_.asString(this.color_) : '-');
     }
   }
 
   return this.checksum_;
 };
+export default _ol_style_Fill_;

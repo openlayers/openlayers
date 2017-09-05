@@ -1,13 +1,13 @@
 
 
-goog.require('ol.structs.RBush');
+import _ol_structs_RBush_ from '../../../../src/ol/structs/rbush';
 
 
 describe('ol.structs.RBush', function() {
 
   var rBush;
   beforeEach(function() {
-    rBush = new ol.structs.RBush();
+    rBush = new _ol_structs_RBush_();
   });
 
   describe('when empty', function() {
@@ -318,7 +318,7 @@ describe('ol.structs.RBush', function() {
     it('concatenates two RBush objects', function() {
       var obj1 = {};
       var obj2 = {};
-      var rBush2 = new ol.structs.RBush();
+      var rBush2 = new _ol_structs_RBush_();
       rBush.insert([0, 0, 1, 1], obj1);
       rBush2.insert([0, 0, 2, 2], obj2);
       rBush.concat(rBush2);
@@ -329,7 +329,7 @@ describe('ol.structs.RBush', function() {
     it('preserves the concatenated object\'s references', function() {
       var obj1 = {};
       var obj2 = {};
-      var rBush2 = new ol.structs.RBush();
+      var rBush2 = new _ol_structs_RBush_();
       rBush.insert([0, 0, 1, 1], obj1);
       rBush2.insert([0, 0, 2, 2], obj2);
       rBush.concat(rBush2);

@@ -1,14 +1,14 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.renderer.Map');
-goog.require('ol.renderer.canvas.TileLayer');
-goog.require('ol.source.TileWMS');
-goog.require('ol.source.XYZ');
-goog.require('ol.transform');
+import _ol_Map_ from '../../../../../src/ol/map';
+import _ol_View_ from '../../../../../src/ol/view';
+import _ol_layer_Tile_ from '../../../../../src/ol/layer/tile';
+import _ol_proj_ from '../../../../../src/ol/proj';
+import _ol_renderer_Map_ from '../../../../../src/ol/renderer/map';
+import _ol_renderer_canvas_TileLayer_ from '../../../../../src/ol/renderer/canvas/tilelayer';
+import _ol_source_TileWMS_ from '../../../../../src/ol/source/tilewms';
+import _ol_source_XYZ_ from '../../../../../src/ol/source/xyz';
+import _ol_transform_ from '../../../../../src/ol/transform';
 
 
 describe('ol.renderer.canvas.TileLayer', function() {
@@ -21,7 +21,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      source = new ol.source.TileWMS({
+      source = new _ol_source_TileWMS_({
         url: 'spec/ol/data/osm-0-0-0.png',
         params: {LAYERS: 'foo', TIME: '0'}
       });
@@ -29,12 +29,12 @@ describe('ol.renderer.canvas.TileLayer', function() {
         tile = e.tile;
         done();
       });
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: target,
-        layers: [new ol.layer.Tile({
+        layers: [new _ol_layer_Tile_({
           source: source
         })],
-        view: new ol.View({
+        view: new _ol_View_({
           zoom: 0,
           center: [0, 0]
         })
@@ -72,34 +72,34 @@ describe('ol.renderer.canvas.TileLayer', function() {
     });
 
     it('uses correct draw scale when rotating (HiDPI)', function() {
-      var layer = new ol.layer.Tile({
-        source: new ol.source.XYZ({
+      var layer = new _ol_layer_Tile_({
+        source: new _ol_source_XYZ_({
           tileSize: 1
         })
       });
-      var renderer = new ol.renderer.canvas.TileLayer(layer);
+      var renderer = new _ol_renderer_canvas_TileLayer_(layer);
       renderer.renderedTiles = [];
       var frameState = {
         viewHints: [],
         time: Date.now(),
         viewState: {
           center: [10, 5],
-          projection: ol.proj.get('EPSG:3857'),
+          projection: _ol_proj_.get('EPSG:3857'),
           resolution: 1,
           rotation: Math.PI
         },
         extent: [0, 0, 20, 10],
         size: [20, 10],
         pixelRatio: 2,
-        coordinateToPixelTransform: ol.transform.create(),
-        pixelToCoordinateTransform: ol.transform.create(),
+        coordinateToPixelTransform: _ol_transform_.create(),
+        pixelToCoordinateTransform: _ol_transform_.create(),
         usedTiles: {},
         wantedTiles: {}
       };
       renderer.getImageTransform = function() {
-        return ol.transform.create();
+        return _ol_transform_.create();
       };
-      ol.renderer.Map.prototype.calculateMatrices2D(frameState);
+      _ol_renderer_Map_.prototype.calculateMatrices2D(frameState);
       var layerState = layer.getLayerState();
       var canvas = document.createElement('canvas');
       canvas.width = 200;

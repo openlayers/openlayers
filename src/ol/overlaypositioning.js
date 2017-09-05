@@ -1,12 +1,10 @@
-goog.provide('ol.OverlayPositioning');
-
 /**
  * Overlay position: `'bottom-left'`, `'bottom-center'`,  `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
  * @enum {string}
  */
-ol.OverlayPositioning = {
+var _ol_OverlayPositioning_ = {
   BOTTOM_LEFT: 'bottom-left',
   BOTTOM_CENTER: 'bottom-center',
   BOTTOM_RIGHT: 'bottom-right',
@@ -17,3 +15,5 @@ ol.OverlayPositioning = {
   TOP_CENTER: 'top-center',
   TOP_RIGHT: 'top-right'
 };
+
+export default _ol_OverlayPositioning_;

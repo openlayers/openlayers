@@ -1,24 +1,24 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.array');
-goog.require('ol.events');
-goog.require('ol.events.condition');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/mapbrowserpointerevent';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_array_ from '../../../../src/ol/array';
+import _ol_events_ from '../../../../src/ol/events';
+import _ol_events_condition_ from '../../../../src/ol/events/condition';
+import _ol_geom_Circle_ from '../../../../src/ol/geom/circle';
+import _ol_geom_LineString_ from '../../../../src/ol/geom/linestring';
+import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/multipolygon';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../../../../src/ol/geom/polygon';
+import _ol_interaction_Draw_ from '../../../../src/ol/interaction/draw';
+import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/interaction';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
 
 
 describe('ol.interaction.Draw', function() {
@@ -36,12 +36,12 @@ describe('ol.interaction.Draw', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new ol.source.Vector();
-    var layer = new ol.layer.Vector({source: source});
-    map = new ol.Map({
+    source = new _ol_source_Vector_();
+    var layer = new _ol_layer_Vector_({source: source});
+    map = new _ol_Map_({
       target: target,
       layers: [layer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -70,33 +70,33 @@ describe('ol.interaction.Draw', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new ol.pointer.PointerEvent(type, {
+    var event = new _ol_pointer_PointerEvent_(type, {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
     });
-    map.handleMapBrowserEvent(new ol.MapBrowserPointerEvent(type, map, event));
+    map.handleMapBrowserEvent(new _ol_MapBrowserPointerEvent_(type, map, event));
   }
 
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Point'
       });
-      expect(draw).to.be.a(ol.interaction.Draw);
-      expect(draw).to.be.a(ol.interaction.Interaction);
+      expect(draw).to.be.a(_ol_interaction_Draw_);
+      expect(draw).to.be.a(_ol_interaction_Interaction_);
     });
 
     it('accepts a freehand option', function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         type: 'LineString',
         freehand: true
       });
 
-      var event = new ol.pointer.PointerEvent('pointerdown', {
+      var event = new _ol_pointer_PointerEvent_('pointerdown', {
         clientX: 0,
         clientY: 0,
         shiftKey: false
@@ -110,7 +110,7 @@ describe('ol.interaction.Draw', function() {
   describe('specifying a geometryName', function() {
 
     beforeEach(function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         geometryName: 'the_geom',
         type: 'Point'
@@ -125,13 +125,13 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       var geometry = features[0].getGeometry();
       expect(features[0].getGeometryName()).to.equal('the_geom');
-      expect(geometry).to.be.a(ol.geom.Point);
+      expect(geometry).to.be.a(_ol_geom_Point_);
     });
   });
 
   describe('specifying a clickTolerance', function() {
     beforeEach(function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Point',
         clickTolerance: 6
@@ -160,7 +160,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new ol.interaction.Draw({
+      draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Point'
       });
@@ -174,7 +174,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Point);
+      expect(geometry).to.be.a(_ol_geom_Point_);
       expect(geometry.getCoordinates()).to.eql([10, -20]);
     });
 
@@ -198,8 +198,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      ol.events.listen(draw, 'drawstart', ds);
-      ol.events.listen(draw, 'drawend', de);
+      _ol_events_.listen(draw, 'drawstart', ds);
+      _ol_events_.listen(draw, 'drawend', de);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
@@ -215,7 +215,7 @@ describe('ol.interaction.Draw', function() {
         end: 0,
         addfeature: 0
       };
-      ol.events.listen(draw, 'drawend',
+      _ol_events_.listen(draw, 'drawend',
           function() {
             expect(receivedEvents.end).to.be(0);
             expect(receivedEvents.addfeature).to.be(0);
@@ -238,7 +238,7 @@ describe('ol.interaction.Draw', function() {
   describe('drawing multipoints', function() {
 
     beforeEach(function() {
-      map.addInteraction(new ol.interaction.Draw({
+      map.addInteraction(new _ol_interaction_Draw_({
         source: source,
         type: 'MultiPoint'
       }));
@@ -251,7 +251,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.MultiPoint);
+      expect(geometry).to.be.a(_ol_geom_MultiPoint_);
       expect(geometry.getCoordinates()).to.eql([[30, -15]]);
     });
 
@@ -261,7 +261,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new ol.interaction.Draw({
+      draw = new _ol_interaction_Draw_({
         source: source,
         type: 'LineString'
       });
@@ -286,7 +286,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry).to.be.a(_ol_geom_LineString_);
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
@@ -328,7 +328,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry).to.be.a(_ol_geom_LineString_);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [20, -40]]);
     });
@@ -365,7 +365,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       // expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry).to.be.a(_ol_geom_LineString_);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
     });
@@ -394,15 +394,15 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry).to.be.a(_ol_geom_LineString_);
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      ol.events.listen(draw, 'drawstart', ds);
-      ol.events.listen(draw, 'drawend', de);
+      _ol_events_.listen(draw, 'drawstart', ds);
+      _ol_events_.listen(draw, 'drawend', de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -429,11 +429,11 @@ describe('ol.interaction.Draw', function() {
 
   describe('drawing with a finishCondition', function() {
     beforeEach(function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         type: 'LineString',
         finishCondition: function(event) {
-          if (ol.array.equals(event.coordinate, [30, -20])) {
+          if (_ol_array_.equals(event.coordinate, [30, -20])) {
             return true;
           }
           return false;
@@ -479,7 +479,7 @@ describe('ol.interaction.Draw', function() {
   describe('drawing multi-linestrings', function() {
 
     beforeEach(function() {
-      map.addInteraction(new ol.interaction.Draw({
+      map.addInteraction(new _ol_interaction_Draw_({
         source: source,
         type: 'MultiLineString'
       }));
@@ -503,7 +503,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.MultiLineString);
+      expect(geometry).to.be.a(_ol_geom_MultiLineString_);
       expect(geometry.getCoordinates()).to.eql([[[10, -20], [30, -20]]]);
     });
 
@@ -513,7 +513,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new ol.interaction.Draw({
+      draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Polygon'
       });
@@ -553,7 +553,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Polygon);
+      expect(geometry).to.be.a(_ol_geom_Polygon_);
 
       expect(geometry.getCoordinates()).to.eql([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
@@ -608,7 +608,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Polygon);
+      expect(geometry).to.be.a(_ol_geom_Polygon_);
 
       expect(geometry.getCoordinates()).to.eql([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
@@ -632,7 +632,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Polygon);
+      expect(geometry).to.be.a(_ol_geom_Polygon_);
 
       expect(geometry.getCoordinates()).to.eql([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
@@ -642,8 +642,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      ol.events.listen(draw, 'drawstart', ds);
-      ol.events.listen(draw, 'drawend', de);
+      _ol_events_.listen(draw, 'drawstart', ds);
+      _ol_events_.listen(draw, 'drawend', de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -676,7 +676,7 @@ describe('ol.interaction.Draw', function() {
   describe('drawing multi-polygons', function() {
 
     beforeEach(function() {
-      map.addInteraction(new ol.interaction.Draw({
+      map.addInteraction(new _ol_interaction_Draw_({
         source: source,
         type: 'MultiPolygon'
       }));
@@ -706,7 +706,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.MultiPolygon);
+      expect(geometry).to.be.a(_ol_geom_MultiPolygon_);
       var coordinates = geometry.getCoordinates();
       expect(coordinates).to.have.length(1);
 
@@ -738,7 +738,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.MultiPolygon);
+      expect(geometry).to.be.a(_ol_geom_MultiPolygon_);
       var coordinates = geometry.getCoordinates();
       expect(coordinates).to.have.length(1);
 
@@ -753,7 +753,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new ol.interaction.Draw({
+      draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Circle'
       });
@@ -774,14 +774,14 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Circle);
+      expect(geometry).to.be.a(_ol_geom_Circle_);
       expect(geometry.getCenter()).to.eql([10, -20]);
       expect(geometry.getRadius()).to.eql(20);
     });
 
     it('supports freehand drawing for circles', function() {
       draw.freehand_ = true;
-      draw.freehandCondition_ = ol.events.condition.always;
+      draw.freehandCondition_ = _ol_events_condition_.always;
 
       // no feture created when not moved
       simulateEvent('pointermove', 10, 20);
@@ -800,8 +800,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      ol.events.listen(draw, 'drawstart', ds);
-      ol.events.listen(draw, 'drawend', de);
+      _ol_events_.listen(draw, 'drawstart', ds);
+      _ol_events_.listen(draw, 'drawend', de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -825,7 +825,7 @@ describe('ol.interaction.Draw', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new ol.interaction.Draw({
+      interaction = new _ol_interaction_Draw_({
         type: 'LineString'
       });
 
@@ -894,7 +894,7 @@ describe('ol.interaction.Draw', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new ol.interaction.Draw({
+      interaction = new _ol_interaction_Draw_({
         type: 'LineString'
       });
       expect(interaction.getActive()).to.be(true);
@@ -947,11 +947,11 @@ describe('ol.interaction.Draw', function() {
 
   describe('ol.interaction.Draw.createRegularPolygon', function() {
     it('creates a regular polygon in Circle mode', function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Circle',
         geometryFunction:
-            ol.interaction.Draw.createRegularPolygon(4, Math.PI / 4)
+            _ol_interaction_Draw_.createRegularPolygon(4, Math.PI / 4)
       });
       map.addInteraction(draw);
 
@@ -967,7 +967,7 @@ describe('ol.interaction.Draw', function() {
 
       var features = source.getFeatures();
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Polygon);
+      expect(geometry).to.be.a(_ol_geom_Polygon_);
       var coordinates = geometry.getCoordinates();
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
@@ -977,10 +977,10 @@ describe('ol.interaction.Draw', function() {
 
   describe('ol.interaction.Draw.createBox', function() {
     it('creates a box-shaped polygon in Circle mode', function() {
-      var draw = new ol.interaction.Draw({
+      var draw = new _ol_interaction_Draw_({
         source: source,
         type: 'Circle',
-        geometryFunction: ol.interaction.Draw.createBox()
+        geometryFunction: _ol_interaction_Draw_.createBox()
       });
       map.addInteraction(draw);
 
@@ -996,7 +996,7 @@ describe('ol.interaction.Draw', function() {
 
       var features = source.getFeatures();
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(ol.geom.Polygon);
+      expect(geometry).to.be.a(_ol_geom_Polygon_);
       var coordinates = geometry.getCoordinates();
       expect(coordinates[0]).to.have.length(5);
       expect(geometry.getArea()).to.equal(400);
@@ -1009,13 +1009,13 @@ describe('ol.interaction.Draw', function() {
     var feature;
 
     beforeEach(function() {
-      draw = new ol.interaction.Draw({
+      draw = new _ol_interaction_Draw_({
         source: source,
         type: 'LineString'
       });
       map.addInteraction(draw);
-      feature = new ol.Feature(
-          new ol.geom.LineString([[0, 0], [1, 1], [2, 0]]));
+      feature = new _ol_Feature_(
+          new _ol_geom_LineString_([[0, 0], [1, 1], [2, 0]]));
     });
 
     it('sets the initial state', function() {
@@ -1027,7 +1027,7 @@ describe('ol.interaction.Draw', function() {
 
     it('dispatches a drawstart event', function() {
       var spy = sinon.spy();
-      ol.events.listen(draw, 'drawstart', spy);
+      _ol_events_.listen(draw, 'drawstart', spy);
       draw.extend(feature);
       expect(spy.callCount).to.be(1);
     });

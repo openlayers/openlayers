@@ -1,6 +1,3 @@
-goog.provide('ol.Kinetic');
-
-
 /**
  * @classdesc
  * Implementation of inertial deceleration for map movement.
@@ -13,7 +10,7 @@ goog.provide('ol.Kinetic');
  * @struct
  * @api
  */
-ol.Kinetic = function(decay, minVelocity, delay) {
+var _ol_Kinetic_ = function(decay, minVelocity, delay) {
 
   /**
    * @private
@@ -56,7 +53,7 @@ ol.Kinetic = function(decay, minVelocity, delay) {
 /**
  * FIXME empty description for jsdoc
  */
-ol.Kinetic.prototype.begin = function() {
+_ol_Kinetic_.prototype.begin = function() {
   this.points_.length = 0;
   this.angle_ = 0;
   this.initialVelocity_ = 0;
@@ -67,7 +64,7 @@ ol.Kinetic.prototype.begin = function() {
  * @param {number} x X.
  * @param {number} y Y.
  */
-ol.Kinetic.prototype.update = function(x, y) {
+_ol_Kinetic_.prototype.update = function(x, y) {
   this.points_.push(x, y, Date.now());
 };
 
@@ -75,7 +72,7 @@ ol.Kinetic.prototype.update = function(x, y) {
 /**
  * @return {boolean} Whether we should do kinetic animation.
  */
-ol.Kinetic.prototype.end = function() {
+_ol_Kinetic_.prototype.end = function() {
   if (this.points_.length < 6) {
     // at least 2 points are required (i.e. there must be at least 6 elements
     // in the array)
@@ -114,7 +111,7 @@ ol.Kinetic.prototype.end = function() {
 /**
  * @return {number} Total distance travelled (pixels).
  */
-ol.Kinetic.prototype.getDistance = function() {
+_ol_Kinetic_.prototype.getDistance = function() {
   return (this.minVelocity_ - this.initialVelocity_) / this.decay_;
 };
 
@@ -122,6 +119,7 @@ ol.Kinetic.prototype.getDistance = function() {
 /**
  * @return {number} Angle of the kinetic panning animation (radians).
  */
-ol.Kinetic.prototype.getAngle = function() {
+_ol_Kinetic_.prototype.getAngle = function() {
   return this.angle_;
 };
+export default _ol_Kinetic_;

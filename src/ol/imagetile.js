@@ -1,12 +1,9 @@
-goog.provide('ol.ImageTile');
-
-goog.require('ol');
-goog.require('ol.Tile');
-goog.require('ol.TileState');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-
+import _ol_ from './index';
+import _ol_Tile_ from './tile';
+import _ol_TileState_ from './tilestate';
+import _ol_dom_ from './dom';
+import _ol_events_ from './events';
+import _ol_events_EventType_ from './events/eventtype';
 
 /**
  * @constructor
@@ -17,9 +14,9 @@ goog.require('ol.events.EventType');
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  */
-ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
+var _ol_ImageTile_ = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
-  ol.Tile.call(this, tileCoord, state);
+  _ol_Tile_.call(this, tileCoord, state);
 
   /**
    * Image URI
@@ -51,23 +48,24 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
   this.tileLoadFunction_ = tileLoadFunction;
 
 };
-ol.inherits(ol.ImageTile, ol.Tile);
+
+_ol_.inherits(_ol_ImageTile_, _ol_Tile_);
 
 
 /**
  * @inheritDoc
  */
-ol.ImageTile.prototype.disposeInternal = function() {
-  if (this.state == ol.TileState.LOADING) {
+_ol_ImageTile_.prototype.disposeInternal = function() {
+  if (this.state == _ol_TileState_.LOADING) {
     this.unlistenImage_();
-    this.image_.src = ol.ImageTile.blankImageUrl;
+    this.image_.src = _ol_ImageTile_.blankImageUrl;
   }
   if (this.interimTile) {
     this.interimTile.dispose();
   }
-  this.state = ol.TileState.ABORT;
+  this.state = _ol_TileState_.ABORT;
   this.changed();
-  ol.Tile.prototype.disposeInternal.call(this);
+  _ol_Tile_.prototype.disposeInternal.call(this);
 };
 
 
@@ -76,7 +74,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  * @api
  */
-ol.ImageTile.prototype.getImage = function() {
+_ol_ImageTile_.prototype.getImage = function() {
   return this.image_;
 };
 
@@ -84,7 +82,7 @@ ol.ImageTile.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-ol.ImageTile.prototype.getKey = function() {
+_ol_ImageTile_.prototype.getKey = function() {
   return this.src_;
 };
 
@@ -94,10 +92,10 @@ ol.ImageTile.prototype.getKey = function() {
  *
  * @private
  */
-ol.ImageTile.prototype.handleImageError_ = function() {
-  this.state = ol.TileState.ERROR;
+_ol_ImageTile_.prototype.handleImageError_ = function() {
+  this.state = _ol_TileState_.ERROR;
   this.unlistenImage_();
-  this.image_.src = ol.ImageTile.blankImageUrl;
+  this.image_.src = _ol_ImageTile_.blankImageUrl;
   this.changed();
 };
 
@@ -107,11 +105,11 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  *
  * @private
  */
-ol.ImageTile.prototype.handleImageLoad_ = function() {
+_ol_ImageTile_.prototype.handleImageLoad_ = function() {
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
-    this.state = ol.TileState.LOADED;
+    this.state = _ol_TileState_.LOADED;
   } else {
-    this.state = ol.TileState.EMPTY;
+    this.state = _ol_TileState_.EMPTY;
   }
   this.unlistenImage_();
   this.changed();
@@ -122,14 +120,14 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
  * @inheritDoc
  * @api
  */
-ol.ImageTile.prototype.load = function() {
-  if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
-    this.state = ol.TileState.LOADING;
+_ol_ImageTile_.prototype.load = function() {
+  if (this.state == _ol_TileState_.IDLE || this.state == _ol_TileState_.ERROR) {
+    this.state = _ol_TileState_.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
+      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.ERROR,
           this.handleImageError_, this),
-      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
+      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.LOAD,
           this.handleImageLoad_, this)
     ];
     this.tileLoadFunction_(this, this.src_);
@@ -142,8 +140,8 @@ ol.ImageTile.prototype.load = function() {
  *
  * @private
  */
-ol.ImageTile.prototype.unlistenImage_ = function() {
-  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
+_ol_ImageTile_.prototype.unlistenImage_ = function() {
+  this.imageListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
 
@@ -152,9 +150,10 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
  * Data URI for a blank image.
  * @type {string}
  */
-ol.ImageTile.blankImageUrl = (function() {
-  var ctx = ol.dom.createCanvasContext2D(1, 1);
+_ol_ImageTile_.blankImageUrl = (function() {
+  var ctx = _ol_dom_.createCanvasContext2D(1, 1);
   ctx.fillStyle = 'rgba(0,0,0,0)';
   ctx.fillRect(0, 0, 1, 1);
   return ctx.canvas.toDataURL('image/png');
 })();
+export default _ol_ImageTile_;

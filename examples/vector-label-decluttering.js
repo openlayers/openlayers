@@ -1,14 +1,14 @@
 // NOCOMPILE
 /* global labelgun */
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_extent_ from '../src/ol/extent';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 // Style for labels
 function setStyle(context) {
@@ -30,9 +30,9 @@ var height = textMeasureContext.measureText('WI').width;
 // A cache for reusing label images once they have been created.
 var textCache = {};
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 1
   })
@@ -54,20 +54,20 @@ function createLabel(canvas, text, coord) {
 // For multi-polygons, we only label the widest polygon. This is done by sorting
 // by extent width in descending order, and take the first from the array.
 function sortByWidth(a, b) {
-  return ol.extent.getWidth(b.getExtent()) - ol.extent.getWidth(a.getExtent());
+  return _ol_extent_.getWidth(b.getExtent()) - _ol_extent_.getWidth(a.getExtent());
 }
 
-var labelStyle = new ol.style.Style({
+var labelStyle = new _ol_style_Style_({
   renderer: function(coords, state) {
     var text = state.feature.get('name');
     createLabel(textCache[text], text, coords);
   }
 });
-var countryStyle = new ol.style.Style({
-  fill: new ol.style.Fill({
+var countryStyle = new _ol_style_Style_({
+  fill: new _ol_style_Fill_({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
-  stroke: new ol.style.Stroke({
+  stroke: new _ol_style_Stroke_({
     color: '#319FD3',
     width: 1
   })
@@ -76,10 +76,10 @@ var styleWithLabel = [countryStyle, labelStyle];
 var styleWithoutLabel = [countryStyle];
 
 var pixelRatio; // This is set by the map's precompose listener
-var vectorLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vectorLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/geojson/countries.geojson',
-    format: new ol.format.GeoJSON()
+    format: new _ol_format_GeoJSON_()
   }),
   style: function(feature, resolution) {
     var text = feature.get('name');
@@ -88,7 +88,7 @@ var vectorLayer = new ol.layer.Vector({
     if (geometry.getType() == 'MultiPolygon') {
       geometry = geometry.getPolygons().sort(sortByWidth)[0];
     }
-    var extentWidth = ol.extent.getWidth(geometry.getExtent());
+    var extentWidth = _ol_extent_.getWidth(geometry.getExtent());
     if (extentWidth / resolution > width) {
       // Only consider label when it fits its geometry's extent
       if (!(text in textCache)) {

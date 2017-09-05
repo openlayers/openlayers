@@ -1,20 +1,20 @@
 
 
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.render.VectorContext');
-goog.require('ol.render.canvas.Immediate');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
+import _ol_geom_Circle_ from '../../../../../src/ol/geom/circle';
+import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/geometrycollection';
+import _ol_geom_LineString_ from '../../../../../src/ol/geom/linestring';
+import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/multipolygon';
+import _ol_geom_Point_ from '../../../../../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../../../../../src/ol/geom/polygon';
+import _ol_render_VectorContext_ from '../../../../../src/ol/render/vectorcontext';
+import _ol_render_canvas_Immediate_ from '../../../../../src/ol/render/canvas/immediate';
+import _ol_style_Circle_ from '../../../../../src/ol/style/circle';
+import _ol_style_Fill_ from '../../../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../../../src/ol/style/stroke';
+import _ol_style_Style_ from '../../../../../src/ol/style/style';
+import _ol_style_Text_ from '../../../../../src/ol/style/text';
 
 
 describe('ol.render.canvas.Immediate', function() {
@@ -32,23 +32,23 @@ describe('ol.render.canvas.Immediate', function() {
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      var instance = new ol.render.canvas.Immediate();
-      expect(instance).to.be.a(ol.render.canvas.Immediate);
-      expect(instance).to.be.a(ol.render.VectorContext);
+      var instance = new _ol_render_canvas_Immediate_();
+      expect(instance).to.be.a(_ol_render_canvas_Immediate_);
+      expect(instance).to.be.a(_ol_render_VectorContext_);
     });
   });
 
   describe('#setStyle()', function() {
     it('calls the more specific methods with style parts', function() {
-      var context = new ol.render.canvas.Immediate();
+      var context = new _ol_render_canvas_Immediate_();
       sinon.spy(context, 'setFillStrokeStyle');
       sinon.spy(context, 'setImageStyle');
       sinon.spy(context, 'setTextStyle');
-      var fill = new ol.style.Fill({});
-      var stroke = new ol.style.Stroke({});
-      var text = new ol.style.Text({});
-      var image = new ol.style.Circle({});
-      var style = new ol.style.Style({
+      var fill = new _ol_style_Fill_({});
+      var stroke = new _ol_style_Stroke_({});
+      var text = new _ol_style_Text_({});
+      var image = new _ol_style_Circle_({});
+      var style = new _ol_style_Style_({
         fill: fill,
         stroke: stroke,
         image: image,
@@ -70,77 +70,77 @@ describe('ol.render.canvas.Immediate', function() {
     var extent = [-10, -10, 10, 10];
 
     it('calls drawPoint() with a Point', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPoint');
 
-      var geometry = new ol.geom.Point([1, 2]);
+      var geometry = new _ol_geom_Point_([1, 2]);
       context.drawGeometry(geometry);
       expect(context.drawPoint.calledOnce).to.be(true);
       expect(context.drawPoint.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
     it('calls drawLineString() with a LineString', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawLineString');
 
-      var geometry = new ol.geom.LineString([[1, 2], [3, 4]]);
+      var geometry = new _ol_geom_LineString_([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
       expect(context.drawLineString.calledOnce).to.be(true);
       expect(context.drawLineString.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
     it('calls drawPolygon() with a Polygon', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPolygon');
 
-      var geometry = new ol.geom.Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+      var geometry = new _ol_geom_Polygon_([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
       context.drawGeometry(geometry);
       expect(context.drawPolygon.calledOnce).to.be(true);
       expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
     it('calls drawMultiPoint() with a MultiPoint', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPoint');
 
-      var geometry = new ol.geom.MultiPoint([[1, 2], [3, 4]]);
+      var geometry = new _ol_geom_MultiPoint_([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiPoint.calledOnce).to.be(true);
       expect(context.drawMultiPoint.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
     it('calls drawMultiLineString() with a MultiLineString', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiLineString');
 
-      var geometry = new ol.geom.MultiLineString([[[1, 2], [3, 4]]]);
+      var geometry = new _ol_geom_MultiLineString_([[[1, 2], [3, 4]]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiLineString.calledOnce).to.be(true);
       expect(context.drawMultiLineString.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
     it('calls drawMultiPolygon() with a MultiPolygon', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPolygon');
 
-      var geometry = new ol.geom.MultiPolygon([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
+      var geometry = new _ol_geom_MultiPolygon_([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiPolygon.calledOnce).to.be(true);
       expect(context.drawMultiPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
     it('calls drawGeometryCollection() with a GeometryCollection', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawGeometryCollection');
       sinon.spy(context, 'drawPoint');
       sinon.spy(context, 'drawLineString');
       sinon.spy(context, 'drawPolygon');
 
-      var point = new ol.geom.Point([1, 2]);
-      var linestring = new ol.geom.LineString([[1, 2], [3, 4]]);
-      var polygon = new ol.geom.Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+      var point = new _ol_geom_Point_([1, 2]);
+      var linestring = new _ol_geom_LineString_([[1, 2], [3, 4]]);
+      var polygon = new _ol_geom_Polygon_([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
 
-      var geometry = new ol.geom.GeometryCollection([point, linestring, polygon]);
+      var geometry = new _ol_geom_GeometryCollection_([point, linestring, polygon]);
       context.drawGeometry(geometry);
 
       expect(context.drawGeometryCollection.calledOnce).to.be(true);
@@ -153,10 +153,10 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawCircle() with a Circle', function() {
-      var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
+      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawCircle');
 
-      var geometry = new ol.geom.Circle([0, 0]);
+      var geometry = new _ol_geom_Circle_([0, 0]);
       context.drawGeometry(geometry);
 
       expect(context.drawCircle.calledOnce).to.be(true);
@@ -225,7 +225,7 @@ describe('ol.render.canvas.Immediate', function() {
         -7572748.158493212, 3741317.9895594316
       ];
 
-      var canvas = new ol.render.canvas.Immediate(context, 1, extent, transform);
+      var canvas = new _ol_render_canvas_Immediate_(context, 1, extent, transform);
 
       canvas.strokeState_ = {
         lineCap: 'round',
@@ -236,7 +236,7 @@ describe('ol.render.canvas.Immediate', function() {
         strokeStyle: '#00FFFF'
       };
 
-      var multiPolygonGeometry = new ol.geom.MultiPolygon([[[
+      var multiPolygonGeometry = new _ol_geom_MultiPolygon_([[[
         // first polygon
         [-80.736061, 28.788576000000006, 0], // moveTo()
         [-80.763557, 28.821799999999996, 0], // lineTo()

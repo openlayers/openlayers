@@ -1,15 +1,12 @@
-goog.provide('ol.layer.Layer');
-
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol');
-goog.require('ol.Object');
-goog.require('ol.layer.Base');
-goog.require('ol.layer.Property');
-goog.require('ol.obj');
-goog.require('ol.render.EventType');
-goog.require('ol.source.State');
-
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_ from '../index';
+import _ol_Object_ from '../object';
+import _ol_layer_Base_ from '../layer/base';
+import _ol_layer_Property_ from '../layer/property';
+import _ol_obj_ from '../obj';
+import _ol_render_EventType_ from '../render/eventtype';
+import _ol_source_State_ from '../source/state';
 
 /**
  * @classdesc
@@ -33,12 +30,12 @@ goog.require('ol.source.State');
  * @param {olx.layer.LayerOptions} options Layer options.
  * @api
  */
-ol.layer.Layer = function(options) {
+var _ol_layer_Layer_ = function(options) {
 
-  var baseOptions = ol.obj.assign({}, options);
+  var baseOptions = _ol_obj_.assign({}, options);
   delete baseOptions.source;
 
-  ol.layer.Base.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
+  _ol_layer_Base_.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
 
   /**
    * @private
@@ -62,14 +59,15 @@ ol.layer.Layer = function(options) {
     this.setMap(options.map);
   }
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Property.SOURCE),
+  _ol_events_.listen(this,
+      _ol_Object_.getChangeEventType(_ol_layer_Property_.SOURCE),
       this.handleSourcePropertyChange_, this);
 
   var source = options.source ? options.source : null;
   this.setSource(source);
 };
-ol.inherits(ol.layer.Layer, ol.layer.Base);
+
+_ol_.inherits(_ol_layer_Layer_, _ol_layer_Base_);
 
 
 /**
@@ -80,7 +78,7 @@ ol.inherits(ol.layer.Layer, ol.layer.Base);
  * @param {number} resolution Resolution.
  * @return {boolean} The layer is visible at the given resolution.
  */
-ol.layer.Layer.visibleAtResolution = function(layerState, resolution) {
+_ol_layer_Layer_.visibleAtResolution = function(layerState, resolution) {
   return layerState.visible && resolution >= layerState.minResolution &&
       resolution < layerState.maxResolution;
 };
@@ -89,7 +87,7 @@ ol.layer.Layer.visibleAtResolution = function(layerState, resolution) {
 /**
  * @inheritDoc
  */
-ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
+_ol_layer_Layer_.prototype.getLayersArray = function(opt_array) {
   var array = opt_array ? opt_array : [];
   array.push(this);
   return array;
@@ -99,7 +97,7 @@ ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
 /**
  * @inheritDoc
  */
-ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
+_ol_layer_Layer_.prototype.getLayerStatesArray = function(opt_states) {
   var states = opt_states ? opt_states : [];
   states.push(this.getLayerState());
   return states;
@@ -112,8 +110,8 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  * @observable
  * @api
  */
-ol.layer.Layer.prototype.getSource = function() {
-  var source = this.get(ol.layer.Property.SOURCE);
+_ol_layer_Layer_.prototype.getSource = function() {
+  var source = this.get(_ol_layer_Property_.SOURCE);
   return /** @type {ol.source.Source} */ (source) || null;
 };
 
@@ -121,16 +119,16 @@ ol.layer.Layer.prototype.getSource = function() {
 /**
   * @inheritDoc
   */
-ol.layer.Layer.prototype.getSourceState = function() {
+_ol_layer_Layer_.prototype.getSourceState = function() {
   var source = this.getSource();
-  return !source ? ol.source.State.UNDEFINED : source.getState();
+  return !source ? _ol_source_State_.UNDEFINED : source.getState();
 };
 
 
 /**
  * @private
  */
-ol.layer.Layer.prototype.handleSourceChange_ = function() {
+_ol_layer_Layer_.prototype.handleSourceChange_ = function() {
   this.changed();
 };
 
@@ -138,15 +136,15 @@ ol.layer.Layer.prototype.handleSourceChange_ = function() {
 /**
  * @private
  */
-ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
+_ol_layer_Layer_.prototype.handleSourcePropertyChange_ = function() {
   if (this.sourceChangeKey_) {
-    ol.events.unlistenByKey(this.sourceChangeKey_);
+    _ol_events_.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
   var source = this.getSource();
   if (source) {
-    this.sourceChangeKey_ = ol.events.listen(source,
-        ol.events.EventType.CHANGE, this.handleSourceChange_, this);
+    this.sourceChangeKey_ = _ol_events_.listen(source,
+        _ol_events_EventType_.CHANGE, this.handleSourceChange_, this);
   }
   this.changed();
 };
@@ -164,29 +162,29 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
  * @param {ol.PluggableMap} map Map.
  * @api
  */
-ol.layer.Layer.prototype.setMap = function(map) {
+_ol_layer_Layer_.prototype.setMap = function(map) {
   if (this.mapPrecomposeKey_) {
-    ol.events.unlistenByKey(this.mapPrecomposeKey_);
+    _ol_events_.unlistenByKey(this.mapPrecomposeKey_);
     this.mapPrecomposeKey_ = null;
   }
   if (!map) {
     this.changed();
   }
   if (this.mapRenderKey_) {
-    ol.events.unlistenByKey(this.mapRenderKey_);
+    _ol_events_.unlistenByKey(this.mapRenderKey_);
     this.mapRenderKey_ = null;
   }
   if (map) {
-    this.mapPrecomposeKey_ = ol.events.listen(
-        map, ol.render.EventType.PRECOMPOSE, function(evt) {
+    this.mapPrecomposeKey_ = _ol_events_.listen(
+        map, _ol_render_EventType_.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
           layerState.zIndex = Infinity;
           evt.frameState.layerStatesArray.push(layerState);
-          evt.frameState.layerStates[ol.getUid(this)] = layerState;
+          evt.frameState.layerStates[_ol_.getUid(this)] = layerState;
         }, this);
-    this.mapRenderKey_ = ol.events.listen(
-        this, ol.events.EventType.CHANGE, map.render, map);
+    this.mapRenderKey_ = _ol_events_.listen(
+        this, _ol_events_EventType_.CHANGE, map.render, map);
     this.changed();
   }
 };
@@ -198,6 +196,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
  * @observable
  * @api
  */
-ol.layer.Layer.prototype.setSource = function(source) {
-  this.set(ol.layer.Property.SOURCE, source);
+_ol_layer_Layer_.prototype.setSource = function(source) {
+  this.set(_ol_layer_Property_.SOURCE, source);
 };
+export default _ol_layer_Layer_;

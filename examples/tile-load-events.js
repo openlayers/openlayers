@@ -1,7 +1,7 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.TileJSON');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_source_TileJSON_ from '../src/ol/source/tilejson';
 
 
 /**
@@ -77,7 +77,7 @@ Progress.prototype.hide = function() {
 
 var progress = new Progress(document.getElementById('progress'));
 
-var source = new ol.source.TileJSON({
+var source = new _ol_source_TileJSON_({
   url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
   crossOrigin: 'anonymous'
 });
@@ -93,13 +93,13 @@ source.on('tileloaderror', function() {
   progress.addLoaded();
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   logo: false,
   layers: [
-    new ol.layer.Tile({source: source})
+    new _ol_layer_Tile_({source: source})
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

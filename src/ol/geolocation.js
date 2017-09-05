@@ -1,19 +1,16 @@
 // FIXME handle geolocation not supported
 
-goog.provide('ol.Geolocation');
-
-goog.require('ol');
-goog.require('ol.GeolocationProperty');
-goog.require('ol.Object');
-goog.require('ol.Sphere');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.geom.Polygon');
-goog.require('ol.has');
-goog.require('ol.math');
-goog.require('ol.proj');
-goog.require('ol.proj.EPSG4326');
-
+import _ol_ from './index';
+import _ol_GeolocationProperty_ from './geolocationproperty';
+import _ol_Object_ from './object';
+import _ol_Sphere_ from './sphere';
+import _ol_events_ from './events';
+import _ol_events_EventType_ from './events/eventtype';
+import _ol_geom_Polygon_ from './geom/polygon';
+import _ol_has_ from './has';
+import _ol_math_ from './math';
+import _ol_proj_ from './proj';
+import _ol_proj_EPSG4326_ from './proj/epsg4326';
 
 /**
  * @classdesc
@@ -41,9 +38,9 @@ goog.require('ol.proj.EPSG4326');
  * @param {olx.GeolocationOptions=} opt_options Options.
  * @api
  */
-ol.Geolocation = function(opt_options) {
+var _ol_Geolocation_ = function(opt_options) {
 
-  ol.Object.call(this);
+  _ol_Object_.call(this);
 
   var options = opt_options || {};
 
@@ -58,13 +55,13 @@ ol.Geolocation = function(opt_options) {
    * @private
    * @type {ol.TransformFunction}
    */
-  this.transform_ = ol.proj.identityTransform;
+  this.transform_ = _ol_proj_.identityTransform;
 
   /**
    * @private
    * @type {ol.Sphere}
    */
-  this.sphere_ = new ol.Sphere(ol.proj.EPSG4326.RADIUS);
+  this.sphere_ = new _ol_Sphere_(_ol_proj_EPSG4326_.RADIUS);
 
   /**
    * @private
@@ -72,11 +69,11 @@ ol.Geolocation = function(opt_options) {
    */
   this.watchId_ = undefined;
 
-  ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.GeolocationProperty.PROJECTION),
+  _ol_events_.listen(
+      this, _ol_Object_.getChangeEventType(_ol_GeolocationProperty_.PROJECTION),
       this.handleProjectionChanged_, this);
-  ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
+  _ol_events_.listen(
+      this, _ol_Object_.getChangeEventType(_ol_GeolocationProperty_.TRACKING),
       this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {
@@ -89,29 +86,30 @@ ol.Geolocation = function(opt_options) {
   this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
-ol.inherits(ol.Geolocation, ol.Object);
+
+_ol_.inherits(_ol_Geolocation_, _ol_Object_);
 
 
 /**
  * @inheritDoc
  */
-ol.Geolocation.prototype.disposeInternal = function() {
+_ol_Geolocation_.prototype.disposeInternal = function() {
   this.setTracking(false);
-  ol.Object.prototype.disposeInternal.call(this);
+  _ol_Object_.prototype.disposeInternal.call(this);
 };
 
 
 /**
  * @private
  */
-ol.Geolocation.prototype.handleProjectionChanged_ = function() {
+_ol_Geolocation_.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (projection) {
-    this.transform_ = ol.proj.getTransformFromProjections(
-        ol.proj.get('EPSG:4326'), projection);
+    this.transform_ = _ol_proj_.getTransformFromProjections(
+        _ol_proj_.get('EPSG:4326'), projection);
     if (this.position_) {
       this.set(
-          ol.GeolocationProperty.POSITION, this.transform_(this.position_));
+          _ol_GeolocationProperty_.POSITION, this.transform_(this.position_));
     }
   }
 };
@@ -120,8 +118,8 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 /**
  * @private
  */
-ol.Geolocation.prototype.handleTrackingChanged_ = function() {
-  if (ol.has.GEOLOCATION) {
+_ol_Geolocation_.prototype.handleTrackingChanged_ = function() {
+  if (_ol_has_.GEOLOCATION) {
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
       this.watchId_ = navigator.geolocation.watchPosition(
@@ -140,16 +138,16 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
  * @private
  * @param {GeolocationPosition} position position event.
  */
-ol.Geolocation.prototype.positionChange_ = function(position) {
+_ol_Geolocation_.prototype.positionChange_ = function(position) {
   var coords = position.coords;
-  this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
-  this.set(ol.GeolocationProperty.ALTITUDE,
+  this.set(_ol_GeolocationProperty_.ACCURACY, coords.accuracy);
+  this.set(_ol_GeolocationProperty_.ALTITUDE,
       coords.altitude === null ? undefined : coords.altitude);
-  this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
+  this.set(_ol_GeolocationProperty_.ALTITUDE_ACCURACY,
       coords.altitudeAccuracy === null ?
         undefined : coords.altitudeAccuracy);
-  this.set(ol.GeolocationProperty.HEADING, coords.heading === null ?
-    undefined : ol.math.toRadians(coords.heading));
+  this.set(_ol_GeolocationProperty_.HEADING, coords.heading === null ?
+    undefined : _ol_math_.toRadians(coords.heading));
   if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {
@@ -157,13 +155,13 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
     this.position_[1] = coords.latitude;
   }
   var projectedPosition = this.transform_(this.position_);
-  this.set(ol.GeolocationProperty.POSITION, projectedPosition);
-  this.set(ol.GeolocationProperty.SPEED,
+  this.set(_ol_GeolocationProperty_.POSITION, projectedPosition);
+  this.set(_ol_GeolocationProperty_.SPEED,
       coords.speed === null ? undefined : coords.speed);
-  var geometry = ol.geom.Polygon.circular(
+  var geometry = _ol_geom_Polygon_.circular(
       this.sphere_, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
-  this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
+  this.set(_ol_GeolocationProperty_.ACCURACY_GEOMETRY, geometry);
   this.changed();
 };
 
@@ -177,8 +175,8 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
  * @private
  * @param {GeolocationPositionError} error error object.
  */
-ol.Geolocation.prototype.positionError_ = function(error) {
-  error.type = ol.events.EventType.ERROR;
+_ol_Geolocation_.prototype.positionError_ = function(error) {
+  error.type = _ol_events_EventType_.ERROR;
   this.setTracking(false);
   this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
 };
@@ -191,9 +189,10 @@ ol.Geolocation.prototype.positionError_ = function(error) {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getAccuracy = function() {
-  return /** @type {number|undefined} */ (
-    this.get(ol.GeolocationProperty.ACCURACY));
+_ol_Geolocation_.prototype.getAccuracy = function() {
+  return (
+    /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.ACCURACY)
+  );
 };
 
 
@@ -203,9 +202,10 @@ ol.Geolocation.prototype.getAccuracy = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getAccuracyGeometry = function() {
-  return /** @type {?ol.geom.Polygon} */ (
-    this.get(ol.GeolocationProperty.ACCURACY_GEOMETRY) || null);
+_ol_Geolocation_.prototype.getAccuracyGeometry = function() {
+  return (
+    /** @type {?ol.geom.Polygon} */ this.get(_ol_GeolocationProperty_.ACCURACY_GEOMETRY) || null
+  );
 };
 
 
@@ -216,9 +216,10 @@ ol.Geolocation.prototype.getAccuracyGeometry = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getAltitude = function() {
-  return /** @type {number|undefined} */ (
-    this.get(ol.GeolocationProperty.ALTITUDE));
+_ol_Geolocation_.prototype.getAltitude = function() {
+  return (
+    /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.ALTITUDE)
+  );
 };
 
 
@@ -229,9 +230,10 @@ ol.Geolocation.prototype.getAltitude = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getAltitudeAccuracy = function() {
-  return /** @type {number|undefined} */ (
-    this.get(ol.GeolocationProperty.ALTITUDE_ACCURACY));
+_ol_Geolocation_.prototype.getAltitudeAccuracy = function() {
+  return (
+    /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.ALTITUDE_ACCURACY)
+  );
 };
 
 
@@ -241,9 +243,10 @@ ol.Geolocation.prototype.getAltitudeAccuracy = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getHeading = function() {
-  return /** @type {number|undefined} */ (
-    this.get(ol.GeolocationProperty.HEADING));
+_ol_Geolocation_.prototype.getHeading = function() {
+  return (
+    /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.HEADING)
+  );
 };
 
 
@@ -254,9 +257,10 @@ ol.Geolocation.prototype.getHeading = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getPosition = function() {
-  return /** @type {ol.Coordinate|undefined} */ (
-    this.get(ol.GeolocationProperty.POSITION));
+_ol_Geolocation_.prototype.getPosition = function() {
+  return (
+    /** @type {ol.Coordinate|undefined} */ this.get(_ol_GeolocationProperty_.POSITION)
+  );
 };
 
 
@@ -267,9 +271,10 @@ ol.Geolocation.prototype.getPosition = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (
-    this.get(ol.GeolocationProperty.PROJECTION));
+_ol_Geolocation_.prototype.getProjection = function() {
+  return (
+    /** @type {ol.proj.Projection|undefined} */ this.get(_ol_GeolocationProperty_.PROJECTION)
+  );
 };
 
 
@@ -280,9 +285,10 @@ ol.Geolocation.prototype.getProjection = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getSpeed = function() {
-  return /** @type {number|undefined} */ (
-    this.get(ol.GeolocationProperty.SPEED));
+_ol_Geolocation_.prototype.getSpeed = function() {
+  return (
+    /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.SPEED)
+  );
 };
 
 
@@ -292,9 +298,10 @@ ol.Geolocation.prototype.getSpeed = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getTracking = function() {
-  return /** @type {boolean} */ (
-    this.get(ol.GeolocationProperty.TRACKING));
+_ol_Geolocation_.prototype.getTracking = function() {
+  return (
+    /** @type {boolean} */ this.get(_ol_GeolocationProperty_.TRACKING)
+  );
 };
 
 
@@ -307,9 +314,10 @@ ol.Geolocation.prototype.getTracking = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.getTrackingOptions = function() {
-  return /** @type {GeolocationPositionOptions|undefined} */ (
-    this.get(ol.GeolocationProperty.TRACKING_OPTIONS));
+_ol_Geolocation_.prototype.getTrackingOptions = function() {
+  return (
+    /** @type {GeolocationPositionOptions|undefined} */ this.get(_ol_GeolocationProperty_.TRACKING_OPTIONS)
+  );
 };
 
 
@@ -320,8 +328,8 @@ ol.Geolocation.prototype.getTrackingOptions = function() {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.setProjection = function(projection) {
-  this.set(ol.GeolocationProperty.PROJECTION, ol.proj.get(projection));
+_ol_Geolocation_.prototype.setProjection = function(projection) {
+  this.set(_ol_GeolocationProperty_.PROJECTION, _ol_proj_.get(projection));
 };
 
 
@@ -331,8 +339,8 @@ ol.Geolocation.prototype.setProjection = function(projection) {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.setTracking = function(tracking) {
-  this.set(ol.GeolocationProperty.TRACKING, tracking);
+_ol_Geolocation_.prototype.setTracking = function(tracking) {
+  this.set(_ol_GeolocationProperty_.TRACKING, tracking);
 };
 
 
@@ -345,6 +353,7 @@ ol.Geolocation.prototype.setTracking = function(tracking) {
  * @observable
  * @api
  */
-ol.Geolocation.prototype.setTrackingOptions = function(options) {
-  this.set(ol.GeolocationProperty.TRACKING_OPTIONS, options);
+_ol_Geolocation_.prototype.setTrackingOptions = function(options) {
+  this.set(_ol_GeolocationProperty_.TRACKING_OPTIONS, options);
 };
+export default _ol_Geolocation_;

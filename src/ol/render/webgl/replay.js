@@ -1,12 +1,9 @@
-goog.provide('ol.render.webgl.Replay');
-
-goog.require('ol');
-goog.require('ol.extent');
-goog.require('ol.render.VectorContext');
-goog.require('ol.transform');
-goog.require('ol.vec.Mat4');
-goog.require('ol.webgl');
-
+import _ol_ from '../../index';
+import _ol_extent_ from '../../extent';
+import _ol_render_VectorContext_ from '../vectorcontext';
+import _ol_transform_ from '../../transform';
+import _ol_vec_Mat4_ from '../../vec/mat4';
+import _ol_webgl_ from '../../webgl';
 
 /**
  * @constructor
@@ -16,8 +13,8 @@ goog.require('ol.webgl');
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.Replay = function(tolerance, maxExtent) {
-  ol.render.VectorContext.call(this);
+var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
+  _ol_render_VectorContext_.call(this);
 
   /**
    * @protected
@@ -40,31 +37,31 @@ ol.render.webgl.Replay = function(tolerance, maxExtent) {
    * @protected
    * @type {ol.Coordinate}
    */
-  this.origin = ol.extent.getCenter(maxExtent);
+  this.origin = _ol_extent_.getCenter(maxExtent);
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.projectionMatrix_ = ol.transform.create();
+  this.projectionMatrix_ = _ol_transform_.create();
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.offsetRotateMatrix_ = ol.transform.create();
+  this.offsetRotateMatrix_ = _ol_transform_.create();
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.offsetScaleMatrix_ = ol.transform.create();
+  this.offsetScaleMatrix_ = _ol_transform_.create();
 
   /**
    * @private
    * @type {Array.<number>}
    */
-  this.tmpMat4_ = ol.vec.Mat4.create();
+  this.tmpMat4_ = _ol_vec_Mat4_.create();
 
   /**
    * @protected
@@ -112,7 +109,8 @@ ol.render.webgl.Replay = function(tolerance, maxExtent) {
   this.lineStringReplay = undefined;
 
 };
-ol.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
+
+_ol_.inherits(_ol_render_webgl_Replay_, _ol_render_VectorContext_);
 
 
 /**
@@ -120,14 +118,14 @@ ol.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
  * @param {ol.webgl.Context} context WebGL context.
  * @return {function()} Delete resources function.
  */
-ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = function(context) {};
+_ol_render_webgl_Replay_.prototype.getDeleteResourcesFunction = function(context) {};
 
 
 /**
  * @abstract
  * @param {ol.webgl.Context} context Context.
  */
-ol.render.webgl.Replay.prototype.finish = function(context) {};
+_ol_render_webgl_Replay_.prototype.finish = function(context) {};
 
 
 /**
@@ -142,7 +140,7 @@ ol.render.webgl.Replay.prototype.finish = function(context) {};
             ol.render.webgl.polygonreplay.defaultshader.Locations|
             ol.render.webgl.texturereplay.defaultshader.Locations} Locations.
  */
-ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
+_ol_render_webgl_Replay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
 
 /**
@@ -154,7 +152,7 @@ ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixe
            ol.render.webgl.polygonreplay.defaultshader.Locations|
            ol.render.webgl.texturereplay.defaultshader.Locations} locations Locations.
  */
-ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {};
+_ol_render_webgl_Replay_.prototype.shutDownProgram = function(gl, locations) {};
 
 
 /**
@@ -166,7 +164,7 @@ ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {};
  *  to skip.
  * @param {boolean} hitDetection Hit detection mode.
  */
-ol.render.webgl.Replay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {};
+_ol_render_webgl_Replay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {};
 
 
 /**
@@ -182,7 +180,7 @@ ol.render.webgl.Replay.prototype.drawReplay = function(gl, context, skippedFeatu
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {};
+_ol_render_webgl_Replay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {};
 
 
 /**
@@ -198,7 +196,7 @@ ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne = function(gl, c
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.Replay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash,
+_ol_render_webgl_Replay_.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent) {
   if (!oneByOne) {
     // draw all hit-detection features in "once" (by texture group)
@@ -222,7 +220,7 @@ ol.render.webgl.Replay.prototype.drawHitDetectionReplay = function(gl, context, 
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash,
+_ol_render_webgl_Replay_.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash,
     featureCallback) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   this.drawReplay(gl, context, skippedFeaturesHash, true);
@@ -253,7 +251,7 @@ ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll = function(gl, contex
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.Replay.prototype.replay = function(context,
+_ol_render_webgl_Replay_.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent) {
@@ -286,32 +284,32 @@ ol.render.webgl.Replay.prototype.replay = function(context,
     gl.stencilFunc(gl.NOTEQUAL, 1, 255);
   }
 
-  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer);
+  context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.verticesBuffer);
 
-  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
+  context.bindBuffer(_ol_webgl_.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
   var locations = this.setUpProgram(gl, context, size, pixelRatio);
 
   // set the "uniform" values
-  var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
-  ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-  ol.transform.rotate(projectionMatrix, -rotation);
-  ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+  var projectionMatrix = _ol_transform_.reset(this.projectionMatrix_);
+  _ol_transform_.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+  _ol_transform_.rotate(projectionMatrix, -rotation);
+  _ol_transform_.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
 
-  var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
-  ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+  var offsetScaleMatrix = _ol_transform_.reset(this.offsetScaleMatrix_);
+  _ol_transform_.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
 
-  var offsetRotateMatrix = ol.transform.reset(this.offsetRotateMatrix_);
+  var offsetRotateMatrix = _ol_transform_.reset(this.offsetRotateMatrix_);
   if (rotation !== 0) {
-    ol.transform.rotate(offsetRotateMatrix, -rotation);
+    _ol_transform_.rotate(offsetRotateMatrix, -rotation);
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
+      _ol_vec_Mat4_.fromTransform(this.tmpMat4_, projectionMatrix));
   gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+      _ol_vec_Mat4_.fromTransform(this.tmpMat4_, offsetScaleMatrix));
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+      _ol_vec_Mat4_.fromTransform(this.tmpMat4_, offsetRotateMatrix));
   gl.uniform1f(locations.u_opacity, opacity);
 
   // draw!
@@ -349,13 +347,14 @@ ol.render.webgl.Replay.prototype.replay = function(context,
  * @param {number} start Start index.
  * @param {number} end End index.
  */
-ol.render.webgl.Replay.prototype.drawElements = function(
+_ol_render_webgl_Replay_.prototype.drawElements = function(
     gl, context, start, end) {
   var elementType = context.hasOESElementIndexUint ?
-    ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
+    _ol_webgl_.UNSIGNED_INT : _ol_webgl_.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
   var numItems = end - start;
   var offsetInBytes = start * elementSize;
-  gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
+  gl.drawElements(_ol_webgl_.TRIANGLES, numItems, elementType, offsetInBytes);
 };
+export default _ol_render_webgl_Replay_;

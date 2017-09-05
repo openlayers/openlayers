@@ -1,13 +1,10 @@
-goog.provide('ol.interaction.DragPan');
-
-goog.require('ol');
-goog.require('ol.ViewHint');
-goog.require('ol.coordinate');
-goog.require('ol.easing');
-goog.require('ol.events.condition');
-goog.require('ol.functions');
-goog.require('ol.interaction.Pointer');
-
+import _ol_ from '../index';
+import _ol_ViewHint_ from '../viewhint';
+import _ol_coordinate_ from '../coordinate';
+import _ol_easing_ from '../easing';
+import _ol_events_condition_ from '../events/condition';
+import _ol_functions_ from '../functions';
+import _ol_interaction_Pointer_ from '../interaction/pointer';
 
 /**
  * @classdesc
@@ -18,12 +15,12 @@ goog.require('ol.interaction.Pointer');
  * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @api
  */
-ol.interaction.DragPan = function(opt_options) {
+var _ol_interaction_DragPan_ = function(opt_options) {
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.DragPan.handleDownEvent_,
-    handleDragEvent: ol.interaction.DragPan.handleDragEvent_,
-    handleUpEvent: ol.interaction.DragPan.handleUpEvent_
+  _ol_interaction_Pointer_.call(this, {
+    handleDownEvent: _ol_interaction_DragPan_.handleDownEvent_,
+    handleDragEvent: _ol_interaction_DragPan_.handleDragEvent_,
+    handleUpEvent: _ol_interaction_DragPan_.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -49,7 +46,7 @@ ol.interaction.DragPan = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-    options.condition : ol.events.condition.noModifierKeys;
+    options.condition : _ol_events_condition_.noModifierKeys;
 
   /**
    * @private
@@ -58,7 +55,8 @@ ol.interaction.DragPan = function(opt_options) {
   this.noKinetic_ = false;
 
 };
-ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
+
+_ol_.inherits(_ol_interaction_DragPan_, _ol_interaction_Pointer_);
 
 
 /**
@@ -66,10 +64,10 @@ ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
  * @this {ol.interaction.DragPan}
  * @private
  */
-ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
+_ol_interaction_DragPan_.handleDragEvent_ = function(mapBrowserEvent) {
   var targetPointers = this.targetPointers;
   var centroid =
-      ol.interaction.Pointer.centroid(targetPointers);
+      _ol_interaction_Pointer_.centroid(targetPointers);
   if (targetPointers.length == this.lastPointersCount_) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);
@@ -81,9 +79,9 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
       var view = map.getView();
       var viewState = view.getState();
       var center = [deltaX, deltaY];
-      ol.coordinate.scale(center, viewState.resolution);
-      ol.coordinate.rotate(center, viewState.rotation);
-      ol.coordinate.add(center, viewState.center);
+      _ol_coordinate_.scale(center, viewState.resolution);
+      _ol_coordinate_.rotate(center, viewState.rotation);
+      _ol_coordinate_.add(center, viewState.center);
       center = view.constrainCenter(center);
       view.setCenter(center);
     }
@@ -103,7 +101,7 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragPan}
  * @private
  */
-ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
+_ol_interaction_DragPan_.handleUpEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -119,10 +117,10 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
       view.animate({
         center: view.constrainCenter(dest),
         duration: 500,
-        easing: ol.easing.easeOut
+        easing: _ol_easing_.easeOut
       });
     }
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(_ol_ViewHint_.INTERACTING, -1);
     return false;
   } else {
     if (this.kinetic_) {
@@ -142,16 +140,16 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragPan}
  * @private
  */
-ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
+_ol_interaction_DragPan_.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
     this.lastCentroid = null;
     if (!this.handlingDownUpSequence) {
-      view.setHint(ol.ViewHint.INTERACTING, 1);
+      view.setHint(_ol_ViewHint_.INTERACTING, 1);
     }
     // stop any current animation
-    if (view.getHints()[ol.ViewHint.ANIMATING]) {
+    if (view.getHints()[_ol_ViewHint_.ANIMATING]) {
       view.setCenter(mapBrowserEvent.frameState.viewState.center);
     }
     if (this.kinetic_) {
@@ -170,4 +168,5 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragPan.prototype.shouldStopEvent = ol.functions.FALSE;
+_ol_interaction_DragPan_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+export default _ol_interaction_DragPan_;

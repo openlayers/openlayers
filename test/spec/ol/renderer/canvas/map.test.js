@@ -1,28 +1,28 @@
 
 
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.renderer.canvas.Map');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Style');
+import _ol_ from '../../../../../src/ol';
+import _ol_Feature_ from '../../../../../src/ol/feature';
+import _ol_Map_ from '../../../../../src/ol/map';
+import _ol_View_ from '../../../../../src/ol/view';
+import _ol_geom_Point_ from '../../../../../src/ol/geom/point';
+import _ol_layer_Tile_ from '../../../../../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../../../../../src/ol/layer/vector';
+import _ol_renderer_canvas_Layer_ from '../../../../../src/ol/renderer/canvas/layer';
+import _ol_renderer_canvas_Map_ from '../../../../../src/ol/renderer/canvas/map';
+import _ol_source_Vector_ from '../../../../../src/ol/source/vector';
+import _ol_style_Icon_ from '../../../../../src/ol/style/icon';
+import _ol_style_Style_ from '../../../../../src/ol/style/style';
 
 describe('ol.renderer.canvas.Map', function() {
 
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var map = new ol.Map({
+      var map = new _ol_Map_({
         target: document.createElement('div')
       });
-      var renderer = new ol.renderer.canvas.Map(map.viewport_, map);
-      expect(renderer).to.be.a(ol.renderer.canvas.Map);
+      var renderer = new _ol_renderer_canvas_Map_(map.viewport_, map);
+      expect(renderer).to.be.a(_ol_renderer_canvas_Map_);
     });
 
   });
@@ -36,10 +36,10 @@ describe('ol.renderer.canvas.Map', function() {
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      map = new ol.Map({
+      map = new _ol_Map_({
         pixelRatio: 1,
         target: target,
-        view: new ol.View({
+        view: new _ol_View_({
           center: [0, 0],
           zoom: 0
         })
@@ -52,16 +52,16 @@ describe('ol.renderer.canvas.Map', function() {
       };
       img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
 
-      layer = new ol.layer.Vector({
-        source: new ol.source.Vector({
+      layer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_({
           features: [
-            new ol.Feature({
-              geometry: new ol.geom.Point([0, 0])
+            new _ol_Feature_({
+              geometry: new _ol_geom_Point_([0, 0])
             })
           ]
         }),
-        style: new ol.style.Style({
-          image: new ol.style.Icon({
+        style: new _ol_style_Style_({
+          image: new _ol_style_Icon_({
             img: img,
             imgSize: [1, 1]
           })
@@ -94,8 +94,8 @@ describe('ol.renderer.canvas.Map', function() {
 
     it('calls callback with main layer when skipped feature on unmanaged layer', function() {
       var feature = layer.getSource().getFeatures()[0];
-      var managedLayer = new ol.layer.Vector({
-        source: new ol.source.Vector({
+      var managedLayer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_({
           features: [feature]
         })
       });
@@ -122,7 +122,7 @@ describe('ol.renderer.canvas.Map', function() {
     });
 
     it('doesn\'t fail with layer with no source', function() {
-      map.addLayer(new ol.layer.Tile());
+      map.addLayer(new _ol_layer_Tile_());
       map.renderSync();
       expect(function() {
         map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]),
@@ -169,21 +169,21 @@ describe('ol.renderer.canvas.Map', function() {
     var layer, map, renderer;
 
     beforeEach(function() {
-      map = new ol.Map({});
+      map = new _ol_Map_({});
       map.on('postcompose', function() {});
-      layer = new ol.layer.Vector({
-        source: new ol.source.Vector({wrapX: true})
+      layer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_({wrapX: true})
       });
       renderer = map.getRenderer();
       renderer.layerRenderers_ = {};
-      var layerRenderer = new ol.renderer.canvas.Layer(layer);
+      var layerRenderer = new _ol_renderer_canvas_Layer_(layer);
       layerRenderer.prepareFrame = function() {
         return true;
       };
       layerRenderer.getImage = function() {
         return null;
       };
-      renderer.layerRenderers_[ol.getUid(layer)] = layerRenderer;
+      renderer.layerRenderers_[_ol_.getUid(layer)] = layerRenderer;
     });
 
   });

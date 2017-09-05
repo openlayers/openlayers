@@ -1,13 +1,13 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_geom_MultiPoint_ from '../src/ol/geom/multipoint';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 var styles = [
   /* We are using two different styles for the polygons:
@@ -17,26 +17,26 @@ var styles = [
    *    returned as `MultiPoint` geometry, which will be used to render
    *    the style.
    */
-  new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'blue',
       width: 3
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   }),
-  new ol.style.Style({
-    image: new ol.style.Circle({
+  new _ol_style_Style_({
+    image: new _ol_style_Circle_({
       radius: 5,
-      fill: new ol.style.Fill({
+      fill: new _ol_style_Fill_({
         color: 'orange'
       })
     }),
     geometry: function(feature) {
       // return the coordinates of the first ring of the polygon
       var coordinates = feature.getGeometry().getCoordinates()[0];
-      return new ol.geom.MultiPoint(coordinates);
+      return new _ol_geom_MultiPoint_(coordinates);
     }
   })
 ];
@@ -80,19 +80,19 @@ var geojsonObject = {
   }]
 };
 
-var source = new ol.source.Vector({
-  features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+var source = new _ol_source_Vector_({
+  features: (new _ol_format_GeoJSON_()).readFeatures(geojsonObject)
 });
 
-var layer = new ol.layer.Vector({
+var layer = new _ol_layer_Vector_({
   source: source,
   style: styles
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [layer],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 3000000],
     zoom: 2
   })

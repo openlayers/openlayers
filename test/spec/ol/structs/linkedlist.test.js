@@ -1,13 +1,13 @@
 
 
-goog.require('ol.structs.LinkedList');
+import _ol_structs_LinkedList_ from '../../../../src/ol/structs/linkedlist';
 
 describe('ol.structs.LinkedList', function() {
   var ll;
   var item = {};
   var item2 = {};
   beforeEach(function() {
-    ll = new ol.structs.LinkedList();
+    ll = new _ol_structs_LinkedList_();
   });
 
   it('defaults to circular', function() {
@@ -61,7 +61,7 @@ describe('ol.structs.LinkedList', function() {
     });
 
     it('otherwise sets the cursor to the prevous item', function() {
-      ll = new ol.structs.LinkedList(false);
+      ll = new _ol_structs_LinkedList_(false);
       ll.insertItem(item);
       ll.insertItem(item2);
       ll.insertItem(item3);
@@ -70,7 +70,7 @@ describe('ol.structs.LinkedList', function() {
     });
 
     it('empties a list with only one item', function() {
-      ll = new ol.structs.LinkedList();
+      ll = new _ol_structs_LinkedList_();
       ll.insertItem(item);
       ll.removeItem();
       expect(ll.length_).to.be(0);
@@ -204,7 +204,7 @@ describe('ol.structs.LinkedList', function() {
     var ll2, item3;
     beforeEach(function() {
       item3 = {};
-      ll2 = new ol.structs.LinkedList();
+      ll2 = new _ol_structs_LinkedList_();
       ll2.insertItem(item);
       ll2.insertItem(item2);
       ll2.insertItem(item3);
@@ -244,7 +244,7 @@ describe('ol.structs.LinkedList', function() {
 
   describe('when circular', function() {
     beforeEach(function() {
-      ll = new ol.structs.LinkedList();
+      ll = new _ol_structs_LinkedList_();
       ll.insertItem(item);
     });
 

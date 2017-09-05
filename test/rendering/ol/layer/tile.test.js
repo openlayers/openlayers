@@ -1,18 +1,18 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Tile');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.source.TileImage');
-goog.require('ol.source.XYZ');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.tilegrid');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_extent_ from '../../../../src/ol/extent';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_layer_Tile_ from '../../../../src/ol/layer/tile';
+import _ol_obj_ from '../../../../src/ol/obj';
+import _ol_proj_ from '../../../../src/ol/proj';
+import _ol_source_TileImage_ from '../../../../src/ol/source/tileimage';
+import _ol_source_XYZ_ from '../../../../src/ol/source/xyz';
+import _ol_style_Circle_ from '../../../../src/ol/style/circle';
+import _ol_style_Fill_ from '../../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../../src/ol/style/stroke';
+import _ol_tilegrid_ from '../../../../src/ol/tilegrid';
 
 
 describe('ol.rendering.layer.Tile', function() {
@@ -22,12 +22,12 @@ describe('ol.rendering.layer.Tile', function() {
   function createMap(renderer, opt_center, opt_size, opt_pixelRatio, opt_resolutions) {
     var size = opt_size !== undefined ? opt_size : [50, 50];
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size[0], size[1]),
       renderer: renderer,
-      view: new ol.View({
-        center: opt_center !== undefined ? opt_center : ol.proj.transform(
+      view: new _ol_View_({
+        center: opt_center !== undefined ? opt_center : _ol_proj_.transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         resolutions: opt_resolutions,
         zoom: 5
@@ -67,8 +67,8 @@ describe('ol.rendering.layer.Tile', function() {
       var options = {
         source: source
       };
-      ol.obj.assign(options, layerOptions[i] || layerOptions);
-      map.addLayer(new ol.layer.Tile(options));
+      _ol_obj_.assign(options, layerOptions[i] || layerOptions);
+      map.addLayer(new _ol_layer_Tile_(options));
     });
   }
 
@@ -76,7 +76,7 @@ describe('ol.rendering.layer.Tile', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.XYZ({
+      source = new _ol_source_XYZ_({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
     });
@@ -103,10 +103,10 @@ describe('ol.rendering.layer.Tile', function() {
     var source1, source2;
 
     beforeEach(function() {
-      source1 = new ol.source.XYZ({
+      source1 = new _ol_source_XYZ_({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
-      source2 = new ol.source.XYZ({
+      source2 = new _ol_source_XYZ_({
         url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png'
       });
     });
@@ -130,8 +130,8 @@ describe('ol.rendering.layer.Tile', function() {
 
     function centerExtent(map) {
       var c = map.getView().calculateExtent(map.getSize());
-      var qw = ol.extent.getSize(c)[0] / 4;
-      var qh = ol.extent.getSize(c)[1] / 4;
+      var qw = _ol_extent_.getSize(c)[0] / 4;
+      var qh = _ol_extent_.getSize(c)[1] / 4;
       return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
     }
 
@@ -175,7 +175,7 @@ describe('ol.rendering.layer.Tile', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.XYZ({
+      source = new _ol_source_XYZ_({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
     });
@@ -201,9 +201,9 @@ describe('ol.rendering.layer.Tile', function() {
   describe('tile layer with non-square tiles', function() {
 
     function createSource(tileSize) {
-      return new ol.source.TileImage({
+      return new _ol_source_TileImage_({
         url: 'rendering/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
-        tileGrid: ol.tilegrid.createXYZ({
+        tileGrid: _ol_tilegrid_.createXYZ({
           tileSize: tileSize.split('x')
         })
       });
@@ -254,19 +254,19 @@ describe('ol.rendering.layer.Tile', function() {
     var source, onAddLayer;
 
     beforeEach(function() {
-      source = new ol.source.XYZ({
+      source = new _ol_source_XYZ_({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
       onAddLayer = function(evt) {
         evt.element.on('render', function(e) {
-          e.vectorContext.setImageStyle(new ol.style.Circle({
+          e.vectorContext.setImageStyle(new _ol_style_Circle_({
             radius: 5,
             snapToPixel: false,
-            fill: new ol.style.Fill({color: 'yellow'}),
-            stroke: new ol.style.Stroke({color: 'red', width: 1})
+            fill: new _ol_style_Fill_({color: 'yellow'}),
+            stroke: new _ol_style_Stroke_({color: 'red', width: 1})
           }));
-          e.vectorContext.drawPoint(new ol.geom.Point(
-              ol.proj.transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
+          e.vectorContext.drawPoint(new _ol_geom_Point_(
+              _ol_proj_.transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
         });
       };
     });

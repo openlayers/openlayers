@@ -1,13 +1,10 @@
-goog.provide('ol.renderer.canvas.ImageLayer');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.ViewHint');
-goog.require('ol.extent');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.canvas.IntermediateCanvas');
-goog.require('ol.transform');
-
+import _ol_ from '../../index';
+import _ol_LayerType_ from '../../layertype';
+import _ol_ViewHint_ from '../../viewhint';
+import _ol_extent_ from '../../extent';
+import _ol_renderer_Type_ from '../type';
+import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/intermediatecanvas';
+import _ol_transform_ from '../../transform';
 
 /**
  * @constructor
@@ -15,9 +12,9 @@ goog.require('ol.transform');
  * @param {ol.layer.Image} imageLayer Single image layer.
  * @api
  */
-ol.renderer.canvas.ImageLayer = function(imageLayer) {
+var _ol_renderer_canvas_ImageLayer_ = function(imageLayer) {
 
-  ol.renderer.canvas.IntermediateCanvas.call(this, imageLayer);
+  _ol_renderer_canvas_IntermediateCanvas_.call(this, imageLayer);
 
   /**
    * @private
@@ -29,10 +26,11 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
    * @private
    * @type {ol.Transform}
    */
-  this.imageTransform_ = ol.transform.create();
+  this.imageTransform_ = _ol_transform_.create();
 
 };
-ol.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.IntermediateCanvas);
+
+_ol_.inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas_);
 
 
 /**
@@ -41,8 +39,8 @@ ol.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.IntermediateCanvas
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-ol.renderer.canvas.ImageLayer['handles'] = function(type, layer) {
-  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.IMAGE;
+_ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
+  return type === _ol_renderer_Type_.CANVAS && layer.getType() === _ol_LayerType_.IMAGE;
 };
 
 
@@ -52,15 +50,15 @@ ol.renderer.canvas.ImageLayer['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
-ol.renderer.canvas.ImageLayer['create'] = function(mapRenderer, layer) {
-  return new ol.renderer.canvas.ImageLayer(/** @type {ol.layer.Image} */ (layer));
+_ol_renderer_canvas_ImageLayer_['create'] = function(mapRenderer, layer) {
+  return new _ol_renderer_canvas_ImageLayer_(/** @type {ol.layer.Image} */ (layer));
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
+_ol_renderer_canvas_ImageLayer_.prototype.getImage = function() {
   return !this.image_ ? null : this.image_.getImage();
 };
 
@@ -68,7 +66,7 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
+_ol_renderer_canvas_ImageLayer_.prototype.getImageTransform = function() {
   return this.imageTransform_;
 };
 
@@ -76,7 +74,7 @@ ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, layerState) {
+_ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
   var size = frameState.size;
@@ -92,14 +90,14 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
 
   var renderedExtent = frameState.extent;
   if (layerState.extent !== undefined) {
-    renderedExtent = ol.extent.getIntersection(
+    renderedExtent = _ol_extent_.getIntersection(
         renderedExtent, layerState.extent);
   }
 
-  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
-      !ol.extent.isEmpty(renderedExtent)) {
+  if (!hints[_ol_ViewHint_.ANIMATING] && !hints[_ol_ViewHint_.INTERACTING] &&
+      !_ol_extent_.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
-    if (!ol.ENABLE_RASTER_REPROJECTION) {
+    if (!_ol_.ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
         projection = sourceProjection;
@@ -122,13 +120,13 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     var imagePixelRatio = image.getPixelRatio();
     var scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
-    var transform = ol.transform.compose(this.imageTransform_,
+    var transform = _ol_transform_.compose(this.imageTransform_,
         pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
         scale, scale,
         0,
         imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
         imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
-    ol.transform.compose(this.coordinateToCanvasPixelTransform,
+    _ol_transform_.compose(this.coordinateToCanvasPixelTransform,
         pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
         pixelRatio / viewResolution, -pixelRatio / viewResolution,
         0,
@@ -141,3 +139,4 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
 
   return !!this.image_;
 };
+export default _ol_renderer_canvas_ImageLayer_;

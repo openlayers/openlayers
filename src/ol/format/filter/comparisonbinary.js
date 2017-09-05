@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.ComparisonBinary');
-
-goog.require('ol');
-goog.require('ol.format.filter.Comparison');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Comparison_ from '../filter/comparison';
 
 /**
  * @classdesc
@@ -17,10 +14,10 @@ goog.require('ol.format.filter.Comparison');
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.filter.ComparisonBinary = function(
+var _ol_format_filter_ComparisonBinary_ = function(
     tagName, propertyName, expression, opt_matchCase) {
 
-  ol.format.filter.Comparison.call(this, tagName, propertyName);
+  _ol_format_filter_Comparison_.call(this, tagName, propertyName);
 
   /**
    * @public
@@ -34,4 +31,6 @@ ol.format.filter.ComparisonBinary = function(
    */
   this.matchCase = opt_matchCase;
 };
-ol.inherits(ol.format.filter.ComparisonBinary, ol.format.filter.Comparison);
+
+_ol_.inherits(_ol_format_filter_ComparisonBinary_, _ol_format_filter_Comparison_);
+export default _ol_format_filter_ComparisonBinary_;

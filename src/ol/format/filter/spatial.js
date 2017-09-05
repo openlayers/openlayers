@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.Spatial');
-
-goog.require('ol');
-goog.require('ol.format.filter.Filter');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Filter_ from '../filter/filter';
 
 /**
  * @classdesc
@@ -18,9 +15,9 @@ goog.require('ol.format.filter.Filter');
  * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.filter.Spatial = function(tagName, geometryName, geometry, opt_srsName) {
+var _ol_format_filter_Spatial_ = function(tagName, geometryName, geometry, opt_srsName) {
 
-  ol.format.filter.Filter.call(this, tagName);
+  _ol_format_filter_Filter_.call(this, tagName);
 
   /**
    * @public
@@ -40,4 +37,6 @@ ol.format.filter.Spatial = function(tagName, geometryName, geometry, opt_srsName
    */
   this.srsName = opt_srsName;
 };
-ol.inherits(ol.format.filter.Spatial, ol.format.filter.Filter);
+
+_ol_.inherits(_ol_format_filter_Spatial_, _ol_format_filter_Filter_);
+export default _ol_format_filter_Spatial_;

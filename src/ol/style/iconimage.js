@@ -1,13 +1,10 @@
-goog.provide('ol.style.IconImage');
-
-goog.require('ol');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');
-goog.require('ol.events.EventType');
-goog.require('ol.ImageState');
-goog.require('ol.style');
-
+import _ol_ from '../index';
+import _ol_dom_ from '../dom';
+import _ol_events_ from '../events';
+import _ol_events_EventTarget_ from '../events/eventtarget';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_ImageState_ from '../imagestate';
+import _ol_style_ from '../style';
 
 /**
  * @constructor
@@ -19,10 +16,10 @@ goog.require('ol.style');
  * @param {ol.Color} color Color.
  * @extends {ol.events.EventTarget}
  */
-ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
+var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
     color) {
 
-  ol.events.EventTarget.call(this);
+  _ol_events_EventTarget_.call(this);
 
   /**
    * @private
@@ -83,12 +80,13 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
    * @type {boolean}
    */
   this.tainting_ = false;
-  if (this.imageState_ == ol.ImageState.LOADED) {
+  if (this.imageState_ == _ol_ImageState_.LOADED) {
     this.determineTainting_();
   }
 
 };
-ol.inherits(ol.style.IconImage, ol.events.EventTarget);
+
+_ol_.inherits(_ol_style_IconImage_, _ol_events_EventTarget_);
 
 
 /**
@@ -100,12 +98,12 @@ ol.inherits(ol.style.IconImage, ol.events.EventTarget);
  * @param {ol.Color} color Color.
  * @return {ol.style.IconImage} Icon image.
  */
-ol.style.IconImage.get = function(image, src, size, crossOrigin, imageState,
+_ol_style_IconImage_.get = function(image, src, size, crossOrigin, imageState,
     color) {
-  var iconImageCache = ol.style.iconImageCache;
+  var iconImageCache = _ol_style_.iconImageCache;
   var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
-    iconImage = new ol.style.IconImage(
+    iconImage = new _ol_style_IconImage_(
         image, src, size, crossOrigin, imageState, color);
     iconImageCache.set(src, crossOrigin, color, iconImage);
   }
@@ -116,8 +114,8 @@ ol.style.IconImage.get = function(image, src, size, crossOrigin, imageState,
 /**
  * @private
  */
-ol.style.IconImage.prototype.determineTainting_ = function() {
-  var context = ol.dom.createCanvasContext2D(1, 1);
+_ol_style_IconImage_.prototype.determineTainting_ = function() {
+  var context = _ol_dom_.createCanvasContext2D(1, 1);
   try {
     context.drawImage(this.image_, 0, 0);
     context.getImageData(0, 0, 1, 1);
@@ -130,16 +128,16 @@ ol.style.IconImage.prototype.determineTainting_ = function() {
 /**
  * @private
  */
-ol.style.IconImage.prototype.dispatchChangeEvent_ = function() {
-  this.dispatchEvent(ol.events.EventType.CHANGE);
+_ol_style_IconImage_.prototype.dispatchChangeEvent_ = function() {
+  this.dispatchEvent(_ol_events_EventType_.CHANGE);
 };
 
 
 /**
  * @private
  */
-ol.style.IconImage.prototype.handleImageError_ = function() {
-  this.imageState_ = ol.ImageState.ERROR;
+_ol_style_IconImage_.prototype.handleImageError_ = function() {
+  this.imageState_ = _ol_ImageState_.ERROR;
   this.unlistenImage_();
   this.dispatchChangeEvent_();
 };
@@ -148,8 +146,8 @@ ol.style.IconImage.prototype.handleImageError_ = function() {
 /**
  * @private
  */
-ol.style.IconImage.prototype.handleImageLoad_ = function() {
-  this.imageState_ = ol.ImageState.LOADED;
+_ol_style_IconImage_.prototype.handleImageLoad_ = function() {
+  this.imageState_ = _ol_ImageState_.LOADED;
   if (this.size_) {
     this.image_.width = this.size_[0];
     this.image_.height = this.size_[1];
@@ -166,7 +164,7 @@ ol.style.IconImage.prototype.handleImageLoad_ = function() {
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image|HTMLCanvasElement} Image or Canvas element.
  */
-ol.style.IconImage.prototype.getImage = function(pixelRatio) {
+_ol_style_IconImage_.prototype.getImage = function(pixelRatio) {
   return this.canvas_ ? this.canvas_ : this.image_;
 };
 
@@ -174,7 +172,7 @@ ol.style.IconImage.prototype.getImage = function(pixelRatio) {
 /**
  * @return {ol.ImageState} Image state.
  */
-ol.style.IconImage.prototype.getImageState = function() {
+_ol_style_IconImage_.prototype.getImageState = function() {
   return this.imageState_;
 };
 
@@ -183,12 +181,12 @@ ol.style.IconImage.prototype.getImageState = function() {
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image|HTMLCanvasElement} Image element.
  */
-ol.style.IconImage.prototype.getHitDetectionImage = function(pixelRatio) {
+_ol_style_IconImage_.prototype.getHitDetectionImage = function(pixelRatio) {
   if (!this.hitDetectionImage_) {
     if (this.tainting_) {
       var width = this.size_[0];
       var height = this.size_[1];
-      var context = ol.dom.createCanvasContext2D(width, height);
+      var context = _ol_dom_.createCanvasContext2D(width, height);
       context.fillRect(0, 0, width, height);
       this.hitDetectionImage_ = context.canvas;
     } else {
@@ -202,7 +200,7 @@ ol.style.IconImage.prototype.getHitDetectionImage = function(pixelRatio) {
 /**
  * @return {ol.Size} Image size.
  */
-ol.style.IconImage.prototype.getSize = function() {
+_ol_style_IconImage_.prototype.getSize = function() {
   return this.size_;
 };
 
@@ -210,7 +208,7 @@ ol.style.IconImage.prototype.getSize = function() {
 /**
  * @return {string|undefined} Image src.
  */
-ol.style.IconImage.prototype.getSrc = function() {
+_ol_style_IconImage_.prototype.getSrc = function() {
   return this.src_;
 };
 
@@ -218,13 +216,13 @@ ol.style.IconImage.prototype.getSrc = function() {
 /**
  * Load not yet loaded URI.
  */
-ol.style.IconImage.prototype.load = function() {
-  if (this.imageState_ == ol.ImageState.IDLE) {
-    this.imageState_ = ol.ImageState.LOADING;
+_ol_style_IconImage_.prototype.load = function() {
+  if (this.imageState_ == _ol_ImageState_.IDLE) {
+    this.imageState_ = _ol_ImageState_.LOADING;
     this.imageListenerKeys_ = [
-      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
+      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.ERROR,
           this.handleImageError_, this),
-      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
+      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.LOAD,
           this.handleImageLoad_, this)
     ];
     try {
@@ -239,7 +237,7 @@ ol.style.IconImage.prototype.load = function() {
 /**
  * @private
  */
-ol.style.IconImage.prototype.replaceColor_ = function() {
+_ol_style_IconImage_.prototype.replaceColor_ = function() {
   if (this.tainting_ || this.color_ === null) {
     return;
   }
@@ -270,7 +268,8 @@ ol.style.IconImage.prototype.replaceColor_ = function() {
  *
  * @private
  */
-ol.style.IconImage.prototype.unlistenImage_ = function() {
-  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
+_ol_style_IconImage_.prototype.unlistenImage_ = function() {
+  this.imageListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
+export default _ol_style_IconImage_;

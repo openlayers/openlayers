@@ -1,11 +1,11 @@
 // NOCOMPILE
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.Raster');
-goog.require('ol.source.XYZ');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_Raster_ from '../src/ol/source/raster';
+import _ol_source_XYZ_ from '../src/ol/source/xyz';
 
 function flood(pixels, data) {
   var pixel = pixels[0];
@@ -24,31 +24,31 @@ function flood(pixels, data) {
 }
 
 var key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
-var elevation = new ol.source.XYZ({
+var elevation = new _ol_source_XYZ_({
   url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
   crossOrigin: 'anonymous'
 });
 
-var raster = new ol.source.Raster({
+var raster = new _ol_source_Raster_({
   sources: [elevation],
   operation: flood
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.XYZ({
+    new _ol_layer_Tile_({
+      source: new _ol_source_XYZ_({
         url: 'https://api.mapbox.com/styles/v1/tschaub/ciutc102t00c62js5fqd47kqw/tiles/256/{z}/{x}/{y}?access_token=' + key
       })
     }),
-    new ol.layer.Image({
+    new _ol_layer_Image_({
       opacity: 0.6,
       source: raster
     })
   ],
-  view: new ol.View({
-    center: ol.proj.fromLonLat([-122.3267, 37.8377]),
+  view: new _ol_View_({
+    center: _ol_proj_.fromLonLat([-122.3267, 37.8377]),
     zoom: 11
   })
 });
@@ -73,6 +73,6 @@ for (var i = 0, ii = locations.length; i < ii; ++i) {
 function relocate(event) {
   var data = event.target.dataset;
   var view = map.getView();
-  view.setCenter(ol.proj.fromLonLat(data.center.split(',').map(Number)));
+  view.setCenter(_ol_proj_.fromLonLat(data.center.split(',').map(Number)));
   view.setZoom(Number(data.zoom));
 }

@@ -1,6 +1,5 @@
-goog.provide('ol.transform');
-
-goog.require('ol.asserts');
+import _ol_asserts_ from './asserts';
+var _ol_transform_ = {};
 
 
 /**
@@ -20,14 +19,14 @@ goog.require('ol.asserts');
  * @private
  * @type {ol.Transform}
  */
-ol.transform.tmp_ = new Array(6);
+_ol_transform_.tmp_ = new Array(6);
 
 
 /**
  * Create an identity transform.
  * @return {!ol.Transform} Identity transform.
  */
-ol.transform.create = function() {
+_ol_transform_.create = function() {
   return [1, 0, 0, 1, 0, 0];
 };
 
@@ -37,8 +36,8 @@ ol.transform.create = function() {
  * @param {!ol.Transform} transform Transform.
  * @return {!ol.Transform} Transform.
  */
-ol.transform.reset = function(transform) {
-  return ol.transform.set(transform, 1, 0, 0, 1, 0, 0);
+_ol_transform_.reset = function(transform) {
+  return _ol_transform_.set(transform, 1, 0, 0, 1, 0, 0);
 };
 
 
@@ -49,7 +48,7 @@ ol.transform.reset = function(transform) {
  * @param {!ol.Transform} transform2 Transform parameters of matrix 2.
  * @return {!ol.Transform} transform1 multiplied with transform2.
  */
-ol.transform.multiply = function(transform1, transform2) {
+_ol_transform_.multiply = function(transform1, transform2) {
   var a1 = transform1[0];
   var b1 = transform1[1];
   var c1 = transform1[2];
@@ -84,7 +83,7 @@ ol.transform.multiply = function(transform1, transform2) {
  * @param {number} f The f component of the transform.
  * @return {!ol.Transform} Matrix with transform applied.
  */
-ol.transform.set = function(transform, a, b, c, d, e, f) {
+_ol_transform_.set = function(transform, a, b, c, d, e, f) {
   transform[0] = a;
   transform[1] = b;
   transform[2] = c;
@@ -101,7 +100,7 @@ ol.transform.set = function(transform, a, b, c, d, e, f) {
  * @param {!ol.Transform} transform2 Matrix to set transform from.
  * @return {!ol.Transform} transform1 with transform from transform2 applied.
  */
-ol.transform.setFromArray = function(transform1, transform2) {
+_ol_transform_.setFromArray = function(transform1, transform2) {
   transform1[0] = transform2[0];
   transform1[1] = transform2[1];
   transform1[2] = transform2[2];
@@ -121,7 +120,7 @@ ol.transform.setFromArray = function(transform1, transform2) {
  * @return {ol.Coordinate|ol.Pixel} return coordinate so that operations can be
  *     chained together.
  */
-ol.transform.apply = function(transform, coordinate) {
+_ol_transform_.apply = function(transform, coordinate) {
   var x = coordinate[0], y = coordinate[1];
   coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
   coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
@@ -135,11 +134,11 @@ ol.transform.apply = function(transform, coordinate) {
  * @param {number} angle Angle in radians.
  * @return {!ol.Transform} The rotated transform.
  */
-ol.transform.rotate = function(transform, angle) {
+_ol_transform_.rotate = function(transform, angle) {
   var cos = Math.cos(angle);
   var sin = Math.sin(angle);
-  return ol.transform.multiply(transform,
-      ol.transform.set(ol.transform.tmp_, cos, sin, -sin, cos, 0, 0));
+  return _ol_transform_.multiply(transform,
+      _ol_transform_.set(_ol_transform_.tmp_, cos, sin, -sin, cos, 0, 0));
 };
 
 
@@ -150,9 +149,9 @@ ol.transform.rotate = function(transform, angle) {
  * @param {number} y Scale factor y.
  * @return {!ol.Transform} The scaled transform.
  */
-ol.transform.scale = function(transform, x, y) {
-  return ol.transform.multiply(transform,
-      ol.transform.set(ol.transform.tmp_, x, 0, 0, y, 0, 0));
+_ol_transform_.scale = function(transform, x, y) {
+  return _ol_transform_.multiply(transform,
+      _ol_transform_.set(_ol_transform_.tmp_, x, 0, 0, y, 0, 0));
 };
 
 
@@ -163,9 +162,9 @@ ol.transform.scale = function(transform, x, y) {
  * @param {number} dy Translation y.
  * @return {!ol.Transform} The translated transform.
  */
-ol.transform.translate = function(transform, dx, dy) {
-  return ol.transform.multiply(transform,
-      ol.transform.set(ol.transform.tmp_, 1, 0, 0, 1, dx, dy));
+_ol_transform_.translate = function(transform, dx, dy) {
+  return _ol_transform_.multiply(transform,
+      _ol_transform_.set(_ol_transform_.tmp_, 1, 0, 0, 1, dx, dy));
 };
 
 
@@ -182,7 +181,7 @@ ol.transform.translate = function(transform, dx, dy) {
  * @param {number} dy2 Final translation y.
  * @return {!ol.Transform} The composite transform.
  */
-ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
+_ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
   var sin = Math.sin(angle);
   var cos = Math.cos(angle);
   transform[0] = sx * cos;
@@ -200,9 +199,9 @@ ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
  * @param {!ol.Transform} transform Transform.
  * @return {!ol.Transform} Inverse of the transform.
  */
-ol.transform.invert = function(transform) {
-  var det = ol.transform.determinant(transform);
-  ol.asserts.assert(det !== 0, 32); // Transformation matrix cannot be inverted
+_ol_transform_.invert = function(transform) {
+  var det = _ol_transform_.determinant(transform);
+  _ol_asserts_.assert(det !== 0, 32); // Transformation matrix cannot be inverted
 
   var a = transform[0];
   var b = transform[1];
@@ -227,6 +226,7 @@ ol.transform.invert = function(transform) {
  * @param {!ol.Transform} mat Matrix.
  * @return {number} Determinant.
  */
-ol.transform.determinant = function(mat) {
+_ol_transform_.determinant = function(mat) {
   return mat[0] * mat[3] - mat[1] * mat[2];
 };
+export default _ol_transform_;

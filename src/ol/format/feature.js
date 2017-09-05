@@ -1,9 +1,6 @@
-goog.provide('ol.format.Feature');
-
-goog.require('ol.geom.Geometry');
-goog.require('ol.obj');
-goog.require('ol.proj');
-
+import _ol_geom_Geometry_ from '../geom/geometry';
+import _ol_obj_ from '../obj';
+import _ol_proj_ from '../proj';
 
 /**
  * @classdesc
@@ -18,7 +15,7 @@ goog.require('ol.proj');
  * @abstract
  * @api
  */
-ol.format.Feature = function() {
+var _ol_format_Feature_ = function() {
 
   /**
    * @protected
@@ -42,7 +39,7 @@ ol.format.Feature = function() {
  * @return {olx.format.ReadOptions|undefined} Options.
  * @protected
  */
-ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
+_ol_format_Feature_.prototype.getReadOptions = function(source, opt_options) {
   var options;
   if (opt_options) {
     options = {
@@ -64,8 +61,8 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
  * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
  *     Updated options.
  */
-ol.format.Feature.prototype.adaptOptions = function(options) {
-  return ol.obj.assign({
+_ol_format_Feature_.prototype.adaptOptions = function(options) {
+  return _ol_obj_.assign({
     dataProjection: this.defaultDataProjection,
     featureProjection: this.defaultFeatureProjection
   }, options);
@@ -76,7 +73,7 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
  * Get the extent from the source of the last {@link readFeatures} call.
  * @return {ol.Extent} Tile extent.
  */
-ol.format.Feature.prototype.getLastExtent = function() {
+_ol_format_Feature_.prototype.getLastExtent = function() {
   return null;
 };
 
@@ -85,7 +82,7 @@ ol.format.Feature.prototype.getLastExtent = function() {
  * @abstract
  * @return {ol.format.FormatType} Format.
  */
-ol.format.Feature.prototype.getType = function() {};
+_ol_format_Feature_.prototype.getType = function() {};
 
 
 /**
@@ -96,7 +93,7 @@ ol.format.Feature.prototype.getType = function() {};
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
-ol.format.Feature.prototype.readFeature = function(source, opt_options) {};
+_ol_format_Feature_.prototype.readFeature = function(source, opt_options) {};
 
 
 /**
@@ -107,7 +104,7 @@ ol.format.Feature.prototype.readFeature = function(source, opt_options) {};
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
-ol.format.Feature.prototype.readFeatures = function(source, opt_options) {};
+_ol_format_Feature_.prototype.readFeatures = function(source, opt_options) {};
 
 
 /**
@@ -118,7 +115,7 @@ ol.format.Feature.prototype.readFeatures = function(source, opt_options) {};
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.Feature.prototype.readGeometry = function(source, opt_options) {};
+_ol_format_Feature_.prototype.readGeometry = function(source, opt_options) {};
 
 
 /**
@@ -128,7 +125,7 @@ ol.format.Feature.prototype.readGeometry = function(source, opt_options) {};
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.Feature.prototype.readProjection = function(source) {};
+_ol_format_Feature_.prototype.readProjection = function(source) {};
 
 
 /**
@@ -139,7 +136,7 @@ ol.format.Feature.prototype.readProjection = function(source) {};
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-ol.format.Feature.prototype.writeFeature = function(feature, opt_options) {};
+_ol_format_Feature_.prototype.writeFeature = function(feature, opt_options) {};
 
 
 /**
@@ -150,7 +147,7 @@ ol.format.Feature.prototype.writeFeature = function(feature, opt_options) {};
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-ol.format.Feature.prototype.writeFeatures = function(features, opt_options) {};
+_ol_format_Feature_.prototype.writeFeatures = function(features, opt_options) {};
 
 
 /**
@@ -161,7 +158,7 @@ ol.format.Feature.prototype.writeFeatures = function(features, opt_options) {};
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-ol.format.Feature.prototype.writeGeometry = function(geometry, opt_options) {};
+_ol_format_Feature_.prototype.writeGeometry = function(geometry, opt_options) {};
 
 
 /**
@@ -172,26 +169,26 @@ ol.format.Feature.prototype.writeGeometry = function(geometry, opt_options) {};
  * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
  * @protected
  */
-ol.format.Feature.transformWithOptions = function(
+_ol_format_Feature_.transformWithOptions = function(
     geometry, write, opt_options) {
   var featureProjection = opt_options ?
-    ol.proj.get(opt_options.featureProjection) : null;
+    _ol_proj_.get(opt_options.featureProjection) : null;
   var dataProjection = opt_options ?
-    ol.proj.get(opt_options.dataProjection) : null;
+    _ol_proj_.get(opt_options.dataProjection) : null;
   /**
    * @type {ol.geom.Geometry|ol.Extent}
    */
   var transformed;
   if (featureProjection && dataProjection &&
-      !ol.proj.equivalent(featureProjection, dataProjection)) {
-    if (geometry instanceof ol.geom.Geometry) {
+      !_ol_proj_.equivalent(featureProjection, dataProjection)) {
+    if (geometry instanceof _ol_geom_Geometry_) {
       transformed = (write ? geometry.clone() : geometry).transform(
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);
     } else {
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
-      transformed = ol.proj.transformExtent(
+      transformed = _ol_proj_.transformExtent(
           geometry,
           dataProjection,
           featureProjection);
@@ -219,3 +216,4 @@ ol.format.Feature.transformWithOptions = function(
   }
   return transformed;
 };
+export default _ol_format_Feature_;

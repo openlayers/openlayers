@@ -1,8 +1,7 @@
-goog.provide('ol.render');
-
-goog.require('ol.has');
-goog.require('ol.transform');
-goog.require('ol.render.canvas.Immediate');
+import _ol_has_ from './has';
+import _ol_transform_ from './transform';
+import _ol_render_canvas_Immediate_ from './render/canvas/immediate';
+var _ol_render_ = {};
 
 
 /**
@@ -25,10 +24,10 @@ goog.require('ol.render.canvas.Immediate');
  * @return {ol.render.canvas.Immediate} Canvas Immediate.
  * @api
  */
-ol.render.toContext = function(context, opt_options) {
+_ol_render_.toContext = function(context, opt_options) {
   var canvas = context.canvas;
   var options = opt_options ? opt_options : {};
-  var pixelRatio = options.pixelRatio || ol.has.DEVICE_PIXEL_RATIO;
+  var pixelRatio = options.pixelRatio || _ol_has_.DEVICE_PIXEL_RATIO;
   var size = options.size;
   if (size) {
     canvas.width = size[0] * pixelRatio;
@@ -37,7 +36,8 @@ ol.render.toContext = function(context, opt_options) {
     canvas.style.height = size[1] + 'px';
   }
   var extent = [0, 0, canvas.width, canvas.height];
-  var transform = ol.transform.scale(ol.transform.create(), pixelRatio, pixelRatio);
-  return new ol.render.canvas.Immediate(context, pixelRatio, extent, transform,
+  var transform = _ol_transform_.scale(_ol_transform_.create(), pixelRatio, pixelRatio);
+  return new _ol_render_canvas_Immediate_(context, pixelRatio, extent, transform,
       0);
 };
+export default _ol_render_;

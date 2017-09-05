@@ -1,18 +1,17 @@
-goog.provide('ol.events');
-
-goog.require('ol.obj');
+import _ol_obj_ from './obj';
+var _ol_events_ = {};
 
 
 /**
  * @param {ol.EventsKey} listenerObj Listener object.
  * @return {ol.EventsListenerFunctionType} Bound listener.
  */
-ol.events.bindListener_ = function(listenerObj) {
+_ol_events_.bindListener_ = function(listenerObj) {
   var boundListener = function(evt) {
     var listener = listenerObj.listener;
     var bindTo = listenerObj.bindTo || listenerObj.target;
     if (listenerObj.callOnce) {
-      ol.events.unlistenByKey(listenerObj);
+      _ol_events_.unlistenByKey(listenerObj);
     }
     return listener.call(bindTo, evt);
   };
@@ -33,7 +32,7 @@ ol.events.bindListener_ = function(listenerObj) {
  * @return {ol.EventsKey|undefined} The matching listener object.
  * @private
  */
-ol.events.findListener_ = function(listeners, listener, opt_this,
+_ol_events_.findListener_ = function(listeners, listener, opt_this,
     opt_setDeleteIndex) {
   var listenerObj;
   for (var i = 0, ii = listeners.length; i < ii; ++i) {
@@ -55,7 +54,7 @@ ol.events.findListener_ = function(listeners, listener, opt_this,
  * @param {string} type Type.
  * @return {Array.<ol.EventsKey>|undefined} Listeners.
  */
-ol.events.getListeners = function(target, type) {
+_ol_events_.getListeners = function(target, type) {
   var listenerMap = target.ol_lm;
   return listenerMap ? listenerMap[type] : undefined;
 };
@@ -69,7 +68,7 @@ ol.events.getListeners = function(target, type) {
  *     listeners by event type.
  * @private
  */
-ol.events.getListenerMap_ = function(target) {
+_ol_events_.getListenerMap_ = function(target) {
   var listenerMap = target.ol_lm;
   if (!listenerMap) {
     listenerMap = target.ol_lm = {};
@@ -86,12 +85,12 @@ ol.events.getListenerMap_ = function(target) {
  * @param {string} type Type.
  * @private
  */
-ol.events.removeListeners_ = function(target, type) {
-  var listeners = ol.events.getListeners(target, type);
+_ol_events_.removeListeners_ = function(target, type) {
+  var listeners = _ol_events_.getListeners(target, type);
   if (listeners) {
     for (var i = 0, ii = listeners.length; i < ii; ++i) {
       target.removeEventListener(type, listeners[i].boundListener);
-      ol.obj.clear(listeners[i]);
+      _ol_obj_.clear(listeners[i]);
     }
     listeners.length = 0;
     var listenerMap = target.ol_lm;
@@ -120,13 +119,13 @@ ol.events.removeListeners_ = function(target, type) {
  * @param {boolean=} opt_once If true, add the listener as one-off listener.
  * @return {ol.EventsKey} Unique key for the listener.
  */
-ol.events.listen = function(target, type, listener, opt_this, opt_once) {
-  var listenerMap = ol.events.getListenerMap_(target);
+_ol_events_.listen = function(target, type, listener, opt_this, opt_once) {
+  var listenerMap = _ol_events_.getListenerMap_(target);
   var listeners = listenerMap[type];
   if (!listeners) {
     listeners = listenerMap[type] = [];
   }
-  var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
+  var listenerObj = _ol_events_.findListener_(listeners, listener, opt_this,
       false);
   if (listenerObj) {
     if (!opt_once) {
@@ -141,7 +140,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
       target: target,
       type: type
     });
-    target.addEventListener(type, ol.events.bindListener_(listenerObj));
+    target.addEventListener(type, _ol_events_.bindListener_(listenerObj));
     listeners.push(listenerObj);
   }
 
@@ -169,8 +168,8 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
  *     listener. Default is the `target`.
  * @return {ol.EventsKey} Key for unlistenByKey.
  */
-ol.events.listenOnce = function(target, type, listener, opt_this) {
-  return ol.events.listen(target, type, listener, opt_this, true);
+_ol_events_.listenOnce = function(target, type, listener, opt_this) {
+  return _ol_events_.listen(target, type, listener, opt_this, true);
 };
 
 
@@ -187,13 +186,13 @@ ol.events.listenOnce = function(target, type, listener, opt_this) {
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  */
-ol.events.unlisten = function(target, type, listener, opt_this) {
-  var listeners = ol.events.getListeners(target, type);
+_ol_events_.unlisten = function(target, type, listener, opt_this) {
+  var listeners = _ol_events_.getListeners(target, type);
   if (listeners) {
-    var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
+    var listenerObj = _ol_events_.findListener_(listeners, listener, opt_this,
         true);
     if (listenerObj) {
-      ol.events.unlistenByKey(listenerObj);
+      _ol_events_.unlistenByKey(listenerObj);
     }
   }
 };
@@ -208,20 +207,20 @@ ol.events.unlisten = function(target, type, listener, opt_this) {
  *
  * @param {ol.EventsKey} key The key.
  */
-ol.events.unlistenByKey = function(key) {
+_ol_events_.unlistenByKey = function(key) {
   if (key && key.target) {
     key.target.removeEventListener(key.type, key.boundListener);
-    var listeners = ol.events.getListeners(key.target, key.type);
+    var listeners = _ol_events_.getListeners(key.target, key.type);
     if (listeners) {
       var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
       if (i !== -1) {
         listeners.splice(i, 1);
       }
       if (listeners.length === 0) {
-        ol.events.removeListeners_(key.target, key.type);
+        _ol_events_.removeListeners_(key.target, key.type);
       }
     }
-    ol.obj.clear(key);
+    _ol_obj_.clear(key);
   }
 };
 
@@ -232,9 +231,10 @@ ol.events.unlistenByKey = function(key) {
  *
  * @param {ol.EventTargetLike} target Target.
  */
-ol.events.unlistenAll = function(target) {
-  var listenerMap = ol.events.getListenerMap_(target);
+_ol_events_.unlistenAll = function(target) {
+  var listenerMap = _ol_events_.getListenerMap_(target);
   for (var type in listenerMap) {
-    ol.events.removeListeners_(target, type);
+    _ol_events_.removeListeners_(target, type);
   }
 };
+export default _ol_events_;

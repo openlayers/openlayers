@@ -1,7 +1,7 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.XYZ');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_source_XYZ_ from '../src/ol/source/xyz';
 
 var appId = 'a2qhegvZZFIuJDkkqjhQ';
 var appCode = 'lPJ3iaFLJDhD8fIAyU582A';
@@ -56,10 +56,10 @@ var layers = [];
 var i, ii;
 for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   var layerDesc = hereLayers[i];
-  layers.push(new ol.layer.Tile({
+  layers.push(new _ol_layer_Tile_({
     visible: false,
     preload: Infinity,
-    source: new ol.source.XYZ({
+    source: new _ol_source_XYZ_({
       url: createUrl(urlTpl, layerDesc),
       attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
         '<a href="http://developer.here.com">HERE</a>'
@@ -67,13 +67,13 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   }));
 }
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: layers,
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [921371.9389, 6358337.7609],
     zoom: 10
   })

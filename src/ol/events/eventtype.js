@@ -1,10 +1,8 @@
-goog.provide('ol.events.EventType');
-
 /**
  * @enum {string}
  * @const
  */
-ol.events.EventType = {
+var _ol_events_EventType_ = {
   /**
    * Generic change event. Triggered when the revision counter is increased.
    * @event ol.events.Event#change
@@ -33,3 +31,5 @@ ol.events.EventType = {
   TOUCHEND: 'touchend',
   WHEEL: 'wheel'
 };
+
+export default _ol_events_EventType_;

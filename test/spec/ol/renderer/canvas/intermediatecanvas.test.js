@@ -1,9 +1,9 @@
 
 
-goog.require('ol.transform');
-goog.require('ol.layer.Image');
-goog.require('ol.renderer.Map');
-goog.require('ol.renderer.canvas.IntermediateCanvas');
+import _ol_transform_ from '../../../../../src/ol/transform';
+import _ol_layer_Image_ from '../../../../../src/ol/layer/image';
+import _ol_renderer_Map_ from '../../../../../src/ol/renderer/map';
+import _ol_renderer_canvas_IntermediateCanvas_ from '../../../../../src/ol/renderer/canvas/intermediatecanvas';
 
 
 describe('ol.renderer.canvas.IntermediateCanvas', function() {
@@ -11,10 +11,10 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
   describe('#composeFrame()', function() {
     var renderer, frameState, layerState, context;
     beforeEach(function() {
-      var layer = new ol.layer.Image({
+      var layer = new _ol_layer_Image_({
         extent: [1, 2, 3, 4]
       });
-      renderer = new ol.renderer.canvas.IntermediateCanvas(layer);
+      renderer = new _ol_renderer_canvas_IntermediateCanvas_(layer);
       var image = new Image();
       image.width = 3;
       image.height = 3;
@@ -29,13 +29,13 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
         },
         size: [10, 10],
         pixelRatio: 1,
-        coordinateToPixelTransform: ol.transform.create(),
-        pixelToCoordinateTransform: ol.transform.create()
+        coordinateToPixelTransform: _ol_transform_.create(),
+        pixelToCoordinateTransform: _ol_transform_.create()
       };
       renderer.getImageTransform = function() {
-        return ol.transform.create();
+        return _ol_transform_.create();
       };
-      ol.renderer.Map.prototype.calculateMatrices2D(frameState);
+      _ol_renderer_Map_.prototype.calculateMatrices2D(frameState);
       layerState = layer.getLayerState();
       context = {
         save: sinon.spy(),

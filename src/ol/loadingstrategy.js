@@ -1,4 +1,4 @@
-goog.provide('ol.loadingstrategy');
+var _ol_loadingstrategy_ = {};
 
 
 /**
@@ -8,7 +8,7 @@ goog.provide('ol.loadingstrategy');
  * @return {Array.<ol.Extent>} Extents.
  * @api
  */
-ol.loadingstrategy.all = function(extent, resolution) {
+_ol_loadingstrategy_.all = function(extent, resolution) {
   return [[-Infinity, -Infinity, Infinity, Infinity]];
 };
 
@@ -21,7 +21,7 @@ ol.loadingstrategy.all = function(extent, resolution) {
  * @return {Array.<ol.Extent>} Extents.
  * @api
  */
-ol.loadingstrategy.bbox = function(extent, resolution) {
+_ol_loadingstrategy_.bbox = function(extent, resolution) {
   return [extent];
 };
 
@@ -32,7 +32,7 @@ ol.loadingstrategy.bbox = function(extent, resolution) {
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
  * @api
  */
-ol.loadingstrategy.tile = function(tileGrid) {
+_ol_loadingstrategy_.tile = function(tileGrid) {
   return (
   /**
        * @param {ol.Extent} extent Extent.
@@ -56,3 +56,4 @@ ol.loadingstrategy.tile = function(tileGrid) {
       return extents;
     });
 };
+export default _ol_loadingstrategy_;

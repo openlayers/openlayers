@@ -1,18 +1,15 @@
-goog.provide('ol.render.webgl.CircleReplay');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.color');
-goog.require('ol.extent');
-goog.require('ol.obj');
-goog.require('ol.geom.flat.transform');
-goog.require('ol.render.webgl.circlereplay.defaultshader');
-goog.require('ol.render.webgl.circlereplay.defaultshader.Locations');
-goog.require('ol.render.webgl.Replay');
-goog.require('ol.render.webgl');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Buffer');
-
+import _ol_ from '../../index';
+import _ol_array_ from '../../array';
+import _ol_color_ from '../../color';
+import _ol_extent_ from '../../extent';
+import _ol_obj_ from '../../obj';
+import _ol_geom_flat_transform_ from '../../geom/flat/transform';
+import _ol_render_webgl_circlereplay_defaultshader_ from '../webgl/circlereplay/defaultshader';
+import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../webgl/circlereplay/defaultshader/locations';
+import _ol_render_webgl_Replay_ from '../webgl/replay';
+import _ol_render_webgl_ from '../webgl';
+import _ol_webgl_ from '../../webgl';
+import _ol_webgl_Buffer_ from '../../webgl/buffer';
 
 /**
  * @constructor
@@ -21,8 +18,8 @@ goog.require('ol.webgl.Buffer');
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.CircleReplay = function(tolerance, maxExtent) {
-  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+var _ol_render_webgl_CircleReplay_ = function(tolerance, maxExtent) {
+  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -67,7 +64,8 @@ ol.render.webgl.CircleReplay = function(tolerance, maxExtent) {
   };
 
 };
-ol.inherits(ol.render.webgl.CircleReplay, ol.render.webgl.Replay);
+
+_ol_.inherits(_ol_render_webgl_CircleReplay_, _ol_render_webgl_Replay_);
 
 
 /**
@@ -77,7 +75,7 @@ ol.inherits(ol.render.webgl.CircleReplay, ol.render.webgl.Replay);
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-ol.render.webgl.CircleReplay.prototype.drawCoordinates_ = function(
+_ol_render_webgl_CircleReplay_.prototype.drawCoordinates_ = function(
     flatCoordinates, offset, end, stride) {
   var numVertices = this.vertices.length;
   var numIndices = this.indices.length;
@@ -120,7 +118,7 @@ ol.render.webgl.CircleReplay.prototype.drawCoordinates_ = function(
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.drawCircle = function(circleGeometry, feature) {
+_ol_render_webgl_CircleReplay_.prototype.drawCircle = function(circleGeometry, feature) {
   var radius = circleGeometry.getRadius();
   var stride = circleGeometry.getStride();
   if (radius) {
@@ -133,7 +131,7 @@ ol.render.webgl.CircleReplay.prototype.drawCircle = function(circleGeometry, fea
 
     this.radius_ = radius;
     var flatCoordinates = circleGeometry.getFlatCoordinates();
-    flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, 2,
+    flatCoordinates = _ol_geom_flat_transform_.translate(flatCoordinates, 0, 2,
         stride, -this.origin[0], -this.origin[1]);
     this.drawCoordinates_(flatCoordinates, 0, 2, stride);
   } else {
@@ -154,12 +152,12 @@ ol.render.webgl.CircleReplay.prototype.drawCircle = function(circleGeometry, fea
 /**
  * @inheritDoc
  **/
-ol.render.webgl.CircleReplay.prototype.finish = function(context) {
+_ol_render_webgl_CircleReplay_.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
 
   this.startIndices.push(this.indices.length);
 
@@ -176,7 +174,7 @@ ol.render.webgl.CircleReplay.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction = function(context) {
+_ol_render_webgl_CircleReplay_.prototype.getDeleteResourcesFunction = function(context) {
   // We only delete our stuff here. The shaders and the program may
   // be used by other CircleReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
@@ -193,17 +191,17 @@ ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction = function(con
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+_ol_render_webgl_CircleReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
   var fragmentShader, vertexShader;
-  fragmentShader = ol.render.webgl.circlereplay.defaultshader.fragment;
-  vertexShader = ol.render.webgl.circlereplay.defaultshader.vertex;
+  fragmentShader = _ol_render_webgl_circlereplay_defaultshader_.fragment;
+  vertexShader = _ol_render_webgl_circlereplay_defaultshader_.vertex;
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
-    locations = new ol.render.webgl.circlereplay.defaultshader.Locations(gl, program);
+    locations = new _ol_render_webgl_circlereplay_defaultshader_Locations_(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;
@@ -213,15 +211,15 @@ ol.render.webgl.CircleReplay.prototype.setUpProgram = function(gl, context, size
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
       false, 16, 0);
 
   gl.enableVertexAttribArray(locations.a_instruction);
-  gl.vertexAttribPointer(locations.a_instruction, 1, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_instruction, 1, _ol_webgl_.FLOAT,
       false, 16, 8);
 
   gl.enableVertexAttribArray(locations.a_radius);
-  gl.vertexAttribPointer(locations.a_radius, 1, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_radius, 1, _ol_webgl_.FLOAT,
       false, 16, 12);
 
   // Enable renderer specific uniforms.
@@ -235,7 +233,7 @@ ol.render.webgl.CircleReplay.prototype.setUpProgram = function(gl, context, size
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.shutDownProgram = function(gl, locations) {
+_ol_render_webgl_CircleReplay_.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_instruction);
   gl.disableVertexAttribArray(locations.a_radius);
@@ -245,8 +243,8 @@ ol.render.webgl.CircleReplay.prototype.shutDownProgram = function(gl, locations)
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+_ol_render_webgl_CircleReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     //Draw by style groups to minimize drawElements() calls.
@@ -268,7 +266,7 @@ ol.render.webgl.CircleReplay.prototype.drawReplay = function(gl, context, skippe
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
+_ol_render_webgl_CircleReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
@@ -284,11 +282,11 @@ ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function
         this.startIndices[featureIndex] >= groupStart) {
       start = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = ol.getUid(feature).toString();
+      featureUid = _ol_.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
-          (opt_hitExtent === undefined || ol.extent.intersects(
+          (opt_hitExtent === undefined || _ol_extent_.intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -315,7 +313,7 @@ ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
-ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+_ol_render_webgl_CircleReplay_.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -330,7 +328,7 @@ ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, contex
         this.startIndices[featureIndex] >= groupStart) {
       featureStart = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = ol.getUid(feature).toString();
+      featureUid = _ol_.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid]) {
         if (start !== end) {
@@ -354,7 +352,7 @@ ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, contex
  * @param {WebGLRenderingContext} gl gl.
  * @param {Array.<number>} color Color.
  */
-ol.render.webgl.CircleReplay.prototype.setFillStyle_ = function(gl, color) {
+_ol_render_webgl_CircleReplay_.prototype.setFillStyle_ = function(gl, color) {
   gl.uniform4fv(this.defaultLocations_.u_fillColor, color);
 };
 
@@ -365,7 +363,7 @@ ol.render.webgl.CircleReplay.prototype.setFillStyle_ = function(gl, color) {
  * @param {Array.<number>} color Color.
  * @param {number} lineWidth Line width.
  */
-ol.render.webgl.CircleReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth) {
+_ol_render_webgl_CircleReplay_.prototype.setStrokeStyle_ = function(gl, color, lineWidth) {
   gl.uniform4fv(this.defaultLocations_.u_strokeColor, color);
   gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
 };
@@ -374,27 +372,27 @@ ol.render.webgl.CircleReplay.prototype.setStrokeStyle_ = function(gl, color, lin
 /**
  * @inheritDoc
  */
-ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+_ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   var strokeStyleColor, strokeStyleWidth;
   if (strokeStyle) {
     var strokeStyleLineDash = strokeStyle.getLineDash();
     this.state_.lineDash = strokeStyleLineDash ?
-      strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+      strokeStyleLineDash : _ol_render_webgl_.defaultLineDash;
     var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-      strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+      strokeStyleLineDashOffset : _ol_render_webgl_.defaultLineDashOffset;
     strokeStyleColor = strokeStyle.getColor();
     if (!(strokeStyleColor instanceof CanvasGradient) &&
         !(strokeStyleColor instanceof CanvasPattern)) {
-      strokeStyleColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
+      strokeStyleColor = _ol_color_.asArray(strokeStyleColor).map(function(c, i) {
         return i != 3 ? c / 255 : c;
-      }) || ol.render.webgl.defaultStrokeStyle;
+      }) || _ol_render_webgl_.defaultStrokeStyle;
     } else {
-      strokeStyleColor = ol.render.webgl.defaultStrokeStyle;
+      strokeStyleColor = _ol_render_webgl_.defaultStrokeStyle;
     }
     strokeStyleWidth = strokeStyle.getWidth();
     strokeStyleWidth = strokeStyleWidth !== undefined ?
-      strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+      strokeStyleWidth : _ol_render_webgl_.defaultLineWidth;
   } else {
     strokeStyleColor = [0, 0, 0, 0];
     strokeStyleWidth = 0;
@@ -402,14 +400,14 @@ ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle = function(fillStyle, 
   var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
   if (!(fillStyleColor instanceof CanvasGradient) &&
       !(fillStyleColor instanceof CanvasPattern)) {
-    fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
+    fillStyleColor = _ol_color_.asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
-    }) || ol.render.webgl.defaultFillStyle;
+    }) || _ol_render_webgl_.defaultFillStyle;
   } else {
-    fillStyleColor = ol.render.webgl.defaultFillStyle;
+    fillStyleColor = _ol_render_webgl_.defaultFillStyle;
   }
-  if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
-      !this.state_.fillColor || !ol.array.equals(this.state_.fillColor, fillStyleColor) ||
+  if (!this.state_.strokeColor || !_ol_array_.equals(this.state_.strokeColor, strokeStyleColor) ||
+      !this.state_.fillColor || !_ol_array_.equals(this.state_.fillColor, fillStyleColor) ||
       this.state_.lineWidth !== strokeStyleWidth) {
     this.state_.changed = true;
     this.state_.fillColor = fillStyleColor;
@@ -418,3 +416,4 @@ ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle = function(fillStyle, 
     this.styles_.push([fillStyleColor, strokeStyleColor, strokeStyleWidth]);
   }
 };
+export default _ol_render_webgl_CircleReplay_;

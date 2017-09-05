@@ -1,28 +1,28 @@
-goog.require('ol.Geolocation');
-goog.require('ol.Map');
-goog.require('ol.Overlay');
-goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.geom.LineString');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.OSM');
+import _ol_Geolocation_ from '../src/ol/geolocation';
+import _ol_Map_ from '../src/ol/map';
+import _ol_Overlay_ from '../src/ol/overlay';
+import _ol_View_ from '../src/ol/view';
+import _ol_control_ from '../src/ol/control';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_OSM_ from '../src/ol/source/osm';
 
 // creating the view
-var view = new ol.View({
-  center: ol.proj.fromLonLat([5.8713, 45.6452]),
+var view = new _ol_View_({
+  center: _ol_proj_.fromLonLat([5.8713, 45.6452]),
   zoom: 19
 });
 
 // creating the map
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     })
   ],
   target: 'map',
-  controls: ol.control.defaults({
+  controls: _ol_control_.defaults({
     attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
       collapsible: false
     })
@@ -32,7 +32,7 @@ var map = new ol.Map({
 
 // Geolocation marker
 var markerEl = document.getElementById('geolocation_marker');
-var marker = new ol.Overlay({
+var marker = new _ol_Overlay_({
   positioning: 'center-center',
   element: markerEl,
   stopEvent: false
@@ -42,11 +42,11 @@ map.addOverlay(marker);
 // LineString to store the different geolocation positions. This LineString
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
-var positions = new ol.geom.LineString([],
+var positions = new _ol_geom_LineString_([],
     /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
 
 // Geolocation Control
-var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
+var geolocation = new _ol_Geolocation_(/** @type {olx.GeolocationOptions} */ ({
   projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
@@ -215,7 +215,7 @@ function simulatePositionChange(position) {
   geolocation.set('accuracy', coords.accuracy);
   geolocation.set('heading', degToRad(coords.heading));
   var position_ = [coords.longitude, coords.latitude];
-  var projectedPosition = ol.proj.transform(position_, 'EPSG:4326',
+  var projectedPosition = _ol_proj_.transform(position_, 'EPSG:4326',
       'EPSG:3857');
   geolocation.set('position', projectedPosition);
   geolocation.set('speed', coords.speed);

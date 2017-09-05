@@ -1,6 +1,6 @@
 
 
-goog.require('ol.geom.flat.contains');
+import _ol_geom_flat_contains_ from '../../../../../src/ol/geom/flat/contains';
 
 
 describe('ol.geom.flat.contains', function() {
@@ -13,27 +13,27 @@ describe('ol.geom.flat.contains', function() {
     describe('ol.geom.flat.contains.linearRingContainsXY', function() {
 
       it('returns true for point inside a simple polygon', function() {
-        expect(ol.geom.flat.contains.linearRingContainsXY(
+        expect(_ol_geom_flat_contains_.linearRingContainsXY(
             flatCoordinatesSimple, 0, flatCoordinatesSimple.length, 2, 0.5, 0.5)).to.be(true);
       });
 
       it('returns false for point outside a simple polygon', function() {
-        expect(ol.geom.flat.contains.linearRingContainsXY(
+        expect(_ol_geom_flat_contains_.linearRingContainsXY(
             flatCoordinatesSimple, 0, flatCoordinatesSimple.length, 2, 1.5, 1.5)).to.be(false);
       });
 
       it('returns true for point inside a non-simple polygon', function() {
-        expect(ol.geom.flat.contains.linearRingContainsXY(
+        expect(_ol_geom_flat_contains_.linearRingContainsXY(
             flatCoordinatesNonSimple, 0, flatCoordinatesNonSimple.length, 2, 1, 1)).to.be(true);
       });
 
       it('returns true for point inside an overlap of a non-simple polygon', function() {
-        expect(ol.geom.flat.contains.linearRingContainsXY(
+        expect(_ol_geom_flat_contains_.linearRingContainsXY(
             flatCoordinatesNonSimple, 0, flatCoordinatesNonSimple.length, 2, 1.5, 2.5)).to.be(true);
       });
 
       it('returns false for a point inside a hole of a non-simple polygon', function() {
-        expect(ol.geom.flat.contains.linearRingContainsXY(
+        expect(_ol_geom_flat_contains_.linearRingContainsXY(
             flatCoordinatesNonSimple, 0, flatCoordinatesNonSimple.length, 2, 2.5, 1.5)).to.be(false);
       });
 

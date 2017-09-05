@@ -1,14 +1,13 @@
-goog.provide('ol.ResolutionConstraint');
-
-goog.require('ol.array');
-goog.require('ol.math');
+import _ol_array_ from './array';
+import _ol_math_ from './math';
+var _ol_ResolutionConstraint_ = {};
 
 
 /**
  * @param {Array.<number>} resolutions Resolutions.
  * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ol.ResolutionConstraint.createSnapToResolutions = function(resolutions) {
+_ol_ResolutionConstraint_.createSnapToResolutions = function(resolutions) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -19,8 +18,8 @@ ol.ResolutionConstraint.createSnapToResolutions = function(resolutions) {
     function(resolution, delta, direction) {
       if (resolution !== undefined) {
         var z =
-              ol.array.linearFindNearest(resolutions, resolution, direction);
-        z = ol.math.clamp(z + delta, 0, resolutions.length - 1);
+              _ol_array_.linearFindNearest(resolutions, resolution, direction);
+        z = _ol_math_.clamp(z + delta, 0, resolutions.length - 1);
         var index = Math.floor(z);
         if (z != index && index < resolutions.length - 1) {
           var power = resolutions[index] / resolutions[index + 1];
@@ -31,7 +30,8 @@ ol.ResolutionConstraint.createSnapToResolutions = function(resolutions) {
       } else {
         return undefined;
       }
-    });
+    }
+  );
 };
 
 
@@ -41,7 +41,7 @@ ol.ResolutionConstraint.createSnapToResolutions = function(resolutions) {
  * @param {number=} opt_maxLevel Maximum level.
  * @return {ol.ResolutionConstraintType} Zoom function.
  */
-ol.ResolutionConstraint.createSnapToPower = function(power, maxResolution, opt_maxLevel) {
+_ol_ResolutionConstraint_.createSnapToPower = function(power, maxResolution, opt_maxLevel) {
   return (
     /**
      * @param {number|undefined} resolution Resolution.
@@ -64,3 +64,4 @@ ol.ResolutionConstraint.createSnapToPower = function(power, maxResolution, opt_m
       }
     });
 };
+export default _ol_ResolutionConstraint_;

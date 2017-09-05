@@ -1,15 +1,12 @@
-goog.provide('ol.renderer.webgl.VectorLayer');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.ViewHint');
-goog.require('ol.extent');
-goog.require('ol.render.webgl.ReplayGroup');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.vector');
-goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.transform');
-
+import _ol_ from '../../index';
+import _ol_LayerType_ from '../../layertype';
+import _ol_ViewHint_ from '../../viewhint';
+import _ol_extent_ from '../../extent';
+import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/replaygroup';
+import _ol_renderer_Type_ from '../type';
+import _ol_renderer_vector_ from '../vector';
+import _ol_renderer_webgl_Layer_ from '../webgl/layer';
+import _ol_transform_ from '../../transform';
 
 /**
  * @constructor
@@ -18,9 +15,9 @@ goog.require('ol.transform');
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  * @api
  */
-ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
+var _ol_renderer_webgl_VectorLayer_ = function(mapRenderer, vectorLayer) {
 
-  ol.renderer.webgl.Layer.call(this, mapRenderer, vectorLayer);
+  _ol_renderer_webgl_Layer_.call(this, mapRenderer, vectorLayer);
 
   /**
    * @private
@@ -44,7 +41,7 @@ ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
    * @private
    * @type {ol.Extent}
    */
-  this.renderedExtent_ = ol.extent.createEmpty();
+  this.renderedExtent_ = _ol_extent_.createEmpty();
 
   /**
    * @private
@@ -66,7 +63,8 @@ ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
   this.layerState_ = null;
 
 };
-ol.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
+
+_ol_.inherits(_ol_renderer_webgl_VectorLayer_, _ol_renderer_webgl_Layer_);
 
 
 /**
@@ -75,8 +73,8 @@ ol.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-ol.renderer.webgl.VectorLayer['handles'] = function(type, layer) {
-  return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.VECTOR;
+_ol_renderer_webgl_VectorLayer_['handles'] = function(type, layer) {
+  return type === _ol_renderer_Type_.WEBGL && layer.getType() === _ol_LayerType_.VECTOR;
 };
 
 
@@ -86,8 +84,8 @@ ol.renderer.webgl.VectorLayer['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.VectorLayer} The layer renderer.
  */
-ol.renderer.webgl.VectorLayer['create'] = function(mapRenderer, layer) {
-  return new ol.renderer.webgl.VectorLayer(
+_ol_renderer_webgl_VectorLayer_['create'] = function(mapRenderer, layer) {
+  return new _ol_renderer_webgl_VectorLayer_(
       /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
       /** @type {ol.layer.Vector} */ (layer)
   );
@@ -97,7 +95,7 @@ ol.renderer.webgl.VectorLayer['create'] = function(mapRenderer, layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.composeFrame = function(frameState, layerState, context) {
+_ol_renderer_webgl_VectorLayer_.prototype.composeFrame = function(frameState, layerState, context) {
   this.layerState_ = layerState;
   var viewState = frameState.viewState;
   var replayGroup = this.replayGroup_;
@@ -120,21 +118,21 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame = function(frameState, laye
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
+_ol_renderer_webgl_VectorLayer_.prototype.disposeInternal = function() {
   var replayGroup = this.replayGroup_;
   if (replayGroup) {
     var context = this.mapRenderer.getContext();
     replayGroup.getDeleteResourcesFunction(context)();
     this.replayGroup_ = null;
   }
-  ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
+  _ol_renderer_webgl_Layer_.prototype.disposeInternal.call(this);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+_ol_renderer_webgl_VectorLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.replayGroup_ || !this.layerState_) {
     return undefined;
   } else {
@@ -153,7 +151,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
          * @return {?} Callback result.
          */
         function(feature) {
-          var key = ol.getUid(feature).toString();
+          var key = _ol_.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback.call(thisArg, feature, layer);
@@ -166,7 +164,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+_ol_renderer_webgl_VectorLayer_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   if (!this.replayGroup_ || !this.layerState_) {
     return false;
   } else {
@@ -184,8 +182,8 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordi
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-  var coordinate = ol.transform.apply(
+_ol_renderer_webgl_VectorLayer_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+  var coordinate = _ol_transform_.apply(
       frameState.pixelToCoordinateTransform, pixel.slice());
   var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 
@@ -202,7 +200,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, fr
  * @param {ol.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
+_ol_renderer_webgl_VectorLayer_.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -210,7 +208,7 @@ ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, layerState, context) {
+_ol_renderer_webgl_VectorLayer_.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
@@ -219,8 +217,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
-  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
+  var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
+  var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
@@ -239,17 +237,17 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
   if (vectorLayerRenderOrder === undefined) {
-    vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
+    vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
   }
 
-  var extent = ol.extent.buffer(frameStateExtent,
+  var extent = _ol_extent_.buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      ol.extent.containsExtent(this.renderedExtent_, extent)) {
+      _ol_extent_.containsExtent(this.renderedExtent_, extent)) {
     return true;
   }
 
@@ -260,8 +258,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
 
   this.dirty_ = false;
 
-  var replayGroup = new ol.render.webgl.ReplayGroup(
-      ol.renderer.vector.getTolerance(resolution, pixelRatio),
+  var replayGroup = new _ol_render_webgl_ReplayGroup_(
+      _ol_renderer_vector_.getTolerance(resolution, pixelRatio),
       extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
@@ -321,23 +319,24 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
+_ol_renderer_webgl_VectorLayer_.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
   if (!styles) {
     return false;
   }
   var loading = false;
   if (Array.isArray(styles)) {
     for (var i = styles.length - 1, ii = 0; i >= ii; --i) {
-      loading = ol.renderer.vector.renderFeature(
+      loading = _ol_renderer_vector_.renderFeature(
           replayGroup, feature, styles[i],
-          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
           this.handleStyleImageChange_, this) || loading;
     }
   } else {
-    loading = ol.renderer.vector.renderFeature(
+    loading = _ol_renderer_vector_.renderFeature(
         replayGroup, feature, styles,
-        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this) || loading;
   }
   return loading;
 };
+export default _ol_renderer_webgl_VectorLayer_;

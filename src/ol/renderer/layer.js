@@ -1,15 +1,12 @@
-goog.provide('ol.renderer.Layer');
-
-goog.require('ol');
-goog.require('ol.ImageState');
-goog.require('ol.Observable');
-goog.require('ol.TileState');
-goog.require('ol.asserts');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.functions');
-goog.require('ol.source.State');
-
+import _ol_ from '../index';
+import _ol_ImageState_ from '../imagestate';
+import _ol_Observable_ from '../observable';
+import _ol_TileState_ from '../tilestate';
+import _ol_asserts_ from '../asserts';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_functions_ from '../functions';
+import _ol_source_State_ from '../source/state';
 
 /**
  * @constructor
@@ -17,9 +14,9 @@ goog.require('ol.source.State');
  * @param {ol.layer.Layer} layer Layer.
  * @struct
  */
-ol.renderer.Layer = function(layer) {
+var _ol_renderer_Layer_ = function(layer) {
 
-  ol.Observable.call(this);
+  _ol_Observable_.call(this);
 
   /**
    * @private
@@ -29,7 +26,8 @@ ol.renderer.Layer = function(layer) {
 
 
 };
-ol.inherits(ol.renderer.Layer, ol.Observable);
+
+_ol_.inherits(_ol_renderer_Layer_, _ol_Observable_);
 
 
 /**
@@ -42,7 +40,7 @@ ol.inherits(ol.renderer.Layer, ol.Observable);
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
+_ol_renderer_Layer_.prototype.forEachFeatureAtCoordinate = _ol_.nullFunction;
 
 
 /**
@@ -50,7 +48,7 @@ ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
  * @param {olx.FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
-ol.renderer.Layer.prototype.hasFeatureAtCoordinate = ol.functions.FALSE;
+_ol_renderer_Layer_.prototype.hasFeatureAtCoordinate = _ol_functions_.FALSE;
 
 
 /**
@@ -64,7 +62,7 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = ol.functions.FALSE;
  *     lookup.
  * @protected
  */
-ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
+_ol_renderer_Layer_.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   return (
     /**
      * @param {number} zoom Zoom level.
@@ -86,7 +84,7 @@ ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, projection
 /**
  * @return {ol.layer.Layer} Layer.
  */
-ol.renderer.Layer.prototype.getLayer = function() {
+_ol_renderer_Layer_.prototype.getLayer = function() {
   return this.layer_;
 };
 
@@ -96,9 +94,9 @@ ol.renderer.Layer.prototype.getLayer = function() {
  * @param {ol.events.Event} event Image change event.
  * @private
  */
-ol.renderer.Layer.prototype.handleImageChange_ = function(event) {
+_ol_renderer_Layer_.prototype.handleImageChange_ = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
-  if (image.getState() === ol.ImageState.LOADED) {
+  if (image.getState() === _ol_ImageState_.LOADED) {
     this.renderIfReadyAndVisible();
   }
 };
@@ -112,27 +110,27 @@ ol.renderer.Layer.prototype.handleImageChange_ = function(event) {
  *     otherwise.
  * @protected
  */
-ol.renderer.Layer.prototype.loadImage = function(image) {
+_ol_renderer_Layer_.prototype.loadImage = function(image) {
   var imageState = image.getState();
-  if (imageState != ol.ImageState.LOADED &&
-      imageState != ol.ImageState.ERROR) {
-    ol.events.listen(image, ol.events.EventType.CHANGE,
+  if (imageState != _ol_ImageState_.LOADED &&
+      imageState != _ol_ImageState_.ERROR) {
+    _ol_events_.listen(image, _ol_events_EventType_.CHANGE,
         this.handleImageChange_, this);
   }
-  if (imageState == ol.ImageState.IDLE) {
+  if (imageState == _ol_ImageState_.IDLE) {
     image.load();
     imageState = image.getState();
   }
-  return imageState == ol.ImageState.LOADED;
+  return imageState == _ol_ImageState_.LOADED;
 };
 
 
 /**
  * @protected
  */
-ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
+_ol_renderer_Layer_.prototype.renderIfReadyAndVisible = function() {
   var layer = this.getLayer();
-  if (layer.getVisible() && layer.getSourceState() == ol.source.State.READY) {
+  if (layer.getVisible() && layer.getSourceState() == _ol_source_State_.READY) {
     this.changed();
   }
 };
@@ -143,7 +141,7 @@ ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
  * @param {ol.source.Tile} tileSource Tile source.
  * @protected
  */
-ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSource) {
+_ol_renderer_Layer_.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     /**
      * @param {ol.source.Tile} tileSource Tile source.
@@ -151,7 +149,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
      * @param {olx.FrameState} frameState Frame state.
      */
     var postRenderFunction = function(tileSource, map, frameState) {
-      var tileSourceKey = ol.getUid(tileSource).toString();
+      var tileSourceKey = _ol_.getUid(tileSource).toString();
       if (tileSourceKey in frameState.usedTiles) {
         tileSource.expireCache(frameState.viewState.projection,
             frameState.usedTiles[tileSourceKey]);
@@ -171,12 +169,12 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
  * @param {Array.<ol.Attribution>} attributions Attributions (source).
  * @protected
  */
-ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attributions) {
+_ol_renderer_Layer_.prototype.updateAttributions = function(attributionsSet, attributions) {
   if (attributions) {
     var attribution, i, ii;
     for (i = 0, ii = attributions.length; i < ii; ++i) {
       attribution = attributions[i];
-      attributionsSet[ol.getUid(attribution).toString()] = attribution;
+      attributionsSet[_ol_.getUid(attribution).toString()] = attribution;
     }
   }
 };
@@ -187,14 +185,14 @@ ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attri
  * @param {ol.source.Source} source Source.
  * @protected
  */
-ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
+_ol_renderer_Layer_.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
   if (logo !== undefined) {
     if (typeof logo === 'string') {
       frameState.logos[logo] = '';
     } else if (logo) {
-      ol.asserts.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      ol.asserts.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
+      _ol_asserts_.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      _ol_asserts_.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       frameState.logos[logo.src] = logo.href;
     }
   }
@@ -208,9 +206,9 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
  * @param {ol.TileRange} tileRange Tile range.
  * @protected
  */
-ol.renderer.Layer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
+_ol_renderer_Layer_.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
-  var tileSourceKey = ol.getUid(tileSource).toString();
+  var tileSourceKey = _ol_.getUid(tileSource).toString();
   var zKey = z.toString();
   if (tileSourceKey in usedTiles) {
     if (zKey in usedTiles[tileSourceKey]) {
@@ -245,10 +243,10 @@ ol.renderer.Layer.prototype.updateUsedTiles = function(usedTiles, tileSource, z,
  * @protected
  * @template T
  */
-ol.renderer.Layer.prototype.manageTilePyramid = function(
+_ol_renderer_Layer_.prototype.manageTilePyramid = function(
     frameState, tileSource, tileGrid, pixelRatio, projection, extent,
     currentZ, preload, opt_tileCallback, opt_this) {
-  var tileSourceKey = ol.getUid(tileSource).toString();
+  var tileSourceKey = _ol_.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
   }
@@ -263,7 +261,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-          if (tile.getState() == ol.TileState.IDLE) {
+          if (tile.getState() == _ol_TileState_.IDLE) {
             wantedTiles[tile.getKey()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {
               tileQueue.enqueue([tile, tileSourceKey,
@@ -280,3 +278,4 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
     }
   }
 };
+export default _ol_renderer_Layer_;

@@ -1,25 +1,25 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.layer.Image');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.ImageStatic');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_extent_ from '../src/ol/extent';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_proj_Projection_ from '../src/ol/proj/projection';
+import _ol_source_ImageStatic_ from '../src/ol/source/imagestatic';
 
 
 // Map views always need a projection.  Here we just want to map image
 // coordinates directly to map coordinates, so we create a projection that uses
 // the image extent in pixels.
 var extent = [0, 0, 1024, 968];
-var projection = new ol.proj.Projection({
+var projection = new _ol_proj_Projection_({
   code: 'xkcd-image',
   units: 'pixels',
   extent: extent
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Image({
-      source: new ol.source.ImageStatic({
+    new _ol_layer_Image_({
+      source: new _ol_source_ImageStatic_({
         attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
         url: 'https://imgs.xkcd.com/comics/online_communities.png',
         projection: projection,
@@ -28,9 +28,9 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     projection: projection,
-    center: ol.extent.getCenter(extent),
+    center: _ol_extent_.getCenter(extent),
     zoom: 2,
     maxZoom: 8
   })

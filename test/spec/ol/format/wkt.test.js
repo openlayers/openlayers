@@ -1,14 +1,14 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.format.WKT');
-goog.require('ol.proj');
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_format_WKT_ from '../../../../src/ol/format/wkt';
+import _ol_proj_ from '../../../../src/ol/proj';
 
 
 describe('ol.format.WKT', function() {
 
-  var format = new ol.format.WKT();
+  var format = new _ol_format_WKT_();
 
   describe('#readProjectionFromText', function() {
     it('returns the default projection', function() {
@@ -26,7 +26,7 @@ describe('ol.format.WKT', function() {
         featureProjection: 'EPSG:3857'
       });
       expect(geom.getCoordinates()).to.eql(
-          ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+          _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });
@@ -34,7 +34,7 @@ describe('ol.format.WKT', function() {
   describe('#writeGeometry()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var geom = new ol.geom.Point([1, 2]).transform('EPSG:4326', 'EPSG:3857');
+      var geom = new _ol_geom_Point_([1, 2]).transform('EPSG:4326', 'EPSG:3857');
       var wkt = format.writeGeometry(geom, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
@@ -56,7 +56,7 @@ describe('ol.format.WKT', function() {
       });
       var geom = feature.getGeometry();
       expect(geom.getCoordinates()).to.eql(
-          ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+          _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });
@@ -64,14 +64,14 @@ describe('ol.format.WKT', function() {
   describe('#writeFeature()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var feature = new ol.Feature(
-          new ol.geom.Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'));
+      var feature = new _ol_Feature_(
+          new _ol_geom_Point_([1, 2]).transform('EPSG:4326', 'EPSG:3857'));
       var wkt = format.writeFeature(feature, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       var gotFeature = format.readFeature(wkt);
-      expect(gotFeature).to.be.a(ol.Feature);
+      expect(gotFeature).to.be.a(_ol_Feature_);
       var got = gotFeature.getGeometry().getCoordinates();
       expect(got[0]).to.roughlyEqual(1, 1e-6);
       expect(got[1]).to.roughlyEqual(2, 1e-6);
@@ -93,9 +93,9 @@ describe('ol.format.WKT', function() {
       expect(point1.getType()).to.eql('Point');
       expect(point2.getType()).to.eql('Point');
       expect(point1.getCoordinates()).to.eql(
-          ol.proj.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+          _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
       expect(point2.getCoordinates()).to.eql(
-          ol.proj.transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
+          _ol_proj_.transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
     });
   });
 
@@ -103,10 +103,10 @@ describe('ol.format.WKT', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
       var features = [
-        new ol.Feature(
-            new ol.geom.Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
-        new ol.Feature(
-            new ol.geom.Point([4, 5]).transform('EPSG:4326', 'EPSG:3857'))
+        new _ol_Feature_(
+            new _ol_geom_Point_([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
+        new _ol_Feature_(
+            new _ol_geom_Point_([4, 5]).transform('EPSG:4326', 'EPSG:3857'))
       ];
       var wkt = format.writeFeatures(features, {
         dataProjection: 'EPSG:4326',
@@ -781,7 +781,7 @@ describe('ol.format.WKT', function() {
   });
 
   it('GeometryCollection split / merged correctly', function() {
-    format = new ol.format.WKT({splitCollection: true});
+    format = new _ol_format_WKT_({splitCollection: true});
     var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
     var features = format.readFeatures(wkt);
     expect(features.length).to.eql(2);

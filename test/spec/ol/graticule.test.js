@@ -1,17 +1,17 @@
 
 
-goog.require('ol.Graticule');
-goog.require('ol.Map');
-goog.require('ol.proj');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Text');
+import _ol_Graticule_ from '../../../src/ol/graticule';
+import _ol_Map_ from '../../../src/ol/map';
+import _ol_proj_ from '../../../src/ol/proj';
+import _ol_style_Stroke_ from '../../../src/ol/style/stroke';
+import _ol_style_Text_ from '../../../src/ol/style/text';
 
 describe('ol.Graticule', function() {
   var graticule;
 
   function createGraticule() {
-    graticule = new ol.Graticule({
-      map: new ol.Map({})
+    graticule = new _ol_Graticule_({
+      map: new _ol_Map_({})
     });
   }
 
@@ -20,7 +20,7 @@ describe('ol.Graticule', function() {
       createGraticule();
       var extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = ol.proj.get('EPSG:3857');
+      var projection = _ol_proj_.get('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
@@ -32,13 +32,13 @@ describe('ol.Graticule', function() {
     });
 
     it('creates a graticule with labels', function() {
-      graticule = new ol.Graticule({
-        map: new ol.Map({}),
+      graticule = new _ol_Graticule_({
+        map: new _ol_Map_({}),
         showLabels: true
       });
       var extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = ol.proj.get('EPSG:3857');
+      var projection = _ol_proj_.get('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
@@ -56,16 +56,16 @@ describe('ol.Graticule', function() {
       var actualStyle = graticule.strokeStyle_;
 
       expect(actualStyle).not.to.be(undefined);
-      expect(actualStyle instanceof ol.style.Stroke).to.be(true);
+      expect(actualStyle instanceof _ol_style_Stroke_).to.be(true);
     });
 
     it('can be configured with a stroke style', function() {
       createGraticule();
-      var customStrokeStyle = new ol.style.Stroke({
+      var customStrokeStyle = new _ol_style_Stroke_({
         color: 'rebeccapurple'
       });
-      var styledGraticule = new ol.Graticule({
-        map: new ol.Map({}),
+      var styledGraticule = new _ol_Graticule_({
+        map: new _ol_Map_({}),
         strokeStyle: customStrokeStyle
       });
       var actualStyle = styledGraticule.strokeStyle_;
@@ -75,10 +75,10 @@ describe('ol.Graticule', function() {
     });
 
     it('can be configured with label options', function() {
-      var latLabelStyle = new ol.style.Text();
-      var lonLabelStyle = new ol.style.Text();
-      graticule = new ol.Graticule({
-        map: new ol.Map({}),
+      var latLabelStyle = new _ol_style_Text_();
+      var lonLabelStyle = new _ol_style_Text_();
+      graticule = new _ol_Graticule_({
+        map: new _ol_Map_({}),
         showLabels: true,
         lonLabelFormatter: function(lon) {
           return 'lon: ' + lon.toString();
@@ -93,7 +93,7 @@ describe('ol.Graticule', function() {
       });
       var extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = ol.proj.get('EPSG:3857');
+      var projection = _ol_proj_.get('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);

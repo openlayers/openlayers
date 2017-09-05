@@ -1,7 +1,4 @@
-goog.provide('ol.style.Stroke');
-
-goog.require('ol');
-
+import _ol_ from '../index';
 
 /**
  * @classdesc
@@ -14,7 +11,7 @@ goog.require('ol');
  * @param {olx.style.StrokeOptions=} opt_options Options.
  * @api
  */
-ol.style.Stroke = function(opt_options) {
+var _ol_style_Stroke_ = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -73,9 +70,9 @@ ol.style.Stroke = function(opt_options) {
  * @return {ol.style.Stroke} The cloned style.
  * @api
  */
-ol.style.Stroke.prototype.clone = function() {
+_ol_style_Stroke_.prototype.clone = function() {
   var color = this.getColor();
-  return new ol.style.Stroke({
+  return new _ol_style_Stroke_({
     color: (color && color.slice) ? color.slice() : color || undefined,
     lineCap: this.getLineCap(),
     lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
@@ -92,7 +89,7 @@ ol.style.Stroke.prototype.clone = function() {
  * @return {ol.Color|ol.ColorLike} Color.
  * @api
  */
-ol.style.Stroke.prototype.getColor = function() {
+_ol_style_Stroke_.prototype.getColor = function() {
   return this.color_;
 };
 
@@ -102,7 +99,7 @@ ol.style.Stroke.prototype.getColor = function() {
  * @return {string|undefined} Line cap.
  * @api
  */
-ol.style.Stroke.prototype.getLineCap = function() {
+_ol_style_Stroke_.prototype.getLineCap = function() {
   return this.lineCap_;
 };
 
@@ -112,7 +109,7 @@ ol.style.Stroke.prototype.getLineCap = function() {
  * @return {Array.<number>} Line dash.
  * @api
  */
-ol.style.Stroke.prototype.getLineDash = function() {
+_ol_style_Stroke_.prototype.getLineDash = function() {
   return this.lineDash_;
 };
 
@@ -122,7 +119,7 @@ ol.style.Stroke.prototype.getLineDash = function() {
  * @return {number|undefined} Line dash offset.
  * @api
  */
-ol.style.Stroke.prototype.getLineDashOffset = function() {
+_ol_style_Stroke_.prototype.getLineDashOffset = function() {
   return this.lineDashOffset_;
 };
 
@@ -132,7 +129,7 @@ ol.style.Stroke.prototype.getLineDashOffset = function() {
  * @return {string|undefined} Line join.
  * @api
  */
-ol.style.Stroke.prototype.getLineJoin = function() {
+_ol_style_Stroke_.prototype.getLineJoin = function() {
   return this.lineJoin_;
 };
 
@@ -142,7 +139,7 @@ ol.style.Stroke.prototype.getLineJoin = function() {
  * @return {number|undefined} Miter limit.
  * @api
  */
-ol.style.Stroke.prototype.getMiterLimit = function() {
+_ol_style_Stroke_.prototype.getMiterLimit = function() {
   return this.miterLimit_;
 };
 
@@ -152,7 +149,7 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
  * @return {number|undefined} Width.
  * @api
  */
-ol.style.Stroke.prototype.getWidth = function() {
+_ol_style_Stroke_.prototype.getWidth = function() {
   return this.width_;
 };
 
@@ -163,7 +160,7 @@ ol.style.Stroke.prototype.getWidth = function() {
  * @param {ol.Color|ol.ColorLike} color Color.
  * @api
  */
-ol.style.Stroke.prototype.setColor = function(color) {
+_ol_style_Stroke_.prototype.setColor = function(color) {
   this.color_ = color;
   this.checksum_ = undefined;
 };
@@ -175,7 +172,7 @@ ol.style.Stroke.prototype.setColor = function(color) {
  * @param {string|undefined} lineCap Line cap.
  * @api
  */
-ol.style.Stroke.prototype.setLineCap = function(lineCap) {
+_ol_style_Stroke_.prototype.setLineCap = function(lineCap) {
   this.lineCap_ = lineCap;
   this.checksum_ = undefined;
 };
@@ -193,7 +190,7 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
  * @param {Array.<number>} lineDash Line dash.
  * @api
  */
-ol.style.Stroke.prototype.setLineDash = function(lineDash) {
+_ol_style_Stroke_.prototype.setLineDash = function(lineDash) {
   this.lineDash_ = lineDash;
   this.checksum_ = undefined;
 };
@@ -205,7 +202,7 @@ ol.style.Stroke.prototype.setLineDash = function(lineDash) {
  * @param {number|undefined} lineDashOffset Line dash offset.
  * @api
  */
-ol.style.Stroke.prototype.setLineDashOffset = function(lineDashOffset) {
+_ol_style_Stroke_.prototype.setLineDashOffset = function(lineDashOffset) {
   this.lineDashOffset_ = lineDashOffset;
   this.checksum_ = undefined;
 };
@@ -217,7 +214,7 @@ ol.style.Stroke.prototype.setLineDashOffset = function(lineDashOffset) {
  * @param {string|undefined} lineJoin Line join.
  * @api
  */
-ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
+_ol_style_Stroke_.prototype.setLineJoin = function(lineJoin) {
   this.lineJoin_ = lineJoin;
   this.checksum_ = undefined;
 };
@@ -229,7 +226,7 @@ ol.style.Stroke.prototype.setLineJoin = function(lineJoin) {
  * @param {number|undefined} miterLimit Miter limit.
  * @api
  */
-ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
+_ol_style_Stroke_.prototype.setMiterLimit = function(miterLimit) {
   this.miterLimit_ = miterLimit;
   this.checksum_ = undefined;
 };
@@ -241,7 +238,7 @@ ol.style.Stroke.prototype.setMiterLimit = function(miterLimit) {
  * @param {number|undefined} width Width.
  * @api
  */
-ol.style.Stroke.prototype.setWidth = function(width) {
+_ol_style_Stroke_.prototype.setWidth = function(width) {
   this.width_ = width;
   this.checksum_ = undefined;
 };
@@ -250,14 +247,14 @@ ol.style.Stroke.prototype.setWidth = function(width) {
 /**
  * @return {string} The checksum.
  */
-ol.style.Stroke.prototype.getChecksum = function() {
+_ol_style_Stroke_.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
     this.checksum_ = 's';
     if (this.color_) {
       if (typeof this.color_ === 'string') {
         this.checksum_ += this.color_;
       } else {
-        this.checksum_ += ol.getUid(this.color_).toString();
+        this.checksum_ += _ol_.getUid(this.color_).toString();
       }
     } else {
       this.checksum_ += '-';
@@ -279,3 +276,4 @@ ol.style.Stroke.prototype.getChecksum = function() {
 
   return this.checksum_;
 };
+export default _ol_style_Stroke_;

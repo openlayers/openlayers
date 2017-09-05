@@ -1,7 +1,7 @@
 
 
-goog.require('ol.events.EventTarget');
-goog.require('ol.Observable');
+import _ol_events_EventTarget_ from '../../../src/ol/events/eventtarget';
+import _ol_Observable_ from '../../../src/ol/observable';
 
 
 describe('ol.Observable', function() {
@@ -9,9 +9,9 @@ describe('ol.Observable', function() {
   describe('constructor', function() {
 
     it('creates a new observable', function() {
-      var observable = new ol.Observable();
-      expect(observable).to.be.a(ol.Observable);
-      expect(observable).to.be.a(ol.events.EventTarget);
+      var observable = new _ol_Observable_();
+      expect(observable).to.be.a(_ol_Observable_);
+      expect(observable).to.be.a(_ol_events_EventTarget_);
     });
 
   });
@@ -19,7 +19,7 @@ describe('ol.Observable', function() {
   describe('#on()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new ol.Observable();
+      observable = new _ol_Observable_();
       listener = sinon.spy();
     });
 
@@ -63,7 +63,7 @@ describe('ol.Observable', function() {
   describe('#once()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new ol.Observable();
+      observable = new _ol_Observable_();
       listener = sinon.spy();
     });
 
@@ -128,7 +128,7 @@ describe('ol.Observable', function() {
   describe('#un()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new ol.Observable();
+      observable = new _ol_Observable_();
       listener = sinon.spy();
     });
 
@@ -166,7 +166,7 @@ describe('ol.Observable', function() {
   describe('ol.Observable.unByKey()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new ol.Observable();
+      observable = new _ol_Observable_();
       listener = sinon.spy();
     });
 
@@ -176,7 +176,7 @@ describe('ol.Observable', function() {
       observable.dispatchEvent('foo');
       expect(listener.calledOnce).to.be(true);
 
-      ol.Observable.unByKey(key);
+      _ol_Observable_.unByKey(key);
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
     });

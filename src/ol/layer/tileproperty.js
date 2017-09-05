@@ -1,9 +1,9 @@
-goog.provide('ol.layer.TileProperty');
-
 /**
  * @enum {string}
  */
-ol.layer.TileProperty = {
+var _ol_layer_TileProperty_ = {
   PRELOAD: 'preload',
   USE_INTERIM_TILES_ON_ERROR: 'useInterimTilesOnError'
 };
+
+export default _ol_layer_TileProperty_;

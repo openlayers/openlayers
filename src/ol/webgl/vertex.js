@@ -1,9 +1,6 @@
-goog.provide('ol.webgl.Vertex');
-
-goog.require('ol');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Shader');
-
+import _ol_ from '../index';
+import _ol_webgl_ from '../webgl';
+import _ol_webgl_Shader_ from '../webgl/shader';
 
 /**
  * @constructor
@@ -11,15 +8,17 @@ goog.require('ol.webgl.Shader');
  * @param {string} source Source.
  * @struct
  */
-ol.webgl.Vertex = function(source) {
-  ol.webgl.Shader.call(this, source);
+var _ol_webgl_Vertex_ = function(source) {
+  _ol_webgl_Shader_.call(this, source);
 };
-ol.inherits(ol.webgl.Vertex, ol.webgl.Shader);
+
+_ol_.inherits(_ol_webgl_Vertex_, _ol_webgl_Shader_);
 
 
 /**
  * @inheritDoc
  */
-ol.webgl.Vertex.prototype.getType = function() {
-  return ol.webgl.VERTEX_SHADER;
+_ol_webgl_Vertex_.prototype.getType = function() {
+  return _ol_webgl_.VERTEX_SHADER;
 };
+export default _ol_webgl_Vertex_;

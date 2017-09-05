@@ -1,40 +1,40 @@
 // NOCOMPILE
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.format.WKT');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_control_ from '../src/ol/control';
+import _ol_format_WKT_ from '../src/ol/format/wkt';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var format = new ol.format.WKT();
+var format = new _ol_format_WKT_();
 var feature = format.readFeature(
     'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
         '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +
         '-39.1552734375, 10.689697265625 -25.0927734375))');
 feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     features: [feature]
   })
 });
 
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: 'map',
-  controls: ol.control.defaults({
+  controls: _ol_control_.defaults({
     attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
       collapsible: false
     })
   }),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

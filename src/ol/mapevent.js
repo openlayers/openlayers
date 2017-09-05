@@ -1,8 +1,5 @@
-goog.provide('ol.MapEvent');
-
-goog.require('ol');
-goog.require('ol.events.Event');
-
+import _ol_ from './index';
+import _ol_events_Event_ from './events/event';
 
 /**
  * @classdesc
@@ -16,9 +13,9 @@ goog.require('ol.events.Event');
  * @param {ol.PluggableMap} map Map.
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
-ol.MapEvent = function(type, map, opt_frameState) {
+var _ol_MapEvent_ = function(type, map, opt_frameState) {
 
-  ol.events.Event.call(this, type);
+  _ol_events_Event_.call(this, type);
 
   /**
    * The map where the event occurred.
@@ -35,4 +32,6 @@ ol.MapEvent = function(type, map, opt_frameState) {
   this.frameState = opt_frameState !== undefined ? opt_frameState : null;
 
 };
-ol.inherits(ol.MapEvent, ol.events.Event);
+
+_ol_.inherits(_ol_MapEvent_, _ol_events_Event_);
+export default _ol_MapEvent_;

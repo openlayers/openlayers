@@ -1,10 +1,7 @@
-goog.provide('ol.source.ImageCanvas');
-
-goog.require('ol');
-goog.require('ol.ImageCanvas');
-goog.require('ol.extent');
-goog.require('ol.source.Image');
-
+import _ol_ from '../index';
+import _ol_ImageCanvas_ from '../imagecanvas';
+import _ol_extent_ from '../extent';
+import _ol_source_Image_ from '../source/image';
 
 /**
  * @classdesc
@@ -15,9 +12,9 @@ goog.require('ol.source.Image');
  * @param {olx.source.ImageCanvasOptions} options Constructor options.
  * @api
  */
-ol.source.ImageCanvas = function(options) {
+var _ol_source_ImageCanvas_ = function(options) {
 
-  ol.source.Image.call(this, {
+  _ol_source_Image_.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
@@ -51,13 +48,14 @@ ol.source.ImageCanvas = function(options) {
     options.ratio : 1.5;
 
 };
-ol.inherits(ol.source.ImageCanvas, ol.source.Image);
+
+_ol_.inherits(_ol_source_ImageCanvas_, _ol_source_Image_);
 
 
 /**
  * @inheritDoc
  */
-ol.source.ImageCanvas.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+_ol_source_ImageCanvas_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
   var canvas = this.canvas_;
@@ -65,20 +63,20 @@ ol.source.ImageCanvas.prototype.getImageInternal = function(extent, resolution, 
       this.renderedRevision_ == this.getRevision() &&
       canvas.getResolution() == resolution &&
       canvas.getPixelRatio() == pixelRatio &&
-      ol.extent.containsExtent(canvas.getExtent(), extent)) {
+      _ol_extent_.containsExtent(canvas.getExtent(), extent)) {
     return canvas;
   }
 
   extent = extent.slice();
-  ol.extent.scaleFromCenter(extent, this.ratio_);
-  var width = ol.extent.getWidth(extent) / resolution;
-  var height = ol.extent.getHeight(extent) / resolution;
+  _ol_extent_.scaleFromCenter(extent, this.ratio_);
+  var width = _ol_extent_.getWidth(extent) / resolution;
+  var height = _ol_extent_.getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
   var canvasElement = this.canvasFunction_(
       extent, resolution, pixelRatio, size, projection);
   if (canvasElement) {
-    canvas = new ol.ImageCanvas(extent, resolution, pixelRatio,
+    canvas = new _ol_ImageCanvas_(extent, resolution, pixelRatio,
         this.getAttributions(), canvasElement);
   }
   this.canvas_ = canvas;
@@ -86,3 +84,4 @@ ol.source.ImageCanvas.prototype.getImageInternal = function(extent, resolution, 
 
   return canvas;
 };
+export default _ol_source_ImageCanvas_;

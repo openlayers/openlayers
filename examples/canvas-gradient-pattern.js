@@ -1,21 +1,21 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.has');
-goog.require('ol.layer.Vector');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_extent_ from '../src/ol/extent';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_has_ from '../src/ol/has';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
 
 // Gradient and pattern are in canvas pixel space, so we adjust for the
 // renderer's pixel ratio
-var pixelRatio = ol.has.DEVICE_PIXEL_RATIO;
+var pixelRatio = _ol_has_.DEVICE_PIXEL_RATIO;
 
 // Generate a rainbow gradient
 function gradient(feature, resolution) {
@@ -25,7 +25,7 @@ function gradient(feature, resolution) {
   // we just divide the geometry's extent width by resolution and multiply with
   // pixelRatio to match the renderer's pixel coordinate system.
   var grad = context.createLinearGradient(0, 0,
-      ol.extent.getWidth(extent) / resolution * pixelRatio, 0);
+      _ol_extent_.getWidth(extent) / resolution * pixelRatio, 0);
   grad.addColorStop(0, 'red');
   grad.addColorStop(1 / 6, 'orange');
   grad.addColorStop(2 / 6, 'yellow');
@@ -57,10 +57,10 @@ var pattern = (function() {
 }());
 
 // Generate style for gradient or pattern fill
-var fill = new ol.style.Fill();
-var style = new ol.style.Style({
+var fill = new _ol_style_Fill_();
+var style = new _ol_style_Style_({
   fill: fill,
-  stroke: new ol.style.Stroke({
+  stroke: new _ol_style_Stroke_({
     color: '#333',
     width: 2
   })
@@ -81,22 +81,22 @@ var getStackedStyle = function(feature, resolution) {
 };
 
 // Create a vector layer that makes use of the style function above…
-var vectorLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vectorLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/geojson/countries.geojson',
-    format: new ol.format.GeoJSON()
+    format: new _ol_format_GeoJSON_()
   }),
   style: getStackedStyle
 });
 
 // … finally create a map with that layer.
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
     vectorLayer
   ],
   target: 'map',
-  view: new ol.View({
-    center: ol.proj.fromLonLat([7, 52]),
+  view: new _ol_View_({
+    center: _ol_proj_.fromLonLat([7, 52]),
     zoom: 3
   })
 });

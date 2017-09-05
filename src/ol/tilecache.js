@@ -1,8 +1,5 @@
-goog.provide('ol.TileCache');
-
-goog.require('ol');
-goog.require('ol.structs.LRUCache');
-
+import _ol_ from './index';
+import _ol_structs_LRUCache_ from './structs/lrucache';
 
 /**
  * @constructor
@@ -10,18 +7,19 @@ goog.require('ol.structs.LRUCache');
  * @param {number=} opt_highWaterMark High water mark.
  * @struct
  */
-ol.TileCache = function(opt_highWaterMark) {
+var _ol_TileCache_ = function(opt_highWaterMark) {
 
-  ol.structs.LRUCache.call(this, opt_highWaterMark);
+  _ol_structs_LRUCache_.call(this, opt_highWaterMark);
 
 };
-ol.inherits(ol.TileCache, ol.structs.LRUCache);
+
+_ol_.inherits(_ol_TileCache_, _ol_structs_LRUCache_);
 
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.TileCache.prototype.expireCache = function(usedTiles) {
+_ol_TileCache_.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
     tile = this.peekLast();
@@ -33,3 +31,4 @@ ol.TileCache.prototype.expireCache = function(usedTiles) {
     }
   }
 };
+export default _ol_TileCache_;

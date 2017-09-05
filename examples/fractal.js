@@ -1,9 +1,9 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.LineString');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
 
 var radius = 10e6;
 var cos30 = Math.cos(Math.PI / 6);
@@ -11,22 +11,22 @@ var sin30 = Math.sin(Math.PI / 6);
 var rise = radius * sin30;
 var run = radius * cos30;
 
-var triangle = new ol.geom.LineString([
+var triangle = new _ol_geom_LineString_([
   [0, radius], [run, -rise], [-run, -rise], [0, radius]
 ]);
 
-var feature = new ol.Feature(triangle);
+var feature = new _ol_Feature_(triangle);
 
-var layer = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var layer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     features: [feature]
   })
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [layer],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 1
   })

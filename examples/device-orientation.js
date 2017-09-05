@@ -1,27 +1,27 @@
 // NOCOMPILE
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.layer.Tile');
-goog.require('ol.math');
-goog.require('ol.proj');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_control_ from '../src/ol/control';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_math_ from '../src/ol/math';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_OSM_ from '../src/ol/source/osm';
 
-var projection = ol.proj.get('EPSG:3857');
-var view = new ol.View({
+var projection = _ol_proj_.get('EPSG:3857');
+var view = new _ol_View_({
   center: [0, 0],
   projection: projection,
   extent: projection.getExtent(),
   zoom: 2
 });
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     })
   ],
   target: 'map',
-  controls: ol.control.defaults({
+  controls: _ol_control_.defaults({
     attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
       collapsible: false
     })
@@ -40,9 +40,9 @@ gn.init().then(function() {
   gn.start(function(event) {
     var center = view.getCenter();
     var resolution = view.getResolution();
-    var alpha = ol.math.toRadians(event.do.beta);
-    var beta = ol.math.toRadians(event.do.beta);
-    var gamma = ol.math.toRadians(event.do.gamma);
+    var alpha = _ol_math_.toRadians(event.do.beta);
+    var beta = _ol_math_.toRadians(event.do.beta);
+    var gamma = _ol_math_.toRadians(event.do.gamma);
 
     el('alpha').innerText = alpha + ' [rad]';
     el('beta').innerText = beta + ' [rad]';

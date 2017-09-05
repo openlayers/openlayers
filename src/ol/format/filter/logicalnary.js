@@ -1,9 +1,6 @@
-goog.provide('ol.format.filter.LogicalNary');
-
-goog.require('ol');
-goog.require('ol.asserts');
-goog.require('ol.format.filter.Filter');
-
+import _ol_ from '../../index';
+import _ol_asserts_ from '../../asserts';
+import _ol_format_filter_Filter_ from '../filter/filter';
 
 /**
  * @classdesc
@@ -15,15 +12,17 @@ goog.require('ol.format.filter.Filter');
  * @param {...ol.format.filter.Filter} conditions Conditions.
  * @extends {ol.format.filter.Filter}
  */
-ol.format.filter.LogicalNary = function(tagName, conditions) {
+var _ol_format_filter_LogicalNary_ = function(tagName, conditions) {
 
-  ol.format.filter.Filter.call(this, tagName);
+  _ol_format_filter_Filter_.call(this, tagName);
 
   /**
    * @public
    * @type {Array.<ol.format.filter.Filter>}
    */
   this.conditions = Array.prototype.slice.call(arguments, 1);
-  ol.asserts.assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
+  _ol_asserts_.assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
 };
-ol.inherits(ol.format.filter.LogicalNary, ol.format.filter.Filter);
+
+_ol_.inherits(_ol_format_filter_LogicalNary_, _ol_format_filter_Filter_);
+export default _ol_format_filter_LogicalNary_;

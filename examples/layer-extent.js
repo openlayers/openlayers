@@ -1,11 +1,11 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.TileJSON');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_TileJSON_ from '../src/ol/source/tilejson';
 
 function transform(extent) {
-  return ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+  return _ol_proj_.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 }
 
 var extents = {
@@ -15,25 +15,25 @@ var extents = {
   Sweden: transform([11.02737, 55.36174, 23.90338, 69.10625])
 };
 
-var base = new ol.layer.Tile({
-  source: new ol.source.TileJSON({
+var base = new _ol_layer_Tile_({
+  source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
     crossOrigin: 'anonymous'
   })
 });
 
-var overlay = new ol.layer.Tile({
+var overlay = new _ol_layer_Tile_({
   extent: extents.India,
-  source: new ol.source.TileJSON({
+  source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
     crossOrigin: 'anonymous'
   })
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [base, overlay],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 1
   })

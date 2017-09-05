@@ -1,14 +1,11 @@
-goog.provide('ol.reproj.Image');
-
-goog.require('ol');
-goog.require('ol.ImageBase');
-goog.require('ol.ImageState');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.extent');
-goog.require('ol.reproj');
-goog.require('ol.reproj.Triangulation');
-
+import _ol_ from '../index';
+import _ol_ImageBase_ from '../imagebase';
+import _ol_ImageState_ from '../imagestate';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_extent_ from '../extent';
+import _ol_reproj_ from '../reproj';
+import _ol_reproj_Triangulation_ from '../reproj/triangulation';
 
 /**
  * @classdesc
@@ -25,7 +22,7 @@ goog.require('ol.reproj.Triangulation');
  * @param {ol.ReprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
-ol.reproj.Image = function(sourceProj, targetProj,
+var _ol_reproj_Image_ = function(sourceProj, targetProj,
     targetExtent, targetResolution, pixelRatio, getImageFunction) {
 
   /**
@@ -42,19 +39,19 @@ ol.reproj.Image = function(sourceProj, targetProj,
   var maxTargetExtent = targetProj.getExtent();
 
   var limitedTargetExtent = maxTargetExtent ?
-    ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+    _ol_extent_.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
-  var targetCenter = ol.extent.getCenter(limitedTargetExtent);
-  var sourceResolution = ol.reproj.calculateSourceResolution(
+  var targetCenter = _ol_extent_.getCenter(limitedTargetExtent);
+  var sourceResolution = _ol_reproj_.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
-  var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
+  var errorThresholdInPixels = _ol_.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangulation_ = new ol.reproj.Triangulation(
+  this.triangulation_ = new _ol_reproj_Triangulation_(
       sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
       sourceResolution * errorThresholdInPixels);
 
@@ -99,35 +96,36 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.sourceListenerKey_ = null;
 
 
-  var state = ol.ImageState.LOADED;
+  var state = _ol_ImageState_.LOADED;
   var attributions = [];
 
   if (this.sourceImage_) {
-    state = ol.ImageState.IDLE;
+    state = _ol_ImageState_.IDLE;
     attributions = this.sourceImage_.getAttributions();
   }
 
-  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
+  _ol_ImageBase_.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
       state, attributions);
 };
-ol.inherits(ol.reproj.Image, ol.ImageBase);
+
+_ol_.inherits(_ol_reproj_Image_, _ol_ImageBase_);
 
 
 /**
  * @inheritDoc
  */
-ol.reproj.Image.prototype.disposeInternal = function() {
-  if (this.state == ol.ImageState.LOADING) {
+_ol_reproj_Image_.prototype.disposeInternal = function() {
+  if (this.state == _ol_ImageState_.LOADING) {
     this.unlistenSource_();
   }
-  ol.ImageBase.prototype.disposeInternal.call(this);
+  _ol_ImageBase_.prototype.disposeInternal.call(this);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.reproj.Image.prototype.getImage = function(opt_context) {
+_ol_reproj_Image_.prototype.getImage = function(opt_context) {
   return this.canvas_;
 };
 
@@ -135,7 +133,7 @@ ol.reproj.Image.prototype.getImage = function(opt_context) {
 /**
  * @return {ol.proj.Projection} Projection.
  */
-ol.reproj.Image.prototype.getProjection = function() {
+_ol_reproj_Image_.prototype.getProjection = function() {
   return this.targetProj_;
 };
 
@@ -143,14 +141,14 @@ ol.reproj.Image.prototype.getProjection = function() {
 /**
  * @private
  */
-ol.reproj.Image.prototype.reproject_ = function() {
+_ol_reproj_Image_.prototype.reproject_ = function() {
   var sourceState = this.sourceImage_.getState();
-  if (sourceState == ol.ImageState.LOADED) {
-    var width = ol.extent.getWidth(this.targetExtent_) / this.targetResolution_;
+  if (sourceState == _ol_ImageState_.LOADED) {
+    var width = _ol_extent_.getWidth(this.targetExtent_) / this.targetResolution_;
     var height =
-        ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
+        _ol_extent_.getHeight(this.targetExtent_) / this.targetResolution_;
 
-    this.canvas_ = ol.reproj.render(width, height, this.sourcePixelRatio_,
+    this.canvas_ = _ol_reproj_.render(width, height, this.sourcePixelRatio_,
         this.sourceImage_.getResolution(), this.maxSourceExtent_,
         this.targetResolution_, this.targetExtent_, this.triangulation_, [{
           extent: this.sourceImage_.getExtent(),
@@ -165,21 +163,21 @@ ol.reproj.Image.prototype.reproject_ = function() {
 /**
  * @inheritDoc
  */
-ol.reproj.Image.prototype.load = function() {
-  if (this.state == ol.ImageState.IDLE) {
-    this.state = ol.ImageState.LOADING;
+_ol_reproj_Image_.prototype.load = function() {
+  if (this.state == _ol_ImageState_.IDLE) {
+    this.state = _ol_ImageState_.LOADING;
     this.changed();
 
     var sourceState = this.sourceImage_.getState();
-    if (sourceState == ol.ImageState.LOADED ||
-        sourceState == ol.ImageState.ERROR) {
+    if (sourceState == _ol_ImageState_.LOADED ||
+        sourceState == _ol_ImageState_.ERROR) {
       this.reproject_();
     } else {
-      this.sourceListenerKey_ = ol.events.listen(this.sourceImage_,
-          ol.events.EventType.CHANGE, function(e) {
+      this.sourceListenerKey_ = _ol_events_.listen(this.sourceImage_,
+          _ol_events_EventType_.CHANGE, function(e) {
             var sourceState = this.sourceImage_.getState();
-            if (sourceState == ol.ImageState.LOADED ||
-                sourceState == ol.ImageState.ERROR) {
+            if (sourceState == _ol_ImageState_.LOADED ||
+                sourceState == _ol_ImageState_.ERROR) {
               this.unlistenSource_();
               this.reproject_();
             }
@@ -193,7 +191,8 @@ ol.reproj.Image.prototype.load = function() {
 /**
  * @private
  */
-ol.reproj.Image.prototype.unlistenSource_ = function() {
-  ol.events.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
+_ol_reproj_Image_.prototype.unlistenSource_ = function() {
+  _ol_events_.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;
 };
+export default _ol_reproj_Image_;

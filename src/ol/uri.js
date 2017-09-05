@@ -1,4 +1,4 @@
-goog.provide('ol.uri');
+var _ol_uri_ = {};
 
 
 /**
@@ -9,7 +9,7 @@ goog.provide('ol.uri');
  *     and the values are arbitrary types or arrays.
  * @return {string} The new URI.
  */
-ol.uri.appendParams = function(uri, params) {
+_ol_uri_.appendParams = function(uri, params) {
   var keyParams = [];
   // Skip any null or undefined parameter values
   Object.keys(params).forEach(function(k) {
@@ -24,3 +24,4 @@ ol.uri.appendParams = function(uri, params) {
   uri = uri.indexOf('?') === -1 ? uri + '?' : uri + '&';
   return uri + qs;
 };
+export default _ol_uri_;

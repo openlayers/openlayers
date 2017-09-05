@@ -1,9 +1,6 @@
-goog.provide('ol.VectorTile');
-
-goog.require('ol');
-goog.require('ol.Tile');
-goog.require('ol.TileState');
-
+import _ol_ from './index';
+import _ol_Tile_ from './tile';
+import _ol_TileState_ from './tilestate';
 
 /**
  * @constructor
@@ -14,9 +11,9 @@ goog.require('ol.TileState');
  * @param {ol.format.Feature} format Feature format.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  */
-ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
+var _ol_VectorTile_ = function(tileCoord, state, src, format, tileLoadFunction) {
 
-  ol.Tile.call(this, tileCoord, state);
+  _ol_Tile_.call(this, tileCoord, state);
 
   /**
    * @type {number}
@@ -73,18 +70,19 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
   this.url_ = src;
 
 };
-ol.inherits(ol.VectorTile, ol.Tile);
+
+_ol_.inherits(_ol_VectorTile_, _ol_Tile_);
 
 
 /**
  * @inheritDoc
  */
-ol.VectorTile.prototype.disposeInternal = function() {
+_ol_VectorTile_.prototype.disposeInternal = function() {
   this.features_ = null;
   this.replayGroups_ = {};
-  this.state = ol.TileState.ABORT;
+  this.state = _ol_TileState_.ABORT;
   this.changed();
-  ol.Tile.prototype.disposeInternal.call(this);
+  _ol_Tile_.prototype.disposeInternal.call(this);
 };
 
 
@@ -92,8 +90,8 @@ ol.VectorTile.prototype.disposeInternal = function() {
  * Gets the extent of the vector tile.
  * @return {ol.Extent} The extent.
  */
-ol.VectorTile.prototype.getExtent = function() {
-  return this.extent_ || ol.VectorTile.DEFAULT_EXTENT;
+_ol_VectorTile_.prototype.getExtent = function() {
+  return this.extent_ || _ol_VectorTile_.DEFAULT_EXTENT;
 };
 
 
@@ -102,7 +100,7 @@ ol.VectorTile.prototype.getExtent = function() {
  * @return {ol.format.Feature} Feature format.
  * @api
  */
-ol.VectorTile.prototype.getFormat = function() {
+_ol_VectorTile_.prototype.getFormat = function() {
   return this.format_;
 };
 
@@ -113,7 +111,7 @@ ol.VectorTile.prototype.getFormat = function() {
  * @return {Array.<ol.Feature|ol.render.Feature>} Features.
  * @api
  */
-ol.VectorTile.prototype.getFeatures = function() {
+_ol_VectorTile_.prototype.getFeatures = function() {
   return this.features_;
 };
 
@@ -121,7 +119,7 @@ ol.VectorTile.prototype.getFeatures = function() {
 /**
  * @inheritDoc
  */
-ol.VectorTile.prototype.getKey = function() {
+_ol_VectorTile_.prototype.getKey = function() {
   return this.url_;
 };
 
@@ -132,7 +130,7 @@ ol.VectorTile.prototype.getKey = function() {
  * @return {ol.proj.Projection} Feature projection.
  * @api
  */
-ol.VectorTile.prototype.getProjection = function() {
+_ol_VectorTile_.prototype.getProjection = function() {
   return this.projection_;
 };
 
@@ -142,17 +140,17 @@ ol.VectorTile.prototype.getProjection = function() {
  * @param {string} key Key.
  * @return {ol.render.ReplayGroup} Replay group.
  */
-ol.VectorTile.prototype.getReplayGroup = function(layer, key) {
-  return this.replayGroups_[ol.getUid(layer) + ',' + key];
+_ol_VectorTile_.prototype.getReplayGroup = function(layer, key) {
+  return this.replayGroups_[_ol_.getUid(layer) + ',' + key];
 };
 
 
 /**
  * @inheritDoc
  */
-ol.VectorTile.prototype.load = function() {
-  if (this.state == ol.TileState.IDLE) {
-    this.setState(ol.TileState.LOADING);
+_ol_VectorTile_.prototype.load = function() {
+  if (this.state == _ol_TileState_.IDLE) {
+    this.setState(_ol_TileState_.LOADING);
     this.tileLoadFunction_(this, this.url_);
     this.loader_(null, NaN, null);
   }
@@ -165,7 +163,7 @@ ol.VectorTile.prototype.load = function() {
  * @param {ol.proj.Projection} dataProjection Data projection.
  * @param {ol.Extent} extent Extent.
  */
-ol.VectorTile.prototype.onLoad = function(features, dataProjection, extent) {
+_ol_VectorTile_.prototype.onLoad = function(features, dataProjection, extent) {
   this.setProjection(dataProjection);
   this.setFeatures(features);
   this.setExtent(extent);
@@ -175,8 +173,8 @@ ol.VectorTile.prototype.onLoad = function(features, dataProjection, extent) {
 /**
  * Handler for tile load errors.
  */
-ol.VectorTile.prototype.onError = function() {
-  this.setState(ol.TileState.ERROR);
+_ol_VectorTile_.prototype.onError = function() {
+  this.setState(_ol_TileState_.ERROR);
 };
 
 
@@ -192,7 +190,7 @@ ol.VectorTile.prototype.onError = function() {
  * @param {ol.Extent} extent The extent.
  * @api
  */
-ol.VectorTile.prototype.setExtent = function(extent) {
+_ol_VectorTile_.prototype.setExtent = function(extent) {
   this.extent_ = extent;
 };
 
@@ -203,9 +201,9 @@ ol.VectorTile.prototype.setExtent = function(extent) {
  * @param {Array.<ol.Feature>} features Features.
  * @api
  */
-ol.VectorTile.prototype.setFeatures = function(features) {
+_ol_VectorTile_.prototype.setFeatures = function(features) {
   this.features_ = features;
-  this.setState(ol.TileState.LOADED);
+  this.setState(_ol_TileState_.LOADED);
 };
 
 
@@ -216,7 +214,7 @@ ol.VectorTile.prototype.setFeatures = function(features) {
  * @param {ol.proj.Projection} projection Feature projection.
  * @api
  */
-ol.VectorTile.prototype.setProjection = function(projection) {
+_ol_VectorTile_.prototype.setProjection = function(projection) {
   this.projection_ = projection;
 };
 
@@ -226,8 +224,8 @@ ol.VectorTile.prototype.setProjection = function(projection) {
  * @param {string} key Key.
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  */
-ol.VectorTile.prototype.setReplayGroup = function(layer, key, replayGroup) {
-  this.replayGroups_[ol.getUid(layer) + ',' + key] = replayGroup;
+_ol_VectorTile_.prototype.setReplayGroup = function(layer, key, replayGroup) {
+  this.replayGroups_[_ol_.getUid(layer) + ',' + key] = replayGroup;
 };
 
 
@@ -236,7 +234,7 @@ ol.VectorTile.prototype.setReplayGroup = function(layer, key, replayGroup) {
  * @param {ol.FeatureLoader} loader Feature loader.
  * @api
  */
-ol.VectorTile.prototype.setLoader = function(loader) {
+_ol_VectorTile_.prototype.setLoader = function(loader) {
   this.loader_ = loader;
 };
 
@@ -245,4 +243,5 @@ ol.VectorTile.prototype.setLoader = function(loader) {
  * @const
  * @type {ol.Extent}
  */
-ol.VectorTile.DEFAULT_EXTENT = [0, 0, 4096, 4096];
+_ol_VectorTile_.DEFAULT_EXTENT = [0, 0, 4096, 4096];
+export default _ol_VectorTile_;

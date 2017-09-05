@@ -1,14 +1,11 @@
-goog.provide('ol.format.IGC');
-
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.format.Feature');
-goog.require('ol.format.IGCZ');
-goog.require('ol.format.TextFeature');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.LineString');
-goog.require('ol.proj');
-
+import _ol_ from '../index';
+import _ol_Feature_ from '../feature';
+import _ol_format_Feature_ from '../format/feature';
+import _ol_format_IGCZ_ from '../format/igcz';
+import _ol_format_TextFeature_ from '../format/textfeature';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_LineString_ from '../geom/linestring';
+import _ol_proj_ from '../proj';
 
 /**
  * @classdesc
@@ -19,26 +16,27 @@ goog.require('ol.proj');
  * @param {olx.format.IGCOptions=} opt_options Options.
  * @api
  */
-ol.format.IGC = function(opt_options) {
+var _ol_format_IGC_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  ol.format.TextFeature.call(this);
+  _ol_format_TextFeature_.call(this);
 
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = ol.proj.get('EPSG:4326');
+  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
 
   /**
    * @private
    * @type {ol.format.IGCZ}
    */
   this.altitudeMode_ = options.altitudeMode ?
-    options.altitudeMode : ol.format.IGCZ.NONE;
+    options.altitudeMode : _ol_format_IGCZ_.NONE;
 
 };
-ol.inherits(ol.format.IGC, ol.format.TextFeature);
+
+_ol_.inherits(_ol_format_IGC_, _ol_format_TextFeature_);
 
 
 /**
@@ -46,7 +44,7 @@ ol.inherits(ol.format.IGC, ol.format.TextFeature);
  * @type {RegExp}
  * @private
  */
-ol.format.IGC.B_RECORD_RE_ =
+_ol_format_IGC_.B_RECORD_RE_ =
     /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
 
@@ -55,7 +53,7 @@ ol.format.IGC.B_RECORD_RE_ =
  * @type {RegExp}
  * @private
  */
-ol.format.IGC.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
+_ol_format_IGC_.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
 
 
 /**
@@ -63,7 +61,7 @@ ol.format.IGC.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
  * @type {RegExp}
  * @private
  */
-ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
+_ol_format_IGC_.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 
 
 /**
@@ -73,7 +71,7 @@ ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
  * @type {RegExp}
  * @private
  */
-ol.format.IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
+_ol_format_IGC_.NEWLINE_RE_ = /\r\n|\r|\n/;
 
 
 /**
@@ -85,15 +83,15 @@ ol.format.IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
  * @return {ol.Feature} Feature.
  * @api
  */
-ol.format.IGC.prototype.readFeature;
+_ol_format_IGC_.prototype.readFeature;
 
 
 /**
  * @inheritDoc
  */
-ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
+_ol_format_IGC_.prototype.readFeatureFromText = function(text, opt_options) {
   var altitudeMode = this.altitudeMode_;
-  var lines = text.split(ol.format.IGC.NEWLINE_RE_);
+  var lines = text.split(_ol_format_IGC_.NEWLINE_RE_);
   /** @type {Object.<string, string>} */
   var properties = {};
   var flatCoordinates = [];
@@ -106,7 +104,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
     var line = lines[i];
     var m;
     if (line.charAt(0) == 'B') {
-      m = ol.format.IGC.B_RECORD_RE_.exec(line);
+      m = _ol_format_IGC_.B_RECORD_RE_.exec(line);
       if (m) {
         var hour = parseInt(m[1], 10);
         var minute = parseInt(m[2], 10);
@@ -120,11 +118,11 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
           x = -x;
         }
         flatCoordinates.push(x, y);
-        if (altitudeMode != ol.format.IGCZ.NONE) {
+        if (altitudeMode != _ol_format_IGCZ_.NONE) {
           var z;
-          if (altitudeMode == ol.format.IGCZ.GPS) {
+          if (altitudeMode == _ol_format_IGCZ_.GPS) {
             z = parseInt(m[11], 10);
-          } else if (altitudeMode == ol.format.IGCZ.BAROMETRIC) {
+          } else if (altitudeMode == _ol_format_IGCZ_.BAROMETRIC) {
             z = parseInt(m[12], 10);
           } else {
             z = 0;
@@ -140,13 +138,13 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
         lastDateTime = dateTime;
       }
     } else if (line.charAt(0) == 'H') {
-      m = ol.format.IGC.HFDTE_RECORD_RE_.exec(line);
+      m = _ol_format_IGC_.HFDTE_RECORD_RE_.exec(line);
       if (m) {
         day = parseInt(m[1], 10);
         month = parseInt(m[2], 10) - 1;
         year = 2000 + parseInt(m[3], 10);
       } else {
-        m = ol.format.IGC.H_RECORD_RE_.exec(line);
+        m = _ol_format_IGC_.H_RECORD_RE_.exec(line);
         if (m) {
           properties[m[1]] = m[2].trim();
         }
@@ -156,11 +154,11 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
   if (flatCoordinates.length === 0) {
     return null;
   }
-  var lineString = new ol.geom.LineString(null);
-  var layout = altitudeMode == ol.format.IGCZ.NONE ?
-    ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
+  var lineString = new _ol_geom_LineString_(null);
+  var layout = altitudeMode == _ol_format_IGCZ_.NONE ?
+    _ol_geom_GeometryLayout_.XYM : _ol_geom_GeometryLayout_.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
-  var feature = new ol.Feature(ol.format.Feature.transformWithOptions(
+  var feature = new _ol_Feature_(_ol_format_Feature_.transformWithOptions(
       lineString, false, opt_options));
   feature.setProperties(properties);
   return feature;
@@ -177,13 +175,13 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.format.IGC.prototype.readFeatures;
+_ol_format_IGC_.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
+_ol_format_IGC_.prototype.readFeaturesFromText = function(text, opt_options) {
   var feature = this.readFeatureFromText(text, opt_options);
   if (feature) {
     return [feature];
@@ -201,32 +199,33 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * @return {ol.proj.Projection} Projection.
  * @api
  */
-ol.format.IGC.prototype.readProjection;
+_ol_format_IGC_.prototype.readProjection;
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.IGC.prototype.writeFeatureText = function(feature, opt_options) {};
+_ol_format_IGC_.prototype.writeFeatureText = function(feature, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.IGC.prototype.writeFeaturesText = function(features, opt_options) {};
+_ol_format_IGC_.prototype.writeFeaturesText = function(features, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.IGC.prototype.writeGeometryText = function(geometry, opt_options) {};
+_ol_format_IGC_.prototype.writeGeometryText = function(geometry, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.IGC.prototype.readGeometryFromText = function(text, opt_options) {};
+_ol_format_IGC_.prototype.readGeometryFromText = function(text, opt_options) {};
+export default _ol_format_IGC_;

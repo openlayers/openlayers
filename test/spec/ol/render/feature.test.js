@@ -1,6 +1,6 @@
 
 
-goog.require('ol.render.Feature');
+import _ol_render_Feature_ from '../../../../src/ol/render/feature';
 
 
 describe('ol.render.Feature', function() {
@@ -14,8 +14,8 @@ describe('ol.render.Feature', function() {
   describe('Constructor', function() {
     it('creates an instance', function() {
       renderFeature =
-          new ol.render.Feature(type, flatCoordinates, ends, properties, 'foo');
-      expect(renderFeature).to.be.a(ol.render.Feature);
+          new _ol_render_Feature_(type, flatCoordinates, ends, properties, 'foo');
+      expect(renderFeature).to.be.a(_ol_render_Feature_);
     });
   });
 
@@ -40,7 +40,7 @@ describe('ol.render.Feature', function() {
     });
     it('returns the correct extent for a linestring', function() {
       var feature =
-          new ol.render.Feature('LineString', [-1, -2, 2, 1], null, {});
+          new _ol_render_Feature_('LineString', [-1, -2, 2, 1], null, {});
       expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
     });
   });

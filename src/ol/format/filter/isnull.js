@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.IsNull');
-
-goog.require('ol');
-goog.require('ol.format.filter.Comparison');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Comparison_ from '../filter/comparison';
 
 /**
  * @classdesc
@@ -13,7 +10,9 @@ goog.require('ol.format.filter.Comparison');
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.filter.IsNull = function(propertyName) {
-  ol.format.filter.Comparison.call(this, 'PropertyIsNull', propertyName);
+var _ol_format_filter_IsNull_ = function(propertyName) {
+  _ol_format_filter_Comparison_.call(this, 'PropertyIsNull', propertyName);
 };
-ol.inherits(ol.format.filter.IsNull, ol.format.filter.Comparison);
+
+_ol_.inherits(_ol_format_filter_IsNull_, _ol_format_filter_Comparison_);
+export default _ol_format_filter_IsNull_;

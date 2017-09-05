@@ -1,14 +1,14 @@
 // NOCOMPILE
 /* global labelgun, labelSegment, textPath */
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.BingMaps');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_extent_ from '../src/ol/extent';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_BingMaps_ from '../src/ol/source/bingmaps';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 var emptyFn = function() {};
 var labelEngine = new labelgun['default'](emptyFn, emptyFn);
@@ -20,40 +20,40 @@ function measureText(text) {
 
 var extent, letters; // Will be set in the style's renderer function
 function collectDrawData(letter, x, y, angle) {
-  ol.extent.extend(extent, [x, y, x, y]);
+  _ol_extent_.extend(extent, [x, y, x, y]);
   letters.push([x, y, angle, letter]);
 }
 
-var style = new ol.style.Style({
+var style = new _ol_style_Style_({
   renderer: function(coords, state) {
     var feature = state.feature;
     var text = feature.get('name');
     // Only create label when geometry has a long and straight segment
     var path = labelSegment(coords, Math.PI / 8, measureText(text));
     if (path) {
-      extent = ol.extent.createEmpty();
+      extent = _ol_extent_.createEmpty();
       letters = [];
       textPath(text, path, measureText, collectDrawData);
-      ol.extent.buffer(extent, 5 * pixelRatio, extent);
+      _ol_extent_.buffer(extent, 5 * pixelRatio, extent);
       var bounds = {
-        bottomLeft: ol.extent.getBottomLeft(extent),
-        topRight: ol.extent.getTopRight(extent)
+        bottomLeft: _ol_extent_.getBottomLeft(extent),
+        topRight: _ol_extent_.getTopRight(extent)
       };
       labelEngine.ingestLabel(bounds, feature.getId(), 1, letters, text, false);
     }
   }
 });
 
-var rasterLayer = new ol.layer.Tile({
-  source: new ol.source.BingMaps({
+var rasterLayer = new _ol_layer_Tile_({
+  source: new _ol_source_BingMaps_({
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
     imagerySet: 'Aerial'
   })
 });
 
-var vectorLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    format: new ol.format.GeoJSON(),
+var vectorLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
+    format: new _ol_format_GeoJSON_(),
     url: 'data/geojson/vienna-streets.geojson'
   }),
   style: function(feature) {
@@ -64,12 +64,12 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var viewExtent = [1817379, 6139595, 1827851, 6143616];
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [rasterLayer, vectorLayer],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     extent: viewExtent,
-    center: ol.extent.getCenter(viewExtent),
+    center: _ol_extent_.getCenter(viewExtent),
     zoom: 17,
     minZoom: 14
   })

@@ -1,7 +1,6 @@
-goog.provide('ol.geom.flat.interpolate');
-
-goog.require('ol.array');
-goog.require('ol.math');
+import _ol_array_ from '../../array';
+import _ol_math_ from '../../math';
+var _ol_geom_flat_interpolate_ = {};
 
 
 /**
@@ -13,7 +12,7 @@ goog.require('ol.math');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Destination.
  */
-ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
+_ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
   var pointX = NaN;
   var pointY = NaN;
   var n = (end - offset) / stride;
@@ -40,14 +39,14 @@ ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, str
       y1 = y2;
     }
     var target = fraction * length;
-    var index = ol.array.binarySearch(cumulativeLengths, target);
+    var index = _ol_array_.binarySearch(cumulativeLengths, target);
     if (index < 0) {
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       var o = offset + (-index - 2) * stride;
-      pointX = ol.math.lerp(
+      pointX = _ol_math_.lerp(
           flatCoordinates[o], flatCoordinates[o + stride], t);
-      pointY = ol.math.lerp(
+      pointY = _ol_math_.lerp(
           flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
     } else {
       pointX = flatCoordinates[offset + index * stride];
@@ -73,7 +72,7 @@ ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, str
  * @param {boolean} extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
  */
-ol.geom.flat.interpolate.lineStringCoordinateAtM = function(flatCoordinates, offset, end, stride, m, extrapolate) {
+_ol_geom_flat_interpolate_.lineStringCoordinateAtM = function(flatCoordinates, offset, end, stride, m, extrapolate) {
   if (end == offset) {
     return null;
   }
@@ -118,7 +117,7 @@ ol.geom.flat.interpolate.lineStringCoordinateAtM = function(flatCoordinates, off
   coordinate = [];
   var i;
   for (i = 0; i < stride - 1; ++i) {
-    coordinate.push(ol.math.lerp(flatCoordinates[(lo - 1) * stride + i],
+    coordinate.push(_ol_math_.lerp(flatCoordinates[(lo - 1) * stride + i],
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);
@@ -136,10 +135,10 @@ ol.geom.flat.interpolate.lineStringCoordinateAtM = function(flatCoordinates, off
  * @param {boolean} interpolate Interpolate.
  * @return {ol.Coordinate} Coordinate.
  */
-ol.geom.flat.interpolate.lineStringsCoordinateAtM = function(
+_ol_geom_flat_interpolate_.lineStringsCoordinateAtM = function(
     flatCoordinates, offset, ends, stride, m, extrapolate, interpolate) {
   if (interpolate) {
-    return ol.geom.flat.interpolate.lineStringCoordinateAtM(
+    return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(
         flatCoordinates, offset, ends[ends.length - 1], stride, m, extrapolate);
   }
   var coordinate;
@@ -170,10 +169,11 @@ ol.geom.flat.interpolate.lineStringsCoordinateAtM = function(
     if (m < flatCoordinates[offset + stride - 1]) {
       return null;
     } else if (m <= flatCoordinates[end - 1]) {
-      return ol.geom.flat.interpolate.lineStringCoordinateAtM(
+      return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(
           flatCoordinates, offset, end, stride, m, false);
     }
     offset = end;
   }
   return null;
 };
+export default _ol_geom_flat_interpolate_;

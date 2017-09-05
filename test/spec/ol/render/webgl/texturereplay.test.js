@@ -1,8 +1,8 @@
 
 
-goog.require('ol.render.webgl.TextureReplay');
-goog.require('ol.render.webgl.texturereplay.defaultshader');
-goog.require('ol.render.webgl.texturereplay.defaultshader.Locations');
+import _ol_render_webgl_TextureReplay_ from '../../../../../src/ol/render/webgl/texturereplay';
+import _ol_render_webgl_texturereplay_defaultshader_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader';
+import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader/locations';
 
 describe('ol.render.webgl.TextureReplay', function() {
   var replay;
@@ -10,7 +10,7 @@ describe('ol.render.webgl.TextureReplay', function() {
   beforeEach(function() {
     var tolerance = 0.1;
     var maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new ol.render.webgl.TextureReplay(tolerance, maxExtent);
+    replay = new _ol_render_webgl_TextureReplay_(tolerance, maxExtent);
   });
 
   describe('#setUpProgram', function() {
@@ -33,7 +33,7 @@ describe('ol.render.webgl.TextureReplay', function() {
     it('returns the locations used by the shaders', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          ol.render.webgl.texturereplay.defaultshader.Locations);
+          _ol_render_webgl_texturereplay_defaultshader_Locations_);
     });
 
     it('gets and compiles the shaders', function() {
@@ -42,8 +42,8 @@ describe('ol.render.webgl.TextureReplay', function() {
 
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(context.getProgram.calledWithExactly(
-          ol.render.webgl.texturereplay.defaultshader.fragment,
-          ol.render.webgl.texturereplay.defaultshader.vertex)).to.be(true);
+          _ol_render_webgl_texturereplay_defaultshader_.fragment,
+          _ol_render_webgl_texturereplay_defaultshader_.vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

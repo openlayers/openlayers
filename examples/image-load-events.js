@@ -1,7 +1,7 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.source.ImageWMS');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_source_ImageWMS_ from '../src/ol/source/imagewms';
 
 
 /**
@@ -77,7 +77,7 @@ Progress.prototype.hide = function() {
 
 var progress = new Progress(document.getElementById('progress'));
 
-var source = new ol.source.ImageWMS({
+var source = new _ol_source_ImageWMS_({
   url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'topp:states'},
   serverType: 'geoserver'
@@ -94,13 +94,13 @@ source.on('imageloaderror', function() {
   progress.addLoaded();
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   logo: false,
   layers: [
-    new ol.layer.Image({source: source})
+    new _ol_layer_Image_({source: source})
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-10997148, 4569099],
     zoom: 4
   })

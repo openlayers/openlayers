@@ -1,6 +1,3 @@
-goog.provide('ol.TileRange');
-
-
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
  * by its min/max tile coordinates and is inclusive of coordinates.
@@ -12,7 +9,7 @@ goog.provide('ol.TileRange');
  * @param {number} maxY Maximum Y.
  * @struct
  */
-ol.TileRange = function(minX, maxX, minY, maxY) {
+var _ol_TileRange_ = function(minX, maxX, minY, maxY) {
 
   /**
    * @type {number}
@@ -45,7 +42,7 @@ ol.TileRange = function(minX, maxX, minY, maxY) {
  * @param {ol.TileRange|undefined} tileRange TileRange.
  * @return {ol.TileRange} Tile range.
  */
-ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
+_ol_TileRange_.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
@@ -53,7 +50,7 @@ ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
     tileRange.maxY = maxY;
     return tileRange;
   } else {
-    return new ol.TileRange(minX, maxX, minY, maxY);
+    return new _ol_TileRange_(minX, maxX, minY, maxY);
   }
 };
 
@@ -62,7 +59,7 @@ ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {boolean} Contains tile coordinate.
  */
-ol.TileRange.prototype.contains = function(tileCoord) {
+_ol_TileRange_.prototype.contains = function(tileCoord) {
   return this.containsXY(tileCoord[1], tileCoord[2]);
 };
 
@@ -71,7 +68,7 @@ ol.TileRange.prototype.contains = function(tileCoord) {
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Contains.
  */
-ol.TileRange.prototype.containsTileRange = function(tileRange) {
+_ol_TileRange_.prototype.containsTileRange = function(tileRange) {
   return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
       this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
 };
@@ -82,7 +79,7 @@ ol.TileRange.prototype.containsTileRange = function(tileRange) {
  * @param {number} y Tile coordinate y.
  * @return {boolean} Contains coordinate.
  */
-ol.TileRange.prototype.containsXY = function(x, y) {
+_ol_TileRange_.prototype.containsXY = function(x, y) {
   return this.minX <= x && x <= this.maxX && this.minY <= y && y <= this.maxY;
 };
 
@@ -91,7 +88,7 @@ ol.TileRange.prototype.containsXY = function(x, y) {
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Equals.
  */
-ol.TileRange.prototype.equals = function(tileRange) {
+_ol_TileRange_.prototype.equals = function(tileRange) {
   return this.minX == tileRange.minX && this.minY == tileRange.minY &&
       this.maxX == tileRange.maxX && this.maxY == tileRange.maxY;
 };
@@ -100,7 +97,7 @@ ol.TileRange.prototype.equals = function(tileRange) {
 /**
  * @param {ol.TileRange} tileRange Tile range.
  */
-ol.TileRange.prototype.extend = function(tileRange) {
+_ol_TileRange_.prototype.extend = function(tileRange) {
   if (tileRange.minX < this.minX) {
     this.minX = tileRange.minX;
   }
@@ -119,7 +116,7 @@ ol.TileRange.prototype.extend = function(tileRange) {
 /**
  * @return {number} Height.
  */
-ol.TileRange.prototype.getHeight = function() {
+_ol_TileRange_.prototype.getHeight = function() {
   return this.maxY - this.minY + 1;
 };
 
@@ -127,7 +124,7 @@ ol.TileRange.prototype.getHeight = function() {
 /**
  * @return {ol.Size} Size.
  */
-ol.TileRange.prototype.getSize = function() {
+_ol_TileRange_.prototype.getSize = function() {
   return [this.getWidth(), this.getHeight()];
 };
 
@@ -135,7 +132,7 @@ ol.TileRange.prototype.getSize = function() {
 /**
  * @return {number} Width.
  */
-ol.TileRange.prototype.getWidth = function() {
+_ol_TileRange_.prototype.getWidth = function() {
   return this.maxX - this.minX + 1;
 };
 
@@ -144,9 +141,10 @@ ol.TileRange.prototype.getWidth = function() {
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Intersects.
  */
-ol.TileRange.prototype.intersects = function(tileRange) {
+_ol_TileRange_.prototype.intersects = function(tileRange) {
   return this.minX <= tileRange.maxX &&
       this.maxX >= tileRange.minX &&
       this.minY <= tileRange.maxY &&
       this.maxY >= tileRange.minY;
 };
+export default _ol_TileRange_;

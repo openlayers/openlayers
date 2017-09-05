@@ -1,16 +1,13 @@
-goog.provide('ol.style.Icon');
-
-goog.require('ol');
-goog.require('ol.ImageState');
-goog.require('ol.asserts');
-goog.require('ol.color');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.style.IconAnchorUnits');
-goog.require('ol.style.IconImage');
-goog.require('ol.style.IconOrigin');
-goog.require('ol.style.Image');
-
+import _ol_ from '../index';
+import _ol_ImageState_ from '../imagestate';
+import _ol_asserts_ from '../asserts';
+import _ol_color_ from '../color';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_style_IconAnchorUnits_ from '../style/iconanchorunits';
+import _ol_style_IconImage_ from '../style/iconimage';
+import _ol_style_IconOrigin_ from '../style/iconorigin';
+import _ol_style_Image_ from '../style/image';
 
 /**
  * @classdesc
@@ -21,7 +18,7 @@ goog.require('ol.style.Image');
  * @extends {ol.style.Image}
  * @api
  */
-ol.style.Icon = function(opt_options) {
+var _ol_style_Icon_ = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -42,21 +39,21 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconOrigin}
    */
   this.anchorOrigin_ = options.anchorOrigin !== undefined ?
-    options.anchorOrigin : ol.style.IconOrigin.TOP_LEFT;
+    options.anchorOrigin : _ol_style_IconOrigin_.TOP_LEFT;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
   this.anchorXUnits_ = options.anchorXUnits !== undefined ?
-    options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
+    options.anchorXUnits : _ol_style_IconAnchorUnits_.FRACTION;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
   this.anchorYUnits_ = options.anchorYUnits !== undefined ?
-    options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
+    options.anchorYUnits : _ol_style_IconAnchorUnits_.FRACTION;
 
   /**
    * @private
@@ -80,35 +77,35 @@ ol.style.Icon = function(opt_options) {
    */
   var src = options.src;
 
-  ol.asserts.assert(!(src !== undefined && image),
+  _ol_asserts_.assert(!(src !== undefined && image),
       4); // `image` and `src` cannot be provided at the same time
-  ol.asserts.assert(!image || (image && imgSize),
+  _ol_asserts_.assert(!image || (image && imgSize),
       5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
-    src = image.src || ol.getUid(image).toString();
+    src = image.src || _ol_.getUid(image).toString();
   }
-  ol.asserts.assert(src !== undefined && src.length > 0,
+  _ol_asserts_.assert(src !== undefined && src.length > 0,
       6); // A defined and non-empty `src` or `image` must be provided
 
   /**
    * @type {ol.ImageState}
    */
   var imageState = options.src !== undefined ?
-    ol.ImageState.IDLE : ol.ImageState.LOADED;
+    _ol_ImageState_.IDLE : _ol_ImageState_.LOADED;
 
   /**
    * @private
    * @type {ol.Color}
    */
-  this.color_ = options.color !== undefined ? ol.color.asArray(options.color) :
+  this.color_ = options.color !== undefined ? _ol_color_.asArray(options.color) :
     null;
 
   /**
    * @private
    * @type {ol.style.IconImage}
    */
-  this.iconImage_ = ol.style.IconImage.get(
+  this.iconImage_ = _ol_style_IconImage_.get(
       image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
 
   /**
@@ -122,7 +119,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconOrigin}
    */
   this.offsetOrigin_ = options.offsetOrigin !== undefined ?
-    options.offsetOrigin : ol.style.IconOrigin.TOP_LEFT;
+    options.offsetOrigin : _ol_style_IconOrigin_.TOP_LEFT;
 
   /**
    * @private
@@ -163,7 +160,7 @@ ol.style.Icon = function(opt_options) {
   var snapToPixel = options.snapToPixel !== undefined ?
     options.snapToPixel : true;
 
-  ol.style.Image.call(this, {
+  _ol_style_Image_.call(this, {
     opacity: opacity,
     rotation: rotation,
     scale: scale,
@@ -172,7 +169,8 @@ ol.style.Icon = function(opt_options) {
   });
 
 };
-ol.inherits(ol.style.Icon, ol.style.Image);
+
+_ol_.inherits(_ol_style_Icon_, _ol_style_Image_);
 
 
 /**
@@ -180,10 +178,10 @@ ol.inherits(ol.style.Icon, ol.style.Image);
  * @return {ol.style.Icon} The cloned style.
  * @api
  */
-ol.style.Icon.prototype.clone = function() {
+_ol_style_Icon_.prototype.clone = function() {
   var oldImage = this.getImage(1);
   var newImage;
-  if (this.iconImage_.getImageState() === ol.ImageState.LOADED) {
+  if (this.iconImage_.getImageState() === _ol_ImageState_.LOADED) {
     if (oldImage.tagName.toUpperCase() === 'IMG') {
       newImage = /** @type {Image} */ (oldImage.cloneNode(true));
     } else {
@@ -194,7 +192,7 @@ ol.style.Icon.prototype.clone = function() {
       context.drawImage(oldImage, 0, 0);
     }
   }
-  return new ol.style.Icon({
+  return new _ol_style_Icon_({
     anchor: this.anchor_.slice(),
     anchorOrigin: this.anchorOrigin_,
     anchorXUnits: this.anchorXUnits_,
@@ -220,39 +218,39 @@ ol.style.Icon.prototype.clone = function() {
  * @inheritDoc
  * @api
  */
-ol.style.Icon.prototype.getAnchor = function() {
+_ol_style_Icon_.prototype.getAnchor = function() {
   if (this.normalizedAnchor_) {
     return this.normalizedAnchor_;
   }
   var anchor = this.anchor_;
   var size = this.getSize();
-  if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
-      this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
+  if (this.anchorXUnits_ == _ol_style_IconAnchorUnits_.FRACTION ||
+      this.anchorYUnits_ == _ol_style_IconAnchorUnits_.FRACTION) {
     if (!size) {
       return null;
     }
     anchor = this.anchor_.slice();
-    if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION) {
+    if (this.anchorXUnits_ == _ol_style_IconAnchorUnits_.FRACTION) {
       anchor[0] *= size[0];
     }
-    if (this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
+    if (this.anchorYUnits_ == _ol_style_IconAnchorUnits_.FRACTION) {
       anchor[1] *= size[1];
     }
   }
 
-  if (this.anchorOrigin_ != ol.style.IconOrigin.TOP_LEFT) {
+  if (this.anchorOrigin_ != _ol_style_IconOrigin_.TOP_LEFT) {
     if (!size) {
       return null;
     }
     if (anchor === this.anchor_) {
       anchor = this.anchor_.slice();
     }
-    if (this.anchorOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
-        this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (this.anchorOrigin_ == _ol_style_IconOrigin_.TOP_RIGHT ||
+        this.anchorOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
       anchor[0] = -anchor[0] + size[0];
     }
-    if (this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
-        this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (this.anchorOrigin_ == _ol_style_IconOrigin_.BOTTOM_LEFT ||
+        this.anchorOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
       anchor[1] = -anchor[1] + size[1];
     }
   }
@@ -266,7 +264,7 @@ ol.style.Icon.prototype.getAnchor = function() {
  * @return {ol.Color} Color.
  * @api
  */
-ol.style.Icon.prototype.getColor = function() {
+_ol_style_Icon_.prototype.getColor = function() {
   return this.color_;
 };
 
@@ -278,7 +276,7 @@ ol.style.Icon.prototype.getColor = function() {
  * @override
  * @api
  */
-ol.style.Icon.prototype.getImage = function(pixelRatio) {
+_ol_style_Icon_.prototype.getImage = function(pixelRatio) {
   return this.iconImage_.getImage(pixelRatio);
 };
 
@@ -286,7 +284,7 @@ ol.style.Icon.prototype.getImage = function(pixelRatio) {
 /**
  * @override
  */
-ol.style.Icon.prototype.getImageSize = function() {
+_ol_style_Icon_.prototype.getImageSize = function() {
   return this.iconImage_.getSize();
 };
 
@@ -294,7 +292,7 @@ ol.style.Icon.prototype.getImageSize = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.getHitDetectionImageSize = function() {
+_ol_style_Icon_.prototype.getHitDetectionImageSize = function() {
   return this.getImageSize();
 };
 
@@ -302,7 +300,7 @@ ol.style.Icon.prototype.getHitDetectionImageSize = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.getImageState = function() {
+_ol_style_Icon_.prototype.getImageState = function() {
   return this.iconImage_.getImageState();
 };
 
@@ -310,7 +308,7 @@ ol.style.Icon.prototype.getImageState = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
+_ol_style_Icon_.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.iconImage_.getHitDetectionImage(pixelRatio);
 };
 
@@ -319,25 +317,25 @@ ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
  * @inheritDoc
  * @api
  */
-ol.style.Icon.prototype.getOrigin = function() {
+_ol_style_Icon_.prototype.getOrigin = function() {
   if (this.origin_) {
     return this.origin_;
   }
   var offset = this.offset_;
 
-  if (this.offsetOrigin_ != ol.style.IconOrigin.TOP_LEFT) {
+  if (this.offsetOrigin_ != _ol_style_IconOrigin_.TOP_LEFT) {
     var size = this.getSize();
     var iconImageSize = this.iconImage_.getSize();
     if (!size || !iconImageSize) {
       return null;
     }
     offset = offset.slice();
-    if (this.offsetOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
-        this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (this.offsetOrigin_ == _ol_style_IconOrigin_.TOP_RIGHT ||
+        this.offsetOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
       offset[0] = iconImageSize[0] - size[0] - offset[0];
     }
-    if (this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
-        this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (this.offsetOrigin_ == _ol_style_IconOrigin_.BOTTOM_LEFT ||
+        this.offsetOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
       offset[1] = iconImageSize[1] - size[1] - offset[1];
     }
   }
@@ -351,7 +349,7 @@ ol.style.Icon.prototype.getOrigin = function() {
  * @return {string|undefined} Image src.
  * @api
  */
-ol.style.Icon.prototype.getSrc = function() {
+_ol_style_Icon_.prototype.getSrc = function() {
   return this.iconImage_.getSrc();
 };
 
@@ -360,7 +358,7 @@ ol.style.Icon.prototype.getSrc = function() {
  * @inheritDoc
  * @api
  */
-ol.style.Icon.prototype.getSize = function() {
+_ol_style_Icon_.prototype.getSize = function() {
   return !this.size_ ? this.iconImage_.getSize() : this.size_;
 };
 
@@ -368,8 +366,8 @@ ol.style.Icon.prototype.getSize = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
-  return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE,
+_ol_style_Icon_.prototype.listenImageChange = function(listener, thisArg) {
+  return _ol_events_.listen(this.iconImage_, _ol_events_EventType_.CHANGE,
       listener, thisArg);
 };
 
@@ -382,7 +380,7 @@ ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
  * @override
  * @api
  */
-ol.style.Icon.prototype.load = function() {
+_ol_style_Icon_.prototype.load = function() {
   this.iconImage_.load();
 };
 
@@ -390,7 +388,8 @@ ol.style.Icon.prototype.load = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
-  ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,
+_ol_style_Icon_.prototype.unlistenImageChange = function(listener, thisArg) {
+  _ol_events_.unlisten(this.iconImage_, _ol_events_EventType_.CHANGE,
       listener, thisArg);
 };
+export default _ol_style_Icon_;

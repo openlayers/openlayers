@@ -1,12 +1,9 @@
-goog.provide('ol.geom.Circle');
-
-goog.require('ol');
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat.deflate');
-
+import _ol_ from '../index';
+import _ol_extent_ from '../extent';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_SimpleGeometry_ from '../geom/simplegeometry';
+import _ol_geom_flat_deflate_ from '../geom/flat/deflate';
 
 /**
  * @classdesc
@@ -19,12 +16,13 @@ goog.require('ol.geom.flat.deflate');
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-ol.geom.Circle = function(center, opt_radius, opt_layout) {
-  ol.geom.SimpleGeometry.call(this);
+var _ol_geom_Circle_ = function(center, opt_radius, opt_layout) {
+  _ol_geom_SimpleGeometry_.call(this);
   var radius = opt_radius ? opt_radius : 0;
   this.setCenterAndRadius(center, radius, opt_layout);
 };
-ol.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
+
+_ol_.inherits(_ol_geom_Circle_, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -33,8 +31,8 @@ ol.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
  * @override
  * @api
  */
-ol.geom.Circle.prototype.clone = function() {
-  var circle = new ol.geom.Circle(null);
+_ol_geom_Circle_.prototype.clone = function() {
+  var circle = new _ol_geom_Circle_(null);
   circle.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return circle;
 };
@@ -43,7 +41,7 @@ ol.geom.Circle.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+_ol_geom_Circle_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
@@ -73,7 +71,7 @@ ol.geom.Circle.prototype.closestPointXY = function(x, y, closestPoint, minSquare
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.containsXY = function(x, y) {
+_ol_geom_Circle_.prototype.containsXY = function(x, y) {
   var flatCoordinates = this.flatCoordinates;
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
@@ -86,7 +84,7 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
  * @return {ol.Coordinate} Center.
  * @api
  */
-ol.geom.Circle.prototype.getCenter = function() {
+_ol_geom_Circle_.prototype.getCenter = function() {
   return this.flatCoordinates.slice(0, this.stride);
 };
 
@@ -94,10 +92,10 @@ ol.geom.Circle.prototype.getCenter = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.computeExtent = function(extent) {
+_ol_geom_Circle_.prototype.computeExtent = function(extent) {
   var flatCoordinates = this.flatCoordinates;
   var radius = flatCoordinates[this.stride] - flatCoordinates[0];
-  return ol.extent.createOrUpdate(
+  return _ol_extent_.createOrUpdate(
       flatCoordinates[0] - radius, flatCoordinates[1] - radius,
       flatCoordinates[0] + radius, flatCoordinates[1] + radius,
       extent);
@@ -109,7 +107,7 @@ ol.geom.Circle.prototype.computeExtent = function(extent) {
  * @return {number} Radius.
  * @api
  */
-ol.geom.Circle.prototype.getRadius = function() {
+_ol_geom_Circle_.prototype.getRadius = function() {
   return Math.sqrt(this.getRadiusSquared_());
 };
 
@@ -118,7 +116,7 @@ ol.geom.Circle.prototype.getRadius = function() {
  * @private
  * @return {number} Radius squared.
  */
-ol.geom.Circle.prototype.getRadiusSquared_ = function() {
+_ol_geom_Circle_.prototype.getRadiusSquared_ = function() {
   var dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
   var dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
   return dx * dx + dy * dy;
@@ -129,8 +127,8 @@ ol.geom.Circle.prototype.getRadiusSquared_ = function() {
  * @inheritDoc
  * @api
  */
-ol.geom.Circle.prototype.getType = function() {
-  return ol.geom.GeometryType.CIRCLE;
+_ol_geom_Circle_.prototype.getType = function() {
+  return _ol_geom_GeometryType_.CIRCLE;
 };
 
 
@@ -138,9 +136,9 @@ ol.geom.Circle.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-ol.geom.Circle.prototype.intersectsExtent = function(extent) {
+_ol_geom_Circle_.prototype.intersectsExtent = function(extent) {
   var circleExtent = this.getExtent();
-  if (ol.extent.intersects(extent, circleExtent)) {
+  if (_ol_extent_.intersects(extent, circleExtent)) {
     var center = this.getCenter();
 
     if (extent[0] <= center[0] && extent[2] >= center[0]) {
@@ -150,7 +148,7 @@ ol.geom.Circle.prototype.intersectsExtent = function(extent) {
       return true;
     }
 
-    return ol.extent.forEachCorner(extent, this.intersectsCoordinate, this);
+    return _ol_extent_.forEachCorner(extent, this.intersectsCoordinate, this);
   }
   return false;
 
@@ -162,7 +160,7 @@ ol.geom.Circle.prototype.intersectsExtent = function(extent) {
  * @param {ol.Coordinate} center Center.
  * @api
  */
-ol.geom.Circle.prototype.setCenter = function(center) {
+_ol_geom_Circle_.prototype.setCenter = function(center) {
   var stride = this.stride;
   var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
   var flatCoordinates = center.slice();
@@ -183,9 +181,9 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-ol.geom.Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
+_ol_geom_Circle_.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
   if (!center) {
-    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
   } else {
     this.setLayout(opt_layout, center, 0);
     if (!this.flatCoordinates) {
@@ -193,7 +191,7 @@ ol.geom.Circle.prototype.setCenterAndRadius = function(center, radius, opt_layou
     }
     /** @type {Array.<number>} */
     var flatCoordinates = this.flatCoordinates;
-    var offset = ol.geom.flat.deflate.coordinate(
+    var offset = _ol_geom_flat_deflate_.coordinate(
         flatCoordinates, 0, center, this.stride);
     flatCoordinates[offset++] = flatCoordinates[0] + radius;
     var i, ii;
@@ -209,20 +207,20 @@ ol.geom.Circle.prototype.setCenterAndRadius = function(center, radius, opt_layou
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.getCoordinates = function() {};
+_ol_geom_Circle_.prototype.getCoordinates = function() {};
 
 
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.setCoordinates = function(coordinates, opt_layout) {};
+_ol_geom_Circle_.prototype.setCoordinates = function(coordinates, opt_layout) {};
 
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-ol.geom.Circle.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+_ol_geom_Circle_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
@@ -233,7 +231,7 @@ ol.geom.Circle.prototype.setFlatCoordinates = function(layout, flatCoordinates) 
  * @param {number} radius Radius.
  * @api
  */
-ol.geom.Circle.prototype.setRadius = function(radius) {
+_ol_geom_Circle_.prototype.setRadius = function(radius) {
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };
@@ -261,4 +259,5 @@ ol.geom.Circle.prototype.setRadius = function(radius) {
  * @function
  * @api
  */
-ol.geom.Circle.prototype.transform;
+_ol_geom_Circle_.prototype.transform;
+export default _ol_geom_Circle_;
