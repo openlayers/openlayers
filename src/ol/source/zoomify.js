@@ -13,7 +13,8 @@ goog.require('ol.tilegrid.TileGrid');
 
 /**
  * @classdesc
- * Layer source for tile data in Zoomify format.
+ * Layer source for tile data in Zoomify format (both Zoomify and Internet
+ * Imaging Protocol are supported).
  *
  * @constructor
  * @extends {ol.source.TileImage}
@@ -84,7 +85,7 @@ ol.source.Zoomify = function(opt_options) {
   });
 
   var url = options.url;
-  if (url && url.indexOf('{TileGroup}') == -1) {
+  if (url && url.indexOf('{TileGroup}') == -1 && url.indexOf('{tileIndex}') == -1) {
     url += '{TileGroup}/{z}-{x}-{y}.jpg';
   }
   var urls = ol.TileUrlFunction.expandUrl(url);
@@ -111,13 +112,13 @@ ol.source.Zoomify = function(opt_options) {
           var tileCoordY = -tileCoord[2] - 1;
           var tileIndex =
               tileCoordX +
-              tileCoordY * tierSizeInTiles[tileCoordZ][0] +
-              tileCountUpToTier[tileCoordZ];
-          var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
+              tileCoordY * tierSizeInTiles[tileCoordZ][0];
+          var tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / ol.DEFAULT_TILE_SIZE) | 0;
           var localContext = {
             'z': tileCoordZ,
             'x': tileCoordX,
             'y': tileCoordY,
+            'tileIndex': tileIndex,
             'TileGroup': 'TileGroup' + tileGroup
           };
           return template.replace(/\{(\w+?)\}/g, function(m, p) {
