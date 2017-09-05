@@ -61,7 +61,7 @@ function resolve(fromName, toName) {
   if (relative.endsWith('/')) {
     relative += 'index';
   }
-  return relative;
+  return relative + '.js';
 }
 
 function getUnprovided(path) {
