@@ -8,7 +8,7 @@ goog.require('ol.source.XYZ');
 
 /**
  * @classdesc
- * Layer source for the CartoDB tiles.
+ * Layer source for the CartoDB Maps API.
  *
  * @constructor
  * @extends {ol.source.XYZ}
@@ -102,7 +102,7 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
     this.applyTemplate_(this.templateCache_[paramHash]);
     return;
   }
-  var mapUrl = 'https://' + this.account_ + '.cartodb.com/api/v1/map';
+  var mapUrl = 'https://' + this.account_ + '.carto.com/api/v1/map';
 
   if (this.mapId_) {
     mapUrl += '/named/' + this.mapId_;
