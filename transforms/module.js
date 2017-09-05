@@ -259,5 +259,17 @@ module.exports = function(info, api) {
   // replace any initial comments
   root.get().node.comments = comments;
 
+  // add @module annotation for src modules
+  if (info.path.startsWith('src')) {
+    const name = info.path.replace(/^src\//, '').replace(/\.js$/, '');
+    const comment = j.commentBlock(`*\n * @module ${name}\n `);
+    const node = root.get().node;
+    if (!node.comments) {
+      node.comments = [comment];
+    } else {
+      node.comments.unshift(comment);
+    }
+  }
+
   return root.toSource({quote: 'single'});
 };
