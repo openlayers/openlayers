@@ -11,6 +11,7 @@ goog.require('ol.format.filter.Filter');
  * Base class for WFS GetFeature n-ary logical filters.
  *
  * @constructor
+ * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @param {...ol.format.filter.Filter} conditions Conditions.
  * @extends {ol.format.filter.Filter}

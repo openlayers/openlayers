@@ -8,6 +8,7 @@ goog.require('ol.format.filter.LogicalNary');
  * Represents a logical `<And>` operator between two or more filter conditions.
  *
  * @constructor
+ * @abstract
  * @param {...ol.format.filter.Filter} conditions Conditions.
  * @extends {ol.format.filter.LogicalNary}
  * @api

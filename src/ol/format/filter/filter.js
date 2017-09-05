@@ -7,6 +7,7 @@ goog.provide('ol.format.filter.Filter');
  * Base class for WFS GetFeature filters.
  *
  * @constructor
+ * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @struct
  * @api

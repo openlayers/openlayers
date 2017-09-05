@@ -10,6 +10,7 @@ goog.require('ol.format.filter.Comparison');
  * Base class for WFS GetFeature property binary comparison filters.
  *
  * @constructor
+ * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.

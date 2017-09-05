@@ -11,6 +11,7 @@ goog.require('ol.format.filter.Filter');
  * relates to a given geometry.
  *
  * @constructor
+ * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} geometryName Geometry name to use.
  * @param {!ol.geom.Geometry} geometry Geometry.
