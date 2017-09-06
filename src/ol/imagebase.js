@@ -79,10 +79,9 @@ ol.ImageBase.prototype.getExtent = function() {
 
 /**
  * @abstract
- * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  */
-ol.ImageBase.prototype.getImage = function(opt_context) {};
+ol.ImageBase.prototype.getImage = function() {};
 
 
 /**

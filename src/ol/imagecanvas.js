@@ -87,6 +87,6 @@ ol.ImageCanvas.prototype.load = function() {
 /**
  * @inheritDoc
  */
-ol.ImageCanvas.prototype.getImage = function(opt_context) {
+ol.ImageCanvas.prototype.getImage = function() {
   return this.canvas_;
 };

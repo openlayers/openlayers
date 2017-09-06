@@ -127,7 +127,7 @@ ol.reproj.Image.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.reproj.Image.prototype.getImage = function(opt_context) {
+ol.reproj.Image.prototype.getImage = function() {
   return this.canvas_;
 };
 
