@@ -1,36 +1,36 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.events.condition');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.interaction.Extent');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_events_condition_ from '../src/ol/events/condition';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_interaction_Extent_ from '../src/ol/interaction/extent';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   url: 'data/geojson/countries.geojson',
-  format: new ol.format.GeoJSON()
+  format: new _ol_format_GeoJSON_()
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     }),
-    new ol.layer.Vector({
+    new _ol_layer_Vector_({
       source: vectorSource
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
 });
 
-var extent = new ol.interaction.Extent({
-  condition: ol.events.condition.platformModifierKeyOnly
+var extent = new _ol_interaction_Extent_({
+  condition: _ol_events_condition_.platformModifierKeyOnly
 });
 map.addInteraction(extent);
 extent.setActive(false);

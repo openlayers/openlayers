@@ -1,14 +1,11 @@
-goog.provide('ol.source.ImageMapGuide');
-
-goog.require('ol');
-goog.require('ol.Image');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.extent');
-goog.require('ol.obj');
-goog.require('ol.source.Image');
-goog.require('ol.uri');
-
+import _ol_ from '../index';
+import _ol_Image_ from '../image';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_extent_ from '../extent';
+import _ol_obj_ from '../obj';
+import _ol_source_Image_ from '../source/image';
+import _ol_uri_ from '../uri';
 
 /**
  * @classdesc
@@ -20,9 +17,9 @@ goog.require('ol.uri');
  * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api
  */
-ol.source.ImageMapGuide = function(options) {
+var _ol_source_ImageMapGuide_ = function(options) {
 
-  ol.source.Image.call(this, {
+  _ol_source_Image_.call(this, {
     projection: options.projection,
     resolutions: options.resolutions
   });
@@ -58,7 +55,7 @@ ol.source.ImageMapGuide = function(options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    options.imageLoadFunction : _ol_source_Image_.defaultImageLoadFunction;
 
   /**
    * @private
@@ -99,7 +96,8 @@ ol.source.ImageMapGuide = function(options) {
   this.renderedRevision_ = 0;
 
 };
-ol.inherits(ol.source.ImageMapGuide, ol.source.Image);
+
+_ol_.inherits(_ol_source_ImageMapGuide_, _ol_source_Image_);
 
 
 /**
@@ -108,7 +106,7 @@ ol.inherits(ol.source.ImageMapGuide, ol.source.Image);
  * @return {Object} Params.
  * @api
  */
-ol.source.ImageMapGuide.prototype.getParams = function() {
+_ol_source_ImageMapGuide_.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -116,7 +114,7 @@ ol.source.ImageMapGuide.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+_ol_source_ImageMapGuide_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
@@ -125,25 +123,25 @@ ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
-      ol.extent.containsExtent(image.getExtent(), extent)) {
+      _ol_extent_.containsExtent(image.getExtent(), extent)) {
     return image;
   }
 
   if (this.ratio_ != 1) {
     extent = extent.slice();
-    ol.extent.scaleFromCenter(extent, this.ratio_);
+    _ol_extent_.scaleFromCenter(extent, this.ratio_);
   }
-  var width = ol.extent.getWidth(extent) / resolution;
-  var height = ol.extent.getHeight(extent) / resolution;
+  var width = _ol_extent_.getWidth(extent) / resolution;
+  var height = _ol_extent_.getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
   if (this.url_ !== undefined) {
     var imageUrl = this.getUrl(this.url_, this.params_, extent, size,
         projection);
-    image = new ol.Image(extent, resolution, pixelRatio,
+    image = new _ol_Image_(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
-    ol.events.listen(image, ol.events.EventType.CHANGE,
+    _ol_events_.listen(image, _ol_events_EventType_.CHANGE,
         this.handleImageChange, this);
   } else {
     image = null;
@@ -160,7 +158,7 @@ ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
-ol.source.ImageMapGuide.prototype.getImageLoadFunction = function() {
+_ol_source_ImageMapGuide_.prototype.getImageLoadFunction = function() {
   return this.imageLoadFunction_;
 };
 
@@ -172,9 +170,9 @@ ol.source.ImageMapGuide.prototype.getImageLoadFunction = function() {
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
  */
-ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
-  var mcsW = ol.extent.getWidth(extent);
-  var mcsH = ol.extent.getHeight(extent);
+_ol_source_ImageMapGuide_.getScale = function(extent, size, metersPerUnit, dpi) {
+  var mcsW = _ol_extent_.getWidth(extent);
+  var mcsH = _ol_extent_.getHeight(extent);
   var devW = size[0];
   var devH = size[1];
   var mpp = 0.0254 / dpi;
@@ -191,8 +189,8 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @param {Object} params Params.
  * @api
  */
-ol.source.ImageMapGuide.prototype.updateParams = function(params) {
-  ol.obj.assign(this.params_, params);
+_ol_source_ImageMapGuide_.prototype.updateParams = function(params) {
+  _ol_obj_.assign(this.params_, params);
   this.changed();
 };
 
@@ -205,10 +203,10 @@ ol.source.ImageMapGuide.prototype.updateParams = function(params) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
-ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
-  var scale = ol.source.ImageMapGuide.getScale(extent, size,
+_ol_source_ImageMapGuide_.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
+  var scale = _ol_source_ImageMapGuide_.getScale(extent, size,
       this.metersPerUnit_, this.displayDpi_);
-  var center = ol.extent.getCenter(extent);
+  var center = _ol_extent_.getCenter(extent);
   var baseParams = {
     'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
     'VERSION': '2.0.0',
@@ -222,8 +220,8 @@ ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, siz
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  ol.obj.assign(baseParams, params);
-  return ol.uri.appendParams(baseUrl, baseParams);
+  _ol_obj_.assign(baseParams, params);
+  return _ol_uri_.appendParams(baseUrl, baseParams);
 };
 
 
@@ -232,9 +230,10 @@ ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, siz
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-ol.source.ImageMapGuide.prototype.setImageLoadFunction = function(
+_ol_source_ImageMapGuide_.prototype.setImageLoadFunction = function(
     imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();
 };
+export default _ol_source_ImageMapGuide_;

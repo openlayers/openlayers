@@ -1,55 +1,55 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.interaction');
-goog.require('ol.interaction.Modify');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_interaction_ from '../src/ol/interaction';
+import _ol_interaction_Modify_ from '../src/ol/interaction/modify';
+import _ol_interaction_Select_ from '../src/ol/interaction/select';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
 var styleFunction = (function() {
   var styles = {};
-  var image = new ol.style.Circle({
+  var image = new _ol_style_Circle_({
     radius: 5,
     fill: null,
-    stroke: new ol.style.Stroke({color: 'orange', width: 2})
+    stroke: new _ol_style_Stroke_({color: 'orange', width: 2})
   });
-  styles['Point'] = new ol.style.Style({image: image});
-  styles['Polygon'] = new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  styles['Point'] = new _ol_style_Style_({image: image});
+  styles['Polygon'] = new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'blue',
       width: 3
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   });
-  styles['MultiLineString'] = new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  styles['MultiLineString'] = new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 3
     })
   });
-  styles['MultiPolygon'] = new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  styles['MultiPolygon'] = new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'yellow',
       width: 1
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255, 255, 0, 0.1)'
     })
   });
-  styles['default'] = new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  styles['default'] = new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'red',
       width: 3
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255, 0, 0, 0.1)'
     }),
     image: image
@@ -144,11 +144,11 @@ var geojsonObject = {
   }]
 };
 
-var source = new ol.source.Vector({
-  features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+var source = new _ol_source_Vector_({
+  features: (new _ol_format_GeoJSON_()).readFeatures(geojsonObject)
 });
 
-var layer = new ol.layer.Vector({
+var layer = new _ol_layer_Vector_({
   source: source,
   style: styleFunction
 });
@@ -156,19 +156,19 @@ var layer = new ol.layer.Vector({
 var overlayStyle = (function() {
   var styles = {};
   styles['Polygon'] = [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
+    new _ol_style_Style_({
+      fill: new _ol_style_Fill_({
         color: [255, 255, 255, 0.5]
       })
     }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: [0, 153, 255, 1],
         width: 3
       })
@@ -177,14 +177,14 @@ var overlayStyle = (function() {
   styles['MultiPolygon'] = styles['Polygon'];
 
   styles['LineString'] = [
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
-    new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: [0, 153, 255, 1],
         width: 3
       })
@@ -193,13 +193,13 @@ var overlayStyle = (function() {
   styles['MultiLineString'] = styles['LineString'];
 
   styles['Point'] = [
-    new ol.style.Style({
-      image: new ol.style.Circle({
+    new _ol_style_Style_({
+      image: new _ol_style_Circle_({
         radius: 7,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: [0, 153, 255, 1]
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: [255, 255, 255, 0.75],
           width: 1.5
         })
@@ -216,11 +216,11 @@ var overlayStyle = (function() {
   };
 })();
 
-var select = new ol.interaction.Select({
+var select = new _ol_interaction_Select_({
   style: overlayStyle
 });
 
-var modify = new ol.interaction.Modify({
+var modify = new _ol_interaction_Modify_({
   features: select.getFeatures(),
   style: overlayStyle,
   insertVertexCondition: function() {
@@ -231,11 +231,11 @@ var modify = new ol.interaction.Modify({
   }
 });
 
-var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([select, modify]),
+var map = new _ol_Map_({
+  interactions: _ol_interaction_.defaults().extend([select, modify]),
   layers: [layer],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 1000000],
     zoom: 2
   })

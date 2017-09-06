@@ -1,46 +1,46 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.events.condition');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.interaction.DragBox');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_events_condition_ from '../src/ol/events/condition';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_interaction_DragBox_ from '../src/ol/interaction/dragbox';
+import _ol_interaction_Select_ from '../src/ol/interaction/select';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
 
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   url: 'data/geojson/countries.geojson',
-  format: new ol.format.GeoJSON()
+  format: new _ol_format_GeoJSON_()
 });
 
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     }),
-    new ol.layer.Vector({
+    new _ol_layer_Vector_({
       source: vectorSource
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
 });
 
 // a normal select interaction to handle click
-var select = new ol.interaction.Select();
+var select = new _ol_interaction_Select_();
 map.addInteraction(select);
 
 var selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
-var dragBox = new ol.interaction.DragBox({
-  condition: ol.events.condition.platformModifierKeyOnly
+var dragBox = new _ol_interaction_DragBox_({
+  condition: _ol_events_condition_.platformModifierKeyOnly
 });
 
 map.addInteraction(dragBox);

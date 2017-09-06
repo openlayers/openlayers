@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.Within');
-
-goog.require('ol');
-goog.require('ol.format.filter.Spatial');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Spatial_ from '../filter/spatial';
 
 /**
  * @classdesc
@@ -17,9 +14,11 @@ goog.require('ol.format.filter.Spatial');
  * @extends {ol.format.filter.Spatial}
  * @api
  */
-ol.format.filter.Within = function(geometryName, geometry, opt_srsName) {
+var _ol_format_filter_Within_ = function(geometryName, geometry, opt_srsName) {
 
-  ol.format.filter.Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
+  _ol_format_filter_Spatial_.call(this, 'Within', geometryName, geometry, opt_srsName);
 
 };
-ol.inherits(ol.format.filter.Within, ol.format.filter.Spatial);
+
+_ol_.inherits(_ol_format_filter_Within_, _ol_format_filter_Spatial_);
+export default _ol_format_filter_Within_;

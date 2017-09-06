@@ -1,13 +1,10 @@
-goog.provide('ol.geom.GeometryCollection');
-
-goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.obj');
-
+import _ol_ from '../index';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_extent_ from '../extent';
+import _ol_geom_Geometry_ from '../geom/geometry';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_obj_ from '../obj';
 
 /**
  * @classdesc
@@ -18,9 +15,9 @@ goog.require('ol.obj');
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.
  * @api
  */
-ol.geom.GeometryCollection = function(opt_geometries) {
+var _ol_geom_GeometryCollection_ = function(opt_geometries) {
 
-  ol.geom.Geometry.call(this);
+  _ol_geom_Geometry_.call(this);
 
   /**
    * @private
@@ -30,7 +27,8 @@ ol.geom.GeometryCollection = function(opt_geometries) {
 
   this.listenGeometriesChange_();
 };
-ol.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
+
+_ol_.inherits(_ol_geom_GeometryCollection_, _ol_geom_Geometry_);
 
 
 /**
@@ -38,7 +36,7 @@ ol.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
  * @private
  * @return {Array.<ol.geom.Geometry>} Cloned geometries.
  */
-ol.geom.GeometryCollection.cloneGeometries_ = function(geometries) {
+_ol_geom_GeometryCollection_.cloneGeometries_ = function(geometries) {
   var clonedGeometries = [];
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -51,14 +49,14 @@ ol.geom.GeometryCollection.cloneGeometries_ = function(geometries) {
 /**
  * @private
  */
-ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
+_ol_geom_GeometryCollection_.prototype.unlistenGeometriesChange_ = function() {
   var i, ii;
   if (!this.geometries_) {
     return;
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
-    ol.events.unlisten(
-        this.geometries_[i], ol.events.EventType.CHANGE,
+    _ol_events_.unlisten(
+        this.geometries_[i], _ol_events_EventType_.CHANGE,
         this.changed, this);
   }
 };
@@ -67,14 +65,14 @@ ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
 /**
  * @private
  */
-ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
+_ol_geom_GeometryCollection_.prototype.listenGeometriesChange_ = function() {
   var i, ii;
   if (!this.geometries_) {
     return;
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
-    ol.events.listen(
-        this.geometries_[i], ol.events.EventType.CHANGE,
+    _ol_events_.listen(
+        this.geometries_[i], _ol_events_EventType_.CHANGE,
         this.changed, this);
   }
 };
@@ -86,8 +84,8 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
  * @override
  * @api
  */
-ol.geom.GeometryCollection.prototype.clone = function() {
-  var geometryCollection = new ol.geom.GeometryCollection(null);
+_ol_geom_GeometryCollection_.prototype.clone = function() {
+  var geometryCollection = new _ol_geom_GeometryCollection_(null);
   geometryCollection.setGeometries(this.geometries_);
   return geometryCollection;
 };
@@ -96,9 +94,9 @@ ol.geom.GeometryCollection.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+_ol_geom_GeometryCollection_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
-      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   var geometries = this.geometries_;
@@ -114,7 +112,7 @@ ol.geom.GeometryCollection.prototype.closestPointXY = function(x, y, closestPoin
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
+_ol_geom_GeometryCollection_.prototype.containsXY = function(x, y) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -129,11 +127,11 @@ ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.computeExtent = function(extent) {
-  ol.extent.createOrUpdateEmpty(extent);
+_ol_geom_GeometryCollection_.prototype.computeExtent = function(extent) {
+  _ol_extent_.createOrUpdateEmpty(extent);
   var geometries = this.geometries_;
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    ol.extent.extend(extent, geometries[i].getExtent());
+    _ol_extent_.extend(extent, geometries[i].getExtent());
   }
   return extent;
 };
@@ -144,15 +142,15 @@ ol.geom.GeometryCollection.prototype.computeExtent = function(extent) {
  * @return {Array.<ol.geom.Geometry>} Geometries.
  * @api
  */
-ol.geom.GeometryCollection.prototype.getGeometries = function() {
-  return ol.geom.GeometryCollection.cloneGeometries_(this.geometries_);
+_ol_geom_GeometryCollection_.prototype.getGeometries = function() {
+  return _ol_geom_GeometryCollection_.cloneGeometries_(this.geometries_);
 };
 
 
 /**
  * @return {Array.<ol.geom.Geometry>} Geometries.
  */
-ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
+_ol_geom_GeometryCollection_.prototype.getGeometriesArray = function() {
   return this.geometries_;
 };
 
@@ -160,9 +158,9 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) {
+_ol_geom_GeometryCollection_.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    ol.obj.clear(this.simplifiedGeometryCache);
+    _ol_obj_.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
@@ -188,7 +186,7 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTol
       }
     }
     if (simplified) {
-      var simplifiedGeometryCollection = new ol.geom.GeometryCollection(null);
+      var simplifiedGeometryCollection = new _ol_geom_GeometryCollection_(null);
       simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
       this.simplifiedGeometryCache[key] = simplifiedGeometryCollection;
       return simplifiedGeometryCollection;
@@ -204,8 +202,8 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTol
  * @inheritDoc
  * @api
  */
-ol.geom.GeometryCollection.prototype.getType = function() {
-  return ol.geom.GeometryType.GEOMETRY_COLLECTION;
+_ol_geom_GeometryCollection_.prototype.getType = function() {
+  return _ol_geom_GeometryType_.GEOMETRY_COLLECTION;
 };
 
 
@@ -213,7 +211,7 @@ ol.geom.GeometryCollection.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
+_ol_geom_GeometryCollection_.prototype.intersectsExtent = function(extent) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -228,7 +226,7 @@ ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
 /**
  * @return {boolean} Is empty.
  */
-ol.geom.GeometryCollection.prototype.isEmpty = function() {
+_ol_geom_GeometryCollection_.prototype.isEmpty = function() {
   return this.geometries_.length === 0;
 };
 
@@ -237,7 +235,7 @@ ol.geom.GeometryCollection.prototype.isEmpty = function() {
  * @inheritDoc
  * @api
  */
-ol.geom.GeometryCollection.prototype.rotate = function(angle, anchor) {
+_ol_geom_GeometryCollection_.prototype.rotate = function(angle, anchor) {
   var geometries = this.geometries_;
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].rotate(angle, anchor);
@@ -250,10 +248,10 @@ ol.geom.GeometryCollection.prototype.rotate = function(angle, anchor) {
  * @inheritDoc
  * @api
  */
-ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
+_ol_geom_GeometryCollection_.prototype.scale = function(sx, opt_sy, opt_anchor) {
   var anchor = opt_anchor;
   if (!anchor) {
-    anchor = ol.extent.getCenter(this.getExtent());
+    anchor = _ol_extent_.getCenter(this.getExtent());
   }
   var geometries = this.geometries_;
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
@@ -268,16 +266,16 @@ ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  * @api
  */
-ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
+_ol_geom_GeometryCollection_.prototype.setGeometries = function(geometries) {
   this.setGeometriesArray(
-      ol.geom.GeometryCollection.cloneGeometries_(geometries));
+      _ol_geom_GeometryCollection_.cloneGeometries_(geometries));
 };
 
 
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  */
-ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
+_ol_geom_GeometryCollection_.prototype.setGeometriesArray = function(geometries) {
   this.unlistenGeometriesChange_();
   this.geometries_ = geometries;
   this.listenGeometriesChange_();
@@ -289,7 +287,7 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
  * @inheritDoc
  * @api
  */
-ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
+_ol_geom_GeometryCollection_.prototype.applyTransform = function(transformFn) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -306,7 +304,7 @@ ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
  * @override
  * @api
  */
-ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {
+_ol_geom_GeometryCollection_.prototype.translate = function(deltaX, deltaY) {
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -319,7 +317,8 @@ ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.disposeInternal = function() {
+_ol_geom_GeometryCollection_.prototype.disposeInternal = function() {
   this.unlistenGeometriesChange_();
-  ol.geom.Geometry.prototype.disposeInternal.call(this);
+  _ol_geom_Geometry_.prototype.disposeInternal.call(this);
 };
+export default _ol_geom_GeometryCollection_;

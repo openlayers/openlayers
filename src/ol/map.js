@@ -1,39 +1,37 @@
-goog.provide('ol.Map');
-
-goog.require('ol');
-goog.require('ol.PluggableMap');
-goog.require('ol.PluginType');
-goog.require('ol.control');
-goog.require('ol.interaction');
-goog.require('ol.obj');
-goog.require('ol.plugins');
-goog.require('ol.renderer.canvas.ImageLayer');
-goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.canvas.TileLayer');
-goog.require('ol.renderer.canvas.VectorLayer');
-goog.require('ol.renderer.canvas.VectorTileLayer');
-goog.require('ol.renderer.webgl.ImageLayer');
-goog.require('ol.renderer.webgl.Map');
-goog.require('ol.renderer.webgl.TileLayer');
-goog.require('ol.renderer.webgl.VectorLayer');
+import _ol_ from './index';
+import _ol_PluggableMap_ from './pluggablemap';
+import _ol_PluginType_ from './plugintype';
+import _ol_control_ from './control';
+import _ol_interaction_ from './interaction';
+import _ol_obj_ from './obj';
+import _ol_plugins_ from './plugins';
+import _ol_renderer_canvas_ImageLayer_ from './renderer/canvas/imagelayer';
+import _ol_renderer_canvas_Map_ from './renderer/canvas/map';
+import _ol_renderer_canvas_TileLayer_ from './renderer/canvas/tilelayer';
+import _ol_renderer_canvas_VectorLayer_ from './renderer/canvas/vectorlayer';
+import _ol_renderer_canvas_VectorTileLayer_ from './renderer/canvas/vectortilelayer';
+import _ol_renderer_webgl_ImageLayer_ from './renderer/webgl/imagelayer';
+import _ol_renderer_webgl_Map_ from './renderer/webgl/map';
+import _ol_renderer_webgl_TileLayer_ from './renderer/webgl/tilelayer';
+import _ol_renderer_webgl_VectorLayer_ from './renderer/webgl/vectorlayer';
 
 
-if (ol.ENABLE_CANVAS) {
-  ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.canvas.Map);
-  ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
-    ol.renderer.canvas.ImageLayer,
-    ol.renderer.canvas.TileLayer,
-    ol.renderer.canvas.VectorLayer,
-    ol.renderer.canvas.VectorTileLayer
+if (_ol_.ENABLE_CANVAS) {
+  _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_canvas_Map_);
+  _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
+    _ol_renderer_canvas_ImageLayer_,
+    _ol_renderer_canvas_TileLayer_,
+    _ol_renderer_canvas_VectorLayer_,
+    _ol_renderer_canvas_VectorTileLayer_
   ]);
 }
 
-if (ol.ENABLE_WEBGL) {
-  ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.webgl.Map);
-  ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
-    ol.renderer.webgl.ImageLayer,
-    ol.renderer.webgl.TileLayer,
-    ol.renderer.webgl.VectorLayer
+if (_ol_.ENABLE_WEBGL) {
+  _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_webgl_Map_);
+  _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
+    _ol_renderer_webgl_ImageLayer_,
+    _ol_renderer_webgl_TileLayer_,
+    _ol_renderer_webgl_VectorLayer_
   ]);
 }
 
@@ -86,15 +84,17 @@ if (ol.ENABLE_WEBGL) {
  * @fires ol.render.Event#precompose
  * @api
  */
-ol.Map = function(options) {
-  options = ol.obj.assign({}, options);
+var _ol_Map_ = function(options) {
+  options = _ol_obj_.assign({}, options);
   if (!options.controls) {
-    options.controls = ol.control.defaults();
+    options.controls = _ol_control_.defaults();
   }
   if (!options.interactions) {
-    options.interactions = ol.interaction.defaults();
+    options.interactions = _ol_interaction_.defaults();
   }
 
-  ol.PluggableMap.call(this, options);
+  _ol_PluggableMap_.call(this, options);
 };
-ol.inherits(ol.Map, ol.PluggableMap);
+
+_ol_.inherits(_ol_Map_, _ol_PluggableMap_);
+export default _ol_Map_;

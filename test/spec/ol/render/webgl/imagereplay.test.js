@@ -1,15 +1,15 @@
 
 
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.Point');
-goog.require('ol.render.webgl.ImageReplay');
-goog.require('ol.style.Image');
+import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/multipoint';
+import _ol_geom_Point_ from '../../../../../src/ol/geom/point';
+import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/imagereplay';
+import _ol_style_Image_ from '../../../../../src/ol/style/image';
 
 describe('ol.render.webgl.ImageReplay', function() {
   var replay;
 
   var createImageStyle = function(image) {
-    var imageStyle = new ol.style.Image({
+    var imageStyle = new _ol_style_Image_({
       opacity: 0.1,
       rotateWithView: true,
       rotation: 1.5,
@@ -42,7 +42,7 @@ describe('ol.render.webgl.ImageReplay', function() {
   beforeEach(function() {
     var tolerance = 0.1;
     var maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new ol.render.webgl.ImageReplay(tolerance, maxExtent);
+    replay = new _ol_render_webgl_ImageReplay_(tolerance, maxExtent);
   });
 
   describe('#setImageStyle', function() {
@@ -96,7 +96,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     it('sets the buffer data', function() {
       var point;
 
-      point = new ol.geom.Point([1000, 2000]);
+      point = new _ol_geom_Point_([1000, 2000]);
       replay.drawPoint(point, null);
       expect(replay.vertices).to.have.length(32);
       expect(replay.indices).to.have.length(6);
@@ -107,7 +107,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices[4]).to.be(2);
       expect(replay.indices[5]).to.be(3);
 
-      point = new ol.geom.Point([2000, 3000]);
+      point = new _ol_geom_Point_([2000, 3000]);
       replay.drawPoint(point, null);
       expect(replay.vertices).to.have.length(64);
       expect(replay.indices).to.have.length(12);
@@ -129,7 +129,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     it('sets the buffer data', function() {
       var multiPoint;
 
-      multiPoint = new ol.geom.MultiPoint(
+      multiPoint = new _ol_geom_MultiPoint_(
           [[1000, 2000], [2000, 3000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(64);
@@ -147,7 +147,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices[10]).to.be(6);
       expect(replay.indices[11]).to.be(7);
 
-      multiPoint = new ol.geom.MultiPoint(
+      multiPoint = new _ol_geom_MultiPoint_(
           [[3000, 4000], [4000, 5000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(128);

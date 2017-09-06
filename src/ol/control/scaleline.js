@@ -1,15 +1,12 @@
-goog.provide('ol.control.ScaleLine');
-
-goog.require('ol');
-goog.require('ol.Object');
-goog.require('ol.asserts');
-goog.require('ol.control.Control');
-goog.require('ol.control.ScaleLineUnits');
-goog.require('ol.css');
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.proj.Units');
-
+import _ol_ from '../index';
+import _ol_Object_ from '../object';
+import _ol_asserts_ from '../asserts';
+import _ol_control_Control_ from '../control/control';
+import _ol_control_ScaleLineUnits_ from '../control/scalelineunits';
+import _ol_css_ from '../css';
+import _ol_events_ from '../events';
+import _ol_proj_ from '../proj';
+import _ol_proj_Units_ from '../proj/units';
 
 /**
  * @classdesc
@@ -26,7 +23,7 @@ goog.require('ol.proj.Units');
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
  * @api
  */
-ol.control.ScaleLine = function(opt_options) {
+var _ol_control_ScaleLine_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -44,7 +41,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.element_ = document.createElement('DIV');
-  this.element_.className = className + ' ' + ol.css.CLASS_UNSELECTABLE;
+  this.element_.className = className + ' ' + _ol_css_.CLASS_UNSELECTABLE;
   this.element_.appendChild(this.innerElement_);
 
   /**
@@ -77,30 +74,31 @@ ol.control.ScaleLine = function(opt_options) {
    */
   this.renderedHTML_ = '';
 
-  var render = options.render ? options.render : ol.control.ScaleLine.render;
+  var render = options.render ? options.render : _ol_control_ScaleLine_.render;
 
-  ol.control.Control.call(this, {
+  _ol_control_Control_.call(this, {
     element: this.element_,
     render: render,
     target: options.target
   });
 
-  ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.control.ScaleLine.Property_.UNITS),
+  _ol_events_.listen(
+      this, _ol_Object_.getChangeEventType(_ol_control_ScaleLine_.Property_.UNITS),
       this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
-      ol.control.ScaleLineUnits.METRIC);
+      _ol_control_ScaleLineUnits_.METRIC);
 
 };
-ol.inherits(ol.control.ScaleLine, ol.control.Control);
+
+_ol_.inherits(_ol_control_ScaleLine_, _ol_control_Control_);
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
+_ol_control_ScaleLine_.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
@@ -110,9 +108,10 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
  * @observable
  * @api
  */
-ol.control.ScaleLine.prototype.getUnits = function() {
-  return /** @type {ol.control.ScaleLineUnits|undefined} */ (
-    this.get(ol.control.ScaleLine.Property_.UNITS));
+_ol_control_ScaleLine_.prototype.getUnits = function() {
+  return (
+    /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(_ol_control_ScaleLine_.Property_.UNITS)
+  );
 };
 
 
@@ -122,7 +121,7 @@ ol.control.ScaleLine.prototype.getUnits = function() {
  * @this {ol.control.ScaleLine}
  * @api
  */
-ol.control.ScaleLine.render = function(mapEvent) {
+_ol_control_ScaleLine_.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (!frameState) {
     this.viewState_ = null;
@@ -136,7 +135,7 @@ ol.control.ScaleLine.render = function(mapEvent) {
 /**
  * @private
  */
-ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
+_ol_control_ScaleLine_.prototype.handleUnitsChanged_ = function() {
   this.updateElement_();
 };
 
@@ -147,15 +146,15 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
  * @observable
  * @api
  */
-ol.control.ScaleLine.prototype.setUnits = function(units) {
-  this.set(ol.control.ScaleLine.Property_.UNITS, units);
+_ol_control_ScaleLine_.prototype.setUnits = function(units) {
+  this.set(_ol_control_ScaleLine_.Property_.UNITS, units);
 };
 
 
 /**
  * @private
  */
-ol.control.ScaleLine.prototype.updateElement_ = function() {
+_ol_control_ScaleLine_.prototype.updateElement_ = function() {
   var viewState = this.viewState_;
 
   if (!viewState) {
@@ -169,17 +168,17 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   var center = viewState.center;
   var projection = viewState.projection;
   var units = this.getUnits();
-  var pointResolutionUnits = units == ol.control.ScaleLineUnits.DEGREES ?
-    ol.proj.Units.DEGREES :
-    ol.proj.Units.METERS;
+  var pointResolutionUnits = units == _ol_control_ScaleLineUnits_.DEGREES ?
+    _ol_proj_Units_.DEGREES :
+    _ol_proj_Units_.METERS;
   var pointResolution =
-      ol.proj.getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
+      _ol_proj_.getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
-  if (units == ol.control.ScaleLineUnits.DEGREES) {
-    var metersPerDegree = ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES];
-    if (projection.getUnits() == ol.proj.Units.DEGREES) {
+  if (units == _ol_control_ScaleLineUnits_.DEGREES) {
+    var metersPerDegree = _ol_proj_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES];
+    if (projection.getUnits() == _ol_proj_Units_.DEGREES) {
       nominalCount *= metersPerDegree;
     } else {
       pointResolution /= metersPerDegree;
@@ -193,7 +192,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     } else {
       suffix = '\u00b0'; // degrees
     }
-  } else if (units == ol.control.ScaleLineUnits.IMPERIAL) {
+  } else if (units == _ol_control_ScaleLineUnits_.IMPERIAL) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution /= 0.0254;
@@ -204,10 +203,10 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       suffix = 'mi';
       pointResolution /= 1609.344;
     }
-  } else if (units == ol.control.ScaleLineUnits.NAUTICAL) {
+  } else if (units == _ol_control_ScaleLineUnits_.NAUTICAL) {
     pointResolution /= 1852;
     suffix = 'nm';
-  } else if (units == ol.control.ScaleLineUnits.METRIC) {
+  } else if (units == _ol_control_ScaleLineUnits_.METRIC) {
     if (nominalCount < 0.001) {
       suffix = 'μm';
       pointResolution *= 1000000;
@@ -220,7 +219,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       suffix = 'km';
       pointResolution /= 1000;
     }
-  } else if (units == ol.control.ScaleLineUnits.US) {
+  } else if (units == _ol_control_ScaleLineUnits_.US) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution *= 39.37;
@@ -232,14 +231,14 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    ol.asserts.assert(false, 33); // Invalid units
+    _ol_asserts_.assert(false, 33); // Invalid units
   }
 
   var i = 3 * Math.floor(
       Math.log(this.minWidth_ * pointResolution) / Math.log(10));
   var count, width;
   while (true) {
-    count = ol.control.ScaleLine.LEADING_DIGITS[((i % 3) + 3) % 3] *
+    count = _ol_control_ScaleLine_.LEADING_DIGITS[((i % 3) + 3) % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
@@ -275,6 +274,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
  * @enum {string}
  * @private
  */
-ol.control.ScaleLine.Property_ = {
+_ol_control_ScaleLine_.Property_ = {
   UNITS: 'units'
 };
+export default _ol_control_ScaleLine_;

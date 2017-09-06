@@ -1,4 +1,4 @@
-goog.provide('ol.string');
+var _ol_string_ = {};
 
 /**
  * @param {number} number Number to be formatted
@@ -6,7 +6,7 @@ goog.provide('ol.string');
  * @param {number=} opt_precision Precision of the output string (i.e. number of decimal places)
  * @returns {string} Formatted string
 */
-ol.string.padNumber = function(number, width, opt_precision) {
+_ol_string_.padNumber = function(number, width, opt_precision) {
   var numberString = opt_precision !== undefined ? number.toFixed(opt_precision) : '' + number;
   var decimal = numberString.indexOf('.');
   decimal = decimal === -1 ? numberString.length : decimal;
@@ -19,7 +19,7 @@ ol.string.padNumber = function(number, width, opt_precision) {
  * @param {string|number} v2 Second version
  * @returns {number} Value
  */
-ol.string.compareVersions = function(v1, v2) {
+_ol_string_.compareVersions = function(v1, v2) {
   var s1 = ('' + v1).split('.');
   var s2 = ('' + v2).split('.');
 
@@ -37,3 +37,4 @@ ol.string.compareVersions = function(v1, v2) {
 
   return 0;
 };
+export default _ol_string_;

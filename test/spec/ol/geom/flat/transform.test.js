@@ -1,8 +1,8 @@
 
 
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat.transform');
+import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/multipolygon';
+import _ol_geom_SimpleGeometry_ from '../../../../../src/ol/geom/simplegeometry';
+import _ol_geom_flat_transform_ from '../../../../../src/ol/geom/flat/transform';
 
 
 describe('ol.geom.flat.transform', function() {
@@ -11,7 +11,7 @@ describe('ol.geom.flat.transform', function() {
 
     it('transforms a Simple Geometry to 2D', function() {
 
-      var multiPolygonGeometry = new ol.geom.MultiPolygon([
+      var multiPolygonGeometry = new _ol_geom_MultiPolygon_([
         [[[-80.736061, 28.788576000000006, 0],
           [-80.763557, 28.821799999999996, 0],
           [-80.817406, 28.895123999999996, 0],
@@ -33,7 +33,7 @@ describe('ol.geom.flat.transform', function() {
         0, -0.0004088332670837288,
         4480.991370439071, 1529.5752568707105
       ];
-      var pixelCoordinates = ol.geom.SimpleGeometry.transform2D(
+      var pixelCoordinates = _ol_geom_SimpleGeometry_.transform2D(
           multiPolygonGeometry, transform, []);
       expect(pixelCoordinates[0]).to.roughlyEqual(806.6035275946265, 1e-9);
       expect(pixelCoordinates[1]).to.roughlyEqual(160.48916296287916, 1e-9);
@@ -71,13 +71,13 @@ describe('ol.geom.flat.transform', function() {
 
   describe('ol.geom.flat.transform.translate', function() {
     it('translates the coordinates array', function() {
-      var multiPolygon = new ol.geom.MultiPolygon([
+      var multiPolygon = new _ol_geom_MultiPolygon_([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
         [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
       var flatCoordinates = multiPolygon.getFlatCoordinates();
       var deltaX = 1;
       var deltaY = 2;
-      ol.geom.flat.transform.translate(flatCoordinates, 0,
+      _ol_geom_flat_transform_.translate(flatCoordinates, 0,
           flatCoordinates.length, multiPolygon.getStride(),
           deltaX, deltaY, flatCoordinates);
       expect(flatCoordinates).to.eql([
@@ -88,13 +88,13 @@ describe('ol.geom.flat.transform', function() {
 
   describe('ol.geom.flat.transform.rotate', function() {
     it('rotates the coordinates array', function() {
-      var multiPolygon = new ol.geom.MultiPolygon([
+      var multiPolygon = new _ol_geom_MultiPolygon_([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
         [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
       var flatCoordinates = multiPolygon.getFlatCoordinates();
       var angle = Math.PI / 2;
       var anchor = [0, 1];
-      ol.geom.flat.transform.rotate(flatCoordinates, 0,
+      _ol_geom_flat_transform_.rotate(flatCoordinates, 0,
           flatCoordinates.length, multiPolygon.getStride(),
           angle, anchor, flatCoordinates);
       expect(flatCoordinates[0]).to.roughlyEqual(1, 1e-9);

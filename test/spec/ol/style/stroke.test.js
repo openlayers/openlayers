@@ -1,20 +1,20 @@
 
 
-goog.require('ol.style.Stroke');
+import _ol_style_Stroke_ from '../../../../src/ol/style/stroke';
 
 describe('ol.style.Stroke', function() {
 
   describe('#clone', function() {
 
     it('creates a new ol.style.Stroke', function() {
-      var original = new ol.style.Stroke();
+      var original = new _ol_style_Stroke_();
       var clone = original.clone();
-      expect(clone).to.be.an(ol.style.Stroke);
+      expect(clone).to.be.an(_ol_style_Stroke_);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new ol.style.Stroke({
+      var original = new _ol_style_Stroke_({
         color: '#319FD3',
         lineCap: 'square',
         lineJoin: 'miter',
@@ -34,7 +34,7 @@ describe('ol.style.Stroke', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new ol.style.Stroke({
+      var original = new _ol_style_Stroke_({
         color: [1, 2, 3, 0.4],
         lineDash: [1, 2, 3]
       });

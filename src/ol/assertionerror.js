@@ -1,6 +1,4 @@
-goog.provide('ol.AssertionError');
-
-goog.require('ol');
+import _ol_ from './index';
 
 /**
  * Error object thrown when an assertion failed. This is an ECMA-262 Error,
@@ -11,9 +9,9 @@ goog.require('ol');
  * @implements {oli.AssertionError}
  * @param {number} code Error code.
  */
-ol.AssertionError = function(code) {
+var _ol_AssertionError_ = function(code) {
 
-  var path = ol.VERSION ? ol.VERSION.split('-')[0] : 'latest';
+  var path = _ol_.VERSION ? _ol_.VERSION.split('-')[0] : 'latest';
 
   /**
    * @type {string}
@@ -34,4 +32,6 @@ ol.AssertionError = function(code) {
   this.name = 'AssertionError';
 
 };
-ol.inherits(ol.AssertionError, Error);
+
+_ol_.inherits(_ol_AssertionError_, Error);
+export default _ol_AssertionError_;

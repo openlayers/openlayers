@@ -1,45 +1,45 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Modify');
-goog.require('ol.interaction.Select');
-goog.require('ol.interaction.Snap');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_interaction_Draw_ from '../src/ol/interaction/draw';
+import _ol_interaction_Modify_ from '../src/ol/interaction/modify';
+import _ol_interaction_Select_ from '../src/ol/interaction/select';
+import _ol_interaction_Snap_ from '../src/ol/interaction/snap';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector(),
-  style: new ol.style.Style({
-    fill: new ol.style.Fill({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_(),
+  style: new _ol_style_Style_({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255, 255, 255, 0.2)'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: '#ffcc33',
       width: 2
     }),
-    image: new ol.style.Circle({
+    image: new _ol_style_Circle_({
       radius: 7,
-      fill: new ol.style.Fill({
+      fill: new _ol_style_Fill_({
         color: '#ffcc33'
       })
     })
   })
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-11000000, 4600000],
     zoom: 4
   })
@@ -47,10 +47,10 @@ var map = new ol.Map({
 
 var Modify = {
   init: function() {
-    this.select = new ol.interaction.Select();
+    this.select = new _ol_interaction_Select_();
     map.addInteraction(this.select);
 
-    this.modify = new ol.interaction.Modify({
+    this.modify = new _ol_interaction_Modify_({
       features: this.select.getFeatures()
     });
     map.addInteraction(this.modify);
@@ -84,19 +84,19 @@ var Draw = {
     map.addInteraction(this.Circle);
     this.Circle.setActive(false);
   },
-  Point: new ol.interaction.Draw({
+  Point: new _ol_interaction_Draw_({
     source: vector.getSource(),
     type: /** @type {ol.geom.GeometryType} */ ('Point')
   }),
-  LineString: new ol.interaction.Draw({
+  LineString: new _ol_interaction_Draw_({
     source: vector.getSource(),
     type: /** @type {ol.geom.GeometryType} */ ('LineString')
   }),
-  Polygon: new ol.interaction.Draw({
+  Polygon: new _ol_interaction_Draw_({
     source: vector.getSource(),
     type: /** @type {ol.geom.GeometryType} */ ('Polygon')
   }),
-  Circle: new ol.interaction.Draw({
+  Circle: new _ol_interaction_Draw_({
     source: vector.getSource(),
     type: /** @type {ol.geom.GeometryType} */ ('Circle')
   }),
@@ -144,7 +144,7 @@ Modify.setActive(false);
 // The snap interaction must be added after the Modify and Draw interactions
 // in order for its map browser event handlers to be fired first. Its handlers
 // are responsible of doing the snapping.
-var snap = new ol.interaction.Snap({
+var snap = new _ol_interaction_Snap_({
   source: vector.getSource()
 });
 map.addInteraction(snap);

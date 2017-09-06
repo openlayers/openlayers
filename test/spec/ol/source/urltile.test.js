@@ -1,15 +1,15 @@
 
 
-goog.require('ol.proj');
-goog.require('ol.source.UrlTile');
-goog.require('ol.tilegrid');
+import _ol_proj_ from '../../../../src/ol/proj';
+import _ol_source_UrlTile_ from '../../../../src/ol/source/urltile';
+import _ol_tilegrid_ from '../../../../src/ol/tilegrid';
 
 
 describe('ol.source.UrlTile', function() {
 
   describe('#setUrl()', function() {
     it('sets the URL for the source', function() {
-      var source = new ol.source.UrlTile({});
+      var source = new _ol_source_UrlTile_({});
 
       var url = 'https://example.com/';
       source.setUrl(url);
@@ -18,7 +18,7 @@ describe('ol.source.UrlTile', function() {
     });
 
     it('updates the key for the source', function() {
-      var source = new ol.source.UrlTile({});
+      var source = new _ol_source_UrlTile_({});
 
       var url = 'https://example.com/';
       source.setUrl(url);
@@ -29,7 +29,7 @@ describe('ol.source.UrlTile', function() {
 
   describe('#setUrls()', function() {
     it('sets the URL for the source', function() {
-      var source = new ol.source.UrlTile({});
+      var source = new _ol_source_UrlTile_({});
 
       var urls = [
         'https://a.example.com/',
@@ -42,7 +42,7 @@ describe('ol.source.UrlTile', function() {
     });
 
     it('updates the key for the source', function() {
-      var source = new ol.source.UrlTile({});
+      var source = new _ol_source_UrlTile_({});
 
       var urls = [
         'https://a.example.com/',
@@ -57,7 +57,7 @@ describe('ol.source.UrlTile', function() {
 
   describe('url option', function() {
     it('expands url template', function() {
-      var tileSource = new ol.source.UrlTile({
+      var tileSource = new _ol_source_UrlTile_({
         url: '{1-3}'
       });
 
@@ -71,9 +71,9 @@ describe('ol.source.UrlTile', function() {
     var tileSource, tileGrid;
 
     beforeEach(function() {
-      tileSource = new ol.source.UrlTile({
+      tileSource = new _ol_source_UrlTile_({
         projection: 'EPSG:3857',
-        tileGrid: ol.tilegrid.createXYZ({maxZoom: 6}),
+        tileGrid: _ol_tilegrid_.createXYZ({maxZoom: 6}),
         url: '{z}/{x}/{y}',
         wrapX: true
       });
@@ -169,8 +169,8 @@ describe('ol.source.UrlTile', function() {
 
     beforeEach(function() {
       sourceOptions = {
-        tileGrid: ol.tilegrid.createXYZ({
-          extent: ol.proj.get('EPSG:4326').getExtent()
+        tileGrid: _ol_tilegrid_.createXYZ({
+          extent: _ol_proj_.get('EPSG:4326').getExtent()
         })
       };
     });
@@ -178,7 +178,7 @@ describe('ol.source.UrlTile', function() {
     describe('using a "url" option', function() {
       beforeEach(function() {
         sourceOptions.url = url;
-        source = new ol.source.UrlTile(sourceOptions);
+        source = new _ol_source_UrlTile_(sourceOptions);
       });
 
       it('returns the XYZ URL', function() {
@@ -191,7 +191,7 @@ describe('ol.source.UrlTile', function() {
     describe('using a "urls" option', function() {
       beforeEach(function() {
         sourceOptions.urls = ['some_xyz_url1', 'some_xyz_url2'];
-        source = new ol.source.UrlTile(sourceOptions);
+        source = new _ol_source_UrlTile_(sourceOptions);
       });
 
       it('returns the XYZ URLs', function() {
@@ -206,7 +206,7 @@ describe('ol.source.UrlTile', function() {
         sourceOptions.tileUrlFunction = function() {
           return 'some_xyz_url';
         };
-        source = new ol.source.UrlTile(sourceOptions);
+        source = new _ol_source_UrlTile_(sourceOptions);
       });
 
       it('returns null', function() {

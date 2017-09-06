@@ -1,13 +1,10 @@
-goog.provide('ol.geom.GeometryType');
-
-
 /**
  * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
  */
-ol.geom.GeometryType = {
+var _ol_geom_GeometryType_ = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   LINEAR_RING: 'LinearRing',
@@ -18,3 +15,5 @@ ol.geom.GeometryType = {
   GEOMETRY_COLLECTION: 'GeometryCollection',
   CIRCLE: 'Circle'
 };
+
+export default _ol_geom_GeometryType_;

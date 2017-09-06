@@ -1,17 +1,17 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Polygon');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_format_GeoJSON_ from '../../../../src/ol/format/geojson';
+import _ol_geom_Circle_ from '../../../../src/ol/geom/circle';
+import _ol_geom_LineString_ from '../../../../src/ol/geom/linestring';
+import _ol_geom_Polygon_ from '../../../../src/ol/geom/polygon';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
+import _ol_style_Fill_ from '../../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../../src/ol/style/stroke';
+import _ol_style_Style_ from '../../../../src/ol/style/style';
 
 
 describe('ol.rendering.layer.Vector', function() {
@@ -20,11 +20,11 @@ describe('ol.rendering.layer.Vector', function() {
 
   var map;
   function createMap(renderer) {
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: 1,
       target: createMapDiv(80, 80),
       renderer: renderer,
-      view: new ol.View({
+      view: new _ol_View_({
         center: center,
         zoom: 13
       })
@@ -41,11 +41,11 @@ describe('ol.rendering.layer.Vector', function() {
   var source;
 
   function addCircle(r) {
-    source.addFeature(new ol.Feature(new ol.geom.Circle(center, r)));
+    source.addFeature(new _ol_Feature_(new _ol_geom_Circle_(center, r)));
   }
 
   function addPolygon(r) {
-    source.addFeature(new ol.Feature(new ol.geom.Polygon([
+    source.addFeature(new _ol_Feature_(new _ol_geom_Polygon_([
       [
         [center[0] - r, center[1] - r],
         [center[0] + r, center[1] - r],
@@ -57,7 +57,7 @@ describe('ol.rendering.layer.Vector', function() {
   }
 
   function addLineString(r) {
-    source.addFeature(new ol.Feature(new ol.geom.LineString([
+    source.addFeature(new _ol_Feature_(new _ol_geom_LineString_([
       [center[0] - r, center[1] - r],
       [center[0] + r, center[1] - r],
       [center[0] + r, center[1] + r],
@@ -69,18 +69,18 @@ describe('ol.rendering.layer.Vector', function() {
   describe('vector layer', function() {
 
     beforeEach(function() {
-      source = new ol.source.Vector();
+      source = new _ol_source_Vector_();
     });
 
     it('renders opacity correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new ol.Feature(new ol.geom.LineString([
+      var smallLine = new _ol_Feature_(new _ol_geom_LineString_([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
-      smallLine.setStyle(new ol.style.Style({
+      smallLine.setStyle(new _ol_style_Style_({
         zIndex: -99,
-        stroke: new ol.style.Stroke({width: 75, color: 'red'})
+        stroke: new _ol_style_Stroke_({width: 75, color: 'red'})
       }));
       source.addFeature(smallLine);
       addPolygon(100);
@@ -89,7 +89,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new ol.layer.Vector({
+      map.addLayer(new _ol_layer_Vector_({
         source: source
       }));
       map.once('postrender', function() {
@@ -100,34 +100,34 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders transparent layers correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new ol.Feature(new ol.geom.LineString([
+      var smallLine = new _ol_Feature_(new _ol_geom_LineString_([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
       smallLine.setStyle([
-        new ol.style.Style({
-          stroke: new ol.style.Stroke({width: 75, color: 'red'})
+        new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({width: 75, color: 'red'})
         }),
-        new ol.style.Style({
-          stroke: new ol.style.Stroke({width: 45, color: 'white'})
+        new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({width: 45, color: 'white'})
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new ol.Feature(new ol.geom.LineString([
+      var smallLine2 = new _ol_Feature_(new _ol_geom_LineString_([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
       smallLine2.setStyle([
-        new ol.style.Style({
-          stroke: new ol.style.Stroke({width: 35, color: 'blue'})
+        new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({width: 35, color: 'blue'})
         }),
-        new ol.style.Style({
-          stroke: new ol.style.Stroke({width: 15, color: 'green'})
+        new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({width: 15, color: 'green'})
         })
       ]);
       source.addFeature(smallLine2);
 
-      map.addLayer(new ol.layer.Vector({
+      map.addLayer(new _ol_layer_Vector_({
         source: source,
         opacity: 0.5
       }));
@@ -142,10 +142,10 @@ describe('ol.rendering.layer.Vector', function() {
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
-      map.addLayer(new ol.layer.Vector({
+      map.addLayer(new _ol_layer_Vector_({
         source: source,
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
+        style: new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({
             width: 2,
             color: 'black'
           })
@@ -159,7 +159,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      source = new ol.source.Vector({
+      source = new _ol_source_Vector_({
         overlaps: false
       });
       addPolygon(100);
@@ -168,10 +168,10 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new ol.layer.Vector({
+      map.addLayer(new _ol_layer_Vector_({
         source: source,
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
+        style: new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({
             color: '#3399CC',
             width: 1.25
           })
@@ -185,17 +185,17 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      source = new ol.source.Vector({
+      source = new _ol_source_Vector_({
         overlaps: false
       });
       addLineString(100);
       addLineString(250);
       addLineString(600);
       addLineString(720);
-      map.addLayer(new ol.layer.Vector({
+      map.addLayer(new _ol_layer_Vector_({
         source: source,
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
+        style: new _ol_style_Style_({
+          stroke: new _ol_style_Stroke_({
             color: '#3399CC',
             width: 1.25
           })
@@ -212,7 +212,7 @@ describe('ol.rendering.layer.Vector', function() {
       var color;
       function createSource(overlaps) {
         color = '#3399CC';
-        source = new ol.source.Vector({
+        source = new _ol_source_Vector_({
           overlaps: overlaps
         });
         addPolygon(720);
@@ -231,16 +231,16 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new ol.layer.Vector({
+      var layer = new _ol_layer_Vector_({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
-          return new ol.style.Style({
-            stroke: new ol.style.Stroke({
+          return new _ol_style_Style_({
+            stroke: new _ol_style_Stroke_({
               color: alternateColor(),
               width: 1.25
             }),
-            fill: new ol.style.Fill({
+            fill: new _ol_style_Fill_({
               color: alternateColor()
             })
           });
@@ -265,7 +265,7 @@ describe('ol.rendering.layer.Vector', function() {
       var color;
       function createSource(overlaps) {
         color = '#3399CC';
-        source = new ol.source.Vector({
+        source = new _ol_source_Vector_({
           overlaps: overlaps
         });
         addLineString(720);
@@ -282,16 +282,16 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new ol.layer.Vector({
+      var layer = new _ol_layer_Vector_({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
-          return new ol.style.Style({
-            stroke: new ol.style.Stroke({
+          return new _ol_style_Style_({
+            stroke: new _ol_style_Stroke_({
               color: alternateColor(),
               width: 1.25
             }),
-            fill: new ol.style.Fill({
+            fill: new _ol_style_Fill_({
               color: alternateColor()
             })
           });
@@ -316,10 +316,10 @@ describe('ol.rendering.layer.Vector', function() {
 
     var map2;
     beforeEach(function() {
-      map2 = new ol.Map({
+      map2 = new _ol_Map_({
         pixelRatio: 1,
         target: createMapDiv(128, 128),
-        view: new ol.View({
+        view: new _ol_View_({
           center: [0, 0],
           zoom: 0
         })
@@ -348,15 +348,15 @@ describe('ol.rendering.layer.Vector', function() {
         properties: {}
       };
 
-      var format = new ol.format.GeoJSON({featureProjection: 'EPSG:3857'});
+      var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:3857'});
       var feature = format.readFeature(json);
 
-      var layer = new ol.layer.Vector({
-        source: new ol.source.Vector({
+      var layer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_({
           features: [feature]
         }),
-        style: new ol.style.Style({
-          fill: new ol.style.Fill({
+        style: new _ol_style_Style_({
+          fill: new _ol_style_Fill_({
             color: 'blue'
           })
         })
@@ -377,16 +377,16 @@ describe('ol.rendering.layer.Vector', function() {
     var layer, map3;
 
     beforeEach(function() {
-      var src = new ol.source.Vector({
+      var src = new _ol_source_Vector_({
         features: [
-          new ol.Feature(new ol.geom.Polygon([[
+          new _ol_Feature_(new _ol_geom_Polygon_([[
             [-22, 58],
             [-22, 78],
             [-9, 78],
             [-9, 58],
             [-22, 58]
           ]])),
-          new ol.Feature(new ol.geom.Polygon([[
+          new _ol_Feature_(new _ol_geom_Polygon_([[
             [-9, 58],
             [-9, 78],
             [4, 78],
@@ -395,17 +395,17 @@ describe('ol.rendering.layer.Vector', function() {
           ]]))
         ]
       });
-      layer = new ol.layer.Vector({
+      layer = new _ol_layer_Vector_({
         renderBuffer: 0,
         source: src
       });
-      var view = new ol.View({
+      var view = new _ol_View_({
         center: [-9.5, 78],
         zoom: 2,
         projection: 'EPSG:4326'
       });
 
-      map3 = new ol.Map({
+      map3 = new _ol_Map_({
         pixelRatio: 1,
         layers: [layer],
         target: createMapDiv(100, 100),
@@ -419,12 +419,12 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders partially out-of-view polygons with a fill and stroke', function(done) {
-      layer.setStyle(new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      layer.setStyle(new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           color: [0, 0, 0, 1],
           width: 2
         }),
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: [255, 0, 0, 1]
         })
       }));
@@ -435,8 +435,8 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders partially out-of-view polygons with a fill', function(done) {
-      layer.setStyle(new ol.style.Style({
-        fill: new ol.style.Fill({
+      layer.setStyle(new _ol_style_Style_({
+        fill: new _ol_style_Fill_({
           color: [0, 0, 0, 1]
         })
       }));
@@ -447,8 +447,8 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders partially out-of-view polygons with a stroke', function(done) {
-      layer.setStyle(new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      layer.setStyle(new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           color: [0, 0, 0, 1],
           width: 2
         })

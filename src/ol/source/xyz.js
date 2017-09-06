@@ -1,9 +1,6 @@
-goog.provide('ol.source.XYZ');
-
-goog.require('ol');
-goog.require('ol.source.TileImage');
-goog.require('ol.tilegrid');
-
+import _ol_ from '../index';
+import _ol_source_TileImage_ from '../source/tileimage';
+import _ol_tilegrid_ from '../tilegrid';
 
 /**
  * @classdesc
@@ -27,20 +24,20 @@ goog.require('ol.tilegrid');
  * @param {olx.source.XYZOptions=} opt_options XYZ options.
  * @api
  */
-ol.source.XYZ = function(opt_options) {
+var _ol_source_XYZ_ = function(opt_options) {
   var options = opt_options || {};
   var projection = options.projection !== undefined ?
     options.projection : 'EPSG:3857';
 
   var tileGrid = options.tileGrid !== undefined ? options.tileGrid :
-    ol.tilegrid.createXYZ({
-      extent: ol.tilegrid.extentFromProjection(projection),
+    _ol_tilegrid_.createXYZ({
+      extent: _ol_tilegrid_.extentFromProjection(projection),
       maxZoom: options.maxZoom,
       minZoom: options.minZoom,
       tileSize: options.tileSize
     });
 
-  ol.source.TileImage.call(this, {
+  _ol_source_TileImage_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -58,4 +55,6 @@ ol.source.XYZ = function(opt_options) {
   });
 
 };
-ol.inherits(ol.source.XYZ, ol.source.TileImage);
+
+_ol_.inherits(_ol_source_XYZ_, _ol_source_TileImage_);
+export default _ol_source_XYZ_;

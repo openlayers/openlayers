@@ -1,18 +1,18 @@
-goog.provide('ol.proj.projections');
+var _ol_proj_projections_ = {};
 
 
 /**
  * @private
  * @type {Object.<string, ol.proj.Projection>}
  */
-ol.proj.projections.cache_ = {};
+_ol_proj_projections_.cache_ = {};
 
 
 /**
  * Clear the projections cache.
  */
-ol.proj.projections.clear = function() {
-  ol.proj.projections.cache_ = {};
+_ol_proj_projections_.clear = function() {
+  _ol_proj_projections_.cache_ = {};
 };
 
 
@@ -21,8 +21,8 @@ ol.proj.projections.clear = function() {
  * @param {string} code The code for the projection.
  * @return {ol.proj.Projection} The projection (if cached).
  */
-ol.proj.projections.get = function(code) {
-  var projections = ol.proj.projections.cache_;
+_ol_proj_projections_.get = function(code) {
+  var projections = _ol_proj_projections_.cache_;
   return projections[code] || null;
 };
 
@@ -32,7 +32,8 @@ ol.proj.projections.get = function(code) {
  * @param {string} code The projection code.
  * @param {ol.proj.Projection} projection The projection to cache.
  */
-ol.proj.projections.add = function(code, projection) {
-  var projections = ol.proj.projections.cache_;
+_ol_proj_projections_.add = function(code, projection) {
+  var projections = _ol_proj_projections_.cache_;
   projections[code] = projection;
 };
+export default _ol_proj_projections_;

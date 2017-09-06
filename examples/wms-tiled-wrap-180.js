@@ -1,26 +1,26 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
-goog.require('ol.source.TileWMS');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_TileWMS_ from '../src/ol/source/tilewms';
 
 
 var layers = [
-  new ol.layer.Tile({
-    source: new ol.source.OSM()
+  new _ol_layer_Tile_({
+    source: new _ol_source_OSM_()
   }),
-  new ol.layer.Tile({
-    source: new ol.source.TileWMS({
+  new _ol_layer_Tile_({
+    source: new _ol_source_TileWMS_({
       url: 'https://ahocevar.com/geoserver/ne/wms',
       params: {'LAYERS': 'ne:ne_10m_admin_0_countries', 'TILED': true},
       serverType: 'geoserver'
     })
   })
 ];
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: layers,
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 1
   })

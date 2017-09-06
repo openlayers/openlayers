@@ -1,10 +1,10 @@
-goog.provide('ol.functions');
+var _ol_functions_ = {};
 
 /**
  * Always returns true.
  * @returns {boolean} true.
  */
-ol.functions.TRUE = function() {
+_ol_functions_.TRUE = function() {
   return true;
 };
 
@@ -12,6 +12,7 @@ ol.functions.TRUE = function() {
  * Always returns false.
  * @returns {boolean} false.
  */
-ol.functions.FALSE = function() {
+_ol_functions_.FALSE = function() {
   return false;
 };
+export default _ol_functions_;

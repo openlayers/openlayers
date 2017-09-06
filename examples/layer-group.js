@@ -1,25 +1,25 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Group');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.OSM');
-goog.require('ol.source.TileJSON');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Group_ from '../src/ol/layer/group';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_TileJSON_ from '../src/ol/source/tilejson';
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
-    }), new ol.layer.Group({
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
+    }), new _ol_layer_Group_({
       layers: [
-        new ol.layer.Tile({
-          source: new ol.source.TileJSON({
+        new _ol_layer_Tile_({
+          source: new _ol_source_TileJSON_({
             url: 'https://api.tiles.mapbox.com/v3/mapbox.20110804-hoa-foodinsecurity-3month.json?secure',
             crossOrigin: 'anonymous'
           })
         }),
-        new ol.layer.Tile({
-          source: new ol.source.TileJSON({
+        new _ol_layer_Tile_({
+          source: new _ol_source_TileJSON_({
             url: 'https://api.tiles.mapbox.com/v3/mapbox.world-borders-light.json?secure',
             crossOrigin: 'anonymous'
           })
@@ -28,8 +28,8 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View({
-    center: ol.proj.fromLonLat([37.40570, 8.81566]),
+  view: new _ol_View_({
+    center: _ol_proj_.fromLonLat([37.40570, 8.81566]),
     zoom: 4
   })
 });
@@ -49,7 +49,7 @@ function bindInputs(layerid, layer) {
 }
 map.getLayers().forEach(function(layer, i) {
   bindInputs('#layer' + i, layer);
-  if (layer instanceof ol.layer.Group) {
+  if (layer instanceof _ol_layer_Group_) {
     layer.getLayers().forEach(function(sublayer, j) {
       bindInputs('#layer' + i + j, sublayer);
     });

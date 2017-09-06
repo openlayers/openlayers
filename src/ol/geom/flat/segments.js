@@ -1,4 +1,4 @@
-goog.provide('ol.geom.flat.segments');
+var _ol_geom_flat_segments_ = {};
 
 
 /**
@@ -16,7 +16,7 @@ goog.provide('ol.geom.flat.segments');
  * @return {T|boolean} Value.
  * @template T,S
  */
-ol.geom.flat.segments.forEach = function(flatCoordinates, offset, end, stride, callback, opt_this) {
+_ol_geom_flat_segments_.forEach = function(flatCoordinates, offset, end, stride, callback, opt_this) {
   var point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   var point2 = [];
   var ret;
@@ -32,3 +32,4 @@ ol.geom.flat.segments.forEach = function(flatCoordinates, offset, end, stride, c
   }
   return false;
 };
+export default _ol_geom_flat_segments_;

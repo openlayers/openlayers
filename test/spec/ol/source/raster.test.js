@@ -1,15 +1,15 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.TileState');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.ImageStatic');
-goog.require('ol.source.Raster');
-goog.require('ol.source.Source');
-goog.require('ol.source.Tile');
-goog.require('ol.source.XYZ');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_TileState_ from '../../../../src/ol/tilestate';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_layer_Image_ from '../../../../src/ol/layer/image';
+import _ol_proj_Projection_ from '../../../../src/ol/proj/projection';
+import _ol_source_ImageStatic_ from '../../../../src/ol/source/imagestatic';
+import _ol_source_Raster_ from '../../../../src/ol/source/raster';
+import _ol_source_Source_ from '../../../../src/ol/source/source';
+import _ol_source_Tile_ from '../../../../src/ol/source/tile';
+import _ol_source_XYZ_ from '../../../../src/ol/source/xyz';
 
 var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
     'BAAEAAAICRAEAOw==';
@@ -37,22 +37,22 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     var extent = [-1, -1, 1, 1];
 
-    redSource = new ol.source.ImageStatic({
+    redSource = new _ol_source_ImageStatic_({
       url: red,
       imageExtent: extent
     });
 
-    greenSource = new ol.source.ImageStatic({
+    greenSource = new _ol_source_ImageStatic_({
       url: green,
       imageExtent: extent
     });
 
-    blueSource = new ol.source.ImageStatic({
+    blueSource = new _ol_source_ImageStatic_({
       url: blue,
       imageExtent: extent
     });
 
-    raster = new ol.source.Raster({
+    raster = new _ol_source_Raster_({
       threads: 0,
       sources: [redSource, greenSource, blueSource],
       operation: function(inputs) {
@@ -60,18 +60,18 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       }
     });
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: target,
-      view: new ol.View({
+      view: new _ol_View_({
         resolutions: [1],
-        projection: new ol.proj.Projection({
+        projection: new _ol_proj_Projection_({
           code: 'image',
           units: 'pixels',
           extent: extent
         })
       }),
       layers: [
-        new ol.layer.Image({
+        new _ol_layer_Image_({
           source: raster
         })
       ]
@@ -92,19 +92,19 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   describe('constructor', function() {
 
     it('returns a tile source', function() {
-      var source = new ol.source.Raster({
+      var source = new _ol_source_Raster_({
         threads: 0,
-        sources: [new ol.source.Tile({})]
+        sources: [new _ol_source_Tile_({})]
       });
-      expect(source).to.be.a(ol.source.Source);
-      expect(source).to.be.a(ol.source.Raster);
+      expect(source).to.be.a(_ol_source_Source_);
+      expect(source).to.be.a(_ol_source_Raster_);
     });
 
     it('defaults to "pixel" operation', function(done) {
 
       var log = [];
 
-      var source = new ol.source.Raster({
+      var source = new _ol_source_Raster_({
         threads: 0,
         sources: [redSource, greenSource, blueSource],
         operation: function(inputs) {
@@ -131,7 +131,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     it('allows operation type to be set to "image"', function(done) {
       var log = [];
 
-      var source = new ol.source.Raster({
+      var source = new _ol_source_Raster_({
         operationType: 'image',
         threads: 0,
         sources: [redSource, greenSource, blueSource],
@@ -313,11 +313,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('is initiated on the underlying source', function(done) {
 
-      var source = new ol.source.XYZ({
+      var source = new _ol_source_XYZ_({
         url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
       });
 
-      raster = new ol.source.Raster({
+      raster = new _ol_source_Raster_({
         threads: 0,
         sources: [source],
         operation: function(inputs) {
@@ -325,14 +325,14 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         }
       });
 
-      map2 = new ol.Map({
+      map2 = new _ol_Map_({
         target: target,
-        view: new ol.View({
+        view: new _ol_View_({
           center: [0, 0],
           zoom: 0
         }),
         layers: [
-          new ol.layer.Image({
+          new _ol_layer_Image_({
             source: raster
           })
         ]
@@ -345,7 +345,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       map2.once('moveend', function() {
         expect(tileCache.getCount()).to.equal(1);
         var state = tileCache.peekLast().getState();
-        expect(state === ol.TileState.LOADED || state === ol.TileState.LOADED).to.be(true);
+        expect(state === _ol_TileState_.LOADED || state === _ol_TileState_.LOADED).to.be(true);
         done();
       });
 

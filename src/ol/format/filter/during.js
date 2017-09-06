@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.During');
-
-goog.require('ol');
-goog.require('ol.format.filter.Comparison');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Comparison_ from '../filter/comparison';
 
 /**
  * @classdesc
@@ -15,8 +12,8 @@ goog.require('ol.format.filter.Comparison');
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.filter.During = function(propertyName, begin, end) {
-  ol.format.filter.Comparison.call(this, 'During', propertyName);
+var _ol_format_filter_During_ = function(propertyName, begin, end) {
+  _ol_format_filter_Comparison_.call(this, 'During', propertyName);
 
   /**
    * @public
@@ -30,4 +27,6 @@ ol.format.filter.During = function(propertyName, begin, end) {
    */
   this.end = end;
 };
-ol.inherits(ol.format.filter.During, ol.format.filter.Comparison);
+
+_ol_.inherits(_ol_format_filter_During_, _ol_format_filter_Comparison_);
+export default _ol_format_filter_During_;

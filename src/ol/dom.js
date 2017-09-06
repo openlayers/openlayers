@@ -1,4 +1,4 @@
-goog.provide('ol.dom');
+var _ol_dom_ = {};
 
 
 /**
@@ -7,7 +7,7 @@ goog.provide('ol.dom');
  * @param {number=} opt_height Canvas height.
  * @return {CanvasRenderingContext2D} The context.
  */
-ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
+_ol_dom_.createCanvasContext2D = function(opt_width, opt_height) {
   var canvas = document.createElement('CANVAS');
   if (opt_width) {
     canvas.width = opt_width;
@@ -26,7 +26,7 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
  * @param {!Element} element Element.
  * @return {number} The width.
  */
-ol.dom.outerWidth = function(element) {
+_ol_dom_.outerWidth = function(element) {
   var width = element.offsetWidth;
   var style = getComputedStyle(element);
   width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
@@ -42,7 +42,7 @@ ol.dom.outerWidth = function(element) {
  * @param {!Element} element Element.
  * @return {number} The height.
  */
-ol.dom.outerHeight = function(element) {
+_ol_dom_.outerHeight = function(element) {
   var height = element.offsetHeight;
   var style = getComputedStyle(element);
   height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
@@ -54,7 +54,7 @@ ol.dom.outerHeight = function(element) {
  * @param {Node} newNode Node to replace old node
  * @param {Node} oldNode The node to be replaced
  */
-ol.dom.replaceNode = function(newNode, oldNode) {
+_ol_dom_.replaceNode = function(newNode, oldNode) {
   var parent = oldNode.parentNode;
   if (parent) {
     parent.replaceChild(newNode, oldNode);
@@ -65,15 +65,16 @@ ol.dom.replaceNode = function(newNode, oldNode) {
  * @param {Node} node The node to remove.
  * @returns {Node} The node that was removed or null.
  */
-ol.dom.removeNode = function(node) {
+_ol_dom_.removeNode = function(node) {
   return node && node.parentNode ? node.parentNode.removeChild(node) : null;
 };
 
 /**
  * @param {Node} node The node to remove the children from.
  */
-ol.dom.removeChildren = function(node) {
+_ol_dom_.removeChildren = function(node) {
   while (node.lastChild) {
     node.removeChild(node.lastChild);
   }
 };
+export default _ol_dom_;

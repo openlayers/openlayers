@@ -1,12 +1,12 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.source.ImageStatic');
-goog.require('ol.tilegrid');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_layer_Image_ from '../../../../src/ol/layer/image';
+import _ol_obj_ from '../../../../src/ol/obj';
+import _ol_proj_ from '../../../../src/ol/proj';
+import _ol_source_ImageStatic_ from '../../../../src/ol/source/imagestatic';
+import _ol_tilegrid_ from '../../../../src/ol/tilegrid';
 
 
 describe('ol.rendering.layer.Image', function() {
@@ -14,12 +14,12 @@ describe('ol.rendering.layer.Image', function() {
   var map;
 
   function createMap(renderer) {
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
-      view: new ol.View({
-        center: ol.proj.transform(
+      view: new _ol_View_({
+        center: _ol_proj_.transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5
       })
@@ -58,8 +58,8 @@ describe('ol.rendering.layer.Image', function() {
       var options = {
         source: source
       };
-      ol.obj.assign(options, layerOptions);
-      map.addLayer(new ol.layer.Image(options));
+      _ol_obj_.assign(options, layerOptions);
+      map.addLayer(new _ol_layer_Image_(options));
     });
   }
 
@@ -67,11 +67,11 @@ describe('ol.rendering.layer.Image', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.ImageStatic({
+      source = new _ol_source_ImageStatic_({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
-        imageExtent: ol.tilegrid.createXYZ().getTileCoordExtent(
+        imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent(
             [5, 5, -12 - 1]),
-        projection: ol.proj.get('EPSG:3857')
+        projection: _ol_proj_.get('EPSG:3857')
       });
     });
 
@@ -97,9 +97,9 @@ describe('ol.rendering.layer.Image', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.ImageStatic({
+      source = new _ol_source_ImageStatic_({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
-        imageExtent: ol.proj.transformExtent(
+        imageExtent: _ol_proj_.transformExtent(
             [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
       });
     });

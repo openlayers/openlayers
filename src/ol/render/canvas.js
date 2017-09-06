@@ -1,81 +1,81 @@
-goog.provide('ol.render.canvas');
+var _ol_render_canvas_ = {};
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultFont = '10px sans-serif';
+_ol_render_canvas_.defaultFont = '10px sans-serif';
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultFillStyle = [0, 0, 0, 1];
+_ol_render_canvas_.defaultFillStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultLineCap = 'round';
+_ol_render_canvas_.defaultLineCap = 'round';
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-ol.render.canvas.defaultLineDash = [];
+_ol_render_canvas_.defaultLineDash = [];
 
 
 /**
  * @const
  * @type {number}
  */
-ol.render.canvas.defaultLineDashOffset = 0;
+_ol_render_canvas_.defaultLineDashOffset = 0;
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultLineJoin = 'round';
+_ol_render_canvas_.defaultLineJoin = 'round';
 
 
 /**
  * @const
  * @type {number}
  */
-ol.render.canvas.defaultMiterLimit = 10;
+_ol_render_canvas_.defaultMiterLimit = 10;
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultStrokeStyle = [0, 0, 0, 1];
+_ol_render_canvas_.defaultStrokeStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextAlign = 'center';
+_ol_render_canvas_.defaultTextAlign = 'center';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextBaseline = 'middle';
+_ol_render_canvas_.defaultTextBaseline = 'middle';
 
 
 /**
  * @const
  * @type {number}
  */
-ol.render.canvas.defaultLineWidth = 1;
+_ol_render_canvas_.defaultLineWidth = 1;
 
 
 /**
@@ -84,10 +84,11 @@ ol.render.canvas.defaultLineWidth = 1;
  * @param {number} offsetX X offset.
  * @param {number} offsetY Y offset.
  */
-ol.render.canvas.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
+_ol_render_canvas_.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
   if (rotation !== 0) {
     context.translate(offsetX, offsetY);
     context.rotate(rotation);
     context.translate(-offsetX, -offsetY);
   }
 };
+export default _ol_render_canvas_;

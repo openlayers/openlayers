@@ -1,7 +1,7 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.source.ImageMapGuide');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_source_ImageMapGuide_ from '../src/ol/source/imagemapguide';
 
 var mdf = 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
 var agentUrl =
@@ -12,11 +12,11 @@ var bounds = [
   -87.595394059497067,
   43.823852564430069
 ];
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Image({
+    new _ol_layer_Image_({
       extent: bounds,
-      source: new ol.source.ImageMapGuide({
+      source: new _ol_source_ImageMapGuide_({
         projection: 'EPSG:4326',
         url: agentUrl,
         useOverlay: false,
@@ -30,7 +30,7 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-87.7302542509315, 43.744459064634],
     projection: 'EPSG:4326',
     zoom: 12

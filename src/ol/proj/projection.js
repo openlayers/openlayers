@@ -1,9 +1,6 @@
-goog.provide('ol.proj.Projection');
-
-goog.require('ol');
-goog.require('ol.proj.Units');
-goog.require('ol.proj.proj4');
-
+import _ol_ from '../index';
+import _ol_proj_Units_ from '../proj/units';
+import _ol_proj_proj4_ from '../proj/proj4';
 
 /**
  * @classdesc
@@ -35,7 +32,7 @@ goog.require('ol.proj.proj4');
  * @struct
  * @api
  */
-ol.proj.Projection = function(options) {
+var _ol_proj_Projection_ = function(options) {
   /**
    * @private
    * @type {string}
@@ -108,8 +105,8 @@ ol.proj.Projection = function(options) {
   this.metersPerUnit_ = options.metersPerUnit;
 
   var code = options.code;
-  if (ol.ENABLE_PROJ4JS) {
-    var proj4js = ol.proj.proj4.get();
+  if (_ol_.ENABLE_PROJ4JS) {
+    var proj4js = _ol_proj_proj4_.get();
     if (typeof proj4js == 'function') {
       var def = proj4js.defs(code);
       if (def !== undefined) {
@@ -131,7 +128,7 @@ ol.proj.Projection = function(options) {
 /**
  * @return {boolean} The projection is suitable for wrapping the x-axis
  */
-ol.proj.Projection.prototype.canWrapX = function() {
+_ol_proj_Projection_.prototype.canWrapX = function() {
   return this.canWrapX_;
 };
 
@@ -141,7 +138,7 @@ ol.proj.Projection.prototype.canWrapX = function() {
  * @return {string} Code.
  * @api
  */
-ol.proj.Projection.prototype.getCode = function() {
+_ol_proj_Projection_.prototype.getCode = function() {
   return this.code_;
 };
 
@@ -151,7 +148,7 @@ ol.proj.Projection.prototype.getCode = function() {
  * @return {ol.Extent} Extent.
  * @api
  */
-ol.proj.Projection.prototype.getExtent = function() {
+_ol_proj_Projection_.prototype.getExtent = function() {
   return this.extent_;
 };
 
@@ -161,7 +158,7 @@ ol.proj.Projection.prototype.getExtent = function() {
  * @return {ol.proj.Units} Units.
  * @api
  */
-ol.proj.Projection.prototype.getUnits = function() {
+_ol_proj_Projection_.prototype.getUnits = function() {
   return this.units_;
 };
 
@@ -173,8 +170,8 @@ ol.proj.Projection.prototype.getUnits = function() {
  * @return {number|undefined} Meters.
  * @api
  */
-ol.proj.Projection.prototype.getMetersPerUnit = function() {
-  return this.metersPerUnit_ || ol.proj.Units.METERS_PER_UNIT[this.units_];
+_ol_proj_Projection_.prototype.getMetersPerUnit = function() {
+  return this.metersPerUnit_ || _ol_proj_Units_.METERS_PER_UNIT[this.units_];
 };
 
 
@@ -183,7 +180,7 @@ ol.proj.Projection.prototype.getMetersPerUnit = function() {
  * @return {ol.Extent} Extent.
  * @api
  */
-ol.proj.Projection.prototype.getWorldExtent = function() {
+_ol_proj_Projection_.prototype.getWorldExtent = function() {
   return this.worldExtent_;
 };
 
@@ -198,7 +195,7 @@ ol.proj.Projection.prototype.getWorldExtent = function() {
  *     "west positive" coordinate systems
  * @return {string} Axis orientation.
  */
-ol.proj.Projection.prototype.getAxisOrientation = function() {
+_ol_proj_Projection_.prototype.getAxisOrientation = function() {
   return this.axisOrientation_;
 };
 
@@ -208,7 +205,7 @@ ol.proj.Projection.prototype.getAxisOrientation = function() {
  * @return {boolean} Whether the projection is global.
  * @api
  */
-ol.proj.Projection.prototype.isGlobal = function() {
+_ol_proj_Projection_.prototype.isGlobal = function() {
   return this.global_;
 };
 
@@ -218,7 +215,7 @@ ol.proj.Projection.prototype.isGlobal = function() {
 * @param {boolean} global Whether the projection is global.
 * @api
 */
-ol.proj.Projection.prototype.setGlobal = function(global) {
+_ol_proj_Projection_.prototype.setGlobal = function(global) {
   this.global_ = global;
   this.canWrapX_ = !!(global && this.extent_);
 };
@@ -227,7 +224,7 @@ ol.proj.Projection.prototype.setGlobal = function(global) {
 /**
  * @return {ol.tilegrid.TileGrid} The default tile grid.
  */
-ol.proj.Projection.prototype.getDefaultTileGrid = function() {
+_ol_proj_Projection_.prototype.getDefaultTileGrid = function() {
   return this.defaultTileGrid_;
 };
 
@@ -235,7 +232,7 @@ ol.proj.Projection.prototype.getDefaultTileGrid = function() {
 /**
  * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
  */
-ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
+_ol_proj_Projection_.prototype.setDefaultTileGrid = function(tileGrid) {
   this.defaultTileGrid_ = tileGrid;
 };
 
@@ -245,7 +242,7 @@ ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
  * @param {ol.Extent} extent Extent.
  * @api
  */
-ol.proj.Projection.prototype.setExtent = function(extent) {
+_ol_proj_Projection_.prototype.setExtent = function(extent) {
   this.extent_ = extent;
   this.canWrapX_ = !!(this.global_ && extent);
 };
@@ -257,7 +254,7 @@ ol.proj.Projection.prototype.setExtent = function(extent) {
  *     [minlon, minlat, maxlon, maxlat].
  * @api
  */
-ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
+_ol_proj_Projection_.prototype.setWorldExtent = function(worldExtent) {
   this.worldExtent_ = worldExtent;
 };
 
@@ -268,7 +265,7 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
  * @param {function(number, ol.Coordinate):number} func Function
  * @api
  */
-ol.proj.Projection.prototype.setGetPointResolution = function(func) {
+_ol_proj_Projection_.prototype.setGetPointResolution = function(func) {
   this.getPointResolutionFunc_ = func;
 };
 
@@ -278,6 +275,7 @@ ol.proj.Projection.prototype.setGetPointResolution = function(func) {
  * @return {function(number, ol.Coordinate):number|undefined} The custom point
  * resolution function (if set).
  */
-ol.proj.Projection.prototype.getPointResolutionFunc = function() {
+_ol_proj_Projection_.prototype.getPointResolutionFunc = function() {
   return this.getPointResolutionFunc_;
 };
+export default _ol_proj_Projection_;

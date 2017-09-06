@@ -1,13 +1,10 @@
-goog.provide('ol.interaction.DragRotate');
-
-goog.require('ol');
-goog.require('ol.RotationConstraint');
-goog.require('ol.ViewHint');
-goog.require('ol.events.condition');
-goog.require('ol.functions');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Pointer');
-
+import _ol_ from '../index';
+import _ol_RotationConstraint_ from '../rotationconstraint';
+import _ol_ViewHint_ from '../viewhint';
+import _ol_events_condition_ from '../events/condition';
+import _ol_functions_ from '../functions';
+import _ol_interaction_Interaction_ from '../interaction/interaction';
+import _ol_interaction_Pointer_ from '../interaction/pointer';
 
 /**
  * @classdesc
@@ -22,14 +19,14 @@ goog.require('ol.interaction.Pointer');
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  * @api
  */
-ol.interaction.DragRotate = function(opt_options) {
+var _ol_interaction_DragRotate_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.DragRotate.handleDownEvent_,
-    handleDragEvent: ol.interaction.DragRotate.handleDragEvent_,
-    handleUpEvent: ol.interaction.DragRotate.handleUpEvent_
+  _ol_interaction_Pointer_.call(this, {
+    handleDownEvent: _ol_interaction_DragRotate_.handleDownEvent_,
+    handleDragEvent: _ol_interaction_DragRotate_.handleDragEvent_,
+    handleUpEvent: _ol_interaction_DragRotate_.handleUpEvent_
   });
 
   /**
@@ -37,7 +34,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-    options.condition : ol.events.condition.altShiftKeysOnly;
+    options.condition : _ol_events_condition_.altShiftKeysOnly;
 
   /**
    * @private
@@ -51,7 +48,8 @@ ol.interaction.DragRotate = function(opt_options) {
    */
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 };
-ol.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
+
+_ol_.inherits(_ol_interaction_DragRotate_, _ol_interaction_Pointer_);
 
 
 /**
@@ -59,14 +57,14 @@ ol.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
  * @this {ol.interaction.DragRotate}
  * @private
  */
-ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragRotate_.handleDragEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return;
   }
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  if (view.getConstraints().rotation === ol.RotationConstraint.disable) {
+  if (view.getConstraints().rotation === _ol_RotationConstraint_.disable) {
     return;
   }
   var size = map.getSize();
@@ -76,7 +74,7 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.lastAngle_ !== undefined) {
     var delta = theta - this.lastAngle_;
     var rotation = view.getRotation();
-    ol.interaction.Interaction.rotateWithoutConstraints(
+    _ol_interaction_Interaction_.rotateWithoutConstraints(
         view, rotation - delta);
   }
   this.lastAngle_ = theta;
@@ -89,16 +87,16 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotate}
  * @private
  */
-ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragRotate_.handleUpEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return true;
   }
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.ViewHint.INTERACTING, -1);
+  view.setHint(_ol_ViewHint_.INTERACTING, -1);
   var rotation = view.getRotation();
-  ol.interaction.Interaction.rotate(view, rotation,
+  _ol_interaction_Interaction_.rotate(view, rotation,
       undefined, this.duration_);
   return false;
 };
@@ -110,15 +108,15 @@ ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotate}
  * @private
  */
-ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragRotate_.handleDownEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return false;
   }
 
-  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
+  if (_ol_events_condition_.mouseActionButton(mapBrowserEvent) &&
       this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+    map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
     this.lastAngle_ = undefined;
     return true;
   } else {
@@ -130,4 +128,5 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotate.prototype.shouldStopEvent = ol.functions.FALSE;
+_ol_interaction_DragRotate_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+export default _ol_interaction_DragRotate_;

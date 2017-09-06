@@ -1,20 +1,20 @@
 
 
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.events');
-goog.require('ol.events.condition');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Modify');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');
+import _ol_Collection_ from '../../../../src/ol/collection';
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/mapbrowserpointerevent';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_events_ from '../../../../src/ol/events';
+import _ol_events_condition_ from '../../../../src/ol/events/condition';
+import _ol_geom_Circle_ from '../../../../src/ol/geom/circle';
+import _ol_geom_LineString_ from '../../../../src/ol/geom/linestring';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../../../../src/ol/geom/polygon';
+import _ol_interaction_Modify_ from '../../../../src/ol/interaction/modify';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
 
 
 describe('ol.interaction.Modify', function() {
@@ -36,23 +36,23 @@ describe('ol.interaction.Modify', function() {
     document.body.appendChild(target);
 
     features = [
-      new ol.Feature({
-        geometry: new ol.geom.Polygon([
+      new _ol_Feature_({
+        geometry: new _ol_geom_Polygon_([
           [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         ])
       })
     ];
 
-    source = new ol.source.Vector({
+    source = new _ol_source_Vector_({
       features: features
     });
 
-    var layer = new ol.layer.Vector({source: source});
+    var layer = new _ol_layer_Vector_({source: source});
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: target,
       layers: [layer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -83,7 +83,7 @@ describe('ol.interaction.Modify', function() {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
-    var pointerEvent = new ol.pointer.PointerEvent(type, {
+    var pointerEvent = new _ol_pointer_PointerEvent_(type, {
       type: type,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
@@ -93,7 +93,7 @@ describe('ol.interaction.Modify', function() {
       button: button,
       isPrimary: true
     });
-    var event = new ol.MapBrowserPointerEvent(type, map, pointerEvent);
+    var event = new _ol_MapBrowserPointerEvent_(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
@@ -132,11 +132,11 @@ describe('ol.interaction.Modify', function() {
     var endevent = events[events.length - 1];
 
     // first event should be modifystary
-    expect(startevent).to.be.an(ol.interaction.Modify.Event);
+    expect(startevent).to.be.an(_ol_interaction_Modify_.Event);
     expect(startevent.type).to.eql('modifystart');
 
     // last event should be modifyend
-    expect(endevent).to.be.an(ol.interaction.Modify.Event);
+    expect(endevent).to.be.an(_ol_interaction_Modify_.Event);
     expect(endevent.type).to.eql('modifyend');
 
     // make sure we get change events to events array
@@ -153,10 +153,10 @@ describe('ol.interaction.Modify', function() {
 
   describe('constructor', function() {
     it('adds features to the RTree', function() {
-      var feature = new ol.Feature(
-          new ol.geom.Point([0, 0]));
-      var features = new ol.Collection([feature]);
-      var modify = new ol.interaction.Modify({
+      var feature = new _ol_Feature_(
+          new _ol_geom_Point_([0, 0]));
+      var features = new _ol_Collection_([feature]);
+      var modify = new _ol_interaction_Modify_({
         features: features
       });
       var rbushEntries = modify.rBush_.getAll();
@@ -165,25 +165,25 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('accepts feature without geometry', function() {
-      var feature = new ol.Feature();
-      var features = new ol.Collection([feature]);
-      var modify = new ol.interaction.Modify({
+      var feature = new _ol_Feature_();
+      var features = new _ol_Collection_([feature]);
+      var modify = new _ol_interaction_Modify_({
         features: features
       });
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(0);
 
-      feature.setGeometry(new ol.geom.Point([0, 10]));
+      feature.setGeometry(new _ol_geom_Point_([0, 10]));
       rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
     });
 
     it('accepts a source', function() {
-      var feature = new ol.Feature(
-          new ol.geom.Point([0, 0]));
-      var source = new ol.source.Vector({features: [feature]});
-      var modify = new ol.interaction.Modify({source: source});
+      var feature = new _ol_Feature_(
+          new _ol_geom_Point_([0, 0]));
+      var source = new _ol_source_Vector_({features: [feature]});
+      var modify = new _ol_interaction_Modify_({source: source});
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
@@ -201,8 +201,8 @@ describe('ol.interaction.Modify', function() {
       var second = features[1];
       var secondRevision = second.getGeometry().getRevision();
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -227,8 +227,8 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('deletes first vertex of a LineString', function() {
-      var lineFeature = new ol.Feature({
-        geometry: new ol.geom.LineString(
+      var lineFeature = new _ol_Feature_({
+        geometry: new _ol_geom_LineString_(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
@@ -239,8 +239,8 @@ describe('ol.interaction.Modify', function() {
       var first = features[0];
       var firstRevision = first.getGeometry().getRevision();
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -263,8 +263,8 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('deletes last vertex of a LineString', function() {
-      var lineFeature = new ol.Feature({
-        geometry: new ol.geom.LineString(
+      var lineFeature = new _ol_Feature_({
+        geometry: new _ol_geom_LineString_(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
@@ -275,8 +275,8 @@ describe('ol.interaction.Modify', function() {
       var first = features[0];
       var firstRevision = first.getGeometry().getRevision();
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -299,8 +299,8 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('deletes vertex of a LineString programmatically', function() {
-      var lineFeature = new ol.Feature({
-        geometry: new ol.geom.LineString(
+      var lineFeature = new _ol_Feature_({
+        geometry: new _ol_geom_LineString_(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
@@ -311,8 +311,8 @@ describe('ol.interaction.Modify', function() {
       var first = features[0];
       var firstRevision = first.getGeometry().getRevision();
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -341,16 +341,16 @@ describe('ol.interaction.Modify', function() {
   describe('vertex modification', function() {
 
     it('keeps the third dimension', function() {
-      var lineFeature = new ol.Feature({
-        geometry: new ol.geom.LineString(
+      var lineFeature = new _ol_Feature_({
+        geometry: new _ol_geom_LineString_(
             [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
         )
       });
       features.length = 0;
       features.push(lineFeature);
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -384,12 +384,12 @@ describe('ol.interaction.Modify', function() {
 
   describe('circle modification', function() {
     it('changes the circle radius and center', function() {
-      var circleFeature = new ol.Feature(new ol.geom.Circle([10, 10], 20));
+      var circleFeature = new _ol_Feature_(new _ol_geom_Circle_([10, 10], 20));
       features.length = 0;
       features.push(circleFeature);
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -419,8 +419,8 @@ describe('ol.interaction.Modify', function() {
     var modify, feature, events;
 
     beforeEach(function() {
-      modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -524,9 +524,9 @@ describe('ol.interaction.Modify', function() {
     var modify, feature, events;
 
     beforeEach(function() {
-      modify = new ol.interaction.Modify({
-        features: new ol.Collection(features),
-        deleteCondition: ol.events.condition.doubleClick
+      modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features),
+        deleteCondition: _ol_events_condition_.doubleClick
       });
       map.addInteraction(modify);
 
@@ -577,8 +577,8 @@ describe('ol.interaction.Modify', function() {
         return false;
       });
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features),
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features),
         insertVertexCondition: listenerSpy
       });
       map.addInteraction(modify);
@@ -610,7 +610,7 @@ describe('ol.interaction.Modify', function() {
 
     beforeEach(function() {
       getListeners = function(feature, modify) {
-        var listeners = ol.events.getListeners(
+        var listeners = _ol_events_.getListeners(
             feature, 'change');
         return listeners.filter(function(listener) {
           return listener.bindTo === modify;
@@ -619,12 +619,12 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('updates circle segment data', function() {
-      var feature = new ol.Feature(new ol.geom.Circle([10, 10], 20));
+      var feature = new _ol_Feature_(new _ol_geom_Circle_([10, 10], 20));
       features.length = 0;
       features.push(feature);
 
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -659,8 +659,8 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('updates polygon segment data', function() {
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
 
@@ -699,8 +699,8 @@ describe('ol.interaction.Modify', function() {
 
   describe('#setActive', function() {
     it('removes the vertexFeature of deactivation', function() {
-      var modify = new ol.interaction.Modify({
-        features: new ol.Collection(features)
+      var modify = new _ol_interaction_Modify_({
+        features: new _ol_Collection_(features)
       });
       map.addInteraction(modify);
       expect(modify.vertexFeature_).to.be(null);

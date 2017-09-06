@@ -1,9 +1,8 @@
-goog.provide('ol.control');
-
-goog.require('ol.Collection');
-goog.require('ol.control.Attribution');
-goog.require('ol.control.Rotate');
-goog.require('ol.control.Zoom');
+import _ol_Collection_ from './collection';
+import _ol_control_Attribution_ from './control/attribution';
+import _ol_control_Rotate_ from './control/rotate';
+import _ol_control_Zoom_ from './control/zoom';
+var _ol_control_ = {};
 
 
 /**
@@ -18,28 +17,29 @@ goog.require('ol.control.Zoom');
  * @return {ol.Collection.<ol.control.Control>} Controls.
  * @api
  */
-ol.control.defaults = function(opt_options) {
+_ol_control_.defaults = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var controls = new ol.Collection();
+  var controls = new _ol_Collection_();
 
   var zoomControl = options.zoom !== undefined ? options.zoom : true;
   if (zoomControl) {
-    controls.push(new ol.control.Zoom(options.zoomOptions));
+    controls.push(new _ol_control_Zoom_(options.zoomOptions));
   }
 
   var rotateControl = options.rotate !== undefined ? options.rotate : true;
   if (rotateControl) {
-    controls.push(new ol.control.Rotate(options.rotateOptions));
+    controls.push(new _ol_control_Rotate_(options.rotateOptions));
   }
 
   var attributionControl = options.attribution !== undefined ?
     options.attribution : true;
   if (attributionControl) {
-    controls.push(new ol.control.Attribution(options.attributionOptions));
+    controls.push(new _ol_control_Attribution_(options.attributionOptions));
   }
 
   return controls;
 
 };
+export default _ol_control_;

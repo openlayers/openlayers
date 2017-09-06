@@ -1,9 +1,8 @@
-goog.provide('ol.proj.EPSG3857');
-
-goog.require('ol');
-goog.require('ol.math');
-goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
+import _ol_ from '../index';
+import _ol_math_ from '../math';
+import _ol_proj_Projection_ from '../proj/projection';
+import _ol_proj_Units_ from '../proj/units';
+var _ol_proj_EPSG3857_ = {};
 
 
 /**
@@ -15,19 +14,19 @@ goog.require('ol.proj.Units');
  * @param {string} code Code.
  * @private
  */
-ol.proj.EPSG3857.Projection_ = function(code) {
-  ol.proj.Projection.call(this, {
+_ol_proj_EPSG3857_.Projection_ = function(code) {
+  _ol_proj_Projection_.call(this, {
     code: code,
-    units: ol.proj.Units.METERS,
-    extent: ol.proj.EPSG3857.EXTENT,
+    units: _ol_proj_Units_.METERS,
+    extent: _ol_proj_EPSG3857_.EXTENT,
     global: true,
-    worldExtent: ol.proj.EPSG3857.WORLD_EXTENT,
+    worldExtent: _ol_proj_EPSG3857_.WORLD_EXTENT,
     getPointResolution: function(resolution, point) {
-      return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS);
+      return resolution / _ol_math_.cosh(point[1] / _ol_proj_EPSG3857_.RADIUS);
     }
   });
 };
-ol.inherits(ol.proj.EPSG3857.Projection_, ol.proj.Projection);
+_ol_.inherits(_ol_proj_EPSG3857_.Projection_, _ol_proj_Projection_);
 
 
 /**
@@ -36,23 +35,23 @@ ol.inherits(ol.proj.EPSG3857.Projection_, ol.proj.Projection);
  * @const
  * @type {number}
  */
-ol.proj.EPSG3857.RADIUS = 6378137;
+_ol_proj_EPSG3857_.RADIUS = 6378137;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.proj.EPSG3857.HALF_SIZE = Math.PI * ol.proj.EPSG3857.RADIUS;
+_ol_proj_EPSG3857_.HALF_SIZE = Math.PI * _ol_proj_EPSG3857_.RADIUS;
 
 
 /**
  * @const
  * @type {ol.Extent}
  */
-ol.proj.EPSG3857.EXTENT = [
-  -ol.proj.EPSG3857.HALF_SIZE, -ol.proj.EPSG3857.HALF_SIZE,
-  ol.proj.EPSG3857.HALF_SIZE, ol.proj.EPSG3857.HALF_SIZE
+_ol_proj_EPSG3857_.EXTENT = [
+  -_ol_proj_EPSG3857_.HALF_SIZE, -_ol_proj_EPSG3857_.HALF_SIZE,
+  _ol_proj_EPSG3857_.HALF_SIZE, _ol_proj_EPSG3857_.HALF_SIZE
 ];
 
 
@@ -60,7 +59,7 @@ ol.proj.EPSG3857.EXTENT = [
  * @const
  * @type {ol.Extent}
  */
-ol.proj.EPSG3857.WORLD_EXTENT = [-180, -85, 180, 85];
+_ol_proj_EPSG3857_.WORLD_EXTENT = [-180, -85, 180, 85];
 
 
 /**
@@ -69,14 +68,14 @@ ol.proj.EPSG3857.WORLD_EXTENT = [-180, -85, 180, 85];
  * @const
  * @type {Array.<ol.proj.Projection>}
  */
-ol.proj.EPSG3857.PROJECTIONS = [
-  new ol.proj.EPSG3857.Projection_('EPSG:3857'),
-  new ol.proj.EPSG3857.Projection_('EPSG:102100'),
-  new ol.proj.EPSG3857.Projection_('EPSG:102113'),
-  new ol.proj.EPSG3857.Projection_('EPSG:900913'),
-  new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG:6.18:3:3857'),
-  new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG::3857'),
-  new ol.proj.EPSG3857.Projection_('http://www.opengis.net/gml/srs/epsg.xml#3857')
+_ol_proj_EPSG3857_.PROJECTIONS = [
+  new _ol_proj_EPSG3857_.Projection_('EPSG:3857'),
+  new _ol_proj_EPSG3857_.Projection_('EPSG:102100'),
+  new _ol_proj_EPSG3857_.Projection_('EPSG:102113'),
+  new _ol_proj_EPSG3857_.Projection_('EPSG:900913'),
+  new _ol_proj_EPSG3857_.Projection_('urn:ogc:def:crs:EPSG:6.18:3:3857'),
+  new _ol_proj_EPSG3857_.Projection_('urn:ogc:def:crs:EPSG::3857'),
+  new _ol_proj_EPSG3857_.Projection_('http://www.opengis.net/gml/srs/epsg.xml#3857')
 ];
 
 
@@ -88,7 +87,7 @@ ol.proj.EPSG3857.PROJECTIONS = [
  * @param {number=} opt_dimension Dimension (default is `2`).
  * @return {Array.<number>} Output array of coordinate values.
  */
-ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
+_ol_proj_EPSG3857_.fromEPSG4326 = function(input, opt_output, opt_dimension) {
   var length = input.length,
       dimension = opt_dimension > 1 ? opt_dimension : 2,
       output = opt_output;
@@ -100,10 +99,10 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  var halfSize = ol.proj.EPSG3857.HALF_SIZE;
+  var halfSize = _ol_proj_EPSG3857_.HALF_SIZE;
   for (var i = 0; i < length; i += dimension) {
     output[i] = halfSize * input[i] / 180;
-    var y = ol.proj.EPSG3857.RADIUS *
+    var y = _ol_proj_EPSG3857_.RADIUS *
         Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
     if (y > halfSize) {
       y = halfSize;
@@ -124,7 +123,7 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
  * @param {number=} opt_dimension Dimension (default is `2`).
  * @return {Array.<number>} Output array of coordinate values.
  */
-ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
+_ol_proj_EPSG3857_.toEPSG4326 = function(input, opt_output, opt_dimension) {
   var length = input.length,
       dimension = opt_dimension > 1 ? opt_dimension : 2,
       output = opt_output;
@@ -137,9 +136,10 @@ ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
     }
   }
   for (var i = 0; i < length; i += dimension) {
-    output[i] = 180 * input[i] / ol.proj.EPSG3857.HALF_SIZE;
+    output[i] = 180 * input[i] / _ol_proj_EPSG3857_.HALF_SIZE;
     output[i + 1] = 360 * Math.atan(
-        Math.exp(input[i + 1] / ol.proj.EPSG3857.RADIUS)) / Math.PI - 90;
+        Math.exp(input[i + 1] / _ol_proj_EPSG3857_.RADIUS)) / Math.PI - 90;
   }
   return output;
 };
+export default _ol_proj_EPSG3857_;

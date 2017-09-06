@@ -1,9 +1,6 @@
-goog.provide('ol.render.canvas.ImageReplay');
-
-goog.require('ol');
-goog.require('ol.render.canvas.Instruction');
-goog.require('ol.render.canvas.Replay');
-
+import _ol_ from '../../index';
+import _ol_render_canvas_Instruction_ from '../canvas/instruction';
+import _ol_render_canvas_Replay_ from '../canvas/replay';
 
 /**
  * @constructor
@@ -15,8 +12,8 @@ goog.require('ol.render.canvas.Replay');
  * @param {boolean} overlaps The replay can have overlapping geometries.
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
+var _ol_render_canvas_ImageReplay_ = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+  _ol_render_canvas_Replay_.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
 
   /**
    * @private
@@ -97,7 +94,8 @@ ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, pixelR
   this.width_ = undefined;
 
 };
-ol.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
+
+_ol_.inherits(_ol_render_canvas_ImageReplay_, _ol_render_canvas_Replay_);
 
 
 /**
@@ -108,7 +106,7 @@ ol.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
  * @private
  * @return {number} My end.
  */
-ol.render.canvas.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+_ol_render_canvas_ImageReplay_.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   return this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false, false);
 };
@@ -117,7 +115,7 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinat
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
+_ol_render_canvas_ImageReplay_.prototype.drawPoint = function(pointGeometry, feature) {
   if (!this.image_) {
     return;
   }
@@ -128,14 +126,14 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
-    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
+    _ol_render_canvas_Instruction_.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_ * this.pixelRatio, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
+    _ol_render_canvas_Instruction_.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
@@ -149,7 +147,7 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
+_ol_render_canvas_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
   if (!this.image_) {
     return;
   }
@@ -160,14 +158,14 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   var myEnd = this.drawCoordinates_(
       flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
-    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
+    _ol_render_canvas_Instruction_.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
+    _ol_render_canvas_Instruction_.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
@@ -181,7 +179,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.finish = function() {
+_ol_render_canvas_ImageReplay_.prototype.finish = function() {
   this.reverseHitDetectionInstructions();
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchorX_ = undefined;
@@ -203,7 +201,7 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
+_ol_render_canvas_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
   var anchor = imageStyle.getAnchor();
   var size = imageStyle.getSize();
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
@@ -223,3 +221,4 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.snapToPixel_ = imageStyle.getSnapToPixel();
   this.width_ = size[0];
 };
+export default _ol_render_canvas_ImageReplay_;

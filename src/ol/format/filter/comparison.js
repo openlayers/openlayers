@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.Comparison');
-
-goog.require('ol');
-goog.require('ol.format.filter.Filter');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Filter_ from '../filter/filter';
 
 /**
  * @classdesc
@@ -15,9 +12,9 @@ goog.require('ol.format.filter.Filter');
  * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.filter.Comparison = function(tagName, propertyName) {
+var _ol_format_filter_Comparison_ = function(tagName, propertyName) {
 
-  ol.format.filter.Filter.call(this, tagName);
+  _ol_format_filter_Filter_.call(this, tagName);
 
   /**
    * @public
@@ -25,4 +22,6 @@ ol.format.filter.Comparison = function(tagName, propertyName) {
    */
   this.propertyName = propertyName;
 };
-ol.inherits(ol.format.filter.Comparison, ol.format.filter.Filter);
+
+_ol_.inherits(_ol_format_filter_Comparison_, _ol_format_filter_Filter_);
+export default _ol_format_filter_Comparison_;

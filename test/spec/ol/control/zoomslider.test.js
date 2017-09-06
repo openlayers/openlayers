@@ -1,9 +1,9 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control.ZoomSlider');
-goog.require('ol.pointer.PointerEvent');
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_control_ZoomSlider_ from '../../../../src/ol/control/zoomslider';
+import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/pointerevent';
 
 describe('ol.control.ZoomSlider', function() {
   var map, target, zoomslider;
@@ -11,8 +11,8 @@ describe('ol.control.ZoomSlider', function() {
   beforeEach(function() {
     target = document.createElement('div');
     document.body.appendChild(target);
-    zoomslider = new ol.control.ZoomSlider();
-    map = new ol.Map({
+    zoomslider = new _ol_control_ZoomSlider_();
+    map = new _ol_Map_({
       target: target,
       controls: [zoomslider]
     });
@@ -61,7 +61,7 @@ describe('ol.control.ZoomSlider', function() {
 
   describe('#direction_', function() {
     it('is horizontal for wide containers', function() {
-      var control = new ol.control.ZoomSlider({});
+      var control = new _ol_control_ZoomSlider_({});
       control.element.style.width = '1000px';
       control.element.style.height = '10px';
       control.setMap(map);
@@ -74,7 +74,7 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('is vertical for tall containers', function() {
-      var control = new ol.control.ZoomSlider({});
+      var control = new _ol_control_ZoomSlider_({});
       control.element.style.width = '10px';
       control.element.style.height = '1000px';
 
@@ -91,9 +91,9 @@ describe('ol.control.ZoomSlider', function() {
     var map;
 
     beforeEach(function() {
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: createMapDiv(500, 100),
-        view: new ol.View({
+        view: new _ol_View_({
           center: [0, 0],
           resolutions: [16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625]
         })
@@ -104,7 +104,7 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('[horizontal] handles a drag sequence', function() {
-      var control = new ol.control.ZoomSlider();
+      var control = new _ol_control_ZoomSlider_();
       map.addControl(control);
       map.getView().setZoom(0);
       control.element.style.width = '500px';
@@ -113,7 +113,7 @@ describe('ol.control.ZoomSlider', function() {
       control.element.firstChild.style.height = '10px';
       map.renderSync();
       var dragger = control.dragger_;
-      var event = new ol.pointer.PointerEvent('pointerdown', {
+      var event = new _ol_pointer_PointerEvent_('pointerdown', {
         target: control.element.firstElementChild
       });
       event.clientX = control.widthLimit_;
@@ -136,7 +136,7 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.dragging_).to.be(false);
     });
     it('[vertical] handles a drag sequence', function() {
-      var control = new ol.control.ZoomSlider();
+      var control = new _ol_control_ZoomSlider_();
       control.element.style.width = '10px';
       control.element.style.height = '100px';
       control.element.firstChild.style.width = '10px';
@@ -145,7 +145,7 @@ describe('ol.control.ZoomSlider', function() {
       map.getView().setZoom(8);
       map.renderSync();
       var dragger = control.dragger_;
-      var event = new ol.pointer.PointerEvent('pointerdown', {
+      var event = new _ol_pointer_PointerEvent_('pointerdown', {
         target: control.element.firstElementChild
       });
       event.clientX = 0;

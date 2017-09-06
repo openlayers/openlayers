@@ -1,16 +1,13 @@
-goog.provide('ol.geom.LinearRing');
-
-goog.require('ol');
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat.area');
-goog.require('ol.geom.flat.closest');
-goog.require('ol.geom.flat.deflate');
-goog.require('ol.geom.flat.inflate');
-goog.require('ol.geom.flat.simplify');
-
+import _ol_ from '../index';
+import _ol_extent_ from '../extent';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_SimpleGeometry_ from '../geom/simplegeometry';
+import _ol_geom_flat_area_ from '../geom/flat/area';
+import _ol_geom_flat_closest_ from '../geom/flat/closest';
+import _ol_geom_flat_deflate_ from '../geom/flat/deflate';
+import _ol_geom_flat_inflate_ from '../geom/flat/inflate';
+import _ol_geom_flat_simplify_ from '../geom/flat/simplify';
 
 /**
  * @classdesc
@@ -23,9 +20,9 @@ goog.require('ol.geom.flat.simplify');
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-ol.geom.LinearRing = function(coordinates, opt_layout) {
+var _ol_geom_LinearRing_ = function(coordinates, opt_layout) {
 
-  ol.geom.SimpleGeometry.call(this);
+  _ol_geom_SimpleGeometry_.call(this);
 
   /**
    * @private
@@ -42,7 +39,8 @@ ol.geom.LinearRing = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-ol.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
+
+_ol_.inherits(_ol_geom_LinearRing_, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -51,8 +49,8 @@ ol.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
  * @override
  * @api
  */
-ol.geom.LinearRing.prototype.clone = function() {
-  var linearRing = new ol.geom.LinearRing(null);
+_ol_geom_LinearRing_.prototype.clone = function() {
+  var linearRing = new _ol_geom_LinearRing_(null);
   linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return linearRing;
 };
@@ -61,17 +59,17 @@ ol.geom.LinearRing.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+_ol_geom_LinearRing_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
-      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
         this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.flat.closest.getClosestPoint(
+  return _ol_geom_flat_closest_.getClosestPoint(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -82,8 +80,8 @@ ol.geom.LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSq
  * @return {number} Area (on projected plane).
  * @api
  */
-ol.geom.LinearRing.prototype.getArea = function() {
-  return ol.geom.flat.area.linearRing(
+_ol_geom_LinearRing_.prototype.getArea = function() {
+  return _ol_geom_flat_area_.linearRing(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -94,8 +92,8 @@ ol.geom.LinearRing.prototype.getArea = function() {
  * @override
  * @api
  */
-ol.geom.LinearRing.prototype.getCoordinates = function() {
-  return ol.geom.flat.inflate.coordinates(
+_ol_geom_LinearRing_.prototype.getCoordinates = function() {
+  return _ol_geom_flat_inflate_.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
@@ -103,14 +101,14 @@ ol.geom.LinearRing.prototype.getCoordinates = function() {
 /**
  * @inheritDoc
  */
-ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+_ol_geom_LinearRing_.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
-  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
+  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
-  var simplifiedLinearRing = new ol.geom.LinearRing(null);
+  var simplifiedLinearRing = new _ol_geom_LinearRing_(null);
   simplifiedLinearRing.setFlatCoordinates(
-      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates);
+      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates);
   return simplifiedLinearRing;
 };
 
@@ -119,15 +117,15 @@ ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal = function(squaredTol
  * @inheritDoc
  * @api
  */
-ol.geom.LinearRing.prototype.getType = function() {
-  return ol.geom.GeometryType.LINEAR_RING;
+_ol_geom_LinearRing_.prototype.getType = function() {
+  return _ol_geom_GeometryType_.LINEAR_RING;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.geom.LinearRing.prototype.intersectsExtent = function(extent) {};
+_ol_geom_LinearRing_.prototype.intersectsExtent = function(extent) {};
 
 
 /**
@@ -137,15 +135,15 @@ ol.geom.LinearRing.prototype.intersectsExtent = function(extent) {};
  * @override
  * @api
  */
-ol.geom.LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
+_ol_geom_LinearRing_.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(
+    this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinates(
         this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }
@@ -156,7 +154,8 @@ ol.geom.LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) 
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-ol.geom.LinearRing.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+_ol_geom_LinearRing_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
+export default _ol_geom_LinearRing_;

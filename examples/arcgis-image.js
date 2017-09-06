@@ -1,29 +1,29 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Image');
-goog.require('ol.source.OSM');
-goog.require('ol.source.ImageArcGISRest');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Image_ from '../src/ol/layer/image';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_ImageArcGISRest_ from '../src/ol/source/imagearcgisrest';
 
 var url = 'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
     'Specialty/ESRI_StateCityHighway_USA/MapServer';
 
 var layers = [
-  new ol.layer.Tile({
-    source: new ol.source.OSM()
+  new _ol_layer_Tile_({
+    source: new _ol_source_OSM_()
   }),
-  new ol.layer.Image({
-    source: new ol.source.ImageArcGISRest({
+  new _ol_layer_Image_({
+    source: new _ol_source_ImageArcGISRest_({
       ratio: 1,
       params: {},
       url: url
     })
   })
 ];
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: layers,
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-10997148, 4569099],
     zoom: 4
   })

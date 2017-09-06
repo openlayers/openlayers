@@ -1,11 +1,11 @@
 
 
-goog.require('ol.render.webgl.Replay');
+import _ol_render_webgl_Replay_ from '../../../../../src/ol/render/webgl/replay';
 
 describe('ol.render.Replay', function() {
   var replay;
   beforeEach(function() {
-    replay = new ol.render.webgl.Replay(5, [-180, -90, 180, 90]);
+    replay = new _ol_render_webgl_Replay_(5, [-180, -90, 180, 90]);
   });
 
 

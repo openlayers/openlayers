@@ -1,16 +1,13 @@
-goog.provide('ol.layer.Heatmap');
-
-goog.require('ol.events');
-goog.require('ol');
-goog.require('ol.Object');
-goog.require('ol.dom');
-goog.require('ol.layer.Vector');
-goog.require('ol.math');
-goog.require('ol.obj');
-goog.require('ol.render.EventType');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Style');
-
+import _ol_events_ from '../events';
+import _ol_ from '../index';
+import _ol_Object_ from '../object';
+import _ol_dom_ from '../dom';
+import _ol_layer_Vector_ from '../layer/vector';
+import _ol_math_ from '../math';
+import _ol_obj_ from '../obj';
+import _ol_render_EventType_ from '../render/eventtype';
+import _ol_style_Icon_ from '../style/icon';
+import _ol_style_Style_ from '../style/style';
 
 /**
  * @classdesc
@@ -25,17 +22,17 @@ goog.require('ol.style.Style');
  * @param {olx.layer.HeatmapOptions=} opt_options Options.
  * @api
  */
-ol.layer.Heatmap = function(opt_options) {
+var _ol_layer_Heatmap_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var baseOptions = ol.obj.assign({}, options);
+  var baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.gradient;
   delete baseOptions.radius;
   delete baseOptions.blur;
   delete baseOptions.shadow;
   delete baseOptions.weight;
-  ol.layer.Vector.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  _ol_layer_Vector_.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   /**
    * @private
@@ -61,22 +58,22 @@ ol.layer.Heatmap = function(opt_options) {
    */
   this.styleCache_ = null;
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.GRADIENT),
+  _ol_events_.listen(this,
+      _ol_Object_.getChangeEventType(_ol_layer_Heatmap_.Property_.GRADIENT),
       this.handleGradientChanged_, this);
 
   this.setGradient(options.gradient ?
-    options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
+    options.gradient : _ol_layer_Heatmap_.DEFAULT_GRADIENT);
 
   this.setBlur(options.blur !== undefined ? options.blur : 15);
 
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.BLUR),
+  _ol_events_.listen(this,
+      _ol_Object_.getChangeEventType(_ol_layer_Heatmap_.Property_.BLUR),
       this.handleStyleChanged_, this);
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.RADIUS),
+  _ol_events_.listen(this,
+      _ol_Object_.getChangeEventType(_ol_layer_Heatmap_.Property_.RADIUS),
       this.handleStyleChanged_, this);
 
   this.handleStyleChanged_();
@@ -93,14 +90,14 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.setStyle(function(feature, resolution) {
     var weight = weightFunction(feature);
-    var opacity = weight !== undefined ? ol.math.clamp(weight, 0, 1) : 1;
+    var opacity = weight !== undefined ? _ol_math_.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = this.styleCache_[index];
     if (!style) {
       style = [
-        new ol.style.Style({
-          image: new ol.style.Icon({
+        new _ol_style_Style_({
+          image: new _ol_style_Icon_({
             opacity: opacity,
             src: this.circleImage_
           })
@@ -115,16 +112,17 @@ ol.layer.Heatmap = function(opt_options) {
   // The render order is not relevant for a heatmap representation.
   this.setRenderOrder(null);
 
-  ol.events.listen(this, ol.render.EventType.RENDER, this.handleRender_, this);
+  _ol_events_.listen(this, _ol_render_EventType_.RENDER, this.handleRender_, this);
 };
-ol.inherits(ol.layer.Heatmap, ol.layer.Vector);
+
+_ol_.inherits(_ol_layer_Heatmap_, _ol_layer_Vector_);
 
 
 /**
  * @const
  * @type {Array.<string>}
  */
-ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
+_ol_layer_Heatmap_.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
 
 /**
@@ -132,10 +130,10 @@ ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @return {Uint8ClampedArray} An array.
  * @private
  */
-ol.layer.Heatmap.createGradient_ = function(colors) {
+_ol_layer_Heatmap_.createGradient_ = function(colors) {
   var width = 1;
   var height = 256;
-  var context = ol.dom.createCanvasContext2D(width, height);
+  var context = _ol_dom_.createCanvasContext2D(width, height);
 
   var gradient = context.createLinearGradient(0, 0, width, height);
   var step = 1 / (colors.length - 1);
@@ -154,12 +152,12 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
  * @return {string} Data URL for a circle.
  * @private
  */
-ol.layer.Heatmap.prototype.createCircle_ = function() {
+_ol_layer_Heatmap_.prototype.createCircle_ = function() {
   var radius = this.getRadius();
   var blur = this.getBlur();
   var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
-  var context = ol.dom.createCanvasContext2D(size, size);
+  var context = _ol_dom_.createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
   context.shadowBlur = blur;
   context.shadowColor = '#000';
@@ -177,8 +175,10 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
  * @api
  * @observable
  */
-ol.layer.Heatmap.prototype.getBlur = function() {
-  return /** @type {number} */ (this.get(ol.layer.Heatmap.Property_.BLUR));
+_ol_layer_Heatmap_.prototype.getBlur = function() {
+  return (
+    /** @type {number} */ this.get(_ol_layer_Heatmap_.Property_.BLUR)
+  );
 };
 
 
@@ -188,9 +188,10 @@ ol.layer.Heatmap.prototype.getBlur = function() {
  * @api
  * @observable
  */
-ol.layer.Heatmap.prototype.getGradient = function() {
-  return /** @type {Array.<string>} */ (
-    this.get(ol.layer.Heatmap.Property_.GRADIENT));
+_ol_layer_Heatmap_.prototype.getGradient = function() {
+  return (
+    /** @type {Array.<string>} */ this.get(_ol_layer_Heatmap_.Property_.GRADIENT)
+  );
 };
 
 
@@ -200,23 +201,25 @@ ol.layer.Heatmap.prototype.getGradient = function() {
  * @api
  * @observable
  */
-ol.layer.Heatmap.prototype.getRadius = function() {
-  return /** @type {number} */ (this.get(ol.layer.Heatmap.Property_.RADIUS));
+_ol_layer_Heatmap_.prototype.getRadius = function() {
+  return (
+    /** @type {number} */ this.get(_ol_layer_Heatmap_.Property_.RADIUS)
+  );
 };
 
 
 /**
  * @private
  */
-ol.layer.Heatmap.prototype.handleGradientChanged_ = function() {
-  this.gradient_ = ol.layer.Heatmap.createGradient_(this.getGradient());
+_ol_layer_Heatmap_.prototype.handleGradientChanged_ = function() {
+  this.gradient_ = _ol_layer_Heatmap_.createGradient_(this.getGradient());
 };
 
 
 /**
  * @private
  */
-ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
+_ol_layer_Heatmap_.prototype.handleStyleChanged_ = function() {
   this.circleImage_ = this.createCircle_();
   this.styleCache_ = new Array(256);
   this.changed();
@@ -227,7 +230,7 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
  * @param {ol.render.Event} event Post compose event
  * @private
  */
-ol.layer.Heatmap.prototype.handleRender_ = function(event) {
+_ol_layer_Heatmap_.prototype.handleRender_ = function(event) {
   var context = event.context;
   var canvas = context.canvas;
   var image = context.getImageData(0, 0, canvas.width, canvas.height);
@@ -251,8 +254,8 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
  * @api
  * @observable
  */
-ol.layer.Heatmap.prototype.setBlur = function(blur) {
-  this.set(ol.layer.Heatmap.Property_.BLUR, blur);
+_ol_layer_Heatmap_.prototype.setBlur = function(blur) {
+  this.set(_ol_layer_Heatmap_.Property_.BLUR, blur);
 };
 
 
@@ -262,8 +265,8 @@ ol.layer.Heatmap.prototype.setBlur = function(blur) {
  * @api
  * @observable
  */
-ol.layer.Heatmap.prototype.setGradient = function(colors) {
-  this.set(ol.layer.Heatmap.Property_.GRADIENT, colors);
+_ol_layer_Heatmap_.prototype.setGradient = function(colors) {
+  this.set(_ol_layer_Heatmap_.Property_.GRADIENT, colors);
 };
 
 
@@ -273,8 +276,8 @@ ol.layer.Heatmap.prototype.setGradient = function(colors) {
  * @api
  * @observable
  */
-ol.layer.Heatmap.prototype.setRadius = function(radius) {
-  this.set(ol.layer.Heatmap.Property_.RADIUS, radius);
+_ol_layer_Heatmap_.prototype.setRadius = function(radius) {
+  this.set(_ol_layer_Heatmap_.Property_.RADIUS, radius);
 };
 
 
@@ -282,8 +285,9 @@ ol.layer.Heatmap.prototype.setRadius = function(radius) {
  * @enum {string}
  * @private
  */
-ol.layer.Heatmap.Property_ = {
+_ol_layer_Heatmap_.Property_ = {
   BLUR: 'blur',
   GRADIENT: 'gradient',
   RADIUS: 'radius'
 };
+export default _ol_layer_Heatmap_;

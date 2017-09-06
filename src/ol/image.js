@@ -1,13 +1,10 @@
-goog.provide('ol.Image');
-
-goog.require('ol');
-goog.require('ol.ImageBase');
-goog.require('ol.ImageState');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.extent');
-goog.require('ol.obj');
-
+import _ol_ from './index';
+import _ol_ImageBase_ from './imagebase';
+import _ol_ImageState_ from './imagestate';
+import _ol_events_ from './events';
+import _ol_events_EventType_ from './events/eventtype';
+import _ol_extent_ from './extent';
+import _ol_obj_ from './obj';
 
 /**
  * @constructor
@@ -20,10 +17,10 @@ goog.require('ol.obj');
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-ol.Image = function(extent, resolution, pixelRatio, attributions, src,
+var _ol_Image_ = function(extent, resolution, pixelRatio, attributions, src,
     crossOrigin, imageLoadFunction) {
 
-  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
+  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, _ol_ImageState_.IDLE,
       attributions);
 
   /**
@@ -57,7 +54,7 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
    * @protected
    * @type {ol.ImageState}
    */
-  this.state = ol.ImageState.IDLE;
+  this.state = _ol_ImageState_.IDLE;
 
   /**
    * @private
@@ -66,20 +63,21 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
   this.imageLoadFunction_ = imageLoadFunction;
 
 };
-ol.inherits(ol.Image, ol.ImageBase);
+
+_ol_.inherits(_ol_Image_, _ol_ImageBase_);
 
 
 /**
  * @inheritDoc
  * @api
  */
-ol.Image.prototype.getImage = function(opt_context) {
+_ol_Image_.prototype.getImage = function(opt_context) {
   if (opt_context !== undefined) {
     var image;
-    var key = ol.getUid(opt_context);
+    var key = _ol_.getUid(opt_context);
     if (key in this.imageByContext_) {
       return this.imageByContext_[key];
-    } else if (ol.obj.isEmpty(this.imageByContext_)) {
+    } else if (_ol_obj_.isEmpty(this.imageByContext_)) {
       image = this.image_;
     } else {
       image = /** @type {Image} */ (this.image_.cloneNode(false));
@@ -97,8 +95,8 @@ ol.Image.prototype.getImage = function(opt_context) {
  *
  * @private
  */
-ol.Image.prototype.handleImageError_ = function() {
-  this.state = ol.ImageState.ERROR;
+_ol_Image_.prototype.handleImageError_ = function() {
+  this.state = _ol_ImageState_.ERROR;
   this.unlistenImage_();
   this.changed();
 };
@@ -109,11 +107,11 @@ ol.Image.prototype.handleImageError_ = function() {
  *
  * @private
  */
-ol.Image.prototype.handleImageLoad_ = function() {
+_ol_Image_.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
-    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
+    this.resolution = _ol_extent_.getHeight(this.extent) / this.image_.height;
   }
-  this.state = ol.ImageState.LOADED;
+  this.state = _ol_ImageState_.LOADED;
   this.unlistenImage_();
   this.changed();
 };
@@ -126,14 +124,14 @@ ol.Image.prototype.handleImageLoad_ = function() {
  * @override
  * @api
  */
-ol.Image.prototype.load = function() {
-  if (this.state == ol.ImageState.IDLE || this.state == ol.ImageState.ERROR) {
-    this.state = ol.ImageState.LOADING;
+_ol_Image_.prototype.load = function() {
+  if (this.state == _ol_ImageState_.IDLE || this.state == _ol_ImageState_.ERROR) {
+    this.state = _ol_ImageState_.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
+      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.ERROR,
           this.handleImageError_, this),
-      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
+      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.LOAD,
           this.handleImageLoad_, this)
     ];
     this.imageLoadFunction_(this, this.src_);
@@ -144,7 +142,7 @@ ol.Image.prototype.load = function() {
 /**
  * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
  */
-ol.Image.prototype.setImage = function(image) {
+_ol_Image_.prototype.setImage = function(image) {
   this.image_ = image;
 };
 
@@ -154,7 +152,8 @@ ol.Image.prototype.setImage = function(image) {
  *
  * @private
  */
-ol.Image.prototype.unlistenImage_ = function() {
-  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
+_ol_Image_.prototype.unlistenImage_ = function() {
+  this.imageListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
+export default _ol_Image_;

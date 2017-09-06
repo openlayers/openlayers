@@ -1,12 +1,9 @@
-goog.provide('ol.interaction.DragRotateAndZoom');
-
-goog.require('ol');
-goog.require('ol.RotationConstraint');
-goog.require('ol.ViewHint');
-goog.require('ol.events.condition');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.Pointer');
-
+import _ol_ from '../index';
+import _ol_RotationConstraint_ from '../rotationconstraint';
+import _ol_ViewHint_ from '../viewhint';
+import _ol_events_condition_ from '../events/condition';
+import _ol_interaction_Interaction_ from '../interaction/interaction';
+import _ol_interaction_Pointer_ from '../interaction/pointer';
 
 /**
  * @classdesc
@@ -23,14 +20,14 @@ goog.require('ol.interaction.Pointer');
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
  * @api
  */
-ol.interaction.DragRotateAndZoom = function(opt_options) {
+var _ol_interaction_DragRotateAndZoom_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.DragRotateAndZoom.handleDownEvent_,
-    handleDragEvent: ol.interaction.DragRotateAndZoom.handleDragEvent_,
-    handleUpEvent: ol.interaction.DragRotateAndZoom.handleUpEvent_
+  _ol_interaction_Pointer_.call(this, {
+    handleDownEvent: _ol_interaction_DragRotateAndZoom_.handleDownEvent_,
+    handleDragEvent: _ol_interaction_DragRotateAndZoom_.handleDragEvent_,
+    handleUpEvent: _ol_interaction_DragRotateAndZoom_.handleUpEvent_
   });
 
   /**
@@ -38,7 +35,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-    options.condition : ol.events.condition.shiftKeyOnly;
+    options.condition : _ol_events_condition_.shiftKeyOnly;
 
   /**
    * @private
@@ -65,7 +62,8 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 400;
 
 };
-ol.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
+
+_ol_.inherits(_ol_interaction_DragRotateAndZoom_, _ol_interaction_Pointer_);
 
 
 /**
@@ -73,8 +71,8 @@ ol.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
  * @this {ol.interaction.DragRotateAndZoom}
  * @private
  */
-ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragRotateAndZoom_.handleDragEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return;
   }
 
@@ -86,15 +84,15 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var theta = Math.atan2(deltaY, deltaX);
   var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var view = map.getView();
-  if (view.getConstraints().rotation !== ol.RotationConstraint.disable && this.lastAngle_ !== undefined) {
+  if (view.getConstraints().rotation !== _ol_RotationConstraint_.disable && this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
-    ol.interaction.Interaction.rotateWithoutConstraints(
+    _ol_interaction_Interaction_.rotateWithoutConstraints(
         view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    ol.interaction.Interaction.zoomWithoutConstraints(view, resolution);
+    _ol_interaction_Interaction_.zoomWithoutConstraints(view, resolution);
   }
   if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
@@ -109,17 +107,17 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotateAndZoom}
  * @private
  */
-ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragRotateAndZoom_.handleUpEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return true;
   }
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.ViewHint.INTERACTING, -1);
+  view.setHint(_ol_ViewHint_.INTERACTING, -1);
   var direction = this.lastScaleDelta_ - 1;
-  ol.interaction.Interaction.rotate(view, view.getRotation());
-  ol.interaction.Interaction.zoom(view, view.getResolution(),
+  _ol_interaction_Interaction_.rotate(view, view.getRotation());
+  _ol_interaction_Interaction_.zoom(view, view.getResolution(),
       undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
@@ -132,13 +130,13 @@ ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotateAndZoom}
  * @private
  */
-ol.interaction.DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragRotateAndZoom_.handleDownEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return false;
   }
 
   if (this.condition_(mapBrowserEvent)) {
-    mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+    mapBrowserEvent.map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
     this.lastAngle_ = undefined;
     this.lastMagnitude_ = undefined;
     return true;
@@ -146,3 +144,4 @@ ol.interaction.DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
+export default _ol_interaction_DragRotateAndZoom_;

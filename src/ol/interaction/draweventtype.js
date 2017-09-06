@@ -1,10 +1,7 @@
-goog.provide('ol.interaction.DrawEventType');
-
-
 /**
  * @enum {string}
  */
-ol.interaction.DrawEventType = {
+var _ol_interaction_DrawEventType_ = {
   /**
    * Triggered upon feature draw start
    * @event ol.interaction.Draw.Event#drawstart
@@ -18,3 +15,5 @@ ol.interaction.DrawEventType = {
    */
   DRAWEND: 'drawend'
 };
+
+export default _ol_interaction_DrawEventType_;

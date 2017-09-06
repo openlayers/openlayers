@@ -1,6 +1,6 @@
 
 
-goog.require('ol.structs.LRUCache');
+import _ol_structs_LRUCache_ from '../../../../src/ol/structs/lrucache';
 
 
 describe('ol.structs.LRUCache', function() {
@@ -15,7 +15,7 @@ describe('ol.structs.LRUCache', function() {
   }
 
   beforeEach(function() {
-    lruCache = new ol.structs.LRUCache();
+    lruCache = new _ol_structs_LRUCache_();
   });
 
   describe('empty cache', function() {

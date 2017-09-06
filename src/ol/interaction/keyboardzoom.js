@@ -1,10 +1,7 @@
-goog.provide('ol.interaction.KeyboardZoom');
-
-goog.require('ol');
-goog.require('ol.events.EventType');
-goog.require('ol.events.condition');
-goog.require('ol.interaction.Interaction');
-
+import _ol_ from '../index';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_events_condition_ from '../events/condition';
+import _ol_interaction_Interaction_ from '../interaction/interaction';
 
 /**
  * @classdesc
@@ -23,10 +20,10 @@ goog.require('ol.interaction.Interaction');
  * @extends {ol.interaction.Interaction}
  * @api
  */
-ol.interaction.KeyboardZoom = function(opt_options) {
+var _ol_interaction_KeyboardZoom_ = function(opt_options) {
 
-  ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.KeyboardZoom.handleEvent
+  _ol_interaction_Interaction_.call(this, {
+    handleEvent: _ol_interaction_KeyboardZoom_.handleEvent
   });
 
   var options = opt_options ? opt_options : {};
@@ -36,7 +33,7 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ? options.condition :
-    ol.events.condition.targetNotEditable;
+    _ol_events_condition_.targetNotEditable;
 
   /**
    * @private
@@ -51,7 +48,8 @@ ol.interaction.KeyboardZoom = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 100;
 
 };
-ol.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
+
+_ol_.inherits(_ol_interaction_KeyboardZoom_, _ol_interaction_Interaction_);
 
 
 /**
@@ -63,10 +61,10 @@ ol.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
  * @this {ol.interaction.KeyboardZoom}
  * @api
  */
-ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
+_ol_interaction_KeyboardZoom_.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == ol.events.EventType.KEYDOWN ||
-      mapBrowserEvent.type == ol.events.EventType.KEYPRESS) {
+  if (mapBrowserEvent.type == _ol_events_EventType_.KEYDOWN ||
+      mapBrowserEvent.type == _ol_events_EventType_.KEYPRESS) {
     var keyEvent = mapBrowserEvent.originalEvent;
     var charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&
@@ -74,7 +72,7 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
       var map = mapBrowserEvent.map;
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       var view = map.getView();
-      ol.interaction.Interaction.zoomByDelta(
+      _ol_interaction_Interaction_.zoomByDelta(
           view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
@@ -82,3 +80,4 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
   }
   return !stopEvent;
 };
+export default _ol_interaction_KeyboardZoom_;

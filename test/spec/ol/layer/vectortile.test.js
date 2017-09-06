@@ -1,7 +1,7 @@
 
 
-goog.require('ol.layer.VectorTile');
-goog.require('ol.source.VectorTile');
+import _ol_layer_VectorTile_ from '../../../../src/ol/layer/vectortile';
+import _ol_source_VectorTile_ from '../../../../src/ol/source/vectortile';
 
 
 describe('ol.layer.VectorTile', function() {
@@ -11,8 +11,8 @@ describe('ol.layer.VectorTile', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new ol.layer.VectorTile({
-        source: new ol.source.VectorTile({})
+      layer = new _ol_layer_VectorTile_({
+        source: new _ol_source_VectorTile_({})
       });
     });
 
@@ -21,7 +21,7 @@ describe('ol.layer.VectorTile', function() {
     });
 
     it('creates an instance', function() {
-      expect(layer).to.be.a(ol.layer.VectorTile);
+      expect(layer).to.be.a(_ol_layer_VectorTile_);
     });
 
     it('provides default preload', function() {
@@ -40,20 +40,20 @@ describe('ol.layer.VectorTile', function() {
 
   describe('constructor (options)', function() {
     it('works with options', function() {
-      var layer = new ol.layer.VectorTile({
+      var layer = new _ol_layer_VectorTile_({
         renderMode: 'vector',
-        source: new ol.source.VectorTile({})
+        source: new _ol_source_VectorTile_({})
       });
       expect(layer.getRenderMode()).to.be('vector');
-      layer = new ol.layer.VectorTile({
+      layer = new _ol_layer_VectorTile_({
         renderMode: 'image',
-        source: new ol.source.VectorTile({})
+        source: new _ol_source_VectorTile_({})
       });
       expect(layer.getRenderMode()).to.be('image');
       expect(function() {
-        layer = new ol.layer.VectorTile({
+        layer = new _ol_layer_VectorTile_({
           renderMode: 'foo',
-          source: new ol.source.VectorTile({})
+          source: new _ol_source_VectorTile_({})
         });
       }).to.throwException();
     });

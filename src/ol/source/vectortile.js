@@ -1,13 +1,10 @@
-goog.provide('ol.source.VectorTile');
-
-goog.require('ol');
-goog.require('ol.TileState');
-goog.require('ol.VectorImageTile');
-goog.require('ol.VectorTile');
-goog.require('ol.size');
-goog.require('ol.tilegrid');
-goog.require('ol.source.UrlTile');
-
+import _ol_ from '../index';
+import _ol_TileState_ from '../tilestate';
+import _ol_VectorImageTile_ from '../vectorimagetile';
+import _ol_VectorTile_ from '../vectortile';
+import _ol_size_ from '../size';
+import _ol_tilegrid_ from '../tilegrid';
+import _ol_source_UrlTile_ from '../source/urltile';
 
 /**
  * @classdesc
@@ -25,19 +22,19 @@ goog.require('ol.source.UrlTile');
  * @param {olx.source.VectorTileOptions} options Vector tile options.
  * @api
  */
-ol.source.VectorTile = function(options) {
+var _ol_source_VectorTile_ = function(options) {
   var projection = options.projection || 'EPSG:3857';
 
-  var extent = options.extent || ol.tilegrid.extentFromProjection(projection);
+  var extent = options.extent || _ol_tilegrid_.extentFromProjection(projection);
 
-  var tileGrid = options.tileGrid || ol.tilegrid.createXYZ({
+  var tileGrid = options.tileGrid || _ol_tilegrid_.createXYZ({
     extent: extent,
     maxZoom: options.maxZoom || 22,
     minZoom: options.minZoom,
     tileSize: options.tileSize || 512
   });
 
-  ol.source.UrlTile.call(this, {
+  _ol_source_UrlTile_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
     extent: extent,
@@ -47,7 +44,7 @@ ol.source.VectorTile = function(options) {
     state: options.state,
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-      options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
+      options.tileLoadFunction : _ol_VectorImageTile_.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
     urls: options.urls,
@@ -77,7 +74,7 @@ ol.source.VectorTile = function(options) {
    * @type {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
    *        ol.format.Feature, ol.TileLoadFunctionType)}
    */
-  this.tileClass = options.tileClass ? options.tileClass : ol.VectorTile;
+  this.tileClass = options.tileClass ? options.tileClass : _ol_VectorTile_;
 
   /**
    * @private
@@ -86,13 +83,14 @@ ol.source.VectorTile = function(options) {
   this.tileGrids_ = {};
 
 };
-ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
+
+_ol_.inherits(_ol_source_VectorTile_, _ol_source_UrlTile_);
 
 
 /**
  * @return {boolean} The source can have overlapping geometries.
  */
-ol.source.VectorTile.prototype.getOverlaps = function() {
+_ol_source_VectorTile_.prototype.getOverlaps = function() {
   return this.overlaps_;
 };
 
@@ -100,7 +98,7 @@ ol.source.VectorTile.prototype.getOverlaps = function() {
  * clear {@link ol.TileCache} and delete all source tiles
  * @api
  */
-ol.source.VectorTile.prototype.clear = function() {
+_ol_source_VectorTile_.prototype.clear = function() {
   this.tileCache.clear();
   this.sourceTiles_ = {};
 };
@@ -108,7 +106,7 @@ ol.source.VectorTile.prototype.clear = function() {
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+_ol_source_VectorTile_.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
@@ -118,9 +116,9 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileCoord, projection);
     var tileUrl = urlTileCoord ?
       this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
-    var tile = new ol.VectorImageTile(
+    var tile = new _ol_VectorImageTile_(
         tileCoord,
-        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        tileUrl !== undefined ? _ol_TileState_.IDLE : _ol_TileState_.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),
@@ -136,14 +134,14 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTileGridForProjection = function(projection) {
+_ol_source_VectorTile_.prototype.getTileGridForProjection = function(projection) {
   var code = projection.getCode();
   var tileGrid = this.tileGrids_[code];
   if (!tileGrid) {
     // A tile grid that matches the tile size of the source tile grid is more
     // likely to have 1:1 relationships between source tiles and rendered tiles.
     var sourceTileGrid = this.tileGrid;
-    tileGrid = this.tileGrids_[code] = ol.tilegrid.createForProjection(projection, undefined,
+    tileGrid = this.tileGrids_[code] = _ol_tilegrid_.createForProjection(projection, undefined,
         sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
   }
   return tileGrid;
@@ -153,7 +151,7 @@ ol.source.VectorTile.prototype.getTileGridForProjection = function(projection) {
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTilePixelRatio = function(pixelRatio) {
+_ol_source_VectorTile_.prototype.getTilePixelRatio = function(pixelRatio) {
   return pixelRatio;
 };
 
@@ -161,7 +159,8 @@ ol.source.VectorTile.prototype.getTilePixelRatio = function(pixelRatio) {
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
-  var tileSize = ol.size.toSize(this.getTileGridForProjection(projection).getTileSize(z));
+_ol_source_VectorTile_.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
+  var tileSize = _ol_size_.toSize(this.getTileGridForProjection(projection).getTileSize(z));
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
+export default _ol_source_VectorTile_;

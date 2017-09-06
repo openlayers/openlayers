@@ -1,29 +1,29 @@
-goog.require('ol.Map');
-goog.require('ol.Overlay');
-goog.require('ol.View');
-goog.require('ol.coordinate');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/map';
+import _ol_Overlay_ from '../src/ol/overlay';
+import _ol_View_ from '../src/ol/view';
+import _ol_coordinate_ from '../src/ol/coordinate';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_OSM_ from '../src/ol/source/osm';
 
 
-var layer = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var layer = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [layer],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
 });
 
-var pos = ol.proj.fromLonLat([16.3725, 48.208889]);
+var pos = _ol_proj_.fromLonLat([16.3725, 48.208889]);
 
 // Vienna marker
-var marker = new ol.Overlay({
+var marker = new _ol_Overlay_({
   position: pos,
   positioning: 'center-center',
   element: document.getElementById('marker'),
@@ -32,14 +32,14 @@ var marker = new ol.Overlay({
 map.addOverlay(marker);
 
 // Vienna label
-var vienna = new ol.Overlay({
+var vienna = new _ol_Overlay_({
   position: pos,
   element: document.getElementById('vienna')
 });
 map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
-var popup = new ol.Overlay({
+var popup = new _ol_Overlay_({
   element: document.getElementById('popup')
 });
 map.addOverlay(popup);
@@ -47,7 +47,7 @@ map.addOverlay(popup);
 map.on('click', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.coordinate;
-  var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
+  var hdms = _ol_coordinate_.toStringHDMS(_ol_proj_.transform(
       coordinate, 'EPSG:3857', 'EPSG:4326'));
 
   $(element).popover('destroy');

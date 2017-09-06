@@ -1,9 +1,6 @@
-goog.provide('ol.ImageBase');
-
-goog.require('ol');
-goog.require('ol.events.EventTarget');
-goog.require('ol.events.EventType');
-
+import _ol_ from './index';
+import _ol_events_EventTarget_ from './events/eventtarget';
+import _ol_events_EventType_ from './events/eventtype';
 
 /**
  * @constructor
@@ -15,9 +12,9 @@ goog.require('ol.events.EventType');
  * @param {ol.ImageState} state State.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  */
-ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
+var _ol_ImageBase_ = function(extent, resolution, pixelRatio, state, attributions) {
 
-  ol.events.EventTarget.call(this);
+  _ol_events_EventTarget_.call(this);
 
   /**
    * @private
@@ -50,21 +47,22 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
   this.state = state;
 
 };
-ol.inherits(ol.ImageBase, ol.events.EventTarget);
+
+_ol_.inherits(_ol_ImageBase_, _ol_events_EventTarget_);
 
 
 /**
  * @protected
  */
-ol.ImageBase.prototype.changed = function() {
-  this.dispatchEvent(ol.events.EventType.CHANGE);
+_ol_ImageBase_.prototype.changed = function() {
+  this.dispatchEvent(_ol_events_EventType_.CHANGE);
 };
 
 
 /**
  * @return {Array.<ol.Attribution>} Attributions.
  */
-ol.ImageBase.prototype.getAttributions = function() {
+_ol_ImageBase_.prototype.getAttributions = function() {
   return this.attributions_;
 };
 
@@ -72,7 +70,7 @@ ol.ImageBase.prototype.getAttributions = function() {
 /**
  * @return {ol.Extent} Extent.
  */
-ol.ImageBase.prototype.getExtent = function() {
+_ol_ImageBase_.prototype.getExtent = function() {
   return this.extent;
 };
 
@@ -82,13 +80,13 @@ ol.ImageBase.prototype.getExtent = function() {
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  */
-ol.ImageBase.prototype.getImage = function(opt_context) {};
+_ol_ImageBase_.prototype.getImage = function(opt_context) {};
 
 
 /**
  * @return {number} PixelRatio.
  */
-ol.ImageBase.prototype.getPixelRatio = function() {
+_ol_ImageBase_.prototype.getPixelRatio = function() {
   return this.pixelRatio_;
 };
 
@@ -96,7 +94,7 @@ ol.ImageBase.prototype.getPixelRatio = function() {
 /**
  * @return {number} Resolution.
  */
-ol.ImageBase.prototype.getResolution = function() {
+_ol_ImageBase_.prototype.getResolution = function() {
   return /** @type {number} */ (this.resolution);
 };
 
@@ -104,7 +102,7 @@ ol.ImageBase.prototype.getResolution = function() {
 /**
  * @return {ol.ImageState} State.
  */
-ol.ImageBase.prototype.getState = function() {
+_ol_ImageBase_.prototype.getState = function() {
   return this.state;
 };
 
@@ -113,4 +111,5 @@ ol.ImageBase.prototype.getState = function() {
  * Load not yet loaded URI.
  * @abstract
  */
-ol.ImageBase.prototype.load = function() {};
+_ol_ImageBase_.prototype.load = function() {};
+export default _ol_ImageBase_;

@@ -1,9 +1,7 @@
-goog.provide('ol.CollectionEventType');
-
 /**
  * @enum {string}
  */
-ol.CollectionEventType = {
+var _ol_CollectionEventType_ = {
   /**
    * Triggered when an item is added to the collection.
    * @event ol.Collection.Event#add
@@ -17,3 +15,5 @@ ol.CollectionEventType = {
    */
   REMOVE: 'remove'
 };
+
+export default _ol_CollectionEventType_;

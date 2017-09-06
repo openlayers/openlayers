@@ -1,12 +1,12 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.TopoJSON');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.proj');
-goog.require('ol.source.VectorTile');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_TopoJSON_ from '../src/ol/format/topojson';
+import _ol_layer_VectorTile_ from '../src/ol/layer/vectortile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_VectorTile_ from '../src/ol/source/vectortile';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 var key = 'vector-tiles-5eJz6JX';
 
@@ -16,18 +16,18 @@ var roadColor = {
   'minor_road': '#ccb',
   'highway': '#f39'
 };
-var buildingStyle = new ol.style.Style({
-  fill: new ol.style.Fill({
+var buildingStyle = new _ol_style_Style_({
+  fill: new _ol_style_Fill_({
     color: '#666',
     opacity: 0.4
   }),
-  stroke: new ol.style.Stroke({
+  stroke: new _ol_style_Stroke_({
     color: '#444',
     width: 1
   })
 });
-var waterStyle = new ol.style.Style({
-  fill: new ol.style.Fill({
+var waterStyle = new _ol_style_Style_({
+  fill: new _ol_style_Fill_({
     color: '#9db9e8'
   })
 });
@@ -46,8 +46,8 @@ var roadStyle = function(feature) {
       color = roadColor[kind];
       width = kind == 'highway' ? 1.5 : 1;
     }
-    style = new ol.style.Style({
-      stroke: new ol.style.Stroke({
+    style = new _ol_style_Style_({
+      stroke: new _ol_style_Stroke_({
         color: color,
         width: width
       }),
@@ -58,13 +58,13 @@ var roadStyle = function(feature) {
   return style;
 };
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.VectorTile({
-      source: new ol.source.VectorTile({
+    new _ol_layer_VectorTile_({
+      source: new _ol_source_VectorTile_({
         attributions: '&copy; OpenStreetMap contributors, Who’s On First, ' +
             'Natural Earth, and openstreetmapdata.com',
-        format: new ol.format.TopoJSON({
+        format: new _ol_format_TopoJSON_({
           layerName: 'layer',
           layers: ['water', 'roads', 'buildings']
         }),
@@ -82,8 +82,8 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View({
-    center: ol.proj.fromLonLat([-74.0064, 40.7142]),
+  view: new _ol_View_({
+    center: _ol_proj_.fromLonLat([-74.0064, 40.7142]),
     maxZoom: 19,
     zoom: 15
   })

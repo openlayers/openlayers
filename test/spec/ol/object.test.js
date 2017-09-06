@@ -1,14 +1,14 @@
 
 
-goog.require('ol.Object');
-goog.require('ol.events');
+import _ol_Object_ from '../../../src/ol/object';
+import _ol_events_ from '../../../src/ol/events';
 
 
 describe('ol.Object', function() {
 
   var o;
   beforeEach(function() {
-    o = new ol.Object();
+    o = new _ol_Object_();
   });
 
   describe('get, set and unset', function() {
@@ -51,7 +51,7 @@ describe('ol.Object', function() {
   describe('#get()', function() {
 
     it('does not return values that are not explicitly set', function() {
-      var o = new ol.Object();
+      var o = new _ol_Object_();
       expect(o.get('constructor')).to.be(undefined);
       expect(o.get('hasOwnProperty')).to.be(undefined);
       expect(o.get('isPrototypeOf')).to.be(undefined);
@@ -65,7 +65,7 @@ describe('ol.Object', function() {
 
   describe('#set()', function() {
     it('can be used with arbitrary names', function() {
-      var o = new ol.Object();
+      var o = new _ol_Object_();
 
       o.set('set', 'sat');
       expect(o.get('set')).to.be('sat');
@@ -82,7 +82,7 @@ describe('ol.Object', function() {
   describe('#getKeys()', function() {
 
     it('returns property names set at construction', function() {
-      var o = new ol.Object({
+      var o = new _ol_Object_({
         prop1: 'val1',
         prop2: 'val2',
         toString: 'string',
@@ -117,10 +117,10 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      ol.events.listen(o, 'change:k', listener1);
+      _ol_events_.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      ol.events.listen(o, 'propertychange', listener2);
+      _ol_events_.listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events', function() {
@@ -150,10 +150,10 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      ol.events.listen(o, 'change:k', listener1);
+      _ol_events_.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      ol.events.listen(o, 'propertychange', listener2);
+      _ol_events_.listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events to object', function() {
@@ -214,7 +214,7 @@ describe('ol.Object', function() {
 
   describe('create with options', function() {
     it('sets the property', function() {
-      var o = new ol.Object({k: 1});
+      var o = new _ol_Object_({k: 1});
       expect(o.get('k')).to.eql(1);
 
       expect(o.getKeys()).to.eql(['k']);
@@ -226,9 +226,9 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      ol.events.listen(o, 'change:k', listener1);
+      _ol_events_.listen(o, 'change:k', listener1);
       listener2 = sinon.spy();
-      ol.events.listen(o, 'change:K', listener2);
+      _ol_events_.listen(o, 'change:K', listener2);
     });
 
     it('dispatches the expected event', function() {

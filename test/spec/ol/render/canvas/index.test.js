@@ -1,6 +1,6 @@
 
 
-goog.require('ol.render.canvas');
+import _ol_render_canvas_ from '../../../../../src/ol/render/canvas';
 
 
 describe('ol.render.canvas', function() {
@@ -11,7 +11,7 @@ describe('ol.render.canvas', function() {
         translate: sinon.spy(),
         rotate: sinon.spy()
       };
-      ol.render.canvas.rotateAtOffset(context, Math.PI, 10, 10);
+      _ol_render_canvas_.rotateAtOffset(context, Math.PI, 10, 10);
       expect(context.translate.callCount).to.be(2);
       expect(context.translate.firstCall.args).to.eql([10, 10]);
       expect(context.translate.secondCall.args).to.eql([-10, -10]);

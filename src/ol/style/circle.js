@@ -1,8 +1,5 @@
-goog.provide('ol.style.Circle');
-
-goog.require('ol');
-goog.require('ol.style.RegularShape');
-
+import _ol_ from '../index';
+import _ol_style_RegularShape_ from '../style/regularshape';
 
 /**
  * @classdesc
@@ -13,11 +10,11 @@ goog.require('ol.style.RegularShape');
  * @extends {ol.style.RegularShape}
  * @api
  */
-ol.style.Circle = function(opt_options) {
+var _ol_style_Circle_ = function(opt_options) {
 
   var options = opt_options || {};
 
-  ol.style.RegularShape.call(this, {
+  _ol_style_RegularShape_.call(this, {
     points: Infinity,
     fill: options.fill,
     radius: options.radius,
@@ -27,7 +24,8 @@ ol.style.Circle = function(opt_options) {
   });
 
 };
-ol.inherits(ol.style.Circle, ol.style.RegularShape);
+
+_ol_.inherits(_ol_style_Circle_, _ol_style_RegularShape_);
 
 
 /**
@@ -36,8 +34,8 @@ ol.inherits(ol.style.Circle, ol.style.RegularShape);
  * @override
  * @api
  */
-ol.style.Circle.prototype.clone = function() {
-  var style = new ol.style.Circle({
+_ol_style_Circle_.prototype.clone = function() {
+  var style = new _ol_style_Circle_({
     fill: this.getFill() ? this.getFill().clone() : undefined,
     stroke: this.getStroke() ? this.getStroke().clone() : undefined,
     radius: this.getRadius(),
@@ -56,7 +54,8 @@ ol.style.Circle.prototype.clone = function() {
  * @param {number} radius Circle radius.
  * @api
  */
-ol.style.Circle.prototype.setRadius = function(radius) {
+_ol_style_Circle_.prototype.setRadius = function(radius) {
   this.radius_ = radius;
   this.render_(this.atlasManager_);
 };
+export default _ol_style_Circle_;

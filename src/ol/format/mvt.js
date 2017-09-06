@@ -1,25 +1,22 @@
 //FIXME Implement projection handling
 
-goog.provide('ol.format.MVT');
-
-goog.require('ol');
-goog.require('ol.asserts');
-goog.require('ol.ext.PBF');
-goog.require('ol.format.Feature');
-goog.require('ol.format.FormatType');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.geom.flat.orient');
-goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
-goog.require('ol.render.Feature');
-
+import _ol_ from '../index';
+import _ol_asserts_ from '../asserts';
+import _ol_ext_PBF_ from 'pbf';
+import _ol_format_Feature_ from '../format/feature';
+import _ol_format_FormatType_ from '../format/formattype';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_LineString_ from '../geom/linestring';
+import _ol_geom_MultiLineString_ from '../geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../geom/multipolygon';
+import _ol_geom_Point_ from '../geom/point';
+import _ol_geom_Polygon_ from '../geom/polygon';
+import _ol_geom_flat_orient_ from '../geom/flat/orient';
+import _ol_proj_Projection_ from '../proj/projection';
+import _ol_proj_Units_ from '../proj/units';
+import _ol_render_Feature_ from '../render/feature';
 
 /**
  * @classdesc
@@ -30,18 +27,18 @@ goog.require('ol.render.Feature');
  * @param {olx.format.MVTOptions=} opt_options Options.
  * @api
  */
-ol.format.MVT = function(opt_options) {
+var _ol_format_MVT_ = function(opt_options) {
 
-  ol.format.Feature.call(this);
+  _ol_format_Feature_.call(this);
 
   var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.proj.Projection}
    */
-  this.defaultDataProjection = new ol.proj.Projection({
+  this.defaultDataProjection = new _ol_proj_Projection_({
     code: 'EPSG:3857',
-    units: ol.proj.Units.TILE_PIXELS
+    units: _ol_proj_Units_.TILE_PIXELS
   });
 
   /**
@@ -51,7 +48,7 @@ ol.format.MVT = function(opt_options) {
    *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
-    options.featureClass : ol.render.Feature;
+    options.featureClass : _ol_render_Feature_;
 
   /**
    * @private
@@ -78,14 +75,15 @@ ol.format.MVT = function(opt_options) {
   this.extent_ = null;
 
 };
-ol.inherits(ol.format.MVT, ol.format.Feature);
+
+_ol_.inherits(_ol_format_MVT_, _ol_format_Feature_);
 
 
 /**
  * Reader callbacks for parsing the PBF.
  * @type {Object.<string, function(number, Object, ol.ext.PBF)>}
  */
-ol.format.MVT.pbfReaders_ = {
+_ol_format_MVT_.pbfReaders_ = {
   layers: function(tag, layers, pbf) {
     if (tag === 3) {
       var layer = {
@@ -94,7 +92,7 @@ ol.format.MVT.pbfReaders_ = {
         features: []
       };
       var end = pbf.readVarint() + pbf.pos;
-      pbf.readFields(ol.format.MVT.pbfReaders_.layer, layer, end);
+      pbf.readFields(_ol_format_MVT_.pbfReaders_.layer, layer, end);
       layer.length = layer.features.length;
       if (layer.length) {
         layers[layer.name] = layer;
@@ -156,7 +154,7 @@ ol.format.MVT.pbfReaders_ = {
  * @param {number} i Index of the feature in the raw layer's `features` array.
  * @return {Object} Raw feature.
  */
-ol.format.MVT.readRawFeature_ = function(pbf, layer, i) {
+_ol_format_MVT_.readRawFeature_ = function(pbf, layer, i) {
   pbf.pos = layer.features[i];
   var end = pbf.readVarint() + pbf.pos;
 
@@ -165,7 +163,7 @@ ol.format.MVT.readRawFeature_ = function(pbf, layer, i) {
     type: 0,
     properties: {}
   };
-  pbf.readFields(ol.format.MVT.pbfReaders_.feature, feature, end);
+  pbf.readFields(_ol_format_MVT_.pbfReaders_.feature, feature, end);
   return feature;
 };
 
@@ -180,7 +178,7 @@ ol.format.MVT.readRawFeature_ = function(pbf, layer, i) {
  * @param {Array.<number>} flatCoordinates Array to store flat coordinates in.
  * @param {Array.<number>} ends Array to store ends in.
  */
-ol.format.MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
+_ol_format_MVT_.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
   pbf.pos = feature.geometry;
 
   var end = pbf.readVarint() + pbf.pos;
@@ -224,7 +222,7 @@ ol.format.MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
       }
 
     } else {
-      ol.asserts.assert(false, 59); // Invalid command found in the PBF
+      _ol_asserts_.assert(false, 59); // Invalid command found in the PBF
     }
   }
 
@@ -244,18 +242,18 @@ ol.format.MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
  * geometry.
  * @return {ol.geom.GeometryType} The geometry type.
  */
-ol.format.MVT.getGeometryType_ = function(type, numEnds) {
+_ol_format_MVT_.getGeometryType_ = function(type, numEnds) {
   /** @type {ol.geom.GeometryType} */
   var geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ?
-      ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
+      _ol_geom_GeometryType_.POINT : _ol_geom_GeometryType_.MULTI_POINT;
   } else if (type === 2) {
     geometryType = numEnds === 1 ?
-      ol.geom.GeometryType.LINE_STRING :
-      ol.geom.GeometryType.MULTI_LINE_STRING;
+      _ol_geom_GeometryType_.LINE_STRING :
+      _ol_geom_GeometryType_.MULTI_LINE_STRING;
   } else if (type === 3) {
-    geometryType = ol.geom.GeometryType.POLYGON;
+    geometryType = _ol_geom_GeometryType_.POLYGON;
     // MultiPolygon not relevant for rendering - winding order determines
     // outer rings of polygons.
   }
@@ -269,7 +267,7 @@ ol.format.MVT.getGeometryType_ = function(type, numEnds) {
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature|ol.render.Feature} Feature.
  */
-ol.format.MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
+_ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
   var type = rawFeature.type;
   if (type === 0) {
     return null;
@@ -282,21 +280,21 @@ ol.format.MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) 
 
   var flatCoordinates = [];
   var ends = [];
-  ol.format.MVT.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
+  _ol_format_MVT_.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
-  var geometryType = ol.format.MVT.getGeometryType_(type, ends.length);
+  var geometryType = _ol_format_MVT_.getGeometryType_(type, ends.length);
 
-  if (this.featureClass_ === ol.render.Feature) {
+  if (this.featureClass_ === _ol_render_Feature_) {
     feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
   } else {
     var geom;
-    if (geometryType == ol.geom.GeometryType.POLYGON) {
+    if (geometryType == _ol_geom_GeometryType_.POLYGON) {
       var endss = [];
       var offset = 0;
       var prevEndIndex = 0;
       for (var i = 0, ii = ends.length; i < ii; ++i) {
         var end = ends[i];
-        if (!ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
+        if (!_ol_geom_flat_orient_.linearRingIsClockwise(flatCoordinates, offset, end, 2)) {
           endss.push(ends.slice(prevEndIndex, i));
           prevEndIndex = i;
         }
@@ -304,24 +302,24 @@ ol.format.MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) 
       }
       if (endss.length > 1) {
         ends = endss;
-        geom = new ol.geom.MultiPolygon(null);
+        geom = new _ol_geom_MultiPolygon_(null);
       } else {
-        geom = new ol.geom.Polygon(null);
+        geom = new _ol_geom_Polygon_(null);
       }
     } else {
-      geom = geometryType === ol.geom.GeometryType.POINT ? new ol.geom.Point(null) :
-        geometryType === ol.geom.GeometryType.LINE_STRING ? new ol.geom.LineString(null) :
-          geometryType === ol.geom.GeometryType.POLYGON ? new ol.geom.Polygon(null) :
-            geometryType === ol.geom.GeometryType.MULTI_POINT ? new ol.geom.MultiPoint (null) :
-              geometryType === ol.geom.GeometryType.MULTI_LINE_STRING ? new ol.geom.MultiLineString(null) :
+      geom = geometryType === _ol_geom_GeometryType_.POINT ? new _ol_geom_Point_(null) :
+        geometryType === _ol_geom_GeometryType_.LINE_STRING ? new _ol_geom_LineString_(null) :
+          geometryType === _ol_geom_GeometryType_.POLYGON ? new _ol_geom_Polygon_(null) :
+            geometryType === _ol_geom_GeometryType_.MULTI_POINT ? new _ol_geom_MultiPoint_ (null) :
+              geometryType === _ol_geom_GeometryType_.MULTI_LINE_STRING ? new _ol_geom_MultiLineString_(null) :
                 null;
     }
-    geom.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates, ends);
+    geom.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates, ends);
     feature = new this.featureClass_();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
     }
-    var geometry = ol.format.Feature.transformWithOptions(geom, false, this.adaptOptions(opt_options));
+    var geometry = _ol_format_Feature_.transformWithOptions(geom, false, this.adaptOptions(opt_options));
     feature.setGeometry(geometry);
     feature.setId(id);
     feature.setProperties(values);
@@ -335,7 +333,7 @@ ol.format.MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) 
  * @inheritDoc
  * @api
  */
-ol.format.MVT.prototype.getLastExtent = function() {
+_ol_format_MVT_.prototype.getLastExtent = function() {
   return this.extent_;
 };
 
@@ -343,8 +341,8 @@ ol.format.MVT.prototype.getLastExtent = function() {
 /**
  * @inheritDoc
  */
-ol.format.MVT.prototype.getType = function() {
-  return ol.format.FormatType.ARRAY_BUFFER;
+_ol_format_MVT_.prototype.getType = function() {
+  return _ol_format_FormatType_.ARRAY_BUFFER;
 };
 
 
@@ -352,11 +350,11 @@ ol.format.MVT.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
+_ol_format_MVT_.prototype.readFeatures = function(source, opt_options) {
   var layers = this.layers_;
 
-  var pbf = new ol.ext.PBF(/** @type {ArrayBuffer} */ (source));
-  var pbfLayers = pbf.readFields(ol.format.MVT.pbfReaders_.layers, {});
+  var pbf = new _ol_ext_PBF_(/** @type {ArrayBuffer} */ (source));
+  var pbfLayers = pbf.readFields(_ol_format_MVT_.pbfReaders_.layers, {});
   /** @type {Array.<ol.Feature|ol.render.Feature>} */
   var features = [];
   var pbfLayer;
@@ -368,7 +366,7 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
 
     var rawFeature;
     for (var i = 0, ii = pbfLayer.length; i < ii; ++i) {
-      rawFeature = ol.format.MVT.readRawFeature_(pbf, pbfLayer, i);
+      rawFeature = _ol_format_MVT_.readRawFeature_(pbf, pbfLayer, i);
       features.push(this.createFeature_(pbf, rawFeature));
     }
     this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
@@ -382,7 +380,7 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
  * @inheritDoc
  * @api
  */
-ol.format.MVT.prototype.readProjection = function(source) {
+_ol_format_MVT_.prototype.readProjection = function(source) {
   return this.defaultDataProjection;
 };
 
@@ -392,7 +390,7 @@ ol.format.MVT.prototype.readProjection = function(source) {
  * @param {Array.<string>} layers Layers.
  * @api
  */
-ol.format.MVT.prototype.setLayers = function(layers) {
+_ol_format_MVT_.prototype.setLayers = function(layers) {
   this.layers_ = layers;
 };
 
@@ -401,32 +399,33 @@ ol.format.MVT.prototype.setLayers = function(layers) {
  * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.readFeature = function() {};
+_ol_format_MVT_.prototype.readFeature = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.readGeometry = function() {};
+_ol_format_MVT_.prototype.readGeometry = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.writeFeature = function() {};
+_ol_format_MVT_.prototype.writeFeature = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.writeGeometry = function() {};
+_ol_format_MVT_.prototype.writeGeometry = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.writeFeatures = function() {};
+_ol_format_MVT_.prototype.writeFeatures = function() {};
+export default _ol_format_MVT_;

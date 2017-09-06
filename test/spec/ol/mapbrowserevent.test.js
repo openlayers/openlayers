@@ -1,10 +1,10 @@
 
 
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEventHandler');
-goog.require('ol.events');
-goog.require('ol.has');
-goog.require('ol.pointer.PointerEvent');
+import _ol_Map_ from '../../../src/ol/map';
+import _ol_MapBrowserEventHandler_ from '../../../src/ol/mapbrowsereventhandler';
+import _ol_events_ from '../../../src/ol/events';
+import _ol_has_ from '../../../src/ol/has';
+import _ol_pointer_PointerEvent_ from '../../../src/ol/pointer/pointerevent';
 
 describe('ol.MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {
@@ -18,18 +18,18 @@ describe('ol.MapBrowserEventHandler', function() {
     beforeEach(function() {
       clock = sinon.useFakeTimers();
       target = document.createElement('DIV');
-      handler = new ol.MapBrowserEventHandler(new ol.Map({
+      handler = new _ol_MapBrowserEventHandler_(new _ol_Map_({
         target: target
       }));
 
       clickSpy = sinon.spy();
-      ol.events.listen(handler, 'click', clickSpy);
+      _ol_events_.listen(handler, 'click', clickSpy);
 
       singleclickSpy = sinon.spy();
-      ol.events.listen(handler, 'singleclick', singleclickSpy);
+      _ol_events_.listen(handler, 'singleclick', singleclickSpy);
 
       dblclickSpy = sinon.spy();
-      ol.events.listen(handler, 'dblclick', dblclickSpy);
+      _ol_events_.listen(handler, 'dblclick', dblclickSpy);
 
     });
 
@@ -38,7 +38,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates click', function() {
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+      handler.emulateClick_(new _ol_pointer_PointerEvent_('pointerdown', {
         type: 'mousedown',
         target: target,
         clientX: 0,
@@ -48,7 +48,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates singleclick', function() {
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+      handler.emulateClick_(new _ol_pointer_PointerEvent_('pointerdown', {
         type: 'mousedown',
         target: target,
         clientX: 0,
@@ -61,7 +61,7 @@ describe('ol.MapBrowserEventHandler', function() {
       expect(singleclickSpy.calledOnce).to.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+      handler.emulateClick_(new _ol_pointer_PointerEvent_('pointerdown', {
         type: 'mousedown',
         target: target,
         clientX: 0,
@@ -72,7 +72,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates dblclick', function() {
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+      handler.emulateClick_(new _ol_pointer_PointerEvent_('pointerdown', {
         type: 'mousedown',
         target: target,
         clientX: 0,
@@ -81,7 +81,7 @@ describe('ol.MapBrowserEventHandler', function() {
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+      handler.emulateClick_(new _ol_pointer_PointerEvent_('pointerdown', {
         type: 'mousedown',
         target: target,
         clientX: 0,
@@ -101,7 +101,7 @@ describe('ol.MapBrowserEventHandler', function() {
 
     var handler;
     beforeEach(function() {
-      handler = new ol.MapBrowserEventHandler(new ol.Map({}));
+      handler = new _ol_MapBrowserEventHandler_(new _ol_Map_({}));
     });
 
     it('is null if no "down" type event has been handled', function() {
@@ -109,7 +109,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is an event after handlePointerDown_ has been called', function() {
-      var event = new ol.pointer.PointerEvent('pointerdown', {});
+      var event = new _ol_pointer_PointerEvent_('pointerdown', {});
       handler.handlePointerDown_(event);
       expect(handler.down_).to.be(event);
     });
@@ -121,9 +121,9 @@ describe('ol.MapBrowserEventHandler', function() {
     var moveToleranceHandler;
     var pointerdownAt0;
     beforeEach(function() {
-      defaultHandler = new ol.MapBrowserEventHandler(new ol.Map({}));
-      moveToleranceHandler = new ol.MapBrowserEventHandler(new ol.Map({}), 8);
-      pointerdownAt0 = new ol.pointer.PointerEvent('pointerdown', {}, {
+      defaultHandler = new _ol_MapBrowserEventHandler_(new _ol_Map_({}));
+      moveToleranceHandler = new _ol_MapBrowserEventHandler_(new _ol_Map_({}), 8);
+      pointerdownAt0 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
         clientX: 0,
         clientY: 0
       });
@@ -132,7 +132,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is not moving if distance is 0', function() {
-      var pointerdownAt0 = new ol.pointer.PointerEvent('pointerdown', {}, {
+      var pointerdownAt0 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
         clientX: 0,
         clientY: 0
       });
@@ -140,33 +140,33 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is moving if distance is 2', function() {
-      var pointerdownAt2 = new ol.pointer.PointerEvent('pointerdown', {}, {
-        clientX: ol.has.DEVICE_PIXEL_RATIO + 1,
-        clientY: ol.has.DEVICE_PIXEL_RATIO + 1
+      var pointerdownAt2 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
+        clientX: _ol_has_.DEVICE_PIXEL_RATIO + 1,
+        clientY: _ol_has_.DEVICE_PIXEL_RATIO + 1
       });
       expect(defaultHandler.isMoving_(pointerdownAt2)).to.be(true);
     });
 
     it('is moving with negative distance', function() {
-      var pointerdownAt2 = new ol.pointer.PointerEvent('pointerdown', {}, {
-        clientX: -(ol.has.DEVICE_PIXEL_RATIO + 1),
-        clientY: -(ol.has.DEVICE_PIXEL_RATIO + 1)
+      var pointerdownAt2 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
+        clientX: -(_ol_has_.DEVICE_PIXEL_RATIO + 1),
+        clientY: -(_ol_has_.DEVICE_PIXEL_RATIO + 1)
       });
       expect(defaultHandler.isMoving_(pointerdownAt2)).to.be(true);
     });
 
     it('is not moving if distance is less than move tolerance', function() {
-      var pointerdownAt2 = new ol.pointer.PointerEvent('pointerdown', {}, {
-        clientX: ol.has.DEVICE_PIXEL_RATIO + 1,
-        clientY: ol.has.DEVICE_PIXEL_RATIO + 1
+      var pointerdownAt2 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
+        clientX: _ol_has_.DEVICE_PIXEL_RATIO + 1,
+        clientY: _ol_has_.DEVICE_PIXEL_RATIO + 1
       });
       expect(moveToleranceHandler.isMoving_(pointerdownAt2)).to.be(false);
     });
 
     it('is moving if distance is greater than move tolerance', function() {
-      var pointerdownAt9 = new ol.pointer.PointerEvent('pointerdown', {}, {
-        clientX: (ol.has.DEVICE_PIXEL_RATIO * 8) + 1,
-        clientY: (ol.has.DEVICE_PIXEL_RATIO * 8) + 1
+      var pointerdownAt9 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
+        clientX: (_ol_has_.DEVICE_PIXEL_RATIO * 8) + 1,
+        clientY: (_ol_has_.DEVICE_PIXEL_RATIO * 8) + 1
       });
       expect(moveToleranceHandler.isMoving_(pointerdownAt9)).to.be(true);
     });

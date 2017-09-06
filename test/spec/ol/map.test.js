@@ -1,33 +1,33 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapEvent');
-goog.require('ol.Overlay');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.has');
-goog.require('ol.interaction');
-goog.require('ol.interaction.DoubleClickZoom');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.interaction.PinchZoom');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.renderer.canvas.IntermediateCanvas');
-goog.require('ol.source.Vector');
-goog.require('ol.source.XYZ');
+import _ol_Feature_ from '../../../src/ol/feature';
+import _ol_Map_ from '../../../src/ol/map';
+import _ol_MapEvent_ from '../../../src/ol/mapevent';
+import _ol_Overlay_ from '../../../src/ol/overlay';
+import _ol_View_ from '../../../src/ol/view';
+import _ol_geom_Point_ from '../../../src/ol/geom/point';
+import _ol_has_ from '../../../src/ol/has';
+import _ol_interaction_ from '../../../src/ol/interaction';
+import _ol_interaction_DoubleClickZoom_ from '../../../src/ol/interaction/doubleclickzoom';
+import _ol_interaction_Interaction_ from '../../../src/ol/interaction/interaction';
+import _ol_interaction_MouseWheelZoom_ from '../../../src/ol/interaction/mousewheelzoom';
+import _ol_interaction_PinchZoom_ from '../../../src/ol/interaction/pinchzoom';
+import _ol_layer_Tile_ from '../../../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../../../src/ol/layer/vector';
+import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/intermediatecanvas';
+import _ol_source_Vector_ from '../../../src/ol/source/vector';
+import _ol_source_XYZ_ from '../../../src/ol/source/xyz';
 
 describe('ol.Map', function() {
 
   describe('constructor', function() {
     it('creates a new map', function() {
-      var map = new ol.Map({});
-      expect(map).to.be.a(ol.Map);
+      var map = new _ol_Map_({});
+      expect(map).to.be.a(_ol_Map_);
     });
 
     it('creates a set of default interactions', function() {
-      var map = new ol.Map({});
+      var map = new _ol_Map_({});
       var interactions = map.getInteractions();
       var length = interactions.getLength();
       expect(length).to.be.greaterThan(0);
@@ -38,14 +38,14 @@ describe('ol.Map', function() {
     });
 
     it('creates the viewport', function() {
-      var map = new ol.Map({});
+      var map = new _ol_Map_({});
       var viewport = map.getViewport();
-      var className = 'ol-viewport' + (ol.has.TOUCH ? ' ol-touch' : '');
+      var className = 'ol-viewport' + (_ol_has_.TOUCH ? ' ol-touch' : '');
       expect(viewport.className).to.be(className);
     });
 
     it('creates the overlay containers', function() {
-      var map = new ol.Map({});
+      var map = new _ol_Map_({});
       var container = map.getOverlayContainer();
       expect(container.className).to.be('ol-overlaycontainer');
 
@@ -57,16 +57,16 @@ describe('ol.Map', function() {
 
   describe('#addLayer()', function() {
     it('adds a layer to the map', function() {
-      var map = new ol.Map({});
-      var layer = new ol.layer.Tile();
+      var map = new _ol_Map_({});
+      var layer = new _ol_layer_Tile_();
       map.addLayer(layer);
 
       expect(map.getLayers().item(0)).to.be(layer);
     });
 
     it('throws if a layer is added twice', function() {
-      var map = new ol.Map({});
-      var layer = new ol.layer.Tile();
+      var map = new _ol_Map_({});
+      var layer = new _ol_layer_Tile_();
       map.addLayer(layer);
 
       var call = function() {
@@ -78,8 +78,8 @@ describe('ol.Map', function() {
 
   describe('#addInteraction()', function() {
     it('adds an interaction to the map', function() {
-      var map = new ol.Map({});
-      var interaction = new ol.interaction.Interaction({});
+      var map = new _ol_Map_({});
+      var interaction = new _ol_interaction_Interaction_({});
 
       var before = map.getInteractions().getLength();
       map.addInteraction(interaction);
@@ -91,8 +91,8 @@ describe('ol.Map', function() {
 
   describe('#removeInteraction()', function() {
     it('removes an interaction from the map', function() {
-      var map = new ol.Map({});
-      var interaction = new ol.interaction.Interaction({});
+      var map = new _ol_Map_({});
+      var interaction = new _ol_interaction_Interaction_({});
 
       var before = map.getInteractions().getLength();
       map.addInteraction(interaction);
@@ -119,15 +119,15 @@ describe('ol.Map', function() {
       style.height = '180px';
       document.body.appendChild(target);
 
-      view = new ol.View({
+      view = new _ol_View_({
         projection: 'EPSG:4326'
       });
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: target,
         view: view,
         layers: [
-          new ol.layer.Tile({
-            source: new ol.source.XYZ({
+          new _ol_layer_Tile_({
+            source: new _ol_source_XYZ_({
               url: '#{x}/{y}/{z}'
             })
           })
@@ -195,14 +195,14 @@ describe('ol.Map', function() {
       target = document.createElement('div');
       target.style.width = target.style.height = '100px';
       document.body.appendChild(target);
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: target,
-        layers: [new ol.layer.Vector({
-          source: new ol.source.Vector({
-            features: [new ol.Feature(new ol.geom.Point([0, 0]))]
+        layers: [new _ol_layer_Vector_({
+          source: new _ol_source_Vector_({
+            features: [new _ol_Feature_(new _ol_geom_Point_([0, 0]))]
           })
         })],
-        view: new ol.View({
+        view: new _ol_View_({
           center: [0, 0],
           zoom: 2
         })
@@ -221,12 +221,12 @@ describe('ol.Map', function() {
     it('returns an array of found features', function() {
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(ol.Feature);
+      expect(features[0]).to.be.an(_ol_Feature_);
     });
 
     it('respects options', function() {
-      var otherLayer = new ol.layer.Vector({
-        source: new ol.source.Vector
+      var otherLayer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_
       });
       map.addLayer(otherLayer);
       var features = map.getFeaturesAtPixel([50, 50], {
@@ -245,8 +245,8 @@ describe('ol.Map', function() {
 
     beforeEach(function(done) {
       log = [];
-      original = ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate;
-      ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(coordinate) {
+      original = _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate;
+      _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = function(coordinate) {
         log.push(coordinate.slice());
       };
 
@@ -259,21 +259,21 @@ describe('ol.Map', function() {
       style.height = '180px';
       document.body.appendChild(target);
 
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: target,
-        view: new ol.View({
+        view: new _ol_View_({
           center: [0, 0],
           zoom: 1
         }),
         layers: [
-          new ol.layer.Tile({
-            source: new ol.source.XYZ()
+          new _ol_layer_Tile_({
+            source: new _ol_source_XYZ_()
           }),
-          new ol.layer.Tile({
-            source: new ol.source.XYZ()
+          new _ol_layer_Tile_({
+            source: new _ol_source_XYZ_()
           }),
-          new ol.layer.Tile({
-            source: new ol.source.XYZ()
+          new _ol_layer_Tile_({
+            source: new _ol_source_XYZ_()
           })
         ]
       });
@@ -284,7 +284,7 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = original;
+      _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = original;
       map.dispose();
       document.body.removeChild(target);
       log = null;
@@ -314,9 +314,9 @@ describe('ol.Map', function() {
       style.width = '360px';
       style.height = '180px';
       document.body.appendChild(target);
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: target,
-        view: new ol.View({
+        view: new _ol_View_({
           projection: 'EPSG:4326',
           center: [0, 0],
           resolution: 1
@@ -351,7 +351,7 @@ describe('ol.Map', function() {
       var spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(ol.MapEvent);
+        expect(event).to.be.a(_ol_MapEvent_);
         expect(typeof spy.firstCall.args[0]).to.be('number');
         spy.restore();
         var frameState = event.frameState;
@@ -391,7 +391,7 @@ describe('ol.Map', function() {
 
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(ol.MapEvent);
+        expect(event).to.be.a(_ol_MapEvent_);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
         done();
@@ -405,7 +405,7 @@ describe('ol.Map', function() {
 
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(ol.MapEvent);
+        expect(event).to.be.a(_ol_MapEvent_);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
         done();
@@ -419,7 +419,7 @@ describe('ol.Map', function() {
     var map;
 
     beforeEach(function() {
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: document.createElement('div')
       });
     });
@@ -439,7 +439,7 @@ describe('ol.Map', function() {
     var map;
 
     beforeEach(function() {
-      map = new ol.Map({
+      map = new _ol_Map_({
         target: document.createElement('div')
       });
       expect(map.handleResize_).to.be.ok();
@@ -482,9 +482,9 @@ describe('ol.Map', function() {
     describe('create mousewheel interaction', function() {
       it('creates mousewheel interaction', function() {
         options.mouseWheelZoom = true;
-        var interactions = ol.interaction.defaults(options);
+        var interactions = _ol_interaction_.defaults(options);
         expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(0)).to.be.a(_ol_interaction_MouseWheelZoom_);
         expect(interactions.item(0).constrainResolution_).to.eql(false);
         expect(interactions.item(0).useAnchor_).to.eql(true);
         interactions.item(0).setMouseAnchor(false);
@@ -495,9 +495,9 @@ describe('ol.Map', function() {
     describe('create pinchZoom interaction', function() {
       it('creates pinchZoom interaction', function() {
         options.pinchZoom = true;
-        var interactions = ol.interaction.defaults(options);
+        var interactions = _ol_interaction_.defaults(options);
         expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(ol.interaction.PinchZoom);
+        expect(interactions.item(0)).to.be.a(_ol_interaction_PinchZoom_);
         expect(interactions.item(0).constrainResolution_).to.eql(false);
       });
     });
@@ -507,11 +507,11 @@ describe('ol.Map', function() {
         options.pinchZoom = true;
         options.mouseWheelZoom = true;
         options.constrainResolution = true;
-        var interactions = ol.interaction.defaults(options);
+        var interactions = _ol_interaction_.defaults(options);
         expect(interactions.getLength()).to.eql(2);
-        expect(interactions.item(0)).to.be.a(ol.interaction.PinchZoom);
+        expect(interactions.item(0)).to.be.a(_ol_interaction_PinchZoom_);
         expect(interactions.item(0).constrainResolution_).to.eql(true);
-        expect(interactions.item(1)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(1)).to.be.a(_ol_interaction_MouseWheelZoom_);
         expect(interactions.item(1).constrainResolution_).to.eql(true);
       });
     });
@@ -524,9 +524,9 @@ describe('ol.Map', function() {
 
       describe('default zoomDelta', function() {
         it('create double click interaction with default delta', function() {
-          var interactions = ol.interaction.defaults(options);
+          var interactions = _ol_interaction_.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(ol.interaction.DoubleClickZoom);
+          expect(interactions.item(0)).to.be.a(_ol_interaction_DoubleClickZoom_);
           expect(interactions.item(0).delta_).to.eql(1);
         });
       });
@@ -534,9 +534,9 @@ describe('ol.Map', function() {
       describe('set zoomDelta', function() {
         it('create double click interaction with set delta', function() {
           options.zoomDelta = 7;
-          var interactions = ol.interaction.defaults(options);
+          var interactions = _ol_interaction_.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(ol.interaction.DoubleClickZoom);
+          expect(interactions.item(0)).to.be.a(_ol_interaction_DoubleClickZoom_);
           expect(interactions.item(0).delta_).to.eql(7);
         });
       });
@@ -562,7 +562,7 @@ describe('ol.Map', function() {
 
       it('works with touchend events', function() {
 
-        var map = new ol.Map({
+        var map = new _ol_Map_({
           target: target
         });
 
@@ -594,9 +594,9 @@ describe('ol.Map', function() {
         style.width = '360px';
         style.height = '180px';
         document.body.appendChild(target);
-        map = new ol.Map({
+        map = new _ol_Map_({
           target: target,
-          view: new ol.View({
+          view: new _ol_View_({
             projection: 'EPSG:4326',
             center: [0, 0],
             resolution: 1
@@ -612,7 +612,7 @@ describe('ol.Map', function() {
       });
 
       it('returns an overlay by id', function() {
-        overlay = new ol.Overlay({
+        overlay = new _ol_Overlay_({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
@@ -622,7 +622,7 @@ describe('ol.Map', function() {
       });
 
       it('returns null when no overlay is found', function() {
-        overlay = new ol.Overlay({
+        overlay = new _ol_Overlay_({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
@@ -632,7 +632,7 @@ describe('ol.Map', function() {
       });
 
       it('returns null after removing overlay', function() {
-        overlay = new ol.Overlay({
+        overlay = new _ol_Overlay_({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]

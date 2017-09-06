@@ -1,9 +1,9 @@
 
 
-goog.require('ol.net');
-goog.require('ol.source.BingMaps');
-goog.require('ol.tilecoord');
-goog.require('ol.Observable');
+import _ol_net_ from '../../../../src/ol/net';
+import _ol_source_BingMaps_ from '../../../../src/ol/source/bingmaps';
+import _ol_tilecoord_ from '../../../../src/ol/tilecoord';
+import _ol_Observable_ from '../../../../src/ol/observable';
 
 
 describe('ol.source.BingMaps', function() {
@@ -13,9 +13,9 @@ describe('ol.source.BingMaps', function() {
     var source, tileGrid;
 
     beforeEach(function(done) {
-      var olNetJsonp = ol.net.jsonp;
+      var olNetJsonp = _ol_net_.jsonp;
       // mock ol.net.Jsonp (used in the ol.source.TileJSON constructor)
-      ol.net.jsonp = function(url, callback) {
+      _ol_net_.jsonp = function(url, callback) {
         var client = new XMLHttpRequest();
         client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
         client.onload = function() {
@@ -23,14 +23,14 @@ describe('ol.source.BingMaps', function() {
         };
         client.send();
       };
-      source = new ol.source.BingMaps({
+      source = new _ol_source_BingMaps_({
         imagerySet: 'AerialWithLabels',
         key: ''
       });
-      ol.net.jsonp = olNetJsonp;
+      _ol_net_.jsonp = olNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          ol.Observable.unByKey(key);
+          _ol_Observable_.unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }
@@ -54,28 +54,28 @@ describe('ol.source.BingMaps', function() {
 
       tileUrl = source.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 1), 1, projection);
-      expect(tileUrl.match(regex)[1]).to.equal(ol.tilecoord.quadKey([1, 1, 0]));
+      expect(tileUrl.match(regex)[1]).to.equal(_ol_tilecoord_.quadKey([1, 1, 0]));
 
       tileUrl = source.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 2), 1, projection);
-      expect(tileUrl.match(regex)[1]).to.equal(ol.tilecoord.quadKey([2, 2, 1]));
+      expect(tileUrl.match(regex)[1]).to.equal(_ol_tilecoord_.quadKey([2, 2, 1]));
 
       tileUrl = source.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 3), 1, projection);
-      expect(tileUrl.match(regex)[1]).to.equal(ol.tilecoord.quadKey([3, 4, 2]));
+      expect(tileUrl.match(regex)[1]).to.equal(_ol_tilecoord_.quadKey([3, 4, 2]));
 
       tileUrl = source.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 4), 1, projection);
-      expect(tileUrl.match(regex)[1]).to.equal(ol.tilecoord.quadKey([4, 8, 5]));
+      expect(tileUrl.match(regex)[1]).to.equal(_ol_tilecoord_.quadKey([4, 8, 5]));
 
       tileUrl = source.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 5), 1, projection);
-      expect(tileUrl.match(regex)[1]).to.equal(ol.tilecoord.quadKey(
+      expect(tileUrl.match(regex)[1]).to.equal(_ol_tilecoord_.quadKey(
           [5, 16, 11]));
 
       tileUrl = source.tileUrlFunction(
           tileGrid.getTileCoordForCoordAndZ(coordinate, 6), 1, projection);
-      expect(tileUrl.match(regex)[1]).to.equal(ol.tilecoord.quadKey(
+      expect(tileUrl.match(regex)[1]).to.equal(_ol_tilecoord_.quadKey(
           [6, 33, 22]));
 
     });

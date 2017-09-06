@@ -1,12 +1,9 @@
 // FIXME draw drag box
-goog.provide('ol.interaction.DragBox');
-
-goog.require('ol.events.Event');
-goog.require('ol');
-goog.require('ol.events.condition');
-goog.require('ol.interaction.Pointer');
-goog.require('ol.render.Box');
-
+import _ol_events_Event_ from '../events/event';
+import _ol_ from '../index';
+import _ol_events_condition_ from '../events/condition';
+import _ol_interaction_Pointer_ from '../interaction/pointer';
+import _ol_render_Box_ from '../render/box';
 
 /**
  * @classdesc
@@ -25,12 +22,12 @@ goog.require('ol.render.Box');
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @api
  */
-ol.interaction.DragBox = function(opt_options) {
+var _ol_interaction_DragBox_ = function(opt_options) {
 
-  ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.DragBox.handleDownEvent_,
-    handleDragEvent: ol.interaction.DragBox.handleDragEvent_,
-    handleUpEvent: ol.interaction.DragBox.handleUpEvent_
+  _ol_interaction_Pointer_.call(this, {
+    handleDownEvent: _ol_interaction_DragBox_.handleDownEvent_,
+    handleDragEvent: _ol_interaction_DragBox_.handleDragEvent_,
+    handleUpEvent: _ol_interaction_DragBox_.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -39,7 +36,7 @@ ol.interaction.DragBox = function(opt_options) {
    * @type {ol.render.Box}
    * @private
    */
-  this.box_ = new ol.render.Box(options.className || 'ol-dragbox');
+  this.box_ = new _ol_render_Box_(options.className || 'ol-dragbox');
 
   /**
    * @type {number}
@@ -58,16 +55,17 @@ ol.interaction.DragBox = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-    options.condition : ol.events.condition.always;
+    options.condition : _ol_events_condition_.always;
 
   /**
    * @private
    * @type {ol.DragBoxEndConditionType}
    */
   this.boxEndCondition_ = options.boxEndCondition ?
-    options.boxEndCondition : ol.interaction.DragBox.defaultBoxEndCondition;
+    options.boxEndCondition : _ol_interaction_DragBox_.defaultBoxEndCondition;
 };
-ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
+
+_ol_.inherits(_ol_interaction_DragBox_, _ol_interaction_Pointer_);
 
 
 /**
@@ -80,7 +78,7 @@ ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
  * @return {boolean} Whether or not the boxend condition should be fired.
  * @this {ol.interaction.DragBox}
  */
-ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
+_ol_interaction_DragBox_.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
   var width = endPixel[0] - startPixel[0];
   var height = endPixel[1] - startPixel[1];
   return width * width + height * height >= this.minArea_;
@@ -92,14 +90,14 @@ ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startP
  * @this {ol.interaction.DragBox}
  * @private
  */
-ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragBox_.handleDragEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return;
   }
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-  this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXDRAG,
+  this.dispatchEvent(new _ol_interaction_DragBox_.Event(_ol_interaction_DragBox_.EventType_.BOXDRAG,
       mapBrowserEvent.coordinate, mapBrowserEvent));
 };
 
@@ -109,7 +107,7 @@ ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
  * @return {ol.geom.Polygon} Geometry.
  * @api
  */
-ol.interaction.DragBox.prototype.getGeometry = function() {
+_ol_interaction_DragBox_.prototype.getGeometry = function() {
   return this.box_.getGeometry();
 };
 
@@ -120,7 +118,7 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
-ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
+_ol_interaction_DragBox_.prototype.onBoxEnd = _ol_.nullFunction;
 
 
 /**
@@ -129,8 +127,8 @@ ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
  * @this {ol.interaction.DragBox}
  * @private
  */
-ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragBox_.handleUpEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return true;
   }
 
@@ -139,7 +137,7 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.boxEndCondition_(mapBrowserEvent,
       this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
-    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXEND,
+    this.dispatchEvent(new _ol_interaction_DragBox_.Event(_ol_interaction_DragBox_.EventType_.BOXEND,
         mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
@@ -152,17 +150,17 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragBox}
  * @private
  */
-ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
+_ol_interaction_DragBox_.handleDownEvent_ = function(mapBrowserEvent) {
+  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return false;
   }
 
-  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
+  if (_ol_events_condition_.mouseActionButton(mapBrowserEvent) &&
       this.condition_(mapBrowserEvent)) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXSTART,
+    this.dispatchEvent(new _ol_interaction_DragBox_.Event(_ol_interaction_DragBox_.EventType_.BOXSTART,
         mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
@@ -175,7 +173,7 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
  * @enum {string}
  * @private
  */
-ol.interaction.DragBox.EventType_ = {
+_ol_interaction_DragBox_.EventType_ = {
   /**
    * Triggered upon drag box start.
    * @event ol.interaction.DragBox.Event#boxstart
@@ -211,8 +209,8 @@ ol.interaction.DragBox.EventType_ = {
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
-ol.interaction.DragBox.Event = function(type, coordinate, mapBrowserEvent) {
-  ol.events.Event.call(this, type);
+_ol_interaction_DragBox_.Event = function(type, coordinate, mapBrowserEvent) {
+  _ol_events_Event_.call(this, type);
 
   /**
    * The coordinate of the drag event.
@@ -230,4 +228,5 @@ ol.interaction.DragBox.Event = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-ol.inherits(ol.interaction.DragBox.Event, ol.events.Event);
+_ol_.inherits(_ol_interaction_DragBox_.Event, _ol_events_Event_);
+export default _ol_interaction_DragBox_;

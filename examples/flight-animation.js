@@ -1,33 +1,33 @@
 // NOCOMPILE
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.LineString');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.proj');
-goog.require('ol.source.Stamen');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_Stamen_ from '../src/ol/source/stamen';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.Stamen({
+    new _ol_layer_Tile_({
+      source: new _ol_source_Stamen_({
         layer: 'toner'
       })
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
 });
 
-var style = new ol.style.Style({
-  stroke: new ol.style.Stroke({
+var style = new _ol_style_Style_({
+  stroke: new _ol_style_Stroke_({
     color: '#EAE911',
     width: 2
   })
@@ -61,7 +61,7 @@ var animateFlights = function(event) {
       }
 
       var maxIndex = Math.min(elapsedPoints, coords.length);
-      var currentLine = new ol.geom.LineString(coords.slice(0, maxIndex));
+      var currentLine = new _ol_geom_LineString_(coords.slice(0, maxIndex));
 
       // directly draw the line with the vector context
       vectorContext.drawGeometry(currentLine);
@@ -71,7 +71,7 @@ var animateFlights = function(event) {
   map.render();
 };
 
-flightsSource = new ol.source.Vector({
+flightsSource = new _ol_source_Vector_({
   wrapX: false,
   attributions: 'Flight data by ' +
         '<a href="http://openflights.org/data.html">OpenFlights</a>,',
@@ -93,10 +93,10 @@ flightsSource = new ol.source.Vector({
 
         var arcLine = arcGenerator.Arc(100, {offset: 10});
         if (arcLine.geometries.length === 1) {
-          var line = new ol.geom.LineString(arcLine.geometries[0].coords);
-          line.transform(ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+          var line = new _ol_geom_LineString_(arcLine.geometries[0].coords);
+          line.transform(_ol_proj_.get('EPSG:4326'), _ol_proj_.get('EPSG:3857'));
 
-          var feature = new ol.Feature({
+          var feature = new _ol_Feature_({
             geometry: line,
             finished: false
           });
@@ -110,7 +110,7 @@ flightsSource = new ol.source.Vector({
   }
 });
 
-var flightsLayer = new ol.layer.Vector({
+var flightsLayer = new _ol_layer_Vector_({
   source: flightsSource,
   style: function(feature) {
     // if the animation is still active for a feature, do not

@@ -1,11 +1,8 @@
-goog.provide('ol.layer.Tile');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.layer.Layer');
-goog.require('ol.layer.TileProperty');
-goog.require('ol.obj');
-
+import _ol_ from '../index';
+import _ol_LayerType_ from '../layertype';
+import _ol_layer_Layer_ from '../layer/layer';
+import _ol_layer_TileProperty_ from '../layer/tileproperty';
+import _ol_obj_ from '../obj';
 
 /**
  * @classdesc
@@ -21,14 +18,14 @@ goog.require('ol.obj');
  * @param {olx.layer.TileOptions=} opt_options Tile layer options.
  * @api
  */
-ol.layer.Tile = function(opt_options) {
+var _ol_layer_Tile_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var baseOptions = ol.obj.assign({}, options);
+  var baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  ol.layer.Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  _ol_layer_Layer_.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   this.setPreload(options.preload !== undefined ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
@@ -39,10 +36,11 @@ ol.layer.Tile = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = ol.LayerType.TILE;
+  this.type = _ol_LayerType_.TILE;
 
 };
-ol.inherits(ol.layer.Tile, ol.layer.Layer);
+
+_ol_.inherits(_ol_layer_Tile_, _ol_layer_Layer_);
 
 
 /**
@@ -51,8 +49,10 @@ ol.inherits(ol.layer.Tile, ol.layer.Layer);
  * @observable
  * @api
  */
-ol.layer.Tile.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
+_ol_layer_Tile_.prototype.getPreload = function() {
+  return (
+  /** @type {number} */ this.get(_ol_layer_TileProperty_.PRELOAD)
+  );
 };
 
 
@@ -62,7 +62,7 @@ ol.layer.Tile.prototype.getPreload = function() {
  * @return {ol.source.Tile} Source.
  * @api
  */
-ol.layer.Tile.prototype.getSource;
+_ol_layer_Tile_.prototype.getSource;
 
 
 /**
@@ -71,8 +71,8 @@ ol.layer.Tile.prototype.getSource;
  * @observable
  * @api
  */
-ol.layer.Tile.prototype.setPreload = function(preload) {
-  this.set(ol.layer.TileProperty.PRELOAD, preload);
+_ol_layer_Tile_.prototype.setPreload = function(preload) {
+  this.set(_ol_layer_TileProperty_.PRELOAD, preload);
 };
 
 
@@ -82,9 +82,10 @@ ol.layer.Tile.prototype.setPreload = function(preload) {
  * @observable
  * @api
  */
-ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean} */ (
-    this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
+_ol_layer_Tile_.prototype.getUseInterimTilesOnError = function() {
+  return (
+  /** @type {boolean} */ this.get(_ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR)
+  );
 };
 
 
@@ -94,7 +95,8 @@ ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
  * @observable
  * @api
  */
-ol.layer.Tile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
+_ol_layer_Tile_.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
-      ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+      _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
+export default _ol_layer_Tile_;

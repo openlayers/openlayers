@@ -1,23 +1,22 @@
-goog.provide('ol.format.XSD');
-
-goog.require('ol.xml');
-goog.require('ol.string');
+import _ol_xml_ from '../xml';
+import _ol_string_ from '../string';
+var _ol_format_XSD_ = {};
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.XSD.NAMESPACE_URI = 'http://www.w3.org/2001/XMLSchema';
+_ol_format_XSD_.NAMESPACE_URI = 'http://www.w3.org/2001/XMLSchema';
 
 
 /**
  * @param {Node} node Node.
  * @return {boolean|undefined} Boolean.
  */
-ol.format.XSD.readBoolean = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return ol.format.XSD.readBooleanString(s);
+_ol_format_XSD_.readBoolean = function(node) {
+  var s = _ol_xml_.getAllTextContent(node, false);
+  return _ol_format_XSD_.readBooleanString(s);
 };
 
 
@@ -25,7 +24,7 @@ ol.format.XSD.readBoolean = function(node) {
  * @param {string} string String.
  * @return {boolean|undefined} Boolean.
  */
-ol.format.XSD.readBooleanString = function(string) {
+_ol_format_XSD_.readBooleanString = function(string) {
   var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if (m) {
     return m[1] !== undefined || false;
@@ -39,8 +38,8 @@ ol.format.XSD.readBooleanString = function(string) {
  * @param {Node} node Node.
  * @return {number|undefined} DateTime in seconds.
  */
-ol.format.XSD.readDateTime = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
+_ol_format_XSD_.readDateTime = function(node) {
+  var s = _ol_xml_.getAllTextContent(node, false);
   var dateTime = Date.parse(s);
   return isNaN(dateTime) ? undefined : dateTime / 1000;
 };
@@ -50,9 +49,9 @@ ol.format.XSD.readDateTime = function(node) {
  * @param {Node} node Node.
  * @return {number|undefined} Decimal.
  */
-ol.format.XSD.readDecimal = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return ol.format.XSD.readDecimalString(s);
+_ol_format_XSD_.readDecimal = function(node) {
+  var s = _ol_xml_.getAllTextContent(node, false);
+  return _ol_format_XSD_.readDecimalString(s);
 };
 
 
@@ -60,7 +59,7 @@ ol.format.XSD.readDecimal = function(node) {
  * @param {string} string String.
  * @return {number|undefined} Decimal.
  */
-ol.format.XSD.readDecimalString = function(string) {
+_ol_format_XSD_.readDecimalString = function(string) {
   // FIXME check spec
   var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(string);
   if (m) {
@@ -75,9 +74,9 @@ ol.format.XSD.readDecimalString = function(string) {
  * @param {Node} node Node.
  * @return {number|undefined} Non negative integer.
  */
-ol.format.XSD.readNonNegativeInteger = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return ol.format.XSD.readNonNegativeIntegerString(s);
+_ol_format_XSD_.readNonNegativeInteger = function(node) {
+  var s = _ol_xml_.getAllTextContent(node, false);
+  return _ol_format_XSD_.readNonNegativeIntegerString(s);
 };
 
 
@@ -85,7 +84,7 @@ ol.format.XSD.readNonNegativeInteger = function(node) {
  * @param {string} string String.
  * @return {number|undefined} Non negative integer.
  */
-ol.format.XSD.readNonNegativeIntegerString = function(string) {
+_ol_format_XSD_.readNonNegativeIntegerString = function(string) {
   var m = /^\s*(\d+)\s*$/.exec(string);
   if (m) {
     return parseInt(m[1], 10);
@@ -99,8 +98,8 @@ ol.format.XSD.readNonNegativeIntegerString = function(string) {
  * @param {Node} node Node.
  * @return {string|undefined} String.
  */
-ol.format.XSD.readString = function(node) {
-  return ol.xml.getAllTextContent(node, false).trim();
+_ol_format_XSD_.readString = function(node) {
+  return _ol_xml_.getAllTextContent(node, false).trim();
 };
 
 
@@ -108,8 +107,8 @@ ol.format.XSD.readString = function(node) {
  * @param {Node} node Node to append a TextNode with the boolean to.
  * @param {boolean} bool Boolean.
  */
-ol.format.XSD.writeBooleanTextNode = function(node, bool) {
-  ol.format.XSD.writeStringTextNode(node, (bool) ? '1' : '0');
+_ol_format_XSD_.writeBooleanTextNode = function(node, bool) {
+  _ol_format_XSD_.writeStringTextNode(node, (bool) ? '1' : '0');
 };
 
 
@@ -117,8 +116,8 @@ ol.format.XSD.writeBooleanTextNode = function(node, bool) {
  * @param {Node} node Node to append a CDATA Section with the string to.
  * @param {string} string String.
  */
-ol.format.XSD.writeCDATASection = function(node, string) {
-  node.appendChild(ol.xml.DOCUMENT.createCDATASection(string));
+_ol_format_XSD_.writeCDATASection = function(node, string) {
+  node.appendChild(_ol_xml_.DOCUMENT.createCDATASection(string));
 };
 
 
@@ -126,15 +125,15 @@ ol.format.XSD.writeCDATASection = function(node, string) {
  * @param {Node} node Node to append a TextNode with the dateTime to.
  * @param {number} dateTime DateTime in seconds.
  */
-ol.format.XSD.writeDateTimeTextNode = function(node, dateTime) {
+_ol_format_XSD_.writeDateTimeTextNode = function(node, dateTime) {
   var date = new Date(dateTime * 1000);
   var string = date.getUTCFullYear() + '-' +
-      ol.string.padNumber(date.getUTCMonth() + 1, 2) + '-' +
-      ol.string.padNumber(date.getUTCDate(), 2) + 'T' +
-      ol.string.padNumber(date.getUTCHours(), 2) + ':' +
-      ol.string.padNumber(date.getUTCMinutes(), 2) + ':' +
-      ol.string.padNumber(date.getUTCSeconds(), 2) + 'Z';
-  node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
+      _ol_string_.padNumber(date.getUTCMonth() + 1, 2) + '-' +
+      _ol_string_.padNumber(date.getUTCDate(), 2) + 'T' +
+      _ol_string_.padNumber(date.getUTCHours(), 2) + ':' +
+      _ol_string_.padNumber(date.getUTCMinutes(), 2) + ':' +
+      _ol_string_.padNumber(date.getUTCSeconds(), 2) + 'Z';
+  node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
 
 
@@ -142,9 +141,9 @@ ol.format.XSD.writeDateTimeTextNode = function(node, dateTime) {
  * @param {Node} node Node to append a TextNode with the decimal to.
  * @param {number} decimal Decimal.
  */
-ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
+_ol_format_XSD_.writeDecimalTextNode = function(node, decimal) {
   var string = decimal.toPrecision();
-  node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
+  node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
 
 
@@ -152,9 +151,9 @@ ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
  * @param {Node} node Node to append a TextNode with the decimal to.
  * @param {number} nonNegativeInteger Non negative integer.
  */
-ol.format.XSD.writeNonNegativeIntegerTextNode = function(node, nonNegativeInteger) {
+_ol_format_XSD_.writeNonNegativeIntegerTextNode = function(node, nonNegativeInteger) {
   var string = nonNegativeInteger.toString();
-  node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
+  node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
 
 
@@ -162,6 +161,7 @@ ol.format.XSD.writeNonNegativeIntegerTextNode = function(node, nonNegativeIntege
  * @param {Node} node Node to append a TextNode with the string to.
  * @param {string} string String.
  */
-ol.format.XSD.writeStringTextNode = function(node, string) {
-  node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
+_ol_format_XSD_.writeStringTextNode = function(node, string) {
+  node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
+export default _ol_format_XSD_;

@@ -1,13 +1,13 @@
 
 
-goog.require('ol.format.WMTSCapabilities');
+import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/wmtscapabilities';
 
 
 describe('ol.format.WMTSCapabilities', function() {
 
   describe('when parsing ogcsample.xml', function() {
 
-    var parser = new ol.format.WMTSCapabilities();
+    var parser = new _ol_format_WMTSCapabilities_();
     var capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ogcsample.xml', function(xml) {
@@ -118,7 +118,7 @@ describe('ol.format.WMTSCapabilities', function() {
 
   describe('when parsing ign.xml', function() {
 
-    var parser = new ol.format.WMTSCapabilities();
+    var parser = new _ol_format_WMTSCapabilities_();
     var capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ign.xml', function(xml) {

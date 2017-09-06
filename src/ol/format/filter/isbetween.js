@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.IsBetween');
-
-goog.require('ol');
-goog.require('ol.format.filter.Comparison');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Comparison_ from '../filter/comparison';
 
 /**
  * @classdesc
@@ -15,8 +12,8 @@ goog.require('ol.format.filter.Comparison');
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.filter.IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
-  ol.format.filter.Comparison.call(this, 'PropertyIsBetween', propertyName);
+var _ol_format_filter_IsBetween_ = function(propertyName, lowerBoundary, upperBoundary) {
+  _ol_format_filter_Comparison_.call(this, 'PropertyIsBetween', propertyName);
 
   /**
    * @public
@@ -30,4 +27,6 @@ ol.format.filter.IsBetween = function(propertyName, lowerBoundary, upperBoundary
    */
   this.upperBoundary = upperBoundary;
 };
-ol.inherits(ol.format.filter.IsBetween, ol.format.filter.Comparison);
+
+_ol_.inherits(_ol_format_filter_IsBetween_, _ol_format_filter_Comparison_);
+export default _ol_format_filter_IsBetween_;

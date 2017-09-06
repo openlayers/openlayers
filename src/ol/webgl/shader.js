@@ -1,7 +1,4 @@
-goog.provide('ol.webgl.Shader');
-
-goog.require('ol.functions');
-
+import _ol_functions_ from '../functions';
 
 /**
  * @constructor
@@ -9,7 +6,7 @@ goog.require('ol.functions');
  * @param {string} source Source.
  * @struct
  */
-ol.webgl.Shader = function(source) {
+var _ol_webgl_Shader_ = function(source) {
 
   /**
    * @private
@@ -24,13 +21,13 @@ ol.webgl.Shader = function(source) {
  * @abstract
  * @return {number} Type.
  */
-ol.webgl.Shader.prototype.getType = function() {};
+_ol_webgl_Shader_.prototype.getType = function() {};
 
 
 /**
  * @return {string} Source.
  */
-ol.webgl.Shader.prototype.getSource = function() {
+_ol_webgl_Shader_.prototype.getSource = function() {
   return this.source_;
 };
 
@@ -38,4 +35,5 @@ ol.webgl.Shader.prototype.getSource = function() {
 /**
  * @return {boolean} Is animated?
  */
-ol.webgl.Shader.prototype.isAnimated = ol.functions.FALSE;
+_ol_webgl_Shader_.prototype.isAnimated = _ol_functions_.FALSE;
+export default _ol_webgl_Shader_;

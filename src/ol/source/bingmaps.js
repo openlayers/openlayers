@@ -1,16 +1,13 @@
-goog.provide('ol.source.BingMaps');
-
-goog.require('ol');
-goog.require('ol.Attribution');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.extent');
-goog.require('ol.net');
-goog.require('ol.proj');
-goog.require('ol.source.State');
-goog.require('ol.source.TileImage');
-goog.require('ol.tilecoord');
-goog.require('ol.tilegrid');
-
+import _ol_ from '../index';
+import _ol_Attribution_ from '../attribution';
+import _ol_TileUrlFunction_ from '../tileurlfunction';
+import _ol_extent_ from '../extent';
+import _ol_net_ from '../net';
+import _ol_proj_ from '../proj';
+import _ol_source_State_ from '../source/state';
+import _ol_source_TileImage_ from '../source/tileimage';
+import _ol_tilecoord_ from '../tilecoord';
+import _ol_tilegrid_ from '../tilegrid';
 
 /**
  * @classdesc
@@ -21,7 +18,7 @@ goog.require('ol.tilegrid');
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
  * @api
  */
-ol.source.BingMaps = function(options) {
+var _ol_source_BingMaps_ = function(options) {
 
   /**
    * @private
@@ -29,13 +26,13 @@ ol.source.BingMaps = function(options) {
    */
   this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
 
-  ol.source.TileImage.call(this, {
+  _ol_source_TileImage_.call(this, {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     opaque: true,
-    projection: ol.proj.get('EPSG:3857'),
+    projection: _ol_proj_.get('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    state: ol.source.State.LOADING,
+    state: _ol_source_State_.LOADING,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: this.hidpi_ ? 2 : 1,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
@@ -69,11 +66,12 @@ ol.source.BingMaps = function(options) {
       this.imagerySet_ +
       '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_;
 
-  ol.net.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
+  _ol_net_.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
       'jsonp');
 
 };
-ol.inherits(ol.source.BingMaps, ol.source.TileImage);
+
+_ol_.inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
 
 
 /**
@@ -83,7 +81,7 @@ ol.inherits(ol.source.BingMaps, ol.source.TileImage);
  * @type {ol.Attribution}
  * @api
  */
-ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
+_ol_source_BingMaps_.TOS_ATTRIBUTION = new _ol_Attribution_({
   html: '<a class="ol-attribution-bing-tos" ' +
       'href="https://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
@@ -96,7 +94,7 @@ ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
  * @return {string} The api key.
  * @api
  */
-ol.source.BingMaps.prototype.getApiKey = function() {
+_ol_source_BingMaps_.prototype.getApiKey = function() {
   return this.apiKey_;
 };
 
@@ -107,7 +105,7 @@ ol.source.BingMaps.prototype.getApiKey = function() {
  * @return {string} The imagery set.
  * @api
  */
-ol.source.BingMaps.prototype.getImagerySet = function() {
+_ol_source_BingMaps_.prototype.getImagerySet = function() {
   return this.imagerySet_;
 };
 
@@ -115,13 +113,13 @@ ol.source.BingMaps.prototype.getImagerySet = function() {
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) {
+_ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response) {
   if (response.statusCode != 200 ||
       response.statusDescription != 'OK' ||
       response.authenticationResultCode != 'ValidCredentials' ||
       response.resourceSets.length != 1 ||
       response.resourceSets[0].resources.length != 1) {
-    this.setState(ol.source.State.ERROR);
+    this.setState(_ol_source_State_.ERROR);
     return;
   }
 
@@ -134,10 +132,10 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
   var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
   var sourceProjection = this.getProjection();
-  var extent = ol.tilegrid.extentFromProjection(sourceProjection);
+  var extent = _ol_tilegrid_.extentFromProjection(sourceProjection);
   var tileSize = resource.imageWidth == resource.imageHeight ?
     resource.imageWidth : [resource.imageWidth, resource.imageHeight];
-  var tileGrid = ol.tilegrid.createXYZ({
+  var tileGrid = _ol_tilegrid_.createXYZ({
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
@@ -147,7 +145,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
 
   var culture = this.culture_;
   var hidpi = this.hidpi_;
-  this.tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
+  this.tileUrlFunction = _ol_TileUrlFunction_.createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function(subdomain) {
         var quadKeyTileCoord = [0, 0, 0];
         var imageUrl = resource.imageUrl
@@ -164,21 +162,22 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
             if (!tileCoord) {
               return undefined;
             } else {
-              ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
+              _ol_tilecoord_.createOrUpdate(tileCoord[0], tileCoord[1],
                   -tileCoord[2] - 1, quadKeyTileCoord);
               var url = imageUrl;
               if (hidpi) {
                 url += '&dpi=d1&device=mobile';
               }
-              return url.replace('{quadkey}', ol.tilecoord.quadKey(
+              return url.replace('{quadkey}', _ol_tilecoord_.quadKey(
                   quadKeyTileCoord));
             }
-          });
+          }
+        );
       }));
 
   if (resource.imageryProviders) {
-    var transform = ol.proj.getTransformFromProjections(
-        ol.proj.get('EPSG:4326'), this.getProjection());
+    var transform = _ol_proj_.getTransformFromProjections(
+        _ol_proj_.get('EPSG:4326'), this.getProjection());
 
     var attributions = resource.imageryProviders.map(function(imageryProvider) {
       var html = imageryProvider.attribution;
@@ -189,7 +188,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
         var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
         var bbox = coverageArea.bbox;
         var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-        var extent = ol.extent.applyTransform(epsg4326Extent, transform);
+        var extent = _ol_extent_.applyTransform(epsg4326Extent, transform);
         var tileRange, z, zKey;
         for (z = minZ; z <= maxZ; ++z) {
           zKey = z.toString();
@@ -201,13 +200,14 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
           }
         }
       });
-      return new ol.Attribution({html: html, tileRanges: tileRanges});
+      return new _ol_Attribution_({html: html, tileRanges: tileRanges});
     });
-    attributions.push(ol.source.BingMaps.TOS_ATTRIBUTION);
+    attributions.push(_ol_source_BingMaps_.TOS_ATTRIBUTION);
     this.setAttributions(attributions);
   }
 
   this.setLogo(brandLogoUri);
 
-  this.setState(ol.source.State.READY);
+  this.setState(_ol_source_State_.READY);
 };
+export default _ol_source_BingMaps_;

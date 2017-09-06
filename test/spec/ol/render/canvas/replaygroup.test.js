@@ -1,6 +1,6 @@
 
 
-goog.require('ol.render.canvas.ReplayGroup');
+import _ol_render_canvas_ReplayGroup_ from '../../../../../src/ol/render/canvas/replaygroup';
 
 
 describe('ol.render.canvas.ReplayGroup', function() {
@@ -10,7 +10,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       var radius = 10;
       var minRadiusSq = Math.pow(radius - Math.SQRT2, 2);
       var maxRadiusSq = Math.pow(radius + Math.SQRT2, 2);
-      var circleArray = ol.render.canvas.ReplayGroup.getCircleArray_(radius);
+      var circleArray = _ol_render_canvas_ReplayGroup_.getCircleArray_(radius);
       var size = radius * 2 + 1;
       expect(circleArray.length).to.be(size);
 

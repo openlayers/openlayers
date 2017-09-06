@@ -1,15 +1,15 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_Map_ from '../../../../src/ol/map';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/vector';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
+import _ol_style_Circle_ from '../../../../src/ol/style/circle';
+import _ol_style_Fill_ from '../../../../src/ol/style/fill';
+import _ol_style_Style_ from '../../../../src/ol/style/style';
+import _ol_style_Stroke_ from '../../../../src/ol/style/stroke';
 
 
 describe('ol.rendering.style.Circle', function() {
@@ -17,17 +17,17 @@ describe('ol.rendering.style.Circle', function() {
   var map, vectorSource;
 
   function createMap(renderer) {
-    vectorSource = new ol.source.Vector();
-    var vectorLayer = new ol.layer.Vector({
+    vectorSource = new _ol_source_Vector_();
+    var vectorLayer = new _ol_layer_Vector_({
       source: vectorSource
     });
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -46,55 +46,55 @@ describe('ol.rendering.style.Circle', function() {
 
     function createFeatures() {
       var feature;
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([-20, 18])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([-20, 18])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 2,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: '#91E339'
           })
         })
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([-10, 18])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([-10, 18])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 4,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: '#5447E6'
           })
         })
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([4, 18])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([4, 18])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 6,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: '#92A8A6'
           })
         })
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([-20, 3])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([-20, 3])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 2,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: '#91E339'
           }),
-          stroke: new ol.style.Stroke({
+          stroke: new _ol_style_Stroke_({
             color: '#000000',
             width: 1
           })
@@ -102,16 +102,16 @@ describe('ol.rendering.style.Circle', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([-10, 3])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([-10, 3])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 4,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: '#5447E6'
           }),
-          stroke: new ol.style.Stroke({
+          stroke: new _ol_style_Stroke_({
             color: '#000000',
             width: 2
           })
@@ -119,16 +119,16 @@ describe('ol.rendering.style.Circle', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([4, 3])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([4, 3])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 6,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: '#92A8A6'
           }),
-          stroke: new ol.style.Stroke({
+          stroke: new _ol_style_Stroke_({
             color: '#000000',
             width: 3
           })
@@ -136,13 +136,13 @@ describe('ol.rendering.style.Circle', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([-20, -15])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([-20, -15])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 2,
-          stroke: new ol.style.Stroke({
+          stroke: new _ol_style_Stroke_({
             color: '#256308',
             width: 1
           })
@@ -150,16 +150,16 @@ describe('ol.rendering.style.Circle', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([-10, -15])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([-10, -15])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 4,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: 'rgba(0, 0, 255, 0.3)'
           }),
-          stroke: new ol.style.Stroke({
+          stroke: new _ol_style_Stroke_({
             color: '#256308',
             width: 2
           })
@@ -167,16 +167,16 @@ describe('ol.rendering.style.Circle', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new ol.Feature({
-        geometry: new ol.geom.Point([4, -15])
+      feature = new _ol_Feature_({
+        geometry: new _ol_geom_Point_([4, -15])
       });
-      feature.setStyle(new ol.style.Style({
-        image: new ol.style.Circle({
+      feature.setStyle(new _ol_style_Style_({
+        image: new _ol_style_Circle_({
           radius: 6,
-          fill: new ol.style.Fill({
+          fill: new _ol_style_Fill_({
             color: 'rgba(235, 45, 70, 0.6)'
           }),
-          stroke: new ol.style.Stroke({
+          stroke: new _ol_style_Stroke_({
             color: '#256308',
             width: 3
           })

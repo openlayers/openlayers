@@ -1,4 +1,4 @@
-goog.provide('ol.webgl');
+var _ol_webgl_ = {};
 
 /**
  * Constants taken from goog.webgl
@@ -9,245 +9,245 @@ goog.provide('ol.webgl');
  * @const
  * @type {number}
  */
-ol.webgl.ONE = 1;
+_ol_webgl_.ONE = 1;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.SRC_ALPHA = 0x0302;
+_ol_webgl_.SRC_ALPHA = 0x0302;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.COLOR_ATTACHMENT0 = 0x8CE0;
+_ol_webgl_.COLOR_ATTACHMENT0 = 0x8CE0;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.COLOR_BUFFER_BIT = 0x00004000;
+_ol_webgl_.COLOR_BUFFER_BIT = 0x00004000;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TRIANGLES = 0x0004;
+_ol_webgl_.TRIANGLES = 0x0004;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TRIANGLE_STRIP = 0x0005;
+_ol_webgl_.TRIANGLE_STRIP = 0x0005;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.ONE_MINUS_SRC_ALPHA = 0x0303;
+_ol_webgl_.ONE_MINUS_SRC_ALPHA = 0x0303;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.ARRAY_BUFFER = 0x8892;
+_ol_webgl_.ARRAY_BUFFER = 0x8892;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.ELEMENT_ARRAY_BUFFER = 0x8893;
+_ol_webgl_.ELEMENT_ARRAY_BUFFER = 0x8893;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.STREAM_DRAW = 0x88E0;
+_ol_webgl_.STREAM_DRAW = 0x88E0;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.STATIC_DRAW = 0x88E4;
+_ol_webgl_.STATIC_DRAW = 0x88E4;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.DYNAMIC_DRAW = 0x88E8;
+_ol_webgl_.DYNAMIC_DRAW = 0x88E8;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.CULL_FACE = 0x0B44;
+_ol_webgl_.CULL_FACE = 0x0B44;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.BLEND = 0x0BE2;
+_ol_webgl_.BLEND = 0x0BE2;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.STENCIL_TEST = 0x0B90;
+_ol_webgl_.STENCIL_TEST = 0x0B90;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.DEPTH_TEST = 0x0B71;
+_ol_webgl_.DEPTH_TEST = 0x0B71;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.SCISSOR_TEST = 0x0C11;
+_ol_webgl_.SCISSOR_TEST = 0x0C11;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.UNSIGNED_BYTE = 0x1401;
+_ol_webgl_.UNSIGNED_BYTE = 0x1401;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.UNSIGNED_SHORT = 0x1403;
+_ol_webgl_.UNSIGNED_SHORT = 0x1403;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.UNSIGNED_INT = 0x1405;
+_ol_webgl_.UNSIGNED_INT = 0x1405;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.FLOAT = 0x1406;
+_ol_webgl_.FLOAT = 0x1406;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.RGBA = 0x1908;
+_ol_webgl_.RGBA = 0x1908;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.FRAGMENT_SHADER = 0x8B30;
+_ol_webgl_.FRAGMENT_SHADER = 0x8B30;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.VERTEX_SHADER = 0x8B31;
+_ol_webgl_.VERTEX_SHADER = 0x8B31;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.LINK_STATUS = 0x8B82;
+_ol_webgl_.LINK_STATUS = 0x8B82;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.LINEAR = 0x2601;
+_ol_webgl_.LINEAR = 0x2601;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TEXTURE_MAG_FILTER = 0x2800;
+_ol_webgl_.TEXTURE_MAG_FILTER = 0x2800;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TEXTURE_MIN_FILTER = 0x2801;
+_ol_webgl_.TEXTURE_MIN_FILTER = 0x2801;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TEXTURE_WRAP_S = 0x2802;
+_ol_webgl_.TEXTURE_WRAP_S = 0x2802;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TEXTURE_WRAP_T = 0x2803;
+_ol_webgl_.TEXTURE_WRAP_T = 0x2803;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TEXTURE_2D = 0x0DE1;
+_ol_webgl_.TEXTURE_2D = 0x0DE1;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.TEXTURE0 = 0x84C0;
+_ol_webgl_.TEXTURE0 = 0x84C0;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.CLAMP_TO_EDGE = 0x812F;
+_ol_webgl_.CLAMP_TO_EDGE = 0x812F;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.COMPILE_STATUS = 0x8B81;
+_ol_webgl_.COMPILE_STATUS = 0x8B81;
 
 
 /**
  * @const
  * @type {number}
  */
-ol.webgl.FRAMEBUFFER = 0x8D40;
+_ol_webgl_.FRAMEBUFFER = 0x8D40;
 
 
 /** end of goog.webgl constants
@@ -259,7 +259,7 @@ ol.webgl.FRAMEBUFFER = 0x8D40;
  * @private
  * @type {Array.<string>}
  */
-ol.webgl.CONTEXT_IDS_ = [
+_ol_webgl_.CONTEXT_IDS_ = [
   'experimental-webgl',
   'webgl',
   'webkit-3d',
@@ -272,11 +272,11 @@ ol.webgl.CONTEXT_IDS_ = [
  * @param {Object=} opt_attributes Attributes.
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
-ol.webgl.getContext = function(canvas, opt_attributes) {
-  var context, i, ii = ol.webgl.CONTEXT_IDS_.length;
+_ol_webgl_.getContext = function(canvas, opt_attributes) {
+  var context, i, ii = _ol_webgl_.CONTEXT_IDS_.length;
   for (i = 0; i < ii; ++i) {
     try {
-      context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
+      context = canvas.getContext(_ol_webgl_.CONTEXT_IDS_[i], opt_attributes);
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }
@@ -286,3 +286,4 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
   }
   return null;
 };
+export default _ol_webgl_;

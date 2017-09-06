@@ -1,36 +1,36 @@
 
 
-goog.require('ol');
-goog.require('ol.View');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventTarget');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.interaction.DragAndDrop');
-goog.require('ol.source.Vector');
+import _ol_ from '../../../../src/ol';
+import _ol_View_ from '../../../../src/ol/view';
+import _ol_events_Event_ from '../../../../src/ol/events/event';
+import _ol_events_EventTarget_ from '../../../../src/ol/events/eventtarget';
+import _ol_format_GeoJSON_ from '../../../../src/ol/format/geojson';
+import _ol_interaction_DragAndDrop_ from '../../../../src/ol/interaction/draganddrop';
+import _ol_source_Vector_ from '../../../../src/ol/source/vector';
 
 where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
 
   beforeEach(function() {
-    viewport = new ol.events.EventTarget();
+    viewport = new _ol_events_EventTarget_();
     map = {
       getViewport: function() {
         return viewport;
       },
       getView: function() {
-        return new ol.View();
+        return new _ol_View_();
       }
     };
-    interaction = new ol.interaction.DragAndDrop({
-      formatConstructors: [ol.format.GeoJSON]
+    interaction = new _ol_interaction_DragAndDrop_({
+      formatConstructors: [_ol_format_GeoJSON_]
     });
   });
 
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var interaction = new ol.interaction.DragAndDrop();
-      expect(interaction).to.be.an(ol.interaction.DragAndDrop);
+      var interaction = new _ol_interaction_DragAndDrop_();
+      expect(interaction).to.be.an(_ol_interaction_DragAndDrop_);
     });
 
     it('sets formatConstructors on the instance', function() {
@@ -38,9 +38,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
 
     it('accepts a source option', function() {
-      var source = new ol.source.Vector();
-      var drop = new ol.interaction.DragAndDrop({
-        formatConstructors: [ol.format.GeoJSON],
+      var source = new _ol_source_Vector_();
+      var drop = new _ol_interaction_DragAndDrop_({
+        formatConstructors: [_ol_format_GeoJSON_],
         source: source
       });
       expect(drop.source_).to.equal(source);
@@ -74,9 +74,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
 
     it('registers and unregisters listeners on a custom target', function() {
-      var customTarget = new ol.events.EventTarget();
-      interaction = new ol.interaction.DragAndDrop({
-        formatConstructors: [ol.format.GeoJSON],
+      var customTarget = new _ol_events_EventTarget_();
+      interaction = new _ol_interaction_DragAndDrop_({
+        formatConstructors: [_ol_format_GeoJSON_],
         target: customTarget
       });
       interaction.setMap(map);
@@ -97,13 +97,13 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
       OrigFileReader = FileReader;
 
       FileReader = function() {
-        ol.events.EventTarget.apply(this, arguments);
+        _ol_events_EventTarget_.apply(this, arguments);
         this.readAsText = function(file) {
           this.result = file;
           this.dispatchEvent('load');
         };
       };
-      ol.inherits(FileReader, ol.events.EventTarget);
+      _ol_.inherits(FileReader, _ol_events_EventTarget_);
     });
 
     afterEach(function() {
@@ -116,7 +116,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         done();
       });
       interaction.setMap(map);
-      var event = new ol.events.Event();
+      var event = new _ol_events_Event_();
       event.dataTransfer = {};
       event.type = 'dragenter';
       viewport.dispatchEvent(event);
@@ -138,9 +138,9 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
 
     it('adds dropped features to a source', function(done) {
-      var source = new ol.source.Vector();
-      var drop = new ol.interaction.DragAndDrop({
-        formatConstructors: [ol.format.GeoJSON],
+      var source = new _ol_source_Vector_();
+      var drop = new _ol_interaction_DragAndDrop_({
+        formatConstructors: [_ol_format_GeoJSON_],
         source: source
       });
       drop.setMap(map);
@@ -151,7 +151,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         done();
       });
 
-      var event = new ol.events.Event();
+      var event = new _ol_events_Event_();
       event.dataTransfer = {};
       event.type = 'dragenter';
       viewport.dispatchEvent(event);

@@ -1,13 +1,10 @@
-goog.provide('ol.Feature');
-
-goog.require('ol.asserts');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol');
-goog.require('ol.Object');
-goog.require('ol.geom.Geometry');
-goog.require('ol.style.Style');
-
+import _ol_asserts_ from './asserts';
+import _ol_events_ from './events';
+import _ol_events_EventType_ from './events/eventtype';
+import _ol_ from './index';
+import _ol_Object_ from './object';
+import _ol_geom_Geometry_ from './geom/geometry';
+import _ol_style_Style_ from './style/style';
 
 /**
  * @classdesc
@@ -54,9 +51,9 @@ goog.require('ol.style.Style');
  *     include a Geometry associated with a `geometry` key.
  * @api
  */
-ol.Feature = function(opt_geometryOrProperties) {
+var _ol_Feature_ = function(opt_geometryOrProperties) {
 
-  ol.Object.call(this);
+  _ol_Object_.call(this);
 
   /**
    * @private
@@ -90,12 +87,12 @@ ol.Feature = function(opt_geometryOrProperties) {
    */
   this.geometryChangeKey_ = null;
 
-  ol.events.listen(
-      this, ol.Object.getChangeEventType(this.geometryName_),
+  _ol_events_.listen(
+      this, _ol_Object_.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
 
   if (opt_geometryOrProperties !== undefined) {
-    if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
+    if (opt_geometryOrProperties instanceof _ol_geom_Geometry_ ||
         !opt_geometryOrProperties) {
       var geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);
@@ -106,7 +103,8 @@ ol.Feature = function(opt_geometryOrProperties) {
     }
   }
 };
-ol.inherits(ol.Feature, ol.Object);
+
+_ol_.inherits(_ol_Feature_, _ol_Object_);
 
 
 /**
@@ -115,8 +113,8 @@ ol.inherits(ol.Feature, ol.Object);
  * @return {ol.Feature} The clone.
  * @api
  */
-ol.Feature.prototype.clone = function() {
-  var clone = new ol.Feature(this.getProperties());
+_ol_Feature_.prototype.clone = function() {
+  var clone = new _ol_Feature_(this.getProperties());
   clone.setGeometryName(this.getGeometryName());
   var geometry = this.getGeometry();
   if (geometry) {
@@ -138,7 +136,7 @@ ol.Feature.prototype.clone = function() {
  * @api
  * @observable
  */
-ol.Feature.prototype.getGeometry = function() {
+_ol_Feature_.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
     this.get(this.geometryName_));
 };
@@ -151,7 +149,7 @@ ol.Feature.prototype.getGeometry = function() {
  * @return {number|string|undefined} Id.
  * @api
  */
-ol.Feature.prototype.getId = function() {
+_ol_Feature_.prototype.getId = function() {
   return this.id_;
 };
 
@@ -163,7 +161,7 @@ ol.Feature.prototype.getId = function() {
  *     for this feature.
  * @api
  */
-ol.Feature.prototype.getGeometryName = function() {
+_ol_Feature_.prototype.getGeometryName = function() {
   return this.geometryName_;
 };
 
@@ -175,7 +173,7 @@ ol.Feature.prototype.getGeometryName = function() {
  *     ol.FeatureStyleFunction|ol.StyleFunction} The feature style.
  * @api
  */
-ol.Feature.prototype.getStyle = function() {
+_ol_Feature_.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -186,7 +184,7 @@ ol.Feature.prototype.getStyle = function() {
  * representing the current style of this feature.
  * @api
  */
-ol.Feature.prototype.getStyleFunction = function() {
+_ol_Feature_.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
 
@@ -194,7 +192,7 @@ ol.Feature.prototype.getStyleFunction = function() {
 /**
  * @private
  */
-ol.Feature.prototype.handleGeometryChange_ = function() {
+_ol_Feature_.prototype.handleGeometryChange_ = function() {
   this.changed();
 };
 
@@ -202,15 +200,15 @@ ol.Feature.prototype.handleGeometryChange_ = function() {
 /**
  * @private
  */
-ol.Feature.prototype.handleGeometryChanged_ = function() {
+_ol_Feature_.prototype.handleGeometryChanged_ = function() {
   if (this.geometryChangeKey_) {
-    ol.events.unlistenByKey(this.geometryChangeKey_);
+    _ol_events_.unlistenByKey(this.geometryChangeKey_);
     this.geometryChangeKey_ = null;
   }
   var geometry = this.getGeometry();
   if (geometry) {
-    this.geometryChangeKey_ = ol.events.listen(geometry,
-        ol.events.EventType.CHANGE, this.handleGeometryChange_, this);
+    this.geometryChangeKey_ = _ol_events_.listen(geometry,
+        _ol_events_EventType_.CHANGE, this.handleGeometryChange_, this);
   }
   this.changed();
 };
@@ -223,7 +221,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
  * @api
  * @observable
  */
-ol.Feature.prototype.setGeometry = function(geometry) {
+_ol_Feature_.prototype.setGeometry = function(geometry) {
   this.set(this.geometryName_, geometry);
 };
 
@@ -237,10 +235,10 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  * @api
  * @fires ol.events.Event#event:change
  */
-ol.Feature.prototype.setStyle = function(style) {
+_ol_Feature_.prototype.setStyle = function(style) {
   this.style_ = style;
   this.styleFunction_ = !style ?
-    undefined : ol.Feature.createStyleFunction(style);
+    undefined : _ol_Feature_.createStyleFunction(style);
   this.changed();
 };
 
@@ -254,7 +252,7 @@ ol.Feature.prototype.setStyle = function(style) {
  * @api
  * @fires ol.events.Event#event:change
  */
-ol.Feature.prototype.setId = function(id) {
+_ol_Feature_.prototype.setId = function(id) {
   this.id_ = id;
   this.changed();
 };
@@ -267,13 +265,13 @@ ol.Feature.prototype.setId = function(id) {
  * @param {string} name The property name of the default geometry.
  * @api
  */
-ol.Feature.prototype.setGeometryName = function(name) {
-  ol.events.unlisten(
-      this, ol.Object.getChangeEventType(this.geometryName_),
+_ol_Feature_.prototype.setGeometryName = function(name) {
+  _ol_events_.unlisten(
+      this, _ol_Object_.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
   this.geometryName_ = name;
-  ol.events.listen(
-      this, ol.Object.getChangeEventType(this.geometryName_),
+  _ol_events_.listen(
+      this, _ol_Object_.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };
@@ -287,7 +285,7 @@ ol.Feature.prototype.setGeometryName = function(name) {
  *     A feature style function, a single style, or an array of styles.
  * @return {ol.FeatureStyleFunction} A style function.
  */
-ol.Feature.createStyleFunction = function(obj) {
+_ol_Feature_.createStyleFunction = function(obj) {
   var styleFunction;
 
   if (typeof obj === 'function') {
@@ -306,7 +304,7 @@ ol.Feature.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      ol.asserts.assert(obj instanceof ol.style.Style,
+      _ol_asserts_.assert(obj instanceof _ol_style_Style_,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
@@ -316,3 +314,4 @@ ol.Feature.createStyleFunction = function(obj) {
   }
   return styleFunction;
 };
+export default _ol_Feature_;

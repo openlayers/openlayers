@@ -1,7 +1,7 @@
 
 
-goog.require('ol.extent');
-goog.require('ol.proj');
+import _ol_extent_ from '../../../src/ol/extent';
+import _ol_proj_ from '../../../src/ol/proj';
 
 
 describe('ol.extent', function() {
@@ -10,7 +10,7 @@ describe('ol.extent', function() {
 
     it('buffers an extent by some value', function() {
       var extent = [-10, -20, 10, 20];
-      expect(ol.extent.buffer(extent, 15)).to.eql([-25, -35, 25, 35]);
+      expect(_ol_extent_.buffer(extent, 15)).to.eql([-25, -35, 25, 35]);
     });
 
   });
@@ -18,12 +18,12 @@ describe('ol.extent', function() {
   describe('clone', function() {
 
     it('creates a copy of an extent', function() {
-      var extent = ol.extent.createOrUpdate(1, 2, 3, 4);
-      var clone = ol.extent.clone(extent);
-      expect(ol.extent.equals(extent, clone)).to.be(true);
+      var extent = _ol_extent_.createOrUpdate(1, 2, 3, 4);
+      var clone = _ol_extent_.clone(extent);
+      expect(_ol_extent_.equals(extent, clone)).to.be(true);
 
-      ol.extent.extendCoordinate(extent, [10, 20]);
-      expect(ol.extent.equals(extent, clone)).to.be(false);
+      _ol_extent_.extendCoordinate(extent, [10, 20]);
+      expect(_ol_extent_.equals(extent, clone)).to.be(false);
     });
 
   });
@@ -31,45 +31,45 @@ describe('ol.extent', function() {
   describe('closestSquaredDistanceXY', function() {
 
     it('returns correct result when x left of extent', function() {
-      var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
+      var extent = _ol_extent_.createOrUpdate(0, 0, 1, 1);
       var x = -2;
       var y = 0;
-      expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
+      expect(_ol_extent_.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
 
     it('returns correct result when x right of extent', function() {
-      var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
+      var extent = _ol_extent_.createOrUpdate(0, 0, 1, 1);
       var x = 3;
       var y = 0;
-      expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
+      expect(_ol_extent_.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
 
     it('returns correct result for other x values', function() {
-      var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
+      var extent = _ol_extent_.createOrUpdate(0, 0, 1, 1);
       var x = 0.5;
       var y = 3;
-      expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
+      expect(_ol_extent_.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
 
     it('returns correct result when y below extent', function() {
-      var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
+      var extent = _ol_extent_.createOrUpdate(0, 0, 1, 1);
       var x = 0;
       var y = -2;
-      expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
+      expect(_ol_extent_.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
 
     it('returns correct result when y above extent', function() {
-      var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
+      var extent = _ol_extent_.createOrUpdate(0, 0, 1, 1);
       var x = 0;
       var y = 3;
-      expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
+      expect(_ol_extent_.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
 
     it('returns correct result for other y values', function() {
-      var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
+      var extent = _ol_extent_.createOrUpdate(0, 0, 1, 1);
       var x = 3;
       var y = 0.5;
-      expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
+      expect(_ol_extent_.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
 
   });
@@ -79,15 +79,15 @@ describe('ol.extent', function() {
     it('works when no extent passed', function() {
       var coords = [0, 1];
       var expected = [0, 1, 0, 1];
-      var got = ol.extent.createOrUpdateFromCoordinate(coords);
+      var got = _ol_extent_.createOrUpdateFromCoordinate(coords);
       expect(got).to.eql(expected);
     });
 
     it('updates a passed extent', function() {
-      var extent = ol.extent.createOrUpdate(-4, -7, -3, -6);
+      var extent = _ol_extent_.createOrUpdate(-4, -7, -3, -6);
       var coords = [0, 1];
       var expected = [0, 1, 0, 1];
-      ol.extent.createOrUpdateFromCoordinate(coords, extent);
+      _ol_extent_.createOrUpdateFromCoordinate(coords, extent);
       expect(extent).to.eql(expected);
     });
 
@@ -98,30 +98,30 @@ describe('ol.extent', function() {
     it('works when single coordinate and no extent passed', function() {
       var coords = [[0, 1]];
       var expected = [0, 1, 0, 1];
-      var got = ol.extent.createOrUpdateFromCoordinates(coords);
+      var got = _ol_extent_.createOrUpdateFromCoordinates(coords);
       expect(got).to.eql(expected);
     });
 
     it('changes the passed extent when single coordinate', function() {
-      var extent = ol.extent.createOrUpdate(-4, -7, -3, -6);
+      var extent = _ol_extent_.createOrUpdate(-4, -7, -3, -6);
       var coords = [[0, 1]];
       var expected = [0, 1, 0, 1];
-      ol.extent.createOrUpdateFromCoordinates(coords, extent);
+      _ol_extent_.createOrUpdateFromCoordinates(coords, extent);
       expect(extent).to.eql(expected);
     });
 
     it('works when multiple coordinates and no extent passed', function() {
       var coords = [[0, 1], [2, 3]];
       var expected = [0, 1, 2, 3];
-      var got = ol.extent.createOrUpdateFromCoordinates(coords);
+      var got = _ol_extent_.createOrUpdateFromCoordinates(coords);
       expect(got).to.eql(expected);
     });
 
     it('changes the passed extent when multiple coordinates given', function() {
-      var extent = ol.extent.createOrUpdate(-4, -7, -3, -6);
+      var extent = _ol_extent_.createOrUpdate(-4, -7, -3, -6);
       var coords = [[0, 1], [-2, -1]];
       var expected = [-2, -1, 0, 1];
-      ol.extent.createOrUpdateFromCoordinates(coords, extent);
+      _ol_extent_.createOrUpdateFromCoordinates(coords, extent);
       expect(extent).to.eql(expected);
     });
 
@@ -133,7 +133,7 @@ describe('ol.extent', function() {
       var ring = [[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]];
       var rings = [ring];
       var expected = [0, 0, 2, 2];
-      var got = ol.extent.createOrUpdateFromRings(rings);
+      var got = _ol_extent_.createOrUpdateFromRings(rings);
       expect(got).to.eql(expected);
     });
 
@@ -142,7 +142,7 @@ describe('ol.extent', function() {
       var rings = [ring];
       var extent = [1, 1, 4, 7];
       var expected = [0, 0, 2, 2];
-      ol.extent.createOrUpdateFromRings(rings, extent);
+      _ol_extent_.createOrUpdateFromRings(rings, extent);
       expect(extent).to.eql(expected);
     });
 
@@ -151,7 +151,7 @@ describe('ol.extent', function() {
       var ring2 = [[1, 1], [1, 3], [3, 3], [3, 1], [1, 1]];
       var rings = [ring1, ring2];
       var expected = [0, 0, 3, 3];
-      var got = ol.extent.createOrUpdateFromRings(rings);
+      var got = _ol_extent_.createOrUpdateFromRings(rings);
       expect(got).to.eql(expected);
     });
 
@@ -161,7 +161,7 @@ describe('ol.extent', function() {
       var rings = [ring1, ring2];
       var extent = [1, 1, 4, 7];
       var expected = [0, 0, 3, 3];
-      ol.extent.createOrUpdateFromRings(rings, extent);
+      _ol_extent_.createOrUpdateFromRings(rings, extent);
       expect(extent).to.eql(expected);
     });
 
@@ -182,13 +182,13 @@ describe('ol.extent', function() {
 
     it('calls the passed callback for each corner', function() {
       var extent = [1, 2, 3, 4];
-      ol.extent.forEachCorner(extent, callbackFalse);
+      _ol_extent_.forEachCorner(extent, callbackFalse);
       expect(callbackFalse.callCount).to.be(4);
     });
 
     it('calls the passed callback with each corner', function() {
       var extent = [1, 2, 3, 4];
-      ol.extent.forEachCorner(extent, callbackFalse);
+      _ol_extent_.forEachCorner(extent, callbackFalse);
       var firstCallFirstArg = callbackFalse.args[0][0];
       var secondCallFirstArg = callbackFalse.args[1][0];
       var thirdCallFirstArg = callbackFalse.args[2][0];
@@ -201,7 +201,7 @@ describe('ol.extent', function() {
 
     it('calls a truthy callback only once', function() {
       var extent = [1, 2, 3, 4];
-      ol.extent.forEachCorner(extent, callbackTrue);
+      _ol_extent_.forEachCorner(extent, callbackTrue);
       expect(callbackTrue.callCount).to.be(1);
     });
 
@@ -220,10 +220,10 @@ describe('ol.extent', function() {
         return (corner[0] === 1 && corner[1] === 4) ? true : false;
       });
 
-      ol.extent.forEachCorner(extent, bottomLeftSpy);
-      ol.extent.forEachCorner(extent, bottomRightSpy);
-      ol.extent.forEachCorner(extent, topRightSpy);
-      ol.extent.forEachCorner(extent, topLeftSpy);
+      _ol_extent_.forEachCorner(extent, bottomLeftSpy);
+      _ol_extent_.forEachCorner(extent, bottomRightSpy);
+      _ol_extent_.forEachCorner(extent, topRightSpy);
+      _ol_extent_.forEachCorner(extent, topLeftSpy);
 
       expect(bottomLeftSpy.callCount).to.be(1);
       expect(bottomRightSpy.callCount).to.be(2);
@@ -235,7 +235,7 @@ describe('ol.extent', function() {
         function() {
           var extent = [1, 2, 3, 4];
           var spy = sinon.spy(); // will return undefined for each corner
-          var got = ol.extent.forEachCorner(extent, spy);
+          var got = _ol_extent_.forEachCorner(extent, spy);
           expect(spy.callCount).to.be(4);
           expect(got).to.be(false);
         }
@@ -244,7 +244,7 @@ describe('ol.extent', function() {
     it('calls the callback with given scope', function() {
       var extent = [1, 2, 3, 4];
       var scope = {humpty: 'dumpty'};
-      ol.extent.forEachCorner(extent, callbackTrue, scope);
+      _ol_extent_.forEachCorner(extent, callbackTrue, scope);
       expect(callbackTrue.calledOn(scope)).to.be(true);
     });
 
@@ -252,21 +252,21 @@ describe('ol.extent', function() {
 
   describe('getArea', function() {
     it('returns zero for empty extents', function() {
-      var emptyExtent = ol.extent.createEmpty();
-      var areaEmpty = ol.extent.getArea(emptyExtent);
+      var emptyExtent = _ol_extent_.createEmpty();
+      var areaEmpty = _ol_extent_.getArea(emptyExtent);
       expect(areaEmpty).to.be(0);
 
       var extentDeltaXZero = [45, 67, 45, 78];
-      var areaDeltaXZero = ol.extent.getArea(extentDeltaXZero);
+      var areaDeltaXZero = _ol_extent_.getArea(extentDeltaXZero);
       expect(areaDeltaXZero).to.be(0);
 
       var extentDeltaYZero = [11, 67, 45, 67];
-      var areaDeltaYZero = ol.extent.getArea(extentDeltaYZero);
+      var areaDeltaYZero = _ol_extent_.getArea(extentDeltaYZero);
       expect(areaDeltaYZero).to.be(0);
     });
     it('calculates correct area for other extents', function() {
       var extent = [0, 0, 10, 10];
-      var area = ol.extent.getArea(extent);
+      var area = _ol_extent_.getArea(extent);
       expect(area).to.be(100);
     });
   });
@@ -282,16 +282,16 @@ describe('ol.extent', function() {
       var farSouth = [-180, -90, 180, -45];
       var west = [-180, -90, 0, 90];
       var farWest = [-180, -90, -90, 90];
-      var none = ol.extent.createEmpty();
-      expect(ol.extent.getIntersection(world, none)).to.eql(none);
-      expect(ol.extent.getIntersection(world, north)).to.eql(north);
-      expect(ol.extent.getIntersection(world, east)).to.eql(east);
-      expect(ol.extent.getIntersection(world, south)).to.eql(south);
-      expect(ol.extent.getIntersection(world, west)).to.eql(west);
-      expect(ol.extent.getIntersection(farEast, farWest)).to.eql(none);
-      expect(ol.extent.getIntersection(farNorth, farSouth)).to.eql(none);
-      expect(ol.extent.getIntersection(north, west)).to.eql([-180, 0, 0, 90]);
-      expect(ol.extent.getIntersection(east, south)).to.eql([0, -90, 180, 0]);
+      var none = _ol_extent_.createEmpty();
+      expect(_ol_extent_.getIntersection(world, none)).to.eql(none);
+      expect(_ol_extent_.getIntersection(world, north)).to.eql(north);
+      expect(_ol_extent_.getIntersection(world, east)).to.eql(east);
+      expect(_ol_extent_.getIntersection(world, south)).to.eql(south);
+      expect(_ol_extent_.getIntersection(world, west)).to.eql(west);
+      expect(_ol_extent_.getIntersection(farEast, farWest)).to.eql(none);
+      expect(_ol_extent_.getIntersection(farNorth, farSouth)).to.eql(none);
+      expect(_ol_extent_.getIntersection(north, west)).to.eql([-180, 0, 0, 90]);
+      expect(_ol_extent_.getIntersection(east, south)).to.eql([0, -90, 180, 0]);
     });
   });
 
@@ -300,37 +300,37 @@ describe('ol.extent', function() {
     describe('positive', function() {
       it('returns true', function() {
         var extent = [1, 2, 3, 4];
-        expect(ol.extent.containsCoordinate(extent, [1, 2])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [1, 3])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [1, 4])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [2, 2])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [2, 3])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [2, 4])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [3, 2])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [3, 3])).to.be.ok();
-        expect(ol.extent.containsCoordinate(extent, [3, 4])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [1, 2])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [1, 3])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [1, 4])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [2, 2])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [2, 3])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [2, 4])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [3, 2])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [3, 3])).to.be.ok();
+        expect(_ol_extent_.containsCoordinate(extent, [3, 4])).to.be.ok();
       });
     });
 
     describe('negative', function() {
       it('returns false', function() {
         var extent = [1, 2, 3, 4];
-        expect(ol.extent.containsCoordinate(extent, [0, 1])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [0, 2])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [0, 3])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [0, 4])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [0, 5])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [1, 1])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [1, 5])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [2, 1])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [2, 5])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [3, 1])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [3, 5])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [4, 1])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [4, 2])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [4, 3])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [4, 4])).to.not.be();
-        expect(ol.extent.containsCoordinate(extent, [4, 5])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [0, 1])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [0, 2])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [0, 3])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [0, 4])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [0, 5])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [1, 1])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [1, 5])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [2, 1])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [2, 5])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [3, 1])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [3, 5])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [4, 1])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [4, 2])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [4, 3])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [4, 4])).to.not.be();
+        expect(_ol_extent_.containsCoordinate(extent, [4, 5])).to.not.be();
       });
     });
   });
@@ -345,70 +345,70 @@ describe('ol.extent', function() {
     var LEFT = 16;
 
     it('returns intersecting for within', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [0, 0]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [0, 0]);
       expect(rel).to.be(INTERSECTING);
     });
 
     it('returns intersecting for touching top', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [0, 90]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [0, 90]);
       expect(rel).to.be(INTERSECTING);
     });
 
     it('returns intersecting for touching right', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [180, 0]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [180, 0]);
       expect(rel).to.be(INTERSECTING);
     });
 
     it('returns intersecting for touching bottom', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [0, -90]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [0, -90]);
       expect(rel).to.be(INTERSECTING);
     });
 
     it('returns intersecting for touching left', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [-180, 0]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [-180, 0]);
       expect(rel).to.be(INTERSECTING);
     });
 
     it('above for north', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [0, 100]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [0, 100]);
       expect(rel).to.be(ABOVE);
     });
 
     it('above and right for northeast', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [190, 100]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [190, 100]);
       expect(rel & ABOVE).to.be(ABOVE);
       expect(rel & RIGHT).to.be(RIGHT);
     });
 
     it('right for east', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [190, 0]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [190, 0]);
       expect(rel).to.be(RIGHT);
     });
 
     it('below and right for southeast', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [190, -100]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [190, -100]);
       expect(rel & BELOW).to.be(BELOW);
       expect(rel & RIGHT).to.be(RIGHT);
     });
 
     it('below for south', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [0, -100]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [0, -100]);
       expect(rel).to.be(BELOW);
     });
 
     it('below and left for southwest', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [-190, -100]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [-190, -100]);
       expect(rel & BELOW).to.be(BELOW);
       expect(rel & LEFT).to.be(LEFT);
     });
 
     it('left for west', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [-190, 0]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [-190, 0]);
       expect(rel).to.be(LEFT);
     });
 
     it('above and left for northwest', function() {
-      var rel = ol.extent.coordinateRelationship(extent, [-190, 100]);
+      var rel = _ol_extent_.coordinateRelationship(extent, [-190, 100]);
       expect(rel & ABOVE).to.be(ABOVE);
       expect(rel & LEFT).to.be(LEFT);
     });
@@ -418,13 +418,13 @@ describe('ol.extent', function() {
   describe('getCenter', function() {
     it('returns the expected center', function() {
       var extent = [1, 2, 3, 4];
-      var center = ol.extent.getCenter(extent);
+      var center = _ol_extent_.getCenter(extent);
       expect(center[0]).to.eql(2);
       expect(center[1]).to.eql(3);
     });
     it('returns [NaN, NaN] for empty extents', function() {
-      var extent = ol.extent.createEmpty();
-      var center = ol.extent.getCenter(extent);
+      var extent = _ol_extent_.createEmpty();
+      var center = _ol_extent_.getCenter(extent);
       expect('' + center[0]).to.be('NaN');
       expect('' + center[1]).to.be('NaN');
     });
@@ -435,27 +435,27 @@ describe('ol.extent', function() {
 
     it('gets the bottom left', function() {
       var corner = 'bottom-left';
-      expect(ol.extent.getCorner(extent, corner)).to.eql([1, 2]);
+      expect(_ol_extent_.getCorner(extent, corner)).to.eql([1, 2]);
     });
 
     it('gets the bottom right', function() {
       var corner = 'bottom-right';
-      expect(ol.extent.getCorner(extent, corner)).to.eql([3, 2]);
+      expect(_ol_extent_.getCorner(extent, corner)).to.eql([3, 2]);
     });
 
     it('gets the top left', function() {
       var corner = 'top-left';
-      expect(ol.extent.getCorner(extent, corner)).to.eql([1, 4]);
+      expect(_ol_extent_.getCorner(extent, corner)).to.eql([1, 4]);
     });
 
     it('gets the top right', function() {
       var corner = 'top-right';
-      expect(ol.extent.getCorner(extent, corner)).to.eql([3, 4]);
+      expect(_ol_extent_.getCorner(extent, corner)).to.eql([3, 4]);
     });
 
     it('throws exception for unexpected corner', function() {
       expect(function() {
-        ol.extent.getCorner(extent, 'foobar');
+        _ol_extent_.getCorner(extent, 'foobar');
       }).to.throwException();
     });
 
@@ -465,7 +465,7 @@ describe('ol.extent', function() {
     it('returns enlarged area of two extents', function() {
       var extent1 = [-1, -1, 0, 0];
       var extent2 = [0, 0, 1, 1];
-      var enlargedArea = ol.extent.getEnlargedArea(extent1, extent2);
+      var enlargedArea = _ol_extent_.getEnlargedArea(extent1, extent2);
       expect(enlargedArea).to.be(4);
     });
   });
@@ -473,7 +473,7 @@ describe('ol.extent', function() {
   describe('getForViewAndSize', function() {
 
     it('works for a unit square', function() {
-      var extent = ol.extent.getForViewAndSize(
+      var extent = _ol_extent_.getForViewAndSize(
           [0, 0], 1, 0, [1, 1]);
       expect(extent[0]).to.be(-0.5);
       expect(extent[2]).to.be(0.5);
@@ -482,7 +482,7 @@ describe('ol.extent', function() {
     });
 
     it('works for center', function() {
-      var extent = ol.extent.getForViewAndSize(
+      var extent = _ol_extent_.getForViewAndSize(
           [5, 10], 1, 0, [1, 1]);
       expect(extent[0]).to.be(4.5);
       expect(extent[2]).to.be(5.5);
@@ -491,7 +491,7 @@ describe('ol.extent', function() {
     });
 
     it('works for rotation', function() {
-      var extent = ol.extent.getForViewAndSize(
+      var extent = _ol_extent_.getForViewAndSize(
           [0, 0], 1, Math.PI / 4, [1, 1]);
       expect(extent[0]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
       expect(extent[2]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
@@ -500,7 +500,7 @@ describe('ol.extent', function() {
     });
 
     it('works for resolution', function() {
-      var extent = ol.extent.getForViewAndSize(
+      var extent = _ol_extent_.getForViewAndSize(
           [0, 0], 2, 0, [1, 1]);
       expect(extent[0]).to.be(-1);
       expect(extent[2]).to.be(1);
@@ -509,7 +509,7 @@ describe('ol.extent', function() {
     });
 
     it('works for size', function() {
-      var extent = ol.extent.getForViewAndSize(
+      var extent = _ol_extent_.getForViewAndSize(
           [0, 0], 1, 0, [10, 5]);
       expect(extent[0]).to.be(-5);
       expect(extent[2]).to.be(5);
@@ -522,7 +522,7 @@ describe('ol.extent', function() {
   describe('getSize', function() {
     it('returns the expected size', function() {
       var extent = [0, 1, 2, 4];
-      var size = ol.extent.getSize(extent);
+      var size = _ol_extent_.getSize(extent);
       expect(size).to.eql([2, 3]);
     });
   });
@@ -531,13 +531,13 @@ describe('ol.extent', function() {
     it('returns correct area when extents intersect', function() {
       var extent1 = [0, 0, 2, 2];
       var extent2 = [1, 1, 3, 3];
-      var intersectionArea = ol.extent.getIntersectionArea(extent1, extent2);
+      var intersectionArea = _ol_extent_.getIntersectionArea(extent1, extent2);
       expect(intersectionArea).to.be(1);
     });
     it('returns 0 when extents do not intersect', function() {
       var extent1 = [0, 0, 1, 1];
       var extent2 = [2, 2, 3, 3];
-      var intersectionArea = ol.extent.getIntersectionArea(extent1, extent2);
+      var intersectionArea = _ol_extent_.getIntersectionArea(extent1, extent2);
       expect(intersectionArea).to.be(0);
     });
   });
@@ -545,14 +545,14 @@ describe('ol.extent', function() {
   describe('getMargin', function() {
     it('returns the correct margin (sum of width and height)', function() {
       var extent = [1, 2, 3, 4];
-      expect(ol.extent.getMargin(extent)).to.be(4);
+      expect(_ol_extent_.getMargin(extent)).to.be(4);
     });
   });
 
   describe('intersects', function() {
 
     it('returns the expected value', function() {
-      var intersects = ol.extent.intersects;
+      var intersects = _ol_extent_.intersects;
       var extent = [50, 50, 100, 100];
       expect(intersects(extent, extent)).to.be(true);
       expect(intersects(extent, [20, 20, 80, 80])).to.be(true);
@@ -587,7 +587,7 @@ describe('ol.extent', function() {
   describe('scaleFromCenter', function() {
     it('scales the extent from its center', function() {
       var extent = [1, 1, 3, 3];
-      ol.extent.scaleFromCenter(extent, 2);
+      _ol_extent_.scaleFromCenter(extent, 2);
       expect(extent[0]).to.eql(0);
       expect(extent[2]).to.eql(4);
       expect(extent[1]).to.eql(0);
@@ -614,107 +614,107 @@ describe('ol.extent', function() {
     var inside = [10, 10];
 
     it('returns true if contained', function() {
-      var intersects = ol.extent.intersectsSegment(extent, center, inside);
+      var intersects = _ol_extent_.intersectsSegment(extent, center, inside);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses top', function() {
-      var intersects = ol.extent.intersectsSegment(extent, center, north);
+      var intersects = _ol_extent_.intersectsSegment(extent, center, north);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses right', function() {
-      var intersects = ol.extent.intersectsSegment(extent, center, east);
+      var intersects = _ol_extent_.intersectsSegment(extent, center, east);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses bottom', function() {
-      var intersects = ol.extent.intersectsSegment(extent, center, south);
+      var intersects = _ol_extent_.intersectsSegment(extent, center, south);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses left', function() {
-      var intersects = ol.extent.intersectsSegment(extent, center, west);
+      var intersects = _ol_extent_.intersectsSegment(extent, center, west);
       expect(intersects).to.be(true);
     });
 
     it('returns false if above', function() {
-      var intersects = ol.extent.intersectsSegment(extent, northwest, north);
+      var intersects = _ol_extent_.intersectsSegment(extent, northwest, north);
       expect(intersects).to.be(false);
     });
 
     it('returns false if right', function() {
-      var intersects = ol.extent.intersectsSegment(extent, northeast, east);
+      var intersects = _ol_extent_.intersectsSegment(extent, northeast, east);
       expect(intersects).to.be(false);
     });
 
     it('returns false if below', function() {
-      var intersects = ol.extent.intersectsSegment(extent, south, southwest);
+      var intersects = _ol_extent_.intersectsSegment(extent, south, southwest);
       expect(intersects).to.be(false);
     });
 
     it('returns false if left', function() {
-      var intersects = ol.extent.intersectsSegment(extent, west, southwest);
+      var intersects = _ol_extent_.intersectsSegment(extent, west, southwest);
       expect(intersects).to.be(false);
     });
 
     it('returns true if crosses top to bottom', function() {
-      var intersects = ol.extent.intersectsSegment(extent, north, south);
+      var intersects = _ol_extent_.intersectsSegment(extent, north, south);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses bottom to top', function() {
-      var intersects = ol.extent.intersectsSegment(extent, south, north);
+      var intersects = _ol_extent_.intersectsSegment(extent, south, north);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses left to right', function() {
-      var intersects = ol.extent.intersectsSegment(extent, west, east);
+      var intersects = _ol_extent_.intersectsSegment(extent, west, east);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses right to left', function() {
-      var intersects = ol.extent.intersectsSegment(extent, east, west);
+      var intersects = _ol_extent_.intersectsSegment(extent, east, west);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses northwest to east', function() {
-      var intersects = ol.extent.intersectsSegment(extent, northwest, east);
+      var intersects = _ol_extent_.intersectsSegment(extent, northwest, east);
       expect(intersects).to.be(true);
     });
 
     it('returns true if crosses south to west', function() {
-      var intersects = ol.extent.intersectsSegment(extent, south, west);
+      var intersects = _ol_extent_.intersectsSegment(extent, south, west);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches top', function() {
-      var intersects = ol.extent.intersectsSegment(extent, northwest, top);
+      var intersects = _ol_extent_.intersectsSegment(extent, northwest, top);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches right', function() {
-      var intersects = ol.extent.intersectsSegment(extent, southeast, right);
+      var intersects = _ol_extent_.intersectsSegment(extent, southeast, right);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches bottom', function() {
-      var intersects = ol.extent.intersectsSegment(extent, bottom, south);
+      var intersects = _ol_extent_.intersectsSegment(extent, bottom, south);
       expect(intersects).to.be(true);
     });
 
     it('returns true if touches left', function() {
-      var intersects = ol.extent.intersectsSegment(extent, left, west);
+      var intersects = _ol_extent_.intersectsSegment(extent, left, west);
       expect(intersects).to.be(true);
     });
 
     it('works for zero length inside', function() {
-      var intersects = ol.extent.intersectsSegment(extent, center, center);
+      var intersects = _ol_extent_.intersectsSegment(extent, center, center);
       expect(intersects).to.be(true);
     });
 
     it('works for zero length outside', function() {
-      var intersects = ol.extent.intersectsSegment(extent, north, north);
+      var intersects = _ol_extent_.intersectsSegment(extent, north, north);
       expect(intersects).to.be(false);
     });
 
@@ -722,16 +722,16 @@ describe('ol.extent', function() {
       var extent = [2, 1, 3, 4];
       var start = [0, 0];
       var end = [5, 5];
-      expect(ol.extent.intersectsSegment(extent, start, end)).to.be(true);
-      expect(ol.extent.intersectsSegment(extent, end, start)).to.be(true);
+      expect(_ol_extent_.intersectsSegment(extent, start, end)).to.be(true);
+      expect(_ol_extent_.intersectsSegment(extent, end, start)).to.be(true);
     });
 
     it('works for top/bottom intersection spanning left to right', function() {
       var extent = [1, 2, 4, 3];
       var start = [0, 0];
       var end = [5, 5];
-      expect(ol.extent.intersectsSegment(extent, start, end)).to.be(true);
-      expect(ol.extent.intersectsSegment(extent, end, start)).to.be(true);
+      expect(_ol_extent_.intersectsSegment(extent, start, end)).to.be(true);
+      expect(_ol_extent_.intersectsSegment(extent, end, start)).to.be(true);
     });
 
   });
@@ -739,9 +739,9 @@ describe('ol.extent', function() {
   describe('#applyTransform()', function() {
 
     it('does transform', function() {
-      var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
+      var transformFn = _ol_proj_.getTransform('EPSG:4326', 'EPSG:3857');
       var sourceExtent = [-15, -30, 45, 60];
-      var destinationExtent = ol.extent.applyTransform(
+      var destinationExtent = _ol_extent_.applyTransform(
           sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
@@ -768,7 +768,7 @@ describe('ol.extent', function() {
         return output;
       };
       var sourceExtent = [-15, -30, 45, 60];
-      var destinationExtent = ol.extent.applyTransform(
+      var destinationExtent = _ol_extent_.applyTransform(
           sourceExtent, transformFn);
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);

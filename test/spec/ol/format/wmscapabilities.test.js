@@ -1,12 +1,12 @@
 
 
-goog.require('ol.format.WMSCapabilities');
+import _ol_format_WMSCapabilities_ from '../../../../src/ol/format/wmscapabilities';
 
 describe('ol.format.WMSCapabilities', function() {
 
   describe('when parsing ogcsample.xml', function() {
 
-    var parser = new ol.format.WMSCapabilities();
+    var parser = new _ol_format_WMSCapabilities_();
     var capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wms/ogcsample.xml', function(xml) {

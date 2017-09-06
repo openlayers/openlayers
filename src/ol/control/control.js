@@ -1,11 +1,8 @@
-goog.provide('ol.control.Control');
-
-goog.require('ol');
-goog.require('ol.MapEventType');
-goog.require('ol.Object');
-goog.require('ol.dom');
-goog.require('ol.events');
-
+import _ol_ from '../index';
+import _ol_MapEventType_ from '../mapeventtype';
+import _ol_Object_ from '../object';
+import _ol_dom_ from '../dom';
+import _ol_events_ from '../events';
 
 /**
  * @classdesc
@@ -36,9 +33,9 @@ goog.require('ol.events');
  * @param {olx.control.ControlOptions} options Control options.
  * @api
  */
-ol.control.Control = function(options) {
+var _ol_control_Control_ = function(options) {
 
-  ol.Object.call(this);
+  _ol_Object_.call(this);
 
   /**
    * @protected
@@ -67,22 +64,23 @@ ol.control.Control = function(options) {
   /**
    * @type {function(ol.MapEvent)}
    */
-  this.render = options.render ? options.render : ol.nullFunction;
+  this.render = options.render ? options.render : _ol_.nullFunction;
 
   if (options.target) {
     this.setTarget(options.target);
   }
 
 };
-ol.inherits(ol.control.Control, ol.Object);
+
+_ol_.inherits(_ol_control_Control_, _ol_Object_);
 
 
 /**
  * @inheritDoc
  */
-ol.control.Control.prototype.disposeInternal = function() {
-  ol.dom.removeNode(this.element);
-  ol.Object.prototype.disposeInternal.call(this);
+_ol_control_Control_.prototype.disposeInternal = function() {
+  _ol_dom_.removeNode(this.element);
+  _ol_Object_.prototype.disposeInternal.call(this);
 };
 
 
@@ -91,7 +89,7 @@ ol.control.Control.prototype.disposeInternal = function() {
  * @return {ol.PluggableMap} Map.
  * @api
  */
-ol.control.Control.prototype.getMap = function() {
+_ol_control_Control_.prototype.getMap = function() {
   return this.map_;
 };
 
@@ -104,12 +102,12 @@ ol.control.Control.prototype.getMap = function() {
  * @override
  * @api
  */
-ol.control.Control.prototype.setMap = function(map) {
+_ol_control_Control_.prototype.setMap = function(map) {
   if (this.map_) {
-    ol.dom.removeNode(this.element);
+    _ol_dom_.removeNode(this.element);
   }
   for (var i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
-    ol.events.unlistenByKey(this.listenerKeys[i]);
+    _ol_events_.unlistenByKey(this.listenerKeys[i]);
   }
   this.listenerKeys.length = 0;
   this.map_ = map;
@@ -117,9 +115,9 @@ ol.control.Control.prototype.setMap = function(map) {
     var target = this.target_ ?
       this.target_ : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
-    if (this.render !== ol.nullFunction) {
-      this.listenerKeys.push(ol.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.render, this));
+    if (this.render !== _ol_.nullFunction) {
+      this.listenerKeys.push(_ol_events_.listen(map,
+          _ol_MapEventType_.POSTRENDER, this.render, this));
     }
     map.render();
   }
@@ -135,8 +133,9 @@ ol.control.Control.prototype.setMap = function(map) {
  * @param {Element|string} target Target.
  * @api
  */
-ol.control.Control.prototype.setTarget = function(target) {
+_ol_control_Control_.prototype.setTarget = function(target) {
   this.target_ = typeof target === 'string' ?
     document.getElementById(target) :
     target;
 };
+export default _ol_control_Control_;

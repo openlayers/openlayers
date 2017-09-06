@@ -1,24 +1,22 @@
-goog.provide('ol.Disposable');
-
-goog.require('ol');
+import _ol_ from './index';
 
 /**
  * Objects that need to clean up after themselves.
  * @constructor
  */
-ol.Disposable = function() {};
+var _ol_Disposable_ = function() {};
 
 /**
  * The object has already been disposed.
  * @type {boolean}
  * @private
  */
-ol.Disposable.prototype.disposed_ = false;
+_ol_Disposable_.prototype.disposed_ = false;
 
 /**
  * Clean up.
  */
-ol.Disposable.prototype.dispose = function() {
+_ol_Disposable_.prototype.dispose = function() {
   if (!this.disposed_) {
     this.disposed_ = true;
     this.disposeInternal();
@@ -29,4 +27,5 @@ ol.Disposable.prototype.dispose = function() {
  * Extension point for disposable objects.
  * @protected
  */
-ol.Disposable.prototype.disposeInternal = ol.nullFunction;
+_ol_Disposable_.prototype.disposeInternal = _ol_.nullFunction;
+export default _ol_Disposable_;

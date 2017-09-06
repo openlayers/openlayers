@@ -1,11 +1,8 @@
-goog.provide('ol.layer.Vector');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.layer.Layer');
-goog.require('ol.obj');
-goog.require('ol.style.Style');
-
+import _ol_ from '../index';
+import _ol_LayerType_ from '../layertype';
+import _ol_layer_Layer_ from '../layer/layer';
+import _ol_obj_ from '../obj';
+import _ol_style_Style_ from '../style/style';
 
 /**
  * @classdesc
@@ -20,17 +17,17 @@ goog.require('ol.style.Style');
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @api
  */
-ol.layer.Vector = function(opt_options) {
+var _ol_layer_Vector_ = function(opt_options) {
   var options = opt_options ?
     opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
-  var baseOptions = ol.obj.assign({}, options);
+  var baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.style;
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
   delete baseOptions.updateWhileInteracting;
-  ol.layer.Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  _ol_layer_Layer_.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
    * @type {number}
@@ -74,16 +71,17 @@ ol.layer.Vector = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = ol.LayerType.VECTOR;
+  this.type = _ol_LayerType_.VECTOR;
 
 };
-ol.inherits(ol.layer.Vector, ol.layer.Layer);
+
+_ol_.inherits(_ol_layer_Vector_, _ol_layer_Layer_);
 
 
 /**
  * @return {number|undefined} Render buffer.
  */
-ol.layer.Vector.prototype.getRenderBuffer = function() {
+_ol_layer_Vector_.prototype.getRenderBuffer = function() {
   return this.renderBuffer_;
 };
 
@@ -92,9 +90,10 @@ ol.layer.Vector.prototype.getRenderBuffer = function() {
  * @return {function(ol.Feature, ol.Feature): number|null|undefined} Render
  *     order.
  */
-ol.layer.Vector.prototype.getRenderOrder = function() {
-  return /** @type {ol.RenderOrderFunction|null|undefined} */ (
-    this.get(ol.layer.Vector.Property_.RENDER_ORDER));
+_ol_layer_Vector_.prototype.getRenderOrder = function() {
+  return (
+  /** @type {ol.RenderOrderFunction|null|undefined} */ this.get(_ol_layer_Vector_.Property_.RENDER_ORDER)
+  );
 };
 
 
@@ -104,7 +103,7 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
  * @return {ol.source.Vector} Source.
  * @api
  */
-ol.layer.Vector.prototype.getSource;
+_ol_layer_Vector_.prototype.getSource;
 
 
 /**
@@ -114,7 +113,7 @@ ol.layer.Vector.prototype.getSource;
  *     Layer style.
  * @api
  */
-ol.layer.Vector.prototype.getStyle = function() {
+_ol_layer_Vector_.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -124,7 +123,7 @@ ol.layer.Vector.prototype.getStyle = function() {
  * @return {ol.StyleFunction|undefined} Layer style function.
  * @api
  */
-ol.layer.Vector.prototype.getStyleFunction = function() {
+_ol_layer_Vector_.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
 
@@ -133,7 +132,7 @@ ol.layer.Vector.prototype.getStyleFunction = function() {
  * @return {boolean} Whether the rendered layer should be updated while
  *     animating.
  */
-ol.layer.Vector.prototype.getUpdateWhileAnimating = function() {
+_ol_layer_Vector_.prototype.getUpdateWhileAnimating = function() {
   return this.updateWhileAnimating_;
 };
 
@@ -142,7 +141,7 @@ ol.layer.Vector.prototype.getUpdateWhileAnimating = function() {
  * @return {boolean} Whether the rendered layer should be updated while
  *     interacting.
  */
-ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
+_ol_layer_Vector_.prototype.getUpdateWhileInteracting = function() {
   return this.updateWhileInteracting_;
 };
 
@@ -151,8 +150,8 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
  * @param {ol.RenderOrderFunction|null|undefined} renderOrder
  *     Render order.
  */
-ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
-  this.set(ol.layer.Vector.Property_.RENDER_ORDER, renderOrder);
+_ol_layer_Vector_.prototype.setRenderOrder = function(renderOrder) {
+  this.set(_ol_layer_Vector_.Property_.RENDER_ORDER, renderOrder);
 };
 
 
@@ -167,10 +166,10 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  *     style Layer style.
  * @api
  */
-ol.layer.Vector.prototype.setStyle = function(style) {
-  this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
+_ol_layer_Vector_.prototype.setStyle = function(style) {
+  this.style_ = style !== undefined ? style : _ol_style_Style_.defaultFunction;
   this.styleFunction_ = style === null ?
-    undefined : ol.style.Style.createFunction(this.style_);
+    undefined : _ol_style_Style_.createFunction(this.style_);
   this.changed();
 };
 
@@ -179,6 +178,7 @@ ol.layer.Vector.prototype.setStyle = function(style) {
  * @enum {string}
  * @private
  */
-ol.layer.Vector.Property_ = {
+_ol_layer_Vector_.Property_ = {
   RENDER_ORDER: 'renderOrder'
 };
+export default _ol_layer_Vector_;

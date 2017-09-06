@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.Not');
-
-goog.require('ol');
-goog.require('ol.format.filter.Filter');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Filter_ from '../filter/filter';
 
 /**
  * @classdesc
@@ -13,9 +10,9 @@ goog.require('ol.format.filter.Filter');
  * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.filter.Not = function(condition) {
+var _ol_format_filter_Not_ = function(condition) {
 
-  ol.format.filter.Filter.call(this, 'Not');
+  _ol_format_filter_Filter_.call(this, 'Not');
 
   /**
    * @public
@@ -23,4 +20,6 @@ ol.format.filter.Not = function(condition) {
    */
   this.condition = condition;
 };
-ol.inherits(ol.format.filter.Not, ol.format.filter.Filter);
+
+_ol_.inherits(_ol_format_filter_Not_, _ol_format_filter_Filter_);
+export default _ol_format_filter_Not_;

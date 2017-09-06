@@ -1,6 +1,6 @@
 
 
-goog.require('ol.array');
+import _ol_array_ from '../../../src/ol/array';
 
 
 describe('ol.array', function() {
@@ -22,43 +22,43 @@ describe('ol.array', function() {
       ];
 
       it('should find \'1000\' at index 0', function() {
-        expect(ol.array.binarySearch(a, '1000')).to.be(0);
+        expect(_ol_array_.binarySearch(a, '1000')).to.be(0);
       });
       it('should find \'zzz\' at index ' + (a.length - 1), function() {
-        expect(ol.array.binarySearch(a, 'zzz')).to.be(a.length - 1);
+        expect(_ol_array_.binarySearch(a, 'zzz')).to.be(a.length - 1);
       });
       it('should find \'C\' at index 10', function() {
-        expect(ol.array.binarySearch(a, 'C')).to.be(10);
+        expect(_ol_array_.binarySearch(a, 'C')).to.be(10);
       });
       it('should find \'B\' at index 7 || 8 || 9', function() {
-        var pos = ol.array.binarySearch(a, 'B');
+        var pos = _ol_array_.binarySearch(a, 'B');
         expect(pos == 7 || pos == 8 || pos == 9).to.be.ok();
       });
       it('should not find \'100\'', function() {
-        var pos = ol.array.binarySearch(a, '100');
+        var pos = _ol_array_.binarySearch(a, '100');
         expect(pos < 0).to.be.ok();
       });
       it('should have an insertion point of 0 for \'100\'', function() {
-        var pos = ol.array.binarySearch(a, '100');
+        var pos = _ol_array_.binarySearch(a, '100');
         expect(insertionPoint(pos)).to.be(0);
       });
       it('should not find \'zzz0\'', function() {
-        var pos = ol.array.binarySearch(a, 'zzz0');
+        var pos = _ol_array_.binarySearch(a, 'zzz0');
         expect(pos < 0).to.be.ok();
       });
       it('should have an insertion point of ' + (a.length) + ' for \'zzz0\'',
           function() {
-            var pos = ol.array.binarySearch(a, 'zzz0');
+            var pos = _ol_array_.binarySearch(a, 'zzz0');
             expect(insertionPoint(pos)).to.be(a.length);
           }
       );
       it('should not find \'BA\'', function() {
-        var pos = ol.array.binarySearch(a, 'zzz0');
+        var pos = _ol_array_.binarySearch(a, 'zzz0');
         expect(pos < 0).to.be.ok();
       });
       it('should have an insertion point of 10 for \'BA\'',
           function() {
-            var pos = ol.array.binarySearch(a, 'BA');
+            var pos = _ol_array_.binarySearch(a, 'BA');
             expect(insertionPoint(pos)).to.be(10);
           }
       );
@@ -67,11 +67,11 @@ describe('ol.array', function() {
     describe('0 length array with default comparison', function() {
       var b = [];
       it('should not find \'a\'', function() {
-        expect(ol.array.binarySearch(b, 'a') < 0).to.be.ok();
+        expect(_ol_array_.binarySearch(b, 'a') < 0).to.be.ok();
       });
       it('should have an insertion point of 0 for \'a\'',
           function() {
-            var pos = ol.array.binarySearch(b, 'a');
+            var pos = _ol_array_.binarySearch(b, 'a');
             expect(insertionPoint(pos)).to.be(0);
           }
       );
@@ -81,23 +81,23 @@ describe('ol.array', function() {
         function() {
           var c = ['only item'];
           it('should find \'only item\' at index 0', function() {
-            expect(ol.array.binarySearch(c, 'only item')).to.be(0);
+            expect(_ol_array_.binarySearch(c, 'only item')).to.be(0);
           });
           it('should not find \'a\'', function() {
-            expect(ol.array.binarySearch(c, 'a') < 0).to.be.ok();
+            expect(_ol_array_.binarySearch(c, 'a') < 0).to.be.ok();
           });
           it('should have an insertion point of 0 for \'a\'',
               function() {
-                var pos = ol.array.binarySearch(c, 'a');
+                var pos = _ol_array_.binarySearch(c, 'a');
                 expect(insertionPoint(pos)).to.be(0);
               }
           );
           it('should not find \'z\'', function() {
-            expect(ol.array.binarySearch(c, 'z') < 0).to.be.ok();
+            expect(_ol_array_.binarySearch(c, 'z') < 0).to.be.ok();
           });
           it('should have an insertion point of 1 for \'z\'',
               function() {
-                var pos = ol.array.binarySearch(c, 'z');
+                var pos = _ol_array_.binarySearch(c, 'z');
                 expect(insertionPoint(pos)).to.be(1);
               }
           );
@@ -110,42 +110,42 @@ describe('ol.array', function() {
         0.31255, 5, 142.88888708, 334, 342, 453, 54254
       ];
       it('should find -897123.9 at index 0', function() {
-        expect(ol.array.binarySearch(d, -897123.9)).to.be(0);
+        expect(_ol_array_.binarySearch(d, -897123.9)).to.be(0);
       });
       it('should find 54254 at index ' + (d.length - 1), function() {
-        expect(ol.array.binarySearch(d, 54254)).to.be(d.length - 1);
+        expect(_ol_array_.binarySearch(d, 54254)).to.be(d.length - 1);
       });
       it('should find -3 at index 5', function() {
-        expect(ol.array.binarySearch(d, -3)).to.be(5);
+        expect(_ol_array_.binarySearch(d, -3)).to.be(5);
       });
       it('should find 0 at index 6 || 7 || 8', function() {
-        var pos = ol.array.binarySearch(d, 0);
+        var pos = _ol_array_.binarySearch(d, 0);
         expect(pos == 6 || pos == 7 || pos == 8).to.be(true);
       });
       it('should not find -900000', function() {
-        var pos = ol.array.binarySearch(d, -900000);
+        var pos = _ol_array_.binarySearch(d, -900000);
         expect(pos < 0).to.be(true);
       });
       it('should have an insertion point of 0 for -900000', function() {
-        var pos = ol.array.binarySearch(d, -900000);
+        var pos = _ol_array_.binarySearch(d, -900000);
         expect(insertionPoint(pos)).to.be(0);
       });
       it('should not find 54255', function() {
-        var pos = ol.array.binarySearch(d, 54255);
+        var pos = _ol_array_.binarySearch(d, 54255);
         expect(pos < 0).to.be(true);
       });
       it('should have an insertion point of ' + (d.length) + ' for 54255',
           function() {
-            var pos = ol.array.binarySearch(d, 54255);
+            var pos = _ol_array_.binarySearch(d, 54255);
             expect(insertionPoint(pos)).to.be(d.length);
           }
       );
       it('should not find 1.1', function() {
-        var pos = ol.array.binarySearch(d, 1.1);
+        var pos = _ol_array_.binarySearch(d, 1.1);
         expect(pos < 0).to.be(true);
       });
       it('should have an insertion point of 10 for 1.1', function() {
-        var pos = ol.array.binarySearch(d, 1.1);
+        var pos = _ol_array_.binarySearch(d, 1.1);
         expect(insertionPoint(pos)).to.be(10);
       });
     });
@@ -157,45 +157,45 @@ describe('ol.array', function() {
             -9, -324, -1321.3124, -321434.58758, -897123.9
           ];
           it('should find 54254 at index 0', function() {
-            var pos = ol.array.binarySearch(e, 54254, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, 54254, revNumCompare);
             expect(pos).to.be(0);
           });
           it('should find -897123.9 at index ' + (e.length - 1), function() {
-            var pos = ol.array.binarySearch(e, -897123.9, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, -897123.9, revNumCompare);
             expect(pos).to.be(e.length - 1);
           });
           it('should find -3 at index 10', function() {
-            var pos = ol.array.binarySearch(e, -3, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, -3, revNumCompare);
             expect(pos).to.be(10);
           });
           it('should find 0 at index 7 || 8 || 9', function() {
-            var pos = ol.array.binarySearch(e, 0, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, 0, revNumCompare);
             expect(pos == 7 || pos == 8 || pos == 9).to.be(true);
           });
           it('should not find 54254.1', function() {
-            var pos = ol.array.binarySearch(e, 54254.1, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, 54254.1, revNumCompare);
             expect(pos < 0).to.be(true);
           });
           it('should have an insertion point of 0 for 54254.1', function() {
-            var pos = ol.array.binarySearch(e, 54254.1, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, 54254.1, revNumCompare);
             expect(insertionPoint(pos)).to.be(0);
           });
           it('should not find -897124', function() {
-            var pos = ol.array.binarySearch(e, -897124, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, -897124, revNumCompare);
             expect(pos < 0).to.be(true);
           });
           it('should have an insertion point of ' + e.length + ' for -897124',
               function() {
-                var pos = ol.array.binarySearch(e, -897124, revNumCompare);
+                var pos = _ol_array_.binarySearch(e, -897124, revNumCompare);
                 expect(insertionPoint(pos)).to.be(e.length);
               }
           );
           it('should not find 1.1', function() {
-            var pos = ol.array.binarySearch(e, 1.1, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, 1.1, revNumCompare);
             expect(pos < 0).to.be(true);
           });
           it('should have an insertion point of 0 for 1.1', function() {
-            var pos = ol.array.binarySearch(e, 1.1, revNumCompare);
+            var pos = _ol_array_.binarySearch(e, 1.1, revNumCompare);
             expect(insertionPoint(pos)).to.be(6);
           });
         }
@@ -204,11 +204,11 @@ describe('ol.array', function() {
     describe('0 length array with custom comparison function', function() {
       var f = [];
       it('should not find 0', function() {
-        var pos = ol.array.binarySearch(f, 0, revNumCompare);
+        var pos = _ol_array_.binarySearch(f, 0, revNumCompare);
         expect(pos < 0).to.be(true);
       });
       it('should have an insertion point of 0 for 0', function() {
-        var pos = ol.array.binarySearch(f, 0, revNumCompare);
+        var pos = _ol_array_.binarySearch(f, 0, revNumCompare);
         expect(insertionPoint(pos)).to.be(0);
       });
     });
@@ -217,23 +217,23 @@ describe('ol.array', function() {
         function() {
           var g = [1];
           it('should find 1 at index 0', function() {
-            var pos = ol.array.binarySearch(g, 1, revNumCompare);
+            var pos = _ol_array_.binarySearch(g, 1, revNumCompare);
             expect(pos).to.be(0);
           });
           it('should not find 2', function() {
-            var pos = ol.array.binarySearch(g, 2, revNumCompare);
+            var pos = _ol_array_.binarySearch(g, 2, revNumCompare);
             expect(pos < 0).to.be(true);
           });
           it('should have an insertion point of 0 for 2', function() {
-            var pos = ol.array.binarySearch(g, 2, revNumCompare);
+            var pos = _ol_array_.binarySearch(g, 2, revNumCompare);
             expect(insertionPoint(pos)).to.be(0);
           });
           it('should not find 0', function() {
-            var pos = ol.array.binarySearch(g, 0, revNumCompare);
+            var pos = _ol_array_.binarySearch(g, 0, revNumCompare);
             expect(pos < 0).to.be(true);
           });
           it('should have an insertion point of 1 for 0', function() {
-            var pos = ol.array.binarySearch(g, 0, revNumCompare);
+            var pos = _ol_array_.binarySearch(g, 0, revNumCompare);
             expect(insertionPoint(pos)).to.be(1);
           });
         }
@@ -241,10 +241,10 @@ describe('ol.array', function() {
 
     describe('finding first index when multiple candidates', function() {
       it('should find the index of the first 0', function() {
-        expect(ol.array.binarySearch([0, 0, 1], 0)).to.be(0);
+        expect(_ol_array_.binarySearch([0, 0, 1], 0)).to.be(0);
       });
       it('should find the index of the first 1', function() {
-        expect(ol.array.binarySearch([0, 1, 1], 1)).to.be(1);
+        expect(_ol_array_.binarySearch([0, 1, 1], 1)).to.be(1);
       });
     });
 
@@ -277,8 +277,8 @@ describe('ol.array', function() {
                 };
 
                 // Now actually call and test the method twice
-                ol.array.binarySearch(a, 48);
-                ol.array.binarySearch(a, 13, function(a, b) {
+                _ol_array_.binarySearch(a, 48);
+                _ol_array_.binarySearch(a, 13, function(a, b) {
                   return a > b ? 1 : a < b ? -1 : 0;
                 });
 
@@ -300,61 +300,61 @@ describe('ol.array', function() {
       var arr = [1, 2, 2, 2, 3, 5, 9];
 
       it('should return the index of where the item would go plus one, negated, if the item is not found', function() {
-        expect(ol.array.binarySearch(arr, 4)).to.equal(-6);
+        expect(_ol_array_.binarySearch(arr, 4)).to.equal(-6);
       });
       it('should work even on empty arrays', function() {
-        expect(ol.array.binarySearch([], 42)).to.equal(-1);
+        expect(_ol_array_.binarySearch([], 42)).to.equal(-1);
       });
       it('should work even on arrays of doubles', function() {
-        expect(ol.array.binarySearch([0.0, 0.1, 0.2, 0.3, 0.4], 0.25)).to.equal(-4);
+        expect(_ol_array_.binarySearch([0.0, 0.1, 0.2, 0.3, 0.4], 0.25)).to.equal(-4);
       });
     });
   });
 
   describe('equals', function() {
     it('returns true for [] == []', function() {
-      expect(ol.array.equals([], [])).to.be(true);
+      expect(_ol_array_.equals([], [])).to.be(true);
     });
     it('returns true for [1] == [1]', function() {
-      expect(ol.array.equals([1], [1])).to.be(true);
+      expect(_ol_array_.equals([1], [1])).to.be(true);
     });
     it('returns true for [\'1\'] == [\'1\']', function() {
-      expect(ol.array.equals(['1'], ['1'])).to.be(true);
+      expect(_ol_array_.equals(['1'], ['1'])).to.be(true);
     });
     it('returns false for [1] == [\'1\']', function() {
-      expect(ol.array.equals([1], ['1'])).to.be(false);
+      expect(_ol_array_.equals([1], ['1'])).to.be(false);
     });
     it('returns true for [null] == [null]', function() {
-      expect(ol.array.equals([null], [null])).to.be(true);
+      expect(_ol_array_.equals([null], [null])).to.be(true);
     });
     it('returns false for [null] == [undefined]', function() {
-      expect(ol.array.equals([null], [undefined])).to.be(false);
+      expect(_ol_array_.equals([null], [undefined])).to.be(false);
     });
     it('returns true for [1, 2] == [1, 2]', function() {
-      expect(ol.array.equals([1, 2], [1, 2])).to.be(true);
+      expect(_ol_array_.equals([1, 2], [1, 2])).to.be(true);
     });
     it('returns false for [1, 2] == [2, 1]', function() {
-      expect(ol.array.equals([1, 2], [2, 1])).to.be(false);
+      expect(_ol_array_.equals([1, 2], [2, 1])).to.be(false);
     });
     it('returns false for [1, 2] == [1]', function() {
-      expect(ol.array.equals([1, 2], [1])).to.be(false);
+      expect(_ol_array_.equals([1, 2], [1])).to.be(false);
     });
     it('returns false for [1] == [1, 2]', function() {
-      expect(ol.array.equals([1], [1, 2])).to.be(false);
+      expect(_ol_array_.equals([1], [1, 2])).to.be(false);
     });
     it('returns false for [{}] == [{}]', function() {
-      expect(ol.array.equals([{}], [{}])).to.be(false);
+      expect(_ol_array_.equals([{}], [{}])).to.be(false);
     });
   });
   describe('extend', function() {
     it('extends an array in place with an array', function() {
       var a = [0, 1];
-      ol.array.extend(a, [2, 3]);
+      _ol_array_.extend(a, [2, 3]);
       expect(a).to.eql([0, 1, 2, 3]);
     });
     it('extends an array in place with a number', function() {
       var a = [0, 1];
-      ol.array.extend(a, 2);
+      _ol_array_.extend(a, 2);
       expect(a).to.eql([0, 1, 2]);
     });
     it('extends an array in place with a big array', function() {
@@ -364,7 +364,7 @@ describe('ol.array', function() {
       while (i--) {
         bigArray[i] = i;
       }
-      ol.array.extend(a, bigArray);
+      _ol_array_.extend(a, bigArray);
       expect(a).to.eql(bigArray);
     });
   });
@@ -372,7 +372,7 @@ describe('ol.array', function() {
   describe('find', function() {
     it('finds numbers in an array', function() {
       var a = [0, 1, 2, 3];
-      var b = ol.array.find(a, function(val, index, a2) {
+      var b = _ol_array_.find(a, function(val, index, a2) {
         expect(a).to.equal(a2);
         expect(typeof index).to.be('number');
         return val > 1;
@@ -382,7 +382,7 @@ describe('ol.array', function() {
 
     it('returns null when an item in an array is not found', function() {
       var a = [0, 1, 2, 3];
-      var b = ol.array.find(a, function(val, index, a2) {
+      var b = _ol_array_.find(a, function(val, index, a2) {
         return val > 100;
       });
       expect(b).to.be(null);
@@ -390,7 +390,7 @@ describe('ol.array', function() {
 
     it('finds items in an array-like', function() {
       var a = 'abCD';
-      var b = ol.array.find(a, function(val, index, a2) {
+      var b = _ol_array_.find(a, function(val, index, a2) {
         expect(a).to.equal(a2);
         expect(typeof index).to.be('number');
         return val >= 'A' && val <= 'Z';
@@ -400,7 +400,7 @@ describe('ol.array', function() {
 
     it('returns null when nothing in an array-like is found', function() {
       var a = 'abcd';
-      var b = ol.array.find(a, function(val, index, a2) {
+      var b = _ol_array_.find(a, function(val, index, a2) {
         return val >= 'A' && val <= 'Z';
       });
       expect(b).to.be(null);
@@ -410,7 +410,7 @@ describe('ol.array', function() {
   describe('findIndex', function() {
     it('finds index of numbers in an array', function() {
       var a = [0, 1, 2, 3];
-      var b = ol.array.findIndex(a, function(val, index, a2) {
+      var b = _ol_array_.findIndex(a, function(val, index, a2) {
         expect(a).to.equal(a2);
         expect(typeof index).to.be('number');
         return val > 1;
@@ -420,7 +420,7 @@ describe('ol.array', function() {
 
     it('returns -1 when an item in an array is not found', function() {
       var a = [0, 1, 2, 3];
-      var b = ol.array.findIndex(a, function(val, index, a2) {
+      var b = _ol_array_.findIndex(a, function(val, index, a2) {
         return val > 100;
       });
       expect(b).to.be(-1);
@@ -429,23 +429,23 @@ describe('ol.array', function() {
 
   describe('isSorted', function() {
     it('works with just an array as argument', function() {
-      expect(ol.array.isSorted([1, 2, 3])).to.be(true);
-      expect(ol.array.isSorted([1, 2, 2])).to.be(true);
-      expect(ol.array.isSorted([1, 2, 1])).to.be(false);
+      expect(_ol_array_.isSorted([1, 2, 3])).to.be(true);
+      expect(_ol_array_.isSorted([1, 2, 2])).to.be(true);
+      expect(_ol_array_.isSorted([1, 2, 1])).to.be(false);
     });
 
     it('works with strict comparison without compare function', function() {
-      expect(ol.array.isSorted([1, 2, 3], null, true)).to.be(true);
-      expect(ol.array.isSorted([1, 2, 2], null, true)).to.be(false);
-      expect(ol.array.isSorted([1, 2, 1], null, true)).to.be(false);
+      expect(_ol_array_.isSorted([1, 2, 3], null, true)).to.be(true);
+      expect(_ol_array_.isSorted([1, 2, 2], null, true)).to.be(false);
+      expect(_ol_array_.isSorted([1, 2, 1], null, true)).to.be(false);
     });
 
     it('works with a compare function', function() {
       function compare(a, b) {
         return b - a;
       }
-      expect(ol.array.isSorted([1, 2, 3], compare)).to.be(false);
-      expect(ol.array.isSorted([3, 2, 2], compare)).to.be(true);
+      expect(_ol_array_.isSorted([1, 2, 3], compare)).to.be(false);
+      expect(_ol_array_.isSorted([3, 2, 2], compare)).to.be(true);
     });
   });
 
@@ -453,49 +453,49 @@ describe('ol.array', function() {
     it('returns expected value', function() {
       var arr = [1000, 500, 100];
 
-      expect(ol.array.linearFindNearest(arr, 10000, 0)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 10000, 1)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 10000, -1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 10000, 0)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 10000, 1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 10000, -1)).to.eql(0);
 
-      expect(ol.array.linearFindNearest(arr, 1000, 0)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 1000, 1)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 1000, -1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 1000, 0)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 1000, 1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 1000, -1)).to.eql(0);
 
-      expect(ol.array.linearFindNearest(arr, 900, 0)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 900, 1)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 900, -1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 900, 0)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 900, 1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 900, -1)).to.eql(1);
 
-      expect(ol.array.linearFindNearest(arr, 750, 0)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 750, 1)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 750, -1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 750, 0)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 750, 1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 750, -1)).to.eql(1);
 
-      expect(ol.array.linearFindNearest(arr, 550, 0)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 550, 1)).to.eql(0);
-      expect(ol.array.linearFindNearest(arr, 550, -1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 550, 0)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 550, 1)).to.eql(0);
+      expect(_ol_array_.linearFindNearest(arr, 550, -1)).to.eql(1);
 
-      expect(ol.array.linearFindNearest(arr, 500, 0)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 500, 1)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 500, -1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 500, 0)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 500, 1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 500, -1)).to.eql(1);
 
-      expect(ol.array.linearFindNearest(arr, 450, 0)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 450, 1)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 450, -1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 450, 0)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 450, 1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 450, -1)).to.eql(2);
 
-      expect(ol.array.linearFindNearest(arr, 300, 0)).to.eql(2);
-      expect(ol.array.linearFindNearest(arr, 300, 1)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 300, -1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 300, 0)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 300, 1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 300, -1)).to.eql(2);
 
-      expect(ol.array.linearFindNearest(arr, 200, 0)).to.eql(2);
-      expect(ol.array.linearFindNearest(arr, 200, 1)).to.eql(1);
-      expect(ol.array.linearFindNearest(arr, 200, -1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 200, 0)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 200, 1)).to.eql(1);
+      expect(_ol_array_.linearFindNearest(arr, 200, -1)).to.eql(2);
 
-      expect(ol.array.linearFindNearest(arr, 100, 0)).to.eql(2);
-      expect(ol.array.linearFindNearest(arr, 100, 1)).to.eql(2);
-      expect(ol.array.linearFindNearest(arr, 100, -1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 100, 0)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 100, 1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 100, -1)).to.eql(2);
 
-      expect(ol.array.linearFindNearest(arr, 50, 0)).to.eql(2);
-      expect(ol.array.linearFindNearest(arr, 50, 1)).to.eql(2);
-      expect(ol.array.linearFindNearest(arr, 50, -1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 50, 0)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 50, 1)).to.eql(2);
+      expect(_ol_array_.linearFindNearest(arr, 50, -1)).to.eql(2);
     });
   });
 
@@ -503,7 +503,7 @@ describe('ol.array', function() {
     it('sorts as expected', function() {
       var arr = [40, 200, 3000];
       // default sort would yield [200, 3000, 40]
-      arr.sort(ol.array.numberSafeCompareFunction);
+      arr.sort(_ol_array_.numberSafeCompareFunction);
       expect(arr).to.eql(arr);
     });
   });
@@ -511,9 +511,9 @@ describe('ol.array', function() {
   describe('remove', function() {
     it('removes elements from an array', function() {
       var a = ['a', 'b', 'c', 'd'];
-      ol.array.remove(a, 'c');
+      _ol_array_.remove(a, 'c');
       expect(a).to.eql(['a', 'b', 'd']);
-      ol.array.remove(a, 'x');
+      _ol_array_.remove(a, 'x');
       expect(a).to.eql(['a', 'b', 'd']);
     });
   });
@@ -524,19 +524,19 @@ describe('ol.array', function() {
       var expected = [1, 2, 3, 4, 5, 6];
 
       arr = [1, 5, 4, 3, 2, 6];
-      ol.array.reverseSubArray(arr, 1, 4);
+      _ol_array_.reverseSubArray(arr, 1, 4);
       expect(arr).to.eql(expected);
 
       arr = [3, 2, 1, 4, 5, 6];
-      ol.array.reverseSubArray(arr, 0, 2);
+      _ol_array_.reverseSubArray(arr, 0, 2);
       expect(arr).to.eql(expected);
 
       arr = [1, 2, 3, 6, 5, 4];
-      ol.array.reverseSubArray(arr, 3, 5);
+      _ol_array_.reverseSubArray(arr, 3, 5);
       expect(arr).to.eql(expected);
 
       arr = [6, 5, 4, 3, 2, 1];
-      ol.array.reverseSubArray(arr, 0, 5);
+      _ol_array_.reverseSubArray(arr, 0, 5);
       expect(arr).to.eql(expected);
     });
   });
@@ -554,7 +554,7 @@ describe('ol.array', function() {
       function comparisonFn(obj1, obj2) {
         return obj1.key - obj2.key;
       }
-      ol.array.stableSort(arr, comparisonFn);
+      _ol_array_.stableSort(arr, comparisonFn);
       var sortedValues = [];
       for (var i = 0; i < arr.length; i++) {
         sortedValues.push(arr[i].val);

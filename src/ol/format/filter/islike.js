@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.IsLike');
-
-goog.require('ol');
-goog.require('ol.format.filter.Comparison');
-
+import _ol_ from '../../index';
+import _ol_format_filter_Comparison_ from '../filter/comparison';
 
 /**
  * @classdesc
@@ -21,9 +18,9 @@ goog.require('ol.format.filter.Comparison');
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.filter.IsLike = function(propertyName, pattern,
+var _ol_format_filter_IsLike_ = function(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  ol.format.filter.Comparison.call(this, 'PropertyIsLike', propertyName);
+  _ol_format_filter_Comparison_.call(this, 'PropertyIsLike', propertyName);
 
   /**
    * @public
@@ -55,4 +52,6 @@ ol.format.filter.IsLike = function(propertyName, pattern,
    */
   this.matchCase = opt_matchCase;
 };
-ol.inherits(ol.format.filter.IsLike, ol.format.filter.Comparison);
+
+_ol_.inherits(_ol_format_filter_IsLike_, _ol_format_filter_Comparison_);
+export default _ol_format_filter_IsLike_;

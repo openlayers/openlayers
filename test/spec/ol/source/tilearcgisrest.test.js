@@ -1,8 +1,8 @@
 
 
-goog.require('ol.ImageTile');
-goog.require('ol.source.TileArcGISRest');
-goog.require('ol.proj');
+import _ol_ImageTile_ from '../../../../src/ol/imagetile';
+import _ol_source_TileArcGISRest_ from '../../../../src/ol/source/tilearcgisrest';
+import _ol_proj_ from '../../../../src/ol/proj';
 
 
 describe('ol.source.TileArcGISRest', function() {
@@ -18,9 +18,9 @@ describe('ol.source.TileArcGISRest', function() {
   describe('#getTile', function() {
 
     it('returns a tile with the expected URL', function() {
-      var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
-      expect(tile).to.be.an(ol.ImageTile);
+      var source = new _ol_source_TileArcGISRest_(options);
+      var tile = source.getTile(3, 2, -7, 1, _ol_proj_.get('EPSG:3857'));
+      expect(tile).to.be.an(_ol_ImageTile_);
       var uri = new URL(tile.src_);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.be('example.com');
@@ -40,8 +40,8 @@ describe('ol.source.TileArcGISRest', function() {
     });
 
     it('returns a non floating point DPI value', function() {
-      var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, -7, 1.12, ol.proj.get('EPSG:3857'));
+      var source = new _ol_source_TileArcGISRest_(options);
+      var tile = source.getTile(3, 2, -7, 1.12, _ol_proj_.get('EPSG:3857'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('DPI')).to.be('101');
@@ -49,8 +49,8 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('takes DPI from params if specified', function() {
       options.params.DPI = 96;
-      var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, -7, 1.12, ol.proj.get('EPSG:3857'));
+      var source = new _ol_source_TileArcGISRest_(options);
+      var tile = source.getTile(3, 2, -7, 1.12, _ol_proj_.get('EPSG:3857'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('DPI')).to.be('108');
@@ -60,10 +60,10 @@ describe('ol.source.TileArcGISRest', function() {
     it('returns a tile with the expected URL with url list', function() {
 
       options.urls = ['http://test1.com/MapServer', 'http://test2.com/MapServer'];
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
 
-      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
-      expect(tile).to.be.an(ol.ImageTile);
+      var tile = source.getTile(3, 2, -7, 1, _ol_proj_.get('EPSG:3857'));
+      expect(tile).to.be.an(_ol_ImageTile_);
       var uri = new URL(tile.src_);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.match(/test[12]\.com/);
@@ -84,9 +84,9 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('returns a tile with the expected URL for ImageServer', function() {
       options.url = 'http://example.com/ImageServer';
-      var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
-      expect(tile).to.be.an(ol.ImageTile);
+      var source = new _ol_source_TileArcGISRest_(options);
+      var tile = source.getTile(3, 2, -7, 1, _ol_proj_.get('EPSG:3857'));
+      expect(tile).to.be.an(_ol_ImageTile_);
       var uri = new URL(tile.src_);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.be('example.com');
@@ -107,8 +107,8 @@ describe('ol.source.TileArcGISRest', function() {
     it('allows various parameters to be overridden', function() {
       options.params.FORMAT = 'png';
       options.params.TRANSPARENT = false;
-      var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
+      var source = new _ol_source_TileArcGISRest_(options);
+      var tile = source.getTile(3, 2, -3, 1, _ol_proj_.get('EPSG:4326'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('png');
@@ -117,8 +117,8 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('allows adding rest option', function() {
       options.params.LAYERS = 'show:1,3,4';
-      var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
+      var source = new _ol_source_TileArcGISRest_(options);
+      var tile = source.getTile(3, 2, -3, 1, _ol_proj_.get('EPSG:4326'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('LAYERS')).to.be('show:1,3,4');
@@ -128,10 +128,10 @@ describe('ol.source.TileArcGISRest', function() {
   describe('#updateParams', function() {
 
     it('add a new param', function() {
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.updateParams({'TEST': 'value'});
 
-      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, _ol_proj_.get('EPSG:3857'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('TEST')).to.be('value');
@@ -140,10 +140,10 @@ describe('ol.source.TileArcGISRest', function() {
     it('updates an existing param', function() {
       options.params.TEST = 'value';
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.updateParams({'TEST': 'newValue'});
 
-      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, _ol_proj_.get('EPSG:3857'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('TEST')).to.be('newValue');
@@ -155,7 +155,7 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('verify getting a param', function() {
       options.params.TEST = 'value';
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
 
       var setParams = source.getParams();
 
@@ -165,7 +165,7 @@ describe('ol.source.TileArcGISRest', function() {
     it('verify on adding a param', function() {
       options.params.TEST = 'value';
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.updateParams({'TEST2': 'newValue'});
 
       var setParams = source.getParams();
@@ -176,7 +176,7 @@ describe('ol.source.TileArcGISRest', function() {
     it('verify on update a param', function() {
       options.params.TEST = 'value';
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.updateParams({'TEST': 'newValue'});
 
       var setParams = source.getParams();
@@ -191,7 +191,7 @@ describe('ol.source.TileArcGISRest', function() {
     it('verify getting array of urls', function() {
       options.urls = ['http://test.com/MapServer', 'http://test2.com/MapServer'];
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
 
       var urls = source.getUrls();
 
@@ -205,7 +205,7 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('verify setting urls when not set yet', function() {
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.setUrls(['http://test.com/MapServer', 'http://test2.com/MapServer']);
 
       var urls = source.getUrls();
@@ -216,7 +216,7 @@ describe('ol.source.TileArcGISRest', function() {
     it('verify setting urls with existing list', function() {
       options.urls = ['http://test.com/MapServer', 'http://test2.com/MapServer'];
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.setUrls(['http://test3.com/MapServer', 'http://test4.com/MapServer']);
 
       var urls = source.getUrls();
@@ -229,7 +229,7 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('verify setting url with no urls', function() {
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.setUrl('http://test.com/MapServer');
 
       var urls = source.getUrls();
@@ -240,14 +240,14 @@ describe('ol.source.TileArcGISRest', function() {
     it('verify setting url with list of urls', function() {
       options.urls = ['http://test.com/MapServer', 'http://test2.com/MapServer'];
 
-      var source = new ol.source.TileArcGISRest(options);
+      var source = new _ol_source_TileArcGISRest_(options);
       source.setUrl('http://test3.com/MapServer');
 
       var urls = source.getUrls();
 
       expect(urls).to.eql(['http://test3.com/MapServer']);
 
-      var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
+      var tileUrl = source.tileUrlFunction([0, 0, 0], 1, _ol_proj_.get('EPSG:4326'));
       expect(tileUrl.indexOf(urls[0])).to.be(0);
     });
 

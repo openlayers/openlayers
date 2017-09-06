@@ -1,38 +1,38 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.Feature');
-goog.require('ol.geom.LineString');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_style_Style_ from '../src/ol/style/style';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var style = new ol.style.Style({
-  stroke: new ol.style.Stroke({
+var style = new _ol_style_Style_({
+  stroke: new _ol_style_Stroke_({
     color: 'black',
     width: 1
   })
 });
 
-var feature = new ol.Feature(new ol.geom.LineString([[-4000000, 0], [4000000, 0]]));
+var feature = new _ol_Feature_(new _ol_geom_LineString_([[-4000000, 0], [4000000, 0]]));
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     features: [feature]
   }),
   style: style
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

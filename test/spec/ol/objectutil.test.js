@@ -1,13 +1,13 @@
 
 
-goog.require('ol.obj');
+import _ol_obj_ from '../../../src/ol/obj';
 
 
 describe('ol.obj.assign()', function() {
 
   it('is an alias for Object.assign() where available', function() {
     if (typeof Object.assign === 'function') {
-      expect(ol.obj.assign).to.be(Object.assign);
+      expect(_ol_obj_.assign).to.be(Object.assign);
     }
   });
 
@@ -23,7 +23,7 @@ describe('ol.obj.assign()', function() {
       targetProp1: 'targetValue1'
     };
 
-    var assigned = ol.obj.assign(target, source);
+    var assigned = _ol_obj_.assign(target, source);
     expect(assigned).to.be(target);
     expect(assigned.sourceProp1).to.be('sourceValue1');
     expect(assigned.sourceProp2).to.be('sourceValue2');
@@ -32,13 +32,13 @@ describe('ol.obj.assign()', function() {
   });
 
   it('throws a TypeError with `undefined` as target', function() {
-    expect(ol.obj.assign).withArgs(undefined).to.throwException(function(e) {
+    expect(_ol_obj_.assign).withArgs(undefined).to.throwException(function(e) {
       expect(e).to.be.a(TypeError);
     });
   });
 
   it('throws a TypeError with `null` as target', function() {
-    expect(ol.obj.assign).withArgs(null).to.throwException(function(e) {
+    expect(_ol_obj_.assign).withArgs(null).to.throwException(function(e) {
       expect(e).to.be.a(TypeError);
     });
   });
@@ -48,8 +48,8 @@ describe('ol.obj.assign()', function() {
 describe('ol.obj.clear()', function() {
 
   it('removes all properties from an object', function() {
-    var clear = ol.obj.clear;
-    var isEmpty = ol.obj.isEmpty;
+    var clear = _ol_obj_.clear;
+    var isEmpty = _ol_obj_.isEmpty;
     expect(isEmpty(clear({foo: 'bar'}))).to.be(true);
     expect(isEmpty(clear({foo: 'bar', num: 42}))).to.be(true);
     expect(isEmpty(clear({}))).to.be(true);
@@ -61,8 +61,8 @@ describe('ol.obj.clear()', function() {
 describe('ol.obj.getValues()', function() {
 
   it('gets a list of property values from an object', function() {
-    expect(ol.obj.getValues({foo: 'bar', num: 42}).sort()).to.eql([42, 'bar']);
-    expect(ol.obj.getValues(null)).to.eql([]);
+    expect(_ol_obj_.getValues({foo: 'bar', num: 42}).sort()).to.eql([42, 'bar']);
+    expect(_ol_obj_.getValues(null)).to.eql([]);
   });
 
 });
@@ -70,10 +70,10 @@ describe('ol.obj.getValues()', function() {
 describe('ol.obj.isEmpty()', function() {
 
   it('checks if an object has any properties', function() {
-    expect(ol.obj.isEmpty({})).to.be(true);
-    expect(ol.obj.isEmpty(null)).to.be(true);
-    expect(ol.obj.isEmpty({foo: 'bar'})).to.be(false);
-    expect(ol.obj.isEmpty({foo: false})).to.be(false);
+    expect(_ol_obj_.isEmpty({})).to.be(true);
+    expect(_ol_obj_.isEmpty(null)).to.be(true);
+    expect(_ol_obj_.isEmpty({foo: 'bar'})).to.be(false);
+    expect(_ol_obj_.isEmpty({foo: false})).to.be(false);
   });
 
 });

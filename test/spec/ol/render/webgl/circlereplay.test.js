@@ -1,29 +1,29 @@
 
 
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.geom.Circle');
-goog.require('ol.render.webgl.CircleReplay');
-goog.require('ol.render.webgl.circlereplay.defaultshader');
-goog.require('ol.render.webgl.circlereplay.defaultshader.Locations');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
+import _ol_ from '../../../../../src/ol';
+import _ol_Feature_ from '../../../../../src/ol/feature';
+import _ol_geom_Circle_ from '../../../../../src/ol/geom/circle';
+import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/circlereplay';
+import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader';
+import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/locations';
+import _ol_style_Fill_ from '../../../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../../../src/ol/style/stroke';
 
 describe('ol.render.webgl.CircleReplay', function() {
   var replay;
 
-  var strokeStyle = new ol.style.Stroke({
+  var strokeStyle = new _ol_style_Stroke_({
     color: [0, 255, 0, 0.4]
   });
 
-  var fillStyle = new ol.style.Fill({
+  var fillStyle = new _ol_style_Fill_({
     color: [255, 0, 0, 1]
   });
 
   beforeEach(function() {
     var tolerance = 0.1;
     var maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new ol.render.webgl.CircleReplay(tolerance, maxExtent);
+    replay = new _ol_render_webgl_CircleReplay_(tolerance, maxExtent);
   });
 
   describe('#setFillStrokeStyle', function() {
@@ -50,7 +50,7 @@ describe('ol.render.webgl.CircleReplay', function() {
 
   describe('#drawCircle', function() {
     it('sets the buffer data', function() {
-      var circle = new ol.geom.Circle([0, 0], 5000);
+      var circle = new _ol_geom_Circle_([0, 0], 5000);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.drawCircle(circle, null);
@@ -63,7 +63,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('does not draw if radius is zero', function() {
-      var circle = new ol.geom.Circle([0, 0], 0);
+      var circle = new _ol_geom_Circle_([0, 0], 0);
 
       replay.drawCircle(circle, null);
       expect(replay.vertices).to.have.length(0);
@@ -73,7 +73,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('resets state and removes style if it belongs to a zero radius circle', function() {
-      var circle = new ol.geom.Circle([0, 0], 0);
+      var circle = new _ol_geom_Circle_([0, 0], 0);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.setFillStrokeStyle(null, strokeStyle);
@@ -118,7 +118,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     it('returns the locations used by the shaders', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          ol.render.webgl.circlereplay.defaultshader.Locations);
+          _ol_render_webgl_circlereplay_defaultshader_Locations_);
     });
 
     it('gets and compiles the shaders', function() {
@@ -127,8 +127,8 @@ describe('ol.render.webgl.CircleReplay', function() {
 
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(context.getProgram.calledWithExactly(
-          ol.render.webgl.circlereplay.defaultshader.fragment,
-          ol.render.webgl.circlereplay.defaultshader.vertex)).to.be(true);
+          _ol_render_webgl_circlereplay_defaultshader_.fragment,
+          _ol_render_webgl_circlereplay_defaultshader_.vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -175,14 +175,14 @@ describe('ol.render.webgl.CircleReplay', function() {
 
   describe('#drawReplay', function() {
     var gl, context;
-    var feature1 = new ol.Feature({
-      geometry: new ol.geom.Circle([0, 0], 5000)
+    var feature1 = new _ol_Feature_({
+      geometry: new _ol_geom_Circle_([0, 0], 5000)
     });
-    var feature2 = new ol.Feature({
-      geometry: new ol.geom.Circle([10, 10], 5000)
+    var feature2 = new _ol_Feature_({
+      geometry: new _ol_geom_Circle_([10, 10], 5000)
     });
-    var feature3 = new ol.Feature({
-      geometry: new ol.geom.Circle([20, 20], 5000)
+    var feature3 = new _ol_Feature_({
+      geometry: new _ol_geom_Circle_([20, 20], 5000)
     });
     beforeEach(function() {
       gl = {};
@@ -234,7 +234,7 @@ describe('ol.render.webgl.CircleReplay', function() {
       replay.drawCircle(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
       var skippedFeatHash = {};
-      skippedFeatHash[ol.getUid(feature2).toString()] = true;
+      skippedFeatHash[_ol_.getUid(feature2).toString()] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);
       expect(replay.setFillStyle_.calledOnce).to.be(true);

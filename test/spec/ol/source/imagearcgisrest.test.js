@@ -1,7 +1,7 @@
 
 
-goog.require('ol.source.ImageArcGISRest');
-goog.require('ol.proj');
+import _ol_source_ImageArcGISRest_ from '../../../../src/ol/source/imagearcgisrest';
+import _ol_proj_ from '../../../../src/ol/proj';
 
 
 describe('ol.source.ImageArcGISRest', function() {
@@ -9,8 +9,8 @@ describe('ol.source.ImageArcGISRest', function() {
   var pixelRatio, options, projection, proj3857, resolution;
   beforeEach(function() {
     pixelRatio = 1;
-    projection = ol.proj.get('EPSG:4326');
-    proj3857 = ol.proj.get('EPSG:3857');
+    projection = _ol_proj_.get('EPSG:4326');
+    proj3857 = _ol_proj_.get('EPSG:3857');
     resolution = 0.1;
     options = {
       params: {},
@@ -21,7 +21,7 @@ describe('ol.source.ImageArcGISRest', function() {
   describe('#getImage', function() {
 
     it('returns a image with the expected URL', function() {
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new URL(image.src_);
       expect(uri.protocol).to.be('http:');
@@ -37,7 +37,7 @@ describe('ol.source.ImageArcGISRest', function() {
     });
 
     it('returns a non floating point DPI value', function() {
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       var image = source.getImage([3, 2, -7, 1.12], resolution, 1.01, proj3857);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -46,7 +46,7 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('returns a image with the expected URL for ImageServer', function() {
       options.url = 'http://example.com/ImageServer';
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new URL(image.src_);
       expect(uri.protocol).to.be('http:');
@@ -63,7 +63,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('allows various parameters to be overridden', function() {
       options.params.FORMAT = 'png';
       options.params.TRANSPARENT = false;
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       var image = source.getImage([3, 2, -3, 1], resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -73,7 +73,7 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('allows adding rest option', function() {
       options.params.LAYERS = 'show:1,3,4';
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       var image = source.getImage([3, 2, -3, 1], resolution, pixelRatio, proj3857);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -84,7 +84,7 @@ describe('ol.source.ImageArcGISRest', function() {
   describe('#updateParams', function() {
 
     it('add a new param', function() {
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       source.updateParams({'TEST': 'value'});
 
       var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
@@ -96,7 +96,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('updates an existing param', function() {
       options.params.TEST = 'value';
 
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       source.updateParams({'TEST': 'newValue'});
 
       var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
@@ -111,7 +111,7 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('verify getting a param', function() {
       options.params.TEST = 'value';
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
 
       var setParams = source.getParams();
 
@@ -121,7 +121,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('verify on adding a param', function() {
       options.params.TEST = 'value';
 
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       source.updateParams({'TEST2': 'newValue'});
 
       var setParams = source.getParams();
@@ -132,7 +132,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('verify on update a param', function() {
       options.params.TEST = 'value';
 
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       source.updateParams({'TEST': 'newValue'});
 
       var setParams = source.getParams();
@@ -147,7 +147,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('verify getting url', function() {
       options.url = 'http://test.com/MapServer';
 
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
 
       var url = source.getUrl();
 
@@ -161,7 +161,7 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('verify setting url when not set yet', function() {
 
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       source.setUrl('http://test.com/MapServer');
 
       var url = source.getUrl();
@@ -172,7 +172,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('verify setting url with existing url', function() {
       options.url = 'http://test.com/MapServer';
 
-      var source = new ol.source.ImageArcGISRest(options);
+      var source = new _ol_source_ImageArcGISRest_(options);
       source.setUrl('http://test2.com/MapServer');
 
       var url = source.getUrl();

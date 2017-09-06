@@ -1,5 +1,5 @@
-goog.require('ol.array');
-goog.require('ol.has');
+import _ol_array_ from '../src/ol/array';
+import _ol_has_ from '../src/ol/has';
 // avoid importing anything that results in an instanceof check
 // since these extensions are global, instanceof checks fail with modules
 
@@ -317,7 +317,7 @@ goog.require('ol.has');
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
-        ol.array.equals(this.obj, obj),
+        _ol_array_.equals(this.obj, obj),
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
@@ -377,7 +377,7 @@ goog.require('ol.has');
   };
 
   global.assertWebGL = function(map) {
-    if (!ol.has.WEBGL) {
+    if (!_ol_has_.WEBGL) {
       expect().fail('No WebGL support!');
     }
   };

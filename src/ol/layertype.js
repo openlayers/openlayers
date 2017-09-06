@@ -1,12 +1,12 @@
-goog.provide('ol.LayerType');
-
 /**
  * A layer type used when creating layer renderers.
  * @enum {string}
  */
-ol.LayerType = {
+var _ol_LayerType_ = {
   IMAGE: 'IMAGE',
   TILE: 'TILE',
   VECTOR_TILE: 'VECTOR_TILE',
   VECTOR: 'VECTOR'
 };
+
+export default _ol_LayerType_;

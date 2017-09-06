@@ -1,13 +1,10 @@
-goog.provide('ol.MapBrowserEventType');
-
-goog.require('ol.events.EventType');
-
+import _ol_events_EventType_ from './events/eventtype';
 
 /**
  * Constants for event names.
  * @enum {string}
  */
-ol.MapBrowserEventType = {
+var _ol_MapBrowserEventType_ = {
 
   /**
    * A true single click with no dragging and no double click. Note that this
@@ -22,14 +19,14 @@ ol.MapBrowserEventType = {
    * @event ol.MapBrowserEvent#click
    * @api
    */
-  CLICK: ol.events.EventType.CLICK,
+  CLICK: _ol_events_EventType_.CLICK,
 
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick
    * @api
    */
-  DBLCLICK: ol.events.EventType.DBLCLICK,
+  DBLCLICK: _ol_events_EventType_.DBLCLICK,
 
   /**
    * Triggered when a pointer is dragged.
@@ -54,3 +51,5 @@ ol.MapBrowserEventType = {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel'
 };
+
+export default _ol_MapBrowserEventType_;

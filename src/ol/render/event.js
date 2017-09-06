@@ -1,8 +1,5 @@
-goog.provide('ol.render.Event');
-
-goog.require('ol');
-goog.require('ol.events.Event');
-
+import _ol_ from '../index';
+import _ol_events_Event_ from '../events/event';
 
 /**
  * @constructor
@@ -14,11 +11,11 @@ goog.require('ol.events.Event');
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
-ol.render.Event = function(
+var _ol_render_Event_ = function(
     type, opt_vectorContext, opt_frameState, opt_context,
     opt_glContext) {
 
-  ol.events.Event.call(this, type);
+  _ol_events_Event_.call(this, type);
 
   /**
    * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
@@ -51,4 +48,6 @@ ol.render.Event = function(
   this.glContext = opt_glContext;
 
 };
-ol.inherits(ol.render.Event, ol.events.Event);
+
+_ol_.inherits(_ol_render_Event_, _ol_events_Event_);
+export default _ol_render_Event_;

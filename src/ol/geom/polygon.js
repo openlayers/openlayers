@@ -1,24 +1,21 @@
-goog.provide('ol.geom.Polygon');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.SimpleGeometry');
-goog.require('ol.geom.flat.area');
-goog.require('ol.geom.flat.closest');
-goog.require('ol.geom.flat.contains');
-goog.require('ol.geom.flat.deflate');
-goog.require('ol.geom.flat.inflate');
-goog.require('ol.geom.flat.interiorpoint');
-goog.require('ol.geom.flat.intersectsextent');
-goog.require('ol.geom.flat.orient');
-goog.require('ol.geom.flat.simplify');
-goog.require('ol.math');
-
+import _ol_ from '../index';
+import _ol_array_ from '../array';
+import _ol_extent_ from '../extent';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_LinearRing_ from '../geom/linearring';
+import _ol_geom_Point_ from '../geom/point';
+import _ol_geom_SimpleGeometry_ from '../geom/simplegeometry';
+import _ol_geom_flat_area_ from '../geom/flat/area';
+import _ol_geom_flat_closest_ from '../geom/flat/closest';
+import _ol_geom_flat_contains_ from '../geom/flat/contains';
+import _ol_geom_flat_deflate_ from '../geom/flat/deflate';
+import _ol_geom_flat_inflate_ from '../geom/flat/inflate';
+import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint';
+import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent';
+import _ol_geom_flat_orient_ from '../geom/flat/orient';
+import _ol_geom_flat_simplify_ from '../geom/flat/simplify';
+import _ol_math_ from '../math';
 
 /**
  * @classdesc
@@ -35,9 +32,9 @@ goog.require('ol.math');
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-ol.geom.Polygon = function(coordinates, opt_layout) {
+var _ol_geom_Polygon_ = function(coordinates, opt_layout) {
 
-  ol.geom.SimpleGeometry.call(this);
+  _ol_geom_SimpleGeometry_.call(this);
 
   /**
    * @type {Array.<number>}
@@ -84,7 +81,8 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-ol.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
+
+_ol_.inherits(_ol_geom_Polygon_, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -92,11 +90,11 @@ ol.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
  * @param {ol.geom.LinearRing} linearRing Linear ring.
  * @api
  */
-ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
+_ol_geom_Polygon_.prototype.appendLinearRing = function(linearRing) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
-    ol.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+    _ol_array_.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
   }
   this.ends_.push(this.flatCoordinates.length);
   this.changed();
@@ -109,8 +107,8 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
  * @override
  * @api
  */
-ol.geom.Polygon.prototype.clone = function() {
-  var polygon = new ol.geom.Polygon(null);
+_ol_geom_Polygon_.prototype.clone = function() {
+  var polygon = new _ol_geom_Polygon_(null);
   polygon.setFlatCoordinates(
       this.layout, this.flatCoordinates.slice(), this.ends_.slice());
   return polygon;
@@ -120,17 +118,17 @@ ol.geom.Polygon.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+_ol_geom_Polygon_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
-      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getsMaxSquaredDelta(
+    this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getsMaxSquaredDelta(
         this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
-  return ol.geom.flat.closest.getsClosestPoint(
+  return _ol_geom_flat_closest_.getsClosestPoint(
       this.flatCoordinates, 0, this.ends_, this.stride,
       this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
@@ -139,8 +137,8 @@ ol.geom.Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquar
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.containsXY = function(x, y) {
-  return ol.geom.flat.contains.linearRingsContainsXY(
+_ol_geom_Polygon_.prototype.containsXY = function(x, y) {
+  return _ol_geom_flat_contains_.linearRingsContainsXY(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
 };
 
@@ -150,8 +148,8 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
  * @return {number} Area (on projected plane).
  * @api
  */
-ol.geom.Polygon.prototype.getArea = function() {
-  return ol.geom.flat.area.linearRings(
+_ol_geom_Polygon_.prototype.getArea = function() {
+  return _ol_geom_flat_area_.linearRings(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
 };
 
@@ -170,17 +168,17 @@ ol.geom.Polygon.prototype.getArea = function() {
  * @override
  * @api
  */
-ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
+_ol_geom_Polygon_.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
-    ol.geom.flat.orient.orientLinearRings(
+    _ol_geom_flat_orient_.orientLinearRings(
         flatCoordinates, 0, this.ends_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
   }
 
-  return ol.geom.flat.inflate.coordinatess(
+  return _ol_geom_flat_inflate_.coordinatess(
       flatCoordinates, 0, this.ends_, this.stride);
 };
 
@@ -188,7 +186,7 @@ ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
 /**
  * @return {Array.<number>} Ends.
  */
-ol.geom.Polygon.prototype.getEnds = function() {
+_ol_geom_Polygon_.prototype.getEnds = function() {
   return this.ends_;
 };
 
@@ -196,10 +194,10 @@ ol.geom.Polygon.prototype.getEnds = function() {
 /**
  * @return {Array.<number>} Interior point.
  */
-ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
+_ol_geom_Polygon_.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
-    var flatCenter = ol.extent.getCenter(this.getExtent());
-    this.flatInteriorPoint_ = ol.geom.flat.interiorpoint.linearRings(
+    var flatCenter = _ol_extent_.getCenter(this.getExtent());
+    this.flatInteriorPoint_ = _ol_geom_flat_interiorpoint_.linearRings(
         this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
         flatCenter, 0);
     this.flatInteriorPointRevision_ = this.getRevision();
@@ -213,8 +211,8 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
  * @return {ol.geom.Point} Interior point.
  * @api
  */
-ol.geom.Polygon.prototype.getInteriorPoint = function() {
-  return new ol.geom.Point(this.getFlatInteriorPoint());
+_ol_geom_Polygon_.prototype.getInteriorPoint = function() {
+  return new _ol_geom_Point_(this.getFlatInteriorPoint());
 };
 
 
@@ -225,7 +223,7 @@ ol.geom.Polygon.prototype.getInteriorPoint = function() {
  * @return {number} Number of rings.
  * @api
  */
-ol.geom.Polygon.prototype.getLinearRingCount = function() {
+_ol_geom_Polygon_.prototype.getLinearRingCount = function() {
   return this.ends_.length;
 };
 
@@ -240,11 +238,11 @@ ol.geom.Polygon.prototype.getLinearRingCount = function() {
  * @return {ol.geom.LinearRing} Linear ring.
  * @api
  */
-ol.geom.Polygon.prototype.getLinearRing = function(index) {
+_ol_geom_Polygon_.prototype.getLinearRing = function(index) {
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
-  var linearRing = new ol.geom.LinearRing(null);
+  var linearRing = new _ol_geom_LinearRing_(null);
   linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
       index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
   return linearRing;
@@ -256,7 +254,7 @@ ol.geom.Polygon.prototype.getLinearRing = function(index) {
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
  * @api
  */
-ol.geom.Polygon.prototype.getLinearRings = function() {
+_ol_geom_Polygon_.prototype.getLinearRings = function() {
   var layout = this.layout;
   var flatCoordinates = this.flatCoordinates;
   var ends = this.ends_;
@@ -265,7 +263,7 @@ ol.geom.Polygon.prototype.getLinearRings = function() {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    var linearRing = new ol.geom.LinearRing(null);
+    var linearRing = new _ol_geom_LinearRing_(null);
     linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
     linearRings.push(linearRing);
     offset = end;
@@ -277,16 +275,16 @@ ol.geom.Polygon.prototype.getLinearRings = function() {
 /**
  * @return {Array.<number>} Oriented flat coordinates.
  */
-ol.geom.Polygon.prototype.getOrientedFlatCoordinates = function() {
+_ol_geom_Polygon_.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
-    if (ol.geom.flat.orient.linearRingsAreOriented(
+    if (_ol_geom_flat_orient_.linearRingsAreOriented(
         flatCoordinates, 0, this.ends_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
-          ol.geom.flat.orient.orientLinearRings(
+          _ol_geom_flat_orient_.orientLinearRings(
               this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
@@ -298,16 +296,16 @@ ol.geom.Polygon.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+_ol_geom_Polygon_.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
-  simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizes(
+  simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizes(
       this.flatCoordinates, 0, this.ends_, this.stride,
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEnds);
-  var simplifiedPolygon = new ol.geom.Polygon(null);
+  var simplifiedPolygon = new _ol_geom_Polygon_(null);
   simplifiedPolygon.setFlatCoordinates(
-      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
+      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates, simplifiedEnds);
   return simplifiedPolygon;
 };
 
@@ -316,8 +314,8 @@ ol.geom.Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolera
  * @inheritDoc
  * @api
  */
-ol.geom.Polygon.prototype.getType = function() {
-  return ol.geom.GeometryType.POLYGON;
+_ol_geom_Polygon_.prototype.getType = function() {
+  return _ol_geom_GeometryType_.POLYGON;
 };
 
 
@@ -325,8 +323,8 @@ ol.geom.Polygon.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
-  return ol.geom.flat.intersectsextent.linearRings(
+_ol_geom_Polygon_.prototype.intersectsExtent = function(extent) {
+  return _ol_geom_flat_intersectsextent_.linearRings(
       this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, extent);
 };
 
@@ -338,15 +336,15 @@ ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
  * @override
  * @api
  */
-ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
+_ol_geom_Polygon_.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
+    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    var ends = ol.geom.flat.deflate.coordinatess(
+    var ends = _ol_geom_flat_deflate_.coordinatess(
         this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();
@@ -359,7 +357,7 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */
-ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
+_ol_geom_Polygon_.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.changed();
@@ -377,19 +375,19 @@ ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates,
  * @return {ol.geom.Polygon} The "circular" polygon.
  * @api
  */
-ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
+_ol_geom_Polygon_.circular = function(sphere, center, radius, opt_n) {
   var n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var i;
   for (i = 0; i < n; ++i) {
-    ol.array.extend(
+    _ol_array_.extend(
         flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
-  var polygon = new ol.geom.Polygon(null);
+  var polygon = new _ol_geom_Polygon_(null);
   polygon.setFlatCoordinates(
-      ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+      _ol_geom_GeometryLayout_.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 };
 
@@ -400,16 +398,16 @@ ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
  * @return {ol.geom.Polygon} The polygon.
  * @api
  */
-ol.geom.Polygon.fromExtent = function(extent) {
+_ol_geom_Polygon_.fromExtent = function(extent) {
   var minX = extent[0];
   var minY = extent[1];
   var maxX = extent[2];
   var maxY = extent[3];
   var flatCoordinates =
       [minX, minY, minX, maxY, maxX, maxY, maxX, minY, minX, minY];
-  var polygon = new ol.geom.Polygon(null);
+  var polygon = new _ol_geom_Polygon_(null);
   polygon.setFlatCoordinates(
-      ol.geom.GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+      _ol_geom_GeometryLayout_.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 };
 
@@ -423,11 +421,11 @@ ol.geom.Polygon.fromExtent = function(extent) {
  * @return {ol.geom.Polygon} Polygon geometry.
  * @api
  */
-ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
+_ol_geom_Polygon_.fromCircle = function(circle, opt_sides, opt_angle) {
   var sides = opt_sides ? opt_sides : 32;
   var stride = circle.getStride();
   var layout = circle.getLayout();
-  var polygon = new ol.geom.Polygon(null, layout);
+  var polygon = new _ol_geom_Polygon_(null, layout);
   var arrayLength = stride * (sides + 1);
   var flatCoordinates = new Array(arrayLength);
   for (var i = 0; i < arrayLength; i++) {
@@ -435,7 +433,7 @@ ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
   }
   var ends = [flatCoordinates.length];
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
-  ol.geom.Polygon.makeRegular(
+  _ol_geom_Polygon_.makeRegular(
       polygon, circle.getCenter(), circle.getRadius(), opt_angle);
   return polygon;
 };
@@ -449,7 +447,7 @@ ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.
  */
-ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
+_ol_geom_Polygon_.makeRegular = function(polygon, center, radius, opt_angle) {
   var flatCoordinates = polygon.getFlatCoordinates();
   var layout = polygon.getLayout();
   var stride = polygon.getStride();
@@ -459,9 +457,10 @@ ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   var angle, offset;
   for (var i = 0; i <= sides; ++i) {
     offset = i * stride;
-    angle = startAngle + (ol.math.modulo(i, sides) * 2 * Math.PI / sides);
+    angle = startAngle + (_ol_math_.modulo(i, sides) * 2 * Math.PI / sides);
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
   }
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
 };
+export default _ol_geom_Polygon_;

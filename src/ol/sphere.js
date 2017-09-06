@@ -5,11 +5,8 @@
  * Licensed under CC-BY-3.0.
  */
 
-goog.provide('ol.Sphere');
-
-goog.require('ol.math');
-goog.require('ol.geom.GeometryType');
-
+import _ol_math_ from './math';
+import _ol_geom_GeometryType_ from './geom/geometrytype';
 
 /**
  * @classdesc
@@ -27,7 +24,7 @@ goog.require('ol.geom.GeometryType');
  * @param {number} radius Radius.
  * @api
  */
-ol.Sphere = function(radius) {
+var _ol_Sphere_ = function(radius) {
 
   /**
    * @type {number}
@@ -51,8 +48,8 @@ ol.Sphere = function(radius) {
  * @return {number} Area.
  * @api
  */
-ol.Sphere.prototype.geodesicArea = function(coordinates) {
-  return ol.Sphere.getArea_(coordinates, this.radius);
+_ol_Sphere_.prototype.geodesicArea = function(coordinates) {
+  return _ol_Sphere_.getArea_(coordinates, this.radius);
 };
 
 
@@ -64,8 +61,8 @@ ol.Sphere.prototype.geodesicArea = function(coordinates) {
  * @return {number} Haversine distance.
  * @api
  */
-ol.Sphere.prototype.haversineDistance = function(c1, c2) {
-  return ol.Sphere.getDistance_(c1, c2, this.radius);
+_ol_Sphere_.prototype.haversineDistance = function(c1, c2) {
+  return _ol_Sphere_.getDistance_(c1, c2, this.radius);
 };
 
 
@@ -78,9 +75,9 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
  * @param {number} bearing The bearing (in radians).
  * @return {ol.Coordinate} The target point.
  */
-ol.Sphere.prototype.offset = function(c1, distance, bearing) {
-  var lat1 = ol.math.toRadians(c1[1]);
-  var lon1 = ol.math.toRadians(c1[0]);
+_ol_Sphere_.prototype.offset = function(c1, distance, bearing) {
+  var lat1 = _ol_math_.toRadians(c1[1]);
+  var lon1 = _ol_math_.toRadians(c1[0]);
   var dByR = distance / this.radius;
   var lat = Math.asin(
       Math.sin(lat1) * Math.cos(dByR) +
@@ -88,7 +85,7 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
   var lon = lon1 + Math.atan2(
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
       Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
-  return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
+  return [_ol_math_.toDegrees(lon), _ol_math_.toDegrees(lat)];
 };
 
 
@@ -97,7 +94,7 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
  * https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
  * @type {number}
  */
-ol.Sphere.DEFAULT_RADIUS = 6371008.8;
+_ol_Sphere_.DEFAULT_RADIUS = 6371008.8;
 
 
 /**
@@ -112,47 +109,47 @@ ol.Sphere.DEFAULT_RADIUS = 6371008.8;
  * @return {number} The spherical length (in meters).
  * @api
  */
-ol.Sphere.getLength = function(geometry, opt_options) {
+_ol_Sphere_.getLength = function(geometry, opt_options) {
   var options = opt_options || {};
-  var radius = options.radius || ol.Sphere.DEFAULT_RADIUS;
+  var radius = options.radius || _ol_Sphere_.DEFAULT_RADIUS;
   var projection = options.projection || 'EPSG:3857';
   geometry = geometry.clone().transform(projection, 'EPSG:4326');
   var type = geometry.getType();
   var length = 0;
   var coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case ol.geom.GeometryType.POINT:
-    case ol.geom.GeometryType.MULTI_POINT: {
+    case _ol_geom_GeometryType_.POINT:
+    case _ol_geom_GeometryType_.MULTI_POINT: {
       break;
     }
-    case ol.geom.GeometryType.LINE_STRING:
-    case ol.geom.GeometryType.LINEAR_RING: {
+    case _ol_geom_GeometryType_.LINE_STRING:
+    case _ol_geom_GeometryType_.LINEAR_RING: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
-      length = ol.Sphere.getLength_(coordinates, radius);
+      length = _ol_Sphere_.getLength_(coordinates, radius);
       break;
     }
-    case ol.geom.GeometryType.MULTI_LINE_STRING:
-    case ol.geom.GeometryType.POLYGON: {
+    case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+    case _ol_geom_GeometryType_.POLYGON: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
-        length += ol.Sphere.getLength_(coordinates[i], radius);
+        length += _ol_Sphere_.getLength_(coordinates[i], radius);
       }
       break;
     }
-    case ol.geom.GeometryType.MULTI_POLYGON: {
+    case _ol_geom_GeometryType_.MULTI_POLYGON: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
         for (j = 0, jj = coords.length; j < jj; ++j) {
-          length += ol.Sphere.getLength_(coords[j], radius);
+          length += _ol_Sphere_.getLength_(coords[j], radius);
         }
       }
       break;
     }
-    case ol.geom.GeometryType.GEOMETRY_COLLECTION: {
+    case _ol_geom_GeometryType_.GEOMETRY_COLLECTION: {
       var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
-        length += ol.Sphere.getLength(geometries[i], opt_options);
+        length += _ol_Sphere_.getLength(geometries[i], opt_options);
       }
       break;
     }
@@ -170,10 +167,10 @@ ol.Sphere.getLength = function(geometry, opt_options) {
  * @param {number} radius The sphere radius to use.
  * @return {number} The length (in meters).
  */
-ol.Sphere.getLength_ = function(coordinates, radius) {
+_ol_Sphere_.getLength_ = function(coordinates, radius) {
   var length = 0;
   for (var i = 0, ii = coordinates.length; i < ii - 1; ++i) {
-    length += ol.Sphere.getDistance_(coordinates[i], coordinates[i + 1], radius);
+    length += _ol_Sphere_.getDistance_(coordinates[i], coordinates[i + 1], radius);
   }
   return length;
 };
@@ -186,11 +183,11 @@ ol.Sphere.getLength_ = function(coordinates, radius) {
  * @param {number} radius The sphere radius to use.
  * @return {number} The great circle distance between the points (in meters).
  */
-ol.Sphere.getDistance_ = function(c1, c2, radius) {
-  var lat1 = ol.math.toRadians(c1[1]);
-  var lat2 = ol.math.toRadians(c2[1]);
+_ol_Sphere_.getDistance_ = function(c1, c2, radius) {
+  var lat1 = _ol_math_.toRadians(c1[1]);
+  var lat2 = _ol_math_.toRadians(c2[1]);
   var deltaLatBy2 = (lat2 - lat1) / 2;
-  var deltaLonBy2 = ol.math.toRadians(c2[0] - c1[0]) / 2;
+  var deltaLonBy2 = _ol_math_.toRadians(c2[0] - c1[0]) / 2;
   var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
       Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
       Math.cos(lat1) * Math.cos(lat2);
@@ -208,45 +205,45 @@ ol.Sphere.getDistance_ = function(c1, c2, radius) {
  * @return {number} The spherical area (in square meters).
  * @api
  */
-ol.Sphere.getArea = function(geometry, opt_options) {
+_ol_Sphere_.getArea = function(geometry, opt_options) {
   var options = opt_options || {};
-  var radius = options.radius || ol.Sphere.DEFAULT_RADIUS;
+  var radius = options.radius || _ol_Sphere_.DEFAULT_RADIUS;
   var projection = options.projection || 'EPSG:3857';
   geometry = geometry.clone().transform(projection, 'EPSG:4326');
   var type = geometry.getType();
   var area = 0;
   var coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case ol.geom.GeometryType.POINT:
-    case ol.geom.GeometryType.MULTI_POINT:
-    case ol.geom.GeometryType.LINE_STRING:
-    case ol.geom.GeometryType.MULTI_LINE_STRING:
-    case ol.geom.GeometryType.LINEAR_RING: {
+    case _ol_geom_GeometryType_.POINT:
+    case _ol_geom_GeometryType_.MULTI_POINT:
+    case _ol_geom_GeometryType_.LINE_STRING:
+    case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+    case _ol_geom_GeometryType_.LINEAR_RING: {
       break;
     }
-    case ol.geom.GeometryType.POLYGON: {
+    case _ol_geom_GeometryType_.POLYGON: {
       coordinates = /** @type {ol.geom.Polygon} */ (geometry).getCoordinates();
-      area = Math.abs(ol.Sphere.getArea_(coordinates[0], radius));
+      area = Math.abs(_ol_Sphere_.getArea_(coordinates[0], radius));
       for (i = 1, ii = coordinates.length; i < ii; ++i) {
-        area -= Math.abs(ol.Sphere.getArea_(coordinates[i], radius));
+        area -= Math.abs(_ol_Sphere_.getArea_(coordinates[i], radius));
       }
       break;
     }
-    case ol.geom.GeometryType.MULTI_POLYGON: {
+    case _ol_geom_GeometryType_.MULTI_POLYGON: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
-        area += Math.abs(ol.Sphere.getArea_(coords[0], radius));
+        area += Math.abs(_ol_Sphere_.getArea_(coords[0], radius));
         for (j = 1, jj = coords.length; j < jj; ++j) {
-          area -= Math.abs(ol.Sphere.getArea_(coords[j], radius));
+          area -= Math.abs(_ol_Sphere_.getArea_(coords[j], radius));
         }
       }
       break;
     }
-    case ol.geom.GeometryType.GEOMETRY_COLLECTION: {
+    case _ol_geom_GeometryType_.GEOMETRY_COLLECTION: {
       var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
-        area += ol.Sphere.getArea(geometries[i], opt_options);
+        area += _ol_Sphere_.getArea(geometries[i], opt_options);
       }
       break;
     }
@@ -272,17 +269,18 @@ ol.Sphere.getArea = function(geometry, opt_options) {
  * @param {number} radius The sphere radius.
  * @return {number} Area (in square meters).
  */
-ol.Sphere.getArea_ = function(coordinates, radius) {
+_ol_Sphere_.getArea_ = function(coordinates, radius) {
   var area = 0, len = coordinates.length;
   var x1 = coordinates[len - 1][0];
   var y1 = coordinates[len - 1][1];
   for (var i = 0; i < len; i++) {
     var x2 = coordinates[i][0], y2 = coordinates[i][1];
-    area += ol.math.toRadians(x2 - x1) *
-        (2 + Math.sin(ol.math.toRadians(y1)) +
-        Math.sin(ol.math.toRadians(y2)));
+    area += _ol_math_.toRadians(x2 - x1) *
+        (2 + Math.sin(_ol_math_.toRadians(y1)) +
+        Math.sin(_ol_math_.toRadians(y2)));
     x1 = x2;
     y1 = y2;
   }
   return area * radius * radius / 2.0;
 };
+export default _ol_Sphere_;

@@ -1,8 +1,7 @@
-goog.provide('ol.TileUrlFunction');
-
-goog.require('ol.asserts');
-goog.require('ol.math');
-goog.require('ol.tilecoord');
+import _ol_asserts_ from './asserts';
+import _ol_math_ from './math';
+import _ol_tilecoord_ from './tilecoord';
+var _ol_TileUrlFunction_ = {};
 
 
 /**
@@ -10,7 +9,7 @@ goog.require('ol.tilecoord');
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
+_ol_TileUrlFunction_.createFromTemplate = function(template, tileGrid) {
   var zRegEx = /\{z\}/g;
   var xRegEx = /\{x\}/g;
   var yRegEx = /\{y\}/g;
@@ -35,12 +34,13 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
             .replace(dashYRegEx, function() {
               var z = tileCoord[0];
               var range = tileGrid.getFullTileRange(z);
-              ol.asserts.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+              _ol_asserts_.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
               var y = range.getHeight() + tileCoord[2];
               return y.toString();
             });
       }
-    });
+    }
+  );
 };
 
 
@@ -49,14 +49,14 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
+_ol_TileUrlFunction_.createFromTemplates = function(templates, tileGrid) {
   var len = templates.length;
   var tileUrlFunctions = new Array(len);
   for (var i = 0; i < len; ++i) {
-    tileUrlFunctions[i] = ol.TileUrlFunction.createFromTemplate(
+    tileUrlFunctions[i] = _ol_TileUrlFunction_.createFromTemplate(
         templates[i], tileGrid);
   }
-  return ol.TileUrlFunction.createFromTileUrlFunctions(tileUrlFunctions);
+  return _ol_TileUrlFunction_.createFromTileUrlFunctions(tileUrlFunctions);
 };
 
 
@@ -64,7 +64,7 @@ ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
  * @param {Array.<ol.TileUrlFunctionType>} tileUrlFunctions Tile URL Functions.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
+_ol_TileUrlFunction_.createFromTileUrlFunctions = function(tileUrlFunctions) {
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];
   }
@@ -79,11 +79,12 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
       if (!tileCoord) {
         return undefined;
       } else {
-        var h = ol.tilecoord.hash(tileCoord);
-        var index = ol.math.modulo(h, tileUrlFunctions.length);
+        var h = _ol_tilecoord_.hash(tileCoord);
+        var index = _ol_math_.modulo(h, tileUrlFunctions.length);
         return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
       }
-    });
+    }
+  );
 };
 
 
@@ -93,7 +94,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
-ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+_ol_TileUrlFunction_.nullTileUrlFunction = function(tileCoord, pixelRatio, projection) {
   return undefined;
 };
 
@@ -102,7 +103,7 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, project
  * @param {string} url URL.
  * @return {Array.<string>} Array of urls.
  */
-ol.TileUrlFunction.expandUrl = function(url) {
+_ol_TileUrlFunction_.expandUrl = function(url) {
   var urls = [];
   var match = /\{([a-z])-([a-z])\}/.exec(url);
   if (match) {
@@ -127,3 +128,4 @@ ol.TileUrlFunction.expandUrl = function(url) {
   urls.push(url);
   return urls;
 };
+export default _ol_TileUrlFunction_;

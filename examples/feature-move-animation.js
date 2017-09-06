@@ -1,17 +1,17 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.Polyline');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.BingMaps');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_format_Polyline_ from '../src/ol/format/polyline';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_BingMaps_ from '../src/ol/source/bingmaps';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Icon_ from '../src/ol/style/icon';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
@@ -57,7 +57,7 @@ var polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-var route = /** @type {ol.geom.LineString} */ (new ol.format.Polyline({
+var route = /** @type {ol.geom.LineString} */ (new _ol_format_Polyline_({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
@@ -67,41 +67,41 @@ var route = /** @type {ol.geom.LineString} */ (new ol.format.Polyline({
 var routeCoords = route.getCoordinates();
 var routeLength = routeCoords.length;
 
-var routeFeature = new ol.Feature({
+var routeFeature = new _ol_Feature_({
   type: 'route',
   geometry: route
 });
-var geoMarker = new ol.Feature({
+var geoMarker = new _ol_Feature_({
   type: 'geoMarker',
-  geometry: new ol.geom.Point(routeCoords[0])
+  geometry: new _ol_geom_Point_(routeCoords[0])
 });
-var startMarker = new ol.Feature({
+var startMarker = new _ol_Feature_({
   type: 'icon',
-  geometry: new ol.geom.Point(routeCoords[0])
+  geometry: new _ol_geom_Point_(routeCoords[0])
 });
-var endMarker = new ol.Feature({
+var endMarker = new _ol_Feature_({
   type: 'icon',
-  geometry: new ol.geom.Point(routeCoords[routeLength - 1])
+  geometry: new _ol_geom_Point_(routeCoords[routeLength - 1])
 });
 
 var styles = {
-  'route': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'route': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       width: 6, color: [237, 212, 0, 0.8]
     })
   }),
-  'icon': new ol.style.Style({
-    image: new ol.style.Icon({
+  'icon': new _ol_style_Style_({
+    image: new _ol_style_Icon_({
       anchor: [0.5, 1],
       src: 'data/icon.png'
     })
   }),
-  'geoMarker': new ol.style.Style({
-    image: new ol.style.Circle({
+  'geoMarker': new _ol_style_Style_({
+    image: new _ol_style_Circle_({
       radius: 7,
       snapToPixel: false,
-      fill: new ol.style.Fill({color: 'black'}),
-      stroke: new ol.style.Stroke({
+      fill: new _ol_style_Fill_({color: 'black'}),
+      stroke: new _ol_style_Stroke_({
         color: 'white', width: 2
       })
     })
@@ -113,8 +113,8 @@ var speed, now;
 var speedInput = document.getElementById('speed');
 var startButton = document.getElementById('start-animation');
 
-var vectorLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vectorLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     features: [routeFeature, geoMarker, startMarker, endMarker]
   }),
   style: function(feature) {
@@ -127,18 +127,18 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var center = [-5639523.95, -3501274.52];
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: document.getElementById('map'),
   loadTilesWhileAnimating: true,
-  view: new ol.View({
+  view: new _ol_View_({
     center: center,
     zoom: 10,
     minZoom: 2,
     maxZoom: 19
   }),
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.BingMaps({
+    new _ol_layer_Tile_({
+      source: new _ol_source_BingMaps_({
         imagerySet: 'AerialWithLabels',
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
       })
@@ -162,8 +162,8 @@ var moveFeature = function(event) {
       return;
     }
 
-    var currentPoint = new ol.geom.Point(routeCoords[index]);
-    var feature = new ol.Feature(currentPoint);
+    var currentPoint = new _ol_geom_Point_(routeCoords[index]);
+    var feature = new _ol_Feature_(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
   // tell OpenLayers to continue the postcompose animation

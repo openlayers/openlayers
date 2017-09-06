@@ -1,16 +1,13 @@
-goog.provide('ol.source.WMTS');
-
-goog.require('ol');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.array');
-goog.require('ol.extent');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.source.TileImage');
-goog.require('ol.source.WMTSRequestEncoding');
-goog.require('ol.tilegrid.WMTS');
-goog.require('ol.uri');
-
+import _ol_ from '../index';
+import _ol_TileUrlFunction_ from '../tileurlfunction';
+import _ol_array_ from '../array';
+import _ol_extent_ from '../extent';
+import _ol_obj_ from '../obj';
+import _ol_proj_ from '../proj';
+import _ol_source_TileImage_ from '../source/tileimage';
+import _ol_source_WMTSRequestEncoding_ from '../source/wmtsrequestencoding';
+import _ol_tilegrid_WMTS_ from '../tilegrid/wmts';
+import _ol_uri_ from '../uri';
 
 /**
  * @classdesc
@@ -21,7 +18,7 @@ goog.require('ol.uri');
  * @param {olx.source.WMTSOptions} options WMTS options.
  * @api
  */
-ol.source.WMTS = function(options) {
+var _ol_source_WMTS_ = function(options) {
 
   // TODO: add support for TileMatrixLimits
 
@@ -63,7 +60,7 @@ ol.source.WMTS = function(options) {
 
   var urls = options.urls;
   if (urls === undefined && options.url !== undefined) {
-    urls = ol.TileUrlFunction.expandUrl(options.url);
+    urls = _ol_TileUrlFunction_.expandUrl(options.url);
   }
 
   // FIXME: should we guess this requestEncoding from options.url(s)
@@ -75,7 +72,7 @@ ol.source.WMTS = function(options) {
    */
   this.requestEncoding_ = options.requestEncoding !== undefined ?
     /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
-    ol.source.WMTSRequestEncoding.KVP;
+    _ol_source_WMTSRequestEncoding_.KVP;
 
   var requestEncoding = this.requestEncoding_;
 
@@ -91,8 +88,8 @@ ol.source.WMTS = function(options) {
     'tilematrixset': this.matrixSet_
   };
 
-  if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
-    ol.obj.assign(context, {
+  if (requestEncoding == _ol_source_WMTSRequestEncoding_.KVP) {
+    _ol_obj_.assign(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
       'Version': this.version_,
@@ -112,8 +109,8 @@ ol.source.WMTS = function(options) {
     // order conforms to wmts spec guidance, and so that we can avoid to escape
     // special template params
 
-    template = (requestEncoding == ol.source.WMTSRequestEncoding.KVP) ?
-      ol.uri.appendParams(template, context) :
+    template = (requestEncoding == _ol_source_WMTSRequestEncoding_.KVP) ?
+      _ol_uri_.appendParams(template, context) :
       template.replace(/\{(\w+?)\}/g, function(m, p) {
         return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
       });
@@ -134,10 +131,10 @@ ol.source.WMTS = function(options) {
             'TileCol': tileCoord[1],
             'TileRow': -tileCoord[2] - 1
           };
-          ol.obj.assign(localContext, dimensions);
+          _ol_obj_.assign(localContext, dimensions);
           var url = template;
-          if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
-            url = ol.uri.appendParams(url, localContext);
+          if (requestEncoding == _ol_source_WMTSRequestEncoding_.KVP) {
+            url = _ol_uri_.appendParams(url, localContext);
           } else {
             url = url.replace(/\{(\w+?)\}/g, function(m, p) {
               return localContext[p];
@@ -145,15 +142,16 @@ ol.source.WMTS = function(options) {
           }
           return url;
         }
-      });
+      }
+    );
   }
 
   var tileUrlFunction = (urls && urls.length > 0) ?
-    ol.TileUrlFunction.createFromTileUrlFunctions(
+    _ol_TileUrlFunction_.createFromTileUrlFunctions(
         urls.map(createFromWMTSTemplate)) :
-    ol.TileUrlFunction.nullTileUrlFunction;
+    _ol_TileUrlFunction_.nullTileUrlFunction;
 
-  ol.source.TileImage.call(this, {
+  _ol_source_TileImage_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -172,7 +170,8 @@ ol.source.WMTS = function(options) {
   this.setKey(this.getKeyForDimensions_());
 
 };
-ol.inherits(ol.source.WMTS, ol.source.TileImage);
+
+_ol_.inherits(_ol_source_WMTS_, _ol_source_TileImage_);
 
 
 /**
@@ -182,7 +181,7 @@ ol.inherits(ol.source.WMTS, ol.source.TileImage);
  * @return {!Object} Dimensions.
  * @api
  */
-ol.source.WMTS.prototype.getDimensions = function() {
+_ol_source_WMTS_.prototype.getDimensions = function() {
   return this.dimensions_;
 };
 
@@ -192,7 +191,7 @@ ol.source.WMTS.prototype.getDimensions = function() {
  * @return {string} Format.
  * @api
  */
-ol.source.WMTS.prototype.getFormat = function() {
+_ol_source_WMTS_.prototype.getFormat = function() {
   return this.format_;
 };
 
@@ -202,7 +201,7 @@ ol.source.WMTS.prototype.getFormat = function() {
  * @return {string} Layer.
  * @api
  */
-ol.source.WMTS.prototype.getLayer = function() {
+_ol_source_WMTS_.prototype.getLayer = function() {
   return this.layer_;
 };
 
@@ -212,7 +211,7 @@ ol.source.WMTS.prototype.getLayer = function() {
  * @return {string} MatrixSet.
  * @api
  */
-ol.source.WMTS.prototype.getMatrixSet = function() {
+_ol_source_WMTS_.prototype.getMatrixSet = function() {
   return this.matrixSet_;
 };
 
@@ -222,7 +221,7 @@ ol.source.WMTS.prototype.getMatrixSet = function() {
  * @return {ol.source.WMTSRequestEncoding} Request encoding.
  * @api
  */
-ol.source.WMTS.prototype.getRequestEncoding = function() {
+_ol_source_WMTS_.prototype.getRequestEncoding = function() {
   return this.requestEncoding_;
 };
 
@@ -232,7 +231,7 @@ ol.source.WMTS.prototype.getRequestEncoding = function() {
  * @return {string} Style.
  * @api
  */
-ol.source.WMTS.prototype.getStyle = function() {
+_ol_source_WMTS_.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -242,7 +241,7 @@ ol.source.WMTS.prototype.getStyle = function() {
  * @return {string} Version.
  * @api
  */
-ol.source.WMTS.prototype.getVersion = function() {
+_ol_source_WMTS_.prototype.getVersion = function() {
   return this.version_;
 };
 
@@ -251,7 +250,7 @@ ol.source.WMTS.prototype.getVersion = function() {
  * @private
  * @return {string} The key for the current dimensions.
  */
-ol.source.WMTS.prototype.getKeyForDimensions_ = function() {
+_ol_source_WMTS_.prototype.getKeyForDimensions_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
@@ -266,8 +265,8 @@ ol.source.WMTS.prototype.getKeyForDimensions_ = function() {
  * @param {Object} dimensions Dimensions.
  * @api
  */
-ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
-  ol.obj.assign(this.dimensions_, dimensions);
+_ol_source_WMTS_.prototype.updateDimensions = function(dimensions) {
+  _ol_obj_.assign(this.dimensions_, dimensions);
   this.setKey(this.getKeyForDimensions_());
 };
 
@@ -296,9 +295,9 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  * @return {?olx.source.WMTSOptions} WMTS source options object or `null` if the layer was not found.
  * @api
  */
-ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
+_ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
   var layers = wmtsCap['Contents']['Layer'];
-  var l = ol.array.find(layers, function(elt, index, array) {
+  var l = _ol_array_.find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
   if (l === null) {
@@ -308,22 +307,22 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var idx, matrixSet, matrixLimits;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
-      idx = ol.array.findIndex(l['TileMatrixSetLink'],
+      idx = _ol_array_.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
-            var tileMatrixSet = ol.array.find(tileMatrixSets, function(el) {
+            var tileMatrixSet = _ol_array_.find(tileMatrixSets, function(el) {
               return el['Identifier'] == elt['TileMatrixSet'];
             });
             var supportedCRS = tileMatrixSet['SupportedCRS'].replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3');
-            var proj1 = ol.proj.get(supportedCRS);
-            var proj2 = ol.proj.get(config['projection']);
+            var proj1 = _ol_proj_.get(supportedCRS);
+            var proj2 = _ol_proj_.get(config['projection']);
             if (proj1 && proj2) {
-              return ol.proj.equivalent(proj1, proj2);
+              return _ol_proj_.equivalent(proj1, proj2);
             } else {
               return supportedCRS == config['projection'];
             }
           });
     } else {
-      idx = ol.array.findIndex(l['TileMatrixSetLink'],
+      idx = _ol_array_.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
             return elt['TileMatrixSet'] == config['matrixSet'];
           });
@@ -343,7 +342,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   if ('format' in config) {
     format = config['format'];
   }
-  idx = ol.array.findIndex(l['Style'], function(elt, index, array) {
+  idx = _ol_array_.findIndex(l['Style'], function(elt, index, array) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {
@@ -368,37 +367,37 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
 
   var matrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  var matrixSetObj = ol.array.find(matrixSets, function(elt, index, array) {
+  var matrixSetObj = _ol_array_.find(matrixSets, function(elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
 
   var projection;
   if ('projection' in config) {
-    projection = ol.proj.get(config['projection']);
+    projection = _ol_proj_.get(config['projection']);
   } else {
-    projection = ol.proj.get(matrixSetObj['SupportedCRS'].replace(
+    projection = _ol_proj_.get(matrixSetObj['SupportedCRS'].replace(
         /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'));
   }
 
   var wgs84BoundingBox = l['WGS84BoundingBox'];
   var extent, wrapX;
   if (wgs84BoundingBox !== undefined) {
-    var wgs84ProjectionExtent = ol.proj.get('EPSG:4326').getExtent();
+    var wgs84ProjectionExtent = _ol_proj_.get('EPSG:4326').getExtent();
     wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
         wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
-    extent = ol.proj.transformExtent(
+    extent = _ol_proj_.transformExtent(
         wgs84BoundingBox, 'EPSG:4326', projection);
     var projectionExtent = projection.getExtent();
     if (projectionExtent) {
       // If possible, do a sanity check on the extent - it should never be
       // bigger than the validity extent of the projection of a matrix set.
-      if (!ol.extent.containsExtent(projectionExtent, extent)) {
+      if (!_ol_extent_.containsExtent(projectionExtent, extent)) {
         extent = undefined;
       }
     }
   }
 
-  var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
+  var tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
       matrixSetObj, extent, matrixLimits);
 
   /** @type {!Array.<string>} */
@@ -410,7 +409,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
-      var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
+      var constraint = _ol_array_.find(gets[i]['Constraint'], function(element) {
         return element['name'] == 'GetEncoding';
       });
       var encodings = constraint['AllowedValues']['Value'];
@@ -419,8 +418,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
         // requestEncoding not provided, use the first encoding from the list
         requestEncoding = encodings[0];
       }
-      if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
-        if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
+      if (requestEncoding === _ol_source_WMTSRequestEncoding_.KVP) {
+        if (_ol_array_.includes(encodings, _ol_source_WMTSRequestEncoding_.KVP)) {
           urls.push(/** @type {string} */ (gets[i]['href']));
         }
       } else {
@@ -429,7 +428,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     }
   }
   if (urls.length === 0) {
-    requestEncoding = ol.source.WMTSRequestEncoding.REST;
+    requestEncoding = _ol_source_WMTSRequestEncoding_.REST;
     l['ResourceURL'].forEach(function(element) {
       if (element['resourceType'] === 'tile') {
         format = element['format'];
@@ -452,3 +451,4 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     crossOrigin: config['crossOrigin']
   };
 };
+export default _ol_source_WMTS_;

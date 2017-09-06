@@ -1,17 +1,17 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.AtlasManager');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_AtlasManager_ from '../src/ol/style/atlasmanager';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_RegularShape_ from '../src/ol/style/regularshape';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
-var atlasManager = new ol.style.AtlasManager({
+var atlasManager = new _ol_style_AtlasManager_({
   // we increase the initial size so that all symbols fit into
   // a single atlas image
   initialSize: 512
@@ -47,14 +47,14 @@ for (i = 0; i < symbolInfo.length; ++i) {
   var info = symbolInfo[i];
   for (j = 0; j < radiuses.length; ++j) {
     // circle symbol
-    symbols.push(new ol.style.Circle({
+    symbols.push(new _ol_style_Circle_({
       opacity: info.opacity,
       scale: info.scale,
       radius: radiuses[j],
-      fill: new ol.style.Fill({
+      fill: new _ol_style_Fill_({
         color: info.fillColor
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: info.strokeColor,
         width: 1
       }),
@@ -64,17 +64,17 @@ for (i = 0; i < symbolInfo.length; ++i) {
     }));
 
     // star symbol
-    symbols.push(new ol.style.RegularShape({
+    symbols.push(new _ol_style_RegularShape_({
       points: 8,
       opacity: info.opacity,
       scale: info.scale,
       radius: radiuses[j],
       radius2: radiuses[j] * 0.7,
       angle: 1.4,
-      fill: new ol.style.Fill({
+      fill: new _ol_style_Fill_({
         color: info.fillColor
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: info.strokeColor,
         width: 1
       }),
@@ -88,29 +88,29 @@ var features = new Array(featureCount);
 var feature, geometry;
 var e = 25000000;
 for (i = 0; i < featureCount; ++i) {
-  geometry = new ol.geom.Point(
+  geometry = new _ol_geom_Point_(
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
-  feature = new ol.Feature(geometry);
+  feature = new _ol_Feature_(geometry);
   feature.setStyle(
-      new ol.style.Style({
+      new _ol_style_Style_({
         image: symbols[i % symbolCount]
       })
   );
   features[i] = feature;
 }
 
-var vectorSource = new ol.source.Vector({
+var vectorSource = new _ol_source_Vector_({
   features: features
 });
-var vector = new ol.layer.Vector({
+var vector = new _ol_layer_Vector_({
   source: vectorSource
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
   layers: [vector],
   target: document.getElementById('map'),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 4
   })

@@ -1,23 +1,23 @@
 
 
-goog.require('ol.Feature');
-goog.require('ol.extent');
-goog.require('ol.format.EsriJSON');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.proj');
+import _ol_Feature_ from '../../../../src/ol/feature';
+import _ol_extent_ from '../../../../src/ol/extent';
+import _ol_format_EsriJSON_ from '../../../../src/ol/format/esrijson';
+import _ol_geom_LineString_ from '../../../../src/ol/geom/linestring';
+import _ol_geom_LinearRing_ from '../../../../src/ol/geom/linearring';
+import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/multipolygon';
+import _ol_geom_Point_ from '../../../../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../../../../src/ol/geom/polygon';
+import _ol_proj_ from '../../../../src/ol/proj';
 
 
 describe('ol.format.EsriJSON', function() {
 
   var format;
   beforeEach(function() {
-    format = new ol.format.EsriJSON();
+    format = new _ol_format_EsriJSON_();
   });
 
   var pointEsriJSON = {
@@ -163,27 +163,27 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a single point feature', function() {
       var feature = format.readFeature(pointEsriJSON);
-      expect(feature).to.be.an(ol.Feature);
+      expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(ol.geom.Point);
+      expect(geometry).to.be.an(_ol_geom_Point_);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
       expect(feature.get('prop0')).to.be('value0');
     });
 
     it('can read a single multipoint feature', function() {
       var feature = format.readFeature(multiPointEsriJSON);
-      expect(feature).to.be.an(ol.Feature);
+      expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(ol.geom.MultiPoint);
+      expect(geometry).to.be.an(_ol_geom_MultiPoint_);
       expect(geometry.getCoordinates()).to.eql([[102.0, 0.0], [103.0, 1.0]]);
       expect(feature.get('prop0')).to.be('value0');
     });
 
     it('can read a single line string feature', function() {
       var feature = format.readFeature(lineStringEsriJSON);
-      expect(feature).to.be.an(ol.Feature);
+      expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(ol.geom.LineString);
+      expect(geometry).to.be.an(_ol_geom_LineString_);
       expect(geometry.getCoordinates()).to.eql(
           [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]]);
       expect(feature.get('prop0')).to.be('value0');
@@ -192,9 +192,9 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a multi line string feature', function() {
       var feature = format.readFeature(multiLineStringEsriJSON);
-      expect(feature).to.be.an(ol.Feature);
+      expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(ol.geom.MultiLineString);
+      expect(geometry).to.be.an(_ol_geom_MultiLineString_);
       expect(geometry.getCoordinates()).to.eql([
         [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
         [[105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]]
@@ -205,9 +205,9 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a single polygon feature', function() {
       var feature = format.readFeature(polygonEsriJSON);
-      expect(feature).to.be.an(ol.Feature);
+      expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(ol.geom.Polygon);
+      expect(geometry).to.be.an(_ol_geom_Polygon_);
       expect(geometry.getCoordinates()).to.eql([[
         [100.0, 0.0], [100.0, 1.0], [101.0, 1.0], [101.0, 0.0]
       ]]);
@@ -217,9 +217,9 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a multi polygon feature', function() {
       var feature = format.readFeature(multiPolygonEsriJSON);
-      expect(feature).to.be.an(ol.Feature);
+      expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(ol.geom.MultiPolygon);
+      expect(geometry).to.be.an(_ol_geom_MultiPolygon_);
       expect(geometry.getCoordinates()).to.eql([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2], [3, 3], [2, 3]]],
         [[[10, 1], [11, 5], [14, 3], [13, 0]]]
@@ -229,9 +229,9 @@ describe('ol.format.EsriJSON', function() {
     it('can read a feature collection', function() {
       var features = format.readFeatures(featureCollectionEsriJSON);
       expect(features).to.have.length(3);
-      expect(features[0].getGeometry()).to.be.an(ol.geom.Point);
-      expect(features[1].getGeometry()).to.be.an(ol.geom.LineString);
-      expect(features[2].getGeometry()).to.be.an(ol.geom.Polygon);
+      expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(features[1].getGeometry()).to.be.an(_ol_geom_LineString_);
+      expect(features[2].getGeometry()).to.be.an(_ol_geom_Polygon_);
     });
 
     it('can read and transform a point', function() {
@@ -239,9 +239,9 @@ describe('ol.format.EsriJSON', function() {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326'
       });
-      expect(feature[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
 
     it('can read and transform a feature collection', function() {
@@ -249,28 +249,28 @@ describe('ol.format.EsriJSON', function() {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326'
       });
-      expect(features[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
-          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
       expect(features[1].getGeometry().getCoordinates()).to.eql([
-        ol.proj.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
+        _ol_proj_.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        _ol_proj_.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        _ol_proj_.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        _ol_proj_.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
       ]);
       expect(features[2].getGeometry().getCoordinates()).to.eql([[
-        ol.proj.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-        ol.proj.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857')
+        _ol_proj_.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        _ol_proj_.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        _ol_proj_.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        _ol_proj_.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857')
       ]]);
     });
 
     it('can create a feature with a specific geometryName', function() {
-      var feature = new ol.format.EsriJSON({geometryName: 'the_geom'}).
+      var feature = new _ol_format_EsriJSON_({geometryName: 'the_geom'}).
           readFeature(pointEsriJSON);
       expect(feature.getGeometryName()).to.be('the_geom');
-      expect(feature.getGeometry()).to.be.an(ol.geom.Point);
+      expect(feature.getGeometry()).to.be.an(_ol_geom_Point_);
     });
 
   });
@@ -284,16 +284,16 @@ describe('ol.format.EsriJSON', function() {
       expect(array.length).to.be(2);
 
       var first = array[0];
-      expect(first).to.be.a(ol.Feature);
+      expect(first).to.be.a(_ol_Feature_);
       expect(first.get('LINK_ID')).to.be(573730499);
       var firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(ol.geom.LineString);
+      expect(firstGeom).to.be.a(_ol_geom_LineString_);
 
       var second = array[1];
-      expect(second).to.be.a(ol.Feature);
+      expect(second).to.be.a(_ol_Feature_);
       expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
       var secondGeom = second.getGeometry();
-      expect(secondGeom).to.be.a(ol.geom.LineString);
+      expect(secondGeom).to.be.a(_ol_geom_LineString_);
     });
 
     it('parses ksfields.geojson', function(done) {
@@ -302,23 +302,23 @@ describe('ol.format.EsriJSON', function() {
         expect(result.length).to.be(9);
 
         var first = result[0];
-        expect(first).to.be.a(ol.Feature);
+        expect(first).to.be.a(_ol_Feature_);
         expect(first.get('field_name')).to.be('EUDORA');
         expect(first.getId()).to.be(6406);
         var firstGeom = first.getGeometry();
-        expect(firstGeom).to.be.a(ol.geom.Polygon);
-        expect(ol.extent.equals(firstGeom.getExtent(), [
+        expect(firstGeom).to.be.a(_ol_geom_Polygon_);
+        expect(_ol_extent_.equals(firstGeom.getExtent(), [
           -10585772.743554419, 4712365.161160459,
           -10579560.16462974, 4716567.373073828
         ])).to.be(true);
 
         var last = result[8];
-        expect(last).to.be.a(ol.Feature);
+        expect(last).to.be.a(_ol_Feature_);
         expect(last.get('field_name')).to.be('FEAGINS');
         expect(last.getId()).to.be(6030);
         var lastGeom = last.getGeometry();
-        expect(lastGeom).to.be.a(ol.geom.Polygon);
-        expect(ol.extent.equals(lastGeom.getExtent(), [
+        expect(lastGeom).to.be.a(_ol_geom_Polygon_);
+        expect(_ol_extent_.equals(lastGeom.getExtent(), [
           -10555714.026858449, 4576511.565880965,
           -10553671.199322715, 4578554.9934867555
         ])).to.be(true);
@@ -338,7 +338,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Point);
+      expect(obj).to.be.a(_ol_geom_Point_);
       expect(obj.getCoordinates()).to.eql([10, 20]);
       expect(obj.getLayout()).to.eql('XY');
     });
@@ -351,7 +351,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Point);
+      expect(obj).to.be.a(_ol_geom_Point_);
       expect(obj.getCoordinates()).to.eql([10, 20, 10]);
       expect(obj.getLayout()).to.eql('XYZ');
     });
@@ -364,7 +364,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Point);
+      expect(obj).to.be.a(_ol_geom_Point_);
       expect(obj.getCoordinates()).to.eql([10, 20, 10]);
       expect(obj.getLayout()).to.eql('XYM');
     });
@@ -378,7 +378,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Point);
+      expect(obj).to.be.a(_ol_geom_Point_);
       expect(obj.getCoordinates()).to.eql([10, 20, 0, 10]);
       expect(obj.getLayout()).to.eql('XYZM');
     });
@@ -389,7 +389,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPoint);
+      expect(obj).to.be.a(_ol_geom_MultiPoint_);
       expect(obj.getCoordinates()).to.eql([[10, 20], [20, 30]]);
       expect(obj.getLayout()).to.eql('XY');
     });
@@ -401,7 +401,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPoint);
+      expect(obj).to.be.a(_ol_geom_MultiPoint_);
       expect(obj.getCoordinates()).to.eql([[10, 20, 0], [20, 30, 0]]);
       expect(obj.getLayout()).to.eql('XYZ');
     });
@@ -413,7 +413,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPoint);
+      expect(obj).to.be.a(_ol_geom_MultiPoint_);
       expect(obj.getCoordinates()).to.eql([[10, 20, 0], [20, 30, 0]]);
       expect(obj.getLayout()).to.eql('XYM');
     });
@@ -426,7 +426,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPoint);
+      expect(obj).to.be.a(_ol_geom_MultiPoint_);
       expect(obj.getCoordinates()).to.eql([[10, 20, 0, 1], [20, 30, 0, 1]]);
       expect(obj.getLayout()).to.eql('XYZM');
     });
@@ -437,7 +437,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.LineString);
+      expect(obj).to.be.a(_ol_geom_LineString_);
       expect(obj.getCoordinates()).to.eql([[10, 20], [30, 40]]);
       expect(obj.getLayout()).to.eql('XY');
     });
@@ -449,7 +449,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.LineString);
+      expect(obj).to.be.a(_ol_geom_LineString_);
       expect(obj.getLayout()).to.eql('XYZ');
       expect(obj.getCoordinates()).to.eql([[10, 20, 1534], [30, 40, 1420]]);
     });
@@ -461,7 +461,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.LineString);
+      expect(obj).to.be.a(_ol_geom_LineString_);
       expect(obj.getLayout()).to.eql('XYM');
       expect(obj.getCoordinates()).to.eql([[10, 20, 1534], [30, 40, 1420]]);
     });
@@ -474,7 +474,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.LineString);
+      expect(obj).to.be.a(_ol_geom_LineString_);
       expect(obj.getLayout()).to.eql('XYZM');
       expect(obj.getCoordinates()).to.eql([[10, 20, 1534, 1],
         [30, 40, 1420, 2]]);
@@ -489,7 +489,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiLineString);
+      expect(obj).to.be.a(_ol_geom_MultiLineString_);
       expect(obj.getCoordinates()).to.eql([
         [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
         [[105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]]
@@ -507,7 +507,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiLineString);
+      expect(obj).to.be.a(_ol_geom_MultiLineString_);
       expect(obj.getCoordinates()).to.eql([
         [[102.0, 0.0, 1], [103.0, 1.0, 1], [104.0, 0.0, 1], [105.0, 1.0, 1]],
         [[105.0, 3.0, 1], [106.0, 4.0, 1], [107.0, 3.0, 1], [108.0, 4.0, 1]]
@@ -525,7 +525,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiLineString);
+      expect(obj).to.be.a(_ol_geom_MultiLineString_);
       expect(obj.getCoordinates()).to.eql([
         [[102.0, 0.0, 1], [103.0, 1.0, 1], [104.0, 0.0, 1], [105.0, 1.0, 1]],
         [[105.0, 3.0, 1], [106.0, 4.0, 1], [107.0, 3.0, 1], [108.0, 4.0, 1]]
@@ -544,7 +544,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiLineString);
+      expect(obj).to.be.a(_ol_geom_MultiLineString_);
       expect(obj.getCoordinates()).to.eql([
         [[102, 0, 1, 2], [103, 1, 1, 2], [104, 0, 1, 2], [105, 1, 1, 2]],
         [[105, 3, 1, 2], [106, 4, 1, 2], [107, 3, 1, 2], [108, 4, 1, 2]]
@@ -560,14 +560,14 @@ describe('ol.format.EsriJSON', function() {
         rings: [outer, inner1, inner2]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Polygon);
+      expect(obj).to.be.a(_ol_geom_Polygon_);
       expect(obj.getLayout()).to.eql('XY');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(2);
-      expect(rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(rings[2]).to.be.a(ol.geom.LinearRing);
+      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
     });
 
     it('parses XYZ polygon', function() {
@@ -579,14 +579,14 @@ describe('ol.format.EsriJSON', function() {
         hasZ: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Polygon);
+      expect(obj).to.be.a(_ol_geom_Polygon_);
       expect(obj.getLayout()).to.eql('XYZ');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(3);
-      expect(rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(rings[2]).to.be.a(ol.geom.LinearRing);
+      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
     });
 
     it('parses XYM polygon', function() {
@@ -598,14 +598,14 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Polygon);
+      expect(obj).to.be.a(_ol_geom_Polygon_);
       expect(obj.getLayout()).to.eql('XYM');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(3);
-      expect(rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(rings[2]).to.be.a(ol.geom.LinearRing);
+      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
     });
 
     it('parses XYZM polygon', function() {
@@ -627,14 +627,14 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.Polygon);
+      expect(obj).to.be.a(_ol_geom_Polygon_);
       expect(obj.getLayout()).to.eql('XYZM');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(4);
-      expect(rings[0]).to.be.a(ol.geom.LinearRing);
-      expect(rings[1]).to.be.a(ol.geom.LinearRing);
-      expect(rings[2]).to.be.a(ol.geom.LinearRing);
+      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
     });
 
     it('parses XY multipolygon', function() {
@@ -646,7 +646,7 @@ describe('ol.format.EsriJSON', function() {
         ]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPolygon);
+      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
       expect(obj.getLayout()).to.eql('XY');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2],
@@ -665,7 +665,7 @@ describe('ol.format.EsriJSON', function() {
         hasZ: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPolygon);
+      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
       expect(obj.getLayout()).to.eql('XYZ');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
@@ -684,7 +684,7 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPolygon);
+      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
       expect(obj.getLayout()).to.eql('XYM');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
@@ -704,7 +704,7 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(ol.geom.MultiPolygon);
+      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
       expect(obj.getLayout()).to.eql('XYZM');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0, 1], [1, 4, 0, 1], [4, 3, 0, 1], [3, 0, 0, 1]],
@@ -746,16 +746,16 @@ describe('ol.format.EsriJSON', function() {
       expect(features.length).to.be(2);
 
       var first = features[0];
-      expect(first).to.be.a(ol.Feature);
+      expect(first).to.be.a(_ol_Feature_);
       expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(ol.geom.Point);
+      expect(first.getGeometry()).to.be.a(_ol_geom_Point_);
 
       var second = features[1];
-      expect(second).to.be.a(ol.Feature);
+      expect(second).to.be.a(_ol_Feature_);
       expect(second.get('bam')).to.be('baz');
-      expect(second.getGeometry()).to.be.a(ol.geom.LineString);
+      expect(second.getGeometry()).to.be.a(_ol_geom_LineString_);
 
-      expect(format.readProjection(json)).to.be(ol.proj.get('EPSG:3857'));
+      expect(format.readProjection(json)).to.be(_ol_proj_.get('EPSG:3857'));
 
     });
 
@@ -764,28 +764,28 @@ describe('ol.format.EsriJSON', function() {
   describe('#writeGeometry', function() {
 
     it('encodes point', function() {
-      var point = new ol.geom.Point([10, 20]);
+      var point = new _ol_geom_Point_([10, 20]);
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYZ point', function() {
-      var point = new ol.geom.Point([10, 20, 0], 'XYZ');
+      var point = new _ol_geom_Point_([10, 20, 0], 'XYZ');
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYM point', function() {
-      var point = new ol.geom.Point([10, 20, 0], 'XYM');
+      var point = new _ol_geom_Point_([10, 20, 0], 'XYM');
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYZM point', function() {
-      var point = new ol.geom.Point([10, 20, 5, 0],
+      var point = new _ol_geom_Point_([10, 20, 5, 0],
           'XYZM');
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
@@ -793,14 +793,14 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes linestring', function() {
-      var linestring = new ol.geom.LineString([[10, 20], [30, 40]]);
+      var linestring = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       var esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYZ linestring', function() {
-      var linestring = new ol.geom.LineString([[10, 20, 1534], [30, 40, 1420]],
+      var linestring = new _ol_geom_LineString_([[10, 20, 1534], [30, 40, 1420]],
           'XYZ');
       var esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
@@ -808,7 +808,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM linestring', function() {
-      var linestring = new ol.geom.LineString([[10, 20, 1534], [30, 40, 1420]],
+      var linestring = new _ol_geom_LineString_([[10, 20, 1534], [30, 40, 1420]],
           'XYM');
       var esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
@@ -816,7 +816,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM linestring', function() {
-      var linestring = new ol.geom.LineString([[10, 20, 1534, 1],
+      var linestring = new _ol_geom_LineString_([[10, 20, 1534, 1],
         [30, 40, 1420, 1]],
       'XYZM');
       var esrijson = format.writeGeometry(linestring);
@@ -828,7 +828,7 @@ describe('ol.format.EsriJSON', function() {
       var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
       var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
       var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
-      var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
+      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2]);
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
           format.readGeometry(esrijson).getCoordinates());
@@ -838,7 +838,7 @@ describe('ol.format.EsriJSON', function() {
       var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
       var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
       var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
-      var polygon = new ol.geom.Polygon([outer, inner1, inner2],
+      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2],
           'XYZ');
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -849,7 +849,7 @@ describe('ol.format.EsriJSON', function() {
       var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
       var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
       var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
-      var polygon = new ol.geom.Polygon([outer, inner1, inner2],
+      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2],
           'XYM');
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -866,7 +866,7 @@ describe('ol.format.EsriJSON', function() {
       var inner2 = [
         [8, 8, 2, 1], [9, 8, 2, 2], [9, 9, 2, 1], [8, 9, 2, 1], [8, 8, 2, 1]
       ];
-      var polygon = new ol.geom.Polygon([outer, inner1, inner2],
+      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2],
           'XYZM');
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -874,14 +874,14 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes multipoint', function() {
-      var multipoint = new ol.geom.MultiPoint([[102.0, 0.0], [103.0, 1.0]]);
+      var multipoint = new _ol_geom_MultiPoint_([[102.0, 0.0], [103.0, 1.0]]);
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYZ multipoint', function() {
-      var multipoint = new ol.geom.MultiPoint([[102.0, 0.0, 3],
+      var multipoint = new _ol_geom_MultiPoint_([[102.0, 0.0, 3],
         [103.0, 1.0, 4]], 'XYZ');
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
@@ -889,7 +889,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM multipoint', function() {
-      var multipoint = new ol.geom.MultiPoint([[102.0, 0.0, 3],
+      var multipoint = new _ol_geom_MultiPoint_([[102.0, 0.0, 3],
         [103.0, 1.0, 4]], 'XYM');
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
@@ -897,7 +897,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM multipoint', function() {
-      var multipoint = new ol.geom.MultiPoint([[102.0, 0.0, 3, 1],
+      var multipoint = new _ol_geom_MultiPoint_([[102.0, 0.0, 3, 1],
         [103.0, 1.0, 4, 1]], 'XYZM');
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
@@ -905,7 +905,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes multilinestring', function() {
-      var multilinestring = new ol.geom.MultiLineString([
+      var multilinestring = new _ol_geom_MultiLineString_([
         [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
         [[105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]]
       ]);
@@ -915,7 +915,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZ multilinestring', function() {
-      var multilinestring = new ol.geom.MultiLineString([
+      var multilinestring = new _ol_geom_MultiLineString_([
         [[102.0, 0.0, 1], [103.0, 1.0, 2], [104.0, 0.0, 3], [105.0, 1.0, 4]],
         [[105.0, 3.0, 1], [106.0, 4.0, 2], [107.0, 3.0, 3], [108.0, 4.0, 4]]
       ], 'XYZ');
@@ -925,7 +925,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM multilinestring', function() {
-      var multilinestring = new ol.geom.MultiLineString([
+      var multilinestring = new _ol_geom_MultiLineString_([
         [[102.0, 0.0, 1], [103.0, 1.0, 2], [104.0, 0.0, 3], [105.0, 1.0, 4]],
         [[105.0, 3.0, 1], [106.0, 4.0, 2], [107.0, 3.0, 3], [108.0, 4.0, 4]]
       ], 'XYM');
@@ -935,7 +935,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM multilinestring', function() {
-      var multilinestring = new ol.geom.MultiLineString([
+      var multilinestring = new _ol_geom_MultiLineString_([
         [[102.0, 0.0, 1, 0], [103.0, 1.0, 2, 2], [104.0, 0.0, 3, 1],
           [105.0, 1.0, 4, 2]],
         [[105.0, 3.0, 1, 0], [106.0, 4.0, 2, 1], [107.0, 3.0, 3, 1],
@@ -947,7 +947,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes multipolygon', function() {
-      var multipolygon = new ol.geom.MultiPolygon([
+      var multipolygon = new _ol_geom_MultiPolygon_([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2], [3, 3], [2, 3]]],
         [[[10, 1], [11, 5], [14, 3], [13, 0]]]
       ]);
@@ -957,7 +957,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZ multipolygon', function() {
-      var multipolygon = new ol.geom.MultiPolygon([
+      var multipolygon = new _ol_geom_MultiPolygon_([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
           [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
@@ -968,7 +968,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM multipolygon', function() {
-      var multipolygon = new ol.geom.MultiPolygon([
+      var multipolygon = new _ol_geom_MultiPolygon_([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
           [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
@@ -979,7 +979,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM multipolygon', function() {
-      var multipolygon = new ol.geom.MultiPolygon([
+      var multipolygon = new _ol_geom_MultiPolygon_([
         [[[0, 1, 0, 1], [1, 4, 0, 1], [4, 3, 0, 3], [3, 0, 0, 3]],
           [[2, 2, 0, 3], [3, 2, 0, 4],
             [3, 3, 0, 1], [2, 3, 0, 1]]],
@@ -991,7 +991,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('transforms and encodes a point', function() {
-      var point = new ol.geom.Point([2, 3]);
+      var point = new _ol_geom_Point_([2, 3]);
       var esrijson = format.writeGeometry(point, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
@@ -1050,15 +1050,15 @@ describe('ol.format.EsriJSON', function() {
 
     it('writes out a feature with a different geometryName correctly',
         function() {
-          var feature = new ol.Feature({'foo': 'bar'});
+          var feature = new _ol_Feature_({'foo': 'bar'});
           feature.setGeometryName('mygeom');
-          feature.setGeometry(new ol.geom.Point([5, 10]));
+          feature.setGeometry(new _ol_geom_Point_([5, 10]));
           var esrijson = format.writeFeaturesObject([feature]);
           expect(esrijson.features[0].attributes.mygeom).to.eql(undefined);
         });
 
     it('writes out a feature without properties correctly', function() {
-      var feature = new ol.Feature(new ol.geom.Point([5, 10]));
+      var feature = new _ol_Feature_(new _ol_geom_Point_([5, 10]));
       var esrijson = format.writeFeatureObject(feature);
       expect(esrijson.attributes).to.eql({});
     });

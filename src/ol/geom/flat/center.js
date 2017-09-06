@@ -1,6 +1,5 @@
-goog.provide('ol.geom.flat.center');
-
-goog.require('ol.extent');
+import _ol_extent_ from '../../extent';
+var _ol_geom_flat_center_ = {};
 
 
 /**
@@ -10,16 +9,17 @@ goog.require('ol.extent');
  * @param {number} stride Stride.
  * @return {Array.<number>} Flat centers.
  */
-ol.geom.flat.center.linearRingss = function(flatCoordinates, offset, endss, stride) {
+_ol_geom_flat_center_.linearRingss = function(flatCoordinates, offset, endss, stride) {
   var flatCenters = [];
   var i, ii;
-  var extent = ol.extent.createEmpty();
+  var extent = _ol_extent_.createEmpty();
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    extent = ol.extent.createOrUpdateFromFlatCoordinates(
+    extent = _ol_extent_.createOrUpdateFromFlatCoordinates(
         flatCoordinates, offset, ends[0], stride);
     flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);
     offset = ends[ends.length - 1];
   }
   return flatCenters;
 };
+export default _ol_geom_flat_center_;

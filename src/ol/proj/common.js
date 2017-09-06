@@ -1,6 +1,5 @@
-goog.provide('ol.proj.common');
-
-goog.require('ol.proj');
+import _ol_proj_ from '../proj';
+var _ol_proj_common_ = {};
 
 
 /**
@@ -10,4 +9,5 @@ goog.require('ol.proj');
  * @deprecated This function is no longer necessary.
  * @api
  */
-ol.proj.common.add = ol.proj.addCommon;
+_ol_proj_common_.add = _ol_proj_.addCommon;
+export default _ol_proj_common_;

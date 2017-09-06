@@ -1,4 +1,4 @@
-goog.provide('ol.geom.flat.transform');
+var _ol_geom_flat_transform_ = {};
 
 
 /**
@@ -10,7 +10,7 @@ goog.provide('ol.geom.flat.transform');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.geom.flat.transform.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
+_ol_geom_flat_transform_.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
   var dest = opt_dest ? opt_dest : [];
   var i = 0;
   var j;
@@ -37,7 +37,7 @@ ol.geom.flat.transform.transform2D = function(flatCoordinates, offset, end, stri
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.geom.flat.transform.rotate = function(flatCoordinates, offset, end, stride, angle, anchor, opt_dest) {
+_ol_geom_flat_transform_.rotate = function(flatCoordinates, offset, end, stride, angle, anchor, opt_dest) {
   var dest = opt_dest ? opt_dest : [];
   var cos = Math.cos(angle);
   var sin = Math.sin(angle);
@@ -72,7 +72,7 @@ ol.geom.flat.transform.rotate = function(flatCoordinates, offset, end, stride, a
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.geom.flat.transform.scale = function(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_dest) {
+_ol_geom_flat_transform_.scale = function(flatCoordinates, offset, end, stride, sx, sy, anchor, opt_dest) {
   var dest = opt_dest ? opt_dest : [];
   var anchorX = anchor[0];
   var anchorY = anchor[1];
@@ -103,7 +103,7 @@ ol.geom.flat.transform.scale = function(flatCoordinates, offset, end, stride, sx
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.geom.flat.transform.translate = function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+_ol_geom_flat_transform_.translate = function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
   var dest = opt_dest ? opt_dest : [];
   var i = 0;
   var j, k;
@@ -119,3 +119,4 @@ ol.geom.flat.transform.translate = function(flatCoordinates, offset, end, stride
   }
   return dest;
 };
+export default _ol_geom_flat_transform_;

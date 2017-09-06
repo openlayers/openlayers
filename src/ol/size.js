@@ -1,4 +1,4 @@
-goog.provide('ol.size');
+var _ol_size_ = {};
 
 
 /**
@@ -8,7 +8,7 @@ goog.provide('ol.size');
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} The buffered size.
  */
-ol.size.buffer = function(size, buffer, opt_size) {
+_ol_size_.buffer = function(size, buffer, opt_size) {
   if (opt_size === undefined) {
     opt_size = [0, 0];
   }
@@ -23,7 +23,7 @@ ol.size.buffer = function(size, buffer, opt_size) {
  * @param {ol.Size} size The size to test.
  * @return {boolean} The size has a positive area.
  */
-ol.size.hasArea = function(size) {
+_ol_size_.hasArea = function(size) {
   return size[0] > 0 && size[1] > 0;
 };
 
@@ -35,7 +35,7 @@ ol.size.hasArea = function(size) {
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} The scaled size.
  */
-ol.size.scale = function(size, ratio, opt_size) {
+_ol_size_.scale = function(size, ratio, opt_size) {
   if (opt_size === undefined) {
     opt_size = [0, 0];
   }
@@ -54,7 +54,7 @@ ol.size.scale = function(size, ratio, opt_size) {
  * @return {ol.Size} Size.
  * @api
  */
-ol.size.toSize = function(size, opt_size) {
+_ol_size_.toSize = function(size, opt_size) {
   if (Array.isArray(size)) {
     return size;
   } else {
@@ -66,3 +66,4 @@ ol.size.toSize = function(size, opt_size) {
     return opt_size;
   }
 };
+export default _ol_size_;

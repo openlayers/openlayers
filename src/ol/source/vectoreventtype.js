@@ -1,9 +1,7 @@
-goog.provide('ol.source.VectorEventType');
-
 /**
  * @enum {string}
  */
-ol.source.VectorEventType = {
+var _ol_source_VectorEventType_ = {
   /**
    * Triggered when a feature is added to the source.
    * @event ol.source.Vector.Event#addfeature
@@ -33,3 +31,5 @@ ol.source.VectorEventType = {
    */
   REMOVEFEATURE: 'removefeature'
 };
+
+export default _ol_source_VectorEventType_;

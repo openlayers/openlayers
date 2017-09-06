@@ -1,4 +1,4 @@
-goog.provide('ol.geom.flat.flip');
+var _ol_geom_flat_flip_ = {};
 
 
 /**
@@ -10,7 +10,7 @@ goog.provide('ol.geom.flat.flip');
  * @param {number=} opt_destOffset Destination offset.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.flip.flipXY = function(flatCoordinates, offset, end, stride, opt_dest, opt_destOffset) {
+_ol_geom_flat_flip_.flipXY = function(flatCoordinates, offset, end, stride, opt_dest, opt_destOffset) {
   var dest, destOffset;
   if (opt_dest !== undefined) {
     dest = opt_dest;
@@ -31,3 +31,4 @@ ol.geom.flat.flip.flipXY = function(flatCoordinates, offset, end, stride, opt_de
   dest.length = destOffset;
   return dest;
 };
+export default _ol_geom_flat_flip_;

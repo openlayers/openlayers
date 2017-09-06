@@ -1,15 +1,12 @@
-goog.provide('ol.render.webgl.TextReplay');
-
-goog.require('ol');
-goog.require('ol.colorlike');
-goog.require('ol.dom');
-goog.require('ol.has');
-goog.require('ol.render.replay');
-goog.require('ol.render.webgl');
-goog.require('ol.render.webgl.TextureReplay');
-goog.require('ol.style.AtlasManager');
-goog.require('ol.webgl.Buffer');
-
+import _ol_ from '../../index';
+import _ol_colorlike_ from '../../colorlike';
+import _ol_dom_ from '../../dom';
+import _ol_has_ from '../../has';
+import _ol_render_replay_ from '../replay';
+import _ol_render_webgl_ from '../webgl';
+import _ol_render_webgl_TextureReplay_ from '../webgl/texturereplay';
+import _ol_style_AtlasManager_ from '../../style/atlasmanager';
+import _ol_webgl_Buffer_ from '../../webgl/buffer';
 
 /**
  * @constructor
@@ -18,8 +15,8 @@ goog.require('ol.webgl.Buffer');
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.TextReplay = function(tolerance, maxExtent) {
-  ol.render.webgl.TextureReplay.call(this, tolerance, maxExtent);
+var _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
+  _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -37,7 +34,7 @@ ol.render.webgl.TextReplay = function(tolerance, maxExtent) {
    * @private
    * @type {HTMLCanvasElement}
    */
-  this.measureCanvas_ = ol.dom.createCanvasContext2D(0, 0).canvas;
+  this.measureCanvas_ = _ol_dom_.createCanvasContext2D(0, 0).canvas;
 
   /**
    * @private
@@ -112,13 +109,14 @@ ol.render.webgl.TextReplay = function(tolerance, maxExtent) {
   this.opacity = 1;
 
 };
-ol.inherits(ol.render.webgl.TextReplay, ol.render.webgl.TextureReplay);
+
+_ol_.inherits(_ol_render_webgl_TextReplay_, _ol_render_webgl_TextureReplay_);
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.TextReplay.prototype.drawText = function(flatCoordinates, offset,
+_ol_render_webgl_TextReplay_.prototype.drawText = function(flatCoordinates, offset,
     end, stride, geometry, feature) {
   if (this.text_) {
     this.startIndices.push(this.indices.length);
@@ -158,7 +156,7 @@ ol.render.webgl.TextReplay.prototype.drawText = function(flatCoordinates, offset
             this.images_.push(image);
           } else {
             currentImage = this.images_[this.images_.length - 1];
-            if (ol.getUid(currentImage) != ol.getUid(image)) {
+            if (_ol_.getUid(currentImage) != _ol_.getUid(image)) {
               this.groupIndices.push(this.indices.length);
               this.images_.push(image);
             }
@@ -178,7 +176,7 @@ ol.render.webgl.TextReplay.prototype.drawText = function(flatCoordinates, offset
  * @param {Array.<string>} lines Label to draw split to lines.
  * @return {Array.<number>} Size of the label in pixels.
  */
-ol.render.webgl.TextReplay.prototype.getTextSize_ = function(lines) {
+_ol_render_webgl_TextReplay_.prototype.getTextSize_ = function(lines) {
   var self = this;
   var glyphAtlas = this.currAtlas_;
   var textHeight = lines.length * glyphAtlas.height;
@@ -209,7 +207,7 @@ ol.render.webgl.TextReplay.prototype.getTextSize_ = function(lines) {
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-ol.render.webgl.TextReplay.prototype.drawText_ = function(flatCoordinates, offset,
+_ol_render_webgl_TextReplay_.prototype.drawText_ = function(flatCoordinates, offset,
     end, stride) {
   var i, ii;
   for (i = offset, ii = end; i < ii; i += stride) {
@@ -222,7 +220,7 @@ ol.render.webgl.TextReplay.prototype.drawText_ = function(flatCoordinates, offse
  * @private
  * @param {string} char Character.
  */
-ol.render.webgl.TextReplay.prototype.addCharToAtlas_ = function(char) {
+_ol_render_webgl_TextReplay_.prototype.addCharToAtlas_ = function(char) {
   if (char.length === 1) {
     var glyphAtlas = this.currAtlas_;
     var state = this.state_;
@@ -242,7 +240,7 @@ ol.render.webgl.TextReplay.prototype.addCharToAtlas_ = function(char) {
           ctx.miterLimit = /** @type {number} */ (state.miterLimit);
           ctx.textAlign = 'left';
           ctx.textBaseline = 'top';
-          if (ol.has.CANVAS_LINE_DASH && state.lineDash) {
+          if (_ol_has_.CANVAS_LINE_DASH && state.lineDash) {
             //FIXME: use pixelRatio
             ctx.setLineDash(state.lineDash);
             ctx.lineDashOffset = /** @type {number} */ (state.lineDashOffset);
@@ -272,17 +270,17 @@ ol.render.webgl.TextReplay.prototype.addCharToAtlas_ = function(char) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.TextReplay.prototype.finish = function(context) {
+_ol_render_webgl_TextReplay_.prototype.finish = function(context) {
   var gl = context.getGL();
 
   this.groupIndices.push(this.indices.length);
   this.hitDetectionGroupIndices = this.groupIndices;
 
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
 
   // create textures
   /** @type {Object.<string, WebGLTexture>} */
@@ -310,14 +308,14 @@ ol.render.webgl.TextReplay.prototype.finish = function(context) {
   this.images_ = null;
   this.atlases_ = {};
   this.currAtlas_ = undefined;
-  ol.render.webgl.TextureReplay.prototype.finish.call(this, context);
+  _ol_render_webgl_TextureReplay_.prototype.finish.call(this, context);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.TextReplay.prototype.setTextStyle = function(textStyle) {
+_ol_render_webgl_TextReplay_.prototype.setTextStyle = function(textStyle) {
   var state = this.state_;
   var textFillStyle = textStyle.getFill();
   var textStrokeStyle = textStyle.getStroke();
@@ -328,33 +326,33 @@ ol.render.webgl.TextReplay.prototype.setTextStyle = function(textStyle) {
       state.fillColor = null;
     } else {
       var textFillStyleColor = textFillStyle.getColor();
-      state.fillColor = ol.colorlike.asColorLike(textFillStyleColor ?
-        textFillStyleColor : ol.render.webgl.defaultFillStyle);
+      state.fillColor = _ol_colorlike_.asColorLike(textFillStyleColor ?
+        textFillStyleColor : _ol_render_webgl_.defaultFillStyle);
     }
     if (!textStrokeStyle) {
       state.strokeColor = null;
       state.lineWidth = 0;
     } else {
       var textStrokeStyleColor = textStrokeStyle.getColor();
-      state.strokeColor = ol.colorlike.asColorLike(textStrokeStyleColor ?
-        textStrokeStyleColor : ol.render.webgl.defaultStrokeStyle);
-      state.lineWidth = textStrokeStyle.getWidth() || ol.render.webgl.defaultLineWidth;
-      state.lineCap = textStrokeStyle.getLineCap() || ol.render.webgl.defaultLineCap;
-      state.lineDashOffset = textStrokeStyle.getLineDashOffset() || ol.render.webgl.defaultLineDashOffset;
-      state.lineJoin = textStrokeStyle.getLineJoin() || ol.render.webgl.defaultLineJoin;
-      state.miterLimit = textStrokeStyle.getMiterLimit() || ol.render.webgl.defaultMiterLimit;
+      state.strokeColor = _ol_colorlike_.asColorLike(textStrokeStyleColor ?
+        textStrokeStyleColor : _ol_render_webgl_.defaultStrokeStyle);
+      state.lineWidth = textStrokeStyle.getWidth() || _ol_render_webgl_.defaultLineWidth;
+      state.lineCap = textStrokeStyle.getLineCap() || _ol_render_webgl_.defaultLineCap;
+      state.lineDashOffset = textStrokeStyle.getLineDashOffset() || _ol_render_webgl_.defaultLineDashOffset;
+      state.lineJoin = textStrokeStyle.getLineJoin() || _ol_render_webgl_.defaultLineJoin;
+      state.miterLimit = textStrokeStyle.getMiterLimit() || _ol_render_webgl_.defaultMiterLimit;
       var lineDash = textStrokeStyle.getLineDash();
-      state.lineDash = lineDash ? lineDash.slice() : ol.render.webgl.defaultLineDash;
+      state.lineDash = lineDash ? lineDash.slice() : _ol_render_webgl_.defaultLineDash;
     }
-    state.font = textStyle.getFont() || ol.render.webgl.defaultFont;
+    state.font = textStyle.getFont() || _ol_render_webgl_.defaultFont;
     state.scale = textStyle.getScale() || 1;
     this.text_ = /** @type {string} */ (textStyle.getText());
-    var textAlign = ol.render.replay.TEXT_ALIGN[textStyle.getTextAlign()];
-    var textBaseline = ol.render.replay.TEXT_ALIGN[textStyle.getTextBaseline()];
+    var textAlign = _ol_render_replay_.TEXT_ALIGN[textStyle.getTextAlign()];
+    var textBaseline = _ol_render_replay_.TEXT_ALIGN[textStyle.getTextBaseline()];
     this.textAlign_ = textAlign === undefined ?
-      ol.render.webgl.defaultTextAlign : textAlign;
+      _ol_render_webgl_.defaultTextAlign : textAlign;
     this.textBaseline_ = textBaseline === undefined ?
-      ol.render.webgl.defaultTextBaseline : textBaseline;
+      _ol_render_webgl_.defaultTextBaseline : textBaseline;
     this.offsetX_ = textStyle.getOffsetX() || 0;
     this.offsetY_ = textStyle.getOffsetY() || 0;
     this.rotateWithView = !!textStyle.getRotateWithView();
@@ -370,7 +368,7 @@ ol.render.webgl.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {Object} state Font attributes.
  * @return {ol.WebglGlyphAtlas} Glyph atlas.
  */
-ol.render.webgl.TextReplay.prototype.getAtlas_ = function(state) {
+_ol_render_webgl_TextReplay_.prototype.getAtlas_ = function(state) {
   var params = [];
   var i;
   for (i in state) {
@@ -390,7 +388,7 @@ ol.render.webgl.TextReplay.prototype.getAtlas_ = function(state) {
         state.lineWidth / 2) * state.scale);
 
     this.atlases_[hash] = {
-      atlas: new ol.style.AtlasManager({
+      atlas: new _ol_style_AtlasManager_({
         space: state.lineWidth + 1
       }),
       width: {},
@@ -406,7 +404,7 @@ ol.render.webgl.TextReplay.prototype.getAtlas_ = function(state) {
  * @param {Array.<string|number>} params Array of parameters.
  * @return {string} Hash string.
  */
-ol.render.webgl.TextReplay.prototype.calculateHash_ = function(params) {
+_ol_render_webgl_TextReplay_.prototype.calculateHash_ = function(params) {
   //TODO: Create a more performant, reliable, general hash function.
   var i, ii;
   var hash = '';
@@ -420,7 +418,7 @@ ol.render.webgl.TextReplay.prototype.calculateHash_ = function(params) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.TextReplay.prototype.getTextures = function(opt_all) {
+_ol_render_webgl_TextReplay_.prototype.getTextures = function(opt_all) {
   return this.textures_;
 };
 
@@ -428,6 +426,7 @@ ol.render.webgl.TextReplay.prototype.getTextures = function(opt_all) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.TextReplay.prototype.getHitDetectionTextures = function() {
+_ol_render_webgl_TextReplay_.prototype.getHitDetectionTextures = function() {
   return this.textures_;
 };
+export default _ol_render_webgl_TextReplay_;

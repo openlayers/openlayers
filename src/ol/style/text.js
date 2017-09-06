@@ -1,8 +1,4 @@
-goog.provide('ol.style.Text');
-
-
-goog.require('ol.style.Fill');
-
+import _ol_style_Fill_ from '../style/fill';
 
 /**
  * @classdesc
@@ -12,7 +8,7 @@ goog.require('ol.style.Fill');
  * @param {olx.style.TextOptions=} opt_options Options.
  * @api
  */
-ol.style.Text = function(opt_options) {
+var _ol_style_Text_ = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -63,7 +59,7 @@ ol.style.Text = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
-    new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
+    new _ol_style_Fill_({color: _ol_style_Text_.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
@@ -92,7 +88,7 @@ ol.style.Text = function(opt_options) {
  * @const {string}
  * @private
  */
-ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
+_ol_style_Text_.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
@@ -100,8 +96,8 @@ ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
  * @return {ol.style.Text} The cloned style.
  * @api
  */
-ol.style.Text.prototype.clone = function() {
-  return new ol.style.Text({
+_ol_style_Text_.prototype.clone = function() {
+  return new _ol_style_Text_({
     font: this.getFont(),
     rotation: this.getRotation(),
     rotateWithView: this.getRotateWithView(),
@@ -122,7 +118,7 @@ ol.style.Text.prototype.clone = function() {
  * @return {string|undefined} Font.
  * @api
  */
-ol.style.Text.prototype.getFont = function() {
+_ol_style_Text_.prototype.getFont = function() {
   return this.font_;
 };
 
@@ -132,7 +128,7 @@ ol.style.Text.prototype.getFont = function() {
  * @return {number} Horizontal text offset.
  * @api
  */
-ol.style.Text.prototype.getOffsetX = function() {
+_ol_style_Text_.prototype.getOffsetX = function() {
   return this.offsetX_;
 };
 
@@ -142,7 +138,7 @@ ol.style.Text.prototype.getOffsetX = function() {
  * @return {number} Vertical text offset.
  * @api
  */
-ol.style.Text.prototype.getOffsetY = function() {
+_ol_style_Text_.prototype.getOffsetY = function() {
   return this.offsetY_;
 };
 
@@ -152,7 +148,7 @@ ol.style.Text.prototype.getOffsetY = function() {
  * @return {ol.style.Fill} Fill style.
  * @api
  */
-ol.style.Text.prototype.getFill = function() {
+_ol_style_Text_.prototype.getFill = function() {
   return this.fill_;
 };
 
@@ -162,7 +158,7 @@ ol.style.Text.prototype.getFill = function() {
  * @return {boolean|undefined} Rotate with map.
  * @api
  */
-ol.style.Text.prototype.getRotateWithView = function() {
+_ol_style_Text_.prototype.getRotateWithView = function() {
   return this.rotateWithView_;
 };
 
@@ -172,7 +168,7 @@ ol.style.Text.prototype.getRotateWithView = function() {
  * @return {number|undefined} Rotation.
  * @api
  */
-ol.style.Text.prototype.getRotation = function() {
+_ol_style_Text_.prototype.getRotation = function() {
   return this.rotation_;
 };
 
@@ -182,7 +178,7 @@ ol.style.Text.prototype.getRotation = function() {
  * @return {number|undefined} Scale.
  * @api
  */
-ol.style.Text.prototype.getScale = function() {
+_ol_style_Text_.prototype.getScale = function() {
   return this.scale_;
 };
 
@@ -192,7 +188,7 @@ ol.style.Text.prototype.getScale = function() {
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
-ol.style.Text.prototype.getStroke = function() {
+_ol_style_Text_.prototype.getStroke = function() {
   return this.stroke_;
 };
 
@@ -202,7 +198,7 @@ ol.style.Text.prototype.getStroke = function() {
  * @return {string|undefined} Text.
  * @api
  */
-ol.style.Text.prototype.getText = function() {
+_ol_style_Text_.prototype.getText = function() {
   return this.text_;
 };
 
@@ -212,7 +208,7 @@ ol.style.Text.prototype.getText = function() {
  * @return {string|undefined} Text align.
  * @api
  */
-ol.style.Text.prototype.getTextAlign = function() {
+_ol_style_Text_.prototype.getTextAlign = function() {
   return this.textAlign_;
 };
 
@@ -222,7 +218,7 @@ ol.style.Text.prototype.getTextAlign = function() {
  * @return {string|undefined} Text baseline.
  * @api
  */
-ol.style.Text.prototype.getTextBaseline = function() {
+_ol_style_Text_.prototype.getTextBaseline = function() {
   return this.textBaseline_;
 };
 
@@ -233,7 +229,7 @@ ol.style.Text.prototype.getTextBaseline = function() {
  * @param {string|undefined} font Font.
  * @api
  */
-ol.style.Text.prototype.setFont = function(font) {
+_ol_style_Text_.prototype.setFont = function(font) {
   this.font_ = font;
 };
 
@@ -244,7 +240,7 @@ ol.style.Text.prototype.setFont = function(font) {
  * @param {number} offsetX Horizontal text offset.
  * @api
  */
-ol.style.Text.prototype.setOffsetX = function(offsetX) {
+_ol_style_Text_.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
 };
 
@@ -255,7 +251,7 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
  * @param {number} offsetY Vertical text offset.
  * @api
  */
-ol.style.Text.prototype.setOffsetY = function(offsetY) {
+_ol_style_Text_.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
 };
 
@@ -266,7 +262,7 @@ ol.style.Text.prototype.setOffsetY = function(offsetY) {
  * @param {ol.style.Fill} fill Fill style.
  * @api
  */
-ol.style.Text.prototype.setFill = function(fill) {
+_ol_style_Text_.prototype.setFill = function(fill) {
   this.fill_ = fill;
 };
 
@@ -277,7 +273,7 @@ ol.style.Text.prototype.setFill = function(fill) {
  * @param {number|undefined} rotation Rotation.
  * @api
  */
-ol.style.Text.prototype.setRotation = function(rotation) {
+_ol_style_Text_.prototype.setRotation = function(rotation) {
   this.rotation_ = rotation;
 };
 
@@ -288,7 +284,7 @@ ol.style.Text.prototype.setRotation = function(rotation) {
  * @param {number|undefined} scale Scale.
  * @api
  */
-ol.style.Text.prototype.setScale = function(scale) {
+_ol_style_Text_.prototype.setScale = function(scale) {
   this.scale_ = scale;
 };
 
@@ -299,7 +295,7 @@ ol.style.Text.prototype.setScale = function(scale) {
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
  */
-ol.style.Text.prototype.setStroke = function(stroke) {
+_ol_style_Text_.prototype.setStroke = function(stroke) {
   this.stroke_ = stroke;
 };
 
@@ -310,7 +306,7 @@ ol.style.Text.prototype.setStroke = function(stroke) {
  * @param {string|undefined} text Text.
  * @api
  */
-ol.style.Text.prototype.setText = function(text) {
+_ol_style_Text_.prototype.setText = function(text) {
   this.text_ = text;
 };
 
@@ -321,7 +317,7 @@ ol.style.Text.prototype.setText = function(text) {
  * @param {string|undefined} textAlign Text align.
  * @api
  */
-ol.style.Text.prototype.setTextAlign = function(textAlign) {
+_ol_style_Text_.prototype.setTextAlign = function(textAlign) {
   this.textAlign_ = textAlign;
 };
 
@@ -332,6 +328,7 @@ ol.style.Text.prototype.setTextAlign = function(textAlign) {
  * @param {string|undefined} textBaseline Text baseline.
  * @api
  */
-ol.style.Text.prototype.setTextBaseline = function(textBaseline) {
+_ol_style_Text_.prototype.setTextBaseline = function(textBaseline) {
   this.textBaseline_ = textBaseline;
 };
+export default _ol_style_Text_;

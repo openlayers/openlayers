@@ -1,15 +1,12 @@
-goog.provide('ol.render.canvas.PolygonReplay');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.color');
-goog.require('ol.colorlike');
-goog.require('ol.extent');
-goog.require('ol.geom.flat.simplify');
-goog.require('ol.render.canvas');
-goog.require('ol.render.canvas.Instruction');
-goog.require('ol.render.canvas.Replay');
-
+import _ol_ from '../../index';
+import _ol_array_ from '../../array';
+import _ol_color_ from '../../color';
+import _ol_colorlike_ from '../../colorlike';
+import _ol_extent_ from '../../extent';
+import _ol_geom_flat_simplify_ from '../../geom/flat/simplify';
+import _ol_render_canvas_ from '../canvas';
+import _ol_render_canvas_Instruction_ from '../canvas/instruction';
+import _ol_render_canvas_Replay_ from '../canvas/replay';
 
 /**
  * @constructor
@@ -21,9 +18,9 @@ goog.require('ol.render.canvas.Replay');
  * @param {boolean} overlaps The replay can have overlapping geometries.
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+var _ol_render_canvas_PolygonReplay_ = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
+  _ol_render_canvas_Replay_.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
 
   /**
    * @private
@@ -70,7 +67,8 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, pixe
   };
 
 };
-ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
+
+_ol_.inherits(_ol_render_canvas_PolygonReplay_, _ol_render_canvas_Replay_);
 
 
 /**
@@ -81,12 +79,12 @@ ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
  * @private
  * @return {number} End.
  */
-ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
+_ol_render_canvas_PolygonReplay_.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
   var fill = state.fillStyle !== undefined;
   var stroke = state.strokeStyle != undefined;
   var numEnds = ends.length;
-  var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
+  var beginPathInstruction = [_ol_render_canvas_Instruction_.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
   for (var i = 0; i < numEnds; ++i) {
@@ -95,25 +93,25 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
     var myEnd = this.appendFlatCoordinates(
         flatCoordinates, offset, end, stride, true, !stroke);
     var moveToLineToInstruction =
-        [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
+        [_ol_render_canvas_Instruction_.MOVE_TO_LINE_TO, myBegin, myEnd];
     this.instructions.push(moveToLineToInstruction);
     this.hitDetectionInstructions.push(moveToLineToInstruction);
     if (stroke) {
       // Performance optimization: only call closePath() when we have a stroke.
       // Otherwise the ring is closed already (see appendFlatCoordinates above).
-      var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
+      var closePathInstruction = [_ol_render_canvas_Instruction_.CLOSE_PATH];
       this.instructions.push(closePathInstruction);
       this.hitDetectionInstructions.push(closePathInstruction);
     }
     offset = end;
   }
-  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  var fillInstruction = [_ol_render_canvas_Instruction_.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (fill) {
     this.instructions.push(fillInstruction);
   }
   if (stroke) {
-    var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
+    var strokeInstruction = [_ol_render_canvas_Instruction_.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
@@ -124,7 +122,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
+_ol_render_canvas_PolygonReplay_.prototype.drawCircle = function(circleGeometry, feature) {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -135,12 +133,12 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   this.beginGeometry(circleGeometry, feature);
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)
+    _ol_render_canvas_Instruction_.SET_FILL_STYLE,
+    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
@@ -150,17 +148,17 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false, false);
-  var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
-  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
+  var beginPathInstruction = [_ol_render_canvas_Instruction_.BEGIN_PATH];
+  var circleInstruction = [_ol_render_canvas_Instruction_.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  var fillInstruction = [_ol_render_canvas_Instruction_.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (state.fillStyle !== undefined) {
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
+    var strokeInstruction = [_ol_render_canvas_Instruction_.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
@@ -171,18 +169,18 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
+_ol_render_canvas_PolygonReplay_.prototype.drawPolygon = function(polygonGeometry, feature) {
   var state = this.state_;
   this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)]
+    _ol_render_canvas_Instruction_.SET_FILL_STYLE,
+    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)]
   );
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
@@ -198,7 +196,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
+_ol_render_canvas_PolygonReplay_.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -209,12 +207,12 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
   this.beginGeometry(multiPolygonGeometry, feature);
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)
+    _ol_render_canvas_Instruction_.SET_FILL_STYLE,
+    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
@@ -235,7 +233,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.finish = function() {
+_ol_render_canvas_PolygonReplay_.prototype.finish = function() {
   this.reverseHitDetectionInstructions();
   this.state_ = null;
   // We want to preserve topology when drawing polygons.  Polygons are
@@ -247,7 +245,7 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
     var coordinates = this.coordinates;
     var i, ii;
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
-      coordinates[i] = ol.geom.flat.simplify.snap(coordinates[i], tolerance);
+      coordinates[i] = _ol_geom_flat_simplify_.snap(coordinates[i], tolerance);
     }
   }
 };
@@ -256,12 +254,12 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
+_ol_render_canvas_PolygonReplay_.prototype.getBufferedMaxExtent = function() {
   if (!this.bufferedMaxExtent_) {
-    this.bufferedMaxExtent_ = ol.extent.clone(this.maxExtent);
+    this.bufferedMaxExtent_ = _ol_extent_.clone(this.maxExtent);
     if (this.maxLineWidth > 0) {
       var width = this.resolution * (this.maxLineWidth + 1) / 2;
-      ol.extent.buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
+      _ol_extent_.buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
     }
   }
   return this.bufferedMaxExtent_;
@@ -271,37 +269,37 @@ ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+_ol_render_canvas_PolygonReplay_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   var state = this.state_;
   if (fillStyle) {
     var fillStyleColor = fillStyle.getColor();
-    state.fillStyle = ol.colorlike.asColorLike(fillStyleColor ?
-      fillStyleColor : ol.render.canvas.defaultFillStyle);
+    state.fillStyle = _ol_colorlike_.asColorLike(fillStyleColor ?
+      fillStyleColor : _ol_render_canvas_.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
   if (strokeStyle) {
     var strokeStyleColor = strokeStyle.getColor();
-    state.strokeStyle = ol.colorlike.asColorLike(strokeStyleColor ?
-      strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
+    state.strokeStyle = _ol_colorlike_.asColorLike(strokeStyleColor ?
+      strokeStyleColor : _ol_render_canvas_.defaultStrokeStyle);
     var strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?
-      strokeStyleLineCap : ol.render.canvas.defaultLineCap;
+      strokeStyleLineCap : _ol_render_canvas_.defaultLineCap;
     var strokeStyleLineDash = strokeStyle.getLineDash();
     state.lineDash = strokeStyleLineDash ?
-      strokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
+      strokeStyleLineDash.slice() : _ol_render_canvas_.defaultLineDash;
     var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     state.lineDashOffset = strokeStyleLineDashOffset ?
-      strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset;
+      strokeStyleLineDashOffset : _ol_render_canvas_.defaultLineDashOffset;
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
     state.lineJoin = strokeStyleLineJoin !== undefined ?
-      strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
+      strokeStyleLineJoin : _ol_render_canvas_.defaultLineJoin;
     var strokeStyleWidth = strokeStyle.getWidth();
     state.lineWidth = strokeStyleWidth !== undefined ?
-      strokeStyleWidth : ol.render.canvas.defaultLineWidth;
+      strokeStyleWidth : _ol_render_canvas_.defaultLineWidth;
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     state.miterLimit = strokeStyleMiterLimit !== undefined ?
-      strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
+      strokeStyleMiterLimit : _ol_render_canvas_.defaultMiterLimit;
 
     if (state.lineWidth > this.maxLineWidth) {
       this.maxLineWidth = state.lineWidth;
@@ -324,7 +322,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
  * @private
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
+_ol_render_canvas_PolygonReplay_.prototype.setFillStrokeStyles_ = function(geometry) {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -335,7 +333,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
   if (fillStyle !== undefined && (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle)) {
-    var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
+    var fillInstruction = [_ol_render_canvas_Instruction_.SET_FILL_STYLE, fillStyle];
     if (typeof fillStyle !== 'string') {
       var fillExtent = geometry.getExtent();
       fillInstruction.push([fillExtent[0], fillExtent[3]]);
@@ -346,13 +344,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   if (strokeStyle !== undefined) {
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
-        !ol.array.equals(state.currentLineDash, lineDash) ||
+        !_ol_array_.equals(state.currentLineDash, lineDash) ||
         state.currentLineDashOffset != lineDashOffset ||
         state.currentLineJoin != lineJoin ||
         state.currentLineWidth != lineWidth ||
         state.currentMiterLimit != miterLimit) {
       this.instructions.push([
-        ol.render.canvas.Instruction.SET_STROKE_STYLE,
+        _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
         strokeStyle, lineWidth * this.pixelRatio, lineCap, lineJoin, miterLimit,
         this.applyPixelRatio(lineDash), lineDashOffset * this.pixelRatio
       ]);
@@ -366,3 +364,4 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
     }
   }
 };
+export default _ol_render_canvas_PolygonReplay_;

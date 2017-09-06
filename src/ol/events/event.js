@@ -1,6 +1,3 @@
-goog.provide('ol.events.Event');
-
-
 /**
  * @classdesc
  * Stripped down implementation of the W3C DOM Level 2 Event interface.
@@ -15,7 +12,7 @@ goog.provide('ol.events.Event');
  * @implements {oli.events.Event}
  * @param {string} type Type.
  */
-ol.events.Event = function(type) {
+var _ol_events_Event_ = function(type) {
 
   /**
    * @type {boolean}
@@ -45,7 +42,7 @@ ol.events.Event = function(type) {
  * @override
  * @api
  */
-ol.events.Event.prototype.preventDefault =
+_ol_events_Event_.prototype.preventDefault =
 
   /**
    * Stop event propagation.
@@ -53,7 +50,7 @@ ol.events.Event.prototype.preventDefault =
    * @override
    * @api
    */
-  ol.events.Event.prototype.stopPropagation = function() {
+  _ol_events_Event_.prototype.stopPropagation = function() {
     this.propagationStopped = true;
   };
 
@@ -61,7 +58,7 @@ ol.events.Event.prototype.preventDefault =
 /**
  * @param {Event|ol.events.Event} evt Event
  */
-ol.events.Event.stopPropagation = function(evt) {
+_ol_events_Event_.stopPropagation = function(evt) {
   evt.stopPropagation();
 };
 
@@ -69,6 +66,7 @@ ol.events.Event.stopPropagation = function(evt) {
 /**
  * @param {Event|ol.events.Event} evt Event
  */
-ol.events.Event.preventDefault = function(evt) {
+_ol_events_Event_.preventDefault = function(evt) {
   evt.preventDefault();
 };
+export default _ol_events_Event_;

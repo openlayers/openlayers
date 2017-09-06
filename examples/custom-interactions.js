@@ -1,20 +1,20 @@
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction');
-goog.require('ol.interaction.Pointer');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.TileJSON');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_ from '../src/ol';
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_LineString_ from '../src/ol/geom/linestring';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../src/ol/geom/polygon';
+import _ol_interaction_ from '../src/ol/interaction';
+import _ol_interaction_Pointer_ from '../src/ol/interaction/pointer';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_TileJSON_ from '../src/ol/source/tilejson';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Icon_ from '../src/ol/style/icon';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
 /**
@@ -29,7 +29,7 @@ var app = {};
  */
 app.Drag = function() {
 
-  ol.interaction.Pointer.call(this, {
+  _ol_interaction_Pointer_.call(this, {
     handleDownEvent: app.Drag.prototype.handleDownEvent,
     handleDragEvent: app.Drag.prototype.handleDragEvent,
     handleMoveEvent: app.Drag.prototype.handleMoveEvent,
@@ -61,7 +61,7 @@ app.Drag = function() {
   this.previousCursor_ = undefined;
 
 };
-ol.inherits(app.Drag, ol.interaction.Pointer);
+_ol_.inherits(app.Drag, _ol_interaction_Pointer_);
 
 
 /**
@@ -135,48 +135,48 @@ app.Drag.prototype.handleUpEvent = function() {
 };
 
 
-var pointFeature = new ol.Feature(new ol.geom.Point([0, 0]));
+var pointFeature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
 
-var lineFeature = new ol.Feature(
-    new ol.geom.LineString([[-1e7, 1e6], [-1e6, 3e6]]));
+var lineFeature = new _ol_Feature_(
+    new _ol_geom_LineString_([[-1e7, 1e6], [-1e6, 3e6]]));
 
-var polygonFeature = new ol.Feature(
-    new ol.geom.Polygon([[[-3e6, -1e6], [-3e6, 1e6],
+var polygonFeature = new _ol_Feature_(
+    new _ol_geom_Polygon_([[[-3e6, -1e6], [-3e6, 1e6],
       [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
 
-var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([new app.Drag()]),
+var map = new _ol_Map_({
+  interactions: _ol_interaction_.defaults().extend([new app.Drag()]),
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.TileJSON({
+    new _ol_layer_Tile_({
+      source: new _ol_source_TileJSON_({
         url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure'
       })
     }),
-    new ol.layer.Vector({
-      source: new ol.source.Vector({
+    new _ol_layer_Vector_({
+      source: new _ol_source_Vector_({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
-      style: new ol.style.Style({
-        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+      style: new _ol_style_Style_({
+        image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
           src: 'data/icon.png'
         })),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           width: 3,
           color: [255, 0, 0, 1]
         }),
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: [0, 0, 255, 0.6]
         })
       })
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

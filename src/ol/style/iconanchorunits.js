@@ -1,10 +1,10 @@
-goog.provide('ol.style.IconAnchorUnits');
-
 /**
  * Icon anchor units. One of 'fraction', 'pixels'.
  * @enum {string}
  */
-ol.style.IconAnchorUnits = {
+var _ol_style_IconAnchorUnits_ = {
   FRACTION: 'fraction',
   PIXELS: 'pixels'
 };
+
+export default _ol_style_IconAnchorUnits_;

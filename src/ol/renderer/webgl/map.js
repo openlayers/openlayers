@@ -1,26 +1,23 @@
 // FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
 
-goog.provide('ol.renderer.webgl.Map');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.css');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.has');
-goog.require('ol.layer.Layer');
-goog.require('ol.render.Event');
-goog.require('ol.render.EventType');
-goog.require('ol.render.webgl.Immediate');
-goog.require('ol.renderer.Map');
-goog.require('ol.renderer.Type');
-goog.require('ol.source.State');
-goog.require('ol.structs.LRUCache');
-goog.require('ol.structs.PriorityQueue');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Context');
-goog.require('ol.webgl.ContextEventType');
-
+import _ol_ from '../../index';
+import _ol_array_ from '../../array';
+import _ol_css_ from '../../css';
+import _ol_dom_ from '../../dom';
+import _ol_events_ from '../../events';
+import _ol_has_ from '../../has';
+import _ol_layer_Layer_ from '../../layer/layer';
+import _ol_render_Event_ from '../../render/event';
+import _ol_render_EventType_ from '../../render/eventtype';
+import _ol_render_webgl_Immediate_ from '../../render/webgl/immediate';
+import _ol_renderer_Map_ from '../map';
+import _ol_renderer_Type_ from '../type';
+import _ol_source_State_ from '../../source/state';
+import _ol_structs_LRUCache_ from '../../structs/lrucache';
+import _ol_structs_PriorityQueue_ from '../../structs/priorityqueue';
+import _ol_webgl_ from '../../webgl';
+import _ol_webgl_Context_ from '../../webgl/context';
+import _ol_webgl_ContextEventType_ from '../../webgl/contexteventtype';
 
 /**
  * @constructor
@@ -29,8 +26,8 @@ goog.require('ol.webgl.ContextEventType');
  * @param {ol.PluggableMap} map Map.
  * @api
  */
-ol.renderer.webgl.Map = function(container, map) {
-  ol.renderer.Map.call(this, container, map);
+var _ol_renderer_webgl_Map_ = function(container, map) {
+  _ol_renderer_Map_.call(this, container, map);
 
   /**
    * @private
@@ -41,7 +38,7 @@ ol.renderer.webgl.Map = function(container, map) {
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.style.display = 'block';
-  this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
+  this.canvas_.className = _ol_css_.CLASS_UNSELECTABLE;
   container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
   /**
@@ -60,7 +57,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.clipTileContext_ = ol.dom.createCanvasContext2D();
+  this.clipTileContext_ = _ol_dom_.createCanvasContext2D();
 
   /**
    * @private
@@ -72,7 +69,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {WebGLRenderingContext}
    */
-  this.gl_ = ol.webgl.getContext(this.canvas_, {
+  this.gl_ = _ol_webgl_.getContext(this.canvas_, {
     antialias: true,
     depth: true,
     failIfMajorPerformanceCaveat: true,
@@ -84,18 +81,18 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {ol.webgl.Context}
    */
-  this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
+  this.context_ = new _ol_webgl_Context_(this.canvas_, this.gl_);
 
-  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
+  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.LOST,
       this.handleWebGLContextLost, this);
-  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
+  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.RESTORED,
       this.handleWebGLContextRestored, this);
 
   /**
    * @private
    * @type {ol.structs.LRUCache.<ol.WebglTextureCacheEntry|null>}
    */
-  this.textureCache_ = new ol.structs.LRUCache();
+  this.textureCache_ = new _ol_structs_LRUCache_();
 
   /**
    * @private
@@ -107,7 +104,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @private
    * @type {ol.structs.PriorityQueue.<Array>}
    */
-  this.tileTextureQueue_ = new ol.structs.PriorityQueue(
+  this.tileTextureQueue_ = new _ol_structs_PriorityQueue_(
       /**
        * @param {Array.<*>} element Element.
        * @return {number} Priority.
@@ -145,7 +142,7 @@ ol.renderer.webgl.Map = function(container, map) {
           var tileSize = /** @type {ol.Size} */ (element[3]);
           var tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
-              tile, tileSize, tileGutter, ol.webgl.LINEAR, ol.webgl.LINEAR);
+              tile, tileSize, tileGutter, _ol_webgl_.LINEAR, _ol_webgl_.LINEAR);
         }
         return false;
       }.bind(this);
@@ -159,7 +156,8 @@ ol.renderer.webgl.Map = function(container, map) {
 
   this.initializeGL_();
 };
-ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+
+_ol_.inherits(_ol_renderer_webgl_Map_, _ol_renderer_Map_);
 
 
 /**
@@ -167,8 +165,8 @@ ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
  * @param {ol.renderer.Type} type The renderer type.
  * @return {boolean} The renderer can render the layer.
  */
-ol.renderer.webgl.Map['handles'] = function(type) {
-  return ol.has.WEBGL && type === ol.renderer.Type.WEBGL;
+_ol_renderer_webgl_Map_['handles'] = function(type) {
+  return _ol_has_.WEBGL && type === _ol_renderer_Type_.WEBGL;
 };
 
 
@@ -178,8 +176,8 @@ ol.renderer.webgl.Map['handles'] = function(type) {
  * @param {ol.PluggableMap} map Map.
  * @return {ol.renderer.webgl.Map} The map renderer.
  */
-ol.renderer.webgl.Map['create'] = function(container, map) {
-  return new ol.renderer.webgl.Map(container, map);
+_ol_renderer_webgl_Map_['create'] = function(container, map) {
+  return new _ol_renderer_webgl_Map_(container, map);
 };
 
 
@@ -190,25 +188,25 @@ ol.renderer.webgl.Map['create'] = function(container, map) {
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
  */
-ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileGutter, magFilter, minFilter) {
+_ol_renderer_webgl_Map_.prototype.bindTileTexture = function(tile, tileSize, tileGutter, magFilter, minFilter) {
   var gl = this.getGL();
   var tileKey = tile.getKey();
   if (this.textureCache_.containsKey(tileKey)) {
     var textureCacheEntry = this.textureCache_.get(tileKey);
-    gl.bindTexture(ol.webgl.TEXTURE_2D, textureCacheEntry.texture);
+    gl.bindTexture(_ol_webgl_.TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(
-          ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
+          _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MAG_FILTER, magFilter);
       textureCacheEntry.magFilter = magFilter;
     }
     if (textureCacheEntry.minFilter != minFilter) {
       gl.texParameteri(
-          ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
+          _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MIN_FILTER, minFilter);
       textureCacheEntry.minFilter = minFilter;
     }
   } else {
     var texture = gl.createTexture();
-    gl.bindTexture(ol.webgl.TEXTURE_2D, texture);
+    gl.bindTexture(_ol_webgl_.TEXTURE_2D, texture);
     if (tileGutter > 0) {
       var clipTileCanvas = this.clipTileContext_.canvas;
       var clipTileContext = this.clipTileContext_;
@@ -223,22 +221,22 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
       }
       clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
           tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
-      gl.texImage2D(ol.webgl.TEXTURE_2D, 0,
-          ol.webgl.RGBA, ol.webgl.RGBA,
-          ol.webgl.UNSIGNED_BYTE, clipTileCanvas);
+      gl.texImage2D(_ol_webgl_.TEXTURE_2D, 0,
+          _ol_webgl_.RGBA, _ol_webgl_.RGBA,
+          _ol_webgl_.UNSIGNED_BYTE, clipTileCanvas);
     } else {
-      gl.texImage2D(ol.webgl.TEXTURE_2D, 0,
-          ol.webgl.RGBA, ol.webgl.RGBA,
-          ol.webgl.UNSIGNED_BYTE, tile.getImage());
+      gl.texImage2D(_ol_webgl_.TEXTURE_2D, 0,
+          _ol_webgl_.RGBA, _ol_webgl_.RGBA,
+          _ol_webgl_.UNSIGNED_BYTE, tile.getImage());
     }
     gl.texParameteri(
-        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
+        _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MAG_FILTER, magFilter);
     gl.texParameteri(
-        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
-    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S,
-        ol.webgl.CLAMP_TO_EDGE);
-    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T,
-        ol.webgl.CLAMP_TO_EDGE);
+        _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_MIN_FILTER, minFilter);
+    gl.texParameteri(_ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_S,
+        _ol_webgl_.CLAMP_TO_EDGE);
+    gl.texParameteri(_ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_T,
+        _ol_webgl_.CLAMP_TO_EDGE);
     this.textureCache_.set(tileKey, {
       texture: texture,
       magFilter: magFilter,
@@ -253,7 +251,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameState) {
+_ol_renderer_webgl_Map_.prototype.dispatchComposeEvent_ = function(type, frameState) {
   var map = this.getMap();
   if (map.hasListener(type)) {
     var context = this.context_;
@@ -267,9 +265,9 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameStat
     var center = viewState.center;
     var rotation = viewState.rotation;
 
-    var vectorContext = new ol.render.webgl.Immediate(context,
+    var vectorContext = new _ol_render_webgl_Immediate_(context,
         center, resolution, rotation, size, extent, pixelRatio);
-    var composeEvent = new ol.render.Event(type, vectorContext,
+    var composeEvent = new _ol_render_Event_(type, vectorContext,
         frameState, null, context);
     map.dispatchEvent(composeEvent);
   }
@@ -279,7 +277,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameStat
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.disposeInternal = function() {
+_ol_renderer_webgl_Map_.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if (!gl.isContextLost()) {
     this.textureCache_.forEach(
@@ -294,7 +292,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
         });
   }
   this.context_.dispose();
-  ol.renderer.Map.prototype.disposeInternal.call(this);
+  _ol_renderer_Map_.prototype.disposeInternal.call(this);
 };
 
 
@@ -303,11 +301,11 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
+_ol_renderer_webgl_Map_.prototype.expireCache_ = function(map, frameState) {
   var gl = this.getGL();
   var textureCacheEntry;
   while (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
-      ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+      _ol_.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
     textureCacheEntry = this.textureCache_.peekLast();
     if (!textureCacheEntry) {
       if (+this.textureCache_.peekLastKey() == frameState.index) {
@@ -326,7 +324,7 @@ ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
 /**
  * @return {ol.webgl.Context} The context.
  */
-ol.renderer.webgl.Map.prototype.getContext = function() {
+_ol_renderer_webgl_Map_.prototype.getContext = function() {
   return this.context_;
 };
 
@@ -334,7 +332,7 @@ ol.renderer.webgl.Map.prototype.getContext = function() {
 /**
  * @return {WebGLRenderingContext} GL.
  */
-ol.renderer.webgl.Map.prototype.getGL = function() {
+_ol_renderer_webgl_Map_.prototype.getGL = function() {
   return this.gl_;
 };
 
@@ -342,7 +340,7 @@ ol.renderer.webgl.Map.prototype.getGL = function() {
 /**
  * @return {ol.structs.PriorityQueue.<Array>} Tile texture queue.
  */
-ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
+_ol_renderer_webgl_Map_.prototype.getTileTextureQueue = function() {
   return this.tileTextureQueue_;
 };
 
@@ -350,8 +348,8 @@ ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.getType = function() {
-  return ol.renderer.Type.WEBGL;
+_ol_renderer_webgl_Map_.prototype.getType = function() {
+  return _ol_renderer_Type_.WEBGL;
 };
 
 
@@ -359,7 +357,7 @@ ol.renderer.webgl.Map.prototype.getType = function() {
  * @param {ol.events.Event} event Event.
  * @protected
  */
-ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
+_ol_renderer_webgl_Map_.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
@@ -375,7 +373,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
 /**
  * @protected
  */
-ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
+_ol_renderer_webgl_Map_.prototype.handleWebGLContextRestored = function() {
   this.initializeGL_();
   this.getMap().render();
 };
@@ -384,16 +382,16 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
 /**
  * @private
  */
-ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
+_ol_renderer_webgl_Map_.prototype.initializeGL_ = function() {
   var gl = this.gl_;
-  gl.activeTexture(ol.webgl.TEXTURE0);
+  gl.activeTexture(_ol_webgl_.TEXTURE0);
   gl.blendFuncSeparate(
-      ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
-      ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
-  gl.disable(ol.webgl.CULL_FACE);
-  gl.disable(ol.webgl.DEPTH_TEST);
-  gl.disable(ol.webgl.SCISSOR_TEST);
-  gl.disable(ol.webgl.STENCIL_TEST);
+      _ol_webgl_.SRC_ALPHA, _ol_webgl_.ONE_MINUS_SRC_ALPHA,
+      _ol_webgl_.ONE, _ol_webgl_.ONE_MINUS_SRC_ALPHA);
+  gl.disable(_ol_webgl_.CULL_FACE);
+  gl.disable(_ol_webgl_.DEPTH_TEST);
+  gl.disable(_ol_webgl_.SCISSOR_TEST);
+  gl.disable(_ol_webgl_.STENCIL_TEST);
 };
 
 
@@ -401,7 +399,7 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
  * @param {ol.Tile} tile Tile.
  * @return {boolean} Is tile texture loaded.
  */
-ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
+_ol_renderer_webgl_Map_.prototype.isTileTextureLoaded = function(tile) {
   return this.textureCache_.containsKey(tile.getKey());
 };
 
@@ -409,7 +407,7 @@ ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
+_ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
 
   var context = this.getContext();
   var gl = this.getGL();
@@ -431,19 +429,19 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(_ol_render_EventType_.PRECOMPOSE, frameState);
 
   /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
-  ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+  _ol_array_.stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
 
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerState.sourceState == ol.source.State.READY) {
+    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) &&
+        layerState.sourceState == _ol_source_State_.READY) {
       layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
       if (layerRenderer.prepareFrame(frameState, layerState, context)) {
         layerStatesToDraw.push(layerState);
@@ -458,11 +456,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     this.canvas_.height = height;
   }
 
-  gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
+  gl.bindFramebuffer(_ol_webgl_.FRAMEBUFFER, null);
 
   gl.clearColor(0, 0, 0, 0);
-  gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-  gl.enable(ol.webgl.BLEND);
+  gl.clear(_ol_webgl_.COLOR_BUFFER_BIT);
+  gl.enable(_ol_webgl_.BLEND);
   gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
@@ -479,7 +477,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.calculateMatrices2D(frameState);
 
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
-      ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+      _ol_.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
     frameState.postRenderFunctions.push(
         /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
     );
@@ -490,7 +488,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     frameState.animate = true;
   }
 
-  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(_ol_render_EventType_.POSTCOMPOSE, frameState);
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
   this.scheduleExpireIconCache(frameState);
@@ -501,7 +499,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
+_ol_renderer_webgl_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
     layerFilter, thisArg2) {
   var result;
 
@@ -517,7 +515,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
+    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachFeatureAtCoordinate(
@@ -534,7 +532,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
+_ol_renderer_webgl_Map_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
   var hasFeature = false;
 
   if (this.getGL().isContextLost()) {
@@ -549,7 +547,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, fr
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
+    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       hasFeature =
@@ -566,7 +564,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, fr
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+_ol_renderer_webgl_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
     layerFilter, thisArg2) {
   if (this.getGL().isContextLost()) {
     return false;
@@ -581,7 +579,7 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
+    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewState.resolution) &&
         layerFilter.call(thisArg, layer)) {
       var layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtPixel(
@@ -593,3 +591,4 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState
   }
   return undefined;
 };
+export default _ol_renderer_webgl_Map_;

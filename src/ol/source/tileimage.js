@@ -1,16 +1,13 @@
-goog.provide('ol.source.TileImage');
-
-goog.require('ol');
-goog.require('ol.ImageTile');
-goog.require('ol.TileCache');
-goog.require('ol.TileState');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.proj');
-goog.require('ol.reproj.Tile');
-goog.require('ol.source.UrlTile');
-goog.require('ol.tilegrid');
-
+import _ol_ from '../index';
+import _ol_ImageTile_ from '../imagetile';
+import _ol_TileCache_ from '../tilecache';
+import _ol_TileState_ from '../tilestate';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_proj_ from '../proj';
+import _ol_reproj_Tile_ from '../reproj/tile';
+import _ol_source_UrlTile_ from '../source/urltile';
+import _ol_tilegrid_ from '../tilegrid';
 
 /**
  * @classdesc
@@ -22,9 +19,9 @@ goog.require('ol.tilegrid');
  * @param {olx.source.TileImageOptions} options Image tile options.
  * @api
  */
-ol.source.TileImage = function(options) {
+var _ol_source_TileImage_ = function(options) {
 
-  ol.source.UrlTile.call(this, {
+  _ol_source_UrlTile_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
@@ -34,7 +31,7 @@ ol.source.TileImage = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-      options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
+      options.tileLoadFunction : _ol_source_TileImage_.defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
@@ -55,7 +52,7 @@ ol.source.TileImage = function(options) {
    *        ?string, ol.TileLoadFunctionType)}
    */
   this.tileClass = options.tileClass !== undefined ?
-    options.tileClass : ol.ImageTile;
+    options.tileClass : _ol_ImageTile_;
 
   /**
    * @protected
@@ -81,15 +78,16 @@ ol.source.TileImage = function(options) {
    */
   this.renderReprojectionEdges_ = false;
 };
-ol.inherits(ol.source.TileImage, ol.source.UrlTile);
+
+_ol_.inherits(_ol_source_TileImage_, _ol_source_UrlTile_);
 
 
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.canExpireCache = function() {
-  if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return ol.source.UrlTile.prototype.canExpireCache.call(this);
+_ol_source_TileImage_.prototype.canExpireCache = function() {
+  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+    return _ol_source_UrlTile_.prototype.canExpireCache.call(this);
   }
   if (this.tileCache.canExpireCache()) {
     return true;
@@ -107,9 +105,9 @@ ol.source.TileImage.prototype.canExpireCache = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
-  if (!ol.ENABLE_RASTER_REPROJECTION) {
-    ol.source.UrlTile.prototype.expireCache.call(this, projection, usedTiles);
+_ol_source_TileImage_.prototype.expireCache = function(projection, usedTiles) {
+  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+    _ol_source_UrlTile_.prototype.expireCache.call(this, projection, usedTiles);
     return;
   }
   var usedTileCache = this.getTileCacheForProjection(projection);
@@ -125,10 +123,10 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getGutter = function(projection) {
-  if (ol.ENABLE_RASTER_REPROJECTION &&
+_ol_source_TileImage_.prototype.getGutter = function(projection) {
+  if (_ol_.ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection &&
-      !ol.proj.equivalent(this.getProjection(), projection)) {
+      !_ol_proj_.equivalent(this.getProjection(), projection)) {
     return 0;
   } else {
     return this.getGutterInternal();
@@ -140,7 +138,7 @@ ol.source.TileImage.prototype.getGutter = function(projection) {
  * @protected
  * @return {number} Gutter.
  */
-ol.source.TileImage.prototype.getGutterInternal = function() {
+_ol_source_TileImage_.prototype.getGutterInternal = function() {
   return 0;
 };
 
@@ -148,13 +146,13 @@ ol.source.TileImage.prototype.getGutterInternal = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getOpaque = function(projection) {
-  if (ol.ENABLE_RASTER_REPROJECTION &&
+_ol_source_TileImage_.prototype.getOpaque = function(projection) {
+  if (_ol_.ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection &&
-      !ol.proj.equivalent(this.getProjection(), projection)) {
+      !_ol_proj_.equivalent(this.getProjection(), projection)) {
     return false;
   } else {
-    return ol.source.UrlTile.prototype.getOpaque.call(this, projection);
+    return _ol_source_UrlTile_.prototype.getOpaque.call(this, projection);
   }
 };
 
@@ -162,19 +160,19 @@ ol.source.TileImage.prototype.getOpaque = function(projection) {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
-  if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return ol.source.UrlTile.prototype.getTileGridForProjection.call(this, projection);
+_ol_source_TileImage_.prototype.getTileGridForProjection = function(projection) {
+  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+    return _ol_source_UrlTile_.prototype.getTileGridForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
   if (this.tileGrid &&
-      (!thisProj || ol.proj.equivalent(thisProj, projection))) {
+      (!thisProj || _ol_proj_.equivalent(thisProj, projection))) {
     return this.tileGrid;
   } else {
-    var projKey = ol.getUid(projection).toString();
+    var projKey = _ol_.getUid(projection).toString();
     if (!(projKey in this.tileGridForProjection)) {
       this.tileGridForProjection[projKey] =
-          ol.tilegrid.getForProjection(projection);
+          _ol_tilegrid_.getForProjection(projection);
     }
     return /** @type {!ol.tilegrid.TileGrid} */ (this.tileGridForProjection[projKey]);
   }
@@ -184,17 +182,17 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
-  if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return ol.source.UrlTile.prototype.getTileCacheForProjection.call(this, projection);
+_ol_source_TileImage_.prototype.getTileCacheForProjection = function(projection) {
+  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+    return _ol_source_UrlTile_.prototype.getTileCacheForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
-  if (!thisProj || ol.proj.equivalent(thisProj, projection)) {
+  if (!thisProj || _ol_proj_.equivalent(thisProj, projection)) {
     return this.tileCache;
   } else {
-    var projKey = ol.getUid(projection).toString();
+    var projKey = _ol_.getUid(projection).toString();
     if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new ol.TileCache(this.tileCache.highWaterMark);
+      this.tileCacheForProjection[projKey] = new _ol_TileCache_(this.tileCache.highWaterMark);
     }
     return this.tileCacheForProjection[projKey];
   }
@@ -211,7 +209,7 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @return {!ol.Tile} Tile.
  * @private
  */
-ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
+_ol_source_TileImage_.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
   var tileCoord = [z, x, y];
   var urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord, projection);
@@ -219,12 +217,12 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
     this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
   var tile = new this.tileClass(
       tileCoord,
-      tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+      tileUrl !== undefined ? _ol_TileState_.IDLE : _ol_TileState_.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction);
   tile.key = key;
-  ol.events.listen(tile, ol.events.EventType.CHANGE,
+  _ol_events_.listen(tile, _ol_events_EventType_.CHANGE,
       this.handleTileChange, this);
   return tile;
 };
@@ -233,11 +231,11 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  if (!ol.ENABLE_RASTER_REPROJECTION ||
+_ol_source_TileImage_.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+  if (!_ol_.ENABLE_RASTER_REPROJECTION ||
       !this.getProjection() ||
       !projection ||
-      ol.proj.equivalent(this.getProjection(), projection)) {
+      _ol_proj_.equivalent(this.getProjection(), projection)) {
     return this.getTileInternal(z, x, y, pixelRatio, /** @type {!ol.proj.Projection} */ (projection));
   } else {
     var cache = this.getTileCacheForProjection(projection);
@@ -256,7 +254,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
       var targetTileGrid = this.getTileGridForProjection(projection);
       var wrappedTileCoord =
           this.getTileCoordForTileUrlFunction(tileCoord, projection);
-      var newTile = new ol.reproj.Tile(
+      var newTile = new _ol_reproj_Tile_(
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
           tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
@@ -289,7 +287,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
  * @return {!ol.Tile} Tile.
  * @protected
  */
-ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
+_ol_source_TileImage_.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
   var key = this.getKey();
@@ -306,7 +304,7 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
       tile = this.createTile_(z, x, y, pixelRatio, projection, key);
 
       //make the new tile the head of the list,
-      if (interimTile.getState() == ol.TileState.IDLE) {
+      if (interimTile.getState() == _ol_TileState_.IDLE) {
         //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
         tile.interimTile = interimTile.interimTile;
       } else {
@@ -325,8 +323,8 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
  * @param {boolean} render Render the edges.
  * @api
  */
-ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
-  if (!ol.ENABLE_RASTER_REPROJECTION ||
+_ol_source_TileImage_.prototype.setRenderReprojectionEdges = function(render) {
+  if (!_ol_.ENABLE_RASTER_REPROJECTION ||
       this.renderReprojectionEdges_ == render) {
     return;
   }
@@ -350,11 +348,11 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
-ol.source.TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
-  if (ol.ENABLE_RASTER_REPROJECTION) {
-    var proj = ol.proj.get(projection);
+_ol_source_TileImage_.prototype.setTileGridForProjection = function(projection, tilegrid) {
+  if (_ol_.ENABLE_RASTER_REPROJECTION) {
+    var proj = _ol_proj_.get(projection);
     if (proj) {
-      var projKey = ol.getUid(proj).toString();
+      var projKey = _ol_.getUid(proj).toString();
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = tilegrid;
       }
@@ -367,6 +365,7 @@ ol.source.TileImage.prototype.setTileGridForProjection = function(projection, ti
  * @param {ol.ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
-ol.source.TileImage.defaultTileLoadFunction = function(imageTile, src) {
+_ol_source_TileImage_.defaultTileLoadFunction = function(imageTile, src) {
   imageTile.getImage().src = src;
 };
+export default _ol_source_TileImage_;

@@ -1,10 +1,7 @@
-goog.provide('ol.events.EventTarget');
-
-goog.require('ol');
-goog.require('ol.Disposable');
-goog.require('ol.events');
-goog.require('ol.events.Event');
-
+import _ol_ from '../index';
+import _ol_Disposable_ from '../disposable';
+import _ol_events_ from '../events';
+import _ol_events_Event_ from '../events/event';
 
 /**
  * @classdesc
@@ -24,9 +21,9 @@ goog.require('ol.events.Event');
  * @constructor
  * @extends {ol.Disposable}
  */
-ol.events.EventTarget = function() {
+var _ol_events_EventTarget_ = function() {
 
-  ol.Disposable.call(this);
+  _ol_Disposable_.call(this);
 
   /**
    * @private
@@ -47,14 +44,15 @@ ol.events.EventTarget = function() {
   this.listeners_ = {};
 
 };
-ol.inherits(ol.events.EventTarget, ol.Disposable);
+
+_ol_.inherits(_ol_events_EventTarget_, _ol_Disposable_);
 
 
 /**
  * @param {string} type Type.
  * @param {ol.EventsListenerFunctionType} listener Listener.
  */
-ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
+_ol_events_EventTarget_.prototype.addEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
   if (!listeners) {
     listeners = this.listeners_[type] = [];
@@ -72,8 +70,8 @@ ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
  * @return {boolean|undefined} `false` if anyone called preventDefault on the
  *     event object or if any of the listeners returned false.
  */
-ol.events.EventTarget.prototype.dispatchEvent = function(event) {
-  var evt = typeof event === 'string' ? new ol.events.Event(event) : event;
+_ol_events_EventTarget_.prototype.dispatchEvent = function(event) {
+  var evt = typeof event === 'string' ? new _ol_events_Event_(event) : event;
   var type = evt.type;
   evt.target = this;
   var listeners = this.listeners_[type];
@@ -95,7 +93,7 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
       var pendingRemovals = this.pendingRemovals_[type];
       delete this.pendingRemovals_[type];
       while (pendingRemovals--) {
-        this.removeEventListener(type, ol.nullFunction);
+        this.removeEventListener(type, _ol_.nullFunction);
       }
       delete this.dispatching_[type];
     }
@@ -107,8 +105,8 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
 /**
  * @inheritDoc
  */
-ol.events.EventTarget.prototype.disposeInternal = function() {
-  ol.events.unlistenAll(this);
+_ol_events_EventTarget_.prototype.disposeInternal = function() {
+  _ol_events_.unlistenAll(this);
 };
 
 
@@ -119,7 +117,7 @@ ol.events.EventTarget.prototype.disposeInternal = function() {
  * @param {string} type Type.
  * @return {Array.<ol.EventsListenerFunctionType>} Listeners.
  */
-ol.events.EventTarget.prototype.getListeners = function(type) {
+_ol_events_EventTarget_.prototype.getListeners = function(type) {
   return this.listeners_[type];
 };
 
@@ -129,7 +127,7 @@ ol.events.EventTarget.prototype.getListeners = function(type) {
  *     `true` will be returned if this EventTarget has any listeners.
  * @return {boolean} Has listeners.
  */
-ol.events.EventTarget.prototype.hasListener = function(opt_type) {
+_ol_events_EventTarget_.prototype.hasListener = function(opt_type) {
   return opt_type ?
     opt_type in this.listeners_ :
     Object.keys(this.listeners_).length > 0;
@@ -140,13 +138,13 @@ ol.events.EventTarget.prototype.hasListener = function(opt_type) {
  * @param {string} type Type.
  * @param {ol.EventsListenerFunctionType} listener Listener.
  */
-ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {
+_ol_events_EventTarget_.prototype.removeEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
   if (listeners) {
     var index = listeners.indexOf(listener);
     if (type in this.pendingRemovals_) {
       // make listener a no-op, and remove later in #dispatchEvent()
-      listeners[index] = ol.nullFunction;
+      listeners[index] = _ol_.nullFunction;
       ++this.pendingRemovals_[type];
     } else {
       listeners.splice(index, 1);
@@ -156,3 +154,4 @@ ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {
     }
   }
 };
+export default _ol_events_EventTarget_;

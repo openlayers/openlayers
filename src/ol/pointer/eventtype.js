@@ -1,11 +1,8 @@
-goog.provide('ol.pointer.EventType');
-
-
 /**
  * Constants for event names.
  * @enum {string}
  */
-ol.pointer.EventType = {
+var _ol_pointer_EventType_ = {
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',
@@ -15,3 +12,5 @@ ol.pointer.EventType = {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel'
 };
+
+export default _ol_pointer_EventType_;

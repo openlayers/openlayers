@@ -1,20 +1,17 @@
-goog.provide('ol.format.WKT');
-
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.format.Feature');
-goog.require('ol.format.TextFeature');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.geom.SimpleGeometry');
-
+import _ol_ from '../index';
+import _ol_Feature_ from '../feature';
+import _ol_format_Feature_ from '../format/feature';
+import _ol_format_TextFeature_ from '../format/textfeature';
+import _ol_geom_GeometryCollection_ from '../geom/geometrycollection';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_LineString_ from '../geom/linestring';
+import _ol_geom_MultiLineString_ from '../geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../geom/multipolygon';
+import _ol_geom_Point_ from '../geom/point';
+import _ol_geom_Polygon_ from '../geom/polygon';
+import _ol_geom_SimpleGeometry_ from '../geom/simplegeometry';
 
 /**
  * @classdesc
@@ -26,11 +23,11 @@ goog.require('ol.geom.SimpleGeometry');
  * @param {olx.format.WKTOptions=} opt_options Options.
  * @api
  */
-ol.format.WKT = function(opt_options) {
+var _ol_format_WKT_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  ol.format.TextFeature.call(this);
+  _ol_format_TextFeature_.call(this);
 
   /**
    * Split GeometryCollection into multiple features.
@@ -41,35 +38,36 @@ ol.format.WKT = function(opt_options) {
     options.splitCollection : false;
 
 };
-ol.inherits(ol.format.WKT, ol.format.TextFeature);
+
+_ol_.inherits(_ol_format_WKT_, _ol_format_TextFeature_);
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WKT.EMPTY = 'EMPTY';
+_ol_format_WKT_.EMPTY = 'EMPTY';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WKT.Z = 'Z';
+_ol_format_WKT_.Z = 'Z';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WKT.M = 'M';
+_ol_format_WKT_.M = 'M';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WKT.ZM = 'ZM';
+_ol_format_WKT_.ZM = 'ZM';
 
 
 /**
@@ -77,7 +75,7 @@ ol.format.WKT.ZM = 'ZM';
  * @return {string} Coordinates part of Point as WKT.
  * @private
  */
-ol.format.WKT.encodePointGeometry_ = function(geom) {
+_ol_format_WKT_.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   if (coordinates.length === 0) {
     return '';
@@ -91,11 +89,11 @@ ol.format.WKT.encodePointGeometry_ = function(geom) {
  * @return {string} Coordinates part of MultiPoint as WKT.
  * @private
  */
-ol.format.WKT.encodeMultiPointGeometry_ = function(geom) {
+_ol_format_WKT_.encodeMultiPointGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPoints();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + ol.format.WKT.encodePointGeometry_(components[i]) + ')');
+    array.push('(' + _ol_format_WKT_.encodePointGeometry_(components[i]) + ')');
   }
   return array.join(',');
 };
@@ -106,11 +104,11 @@ ol.format.WKT.encodeMultiPointGeometry_ = function(geom) {
  * @return {string} Coordinates part of GeometryCollection as WKT.
  * @private
  */
-ol.format.WKT.encodeGeometryCollectionGeometry_ = function(geom) {
+_ol_format_WKT_.encodeGeometryCollectionGeometry_ = function(geom) {
   var array = [];
   var geoms = geom.getGeometries();
   for (var i = 0, ii = geoms.length; i < ii; ++i) {
-    array.push(ol.format.WKT.encode_(geoms[i]));
+    array.push(_ol_format_WKT_.encode_(geoms[i]));
   }
   return array.join(',');
 };
@@ -121,7 +119,7 @@ ol.format.WKT.encodeGeometryCollectionGeometry_ = function(geom) {
  * @return {string} Coordinates part of LineString as WKT.
  * @private
  */
-ol.format.WKT.encodeLineStringGeometry_ = function(geom) {
+_ol_format_WKT_.encodeLineStringGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   var array = [];
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
@@ -136,11 +134,11 @@ ol.format.WKT.encodeLineStringGeometry_ = function(geom) {
  * @return {string} Coordinates part of MultiLineString as WKT.
  * @private
  */
-ol.format.WKT.encodeMultiLineStringGeometry_ = function(geom) {
+_ol_format_WKT_.encodeMultiLineStringGeometry_ = function(geom) {
   var array = [];
   var components = geom.getLineStrings();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + ol.format.WKT.encodeLineStringGeometry_(
+    array.push('(' + _ol_format_WKT_.encodeLineStringGeometry_(
         components[i]) + ')');
   }
   return array.join(',');
@@ -152,11 +150,11 @@ ol.format.WKT.encodeMultiLineStringGeometry_ = function(geom) {
  * @return {string} Coordinates part of Polygon as WKT.
  * @private
  */
-ol.format.WKT.encodePolygonGeometry_ = function(geom) {
+_ol_format_WKT_.encodePolygonGeometry_ = function(geom) {
   var array = [];
   var rings = geom.getLinearRings();
   for (var i = 0, ii = rings.length; i < ii; ++i) {
-    array.push('(' + ol.format.WKT.encodeLineStringGeometry_(
+    array.push('(' + _ol_format_WKT_.encodeLineStringGeometry_(
         rings[i]) + ')');
   }
   return array.join(',');
@@ -168,11 +166,11 @@ ol.format.WKT.encodePolygonGeometry_ = function(geom) {
  * @return {string} Coordinates part of MultiPolygon as WKT.
  * @private
  */
-ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
+_ol_format_WKT_.encodeMultiPolygonGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPolygons();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + ol.format.WKT.encodePolygonGeometry_(
+    array.push('(' + _ol_format_WKT_.encodePolygonGeometry_(
         components[i]) + ')');
   }
   return array.join(',');
@@ -183,14 +181,14 @@ ol.format.WKT.encodeMultiPolygonGeometry_ = function(geom) {
  * @return {string} Potential dimensional information for WKT type.
  * @private
  */
-ol.format.WKT.encodeGeometryLayout_ = function(geom) {
+_ol_format_WKT_.encodeGeometryLayout_ = function(geom) {
   var layout = geom.getLayout();
   var dimInfo = '';
-  if (layout === ol.geom.GeometryLayout.XYZ || layout === ol.geom.GeometryLayout.XYZM) {
-    dimInfo += ol.format.WKT.Z;
+  if (layout === _ol_geom_GeometryLayout_.XYZ || layout === _ol_geom_GeometryLayout_.XYZM) {
+    dimInfo += _ol_format_WKT_.Z;
   }
-  if (layout === ol.geom.GeometryLayout.XYM || layout === ol.geom.GeometryLayout.XYZM) {
-    dimInfo += ol.format.WKT.M;
+  if (layout === _ol_geom_GeometryLayout_.XYM || layout === _ol_geom_GeometryLayout_.XYZM) {
+    dimInfo += _ol_format_WKT_.M;
   }
   return dimInfo;
 };
@@ -202,19 +200,19 @@ ol.format.WKT.encodeGeometryLayout_ = function(geom) {
  * @return {string} WKT string for the geometry.
  * @private
  */
-ol.format.WKT.encode_ = function(geom) {
+_ol_format_WKT_.encode_ = function(geom) {
   var type = geom.getType();
-  var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
+  var geometryEncoder = _ol_format_WKT_.GeometryEncoder_[type];
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
-  if (geom instanceof ol.geom.SimpleGeometry) {
-    var dimInfo = ol.format.WKT.encodeGeometryLayout_(geom);
+  if (geom instanceof _ol_geom_SimpleGeometry_) {
+    var dimInfo = _ol_format_WKT_.encodeGeometryLayout_(geom);
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
     }
   }
   if (enc.length === 0) {
-    return type + ' ' + ol.format.WKT.EMPTY;
+    return type + ' ' + _ol_format_WKT_.EMPTY;
   }
   return type + '(' + enc + ')';
 };
@@ -225,14 +223,14 @@ ol.format.WKT.encode_ = function(geom) {
  * @type {Object.<string, function(ol.geom.Geometry): string>}
  * @private
  */
-ol.format.WKT.GeometryEncoder_ = {
-  'Point': ol.format.WKT.encodePointGeometry_,
-  'LineString': ol.format.WKT.encodeLineStringGeometry_,
-  'Polygon': ol.format.WKT.encodePolygonGeometry_,
-  'MultiPoint': ol.format.WKT.encodeMultiPointGeometry_,
-  'MultiLineString': ol.format.WKT.encodeMultiLineStringGeometry_,
-  'MultiPolygon': ol.format.WKT.encodeMultiPolygonGeometry_,
-  'GeometryCollection': ol.format.WKT.encodeGeometryCollectionGeometry_
+_ol_format_WKT_.GeometryEncoder_ = {
+  'Point': _ol_format_WKT_.encodePointGeometry_,
+  'LineString': _ol_format_WKT_.encodeLineStringGeometry_,
+  'Polygon': _ol_format_WKT_.encodePolygonGeometry_,
+  'MultiPoint': _ol_format_WKT_.encodeMultiPointGeometry_,
+  'MultiLineString': _ol_format_WKT_.encodeMultiLineStringGeometry_,
+  'MultiPolygon': _ol_format_WKT_.encodeMultiPolygonGeometry_,
+  'GeometryCollection': _ol_format_WKT_.encodeGeometryCollectionGeometry_
 };
 
 
@@ -243,9 +241,9 @@ ol.format.WKT.GeometryEncoder_ = {
  *     The geometry created.
  * @private
  */
-ol.format.WKT.prototype.parse_ = function(wkt) {
-  var lexer = new ol.format.WKT.Lexer(wkt);
-  var parser = new ol.format.WKT.Parser(lexer);
+_ol_format_WKT_.prototype.parse_ = function(wkt) {
+  var lexer = new _ol_format_WKT_.Lexer(wkt);
+  var parser = new _ol_format_WKT_.Parser(lexer);
   return parser.parse();
 };
 
@@ -259,16 +257,16 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  * @return {ol.Feature} Feature.
  * @api
  */
-ol.format.WKT.prototype.readFeature;
+_ol_format_WKT_.prototype.readFeature;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
+_ol_format_WKT_.prototype.readFeatureFromText = function(text, opt_options) {
   var geom = this.readGeometryFromText(text, opt_options);
   if (geom) {
-    var feature = new ol.Feature();
+    var feature = new _ol_Feature_();
     feature.setGeometry(geom);
     return feature;
   }
@@ -285,17 +283,17 @@ ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.format.WKT.prototype.readFeatures;
+_ol_format_WKT_.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
+_ol_format_WKT_.prototype.readFeaturesFromText = function(text, opt_options) {
   var geometries = [];
   var geometry = this.readGeometryFromText(text, opt_options);
   if (this.splitCollection_ &&
-      geometry.getType() == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
+      geometry.getType() == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {
     geometries = (/** @type {ol.geom.GeometryCollection} */ (geometry))
         .getGeometriesArray();
   } else {
@@ -303,7 +301,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
   }
   var feature, features = [];
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    feature = new ol.Feature();
+    feature = new _ol_Feature_();
     feature.setGeometry(geometries[i]);
     features.push(feature);
   }
@@ -320,17 +318,18 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  * @return {ol.geom.Geometry} Geometry.
  * @api
  */
-ol.format.WKT.prototype.readGeometry;
+_ol_format_WKT_.prototype.readGeometry;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
+_ol_format_WKT_.prototype.readGeometryFromText = function(text, opt_options) {
   var geometry = this.parse_(text);
   if (geometry) {
-    return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, false, opt_options));
+    return (
+      /** @type {ol.geom.Geometry} */ _ol_format_Feature_.transformWithOptions(geometry, false, opt_options)
+    );
   } else {
     return null;
   }
@@ -346,13 +345,13 @@ ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
  * @return {string} WKT string.
  * @api
  */
-ol.format.WKT.prototype.writeFeature;
+_ol_format_WKT_.prototype.writeFeature;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.writeFeatureText = function(feature, opt_options) {
+_ol_format_WKT_.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
   if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
@@ -370,13 +369,13 @@ ol.format.WKT.prototype.writeFeatureText = function(feature, opt_options) {
  * @return {string} WKT string.
  * @api
  */
-ol.format.WKT.prototype.writeFeatures;
+_ol_format_WKT_.prototype.writeFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.writeFeaturesText = function(features, opt_options) {
+_ol_format_WKT_.prototype.writeFeaturesText = function(features, opt_options) {
   if (features.length == 1) {
     return this.writeFeatureText(features[0], opt_options);
   }
@@ -384,7 +383,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features, opt_options) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     geometries.push(features[i].getGeometry());
   }
-  var collection = new ol.geom.GeometryCollection(geometries);
+  var collection = new _ol_geom_GeometryCollection_(geometries);
   return this.writeGeometryText(collection, opt_options);
 };
 
@@ -397,15 +396,15 @@ ol.format.WKT.prototype.writeFeaturesText = function(features, opt_options) {
  * @return {string} WKT string.
  * @api
  */
-ol.format.WKT.prototype.writeGeometry;
+_ol_format_WKT_.prototype.writeGeometry;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WKT.prototype.writeGeometryText = function(geometry, opt_options) {
-  return ol.format.WKT.encode_(/** @type {ol.geom.Geometry} */ (
-    ol.format.Feature.transformWithOptions(geometry, true, opt_options)));
+_ol_format_WKT_.prototype.writeGeometryText = function(geometry, opt_options) {
+  return _ol_format_WKT_.encode_(/** @type {ol.geom.Geometry} */ (
+    _ol_format_Feature_.transformWithOptions(geometry, true, opt_options)));
 };
 
 
@@ -414,7 +413,7 @@ ol.format.WKT.prototype.writeGeometryText = function(geometry, opt_options) {
  * @enum {number}
  * @private
  */
-ol.format.WKT.TokenType_ = {
+_ol_format_WKT_.TokenType_ = {
   TEXT: 1,
   LEFT_PAREN: 2,
   RIGHT_PAREN: 3,
@@ -430,7 +429,7 @@ ol.format.WKT.TokenType_ = {
  * @constructor
  * @protected
  */
-ol.format.WKT.Lexer = function(wkt) {
+_ol_format_WKT_.Lexer = function(wkt) {
 
   /**
    * @type {string}
@@ -450,7 +449,7 @@ ol.format.WKT.Lexer = function(wkt) {
  * @return {boolean} Whether the character is alphabetic.
  * @private
  */
-ol.format.WKT.Lexer.prototype.isAlpha_ = function(c) {
+_ol_format_WKT_.Lexer.prototype.isAlpha_ = function(c) {
   return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
 };
 
@@ -462,7 +461,7 @@ ol.format.WKT.Lexer.prototype.isAlpha_ = function(c) {
  * @return {boolean} Whether the character is numeric.
  * @private
  */
-ol.format.WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
+_ol_format_WKT_.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
   var decimal = opt_decimal !== undefined ? opt_decimal : false;
   return c >= '0' && c <= '9' || c == '.' && !decimal;
 };
@@ -473,7 +472,7 @@ ol.format.WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
  * @return {boolean} Whether the character is whitespace.
  * @private
  */
-ol.format.WKT.Lexer.prototype.isWhiteSpace_ = function(c) {
+_ol_format_WKT_.Lexer.prototype.isWhiteSpace_ = function(c) {
   return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 };
 
@@ -482,7 +481,7 @@ ol.format.WKT.Lexer.prototype.isWhiteSpace_ = function(c) {
  * @return {string} Next string character.
  * @private
  */
-ol.format.WKT.Lexer.prototype.nextChar_ = function() {
+_ol_format_WKT_.Lexer.prototype.nextChar_ = function() {
   return this.wkt.charAt(++this.index_);
 };
 
@@ -491,26 +490,26 @@ ol.format.WKT.Lexer.prototype.nextChar_ = function() {
  * Fetch and return the next token.
  * @return {!ol.WKTToken} Next string token.
  */
-ol.format.WKT.Lexer.prototype.nextToken = function() {
+_ol_format_WKT_.Lexer.prototype.nextToken = function() {
   var c = this.nextChar_();
   var token = {position: this.index_, value: c};
 
   if (c == '(') {
-    token.type = ol.format.WKT.TokenType_.LEFT_PAREN;
+    token.type = _ol_format_WKT_.TokenType_.LEFT_PAREN;
   } else if (c == ',') {
-    token.type = ol.format.WKT.TokenType_.COMMA;
+    token.type = _ol_format_WKT_.TokenType_.COMMA;
   } else if (c == ')') {
-    token.type = ol.format.WKT.TokenType_.RIGHT_PAREN;
+    token.type = _ol_format_WKT_.TokenType_.RIGHT_PAREN;
   } else if (this.isNumeric_(c) || c == '-') {
-    token.type = ol.format.WKT.TokenType_.NUMBER;
+    token.type = _ol_format_WKT_.TokenType_.NUMBER;
     token.value = this.readNumber_();
   } else if (this.isAlpha_(c)) {
-    token.type = ol.format.WKT.TokenType_.TEXT;
+    token.type = _ol_format_WKT_.TokenType_.TEXT;
     token.value = this.readText_();
   } else if (this.isWhiteSpace_(c)) {
     return this.nextToken();
   } else if (c === '') {
-    token.type = ol.format.WKT.TokenType_.EOF;
+    token.type = _ol_format_WKT_.TokenType_.EOF;
   } else {
     throw new Error('Unexpected character: ' + c);
   }
@@ -523,7 +522,7 @@ ol.format.WKT.Lexer.prototype.nextToken = function() {
  * @return {number} Numeric token value.
  * @private
  */
-ol.format.WKT.Lexer.prototype.readNumber_ = function() {
+_ol_format_WKT_.Lexer.prototype.readNumber_ = function() {
   var c, index = this.index_;
   var decimal = false;
   var scientificNotation = false;
@@ -551,7 +550,7 @@ ol.format.WKT.Lexer.prototype.readNumber_ = function() {
  * @return {string} String token value.
  * @private
  */
-ol.format.WKT.Lexer.prototype.readText_ = function() {
+_ol_format_WKT_.Lexer.prototype.readText_ = function() {
   var c, index = this.index_;
   do {
     c = this.nextChar_();
@@ -566,7 +565,7 @@ ol.format.WKT.Lexer.prototype.readText_ = function() {
  * @constructor
  * @protected
  */
-ol.format.WKT.Parser = function(lexer) {
+_ol_format_WKT_.Parser = function(lexer) {
 
   /**
    * @type {ol.format.WKT.Lexer}
@@ -584,7 +583,7 @@ ol.format.WKT.Parser = function(lexer) {
    * @type {ol.geom.GeometryLayout}
    * @private
    */
-  this.layout_ = ol.geom.GeometryLayout.XY;
+  this.layout_ = _ol_geom_GeometryLayout_.XY;
 };
 
 
@@ -592,7 +591,7 @@ ol.format.WKT.Parser = function(lexer) {
  * Fetch the next token form the lexer and replace the active token.
  * @private
  */
-ol.format.WKT.Parser.prototype.consume_ = function() {
+_ol_format_WKT_.Parser.prototype.consume_ = function() {
   this.token_ = this.lexer_.nextToken();
 };
 
@@ -601,7 +600,7 @@ ol.format.WKT.Parser.prototype.consume_ = function() {
  * @param {ol.format.WKT.TokenType_} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
-ol.format.WKT.Parser.prototype.isTokenType = function(type) {
+_ol_format_WKT_.Parser.prototype.isTokenType = function(type) {
   var isMatch = this.token_.type == type;
   return isMatch;
 };
@@ -612,7 +611,7 @@ ol.format.WKT.Parser.prototype.isTokenType = function(type) {
  * @param {ol.format.WKT.TokenType_} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
-ol.format.WKT.Parser.prototype.match = function(type) {
+_ol_format_WKT_.Parser.prototype.match = function(type) {
   var isMatch = this.isTokenType(type);
   if (isMatch) {
     this.consume_();
@@ -625,7 +624,7 @@ ol.format.WKT.Parser.prototype.match = function(type) {
  * Try to parse the tokens provided by the lexer.
  * @return {ol.geom.Geometry} The geometry.
  */
-ol.format.WKT.Parser.prototype.parse = function() {
+_ol_format_WKT_.Parser.prototype.parse = function() {
   this.consume_();
   var geometry = this.parseGeometry_();
   return geometry;
@@ -637,19 +636,19 @@ ol.format.WKT.Parser.prototype.parse = function() {
  * @return {ol.geom.GeometryLayout} The layout.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseGeometryLayout_ = function() {
-  var layout = ol.geom.GeometryLayout.XY;
+_ol_format_WKT_.Parser.prototype.parseGeometryLayout_ = function() {
+  var layout = _ol_geom_GeometryLayout_.XY;
   var dimToken = this.token_;
-  if (this.isTokenType(ol.format.WKT.TokenType_.TEXT)) {
+  if (this.isTokenType(_ol_format_WKT_.TokenType_.TEXT)) {
     var dimInfo = dimToken.value;
-    if (dimInfo === ol.format.WKT.Z) {
-      layout = ol.geom.GeometryLayout.XYZ;
-    } else if (dimInfo === ol.format.WKT.M) {
-      layout = ol.geom.GeometryLayout.XYM;
-    } else if (dimInfo === ol.format.WKT.ZM) {
-      layout = ol.geom.GeometryLayout.XYZM;
+    if (dimInfo === _ol_format_WKT_.Z) {
+      layout = _ol_geom_GeometryLayout_.XYZ;
+    } else if (dimInfo === _ol_format_WKT_.M) {
+      layout = _ol_geom_GeometryLayout_.XYM;
+    } else if (dimInfo === _ol_format_WKT_.ZM) {
+      layout = _ol_geom_GeometryLayout_.XYZM;
     }
-    if (layout !== ol.geom.GeometryLayout.XY) {
+    if (layout !== _ol_geom_GeometryLayout_.XY) {
       this.consume_();
     }
   }
@@ -661,17 +660,17 @@ ol.format.WKT.Parser.prototype.parseGeometryLayout_ = function() {
  * @return {!ol.geom.Geometry} The geometry.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
+_ol_format_WKT_.Parser.prototype.parseGeometry_ = function() {
   var token = this.token_;
-  if (this.match(ol.format.WKT.TokenType_.TEXT)) {
+  if (this.match(_ol_format_WKT_.TokenType_.TEXT)) {
     var geomType = token.value;
     this.layout_ = this.parseGeometryLayout_();
-    if (geomType == ol.geom.GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
+    if (geomType == _ol_geom_GeometryType_.GEOMETRY_COLLECTION.toUpperCase()) {
       var geometries = this.parseGeometryCollectionText_();
-      return new ol.geom.GeometryCollection(geometries);
+      return new _ol_geom_GeometryCollection_(geometries);
     } else {
-      var parser = ol.format.WKT.Parser.GeometryParser_[geomType];
-      var ctor = ol.format.WKT.Parser.GeometryConstructor_[geomType];
+      var parser = _ol_format_WKT_.Parser.GeometryParser_[geomType];
+      var ctor = _ol_format_WKT_.Parser.GeometryConstructor_[geomType];
       if (!parser || !ctor) {
         throw new Error('Invalid geometry type: ' + geomType);
       }
@@ -687,13 +686,13 @@ ol.format.WKT.Parser.prototype.parseGeometry_ = function() {
  * @return {!Array.<ol.geom.Geometry>} A collection of geometries.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parseGeometryCollectionText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var geometries = [];
     do {
       geometries.push(this.parseGeometry_());
-    } while (this.match(ol.format.WKT.TokenType_.COMMA));
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    } while (this.match(_ol_format_WKT_.TokenType_.COMMA));
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return geometries;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -707,10 +706,10 @@ ol.format.WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
  * @return {Array.<number>} All values in a point.
  * @private
  */
-ol.format.WKT.Parser.prototype.parsePointText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parsePointText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parsePoint_();
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -724,10 +723,10 @@ ol.format.WKT.Parser.prototype.parsePointText_ = function() {
  * @return {!Array.<!Array.<number>>} All points in a linestring.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseLineStringText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parseLineStringText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parsePointList_();
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -741,10 +740,10 @@ ol.format.WKT.Parser.prototype.parseLineStringText_ = function() {
  * @return {!Array.<!Array.<number>>} All points in a polygon.
  * @private
  */
-ol.format.WKT.Parser.prototype.parsePolygonText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parsePolygonText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parseLineStringTextList_();
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -758,15 +757,15 @@ ol.format.WKT.Parser.prototype.parsePolygonText_ = function() {
  * @return {!Array.<!Array.<number>>} All points in a multipoint.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseMultiPointText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parseMultiPointText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var coordinates;
-    if (this.token_.type == ol.format.WKT.TokenType_.LEFT_PAREN) {
+    if (this.token_.type == _ol_format_WKT_.TokenType_.LEFT_PAREN) {
       coordinates = this.parsePointTextList_();
     } else {
       coordinates = this.parsePointList_();
     }
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -781,10 +780,10 @@ ol.format.WKT.Parser.prototype.parseMultiPointText_ = function() {
  *                                        in a multilinestring.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseMultiLineStringText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parseMultiLineStringText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parseLineStringTextList_();
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -798,10 +797,10 @@ ol.format.WKT.Parser.prototype.parseMultiLineStringText_ = function() {
  * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseMultiPolygonText_ = function() {
-  if (this.match(ol.format.WKT.TokenType_.LEFT_PAREN)) {
+_ol_format_WKT_.Parser.prototype.parseMultiPolygonText_ = function() {
+  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parsePolygonTextList_();
-    if (this.match(ol.format.WKT.TokenType_.RIGHT_PAREN)) {
+    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -815,12 +814,12 @@ ol.format.WKT.Parser.prototype.parseMultiPolygonText_ = function() {
  * @return {!Array.<number>} A point.
  * @private
  */
-ol.format.WKT.Parser.prototype.parsePoint_ = function() {
+_ol_format_WKT_.Parser.prototype.parsePoint_ = function() {
   var coordinates = [];
   var dimensions = this.layout_.length;
   for (var i = 0; i < dimensions; ++i) {
     var token = this.token_;
-    if (this.match(ol.format.WKT.TokenType_.NUMBER)) {
+    if (this.match(_ol_format_WKT_.TokenType_.NUMBER)) {
       coordinates.push(token.value);
     } else {
       break;
@@ -837,9 +836,9 @@ ol.format.WKT.Parser.prototype.parsePoint_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-ol.format.WKT.Parser.prototype.parsePointList_ = function() {
+_ol_format_WKT_.Parser.prototype.parsePointList_ = function() {
   var coordinates = [this.parsePoint_()];
-  while (this.match(ol.format.WKT.TokenType_.COMMA)) {
+  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
     coordinates.push(this.parsePoint_());
   }
   return coordinates;
@@ -850,9 +849,9 @@ ol.format.WKT.Parser.prototype.parsePointList_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
+_ol_format_WKT_.Parser.prototype.parsePointTextList_ = function() {
   var coordinates = [this.parsePointText_()];
-  while (this.match(ol.format.WKT.TokenType_.COMMA)) {
+  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
     coordinates.push(this.parsePointText_());
   }
   return coordinates;
@@ -863,9 +862,9 @@ ol.format.WKT.Parser.prototype.parsePointTextList_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
+_ol_format_WKT_.Parser.prototype.parseLineStringTextList_ = function() {
   var coordinates = [this.parseLineStringText_()];
-  while (this.match(ol.format.WKT.TokenType_.COMMA)) {
+  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
     coordinates.push(this.parseLineStringText_());
   }
   return coordinates;
@@ -876,9 +875,9 @@ ol.format.WKT.Parser.prototype.parseLineStringTextList_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
+_ol_format_WKT_.Parser.prototype.parsePolygonTextList_ = function() {
   var coordinates = [this.parsePolygonText_()];
-  while (this.match(ol.format.WKT.TokenType_.COMMA)) {
+  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
     coordinates.push(this.parsePolygonText_());
   }
   return coordinates;
@@ -889,9 +888,9 @@ ol.format.WKT.Parser.prototype.parsePolygonTextList_ = function() {
  * @return {boolean} Whether the token implies an empty geometry.
  * @private
  */
-ol.format.WKT.Parser.prototype.isEmptyGeometry_ = function() {
-  var isEmpty = this.isTokenType(ol.format.WKT.TokenType_.TEXT) &&
-      this.token_.value == ol.format.WKT.EMPTY;
+_ol_format_WKT_.Parser.prototype.isEmptyGeometry_ = function() {
+  var isEmpty = this.isTokenType(_ol_format_WKT_.TokenType_.TEXT) &&
+      this.token_.value == _ol_format_WKT_.EMPTY;
   if (isEmpty) {
     this.consume_();
   }
@@ -904,7 +903,7 @@ ol.format.WKT.Parser.prototype.isEmptyGeometry_ = function() {
  * @return {string} Error message.
  * @private
  */
-ol.format.WKT.Parser.prototype.formatErrorMessage_ = function() {
+_ol_format_WKT_.Parser.prototype.formatErrorMessage_ = function() {
   return 'Unexpected `' + this.token_.value + '` at position ' +
       this.token_.position + ' in `' + this.lexer_.wkt + '`';
 };
@@ -914,13 +913,13 @@ ol.format.WKT.Parser.prototype.formatErrorMessage_ = function() {
  * @enum {function (new:ol.geom.Geometry, Array, ol.geom.GeometryLayout)}
  * @private
  */
-ol.format.WKT.Parser.GeometryConstructor_ = {
-  'POINT': ol.geom.Point,
-  'LINESTRING': ol.geom.LineString,
-  'POLYGON': ol.geom.Polygon,
-  'MULTIPOINT': ol.geom.MultiPoint,
-  'MULTILINESTRING': ol.geom.MultiLineString,
-  'MULTIPOLYGON': ol.geom.MultiPolygon
+_ol_format_WKT_.Parser.GeometryConstructor_ = {
+  'POINT': _ol_geom_Point_,
+  'LINESTRING': _ol_geom_LineString_,
+  'POLYGON': _ol_geom_Polygon_,
+  'MULTIPOINT': _ol_geom_MultiPoint_,
+  'MULTILINESTRING': _ol_geom_MultiLineString_,
+  'MULTIPOLYGON': _ol_geom_MultiPolygon_
 };
 
 
@@ -928,11 +927,12 @@ ol.format.WKT.Parser.GeometryConstructor_ = {
  * @enum {(function(): Array)}
  * @private
  */
-ol.format.WKT.Parser.GeometryParser_ = {
-  'POINT': ol.format.WKT.Parser.prototype.parsePointText_,
-  'LINESTRING': ol.format.WKT.Parser.prototype.parseLineStringText_,
-  'POLYGON': ol.format.WKT.Parser.prototype.parsePolygonText_,
-  'MULTIPOINT': ol.format.WKT.Parser.prototype.parseMultiPointText_,
-  'MULTILINESTRING': ol.format.WKT.Parser.prototype.parseMultiLineStringText_,
-  'MULTIPOLYGON': ol.format.WKT.Parser.prototype.parseMultiPolygonText_
+_ol_format_WKT_.Parser.GeometryParser_ = {
+  'POINT': _ol_format_WKT_.Parser.prototype.parsePointText_,
+  'LINESTRING': _ol_format_WKT_.Parser.prototype.parseLineStringText_,
+  'POLYGON': _ol_format_WKT_.Parser.prototype.parsePolygonText_,
+  'MULTIPOINT': _ol_format_WKT_.Parser.prototype.parseMultiPointText_,
+  'MULTILINESTRING': _ol_format_WKT_.Parser.prototype.parseMultiLineStringText_,
+  'MULTIPOLYGON': _ol_format_WKT_.Parser.prototype.parseMultiPolygonText_
 };
+export default _ol_format_WKT_;

@@ -1,7 +1,6 @@
-goog.provide('ol.color');
-
-goog.require('ol.asserts');
-goog.require('ol.math');
+import _ol_asserts_ from './asserts';
+import _ol_math_ from './math';
+var _ol_color_ = {};
 
 
 /**
@@ -10,7 +9,7 @@ goog.require('ol.math');
  * @type {RegExp}
  * @private
  */
-ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
+_ol_color_.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 
 /**
@@ -19,7 +18,7 @@ ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
  * @type {RegExp}
  * @private
  */
-ol.color.NAMED_COLOR_RE_ = /^([a-z]*)$/i;
+_ol_color_.NAMED_COLOR_RE_ = /^([a-z]*)$/i;
 
 
 /**
@@ -29,11 +28,11 @@ ol.color.NAMED_COLOR_RE_ = /^([a-z]*)$/i;
  * @return {ol.Color} Color.
  * @api
  */
-ol.color.asArray = function(color) {
+_ol_color_.asArray = function(color) {
   if (Array.isArray(color)) {
     return color;
   } else {
-    return ol.color.fromString(/** @type {string} */ (color));
+    return _ol_color_.fromString(/** @type {string} */ (color));
   }
 };
 
@@ -44,11 +43,11 @@ ol.color.asArray = function(color) {
  * @return {string} Rgba string.
  * @api
  */
-ol.color.asString = function(color) {
+_ol_color_.asString = function(color) {
   if (typeof color === 'string') {
     return color;
   } else {
-    return ol.color.toString(color);
+    return _ol_color_.toString(color);
   }
 };
 
@@ -57,7 +56,7 @@ ol.color.asString = function(color) {
  * @param {string} color Named color.
  * @return {string} Rgb string.
  */
-ol.color.fromNamed = function(color) {
+_ol_color_.fromNamed = function(color) {
   var el = document.createElement('div');
   el.style.color = color;
   document.body.appendChild(el);
@@ -71,7 +70,7 @@ ol.color.fromNamed = function(color) {
  * @param {string} s String.
  * @return {ol.Color} Color.
  */
-ol.color.fromString = (
+_ol_color_.fromString = (
   function() {
 
     // We maintain a small cache of parsed strings.  To provide cheap LRU-like
@@ -114,12 +113,13 @@ ol.color.fromString = (
               }
             }
           }
-          color = ol.color.fromStringInternal_(s);
+          color = _ol_color_.fromStringInternal_(s);
           cache[s] = color;
           ++cacheSize;
         }
         return color;
-      });
+      }
+    );
 
   })();
 
@@ -129,16 +129,16 @@ ol.color.fromString = (
  * @private
  * @return {ol.Color} Color.
  */
-ol.color.fromStringInternal_ = function(s) {
+_ol_color_.fromStringInternal_ = function(s) {
   var r, g, b, a, color, parts;
 
-  if (ol.color.NAMED_COLOR_RE_.exec(s)) {
-    s = ol.color.fromNamed(s);
+  if (_ol_color_.NAMED_COLOR_RE_.exec(s)) {
+    s = _ol_color_.fromNamed(s);
   }
 
-  if (ol.color.HEX_COLOR_RE_.exec(s)) { // hex
+  if (_ol_color_.HEX_COLOR_RE_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
-    ol.asserts.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
+    _ol_asserts_.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
     var d = n == 3 ? 1 : 2; // number of digits per channel
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
@@ -152,13 +152,13 @@ ol.color.fromStringInternal_ = function(s) {
     color = [r, g, b, a];
   } else if (s.indexOf('rgba(') == 0) { // rgba()
     parts = s.slice(5, -1).split(',').map(Number);
-    color = ol.color.normalize(parts);
+    color = _ol_color_.normalize(parts);
   } else if (s.indexOf('rgb(') == 0) { // rgb()
     parts = s.slice(4, -1).split(',').map(Number);
     parts.push(1);
-    color = ol.color.normalize(parts);
+    color = _ol_color_.normalize(parts);
   } else {
-    ol.asserts.assert(false, 14); // Invalid color
+    _ol_asserts_.assert(false, 14); // Invalid color
   }
   return /** @type {ol.Color} */ (color);
 };
@@ -169,12 +169,12 @@ ol.color.fromStringInternal_ = function(s) {
  * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Clamped color.
  */
-ol.color.normalize = function(color, opt_color) {
+_ol_color_.normalize = function(color, opt_color) {
   var result = opt_color || [];
-  result[0] = ol.math.clamp((color[0] + 0.5) | 0, 0, 255);
-  result[1] = ol.math.clamp((color[1] + 0.5) | 0, 0, 255);
-  result[2] = ol.math.clamp((color[2] + 0.5) | 0, 0, 255);
-  result[3] = ol.math.clamp(color[3], 0, 1);
+  result[0] = _ol_math_.clamp((color[0] + 0.5) | 0, 0, 255);
+  result[1] = _ol_math_.clamp((color[1] + 0.5) | 0, 0, 255);
+  result[2] = _ol_math_.clamp((color[2] + 0.5) | 0, 0, 255);
+  result[3] = _ol_math_.clamp(color[3], 0, 1);
   return result;
 };
 
@@ -183,7 +183,7 @@ ol.color.normalize = function(color, opt_color) {
  * @param {ol.Color} color Color.
  * @return {string} String.
  */
-ol.color.toString = function(color) {
+_ol_color_.toString = function(color) {
   var r = color[0];
   if (r != (r | 0)) {
     r = (r + 0.5) | 0;
@@ -199,3 +199,4 @@ ol.color.toString = function(color) {
   var a = color[3] === undefined ? 1 : color[3];
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 };
+export default _ol_color_;

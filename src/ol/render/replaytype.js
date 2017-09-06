@@ -1,10 +1,7 @@
-goog.provide('ol.render.ReplayType');
-
-
 /**
  * @enum {string}
  */
-ol.render.ReplayType = {
+var _ol_render_ReplayType_ = {
   CIRCLE: 'Circle',
   DEFAULT: 'Default',
   IMAGE: 'Image',
@@ -12,3 +9,5 @@ ol.render.ReplayType = {
   POLYGON: 'Polygon',
   TEXT: 'Text'
 };
+
+export default _ol_render_ReplayType_;

@@ -1,7 +1,7 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_source_OSM_ from '../src/ol/source/osm';
 
 var viewport = document.getElementById('map');
 
@@ -12,16 +12,16 @@ function getMinZoom() {
 
 var initialZoom = getMinZoom();
 
-var view = new ol.View({
+var view = new _ol_View_({
   center: [0, 0],
   minZoom: initialZoom,
   zoom: initialZoom
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     })
   ],
   target: 'map',

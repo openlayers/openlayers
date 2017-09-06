@@ -1,8 +1,5 @@
-goog.provide('ol.format.filter.LessThan');
-
-goog.require('ol');
-goog.require('ol.format.filter.ComparisonBinary');
-
+import _ol_ from '../../index';
+import _ol_format_filter_ComparisonBinary_ from '../filter/comparisonbinary';
 
 /**
  * @classdesc
@@ -14,7 +11,9 @@ goog.require('ol.format.filter.ComparisonBinary');
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-ol.format.filter.LessThan = function(propertyName, expression) {
-  ol.format.filter.ComparisonBinary.call(this, 'PropertyIsLessThan', propertyName, expression);
+var _ol_format_filter_LessThan_ = function(propertyName, expression) {
+  _ol_format_filter_ComparisonBinary_.call(this, 'PropertyIsLessThan', propertyName, expression);
 };
-ol.inherits(ol.format.filter.LessThan, ol.format.filter.ComparisonBinary);
+
+_ol_.inherits(_ol_format_filter_LessThan_, _ol_format_filter_ComparisonBinary_);
+export default _ol_format_filter_LessThan_;

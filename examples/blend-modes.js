@@ -1,29 +1,29 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/feature';
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_geom_Point_ from '../src/ol/geom/point';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_Vector_ from '../src/ol/source/vector';
+import _ol_style_Circle_ from '../src/ol/style/circle';
+import _ol_style_Fill_ from '../src/ol/style/fill';
+import _ol_style_Stroke_ from '../src/ol/style/stroke';
+import _ol_style_Style_ from '../src/ol/style/style';
 
 
 // Create separate layers for red, green an blue circles.
 //
 // Every layer has one feature that is styled with a circle, together the
 // features form the corners of an equilateral triangle and their styles overlap
-var redLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: [new ol.Feature(new ol.geom.Point([0, 0]))]
+var redLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
+    features: [new _ol_Feature_(new _ol_geom_Point_([0, 0]))]
   }),
-  style: new ol.style.Style({
-    image: new ol.style.Circle({
-      fill: new ol.style.Fill({
+  style: new _ol_style_Style_({
+    image: new _ol_style_Circle_({
+      fill: new _ol_style_Fill_({
         color: 'rgba(255,0,0,0.8)'
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: 'rgb(255,0,0)',
         width: 15
       }),
@@ -31,17 +31,17 @@ var redLayer = new ol.layer.Vector({
     })
   })
 });
-var greenLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var greenLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     // 433.013 is roughly 250 * Math.sqrt(3)
-    features: [new ol.Feature(new ol.geom.Point([250, 433.013]))]
+    features: [new _ol_Feature_(new _ol_geom_Point_([250, 433.013]))]
   }),
-  style: new ol.style.Style({
-    image: new ol.style.Circle({
-      fill: new ol.style.Fill({
+  style: new _ol_style_Style_({
+    image: new _ol_style_Circle_({
+      fill: new _ol_style_Fill_({
         color: 'rgba(0,255,0,0.8)'
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: 'rgb(0,255,0)',
         width: 15
       }),
@@ -49,16 +49,16 @@ var greenLayer = new ol.layer.Vector({
     })
   })
 });
-var blueLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: [new ol.Feature(new ol.geom.Point([500, 0]))]
+var blueLayer = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
+    features: [new _ol_Feature_(new _ol_geom_Point_([500, 0]))]
   }),
-  style: new ol.style.Style({
-    image: new ol.style.Circle({
-      fill: new ol.style.Fill({
+  style: new _ol_style_Style_({
+    image: new _ol_style_Circle_({
+      fill: new _ol_style_Fill_({
         color: 'rgba(0,0,255,0.8)'
       }),
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: 'rgb(0,0,255)',
         width: 15
       }),
@@ -69,14 +69,14 @@ var blueLayer = new ol.layer.Vector({
 
 // Create the map, the view is centered on the triangle. Zooming and panning is
 // restricted to a sane area
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
     redLayer,
     greenLayer,
     blueLayer
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [250, 220],
     extent: [0, 0, 500, 500],
     resolution: 4,

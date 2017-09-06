@@ -1,11 +1,8 @@
-goog.provide('ol.TileQueue');
-
-goog.require('ol');
-goog.require('ol.TileState');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.structs.PriorityQueue');
-
+import _ol_ from './index';
+import _ol_TileState_ from './tilestate';
+import _ol_events_ from './events';
+import _ol_events_EventType_ from './events/eventtype';
+import _ol_structs_PriorityQueue_ from './structs/priorityqueue';
 
 /**
  * @constructor
@@ -16,9 +13,9 @@ goog.require('ol.structs.PriorityQueue');
  *     Function called on each tile change event.
  * @struct
  */
-ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
+var _ol_TileQueue_ = function(tilePriorityFunction, tileChangeCallback) {
 
-  ol.structs.PriorityQueue.call(
+  _ol_structs_PriorityQueue_.call(
       this,
       /**
        * @param {Array} element Element.
@@ -54,17 +51,18 @@ ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
   this.tilesLoadingKeys_ = {};
 
 };
-ol.inherits(ol.TileQueue, ol.structs.PriorityQueue);
+
+_ol_.inherits(_ol_TileQueue_, _ol_structs_PriorityQueue_);
 
 
 /**
  * @inheritDoc
  */
-ol.TileQueue.prototype.enqueue = function(element) {
-  var added = ol.structs.PriorityQueue.prototype.enqueue.call(this, element);
+_ol_TileQueue_.prototype.enqueue = function(element) {
+  var added = _ol_structs_PriorityQueue_.prototype.enqueue.call(this, element);
   if (added) {
     var tile = element[0];
-    ol.events.listen(tile, ol.events.EventType.CHANGE,
+    _ol_events_.listen(tile, _ol_events_EventType_.CHANGE,
         this.handleTileChange, this);
   }
   return added;
@@ -74,7 +72,7 @@ ol.TileQueue.prototype.enqueue = function(element) {
 /**
  * @return {number} Number of tiles loading.
  */
-ol.TileQueue.prototype.getTilesLoading = function() {
+_ol_TileQueue_.prototype.getTilesLoading = function() {
   return this.tilesLoading_;
 };
 
@@ -83,12 +81,12 @@ ol.TileQueue.prototype.getTilesLoading = function() {
  * @param {ol.events.Event} event Event.
  * @protected
  */
-ol.TileQueue.prototype.handleTileChange = function(event) {
+_ol_TileQueue_.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   var state = tile.getState();
-  if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
-      state === ol.TileState.EMPTY || state === ol.TileState.ABORT) {
-    ol.events.unlisten(tile, ol.events.EventType.CHANGE,
+  if (state === _ol_TileState_.LOADED || state === _ol_TileState_.ERROR ||
+      state === _ol_TileState_.EMPTY || state === _ol_TileState_.ABORT) {
+    _ol_events_.unlisten(tile, _ol_events_EventType_.CHANGE,
         this.handleTileChange, this);
     var tileKey = tile.getKey();
     if (tileKey in this.tilesLoadingKeys_) {
@@ -104,7 +102,7 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
  * @param {number} maxTotalLoading Maximum number tiles to load simultaneously.
  * @param {number} maxNewLoads Maximum number of new tiles to load.
  */
-ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
+_ol_TileQueue_.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var newLoads = 0;
   var abortedTiles = false;
   var state, tile, tileKey;
@@ -113,9 +111,9 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     tileKey = tile.getKey();
     state = tile.getState();
-    if (state === ol.TileState.ABORT) {
+    if (state === _ol_TileState_.ABORT) {
       abortedTiles = true;
-    } else if (state === ol.TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+    } else if (state === _ol_TileState_.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
       this.tilesLoadingKeys_[tileKey] = true;
       ++this.tilesLoading_;
       ++newLoads;
@@ -128,3 +126,4 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
     this.tileChangeCallback_();
   }
 };
+export default _ol_TileQueue_;

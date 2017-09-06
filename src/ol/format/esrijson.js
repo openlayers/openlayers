@@ -1,25 +1,22 @@
-goog.provide('ol.format.EsriJSON');
-
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.asserts');
-goog.require('ol.extent');
-goog.require('ol.format.Feature');
-goog.require('ol.format.JSONFeature');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.geom.flat.deflate');
-goog.require('ol.geom.flat.orient');
-goog.require('ol.obj');
-goog.require('ol.proj');
-
+import _ol_ from '../index';
+import _ol_Feature_ from '../feature';
+import _ol_asserts_ from '../asserts';
+import _ol_extent_ from '../extent';
+import _ol_format_Feature_ from '../format/feature';
+import _ol_format_JSONFeature_ from '../format/jsonfeature';
+import _ol_geom_GeometryLayout_ from '../geom/geometrylayout';
+import _ol_geom_GeometryType_ from '../geom/geometrytype';
+import _ol_geom_LineString_ from '../geom/linestring';
+import _ol_geom_LinearRing_ from '../geom/linearring';
+import _ol_geom_MultiLineString_ from '../geom/multilinestring';
+import _ol_geom_MultiPoint_ from '../geom/multipoint';
+import _ol_geom_MultiPolygon_ from '../geom/multipolygon';
+import _ol_geom_Point_ from '../geom/point';
+import _ol_geom_Polygon_ from '../geom/polygon';
+import _ol_geom_flat_deflate_ from '../geom/flat/deflate';
+import _ol_geom_flat_orient_ from '../geom/flat/orient';
+import _ol_obj_ from '../obj';
+import _ol_proj_ from '../proj';
 
 /**
  * @classdesc
@@ -30,11 +27,11 @@ goog.require('ol.proj');
  * @param {olx.format.EsriJSONOptions=} opt_options Options.
  * @api
  */
-ol.format.EsriJSON = function(opt_options) {
+var _ol_format_EsriJSON_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  ol.format.JSONFeature.call(this);
+  _ol_format_JSONFeature_.call(this);
 
   /**
    * Name of the geometry attribute for features.
@@ -44,7 +41,8 @@ ol.format.EsriJSON = function(opt_options) {
   this.geometryName_ = options.geometryName;
 
 };
-ol.inherits(ol.format.EsriJSON, ol.format.JSONFeature);
+
+_ol_.inherits(_ol_format_EsriJSON_, _ol_format_JSONFeature_);
 
 
 /**
@@ -53,38 +51,39 @@ ol.inherits(ol.format.EsriJSON, ol.format.JSONFeature);
  * @private
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
+_ol_format_EsriJSON_.readGeometry_ = function(object, opt_options) {
   if (!object) {
     return null;
   }
   /** @type {ol.geom.GeometryType} */
   var type;
   if (typeof object.x === 'number' && typeof object.y === 'number') {
-    type = ol.geom.GeometryType.POINT;
+    type = _ol_geom_GeometryType_.POINT;
   } else if (object.points) {
-    type = ol.geom.GeometryType.MULTI_POINT;
+    type = _ol_geom_GeometryType_.MULTI_POINT;
   } else if (object.paths) {
     if (object.paths.length === 1) {
-      type = ol.geom.GeometryType.LINE_STRING;
+      type = _ol_geom_GeometryType_.LINE_STRING;
     } else {
-      type = ol.geom.GeometryType.MULTI_LINE_STRING;
+      type = _ol_geom_GeometryType_.MULTI_LINE_STRING;
     }
   } else if (object.rings) {
-    var layout = ol.format.EsriJSON.getGeometryLayout_(object);
-    var rings = ol.format.EsriJSON.convertRings_(object.rings, layout);
-    object = /** @type {EsriJSONGeometry} */(ol.obj.assign({}, object));
+    var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
+    var rings = _ol_format_EsriJSON_.convertRings_(object.rings, layout);
+    object = /** @type {EsriJSONGeometry} */(_ol_obj_.assign({}, object));
     if (rings.length === 1) {
-      type = ol.geom.GeometryType.POLYGON;
+      type = _ol_geom_GeometryType_.POLYGON;
       object.rings = rings[0];
     } else {
-      type = ol.geom.GeometryType.MULTI_POLYGON;
+      type = _ol_geom_GeometryType_.MULTI_POLYGON;
       object.rings = rings;
     }
   }
-  var geometryReader = ol.format.EsriJSON.GEOMETRY_READERS_[type];
-  return /** @type {ol.geom.Geometry} */ (
-    ol.format.Feature.transformWithOptions(
-        geometryReader(object), false, opt_options));
+  var geometryReader = _ol_format_EsriJSON_.GEOMETRY_READERS_[type];
+  return (
+    /** @type {ol.geom.Geometry} */ _ol_format_Feature_.transformWithOptions(
+        geometryReader(object), false, opt_options)
+  );
 };
 
 
@@ -98,16 +97,16 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
  * @private
  * @return {Array.<!Array.<!Array.<number>>>} Transformed rings.
  */
-ol.format.EsriJSON.convertRings_ = function(rings, layout) {
+_ol_format_EsriJSON_.convertRings_ = function(rings, layout) {
   var flatRing = [];
   var outerRings = [];
   var holes = [];
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
     flatRing.length = 0;
-    ol.geom.flat.deflate.coordinates(flatRing, 0, rings[i], layout.length);
+    _ol_geom_flat_deflate_.coordinates(flatRing, 0, rings[i], layout.length);
     // is this ring an outer ring? is it clockwise?
-    var clockwise = ol.geom.flat.orient.linearRingIsClockwise(flatRing, 0,
+    var clockwise = _ol_geom_flat_orient_.linearRingIsClockwise(flatRing, 0,
         flatRing.length, layout.length);
     if (clockwise) {
       outerRings.push([rings[i]]);
@@ -121,9 +120,9 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
     // loop over all outer rings and see if they contain our hole.
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
-      var containsHole = ol.extent.containsExtent(
-          new ol.geom.LinearRing(outerRing).getExtent(),
-          new ol.geom.LinearRing(hole).getExtent()
+      var containsHole = _ol_extent_.containsExtent(
+          new _ol_geom_LinearRing_(outerRing).getExtent(),
+          new _ol_geom_LinearRing_(hole).getExtent()
       );
       if (containsHole) {
         // the hole is contained push it into our polygon
@@ -147,19 +146,19 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
  * @private
  * @return {ol.geom.Geometry} Point.
  */
-ol.format.EsriJSON.readPointGeometry_ = function(object) {
+_ol_format_EsriJSON_.readPointGeometry_ = function(object) {
   var point;
   if (object.m !== undefined && object.z !== undefined) {
-    point = new ol.geom.Point([object.x, object.y, object.z, object.m],
-        ol.geom.GeometryLayout.XYZM);
+    point = new _ol_geom_Point_([object.x, object.y, object.z, object.m],
+        _ol_geom_GeometryLayout_.XYZM);
   } else if (object.z !== undefined) {
-    point = new ol.geom.Point([object.x, object.y, object.z],
-        ol.geom.GeometryLayout.XYZ);
+    point = new _ol_geom_Point_([object.x, object.y, object.z],
+        _ol_geom_GeometryLayout_.XYZ);
   } else if (object.m !== undefined) {
-    point = new ol.geom.Point([object.x, object.y, object.m],
-        ol.geom.GeometryLayout.XYM);
+    point = new _ol_geom_Point_([object.x, object.y, object.m],
+        _ol_geom_GeometryLayout_.XYM);
   } else {
-    point = new ol.geom.Point([object.x, object.y]);
+    point = new _ol_geom_Point_([object.x, object.y]);
   }
   return point;
 };
@@ -170,9 +169,9 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
  * @private
  * @return {ol.geom.Geometry} LineString.
  */
-ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
-  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
-  return new ol.geom.LineString(object.paths[0], layout);
+_ol_format_EsriJSON_.readLineStringGeometry_ = function(object) {
+  var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
+  return new _ol_geom_LineString_(object.paths[0], layout);
 };
 
 
@@ -181,9 +180,9 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
  * @private
  * @return {ol.geom.Geometry} MultiLineString.
  */
-ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
-  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
-  return new ol.geom.MultiLineString(object.paths, layout);
+_ol_format_EsriJSON_.readMultiLineStringGeometry_ = function(object) {
+  var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
+  return new _ol_geom_MultiLineString_(object.paths, layout);
 };
 
 
@@ -192,14 +191,14 @@ ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
  * @private
  * @return {ol.geom.GeometryLayout} The geometry layout to use.
  */
-ol.format.EsriJSON.getGeometryLayout_ = function(object) {
-  var layout = ol.geom.GeometryLayout.XY;
+_ol_format_EsriJSON_.getGeometryLayout_ = function(object) {
+  var layout = _ol_geom_GeometryLayout_.XY;
   if (object.hasZ === true && object.hasM === true) {
-    layout = ol.geom.GeometryLayout.XYZM;
+    layout = _ol_geom_GeometryLayout_.XYZM;
   } else if (object.hasZ === true) {
-    layout = ol.geom.GeometryLayout.XYZ;
+    layout = _ol_geom_GeometryLayout_.XYZ;
   } else if (object.hasM === true) {
-    layout = ol.geom.GeometryLayout.XYM;
+    layout = _ol_geom_GeometryLayout_.XYM;
   }
   return layout;
 };
@@ -210,9 +209,9 @@ ol.format.EsriJSON.getGeometryLayout_ = function(object) {
  * @private
  * @return {ol.geom.Geometry} MultiPoint.
  */
-ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
-  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
-  return new ol.geom.MultiPoint(object.points, layout);
+_ol_format_EsriJSON_.readMultiPointGeometry_ = function(object) {
+  var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
+  return new _ol_geom_MultiPoint_(object.points, layout);
 };
 
 
@@ -221,9 +220,9 @@ ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
  * @private
  * @return {ol.geom.Geometry} MultiPolygon.
  */
-ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
-  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
-  return new ol.geom.MultiPolygon(
+_ol_format_EsriJSON_.readMultiPolygonGeometry_ = function(object) {
+  var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
+  return new _ol_geom_MultiPolygon_(
       /** @type {Array.<Array.<Array.<Array.<number>>>>} */(object.rings),
       layout);
 };
@@ -234,9 +233,9 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
  * @private
  * @return {ol.geom.Geometry} Polygon.
  */
-ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
-  var layout = ol.format.EsriJSON.getGeometryLayout_(object);
-  return new ol.geom.Polygon(object.rings, layout);
+_ol_format_EsriJSON_.readPolygonGeometry_ = function(object) {
+  var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
+  return new _ol_geom_Polygon_(object.rings, layout);
 };
 
 
@@ -246,36 +245,36 @@ ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
  * @private
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
-ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
+_ol_format_EsriJSON_.writePointGeometry_ = function(geometry, opt_options) {
   var coordinates = /** @type {ol.geom.Point} */ (geometry).getCoordinates();
   var esriJSON;
   var layout = /** @type {ol.geom.Point} */ (geometry).getLayout();
-  if (layout === ol.geom.GeometryLayout.XYZ) {
+  if (layout === _ol_geom_GeometryLayout_.XYZ) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2]
     });
-  } else if (layout === ol.geom.GeometryLayout.XYM) {
+  } else if (layout === _ol_geom_GeometryLayout_.XYM) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       m: coordinates[2]
     });
-  } else if (layout === ol.geom.GeometryLayout.XYZM) {
+  } else if (layout === _ol_geom_GeometryLayout_.XYZM) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
       m: coordinates[3]
     });
-  } else if (layout === ol.geom.GeometryLayout.XY) {
+  } else if (layout === _ol_geom_GeometryLayout_.XY) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1]
     });
   } else {
-    ol.asserts.assert(false, 34); // Invalid geometry layout
+    _ol_asserts_.assert(false, 34); // Invalid geometry layout
   }
   return /** @type {EsriJSONGeometry} */ (esriJSON);
 };
@@ -286,13 +285,13 @@ ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {Object} Object with boolean hasZ and hasM keys.
  */
-ol.format.EsriJSON.getHasZM_ = function(geometry) {
+_ol_format_EsriJSON_.getHasZM_ = function(geometry) {
   var layout = geometry.getLayout();
   return {
-    hasZ: (layout === ol.geom.GeometryLayout.XYZ ||
-      layout === ol.geom.GeometryLayout.XYZM),
-    hasM: (layout === ol.geom.GeometryLayout.XYM ||
-      layout === ol.geom.GeometryLayout.XYZM)
+    hasZ: (layout === _ol_geom_GeometryLayout_.XYZ ||
+      layout === _ol_geom_GeometryLayout_.XYZM),
+    hasM: (layout === _ol_geom_GeometryLayout_.XYM ||
+      layout === _ol_geom_GeometryLayout_.XYZM)
   };
 };
 
@@ -303,8 +302,8 @@ ol.format.EsriJSON.getHasZM_ = function(geometry) {
  * @private
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
-  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.LineString} */(geometry));
+_ol_format_EsriJSON_.writeLineStringGeometry_ = function(geometry, opt_options) {
+  var hasZM = _ol_format_EsriJSON_.getHasZM_(/** @type {ol.geom.LineString} */(geometry));
   return /** @type {EsriJSONPolyline} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
@@ -321,9 +320,9 @@ ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
-ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
+_ol_format_EsriJSON_.writePolygonGeometry_ = function(geometry, opt_options) {
   // Esri geometries use the left-hand rule
-  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.Polygon} */(geometry));
+  var hasZM = _ol_format_EsriJSON_.getHasZM_(/** @type {ol.geom.Polygon} */(geometry));
   return /** @type {EsriJSONPolygon} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
@@ -338,8 +337,8 @@ ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-ol.format.EsriJSON.writeMultiLineStringGeometry_ = function(geometry, opt_options) {
-  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.MultiLineString} */(geometry));
+_ol_format_EsriJSON_.writeMultiLineStringGeometry_ = function(geometry, opt_options) {
+  var hasZM = _ol_format_EsriJSON_.getHasZM_(/** @type {ol.geom.MultiLineString} */(geometry));
   return /** @type {EsriJSONPolyline} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
@@ -354,8 +353,8 @@ ol.format.EsriJSON.writeMultiLineStringGeometry_ = function(geometry, opt_option
  * @private
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
-ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
-  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.MultiPoint} */(geometry));
+_ol_format_EsriJSON_.writeMultiPointGeometry_ = function(geometry, opt_options) {
+  var hasZM = _ol_format_EsriJSON_.getHasZM_(/** @type {ol.geom.MultiPoint} */(geometry));
   return /** @type {EsriJSONMultipoint} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
@@ -370,9 +369,9 @@ ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
-ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
+_ol_format_EsriJSON_.writeMultiPolygonGeometry_ = function(geometry,
     opt_options) {
-  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.MultiPolygon} */(geometry));
+  var hasZM = _ol_format_EsriJSON_.getHasZM_(/** @type {ol.geom.MultiPolygon} */(geometry));
   var coordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getCoordinates(false);
   var output = [];
   for (var i = 0; i < coordinates.length; i++) {
@@ -393,19 +392,19 @@ ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
  * @private
  * @type {Object.<ol.geom.GeometryType, function(EsriJSONGeometry): ol.geom.Geometry>}
  */
-ol.format.EsriJSON.GEOMETRY_READERS_ = {};
-ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.POINT] =
-  ol.format.EsriJSON.readPointGeometry_;
-ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.LINE_STRING] =
-  ol.format.EsriJSON.readLineStringGeometry_;
-ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.POLYGON] =
-  ol.format.EsriJSON.readPolygonGeometry_;
-ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_POINT] =
-  ol.format.EsriJSON.readMultiPointGeometry_;
-ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_LINE_STRING] =
-  ol.format.EsriJSON.readMultiLineStringGeometry_;
-ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_POLYGON] =
-  ol.format.EsriJSON.readMultiPolygonGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_READERS_ = {};
+_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.POINT] =
+  _ol_format_EsriJSON_.readPointGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.LINE_STRING] =
+  _ol_format_EsriJSON_.readLineStringGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.POLYGON] =
+  _ol_format_EsriJSON_.readPolygonGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_POINT] =
+  _ol_format_EsriJSON_.readMultiPointGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_LINE_STRING] =
+  _ol_format_EsriJSON_.readMultiLineStringGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_POLYGON] =
+  _ol_format_EsriJSON_.readMultiPolygonGeometry_;
 
 
 /**
@@ -413,19 +412,19 @@ ol.format.EsriJSON.GEOMETRY_READERS_[ol.geom.GeometryType.MULTI_POLYGON] =
  * @private
  * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (EsriJSONGeometry)>}
  */
-ol.format.EsriJSON.GEOMETRY_WRITERS_ = {};
-ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.POINT] =
-  ol.format.EsriJSON.writePointGeometry_;
-ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.LINE_STRING] =
-  ol.format.EsriJSON.writeLineStringGeometry_;
-ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.POLYGON] =
-  ol.format.EsriJSON.writePolygonGeometry_;
-ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_POINT] =
-  ol.format.EsriJSON.writeMultiPointGeometry_;
-ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_LINE_STRING] =
-  ol.format.EsriJSON.writeMultiLineStringGeometry_;
-ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_POLYGON] =
-  ol.format.EsriJSON.writeMultiPolygonGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_ = {};
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.POINT] =
+  _ol_format_EsriJSON_.writePointGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.LINE_STRING] =
+  _ol_format_EsriJSON_.writeLineStringGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.POLYGON] =
+  _ol_format_EsriJSON_.writePolygonGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.MULTI_POINT] =
+  _ol_format_EsriJSON_.writeMultiPointGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.MULTI_LINE_STRING] =
+  _ol_format_EsriJSON_.writeMultiLineStringGeometry_;
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.MULTI_POLYGON] =
+  _ol_format_EsriJSON_.writeMultiPolygonGeometry_;
 
 
 /**
@@ -438,7 +437,7 @@ ol.format.EsriJSON.GEOMETRY_WRITERS_[ol.geom.GeometryType.MULTI_POLYGON] =
  * @return {ol.Feature} Feature.
  * @api
  */
-ol.format.EsriJSON.prototype.readFeature;
+_ol_format_EsriJSON_.prototype.readFeature;
 
 
 /**
@@ -451,18 +450,18 @@ ol.format.EsriJSON.prototype.readFeature;
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.format.EsriJSON.prototype.readFeatures;
+_ol_format_EsriJSON_.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.EsriJSON.prototype.readFeatureFromObject = function(
+_ol_format_EsriJSON_.prototype.readFeatureFromObject = function(
     object, opt_options) {
   var esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-  var geometry = ol.format.EsriJSON.readGeometry_(esriJSONFeature.geometry,
+  var geometry = _ol_format_EsriJSON_.readGeometry_(esriJSONFeature.geometry,
       opt_options);
-  var feature = new ol.Feature();
+  var feature = new _ol_Feature_();
   if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
   }
@@ -482,7 +481,7 @@ ol.format.EsriJSON.prototype.readFeatureFromObject = function(
 /**
  * @inheritDoc
  */
-ol.format.EsriJSON.prototype.readFeaturesFromObject = function(
+_ol_format_EsriJSON_.prototype.readFeaturesFromObject = function(
     object, opt_options) {
   var esriJSONObject = /** @type {EsriJSONObject} */ (object);
   var options = opt_options ? opt_options : {};
@@ -514,15 +513,15 @@ ol.format.EsriJSON.prototype.readFeaturesFromObject = function(
  * @return {ol.geom.Geometry} Geometry.
  * @api
  */
-ol.format.EsriJSON.prototype.readGeometry;
+_ol_format_EsriJSON_.prototype.readGeometry;
 
 
 /**
  * @inheritDoc
  */
-ol.format.EsriJSON.prototype.readGeometryFromObject = function(
+_ol_format_EsriJSON_.prototype.readGeometryFromObject = function(
     object, opt_options) {
-  return ol.format.EsriJSON.readGeometry_(
+  return _ol_format_EsriJSON_.readGeometry_(
       /** @type {EsriJSONGeometry} */(object), opt_options);
 };
 
@@ -535,17 +534,17 @@ ol.format.EsriJSON.prototype.readGeometryFromObject = function(
  * @return {ol.proj.Projection} Projection.
  * @api
  */
-ol.format.EsriJSON.prototype.readProjection;
+_ol_format_EsriJSON_.prototype.readProjection;
 
 
 /**
  * @inheritDoc
  */
-ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
+_ol_format_EsriJSON_.prototype.readProjectionFromObject = function(object) {
   var esriJSONObject = /** @type {EsriJSONObject} */ (object);
   if (esriJSONObject.spatialReference && esriJSONObject.spatialReference.wkid) {
     var crs = esriJSONObject.spatialReference.wkid;
-    return ol.proj.get('EPSG:' + crs);
+    return _ol_proj_.get('EPSG:' + crs);
   } else {
     return null;
   }
@@ -558,10 +557,10 @@ ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
  * @private
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
-ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
-  var geometryWriter = ol.format.EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
+_ol_format_EsriJSON_.writeGeometry_ = function(geometry, opt_options) {
+  var geometryWriter = _ol_format_EsriJSON_.GEOMETRY_WRITERS_[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */(
-    ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
+    _ol_format_Feature_.transformWithOptions(geometry, true, opt_options)),
   opt_options);
 };
 
@@ -575,7 +574,7 @@ ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
  * @return {string} EsriJSON.
  * @api
  */
-ol.format.EsriJSON.prototype.writeGeometry;
+_ol_format_EsriJSON_.prototype.writeGeometry;
 
 
 /**
@@ -587,9 +586,9 @@ ol.format.EsriJSON.prototype.writeGeometry;
  * @override
  * @api
  */
-ol.format.EsriJSON.prototype.writeGeometryObject = function(geometry,
+_ol_format_EsriJSON_.prototype.writeGeometryObject = function(geometry,
     opt_options) {
-  return ol.format.EsriJSON.writeGeometry_(geometry,
+  return _ol_format_EsriJSON_.writeGeometry_(geometry,
       this.adaptOptions(opt_options));
 };
 
@@ -603,7 +602,7 @@ ol.format.EsriJSON.prototype.writeGeometryObject = function(geometry,
  * @return {string} EsriJSON.
  * @api
  */
-ol.format.EsriJSON.prototype.writeFeature;
+_ol_format_EsriJSON_.prototype.writeFeature;
 
 
 /**
@@ -615,24 +614,24 @@ ol.format.EsriJSON.prototype.writeFeature;
  * @override
  * @api
  */
-ol.format.EsriJSON.prototype.writeFeatureObject = function(
+_ol_format_EsriJSON_.prototype.writeFeatureObject = function(
     feature, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   var object = {};
   var geometry = feature.getGeometry();
   if (geometry) {
     object['geometry'] =
-      ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
+      _ol_format_EsriJSON_.writeGeometry_(geometry, opt_options);
     if (opt_options && opt_options.featureProjection) {
       object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
-        wkid: ol.proj.get(
+        wkid: _ol_proj_.get(
             opt_options.featureProjection).getCode().split(':').pop()
       });
     }
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!ol.obj.isEmpty(properties)) {
+  if (!_ol_obj_.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
     object['attributes'] = {};
@@ -650,7 +649,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
  * @return {string} EsriJSON.
  * @api
  */
-ol.format.EsriJSON.prototype.writeFeatures;
+_ol_format_EsriJSON_.prototype.writeFeatures;
 
 
 /**
@@ -662,7 +661,7 @@ ol.format.EsriJSON.prototype.writeFeatures;
  * @override
  * @api
  */
-ol.format.EsriJSON.prototype.writeFeaturesObject = function(features, opt_options) {
+_ol_format_EsriJSON_.prototype.writeFeaturesObject = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   var objects = [];
   var i, ii;
@@ -673,3 +672,4 @@ ol.format.EsriJSON.prototype.writeFeaturesObject = function(features, opt_option
     'features': objects
   });
 };
+export default _ol_format_EsriJSON_;

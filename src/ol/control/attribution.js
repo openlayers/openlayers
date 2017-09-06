@@ -1,15 +1,12 @@
 // FIXME handle date line wrap
 
-goog.provide('ol.control.Attribution');
-
-goog.require('ol');
-goog.require('ol.dom');
-goog.require('ol.control.Control');
-goog.require('ol.css');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.obj');
-
+import _ol_ from '../index';
+import _ol_dom_ from '../dom';
+import _ol_control_Control_ from '../control/control';
+import _ol_css_ from '../css';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_obj_ from '../obj';
 
 /**
  * @classdesc
@@ -23,7 +20,7 @@ goog.require('ol.obj');
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
  * @api
  */
-ol.control.Attribution = function(opt_options) {
+var _ol_control_Attribution_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -97,10 +94,10 @@ ol.control.Attribution = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
+  _ol_events_.listen(button, _ol_events_EventType_.CLICK, this.handleClick_, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL +
+  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
+      _ol_css_.CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');
@@ -108,9 +105,9 @@ ol.control.Attribution = function(opt_options) {
   element.appendChild(this.ulElement_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : ol.control.Attribution.render;
+  var render = options.render ? options.render : _ol_control_Attribution_.render;
 
-  ol.control.Control.call(this, {
+  _ol_control_Control_.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -141,20 +138,21 @@ ol.control.Attribution = function(opt_options) {
   this.logoElements_ = {};
 
 };
-ol.inherits(ol.control.Attribution, ol.control.Control);
+
+_ol_.inherits(_ol_control_Attribution_, _ol_control_Control_);
 
 
 /**
  * @param {?olx.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
-ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
+_ol_control_Attribution_.prototype.getSourceAttributions = function(frameState) {
   var i, ii, j, jj, tileRanges, source, sourceAttribution,
       sourceAttributionKey, sourceAttributions, sourceKey;
   var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
-  var attributions = ol.obj.assign({}, frameState.attributions);
+  var attributions = _ol_obj_.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var uniqueAttributions = {};
@@ -164,14 +162,14 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
     if (!source) {
       continue;
     }
-    sourceKey = ol.getUid(source).toString();
+    sourceKey = _ol_.getUid(source).toString();
     sourceAttributions = source.getAttributions();
     if (!sourceAttributions) {
       continue;
     }
     for (j = 0, jj = sourceAttributions.length; j < jj; j++) {
       sourceAttribution = sourceAttributions[j];
-      sourceAttributionKey = ol.getUid(sourceAttribution).toString();
+      sourceAttributionKey = _ol_.getUid(sourceAttribution).toString();
       if (sourceAttributionKey in attributions) {
         continue;
       }
@@ -207,7 +205,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
  * @this {ol.control.Attribution}
  * @api
  */
-ol.control.Attribution.render = function(mapEvent) {
+_ol_control_Attribution_.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
@@ -216,7 +214,7 @@ ol.control.Attribution.render = function(mapEvent) {
  * @private
  * @param {?olx.FrameState} frameState Frame state.
  */
-ol.control.Attribution.prototype.updateElement_ = function(frameState) {
+_ol_control_Attribution_.prototype.updateElement_ = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
@@ -247,7 +245,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
       }
       delete hiddenAttributions[attributionKey];
     } else {
-      ol.dom.removeNode(this.attributionElements_[attributionKey]);
+      _ol_dom_.removeNode(this.attributionElements_[attributionKey]);
       delete this.attributionElements_[attributionKey];
       delete this.attributionElementRenderedVisible_[attributionKey];
     }
@@ -270,14 +268,14 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var renderVisible =
-      !ol.obj.isEmpty(this.attributionElementRenderedVisible_) ||
-      !ol.obj.isEmpty(frameState.logos);
+      !_ol_obj_.isEmpty(this.attributionElementRenderedVisible_) ||
+      !_ol_obj_.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
     this.element.style.display = renderVisible ? '' : 'none';
     this.renderedVisible_ = renderVisible;
   }
   if (renderVisible &&
-      ol.obj.isEmpty(this.attributionElementRenderedVisible_)) {
+      _ol_obj_.isEmpty(this.attributionElementRenderedVisible_)) {
     this.element.classList.add('ol-logo-only');
   } else {
     this.element.classList.remove('ol-logo-only');
@@ -292,7 +290,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
  * @param {?olx.FrameState} frameState Frame state.
  * @private
  */
-ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
+_ol_control_Attribution_.prototype.insertLogos_ = function(frameState) {
 
   var logo;
   var logos = frameState.logos;
@@ -300,7 +298,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
 
   for (logo in logoElements) {
     if (!(logo in logos)) {
-      ol.dom.removeNode(logoElements[logo]);
+      _ol_dom_.removeNode(logoElements[logo]);
       delete logoElements[logo];
     }
   }
@@ -327,7 +325,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     }
   }
 
-  this.logoLi_.style.display = !ol.obj.isEmpty(logos) ? '' : 'none';
+  this.logoLi_.style.display = !_ol_obj_.isEmpty(logos) ? '' : 'none';
 
 };
 
@@ -336,7 +334,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
  * @param {Event} event The event to handle
  * @private
  */
-ol.control.Attribution.prototype.handleClick_ = function(event) {
+_ol_control_Attribution_.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleToggle_();
 };
@@ -345,12 +343,12 @@ ol.control.Attribution.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-ol.control.Attribution.prototype.handleToggle_ = function() {
+_ol_control_Attribution_.prototype.handleToggle_ = function() {
   this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
-    ol.dom.replaceNode(this.collapseLabel_, this.label_);
+    _ol_dom_.replaceNode(this.collapseLabel_, this.label_);
   } else {
-    ol.dom.replaceNode(this.label_, this.collapseLabel_);
+    _ol_dom_.replaceNode(this.label_, this.collapseLabel_);
   }
   this.collapsed_ = !this.collapsed_;
 };
@@ -361,7 +359,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
  * @return {boolean} True if the widget is collapsible.
  * @api
  */
-ol.control.Attribution.prototype.getCollapsible = function() {
+_ol_control_Attribution_.prototype.getCollapsible = function() {
   return this.collapsible_;
 };
 
@@ -371,7 +369,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
  * @param {boolean} collapsible True if the widget is collapsible.
  * @api
  */
-ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
+_ol_control_Attribution_.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
     return;
   }
@@ -390,7 +388,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
  * @param {boolean} collapsed True if the widget is collapsed.
  * @api
  */
-ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
+_ol_control_Attribution_.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
     return;
   }
@@ -404,6 +402,7 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
  * @return {boolean} True if the widget is collapsed.
  * @api
  */
-ol.control.Attribution.prototype.getCollapsed = function() {
+_ol_control_Attribution_.prototype.getCollapsed = function() {
   return this.collapsed_;
 };
+export default _ol_control_Attribution_;

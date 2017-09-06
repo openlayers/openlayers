@@ -1,6 +1,6 @@
 
 
-goog.require('ol.geom.flat.orient');
+import _ol_geom_flat_orient_ from '../../../../../src/ol/geom/flat/orient';
 
 
 describe('ol.geom.flat.orient', function() {
@@ -9,14 +9,14 @@ describe('ol.geom.flat.orient', function() {
 
     it('identifies clockwise rings', function() {
       var flatCoordinates = [0, 1, 1, 4, 4, 3, 3, 0];
-      var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(
+      var isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
           flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(true);
     });
 
     it('identifies anti-clockwise rings', function() {
       var flatCoordinates = [2, 2, 3, 2, 3, 3, 2, 3];
-      var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(
+      var isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
           flatCoordinates, 0, flatCoordinates.length, 2);
       expect(isClockwise).to.be(false);
     });
@@ -24,7 +24,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.linearRingsAreOriented()', function() {
-    var oriented = ol.geom.flat.orient.linearRingsAreOriented;
+    var oriented = _ol_geom_flat_orient_.linearRingsAreOriented;
 
     var rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -51,7 +51,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.linearRingssAreOriented()', function() {
-    var oriented = ol.geom.flat.orient.linearRingssAreOriented;
+    var oriented = _ol_geom_flat_orient_.linearRingssAreOriented;
 
     var rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -82,7 +82,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.orientLinearRings()', function() {
-    var orient = ol.geom.flat.orient.orientLinearRings;
+    var orient = _ol_geom_flat_orient_.orientLinearRings;
 
     var rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,
@@ -119,7 +119,7 @@ describe('ol.geom.flat.orient', function() {
   });
 
   describe('ol.geom.flat.orient.orientLinearRingss()', function() {
-    var orient = ol.geom.flat.orient.orientLinearRingss;
+    var orient = _ol_geom_flat_orient_.orientLinearRingss;
 
     var rightCoords = [
       -180, -90, 180, -90, 180, 90, -180, 90, -180, -90,

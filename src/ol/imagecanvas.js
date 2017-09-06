@@ -1,9 +1,6 @@
-goog.provide('ol.ImageCanvas');
-
-goog.require('ol');
-goog.require('ol.ImageBase');
-goog.require('ol.ImageState');
-
+import _ol_ from './index';
+import _ol_ImageBase_ from './imagebase';
+import _ol_ImageState_ from './imagestate';
 
 /**
  * @constructor
@@ -16,7 +13,7 @@ goog.require('ol.ImageState');
  * @param {ol.ImageCanvasLoader=} opt_loader Optional loader function to
  *     support asynchronous canvas drawing.
  */
-ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
+var _ol_ImageCanvas_ = function(extent, resolution, pixelRatio, attributions,
     canvas, opt_loader) {
 
   /**
@@ -27,9 +24,9 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   this.loader_ = opt_loader !== undefined ? opt_loader : null;
 
   var state = opt_loader !== undefined ?
-    ol.ImageState.IDLE : ol.ImageState.LOADED;
+    _ol_ImageState_.IDLE : _ol_ImageState_.LOADED;
 
-  ol.ImageBase.call(this, extent, resolution, pixelRatio, state, attributions);
+  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, state, attributions);
 
   /**
    * @private
@@ -44,14 +41,15 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   this.error_ = null;
 
 };
-ol.inherits(ol.ImageCanvas, ol.ImageBase);
+
+_ol_.inherits(_ol_ImageCanvas_, _ol_ImageBase_);
 
 
 /**
  * Get any error associated with asynchronous rendering.
  * @return {Error} Any error that occurred during rendering.
  */
-ol.ImageCanvas.prototype.getError = function() {
+_ol_ImageCanvas_.prototype.getError = function() {
   return this.error_;
 };
 
@@ -61,12 +59,12 @@ ol.ImageCanvas.prototype.getError = function() {
  * @param {Error} err Any error during drawing.
  * @private
  */
-ol.ImageCanvas.prototype.handleLoad_ = function(err) {
+_ol_ImageCanvas_.prototype.handleLoad_ = function(err) {
   if (err) {
     this.error_ = err;
-    this.state = ol.ImageState.ERROR;
+    this.state = _ol_ImageState_.ERROR;
   } else {
-    this.state = ol.ImageState.LOADED;
+    this.state = _ol_ImageState_.LOADED;
   }
   this.changed();
 };
@@ -75,9 +73,9 @@ ol.ImageCanvas.prototype.handleLoad_ = function(err) {
 /**
  * @inheritDoc
  */
-ol.ImageCanvas.prototype.load = function() {
-  if (this.state == ol.ImageState.IDLE) {
-    this.state = ol.ImageState.LOADING;
+_ol_ImageCanvas_.prototype.load = function() {
+  if (this.state == _ol_ImageState_.IDLE) {
+    this.state = _ol_ImageState_.LOADING;
     this.changed();
     this.loader_(this.handleLoad_.bind(this));
   }
@@ -87,6 +85,7 @@ ol.ImageCanvas.prototype.load = function() {
 /**
  * @inheritDoc
  */
-ol.ImageCanvas.prototype.getImage = function(opt_context) {
+_ol_ImageCanvas_.prototype.getImage = function(opt_context) {
   return this.canvas_;
 };
+export default _ol_ImageCanvas_;

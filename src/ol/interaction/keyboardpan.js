@@ -1,12 +1,9 @@
-goog.provide('ol.interaction.KeyboardPan');
-
-goog.require('ol');
-goog.require('ol.coordinate');
-goog.require('ol.events.EventType');
-goog.require('ol.events.KeyCode');
-goog.require('ol.events.condition');
-goog.require('ol.interaction.Interaction');
-
+import _ol_ from '../index';
+import _ol_coordinate_ from '../coordinate';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_events_KeyCode_ from '../events/keycode';
+import _ol_events_condition_ from '../events/condition';
+import _ol_interaction_Interaction_ from '../interaction/interaction';
 
 /**
  * @classdesc
@@ -25,10 +22,10 @@ goog.require('ol.interaction.Interaction');
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
  * @api
  */
-ol.interaction.KeyboardPan = function(opt_options) {
+var _ol_interaction_KeyboardPan_ = function(opt_options) {
 
-  ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.KeyboardPan.handleEvent
+  _ol_interaction_Interaction_.call(this, {
+    handleEvent: _ol_interaction_KeyboardPan_.handleEvent
   });
 
   var options = opt_options || {};
@@ -39,8 +36,8 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @return {boolean} Combined condition result.
    */
   this.defaultCondition_ = function(mapBrowserEvent) {
-    return ol.events.condition.noModifierKeys(mapBrowserEvent) &&
-      ol.events.condition.targetNotEditable(mapBrowserEvent);
+    return _ol_events_condition_.noModifierKeys(mapBrowserEvent) &&
+      _ol_events_condition_.targetNotEditable(mapBrowserEvent);
   };
 
   /**
@@ -64,7 +61,8 @@ ol.interaction.KeyboardPan = function(opt_options) {
     options.pixelDelta : 128;
 
 };
-ol.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
+
+_ol_.inherits(_ol_interaction_KeyboardPan_, _ol_interaction_Interaction_);
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
@@ -75,35 +73,36 @@ ol.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
  * @this {ol.interaction.KeyboardPan}
  * @api
  */
-ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
+_ol_interaction_KeyboardPan_.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == ol.events.EventType.KEYDOWN) {
+  if (mapBrowserEvent.type == _ol_events_EventType_.KEYDOWN) {
     var keyEvent = mapBrowserEvent.originalEvent;
     var keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&
-        (keyCode == ol.events.KeyCode.DOWN ||
-        keyCode == ol.events.KeyCode.LEFT ||
-        keyCode == ol.events.KeyCode.RIGHT ||
-        keyCode == ol.events.KeyCode.UP)) {
+        (keyCode == _ol_events_KeyCode_.DOWN ||
+        keyCode == _ol_events_KeyCode_.LEFT ||
+        keyCode == _ol_events_KeyCode_.RIGHT ||
+        keyCode == _ol_events_KeyCode_.UP)) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
       var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
-      if (keyCode == ol.events.KeyCode.DOWN) {
+      if (keyCode == _ol_events_KeyCode_.DOWN) {
         deltaY = -mapUnitsDelta;
-      } else if (keyCode == ol.events.KeyCode.LEFT) {
+      } else if (keyCode == _ol_events_KeyCode_.LEFT) {
         deltaX = -mapUnitsDelta;
-      } else if (keyCode == ol.events.KeyCode.RIGHT) {
+      } else if (keyCode == _ol_events_KeyCode_.RIGHT) {
         deltaX = mapUnitsDelta;
       } else {
         deltaY = mapUnitsDelta;
       }
       var delta = [deltaX, deltaY];
-      ol.coordinate.rotate(delta, view.getRotation());
-      ol.interaction.Interaction.pan(view, delta, this.duration_);
+      _ol_coordinate_.rotate(delta, view.getRotation());
+      _ol_interaction_Interaction_.pan(view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }
   }
   return !stopEvent;
 };
+export default _ol_interaction_KeyboardPan_;

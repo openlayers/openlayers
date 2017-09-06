@@ -1,11 +1,8 @@
-goog.provide('ol.control.ZoomToExtent');
-
-goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.control.Control');
-goog.require('ol.css');
-
+import _ol_ from '../index';
+import _ol_events_ from '../events';
+import _ol_events_EventType_ from '../events/eventtype';
+import _ol_control_Control_ from '../control/control';
+import _ol_css_ from '../css';
 
 /**
  * @classdesc
@@ -17,7 +14,7 @@ goog.require('ol.css');
  * @param {olx.control.ZoomToExtentOptions=} opt_options Options.
  * @api
  */
-ol.control.ZoomToExtent = function(opt_options) {
+var _ol_control_ZoomToExtent_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   /**
@@ -39,28 +36,29 @@ ol.control.ZoomToExtent = function(opt_options) {
       typeof label === 'string' ? document.createTextNode(label) : label
   );
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
+  _ol_events_.listen(button, _ol_events_EventType_.CLICK,
       this.handleClick_, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL;
+  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
+      _ol_css_.CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
 
-  ol.control.Control.call(this, {
+  _ol_control_Control_.call(this, {
     element: element,
     target: options.target
   });
 };
-ol.inherits(ol.control.ZoomToExtent, ol.control.Control);
+
+_ol_.inherits(_ol_control_ZoomToExtent_, _ol_control_Control_);
 
 
 /**
  * @param {Event} event The event to handle
  * @private
  */
-ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
+_ol_control_ZoomToExtent_.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleZoomToExtent_();
 };
@@ -69,9 +67,10 @@ ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
+_ol_control_ZoomToExtent_.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
   var extent = !this.extent_ ? view.getProjection().getExtent() : this.extent_;
   view.fit(extent);
 };
+export default _ol_control_ZoomToExtent_;

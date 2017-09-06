@@ -1,28 +1,28 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.events.condition');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.interaction.Select');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_events_condition_ from '../src/ol/events/condition';
+import _ol_format_GeoJSON_ from '../src/ol/format/geojson';
+import _ol_interaction_Select_ from '../src/ol/interaction/select';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_layer_Vector_ from '../src/ol/layer/vector';
+import _ol_source_OSM_ from '../src/ol/source/osm';
+import _ol_source_Vector_ from '../src/ol/source/vector';
 
-var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+var raster = new _ol_layer_Tile_({
+  source: new _ol_source_OSM_()
 });
 
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
+var vector = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_({
     url: 'data/geojson/countries.geojson',
-    format: new ol.format.GeoJSON()
+    format: new _ol_format_GeoJSON_()
   })
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [raster, vector],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
@@ -31,22 +31,22 @@ var map = new ol.Map({
 var select = null;  // ref to currently selected interaction
 
 // select interaction working on "singleclick"
-var selectSingleClick = new ol.interaction.Select();
+var selectSingleClick = new _ol_interaction_Select_();
 
 // select interaction working on "click"
-var selectClick = new ol.interaction.Select({
-  condition: ol.events.condition.click
+var selectClick = new _ol_interaction_Select_({
+  condition: _ol_events_condition_.click
 });
 
 // select interaction working on "pointermove"
-var selectPointerMove = new ol.interaction.Select({
-  condition: ol.events.condition.pointerMove
+var selectPointerMove = new _ol_interaction_Select_({
+  condition: _ol_events_condition_.pointerMove
 });
 
-var selectAltClick = new ol.interaction.Select({
+var selectAltClick = new _ol_interaction_Select_({
   condition: function(mapBrowserEvent) {
-    return ol.events.condition.click(mapBrowserEvent) &&
-        ol.events.condition.altKeyOnly(mapBrowserEvent);
+    return _ol_events_condition_.click(mapBrowserEvent) &&
+        _ol_events_condition_.altKeyOnly(mapBrowserEvent);
   }
 });
 

@@ -57,6 +57,9 @@ module.exports = function(karma) {
       '/rendering/': '/base/rendering/',
       '/spec/': '/base/spec/'
     },
+    preprocessors: {
+      '**/*.js': ['webpack']
+    },
     reporters: ['progress'],
     coverageReporter: {
       reporters: [
@@ -69,6 +72,9 @@ module.exports = function(karma) {
           type: 'text-summary' // prints the textual summary to the terminal
         }
       ]
+    },
+    webpackMiddleware: {
+      noInfo: true
     }
   });
 

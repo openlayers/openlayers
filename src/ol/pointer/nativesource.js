@@ -28,18 +28,15 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-goog.provide('ol.pointer.NativeSource');
-
-goog.require('ol');
-goog.require('ol.pointer.EventSource');
-
+import _ol_ from '../index';
+import _ol_pointer_EventSource_ from '../pointer/eventsource';
 
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @constructor
  * @extends {ol.pointer.EventSource}
  */
-ol.pointer.NativeSource = function(dispatcher) {
+var _ol_pointer_NativeSource_ = function(dispatcher) {
   var mapping = {
     'pointerdown': this.pointerDown,
     'pointermove': this.pointerMove,
@@ -50,9 +47,10 @@ ol.pointer.NativeSource = function(dispatcher) {
     'gotpointercapture': this.gotPointerCapture,
     'lostpointercapture': this.lostPointerCapture
   };
-  ol.pointer.EventSource.call(this, dispatcher, mapping);
+  _ol_pointer_EventSource_.call(this, dispatcher, mapping);
 };
-ol.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
+
+_ol_.inherits(_ol_pointer_NativeSource_, _ol_pointer_EventSource_);
 
 
 /**
@@ -60,7 +58,7 @@ ol.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.pointerDown = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.pointerDown = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -70,7 +68,7 @@ ol.pointer.NativeSource.prototype.pointerDown = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.pointerMove = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.pointerMove = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -80,7 +78,7 @@ ol.pointer.NativeSource.prototype.pointerMove = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.pointerUp = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.pointerUp = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -90,7 +88,7 @@ ol.pointer.NativeSource.prototype.pointerUp = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.pointerOut = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.pointerOut = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -100,7 +98,7 @@ ol.pointer.NativeSource.prototype.pointerOut = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.pointerOver = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.pointerOver = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -110,7 +108,7 @@ ol.pointer.NativeSource.prototype.pointerOver = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.pointerCancel = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.pointerCancel = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -120,7 +118,7 @@ ol.pointer.NativeSource.prototype.pointerCancel = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.lostPointerCapture = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.lostPointerCapture = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
@@ -130,6 +128,7 @@ ol.pointer.NativeSource.prototype.lostPointerCapture = function(inEvent) {
  *
  * @param {Event} inEvent The in event.
  */
-ol.pointer.NativeSource.prototype.gotPointerCapture = function(inEvent) {
+_ol_pointer_NativeSource_.prototype.gotPointerCapture = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
+export default _ol_pointer_NativeSource_;

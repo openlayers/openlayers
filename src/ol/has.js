@@ -1,7 +1,6 @@
-goog.provide('ol.has');
-
-goog.require('ol');
-goog.require('ol.webgl');
+import _ol_ from './index';
+import _ol_webgl_ from './webgl';
+var _ol_has_ = {};
 
 var ua = typeof navigator !== 'undefined' ?
   navigator.userAgent.toLowerCase() : '';
@@ -10,25 +9,25 @@ var ua = typeof navigator !== 'undefined' ?
  * User agent string says we are dealing with Firefox as browser.
  * @type {boolean}
  */
-ol.has.FIREFOX = ua.indexOf('firefox') !== -1;
+_ol_has_.FIREFOX = ua.indexOf('firefox') !== -1;
 
 /**
  * User agent string says we are dealing with Safari as browser.
  * @type {boolean}
  */
-ol.has.SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
+_ol_has_.SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
 
 /**
  * User agent string says we are dealing with a WebKit engine.
  * @type {boolean}
  */
-ol.has.WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
+_ol_has_.WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
 
 /**
  * User agent string says we are dealing with a Mac as platform.
  * @type {boolean}
  */
-ol.has.MAC = ua.indexOf('macintosh') !== -1;
+_ol_has_.MAC = ua.indexOf('macintosh') !== -1;
 
 
 /**
@@ -38,14 +37,14 @@ ol.has.MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api
  */
-ol.has.DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+_ol_has_.DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 
 
 /**
  * True if the browser's Canvas implementation implements {get,set}LineDash.
  * @type {boolean}
  */
-ol.has.CANVAS_LINE_DASH = false;
+_ol_has_.CANVAS_LINE_DASH = false;
 
 
 /**
@@ -55,7 +54,7 @@ ol.has.CANVAS_LINE_DASH = false;
  * @type {boolean}
  * @api
  */
-ol.has.CANVAS = ol.ENABLE_CANVAS && (
+_ol_has_.CANVAS = _ol_.ENABLE_CANVAS && (
   /**
    * @return {boolean} Canvas supported.
    */
@@ -69,7 +68,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
         return false;
       } else {
         if (context.setLineDash !== undefined) {
-          ol.has.CANVAS_LINE_DASH = true;
+          _ol_has_.CANVAS_LINE_DASH = true;
         }
         return true;
       }
@@ -85,7 +84,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  * @type {boolean}
  * @api
  */
-ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
+_ol_has_.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
 
 
 /**
@@ -94,7 +93,7 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
  * @type {boolean}
  * @api
  */
-ol.has.GEOLOCATION = 'geolocation' in navigator;
+_ol_has_.GEOLOCATION = 'geolocation' in navigator;
 
 
 /**
@@ -103,7 +102,7 @@ ol.has.GEOLOCATION = 'geolocation' in navigator;
  * @type {boolean}
  * @api
  */
-ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in window;
+_ol_has_.TOUCH = _ol_.ASSUME_TOUCH || 'ontouchstart' in window;
 
 
 /**
@@ -111,7 +110,7 @@ ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in window;
  * @const
  * @type {boolean}
  */
-ol.has.POINTER = 'PointerEvent' in window;
+_ol_has_.POINTER = 'PointerEvent' in window;
 
 
 /**
@@ -119,7 +118,7 @@ ol.has.POINTER = 'PointerEvent' in window;
  * @const
  * @type {boolean}
  */
-ol.has.MSPOINTER = !!(navigator.msPointerEnabled);
+_ol_has_.MSPOINTER = !!(navigator.msPointerEnabled);
 
 
 /**
@@ -129,11 +128,11 @@ ol.has.MSPOINTER = !!(navigator.msPointerEnabled);
  * @type {boolean}
  * @api
  */
-ol.has.WEBGL;
+_ol_has_.WEBGL;
 
 
 (function() {
-  if (ol.ENABLE_WEBGL) {
+  if (_ol_.ENABLE_WEBGL) {
     var hasWebGL = false;
     var textureSize;
     var /** @type {Array.<string>} */ extensions = [];
@@ -142,7 +141,7 @@ ol.has.WEBGL;
       try {
         var canvas = /** @type {HTMLCanvasElement} */
             (document.createElement('CANVAS'));
-        var gl = ol.webgl.getContext(canvas, {
+        var gl = _ol_webgl_.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
         });
         if (gl) {
@@ -155,8 +154,9 @@ ol.has.WEBGL;
         // pass
       }
     }
-    ol.has.WEBGL = hasWebGL;
-    ol.WEBGL_EXTENSIONS = extensions;
-    ol.WEBGL_MAX_TEXTURE_SIZE = textureSize;
+    _ol_has_.WEBGL = hasWebGL;
+    _ol_.WEBGL_EXTENSIONS = extensions;
+    _ol_.WEBGL_MAX_TEXTURE_SIZE = textureSize;
   }
 })();
+export default _ol_has_;

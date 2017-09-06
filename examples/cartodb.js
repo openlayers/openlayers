@@ -1,8 +1,8 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.CartoDB');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_source_CartoDB_ from '../src/ol/source/cartodb';
+import _ol_source_OSM_ from '../src/ol/source/osm';
 
 var mapConfig = {
   'layers': [{
@@ -15,22 +15,22 @@ var mapConfig = {
   }]
 };
 
-var cartoDBSource = new ol.source.CartoDB({
+var cartoDBSource = new _ol_source_CartoDB_({
   account: 'documentation',
   config: mapConfig
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     }),
-    new ol.layer.Tile({
+    new _ol_layer_Tile_({
       source: cartoDBSource
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

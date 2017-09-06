@@ -1,10 +1,7 @@
-goog.provide('ol.reproj.Triangulation');
-
-goog.require('ol');
-goog.require('ol.extent');
-goog.require('ol.math');
-goog.require('ol.proj');
-
+import _ol_ from '../index';
+import _ol_extent_ from '../extent';
+import _ol_math_ from '../math';
+import _ol_proj_ from '../proj';
 
 /**
  * @classdesc
@@ -18,7 +15,7 @@ goog.require('ol.proj');
  * @param {number} errorThreshold Acceptable error (in source units).
  * @constructor
  */
-ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
+var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
     maxSourceExtent, errorThreshold) {
 
   /**
@@ -35,7 +32,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
 
   /** @type {!Object.<string, ol.Coordinate>} */
   var transformInvCache = {};
-  var transformInv = ol.proj.getTransform(this.targetProj_, this.sourceProj_);
+  var transformInv = _ol_proj_.getTransform(this.targetProj_, this.sourceProj_);
 
   /**
    * @param {ol.Coordinate} c A coordinate.
@@ -82,27 +79,27 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.canWrapXInSource_ = this.sourceProj_.canWrapX() &&
       !!maxSourceExtent &&
       !!this.sourceProj_.getExtent() &&
-      (ol.extent.getWidth(maxSourceExtent) ==
-       ol.extent.getWidth(this.sourceProj_.getExtent()));
+      (_ol_extent_.getWidth(maxSourceExtent) ==
+       _ol_extent_.getWidth(this.sourceProj_.getExtent()));
 
   /**
    * @type {?number}
    * @private
    */
   this.sourceWorldWidth_ = this.sourceProj_.getExtent() ?
-    ol.extent.getWidth(this.sourceProj_.getExtent()) : null;
+    _ol_extent_.getWidth(this.sourceProj_.getExtent()) : null;
 
   /**
    * @type {?number}
    * @private
    */
   this.targetWorldWidth_ = this.targetProj_.getExtent() ?
-    ol.extent.getWidth(this.targetProj_.getExtent()) : null;
+    _ol_extent_.getWidth(this.targetProj_.getExtent()) : null;
 
-  var destinationTopLeft = ol.extent.getTopLeft(targetExtent);
-  var destinationTopRight = ol.extent.getTopRight(targetExtent);
-  var destinationBottomRight = ol.extent.getBottomRight(targetExtent);
-  var destinationBottomLeft = ol.extent.getBottomLeft(targetExtent);
+  var destinationTopLeft = _ol_extent_.getTopLeft(targetExtent);
+  var destinationTopRight = _ol_extent_.getTopRight(targetExtent);
+  var destinationBottomRight = _ol_extent_.getBottomRight(targetExtent);
+  var destinationBottomLeft = _ol_extent_.getBottomLeft(targetExtent);
   var sourceTopLeft = this.transformInv_(destinationTopLeft);
   var sourceTopRight = this.transformInv_(destinationTopRight);
   var sourceBottomRight = this.transformInv_(destinationBottomRight);
@@ -112,7 +109,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
       destinationTopLeft, destinationTopRight,
       destinationBottomRight, destinationBottomLeft,
       sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
-      ol.RASTER_REPROJECTION_MAX_SUBDIVISION);
+      _ol_.RASTER_REPROJECTION_MAX_SUBDIVISION);
 
   if (this.wrapsXInSource_) {
     var leftBound = Infinity;
@@ -167,7 +164,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
  * @param {ol.Coordinate} cSrc The source c coordinate.
  * @private
  */
-ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
+_ol_reproj_Triangulation_.prototype.addTriangle_ = function(a, b, c,
     aSrc, bSrc, cSrc) {
   this.triangles_.push({
     source: [aSrc, bSrc, cSrc],
@@ -192,12 +189,12 @@ ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
  * @param {number} maxSubdivision Maximal allowed subdivision of the quad.
  * @private
  */
-ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
+_ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
     aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
 
-  var sourceQuadExtent = ol.extent.boundingExtent([aSrc, bSrc, cSrc, dSrc]);
+  var sourceQuadExtent = _ol_extent_.boundingExtent([aSrc, bSrc, cSrc, dSrc]);
   var sourceCoverageX = this.sourceWorldWidth_ ?
-    ol.extent.getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
+    _ol_extent_.getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
   var sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
 
   // when the quad is wrapped in the source projection
@@ -209,20 +206,20 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
 
   if (maxSubdivision > 0) {
     if (this.targetProj_.isGlobal() && this.targetWorldWidth_) {
-      var targetQuadExtent = ol.extent.boundingExtent([a, b, c, d]);
+      var targetQuadExtent = _ol_extent_.boundingExtent([a, b, c, d]);
       var targetCoverageX =
-          ol.extent.getWidth(targetQuadExtent) / this.targetWorldWidth_;
+          _ol_extent_.getWidth(targetQuadExtent) / this.targetWorldWidth_;
       needsSubdivision |=
-          targetCoverageX > ol.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
+          targetCoverageX > _ol_.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
     }
     if (!wrapsX && this.sourceProj_.isGlobal() && sourceCoverageX) {
       needsSubdivision |=
-          sourceCoverageX > ol.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
+          sourceCoverageX > _ol_.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
     }
   }
 
   if (!needsSubdivision && this.maxSourceExtent_) {
-    if (!ol.extent.intersects(sourceQuadExtent, this.maxSourceExtent_)) {
+    if (!_ol_extent_.intersects(sourceQuadExtent, this.maxSourceExtent_)) {
       // whole quad outside source projection extent -> ignore
       return;
     }
@@ -249,10 +246,10 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
       var dx;
       if (wrapsX) {
         var centerSrcEstimX =
-            (ol.math.modulo(aSrc[0], sourceWorldWidth) +
-             ol.math.modulo(cSrc[0], sourceWorldWidth)) / 2;
+            (_ol_math_.modulo(aSrc[0], sourceWorldWidth) +
+             _ol_math_.modulo(cSrc[0], sourceWorldWidth)) / 2;
         dx = centerSrcEstimX -
-            ol.math.modulo(centerSrc[0], sourceWorldWidth);
+            _ol_math_.modulo(centerSrc[0], sourceWorldWidth);
       } else {
         dx = (aSrc[0] + cSrc[0]) / 2 - centerSrc[0];
       }
@@ -305,14 +302,14 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
  *
  * @return {ol.Extent} Calculated extent.
  */
-ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
-  var extent = ol.extent.createEmpty();
+_ol_reproj_Triangulation_.prototype.calculateSourceExtent = function() {
+  var extent = _ol_extent_.createEmpty();
 
   this.triangles_.forEach(function(triangle, i, arr) {
     var src = triangle.source;
-    ol.extent.extendCoordinate(extent, src[0]);
-    ol.extent.extendCoordinate(extent, src[1]);
-    ol.extent.extendCoordinate(extent, src[2]);
+    _ol_extent_.extendCoordinate(extent, src[0]);
+    _ol_extent_.extendCoordinate(extent, src[1]);
+    _ol_extent_.extendCoordinate(extent, src[2]);
   });
 
   return extent;
@@ -322,6 +319,7 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 /**
  * @return {Array.<ol.ReprojTriangle>} Array of the calculated triangles.
  */
-ol.reproj.Triangulation.prototype.getTriangles = function() {
+_ol_reproj_Triangulation_.prototype.getTriangles = function() {
   return this.triangles_;
 };
+export default _ol_reproj_Triangulation_;

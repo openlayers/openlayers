@@ -1,15 +1,15 @@
 
 
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.render');
-goog.require('ol.render.VectorContext');
-goog.require('ol.render.canvas.Immediate');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_geom_LineString_ from '../../../src/ol/geom/linestring';
+import _ol_geom_Point_ from '../../../src/ol/geom/point';
+import _ol_geom_Polygon_ from '../../../src/ol/geom/polygon';
+import _ol_render_ from '../../../src/ol/render';
+import _ol_render_VectorContext_ from '../../../src/ol/render/vectorcontext';
+import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/immediate';
+import _ol_style_Circle_ from '../../../src/ol/style/circle';
+import _ol_style_Fill_ from '../../../src/ol/style/fill';
+import _ol_style_Stroke_ from '../../../src/ol/style/stroke';
+import _ol_style_Style_ from '../../../src/ol/style/style';
 
 function getContext() {
   return document.createElement('canvas').getContext('2d');
@@ -20,24 +20,24 @@ describe('ol.render', function() {
   describe('ol.render.toContext()', function() {
 
     it('creates a vector context from a Canvas 2d context', function() {
-      var vectorContext = ol.render.toContext(getContext(), {
+      var vectorContext = _ol_render_.toContext(getContext(), {
         pixelRatio: 1,
         size: [100, 100]
       });
-      expect(vectorContext).to.be.a(ol.render.VectorContext);
-      expect(vectorContext).to.be.a(ol.render.canvas.Immediate);
+      expect(vectorContext).to.be.a(_ol_render_VectorContext_);
+      expect(vectorContext).to.be.a(_ol_render_canvas_Immediate_);
     });
 
     it('can be used to render a point geometry', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        image: new ol.style.Circle({
-          fill: new ol.style.Fill({
+      var style = new _ol_style_Style_({
+        image: new _ol_style_Circle_({
+          fill: new _ol_style_Fill_({
             color: 'green'
           }),
           radius: 10
@@ -45,7 +45,7 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.Point([50, 50]));
+      vectorContext.drawGeometry(new _ol_geom_Point_([50, 50]));
 
       resembleCanvas(context.canvas,
           'rendering/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
@@ -54,20 +54,20 @@ describe('ol.render', function() {
 
     it('can be used to render a linestring geometry', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      var style = new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           color: 'red',
           width: 14
         })
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.LineString([
+      vectorContext.drawGeometry(new _ol_geom_LineString_([
         [10, 60], [30, 40], [50, 60], [70, 40], [90, 60]
       ]));
 
@@ -78,13 +78,13 @@ describe('ol.render', function() {
 
     it('respects lineCap for linestring', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      var style = new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           lineCap: 'butt',
           color: 'red',
           width: 14
@@ -92,7 +92,7 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.LineString([
+      vectorContext.drawGeometry(new _ol_geom_LineString_([
         [10, 60], [30, 40], [50, 60], [70, 40], [90, 60]
       ]));
 
@@ -103,13 +103,13 @@ describe('ol.render', function() {
 
     it('respects lineJoin for linestring', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      var style = new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           lineJoin: 'bevel',
           color: 'red',
           width: 14
@@ -117,7 +117,7 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.LineString([
+      vectorContext.drawGeometry(new _ol_geom_LineString_([
         [10, 60], [30, 40], [50, 60], [70, 40], [90, 60]
       ]));
 
@@ -128,24 +128,24 @@ describe('ol.render', function() {
 
     it('can be used to render a polygon geometry', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      var style = new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           color: 'blue',
           width: 8
         }),
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: 'rgba(0,0,255,0.5)'
         })
       });
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new ol.geom.Polygon([
+      vectorContext.drawGeometry(new _ol_geom_Polygon_([
         [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
         [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
       ]));
@@ -157,20 +157,20 @@ describe('ol.render', function() {
 
     it('supports lineDash styles', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      var style = new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           lineDash: [10, 5]
         })
       });
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new ol.geom.Polygon([
+      vectorContext.drawGeometry(new _ol_geom_Polygon_([
         [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
         [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
       ]));
@@ -182,13 +182,13 @@ describe('ol.render', function() {
 
     it('supports lineDashOffset', function(done) {
       var context = getContext();
-      var vectorContext = ol.render.toContext(context, {
+      var vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
+      var style = new _ol_style_Style_({
+        stroke: new _ol_style_Stroke_({
           lineDash: [10, 5],
           lineDashOffset: 5
         })
@@ -196,7 +196,7 @@ describe('ol.render', function() {
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new ol.geom.Polygon([
+      vectorContext.drawGeometry(new _ol_geom_Polygon_([
         [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
         [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
       ]));

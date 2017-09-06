@@ -19,6 +19,27 @@
 /**
  * @typedef {{x: number, y: number, width: number, height: number}}
  */
+/* eslint-disable openlayers-internal/no-missing-requires */
+
+/**
+ * File for all typedefs used by the compiler, and referenced by JSDoc.
+ *
+ * These look like vars (or var properties), but in fact are simply identifiers
+ * for the Closure compiler. Originally they were included in the appropriate
+ * namespace file, but with the move away from Closure namespaces and towards
+ * self-contained standard modules are now all in this file.
+ * Unlike the other type definitions - enums and constructor functions - they
+ * are not code and so are not imported or exported. They are only referred to
+ * in type-defining comments used by the Closure compiler, and so should not
+ * appear in module code.
+ *
+ * They are now all in the `ol` namespace.
+ */
+
+
+/**
+ * @typedef {{x: number, y: number, width: number, height: number}}
+ */
 ol.AtlasBlock;
 
 

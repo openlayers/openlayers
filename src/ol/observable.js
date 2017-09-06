@@ -1,10 +1,7 @@
-goog.provide('ol.Observable');
-
-goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');
-goog.require('ol.events.EventType');
-
+import _ol_ from './index';
+import _ol_events_ from './events';
+import _ol_events_EventTarget_ from './events/eventtarget';
+import _ol_events_EventType_ from './events/eventtype';
 
 /**
  * @classdesc
@@ -20,9 +17,9 @@ goog.require('ol.events.EventType');
  * @struct
  * @api
  */
-ol.Observable = function() {
+var _ol_Observable_ = function() {
 
-  ol.events.EventTarget.call(this);
+  _ol_events_EventTarget_.call(this);
 
   /**
    * @private
@@ -31,7 +28,8 @@ ol.Observable = function() {
   this.revision_ = 0;
 
 };
-ol.inherits(ol.Observable, ol.events.EventTarget);
+
+_ol_.inherits(_ol_Observable_, _ol_events_EventTarget_);
 
 
 /**
@@ -40,13 +38,13 @@ ol.inherits(ol.Observable, ol.events.EventTarget);
  *     or `once()` (or an array of keys).
  * @api
  */
-ol.Observable.unByKey = function(key) {
+_ol_Observable_.unByKey = function(key) {
   if (Array.isArray(key)) {
     for (var i = 0, ii = key.length; i < ii; ++i) {
-      ol.events.unlistenByKey(key[i]);
+      _ol_events_.unlistenByKey(key[i]);
     }
   } else {
-    ol.events.unlistenByKey(/** @type {ol.EventsKey} */ (key));
+    _ol_events_.unlistenByKey(/** @type {ol.EventsKey} */ (key));
   }
 };
 
@@ -55,9 +53,9 @@ ol.Observable.unByKey = function(key) {
  * Increases the revision counter and dispatches a 'change' event.
  * @api
  */
-ol.Observable.prototype.changed = function() {
+_ol_Observable_.prototype.changed = function() {
   ++this.revision_;
-  this.dispatchEvent(ol.events.EventType.CHANGE);
+  this.dispatchEvent(_ol_events_EventType_.CHANGE);
 };
 
 
@@ -72,7 +70,7 @@ ol.Observable.prototype.changed = function() {
  * @function
  * @api
  */
-ol.Observable.prototype.dispatchEvent;
+_ol_Observable_.prototype.dispatchEvent;
 
 
 /**
@@ -81,7 +79,7 @@ ol.Observable.prototype.dispatchEvent;
  * @return {number} Revision.
  * @api
  */
-ol.Observable.prototype.getRevision = function() {
+_ol_Observable_.prototype.getRevision = function() {
   return this.revision_;
 };
 
@@ -96,16 +94,16 @@ ol.Observable.prototype.getRevision = function() {
  *     will be an array of keys.
  * @api
  */
-ol.Observable.prototype.on = function(type, listener, opt_this) {
+_ol_Observable_.prototype.on = function(type, listener, opt_this) {
   if (Array.isArray(type)) {
     var len = type.length;
     var keys = new Array(len);
     for (var i = 0; i < len; ++i) {
-      keys[i] = ol.events.listen(this, type[i], listener, opt_this);
+      keys[i] = _ol_events_.listen(this, type[i], listener, opt_this);
     }
     return keys;
   } else {
-    return ol.events.listen(
+    return _ol_events_.listen(
         this, /** @type {string} */ (type), listener, opt_this);
   }
 };
@@ -121,16 +119,16 @@ ol.Observable.prototype.on = function(type, listener, opt_this) {
  *     will be an array of keys.
  * @api
  */
-ol.Observable.prototype.once = function(type, listener, opt_this) {
+_ol_Observable_.prototype.once = function(type, listener, opt_this) {
   if (Array.isArray(type)) {
     var len = type.length;
     var keys = new Array(len);
     for (var i = 0; i < len; ++i) {
-      keys[i] = ol.events.listenOnce(this, type[i], listener, opt_this);
+      keys[i] = _ol_events_.listenOnce(this, type[i], listener, opt_this);
     }
     return keys;
   } else {
-    return ol.events.listenOnce(
+    return _ol_events_.listenOnce(
         this, /** @type {string} */ (type), listener, opt_this);
   }
 };
@@ -144,13 +142,14 @@ ol.Observable.prototype.once = function(type, listener, opt_this) {
  * `listener`.
  * @api
  */
-ol.Observable.prototype.un = function(type, listener, opt_this) {
+_ol_Observable_.prototype.un = function(type, listener, opt_this) {
   if (Array.isArray(type)) {
     for (var i = 0, ii = type.length; i < ii; ++i) {
-      ol.events.unlisten(this, type[i], listener, opt_this);
+      _ol_events_.unlisten(this, type[i], listener, opt_this);
     }
     return;
   } else {
-    ol.events.unlisten(this, /** @type {string} */ (type), listener, opt_this);
+    _ol_events_.unlisten(this, /** @type {string} */ (type), listener, opt_this);
   }
 };
+export default _ol_Observable_;

@@ -1,27 +1,27 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.easing');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/map';
+import _ol_View_ from '../src/ol/view';
+import _ol_easing_ from '../src/ol/easing';
+import _ol_layer_Tile_ from '../src/ol/layer/tile';
+import _ol_proj_ from '../src/ol/proj';
+import _ol_source_OSM_ from '../src/ol/source/osm';
 
-var london = ol.proj.fromLonLat([-0.12755, 51.507222]);
-var moscow = ol.proj.fromLonLat([37.6178, 55.7517]);
-var istanbul = ol.proj.fromLonLat([28.9744, 41.0128]);
-var rome = ol.proj.fromLonLat([12.5, 41.9]);
-var bern = ol.proj.fromLonLat([7.4458, 46.95]);
+var london = _ol_proj_.fromLonLat([-0.12755, 51.507222]);
+var moscow = _ol_proj_.fromLonLat([37.6178, 55.7517]);
+var istanbul = _ol_proj_.fromLonLat([28.9744, 41.0128]);
+var rome = _ol_proj_.fromLonLat([12.5, 41.9]);
+var bern = _ol_proj_.fromLonLat([7.4458, 46.95]);
 
-var view = new ol.View({
+var view = new _ol_View_({
   center: istanbul,
   zoom: 6
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new ol.layer.Tile({
+    new _ol_layer_Tile_({
       preload: 4,
-      source: new ol.source.OSM()
+      source: new _ol_source_OSM_()
     })
   ],
   // Improve user experience by loading tiles while animating. Will make
@@ -79,11 +79,11 @@ onClick('rotate-around-rome', function() {
   view.animate({
     rotation: rotation + Math.PI,
     anchor: rome,
-    easing: ol.easing.easeIn
+    easing: _ol_easing_.easeIn
   }, {
     rotation: rotation + 2 * Math.PI,
     anchor: rome,
-    easing: ol.easing.easeOut
+    easing: _ol_easing_.easeOut
   });
 });
 
@@ -119,11 +119,11 @@ onClick('spin-to-rome', function() {
       center[1] + (rome[1] - center[1]) / 2
     ],
     rotation: Math.PI,
-    easing: ol.easing.easeIn
+    easing: _ol_easing_.easeIn
   }, {
     center: rome,
     rotation: 2 * Math.PI,
-    easing: ol.easing.easeOut
+    easing: _ol_easing_.easeOut
   });
 });
 

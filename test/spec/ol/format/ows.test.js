@@ -1,15 +1,15 @@
 
 
-goog.require('ol.format.OWS');
-goog.require('ol.xml');
+import _ol_format_OWS_ from '../../../../src/ol/format/ows';
+import _ol_xml_ from '../../../../src/ol/xml';
 
 
 describe('ol.format.OWS 1.1', function() {
 
-  var parser = new ol.format.OWS();
+  var parser = new _ol_format_OWS_();
 
   it('should read ServiceProvider tag properly', function() {
-    var doc = ol.xml.parse(
+    var doc = _ol_xml_.parse(
         '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceProvider>' +
@@ -58,7 +58,7 @@ describe('ol.format.OWS 1.1', function() {
   });
 
   it('should read ServiceIdentification tag properly', function() {
-    var doc = ol.xml.parse(
+    var doc = _ol_xml_.parse(
         '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceIdentification>' +
@@ -88,7 +88,7 @@ describe('ol.format.OWS 1.1', function() {
   });
 
   it('should read OperationsMetadata tag properly', function() {
-    var doc = ol.xml.parse(
+    var doc = _ol_xml_.parse(
         '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:OperationsMetadata>' +

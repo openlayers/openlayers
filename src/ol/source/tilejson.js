@@ -4,19 +4,16 @@
  * @see http://mapbox.com/developers/api/
  */
 
-goog.provide('ol.source.TileJSON');
-
-goog.require('ol');
-goog.require('ol.Attribution');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.asserts');
-goog.require('ol.extent');
-goog.require('ol.net');
-goog.require('ol.proj');
-goog.require('ol.source.State');
-goog.require('ol.source.TileImage');
-goog.require('ol.tilegrid');
-
+import _ol_ from '../index';
+import _ol_Attribution_ from '../attribution';
+import _ol_TileUrlFunction_ from '../tileurlfunction';
+import _ol_asserts_ from '../asserts';
+import _ol_extent_ from '../extent';
+import _ol_net_ from '../net';
+import _ol_proj_ from '../proj';
+import _ol_source_State_ from '../source/state';
+import _ol_source_TileImage_ from '../source/tileimage';
+import _ol_tilegrid_ from '../tilegrid';
 
 /**
  * @classdesc
@@ -27,7 +24,7 @@ goog.require('ol.tilegrid');
  * @param {olx.source.TileJSONOptions} options TileJSON options.
  * @api
  */
-ol.source.TileJSON = function(options) {
+var _ol_source_TileJSON_ = function(options) {
 
   /**
    * @type {TileJSON}
@@ -35,20 +32,20 @@ ol.source.TileJSON = function(options) {
    */
   this.tileJSON_ = null;
 
-  ol.source.TileImage.call(this, {
+  _ol_source_TileImage_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    projection: ol.proj.get('EPSG:3857'),
+    projection: _ol_proj_.get('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    state: ol.source.State.LOADING,
+    state: _ol_source_State_.LOADING,
     tileLoadFunction: options.tileLoadFunction,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   if (options.url) {
     if (options.jsonp) {
-      ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
+      _ol_net_.jsonp(options.url, this.handleTileJSONResponse.bind(this),
           this.handleTileJSONError.bind(this));
     } else {
       var client = new XMLHttpRequest();
@@ -60,18 +57,19 @@ ol.source.TileJSON = function(options) {
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
-    ol.asserts.assert(false, 51); // Either `url` or `tileJSON` options must be provided
+    _ol_asserts_.assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 
 };
-ol.inherits(ol.source.TileJSON, ol.source.TileImage);
+
+_ol_.inherits(_ol_source_TileJSON_, _ol_source_TileImage_);
 
 
 /**
  * @private
  * @param {Event} event The load event.
  */
-ol.source.TileJSON.prototype.onXHRLoad_ = function(event) {
+_ol_source_TileJSON_.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
@@ -93,7 +91,7 @@ ol.source.TileJSON.prototype.onXHRLoad_ = function(event) {
  * @private
  * @param {Event} event The error event.
  */
-ol.source.TileJSON.prototype.onXHRError_ = function(event) {
+_ol_source_TileJSON_.prototype.onXHRError_ = function(event) {
   this.handleTileJSONError();
 };
 
@@ -102,7 +100,7 @@ ol.source.TileJSON.prototype.onXHRError_ = function(event) {
  * @return {TileJSON} The tilejson object.
  * @api
  */
-ol.source.TileJSON.prototype.getTileJSON = function() {
+_ol_source_TileJSON_.prototype.getTileJSON = function() {
   return this.tileJSON_;
 };
 
@@ -111,29 +109,29 @@ ol.source.TileJSON.prototype.getTileJSON = function() {
  * @protected
  * @param {TileJSON} tileJSON Tile JSON.
  */
-ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
+_ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
 
-  var epsg4326Projection = ol.proj.get('EPSG:4326');
+  var epsg4326Projection = _ol_proj_.get('EPSG:4326');
 
   var sourceProjection = this.getProjection();
   var extent;
   if (tileJSON.bounds !== undefined) {
-    var transform = ol.proj.getTransformFromProjections(
+    var transform = _ol_proj_.getTransformFromProjections(
         epsg4326Projection, sourceProjection);
-    extent = ol.extent.applyTransform(tileJSON.bounds, transform);
+    extent = _ol_extent_.applyTransform(tileJSON.bounds, transform);
   }
 
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
-  var tileGrid = ol.tilegrid.createXYZ({
-    extent: ol.tilegrid.extentFromProjection(sourceProjection),
+  var tileGrid = _ol_tilegrid_.createXYZ({
+    extent: _ol_tilegrid_.extentFromProjection(sourceProjection),
     maxZoom: maxZoom,
     minZoom: minZoom
   });
   this.tileGrid = tileGrid;
 
   this.tileUrlFunction =
-      ol.TileUrlFunction.createFromTemplates(tileJSON.tiles, tileGrid);
+      _ol_TileUrlFunction_.createFromTemplates(tileJSON.tiles, tileGrid);
 
   if (tileJSON.attribution !== undefined && !this.getAttributions()) {
     var attributionExtent = extent !== undefined ?
@@ -147,14 +145,14 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
           [tileGrid.getTileRangeForExtentAndZ(attributionExtent, z)];
     }
     this.setAttributions([
-      new ol.Attribution({
+      new _ol_Attribution_({
         html: tileJSON.attribution,
         tileRanges: tileRanges
       })
     ]);
   }
   this.tileJSON_ = tileJSON;
-  this.setState(ol.source.State.READY);
+  this.setState(_ol_source_State_.READY);
 
 };
 
@@ -162,6 +160,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 /**
  * @protected
  */
-ol.source.TileJSON.prototype.handleTileJSONError = function() {
-  this.setState(ol.source.State.ERROR);
+_ol_source_TileJSON_.prototype.handleTileJSONError = function() {
+  this.setState(_ol_source_State_.ERROR);
 };
+export default _ol_source_TileJSON_;

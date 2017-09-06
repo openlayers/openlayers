@@ -1,6 +1,6 @@
 
 
-goog.require('ol.geom.flat.simplify');
+import _ol_geom_flat_simplify_ from '../../../../../src/ol/geom/flat/simplify';
 
 
 describe('ol.geom.flat.simplify', function() {
@@ -86,28 +86,28 @@ describe('ol.geom.flat.simplify', function() {
   describe('ol.geom.flat.simplify.lineString', function() {
 
     it('works with empty line strings', function() {
-      expect(ol.geom.flat.simplify.lineString([], 0, 0, 2, 1, true)).to.
+      expect(_ol_geom_flat_simplify_.lineString([], 0, 0, 2, 1, true)).to.
           eql([]);
-      expect(ol.geom.flat.simplify.lineString([], 0, 0, 2, 1, false)).to.
+      expect(_ol_geom_flat_simplify_.lineString([], 0, 0, 2, 1, false)).to.
           eql([]);
     });
 
     it('works with a line string with a single point', function() {
-      expect(ol.geom.flat.simplify.lineString([1, 2], 0, 2, 2, 1, true)).to.
+      expect(_ol_geom_flat_simplify_.lineString([1, 2], 0, 2, 2, 1, true)).to.
           eql([1, 2]);
-      expect(ol.geom.flat.simplify.lineString([1, 2], 0, 2, 2, 1, false)).to.
+      expect(_ol_geom_flat_simplify_.lineString([1, 2], 0, 2, 2, 1, false)).to.
           eql([1, 2]);
     });
 
     it('returns the expected result with low quality', function() {
-      var result = ol.geom.flat.simplify.lineString(
+      var result = _ol_geom_flat_simplify_.lineString(
           flatCoordinates, 0, flatCoordinates.length, 2, 25, false);
       expect(result.length).to.be(simplifiedFlatCoordinates.length);
       expect(result).to.eql(simplifiedFlatCoordinates);
     });
 
     it('returns the expected result with high quality', function() {
-      var result = ol.geom.flat.simplify.lineString(
+      var result = _ol_geom_flat_simplify_.lineString(
           flatCoordinates, 0, flatCoordinates.length, 2, 25, true);
       expect(result.length).to.be(simplifiedHighQualityFlatCoordinates.length);
       expect(result).to.eql(simplifiedHighQualityFlatCoordinates);
@@ -123,63 +123,63 @@ describe('ol.geom.flat.simplify', function() {
     });
 
     it('works with empty line strings', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [], 0, 0, 2, 1, dest, 0)).to.be(0);
       expect(dest).to.eql([]);
     });
 
     it('works with a line string with a single point', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [1, 2], 0, 2, 2, 1, dest, 0)).to.be(2);
       expect(dest).to.eql([1, 2]);
     });
 
     it('works with a line string with two points', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [1, 2, 3, 4], 0, 4, 2, 1, dest, 0)).to.be(4);
       expect(dest).to.eql([1, 2, 3, 4]);
     });
 
     it('works when the points are widely spaced', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)).to.be(8);
       expect(dest).to.eql([0, 0, 1, 0, 2, 0, 3, 0]);
     });
 
     it('works when the spacing matches the tolerance', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)).to.be(6);
       expect(dest).to.eql([0, 0, 2, 0, 3, 0]);
     });
 
     it('works when the points are closely spaced', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)).to.be(6);
       expect(dest).to.eql([0, 0, 2, 0, 3, 0]);
     });
 
     it('works when the line oscillates with widely spaced points', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 1, dest, 0)).
           to.be(12);
       expect(dest).to.eql([0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1]);
     });
 
     it('works when the line oscillates with closely spaced points', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 2, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 1, 1]);
     });
 
     it('works when the line oscillates within the tolerance', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0], 0, 14, 2, 2, dest, 0)).
           to.be(2);
       expect(dest).to.eql([0, 0]);
     });
 
     it('works with real data', function() {
-      expect(ol.geom.flat.simplify.radialDistance(
+      expect(_ol_geom_flat_simplify_.radialDistance(
           flatCoordinates, 0, flatCoordinates.length, 2, 25, dest, 0)).
           to.be(simplifiedRadiallyFlatCoordinates.length);
       expect(dest).to.eql(simplifiedRadiallyFlatCoordinates);
@@ -195,93 +195,93 @@ describe('ol.geom.flat.simplify', function() {
     });
 
     it('works with empty line strings', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [], 0, 0, 2, 1, dest, 0)).to.be(0);
       expect(dest).to.eql([]);
     });
 
     it('works with a line string with a single point', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [1, 2], 0, 2, 2, 1, dest, 0)).to.be(2);
       expect(dest).to.eql([1, 2]);
     });
 
     it('works with a line string with two points', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [1, 2, 3, 4], 0, 4, 2, 1, dest, 0)).to.be(4);
       expect(dest).to.eql([1, 2, 3, 4]);
     });
 
     it('works when the points are widely spaced', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 0.5, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 3, 0]);
     });
 
     it('works when the spacing matches the tolerance', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 3, 0]);
     });
 
     it('works when the points are closely spaced', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 0, 2, 0, 3, 0], 0, 8, 2, 1.5, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 3, 0]);
     });
 
     it('does not elimnate points outside the tolerance', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 2, 0], 0, 6, 2, 0.5, dest, 0)).to.be(6);
       expect(dest).to.eql([0, 0, 1, 1, 2, 0]);
     });
 
     it('does eliminate points within the tolerance', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 2, 0], 0, 6, 2, 2, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 2, 0]);
     });
 
     it('does not eliminate multiple points outside the tolerance', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 0.5, dest, 0)).to.be(8);
       expect(dest).to.eql([0, 0, 1, 1, 1, -1, 2, 0]);
     });
 
     it('does eliminate multiple points within the tolerance', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 1, -1, 2, 0], 0, 8, 2, 2, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 2, 0]);
     });
 
     it('works when the line oscillates with widely spaced points', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 1, dest, 0)).to.be(4);
       expect(dest).to.eql([0, 0, 1, 1]);
     });
 
     it('works when the line oscillates with closely spaced points', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1], 0, 12, 2, 2, dest, 0)).
           to.be(4);
       expect(dest).to.eql([0, 0, 1, 1]);
     });
 
     it('works when the line oscillates within the tolerance', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0], 0, 14, 2, 2, dest, 0)).
           to.be(4);
       expect(dest).to.eql([0, 0, 0, 0]);
     });
 
     it('works on small triangles', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           [3, 0, 4, 1, 5, 2, 5, 0], 0, 8, 2, 1, dest, 0)).to.be(6);
       expect(dest).to.eql([3, 0, 5, 2, 5, 0]);
     });
 
     it('is the same as high quality simplification', function() {
-      expect(ol.geom.flat.simplify.douglasPeucker(
+      expect(_ol_geom_flat_simplify_.douglasPeucker(
           flatCoordinates, 0, flatCoordinates.length, 2, 25, dest, 0)).
           to.be(simplifiedHighQualityFlatCoordinates.length);
       expect(dest).to.eql(simplifiedHighQualityFlatCoordinates);
@@ -293,28 +293,28 @@ describe('ol.geom.flat.simplify', function() {
 
     it('handles empty coordinates', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [], 0, 0, 2, 2, simplifiedFlatCoordinates, 0)).to.be(0);
       expect(simplifiedFlatCoordinates).to.be.empty();
     });
 
     it('expands points to a zero-length line', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0, 0, 0, 0], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
     });
 
     it('snaps near-by points to the same value', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0.1, 0, 0, 0.1], 0, 4, 2, 2, simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, 0]);
     });
 
     it('eliminates duplicate snapped points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0.1, 0, 2, 0, 2.1, 0, 2, 0.1, 1.9, 0, 2, -0.1], 0, 12, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0]);
@@ -322,7 +322,7 @@ describe('ol.geom.flat.simplify', function() {
 
     it('eliminates horizontal colinear points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0, 0, 2, 0, 4, 0, 6, 0], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, 0]);
@@ -330,7 +330,7 @@ describe('ol.geom.flat.simplify', function() {
 
     it('eliminates vertical colinear points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0, 0, 0, -2, 0, -4, 0, -6], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 0, -6]);
@@ -338,7 +338,7 @@ describe('ol.geom.flat.simplify', function() {
 
     it('eliminates diagonal colinear points', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0, 0, 2, -2, 4, -4, 6, -6], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(4);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 6, -6]);
@@ -346,7 +346,7 @@ describe('ol.geom.flat.simplify', function() {
 
     it('handles switchbacks', function() {
       var simplifiedFlatCoordinates = [];
-      expect(ol.geom.flat.simplify.quantize(
+      expect(_ol_geom_flat_simplify_.quantize(
           [0, 0, 2, 0, 0, 0, 4, 0], 0, 8, 2, 2,
           simplifiedFlatCoordinates, 0)).to.be(8);
       expect(simplifiedFlatCoordinates).to.eql([0, 0, 2, 0, 0, 0, 4, 0]);
