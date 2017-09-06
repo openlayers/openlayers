@@ -136,7 +136,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
-    this.renderedResolution = viewResolution * pixelRatio / imagePixelRatio;
+    this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
   }
 
   return !!this.image_;
