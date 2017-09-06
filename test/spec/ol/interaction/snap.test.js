@@ -125,10 +125,8 @@ describe('ol.interaction.Snap', function() {
       };
       ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
 
-      expect(event.coordinate).to.eql([
-        Math.sin(Math.PI / 4) * 10,
-        Math.sin(Math.PI / 4) * 10
-      ]);
+      expect(event.coordinate[0]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
+      expect(event.coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
     });
 
     it('handle feature without geometry', function() {
