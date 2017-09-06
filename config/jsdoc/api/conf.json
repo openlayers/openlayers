@@ -1,7 +1,7 @@
 {
     "opts": {
         "recurse": true,
-        "template": "../../config/jsdoc/api/template"
+        "template": "config/jsdoc/api/template"
     },
     "tags": {
         "allowUnknownTags": true
@@ -17,11 +17,11 @@
     },
     "plugins": [
         "plugins/markdown",
-        "../../config/jsdoc/api/plugins/inheritdoc",
-        "../../config/jsdoc/api/plugins/typedefs",
-        "../../config/jsdoc/api/plugins/events",
-        "../../config/jsdoc/api/plugins/observable",
-        "../../config/jsdoc/api/plugins/api"
+        "config/jsdoc/api/plugins/inheritdoc",
+        "config/jsdoc/api/plugins/typedefs",
+        "config/jsdoc/api/plugins/events",
+        "config/jsdoc/api/plugins/observable",
+        "config/jsdoc/api/plugins/api"
     ],
     "markdown": {
         "parser": "gfm"
