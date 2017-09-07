@@ -7175,6 +7175,9 @@ olx.source.ZoomifyOptions.prototype.reprojectionErrorThreshold;
  * `http://my.zoomify.info/IMAGE.TIF/`. A URL template must include
  * `{TileGroup}`, `{x}`, `{y}`, and `{z}` placeholders, e.g.
  * `http://my.zoomify.info/IMAGE.TIF/{TileGroup}/{z}-{x}-{y}.jpg`.
+ * Internet Imaging Protocol (IIP) with JTL extension can be also used with
+ * `{tileIndex}` and `{z}` placeholders, e.g.
+ * `http://my.zoomify.info?FIF=IMAGE.TIF&JTL={z},{tileIndex}`.
  * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
  * used instead of defining each one separately in the `urls` option.
  * @type {!string}
