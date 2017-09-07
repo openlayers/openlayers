@@ -7658,8 +7658,11 @@ olx.style.StrokeOptions.prototype.width;
 
 /**
  * @typedef {{font: (string|undefined),
+ *     exceedLength: (boolean|undefined),
+ *     maxAngle: (number|undefined),
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined),
+ *     placement: (ol.style.TextPlacement|string|undefined),
  *     scale: (number|undefined),
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
@@ -7673,6 +7676,15 @@ olx.style.TextOptions;
 
 
 /**
+ * When `placement` is set to `'line'`, allow text to exceed the length of the
+ * path that it follows. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.exceedLength;
+
+
+/**
  * Font style as CSS 'font' value, see:
  * {@link https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/font}.
  * Default is '10px sans-serif'
@@ -7680,6 +7692,16 @@ olx.style.TextOptions;
  * @api
  */
 olx.style.TextOptions.prototype.font;
+
+
+/**
+ * When `placement` is set to `'line'`, allow a maximum angle between adjacent
+ * characters. The expected value is in radians, and the default is 45°
+ * (`Math.PI / 4`).
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.maxAngle;
 
 
 /**
@@ -7698,6 +7720,14 @@ olx.style.TextOptions.prototype.offsetX;
  * @api
  */
 olx.style.TextOptions.prototype.offsetY;
+
+
+/**
+ * Text placement.
+ * @type {ol.style.TextPlacement|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.placement;
 
 
 /**
