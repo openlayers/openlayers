@@ -88,19 +88,15 @@ ol.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
 
 /**
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @private
  */
-ol.render.webgl.Immediate.prototype.drawText_ = function(replayGroup,
-    flatCoordinates, offset, end, stride) {
+ol.render.webgl.Immediate.prototype.drawText_ = function(replayGroup, geometry) {
   var context = this.context_;
   var replay = /** @type {ol.render.webgl.TextReplay} */ (
     replayGroup.getReplay(0, ol.render.ReplayType.TEXT));
   replay.setTextStyle(this.textStyle_);
-  replay.drawText(flatCoordinates, offset, end, stride, null, null);
+  replay.drawText(geometry, null);
   replay.finish(context);
   // default colors
   var opacity = 1;
@@ -219,9 +215,7 @@ ol.render.webgl.Immediate.prototype.drawPoint = function(geometry, data) {
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    var flatCoordinates = geometry.getFlatCoordinates();
-    var stride = geometry.getStride();
-    this.drawText_(replayGroup, flatCoordinates, 0, flatCoordinates.length, stride);
+    this.drawText_(replayGroup, geometry);
   }
 };
 
@@ -247,9 +241,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPoint = function(geometry, data) {
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    var flatCoordinates = geometry.getFlatCoordinates();
-    var stride = geometry.getStride();
-    this.drawText_(replayGroup, flatCoordinates, 0, flatCoordinates.length, stride);
+    this.drawText_(replayGroup, geometry);
   }
 };
 
@@ -275,8 +267,7 @@ ol.render.webgl.Immediate.prototype.drawLineString = function(geometry, data) {
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    var flatMidpoint = geometry.getFlatMidpoint();
-    this.drawText_(replayGroup, flatMidpoint, 0, 2, 2);
+    this.drawText_(replayGroup, geometry);
   }
 };
 
@@ -302,8 +293,7 @@ ol.render.webgl.Immediate.prototype.drawMultiLineString = function(geometry, dat
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    var flatMidpoints = geometry.getFlatMidpoints();
-    this.drawText_(replayGroup, flatMidpoints, 0, flatMidpoints.length, 2);
+    this.drawText_(replayGroup, geometry);
   }
 };
 
@@ -329,8 +319,7 @@ ol.render.webgl.Immediate.prototype.drawPolygon = function(geometry, data) {
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    var flatInteriorPoint = geometry.getFlatInteriorPoint();
-    this.drawText_(replayGroup, flatInteriorPoint, 0, 2, 2);
+    this.drawText_(replayGroup, geometry);
   }
 };
 
@@ -356,8 +345,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPolygon = function(geometry, data) 
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    var flatInteriorPoints = geometry.getFlatInteriorPoints();
-    this.drawText_(replayGroup, flatInteriorPoints, 0, flatInteriorPoints.length, 2);
+    this.drawText_(replayGroup, geometry);
   }
 };
 
@@ -383,7 +371,7 @@ ol.render.webgl.Immediate.prototype.drawCircle = function(geometry, data) {
   replay.getDeleteResourcesFunction(context)();
 
   if (this.textStyle_) {
-    this.drawText_(replayGroup, geometry.getCenter(), 0, 2, 2);
+    this.drawText_(replayGroup, geometry);
   }
 };
 

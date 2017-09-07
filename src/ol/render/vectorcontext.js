@@ -108,14 +108,10 @@ ol.render.VectorContext.prototype.drawPolygon = function(polygonGeometry, featur
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, feature) {};
+ol.render.VectorContext.prototype.drawText = function(geometry, feature) {};
 
 
 /**
