@@ -35,6 +35,9 @@ var myDom = {
     rotation: document.getElementById('lines-rotation'),
     font: document.getElementById('lines-font'),
     weight: document.getElementById('lines-weight'),
+    placement: document.getElementById('lines-placement'),
+    maxangle: document.getElementById('lines-maxangle'),
+    exceedlength: document.getElementById('lines-exceedlength'),
     size: document.getElementById('lines-size'),
     offsetX: document.getElementById('lines-offset-x'),
     offsetY: document.getElementById('lines-offset-y'),
@@ -50,6 +53,9 @@ var myDom = {
     rotation: document.getElementById('polygons-rotation'),
     font: document.getElementById('polygons-font'),
     weight: document.getElementById('polygons-weight'),
+    placement: document.getElementById('polygons-placement'),
+    maxangle: document.getElementById('polygons-maxangle'),
+    exceedlength: document.getElementById('polygons-exceedlength'),
     size: document.getElementById('polygons-size'),
     offsetX: document.getElementById('polygons-offset-x'),
     offsetY: document.getElementById('polygons-offset-y'),
@@ -86,6 +92,9 @@ var createTextStyle = function(feature, resolution, dom) {
   var offsetX = parseInt(dom.offsetX.value, 10);
   var offsetY = parseInt(dom.offsetY.value, 10);
   var weight = dom.weight.value;
+  var placement = dom.placement ? dom.placement.value : undefined;
+  var maxAngle = dom.maxangle ? parseFloat(dom.maxangle.value) : undefined;
+  var exceedLength = dom.exceedlength ? (dom.exceedlength.value == 'true') : undefined;
   var rotation = parseFloat(dom.rotation.value);
   var font = weight + ' ' + size + ' ' + dom.font.value;
   var fillColor = dom.color.value;
@@ -93,7 +102,7 @@ var createTextStyle = function(feature, resolution, dom) {
   var outlineWidth = parseInt(dom.outlineWidth.value, 10);
 
   return new ol.style.Text({
-    textAlign: align,
+    textAlign: align == '' ? undefined : align,
     textBaseline: baseline,
     font: font,
     text: getText(feature, resolution, dom),
@@ -101,6 +110,9 @@ var createTextStyle = function(feature, resolution, dom) {
     stroke: new ol.style.Stroke({color: outlineColor, width: outlineWidth}),
     offsetX: offsetX,
     offsetY: offsetY,
+    placement: placement,
+    maxAngle: maxAngle,
+    exceedLength: exceedLength,
     rotation: rotation
   });
 };
