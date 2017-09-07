@@ -6,7 +6,6 @@ goog.require('ol.ImageState');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
-goog.require('ol.obj');
 
 
 /**
@@ -43,12 +42,6 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
 
   /**
    * @private
-   * @type {Object.<number, (HTMLCanvasElement|Image|HTMLVideoElement)>}
-   */
-  this.imageByContext_ = {};
-
-  /**
-   * @private
    * @type {Array.<ol.EventsKey>}
    */
   this.imageListenerKeys_ = null;
@@ -73,22 +66,8 @@ ol.inherits(ol.Image, ol.ImageBase);
  * @inheritDoc
  * @api
  */
-ol.Image.prototype.getImage = function(opt_context) {
-  if (opt_context !== undefined) {
-    var image;
-    var key = ol.getUid(opt_context);
-    if (key in this.imageByContext_) {
-      return this.imageByContext_[key];
-    } else if (ol.obj.isEmpty(this.imageByContext_)) {
-      image = this.image_;
-    } else {
-      image = /** @type {Image} */ (this.image_.cloneNode(false));
-    }
-    this.imageByContext_[key] = image;
-    return image;
-  } else {
-    return this.image_;
-  }
+ol.Image.prototype.getImage = function() {
+  return this.image_;
 };
 
 
