@@ -1,6 +1,7 @@
 
 
 goog.require('ol.ImageTile');
+goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.proj');
@@ -172,4 +173,67 @@ describe('ol.source.TileImage', function() {
       tile.load();
     });
   });
+
+  describe('tile load events', function() {
+
+    var source;
+
+    beforeEach(function() {
+      source = new ol.source.TileImage({
+        url: '{z}/{x}/{y}'
+      });
+    });
+
+    it('dispatches tileloadstart and tileloadend events', function() {
+      source.setTileLoadFunction(function(tile) {
+        tile.setState(ol.TileState.LOADED);
+      });
+      var startSpy = sinon.spy();
+      source.on('tileloadstart', startSpy);
+      var endSpy = sinon.spy();
+      source.on('tileloadend', endSpy);
+      var tile = source.getTile(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+      tile.load();
+      expect(startSpy.callCount).to.be(1);
+      expect(endSpy.callCount).to.be(1);
+    });
+
+    it('works for loading-error-loading-loaded sequences', function(done) {
+      source.setTileLoadFunction(function(tile) {
+        tile.setState(
+            tile.state == ol.TileState.ERROR ? ol.TileState.LOADED : ol.TileState.ERROR);
+      });
+      var startSpy = sinon.spy();
+      source.on('tileloadstart', startSpy);
+      var errorSpy = sinon.spy();
+      source.on('tileloaderror', function(e) {
+        setTimeout(function() {
+          e.tile.setState(ol.TileState.LOADING);
+          e.tile.setState(ol.TileState.LOADED);
+        }, 0);
+        errorSpy();
+      });
+      source.on('tileloadend', function() {
+        expect(startSpy.callCount).to.be(2);
+        expect(errorSpy.callCount).to.be(1);
+        done();
+      });
+      var tile = source.getTile(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+      tile.load();
+    });
+
+    it('dispatches tileloadend events for aborted tiles', function() {
+      source.setTileLoadFunction(function() {});
+      var startSpy = sinon.spy();
+      source.on('tileloadstart', startSpy);
+      var endSpy = sinon.spy();
+      source.on('tileloadend', endSpy);
+      var tile = source.getTile(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+      tile.load();
+      tile.dispose();
+      expect(startSpy.callCount).to.be(1);
+      expect(endSpy.callCount).to.be(1);
+    });
+  });
+
 });

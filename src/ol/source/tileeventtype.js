@@ -13,7 +13,8 @@ ol.source.TileEventType = {
   TILELOADSTART: 'tileloadstart',
 
   /**
-   * Triggered when a tile finishes loading.
+   * Triggered when a tile finishes loading, either when its data is loaded,
+   * or when loading was aborted because the tile is no longer needed.
    * @event ol.source.Tile.Event#tileloadend
    * @api
    */
