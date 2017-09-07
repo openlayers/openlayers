@@ -6,6 +6,7 @@ goog.require('ol.format.filter.Filter');
 
 /**
  * @classdesc
+ * Abstract class; normally only used for creating subclasses and not instantiated in apps.
  * Represents a spatial operator to test whether a geometry-valued property
  * relates to a given geometry.
  *
