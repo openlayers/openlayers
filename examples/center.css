@@ -10,7 +10,11 @@ div.ol-zoom {
   top: 178px;
   left: 158px;
 }
-div.ol-attribution {
+div.ol-rotate {
+  top: 178px;
+  right: 58px;
+}
+.map div.ol-attribution {
   bottom: 30px;
   right: 50px;
 }
