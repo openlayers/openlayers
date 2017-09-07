@@ -14,9 +14,9 @@ div.ol-rotate {
   top: 178px;
   right: 58px;
 }
-div.ol-attribution {
-  bottom: 30px !important;
-  right: 50px !important;
+.map div.ol-attribution {
+  bottom: 30px;
+  right: 50px;
 }
 .padding-top {
   position: absolute;
