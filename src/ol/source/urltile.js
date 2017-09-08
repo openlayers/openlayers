@@ -61,6 +61,12 @@ ol.source.UrlTile = function(options) {
     this.setTileUrlFunction(options.tileUrlFunction);
   }
 
+  /**
+   * @private
+   * @type {Object.<number, boolean>}
+   */
+  this.tileLoadingKeys_ = {};
+
 };
 ol.inherits(ol.source.UrlTile, ol.source.Tile);
 
@@ -110,21 +116,20 @@ ol.source.UrlTile.prototype.getUrls = function() {
  */
 ol.source.UrlTile.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
-  switch (tile.getState()) {
-    case ol.TileState.LOADING:
-      this.dispatchEvent(
-          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADSTART, tile));
-      break;
-    case ol.TileState.LOADED:
-      this.dispatchEvent(
-          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADEND, tile));
-      break;
-    case ol.TileState.ERROR:
-      this.dispatchEvent(
-          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADERROR, tile));
-      break;
-    default:
-      // pass
+  var uid = ol.getUid(tile);
+  var tileState = tile.getState();
+  var type;
+  if (tileState == ol.TileState.LOADING) {
+    this.tileLoadingKeys_[uid] = true;
+    type = ol.source.TileEventType.TILELOADSTART;
+  } else if (uid in this.tileLoadingKeys_) {
+    delete this.tileLoadingKeys_[uid];
+    type = tileState == ol.TileState.ERROR ? ol.source.TileEventType.TILELOADERROR :
+      (tileState == ol.TileState.LOADED || tileState == ol.TileState.ABORT) ?
+        ol.source.TileEventType.TILELOADEND : undefined;
+  }
+  if (type != undefined) {
+    this.dispatchEvent(new ol.source.Tile.Event(type, tile));
   }
 };
 
