@@ -3,6 +3,7 @@ goog.provide('ol.render.canvas.TextReplay');
 goog.require('ol');
 goog.require('ol.colorlike');
 goog.require('ol.dom');
+goog.require('ol.geom.flat.straightchunk');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
@@ -191,7 +192,8 @@ ol.render.canvas.TextReplay.measureTextWidths = (function() {
 ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
   var fillState = this.textFillState_;
   var strokeState = this.textStrokeState_;
-  if (this.text_ === '' || !this.textState_ || (!fillState && !strokeState)) {
+  var textState = this.textState_;
+  if (this.text_ === '' || !textState || (!fillState && !strokeState)) {
     return;
   }
 
@@ -220,12 +222,20 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
         ends.push(endss[i][0]);
       }
     }
+    var textAlign = textState.textAlign;
     var flatOffset = 0;
     var flatEnd;
     for (var o = 0, oo = ends.length; o < oo; ++o) {
-      flatEnd = ends[o];
+      if (textAlign == undefined) {
+        var range = ol.geom.flat.straightchunk.lineString(
+            textState.maxAngle, flatCoordinates, flatOffset, ends[o], stride);
+        flatOffset = range[0];
+        flatEnd = range[1];
+      } else {
+        flatEnd = ends[o];
+      }
       end = this.appendFlatCoordinates(flatCoordinates, flatOffset, flatEnd, stride, false, false);
-      flatOffset = flatEnd;
+      flatOffset = ends[o];
       this.drawChars_(begin, end);
       begin = end;
     }
@@ -282,7 +292,7 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     var fillState = this.textFillState_;
     var textState = this.textState_;
     var pixelRatio = this.pixelRatio;
-    var align =  ol.render.replay.TEXT_ALIGN[textState.textAlign];
+    var align =  ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
     var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
     var widths = [];
@@ -340,7 +350,7 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(begin, end) {
   var textState = this.textState_;
   var strokeState = this.textStrokeState_;
   var pixelRatio = this.pixelRatio;
-  var align = ol.render.replay.TEXT_ALIGN[textState.textAlign];
+  var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
   var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
   var strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
@@ -479,8 +489,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
     var textTextBaseline = textStyle.getTextBaseline();
     var font = textFont !== undefined ?
       textFont : ol.render.canvas.defaultFont;
-    var textAlign = textTextAlign !== undefined ?
-      textTextAlign : ol.render.canvas.defaultTextAlign;
+    var textAlign = textTextAlign;
     var textBaseline = textTextBaseline !== undefined ?
       textTextBaseline : ol.render.canvas.defaultTextBaseline;
     textState = this.textState_;

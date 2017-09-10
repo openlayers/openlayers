@@ -789,21 +789,23 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
 ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) {
   var context = this.context_;
   var contextTextState = this.contextTextState_;
+  var textAlign = textState.textAlign ?
+    textState.textAlign : ol.render.canvas.defaultTextAlign;
   if (!contextTextState) {
     context.font = textState.font;
-    context.textAlign = textState.textAlign;
+    context.textAlign = textAlign;
     context.textBaseline = textState.textBaseline;
     this.contextTextState_ = {
       font: textState.font,
-      textAlign: textState.textAlign,
+      textAlign: textAlign,
       textBaseline: textState.textBaseline
     };
   } else {
     if (contextTextState.font != textState.font) {
       contextTextState.font = context.font = textState.font;
     }
-    if (contextTextState.textAlign != textState.textAlign) {
-      contextTextState.textAlign = context.textAlign = textState.textAlign;
+    if (contextTextState.textAlign != textAlign) {
+      contextTextState.textAlign = textAlign;
     }
     if (contextTextState.textBaseline != textState.textBaseline) {
       contextTextState.textBaseline = context.textBaseline =

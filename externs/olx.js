@@ -7764,7 +7764,9 @@ olx.style.TextOptions.prototype.text;
 
 /**
  * Text alignment. Possible values: 'left', 'right', 'center', 'end' or 'start'.
- * Default is 'start'.
+ * Default is 'center' for `placement: 'point'`. For `placement: 'line'`, the
+ * default is to let the renderer choose a placement where `maxAngle` is not
+ * exceeded.
  * @type {string|undefined}
  * @api
  */
@@ -7773,7 +7775,7 @@ olx.style.TextOptions.prototype.textAlign;
 
 /**
  * Text base line. Possible values: 'bottom', 'top', 'middle', 'alphabetic',
- * 'hanging', 'ideographic'. Default is 'alphabetic'.
+ * 'hanging', 'ideographic'. Default is 'middle'.
  * @type {string|undefined}
  * @api
  */
