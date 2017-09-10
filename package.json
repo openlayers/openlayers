@@ -75,7 +75,7 @@
     "marked": "0.3.6",
     "metalsmith": "2.3.0",
     "metalsmith-layouts": "1.8.1",
-    "mocha": "3.5.1",
+    "mocha": "3.5.2",
     "mocha-phantomjs-core": "^2.1.0",
     "mustache": "2.3.0",
     "phantomjs-prebuilt": "2.1.15",
