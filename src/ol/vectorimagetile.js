@@ -273,7 +273,7 @@ ol.VectorImageTile.prototype.finishLoading_ = function() {
     this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
     this.loadListenerKeys_.length = 0;
   }
-  this.setState(loaded > 0 ? ol.TileState.LOADED : ol.TileState.EMPTY);
+  this.setState(loaded > 0 ? ol.TileState.LOADED : ol.TileState.ERROR);
 };
 
 

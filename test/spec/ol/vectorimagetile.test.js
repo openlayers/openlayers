@@ -49,7 +49,7 @@ describe('ol.VectorImageTile', function() {
     var calls = 0;
     ol.events.listen(tile, 'change', function(e) {
       ++calls;
-      expect(tile.getState()).to.be(calls == 2 ? ol.TileState.LOADED : ol.TileState.EMPTY);
+      expect(tile.getState()).to.be(calls == 2 ? ol.TileState.LOADED : ol.TileState.ERROR);
       if (calls == 2) {
         done();
       } else {
@@ -60,7 +60,7 @@ describe('ol.VectorImageTile', function() {
     });
   });
 
-  it('sets EMPTY state when all source tiles fail to load', function(done) {
+  it('sets ERROR state when source tiles fail to load', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var tile = new ol.VectorImageTile([0, 0, -1], 0, url, format,
@@ -72,7 +72,7 @@ describe('ol.VectorImageTile', function() {
     tile.load();
 
     ol.events.listen(tile, 'change', function(e) {
-      expect(tile.getState()).to.be(ol.TileState.EMPTY);
+      expect(tile.getState()).to.be(ol.TileState.ERROR);
       done();
     });
   });
