@@ -58,29 +58,6 @@ ol.style.RegularShape = function(options) {
   this.points_ = options.points;
 
   /**
-   * If <code>options.points</code> is a Array.<number> object, 
-   * <code>this.quotients_</code> will hold the Array.<number> instance 
-   * and <code>this.points_</code> will be still assigned with the number
-   * of points for stars and polygons.
-   * @private
-   * @type {null|Array.<number>}
-   */
-  this.quotients_ = null;
-
-  if (goog.isArray(this.points_)) {
-    this.quotients_ = this.points_.map(number => {
-      if (number > 10) {
-        return number / 100;
-      }
-      if (number > 1) {
-        return number / 10;
-      }
-      return number;
-    });
-    this.points_ = this.quotients_.length;
-  }
-
-  /**
    * @protected
    * @type {number}
    */
@@ -166,15 +143,9 @@ ol.inherits(ol.style.RegularShape, ol.style.Image);
  * @api
  */
 ol.style.RegularShape.prototype.clone = function() {
-  let points;  
-  if (goog.isArray(this.quotients_)) {
-    points = this.quotients_;
-  } else {
-    points = this.getPoints();
-  }
   var style = new ol.style.RegularShape({
     fill: this.getFill() ? this.getFill().clone() : undefined,
-    points: points,
+    points: this.getPoints(),
     radius: this.getRadius(),
     radius2: this.getRadius2(),
     angle: this.getAngle(),
@@ -472,12 +443,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
       points = 2 * points;
     }
     for (i = 0; i <= points; i++) {
-      if (goog.isArray(this.quotients_)) {
-        const sum = this.quotients_.slice(0, i + 1).reduce((sum, current) => sum + current, 0);
-        angle0 = sum * 2 * Math.PI - Math.PI / 2 + this.angle_;
-      } else {
-        angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
-      }      
+      angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
       radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
           renderOptions.size / 2 + radiusC * Math.sin(angle0));
