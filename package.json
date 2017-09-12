@@ -22,7 +22,7 @@
     "changecase-src": "node tasks/filename-case-from-module.js",
     "transform-examples": "jscodeshift --transform transforms/module.js examples",
     "transform-test": "jscodeshift --transform transforms/module.js test",
-    "transform": "npm run transform-src && npm run changecase-src && npm run transform-examples && npm run transform-test && npm run lint -- --fix"
+    "transform": "npm run changecase-src && npm run transform-src && npm run transform-examples && npm run transform-test && npm run lint -- --fix"
   },
   "main": "dist/ol.js",
   "repository": {

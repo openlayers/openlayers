@@ -11,7 +11,7 @@ glob('src/**/*.js', {}, function(err, files) {
       const lines = contents.split('\n');
       for (let i = lines.length - 1; i >= 0; --i) {
         const line = lines[i];
-        const match = line.match(/export default _.*_([^;]*)_;$/);
+        const match = line.match(/goog\.provide\('.*\.([^']*)'\);$/);
         if (match && match.length) {
           const newName = match[1] + '.js';
           if (newName != newName.toLowerCase()) {
