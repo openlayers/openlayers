@@ -13,7 +13,7 @@ glob('src/**/*.js', {}, function(err, files) {
         const line = lines[i];
         const match = line.match(/export default _.*_([^;]*)_;$/);
         if (match && match.length) {
-          var newName = match[1] + '.js';
+          const newName = match[1] + '.js';
           if (newName != newName.toLowerCase()) {
             fs.renameSync(filename, path.resolve(path.dirname(filename), newName));
             ++renamed;

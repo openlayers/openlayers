@@ -57,7 +57,7 @@ function resolve(fromName, toName) {
   }
 
   const back = new Array(fromLength - commonDepth).join('../') || './';
-  let relative = back + toParts.slice(commonDepth).join('/').toLowerCase();
+  let relative = back + toParts.slice(commonDepth).join('/');
   if (relative.endsWith('/')) {
     relative += 'index';
   }
