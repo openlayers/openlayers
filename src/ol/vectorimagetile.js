@@ -263,17 +263,23 @@ ol.VectorImageTile.prototype.load = function() {
  */
 ol.VectorImageTile.prototype.finishLoading_ = function() {
   var loaded = this.tileKeys.length;
+  var empty = 0;
   for (var i = loaded - 1; i >= 0; --i) {
     var state = this.getTile(this.tileKeys[i]).getState();
     if (state != ol.TileState.LOADED) {
       --loaded;
     }
+    if (state == ol.TileState.EMPTY) {
+      ++empty;
+    }
   }
   if (loaded == this.tileKeys.length) {
     this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
     this.loadListenerKeys_.length = 0;
+    this.setState(ol.TileState.LOADED);
+  } else {
+    this.setState(empty == this.tileKeys.length ? ol.TileState.EMPTY : ol.TileState.ERROR);
   }
-  this.setState(loaded > 0 ? ol.TileState.LOADED : ol.TileState.EMPTY);
 };
 
 
