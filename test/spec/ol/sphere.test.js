@@ -176,7 +176,7 @@ describe('ol.Sphere.getLength()', function() {
     it('works for case ' + i, function() {
       var c = cases[i];
       var length = ol.Sphere.getLength(c.geometry, c.options);
-      expect(length).to.equal(c.length);
+      expect(length).to.roughlyEqual(c.length, 1e-8);
     });
   });
 
