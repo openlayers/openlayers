@@ -12,7 +12,7 @@ goog.require('ol.style.Text');
 
 var style = new ol.style.Style({
   text: new ol.style.Text({
-    font: 'bold 11px "Open Sans", "Arial Unicode MS"',
+    font: 'bold 11px "Open Sans", "Arial Unicode MS", "sans-serif"',
     placement: 'line',
     fill: new ol.style.Fill({
       color: 'white'
