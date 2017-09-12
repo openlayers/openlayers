@@ -2,6 +2,7 @@ goog.provide('ol.style.Text');
 
 
 goog.require('ol.style.Fill');
+goog.require('ol.style.TextPlacement');
 
 
 /**
@@ -67,6 +68,24 @@ ol.style.Text = function(opt_options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.maxAngle_ = options.maxAngle !== undefined ? options.maxAngle : Math.PI / 4;
+
+  /**
+   * @private
+   * @type {ol.style.TextPlacement|string}
+   */
+  this.placement_ = options.placement !== undefined ? options.placement : ol.style.TextPlacement.POINT;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.exceedLength_ = options.exceedLength !== undefined ? options.exceedLength : false;
+
+  /**
+   * @private
    * @type {ol.style.Stroke}
    */
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
@@ -103,6 +122,9 @@ ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
 ol.style.Text.prototype.clone = function() {
   return new ol.style.Text({
     font: this.getFont(),
+    placement: this.getPlacement(),
+    maxAngle: this.getMaxAngle(),
+    exceedLength: this.getExceedLength(),
     rotation: this.getRotation(),
     rotateWithView: this.getRotateWithView(),
     scale: this.getScale(),
@@ -118,12 +140,42 @@ ol.style.Text.prototype.clone = function() {
 
 
 /**
+ * Get the `exceedLength` configuration.
+ * @return {boolean} Let text exceed the length of the path they follow.
+ * @api
+ */
+ol.style.Text.prototype.getExceedLength = function() {
+  return this.exceedLength_;
+};
+
+
+/**
  * Get the font name.
  * @return {string|undefined} Font.
  * @api
  */
 ol.style.Text.prototype.getFont = function() {
   return this.font_;
+};
+
+
+/**
+ * Get the maximum angle between adjacent characters.
+ * @return {number} Angle in radians.
+ * @api
+ */
+ol.style.Text.prototype.getMaxAngle = function() {
+  return this.maxAngle_;
+};
+
+
+/**
+ * Get the label placement.
+ * @return {ol.style.TextPlacement|string} Text placement.
+ * @api
+ */
+ol.style.Text.prototype.getPlacement = function() {
+  return this.placement_;
 };
 
 
@@ -228,6 +280,17 @@ ol.style.Text.prototype.getTextBaseline = function() {
 
 
 /**
+ * Set the `exceedLength` property.
+ *
+ * @param {boolean} exceedLength Let text exceed the path that it follows.
+ * @api
+ */
+ol.style.Text.prototype.setExceedLength = function(exceedLength) {
+  this.exceedLength_ = exceedLength;
+};
+
+
+/**
  * Set the font.
  *
  * @param {string|undefined} font Font.
@@ -235,6 +298,17 @@ ol.style.Text.prototype.getTextBaseline = function() {
  */
 ol.style.Text.prototype.setFont = function(font) {
   this.font_ = font;
+};
+
+
+/**
+ * Set the maximum angle between adjacent characters.
+ *
+ * @param {number} maxAngle Angle in radians.
+ * @api
+ */
+ol.style.Text.prototype.setMaxAngle = function(maxAngle) {
+  this.maxAngle_ = maxAngle;
 };
 
 
@@ -257,6 +331,17 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
  */
 ol.style.Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
+};
+
+
+/**
+ * Set the text placement.
+ *
+ * @param {ol.style.TextPlacement|string} placement Placement.
+ * @api
+ */
+ol.style.Text.prototype.setPlacement = function(placement) {
+  this.placement_ = placement;
 };
 
 

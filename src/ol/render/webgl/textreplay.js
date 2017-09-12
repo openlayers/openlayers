@@ -3,6 +3,7 @@ goog.provide('ol.render.webgl.TextReplay');
 goog.require('ol');
 goog.require('ol.colorlike');
 goog.require('ol.dom');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.has');
 goog.require('ol.render.replay');
 goog.require('ol.render.webgl');
@@ -118,9 +119,38 @@ ol.inherits(ol.render.webgl.TextReplay, ol.render.webgl.TextureReplay);
 /**
  * @inheritDoc
  */
-ol.render.webgl.TextReplay.prototype.drawText = function(flatCoordinates, offset,
-    end, stride, geometry, feature) {
+ol.render.webgl.TextReplay.prototype.drawText = function(geometry, feature) {
   if (this.text_) {
+    var flatCoordinates = null;
+    var offset = 0;
+    var end = 2;
+    var stride = 2;
+    switch (geometry.getType()) {
+      case ol.geom.GeometryType.POINT:
+      case ol.geom.GeometryType.MULTI_POINT:
+        flatCoordinates = geometry.getFlatCoordinates();
+        end = flatCoordinates.length;
+        stride = geometry.getStride();
+        break;
+      case ol.geom.GeometryType.CIRCLE:
+        flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
+        break;
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
+        end = flatCoordinates.length;
+        break;
+      case ol.geom.GeometryType.POLYGON:
+        flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
+        break;
+      case ol.geom.GeometryType.MULTI_POLYGON:
+        flatCoordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+        end = flatCoordinates.length;
+        break;
+      default:
+    }
     this.startIndices.push(this.indices.length);
     this.startIndicesFeature.push(feature);
 

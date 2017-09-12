@@ -90,7 +90,7 @@ ol.CanvasStrokeState;
 
 /**
  * @typedef {{font: string,
- *            textAlign: string,
+ *            textAlign: (string|undefined),
  *            textBaseline: string}}
  */
 ol.CanvasTextState;

@@ -6,6 +6,8 @@ goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.flat.inflate');
+goog.require('ol.geom.flat.length');
+goog.require('ol.geom.flat.textpath');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.obj');
@@ -130,8 +132,67 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
    * @type {!ol.Transform}
    */
   this.resetTransform_ = ol.transform.create();
+
+  /**
+   * @private
+   * @type {Array.<Array.<number>>}
+   */
+  this.chars_ = [];
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {number} x X.
+ * @param {number} y Y.
+ * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
+ * @param {number} anchorX Anchor X.
+ * @param {number} anchorY Anchor Y.
+ * @param {number} height Height.
+ * @param {number} opacity Opacity.
+ * @param {number} originX Origin X.
+ * @param {number} originY Origin Y.
+ * @param {number} rotation Rotation.
+ * @param {number} scale Scale.
+ * @param {boolean} snapToPixel Snap to pixel.
+ * @param {number} width Width.
+ */
+ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, anchorX, anchorY,
+    height, opacity, originX, originY, rotation, scale, snapToPixel, width) {
+  var localTransform = this.tmpLocalTransform_;
+  anchorX *= scale;
+  anchorY *= scale;
+  x -= anchorX;
+  y -= anchorY;
+  if (snapToPixel) {
+    x = Math.round(x);
+    y = Math.round(y);
+  }
+  if (rotation !== 0) {
+    var centerX = x + anchorX;
+    var centerY = y + anchorY;
+    ol.transform.compose(localTransform,
+        centerX, centerY, 1, 1, rotation, -centerX, -centerY);
+    context.setTransform.apply(context, localTransform);
+  }
+  var alpha = context.globalAlpha;
+  if (opacity != 1) {
+    context.globalAlpha = alpha * opacity;
+  }
+
+  var w = (width + originX > image.width) ? image.width - originX : width;
+  var h = (height + originY > image.height) ? image.height - originY : height;
+
+  context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
+
+  if (opacity != 1) {
+    context.globalAlpha = alpha;
+  }
+  if (rotation !== 0) {
+    context.setTransform.apply(context, this.resetTransform_);
+  }
+};
 
 
 /**
@@ -340,9 +401,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
   var dd; // end of per-instruction data
-  var localTransform = this.tmpLocalTransform_;
-  var resetTransform = this.resetTransform_;
-  var prevX, prevY, roundX, roundY;
+  var anchorX, anchorY, prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
   var coordinateCache = this.coordinateCache_;
@@ -435,53 +494,63 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         dd = /** @type {number} */ (instruction[2]);
         var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
             (instruction[3]);
-        var scale = /** @type {number} */ (instruction[12]);
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
-        var anchorX = /** @type {number} */ (instruction[4]) * scale;
-        var anchorY = /** @type {number} */ (instruction[5]) * scale;
+        anchorX = /** @type {number} */ (instruction[4]);
+        anchorY = /** @type {number} */ (instruction[5]);
         var height = /** @type {number} */ (instruction[6]);
         var opacity = /** @type {number} */ (instruction[7]);
         var originX = /** @type {number} */ (instruction[8]);
         var originY = /** @type {number} */ (instruction[9]);
         var rotateWithView = /** @type {boolean} */ (instruction[10]);
         var rotation = /** @type {number} */ (instruction[11]);
+        var scale = /** @type {number} */ (instruction[12]);
         var snapToPixel = /** @type {boolean} */ (instruction[13]);
         var width = /** @type {number} */ (instruction[14]);
+
         if (rotateWithView) {
           rotation += viewRotation;
         }
         for (; d < dd; d += 2) {
-          x = pixelCoordinates[d] - anchorX;
-          y = pixelCoordinates[d + 1] - anchorY;
-          if (snapToPixel) {
-            x = Math.round(x);
-            y = Math.round(y);
-          }
-          if (rotation !== 0) {
-            var centerX = x + anchorX;
-            var centerY = y + anchorY;
-            ol.transform.compose(localTransform,
-                centerX, centerY, 1, 1, rotation, -centerX, -centerY);
-            context.setTransform.apply(context, localTransform);
-          }
-          var alpha = context.globalAlpha;
-          if (opacity != 1) {
-            context.globalAlpha = alpha * opacity;
-          }
+          this.replayImage_(context, pixelCoordinates[d], pixelCoordinates[d + 1],
+              image, anchorX, anchorY, height, opacity, originX, originY,
+              rotation, scale, snapToPixel, width);
+        }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.DRAW_CHARS:
+        var begin = /** @type {number} */ (instruction[1]);
+        var end = /** @type {number} */ (instruction[2]);
+        var images =  /** @type {Array.<HTMLCanvasElement>} */ (instruction[3]);
+        // Remaining arguments in DRAW_CHARS are in alphabetical order
+        var baseline = /** @type {number} */ (instruction[4]);
+        var exceedLength = /** @type {number} */ (instruction[5]);
+        var maxAngle = /** @type {number} */ (instruction[6]);
+        var measure = /** @type {function(string):number} */ (instruction[7]);
+        var offsetY = /** @type {number} */ (instruction[8]);
+        var strokeWidth = /** @type {number} */ (instruction[9]);
+        var text = /** @type {string} */ (instruction[10]);
+        var align = /** @type {number} */ (instruction[11]);
+        var textScale = /** @type {number} */ (instruction[12]);
 
-          var w = (width + originX > image.width) ? image.width - originX : width;
-          var h = (height + originY > image.height) ? image.height - originY : height;
-
-          context.drawImage(image, originX, originY, w, h,
-              x, y, w * scale, h * scale);
-
-          if (opacity != 1) {
-            context.globalAlpha = alpha;
-          }
-          if (rotation !== 0) {
-            context.setTransform.apply(context, resetTransform);
+        var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
+        var textLength = measure(text);
+        if (exceedLength || textLength <= pathLength) {
+          var startM = (pathLength - textLength) * align;
+          var chars = ol.geom.flat.textpath.lineString(
+              pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle, this.chars_);
+          var numChars = text.length;
+          if (chars) {
+            for (var c = 0, cc = images.length; c < cc; ++c) {
+              var char = chars[c % numChars]; // x, y, rotation
+              var label = images[c];
+              anchorX = label.width / 2;
+              anchorY = baseline * label.height + 2 * (0.5 - baseline) * strokeWidth - offsetY;
+              this.replayImage_(context, char[0], char[1], label, anchorX, anchorY,
+                  label.height, 1, 0, 0, char[2], textScale, false, label.width);
+            }
           }
         }
+
         ++i;
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:

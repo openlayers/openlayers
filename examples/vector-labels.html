@@ -80,6 +80,25 @@ tags: "geojson, vector, openstreetmap, label"
       <option value="normal" selected="selected">Normal</option>
     </select>
     <br />
+    <label>Placement: </label>
+    <select disabled id="points-placement">
+      <option value="line">Line</option>
+      <option value="point" selected="selected">Point</option>
+    </select>
+    <br />
+    <label>Max Angle: </label>
+    <select disabled id="points-maxangle">
+      <option value="0.7853981633974483" selected="selected">45°</option>
+      <option value="2.0943951023931953">120°</option>
+      <option value="6.283185307179586">360°</option>
+    </select>
+    <br />
+    <label>Exceed Len: </label>
+    <select disabled id="points-exceedlength">
+      <option value="true">True</option>
+      <option value="false" selected="selected">False</option>
+    </select>
+    <br />
     <label>Size: </label>
     <input type="text" value="12px" id="points-size" />
     <br />
@@ -131,7 +150,8 @@ tags: "geojson, vector, openstreetmap, label"
     <br />
     <label>Align: </label>
     <select id="lines-align">
-      <option value="center" selected="selected">Center</option>
+      <option value="" selected="selected"></option>
+      <option value="center">Center</option>
       <option value="end">End</option>
       <option value="left">Left</option>
       <option value="right">Right</option>
@@ -167,6 +187,25 @@ tags: "geojson, vector, openstreetmap, label"
     <select id="lines-weight">
       <option value="bold" selected="selected">Bold</option>
       <option value="normal">Normal</option>
+    </select>
+    <br />
+    <label>Placement: </label>
+    <select id="lines-placement">
+      <option value="line">Line</option>
+      <option value="point" selected="selected">Point</option>
+    </select>
+    <br />
+    <label>Max Angle: </label>
+    <select id="lines-maxangle">
+      <option value="0.7853981633974483" selected="selected">45°</option>
+      <option value="2.0943951023931953">120°</option>
+      <option value="6.283185307179586">360°</option>
+    </select>
+    <br />
+    <label>Exceed Len: </label>
+    <select id="lines-exceedlength">
+      <option value="true">True</option>
+      <option value="false" selected="selected">False</option>
     </select>
     <br />
     <label>Size: </label>
@@ -220,7 +259,8 @@ tags: "geojson, vector, openstreetmap, label"
     <br />
     <label>Align: </label>
     <select id="polygons-align">
-      <option value="center" selected="selected">Center</option>
+      <option value="" selected="selected"></option>
+      <option value="center">Center</option>
       <option value="end">End</option>
       <option value="left">Left</option>
       <option value="right">Right</option>
@@ -256,6 +296,25 @@ tags: "geojson, vector, openstreetmap, label"
     <select id="polygons-weight">
       <option value="bold" selected="selected">Bold</option>
       <option value="normal">Normal</option>
+    </select>
+    <br />
+    <label>Placement: </label>
+    <select id="polygons-placement">
+      <option value="line">Line</option>
+      <option value="point" selected="selected">Point</option>
+    </select>
+    <br />
+    <label>Max Angle: </label>
+    <select id="polygons-maxangle">
+      <option value="0.7853981633974483" selected="selected">45°</option>
+      <option value="2.0943951023931953">120°</option>
+      <option value="6.283185307179586">360°</option>
+    </select>
+    <br />
+    <label>Exceed Len: </label>
+    <select id="polygons-exceedlength">
+      <option value="true">True</option>
+      <option value="false" selected="selected">False</option>
     </select>
     <br />
     <label>Size: </label>
