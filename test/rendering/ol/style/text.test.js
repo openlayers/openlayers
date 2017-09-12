@@ -142,7 +142,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      expectResemble(map, 'rendering/ol/style/expected/text-align-offset-canvas.png', 5, done);
+      expectResemble(map, 'rendering/ol/style/expected/text-align-offset-canvas.png', 6, done);
     });
 
     it('renders multiline text with positioning options', function(done) {
@@ -188,7 +188,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      expectResemble(map, 'rendering/ol/style/expected/text-align-offset-canvas.png', 5, done);
+      expectResemble(map, 'rendering/ol/style/expected/text-align-offset-canvas.png', 6, done);
     });
 
     where('WebGL').it('tests the webgl renderer without rotation', function(done) {
