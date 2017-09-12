@@ -135,7 +135,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
 
   /**
    * @private
-   * @type {Array.<*>}
+   * @type {Array.<Array.<number>>}
    */
   this.chars_ = [];
 };
