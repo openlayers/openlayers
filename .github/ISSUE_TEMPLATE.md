@@ -1,7 +1,8 @@
-This issue tracker is for reporting bugs or feature requests, not for asking questions. For usage questions, refer to the (documentation)[http://openlayers.org/en/latest/doc/].
+Thank you for your interest in making OpenLayers better!
 
-Ready to submit your bug or feature request? Make sure these boxes are checked before submitting your issue. Thank you!
+To keep this project manageable for maintainers, we ask you to please check all boxes below before submitting an issue.
 
+- [ ] I am submitting a bug or feature request, not a usage question. Go to https://stackoverflow.com/questions/tagged/openlayers for questions.
 - [ ] I have searched GitHub to see if a similar bug or feature request has already been reported.
-- [ ] If reporting a bug, I have tried with the latest version of OpenLayers (see 'LATEST' on https://openlayers.org/)
+- [ ] I have verified that the issue is present in the latest version of OpenLayers (see 'LATEST' on https://openlayers.org/).
 - [ ] If reporting a bug, I have created a [CodePen](https://codepen.io) or prepared a stack trace (using the latest version and unminified code, so e.g. `ol-debug.js`, not `ol.js`) that shows the issue.
