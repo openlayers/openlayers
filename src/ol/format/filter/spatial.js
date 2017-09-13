@@ -10,6 +10,8 @@ goog.require('ol.format.filter.Filter');
  * Represents a spatial operator to test whether a geometry-valued property
  * relates to a given geometry.
  *
+ * deprecated: This class will no longer be exported starting from the next major version.
+ *
  * @constructor
  * @abstract
  * @param {!string} tagName The XML tag name for this filter.

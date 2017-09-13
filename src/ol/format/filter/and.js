@@ -7,6 +7,8 @@ goog.require('ol.format.filter.LogicalNary');
  * @classdesc
  * Represents a logical `<And>` operator between two or more filter conditions.
  *
+ * deprecated: This class will no longer be exported starting from the next major version.
+ *
  * @constructor
  * @abstract
  * @param {...ol.format.filter.Filter} conditions Conditions.
