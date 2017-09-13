@@ -71,34 +71,14 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
  * @private
  */
 ol.format.OSMXML.readWay_ = function(node, objectStack) {
-  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var id = node.getAttribute('id');
   var values = ol.xml.pushParseAndPop({
+    id: id,
     ndrefs: [],
     tags: {}
   }, ol.format.OSMXML.WAY_PARSERS_, node, objectStack);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  /** @type {Array.<number>} */
-  var flatCoordinates = [];
-  for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
-    var point = state.nodes[values.ndrefs[i]];
-    ol.array.extend(flatCoordinates, point);
-  }
-  var geometry;
-  if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
-    // closed way
-    geometry = new ol.geom.Polygon(null);
-    geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates,
-        [flatCoordinates.length]);
-  } else {
-    geometry = new ol.geom.LineString(null);
-    geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
-  }
-  ol.format.Feature.transformWithOptions(geometry, false, options);
-  var feature = new ol.Feature(geometry);
-  feature.setId(id);
-  feature.setProperties(values.tags);
-  state.features.push(feature);
+  state.ways.push(values);
 };
 
 
@@ -189,8 +169,34 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   if (node.localName == 'osm') {
     var state = ol.xml.pushParseAndPop({
       nodes: {},
+      ways: [],
       features: []
     }, ol.format.OSMXML.PARSERS_, node, [options]);
+    // parse nodes in ways
+    for (var j = 0; j < state.ways.length; j++) {
+      var values = /** @type {Object} */ (state.ways[j]);
+      /** @type {Array.<number>} */
+      var flatCoordinates = [];
+      for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
+        var point = state.nodes[values.ndrefs[i]];
+        ol.array.extend(flatCoordinates, point);
+      }
+      var geometry;
+      if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
+        // closed way
+        geometry = new ol.geom.Polygon(null);
+        geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates,
+            [flatCoordinates.length]);
+      } else {
+        geometry = new ol.geom.LineString(null);
+        geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
+      }
+      ol.format.Feature.transformWithOptions(geometry, false, options);
+      var feature = new ol.Feature(geometry);
+      feature.setId(values.id);
+      feature.setProperties(values.tags);
+      state.features.push(feature);
+    }
     if (state.features) {
       return state.features;
     }
