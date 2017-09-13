@@ -87,6 +87,33 @@ describe('ol.format.OSMXML', function() {
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
     });
 
+
+    it('can read ways before nodes', function() {
+      var text =
+          '<?xml version="1.0" encoding="UTF-8"?>' +
+          '<osm version="0.6" generator="my hand">' +
+          '  <way id="3">' +
+          '    <tag k="name" v="3"/>' +
+          '    <nd ref="1" />' +
+          '    <nd ref="2" />' +
+          '  </way>' +
+          '  <node id="1" lat="1" lon="2">' +
+          '    <tag k="name" v="1"/>' +
+          '  </node>' +
+          '  <node id="2" lat="3" lon="4">' +
+          '    <tag k="name" v="2"/>' +
+          '  </node>' +
+          '</osm>';
+      var fs = format.readFeatures(text);
+      expect(fs).to.have.length(3);
+      var line = fs[2];
+      expect(line).to.be.an(ol.Feature);
+      var g = line.getGeometry();
+      expect(g).to.be.an(ol.geom.LineString);
+      expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
+    });
+
+
     it('can transform and read nodes', function() {
       var text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
