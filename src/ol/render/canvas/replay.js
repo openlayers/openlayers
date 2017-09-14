@@ -169,20 +169,33 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, 
     x = Math.round(x);
     y = Math.round(y);
   }
+
+  var w = (width + originX > image.width) ? image.width - originX : width;
+  var h = (height + originY > image.height) ? image.height - originY : height;
+
+  var box;
   if (rotation !== 0) {
     var centerX = x + anchorX;
     var centerY = y + anchorY;
     ol.transform.compose(localTransform,
         centerX, centerY, 1, 1, rotation, -centerX, -centerY);
     context.setTransform.apply(context, localTransform);
+    box = ol.extent.createEmpty();
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x, y]));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x + w, y]));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x + w, y + h]));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x, y + w]));
+  } else {
+    box = [x, y, x + w * scale, y + h * scale];
+  }
+  var canvas = context.canvas;
+  if (box[0] > canvas.width || box[2] < 0 || box[1] > canvas.height || box[3] < 0) {
+    return;
   }
   var alpha = context.globalAlpha;
   if (opacity != 1) {
     context.globalAlpha = alpha * opacity;
   }
-
-  var w = (width + originX > image.width) ? image.width - originX : width;
-  var h = (height + originY > image.height) ? image.height - originY : height;
 
   context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
 
