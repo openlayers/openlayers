@@ -10,11 +10,40 @@
     });
   }
 
-  var fiddleButton = document.getElementById('jsfiddle-button');
-  if (fiddleButton) {
-    fiddleButton.onclick = function(event) {
+  var codepenButton = document.getElementById('codepen-button');
+  if (codepenButton) {
+    codepenButton.onclick = function(event) {
       event.preventDefault();
-      document.getElementById('jsfiddle-form').submit();
+      var form = document.getElementById('codepen-form');
+
+      // Doc : https://blog.codepen.io/documentation/api/prefill/
+
+      var resources = form.resources.value.split(',');
+
+      var data = {
+        title: form.title.value,
+        description: form.description.value,
+        layout: 'left',
+        html: form.html.value,
+        css: form.css.value,
+        js: form.js.value,
+        css_external: resources.filter(function(resource) {
+          return resource.lastIndexOf('.css') === resource.length - 4;
+        }).join(';'),
+        js_external: resources.filter(function(resource) {
+          return resource.lastIndexOf('.js') === resource.length - 3;
+        }).join(';')
+      };
+
+      // binary flags to display html, css, js and/or console tabs
+      data.editors = '' + Number(data.html.length > 0) +
+          Number(data.css.length > 0) +
+          Number(data.js.length > 0) +
+          Number(data.js.indexOf('console') > 0);
+
+      form.data.value = JSON.stringify(data);
+
+      form.submit();
     };
   }
 
@@ -79,24 +108,3 @@
 
   container.appendChild(form);
 })();
-
-var common = {};
-
-common.getRendererFromQueryString = function(opt_default) {
-  var obj = {};
-  var queryString = location.search.slice(1);
-  var re = /([^&=]+)=([^&]*)/g;
-
-  var m = re.exec(queryString);
-  while (m) {
-    obj[decodeURIComponent(m[1])] = decodeURIComponent(m[2]);
-    m = re.exec(queryString);
-  }
-  if ('renderers' in obj) {
-    return obj['renderers'].split(',');
-  } else if ('renderer' in obj) {
-    return [obj['renderer']];
-  } else {
-    return opt_default;
-  }
-};

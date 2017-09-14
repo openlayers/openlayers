@@ -1,4 +1,3 @@
-/*global createMapDiv, disposeMap*/
 goog.provide('ol.test.interaction.KeyboardPan');
 
 goog.require('ol.Map');
@@ -40,10 +39,10 @@ describe('ol.interaction.KeyboardPan', function() {
       map.handleMapBrowserEvent(event);
       event.originalEvent.keyCode = 39; // RIGHT
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[2]).to.eql([0, -128]);
-      expect(spy.getCall(1).args[2]).to.eql([0, 128]);
-      expect(spy.getCall(2).args[2]).to.eql([-128, 0]);
-      expect(spy.getCall(3).args[2]).to.eql([128, 0]);
+      expect(spy.getCall(0).args[1]).to.eql([0, -128]);
+      expect(spy.getCall(1).args[1]).to.eql([0, 128]);
+      expect(spy.getCall(2).args[1]).to.eql([-128, 0]);
+      expect(spy.getCall(3).args[1]).to.eql([128, 0]);
       ol.interaction.Interaction.pan.restore();
     });
   });

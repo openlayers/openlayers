@@ -20,15 +20,15 @@ var map4326 = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileWMS({
-        url: 'http://demo.boundlessgeo.com/geoserver/wms',
+        url: 'https://ahocevar.com/geoserver/wms',
         params: {
-          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
+          'TILED': true
         }
       })
     }),
     vectorLayer4326
   ],
-  renderer: 'canvas',
   target: 'map4326',
   view: new ol.View({
     projection: 'EPSG:4326',
@@ -41,15 +41,15 @@ var map3857 = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileWMS({
-        url: 'http://demo.boundlessgeo.com/geoserver/wms',
+        url: 'https://ahocevar.com/geoserver/wms',
         params: {
-          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+          'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
+          'TILED': true
         }
       })
     }),
     vectorLayer3857
   ],
-  renderer: 'canvas',
   target: 'map3857',
   view: new ol.View({
     center: [0, 0],

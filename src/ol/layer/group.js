@@ -1,24 +1,17 @@
 goog.provide('ol.layer.Group');
 
 goog.require('ol');
-goog.require('ol.asserts');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
 goog.require('ol.obj');
 goog.require('ol.source.State');
-
-
-/**
- * @enum {string}
- */
-ol.layer.GroupProperty = {
-  LAYERS: 'layers'
-};
 
 
 /**
@@ -30,7 +23,7 @@ ol.layer.GroupProperty = {
  * @constructor
  * @extends {ol.layer.Base}
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @api stable
+ * @api
  */
 ol.layer.Group = function(opt_options) {
 
@@ -56,19 +49,19 @@ ol.layer.Group = function(opt_options) {
   this.listenerKeys_ = {};
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
+      ol.Object.getChangeEventType(ol.layer.Group.Property_.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {
     if (Array.isArray(layers)) {
-      layers = new ol.Collection(layers.slice());
+      layers = new ol.Collection(layers.slice(), {unique: true});
     } else {
       ol.asserts.assert(layers instanceof ol.Collection,
           43); // Expected `layers` to be an array or an `ol.Collection`
       layers = layers;
     }
   } else {
-    layers = new ol.Collection();
+    layers = new ol.Collection(undefined, {unique: true});
   }
 
   this.setLayers(layers);
@@ -78,12 +71,16 @@ ol.inherits(ol.layer.Group, ol.layer.Base);
 
 
 /**
+ * @inheritDoc
+ */
+ol.layer.Group.prototype.createRenderer = function(mapRenderer) {};
+
+
+/**
  * @private
  */
 ol.layer.Group.prototype.handleLayerChange_ = function() {
-  if (this.getVisible()) {
-    this.changed();
-  }
+  this.changed();
 };
 
 
@@ -97,9 +94,9 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 
   var layers = this.getLayers();
   this.layersListenerKeys_.push(
-      ol.events.listen(layers, ol.Collection.EventType.ADD,
+      ol.events.listen(layers, ol.CollectionEventType.ADD,
           this.handleLayersAdd_, this),
-      ol.events.listen(layers, ol.Collection.EventType.REMOVE,
+      ol.events.listen(layers, ol.CollectionEventType.REMOVE,
           this.handleLayersRemove_, this));
 
   for (var id in this.listenerKeys_) {
@@ -130,8 +127,6 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = ol.getUid(layer).toString();
-  goog.DEBUG && console.assert(!(key in this.listenerKeys_),
-      'listeners already registered');
   this.listenerKeys_[key] = [
     ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
@@ -149,7 +144,6 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
 ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = ol.getUid(layer).toString();
-  goog.DEBUG && console.assert(key in this.listenerKeys_, 'no listeners to unregister');
   this.listenerKeys_[key].forEach(ol.events.unlistenByKey);
   delete this.listenerKeys_[key];
   this.changed();
@@ -162,11 +156,11 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @return {!ol.Collection.<ol.layer.Base>} Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
- * @api stable
+ * @api
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
-      ol.layer.GroupProperty.LAYERS));
+      ol.layer.Group.Property_.LAYERS));
 };
 
 
@@ -176,10 +170,10 @@ ol.layer.Group.prototype.getLayers = function() {
  * @param {!ol.Collection.<ol.layer.Base>} layers Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
- * @api stable
+ * @api
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
-  this.set(ol.layer.GroupProperty.LAYERS, layers);
+  this.set(ol.layer.Group.Property_.LAYERS, layers);
 };
 
 
@@ -236,4 +230,12 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
  */
 ol.layer.Group.prototype.getSourceState = function() {
   return ol.source.State.READY;
+};
+
+/**
+ * @enum {string}
+ * @private
+ */
+ol.layer.Group.Property_ = {
+  LAYERS: 'layers'
 };

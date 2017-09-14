@@ -76,15 +76,19 @@ function getSymbols(patterns, callback) {
  * @param {Array.<string>} patterns A list of symbol names to match.  Wildcards
  *     at the end of a string will match multiple names.
  * @param {Array.<Object>} symbols List of symbols.
- * @param {function(Error, Array.<Object>)} callback Called with the filtered
- *     list of symbols (or any error).
+ * @param {function(Error, Array.<Object>, Array.<string>)} callback Called with
+ *     the filtered list of symbols and a list of all provides (or any error).
  */
 function filterSymbols(patterns, symbols, callback) {
   var matches = [];
 
+  var provides = {};
   var lookup = {};
   symbols.forEach(function(symbol) {
     lookup[symbol.name] = symbol;
+    symbol.provides.forEach(function(provide) {
+      provides[provide] = true;
+    });
   });
 
   patterns.forEach(function(name) {
@@ -111,7 +115,7 @@ function filterSymbols(patterns, symbols, callback) {
     }
   });
 
-  callback(null, matches);
+  callback(null, matches, Object.keys(provides).sort());
 }
 
 
@@ -150,25 +154,22 @@ function formatPropertyExport(name) {
  * Generate export code given a list symbol names.
  * @param {Array.<Object>} symbols List of symbols.
  * @param {string|undefined} namespace Target object for exported symbols.
+ * @param {Array.<string>} provides List of all provides.
  * @return {string} Export code.
  */
-function generateExports(symbols, namespace) {
+function generateExports(symbols, namespace, provides) {
   var blocks = [];
-  var requires = {};
+  provides.forEach(function(provide) {
+    blocks.push('goog.require(\'' + provide + '\');');
+  });
+  blocks.push('\n\n');
   symbols.forEach(function(symbol) {
-    symbol.provides.forEach(function(provide) {
-      requires[provide] = true;
-    });
     var name = symbol.name;
     if (name.indexOf('#') > 0) {
       blocks.push(formatPropertyExport(name));
     } else {
       blocks.push(formatSymbolExport(name, namespace));
     }
-  });
-  blocks.unshift('\n');
-  Object.keys(requires).sort().reverse().forEach(function(name) {
-    blocks.unshift('goog.require(\'' + name + '\');');
   });
   blocks.unshift(
       '/**\n' +
@@ -190,10 +191,10 @@ function main(config, callback) {
   async.waterfall([
     getSymbols.bind(null, config.exports),
     filterSymbols,
-    function(symbols, done) {
+    function(symbols, provides, done) {
       var code, err;
       try {
-        code = generateExports(symbols, config.namespace);
+        code = generateExports(symbols, config.namespace, provides);
       } catch (e) {
         err = e;
       }

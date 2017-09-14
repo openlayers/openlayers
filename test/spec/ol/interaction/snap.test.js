@@ -4,6 +4,7 @@ goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
 goog.require('ol.interaction.Snap');
@@ -109,6 +110,27 @@ describe('ol.interaction.Snap', function() {
       expect(event.coordinate).to.eql([10, 0]);
     });
 
+    it('snaps to circle', function() {
+      var circle = new ol.Feature(new ol.geom.Circle([0, 0], 10));
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([circle]),
+        pixelTolerance: 5
+      });
+      snapInteraction.setMap(map);
+
+      var event = {
+        pixel: [5 + width / 2,  height / 2 - 5],
+        coordinate: [5, 5],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+
+      expect(event.coordinate).to.eql([
+        Math.sin(Math.PI / 4) * 10,
+        Math.sin(Math.PI / 4) * 10
+      ]);
+    });
+
     it('handle feature without geometry', function() {
       var feature = new ol.Feature();
       var snapInteraction = new ol.interaction.Snap({
@@ -122,12 +144,56 @@ describe('ol.interaction.Snap', function() {
 
       var event = {
         pixel: [7 + width / 2, height / 2 - 4],
-        coorinate: [7, 4],
+        coordinate: [7, 4],
         map: map
       };
       ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
     });
+
+    it('handle geometry changes', function() {
+      var line = new ol.Feature(new ol.geom.LineString([[-10, 0], [0, 0]]));
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([line]),
+        pixelTolerance: 5,
+        edge: false
+      });
+      snapInteraction.setMap(map);
+
+      line.getGeometry().setCoordinates([[-10, 0], [10, 0]]);
+
+      var event = {
+        pixel: [7 + width / 2, height / 2 - 4],
+        coordinate: [7, 4],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+      expect(event.coordinate).to.eql([10, 0]);
+    });
+
+    it('handle geometry name changes', function() {
+      var line = new ol.Feature({
+        geometry: new ol.geom.LineString([[-10, 0], [0, 0]]),
+        alt_geometry: new ol.geom.LineString([[-10, 0], [10, 0]])
+      });
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([line]),
+        pixelTolerance: 5,
+        edge: false
+      });
+      snapInteraction.setMap(map);
+
+      line.setGeometryName('alt_geometry');
+
+      var event = {
+        pixel: [7 + width / 2, height / 2 - 4],
+        coordinate: [7, 4],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+      expect(event.coordinate).to.eql([10, 0]);
+    });
+
 
   });
 

@@ -1,10 +1,8 @@
 goog.provide('ol.proj.EPSG4326');
 
 goog.require('ol');
-goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
-goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -21,7 +19,7 @@ goog.require('ol.sphere.WGS84');
  * @param {string=} opt_axisOrientation Axis orientation.
  * @private
  */
-ol.proj.EPSG4326_ = function(code, opt_axisOrientation) {
+ol.proj.EPSG4326.Projection_ = function(code, opt_axisOrientation) {
   ol.proj.Projection.call(this, {
     code: code,
     units: ol.proj.Units.DEGREES,
@@ -32,15 +30,16 @@ ol.proj.EPSG4326_ = function(code, opt_axisOrientation) {
     worldExtent: ol.proj.EPSG4326.EXTENT
   });
 };
-ol.inherits(ol.proj.EPSG4326_, ol.proj.Projection);
+ol.inherits(ol.proj.EPSG4326.Projection_, ol.proj.Projection);
 
 
 /**
- * @inheritDoc
+ * Radius of WGS84 sphere
+ *
+ * @const
+ * @type {number}
  */
-ol.proj.EPSG4326_.prototype.getPointResolution = function(resolution, point) {
-  return resolution;
-};
+ol.proj.EPSG4326.RADIUS = 6378137;
 
 
 /**
@@ -56,7 +55,7 @@ ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
  * @const
  * @type {number}
  */
-ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.sphere.WGS84.radius / 180;
+ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.proj.EPSG4326.RADIUS / 180;
 
 
 /**
@@ -66,12 +65,12 @@ ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.sphere.WGS84.radius / 180;
  * @type {Array.<ol.proj.Projection>}
  */
 ol.proj.EPSG4326.PROJECTIONS = [
-  new ol.proj.EPSG4326_('CRS:84'),
-  new ol.proj.EPSG4326_('EPSG:4326', 'neu'),
-  new ol.proj.EPSG4326_('urn:ogc:def:crs:EPSG::4326', 'neu'),
-  new ol.proj.EPSG4326_('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
-  new ol.proj.EPSG4326_('urn:ogc:def:crs:OGC:1.3:CRS84'),
-  new ol.proj.EPSG4326_('urn:ogc:def:crs:OGC:2:84'),
-  new ol.proj.EPSG4326_('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
-  new ol.proj.EPSG4326_('urn:x-ogc:def:crs:EPSG:4326', 'neu')
+  new ol.proj.EPSG4326.Projection_('CRS:84'),
+  new ol.proj.EPSG4326.Projection_('EPSG:4326', 'neu'),
+  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:EPSG::4326', 'neu'),
+  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
+  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:OGC:1.3:CRS84'),
+  new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:OGC:2:84'),
+  new ol.proj.EPSG4326.Projection_('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
+  new ol.proj.EPSG4326.Projection_('urn:x-ogc:def:crs:EPSG:4326', 'neu')
 ];

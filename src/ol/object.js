@@ -1,57 +1,10 @@
 goog.provide('ol.Object');
-goog.provide('ol.ObjectEvent');
-goog.provide('ol.ObjectEventType');
 
 goog.require('ol');
+goog.require('ol.ObjectEventType');
 goog.require('ol.Observable');
 goog.require('ol.events.Event');
 goog.require('ol.obj');
-
-
-/**
- * @enum {string}
- */
-ol.ObjectEventType = {
-  /**
-   * Triggered when a property is changed.
-   * @event ol.ObjectEvent#propertychange
-   * @api stable
-   */
-  PROPERTYCHANGE: 'propertychange'
-};
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.Object} instances are instances of this type.
- *
- * @param {string} type The event type.
- * @param {string} key The property name.
- * @param {*} oldValue The old value for `key`.
- * @extends {ol.events.Event}
- * @implements {oli.ObjectEvent}
- * @constructor
- */
-ol.ObjectEvent = function(type, key, oldValue) {
-  ol.events.Event.call(this, type);
-
-  /**
-   * The name of the property whose value is changing.
-   * @type {string}
-   * @api stable
-   */
-  this.key = key;
-
-  /**
-   * The old value. To get the new value use `e.target.get(e.key)` where
-   * `e` is the event object.
-   * @type {*}
-   * @api stable
-   */
-  this.oldValue = oldValue;
-
-};
-ol.inherits(ol.ObjectEvent, ol.events.Event);
 
 
 /**
@@ -96,7 +49,7 @@ ol.inherits(ol.ObjectEvent, ol.events.Event);
  * @constructor
  * @extends {ol.Observable}
  * @param {Object.<string, *>=} opt_values An object with key-value pairs.
- * @fires ol.ObjectEvent
+ * @fires ol.Object.Event
  * @api
  */
 ol.Object = function(opt_values) {
@@ -134,8 +87,8 @@ ol.Object.changeEventTypeCache_ = {};
  */
 ol.Object.getChangeEventType = function(key) {
   return ol.Object.changeEventTypeCache_.hasOwnProperty(key) ?
-      ol.Object.changeEventTypeCache_[key] :
-      (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
+    ol.Object.changeEventTypeCache_[key] :
+    (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
 };
 
 
@@ -143,7 +96,7 @@ ol.Object.getChangeEventType = function(key) {
  * Gets a value.
  * @param {string} key Key name.
  * @return {*} Value.
- * @api stable
+ * @api
  */
 ol.Object.prototype.get = function(key) {
   var value;
@@ -157,7 +110,7 @@ ol.Object.prototype.get = function(key) {
 /**
  * Get a list of object property names.
  * @return {Array.<string>} List of property names.
- * @api stable
+ * @api
  */
 ol.Object.prototype.getKeys = function() {
   return Object.keys(this.values_);
@@ -167,7 +120,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
- * @api stable
+ * @api
  */
 ol.Object.prototype.getProperties = function() {
   return ol.obj.assign({}, this.values_);
@@ -181,9 +134,9 @@ ol.Object.prototype.getProperties = function() {
 ol.Object.prototype.notify = function(key, oldValue) {
   var eventType;
   eventType = ol.Object.getChangeEventType(key);
-  this.dispatchEvent(new ol.ObjectEvent(eventType, key, oldValue));
+  this.dispatchEvent(new ol.Object.Event(eventType, key, oldValue));
   eventType = ol.ObjectEventType.PROPERTYCHANGE;
-  this.dispatchEvent(new ol.ObjectEvent(eventType, key, oldValue));
+  this.dispatchEvent(new ol.Object.Event(eventType, key, oldValue));
 };
 
 
@@ -192,7 +145,7 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * @param {string} key Key name.
  * @param {*} value Value.
  * @param {boolean=} opt_silent Update without triggering an event.
- * @api stable
+ * @api
  */
 ol.Object.prototype.set = function(key, value, opt_silent) {
   if (opt_silent) {
@@ -212,7 +165,7 @@ ol.Object.prototype.set = function(key, value, opt_silent) {
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
  * @param {boolean=} opt_silent Update without triggering an event.
- * @api stable
+ * @api
  */
 ol.Object.prototype.setProperties = function(values, opt_silent) {
   var key;
@@ -226,7 +179,7 @@ ol.Object.prototype.setProperties = function(values, opt_silent) {
  * Unsets a property.
  * @param {string} key Key name.
  * @param {boolean=} opt_silent Unset without triggering an event.
- * @api stable
+ * @api
  */
 ol.Object.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
@@ -237,3 +190,36 @@ ol.Object.prototype.unset = function(key, opt_silent) {
     }
   }
 };
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.Object} instances are instances of this type.
+ *
+ * @param {string} type The event type.
+ * @param {string} key The property name.
+ * @param {*} oldValue The old value for `key`.
+ * @extends {ol.events.Event}
+ * @implements {oli.Object.Event}
+ * @constructor
+ */
+ol.Object.Event = function(type, key, oldValue) {
+  ol.events.Event.call(this, type);
+
+  /**
+   * The name of the property whose value is changing.
+   * @type {string}
+   * @api
+   */
+  this.key = key;
+
+  /**
+   * The old value. To get the new value use `e.target.get(e.key)` where
+   * `e` is the event object.
+   * @type {*}
+   * @api
+   */
+  this.oldValue = oldValue;
+
+};
+ol.inherits(ol.Object.Event, ol.events.Event);

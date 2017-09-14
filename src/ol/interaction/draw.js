@@ -1,17 +1,15 @@
 goog.provide('ol.interaction.Draw');
-goog.provide('ol.interaction.DrawEvent');
-goog.provide('ol.interaction.DrawEventType');
-goog.provide('ol.interaction.DrawMode');
 
 goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.events.Event');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
-goog.require('ol.functions');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 goog.require('ol.events.condition');
+goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -20,56 +18,12 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.InteractionProperty');
+goog.require('ol.interaction.DrawEventType');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.interaction.Property');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
-
-
-/**
- * @enum {string}
- */
-ol.interaction.DrawEventType = {
-  /**
-   * Triggered upon feature draw start
-   * @event ol.interaction.DrawEvent#drawstart
-   * @api stable
-   */
-  DRAWSTART: 'drawstart',
-  /**
-   * Triggered upon feature draw end
-   * @event ol.interaction.DrawEvent#drawend
-   * @api stable
-   */
-  DRAWEND: 'drawend'
-};
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Draw} instances are instances of
- * this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.DrawEvent}
- * @param {ol.interaction.DrawEventType} type Type.
- * @param {ol.Feature} feature The feature drawn.
- */
-ol.interaction.DrawEvent = function(type, feature) {
-
-  ol.events.Event.call(this, type);
-
-  /**
-   * The feature being drawn.
-   * @type {ol.Feature}
-   * @api stable
-   */
-  this.feature = feature;
-
-};
-ol.inherits(ol.interaction.DrawEvent, ol.events.Event);
 
 
 /**
@@ -78,9 +32,9 @@ ol.inherits(ol.interaction.DrawEvent, ol.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.DrawEvent
+ * @fires ol.interaction.Draw.Event
  * @param {olx.interaction.DrawOptions} options Options.
- * @api stable
+ * @api
  */
 ol.interaction.Draw = function(options) {
 
@@ -89,6 +43,12 @@ ol.interaction.Draw = function(options) {
     handleEvent: ol.interaction.Draw.handleEvent,
     handleUpEvent: ol.interaction.Draw.handleUpEvent_
   });
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.shouldHandle_ = false;
 
   /**
    * @type {ol.Pixel}
@@ -132,7 +92,7 @@ ol.interaction.Draw = function(options) {
 
   /**
    * Drawing mode (derived from geometry type.
-   * @type {ol.interaction.DrawMode}
+   * @type {ol.interaction.Draw.Mode_}
    * @private
    */
   this.mode_ = ol.interaction.Draw.getMode_(this.type_);
@@ -145,8 +105,8 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.minPoints_ = options.minPoints ?
-      options.minPoints :
-      (this.mode_ === ol.interaction.DrawMode.POLYGON ? 3 : 2);
+    options.minPoints :
+    (this.mode_ === ol.interaction.Draw.Mode_.POLYGON ? 3 : 2);
 
   /**
    * The number of points that can be drawn before a polygon ring or line string
@@ -157,7 +117,7 @@ ol.interaction.Draw = function(options) {
   this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
 
   /**
-   * A function to decide if a potential finish coordinate is permissable
+   * A function to decide if a potential finish coordinate is permissible
    * @private
    * @type {ol.EventsConditionType}
    */
@@ -167,14 +127,14 @@ ol.interaction.Draw = function(options) {
   if (!geometryFunction) {
     if (this.type_ === ol.geom.GeometryType.CIRCLE) {
       /**
-       * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+       * @param {!Array.<ol.Coordinate>} coordinates
        *     The coordinates.
        * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
        * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
-            new ol.geom.Circle([NaN, NaN]);
+          new ol.geom.Circle([NaN, NaN]);
         var squaredLength = ol.coordinate.squaredDistance(
             coordinates[0], coordinates[1]);
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
@@ -183,15 +143,15 @@ ol.interaction.Draw = function(options) {
     } else {
       var Constructor;
       var mode = this.mode_;
-      if (mode === ol.interaction.DrawMode.POINT) {
+      if (mode === ol.interaction.Draw.Mode_.POINT) {
         Constructor = ol.geom.Point;
-      } else if (mode === ol.interaction.DrawMode.LINE_STRING) {
+      } else if (mode === ol.interaction.Draw.Mode_.LINE_STRING) {
         Constructor = ol.geom.LineString;
-      } else if (mode === ol.interaction.DrawMode.POLYGON) {
+      } else if (mode === ol.interaction.Draw.Mode_.POLYGON) {
         Constructor = ol.geom.Polygon;
       }
       /**
-       * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+       * @param {!Array.<ol.Coordinate>} coordinates
        *     The coordinates.
        * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
        * @return {ol.geom.SimpleGeometry} A geometry.
@@ -199,7 +159,11 @@ ol.interaction.Draw = function(options) {
       geometryFunction = function(coordinates, opt_geometry) {
         var geometry = opt_geometry;
         if (geometry) {
-          geometry.setCoordinates(coordinates);
+          if (mode === ol.interaction.Draw.Mode_.POLYGON) {
+            geometry.setCoordinates([coordinates[0].concat([coordinates[0][0]])]);
+          } else {
+            geometry.setCoordinates(coordinates);
+          }
         } else {
           geometry = new Constructor(coordinates);
         }
@@ -265,7 +229,7 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.squaredClickTolerance_ = options.clickTolerance ?
-      options.clickTolerance * options.clickTolerance : 36;
+    options.clickTolerance * options.clickTolerance : 36;
 
   /**
    * Draw overlay where our sketch features are drawn.
@@ -278,7 +242,7 @@ ol.interaction.Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-        ol.interaction.Draw.getDefaultStyleFunction()
+      ol.interaction.Draw.getDefaultStyleFunction()
   });
 
   /**
@@ -293,17 +257,22 @@ ol.interaction.Draw = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.noModifierKeys;
+    options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.freehandCondition_ = options.freehandCondition ?
+  this.freehandCondition_;
+  if (options.freehand) {
+    this.freehandCondition_ = ol.events.condition.always;
+  } else {
+    this.freehandCondition_ = options.freehandCondition ?
       options.freehandCondition : ol.events.condition.shiftKeyOnly;
+  }
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.interaction.InteractionProperty.ACTIVE),
+      ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
       this.updateState_, this);
 
 };
@@ -333,29 +302,25 @@ ol.interaction.Draw.prototype.setMap = function(map) {
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
  * draw or finish the drawing.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {ol.MapBrowserEvent} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Draw}
  * @api
  */
-ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
-  if ((this.mode_ === ol.interaction.DrawMode.LINE_STRING ||
-    this.mode_ === ol.interaction.DrawMode.POLYGON) &&
-    this.freehandCondition_(mapBrowserEvent)) {
-    this.freehand_ = true;
-  }
+ol.interaction.Draw.handleEvent = function(event) {
+  this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode_.POINT && this.freehandCondition_(event);
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG) {
-    this.addToDrawing_(mapBrowserEvent);
+      event.type === ol.MapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+    this.addToDrawing_(event);
     pass = false;
-  } else if (mapBrowserEvent.type ===
-      ol.MapBrowserEvent.EventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(mapBrowserEvent);
-  } else if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
+  } else if (event.type ===
+      ol.MapBrowserEventType.POINTERMOVE) {
+    pass = this.handlePointerMove_(event);
+  } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
+  return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
 };
 
 
@@ -366,14 +331,16 @@ ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.Draw.handleDownEvent_ = function(event) {
-  if (this.condition_(event)) {
-    this.downPx_ = event.pixel;
-    return true;
-  } else if (this.freehand_) {
+  this.shouldHandle_ = !this.freehand_;
+
+  if (this.freehand_) {
     this.downPx_ = event.pixel;
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
     }
+    return true;
+  } else if (this.condition_(event)) {
+    this.downPx_ = event.pixel;
     return true;
   } else {
     return false;
@@ -388,21 +355,19 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
-  this.freehand_ = false;
-  var downPx = this.downPx_;
-  var clickPx = event.pixel;
-  var dx = downPx[0] - clickPx[0];
-  var dy = downPx[1] - clickPx[1];
-  var squaredDistance = dx * dx + dy * dy;
   var pass = true;
-  if (squaredDistance <= this.squaredClickTolerance_) {
-    this.handlePointerMove_(event);
+
+  this.handlePointerMove_(event);
+
+  var circleMode = this.mode_ === ol.interaction.Draw.Mode_.CIRCLE;
+
+  if (this.shouldHandle_) {
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
-      if (this.mode_ === ol.interaction.DrawMode.POINT) {
+      if (this.mode_ === ol.interaction.Draw.Mode_.POINT) {
         this.finishDrawing();
       }
-    } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+    } else if (this.freehand_ || circleMode) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
       if (this.finishCondition_(event)) {
@@ -412,6 +377,9 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       this.addToDrawing_(event);
     }
     pass = false;
+  } else if (this.freehand_) {
+    this.finishCoordinate_ = null;
+    this.abortDrawing_();
   }
   return pass;
 };
@@ -424,6 +392,19 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
+  if (this.downPx_ &&
+      ((!this.freehand_ && this.shouldHandle_) ||
+      (this.freehand_ && !this.shouldHandle_))) {
+    var downPx = this.downPx_;
+    var clickPx = event.pixel;
+    var dx = downPx[0] - clickPx[0];
+    var dy = downPx[1] - clickPx[1];
+    var squaredDistance = dx * dx + dy * dy;
+    this.shouldHandle_ = this.freehand_ ?
+      squaredDistance > this.squaredClickTolerance_ :
+      squaredDistance <= this.squaredClickTolerance_;
+  }
+
   if (this.finishCoordinate_) {
     this.modifyDrawing_(event);
   } else {
@@ -444,9 +425,9 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
   if (this.sketchFeature_) {
     var potentiallyDone = false;
     var potentiallyFinishCoordinates = [this.finishCoordinate_];
-    if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
+    if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
       potentiallyDone = this.sketchCoords_.length > this.minPoints_;
-    } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
       potentiallyDone = this.sketchCoords_[0].length >
           this.minPoints_;
       potentiallyFinishCoordinates = [this.sketchCoords_[0][0],
@@ -460,8 +441,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
         var pixel = event.pixel;
         var dx = pixel[0] - finishPixel[0];
         var dy = pixel[1] - finishPixel[1];
-        var freehand = this.freehand_ && this.freehandCondition_(event);
-        var snapTolerance = freehand ? 1 : this.snapTolerance_;
+        var snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
         at = Math.sqrt(dx * dx + dy * dy) <= snapTolerance;
         if (at) {
           this.finishCoordinate_ = finishCoordinate;
@@ -498,14 +478,14 @@ ol.interaction.Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
 ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   var start = event.coordinate;
   this.finishCoordinate_ = start;
-  if (this.mode_ === ol.interaction.DrawMode.POINT) {
+  if (this.mode_ === ol.interaction.Draw.Mode_.POINT) {
     this.sketchCoords_ = start.slice();
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+  } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
     this.sketchCoords_ = [[start.slice(), start.slice()]];
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
-    if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
+    if (this.mode_ === ol.interaction.Draw.Mode_.CIRCLE) {
       this.sketchLineCoords_ = this.sketchCoords_;
     }
   }
@@ -514,14 +494,13 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
         new ol.geom.LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
-  goog.DEBUG && console.assert(geometry !== undefined, 'geometry should be defined');
   this.sketchFeature_ = new ol.Feature();
   if (this.geometryName_) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
   }
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
-  this.dispatchEvent(new ol.interaction.DrawEvent(
+  this.dispatchEvent(new ol.interaction.Draw.Event(
       ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
@@ -535,9 +514,9 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   var coordinate = event.coordinate;
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates, last;
-  if (this.mode_ === ol.interaction.DrawMode.POINT) {
+  if (this.mode_ === ol.interaction.Draw.Mode_.POINT) {
     last = this.sketchCoords_;
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+  } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
     coordinates = this.sketchCoords_[0];
     last = coordinates[coordinates.length - 1];
     if (this.atFinish_(event)) {
@@ -550,17 +529,14 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   }
   last[0] = coordinate[0];
   last[1] = coordinate[1];
-  goog.DEBUG && console.assert(this.sketchCoords_, 'sketchCoords_ expected');
-  this.geometryFunction_(
-      /** @type {!ol.Coordinate|!Array.<ol.Coordinate>|!Array.<Array.<ol.Coordinate>>} */ (this.sketchCoords_),
-      geometry);
+  this.geometryFunction_(/** @type {!Array.<ol.Coordinate>} */ (this.sketchCoords_), geometry);
   if (this.sketchPoint_) {
     var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinate);
   }
   var sketchLineGeom;
   if (geometry instanceof ol.geom.Polygon &&
-      this.mode_ !== ol.interaction.DrawMode.POLYGON) {
+      this.mode_ !== ol.interaction.Draw.Mode_.POLYGON) {
     if (!this.sketchLine_) {
       this.sketchLine_ = new ol.Feature(new ol.geom.LineString(null));
     }
@@ -586,16 +562,28 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var done;
   var coordinates;
-  if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
+  if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
     coordinates = this.sketchCoords_;
+    if (coordinates.length >= this.maxPoints_) {
+      if (this.freehand_) {
+        coordinates.pop();
+      } else {
+        done = true;
+      }
+    }
     coordinates.push(coordinate.slice());
-    done = coordinates.length > this.maxPoints_;
     this.geometryFunction_(coordinates, geometry);
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+  } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
     coordinates = this.sketchCoords_[0];
+    if (coordinates.length >= this.maxPoints_) {
+      if (this.freehand_) {
+        coordinates.pop();
+      } else {
+        done = true;
+      }
+    }
     coordinates.push(coordinate.slice());
-    done = coordinates.length > this.maxPoints_;
     if (done) {
       this.finishCoordinate_ = coordinates[0];
     }
@@ -613,13 +601,19 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
  * @api
  */
 ol.interaction.Draw.prototype.removeLastPoint = function() {
+  if (!this.sketchFeature_) {
+    return;
+  }
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates, sketchLineGeom;
-  if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
+  if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
     coordinates = this.sketchCoords_;
     coordinates.splice(-2, 1);
     this.geometryFunction_(coordinates, geometry);
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
+    if (coordinates.length >= 2) {
+      this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
+    }
+  } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
@@ -645,17 +639,15 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
   var coordinates = this.sketchCoords_;
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
-  if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
+  if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
     // remove the redundant last point
     coordinates.pop();
     this.geometryFunction_(coordinates, geometry);
-  } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
-    // When we finish drawing a polygon on the last point,
-    // the last coordinate is duplicated as for LineString
-    // we force the replacement by the first point
+  } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
+    // remove the redundant last point in ring
     coordinates[0].pop();
-    coordinates[0].push(coordinates[0][0]);
     this.geometryFunction_(coordinates, geometry);
+    coordinates = geometry.getCoordinates();
   }
 
   // cast multi-part geometries
@@ -668,7 +660,7 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
   }
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new ol.interaction.DrawEvent(
+  this.dispatchEvent(new ol.interaction.Draw.Event(
       ol.interaction.DrawEventType.DRAWEND, sketchFeature));
 
   // Then insert feature
@@ -708,10 +700,6 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
  */
 ol.interaction.Draw.prototype.extend = function(feature) {
   var geometry = feature.getGeometry();
-  goog.DEBUG && console.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
-      'interaction mode must be "line"');
-  goog.DEBUG && console.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
-      'feature geometry must be a line string');
   var lineString = /** @type {ol.geom.LineString} */ (geometry);
   this.sketchFeature_ = feature;
   this.sketchCoords_ = lineString.getCoordinates();
@@ -719,7 +707,7 @@ ol.interaction.Draw.prototype.extend = function(feature) {
   this.finishCoordinate_ = last.slice();
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
-  this.dispatchEvent(new ol.interaction.DrawEvent(
+  this.dispatchEvent(new ol.interaction.Draw.Event(
       ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
@@ -765,7 +753,7 @@ ol.interaction.Draw.prototype.updateState_ = function() {
 
 
 /**
- * Create a `geometryFunction` for `mode: 'Circle'` that will create a regular
+ * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of an
  * `ol.geom.Circle` geometry.
  * @param {number=} opt_sides Number of sides of the regular polygon. Default is
@@ -779,23 +767,53 @@ ol.interaction.Draw.prototype.updateState_ = function() {
  */
 ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
   return (
-      /**
+  /**
        * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
        * @param {ol.geom.SimpleGeometry=} opt_geometry
        * @return {ol.geom.SimpleGeometry}
        */
-      function(coordinates, opt_geometry) {
-        var center = coordinates[0];
-        var end = coordinates[1];
-        var radius = Math.sqrt(
-            ol.coordinate.squaredDistance(center, end));
-        var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-            ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
-        var angle = opt_angle ? opt_angle :
-            Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-        ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
-        return geometry;
-      }
+    function(coordinates, opt_geometry) {
+      var center = coordinates[0];
+      var end = coordinates[1];
+      var radius = Math.sqrt(
+          ol.coordinate.squaredDistance(center, end));
+      var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
+        ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
+      var angle = opt_angle ? opt_angle :
+        Math.atan((end[1] - center[1]) / (end[0] - center[0]));
+      ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
+      return geometry;
+    }
+  );
+};
+
+
+/**
+ * Create a `geometryFunction` that will create a box-shaped polygon (aligned
+ * with the coordinate system axes).  Use this with the draw interaction and
+ * `type: 'Circle'` to return a box instead of a circle geometry.
+ * @return {ol.DrawGeometryFunctionType} Function that draws a box-shaped polygon.
+ * @api
+ */
+ol.interaction.Draw.createBox = function() {
+  return (
+    /**
+     * @param {Array.<ol.Coordinate>} coordinates
+     * @param {ol.geom.SimpleGeometry=} opt_geometry
+     * @return {ol.geom.SimpleGeometry}
+     */
+    function(coordinates, opt_geometry) {
+      var extent = ol.extent.boundingExtent(coordinates);
+      var geometry = opt_geometry || new ol.geom.Polygon(null);
+      geometry.setCoordinates([[
+        ol.extent.getBottomLeft(extent),
+        ol.extent.getBottomRight(extent),
+        ol.extent.getTopRight(extent),
+        ol.extent.getTopLeft(extent),
+        ol.extent.getBottomLeft(extent)
+      ]]);
+      return geometry;
+    }
   );
 };
 
@@ -804,24 +822,24 @@ ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
  * their single-part cousins.
  * @param {ol.geom.GeometryType} type Geometry type.
- * @return {ol.interaction.DrawMode} Drawing mode.
+ * @return {ol.interaction.Draw.Mode_} Drawing mode.
  * @private
  */
 ol.interaction.Draw.getMode_ = function(type) {
   var mode;
   if (type === ol.geom.GeometryType.POINT ||
       type === ol.geom.GeometryType.MULTI_POINT) {
-    mode = ol.interaction.DrawMode.POINT;
+    mode = ol.interaction.Draw.Mode_.POINT;
   } else if (type === ol.geom.GeometryType.LINE_STRING ||
       type === ol.geom.GeometryType.MULTI_LINE_STRING) {
-    mode = ol.interaction.DrawMode.LINE_STRING;
+    mode = ol.interaction.Draw.Mode_.LINE_STRING;
   } else if (type === ol.geom.GeometryType.POLYGON ||
       type === ol.geom.GeometryType.MULTI_POLYGON) {
-    mode = ol.interaction.DrawMode.POLYGON;
+    mode = ol.interaction.Draw.Mode_.POLYGON;
   } else if (type === ol.geom.GeometryType.CIRCLE) {
-    mode = ol.interaction.DrawMode.CIRCLE;
+    mode = ol.interaction.Draw.Mode_.CIRCLE;
   }
-  return /** @type {!ol.interaction.DrawMode} */ (mode);
+  return /** @type {!ol.interaction.Draw.Mode_} */ (mode);
 };
 
 
@@ -829,10 +847,36 @@ ol.interaction.Draw.getMode_ = function(type) {
  * Draw mode.  This collapses multi-part geometry types with their single-part
  * cousins.
  * @enum {string}
+ * @private
  */
-ol.interaction.DrawMode = {
+ol.interaction.Draw.Mode_ = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',
   CIRCLE: 'Circle'
 };
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Draw} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.DrawEvent}
+ * @param {ol.interaction.DrawEventType} type Type.
+ * @param {ol.Feature} feature The feature drawn.
+ */
+ol.interaction.Draw.Event = function(type, feature) {
+
+  ol.events.Event.call(this, type);
+
+  /**
+   * The feature being drawn.
+   * @type {ol.Feature}
+   * @api
+   */
+  this.feature = feature;
+
+};
+ol.inherits(ol.interaction.Draw.Event, ol.events.Event);

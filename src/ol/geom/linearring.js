@@ -21,7 +21,7 @@ goog.require('ol.geom.flat.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @api
  */
 ol.geom.LinearRing = function(coordinates, opt_layout) {
 
@@ -48,7 +48,8 @@ ol.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.LinearRing} Clone.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.LinearRing.prototype.clone = function() {
   var linearRing = new ol.geom.LinearRing(null);
@@ -79,7 +80,7 @@ ol.geom.LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSq
 /**
  * Return the area of the linear ring on projected plane.
  * @return {number} Area (on projected plane).
- * @api stable
+ * @api
  */
 ol.geom.LinearRing.prototype.getArea = function() {
   return ol.geom.flat.area.linearRing(
@@ -90,7 +91,8 @@ ol.geom.LinearRing.prototype.getArea = function() {
 /**
  * Return the coordinates of the linear ring.
  * @return {Array.<ol.Coordinate>} Coordinates.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinates(
@@ -115,7 +117,7 @@ ol.geom.LinearRing.prototype.getSimplifiedGeometryInternal = function(squaredTol
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.LinearRing.prototype.getType = function() {
   return ol.geom.GeometryType.LINEAR_RING;
@@ -123,10 +125,17 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.intersectsExtent = function(extent) {};
+
+
+/**
  * Set the coordinates of the linear ring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {

@@ -3,8 +3,8 @@
 goog.provide('ol.format.MVT');
 
 goog.require('ol');
-goog.require('ol.ext.pbf');
-goog.require('ol.ext.vectortile');
+goog.require('ol.ext.PBF');
+goog.require('ol.ext.vectortile.VectorTile');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.geom.GeometryLayout');
@@ -44,19 +44,18 @@ ol.format.MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {function((ol.geom.Geometry|Object.<string, *>)=)|
+   * @type {function((ol.geom.Geometry|Object.<string,*>)=)|
    *     function(ol.geom.GeometryType,Array.<number>,
-   *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
+   *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
-      options.featureClass : ol.render.Feature;
+    options.featureClass : ol.render.Feature;
 
   /**
    * @private
-   * @type {string}
+   * @type {string|undefined}
    */
-  this.geometryName_ = options.geometryName ?
-      options.geometryName : 'geometry';
+  this.geometryName_ = options.geometryName;
 
   /**
    * @private
@@ -70,8 +69,23 @@ ol.format.MVT = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = null;
+
 };
 ol.inherits(ol.format.MVT, ol.format.Feature);
+
+
+/**
+ * @inheritDoc
+ * @api
+ */
+ol.format.MVT.prototype.getLastExtent = function() {
+  return this.extent_;
+};
 
 
 /**
@@ -95,15 +109,15 @@ ol.format.MVT.prototype.readFeature_ = function(
   var id = rawFeature.id;
   var values = rawFeature.properties;
   values[this.layerName_] = layer;
+  if (this.geometryName_) {
+    feature.setGeometryName(this.geometryName_);
+  }
   var geometry = ol.format.Feature.transformWithOptions(
       ol.format.MVT.readGeometry_(rawFeature), false,
       this.adaptOptions(opt_options));
-  if (geometry) {
-    values[this.geometryName_] = geometry;
-  }
+  feature.setGeometry(geometry);
   feature.setId(id);
   feature.setProperties(values);
-  feature.setGeometryName(this.geometryName_);
   return feature;
 };
 
@@ -125,7 +139,7 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
   var geometryType;
   if (type === 1) {
     geometryType = coords.length === 1 ?
-        ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
+      ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
   } else if (type === 2) {
     if (coords.length === 1) {
       geometryType = ol.geom.GeometryType.LINE_STRING;
@@ -138,8 +152,9 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
 
   var values = rawFeature.properties;
   values[this.layerName_] = layer;
+  var id = rawFeature.id;
 
-  return new this.featureClass_(geometryType, flatCoordinates, ends, values);
+  return new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
 };
 
 
@@ -150,7 +165,7 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
 ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
   var layers = this.layers_;
 
-  var pbf = new ol.ext.pbf(/** @type {ArrayBuffer} */ (source));
+  var pbf = new ol.ext.PBF(/** @type {ArrayBuffer} */ (source));
   var tile = new ol.ext.vectortile.VectorTile(pbf);
   var features = [];
   var featureClass = this.featureClass_;
@@ -161,14 +176,17 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
     }
     layer = tile.layers[name];
 
+    var rawFeature;
     for (var i = 0, ii = layer.length; i < ii; ++i) {
+      rawFeature = layer.feature(i);
       if (featureClass === ol.render.Feature) {
-        feature = this.readRenderFeature_(layer.feature(i), name);
+        feature = this.readRenderFeature_(rawFeature, name);
       } else {
-        feature = this.readFeature_(layer.feature(i), name, opt_options);
+        feature = this.readFeature_(rawFeature, name, opt_options);
       }
       features.push(feature);
     }
+    this.extent_ = layer ? [0, 0, layer.extent, layer.extent] : null;
   }
 
   return features;
@@ -238,7 +256,7 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
   var geom;
   if (type === 1) {
     geom = coords.length === 1 ?
-        new ol.geom.Point(null) : new ol.geom.MultiPoint(null);
+      new ol.geom.Point(null) : new ol.geom.MultiPoint(null);
   } else if (type === 2) {
     if (coords.length === 1) {
       geom = new ol.geom.LineString(null);
@@ -254,3 +272,38 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
 
   return geom;
 };
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.MVT.prototype.readFeature = function() {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.MVT.prototype.readGeometry = function() {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.MVT.prototype.writeFeature = function() {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.MVT.prototype.writeGeometry = function() {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.MVT.prototype.writeFeatures = function() {};

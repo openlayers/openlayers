@@ -5,13 +5,11 @@ goog.require('ol.net');
 
 describe('ol.net', function() {
 
-  var global = ol.global;
-
   describe('jsonp()', function() {
-    var head = global.document.getElementsByTagName('head')[0];
+    var head = document.getElementsByTagName('head')[0];
     var origAppendChild = head.appendChild;
     var origCreateElement = document.createElement;
-    var origSetTimeout = global.setTimeout;
+    var origSetTimeout = setTimeout;
     var key, removeChild;
 
     function createCallback(url, done) {
@@ -31,7 +29,7 @@ describe('ol.net', function() {
         if (arg == 'script') {
           return element;
         } else {
-          return origCreateElement.apply(global.document, arguments);
+          return origCreateElement.apply(document, arguments);
         }
       };
       head.appendChild = function(el) {
@@ -40,13 +38,13 @@ describe('ol.net', function() {
             removeChild: removeChild
           };
           origSetTimeout(function() {
-            global[key](element.src);
+            window[key](element.src);
           }, 0);
         } else {
           origAppendChild.apply(head, arguments);
         }
       };
-      global.setTimeout = function(fn, time) {
+      setTimeout = function(fn, time) {
         origSetTimeout(fn, 100);
       };
     });
@@ -54,7 +52,7 @@ describe('ol.net', function() {
     afterEach(function() {
       document.createElement = origCreateElement;
       head.appendChild = origAppendChild;
-      global.setTimeout = origSetTimeout;
+      setTimeout = origSetTimeout;
     });
 
     it('appends callback param to url, cleans up after call', function(done) {
@@ -74,7 +72,7 @@ describe('ol.net', function() {
         expect.fail();
       }
       function errback() {
-        expect(global[key]).to.be(undefined);
+        expect(window[key]).to.be(undefined);
         expect(removeChild.called).to.be(true);
         done();
       }

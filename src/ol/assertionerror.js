@@ -13,16 +13,17 @@ goog.require('ol');
  */
 ol.AssertionError = function(code) {
 
+  var path = ol.VERSION ? ol.VERSION.split('-')[0] : 'latest';
+
   /**
    * @type {string}
    */
-  this.message = 'Assertion failed. See ' +
-      (ol.VERSION ? 'http://openlayers.org/en/' + ol.VERSION.split('-')[0] : '') +
+  this.message = 'Assertion failed. See https://openlayers.org/en/' + path +
       '/doc/errors/#' + code + ' for details.';
 
   /**
    * Error code. The meaning of the code can be found on
-   * {@link http://openlayers.org/en/latest/errors.html} (replace `latest` with
+   * {@link https://openlayers.org/en/latest/doc/errors/} (replace `latest` with
    * the version found in the OpenLayers script's header comment if a version
    * other than the latest is used).
    * @type {number}

@@ -119,7 +119,7 @@ describe('ol.source.TileUTFGrid', function() {
       var proj3857 = ol.proj.get('EPSG:3857');
       var expectedExtent4326 = tileJson.bounds;
       var expectedExtent3857 = ol.proj.transformExtent(
-        expectedExtent4326, proj4326, proj3857
+          expectedExtent4326, proj4326, proj3857
       );
       expect(extent).to.eql(proj3857.getExtent());
       expect(extent[0]).to.roughlyEqual(expectedExtent3857[0], 1e-8);
@@ -236,7 +236,7 @@ describe('ol.source.TileUTFGrid', function() {
         var urlTileCoord =
             this.getTileCoordForTileUrlFunction(tileCoord, projection);
         var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-        var tile = new ol.source.TileUTFGridTile_(
+        var tile = new ol.source.TileUTFGrid.Tile_(
             tileCoord,
             tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
             tileUrl !== undefined ? tileUrl : '',
@@ -261,7 +261,7 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-        bonn3857, resolutionZoom1, callback, null, true
+          bonn3857, resolutionZoom1, callback, null, true
       );
     });
 
@@ -272,7 +272,7 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-        bonn3857, resolutionZoom1, callback, scope, true
+          bonn3857, resolutionZoom1, callback, scope, true
       );
     });
 
@@ -283,7 +283,7 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-        noState3857, resolutionZoom1, callback, null, true
+          noState3857, resolutionZoom1, callback, null, true
       );
     });
 

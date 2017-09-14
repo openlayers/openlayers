@@ -17,7 +17,7 @@ goog.require('ol.source.ImageWMS');
 //
 // Note that we are setting the projection's extent here, which is used to
 // determine the view resolution for zoom level 0. Recommended values for a
-// projection's validity extent can be found at http://epsg.io/.
+// projection's validity extent can be found at https://epsg.io/.
 //
 // If you use Proj4js only to transform coordinates, you don't even need to
 // create an ol.proj.Projection instance. ol.proj.get() will take care of it
@@ -41,7 +41,7 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver')
+      serverType: /** @type {ol.source.WMSServerType} */ ('mapserver')
     })
   }),
   new ol.layer.Image({
@@ -52,7 +52,7 @@ var layers = [
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver')
+      serverType: /** @type {ol.source.WMSServerType} */ ('mapserver')
     })
   })
 ];
@@ -62,7 +62,6 @@ var map = new ol.Map({
     new ol.control.ScaleLine()
   ]),
   layers: layers,
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: projection,

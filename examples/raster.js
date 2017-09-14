@@ -50,7 +50,7 @@ function summarize(value, counts) {
  * Use aerial imagery as the input data for the raster source.
  */
 var bing = new ol.source.BingMaps({
-  key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF',
+  key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
   imagerySet: 'Aerial'
 });
 
@@ -162,13 +162,13 @@ function plot(resolution, counts, threshold) {
     var value = counts.min + (index * counts.delta);
     return 'bar' + (value >= threshold ? ' selected' : '');
   })
-  .attr('width', barWidth - 2);
+      .attr('width', barWidth - 2);
 
   bar.transition().attr('transform', function(value, index) {
     return 'translate(' + (index * barWidth) + ', ' +
         (plotHeight - yScale(value)) + ')';
   })
-  .attr('height', yScale);
+      .attr('height', yScale);
 
   bar.on('mousemove', function(count, index) {
     var threshold = counts.min + (index * counts.delta);

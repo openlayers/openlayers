@@ -102,5 +102,18 @@ describe('ol.rendering.style.Text', function() {
       expectResemble(map, 'spec/ol/style/expected/text-rotated-canvas.png', IMAGE_TOLERANCE, done);
     });
 
+    it('tests the webgl renderer without rotation', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/text-webgl.png', 1.8, done);
+    });
+
+    it('tests the webgl renderer with rotation', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      map.getView().setRotation(Math.PI / 7);
+      expectResemble(map, 'spec/ol/style/expected/text-rotated-webgl.png', 1.8, done);
+    });
+
   });
 });

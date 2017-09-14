@@ -31,6 +31,19 @@ ol.style.Fill = function(opt_options) {
 
 
 /**
+ * Clones the style. The color is not cloned if it is an {@link ol.ColorLike}.
+ * @return {ol.style.Fill} The cloned style.
+ * @api
+ */
+ol.style.Fill.prototype.clone = function() {
+  var color = this.getColor();
+  return new ol.style.Fill({
+    color: (color && color.slice) ? color.slice() : color || undefined
+  });
+};
+
+
+/**
  * Get the fill color.
  * @return {ol.Color|ol.ColorLike} Color.
  * @api
@@ -58,13 +71,13 @@ ol.style.Fill.prototype.setColor = function(color) {
 ol.style.Fill.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
     if (
-        this.color_ instanceof CanvasPattern ||
+      this.color_ instanceof CanvasPattern ||
         this.color_ instanceof CanvasGradient
     ) {
       this.checksum_ = ol.getUid(this.color_).toString();
     } else {
       this.checksum_ = 'f' + (this.color_ ?
-          ol.color.asString(this.color_) : '-');
+        ol.color.asString(this.color_) : '-');
     }
   }
 

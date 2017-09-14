@@ -155,14 +155,14 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
  * @inheritDoc
  */
 ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
-    coordinate, resolution, rotation, skippedFeatureUids, callback) {
+    coordinate, resolution, rotation, hitTolerance, skippedFeatureUids, callback) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(
-        coordinate, resolution, 0, skippedFeatureUids,
+        coordinate, resolution, 0, hitTolerance, skippedFeatureUids,
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
@@ -193,7 +193,7 @@ ol.source.ImageVector.prototype.getSource = function() {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
  *     Layer style.
- * @api stable
+ * @api
  */
 ol.source.ImageVector.prototype.getStyle = function() {
   return this.style_;
@@ -203,7 +203,7 @@ ol.source.ImageVector.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.StyleFunction|undefined} Layer style function.
- * @api stable
+ * @api
  */
 ol.source.ImageVector.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -292,11 +292,11 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
  * {@link ol.style} for information on the default style.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  *     style Layer style.
- * @api stable
+ * @api
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
   this.styleFunction_ = !style ?
-      undefined : ol.style.Style.createFunction(this.style_);
+    undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
 };

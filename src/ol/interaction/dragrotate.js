@@ -1,7 +1,8 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.RotationConstraint');
+goog.require('ol.ViewHint');
 goog.require('ol.events.condition');
 goog.require('ol.functions');
 goog.require('ol.interaction.Interaction');
@@ -19,7 +20,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragRotate = function(opt_options) {
 
@@ -36,7 +37,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.altShiftKeysOnly;
+    options.condition : ol.events.condition.altShiftKeysOnly;
 
   /**
    * @private
@@ -64,16 +65,19 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   }
 
   var map = mapBrowserEvent.map;
+  var view = map.getView();
+  if (view.getConstraints().rotation === ol.RotationConstraint.disable) {
+    return;
+  }
   var size = map.getSize();
   var offset = mapBrowserEvent.pixel;
   var theta =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (this.lastAngle_ !== undefined) {
     var delta = theta - this.lastAngle_;
-    var view = map.getView();
     var rotation = view.getRotation();
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, rotation - delta);
+        view, rotation - delta);
   }
   this.lastAngle_ = theta;
 };
@@ -92,9 +96,9 @@ ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.View.Hint.INTERACTING, -1);
+  view.setHint(ol.ViewHint.INTERACTING, -1);
   var rotation = view.getRotation();
-  ol.interaction.Interaction.rotate(map, view, rotation,
+  ol.interaction.Interaction.rotate(view, rotation,
       undefined, this.duration_);
   return false;
 };
@@ -114,7 +118,7 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
   if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
       this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    map.getView().setHint(ol.View.Hint.INTERACTING, 1);
+    map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     return true;
   } else {

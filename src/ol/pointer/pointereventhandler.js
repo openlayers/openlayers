@@ -35,6 +35,7 @@ goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 
 goog.require('ol.has');
+goog.require('ol.pointer.EventType');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.MsSource');
 goog.require('ol.pointer.NativeSource');
@@ -204,9 +205,9 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
  */
 ol.pointer.PointerEventHandler.prototype.cloneEvent = function(event, inEvent) {
   var eventCopy = {}, p;
-  for (var i = 0, ii = ol.pointer.CLONE_PROPS.length; i < ii; i++) {
-    p = ol.pointer.CLONE_PROPS[i][0];
-    eventCopy[p] = event[p] || inEvent[p] || ol.pointer.CLONE_PROPS[i][1];
+  for (var i = 0, ii = ol.pointer.PointerEventHandler.CLONE_PROPS.length; i < ii; i++) {
+    p = ol.pointer.PointerEventHandler.CLONE_PROPS[i][0];
+    eventCopy[p] = event[p] || inEvent[p] || ol.pointer.PointerEventHandler.CLONE_PROPS[i][1];
   }
 
   return eventCopy;
@@ -403,26 +404,10 @@ ol.pointer.PointerEventHandler.prototype.disposeInternal = function() {
 
 
 /**
- * Constants for event names.
- * @enum {string}
- */
-ol.pointer.EventType = {
-  POINTERMOVE: 'pointermove',
-  POINTERDOWN: 'pointerdown',
-  POINTERUP: 'pointerup',
-  POINTEROVER: 'pointerover',
-  POINTEROUT: 'pointerout',
-  POINTERENTER: 'pointerenter',
-  POINTERLEAVE: 'pointerleave',
-  POINTERCANCEL: 'pointercancel'
-};
-
-
-/**
  * Properties to copy when cloning an event, with default values.
  * @type {Array.<Array>}
  */
-ol.pointer.CLONE_PROPS = [
+ol.pointer.PointerEventHandler.CLONE_PROPS = [
   // MouseEvent
   ['bubbles', false],
   ['cancelable', false],

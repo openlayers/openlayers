@@ -21,7 +21,7 @@ goog.require('ol.obj');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
- * @api stable
+ * @api
  */
 ol.control.Attribution = function(opt_options) {
 
@@ -53,7 +53,7 @@ ol.control.Attribution = function(opt_options) {
    * @type {boolean}
    */
   this.collapsible_ = options.collapsible !== undefined ?
-      options.collapsible : true;
+    options.collapsible : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;
@@ -91,7 +91,7 @@ ol.control.Attribution = function(opt_options) {
 
 
   var activeLabel = (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_;
+    this.collapseLabel_ : this.label_;
   var button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
@@ -157,6 +157,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var attributions = ol.obj.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
+  var uniqueAttributions = {};
   var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
@@ -186,7 +187,11 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
-        attributions[sourceAttributionKey] = sourceAttribution;
+        var html = sourceAttribution.getHTML();
+        if (!(html in uniqueAttributions)) {
+          uniqueAttributions[html] = true;
+          attributions[sourceAttributionKey] = sourceAttribution;
+        }
       } else {
         hiddenAttributions[sourceAttributionKey] = sourceAttribution;
       }
@@ -354,7 +359,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
 /**
  * Return `true` if the attribution is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.getCollapsible = function() {
   return this.collapsible_;
@@ -364,7 +369,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
 /**
  * Set whether the attribution should be collapsible.
  * @param {boolean} collapsible True if the widget is collapsible.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
@@ -383,7 +388,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
  * not do anything if the attribution isn't collapsible or if the current
  * collapsed state is already the one requested.
  * @param {boolean} collapsed True if the widget is collapsed.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
@@ -397,7 +402,7 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
  * Return `true` when the attribution is currently collapsed or `false`
  * otherwise.
  * @return {boolean} True if the widget is collapsed.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.getCollapsed = function() {
   return this.collapsed_;

@@ -26,9 +26,14 @@ goog.require('ol.math');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Array of linear
+ *     rings that define the polygon. The first linear ring of the array
+ *     defines the outer-boundary or surface of the polygon. Each subsequent
+ *     linear ring defines a hole in the surface of the polygon. A linear ring
+ *     is an array of vertices' coordinates where the first coordinate and the
+ *     last are equivalent.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @api
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
@@ -85,11 +90,9 @@ ol.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 /**
  * Append the passed linear ring to this polygon.
  * @param {ol.geom.LinearRing} linearRing Linear ring.
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
-  goog.DEBUG && console.assert(linearRing.getLayout() == this.layout,
-      'layout of linearRing should match layout');
   if (!this.flatCoordinates) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
@@ -103,7 +106,8 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.Polygon} Clone.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.Polygon.prototype.clone = function() {
   var polygon = new ol.geom.Polygon(null);
@@ -144,7 +148,7 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 /**
  * Return the area of the polygon on projected plane.
  * @return {number} Area (on projected plane).
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.getArea = function() {
   return ol.geom.flat.area.linearRings(
@@ -163,7 +167,8 @@ ol.geom.Polygon.prototype.getArea = function() {
  *     By default, coordinate orientation will depend on how the geometry was
  *     constructed.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
@@ -206,7 +211,7 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 /**
  * Return an interior point of the polygon.
  * @return {ol.geom.Point} Interior point.
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
   return new ol.geom.Point(this.getFlatInteriorPoint());
@@ -233,11 +238,9 @@ ol.geom.Polygon.prototype.getLinearRingCount = function() {
  *
  * @param {number} index Index.
  * @return {ol.geom.LinearRing} Linear ring.
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
-  goog.DEBUG && console.assert(0 <= index && index < this.ends_.length,
-      'index should be in between 0 and and length of this.ends_');
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
@@ -251,7 +254,7 @@ ol.geom.Polygon.prototype.getLinearRing = function(index) {
 /**
  * Return the linear rings of the polygon.
  * @return {Array.<ol.geom.LinearRing>} Linear rings.
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.getLinearRings = function() {
   var layout = this.layout;
@@ -311,7 +314,7 @@ ol.geom.Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolera
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.getType = function() {
   return ol.geom.GeometryType.POLYGON;
@@ -320,7 +323,7 @@ ol.geom.Polygon.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.linearRings(
@@ -332,7 +335,8 @@ ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
  * Set the coordinates of the polygon.
  * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
@@ -356,16 +360,6 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  * @param {Array.<number>} ends Ends.
  */
 ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
-  if (!flatCoordinates) {
-    goog.DEBUG && console.assert(ends && ends.length === 0,
-        'ends must be an empty array');
-  } else if (ends.length === 0) {
-    goog.DEBUG && console.assert(flatCoordinates.length === 0,
-        'flatCoordinates should be an empty array');
-  } else {
-    goog.DEBUG && console.assert(flatCoordinates.length == ends[ends.length - 1],
-        'the length of flatCoordinates should be the last entry of ends');
-  }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.changed();
@@ -381,7 +375,7 @@ ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates,
  * @param {number=} opt_n Optional number of vertices for the resulting
  *     polygon. Default is `32`.
  * @return {ol.geom.Polygon} The "circular" polygon.
- * @api stable
+ * @api
  */
 ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
   var n = opt_n ? opt_n : 32;
@@ -460,7 +454,6 @@ ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   var layout = polygon.getLayout();
   var stride = polygon.getStride();
   var ends = polygon.getEnds();
-  goog.DEBUG && console.assert(ends.length === 1, 'only 1 ring is supported');
   var sides = flatCoordinates.length / stride - 1;
   var startAngle = opt_angle ? opt_angle : 0;
   var angle, offset;

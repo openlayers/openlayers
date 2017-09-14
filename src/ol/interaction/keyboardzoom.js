@@ -21,7 +21,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @param {olx.interaction.KeyboardZoomOptions=} opt_options Options.
  * @extends {ol.interaction.Interaction}
- * @api stable
+ * @api
  */
 ol.interaction.KeyboardZoom = function(opt_options) {
 
@@ -36,7 +36,7 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ? options.condition :
-          ol.events.condition.targetNotEditable;
+    ol.events.condition.targetNotEditable;
 
   /**
    * @private
@@ -75,7 +75,7 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       var view = map.getView();
       ol.interaction.Interaction.zoomByDelta(
-          map, view, delta, undefined, this.duration_);
+          view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

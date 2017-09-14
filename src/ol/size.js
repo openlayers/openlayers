@@ -19,17 +19,6 @@ ol.size.buffer = function(size, buffer, opt_size) {
 
 
 /**
- * Compares sizes for equality.
- * @param {ol.Size} a Size.
- * @param {ol.Size} b Size.
- * @return {boolean} Equals.
- */
-ol.size.equals = function(a, b) {
-  return a[0] == b[0] && a[1] == b[1];
-};
-
-
-/**
  * Determines if a size has a positive area.
  * @param {ol.Size} size The size to test.
  * @return {boolean} The size has a positive area.
@@ -63,7 +52,7 @@ ol.size.scale = function(size, ratio, opt_size) {
  * @param {number|ol.Size} size Width and height.
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} Size.
- * @api stable
+ * @api
  */
 ol.size.toSize = function(size, opt_size) {
   if (Array.isArray(size)) {

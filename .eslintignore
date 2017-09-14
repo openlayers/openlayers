@@ -1,2 +1,3 @@
 examples/Jugl.js
 examples/resources/
+build/package/**/*webgl*

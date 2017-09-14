@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.PinchZoom');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.functions');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
@@ -15,7 +15,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.PinchZoom = function(opt_options) {
 
@@ -26,6 +26,12 @@ ol.interaction.PinchZoom = function(opt_options) {
   });
 
   var options = opt_options ? opt_options : {};
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.constrainResolution_ = options.constrainResolution || false;
 
   /**
    * @private
@@ -61,8 +67,6 @@ ol.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  goog.DEBUG && console.assert(this.targetPointers.length >= 2,
-      'length of this.targetPointers should be 2 or more');
   var scaleDelta = 1.0;
 
   var touch0 = this.targetPointers[0];
@@ -77,13 +81,25 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
     scaleDelta = this.lastDistance_ / distance;
   }
   this.lastDistance_ = distance;
-  if (scaleDelta != 1.0) {
-    this.lastScaleDelta_ = scaleDelta;
-  }
+
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
   var resolution = view.getResolution();
+  var maxResolution = view.getMaxResolution();
+  var minResolution = view.getMinResolution();
+  var newResolution = resolution * scaleDelta;
+  if (newResolution > maxResolution) {
+    scaleDelta = maxResolution / resolution;
+    newResolution = maxResolution;
+  } else if (newResolution < minResolution) {
+    scaleDelta = minResolution / resolution;
+    newResolution = minResolution;
+  }
+
+  if (scaleDelta != 1.0) {
+    this.lastScaleDelta_ = scaleDelta;
+  }
 
   // scale anchor point.
   var viewportPosition = map.getViewport().getBoundingClientRect();
@@ -94,9 +110,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   // scale, bypass the resolution constraint
   map.render();
-  ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, resolution * scaleDelta, this.anchor_);
-
+  ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
 };
 
 
@@ -110,14 +124,18 @@ ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(ol.View.Hint.INTERACTING, -1);
+    view.setHint(ol.ViewHint.INTERACTING, -1);
     var resolution = view.getResolution();
-    // Zoom to final resolution, with an animation, and provide a
-    // direction not to zoom out/in if user was pinching in/out.
-    // Direction is > 0 if pinching out, and < 0 if pinching in.
-    var direction = this.lastScaleDelta_ - 1;
-    ol.interaction.Interaction.zoom(map, view, resolution,
-        this.anchor_, this.duration_, direction);
+    if (this.constrainResolution_ ||
+        resolution < view.getMinResolution() ||
+        resolution > view.getMaxResolution()) {
+      // Zoom to final resolution, with an animation, and provide a
+      // direction not to zoom out/in if user was pinching in/out.
+      // Direction is > 0 if pinching out, and < 0 if pinching in.
+      var direction = this.lastScaleDelta_ - 1;
+      ol.interaction.Interaction.zoom(view, resolution,
+          this.anchor_, this.duration_, direction);
+    }
     return false;
   } else {
     return true;
@@ -138,9 +156,8 @@ ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
     if (!this.handlingDownUpSequence) {
-      map.getView().setHint(ol.View.Hint.INTERACTING, 1);
+      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     }
-    map.render();
     return true;
   } else {
     return false;

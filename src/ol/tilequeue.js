@@ -1,7 +1,7 @@
 goog.provide('ol.TileQueue');
 
 goog.require('ol');
-goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.structs.PriorityQueue');
@@ -86,8 +86,8 @@ ol.TileQueue.prototype.getTilesLoading = function() {
 ol.TileQueue.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   var state = tile.getState();
-  if (state === ol.Tile.State.LOADED || state === ol.Tile.State.ERROR ||
-      state === ol.Tile.State.EMPTY || state === ol.Tile.State.ABORT) {
+  if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
+      state === ol.TileState.EMPTY || state === ol.TileState.ABORT) {
     ol.events.unlisten(tile, ol.events.EventType.CHANGE,
         this.handleTileChange, this);
     var tileKey = tile.getKey();
@@ -97,7 +97,6 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
     }
     this.tileChangeCallback_();
   }
-  goog.DEBUG && console.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
 };
 
 
@@ -107,17 +106,25 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
  */
 ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var newLoads = 0;
-  var tile, tileKey;
+  var abortedTiles = false;
+  var state, tile, tileKey;
   while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
          this.getCount() > 0) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     tileKey = tile.getKey();
-    if (tile.getState() === ol.Tile.State.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+    state = tile.getState();
+    if (state === ol.TileState.ABORT) {
+      abortedTiles = true;
+    } else if (state === ol.TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
       this.tilesLoadingKeys_[tileKey] = true;
       ++this.tilesLoading_;
       ++newLoads;
       tile.load();
     }
-    goog.DEBUG && console.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
+  }
+  if (newLoads === 0 && abortedTiles) {
+    // Do not stop the render loop when all wanted tiles were aborted due to
+    // a small, saturated tile cache.
+    this.tileChangeCallback_();
   }
 };

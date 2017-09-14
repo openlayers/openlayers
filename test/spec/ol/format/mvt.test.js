@@ -1,12 +1,13 @@
 goog.provide('ol.test.format.MVT');
 
 goog.require('ol.Feature');
-goog.require('ol.ext.pbf');
-goog.require('ol.ext.vectortile');
+goog.require('ol.ext.PBF');
+goog.require('ol.ext.vectortile.VectorTile');
 goog.require('ol.format.MVT');
+goog.require('ol.geom.Point');
 goog.require('ol.render.Feature');
 
-where('ArrayBuffer').describe('ol.format.MVT', function() {
+where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
   var data;
   beforeEach(function(done) {
@@ -39,7 +40,7 @@ where('ArrayBuffer').describe('ol.format.MVT', function() {
         featureClass: ol.Feature,
         layers: ['poi_label']
       });
-      var pbf = new ol.ext.pbf(data);
+      var pbf = new ol.ext.PBF(data);
       var tile = new ol.ext.vectortile.VectorTile(pbf);
       var geometry, rawGeometry;
 
@@ -72,14 +73,56 @@ where('ArrayBuffer').describe('ol.format.MVT', function() {
     });
 
     it('parses id property', function() {
+      // ol.Feature
       var format = new ol.format.MVT({
         featureClass: ol.Feature,
         layers: ['building']
       });
       var features = format.readFeatures(data);
       expect(features[0].getId()).to.be(2);
+      // ol.render.Feature
+      format = new ol.format.MVT({
+        layers: ['building']
+      });
+      features = format.readFeatures(data);
+      expect(features[0].getId()).to.be(2);
     });
 
+    it('sets the extent of the last readFeatures call', function() {
+      var format = new ol.format.MVT();
+      format.readFeatures(data);
+      var extent = format.getLastExtent();
+      expect(extent.getWidth()).to.be(4096);
+    });
+
+  });
+
+});
+
+describe('ol.format.MVT', function() {
+
+  describe('#readFeature_', function() {
+    it('accepts a geometryName', function() {
+      var format = new ol.format.MVT({
+        featureClass: ol.Feature,
+        geometryName: 'myGeom'
+      });
+      var rawFeature = {
+        id: 1,
+        properties: {
+          geometry: 'foo'
+        },
+        type: 1,
+        loadGeometry: function() {
+          return [[0, 0]];
+        }
+      };
+      var feature = format.readFeature_(rawFeature, 'mapbox');
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.a(ol.geom.Point);
+      expect(feature.get('myGeom')).to.equal(geometry);
+      expect(feature.get('geometry')).to.be('foo');
+    });
   });
 
 });

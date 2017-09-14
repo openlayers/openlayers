@@ -5,11 +5,11 @@
  */
 
 goog.provide('ol.source.TileJSON');
-goog.provide('ol.tilejson');
 
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.net');
 goog.require('ol.proj');
@@ -25,7 +25,7 @@ goog.require('ol.tilegrid');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileJSONOptions} options TileJSON options.
- * @api stable
+ * @api
  */
 ol.source.TileJSON = function(options) {
 
@@ -46,15 +46,21 @@ ol.source.TileJSON = function(options) {
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
-  if (options.jsonp) {
-    ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
-        this.handleTileJSONError.bind(this));
+  if (options.url) {
+    if (options.jsonp) {
+      ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
+          this.handleTileJSONError.bind(this));
+    } else {
+      var client = new XMLHttpRequest();
+      client.addEventListener('load', this.onXHRLoad_.bind(this));
+      client.addEventListener('error', this.onXHRError_.bind(this));
+      client.open('GET', options.url);
+      client.send();
+    }
+  } else if (options.tileJSON) {
+    this.handleTileJSONResponse(options.tileJSON);
   } else {
-    var client = new XMLHttpRequest();
-    client.addEventListener('load', this.onXHRLoad_.bind(this));
-    client.addEventListener('error', this.onXHRError_.bind(this));
-    client.open('GET', options.url);
-    client.send();
+    ol.asserts.assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 
 };
@@ -117,9 +123,6 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (tileJSON.scheme !== undefined) {
-    goog.DEBUG && console.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
-  }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
   var tileGrid = ol.tilegrid.createXYZ({
@@ -134,7 +137,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   if (tileJSON.attribution !== undefined && !this.getAttributions()) {
     var attributionExtent = extent !== undefined ?
-        extent : epsg4326Projection.getExtent();
+      extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};
     var z, zKey;

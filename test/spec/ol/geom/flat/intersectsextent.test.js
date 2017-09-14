@@ -74,14 +74,14 @@ describe('ol.geom.flat.intersectsextent', function() {
     });
     describe('boundary does not intersect the extent and ring does not ' +
         'contain a corner of the extent',
-        function() {
-          it('returns false', function() {
-            var extent = [2.0, 0.5, 3, 1.5];
-            var r = ol.geom.flat.intersectsextent.linearRing(
-                flatCoordinates, 0, flatCoordinates.length, 2, extent);
-            expect(r).to.be(false);
-          });
-        });
+    function() {
+      it('returns false', function() {
+        var extent = [2.0, 0.5, 3, 1.5];
+        var r = ol.geom.flat.intersectsextent.linearRing(
+            flatCoordinates, 0, flatCoordinates.length, 2, extent);
+        expect(r).to.be(false);
+      });
+    });
     describe('ring contains the extent', function() {
       it('returns true', function() {
         var extent = [0.75, -0.25, 1.25, 0.25];

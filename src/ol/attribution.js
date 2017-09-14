@@ -15,7 +15,7 @@ goog.require('ol.tilegrid');
  *       attributions: [
  *         new ol.Attribution({
  *           html: 'All maps &copy; ' +
- *               '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'
+ *               '<a href="https://www.opencyclemap.org/">OpenCycleMap</a>'
  *         }),
  *         ol.source.OSM.ATTRIBUTION
  *       ],
@@ -24,7 +24,7 @@ goog.require('ol.tilegrid');
  * @constructor
  * @param {olx.AttributionOptions} options Attribution options.
  * @struct
- * @api stable
+ * @api
  */
 ol.Attribution = function(options) {
 
@@ -46,7 +46,7 @@ ol.Attribution = function(options) {
 /**
  * Get the attribution markup.
  * @return {string} The attribution HTML.
- * @api stable
+ * @api
  */
 ol.Attribution.prototype.getHTML = function() {
   return this.html_;

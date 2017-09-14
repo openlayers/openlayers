@@ -88,6 +88,22 @@ describe('ol.interaction.Draw', function() {
       expect(draw).to.be.a(ol.interaction.Interaction);
     });
 
+    it('accepts a freehand option', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: 'LineString',
+        freehand: true
+      });
+
+      var event = new ol.pointer.PointerEvent('pointerdown', {
+        clientX: 0,
+        clientY: 0,
+        shiftKey: false
+      });
+
+      expect(draw.freehandCondition_(event)).to.be(true);
+    });
+
   });
 
   describe('specifying a geometryName', function() {
@@ -273,6 +289,31 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
+    it('supports removeLastPoint while drawing', function() {
+
+      draw.removeLastPoint();
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 40, 30);
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+
+      simulateEvent('pointermove', 100, 100);
+      draw.removeLastPoint();
+
+      // click near the removed point
+      simulateEvent('pointermove', 39, 31);
+      simulateEvent('pointerdown', 38, 31);
+      simulateEvent('pointerup', 38, 31);
+
+      expect(source.getFeatures()).to.have.length(0);
+    });
+
     it('supports freehand drawing for linestrings', function() {
       // freehand sequence
       simulateEvent('pointermove', 10, 20);
@@ -283,17 +324,49 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdrag', 20, 40, true);
       simulateEvent('pointerup', 20, 40, true);
 
-      // finish on third point
-      simulateEvent('pointermove', 20, 40);
-      simulateEvent('pointerdown', 20, 40);
-      simulateEvent('pointerup', 20, 40);
-
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [20, -40]]);
+    });
+
+    it('allows freehand mode for part of the drawing', function() {
+
+      // non-freehand
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 20, 30);
+
+      // freehand
+      simulateEvent('pointerdown', 20, 30, true);
+      simulateEvent('pointermove', 20, 30, true);
+      simulateEvent('pointerdrag', 20, 30, true);
+      simulateEvent('pointermove', 30, 40, true);
+      simulateEvent('pointerdrag', 30, 40, true);
+      simulateEvent('pointermove', 40, 50, true);
+      simulateEvent('pointerdrag', 40, 50, true);
+
+      // non-freehand
+      simulateEvent('pointerup', 40, 50);
+      simulateEvent('pointermove', 50, 60);
+      simulateEvent('pointerdown', 50, 60);
+      simulateEvent('pointerup', 50, 60);
+      simulateEvent('pointermove', 60, 70);
+      simulateEvent('pointerdown', 60, 70);
+      simulateEvent('pointerup', 60, 70);
+
+      // finish
+      simulateEvent('pointerdown', 60, 70);
+      simulateEvent('pointerup', 60, 70);
+
+      var features = source.getFeatures();
+      // expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(
+          [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
     });
 
     it('does not add a point with a significant drag', function() {
@@ -359,7 +432,7 @@ describe('ol.interaction.Draw', function() {
         source: source,
         type: 'LineString',
         finishCondition: function(event) {
-          if (ol.array.equals(event.coordinate,[30,-20])) {
+          if (ol.array.equals(event.coordinate, [30, -20])) {
             return true;
           }
           return false;
@@ -446,21 +519,30 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
+    function isClosed(polygon) {
+      var first = polygon.getFirstCoordinate();
+      var last = polygon.getLastCoordinate();
+      expect(first).to.eql(last);
+    }
+
     it('draws polygon with clicks, finishing on first point', function() {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
 
       // second point
       simulateEvent('pointermove', 30, 20);
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
 
       // third point
       simulateEvent('pointermove', 40, 10);
       simulateEvent('pointerdown', 40, 10);
       simulateEvent('pointerup', 40, 10);
+      isClosed(draw.sketchFeature_.getGeometry());
 
       // finish on first point
       simulateEvent('pointermove', 10, 20);
@@ -475,6 +557,31 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getCoordinates()).to.eql([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
+    });
+
+    it('supports removeLastPoint while drawing', function() {
+
+      draw.removeLastPoint();
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 40, 30);
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+
+      simulateEvent('pointermove', 100, 100);
+      draw.removeLastPoint();
+
+      // click near the removed point
+      simulateEvent('pointermove', 39, 31);
+      simulateEvent('pointerdown', 39, 31);
+      simulateEvent('pointerup', 39, 31);
+
+      expect(source.getFeatures()).to.have.length(0);
     });
 
     it('draws polygon with clicks, finishing on last point', function() {
@@ -671,6 +778,24 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getRadius()).to.eql(20);
     });
 
+    it('supports freehand drawing for circles', function() {
+      draw.freehand_ = true;
+      draw.freehandCondition_ = ol.events.condition.always;
+
+      // no feture created when not moved
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      expect(source.getFeatures()).to.have.length(0);
+
+      // feature created when moved
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+      expect(source.getFeatures()).to.have.length(1);
+    });
+
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
@@ -846,6 +971,35 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+  });
+
+  describe('ol.interaction.Draw.createBox', function() {
+    it('creates a box-shaped polygon in Circle mode', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: ol.interaction.Draw.createBox()
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      var features = source.getFeatures();
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+      var coordinates = geometry.getCoordinates();
+      expect(coordinates[0]).to.have.length(5);
+      expect(geometry.getArea()).to.equal(400);
+      expect(geometry.getExtent()).to.eql([0, -20, 20, 0]);
     });
   });
 

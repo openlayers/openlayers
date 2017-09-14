@@ -36,8 +36,6 @@ ol.style.IconImageCache = function() {
  * @return {string} Cache key.
  */
 ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
-  goog.DEBUG && console.assert(crossOrigin !== undefined,
-      'argument crossOrigin must be defined');
   var colorString = color ? ol.color.asString(color) : 'null';
   return crossOrigin + ':' + src + ':' + colorString;
 };
@@ -88,8 +86,7 @@ ol.style.IconImageCache.prototype.get = function(src, crossOrigin, color) {
  * @param {ol.Color} color Color.
  * @param {ol.style.IconImage} iconImage Icon image.
  */
-ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color,
-                                                 iconImage) {
+ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color, iconImage) {
   var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;

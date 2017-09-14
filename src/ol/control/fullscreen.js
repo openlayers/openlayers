@@ -1,18 +1,18 @@
 goog.provide('ol.control.FullScreen');
 
-goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.control.Control');
-goog.require('ol.dom');
 goog.require('ol.css');
+goog.require('ol.dom');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 
 
 /**
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * The full screen source element is by default the element containing the map viewport unless
- * overriden by providing the `source` option. In which case, the dom
+ * overridden by providing the `source` option. In which case, the dom
  * element introduced using this parameter will be displayed in full screen.
  *
  * When in full screen mode, a close button is shown to exit full screen mode.
@@ -23,7 +23,7 @@ goog.require('ol.css');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -34,7 +34,7 @@ ol.control.FullScreen = function(opt_options) {
    * @type {string}
    */
   this.cssClassName_ = options.className !== undefined ? options.className :
-      'ol-full-screen';
+    'ol-full-screen';
 
   var label = options.label !== undefined ? options.label : '\u2922';
 
@@ -43,7 +43,7 @@ ol.control.FullScreen = function(opt_options) {
    * @type {Node}
    */
   this.labelNode_ = typeof label === 'string' ?
-      document.createTextNode(label) : label;
+    document.createTextNode(label) : label;
 
   var labelActive = options.labelActive !== undefined ? options.labelActive : '\u00d7';
 
@@ -52,7 +52,7 @@ ol.control.FullScreen = function(opt_options) {
    * @type {Node}
    */
   this.labelActiveNode_ = typeof labelActive === 'string' ?
-      document.createTextNode(labelActive) : labelActive;
+    document.createTextNode(labelActive) : labelActive;
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
   var button = document.createElement('button');
@@ -155,12 +155,12 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.control.FullScreen.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
-    this.listenerKeys.push(ol.events.listen(ol.global.document,
+    this.listenerKeys.push(ol.events.listen(document,
         ol.control.FullScreen.getChangeType_(),
         this.handleFullScreenChange_, this)
     );

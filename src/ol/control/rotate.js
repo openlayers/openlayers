@@ -3,7 +3,6 @@ goog.provide('ol.control.Rotate');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
-goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -18,7 +17,7 @@ goog.require('ol.easing');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
- * @api stable
+ * @api
  */
 ol.control.Rotate = function(opt_options) {
 
@@ -121,23 +120,16 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
     // upon it
     return;
   }
-  var currentRotation = view.getRotation();
-  if (currentRotation !== undefined) {
+  if (view.getRotation() !== undefined) {
     if (this.duration_ > 0) {
-      currentRotation = currentRotation % (2 * Math.PI);
-      if (currentRotation < -Math.PI) {
-        currentRotation += 2 * Math.PI;
-      }
-      if (currentRotation > Math.PI) {
-        currentRotation -= 2 * Math.PI;
-      }
-      map.beforeRender(ol.animation.rotate({
-        rotation: currentRotation,
+      view.animate({
+        rotation: 0,
         duration: this.duration_,
         easing: ol.easing.easeOut
-      }));
+      });
+    } else {
+      view.setRotation(0);
     }
-    view.setRotation(0);
   }
 };
 

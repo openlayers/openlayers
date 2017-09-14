@@ -1,10 +1,10 @@
 goog.provide('ol.source.UrlTile');
 
 goog.require('ol');
-goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.Tile');
-goog.require('ol.source.TileEvent');
+goog.require('ol.source.TileEventType');
 
 
 /**
@@ -12,7 +12,8 @@ goog.require('ol.source.TileEvent');
  * Base class for sources providing tiles divided into a tile grid over http.
  *
  * @constructor
- * @fires ol.source.TileEvent
+ * @abstract
+ * @fires ol.source.Tile.Event
  * @extends {ol.source.Tile}
  * @param {ol.SourceUrlTileOptions} options Image tile options.
  */
@@ -42,8 +43,8 @@ ol.source.UrlTile = function(options) {
    * @type {ol.TileUrlFunctionType}
    */
   this.tileUrlFunction = this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.nullTileUrlFunction;
+    this.fixedTileUrlFunction.bind(this) :
+    ol.TileUrlFunction.nullTileUrlFunction;
 
   /**
    * @protected
@@ -110,17 +111,17 @@ ol.source.UrlTile.prototype.getUrls = function() {
 ol.source.UrlTile.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   switch (tile.getState()) {
-    case ol.Tile.State.LOADING:
+    case ol.TileState.LOADING:
       this.dispatchEvent(
-          new ol.source.TileEvent(ol.source.TileEventType.TILELOADSTART, tile));
+          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADSTART, tile));
       break;
-    case ol.Tile.State.LOADED:
+    case ol.TileState.LOADED:
       this.dispatchEvent(
-          new ol.source.TileEvent(ol.source.TileEventType.TILELOADEND, tile));
+          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADEND, tile));
       break;
-    case ol.Tile.State.ERROR:
+    case ol.TileState.ERROR:
       this.dispatchEvent(
-          new ol.source.TileEvent(ol.source.TileEventType.TILELOADERROR, tile));
+          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADERROR, tile));
       break;
     default:
       // pass
@@ -159,27 +160,27 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_k
 /**
  * Set the URL to use for requests.
  * @param {string} url URL.
- * @api stable
+ * @api
  */
 ol.source.UrlTile.prototype.setUrl = function(url) {
   var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), url);
+    this.fixedTileUrlFunction.bind(this) :
+    ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), url);
 };
 
 
 /**
  * Set the URLs to use for requests.
  * @param {Array.<string>} urls URLs.
- * @api stable
+ * @api
  */
 ol.source.UrlTile.prototype.setUrls = function(urls) {
   this.urls = urls;
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), key);
+    this.fixedTileUrlFunction.bind(this) :
+    ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), key);
 };
 
 

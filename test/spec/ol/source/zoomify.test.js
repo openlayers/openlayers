@@ -11,7 +11,7 @@ describe('ol.source.Zoomify', function() {
   var w = 1024;
   var h = 512;
   var size = [w, h];
-  var url = 'zoomify-url/';
+  var url = 'zoomify-url/{TileGroup}/{z}-{x}-{y}.jpg';
   var proj = new ol.proj.Projection({
     code: 'ZOOMIFY',
     units: 'pixels',
@@ -167,7 +167,7 @@ describe('ol.source.Zoomify', function() {
 
   describe('generated tileUrlFunction', function() {
 
-    it('creates an expected tileUrlFunction', function() {
+    it('creates an expected tileUrlFunction with template', function() {
       var source = getZoomifySource();
       var tileUrlFunction = source.getTileUrlFunction();
       // zoomlevel 0
@@ -179,6 +179,20 @@ describe('ol.source.Zoomify', function() {
       expect(tileUrlFunction([1, 1, -2])).to.eql('zoomify-url/TileGroup0/1-1-1.jpg');
     });
 
+    it('creates an expected tileUrlFunction without template', function() {
+      var source = new ol.source.Zoomify({
+        url: 'zoomify-url/',
+        size: size
+      });
+      var tileUrlFunction = source.getTileUrlFunction();
+      // zoomlevel 0
+      expect(tileUrlFunction([0, 0, -1])).to.eql('zoomify-url/TileGroup0/0-0-0.jpg');
+      // zoomlevel 1
+      expect(tileUrlFunction([1, 0, -1])).to.eql('zoomify-url/TileGroup0/1-0-0.jpg');
+      expect(tileUrlFunction([1, 1, -1])).to.eql('zoomify-url/TileGroup0/1-1-0.jpg');
+      expect(tileUrlFunction([1, 0, -2])).to.eql('zoomify-url/TileGroup0/1-0-1.jpg');
+      expect(tileUrlFunction([1, 1, -2])).to.eql('zoomify-url/TileGroup0/1-1-1.jpg');
+    });
     it('returns undefined if no tileCoord passed', function() {
       var source = getZoomifySource();
       var tileUrlFunction = source.getTileUrlFunction();
@@ -189,15 +203,15 @@ describe('ol.source.Zoomify', function() {
 
   describe('uses a custom tileClass', function() {
 
-    it('uses "ol.source.ZoomifyTile_" as tileClass', function() {
+    it('uses "ol.source.Zoomify.Tile_" as tileClass', function() {
       var source = getZoomifySource();
-      expect(source.tileClass).to.be(ol.source.ZoomifyTile_);
+      expect(source.tileClass).to.be(ol.source.Zoomify.Tile_);
     });
 
     it('returns expected tileClass instances via "getTile"', function() {
       var source = getZoomifySource();
       var tile = source.getTile(0, 0, -1, 1, proj);
-      expect(tile).to.be.an(ol.source.ZoomifyTile_);
+      expect(tile).to.be.an(ol.source.Zoomify.Tile_);
     });
 
     it('"tile.getImage" returns and caches an unloaded image', function() {
@@ -216,47 +230,23 @@ describe('ol.source.Zoomify', function() {
     });
 
     it('"tile.getImage" returns and caches a loaded canvas', function(done) {
-      // It'll only cache if the same context is passed, see below
-      var context = ol.dom.createCanvasContext2D(256, 256);
       var source = getZoomifySource();
 
       var tile = source.getTile(0, 0, -1, 1, proj);
 
       ol.events.listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
-          var img = tile.getImage(context);
+          var img = tile.getImage();
           expect(img).to.be.a(HTMLCanvasElement);
 
           var tile2 = source.getTile(0, 0, -1, 1, proj);
           expect(tile2.getState()).to.be(2); // LOADED
-          var img2 = tile2.getImage(context);
+          var img2 = tile2.getImage();
           expect(img).to.be(img2);
           done();
         }
       });
       tile.load();
-    });
-
-    it('"tile.getImage" returns and caches an image only for same context', function() {
-      var source = getZoomifySource();
-
-      var tile = source.getTile(0, 0, -1, 1, proj);
-      var img = tile.getImage(ol.dom.createCanvasContext2D(256, 256));
-
-      var tile2 = source.getTile(0, 0, -1, 1, proj);
-      var img2 = tile2.getImage(ol.dom.createCanvasContext2D(256, 256));
-
-      expect(img).to.be.a(HTMLImageElement);
-      expect(img).to.not.be(img2);
-    });
-
-    it('passing the context to "tile.getImage" is optional', function() {
-      var source = getZoomifySource();
-
-      var tile = source.getTile(0, 0, -1, 1, proj);
-      var img = tile.getImage();
-
-      expect(img).to.be.a(HTMLImageElement);
     });
 
   });

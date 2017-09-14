@@ -1,30 +1,7 @@
 goog.provide('ol.render.Event');
-goog.provide('ol.render.EventType');
 
 goog.require('ol');
 goog.require('ol.events.Event');
-
-
-/**
- * @enum {string}
- */
-ol.render.EventType = {
-  /**
-   * @event ol.render.Event#postcompose
-   * @api
-   */
-  POSTCOMPOSE: 'postcompose',
-  /**
-   * @event ol.render.Event#precompose
-   * @api
-   */
-  PRECOMPOSE: 'precompose',
-  /**
-   * @event ol.render.Event#render
-   * @api
-   */
-  RENDER: 'render'
-};
 
 
 /**

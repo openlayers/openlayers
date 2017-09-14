@@ -1,6 +1,6 @@
 goog.provide('ol.test.rendering.reproj.Tile');
 
-goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.reproj.Tile');
@@ -11,7 +11,7 @@ goog.require('ol.tilegrid');
 describe('ol.rendering.reproj.Tile', function() {
 
   function testSingleTile(source, targetProjection, targetTileGrid, z, x, y,
-                          pixelRatio, expectedUrl, expectedRequests, done) {
+      pixelRatio, expectedUrl, expectedRequests, done) {
     var sourceProjection = source.getProjection();
     var sourceGutter = source.getGutter(sourceProjection);
 
@@ -24,9 +24,9 @@ describe('ol.rendering.reproj.Tile', function() {
           tilesRequested++;
           return source.getTile(z, x, y, pixelRatio, sourceProjection);
         });
-    if (tile.getState() == ol.Tile.State.IDLE) {
+    if (tile.getState() == ol.TileState.IDLE) {
       ol.events.listen(tile, 'change', function(e) {
-        if (tile.getState() == ol.Tile.State.LOADED) {
+        if (tile.getState() == ol.TileState.LOADED) {
           expect(tilesRequested).to.be(expectedRequests);
           resembleCanvas(tile.getImage(), expectedUrl, 7.5, done);
         }
@@ -47,13 +47,13 @@ describe('ol.rendering.reproj.Tile', function() {
 
     it('works for identity reprojection', function(done) {
       testSingleTile(source, 'EPSG:3857', source.getTileGrid(), 5, 5, -13, 1,
-                     'spec/ol/data/tiles/osm/5/5/12.png', 1, done);
+          'spec/ol/data/tiles/osm/5/5/12.png', 1, done);
     });
 
     it('to EPSG:4326', function(done) {
       var tileGrid = ol.tilegrid.createForProjection('EPSG:4326', 7, [64, 64]);
       testSingleTile(source, 'EPSG:4326', tileGrid, 7, 21, -20, 1,
-                     'spec/ol/reproj/expected/osm4326.png', 1, done);
+          'spec/ol/reproj/expected/osm4326.png', 1, done);
     });
 
     it('to EPSG:5070', function(done) {
@@ -65,7 +65,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('EPSG:5070', 5, [64, 64]);
       testSingleTile(source, 'EPSG:5070', tileGrid, 5, 13, -15, 1,
-                     'spec/ol/reproj/expected/osm5070.png', 1, done);
+          'spec/ol/reproj/expected/osm5070.png', 1, done);
     });
 
     it('to ESRI:54009', function(done) {
@@ -76,7 +76,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('ESRI:54009', 7, [64, 64]);
       testSingleTile(source, 'ESRI:54009', tileGrid, 7, 27, -16, 1,
-                     'spec/ol/reproj/expected/osm54009.png', 1, done);
+          'spec/ol/reproj/expected/osm54009.png', 1, done);
     });
   });
 
@@ -91,7 +91,7 @@ describe('ol.rendering.reproj.Tile', function() {
     it('to EPSG:4326', function(done) {
       var tileGrid = ol.tilegrid.createForProjection('EPSG:4326', 7, [64, 64]);
       testSingleTile(source, 'EPSG:4326', tileGrid, 7, 23, -21, 1,
-                     'spec/ol/reproj/expected/stitch-osm4326.png', 2, done);
+          'spec/ol/reproj/expected/stitch-osm4326.png', 2, done);
     });
 
     it('to EPSG:3740', function(done) {
@@ -103,7 +103,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('EPSG:3740', 4, [64, 64]);
       testSingleTile(source, 'EPSG:3740', tileGrid, 4, 4, -13, 1,
-                     'spec/ol/reproj/expected/stitch-osm3740.png', 4, done);
+          'spec/ol/reproj/expected/stitch-osm3740.png', 4, done);
     });
   });
 
@@ -118,13 +118,13 @@ describe('ol.rendering.reproj.Tile', function() {
 
     it('works for identity reprojection', function(done) {
       testSingleTile(source, 'EPSG:4326', source.getTileGrid(), 0, 0, -1, 1,
-                     'spec/ol/data/tiles/4326/0/0/0.png', 1, done);
+          'spec/ol/data/tiles/4326/0/0/0.png', 1, done);
     });
 
     it('to EPSG:3857', function(done) {
       var tileGrid = ol.tilegrid.createForProjection('EPSG:3857', 0, [64, 64]);
       testSingleTile(source, 'EPSG:3857', tileGrid, 0, 0, -1, 1,
-                     'spec/ol/reproj/expected/4326-to-3857.png', 1, done);
+          'spec/ol/reproj/expected/4326-to-3857.png', 1, done);
     });
   });
 
@@ -139,13 +139,13 @@ describe('ol.rendering.reproj.Tile', function() {
 
     it('works for identity reprojection', function(done) {
       testSingleTile(source, 'EPSG:3857', source.getTileGrid(), 5, 3, -13, 1,
-                     'spec/ol/data/tiles/osm-512x256/5/3/12.png', 1, done);
+          'spec/ol/data/tiles/osm-512x256/5/3/12.png', 1, done);
     });
 
     it('to 64x128 EPSG:4326', function(done) {
       var tileGrid = ol.tilegrid.createForProjection('EPSG:4326', 7, [64, 128]);
       testSingleTile(source, 'EPSG:4326', tileGrid, 7, 27, -10, 1,
-                     'spec/ol/reproj/expected/512x256-to-64x128.png', 1, done);
+          'spec/ol/reproj/expected/512x256-to-64x128.png', 1, done);
     });
   });
 
@@ -165,7 +165,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('merc_180', 0, [64, 64]);
       testSingleTile(source, 'merc_180', tileGrid, 0, 0, -1, 1,
-                     'spec/ol/reproj/expected/dateline-merc-180.png', 2, done);
+          'spec/ol/reproj/expected/dateline-merc-180.png', 2, done);
     });
 
     it('displays north pole correctly (EPSG:3413)', function(done) {
@@ -176,7 +176,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('EPSG:3413', 0, [64, 64]);
       testSingleTile(source, 'EPSG:3413', tileGrid, 0, 0, -1, 1,
-                     'spec/ol/reproj/expected/dateline-pole.png', 2, done);
+          'spec/ol/reproj/expected/dateline-pole.png', 2, done);
     });
   });
 });

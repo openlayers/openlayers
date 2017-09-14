@@ -38,7 +38,7 @@ var styleFunction = function(feature) {
       image: new ol.style.Icon({
         src: 'data/arrow.png',
         anchor: [0.75, 0.5],
-        rotateWithView: false,
+        rotateWithView: true,
         rotation: -rotation
       })
     }));
@@ -53,7 +53,6 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [-11000000, 4600000],

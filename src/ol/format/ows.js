@@ -18,12 +18,9 @@ ol.inherits(ol.format.OWS, ol.format.XML);
 
 
 /**
- * @param {Document} doc Document.
- * @return {Object} OWS object.
+ * @inheritDoc
  */
 ol.format.OWS.prototype.readFromDocument = function(doc) {
-  goog.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
-      'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readFromNode(n);
@@ -34,12 +31,9 @@ ol.format.OWS.prototype.readFromDocument = function(doc) {
 
 
 /**
- * @param {Node} node Node.
- * @return {Object} OWS object.
+ * @inheritDoc
  */
 ol.format.OWS.prototype.readFromNode = function(node) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
   var owsObject = ol.xml.pushParseAndPop({},
       ol.format.OWS.PARSERS_, node, []);
   return owsObject ? owsObject : null;
@@ -53,10 +47,6 @@ ol.format.OWS.prototype.readFromNode = function(node) {
  * @return {Object|undefined} The address.
  */
 ol.format.OWS.readAddress_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Address',
-      'localName should be Address');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.ADDRESS_PARSERS_, node, objectStack);
 };
@@ -69,10 +59,6 @@ ol.format.OWS.readAddress_ = function(node, objectStack) {
  * @return {Object|undefined} The values.
  */
 ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'AllowedValues',
-      'localName should be AllowedValues');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
 };
@@ -85,10 +71,6 @@ ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
  * @return {Object|undefined} The constraint.
  */
 ol.format.OWS.readConstraint_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Constraint',
-      'localName should be Constraint');
   var name = node.getAttribute('name');
   if (!name) {
     return undefined;
@@ -106,10 +88,6 @@ ol.format.OWS.readConstraint_ = function(node, objectStack) {
  * @return {Object|undefined} The contact info.
  */
 ol.format.OWS.readContactInfo_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'ContactInfo',
-      'localName should be ContactInfo');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.CONTACT_INFO_PARSERS_, node, objectStack);
 };
@@ -122,9 +100,6 @@ ol.format.OWS.readContactInfo_ = function(node, objectStack) {
  * @return {Object|undefined} The DCP.
  */
 ol.format.OWS.readDcp_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'DCP', 'localName should be DCP');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.DCP_PARSERS_, node, objectStack);
 };
@@ -137,9 +112,6 @@ ol.format.OWS.readDcp_ = function(node, objectStack) {
  * @return {Object|undefined} The GET object.
  */
 ol.format.OWS.readGet_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Get', 'localName should be Get');
   var href = ol.format.XLink.readHref(node);
   if (!href) {
     return undefined;
@@ -156,9 +128,6 @@ ol.format.OWS.readGet_ = function(node, objectStack) {
  * @return {Object|undefined} The HTTP object.
  */
 ol.format.OWS.readHttp_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'HTTP', 'localName should be HTTP');
   return ol.xml.pushParseAndPop({}, ol.format.OWS.HTTP_PARSERS_,
       node, objectStack);
 };
@@ -171,10 +140,6 @@ ol.format.OWS.readHttp_ = function(node, objectStack) {
  * @return {Object|undefined} The operation.
  */
 ol.format.OWS.readOperation_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Operation',
-      'localName should be Operation');
   var name = node.getAttribute('name');
   var value = ol.xml.pushParseAndPop({},
       ol.format.OWS.OPERATION_PARSERS_, node, objectStack);
@@ -184,7 +149,6 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
   var object = /** @type {Object} */
       (objectStack[objectStack.length - 1]);
   object[name] = value;
-
 };
 
 
@@ -196,10 +160,6 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
  */
 ol.format.OWS.readOperationsMetadata_ = function(node,
     objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'OperationsMetadata',
-      'localName should be OperationsMetadata');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.OPERATIONS_METADATA_PARSERS_, node,
       objectStack);
@@ -213,9 +173,6 @@ ol.format.OWS.readOperationsMetadata_ = function(node,
  * @return {Object|undefined} The phone.
  */
 ol.format.OWS.readPhone_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Phone', 'localName should be Phone');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.PHONE_PARSERS_, node, objectStack);
 };
@@ -229,10 +186,6 @@ ol.format.OWS.readPhone_ = function(node, objectStack) {
  */
 ol.format.OWS.readServiceIdentification_ = function(node,
     objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'ServiceIdentification',
-      'localName should be ServiceIdentification');
   return ol.xml.pushParseAndPop(
       {}, ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
       objectStack);
@@ -246,10 +199,6 @@ ol.format.OWS.readServiceIdentification_ = function(node,
  * @return {Object|undefined} The service contact.
  */
 ol.format.OWS.readServiceContact_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'ServiceContact',
-      'localName should be ServiceContact');
   return ol.xml.pushParseAndPop(
       {}, ol.format.OWS.SERVICE_CONTACT_PARSERS_, node,
       objectStack);
@@ -263,10 +212,6 @@ ol.format.OWS.readServiceContact_ = function(node, objectStack) {
  * @return {Object|undefined} The service provider.
  */
 ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'ServiceProvider',
-      'localName should be ServiceProvider');
   return ol.xml.pushParseAndPop(
       {}, ol.format.OWS.SERVICE_PROVIDER_PARSERS_, node,
       objectStack);
@@ -280,9 +225,6 @@ ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
  * @return {string|undefined} The value.
  */
 ol.format.OWS.readValue_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Value', 'localName should be Value');
   return ol.format.XSD.readString(node);
 };
 
@@ -444,13 +386,13 @@ ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
  */
 ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
     ol.xml.makeStructureNS(
-    ol.format.OWS.NAMESPACE_URIS_, {
-      'IndividualName': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'ContactInfo': ol.xml.makeObjectPropertySetter(
-          ol.format.OWS.readContactInfo_)
-    });
+        ol.format.OWS.NAMESPACE_URIS_, {
+          'IndividualName': ol.xml.makeObjectPropertySetter(
+              ol.format.XSD.readString),
+          'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'ContactInfo': ol.xml.makeObjectPropertySetter(
+              ol.format.OWS.readContactInfo_)
+        });
 
 
 /**
@@ -460,12 +402,12 @@ ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
  */
 ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
     ol.xml.makeStructureNS(
-    ol.format.OWS.NAMESPACE_URIS_, {
-      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
+        ol.format.OWS.NAMESPACE_URIS_, {
+          'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
+              ol.format.XSD.readString),
+          'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
 /**
@@ -475,9 +417,9 @@ ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
  */
 ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
     ol.xml.makeStructureNS(
-    ol.format.OWS.NAMESPACE_URIS_, {
-      'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
-      'ServiceContact': ol.xml.makeObjectPropertySetter(
-          ol.format.OWS.readServiceContact_)
-    });
+        ol.format.OWS.NAMESPACE_URIS_, {
+          'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
+          'ServiceContact': ol.xml.makeObjectPropertySetter(
+              ol.format.OWS.readServiceContact_)
+        });

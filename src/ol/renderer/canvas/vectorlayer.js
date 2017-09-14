@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.EventType');
@@ -74,7 +74,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   var extent = frameState.extent;
   var pixelRatio = frameState.pixelRatio;
   var skippedFeatureUids = layerState.managed ?
-      frameState.skippedFeatureUids : {};
+    frameState.skippedFeatureUids : {};
   var viewState = frameState.viewState;
   var projection = viewState.projection;
   var rotation = viewState.rotation;
@@ -83,7 +83,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 
   var transform = this.getTransform(frameState, 0);
 
-  this.dispatchPreComposeEvent(context, frameState, transform);
+  this.preCompose(context, frameState, transform);
 
   // clipped rendering if layer extent is set
   var clipExtent = layerState.extent;
@@ -97,7 +97,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var drawOffsetX = 0;
     var drawOffsetY = 0;
     var replayContext;
-    if (layer.hasListener(ol.render.EventType.RENDER)) {
+    var transparentLayer = layerState.opacity !== 1;
+    var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
+    if (transparentLayer || hasRenderListeners) {
       var drawWidth = context.canvas.width;
       var drawHeight = context.canvas.height;
       if (rotation) {
@@ -113,11 +115,15 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     } else {
       replayContext = context;
     }
-    // for performance reasons, context.save / context.restore is not used
-    // to save and restore the transformation matrix and the opacity.
-    // see http://jsperf.com/context-save-restore-versus-variable
+
     var alpha = replayContext.globalAlpha;
-    replayContext.globalAlpha = layerState.opacity;
+    if (!transparentLayer) {
+      // for performance reasons, context.save / context.restore is not used
+      // to save and restore the transformation matrix and the opacity.
+      // see http://jsperf.com/context-save-restore-versus-variable
+      replayContext.globalAlpha = layerState.opacity;
+    }
+
     if (replayContext != context) {
       replayContext.translate(drawOffsetX, drawOffsetY);
     }
@@ -159,17 +165,29 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         width / 2, height / 2);
 
     if (replayContext != context) {
-      this.dispatchRenderEvent(replayContext, frameState, transform);
-      context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
+      if (hasRenderListeners) {
+        this.dispatchRenderEvent(replayContext, frameState, transform);
+      }
+      if (transparentLayer) {
+        var mainContextAlpha = context.globalAlpha;
+        context.globalAlpha = layerState.opacity;
+        context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
+        context.globalAlpha = mainContextAlpha;
+      } else {
+        context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
+      }
       replayContext.translate(-drawOffsetX, -drawOffsetY);
     }
-    replayContext.globalAlpha = alpha;
+
+    if (!transparentLayer) {
+      replayContext.globalAlpha = alpha;
+    }
   }
 
   if (clipped) {
     context.restore();
   }
-  this.dispatchPostComposeEvent(context, frameState, transform);
+  this.postCompose(context, frameState, layerState, transform);
 
 };
 
@@ -177,7 +195,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
@@ -187,7 +205,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-        rotation, {},
+        rotation, hitTolerance, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
@@ -225,8 +243,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.View.Hint.ANIMATING];
-  var interacting = frameState.viewHints[ol.View.Hint.INTERACTING];
+  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
@@ -277,10 +295,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
 
   this.dirty_ = false;
 
-  var replayGroup =
-      new ol.render.canvas.ReplayGroup(
-          ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-          resolution, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
+  var replayGroup = new ol.render.canvas.ReplayGroup(
+      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
+      resolution, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.
@@ -302,7 +319,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
           feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
-  };
+  }.bind(this);
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
@@ -314,7 +331,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
           features.push(feature);
         }, this);
     features.sort(vectorLayerRenderOrder);
-    features.forEach(renderFeature, this);
+    for (var i = 0, ii = features.length; i < ii; ++i) {
+      renderFeature(features[i]);
+    }
   } else {
     vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
   }

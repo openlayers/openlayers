@@ -23,19 +23,18 @@
       "externs/tilejson.js",
       "externs/topojson.js"
     ],
-    "define": [
-      "goog.DEBUG=false"
-    ],
     "jscomp_error": [
       "*"
     ],
     "jscomp_off": [
       "lintChecks",
-      "analyzerChecks"
+      "analyzerChecks",
+      "unusedLocalVariables"
     ],
     "extra_annotation_name": [
       "api", "observable"
     ],
+    "rewrite_polyfills": "false",
     "compilation_level": "ADVANCED",
     "warning_level": "VERBOSE",
     "output_wrapper": "(function(){%output%})();",

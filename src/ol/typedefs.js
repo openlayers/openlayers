@@ -43,6 +43,13 @@ ol.AtlasManagerInfo;
 
 
 /**
+ * A type that can be used to provide attribution information for data sources.
+ *
+ * It represents either
+ * * a simple string (e.g. `'© Acme Inc.'`),
+ * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`),
+ * * an instance of `{@link ol.Attribution}`,
+ * * or an array with multiple `{@link ol.Attribution}` instances.
  * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
  */
 ol.AttributionLike;
@@ -72,10 +79,11 @@ ol.CanvasFunctionType;
 /**
  * @typedef {{lineCap: string,
  *            lineDash: Array.<number>,
+ *            lineDashOffset: number,
  *            lineJoin: string,
  *            lineWidth: number,
  *            miterLimit: number,
- *            strokeStyle: string}}
+ *            strokeStyle: ol.ColorLike}}
  */
 ol.CanvasStrokeState;
 
@@ -95,7 +103,7 @@ ol.CenterConstraintType;
 
 
 /**
- * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
+ * @typedef {{strokeStyle: (ol.ColorLike|undefined), strokeWidth: number,
  *   size: number, lineDash: Array.<number>}}
  */
 ol.CircleRenderOptions;
@@ -106,18 +114,31 @@ ol.CircleRenderOptions;
  * red, green, and blue should be integers in the range 0..255 inclusive.
  * alpha should be a float in the range 0..1 inclusive. If no alpha value is
  * given then `1` will be used.
- * @typedef {Array.<number>|Uint8Array|Uint8ClampedArray}
+ * @typedef {Array.<number>}
  */
 ol.Color;
 
 
 /**
- * A type accepted by CanvasRenderingContext2D.fillStyle.
- * Represents a color, pattern, or gradient.
+ * A type accepted by CanvasRenderingContext2D.fillStyle
+ * or CanvasRenderingContext2D.strokeStyle.
+ * Represents a color, pattern, or gradient. The origin for patterns and
+ * gradients as fill style is the top-left corner of the extent of the geometry
+ * being filled.
  *
  * @typedef {string|CanvasPattern|CanvasGradient}
  */
 ol.ColorLike;
+
+
+/**
+ * @typedef {{
+ *   center: ol.CenterConstraintType,
+ *   resolution: ol.ResolutionConstraintType,
+ *   rotation: ol.RotationConstraintType
+ * }}
+ */
+ol.Constraints;
 
 
 /**
@@ -146,12 +167,11 @@ ol.DragBoxEndConditionType;
 
 
 /**
- * Function that takes coordinates and an optional existing geometry as
+ * Function that takes an array of coordinates and an optional existing geometry as
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
+ * @typedef {function(!Array.<ol.Coordinate>, ol.geom.SimpleGeometry=):
  *     ol.geom.SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
@@ -244,6 +264,15 @@ ol.FeatureUrlFunction;
 
 
 /**
+ * @typedef {{
+ *     geom: ol.geom.Point,
+ *     text: string
+ * }}
+ */
+ol.GraticuleLabelDataType;
+
+
+/**
  * A function that is called to trigger asynchronous canvas drawing.  It is
  * called with a "done" callback that should be called when drawing is done.
  * If any error occurs during drawing, the "done" callback should be called with
@@ -275,7 +304,8 @@ ol.ImageLoadFunctionType;
 
 /**
  * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
+ *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
+ *            origin: (ol.style.IconOrigin|undefined)}}
  */
 ol.KMLVec2_;
 
@@ -299,6 +329,20 @@ ol.KMLGxTrackObject_;
  *            minResolution: number}}
  */
 ol.LayerState;
+
+
+/**
+ * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
+ */
+ol.LayoutOptions;
+
+
+/**
+ * @typedef {{prev: (ol.LinkedListItem|undefined),
+ *            next: (ol.LinkedListItem|undefined),
+ *            data: ?}}
+ */
+ol.LinkedListItem;
 
 
 /**
@@ -336,7 +380,7 @@ ol.MapOptionsInternal;
 /**
  * An array representing an affine 2d transformation for use with
  * {@link ol.transform} functions. The array has 6 elements.
- * @typedef {Array.<number>}
+ * @typedef {!Array.<number>}
  */
 ol.Transform;
 
@@ -346,7 +390,8 @@ ol.Transform;
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,
  *            index: (number),
- *            segment: Array.<ol.Extent>}}
+ *            segment: Array.<ol.Extent>,
+ *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
  */
 ol.ModifySegmentDataType;
 
@@ -405,7 +450,7 @@ ol.RasterOperation;
 
 /**
  * @typedef {{
- *   strokeStyle: (string|undefined),
+ *   strokeStyle: (ol.ColorLike|undefined),
  *   strokeWidth: number,
  *   size: number,
  *   lineCap: string,
@@ -415,6 +460,17 @@ ol.RasterOperation;
  * }}
  */
 ol.RegularShapeRenderOptions;
+
+
+/**
+ * A function to be used when sorting features before rendering.
+ * It takes two instances of {@link ol.Feature} or {@link ol.render.Feature} and
+ * returns a `{number}`.
+ *
+ * @typedef {function((ol.Feature|ol.render.Feature), (ol.Feature|ol.render.Feature)):
+ *     number}
+ */
+ol.RenderOrderFunction;
 
 
 /**
@@ -571,6 +627,17 @@ ol.StyleGeometryFunction;
 
 
 /**
+ * Custom renderer function. Takes two arguments:
+ *
+ * 1. The pixel coordinates of the geometry in GeoJSON notation.
+ * 2. The {@link olx.render.State} of the layer renderer.
+ *
+ * @typedef {function((ol.Coordinate|Array<ol.Coordinate>|Array.<Array.<ol.Coordinate>>),olx.render.State)}
+ */
+ol.StyleRenderFunction;
+
+
+/**
  * @typedef {{opacity: number,
  *            rotateWithView: boolean,
  *            rotation: number,
@@ -606,11 +673,9 @@ ol.TilePriorityFunction;
 /**
  * @typedef {{
  *     dirty: boolean,
- *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
+ *     renderedRenderOrder: (null|ol.RenderOrderFunction),
  *     renderedTileRevision: number,
- *     renderedRevision: number,
- *     replayGroup: ol.render.ReplayGroup,
- *     skippedFeatures: Array.<string>}}
+ *     renderedRevision: number}}
  */
 ol.TileReplayState;
 
@@ -643,10 +708,54 @@ ol.TransformFunction;
 
 
 /**
+ * An animation configuration
+ *
+ * @typedef {{
+ *   sourceCenter: (ol.Coordinate|undefined),
+ *   targetCenter: (ol.Coordinate|undefined),
+ *   sourceResolution: (number|undefined),
+ *   targetResolution: (number|undefined),
+ *   sourceRotation: (number|undefined),
+ *   targetRotation: (number|undefined),
+ *   anchor: (ol.Coordinate|undefined),
+ *   start: number,
+ *   duration: number,
+ *   complete: boolean,
+ *   easing: function(number):number,
+ *   callback: (function(boolean)|undefined)
+ *  }}
+ */
+ol.ViewAnimation;
+
+
+/**
  * @typedef {{buf: ol.webgl.Buffer,
  *            buffer: WebGLBuffer}}
  */
 ol.WebglBufferCacheEntry;
+
+
+/**
+ * @typedef {{atlas: ol.style.AtlasManager,
+ *            width: Object.<string, number>,
+ *            height: number}}
+ */
+ol.WebglGlyphAtlas;
+
+
+/**
+ * @typedef {{p0: ol.WebglPolygonVertex,
+ *            p1: ol.WebglPolygonVertex}}
+ */
+ol.WebglPolygonSegment;
+
+/**
+ * @typedef {{x: number,
+ *            y: number,
+ *            i: number,
+ *            reflex: (boolean|undefined)}}
+ */
+ol.WebglPolygonVertex;
 
 
 /**

@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('ol');
-goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
@@ -20,13 +19,13 @@ goog.require('ol.interaction.DragBox');
  * @constructor
  * @extends {ol.interaction.DragBox}
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragZoom = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var condition = options.condition ?
-      options.condition : ol.events.condition.shiftKeyOnly;
+    options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -75,21 +74,14 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));
 
-  var currentResolution = /** @type {number} */ (view.getResolution());
+  var center = ol.extent.getCenter(extent);
+  center = view.constrainCenter(center);
 
-  var currentCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
-
-  map.beforeRender(ol.animation.zoom({
-    resolution: currentResolution,
+  view.animate({
+    resolution: resolution,
+    center: center,
     duration: this.duration_,
     easing: ol.easing.easeOut
-  }));
-  map.beforeRender(ol.animation.pan({
-    source: currentCenter,
-    duration: this.duration_,
-    easing: ol.easing.easeOut
-  }));
+  });
 
-  view.setCenter(ol.extent.getCenter(extent));
-  view.setResolution(resolution);
 };

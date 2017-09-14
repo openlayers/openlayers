@@ -5,8 +5,8 @@ goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
+goog.require('ol.ImageState');
 goog.require('ol.style');
-goog.require('ol.style.ImageState');
 
 
 /**
@@ -15,12 +15,12 @@ goog.require('ol.style.ImageState');
  * @param {string|undefined} src Src.
  * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.style.ImageState} imageState Image state.
+ * @param {ol.ImageState} imageState Image state.
  * @param {ol.Color} color Color.
  * @extends {ol.events.EventTarget}
  */
 ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
-                               color) {
+    color) {
 
   ol.events.EventTarget.call(this);
 
@@ -45,8 +45,8 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = color ?
-      /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
-      null;
+    /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
+    null;
 
   /**
    * @private
@@ -62,7 +62,7 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
 
   /**
    * @private
-   * @type {ol.style.ImageState}
+   * @type {ol.ImageState}
    */
   this.imageState_ = imageState;
 
@@ -83,7 +83,7 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
    * @type {boolean}
    */
   this.tainting_ = false;
-  if (this.imageState_ == ol.style.ImageState.LOADED) {
+  if (this.imageState_ == ol.ImageState.LOADED) {
     this.determineTainting_();
   }
 
@@ -96,12 +96,12 @@ ol.inherits(ol.style.IconImage, ol.events.EventTarget);
  * @param {string} src Src.
  * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
- * @param {ol.style.ImageState} imageState Image state.
+ * @param {ol.ImageState} imageState Image state.
  * @param {ol.Color} color Color.
  * @return {ol.style.IconImage} Icon image.
  */
 ol.style.IconImage.get = function(image, src, size, crossOrigin, imageState,
-                                   color) {
+    color) {
   var iconImageCache = ol.style.iconImageCache;
   var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
@@ -139,7 +139,7 @@ ol.style.IconImage.prototype.dispatchChangeEvent_ = function() {
  * @private
  */
 ol.style.IconImage.prototype.handleImageError_ = function() {
-  this.imageState_ = ol.style.ImageState.ERROR;
+  this.imageState_ = ol.ImageState.ERROR;
   this.unlistenImage_();
   this.dispatchChangeEvent_();
 };
@@ -149,7 +149,7 @@ ol.style.IconImage.prototype.handleImageError_ = function() {
  * @private
  */
 ol.style.IconImage.prototype.handleImageLoad_ = function() {
-  this.imageState_ = ol.style.ImageState.LOADED;
+  this.imageState_ = ol.ImageState.LOADED;
   if (this.size_) {
     this.image_.width = this.size_[0];
     this.image_.height = this.size_[1];
@@ -172,7 +172,7 @@ ol.style.IconImage.prototype.getImage = function(pixelRatio) {
 
 
 /**
- * @return {ol.style.ImageState} Image state.
+ * @return {ol.ImageState} Image state.
  */
 ol.style.IconImage.prototype.getImageState = function() {
   return this.imageState_;
@@ -219,12 +219,8 @@ ol.style.IconImage.prototype.getSrc = function() {
  * Load not yet loaded URI.
  */
 ol.style.IconImage.prototype.load = function() {
-  if (this.imageState_ == ol.style.ImageState.IDLE) {
-    goog.DEBUG && console.assert(this.src_ !== undefined,
-        'this.src_ must not be undefined');
-    goog.DEBUG && console.assert(!this.imageListenerKeys_,
-        'no listener keys existing');
-    this.imageState_ = ol.style.ImageState.LOADING;
+  if (this.imageState_ == ol.ImageState.IDLE) {
+    this.imageState_ = ol.ImageState.LOADING;
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
           this.handleImageError_, this),

@@ -6,6 +6,7 @@ goog.require('ol.source.BingMaps');
 
 var styles = [
   'Road',
+  'RoadOnDemand',
   'Aerial',
   'AerialWithLabels',
   'collinsBart',
@@ -18,7 +19,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
     visible: false,
     preload: Infinity,
     source: new ol.source.BingMaps({
-      key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF',
+      key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
       imagerySet: styles[i]
       // use maxZoom 19 to see stretched tiles instead of the BingMaps
       // "no photos at this zoom level" tiles
@@ -28,7 +29,6 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
 }
 var map = new ol.Map({
   layers: layers,
-  renderer: common.getRendererFromQueryString(),
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,

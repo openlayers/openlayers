@@ -13,7 +13,7 @@ goog.require('ol.style.Style');
 var vectorSource = new ol.source.Vector({
   format: new ol.format.GeoJSON(),
   url: function(extent) {
-    return 'http://demo.boundlessgeo.com/geoserver/wfs?service=WFS&' +
+    return 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
         'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
         'outputFormat=application/json&srsname=EPSG:3857&' +
         'bbox=' + extent.join(',') + ',EPSG:3857';
@@ -35,7 +35,7 @@ var vector = new ol.layer.Vector({
 var raster = new ol.layer.Tile({
   source: new ol.source.BingMaps({
     imagerySet: 'Aerial',
-    key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
+    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
 });
 

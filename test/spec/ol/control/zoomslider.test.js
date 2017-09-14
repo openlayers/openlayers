@@ -1,4 +1,3 @@
-/*global createMapDiv, disposeMap*/
 goog.provide('ol.test.control.ZoomSlider');
 
 goog.require('ol.Map');
@@ -122,7 +121,6 @@ describe('ol.control.ZoomSlider', function() {
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(16);
       expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(6);
       event.type = 'pointermove';
       event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
@@ -135,7 +133,6 @@ describe('ol.control.ZoomSlider', function() {
       event.type = 'pointerup';
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
-      expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
     });
     it('[vertical] handles a drag sequence', function() {
@@ -156,7 +153,6 @@ describe('ol.control.ZoomSlider', function() {
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.0625);
       expect(control.dragging_).to.be(true);
-      expect(control.dragListenerKeys_.length).to.be(6);
       event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 2 * control.heightLimit_ / 8;
@@ -169,7 +165,6 @@ describe('ol.control.ZoomSlider', function() {
       event.type = 'pointerup';
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
-      expect(control.dragListenerKeys_.length).to.be(0);
       expect(control.dragging_).to.be(false);
     });
   });

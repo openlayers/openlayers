@@ -70,10 +70,7 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
  * @private
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
-
   node.setAttribute('namespaceURI', this.featureNS_);
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
   var features = [];
@@ -87,10 +84,6 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
         continue;
       }
       var context = objectStack[0];
-
-      goog.DEBUG && console.assert(layer.localName.indexOf(
-          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0,
-          'localName of layer node should match layerIdentifier');
 
       var toRemove = ol.format.WMSGetFeatureInfo.layerIdentifier_;
       var layerName = layer.localName.replace(toRemove, '');
@@ -137,7 +130,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeatures;
 
@@ -152,3 +145,24 @@ ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_
   }
   return this.readFeatures_(node, [options]);
 };
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.WMSGetFeatureInfo.prototype.writeFeatureNode = function(feature, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.WMSGetFeatureInfo.prototype.writeFeaturesNode = function(features, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.WMSGetFeatureInfo.prototype.writeGeometryNode = function(geometry, opt_options) {};

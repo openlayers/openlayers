@@ -6,11 +6,10 @@ goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.DragAndDrop');
+goog.require('ol.source.Vector');
 
-
-describe('ol.interaction.DragAndDrop', function() {
+where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
-  var global = ol.global;
 
   beforeEach(function() {
     viewport = new ol.events.EventTarget();
@@ -38,7 +37,28 @@ describe('ol.interaction.DragAndDrop', function() {
       expect(interaction.formatConstructors_).to.have.length(1);
     });
 
+    it('accepts a source option', function() {
+      var source = new ol.source.Vector();
+      var drop = new ol.interaction.DragAndDrop({
+        formatConstructors: [ol.format.GeoJSON],
+        source: source
+      });
+      expect(drop.source_).to.equal(source);
+    });
+  });
 
+  describe('#setActive()', function() {
+    it('registers and unregisters listeners', function() {
+      interaction.setMap(map);
+      interaction.setActive(true);
+      expect(viewport.hasListener('dragenter')).to.be(true);
+      expect(viewport.hasListener('dragover')).to.be(true);
+      expect(viewport.hasListener('drop')).to.be(true);
+      interaction.setActive(false);
+      expect(viewport.hasListener('dragenter')).to.be(false);
+      expect(viewport.hasListener('dragover')).to.be(false);
+      expect(viewport.hasListener('drop')).to.be(false);
+    });
   });
 
   describe('#setMap()', function() {
@@ -71,9 +91,11 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('#handleDrop_', function() {
-    var origFileReader = global.FileReader;
+    var OrigFileReader;
 
     beforeEach(function() {
+      OrigFileReader = FileReader;
+
       FileReader = function() {
         ol.events.EventTarget.apply(this, arguments);
         this.readAsText = function(file) {
@@ -85,7 +107,7 @@ describe('ol.interaction.DragAndDrop', function() {
     });
 
     afterEach(function() {
-      global.FileReader = origFileReader;
+      FileReader = OrigFileReader;
     });
 
     it('reads dropped files', function(done) {
@@ -94,6 +116,41 @@ describe('ol.interaction.DragAndDrop', function() {
         done();
       });
       interaction.setMap(map);
+      var event = new ol.events.Event();
+      event.dataTransfer = {};
+      event.type = 'dragenter';
+      viewport.dispatchEvent(event);
+      event.type = 'dragover';
+      viewport.dispatchEvent(event);
+      event.type = 'drop';
+      event.dataTransfer.files = {
+        length: 1,
+        item: function() {
+          return JSON.stringify({
+            type: 'FeatureCollection',
+            features: [{type: 'Feature', id: '1'}]
+          });
+        }
+      };
+      viewport.dispatchEvent(event);
+      expect(event.dataTransfer.dropEffect).to.be('copy');
+      expect(event.propagationStopped).to.be(true);
+    });
+
+    it('adds dropped features to a source', function(done) {
+      var source = new ol.source.Vector();
+      var drop = new ol.interaction.DragAndDrop({
+        formatConstructors: [ol.format.GeoJSON],
+        source: source
+      });
+      drop.setMap(map);
+
+      drop.on('addfeatures', function(evt) {
+        var features = source.getFeatures();
+        expect(features.length).to.be(1);
+        done();
+      });
+
       var event = new ol.events.Event();
       event.dataTransfer = {};
       event.type = 'dragenter';

@@ -1,6 +1,5 @@
 goog.provide('ol.format.XSD');
 
-goog.require('ol');
 goog.require('ol.xml');
 goog.require('ol.string');
 
@@ -115,6 +114,15 @@ ol.format.XSD.writeBooleanTextNode = function(node, bool) {
 
 
 /**
+ * @param {Node} node Node to append a CDATA Section with the string to.
+ * @param {string} string String.
+ */
+ol.format.XSD.writeCDATASection = function(node, string) {
+  node.appendChild(ol.xml.DOCUMENT.createCDATASection(string));
+};
+
+
+/**
  * @param {Node} node Node to append a TextNode with the dateTime to.
  * @param {number} dateTime DateTime in seconds.
  */
@@ -145,9 +153,6 @@ ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
  * @param {number} nonNegativeInteger Non negative integer.
  */
 ol.format.XSD.writeNonNegativeIntegerTextNode = function(node, nonNegativeInteger) {
-  goog.DEBUG && console.assert(nonNegativeInteger >= 0, 'value should be more than 0');
-  goog.DEBUG && console.assert(nonNegativeInteger == (nonNegativeInteger | 0),
-      'value should be an integer value');
   var string = nonNegativeInteger.toString();
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };

@@ -12,7 +12,7 @@ var layers = [
   new ol.layer.Tile({
     extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ol.source.TileWMS({
-      url: 'http://demo.boundlessgeo.com/geoserver/wms',
+      url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
       serverType: 'geoserver'
     })

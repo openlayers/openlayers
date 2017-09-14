@@ -61,7 +61,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
     preload: Infinity,
     source: new ol.source.XYZ({
       url: createUrl(urlTpl, layerDesc),
-      attributions: 'Map Tiles &copy; 2016 ' +
+      attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
         '<a href="http://developer.here.com">HERE</a>'
     })
   }));
@@ -69,7 +69,6 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
 
 var map = new ol.Map({
   layers: layers,
-  renderer: common.getRendererFromQueryString(),
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,
@@ -82,11 +81,11 @@ var map = new ol.Map({
 
 function createUrl(tpl, layerDesc) {
   return tpl
-    .replace('{base}', layerDesc.base)
-    .replace('{type}', layerDesc.type)
-    .replace('{scheme}', layerDesc.scheme)
-    .replace('{app_id}', layerDesc.app_id)
-    .replace('{app_code}', layerDesc.app_code);
+      .replace('{base}', layerDesc.base)
+      .replace('{type}', layerDesc.type)
+      .replace('{scheme}', layerDesc.scheme)
+      .replace('{app_id}', layerDesc.app_id)
+      .replace('{app_code}', layerDesc.app_code);
 }
 
 var select = document.getElementById('layer-select');

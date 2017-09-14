@@ -1,6 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.format.ogc.filter');
+goog.require('ol.format.filter');
 goog.require('ol.format.WFS');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
@@ -25,7 +25,7 @@ var vector = new ol.layer.Vector({
 var raster = new ol.layer.Tile({
   source: new ol.source.BingMaps({
     imagerySet: 'Aerial',
-    key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
+    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
 });
 
@@ -46,14 +46,14 @@ var featureRequest = new ol.format.WFS().writeGetFeature({
   featurePrefix: 'osm',
   featureTypes: ['water_areas'],
   outputFormat: 'application/json',
-  filter: ol.format.ogc.filter.and(
-    ol.format.ogc.filter.like('name', 'Mississippi*'),
-    ol.format.ogc.filter.equalTo('waterway', 'riverbank')
+  filter: ol.format.filter.and(
+      ol.format.filter.like('name', 'Mississippi*'),
+      ol.format.filter.equalTo('waterway', 'riverbank')
   )
 });
 
 // then post the request and add the received features to a layer
-fetch('http://demo.boundlessgeo.com/geoserver/wfs', {
+fetch('https://ahocevar.com/geoserver/wfs', {
   method: 'POST',
   body: new XMLSerializer().serializeToString(featureRequest)
 }).then(function(response) {
@@ -61,5 +61,5 @@ fetch('http://demo.boundlessgeo.com/geoserver/wfs', {
 }).then(function(json) {
   var features = new ol.format.GeoJSON().readFeatures(json);
   vectorSource.addFeatures(features);
-  map.getView().fit(vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
+  map.getView().fit(vectorSource.getExtent());
 });

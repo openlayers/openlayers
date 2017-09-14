@@ -16,7 +16,7 @@ ol.ASSUME_TOUCH = false;
 
 /**
  * TODO: rename this to something having to do with tile grids
- * see https://github.com/openlayers/ol3/issues/2076
+ * see https://github.com/openlayers/openlayers/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
  */
 ol.DEFAULT_MAX_ZOOM = 42;
@@ -48,34 +48,11 @@ ol.DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * @define {number} Hysteresis pixels.
- */
-ol.DRAG_BOX_HYSTERESIS_PIXELS = 8;
-
-
-/**
  * @define {boolean} Enable the Canvas renderer.  Default is `true`. Setting
  *     this to false at compile time in advanced mode removes all code
  *     supporting the Canvas renderer from the build.
  */
 ol.ENABLE_CANVAS = true;
-
-
-/**
- * @define {boolean} Enable the DOM renderer (used as a fallback where Canvas is
- *     not available).  Default is `true`. Setting this to false at compile time
- *     in advanced mode removes all code supporting the DOM renderer from the
- *     build.
- */
-ol.ENABLE_DOM = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
- *     is `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Image layers from the build.
- */
-ol.ENABLE_IMAGE = true;
 
 
 /**
@@ -93,35 +70,19 @@ ol.ENABLE_RASTER_REPROJECTION = true;
 
 
 /**
- * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
- *     `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Tile layers from the build.
- */
-ol.ENABLE_TILE = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Vector based layers.  Default
- *     is `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Vector layers from the build.
- */
-ol.ENABLE_VECTOR = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.VectorTile based layers.
- *     Default is `true`. Setting this to false at compile time in advanced mode
- *     removes all code supporting VectorTile layers from the build.
- */
-ol.ENABLE_VECTOR_TILE = true;
-
-
-/**
  * @define {boolean} Enable the WebGL renderer.  Default is `true`. Setting
  *     this to false at compile time in advanced mode removes all code
  *     supporting the WebGL renderer from the build.
  */
 ol.ENABLE_WEBGL = true;
+
+
+/**
+ * @define {boolean} Include debuggable shader sources.  Default is `true`.
+ *     This should be set to `false` for production builds (if `ol.ENABLE_WEBGL`
+ *     is `true`).
+ */
+ol.DEBUG_WEBGL = true;
 
 
 /**
@@ -146,12 +107,6 @@ ol.MOUSEWHEELZOOM_MAXDELTA = 1;
 
 
 /**
- * @define {number} Mouse wheel timeout duration.
- */
-ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
-
-
-/**
  * @define {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
  */
@@ -173,7 +128,7 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
  *     This can happen if the developer defines projections improperly and/or
  *     with unlimited extents.
  *     If too many tiles are required, no tiles are loaded and
- *     `ol.Tile.State.ERROR` state is set. Default is `100`.
+ *     `ol.TileState.ERROR` state is set. Default is `100`.
  */
 ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
 
@@ -273,8 +228,8 @@ ol.nullFunction = function() {};
 
 /**
  * Gets a unique ID for an object. This mutates the object so that further calls
- * with the same object as a parameter returns the same value. Adapted from
- * goog.getUid.
+ * with the same object as a parameter returns the same value. Unique IDs are generated
+ * as a strictly increasing sequence. Adapted from goog.getUid.
  *
  * @param {Object} obj The object to get the unique ID for.
  * @return {number} The unique ID for the object.
@@ -291,15 +246,3 @@ ol.getUid = function(obj) {
  * @private
  */
 ol.uidCounter_ = 0;
-
-
-/**
- * @see https://github.com/tc39/proposal-global
- */
-if (typeof window !== 'undefined') {
-  ol.global = window;
-} else if (typeof global !== 'undefined') {
-  ol.global = global;
-} else if (typeof self !== 'undefined') {
-  ol.global = self;
-}

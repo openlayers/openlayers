@@ -15,10 +15,10 @@ goog.require('ol.uri');
  * Source for images from Mapguide servers
  *
  * @constructor
- * @fires ol.source.ImageEvent
+ * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageMapGuideOptions} options Options.
- * @api stable
+ * @api
  */
 ol.source.ImageMapGuide = function(options) {
 
@@ -39,7 +39,7 @@ ol.source.ImageMapGuide = function(options) {
    * @type {number}
    */
   this.displayDpi_ = options.displayDpi !== undefined ?
-      options.displayDpi : 96;
+    options.displayDpi : 96;
 
   /**
    * @private
@@ -58,7 +58,7 @@ ol.source.ImageMapGuide = function(options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private
@@ -71,7 +71,7 @@ ol.source.ImageMapGuide = function(options) {
    * @type {number}
    */
   this.metersPerUnit_ = options.metersPerUnit !== undefined ?
-      options.metersPerUnit : 1;
+    options.metersPerUnit : 1;
 
   /**
    * @private
@@ -84,7 +84,7 @@ ol.source.ImageMapGuide = function(options) {
    * @type {boolean}
    */
   this.useOverlay_ = options.useOverlay !== undefined ?
-      options.useOverlay : false;
+    options.useOverlay : false;
 
   /**
    * @private
@@ -106,7 +106,7 @@ ol.inherits(ol.source.ImageMapGuide, ol.source.Image);
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api stable
+ * @api
  */
 ol.source.ImageMapGuide.prototype.getParams = function() {
   return this.params_;
@@ -189,7 +189,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);

@@ -94,6 +94,17 @@ oli.DrawEvent.prototype.feature;
 /**
  * @interface
  */
+oli.ExtentEvent = function() {};
+
+
+/**
+ * @type {ol.Extent}
+ */
+oli.ExtentEvent.prototype.extent;
+
+/**
+ * @interface
+ */
 oli.ModifyEvent = function() {};
 
 
@@ -110,21 +121,27 @@ oli.ModifyEvent.prototype.mapBrowserEvent;
 
 
 /**
+ * @type {Object}
+ */
+oli.Object;
+
+
+/**
  * @interface
  */
-oli.ObjectEvent = function() {};
+oli.Object.Event = function() {};
 
 
 /**
  * @type {string}
  */
-oli.ObjectEvent.prototype.key;
+oli.Object.Event.prototype.key;
 
 
 /**
  * @type {*}
  */
-oli.ObjectEvent.prototype.oldValue;
+oli.Object.Event.prototype.oldValue;
 
 
 /**
@@ -347,22 +364,22 @@ oli.source.RasterEvent.prototype.data;
 /**
  * @interface
  */
-oli.source.TileEvent = function() {};
+oli.source.Tile.Event = function() {};
 
 
 /**
  * @type {ol.Tile}
  */
-oli.source.TileEvent.prototype.tile;
+oli.source.Tile.Event.prototype.tile;
 
 
 /**
  * @interface
  */
-oli.source.VectorEvent = function() {};
+oli.source.Vector.Event = function() {};
 
 
 /**
  * @type {ol.Feature|undefined}
  */
-oli.source.VectorEvent.prototype.feature;
+oli.source.Vector.Event.prototype.feature;

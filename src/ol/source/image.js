@@ -1,5 +1,4 @@
 goog.provide('ol.source.Image');
-goog.provide('ol.source.ImageEvent');
 
 goog.require('ol');
 goog.require('ol.ImageState');
@@ -18,12 +17,12 @@ goog.require('ol.source.Source');
  * Base class for sources providing a single image.
  *
  * @constructor
+ * @abstract
  * @extends {ol.source.Source}
  * @param {ol.SourceImageOptions} options Single image source options.
  * @api
  */
 ol.source.Image = function(options) {
-
   ol.source.Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -37,12 +36,7 @@ ol.source.Image = function(options) {
    * @type {Array.<number>}
    */
   this.resolutions_ = options.resolutions !== undefined ?
-      options.resolutions : null;
-  goog.DEBUG && console.assert(!this.resolutions_ ||
-      ol.array.isSorted(this.resolutions_,
-          function(a, b) {
-            return b - a;
-          }, true), 'resolutions must be null or sorted in descending order');
+    options.resolutions : null;
 
 
   /**
@@ -57,13 +51,13 @@ ol.source.Image = function(options) {
    * @type {number}
    */
   this.reprojectedRevision_ = 0;
-
 };
 ol.inherits(ol.source.Image, ol.source.Source);
 
 
 /**
  * @return {Array.<number>} Resolutions.
+ * @override
  */
 ol.source.Image.prototype.getResolutions = function() {
   return this.resolutions_;
@@ -107,7 +101,6 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
           ol.proj.equivalent(
               this.reprojectedImage_.getProjection(), projection) &&
           this.reprojectedImage_.getResolution() == resolution &&
-          this.reprojectedImage_.getPixelRatio() == pixelRatio &&
           ol.extent.equals(this.reprojectedImage_.getExtent(), extent)) {
         return this.reprojectedImage_;
       }
@@ -150,17 +143,17 @@ ol.source.Image.prototype.handleImageChange = function(event) {
   switch (image.getState()) {
     case ol.ImageState.LOADING:
       this.dispatchEvent(
-          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADSTART,
+          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADSTART,
               image));
       break;
     case ol.ImageState.LOADED:
       this.dispatchEvent(
-          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADEND,
+          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADEND,
               image));
       break;
     case ol.ImageState.ERROR:
       this.dispatchEvent(
-          new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADERROR,
+          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADERROR,
               image));
       break;
     default:
@@ -191,7 +184,7 @@ ol.source.Image.defaultImageLoadFunction = function(image, src) {
  * @param {string} type Type.
  * @param {ol.Image} image The image.
  */
-ol.source.ImageEvent = function(type, image) {
+ol.source.Image.Event = function(type, image) {
 
   ol.events.Event.call(this, type);
 
@@ -203,31 +196,32 @@ ol.source.ImageEvent = function(type, image) {
   this.image = image;
 
 };
-ol.inherits(ol.source.ImageEvent, ol.events.Event);
+ol.inherits(ol.source.Image.Event, ol.events.Event);
 
 
 /**
  * @enum {string}
+ * @private
  */
-ol.source.ImageEventType = {
+ol.source.Image.EventType_ = {
 
   /**
    * Triggered when an image starts loading.
-   * @event ol.source.ImageEvent#imageloadstart
+   * @event ol.source.Image.Event#imageloadstart
    * @api
    */
   IMAGELOADSTART: 'imageloadstart',
 
   /**
    * Triggered when an image finishes loading.
-   * @event ol.source.ImageEvent#imageloadend
+   * @event ol.source.Image.Event#imageloadend
    * @api
    */
   IMAGELOADEND: 'imageloadend',
 
   /**
    * Triggered if image loading results in an error.
-   * @event ol.source.ImageEvent#imageloaderror
+   * @event ol.source.Image.Event#imageloaderror
    * @api
    */
   IMAGELOADERROR: 'imageloaderror'

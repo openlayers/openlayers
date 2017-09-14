@@ -16,21 +16,20 @@ goog.require('ol.geom.GeometryType');
  *     to be right-handed for polygons.
  * @param {Array.<number>|Array.<Array.<number>>} ends Ends or Endss.
  * @param {Object.<string, *>} properties Properties.
+ * @param {number|string|undefined} id Feature id.
  */
-ol.render.Feature = function(type, flatCoordinates, ends, properties) {
-
+ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
   /**
    * @private
    * @type {ol.Extent|undefined}
    */
   this.extent_;
 
-  goog.DEBUG && console.assert(type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTI_POINT ||
-      type === ol.geom.GeometryType.LINE_STRING ||
-      type === ol.geom.GeometryType.MULTI_LINE_STRING ||
-      type === ol.geom.GeometryType.POLYGON,
-      'Need a Point, MultiPoint, LineString, MultiLineString or Polygon type');
+  /**
+   * @private
+   * @type {number|string|undefined}
+   */
+  this.id_ = id;
 
   /**
    * @private
@@ -55,7 +54,6 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties) {
    * @type {Object.<string, *>}
    */
   this.properties_ = properties;
-
 };
 
 
@@ -86,12 +84,22 @@ ol.render.Feature.prototype.getEnds = function() {
 ol.render.Feature.prototype.getExtent = function() {
   if (!this.extent_) {
     this.extent_ = this.type_ === ol.geom.GeometryType.POINT ?
-        ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
-        ol.extent.createOrUpdateFromFlatCoordinates(
-            this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
+      ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
+      ol.extent.createOrUpdateFromFlatCoordinates(
+          this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
 
   }
   return this.extent_;
+};
+
+/**
+ * Get the feature identifier.  This is a stable identifier for the feature and
+ * is set when reading data from a remote source.
+ * @return {number|string|undefined} Id.
+ * @api
+ */
+ol.render.Feature.prototype.getId = function() {
+  return this.id_;
 };
 
 
@@ -111,7 +119,8 @@ ol.render.Feature.prototype.getFlatCoordinates =
 
 
 /**
- * Get the feature for working with its geometry.
+ * For API compatibility with {@link ol.Feature}, this method is useful when
+ * determining the geometry type in style function (see {@link #getType}).
  * @return {ol.render.Feature} Feature.
  * @api
  */

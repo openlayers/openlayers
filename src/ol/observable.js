@@ -18,7 +18,7 @@ goog.require('ol.events.EventType');
  * @extends {ol.events.EventTarget}
  * @fires ol.events.Event
  * @struct
- * @api stable
+ * @api
  */
 ol.Observable = function() {
 
@@ -38,7 +38,7 @@ ol.inherits(ol.Observable, ol.events.EventTarget);
  * Removes an event listener using the key returned by `on()` or `once()`.
  * @param {ol.EventsKey|Array.<ol.EventsKey>} key The key returned by `on()`
  *     or `once()` (or an array of keys).
- * @api stable
+ * @api
  */
 ol.Observable.unByKey = function(key) {
   if (Array.isArray(key)) {
@@ -94,7 +94,7 @@ ol.Observable.prototype.getRevision = function() {
  * @return {ol.EventsKey|Array.<ol.EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
- * @api stable
+ * @api
  */
 ol.Observable.prototype.on = function(type, listener, opt_this) {
   if (Array.isArray(type)) {
@@ -119,7 +119,7 @@ ol.Observable.prototype.on = function(type, listener, opt_this) {
  * @return {ol.EventsKey|Array.<ol.EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
- * @api stable
+ * @api
  */
 ol.Observable.prototype.once = function(type, listener, opt_this) {
   if (Array.isArray(type)) {
@@ -142,7 +142,7 @@ ol.Observable.prototype.once = function(type, listener, opt_this) {
  * @param {function(?): ?} listener The listener function.
  * @param {Object=} opt_this The object which was used as `this` by the
  * `listener`.
- * @api stable
+ * @api
  */
 ol.Observable.prototype.un = function(type, listener, opt_this) {
   if (Array.isArray(type)) {
@@ -154,15 +154,3 @@ ol.Observable.prototype.un = function(type, listener, opt_this) {
     ol.events.unlisten(this, /** @type {string} */ (type), listener, opt_this);
   }
 };
-
-
-/**
- * Removes an event listener using the key returned by `on()` or `once()`.
- * Note that using the {@link ol.Observable.unByKey} static function is to
- * be preferred.
- * @param {ol.EventsKey|Array.<ol.EventsKey>} key The key returned by `on()`
- *     or `once()` (or an array of keys).
- * @function
- * @api stable
- */
-ol.Observable.prototype.unByKey = ol.Observable.unByKey;

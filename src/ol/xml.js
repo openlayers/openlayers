@@ -1,6 +1,5 @@
 goog.provide('ol.xml');
 
-goog.require('ol');
 goog.require('ol.array');
 
 
@@ -126,22 +125,18 @@ ol.xml.parse = function(xml) {
  */
 ol.xml.makeArrayExtender = function(valueReader, opt_this) {
   return (
-      /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
-        if (value !== undefined) {
-          goog.DEBUG && console.assert(Array.isArray(value),
-              'valueReader function is expected to return an array of values');
-          var array = /** @type {Array.<*>} */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
+    function(node, objectStack) {
+      var value = valueReader.call(opt_this, node, objectStack);
+      if (value !== undefined) {
+        var array = /** @type {Array.<*>} */
               (objectStack[objectStack.length - 1]);
-          goog.DEBUG && console.assert(Array.isArray(array),
-              'objectStack is supposed to be an array of arrays');
-          ol.array.extend(array, value);
-        }
-      });
+        ol.array.extend(array, value);
+      }
+    });
 };
 
 
@@ -155,20 +150,18 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
  */
 ol.xml.makeArrayPusher = function(valueReader, opt_this) {
   return (
-      /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          var array = objectStack[objectStack.length - 1];
-          goog.DEBUG && console.assert(Array.isArray(array),
-              'objectStack is supposed to be an array of arrays');
-          array.push(value);
-        }
-      });
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
+    function(node, objectStack) {
+      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
+          node, objectStack);
+      if (value !== undefined) {
+        var array = objectStack[objectStack.length - 1];
+        array.push(value);
+      }
+    });
 };
 
 
@@ -182,17 +175,17 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
  */
 ol.xml.makeReplacer = function(valueReader, opt_this) {
   return (
-      /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          objectStack[objectStack.length - 1] = value;
-        }
-      });
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
+    function(node, objectStack) {
+      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
+          node, objectStack);
+      if (value !== undefined) {
+        objectStack[objectStack.length - 1] = value;
+      }
+    });
 };
 
 
@@ -206,30 +199,28 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  * @template T
  */
 ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
-  goog.DEBUG && console.assert(valueReader !== undefined,
-      'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
-      /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          var object = /** @type {Object} */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
+    function(node, objectStack) {
+      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
+          node, objectStack);
+      if (value !== undefined) {
+        var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
-          var property = opt_property !== undefined ?
-              opt_property : node.localName;
-          var array;
-          if (property in object) {
-            array = object[property];
-          } else {
-            array = object[property] = [];
-          }
-          array.push(value);
+        var property = opt_property !== undefined ?
+          opt_property : node.localName;
+        var array;
+        if (property in object) {
+          array = object[property];
+        } else {
+          array = object[property] = [];
         }
-      });
+        array.push(value);
+      }
+    });
 };
 
 
@@ -242,24 +233,22 @@ ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) 
  * @template T
  */
 ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
-  goog.DEBUG && console.assert(valueReader !== undefined,
-      'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
-      /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          var object = /** @type {Object} */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
+    function(node, objectStack) {
+      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
+          node, objectStack);
+      if (value !== undefined) {
+        var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
-          var property = opt_property !== undefined ?
-              opt_property : node.localName;
-          object[property] = value;
-        }
-      });
+        var property = opt_property !== undefined ?
+          opt_property : node.localName;
+        object[property] = value;
+      }
+    });
 };
 
 
@@ -279,9 +268,6 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
         node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
     var parentNode = parent.node;
-    goog.DEBUG && console.assert(ol.xml.isNode(parentNode) ||
-        ol.xml.isDocument(parentNode),
-        'expected parentNode %s to be a Node or a Document', parentNode);
     parentNode.appendChild(node);
   };
 };
@@ -331,28 +317,25 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
 ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
   var fixedNodeName = opt_nodeName;
   return (
-      /**
-       * @param {*} value Value.
-       * @param {Array.<*>} objectStack Object stack.
-       * @param {string=} opt_nodeName Node name.
-       * @return {Node} Node.
-       */
-      function(value, objectStack, opt_nodeName) {
-        var context = objectStack[objectStack.length - 1];
-        var node = context.node;
-        goog.DEBUG && console.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
-            'expected node %s to be a Node or a Document', node);
-        var nodeName = fixedNodeName;
-        if (nodeName === undefined) {
-          nodeName = opt_nodeName;
-        }
-        var namespaceURI = opt_namespaceURI;
-        if (opt_namespaceURI === undefined) {
-          namespaceURI = node.namespaceURI;
-        }
-        goog.DEBUG && console.assert(nodeName !== undefined, 'nodeName was undefined');
-        return ol.xml.createElementNS(namespaceURI, /** @type {string} */ (nodeName));
+    /**
+     * @param {*} value Value.
+     * @param {Array.<*>} objectStack Object stack.
+     * @param {string=} opt_nodeName Node name.
+     * @return {Node} Node.
+     */
+    function(value, objectStack, opt_nodeName) {
+      var context = objectStack[objectStack.length - 1];
+      var node = context.node;
+      var nodeName = fixedNodeName;
+      if (nodeName === undefined) {
+        nodeName = opt_nodeName;
       }
+      var namespaceURI = opt_namespaceURI;
+      if (opt_namespaceURI === undefined) {
+        namespaceURI = node.namespaceURI;
+      }
+      return ol.xml.createElementNS(namespaceURI, /** @type {string} */ (nodeName));
+    }
   );
 };
 

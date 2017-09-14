@@ -12,14 +12,14 @@ goog.require('ol.source.XYZ');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
-goog.require('ol.tilegrid.TileGrid');
+goog.require('ol.tilegrid');
 
 
 describe('ol.rendering.layer.Tile', function() {
 
   var target, map;
 
-  function createMap(renderer, opt_center, opt_size, opt_pixelRatio) {
+  function createMap(renderer, opt_center, opt_size, opt_pixelRatio, opt_resolutions) {
     var size = opt_size !== undefined ? opt_size : [50, 50];
     target = createMapDiv(size[0], size[1]);
 
@@ -30,6 +30,7 @@ describe('ol.rendering.layer.Tile', function() {
       view: new ol.View({
         center: opt_center !== undefined ? opt_center : ol.proj.transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
+        resolutions: opt_resolutions,
         zoom: 5
       })
     });
@@ -205,30 +206,22 @@ describe('ol.rendering.layer.Tile', function() {
   });
 
   describe('tile layer with non-square tiles', function() {
-    var source;
 
-    beforeEach(function() {
-      source = new ol.source.TileImage({
-        tileUrlFunction: function(tileCoord, ratio, projection) {
-          return 'spec/ol/data/tiles/512x256/' + tileCoord[0] + '/' +
-              tileCoord[1] + '/' + tileCoord[2] + '.png';
-        },
-        tileGrid: new ol.tilegrid.TileGrid({
-          origin: [-20037508.342789244, -20037508.342789244],
-          resolutions: [
-            156543.03392804097, 78271.51696402048, 39135.75848201024,
-            19567.87924100512, 9783.93962050256, 4891.96981025128
-          ],
-          tileSize: [512, 256]
+    function createSource(tileSize) {
+      return new ol.source.TileImage({
+        url: 'spec/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
+        tileGrid: ol.tilegrid.createXYZ({
+          tileSize: tileSize.split('x')
         })
       });
-    });
+    }
 
     afterEach(function() {
       disposeMap(map);
     });
 
-    it('renders correcly using the canvas renderer', function(done) {
+    it('512x256 renders correcly using the canvas renderer', function(done) {
+      var source = createSource('512x256');
       map = createMap('canvas', [-10997148, 4569099]);
       waitForTiles([source], {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/512x256-canvas.png',
@@ -236,8 +229,9 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('renders correcly using the webgl renderer', function(done) {
+    it('512x256 renders correcly using the webgl renderer', function(done) {
       assertWebGL();
+      var source = createSource('512x256');
       map = createMap('webgl', [-10997148, 4569099]);
       waitForTiles([source], {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/512x256-webgl.png',
@@ -245,6 +239,26 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
+    it('192x256 renders correcly using the canvas renderer', function(done) {
+      var source = createSource('192x256');
+      map = createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
+          source.getTileGrid().getResolutions());
+      waitForTiles([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/192x256-canvas.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('192x256 renders correcly using the webgl renderer', function(done) {
+      assertWebGL();
+      var source = createSource('192x256');
+      map = createMap('webgl', [-11271098, 3747248], [100, 100], undefined,
+          source.getTileGrid().getResolutions());
+      waitForTiles([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/192x256-webgl.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
   });
 
   describe('tile layer with render listener', function() {

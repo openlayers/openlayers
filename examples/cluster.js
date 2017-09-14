@@ -69,7 +69,6 @@ var raster = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [raster, clusters],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View({
     center: [0, 0],

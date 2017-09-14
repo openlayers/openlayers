@@ -86,7 +86,7 @@ check-deps:
 	done ;\
 
 .PHONY: ci
-ci: lint build test test-rendering compile-examples check-examples apidoc
+ci: lint build test test-rendering package compile-examples check-examples apidoc
 
 .PHONY: compile-examples
 compile-examples: build/compiled-examples/all.combined.js
@@ -103,6 +103,7 @@ clean:
 	rm -f build/test_rendering_requires.js
 	rm -rf build/examples
 	rm -rf build/compiled-examples
+	rm -rf build/package
 	rm -rf $(BUILD_HOSTED)
 
 .PHONY: cleanall
@@ -252,7 +253,7 @@ build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                    build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@echo "Running eslint..."
-	@./node_modules/.bin/eslint --quiet tasks test test_rendering src examples
+	@./node_modules/.bin/eslint tasks test test_rendering src examples
 	@touch $@
 
 build/timestamps/node-modules-timestamp: package.json
@@ -300,3 +301,13 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 
 %shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
+
+.PHONY: package
+package:
+	@rm -rf build/package
+	@cp -r package build
+	@cd ./src && cp -r ol/* ../build/package
+	@rm build/package/typedefs.js
+	@cp css/ol.css build/package
+	./node_modules/.bin/jscodeshift --transform transforms/module.js build/package
+	npm run lint-package

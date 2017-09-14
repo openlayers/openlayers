@@ -140,7 +140,7 @@ ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
    * @type {Node}
    */
   this.relatedTarget = 'relatedTarget' in eventDict ?
-      eventDict['relatedTarget'] : null;
+    eventDict['relatedTarget'] : null;
 
   // PointerEvent related properties
 

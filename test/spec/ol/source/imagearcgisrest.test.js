@@ -38,10 +38,10 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('returns a non floating point DPI value', function() {
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -7, 1.12], resolution, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1.12], resolution, 1.01, proj3857);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('90');
+      expect(queryData.get('DPI')).to.be('91');
     });
 
     it('returns a image with the expected URL for ImageServer', function() {
@@ -97,7 +97,7 @@ describe('ol.source.ImageArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({'TEST':'newValue'});
+      source.updateParams({'TEST': 'newValue'});
 
       var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new URL(image.src_);
@@ -122,22 +122,22 @@ describe('ol.source.ImageArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({'TEST2':'newValue'});
+      source.updateParams({'TEST2': 'newValue'});
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({TEST:'value', TEST2:'newValue'});
+      expect(setParams).to.eql({TEST: 'value', TEST2: 'newValue'});
     });
 
     it('verify on update a param', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({'TEST':'newValue'});
+      source.updateParams({'TEST': 'newValue'});
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({TEST:'newValue'});
+      expect(setParams).to.eql({TEST: 'newValue'});
     });
 
   });

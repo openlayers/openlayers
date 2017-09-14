@@ -1,8 +1,9 @@
 goog.provide('ol.renderer.vector');
 
 goog.require('ol');
+goog.require('ol.ImageState');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.render.ReplayType');
-goog.require('ol.style.ImageState');
 
 
 /**
@@ -47,10 +48,10 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
-    var polygonReplay = replayGroup.getReplay(
-        style.getZIndex(), ol.render.ReplayType.POLYGON);
-    polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-    polygonReplay.drawCircle(geometry, feature);
+    var circleReplay = replayGroup.getReplay(
+        style.getZIndex(), ol.render.ReplayType.CIRCLE);
+    circleReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+    circleReplay.drawCircle(geometry, feature);
   }
   var textStyle = style.getText();
   if (textStyle) {
@@ -79,16 +80,14 @@ ol.renderer.vector.renderFeature = function(
   imageStyle = style.getImage();
   if (imageStyle) {
     imageState = imageStyle.getImageState();
-    if (imageState == ol.style.ImageState.LOADED ||
-        imageState == ol.style.ImageState.ERROR) {
+    if (imageState == ol.ImageState.LOADED ||
+        imageState == ol.ImageState.ERROR) {
       imageStyle.unlistenImageChange(listener, thisArg);
     } else {
-      if (imageState == ol.style.ImageState.IDLE) {
+      if (imageState == ol.ImageState.IDLE) {
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      goog.DEBUG && console.assert(imageState == ol.style.ImageState.LOADING,
-          'imageState should be LOADING');
       imageStyle.listenImageChange(listener, thisArg);
       loading = true;
     }
@@ -113,9 +112,34 @@ ol.renderer.vector.renderFeature_ = function(
     return;
   }
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
-  var geometryRenderer =
-      ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-  geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
+  var renderer = style.getRenderer();
+  if (renderer) {
+    ol.renderer.vector.renderGeometry_(replayGroup, simplifiedGeometry, style, feature);
+  } else {
+    var geometryRenderer =
+        ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
+    geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
+  }
+};
+
+
+/**
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
+ * @param {ol.geom.Geometry} geometry Geometry.
+ * @param {ol.style.Style} style Style.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @private
+ */
+ol.renderer.vector.renderGeometry_ = function(replayGroup, geometry, style, feature) {
+  if (geometry.getType() == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
+    var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
+    for (var i = 0, ii = geometries.length; i < ii; ++i) {
+      ol.renderer.vector.renderGeometry_(replayGroup, geometries[i], style, feature);
+    }
+    return;
+  }
+  var replay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.DEFAULT);
+  replay.drawCustom(/** @type {ol.geom.SimpleGeometry} */ (geometry), feature, style.getRenderer());
 };
 
 
@@ -227,7 +251,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
 ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
-    if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
+    if (imageStyle.getImageState() != ol.ImageState.LOADED) {
       return;
     }
     var imageReplay = replayGroup.getReplay(
@@ -256,7 +280,7 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
 ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
-    if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
+    if (imageStyle.getImageState() != ol.ImageState.LOADED) {
       return;
     }
     var imageReplay = replayGroup.getReplay(

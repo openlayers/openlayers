@@ -2,10 +2,10 @@ goog.provide('ol.test.View');
 
 goog.require('ol');
 goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
-
 
 describe('ol.View', function() {
 
@@ -301,6 +301,565 @@ describe('ol.View', function() {
 
   });
 
+  describe('#setHint()', function() {
+
+    it('changes a view hint', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      expect(view.getHints()).to.eql([0, 0]);
+      expect(view.getInteracting()).to.eql(false);
+
+      view.setHint(ol.ViewHint.INTERACTING, 1);
+      expect(view.getHints()).to.eql([0, 1]);
+      expect(view.getInteracting()).to.eql(true);
+    });
+
+    it('triggers the change event', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.on('change', function() {
+        expect(view.getHints()).to.eql([0, 1]);
+        expect(view.getInteracting()).to.eql(true);
+        done();
+      });
+      view.setHint(ol.ViewHint.INTERACTING, 1);
+    });
+
+  });
+
+  describe('#getUpdatedOptions_()', function() {
+
+    it('applies minZoom to constructor options', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        minZoom: 2,
+        zoom: 10
+      });
+      var options = view.getUpdatedOptions_({minZoom: 3});
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.minZoom).to.eql(3);
+      expect(options.zoom).to.eql(10);
+    });
+
+    it('applies the current zoom', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 10
+      });
+      view.setZoom(8);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.zoom).to.eql(8);
+    });
+
+    it('applies the current resolution if resolution was originally supplied', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        resolution: 1000
+      });
+      view.setResolution(500);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.resolution).to.eql(500);
+    });
+
+    it('applies the current center', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 10
+      });
+      view.setCenter([1, 2]);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([1, 2]);
+      expect(options.zoom).to.eql(10);
+    });
+
+    it('applies the current rotation', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 10
+      });
+      view.setRotation(Math.PI / 6);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.zoom).to.eql(10);
+      expect(options.rotation).to.eql(Math.PI / 6);
+    });
+
+  });
+
+  describe('#animate()', function() {
+
+    var originalRequestAnimationFrame = window.requestAnimationFrame;
+    var originalCancelAnimationFrame = window.cancelAnimationFrame;
+
+    beforeEach(function() {
+      window.requestAnimationFrame = function(callback) {
+        return setTimeout(callback, 1);
+      };
+      window.cancelAnimationFrame = function(key) {
+        return clearTimeout(key);
+      };
+    });
+
+    afterEach(function() {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+      window.cancelAnimationFrame = originalCancelAnimationFrame;
+    });
+
+    it('can be called to animate view properties', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        duration: 25
+      });
+      expect(view.getAnimating()).to.eql(true);
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        expect(view.getZoom()).to.eql(4);
+        expect(view.getAnimating()).to.eql(false);
+        done();
+      }, 50);
+    });
+
+    it('allows duration to be zero', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        duration: 0
+      });
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        expect(view.getZoom()).to.eql(4);
+        expect(view.getAnimating()).to.eql(false);
+        done();
+      }, 10);
+    });
+
+    it('immediately completes for no-op animations', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 5,
+        center: [0, 0],
+        duration: 25
+      });
+      expect(view.getAnimating()).to.eql(false);
+    });
+
+    it('prefers zoom over resolution', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        resolution: view.getResolution() * 3,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        expect(view.getZoom()).to.be(4);
+        done();
+      });
+    });
+
+    it('avoids going under minResolution', function(done) {
+      var maxZoom = 14;
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        maxZoom: maxZoom
+      });
+
+      var minResolution = view.getMinResolution();
+      view.animate({
+        resolution: minResolution,
+        duration: 10
+      }, function(complete) {
+        expect(complete).to.be(true);
+        expect(view.getResolution()).to.be(minResolution);
+        expect(view.getZoom()).to.be(maxZoom);
+        done();
+      });
+    });
+
+    it('takes the shortest arc to the target rotation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: Math.PI / 180 * 1
+      });
+      view.animate({
+        rotation: Math.PI / 180 * 359,
+        duration: 0
+      }, function() {
+        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * -1, 1e-12);
+        done();
+      });
+    });
+
+    it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: Math.PI / 180 * 1
+      });
+      view.animate({
+        rotation: Math.PI / 180 * -181,
+        duration: 0
+      }, function() {
+        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * 179, 1e-12);
+        done();
+      });
+    });
+
+    it('calls a callback when animation completes', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        done();
+      });
+    });
+
+    it('calls callback with false when animation is interrupted', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(false);
+        done();
+      });
+
+      view.setCenter([1, 2]); // interrupt the animation
+    });
+
+    it('calls a callback even if animation is a no-op', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 0,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        done();
+      });
+    });
+
+    it('can run multiple animations in series', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      var checked = false;
+
+      view.animate({
+        zoom: 2,
+        duration: 25
+      }, {
+        center: [10, 10],
+        duration: 25
+      }, function(complete) {
+        expect(checked).to.be(true);
+        expect(view.getZoom()).to.roughlyEqual(2, 1e-5);
+        expect(view.getCenter()).to.eql([10, 10]);
+        expect(complete).to.be(true);
+        done();
+      });
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        checked = true;
+      }, 10);
+
+    });
+
+    it('properly sets the ANIMATING hint', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      var count = 3;
+      function decrement() {
+        --count;
+        if (count === 0) {
+          expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(0);
+          done();
+        }
+      }
+      view.animate({
+        center: [1, 2],
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(1);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(2);
+
+      view.animate({
+        rotation: Math.PI,
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(3);
+
+    });
+
+    it('clears the ANIMATING hint when animations are cancelled', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        center: [1, 2],
+        duration: 25
+      });
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(1);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      });
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(2);
+
+      view.animate({
+        rotation: Math.PI,
+        duration: 25
+      });
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(3);
+
+      // cancel animations
+      view.setCenter([10, 20]);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(0);
+
+    });
+
+    it('completes multiple staggered animations run in parallel', function(done) {
+
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      var calls = 0;
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function() {
+        ++calls;
+      });
+
+      setTimeout(function() {
+        expect(view.getZoom() > 0).to.be(true);
+        expect(view.getZoom() < 1).to.be(true);
+        expect(view.getAnimating()).to.be(true);
+        view.animate({
+          zoom: 2,
+          duration: 25
+        }, function() {
+          expect(calls).to.be(1);
+          expect(view.getZoom()).to.be(2);
+          expect(view.getAnimating()).to.be(false);
+          done();
+        });
+      }, 10);
+
+    });
+
+    it('completes complex animation using resolution', function(done) {
+
+      var view = new ol.View({
+        center: [0, 0],
+        resolution: 2
+      });
+
+      var calls = 0;
+
+      function onAnimateEnd() {
+        if (calls == 2) {
+          expect(view.getAnimating()).to.be(false);
+          done();
+        }
+      }
+
+      view.animate({
+        center: [100, 100],
+        duration: 50
+      }, function() {
+        ++calls;
+        expect(view.getCenter()).to.eql([100, 100]);
+        onAnimateEnd();
+      });
+
+      view.animate({
+        resolution: 2000,
+        duration: 25
+      }, {
+        resolution: 2,
+        duration: 25
+      }, function() {
+        ++calls;
+        expect(view.getResolution()).to.be(2);
+        onAnimateEnd();
+      });
+
+      setTimeout(function() {
+        expect(view.getResolution() > 2).to.be(true);
+        expect(view.getResolution() < 2000).to.be(true);
+        expect(view.getAnimating()).to.be(true);
+      }, 10);
+
+      setTimeout(function() {
+        expect(view.getResolution() > 2).to.be(true);
+        expect(view.getResolution() < 2000).to.be(true);
+        expect(view.getAnimating()).to.be(true);
+      }, 40);
+
+    });
+
+  });
+
+  describe('#cancelAnimations()', function() {
+
+    var originalRequestAnimationFrame = window.requestAnimationFrame;
+    var originalCancelAnimationFrame = window.cancelAnimationFrame;
+
+    beforeEach(function() {
+      window.requestAnimationFrame = function(callback) {
+        return setTimeout(callback, 1);
+      };
+      window.cancelAnimationFrame = function(key) {
+        return clearTimeout(key);
+      };
+    });
+
+    afterEach(function() {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+      window.cancelAnimationFrame = originalCancelAnimationFrame;
+    });
+
+    it('cancels a currently running animation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        rotation: 10,
+        duration: 50
+      });
+
+      setTimeout(function() {
+        expect(view.getAnimating()).to.be(true);
+        view.once('change', function() {
+          expect(view.getAnimating()).to.be(false);
+          done();
+        });
+        view.cancelAnimations();
+      }, 10);
+    });
+
+    it('cancels a multiple animations', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        rotation: 10,
+        duration: 50
+      }, {
+        zoom: 10,
+        duration: 50
+      });
+
+      view.animate({
+        center: [10, 30],
+        duration: 100
+      });
+
+      setTimeout(function() {
+        expect(view.getAnimating()).to.be(true);
+        view.once('change', function() {
+          expect(view.getAnimating()).to.be(false);
+          done();
+        });
+        view.cancelAnimations();
+      }, 10);
+    });
+
+    it('calls callbacks with false to indicate animations did not complete', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 10,
+        duration: 50
+      }, function(complete) {
+        expect(view.getAnimating()).to.be(false);
+        expect(complete).to.be(false);
+        done();
+      });
+
+      setTimeout(function() {
+        expect(view.getAnimating()).to.be(true);
+        view.cancelAnimations();
+      }, 10);
+    });
+
+  });
+
   describe('#getResolutions', function() {
     var view;
     var resolutions = [512, 256, 128, 64, 32, 16];
@@ -442,6 +1001,94 @@ describe('ol.View', function() {
     });
   });
 
+  describe('#getZoomForResolution', function() {
+
+    it('returns correct zoom levels', function() {
+      var view = new ol.View();
+      var max = view.getMaxResolution();
+
+      expect(view.getZoomForResolution(max)).to.be(0);
+
+      expect(view.getZoomForResolution(max / 2)).to.be(1);
+
+      expect(view.getZoomForResolution(max / 4)).to.be(2);
+    });
+
+    it('returns correct zoom levels for specifically configured resolutions', function() {
+      var view = new ol.View({
+        resolutions: [10, 8, 6, 4, 2]
+      });
+
+      expect(view.getZoomForResolution(10)).to.be(0);
+
+      expect(view.getZoomForResolution(8)).to.be(1);
+
+      expect(view.getZoomForResolution(6)).to.be(2);
+
+      expect(view.getZoomForResolution(4)).to.be(3);
+
+      expect(view.getZoomForResolution(2)).to.be(4);
+    });
+
+  });
+
+  describe('#getResolutionForZoom', function() {
+
+    it('returns correct zoom resolution', function() {
+      var view = new ol.View();
+      var max = view.getMaxZoom();
+      var min = view.getMinZoom();
+
+      expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
+      expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
+    });
+
+    it('returns correct zoom levels for specifically configured resolutions', function() {
+      var view = new ol.View({
+        resolutions: [10, 8, 6, 4, 2]
+      });
+
+      expect(view.getResolutionForZoom(0)).to.be(10);
+      expect(view.getResolutionForZoom(1)).to.be(8);
+      expect(view.getResolutionForZoom(2)).to.be(6);
+      expect(view.getResolutionForZoom(3)).to.be(4);
+      expect(view.getResolutionForZoom(4)).to.be(2);
+    });
+
+  });
+
+  describe('#getMaxZoom', function() {
+
+    it('returns the zoom level for the min resolution', function() {
+      var view = new ol.View();
+      expect(view.getMaxZoom()).to.be(view.getZoomForResolution(view.getMinResolution()));
+    });
+
+    it('works for a view configured with a maxZoom', function() {
+      var view = new ol.View({
+        maxZoom: 10
+      });
+      expect(view.getMaxZoom()).to.be(10);
+    });
+
+  });
+
+  describe('#getMinZoom', function() {
+
+    it('returns the zoom level for the max resolution', function() {
+      var view = new ol.View();
+      expect(view.getMinZoom()).to.be(view.getZoomForResolution(view.getMaxResolution()));
+    });
+
+    it('works for views configured with a minZoom', function() {
+      var view = new ol.View({
+        minZoom: 3
+      });
+      expect(view.getMinZoom()).to.be(3);
+    });
+
+  });
+
   describe('#calculateExtent', function() {
     it('returns the expected extent', function() {
       var view = new ol.View({
@@ -471,66 +1118,116 @@ describe('ol.View', function() {
     });
   });
 
+  describe('#getSizeFromViewport_()', function() {
+    var map, target;
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '200px';
+      target.style.height = '150px';
+      map = new ol.Map({
+        target: target
+      });
+      document.body.appendChild(target);
+    });
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+    it('calculates the size correctly', function() {
+      var size = map.getView().getSizeFromViewport_();
+      expect(size).to.eql([200, 150]);
+    });
+  });
+
   describe('fit', function() {
+
+    var originalRequestAnimationFrame = window.requestAnimationFrame;
+    var originalCancelAnimationFrame = window.cancelAnimationFrame;
+
+    beforeEach(function() {
+      window.requestAnimationFrame = function(callback) {
+        return setTimeout(callback, 1);
+      };
+      window.cancelAnimationFrame = function(key) {
+        return clearTimeout(key);
+      };
+    });
+
+    afterEach(function() {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+      window.cancelAnimationFrame = originalCancelAnimationFrame;
+    });
+
     var view;
     beforeEach(function() {
       view = new ol.View({
-        resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
+        center: [0, 0],
+        resolutions: [200, 100, 50, 20, 10, 5, 2, 1],
+        zoom: 5
       });
     });
     it('fits correctly to the geometry', function() {
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          [200, 200],
-          {padding: [100, 0, 0, 100], constrainResolution: false});
+          {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
 
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          [200, 200],
-          {padding: [100, 0, 0, 100]});
+          {size: [200, 200], padding: [100, 0, 0, 100]});
       expect(view.getResolution()).to.be(20);
       expect(view.getCenter()[0]).to.be(5500);
       expect(view.getCenter()[1]).to.be(47550);
 
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          [200, 200],
-          {padding: [100, 0, 0, 100], nearest: true});
+          {size: [200, 200], padding: [100, 0, 0, 100], nearest: true});
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(47050);
 
       view.fit(
           new ol.geom.Point([6000, 46000]),
-          [200, 200],
-          {padding: [100, 0, 0, 100], minResolution: 2});
+          {size: [200, 200], padding: [100, 0, 0, 100], minResolution: 2});
       expect(view.getResolution()).to.be(2);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
       view.fit(
           new ol.geom.Point([6000, 46000]),
-          [200, 200],
-          {padding: [100, 0, 0, 100], maxZoom: 6});
+          {size: [200, 200], padding: [100, 0, 0, 100], maxZoom: 6});
       expect(view.getResolution()).to.be(2);
       expect(view.getZoom()).to.be(6);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
+      view.fit(
+          new ol.geom.Circle([6000, 46000], 1000),
+          {size: [200, 200], constrainResolution: false});
+      expect(view.getResolution()).to.be(10);
+      expect(view.getCenter()[0]).to.be(6000);
+      expect(view.getCenter()[1]).to.be(46000);
+
+      view.setRotation(Math.PI / 8);
+      view.fit(
+          new ol.geom.Circle([6000, 46000], 1000),
+          {size: [200, 200], constrainResolution: false});
+      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+
       view.setRotation(Math.PI / 4);
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          [200, 200],
-          {padding: [100, 0, 0, 100], constrainResolution: false});
+          {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
     });
-    it('fit correctly to the extent', function() {
-      view.fit([1000, 1000, 2000, 2000], [200, 200]);
+    it('fits correctly to the extent', function() {
+      view.fit([1000, 1000, 2000, 2000], {size: [200, 200]});
       expect(view.getResolution()).to.be(5);
       expect(view.getCenter()[0]).to.be(1500);
       expect(view.getCenter()[1]).to.be(1500);
@@ -542,9 +1239,48 @@ describe('ol.View', function() {
     });
     it('throws on empty extent', function() {
       expect(function() {
-        view.fit(ol.extent.createEmpty(), [200, 200]);
+        view.fit(ol.extent.createEmpty());
       }).to.throwException();
     });
+    it('animates when duration is defined', function(done) {
+      view.fit(
+          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          {
+            size: [200, 200],
+            padding: [100, 0, 0, 100],
+            constrainResolution: false,
+            duration: 25
+          });
+
+      expect(view.getAnimating()).to.eql(true);
+
+      setTimeout(function() {
+        expect(view.getResolution()).to.be(11);
+        expect(view.getCenter()[0]).to.be(5950);
+        expect(view.getCenter()[1]).to.be(47100);
+        expect(view.getAnimating()).to.eql(false);
+        done();
+      }, 50);
+
+    });
+    it('calls a callback when duration is not defined', function(done) {
+      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+        callback: function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      });
+    });
+    it('calls a callback when animation completes', function(done) {
+      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+        duration: 25,
+        callback: function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      });
+    });
+
   });
 
   describe('centerOn', function() {
@@ -574,4 +1310,75 @@ describe('ol.View', function() {
       expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
     });
   });
+});
+
+describe('ol.View.isNoopAnimation()', function() {
+
+  var cases = [{
+    animation: {
+      sourceCenter: [0, 0], targetCenter: [0, 0],
+      sourceResolution: 1, targetResolution: 1,
+      sourceRotation: 0, targetRotation: 0
+    },
+    noop: true
+  }, {
+    animation: {
+      sourceCenter: [0, 0], targetCenter: [0, 1],
+      sourceResolution: 1, targetResolution: 1,
+      sourceRotation: 0, targetRotation: 0
+    },
+    noop: false
+  }, {
+    animation: {
+      sourceCenter: [0, 0], targetCenter: [0, 0],
+      sourceResolution: 1, targetResolution: 0,
+      sourceRotation: 0, targetRotation: 0
+    },
+    noop: false
+  }, {
+    animation: {
+      sourceCenter: [0, 0], targetCenter: [0, 0],
+      sourceResolution: 1, targetResolution: 1,
+      sourceRotation: 0, targetRotation: 1
+    },
+    noop: false
+  }, {
+    animation: {
+      sourceCenter: [0, 0], targetCenter: [0, 0]
+    },
+    noop: true
+  }, {
+    animation: {
+      sourceCenter: [1, 0], targetCenter: [0, 0]
+    },
+    noop: false
+  }, {
+    animation: {
+      sourceResolution: 1, targetResolution: 1
+    },
+    noop: true
+  }, {
+    animation: {
+      sourceResolution: 0, targetResolution: 1
+    },
+    noop: false
+  }, {
+    animation: {
+      sourceRotation: 10, targetRotation: 10
+    },
+    noop: true
+  }, {
+    animation: {
+      sourceRotation: 0, targetRotation: 10
+    },
+    noop: false
+  }];
+
+  cases.forEach(function(c, i) {
+    it('works for case ' + i, function() {
+      var noop = ol.View.isNoopAnimation(c.animation);
+      expect(noop).to.equal(c.noop);
+    });
+  });
+
 });

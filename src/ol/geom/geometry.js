@@ -1,46 +1,10 @@
 goog.provide('ol.geom.Geometry');
-goog.provide('ol.geom.GeometryLayout');
-goog.provide('ol.geom.GeometryType');
 
 goog.require('ol');
-goog.require('ol.functions');
 goog.require('ol.Object');
 goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.proj');
-goog.require('ol.proj.Units');
-
-
-/**
- * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
- * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
- * `'GeometryCollection'`, `'Circle'`.
- * @enum {string}
- */
-ol.geom.GeometryType = {
-  POINT: 'Point',
-  LINE_STRING: 'LineString',
-  LINEAR_RING: 'LinearRing',
-  POLYGON: 'Polygon',
-  MULTI_POINT: 'MultiPoint',
-  MULTI_LINE_STRING: 'MultiLineString',
-  MULTI_POLYGON: 'MultiPolygon',
-  GEOMETRY_COLLECTION: 'GeometryCollection',
-  CIRCLE: 'Circle'
-};
-
-
-/**
- * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
- * or measure ('M') coordinate is available. Supported values are `'XY'`,
- * `'XYZ'`, `'XYM'`, `'XYZM'`.
- * @enum {string}
- */
-ol.geom.GeometryLayout = {
-  XY: 'XY',
-  XYZ: 'XYZ',
-  XYM: 'XYM',
-  XYZM: 'XYZM'
-};
 
 
 /**
@@ -53,8 +17,9 @@ ol.geom.GeometryLayout = {
  * generic `change` event on your geometry instance.
  *
  * @constructor
+ * @abstract
  * @extends {ol.Object}
- * @api stable
+ * @api
  */
 ol.geom.Geometry = function() {
 
@@ -119,7 +84,7 @@ ol.geom.Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSqua
  * @param {ol.Coordinate} point Point.
  * @param {ol.Coordinate=} opt_closestPoint Closest point.
  * @return {ol.Coordinate} Closest point.
- * @api stable
+ * @api
  */
 ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
   var closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
@@ -161,7 +126,7 @@ ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
  * Get the extent of the geometry.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
- * @api stable
+ * @api
  */
 ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision_ != this.getRevision()) {
@@ -276,13 +241,9 @@ ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
  *     modified in place.
- * @api stable
+ * @api
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
-  goog.DEBUG && console.assert(
-      ol.proj.get(source).getUnits() !== ol.proj.Units.TILE_PIXELS &&
-      ol.proj.get(destination).getUnits() !== ol.proj.Units.TILE_PIXELS,
-      'cannot transform geometries with TILE_PIXELS units');
   this.applyTransform(ol.proj.getTransform(source, destination));
   return this;
 };

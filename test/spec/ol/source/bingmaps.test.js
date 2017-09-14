@@ -37,6 +37,14 @@ describe('ol.source.BingMaps', function() {
       });
     });
 
+    it('getImagerySet works correctly', function() {
+      expect(source.getImagerySet()).to.equal('AerialWithLabels');
+    });
+
+    it('getApiKey works correctly', function() {
+      expect(source.getApiKey()).to.equal('');
+    });
+
     it('returns the expected URL', function() {
 
       var coordinate = [829330.2064098881, 5933916.615134273];

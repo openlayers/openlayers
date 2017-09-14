@@ -1,16 +1,4 @@
 goog.provide('ol.style.Image');
-goog.provide('ol.style.ImageState');
-
-
-/**
- * @enum {number}
- */
-ol.style.ImageState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3
-};
 
 
 /**
@@ -20,6 +8,7 @@ ol.style.ImageState = {
  * {@link ol.style.RegularShape}.
  *
  * @constructor
+ * @abstract
  * @param {ol.StyleImageOptions} options Options.
  * @api
  */
@@ -136,7 +125,7 @@ ol.style.Image.prototype.getHitDetectionImage = function(pixelRatio) {};
 
 /**
  * @abstract
- * @return {ol.style.ImageState} Image state.
+ * @return {ol.ImageState} Image state.
  */
 ol.style.Image.prototype.getImageState = function() {};
 

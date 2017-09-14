@@ -1,0 +1,26 @@
+---
+layout: example.html
+title: Sea Level
+shortdesc: Render sea level at different elevations
+docs: >
+  <p>
+    This example uses a <code>ol.source.Raster</code> with
+    <a href="https://www.mapbox.com/blog/terrain-rgb/">Mapbox Terrain-RGB tiles</a>
+    to "flood" areas below the elevation shown on the sea level slider.
+  </p>
+tags: "raster, pixel operation, flood"
+cloak:
+  pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg: Your Mapbox access token from http://mapbox.com/ here
+---
+<div id="map" class="map"></div>
+<label>
+  Sea level
+  <input id="level" type="range" min="0" max="100" value="1"/>
+  +<span id="output"></span> m
+</label>
+<br>
+Go to
+<a class="location" data-center="-122.3267,37.8377" data-zoom="11">San Francisco</a>,
+<a class="location" data-center="-73.9338,40.6861" data-zoom="11">New York</a>,
+<a class="location" data-center="72.9481,18.9929" data-zoom="11">Mumbai</a>, or
+<a class="location" data-center="120.831,31.160" data-zoom="9">Shanghai</a>

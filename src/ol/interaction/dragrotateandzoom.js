@@ -1,7 +1,8 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.RotationConstraint');
+goog.require('ol.ViewHint');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
@@ -20,7 +21,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {
 
@@ -37,7 +38,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.shiftKeyOnly;
+    options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -85,15 +86,15 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var theta = Math.atan2(deltaY, deltaX);
   var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var view = map.getView();
-  if (this.lastAngle_ !== undefined) {
+  if (view.getConstraints().rotation !== ol.RotationConstraint.disable && this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, view.getRotation() - angleDelta);
+        view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    ol.interaction.Interaction.zoomWithoutConstraints(map, view, resolution);
+    ol.interaction.Interaction.zoomWithoutConstraints(view, resolution);
   }
   if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
@@ -115,10 +116,10 @@ ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(ol.View.Hint.INTERACTING, -1);
+  view.setHint(ol.ViewHint.INTERACTING, -1);
   var direction = this.lastScaleDelta_ - 1;
-  ol.interaction.Interaction.rotate(map, view, view.getRotation());
-  ol.interaction.Interaction.zoom(map, view, view.getResolution(),
+  ol.interaction.Interaction.rotate(view, view.getRotation());
+  ol.interaction.Interaction.zoom(view, view.getResolution(),
       undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
@@ -137,7 +138,7 @@ ol.interaction.DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
   }
 
   if (this.condition_(mapBrowserEvent)) {
-    mapBrowserEvent.map.getView().setHint(ol.View.Hint.INTERACTING, 1);
+    mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     this.lastMagnitude_ = undefined;
     return true;

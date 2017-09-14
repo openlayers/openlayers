@@ -41,12 +41,9 @@ ol.format.WMTSCapabilities.prototype.read;
 
 
 /**
- * @param {Document} doc Document.
- * @return {Object} WMTS Capability object.
+ * @inheritDoc
  */
 ol.format.WMTSCapabilities.prototype.readFromDocument = function(doc) {
-  goog.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
-      'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readFromNode(n);
@@ -57,14 +54,9 @@ ol.format.WMTSCapabilities.prototype.readFromDocument = function(doc) {
 
 
 /**
- * @param {Node} node Node.
- * @return {Object} WMTS Capability object.
+ * @inheritDoc
  */
 ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Capabilities',
-      'localName should be Capabilities');
   var version = node.getAttribute('version').trim();
   var WMTSCapabilityObject = this.owsParser_.readFromNode(node);
   if (!WMTSCapabilityObject) {
@@ -84,11 +76,6 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
  * @return {Object|undefined} Attribution object.
  */
 ol.format.WMTSCapabilities.readContents_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Contents',
-      'localName should be Contents');
-
   return ol.xml.pushParseAndPop({},
       ol.format.WMTSCapabilities.CONTENTS_PARSERS_, node, objectStack);
 };
@@ -101,9 +88,6 @@ ol.format.WMTSCapabilities.readContents_ = function(node, objectStack) {
  * @return {Object|undefined} Layers object.
  */
 ol.format.WMTSCapabilities.readLayer_ = function(node, objectStack) {
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  goog.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
   return ol.xml.pushParseAndPop({},
       ol.format.WMTSCapabilities.LAYER_PARSERS_, node, objectStack);
 };
@@ -252,6 +236,32 @@ ol.format.WMTSCapabilities.readTileMatrix_ = function(node, objectStack) {
 
 
 /**
+ * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} TileMatrixSetLimits Object.
+ */
+ol.format.WMTSCapabilities.readTileMatrixLimitsList_ = function(node,
+    objectStack) {
+  return ol.xml.pushParseAndPop([],
+      ol.format.WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_, node,
+      objectStack);
+};
+
+
+/**
+ * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} TileMatrixLimits Array.
+ */
+ol.format.WMTSCapabilities.readTileMatrixLimits_ = function(node, objectStack) {
+  return ol.xml.pushParseAndPop({},
+      ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_, node, objectStack);
+};
+
+
+/**
  * @const
  * @private
  * @type {Array.<string>}
@@ -353,7 +363,40 @@ ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
 ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'TileMatrixSet': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString)
+          ol.format.XSD.readString),
+      'TileMatrixSetLimits': ol.xml.makeObjectPropertySetter(
+          ol.format.WMTSCapabilities.readTileMatrixLimitsList_)
+    });
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+ol.format.WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
+      'TileMatrixLimits': ol.xml.makeArrayPusher(
+          ol.format.WMTSCapabilities.readTileMatrixLimits_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
+      'TileMatrix': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readString),
+      'MinTileRow': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger),
+      'MaxTileRow': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger),
+      'MinTileCol': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger),
+      'MaxTileCol': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger)
     });
 
 

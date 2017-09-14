@@ -2,21 +2,13 @@ goog.provide('ol.source.Zoomify');
 
 goog.require('ol');
 goog.require('ol.ImageTile');
-goog.require('ol.Tile');
+goog.require('ol.TileState');
+goog.require('ol.TileUrlFunction');
 goog.require('ol.asserts');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.TileGrid');
-
-
-/**
- * @enum {string}
- */
-ol.source.ZoomifyTierSizeCalculation = {
-  DEFAULT: 'default',
-  TRUNCATED: 'truncated'
-};
 
 
 /**
@@ -26,7 +18,7 @@ ol.source.ZoomifyTierSizeCalculation = {
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.source.Zoomify = function(opt_options) {
 
@@ -34,8 +26,8 @@ ol.source.Zoomify = function(opt_options) {
 
   var size = options.size;
   var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
-      options.tierSizeCalculation :
-      ol.source.ZoomifyTierSizeCalculation.DEFAULT;
+    options.tierSizeCalculation :
+    ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];
@@ -43,7 +35,7 @@ ol.source.Zoomify = function(opt_options) {
   var tileSize = ol.DEFAULT_TILE_SIZE;
 
   switch (tierSizeCalculation) {
-    case ol.source.ZoomifyTierSizeCalculation.DEFAULT:
+    case ol.source.Zoomify.TierSizeCalculation_.DEFAULT:
       while (imageWidth > tileSize || imageHeight > tileSize) {
         tierSizeInTiles.push([
           Math.ceil(imageWidth / tileSize),
@@ -52,7 +44,7 @@ ol.source.Zoomify = function(opt_options) {
         tileSize += tileSize;
       }
       break;
-    case ol.source.ZoomifyTierSizeCalculation.TRUNCATED:
+    case ol.source.Zoomify.TierSizeCalculation_.TRUNCATED:
       var width = imageWidth;
       var height = imageHeight;
       while (width > tileSize || height > tileSize) {
@@ -92,38 +84,59 @@ ol.source.Zoomify = function(opt_options) {
   });
 
   var url = options.url;
+  if (url && url.indexOf('{TileGroup}') == -1) {
+    url += '{TileGroup}/{z}-{x}-{y}.jpg';
+  }
+  var urls = ol.TileUrlFunction.expandUrl(url);
 
   /**
-   * @this {ol.source.TileImage}
-   * @param {ol.TileCoord} tileCoord Tile Coordinate.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {ol.proj.Projection} projection Projection.
-   * @return {string|undefined} Tile URL.
+   * @param {string} template Template.
+   * @return {ol.TileUrlFunctionType} Tile URL function.
    */
-  function tileUrlFunction(tileCoord, pixelRatio, projection) {
-    if (!tileCoord) {
-      return undefined;
-    } else {
-      var tileCoordZ = tileCoord[0];
-      var tileCoordX = tileCoord[1];
-      var tileCoordY = -tileCoord[2] - 1;
-      var tileIndex =
-          tileCoordX +
-          tileCoordY * tierSizeInTiles[tileCoordZ][0] +
-          tileCountUpToTier[tileCoordZ];
-      var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
-      return url + 'TileGroup' + tileGroup + '/' +
-          tileCoordZ + '-' + tileCoordX + '-' + tileCoordY + '.jpg';
-    }
+  function createFromTemplate(template) {
+
+    return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
+       * @param {ol.proj.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, pixelRatio, projection) {
+        if (!tileCoord) {
+          return undefined;
+        } else {
+          var tileCoordZ = tileCoord[0];
+          var tileCoordX = tileCoord[1];
+          var tileCoordY = -tileCoord[2] - 1;
+          var tileIndex =
+              tileCoordX +
+              tileCoordY * tierSizeInTiles[tileCoordZ][0] +
+              tileCountUpToTier[tileCoordZ];
+          var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
+          var localContext = {
+            'z': tileCoordZ,
+            'x': tileCoordX,
+            'y': tileCoordY,
+            'TileGroup': 'TileGroup' + tileGroup
+          };
+          return template.replace(/\{(\w+?)\}/g, function(m, p) {
+            return localContext[p];
+          });
+        }
+      });
   }
+
+  var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(createFromTemplate));
 
   ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
+    projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileClass: ol.source.ZoomifyTile_,
+    tileClass: ol.source.Zoomify.Tile_,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction
   });
@@ -136,51 +149,57 @@ ol.inherits(ol.source.Zoomify, ol.source.TileImage);
  * @constructor
  * @extends {ol.ImageTile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Tile.State} state State.
+ * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @private
  */
-ol.source.ZoomifyTile_ = function(
+ol.source.Zoomify.Tile_ = function(
     tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction);
 
   /**
    * @private
-   * @type {Object.<string,
-   *                HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
+   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
    */
-  this.zoomifyImageByContext_ = {};
+  this.zoomifyImage_ = null;
 
 };
-ol.inherits(ol.source.ZoomifyTile_, ol.ImageTile);
+ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
 
 
 /**
  * @inheritDoc
  */
-ol.source.ZoomifyTile_.prototype.getImage = function(opt_context) {
-  var tileSize = ol.DEFAULT_TILE_SIZE;
-  var key = opt_context !== undefined ?
-      ol.getUid(opt_context).toString() : '';
-  if (key in this.zoomifyImageByContext_) {
-    return this.zoomifyImageByContext_[key];
-  } else {
-    var image = ol.ImageTile.prototype.getImage.call(this, opt_context);
-    if (this.state == ol.Tile.State.LOADED) {
-      if (image.width == tileSize && image.height == tileSize) {
-        this.zoomifyImageByContext_[key] = image;
-        return image;
-      } else {
-        var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
-        context.drawImage(image, 0, 0);
-        this.zoomifyImageByContext_[key] = context.canvas;
-        return context.canvas;
-      }
-    } else {
-      return image;
-    }
+ol.source.Zoomify.Tile_.prototype.getImage = function() {
+  if (this.zoomifyImage_) {
+    return this.zoomifyImage_;
   }
+  var tileSize = ol.DEFAULT_TILE_SIZE;
+  var image = ol.ImageTile.prototype.getImage.call(this);
+  if (this.state == ol.TileState.LOADED) {
+    if (image.width == tileSize && image.height == tileSize) {
+      this.zoomifyImage_ = image;
+      return image;
+    } else {
+      var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
+      context.drawImage(image, 0, 0);
+      this.zoomifyImage_ = context.canvas;
+      return context.canvas;
+    }
+  } else {
+    return image;
+  }
+};
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+ol.source.Zoomify.TierSizeCalculation_ = {
+  DEFAULT: 'default',
+  TRUNCATED: 'truncated'
 };

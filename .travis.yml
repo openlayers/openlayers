@@ -3,7 +3,10 @@ sudo: false
 language: node_js
 
 node_js:
-  - "6"
+  - "6.1"
+
+addons:
+  firefox: "52.0"
 
 cache:
   directories:
@@ -17,7 +20,7 @@ before_install:
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
   - "sh -e /etc/init.d/xvfb start"
-  - "npm ls"
+  - "npm ls || true"
 
 script: "make ci"
 

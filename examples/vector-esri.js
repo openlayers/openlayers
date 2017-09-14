@@ -13,7 +13,7 @@ goog.require('ol.style.Style');
 goog.require('ol.tilegrid');
 
 
-var serviceUrl = 'http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
+var serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
     'Petroleum/KSFields/FeatureServer/';
 var layer = '0';
 
@@ -97,7 +97,7 @@ var vector = new ol.layer.Vector({
 
 var raster = new ol.layer.Tile({
   source: new ol.source.XYZ({
-    attributions: 'Tiles © <a href="http://services.arcgisonline.com/ArcGIS/' +
+    attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
         'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'

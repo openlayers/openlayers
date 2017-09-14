@@ -4,6 +4,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.Projection');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.TileImage');
@@ -11,9 +12,10 @@ goog.require('ol.tilegrid');
 
 
 describe('ol.source.TileImage', function() {
-  function createSource(opt_proj, opt_tileGrid) {
+  function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
     var proj = opt_proj || 'EPSG:3857';
     return new ol.source.TileImage({
+      cacheSize: opt_cacheSize,
       projection: proj,
       tileGrid: opt_tileGrid ||
           ol.tilegrid.createForProjection(proj, undefined, [2, 2]),
@@ -21,6 +23,15 @@ describe('ol.source.TileImage', function() {
           'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
     });
   }
+
+  describe('#getTileCacheForProjection', function() {
+    it('uses the cacheSize for reprojected tile caches', function() {
+      var source = createSource(undefined, undefined, 42);
+      var tileCache = source.getTileCacheForProjection(ol.proj.get('EPSG:4326'));
+      expect(tileCache.highWaterMark).to.be(42);
+      expect(tileCache).to.not.equal(source.getTileCacheForProjection(source.getProjection()));
+    });
+  });
 
   describe('#setTileGridForProjection', function() {
     it('uses the tilegrid for given projection', function() {
@@ -147,7 +158,7 @@ describe('ol.source.TileImage', function() {
       var source = createSource();
       source.setTileGridForProjection(proj,
           ol.tilegrid.createXYZ({
-            extent: [-180, -90, 180, 90],
+            extent: ol.proj.EPSG3857.WORLD_EXTENT,
             tileSize: [2, 2]
           }));
       var tile = source.getTile(0, 0, -1, 1, proj);

@@ -2,16 +2,17 @@ goog.provide('ol.ImageTile');
 
 goog.require('ol');
 goog.require('ol.Tile');
+goog.require('ol.TileState');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.obj');
 
 
 /**
  * @constructor
  * @extends {ol.Tile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Tile.State} state State.
+ * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
@@ -30,18 +31,12 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   /**
    * @private
-   * @type {Image}
+   * @type {Image|HTMLCanvasElement}
    */
   this.image_ = new Image();
   if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
-
-  /**
-   * @private
-   * @type {Object.<number, Image>}
-   */
-  this.imageByContext_ = {};
 
   /**
    * @private
@@ -63,39 +58,26 @@ ol.inherits(ol.ImageTile, ol.Tile);
  * @inheritDoc
  */
 ol.ImageTile.prototype.disposeInternal = function() {
-  if (this.state == ol.Tile.State.LOADING) {
+  if (this.state == ol.TileState.LOADING) {
     this.unlistenImage_();
+    this.image_.src = ol.ImageTile.blankImage.toDataURL('image/png');
   }
   if (this.interimTile) {
     this.interimTile.dispose();
   }
-  this.state = ol.Tile.State.ABORT;
+  this.state = ol.TileState.ABORT;
   this.changed();
   ol.Tile.prototype.disposeInternal.call(this);
 };
 
 
 /**
- * Get the image element for this tile.
- * @inheritDoc
+ * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
+ * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  * @api
  */
-ol.ImageTile.prototype.getImage = function(opt_context) {
-  if (opt_context !== undefined) {
-    var image;
-    var key = ol.getUid(opt_context);
-    if (key in this.imageByContext_) {
-      return this.imageByContext_[key];
-    } else if (ol.obj.isEmpty(this.imageByContext_)) {
-      image = this.image_;
-    } else {
-      image = /** @type {Image} */ (this.image_.cloneNode(false));
-    }
-    this.imageByContext_[key] = image;
-    return image;
-  } else {
-    return this.image_;
-  }
+ol.ImageTile.prototype.getImage = function() {
+  return this.image_;
 };
 
 
@@ -113,8 +95,9 @@ ol.ImageTile.prototype.getKey = function() {
  * @private
  */
 ol.ImageTile.prototype.handleImageError_ = function() {
-  this.state = ol.Tile.State.ERROR;
+  this.state = ol.TileState.ERROR;
   this.unlistenImage_();
+  this.image_ = ol.ImageTile.blankImage;
   this.changed();
 };
 
@@ -126,9 +109,9 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
-    this.state = ol.Tile.State.LOADED;
+    this.state = ol.TileState.LOADED;
   } else {
-    this.state = ol.Tile.State.EMPTY;
+    this.state = ol.TileState.EMPTY;
   }
   this.unlistenImage_();
   this.changed();
@@ -136,17 +119,13 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
 
 
 /**
- * Load the image or retry if loading previously failed.
- * Loading is taken care of by the tile queue, and calling this method is
- * only needed for preloading or for reloading in case of an error.
+ * @inheritDoc
  * @api
  */
 ol.ImageTile.prototype.load = function() {
-  if (this.state == ol.Tile.State.IDLE || this.state == ol.Tile.State.ERROR) {
-    this.state = ol.Tile.State.LOADING;
+  if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
+    this.state = ol.TileState.LOADING;
     this.changed();
-    goog.DEBUG && console.assert(!this.imageListenerKeys_,
-        'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
           this.handleImageError_, this),
@@ -167,3 +146,15 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
+
+
+/**
+ * A blank image.
+ * @type {HTMLCanvasElement}
+ */
+ol.ImageTile.blankImage = (function() {
+  var ctx = ol.dom.createCanvasContext2D(1, 1);
+  ctx.fillStyle = 'rgba(0,0,0,0)';
+  ctx.fillRect(0, 0, 1, 1);
+  return ctx.canvas;
+})();

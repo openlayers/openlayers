@@ -10,7 +10,6 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.obj');
 goog.require('ol.proj');
 
 
@@ -21,7 +20,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.JSONFeature}
  * @param {olx.format.TopoJSONOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.format.TopoJSON = function(opt_options) {
 
@@ -30,21 +29,26 @@ ol.format.TopoJSON = function(opt_options) {
   ol.format.JSONFeature.call(this);
 
   /**
+   * @private
+   * @type {string|undefined}
+   */
+  this.layerName_ = options.layerName;
+
+  /**
+   * @private
+   * @type {Array.<string>}
+   */
+  this.layers_ = options.layers ? options.layers : null;
+
+  /**
    * @inheritDoc
    */
   this.defaultDataProjection = ol.proj.get(
       options.defaultDataProjection ?
-          options.defaultDataProjection : 'EPSG:4326');
+        options.defaultDataProjection : 'EPSG:4326');
 
 };
 ol.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
-
-
-/**
- * @const {Array.<string>}
- * @private
- */
-ol.format.TopoJSON.EXTENSIONS_ = ['.topojson'];
 
 
 /**
@@ -202,14 +206,6 @@ ol.format.TopoJSON.readMultiPolygonGeometry_ = function(object, arcs) {
 
 
 /**
- * @inheritDoc
- */
-ol.format.TopoJSON.prototype.getExtensions = function() {
-  return ol.format.TopoJSON.EXTENSIONS_;
-};
-
-
-/**
  * Create features from a TopoJSON GeometryCollection object.
  *
  * @param {TopoJSONGeometryCollection} collection TopoJSON Geometry
@@ -217,18 +213,21 @@ ol.format.TopoJSON.prototype.getExtensions = function() {
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
+ * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
+ *     object to.
+ * @param {string} name Name of the `Topology`'s child object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Array of features.
  * @private
  */
 ol.format.TopoJSON.readFeaturesFromGeometryCollection_ = function(
-    collection, arcs, scale, translate, opt_options) {
+    collection, arcs, scale, translate, property, name, opt_options) {
   var geometries = collection.geometries;
   var features = [];
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     features[i] = ol.format.TopoJSON.readFeatureFromGeometry_(
-        geometries[i], arcs, scale, translate, opt_options);
+        geometries[i], arcs, scale, translate, property, name, opt_options);
   }
   return features;
 };
@@ -241,12 +240,15 @@ ol.format.TopoJSON.readFeaturesFromGeometryCollection_ = function(
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
+ * @param {string|undefined} property Property to set the `GeometryCollection`'s parent
+ *     object to.
+ * @param {string} name Name of the `Topology`'s child object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @private
  */
 ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
-    scale, translate, opt_options) {
+    scale, translate, property, name, opt_options) {
   var geometry;
   var type = object.type;
   var geometryReader = ol.format.TopoJSON.GEOMETRY_READERS_[type];
@@ -257,12 +259,19 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   }
   var feature = new ol.Feature();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
+    ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
-  if (object.properties) {
-    feature.setProperties(object.properties);
+  var properties = object.properties;
+  if (property) {
+    if (!properties) {
+      properties = {};
+    }
+    properties[property] = name;
+  }
+  if (properties) {
+    feature.setProperties(properties);
   }
   return feature;
 };
@@ -274,7 +283,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.TopoJSON.prototype.readFeatures;
 
@@ -298,21 +307,24 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
     }
     /** @type {Array.<ol.Feature>} */
     var features = [];
-    var topoJSONFeatures = ol.obj.getValues(topoJSONTopology.objects);
-    var i, ii;
-    var feature;
-    for (i = 0, ii = topoJSONFeatures.length; i < ii; ++i) {
-      if (topoJSONFeatures[i].type === 'GeometryCollection') {
+    var topoJSONFeatures = topoJSONTopology.objects;
+    var property = this.layerName_;
+    var objectName, feature;
+    for (objectName in topoJSONFeatures) {
+      if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
+        continue;
+      }
+      if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
         feature = /** @type {TopoJSONGeometryCollection} */
-            (topoJSONFeatures[i]);
+          (topoJSONFeatures[objectName]);
         features.push.apply(features,
             ol.format.TopoJSON.readFeaturesFromGeometryCollection_(
-                feature, arcs, scale, translate, opt_options));
+                feature, arcs, scale, translate, property, objectName, opt_options));
       } else {
         feature = /** @type {TopoJSONGeometry} */
-            (topoJSONFeatures[i]);
+          (topoJSONFeatures[objectName]);
         features.push(ol.format.TopoJSON.readFeatureFromGeometry_(
-            feature, arcs, scale, translate, opt_options));
+            feature, arcs, scale, translate, property, objectName, opt_options));
       }
     }
     return features;
@@ -381,12 +393,18 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
 /**
  * Read the projection from a TopoJSON source.
  *
- * @function
  * @param {Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
- * @api stable
+ * @override
+ * @api
  */
-ol.format.TopoJSON.prototype.readProjection = function(object) {
+ol.format.TopoJSON.prototype.readProjection;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.readProjectionFromObject = function(object) {
   return this.defaultDataProjection;
 };
 
@@ -404,3 +422,38 @@ ol.format.TopoJSON.GEOMETRY_READERS_ = {
   'MultiLineString': ol.format.TopoJSON.readMultiLineStringGeometry_,
   'MultiPolygon': ol.format.TopoJSON.readMultiPolygonGeometry_
 };
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeFeatureObject = function(feature, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeFeaturesObject = function(features, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeGeometryObject = function(geometry, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.TopoJSON.prototype.readGeometryFromObject = function() {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.TopoJSON.prototype.readFeatureFromObject = function() {};

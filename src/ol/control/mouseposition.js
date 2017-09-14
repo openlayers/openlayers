@@ -11,15 +11,6 @@ goog.require('ol.proj');
 
 
 /**
- * @enum {string}
- */
-ol.control.MousePositionProperty = {
-  PROJECTION: 'projection',
-  COORDINATE_FORMAT: 'coordinateFormat'
-};
-
-
-/**
  * @classdesc
  * A control to show the 2D coordinates of the mouse cursor. By default, these
  * are in the view projection, but can be in any supported projection.
@@ -30,7 +21,7 @@ ol.control.MousePositionProperty = {
  * @extends {ol.control.Control}
  * @param {olx.control.MousePositionOptions=} opt_options Mouse position
  *     options.
- * @api stable
+ * @api
  */
 ol.control.MousePosition = function(opt_options) {
 
@@ -40,7 +31,7 @@ ol.control.MousePosition = function(opt_options) {
   element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
   var render = options.render ?
-      options.render : ol.control.MousePosition.render;
+    options.render : ol.control.MousePosition.render;
 
   ol.control.Control.call(this, {
     element: element,
@@ -49,14 +40,14 @@ ol.control.MousePosition = function(opt_options) {
   });
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.control.MousePositionProperty.PROJECTION),
+      ol.Object.getChangeEventType(ol.control.MousePosition.Property_.PROJECTION),
       this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
   }
   if (options.projection) {
-    this.setProjection(ol.proj.get(options.projection));
+    this.setProjection(options.projection);
   }
 
   /**
@@ -127,11 +118,11 @@ ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
  * @return {ol.CoordinateFormatType|undefined} The format to render the current
  *     position in.
  * @observable
- * @api stable
+ * @api
  */
 ol.control.MousePosition.prototype.getCoordinateFormat = function() {
   return /** @type {ol.CoordinateFormatType|undefined} */ (
-      this.get(ol.control.MousePositionProperty.COORDINATE_FORMAT));
+    this.get(ol.control.MousePosition.Property_.COORDINATE_FORMAT));
 };
 
 
@@ -140,11 +131,11 @@ ol.control.MousePosition.prototype.getCoordinateFormat = function() {
  * @return {ol.proj.Projection|undefined} The projection to report mouse
  *     position in.
  * @observable
- * @api stable
+ * @api
  */
 ol.control.MousePosition.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.control.MousePositionProperty.PROJECTION));
+    this.get(ol.control.MousePosition.Property_.PROJECTION));
 };
 
 
@@ -171,7 +162,7 @@ ol.control.MousePosition.prototype.handleMouseOut = function(event) {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);
@@ -192,22 +183,22 @@ ol.control.MousePosition.prototype.setMap = function(map) {
  * @param {ol.CoordinateFormatType} format The format to render the current
  *     position in.
  * @observable
- * @api stable
+ * @api
  */
 ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
-  this.set(ol.control.MousePositionProperty.COORDINATE_FORMAT, format);
+  this.set(ol.control.MousePosition.Property_.COORDINATE_FORMAT, format);
 };
 
 
 /**
  * Set the projection that is used to report the mouse position.
- * @param {ol.proj.Projection} projection The projection to report mouse
+ * @param {ol.ProjectionLike} projection The projection to report mouse
  *     position in.
  * @observable
- * @api stable
+ * @api
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
-  this.set(ol.control.MousePositionProperty.PROJECTION, projection);
+  this.set(ol.control.MousePosition.Property_.PROJECTION, ol.proj.get(projection));
 };
 
 
@@ -243,4 +234,14 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     this.element.innerHTML = html;
     this.renderedHTML_ = html;
   }
+};
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+ol.control.MousePosition.Property_ = {
+  PROJECTION: 'projection',
+  COORDINATE_FORMAT: 'coordinateFormat'
 };

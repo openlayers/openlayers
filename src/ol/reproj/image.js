@@ -42,7 +42,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
   var maxTargetExtent = targetProj.getExtent();
 
   var limitedTargetExtent = maxTargetExtent ?
-      ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+    ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -108,7 +108,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
   }
 
   ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
-            state, attributions);
+      state, attributions);
 };
 ol.inherits(ol.reproj.Image, ol.ImageBase);
 
@@ -194,8 +194,6 @@ ol.reproj.Image.prototype.load = function() {
  * @private
  */
 ol.reproj.Image.prototype.unlistenSource_ = function() {
-  goog.DEBUG && console.assert(this.sourceListenerKey_,
-      'this.sourceListenerKey_ should not be null');
   ol.events.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;
 };

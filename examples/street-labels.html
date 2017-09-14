@@ -1,0 +1,17 @@
+---
+layout: example.html
+title: Street Labels
+shortdesc: Render street names with a custom render.
+docs: >
+  Example showing the use of a custom renderer to render text along a path. [Labelgun](https://github.com/Geovation/labelgun) is used to avoid label collisions. [label-segment](https://github.com/ahocevar/label-segment) makes sure that labels are placed on suitable street segments. [textpath](https://github.com/ahocevar/textpath) arranges the letters of a label along the geometry. The data is fetched from OSM using the [Overpass API](https://overpass-api.de).
+tags: "vector, label, collision detection, labelgun, linelabel, overpass"
+resources:
+  - https://cdn.polyfill.io/v2/polyfill.min.js?features=Set"
+  - https://unpkg.com/rbush@2.0.1/rbush.min.js
+  - https://unpkg.com/labelgun@0.1.1/lib/labelgun.min.js
+  - https://unpkg.com/textpath@1.0.1/dist/textpath.js
+  - https://unpkg.com/label-segment@1.0.0/dist/label-segment.js
+cloak:
+  As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5: Your Bing Maps Key from http://www.bingmapsportal.com/ here
+---
+<div id="map" class="map"></div>

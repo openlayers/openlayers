@@ -63,7 +63,7 @@ ol.style.Text = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
-      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
+    new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
@@ -93,6 +93,28 @@ ol.style.Text = function(opt_options) {
  * @private
  */
 ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
+
+
+/**
+ * Clones the style.
+ * @return {ol.style.Text} The cloned style.
+ * @api
+ */
+ol.style.Text.prototype.clone = function() {
+  return new ol.style.Text({
+    font: this.getFont(),
+    rotation: this.getRotation(),
+    rotateWithView: this.getRotateWithView(),
+    scale: this.getScale(),
+    text: this.getText(),
+    textAlign: this.getTextAlign(),
+    textBaseline: this.getTextBaseline(),
+    fill: this.getFill() ? this.getFill().clone() : undefined,
+    stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+    offsetX: this.getOffsetX(),
+    offsetY: this.getOffsetY()
+  });
+};
 
 
 /**

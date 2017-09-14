@@ -3,6 +3,7 @@ goog.provide('ol.test.rendering.layer.Vector');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Polygon');
@@ -96,6 +97,45 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
+    it('renders transparent layers correctly with the canvas renderer', function(done) {
+      map = createMap('canvas');
+      var smallLine = new ol.Feature(new ol.geom.LineString([
+        [center[0], center[1] - 1],
+        [center[0], center[1] + 1]
+      ]));
+      smallLine.setStyle([
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 75, color: 'red'})
+        }),
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 45, color: 'white'})
+        })
+      ]);
+      source.addFeature(smallLine);
+      var smallLine2 = new ol.Feature(new ol.geom.LineString([
+        [center[0], center[1] - 1000],
+        [center[0], center[1] + 1000]
+      ]));
+      smallLine2.setStyle([
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 35, color: 'blue'})
+        }),
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 15, color: 'green'})
+        })
+      ]);
+      source.addFeature(smallLine2);
+
+      map.addLayer(new ol.layer.Vector({
+        source: source,
+        opacity: 0.5
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-transparent.png',
+            7, done);
+      });
+    });
+
     it('renders rotation correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
       map.getView().setRotation(Math.PI + Math.PI / 4);
@@ -138,7 +178,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'spec/ol/layer/expected/vector-canvas-opaque.png',
-            17, done);
+            24.34, done);
       });
     });
 
@@ -269,6 +309,151 @@ describe('ol.rendering.layer.Vector', function() {
         });
       });
     });
+  });
+
+  describe('polygon rendering', function() {
+
+    var map;
+    beforeEach(function() {
+      map = new ol.Map({
+        target: createMapDiv(128, 128),
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders a feature that spans the world', function(done) {
+      var json = {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]
+            ],
+            [
+              [0, 60], [-17.6336, 24.2705], [-57.0634, 18.5410], [-28.5317, -9.2705], [-35.2671, -48.5410], [0, -30], [35.2671, -48.5410], [28.5317, -9.2705], [57.0634, 18.5410], [17.6336, 24.2705], [0, 60]
+            ]
+          ]
+        },
+        properties: {}
+      };
+
+      var format = new ol.format.GeoJSON({featureProjection: 'EPSG:3857'});
+      var feature = format.readFeature(json);
+
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        }),
+        style: new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'blue'
+          })
+        })
+      });
+
+      map.addLayer(layer);
+
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/inverted-star.png', 1, done);
+      });
+
+    });
+
+  });
+
+  describe('Polygon simplification', function() {
+
+    var layer, map;
+
+    beforeEach(function() {
+      var src = new ol.source.Vector({
+        features: [
+          new ol.Feature(new ol.geom.Polygon([[
+            [-22, 58],
+            [-22, 78],
+            [-9, 78],
+            [-9, 58],
+            [-22, 58]
+          ]])),
+          new ol.Feature(new ol.geom.Polygon([[
+            [-9, 58],
+            [-9, 78],
+            [4, 78],
+            [4, 58],
+            [-9, 58]
+          ]]))
+        ]
+      });
+      layer = new ol.layer.Vector({
+        renderBuffer: 0,
+        source: src
+      });
+      var view = new ol.View({
+        center: [-9.5, 78],
+        zoom: 2,
+        projection: 'EPSG:4326'
+      });
+
+      map = new ol.Map({
+        layers: [layer],
+        target: createMapDiv(100, 100),
+        view: view
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders partially out-of-view polygons with a fill and stroke', function(done) {
+      layer.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: [0, 0, 0, 1],
+          width: 2
+        }),
+        fill: new ol.style.Fill({
+          color: [255, 0, 0, 1]
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('renders partially out-of-view polygons with a fill', function(done) {
+      layer.setStyle(new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: [0, 0, 0, 1]
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-fill.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('renders partially out-of-view polygons with a stroke', function(done) {
+      layer.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: [0, 0, 0, 1],
+          width: 2
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-stroke.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
   });
 
 });

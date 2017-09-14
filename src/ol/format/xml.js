@@ -8,6 +8,7 @@ goog.require('ol.xml');
  * Generic format for reading non-feature XML data
  *
  * @constructor
+ * @abstract
  * @struct
  */
 ol.format.XML = function() {

@@ -1,8 +1,9 @@
 goog.provide('ol.events.condition');
 
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.asserts');
 goog.require('ol.functions');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.has');
 
 
 /**
@@ -11,12 +12,12 @@ goog.require('ol.MapBrowserEvent.EventType');
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt key is pressed.
- * @api stable
+ * @api
  */
 ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      originalEvent.altKey &&
+    originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       !originalEvent.shiftKey);
 };
@@ -28,12 +29,12 @@ ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the alt and shift keys are pressed.
- * @api stable
+ * @api
  */
 ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      originalEvent.altKey &&
+    originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       originalEvent.shiftKey);
 };
@@ -45,7 +46,7 @@ ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True.
  * @function
- * @api stable
+ * @api
  */
 ol.events.condition.always = ol.functions.TRUE;
 
@@ -55,10 +56,10 @@ ol.events.condition.always = ol.functions.TRUE;
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a map `click` event.
- * @api stable
+ * @api
  */
 ol.events.condition.click = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.CLICK;
+  return mapBrowserEvent.type == ol.MapBrowserEventType.CLICK;
 };
 
 
@@ -74,7 +75,7 @@ ol.events.condition.click = function(mapBrowserEvent) {
 ol.events.condition.mouseActionButton = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return originalEvent.button == 0 &&
-      !(goog.userAgent.WEBKIT && ol.has.MAC && originalEvent.ctrlKey);
+      !(ol.has.WEBKIT && ol.has.MAC && originalEvent.ctrlKey);
 };
 
 
@@ -84,7 +85,7 @@ ol.events.condition.mouseActionButton = function(mapBrowserEvent) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} False.
  * @function
- * @api stable
+ * @api
  */
 ol.events.condition.never = ol.functions.FALSE;
 
@@ -107,10 +108,10 @@ ol.events.condition.pointerMove = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a map `singleclick` event.
- * @api stable
+ * @api
  */
 ol.events.condition.singleClick = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK;
+  return mapBrowserEvent.type == ol.MapBrowserEventType.SINGLECLICK;
 };
 
 
@@ -119,10 +120,10 @@ ol.events.condition.singleClick = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event is a map `dblclick` event.
- * @api stable
+ * @api
  */
 ol.events.condition.doubleClick = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK;
+  return mapBrowserEvent.type == ol.MapBrowserEventType.DBLCLICK;
 };
 
 
@@ -132,12 +133,12 @@ ol.events.condition.doubleClick = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True only if there no modifier keys are pressed.
- * @api stable
+ * @api
  */
 ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !originalEvent.altKey &&
+    !originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       !originalEvent.shiftKey);
 };
@@ -150,12 +151,12 @@ ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the platform modifier key is pressed.
- * @api stable
+ * @api
  */
 ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !originalEvent.altKey &&
+    !originalEvent.altKey &&
       (ol.has.MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
       !originalEvent.shiftKey);
 };
@@ -167,12 +168,12 @@ ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the shift key is pressed.
- * @api stable
+ * @api
  */
 ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !originalEvent.altKey &&
+    !originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       originalEvent.shiftKey);
 };
@@ -190,7 +191,7 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
   var target = mapBrowserEvent.originalEvent.target;
   var tagName = target.tagName;
   return (
-      tagName !== 'INPUT' &&
+    tagName !== 'INPUT' &&
       tagName !== 'SELECT' &&
       tagName !== 'TEXTAREA');
 };
@@ -201,7 +202,7 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a mouse device.
- * @api stable
+ * @api
  */
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
   ol.asserts.assert(mapBrowserEvent.pointerEvent, 56); // mapBrowserEvent must originate from a pointer event

@@ -22,7 +22,7 @@ goog.require('ol.proj');
  * @extends {ol.format.TextFeature}
  * @param {olx.format.PolylineOptions=} opt_options
  *     Optional configuration object.
- * @api stable
+ * @api
  */
 ol.format.Polyline = function(opt_options) {
 
@@ -46,7 +46,7 @@ ol.format.Polyline = function(opt_options) {
    * @type {ol.geom.GeometryLayout}
    */
   this.geometryLayout_ = options.geometryLayout ?
-      options.geometryLayout : ol.geom.GeometryLayout.XY;
+    options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
 ol.inherits(ol.format.Polyline, ol.format.TextFeature);
 
@@ -271,7 +271,7 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api stable
+ * @api
  */
 ol.format.Polyline.prototype.readFeature;
 
@@ -293,7 +293,7 @@ ol.format.Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.Polyline.prototype.readFeatures;
 
@@ -314,7 +314,7 @@ ol.format.Polyline.prototype.readFeaturesFromText = function(text, opt_options) 
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
- * @api stable
+ * @api
  */
 ol.format.Polyline.prototype.readGeometry;
 
@@ -332,9 +332,9 @@ ol.format.Polyline.prototype.readGeometryFromText = function(text, opt_options) 
       flatCoordinates, 0, flatCoordinates.length, stride);
 
   return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(
-          new ol.geom.LineString(coordinates, this.geometryLayout_), false,
-          this.adaptOptions(opt_options)));
+    ol.format.Feature.transformWithOptions(
+        new ol.geom.LineString(coordinates, this.geometryLayout_), false,
+        this.adaptOptions(opt_options)));
 };
 
 
@@ -344,7 +344,7 @@ ol.format.Polyline.prototype.readGeometryFromText = function(text, opt_options) 
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api stable
+ * @api
  */
 ol.format.Polyline.prototype.readProjection;
 
@@ -367,8 +367,6 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
  * @inheritDoc
  */
 ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options) {
-  goog.DEBUG && console.assert(features.length == 1,
-      'features array should have 1 item');
   return this.writeFeatureText(features[0], opt_options);
 };
 
@@ -380,7 +378,7 @@ ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options)
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Geometry.
- * @api stable
+ * @api
  */
 ol.format.Polyline.prototype.writeGeometry;
 
@@ -390,8 +388,8 @@ ol.format.Polyline.prototype.writeGeometry;
  */
 ol.format.Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
   geometry = /** @type {ol.geom.LineString} */
-      (ol.format.Feature.transformWithOptions(
-          geometry, true, this.adaptOptions(opt_options)));
+    (ol.format.Feature.transformWithOptions(
+        geometry, true, this.adaptOptions(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   ol.geom.flat.flip.flipXY(

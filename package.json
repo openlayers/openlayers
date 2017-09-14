@@ -1,74 +1,78 @@
 {
   "name": "openlayers",
-  "version": "3.18.2",
+  "version": "4.3.2",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
     "mapping",
-    "ol3"
+    "ol"
   ],
-  "homepage": "http://openlayers.org/",
+  "homepage": "https://openlayers.org/",
   "scripts": {
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
     "pretest": "eslint tasks test test_rendering src examples",
+    "lint-package": "eslint --fix build/package",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
   },
   "main": "dist/ol.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/openlayers/ol3.git"
+    "url": "git://github.com/openlayers/openlayers.git"
   },
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/openlayers/ol3/issues"
+    "url": "https://github.com/openlayers/openlayers/issues"
   },
   "browser": "dist/ol.js",
   "style": [
     "css/ol.css"
   ],
   "dependencies": {
-    "async": "2.0.1",
-    "browserify": "13.1.0",
-    "closure-util": "1.15.1",
-    "derequire": "2.0.3",
-    "fs-extra": "0.30.0",
-    "glob": "7.0.6",
-    "handlebars": "4.0.5",
-    "jsdoc": "3.4.0",
-    "marked": "0.3.6",
-    "metalsmith": "2.2.0",
-    "metalsmith-layouts": "1.6.5",
+    "async": "2.5.0",
+    "closure-util": "1.22.0",
+    "fs-extra": "4.0.1",
+    "jsdoc": "3.5.4",
     "nomnom": "1.8.1",
-    "pbf": "2.0.1",
+    "pbf": "3.0.5",
     "pixelworks": "1.1.0",
     "rbush": "2.0.1",
+    "rollup": "^0.47.2",
+    "rollup-plugin-cleanup": "^1.0.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "temp": "0.8.3",
-    "vector-tile": "1.3.0",
+    "@mapbox/vector-tile": "1.3.0",
     "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css": "3.4.19",
-    "coveralls": "2.11.12",
+    "clean-css-cli": "4.1.6",
+    "coveralls": "2.13.1",
     "debounce": "^1.0.0",
-    "eslint": "3.3.1",
-    "eslint-config-openlayers": "5.0.0",
-    "eslint-plugin-openlayers-internal": "2.1.0",
+    "eslint": "4.4.1",
+    "eslint-config-openlayers": "7.0.0",
+    "eslint-plugin-openlayers-internal": "^3.1.0",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",
+    "glob": "7.1.1",
+    "handlebars": "4.0.10",
     "istanbul": "0.4.5",
-    "jquery": "3.1.0",
-    "mocha": "3.0.2",
-    "mocha-phantomjs-core": "^1.3.0",
-    "mustache": "2.2.1",
-    "phantomjs-prebuilt": "2.1.12",
-    "proj4": "2.3.15",
-    "resemblejs": "2.2.1",
-    "serve-files": "1.0.0",
-    "sinon": "1.17.5",
-    "slimerjs": "0.906.2"
+    "jquery": "3.2.1",
+    "jscodeshift": "^0.3.30",
+    "marked": "0.3.6",
+    "metalsmith": "2.3.0",
+    "metalsmith-layouts": "1.8.1",
+    "mocha": "3.5.0",
+    "mocha-phantomjs-core": "^2.1.0",
+    "mustache": "2.3.0",
+    "phantomjs-prebuilt": "2.1.14",
+    "proj4": "2.4.4",
+    "resemblejs": "2.2.4",
+    "serve-files": "1.0.1",
+    "sinon": "3.2.0",
+    "slimerjs": "0.10.3"
   },
   "eslintConfig": {
     "extends": "openlayers",
@@ -87,41 +91,53 @@
       "openlayers-internal"
     ],
     "rules": {
-      "no-console": [
-        2,
-        {
-          "allow": [
-            "assert"
-          ]
-        }
-      ],
       "no-constant-condition": 0,
+      "openlayers-internal/enum": 2,
       "openlayers-internal/no-duplicate-requires": 2,
-      "openlayers-internal/no-missing-requires": 1,
+      "openlayers-internal/no-missing-requires": 2,
       "openlayers-internal/no-unused-requires": 2,
-      "openlayers-internal/one-provide": 1,
+      "openlayers-internal/one-provide": 2,
       "openlayers-internal/requires-first": 2,
       "openlayers-internal/valid-provide": 2,
-      "openlayers-internal/valid-requires": 2
+      "openlayers-internal/valid-requires": 2,
+      "indent": [
+        2,
+        2,
+        {
+          "VariableDeclarator": 2,
+          "SwitchCase": 1,
+          "MemberExpression": 2,
+          "FunctionDeclaration": {
+            "parameters": 2,
+            "body": 1
+          },
+          "FunctionExpression": {
+            "parameters": 2,
+            "body": 1
+          },
+          "CallExpression": {
+            "arguments": 2
+          }
+        }
+      ]
     }
   },
   "ext": [
     {
-      "module": "rbush",
-      "browserify": true
+      "module": "rbush"
     },
     {
       "module": "pbf",
-      "browserify": true
+      "name": "PBF"
     },
     {
       "module": "pixelworks",
-      "browserify": true
+      "import": "Processor"
     },
     {
-      "module": "vector-tile",
+      "module": "@mapbox/vector-tile",
       "name": "vectortile",
-      "browserify": true
+      "import": "VectorTile"
     }
   ]
 }

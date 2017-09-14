@@ -16,7 +16,7 @@
             <ows:DCP>
                 <ows:HTTP>
                     <ows:Get
-                        xlink:href="http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/1.0.0/WMTSCapabilities.xml">
+                        xlink:href="https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/1.0.0/WMTSCapabilities.xml">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>RESTful</ows:Value>
@@ -25,7 +25,7 @@
                     </ows:Get>
                     <!-- add KVP binding in 10.1 -->
                     <ows:Get
-                        xlink:href="http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS?">
+                        xlink:href="https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS?">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>KVP</ows:Value>
@@ -39,7 +39,7 @@
             <ows:DCP>
                 <ows:HTTP>
                     <ows:Get
-                        xlink:href="http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/tile/1.0.0/">
+                        xlink:href="https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/tile/1.0.0/">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>RESTful</ows:Value>
@@ -47,7 +47,7 @@
                         </ows:Constraint>
                     </ows:Get>
                     <ows:Get
-                        xlink:href="http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS?">
+                        xlink:href="https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS?">
                         <ows:Constraint name="GetEncoding">
                             <ows:AllowedValues>
                                 <ows:Value>KVP</ows:Value>
@@ -84,7 +84,7 @@
                 <TileMatrixSet>GoogleMapsCompatible</TileMatrixSet>
             </TileMatrixSetLink>
             <ResourceURL format="image/png" resourceType="tile"
-                template="http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/tile/1.0.0/Demographics_USA_Population_Density/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
+                template="https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/tile/1.0.0/Demographics_USA_Population_Density/{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"
             />
         </Layer>
         <!--TileMatrixSet-->
@@ -403,6 +403,6 @@
         </TileMatrixSet>
     </Contents>
     <ServiceMetadataURL
-        xlink:href="http://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/1.0.0/WMTSCapabilities.xml"
+        xlink:href="https://services.arcgisonline.com/arcgis/rest/services/Demographics/USA_Population_Density/MapServer/WMTS/1.0.0/WMTSCapabilities.xml"
     />
 </Capabilities>

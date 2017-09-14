@@ -1,4 +1,3 @@
-/*global createMapDiv, disposeMap*/
 goog.provide('ol.test.interaction.KeyboardZoom');
 
 goog.require('ol.Map');
@@ -36,8 +35,8 @@ describe('ol.interaction.KeyboardZoom', function() {
       map.handleMapBrowserEvent(event);
       event.originalEvent.charCode = '-'.charCodeAt(0);
       map.handleMapBrowserEvent(event);
-      expect(spy.getCall(0).args[2]).to.eql(1);
-      expect(spy.getCall(1).args[2]).to.eql(-1);
+      expect(spy.getCall(0).args[1]).to.eql(1);
+      expect(spy.getCall(1).args[1]).to.eql(-1);
       ol.interaction.Interaction.zoomByDelta.restore();
     });
   });

@@ -100,11 +100,10 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.BingMaps({
         imagerySet: 'Aerial',
-        key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
+        key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
       })
     })
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],
@@ -122,8 +121,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
       style: styleFunction
     })
   }));
-  map.getView().fit(
-      vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
+  map.getView().fit(vectorSource.getExtent());
 });
 
 var displayFeatureInfo = function(pixel) {

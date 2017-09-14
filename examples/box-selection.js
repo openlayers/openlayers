@@ -25,7 +25,6 @@ var map = new ol.Map({
       source: vectorSource
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View({
     center: [0, 0],
@@ -46,29 +45,29 @@ var dragBox = new ol.interaction.DragBox({
 
 map.addInteraction(dragBox);
 
-var infoBox = document.getElementById('info');
-
 dragBox.on('boxend', function() {
   // features that intersect the box are added to the collection of
-  // selected features, and their names are displayed in the "info"
-  // div
-  var info = [];
+  // selected features
   var extent = dragBox.getGeometry().getExtent();
   vectorSource.forEachFeatureIntersectingExtent(extent, function(feature) {
     selectedFeatures.push(feature);
-    info.push(feature.get('name'));
   });
-  if (info.length > 0) {
-    infoBox.innerHTML = info.join(', ');
-  }
 });
 
 // clear selection when drawing a new box and when clicking on the map
 dragBox.on('boxstart', function() {
   selectedFeatures.clear();
-  infoBox.innerHTML = '&nbsp;';
 });
-map.on('click', function() {
-  selectedFeatures.clear();
-  infoBox.innerHTML = '&nbsp;';
+
+var infoBox = document.getElementById('info');
+
+selectedFeatures.on(['add', 'remove'], function() {
+  var names = selectedFeatures.getArray().map(function(feature) {
+    return feature.get('name');
+  });
+  if (names.length > 0) {
+    infoBox.innerHTML = names.join(', ');
+  } else {
+    infoBox.innerHTML = 'No countries selected';
+  }
 });

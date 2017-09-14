@@ -90,14 +90,14 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
    * @private
    */
   this.sourceWorldWidth_ = this.sourceProj_.getExtent() ?
-      ol.extent.getWidth(this.sourceProj_.getExtent()) : null;
+    ol.extent.getWidth(this.sourceProj_.getExtent()) : null;
 
   /**
    * @type {?number}
    * @private
    */
   this.targetWorldWidth_ = this.targetProj_.getExtent() ?
-      ol.extent.getWidth(this.targetProj_.getExtent()) : null;
+    ol.extent.getWidth(this.targetProj_.getExtent()) : null;
 
   var destinationTopLeft = ol.extent.getTopLeft(targetExtent);
   var destinationTopRight = ol.extent.getTopRight(targetExtent);
@@ -115,10 +115,6 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
       ol.RASTER_REPROJECTION_MAX_SUBDIVISION);
 
   if (this.wrapsXInSource_) {
-    // Fix coordinates (ol.proj returns wrapped coordinates, "unwrap" here).
-    // This significantly simplifies the rest of the reprojection process.
-
-    goog.DEBUG && console.assert(this.sourceWorldWidth_ !== null);
     var leftBound = Infinity;
     this.triangles_.forEach(function(triangle, i, arr) {
       leftBound = Math.min(leftBound,
@@ -131,8 +127,8 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
       if (Math.max(triangle.source[0][0], triangle.source[1][0],
           triangle.source[2][0]) - leftBound > this.sourceWorldWidth_ / 2) {
         var newTriangle = [[triangle.source[0][0], triangle.source[0][1]],
-                           [triangle.source[1][0], triangle.source[1][1]],
-                           [triangle.source[2][0], triangle.source[2][1]]];
+          [triangle.source[1][0], triangle.source[1][1]],
+          [triangle.source[2][0], triangle.source[2][1]]];
         if ((newTriangle[0][0] - leftBound) > this.sourceWorldWidth_ / 2) {
           newTriangle[0][0] -= this.sourceWorldWidth_;
         }
@@ -201,7 +197,7 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
 
   var sourceQuadExtent = ol.extent.boundingExtent([aSrc, bSrc, cSrc, dSrc]);
   var sourceCoverageX = this.sourceWorldWidth_ ?
-      ol.extent.getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
+    ol.extent.getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
   var sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
 
   // when the quad is wrapped in the source projection

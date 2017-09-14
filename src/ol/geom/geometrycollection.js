@@ -16,7 +16,7 @@ goog.require('ol.obj');
  * @constructor
  * @extends {ol.geom.Geometry}
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.
- * @api stable
+ * @api
  */
 ol.geom.GeometryCollection = function(opt_geometries) {
 
@@ -83,7 +83,8 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.GeometryCollection} Clone.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.GeometryCollection.prototype.clone = function() {
   var geometryCollection = new ol.geom.GeometryCollection(null);
@@ -141,7 +142,7 @@ ol.geom.GeometryCollection.prototype.computeExtent = function(extent) {
 /**
  * Return the geometries that make up this geometry collection.
  * @return {Array.<ol.geom.Geometry>} Geometries.
- * @api stable
+ * @api
  */
 ol.geom.GeometryCollection.prototype.getGeometries = function() {
   return ol.geom.GeometryCollection.cloneGeometries_(this.geometries_);
@@ -201,7 +202,7 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTol
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.GeometryCollection.prototype.getType = function() {
   return ol.geom.GeometryType.GEOMETRY_COLLECTION;
@@ -210,7 +211,7 @@ ol.geom.GeometryCollection.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
   var geometries = this.geometries_;
@@ -265,7 +266,7 @@ ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
 /**
  * Set the geometries that make up this geometry collection.
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
- * @api stable
+ * @api
  */
 ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
   this.setGeometriesArray(
@@ -286,7 +287,7 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   var geometries = this.geometries_;
@@ -302,6 +303,7 @@ ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
  * Translate the geometry.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
+ * @override
  * @api
  */
 ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {

@@ -3,14 +3,13 @@ goog.provide('ol.test.proj');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.common');
 
 
 describe('ol.proj', function() {
 
   afterEach(function() {
     ol.proj.clearAllProjections();
-    ol.proj.common.add();
+    ol.proj.addCommon();
   });
 
   describe('projection equivalence', function() {
@@ -56,13 +55,13 @@ describe('ol.proj', function() {
 
     it('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
         'equivalent',
-        function() {
-          _testAllEquivalent([
-            'CRS:84',
-            'urn:ogc:def:crs:EPSG:6.6:4326',
-            'EPSG:4326'
-          ]);
-        });
+    function() {
+      _testAllEquivalent([
+        'CRS:84',
+        'urn:ogc:def:crs:EPSG:6.6:4326',
+        'EPSG:4326'
+      ]);
+    });
 
     it('requires code and units to be equal for projection evquivalence',
         function() {
@@ -213,6 +212,33 @@ describe('ol.proj', function() {
 
   });
 
+  describe('getPointResolution()', function() {
+    it('returns the correct point resolution for EPSG:4326', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 0]);
+      expect (pointResolution).to.be(1);
+      pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 52]);
+      expect (pointResolution).to.be(1);
+    });
+    it('returns the correct point resolution for EPSG:4326 with custom units', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 0], 'm');
+      expect(pointResolution).to.roughlyEqual(111195.0802335329, 1e-5);
+      pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, [0, 52], 'm');
+      expect(pointResolution).to.roughlyEqual(89826.53390979706, 1e-5);
+    });
+    it('returns the correct point resolution for EPSG:3857', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:3857', 1, [0, 0]);
+      expect(pointResolution).to.be(1);
+      pointResolution = ol.proj.getPointResolution('EPSG:3857', 1, ol.proj.fromLonLat([0, 52]));
+      expect(pointResolution).to.roughlyEqual(0.615661, 1e-5);
+    });
+    it('returns the correct point resolution for EPSG:3857 with custom units', function() {
+      var pointResolution = ol.proj.getPointResolution('EPSG:3857', 1, [0, 0], 'degrees');
+      expect(pointResolution).to.be(1);
+      pointResolution = ol.proj.getPointResolution('EPSG:4326', 1, ol.proj.fromLonLat([0, 52]), 'degrees');
+      expect(pointResolution).to.be(1);
+    });
+  });
+
   describe('Proj4js integration', function() {
 
     var proj4 = window.proj4;
@@ -310,7 +336,7 @@ describe('ol.proj', function() {
 
     it('numerically estimates point scale at the equator', function() {
       var googleProjection = ol.proj.get('GOOGLE');
-      expect(googleProjection.getPointResolution(1, [0, 0])).
+      expect(ol.proj.getPointResolution(googleProjection, 1, [0, 0])).
           to.roughlyEqual(1, 1e-1);
     });
 
@@ -320,8 +346,8 @@ describe('ol.proj', function() {
       var point, y;
       for (y = -20; y <= 20; ++y) {
         point = [0, 1000000 * y];
-        expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
-            epsg3857Projection.getPointResolution(1, point), 1e-1);
+        expect(ol.proj.getPointResolution(googleProjection, 1, point)).to.roughlyEqual(
+            ol.proj.getPointResolution(epsg3857Projection, 1, point), 1e-1);
       }
     });
 
@@ -332,8 +358,8 @@ describe('ol.proj', function() {
       for (x = -20; x <= 20; x += 2) {
         for (y = -20; y <= 20; y += 2) {
           point = [1000000 * x, 1000000 * y];
-          expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
-              epsg3857Projection.getPointResolution(1, point), 1e-1);
+          expect(ol.proj.getPointResolution(googleProjection, 1, point)).to.roughlyEqual(
+              ol.proj.getPointResolution(epsg3857Projection, 1, point), 1e-1);
         }
       }
     });
@@ -449,37 +475,6 @@ describe('ol.proj', function() {
       expect(output[7]).to.roughlyEqual(52.4827802220782, 1e-9);
       expect(output[8]).to.be(300);
     });
-  });
-
-  describe('ol.proj.removeTransform()', function() {
-
-    var extent = [180, -90, 180, 90];
-    var units = 'degrees';
-
-    it('removes functions cached by addTransform', function() {
-      var foo = new ol.proj.Projection({
-        code: 'foo',
-        units: units,
-        extent: extent
-      });
-      var bar = new ol.proj.Projection({
-        code: 'bar',
-        units: units,
-        extent: extent
-      });
-      var transform = function(input, output, dimension) {
-        return input;
-      };
-      ol.proj.addTransform(foo, bar, transform);
-      expect(ol.proj.transforms_).not.to.be(undefined);
-      expect(ol.proj.transforms_.foo).not.to.be(undefined);
-      expect(ol.proj.transforms_.foo.bar).to.be(transform);
-
-      var removed = ol.proj.removeTransform(foo, bar);
-      expect(removed).to.be(transform);
-      expect(ol.proj.transforms_.foo).to.be(undefined);
-    });
-
   });
 
   describe('ol.proj.transform()', function() {

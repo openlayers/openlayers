@@ -69,10 +69,11 @@ layers['osm'] = new ol.layer.Tile({
 
 layers['wms4326'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
-    url: 'http://demo.boundlessgeo.com/geoserver/wms',
+    url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {
-      'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+      'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
+      'TILED': true
     },
     projection: 'EPSG:4326'
   })
@@ -93,19 +94,21 @@ layers['wms21781'] = new ol.layer.Tile({
 });
 
 var parser = new ol.format.WMTSCapabilities();
-var url = 'http://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
+var url = 'https://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
     'wmts.cgi?SERVICE=WMTS&request=GetCapabilities';
 fetch(url).then(function(response) {
   return response.text();
 }).then(function(text) {
   var result = parser.read(text);
-  var options = ol.source.WMTS.optionsFromCapabilities(result,
-      {layer: 'OSM_Land_Mask', matrixSet: 'EPSG3413_250m'});
+  var options = ol.source.WMTS.optionsFromCapabilities(result, {
+    layer: 'OSM_Land_Mask',
+    matrixSet: 'EPSG3413_250m'
+  });
   options.crossOrigin = '';
   options.projection = 'EPSG:3413';
   options.wrapX = false;
   layers['wmts3413'] = new ol.layer.Tile({
-    source: new ol.source.WMTS(options)
+    source: new ol.source.WMTS(/** @type {!olx.source.WMTSOptions} */ (options))
   });
 });
 
@@ -129,9 +132,9 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
 
 layers['states'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
-    url: 'http://demo.boundlessgeo.com/geoserver/wms',
+    url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
-    params: {'LAYERS': 'topp:states', 'TILED': true},
+    params: {'LAYERS': 'topp:states'},
     serverType: 'geoserver',
     tileGrid: new ol.tilegrid.TileGrid({
       extent: [-13884991, 2870341, -7455066, 6338219],
@@ -148,7 +151,6 @@ var map = new ol.Map({
     layers['osm'],
     layers['bng']
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: 'EPSG:3857',
@@ -175,7 +177,7 @@ function updateViewProjection() {
   });
   map.setView(newView);
 
-  // Example how to prevent double occurence of map by limiting layer extent
+  // Example how to prevent double occurrence of map by limiting layer extent
   if (newProj == ol.proj.get('EPSG:3857')) {
     layers['bng'].setExtent([-1057216, 6405988, 404315, 8759696]);
   } else {

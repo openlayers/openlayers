@@ -26,7 +26,7 @@ var layers = [
   }),
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
-      url: 'http://demo.boundlessgeo.com/geoserver/wms',
+      url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
       serverType: 'geoserver',
       tileGrid: tileGrid

@@ -1,17 +1,17 @@
-# Contributing to OpenLayers 3
+# Contributing to OpenLayers
 
-Thanks for your interest in contributing to OpenLayers 3.
+Thanks for your interest in contributing to OpenLayers.
 
 ## Asking Questions
 
-Please ask questions about using the library on [stackoverflow using the tag 'openlayers-3'](http://stackoverflow.com/questions/tagged/openlayers-3).
+Please ask questions about using the library on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers).
 
-When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/ol3-dev).
+When you want to get involved and discuss new features or changes, please use [the mailing list](https://groups.google.com/forum/#!forum/openlayers-dev).
 
 
 ## Submitting Bug Reports
 
-Please use the [GitHub issue tracker](https://github.com/openlayers/ol3/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
+Please use the [GitHub issue tracker](https://github.com/openlayers/openlayers/issues). Before creating a new issue, do a quick search to see if the problem has been reported already.
 
 
 ## Getting Familiar with the Code in the Repository
@@ -21,12 +21,12 @@ Look for `readme.md` files! Several directories contain a `readme.md` file that 
 
 ## Contributing Code
 
-See [`DEVELOPING.md`](https://github.com/openlayers/ol3/blob/master/DEVELOPING.md) to learn how to get started developing.
+See [`DEVELOPING.md`](https://github.com/openlayers/openlayers/blob/master/DEVELOPING.md) to learn how to get started developing.
 
 Our preferred means of receiving contributions is through [pull requests](https://help.github.com/articles/using-pull-requests). Make sure
 that your pull request follows our pull request guidelines below before submitting it.
 
-This page describes what you need to know to contribute code to ol3 as a developer.
+This page describes what you need to know to contribute code to OpenLayers as a developer.
 
 
 ## Contributor License Agreement
@@ -45,7 +45,7 @@ Before working on a pull request, create an issue explaining what you want to co
 
 Your pull request must:
 
- * Follow OpenLayers 3's coding style.
+ * Follow OpenLayers's coding style.
 
  * Pass the integration tests run automatically by the Travis Continuous
    Integration system.
@@ -77,9 +77,9 @@ include:
  * Tests
 
 
-### Follow OpenLayers 3's coding style
+### Follow OpenLayers's coding style
 
-OpenLayers 3 follows [Google's JavaScript Style
+OpenLayers follows [Google's JavaScript Style
 Guide](https://google.github.io/styleguide/javascriptguide.xml).
 This is checked using [ESLint](http://eslint.org/), you
 can run the linter locally on your machine before committing using the `lint`
@@ -88,7 +88,7 @@ target:
     $ make lint
 
 In addition to fixing problems identified by the linter, please also follow the
-style of the existing OpenLayers 3 code, which includes:
+style of the existing OpenLayers code, which includes:
 
  * Always wrap the body of `for`, `if`, and `while` statements in braces.
 
@@ -114,7 +114,7 @@ http://editorconfig.org/#download) site links to plugins for various editors.
 ### Pass the integration tests run automatically by the Travis CI system
 
 The integration tests contain a number of automated checks to ensure that the
-code follows the OpenLayers 3 style and does not break tests or examples.  You
+code follows the OpenLayers style and does not break tests or examples.  You
 can run the integration tests locally using the `ci` target:
 
     $ make ci
@@ -199,7 +199,7 @@ Microsoft Visual Studio's javascript debugger may be used to debug the
 build/hosted/your-branch/examples. It will be convenient to set
 build/hosted/your-branch/examples/index.html as the startup page.
 
-Your ol3 source tree need not be under the Cygwin root.
-if you checkout to c:/ol3 then you can build under Cygwin at /cygdrive/c/ol3 .
-However, keep the path to the ol3 files short otherwise you may see
+Your OpenLayers source tree need not be under the Cygwin root.
+if you checkout to c:/openlayers then you can build under Cygwin at /cygdrive/c/openlayers .
+However, keep the path to the OpenLayers files short otherwise you may see
 `ENAMETOOLONG` errors.

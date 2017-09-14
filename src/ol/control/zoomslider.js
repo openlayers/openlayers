@@ -3,8 +3,7 @@
 goog.provide('ol.control.ZoomSlider');
 
 goog.require('ol');
-goog.require('ol.View');
-goog.require('ol.animation');
+goog.require('ol.ViewHint');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -12,6 +11,7 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('ol.math');
+goog.require('ol.pointer.EventType');
 goog.require('ol.pointer.PointerEventHandler');
 
 
@@ -26,7 +26,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomSliderOptions=} opt_options Zoom slider options.
- * @api stable
+ * @api
  */
 ol.control.ZoomSlider = function(opt_options) {
 
@@ -42,24 +42,18 @@ ol.control.ZoomSlider = function(opt_options) {
 
   /**
    * The direction of the slider. Will be determined from actual display of the
-   * container and defaults to ol.control.ZoomSlider.direction.VERTICAL.
+   * container and defaults to ol.control.ZoomSlider.Direction_.VERTICAL.
    *
-   * @type {ol.control.ZoomSlider.direction}
+   * @type {ol.control.ZoomSlider.Direction_}
    * @private
    */
-  this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
+  this.direction_ = ol.control.ZoomSlider.Direction_.VERTICAL;
 
   /**
    * @type {boolean}
    * @private
    */
   this.dragging_;
-
-  /**
-   * @type {!Array.<ol.EventsKey>}
-   * @private
-   */
-  this.dragListenerKeys_ = [];
 
   /**
    * @type {number}
@@ -154,8 +148,9 @@ ol.control.ZoomSlider.prototype.disposeInternal = function() {
  * The enum for available directions.
  *
  * @enum {number}
+ * @private
  */
-ol.control.ZoomSlider.direction = {
+ol.control.ZoomSlider.Direction_ = {
   VERTICAL: 0,
   HORIZONTAL: 1
 };
@@ -186,7 +181,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   };
 
   var thumb = container.firstElementChild;
-  var computedStyle = ol.global.getComputedStyle(thumb);
+  var computedStyle = getComputedStyle(thumb);
   var thumbWidth = thumb.offsetWidth +
       parseFloat(computedStyle['marginRight']) +
       parseFloat(computedStyle['marginLeft']);
@@ -196,10 +191,10 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
-    this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
+    this.direction_ = ol.control.ZoomSlider.Direction_.HORIZONTAL;
     this.widthLimit_ = containerSize.width - thumbWidth;
   } else {
-    this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
+    this.direction_ = ol.control.ZoomSlider.Direction_.VERTICAL;
     this.heightLimit_ = containerSize.height - thumbHeight;
   }
   this.sliderInitialized_ = true;
@@ -232,19 +227,19 @@ ol.control.ZoomSlider.render = function(mapEvent) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
-  var map = this.getMap();
-  var view = map.getView();
-  var currentResolution = view.getResolution();
-  map.beforeRender(ol.animation.zoom({
-    resolution: /** @type {number} */ (currentResolution),
-    duration: this.duration_,
-    easing: ol.easing.easeOut
-  }));
+  var view = this.getMap().getView();
+
   var relativePosition = this.getRelativePosition_(
       event.offsetX - this.thumbSize_[0] / 2,
       event.offsetY - this.thumbSize_[1] / 2);
+
   var resolution = this.getResolutionForPosition_(relativePosition);
-  view.setResolution(view.constrainResolution(resolution));
+
+  view.animate({
+    resolution: view.constrainResolution(resolution),
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  });
 };
 
 
@@ -254,25 +249,11 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
-  if (!this.dragging_ &&
-      event.originalEvent.target === this.element.firstElementChild) {
-    this.getMap().getView().setHint(ol.View.Hint.INTERACTING, 1);
+  if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
+    this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;
     this.dragging_ = true;
-
-    if (this.dragListenerKeys_.length === 0) {
-      var drag = this.handleDraggerDrag_;
-      var end = this.handleDraggerEnd_;
-      this.dragListenerKeys_.push(
-        ol.events.listen(document, ol.events.EventType.MOUSEMOVE, drag, this),
-        ol.events.listen(document, ol.events.EventType.TOUCHMOVE, drag, this),
-        ol.events.listen(document, ol.pointer.EventType.POINTERMOVE, drag, this),
-        ol.events.listen(document, ol.events.EventType.MOUSEUP, end, this),
-        ol.events.listen(document, ol.events.EventType.TOUCHEND, end, this),
-        ol.events.listen(document, ol.pointer.EventType.POINTERUP, end, this)
-      );
-    }
   }
 };
 
@@ -305,21 +286,18 @@ ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
  */
 ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
-    var map = this.getMap();
-    var view = map.getView();
-    view.setHint(ol.View.Hint.INTERACTING, -1);
-    map.beforeRender(ol.animation.zoom({
-      resolution: /** @type {number} */ (this.currentResolution_),
+    var view = this.getMap().getView();
+    view.setHint(ol.ViewHint.INTERACTING, -1);
+
+    view.animate({
+      resolution: view.constrainResolution(this.currentResolution_),
       duration: this.duration_,
       easing: ol.easing.easeOut
-    }));
-    var resolution = view.constrainResolution(this.currentResolution_);
-    view.setResolution(resolution);
+    });
+
     this.dragging_ = false;
     this.previousX_ = undefined;
     this.previousY_ = undefined;
-    this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
-    this.dragListenerKeys_.length = 0;
   }
 };
 
@@ -334,7 +312,7 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
   var position = this.getPositionForResolution_(res);
   var thumb = this.element.firstElementChild;
 
-  if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
+  if (this.direction_ == ol.control.ZoomSlider.Direction_.HORIZONTAL) {
     thumb.style.left = this.widthLimit_ * position + 'px';
   } else {
     thumb.style.top = this.heightLimit_ * position + 'px';
@@ -354,7 +332,7 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
  */
 ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   var amount;
-  if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
+  if (this.direction_ === ol.control.ZoomSlider.Direction_.HORIZONTAL) {
     amount = x / this.widthLimit_;
   } else {
     amount = y / this.heightLimit_;

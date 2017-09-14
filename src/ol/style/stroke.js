@@ -1,8 +1,6 @@
 goog.provide('ol.style.Stroke');
 
-goog.require('goog.crypt');
-goog.require('goog.crypt.Md5');
-goog.require('ol.color');
+goog.require('ol');
 
 
 /**
@@ -22,7 +20,7 @@ ol.style.Stroke = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.Color|string}
+   * @type {ol.Color|ol.ColorLike}
    */
   this.color_ = options.color !== undefined ? options.color : null;
 
@@ -37,6 +35,12 @@ ol.style.Stroke = function(opt_options) {
    * @type {Array.<number>}
    */
   this.lineDash_ = options.lineDash !== undefined ? options.lineDash : null;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.lineDashOffset_ = options.lineDashOffset;
 
   /**
    * @private
@@ -65,8 +69,27 @@ ol.style.Stroke = function(opt_options) {
 
 
 /**
+ * Clones the style.
+ * @return {ol.style.Stroke} The cloned style.
+ * @api
+ */
+ol.style.Stroke.prototype.clone = function() {
+  var color = this.getColor();
+  return new ol.style.Stroke({
+    color: (color && color.slice) ? color.slice() : color || undefined,
+    lineCap: this.getLineCap(),
+    lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
+    lineDashOffset: this.getLineDashOffset(),
+    lineJoin: this.getLineJoin(),
+    miterLimit: this.getMiterLimit(),
+    width: this.getWidth()
+  });
+};
+
+
+/**
  * Get the stroke color.
- * @return {ol.Color|string} Color.
+ * @return {ol.Color|ol.ColorLike} Color.
  * @api
  */
 ol.style.Stroke.prototype.getColor = function() {
@@ -91,6 +114,16 @@ ol.style.Stroke.prototype.getLineCap = function() {
  */
 ol.style.Stroke.prototype.getLineDash = function() {
   return this.lineDash_;
+};
+
+
+/**
+ * Get the line dash offset for the stroke.
+ * @return {number|undefined} Line dash offset.
+ * @api
+ */
+ol.style.Stroke.prototype.getLineDashOffset = function() {
+  return this.lineDashOffset_;
 };
 
 
@@ -127,7 +160,7 @@ ol.style.Stroke.prototype.getWidth = function() {
 /**
  * Set the color.
  *
- * @param {ol.Color|string} color Color.
+ * @param {ol.Color|ol.ColorLike} color Color.
  * @api
  */
 ol.style.Stroke.prototype.setColor = function(color) {
@@ -162,6 +195,18 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
  */
 ol.style.Stroke.prototype.setLineDash = function(lineDash) {
   this.lineDash_ = lineDash;
+  this.checksum_ = undefined;
+};
+
+
+/**
+ * Set the line dash offset.
+ *
+ * @param {number|undefined} lineDashOffset Line dash offset.
+ * @api
+ */
+ol.style.Stroke.prototype.setLineDashOffset = function(lineDashOffset) {
+  this.lineDashOffset_ = lineDashOffset;
   this.checksum_ = undefined;
 };
 
@@ -207,23 +252,29 @@ ol.style.Stroke.prototype.setWidth = function(width) {
  */
 ol.style.Stroke.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
-    var raw = 's' +
-        (this.color_ ?
-            ol.color.asString(this.color_) : '-') + ',' +
+    this.checksum_ = 's';
+    if (this.color_) {
+      if (typeof this.color_ === 'string') {
+        this.checksum_ += this.color_;
+      } else {
+        this.checksum_ += ol.getUid(this.color_).toString();
+      }
+    } else {
+      this.checksum_ += '-';
+    }
+    this.checksum_ += ',' +
         (this.lineCap_ !== undefined ?
-            this.lineCap_.toString() : '-') + ',' +
+          this.lineCap_.toString() : '-') + ',' +
         (this.lineDash_ ?
-            this.lineDash_.toString() : '-') + ',' +
+          this.lineDash_.toString() : '-') + ',' +
+        (this.lineDashOffset_ !== undefined ?
+          this.lineDashOffset_ : '-') + ',' +
         (this.lineJoin_ !== undefined ?
-            this.lineJoin_ : '-') + ',' +
+          this.lineJoin_ : '-') + ',' +
         (this.miterLimit_ !== undefined ?
-            this.miterLimit_.toString() : '-') + ',' +
+          this.miterLimit_.toString() : '-') + ',' +
         (this.width_ !== undefined ?
-            this.width_.toString() : '-');
-
-    var md5 = new goog.crypt.Md5();
-    md5.update(raw);
-    this.checksum_ = goog.crypt.byteArrayToString(md5.digest());
+          this.width_.toString() : '-');
   }
 
   return this.checksum_;

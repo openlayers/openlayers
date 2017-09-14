@@ -13,7 +13,6 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

@@ -15,11 +15,11 @@
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
 </tr><tr>
-<td>[Map default controls](ol.control.html#defaults)<br>
+<td>[Map default controls](ol.control.html#.defaults)<br>
 [All controls](ol.control.html)
 </td>
 <td>
-[Map default interactions](ol.interaction.html#defaults)<br>
+[Map default interactions](ol.interaction.html#.defaults)<br>
 Interactions for [vector features](ol.Feature.html)
 <ul><li>[ol.interaction.Select](ol.interaction.Select.html)</li>
 <li>[ol.interaction.Draw](ol.interaction.Draw.html)</li>
@@ -32,9 +32,9 @@ Interactions for [vector features](ol.Feature.html)
 <br>[Formats](ol.format.Feature.html) for reading/writing vector data
 <br>[ol.format.WMSCapabilities](ol.format.WMSCapabilities.html)</td></tr>
 <tr><th>Projections</th><th>Observable objects</th><th>Other components</th></tr>
-<tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol.proj.transform()](ol.proj.html#transform) and [ol.proj.transformExtent()](ol.proj.html#transformExtent).</p>
+<tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol.proj.transform()](ol.proj.html#.transform) and [ol.proj.transformExtent()](ol.proj.html#.transformExtent).</p>
 [ol.proj](ol.proj.html)</td>
-<td><p>Changes to all [ol.Objects](ol.Object.html) can observed by calling the [object.on('propertychange')](ol.Object.html#on) method.  Listeners receive an [ol.ObjectEvent](ol.ObjectEvent.html) with information on the changed property and old value.</p>
+<td><p>Changes to all [ol.Objects](ol.Object.html) can observed by calling the [object.on('propertychange')](ol.Object.html#on) method.  Listeners receive an [ol.Object.Event](ol.Object.Event.html) with information on the changed property and old value.</p>
 <td>[ol.DeviceOrientation](ol.DeviceOrientation.html)<br>
 [ol.Geolocation](ol.Geolocation.html)<br>
 [ol.Overlay](ol.Overlay.html)<br></td>
@@ -44,21 +44,19 @@ Interactions for [vector features](ol.Feature.html)
 
 #### API change policy
 
-The OpenLayers 3.x API consists of
-* names of classes, class methods and properties
-* names of static functions and constants
-* order and types of function arguments
-* types of function return values
+The OpenLayers API consists of
+* names and signatures of constructors
+* names and signatures of instance methods and properties
+* names and signatures of functions
+* names of constants
 
-API elements marked as `experimental` provide stable and functioning code, but may change.
-Any changes will be documented in upgrade notes so application code can be changed appropriately
-before using the new version of the library. All other API elements will remain compatible throughout the 3.x releases so that no changes to existing application code are necessary when upgrading to a later version.
+Within a major release series, the API will not be changed.  Any changes to the API will be accompanied by a new major release.
 
-*Note*: The API change policy does not cover CSS class names that are used to theme the
+*Note*: The API change policy does not cover CSS class names that are used to style the
 OpenLayers UI.
 
 *Note for Closure Compiler users compiling their application code together with OpenLayers*:
-The names of types other than those in the list above (e.g. `ol.Pixel`) are subject to change. It
+The names of types other than those in the list above (e.g. `ol.Coordinate`) are subject to change. It
 is therefore recommended to either use the resolved type as listed in the API docs (e.g.
-`Array.<number>` instead of `ol.Pixel`), or pay attention to the upgrade notes, which will list
+`Array.<number>` instead of `ol.Coordinate`), or pay attention to the upgrade notes, which will list
 the changes for those types.

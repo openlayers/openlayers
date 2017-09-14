@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.DoubleClickZoom');
 
 goog.require('ol');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.interaction.Interaction');
 
 
@@ -12,7 +12,7 @@ goog.require('ol.interaction.Interaction');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DoubleClickZoom = function(opt_options) {
 
@@ -49,13 +49,13 @@ ol.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
 ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   var browserEvent = mapBrowserEvent.originalEvent;
-  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK) {
+  if (mapBrowserEvent.type == ol.MapBrowserEventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
     ol.interaction.Interaction.zoomByDelta(
-        map, view, delta, anchor, this.duration_);
+        view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

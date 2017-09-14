@@ -2,6 +2,7 @@ goog.provide('ol.test.Collection');
 
 goog.require('ol.events');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 
 
 describe('ol.collection', function() {
@@ -31,10 +32,22 @@ describe('ol.collection', function() {
 
   describe('push to a collection', function() {
     it('adds elements to the collection', function() {
-      collection.push(1);
-      expect(collection.getLength()).to.eql(1);
+      var length = collection.push(1);
+      expect(collection.getLength()).to.eql(length);
       expect(collection.getArray()).to.eql([1]);
       expect(collection.item(0)).to.eql(1);
+    });
+    it('returns the correct new length of the collection', function() {
+      var length;
+      ol.events.listen(collection, 'add', function(event) {
+        if (event.element === 'remove_me') {
+          collection.remove(event.element);
+        }
+      });
+      length = collection.push('keep_me');
+      expect(collection.getLength()).to.eql(length);
+      length = collection.push('remove_me');
+      expect(collection.getLength()).to.eql(length);
     });
   });
 
@@ -118,7 +131,7 @@ describe('ol.collection', function() {
     it('fires a remove event', function() {
       var collection = new ol.Collection([0, 1, 2]);
       var cb = sinon.spy();
-      ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb);
+      ol.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb).to.be.called();
       expect(cb.lastCall.args[0].element).to.eql(1);
@@ -141,11 +154,11 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a', 'b']);
       var added, removed;
-      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         added = e.element;
       });
       ol.events.listen(
-          collection, ol.Collection.EventType.REMOVE, function(e) {
+          collection, ol.CollectionEventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.setAt(1, 1);
@@ -159,7 +172,7 @@ describe('ol.collection', function() {
       var collection = new ol.Collection(['a']);
       var removed;
       ol.events.listen(
-          collection, ol.Collection.EventType.REMOVE, function(e) {
+          collection, ol.CollectionEventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.pop();
@@ -172,7 +185,7 @@ describe('ol.collection', function() {
       var collection = new ol.Collection([0, 2]);
       var added;
       ol.events.listen(
-          collection, ol.Collection.EventType.ADD, function(e) {
+          collection, ol.CollectionEventType.ADD, function(e) {
             added = e.element;
           });
       collection.insertAt(1, 1);
@@ -184,7 +197,7 @@ describe('ol.collection', function() {
     it('triggers events properly', function() {
       var added = [];
       ol.events.listen(
-          collection, ol.Collection.EventType.ADD, function(e) {
+          collection, ol.CollectionEventType.ADD, function(e) {
             added.push(e.element);
           });
       collection.setAt(2, 0);
@@ -233,11 +246,11 @@ describe('ol.collection', function() {
     it('triggers add when pushing', function() {
       var collection = new ol.Collection();
       var elem;
-      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         elem = e.element;
       });
-      collection.push(1);
-      expect(elem).to.eql(1);
+      var length = collection.push(1);
+      expect(elem).to.eql(length);
     });
   });
 
@@ -250,8 +263,8 @@ describe('ol.collection', function() {
     });
     describe('setAt', function() {
       it('triggers remove', function() {
-        ol.events.listen(collection, ol.Collection.EventType.ADD, cb1);
-        ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb2);
+        ol.events.listen(collection, ol.CollectionEventType.ADD, cb1);
+        ol.events.listen(collection, ol.CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
         expect(cb2.lastCall.args[0].element).to.eql(1);
         expect(cb1.lastCall.args[0].element).to.eql(2);
@@ -259,7 +272,7 @@ describe('ol.collection', function() {
     });
     describe('pop', function() {
       it('triggers remove', function() {
-        ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb1);
+        ol.events.listen(collection, ol.CollectionEventType.REMOVE, cb1);
         collection.pop();
         expect(cb1.lastCall.args[0].element).to.eql(1);
       });
@@ -277,12 +290,82 @@ describe('ol.collection', function() {
     it('fires events', function() {
       var collection = new ol.Collection();
       var elems = [];
-      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         elems.push(e.element);
       });
       collection.extend([1, 2]);
       expect(elems).to.eql([1, 2]);
     });
+  });
+
+  describe('unique collection', function() {
+    it('allows unique items in the constructor', function() {
+      new ol.Collection([{}, {}, {}], {unique: true});
+    });
+
+    it('throws if duplicate items are passed to the constructor', function() {
+      var item = {};
+      var call = function() {
+        new ol.Collection([item, item], {unique: true});
+      };
+      expect(call).to.throwException();
+    });
+
+    it('allows unique items to be added via push', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      unique.push({});
+      unique.push({});
+    });
+
+    it('throws if duplicate items are added via push', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.push(item);
+      var call = function() {
+        unique.push(item);
+      };
+      expect(call).to.throwException();
+    });
+
+    it('allows unique items to be added via insertAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      unique.insertAt(0, {});
+      unique.insertAt(0, {});
+    });
+
+    it('throws if duplicate items are added via insertAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.insertAt(0, item);
+      var call = function() {
+        unique.insertAt(0, item);
+      };
+      expect(call).to.throwException();
+    });
+
+    it('allows unique items to be added via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      unique.setAt(0, {});
+      unique.setAt(1, {});
+    });
+
+    it('allows items to be reset via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.setAt(0, item);
+      unique.setAt(0, item);
+    });
+
+    it('throws if duplicate items are added via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.setAt(0, item);
+      var call = function() {
+        unique.setAt(1, item);
+      };
+      expect(call).to.throwException();
+    });
+
   });
 
 });

@@ -137,7 +137,7 @@ describe('ol.control.ScaleLine', function() {
         expect(renderSpy.callCount).to.be(2);
         done();
       });
-      map.getView().setCenter([1,1]);
+      map.getView().setCenter([1, 1]);
     });
   });
 
@@ -262,20 +262,73 @@ describe('ol.control.ScaleLine', function() {
     });
   });
 
+  describe('latitude may affect scale line in EPSG:4326', function() {
+
+    it('is rendered differently at different latitudes for metric', function() {
+      var ctrl = new ol.control.ScaleLine();
+      ctrl.setMap(map);
+      map.setView(new ol.View({
+        center: ol.proj.fromLonLat([7, 0]),
+        zoom: 2,
+        projection: 'EPSG:4326'
+      }));
+      map.renderSync();
+      var innerHtml0 = ctrl.element_.innerHTML;
+      map.getView().setCenter([7, 52]);
+      map.renderSync();
+      var innerHtml52 = ctrl.element_.innerHTML;
+      expect(innerHtml0).to.not.be(innerHtml52);
+    });
+
+    it('is rendered the same at different latitudes for degrees', function() {
+      var ctrl = new ol.control.ScaleLine({
+        units: 'degrees'
+      });
+      ctrl.setMap(map);
+      map.setView(new ol.View({
+        center: ol.proj.fromLonLat([7, 0]),
+        zoom: 2,
+        projection: 'EPSG:4326'
+      }));
+      map.renderSync();
+      var innerHtml0 = ctrl.element_.innerHTML;
+      map.getView().setCenter([7, 52]);
+      map.renderSync();
+      var innerHtml52 = ctrl.element_.innerHTML;
+      expect(innerHtml0).to.be(innerHtml52);
+    });
+
+  });
+
   describe('zoom affects the scaleline', function() {
     var currentZoom;
     var ctrl;
     var renderedHtmls;
     var mapView;
 
+    var getMetricUnit = function(zoom) {
+      if (zoom > 30) {
+        return 'μm';
+      } else if (zoom > 20) {
+        return 'mm';
+      } else if (zoom > 10) {
+        return 'm';
+      } else {
+        return 'km';
+      }
+    };
+
     beforeEach(function() {
-      currentZoom = 28;
+      currentZoom = 33;
       renderedHtmls = {};
-      ctrl = new ol.control.ScaleLine();
+      ctrl = new ol.control.ScaleLine({
+        minWidth: 10
+      });
       ctrl.setMap(map);
       map.setView(new ol.View({
         center: [0, 0],
-        zoom: currentZoom
+        zoom: currentZoom,
+        maxZoom: currentZoom
       }));
       mapView = map.getView();
       map.renderSync();
@@ -296,6 +349,9 @@ describe('ol.control.ScaleLine', function() {
         var currentHtml = ctrl.element_.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
+
+        var unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
+        expect(unit).to.eql(getMetricUnit(currentZoom));
       }
     });
     it('degrees: is rendered differently for different zoomlevels', function() {

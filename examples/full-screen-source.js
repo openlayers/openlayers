@@ -22,7 +22,6 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: view
 });

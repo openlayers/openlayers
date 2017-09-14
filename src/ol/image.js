@@ -70,9 +70,7 @@ ol.inherits(ol.Image, ol.ImageBase);
 
 
 /**
- * Get the HTML image element (may be a Canvas, Image, or Video).
- * @param {Object=} opt_context Object.
- * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
+ * @inheritDoc
  * @api
  */
 ol.Image.prototype.getImage = function(opt_context) {
@@ -125,14 +123,13 @@ ol.Image.prototype.handleImageLoad_ = function() {
  * Load the image or retry if loading previously failed.
  * Loading is taken care of by the tile queue, and calling this method is
  * only needed for preloading or for reloading in case of an error.
+ * @override
  * @api
  */
 ol.Image.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE || this.state == ol.ImageState.ERROR) {
     this.state = ol.ImageState.LOADING;
     this.changed();
-    goog.DEBUG && console.assert(!this.imageListenerKeys_,
-        'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
           this.handleImageError_, this),

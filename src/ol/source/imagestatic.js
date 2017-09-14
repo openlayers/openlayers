@@ -18,17 +18,17 @@ goog.require('ol.source.Image');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageStaticOptions} options Options.
- * @api stable
+ * @api
  */
 ol.source.ImageStatic = function(options) {
   var imageExtent = options.imageExtent;
 
   var crossOrigin = options.crossOrigin !== undefined ?
-      options.crossOrigin : null;
+    options.crossOrigin : null;
 
   var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
       options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+        options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   ol.source.Image.call(this, {
     attributions: options.attributions,
@@ -79,10 +79,8 @@ ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
       imageWidth = this.imageSize_[0];
       imageHeight = this.imageSize_[1];
     } else {
-      // TODO: remove the type cast when a closure-compiler > 20160315 is used.
-      // see: https://github.com/google/closure-compiler/pull/1664
-      imageWidth = /** @type {number} */ (image.width);
-      imageHeight = /** @type {number} */ (image.height);
+      imageWidth = image.width;
+      imageHeight = image.height;
     }
     var resolution = ol.extent.getHeight(imageExtent) / imageHeight;
     var targetWidth = Math.ceil(ol.extent.getWidth(imageExtent) / resolution);

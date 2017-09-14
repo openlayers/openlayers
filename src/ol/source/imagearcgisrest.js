@@ -21,7 +21,7 @@ goog.require('ol.uri');
  * {@link ol.source.TileArcGISRest} data source.
  *
  * @constructor
- * @fires ol.source.ImageEvent
+ * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageArcGISRestOptions=} opt_options Image ArcGIS Rest Options.
  * @api
@@ -46,6 +46,12 @@ ol.source.ImageArcGISRest = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.url_ = options.url;
@@ -55,7 +61,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
 
   /**
@@ -97,7 +103,7 @@ ol.inherits(ol.source.ImageArcGISRest, ol.source.Image);
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.getParams = function() {
   return this.params_;
@@ -114,6 +120,7 @@ ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resoluti
   }
 
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (image &&
@@ -194,9 +201,6 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  * @private
  */
 ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
-
-  goog.DEBUG && console.assert(this.url_ !== undefined, 'url is defined');
-
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
 
@@ -204,13 +208,13 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
   params['BBOX'] = extent.join(',');
   params['BBOXSR'] = srid;
   params['IMAGESR'] = srid;
-  params['DPI'] = 90 * pixelRatio;
+  params['DPI'] = Math.round(90 * pixelRatio);
 
   var url = this.url_;
 
   var modifiedUrl = url
-    .replace(/MapServer\/?$/, 'MapServer/export')
-    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+      .replace(/MapServer\/?$/, 'MapServer/export')
+      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
     ol.asserts.assert(false, 50); // `options.featureTypes` should be an Array
   }
@@ -221,7 +225,7 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
 /**
  * Return the URL used for this ArcGIS source.
  * @return {string|undefined} URL.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.getUrl = function() {
   return this.url_;
@@ -243,7 +247,7 @@ ol.source.ImageArcGISRest.prototype.setImageLoadFunction = function(imageLoadFun
 /**
  * Set the URL to use for requests.
  * @param {string|undefined} url URL.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
   if (url != this.url_) {
@@ -257,7 +261,7 @@ ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);

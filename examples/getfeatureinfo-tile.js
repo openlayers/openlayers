@@ -5,8 +5,8 @@ goog.require('ol.source.TileWMS');
 
 
 var wmsSource = new ol.source.TileWMS({
-  url: 'http://demo.boundlessgeo.com/geoserver/wms',
-  params: {'LAYERS': 'ne:ne'},
+  url: 'https://ahocevar.com/geoserver/wms',
+  params: {'LAYERS': 'ne:ne', 'TILED': true},
   serverType: 'geoserver',
   crossOrigin: 'anonymous'
 });
@@ -21,7 +21,6 @@ var view = new ol.View({
 });
 
 var map = new ol.Map({
-  renderer: common.getRendererFromQueryString(),
   layers: [wmsLayer],
   target: 'map',
   view: view

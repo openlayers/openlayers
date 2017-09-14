@@ -32,17 +32,6 @@ ol.pointer.EventSource.prototype.getEvents = function() {
 
 
 /**
- * Returns a mapping between the supported event types and
- * the handlers that should handle an event.
- * @return {Object.<string, function(Event)>}
- *         Event/Handler mapping
- */
-ol.pointer.EventSource.prototype.getMapping = function() {
-  return this.mapping_;
-};
-
-
-/**
  * Returns the handler that should handle a given event type.
  * @param {string} eventType The event type.
  * @return {function(Event)} Handler

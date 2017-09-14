@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('ol');
-goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.obj');
@@ -55,8 +54,23 @@ ol.source.TileArcGISRest = function(opt_options) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
+  this.setKey(this.getKeyForParams_());
 };
 ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
+
+
+/**
+ * @private
+ * @return {string} The key for the current params.
+ */
+ol.source.TileArcGISRest.prototype.getKeyForParams_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.params_) {
+    res[i++] = key + '-' + this.params_[key];
+  }
+  return res.join('/');
+};
 
 
 /**
@@ -81,7 +95,7 @@ ol.source.TileArcGISRest.prototype.getParams = function() {
  * @private
  */
 ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
-        pixelRatio, projection, params) {
+    pixelRatio, projection, params) {
 
   var urls = this.urls;
   if (!urls) {
@@ -97,7 +111,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   params['IMAGESR'] = srid;
   params['DPI'] = Math.round(
       params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
-      );
+  );
 
   var url;
   if (urls.length == 1) {
@@ -110,9 +124,6 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   var modifiedUrl = url
       .replace(/MapServer\/?$/, 'MapServer/export')
       .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
-  if (modifiedUrl == url) {
-    ol.asserts.assert(false, 50); // Cannot determine Rest Service from url
-  }
   return ol.uri.appendParams(modifiedUrl, params);
 };
 
@@ -164,9 +175,9 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.TileArcGISRest.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);
-  this.changed();
+  this.setKey(this.getKeyForParams_());
 };

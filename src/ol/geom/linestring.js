@@ -24,7 +24,7 @@ goog.require('ol.geom.flat.simplify');
  * @extends {ol.geom.SimpleGeometry}
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @api
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
 
@@ -63,11 +63,9 @@ ol.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 /**
  * Append the passed coordinate to the coordinates of the linestring.
  * @param {ol.Coordinate} coordinate Coordinate.
- * @api stable
+ * @api
  */
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
-  goog.DEBUG && console.assert(coordinate.length == this.stride,
-      'length of coordinate array should match stride');
   if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {
@@ -80,7 +78,8 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.LineString} Clone.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.LineString.prototype.clone = function() {
   var lineString = new ol.geom.LineString(null);
@@ -139,7 +138,7 @@ ol.geom.LineString.prototype.forEachSegment = function(callback, opt_this) {
  * @param {number} m M.
  * @param {boolean=} opt_extrapolate Extrapolate. Default is `false`.
  * @return {ol.Coordinate} Coordinate.
- * @api stable
+ * @api
  */
 ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
   if (this.layout != ol.geom.GeometryLayout.XYM &&
@@ -147,7 +146,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
     return null;
   }
   var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
-  return ol.geom.flat.lineStringCoordinateAtM(this.flatCoordinates, 0,
+  return ol.geom.flat.interpolate.lineStringCoordinateAtM(this.flatCoordinates, 0,
       this.flatCoordinates.length, this.stride, m, extrapolate);
 };
 
@@ -155,7 +154,8 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 /**
  * Return the coordinates of the linestring.
  * @return {Array.<ol.Coordinate>} Coordinates.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinates(
@@ -183,7 +183,7 @@ ol.geom.LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
 /**
  * Return the length of the linestring on projected plane.
  * @return {number} Length (on projected plane).
- * @api stable
+ * @api
  */
 ol.geom.LineString.prototype.getLength = function() {
   return ol.geom.flat.length.lineString(
@@ -220,7 +220,7 @@ ol.geom.LineString.prototype.getSimplifiedGeometryInternal = function(squaredTol
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.LineString.prototype.getType = function() {
   return ol.geom.GeometryType.LINE_STRING;
@@ -229,7 +229,7 @@ ol.geom.LineString.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.LineString.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.lineString(
@@ -242,7 +242,8 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
  * Set the coordinates of the linestring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @override
+ * @api
  */
 ol.geom.LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {

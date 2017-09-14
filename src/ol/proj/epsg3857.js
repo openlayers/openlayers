@@ -2,7 +2,6 @@ goog.provide('ol.proj.EPSG3857');
 
 goog.require('ol');
 goog.require('ol.math');
-goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 
@@ -16,27 +15,24 @@ goog.require('ol.proj.Units');
  * @param {string} code Code.
  * @private
  */
-ol.proj.EPSG3857_ = function(code) {
+ol.proj.EPSG3857.Projection_ = function(code) {
   ol.proj.Projection.call(this, {
     code: code,
     units: ol.proj.Units.METERS,
     extent: ol.proj.EPSG3857.EXTENT,
     global: true,
-    worldExtent: ol.proj.EPSG3857.WORLD_EXTENT
+    worldExtent: ol.proj.EPSG3857.WORLD_EXTENT,
+    getPointResolution: function(resolution, point) {
+      return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS);
+    }
   });
 };
-ol.inherits(ol.proj.EPSG3857_, ol.proj.Projection);
+ol.inherits(ol.proj.EPSG3857.Projection_, ol.proj.Projection);
 
 
 /**
- * @inheritDoc
- */
-ol.proj.EPSG3857_.prototype.getPointResolution = function(resolution, point) {
-  return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS);
-};
-
-
-/**
+ * Radius of WGS84 sphere
+ *
  * @const
  * @type {number}
  */
@@ -68,30 +64,20 @@ ol.proj.EPSG3857.WORLD_EXTENT = [-180, -85, 180, 85];
 
 
 /**
- * Lists several projection codes with the same meaning as EPSG:3857.
- *
- * @type {Array.<string>}
- */
-ol.proj.EPSG3857.CODES = [
-  'EPSG:3857',
-  'EPSG:102100',
-  'EPSG:102113',
-  'EPSG:900913',
-  'urn:ogc:def:crs:EPSG:6.18:3:3857',
-  'urn:ogc:def:crs:EPSG::3857',
-  'http://www.opengis.net/gml/srs/epsg.xml#3857'
-];
-
-
-/**
  * Projections equal to EPSG:3857.
  *
  * @const
  * @type {Array.<ol.proj.Projection>}
  */
-ol.proj.EPSG3857.PROJECTIONS = ol.proj.EPSG3857.CODES.map(function(code) {
-  return new ol.proj.EPSG3857_(code);
-});
+ol.proj.EPSG3857.PROJECTIONS = [
+  new ol.proj.EPSG3857.Projection_('EPSG:3857'),
+  new ol.proj.EPSG3857.Projection_('EPSG:102100'),
+  new ol.proj.EPSG3857.Projection_('EPSG:102113'),
+  new ol.proj.EPSG3857.Projection_('EPSG:900913'),
+  new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG:6.18:3:3857'),
+  new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG::3857'),
+  new ol.proj.EPSG3857.Projection_('http://www.opengis.net/gml/srs/epsg.xml#3857')
+];
 
 
 /**
@@ -114,12 +100,17 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  goog.DEBUG && console.assert(output.length % dimension === 0,
-      'modulus of output.length with dimension should be 0');
+  var halfSize = ol.proj.EPSG3857.HALF_SIZE;
   for (var i = 0; i < length; i += dimension) {
-    output[i] = ol.proj.EPSG3857.RADIUS * Math.PI * input[i] / 180;
-    output[i + 1] = ol.proj.EPSG3857.RADIUS *
+    output[i] = halfSize * input[i] / 180;
+    var y = ol.proj.EPSG3857.RADIUS *
         Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
+    if (y > halfSize) {
+      y = halfSize;
+    } else if (y < -halfSize) {
+      y = -halfSize;
+    }
+    output[i + 1] = y;
   }
   return output;
 };
@@ -145,10 +136,8 @@ ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  goog.DEBUG && console.assert(output.length % dimension === 0,
-      'modulus of output.length with dimension should be 0');
   for (var i = 0; i < length; i += dimension) {
-    output[i] = 180 * input[i] / (ol.proj.EPSG3857.RADIUS * Math.PI);
+    output[i] = 180 * input[i] / ol.proj.EPSG3857.HALF_SIZE;
     output[i + 1] = 360 * Math.atan(
         Math.exp(input[i + 1] / ol.proj.EPSG3857.RADIUS)) / Math.PI - 90;
   }

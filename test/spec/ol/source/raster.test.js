@@ -1,6 +1,7 @@
 goog.provide('ol.test.source.RasterSource');
 
 goog.require('ol.Map');
+goog.require('ol.TileState');
 goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.proj.Projection');
@@ -8,7 +9,7 @@ goog.require('ol.source.ImageStatic');
 goog.require('ol.source.Raster');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
-
+goog.require('ol.source.XYZ');
 
 var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
     'BAAEAAAICRAEAOw==';
@@ -300,6 +301,53 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     });
 
+  });
+
+  describe('tile loading', function() {
+    beforeEach(function() {
+      map.setTarget(null);
+      map.dispose();
+    });
+
+    it('is initiated on the underlying source', function(done) {
+
+      var source = new ol.source.XYZ({
+        url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
+      });
+
+      raster = new ol.source.Raster({
+        threads: 0,
+        sources: [source],
+        operation: function(inputs) {
+          return inputs[0];
+        }
+      });
+
+      map = new ol.Map({
+        target: target,
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        }),
+        layers: [
+          new ol.layer.Image({
+            source: raster
+          })
+        ]
+      });
+
+      var tileCache = source.tileCache;
+
+      expect(tileCache.getCount()).to.equal(0);
+
+      map.once('moveend', function() {
+        expect(tileCache.getCount()).to.equal(1);
+        var state = tileCache.peekLast().getState();
+        expect(state === ol.TileState.LOADED || state === ol.TileState.LOADED).to.be(true);
+        done();
+      });
+
+    });
   });
 
 });

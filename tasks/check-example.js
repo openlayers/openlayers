@@ -17,9 +17,9 @@ const examplePath = process.argv[2];
 const phantomPath = require('phantomjs-prebuilt').path;
 
 const server = http.createServer(serveFiles.createFileResponseHandler({
-  documentRoot       : root,
+  documentRoot: root,
   followSymbolicLinks: false,
-  cacheTimeInSeconds : 3600
+  cacheTimeInSeconds: 3600
 }));
 
 server.listen(port, host, null, function() {
@@ -51,15 +51,14 @@ server.on('connection', function(socket) {
   });
 });
 
-['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
- 'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'].forEach(signal => {
-   process.once(signal, () => {
-     process.stdout.write(`Got ${signal}, stopping...\n`),
-     server.close(() => {
-       process.stdout.write('Stopped.\n');
-       process.exit(0);
-     });
+['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'].forEach(signal => {
+  process.once(signal, () => {
+    process.stdout.write(`Got ${signal}, stopping...\n`),
+    server.close(() => {
+      process.stdout.write('Stopped.\n');
+      process.exit(0);
+    });
 
-     Object.keys(connections).forEach(cid => connections[cid].destroy());
-   });
- });
+    Object.keys(connections).forEach(cid => connections[cid].destroy());
+  });
+});
