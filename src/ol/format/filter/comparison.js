@@ -9,7 +9,10 @@ goog.require('ol.format.filter.Filter');
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
  * Base class for WFS GetFeature property comparison filters.
  *
+ * deprecated: This class will no longer be exported starting from the next major version.
+ *
  * @constructor
+ * @abstract
  * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} propertyName Name of the context property to compare.
  * @extends {ol.format.filter.Filter}
