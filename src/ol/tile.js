@@ -1,8 +1,8 @@
 goog.provide('ol.Tile');
 
 goog.require('ol');
-goog.require('ol.easing');
 goog.require('ol.TileState');
+goog.require('ol.easing');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 
@@ -16,10 +16,12 @@ goog.require('ol.events.EventType');
  * @extends {ol.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
+ * @param {olx.TileOptions=} opt_options Tile options.
  */
-ol.Tile = function(tileCoord, state) {
-
+ol.Tile = function(tileCoord, state, opt_options) {
   ol.events.EventTarget.call(this);
+
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.TileCoord}
@@ -49,16 +51,11 @@ ol.Tile = function(tileCoord, state) {
   this.key = '';
 
   /**
-   * The timing function to apply to any opacity transition.
-   * @type {function(number):number}
-   */
-  this.transitionEasing_ = ol.easing.linear;
-
-  /**
    * The duration for the opacity transition.
    * @type {number}
    */
-  this.transitionDuration_ = 250;
+  this.transition_ = options.transition === undefined ?
+    250 : options.transition;
 
   /**
    * Lookup of start times for rendering transitions.
@@ -188,7 +185,7 @@ ol.Tile.prototype.load = function() {};
  * @return {number} A number between 0 and 1.
  */
 ol.Tile.prototype.getAlpha = function(id, time) {
-  if (!this.transitionEasing_) {
+  if (!this.transition_) {
     return 1;
   }
 
@@ -197,9 +194,9 @@ ol.Tile.prototype.getAlpha = function(id, time) {
     start = time;
     this.transitionStarts_[id] = start;
   }
-  var delta = Date.now() - start + (1000 / 60); // avoid rendering at 0
-  if (delta >= this.transitionDuration_) {
+  var delta = time - start + (1000 / 60); // avoid rendering at 0
+  if (delta >= this.transition_) {
     return 1;
   }
-  return this.transitionEasing_(delta / this.transitionDuration_);
+  return ol.easing.easeIn(delta / this.transition_);
 };

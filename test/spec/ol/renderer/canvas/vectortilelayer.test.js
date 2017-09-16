@@ -199,7 +199,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('re-renders when layer changed', function() {
       var layer = new ol.layer.VectorTile({
         source: new ol.source.VectorTile({
-          tileGrid: ol.tilegrid.createXYZ()
+          tileGrid: ol.tilegrid.createXYZ(),
+          transition: 0
         })
       });
       var sourceTile = new ol.VectorTile([0, 0, 0], 2);
@@ -209,6 +210,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         return document.createElement('canvas');
       };
       var tile = new ol.VectorImageTile([0, 0, 0]);
+      tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
       tile.setState(ol.TileState.LOADED);
       tile.getSourceTile = function() {

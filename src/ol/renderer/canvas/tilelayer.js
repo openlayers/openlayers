@@ -183,7 +183,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       if (this.isDrawableTile_(tile)) {
         if (tile.getState() == ol.TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-          if (!newTiles && (this.renderedTiles.indexOf(tile) === -1 || tile.getAlpha(ol.getUid(this), frameState.time) !== 1)) {
+          var inTransition = tile.getAlpha && tile.getAlpha(ol.getUid(this), frameState.time) !== 1;
+          if (!newTiles && (this.renderedTiles.indexOf(tile) === -1 || inTransition)) {
             newTiles = true;
           }
         }
@@ -294,26 +295,27 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
  * @param {number} gutter Tile gutter.
  */
 ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter) {
+  var image = tile.getImage(this.getLayer());
+  if (!image) {
+    return;
+  }
   var alpha = tile.getAlpha(ol.getUid(this), frameState.time);
   if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
   }
-  var image = tile.getImage(this.getLayer());
-  if (image) {
-    var alphaChanged = alpha !== this.context.globalAlpha;
-    if (alphaChanged) {
-      this.context.save();
-      this.context.globalAlpha = alpha;
-    }
-    this.context.drawImage(image, gutter, gutter,
-        image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
+  var alphaChanged = alpha !== this.context.globalAlpha;
+  if (alphaChanged) {
+    this.context.save();
+    this.context.globalAlpha = Math.min(0.5, alpha);
+  }
+  this.context.drawImage(image, gutter, gutter,
+      image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
 
-    if (alphaChanged) {
-      this.context.restore();
-    }
-    if (alpha !== 1) {
-      frameState.animate = true;
-    }
+  if (alphaChanged) {
+    this.context.restore();
+  }
+  if (alpha !== 1) {
+    frameState.animate = true;
   }
 };
 

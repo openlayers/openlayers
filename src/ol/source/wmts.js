@@ -166,7 +166,8 @@ ol.source.WMTS = function(options) {
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: tileUrlFunction,
     urls: urls,
-    wrapX: options.wrapX !== undefined ? options.wrapX : false
+    wrapX: options.wrapX !== undefined ? options.wrapX : false,
+    transition: options.transition
   });
 
   this.setKey(this.getKeyForDimensions_());

@@ -38,7 +38,8 @@ ol.source.BingMaps = function(options) {
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: this.hidpi_ ? 2 : 1,
-    wrapX: options.wrapX !== undefined ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true,
+    transition: options.transition
   });
 
   /**

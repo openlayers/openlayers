@@ -16,10 +16,11 @@ goog.require('ol.events.EventType');
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {olx.TileOptions=} opt_options Tile options.
  */
-ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
+ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-  ol.Tile.call(this, tileCoord, state);
+  ol.Tile.call(this, tileCoord, state, opt_options);
 
   /**
    * Image URI
