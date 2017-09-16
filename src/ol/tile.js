@@ -1,6 +1,7 @@
 goog.provide('ol.Tile');
 
 goog.require('ol');
+goog.require('ol.easing');
 goog.require('ol.TileState');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
@@ -46,6 +47,24 @@ ol.Tile = function(tileCoord, state) {
    * @type {string}
    */
   this.key = '';
+
+  /**
+   * The timing function to apply to any opacity transition.
+   * @type {function(number):number}
+   */
+  this.transitionEasing_ = ol.easing.linear;
+
+  /**
+   * The duration for the opacity transition.
+   * @type {number}
+   */
+  this.transitionDuration_ = 250;
+
+  /**
+   * Lookup of start times for rendering transitions.
+   * @type {Object.<number, number>}
+   */
+  this.transitionStarts_ = {};
 
 };
 ol.inherits(ol.Tile, ol.events.EventTarget);
@@ -161,3 +180,26 @@ ol.Tile.prototype.setState = function(state) {
  * @api
  */
 ol.Tile.prototype.load = function() {};
+
+/**
+ * Get the alpha value for rendering.
+ * @param {number} id An id for the renderer.
+ * @param {number} time The render frame time.
+ * @return {number} A number between 0 and 1.
+ */
+ol.Tile.prototype.getAlpha = function(id, time) {
+  if (!this.transitionEasing_) {
+    return 1;
+  }
+
+  var start = this.transitionStarts_[id];
+  if (!start) {
+    start = time;
+    this.transitionStarts_[id] = start;
+  }
+  var delta = Date.now() - start + (1000 / 60); // avoid rendering at 0
+  if (delta >= this.transitionDuration_) {
+    return 1;
+  }
+  return this.transitionEasing_(delta / this.transitionDuration_);
+};
