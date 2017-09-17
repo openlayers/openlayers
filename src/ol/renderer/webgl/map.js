@@ -431,8 +431,6 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
-
   /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
@@ -464,6 +462,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   gl.clear(ol.webgl.COLOR_BUFFER_BIT);
   gl.enable(ol.webgl.BLEND);
   gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
+
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
     layerState = layerStatesToDraw[i];
