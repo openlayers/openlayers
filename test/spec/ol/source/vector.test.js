@@ -430,6 +430,29 @@ describe('ol.source.Vector', function() {
       });
     });
 
+    describe('with setLoader', function() {
+
+      it('it will change the loader function', function() {
+        var count1 = 0;
+        var loader1 = function(bbox, resolution, projection) {
+          count1++;
+        };
+        var count2 = 0;
+        var loader2 = function(bbox, resolution, projection) {
+          count2++;
+        };
+        var source = new ol.source.Vector({loader: loader1});
+        source.loadFeatures([-10000, -10000, 10000, 10000], 1,
+            ol.proj.get('EPSG:3857'));
+        source.setLoader(loader2);
+        source.clear();
+        source.loadFeatures([-10000, -10000, 10000, 10000], 1,
+            ol.proj.get('EPSG:3857'));
+        expect(count1).to.eql(1);
+        expect(count2).to.eql(1);
+      });
+    });
+
   });
 
   describe('the feature id index', function() {
