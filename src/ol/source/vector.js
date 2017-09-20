@@ -824,6 +824,17 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
 
 
 /**
+ * Set the new loader of the source. The next loadFeatures call will use the
+ * new loader.
+ * @param {ol.FeatureLoader} loader The loader to set.
+ * @api
+ */
+ol.source.Vector.prototype.setLoader = function(loader) {
+  this.loader_ = loader;
+};
+
+
+/**
  * @classdesc
  * Events emitted by {@link ol.source.Vector} instances are instances of this
  * type.
