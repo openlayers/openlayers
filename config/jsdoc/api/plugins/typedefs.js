@@ -88,7 +88,7 @@ exports.handlers = {
 
   newDoclet: function(e) {
     var doclet = e.doclet;
-    if (doclet.meta.filename == 'olx.js') {
+    if (doclet.meta.filename == 'olx.js' || doclet.meta.filename == 'gax.js') {
       if (doclet.kind == 'typedef') {
         lastOlxTypedef = doclet;
         olxTypeNames.push(doclet.longname);

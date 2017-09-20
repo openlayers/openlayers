@@ -1,4 +1,24 @@
-# OpenLayers
+# Geoadmin API
+
+To compile use:
+
+    $ make -f Makefile-ga build-ga
+
+To run examples use:
+
+    $ make -f Makefile-ga serve
+
+Examples available at : http://localhost:3000/build/examples/
+
+To run hosted examples use:
+
+    $ make -f Makefile-ga hosted-examples-ga
+
+Hosted example with compiled version : http://localhost:3000/build/hosted/master/examples/ga-custom.html
+
+Hosted example with non-compiled version : http://localhost:3000/build/hosted/master/examples/ga-custom.html?mode=raw
+
+# OpenLayers 3
 
 [![Travis CI Status](https://secure.travis-ci.org/openlayers/openlayers.svg)](http://travis-ci.org/#!/openlayers/openlayers)
 [![Greenkeeper badge](https://badges.greenkeeper.io/openlayers/openlayers.svg)](https://greenkeeper.io/)
