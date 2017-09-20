@@ -6,6 +6,7 @@ goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
+goog.require('goog.html.SafeHtml');
 
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -22,7 +23,6 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Circle');
-
 
 goog.require('ga.Tooltip');
 goog.require('ga.Lang');
@@ -244,21 +244,22 @@ ga.Map.prototype.handleHighlightError_ = function() {
 
 ga.Map.prototype.showGeocoderDialog_ = function(results) {
   this.geocoderDialog_.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'geocoderList'}));
-  this.geocoderDialog_.setVisible(true); 
+  this.geocoderDialog_.setVisible(true);
   this.geocoderList_ = new goog.ui.Menu();
   var geocoderListContainer = goog.dom.getElement('geocoderList');
   for (var item in results) {
      this.geocoderList_.addChild(
        new goog.ui.MenuItem(results[item]['attrs']['label'].
         replace('<b>','').replace('</b>',''),
-        results[item]['attrs']),true);  
+        replace('<i>','').replace('</i>',''),
+        results[item]['attrs']),true);
   }
   this.geocoderList_.listen('action',
     this.handleResultSelection_,
     true,
     this);
 
-  this.geocoderList_.render(geocoderListContainer); 
+  this.geocoderList_.render(geocoderListContainer);
 };
 
 ga.Map.prototype.hideGeocoderDialog_ = function() {
