@@ -3292,7 +3292,7 @@ olx.interaction.ModifyOptions.prototype.condition;
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * By default, {@link ol.events.condition.singleClick} with
- * {@link ol.events.condition.noModifierKeys} results in a vertex deletion.
+ * {@link ol.events.condition.altKeyOnly} results in a vertex deletion.
  * @type {ol.EventsConditionType|undefined}
  * @api
  */
