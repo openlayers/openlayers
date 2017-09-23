@@ -163,6 +163,88 @@ describe('ol.renderer.canvas.Map', function() {
     });
   });
 
+  describe('#forEachLayerAtCoordinate', function() {
+
+    let layer, map, target;
+
+    beforeEach(function(done) {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new Map({
+        pixelRatio: 1,
+        target: target,
+        view: new View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+
+      // 1 x 1 pixel black icon
+      const img = document.createElement('img');
+      img.onload = function() {
+        done();
+      };
+      img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
+
+      layer = new VectorLayer({
+        source: new VectorSource({
+          features: [
+            new Feature({
+              geometry: new Point([0, 0])
+            })
+          ]
+        }),
+        style: new Style({
+          image: new Icon({
+            img: img,
+            imgSize: [1, 1]
+          })
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('calls callback for clicks inside of the hitTolerance', function() {
+      map.addLayer(layer);
+      map.renderSync();
+      const cb1 = sinon.spy();
+      const cb2 = sinon.spy();
+
+      const pixel = map.getPixelFromCoordinate([0, 0]);
+
+      const pixelsInside = [
+        [pixel[0] + 9, pixel[1]],
+        [pixel[0] - 9, pixel[1]],
+        [pixel[0], pixel[1] + 9],
+        [pixel[0], pixel[1] - 9]
+      ];
+
+      const pixelsOutside = [
+        [pixel[0] + 9, pixel[1] + 9],
+        [pixel[0] - 9, pixel[1] + 9],
+        [pixel[0] + 9, pixel[1] - 9],
+        [pixel[0] - 9, pixel[1] - 9]
+      ];
+
+      for (let i = 0; i < 4; i++) {
+        map.forEachLayerAtPixel(pixelsInside[i], cb1, {hitTolerance: 10});
+      }
+      expect(cb1.callCount).to.be(4);
+      expect(cb1.firstCall.args[0]).to.be(layer);
+
+      for (let j = 0; j < 4; j++) {
+        map.forEachLayerAtPixel(pixelsOutside[j], cb2, {hitTolerance: 10});
+      }
+      expect(cb2).not.to.be.called();
+    });
+  });
+
   describe('#renderFrame()', function() {
     let layer, map, renderer;
 

@@ -557,7 +557,7 @@ WebGLMapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameSt
 /**
  * @inheritDoc
  */
-WebGLMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+WebGLMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, hitTolerance, callback, thisArg,
   layerFilter, thisArg2) {
   if (this.getGL().isContextLost()) {
     return false;

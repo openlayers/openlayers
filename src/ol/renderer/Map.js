@@ -181,6 +181,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
  * @abstract
  * @param {module:ol~Pixel} pixel Pixel.
  * @param {module:ol/PluggableMap~FrameState} frameState FrameState.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, module:ol/layer/Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -192,7 +193,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, hitTolerance, callback, thisArg,
   layerFilter, thisArg2) {};
 
 

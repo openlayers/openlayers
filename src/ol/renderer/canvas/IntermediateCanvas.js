@@ -119,7 +119,7 @@ IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate = function(coord
 /**
  * @inheritDoc
  */
-IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
@@ -147,4 +147,5 @@ IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordin
     }
   }
 };
+
 export default IntermediateCanvasRenderer;

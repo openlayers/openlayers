@@ -182,7 +182,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, hitTolerance, callback, thisArg,
   layerFilter, thisArg2) {
   let result;
   const viewState = frameState.viewState;
@@ -201,7 +201,7 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
     if (visibleAtResolution(layerState, viewResolution) && layerFilter.call(thisArg2, layer)) {
       const layerRenderer = /** @type {module:ol/renderer/canvas/Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(
-        coordinate, frameState, callback, thisArg);
+        coordinate, frameState, hitTolerance, callback, thisArg);
       if (result) {
         return result;
       }
