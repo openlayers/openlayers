@@ -28,7 +28,7 @@ goog.require('ol.interaction.Interaction');
 ol.interaction.KeyboardPan = function(opt_options) {
 
   ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.KeyboardPan.handleEvent
+    handleEvent: ol.interaction.KeyboardPan.handleEvent.bind(this)
   });
 
   var options = opt_options || {};

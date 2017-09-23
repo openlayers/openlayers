@@ -39,9 +39,9 @@ goog.require('ol.style.Style');
 ol.interaction.Draw = function(options) {
 
   ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.Draw.handleDownEvent_,
-    handleEvent: ol.interaction.Draw.handleEvent,
-    handleUpEvent: ol.interaction.Draw.handleUpEvent_
+    handleDownEvent: ol.interaction.Draw.handleDownEvent_.bind(this),
+    handleEvent: ol.interaction.Draw.handleEvent.bind(this),
+    handleUpEvent: ol.interaction.Draw.handleUpEvent_.bind(this)
   });
 
   /**
@@ -273,7 +273,7 @@ ol.interaction.Draw = function(options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
-      this.updateState_, this);
+      this.updateState_);
 
 };
 ol.inherits(ol.interaction.Draw, ol.interaction.Pointer);

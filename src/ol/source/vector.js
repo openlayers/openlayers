@@ -127,6 +127,8 @@ ol.source.Vector = function(opt_options) {
    */
   this.featureChangeKeys_ = {};
 
+  this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
+
   /**
    * @private
    * @type {ol.Collection.<ol.Feature>}
@@ -206,9 +208,9 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
   this.featureChangeKeys_[featureKey] = [
     ol.events.listen(feature, ol.events.EventType.CHANGE,
-        this.handleFeatureChange_, this),
+        this.handleFeatureChange_),
     ol.events.listen(feature, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleFeatureChange_, this)
+        this.handleFeatureChange_)
   ];
 };
 
@@ -323,7 +325,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           this.addFeature(/** @type {ol.Feature} */ (evt.element));
           modifyingCollection = false;
         }
-      }, this);
+      }.bind(this));
   ol.events.listen(collection, ol.CollectionEventType.REMOVE,
       function(evt) {
         if (!modifyingCollection) {
@@ -331,7 +333,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           this.removeFeature(/** @type {ol.Feature} */ (evt.element));
           modifyingCollection = false;
         }
-      }, this);
+      }.bind(this));
   this.featuresCollection_ = collection;
 };
 
@@ -354,7 +356,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
     }
   } else {
     if (this.featuresRtree_) {
-      this.featuresRtree_.forEach(this.removeFeatureInternal, this);
+      this.featuresRtree_.forEach(this.removeFeatureInternal.bind(this));
       for (var id in this.nullGeometryFeatures_) {
         this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
       }

@@ -87,7 +87,7 @@ ol.control.OverviewMap = function(opt_options) {
   button.appendChild(activeLabel);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, this);
+      this.handleClick_.bind(this));
 
   /**
    * @type {Element}
@@ -141,7 +141,7 @@ ol.control.OverviewMap = function(opt_options) {
   element.appendChild(this.ovmapDiv_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : ol.control.OverviewMap.render;
+  var render = options.render ? options.render : ol.control.OverviewMap.render.bind(this);
 
   ol.control.Control.call(this, {
     element: element,
@@ -186,6 +186,9 @@ ol.control.OverviewMap = function(opt_options) {
     window.addEventListener('mousemove', move);
     window.addEventListener('mouseup', endMoving);
   });
+
+  this.handleMapPropertyChange_ = this.handleMapPropertyChange_.bind(this);
+  this.handleRotationChanged_ = this.handleRotationChanged_.bind(this);
 };
 ol.inherits(ol.control.OverviewMap, ol.control.Control);
 
@@ -212,7 +215,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     this.ovmap_.setTarget(this.ovmapDiv_);
     this.listenerKeys.push(ol.events.listen(
         map, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, this));
+        this.handleMapPropertyChange_));
 
     // TODO: to really support map switching, this would need to be reworked
     if (this.ovmap_.getLayers().getLength() === 0) {
@@ -256,7 +259,7 @@ ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
 ol.control.OverviewMap.prototype.bindView_ = function(view) {
   ol.events.listen(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+      this.handleRotationChanged_);
 };
 
 
@@ -268,7 +271,7 @@ ol.control.OverviewMap.prototype.bindView_ = function(view) {
 ol.control.OverviewMap.prototype.unbindView_ = function(view) {
   ol.events.unlisten(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+      this.handleRotationChanged_);
 };
 
 
@@ -491,8 +494,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
     ol.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
-        },
-        this);
+        }.bind(this));
   }
 };
 

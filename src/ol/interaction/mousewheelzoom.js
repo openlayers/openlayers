@@ -21,7 +21,7 @@ goog.require('ol.math');
 ol.interaction.MouseWheelZoom = function(opt_options) {
 
   ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.MouseWheelZoom.handleEvent
+    handleEvent: ol.interaction.MouseWheelZoom.handleEvent.bind(this)
   });
 
   var options = opt_options || {};

@@ -58,6 +58,9 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
    */
   this.imageLoadFunction_ = imageLoadFunction;
 
+  this.handleImageError_ = this.handleImageError_.bind(this);
+  this.handleImageLoad_ = this.handleImageLoad_.bind(this);
+
 };
 ol.inherits(ol.Image, ol.ImageBase);
 
@@ -111,9 +114,9 @@ ol.Image.prototype.load = function() {
     this.changed();
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, this),
+          this.handleImageError_),
       ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, this)
+          this.handleImageLoad_)
     ];
     this.imageLoadFunction_(this, this.src_);
   }

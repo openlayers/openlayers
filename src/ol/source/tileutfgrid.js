@@ -382,7 +382,7 @@ ol.source.TileUTFGrid.Tile_.prototype.forDataAtCoordinate = function(coordinate,
   if (this.state == ol.TileState.IDLE && opt_request === true) {
     ol.events.listenOnce(this, ol.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
-    }, this);
+    });
     this.loadInternal_();
   } else {
     if (opt_request === true) {

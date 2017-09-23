@@ -62,7 +62,7 @@ ol.control.FullScreen = function(opt_options) {
   button.appendChild(this.labelNode_);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, this);
+      this.handleClick_.bind(this));
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL + ' ' +
@@ -87,6 +87,8 @@ ol.control.FullScreen = function(opt_options) {
    * @type {Element|string|undefined}
    */
   this.source_ = options.source;
+
+  this.handleFullScreenChange_ = this.handleFullScreenChange_.bind(this);
 
 };
 ol.inherits(ol.control.FullScreen, ol.control.Control);
@@ -162,7 +164,7 @@ ol.control.FullScreen.prototype.setMap = function(map) {
   if (map) {
     this.listenerKeys.push(ol.events.listen(document,
         ol.control.FullScreen.getChangeType_(),
-        this.handleFullScreenChange_, this)
+        this.handleFullScreenChange_)
     );
   }
 };

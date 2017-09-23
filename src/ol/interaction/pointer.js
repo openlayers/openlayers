@@ -28,7 +28,7 @@ ol.interaction.Pointer = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var handleEvent = options.handleEvent ?
-    options.handleEvent : ol.interaction.Pointer.handleEvent;
+    options.handleEvent : ol.interaction.Pointer.handleEvent.bind(this);
 
   ol.interaction.Interaction.call(this, {
     handleEvent: handleEvent
@@ -39,28 +39,28 @@ ol.interaction.Pointer = function(opt_options) {
    * @private
    */
   this.handleDownEvent_ = options.handleDownEvent ?
-    options.handleDownEvent : ol.interaction.Pointer.handleDownEvent;
+    options.handleDownEvent : ol.interaction.Pointer.handleDownEvent.bind(this);
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleDragEvent_ = options.handleDragEvent ?
-    options.handleDragEvent : ol.interaction.Pointer.handleDragEvent;
+    options.handleDragEvent : ol.interaction.Pointer.handleDragEvent.bind(this);
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleMoveEvent_ = options.handleMoveEvent ?
-    options.handleMoveEvent : ol.interaction.Pointer.handleMoveEvent;
+    options.handleMoveEvent : ol.interaction.Pointer.handleMoveEvent.bind(this);
 
   /**
    * @type {function(ol.MapBrowserPointerEvent):boolean}
    * @private
    */
   this.handleUpEvent_ = options.handleUpEvent ?
-    options.handleUpEvent : ol.interaction.Pointer.handleUpEvent;
+    options.handleUpEvent : ol.interaction.Pointer.handleUpEvent.bind(this);
 
   /**
    * @type {boolean}

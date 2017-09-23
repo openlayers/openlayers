@@ -87,9 +87,9 @@ ol.renderer.webgl.Map = function(container, map) {
   this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
   ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
-      this.handleWebGLContextLost, this);
+      this.handleWebGLContextLost.bind(this));
   ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
-      this.handleWebGLContextRestored, this);
+      this.handleWebGLContextRestored.bind(this));
 
   /**
    * @private

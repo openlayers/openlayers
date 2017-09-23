@@ -46,10 +46,10 @@ goog.require('ol.style.Style');
 ol.interaction.Modify = function(options) {
 
   ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.Modify.handleDownEvent_,
-    handleDragEvent: ol.interaction.Modify.handleDragEvent_,
-    handleEvent: ol.interaction.Modify.handleEvent,
-    handleUpEvent: ol.interaction.Modify.handleUpEvent_
+    handleDownEvent: ol.interaction.Modify.handleDownEvent_.bind(this),
+    handleDragEvent: ol.interaction.Modify.handleDragEvent_.bind(this),
+    handleEvent: ol.interaction.Modify.handleEvent.bind(this),
+    handleUpEvent: ol.interaction.Modify.handleUpEvent_.bind(this)
   });
 
   /**
@@ -185,6 +185,7 @@ ol.interaction.Modify = function(options) {
     'GeometryCollection': this.writeGeometryCollectionGeometry_
   };
 
+  this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
 
   /**
    * @type {ol.source.Vector}
@@ -197,9 +198,9 @@ ol.interaction.Modify = function(options) {
     this.source_ = options.source;
     features = new ol.Collection(this.source_.getFeatures());
     ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
-        this.handleSourceAdd_, this);
+        this.handleSourceAdd_.bind(this));
     ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
-        this.handleSourceRemove_, this);
+        this.handleSourceRemove_.bind(this));
   } else {
     features = options.features;
   }
@@ -215,9 +216,9 @@ ol.interaction.Modify = function(options) {
 
   this.features_.forEach(this.addFeature_, this);
   ol.events.listen(this.features_, ol.CollectionEventType.ADD,
-      this.handleFeatureAdd_, this);
+      this.handleFeatureAdd_.bind(this));
   ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-      this.handleFeatureRemove_, this);
+      this.handleFeatureRemove_.bind(this));
 
   /**
    * @type {ol.MapBrowserPointerEvent}
@@ -256,7 +257,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(feature) {
     this.handlePointerAtPixel_(this.lastPixel_, map);
   }
   ol.events.listen(feature, ol.events.EventType.CHANGE,
-      this.handleFeatureChange_, this);
+      this.handleFeatureChange_);
 };
 
 
@@ -286,7 +287,7 @@ ol.interaction.Modify.prototype.removeFeature_ = function(feature) {
     this.vertexFeature_ = null;
   }
   ol.events.unlisten(feature, ol.events.EventType.CHANGE,
-      this.handleFeatureChange_, this);
+      this.handleFeatureChange_);
 };
 
 

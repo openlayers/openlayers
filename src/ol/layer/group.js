@@ -42,6 +42,10 @@ ol.layer.Group = function(opt_options) {
    */
   this.layersListenerKeys_ = [];
 
+  this.handleLayersAdd_ = this.handleLayersAdd_.bind(this);
+  this.handleLayersRemove_ = this.handleLayersRemove_.bind(this);
+  this.handleLayerChange_ = this.handleLayerChange_.bind(this);
+
   /**
    * @private
    * @type {Object.<string, Array.<ol.EventsKey>>}
@@ -50,7 +54,7 @@ ol.layer.Group = function(opt_options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.Group.Property_.LAYERS),
-      this.handleLayersChanged_, this);
+      this.handleLayersChanged_);
 
   if (layers) {
     if (Array.isArray(layers)) {
@@ -89,9 +93,9 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   var layers = this.getLayers();
   this.layersListenerKeys_.push(
       ol.events.listen(layers, ol.CollectionEventType.ADD,
-          this.handleLayersAdd_, this),
+          this.handleLayersAdd_),
       ol.events.listen(layers, ol.CollectionEventType.REMOVE,
-          this.handleLayersRemove_, this));
+          this.handleLayersRemove_));
 
   for (var id in this.listenerKeys_) {
     this.listenerKeys_[id].forEach(ol.events.unlistenByKey);
@@ -104,9 +108,9 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
     layer = layersArray[i];
     this.listenerKeys_[ol.getUid(layer).toString()] = [
       ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
-          this.handleLayerChange_, this),
+          this.handleLayerChange_),
       ol.events.listen(layer, ol.events.EventType.CHANGE,
-          this.handleLayerChange_, this)
+          this.handleLayerChange_)
     ];
   }
 
@@ -123,9 +127,9 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var key = ol.getUid(layer).toString();
   this.listenerKeys_[key] = [
     ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleLayerChange_, this),
+        this.handleLayerChange_),
     ol.events.listen(layer, ol.events.EventType.CHANGE,
-        this.handleLayerChange_, this)
+        this.handleLayerChange_)
   ];
   this.changed();
 };

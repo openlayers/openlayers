@@ -63,7 +63,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.GRADIENT),
-      this.handleGradientChanged_, this);
+      this.handleGradientChanged_);
 
   this.setGradient(options.gradient ?
     options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
@@ -74,10 +74,10 @@ ol.layer.Heatmap = function(opt_options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.BLUR),
-      this.handleStyleChanged_, this);
+      this.handleStyleChanged_);
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.RADIUS),
-      this.handleStyleChanged_, this);
+      this.handleStyleChanged_);
 
   this.handleStyleChanged_();
 
@@ -115,7 +115,7 @@ ol.layer.Heatmap = function(opt_options) {
   // The render order is not relevant for a heatmap representation.
   this.setRenderOrder(null);
 
-  ol.events.listen(this, ol.render.EventType.RENDER, this.handleRender_, this);
+  ol.events.listen(this, ol.render.EventType.RENDER, this.handleRender_);
 };
 ol.inherits(ol.layer.Heatmap, ol.layer.Vector);
 

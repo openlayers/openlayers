@@ -45,6 +45,9 @@ ol.MapBrowserEventHandler = function(map, moveTolerance) {
    */
   this.dragListenerKeys_ = [];
 
+  this.handlePointerMove_ = this.handlePointerMove_.bind(this);
+  this.handlePointerUp_ = this.handlePointerUp_.bind(this);
+
   /**
    * @type {number}
    * @private
@@ -98,7 +101,7 @@ ol.MapBrowserEventHandler = function(map, moveTolerance) {
    */
   this.pointerdownListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
-      this.handlePointerDown_, this);
+      this.handlePointerDown_.bind(this));
 
   /**
    * @type {?ol.EventsKey}
@@ -106,7 +109,7 @@ ol.MapBrowserEventHandler = function(map, moveTolerance) {
    */
   this.relayedListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERMOVE,
-      this.relayEvent_, this);
+      this.relayEvent_.bind(this));
 
 };
 ol.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
@@ -220,10 +223,10 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
     this.dragListenerKeys_.push(
         ol.events.listen(this.documentPointerEventHandler_,
             ol.MapBrowserEventType.POINTERMOVE,
-            this.handlePointerMove_, this),
+            this.handlePointerMove_),
         ol.events.listen(this.documentPointerEventHandler_,
             ol.MapBrowserEventType.POINTERUP,
-            this.handlePointerUp_, this),
+            this.handlePointerUp_),
         /* Note that the listener for `pointercancel is set up on
        * `pointerEventHandler_` and not `documentPointerEventHandler_` like
        * the `pointerup` and `pointermove` listeners.
@@ -239,7 +242,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
        */
         ol.events.listen(this.pointerEventHandler_,
             ol.MapBrowserEventType.POINTERCANCEL,
-            this.handlePointerUp_, this)
+            this.handlePointerUp_)
     );
   }
 };

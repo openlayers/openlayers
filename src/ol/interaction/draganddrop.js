@@ -61,6 +61,9 @@ ol.interaction.DragAndDrop = function(opt_options) {
    */
   this.target = options.target ? options.target : null;
 
+  this.boundHandleDrop_ = ol.interaction.DragAndDrop.handleDrop_.bind(this);
+  this.boundHandleStop_ = ol.interaction.DragAndDrop.handleStop_.bind(this);
+
 };
 ol.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
 
@@ -159,13 +162,13 @@ ol.interaction.DragAndDrop.prototype.registerListeners_ = function() {
     var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
       ol.events.listen(dropArea, ol.events.EventType.DROP,
-          ol.interaction.DragAndDrop.handleDrop_, this),
+          this.boundHandleDrop_),
       ol.events.listen(dropArea, ol.events.EventType.DRAGENTER,
-          ol.interaction.DragAndDrop.handleStop_, this),
+          this.boundHandleStop_),
       ol.events.listen(dropArea, ol.events.EventType.DRAGOVER,
-          ol.interaction.DragAndDrop.handleStop_, this),
+          this.boundHandleStop_),
       ol.events.listen(dropArea, ol.events.EventType.DROP,
-          ol.interaction.DragAndDrop.handleStop_, this)
+          this.boundHandleStop_)
     ];
   }
 };

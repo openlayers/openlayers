@@ -119,7 +119,7 @@ ol.control.Control.prototype.setMap = function(map) {
     target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(ol.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.render, this));
+          ol.MapEventType.POSTRENDER, this.render));
     }
     map.render();
   }

@@ -94,7 +94,7 @@ ol.source.ImageVector = function(options) {
   this.setStyle(options.style);
 
   ol.events.listen(this.source_, ol.events.EventType.CHANGE,
-      this.handleSourceChange_, this);
+      this.handleSourceChange_.bind(this));
 
 };
 ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);

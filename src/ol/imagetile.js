@@ -50,6 +50,9 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    */
   this.tileLoadFunction_ = tileLoadFunction;
 
+  this.handleImageError_ = this.handleImageError_.bind(this);
+  this.handleImageLoad_ = this.handleImageLoad_.bind(this);
+
 };
 ol.inherits(ol.ImageTile, ol.Tile);
 
@@ -128,9 +131,9 @@ ol.ImageTile.prototype.load = function() {
     this.changed();
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, this),
+          this.handleImageError_),
       ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, this)
+          this.handleImageLoad_)
     ];
     this.tileLoadFunction_(this, this.src_);
   }

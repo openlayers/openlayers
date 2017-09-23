@@ -67,8 +67,12 @@ describe('ol.control.ScaleLine', function() {
 
     describe('render', function() {
       it('defaults to `ol.control.ScaleLine.render`', function() {
+        var oldRender = ol.control.ScaleLine.render;
+        ol.control.ScaleLine.render = sinon.spy();
         var ctrl = new ol.control.ScaleLine();
-        expect(ctrl.render).to.be(ol.control.ScaleLine.render);
+        ctrl.render();
+        expect(ol.control.ScaleLine.render.called).to.be(true);
+        ol.control.ScaleLine.render = oldRender;
       });
       it('can be configured', function() {
         var myRender = function() {

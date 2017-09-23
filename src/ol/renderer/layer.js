@@ -27,6 +27,7 @@ ol.renderer.Layer = function(layer) {
    */
   this.layer_ = layer;
 
+  this.handleImageChange_ = this.handleImageChange_.bind(this);
 
 };
 ol.inherits(ol.renderer.Layer, ol.Observable);
@@ -116,7 +117,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
   if (imageState != ol.ImageState.LOADED &&
       imageState != ol.ImageState.ERROR) {
     ol.events.listen(image, ol.events.EventType.CHANGE,
-        this.handleImageChange_, this);
+        this.handleImageChange_);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();

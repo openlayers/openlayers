@@ -51,6 +51,8 @@ ol.source.Image = function(options) {
    * @type {number}
    */
   this.reprojectedRevision_ = 0;
+
+  this.handleImageChange = this.handleImageChange.bind(this);
 };
 ol.inherits(ol.source.Image, ol.source.Source);
 

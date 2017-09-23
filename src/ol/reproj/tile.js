@@ -278,7 +278,7 @@ ol.reproj.Tile.prototype.load = function() {
                   this.reproject_();
                 }
               }
-            }, this);
+            }.bind(this));
         this.sourcesListenerKeys_.push(sourceListenKey);
       }
     }, this);

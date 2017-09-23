@@ -606,20 +606,19 @@ describe('ol.interaction.Modify', function() {
   });
 
   describe('handle feature change', function() {
-    var getListeners;
+    var getListenerAmount;
 
     beforeEach(function() {
-      getListeners = function(feature, modify) {
+      getListenerAmount = function(feature) {
         var listeners = ol.events.getListeners(
             feature, 'change');
-        return listeners.filter(function(listener) {
-          return listener.bindTo === modify;
-        });
+        return (listeners === undefined) ? 0 : listeners.length;
       };
     });
 
     it('updates circle segment data', function() {
       var feature = new ol.Feature(new ol.geom.Circle([10, 10], 20));
+      var initialListenerAmount = getListenerAmount(feature);
       features.length = 0;
       features.push(feature);
 
@@ -628,10 +627,7 @@ describe('ol.interaction.Modify', function() {
       });
       map.addInteraction(modify);
 
-      var listeners;
-
-      listeners = getListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      expect(getListenerAmount(feature)).to.eql(initialListenerAmount + 1);
 
       var firstSegmentData;
 
@@ -654,21 +650,18 @@ describe('ol.interaction.Modify', function() {
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([1, 1]);
 
-      listeners = getListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      expect(getListenerAmount(feature)).to.eql(initialListenerAmount + 1);
     });
 
     it('updates polygon segment data', function() {
+      var feature = features[0];
+      var initialListenerAmount = getListenerAmount(feature);
       var modify = new ol.interaction.Modify({
         features: new ol.Collection(features)
       });
       map.addInteraction(modify);
 
-      var feature = features[0];
-      var listeners;
-
-      listeners = getListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      expect(getListenerAmount(feature)).to.eql(initialListenerAmount + 1);
 
       var firstSegmentData;
 
@@ -692,8 +685,7 @@ describe('ol.interaction.Modify', function() {
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([10, 20]);
 
-      listeners = getListeners(feature, modify);
-      expect(listeners).to.have.length(1);
+      expect(getListenerAmount(feature)).to.eql(initialListenerAmount + 1);
     });
   });
 

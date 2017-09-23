@@ -59,7 +59,7 @@ ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     ol.events.unlisten(
         this.geometries_[i], ol.events.EventType.CHANGE,
-        this.changed, this);
+        this.changed);
   }
 };
 
@@ -75,7 +75,7 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     ol.events.listen(
         this.geometries_[i], ol.events.EventType.CHANGE,
-        this.changed, this);
+        this.changed);
   }
 };
 

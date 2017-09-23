@@ -60,9 +60,11 @@ ol.source.Raster = function(options) {
    */
   this.renderers_ = ol.source.Raster.createRenderers_(options.sources);
 
+  this.changed = this.changed.bind(this);
+
   for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
     ol.events.listen(this.renderers_[r], ol.events.EventType.CHANGE,
-        this.changed, this);
+        this.changed);
   }
 
   /**
@@ -73,7 +75,7 @@ ol.source.Raster = function(options) {
       function() {
         return 1;
       },
-      this.changed.bind(this));
+      this.changed);
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
   var layerStates = {};

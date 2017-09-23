@@ -250,23 +250,23 @@ describe('ol.layer.Layer', function() {
     });
 
     it('sets up event listeners', function() {
-      sinon.spy(ol.layer.Layer.prototype, 'handleSourceChange_');
+      var spy = sinon.spy(ol.layer.Layer.prototype, 'handleSourceChange_');
 
       var first = new ol.source.Source({projection: projection});
       var layer = new ol.layer.Layer({source: first});
 
       first.setState('ready');
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      expect(spy.calledOnce).to.be(true);
 
       var second = new ol.source.Source({projection: projection});
       layer.set('source', second);
 
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      expect(spy.calledOnce).to.be(true);
       second.setState('ready');
-      expect(layer.handleSourceChange_.callCount).to.be(2);
+      expect(spy.callCount).to.be(2);
 
       // remove spy
-      ol.layer.Layer.prototype.handleSourceChange_.restore();
+      spy.restore();
     });
 
   });
@@ -302,14 +302,14 @@ describe('ol.layer.Layer', function() {
       var layer = new ol.layer.Layer({source: first});
 
       first.setState('ready');
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      expect(ol.layer.Layer.prototype.handleSourceChange_.calledOnce).to.be(true);
 
       var second = new ol.source.Source({projection: projection});
       layer.setSource(second);
 
-      expect(layer.handleSourceChange_.calledOnce).to.be(true);
+      expect(ol.layer.Layer.prototype.handleSourceChange_.calledOnce).to.be(true);
       second.setState('ready');
-      expect(layer.handleSourceChange_.callCount).to.be(2);
+      expect(ol.layer.Layer.prototype.handleSourceChange_.callCount).to.be(2);
 
       // remove spy
       ol.layer.Layer.prototype.handleSourceChange_.restore();

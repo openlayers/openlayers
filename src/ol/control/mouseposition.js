@@ -31,7 +31,7 @@ ol.control.MousePosition = function(opt_options) {
   element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
   var render = options.render ?
-    options.render : ol.control.MousePosition.render;
+    options.render : ol.control.MousePosition.render.bind(this);
 
   ol.control.Control.call(this, {
     element: element,
@@ -39,9 +39,12 @@ ol.control.MousePosition = function(opt_options) {
     target: options.target
   });
 
+  this.handleMouseMove = this.handleMouseMove.bind(this);
+  this.handleMouseOut = this.handleMouseOut.bind(this);
+
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.control.MousePosition.Property_.PROJECTION),
-      this.handleProjectionChanged_, this);
+      this.handleProjectionChanged_.bind(this));
 
   if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
@@ -170,9 +173,9 @@ ol.control.MousePosition.prototype.setMap = function(map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
         ol.events.listen(viewport, ol.events.EventType.MOUSEMOVE,
-            this.handleMouseMove, this),
+            this.handleMouseMove),
         ol.events.listen(viewport, ol.events.EventType.MOUSEOUT,
-            this.handleMouseOut, this)
+            this.handleMouseOut)
     );
   }
 };

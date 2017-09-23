@@ -86,9 +86,9 @@ ol.webgl.Context = function(canvas, gl) {
   }
 
   ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
-      this.handleWebGLContextLost, this);
+      this.handleWebGLContextLost.bind(this));
   ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
-      this.handleWebGLContextRestored, this);
+      this.handleWebGLContextRestored.bind(this));
 
 };
 ol.inherits(ol.webgl.Context, ol.Disposable);

@@ -36,7 +36,7 @@ goog.require('ol.style.Style');
 ol.interaction.Select = function(opt_options) {
 
   ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.Select.handleEvent
+    handleEvent: ol.interaction.Select.handleEvent.bind(this)
   });
 
   var options = opt_options ? opt_options : {};
@@ -137,9 +137,9 @@ ol.interaction.Select = function(opt_options) {
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
   ol.events.listen(features, ol.CollectionEventType.ADD,
-      this.addFeature_, this);
+      this.addFeature_.bind(this));
   ol.events.listen(features, ol.CollectionEventType.REMOVE,
-      this.removeFeature_, this);
+      this.removeFeature_.bind(this));
 
 };
 ol.inherits(ol.interaction.Select, ol.interaction.Interaction);

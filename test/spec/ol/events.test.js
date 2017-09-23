@@ -16,17 +16,7 @@ describe('ol.events', function() {
   });
 
   describe('bindListener_()', function() {
-    it('binds a listener and returns a bound listener function', function() {
-      var listenerObj = {
-        listener: sinon.spy(),
-        bindTo: {id: 1}
-      };
-      var boundListener = ol.events.bindListener_(listenerObj);
-      expect(listenerObj.boundListener).to.equal(boundListener);
-      boundListener();
-      expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.bindTo);
-    });
-    it('binds to the target when bindTo is not provided', function() {
+    it('binds to the target', function() {
       var listenerObj = {
         listener: sinon.spy(),
         target: {id: 1}
@@ -37,16 +27,13 @@ describe('ol.events', function() {
       expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.target);
     });
     it('binds a self-unregistering listener when callOnce is true', function() {
-      var bindTo = {id: 1};
       var listenerObj = {
         type: 'foo',
         target: target,
-        bindTo: bindTo,
         callOnce: true
       };
       var unlistenSpy = sinon.spy(ol.events, 'unlistenByKey'); // eslint-disable-line openlayers-internal/no-missing-requires
       listenerObj.listener = function() {
-        expect(this).to.equal(bindTo);
         expect(unlistenSpy.firstCall.args[0]).to.eql(listenerObj);
       };
       var boundListener = ol.events.bindListener_(listenerObj);
@@ -70,19 +57,11 @@ describe('ol.events', function() {
     });
 
     it('searches a listener array for a specific listener', function() {
-      var bindTo = {id: 1};
       var result = ol.events.findListener_(listeners, listener);
-      expect(result).to.be(listenerObj);
-      result = ol.events.findListener_(listeners, listener, bindTo);
-      expect(result).to.be(undefined);
-      listenerObj.bindTo = bindTo;
-      result = ol.events.findListener_(listeners, listener);
-      expect(result).to.be(undefined);
-      result = ol.events.findListener_(listeners, listener, bindTo);
       expect(result).to.be(listenerObj);
     });
     it('marks the delete index on a listener object', function() {
-      var result = ol.events.findListener_(listeners, listener, undefined, true);
+      var result = ol.events.findListener_(listeners, listener, true);
       expect(result).to.be(listenerObj);
       expect(listenerObj.deleteIndex).to.be(0);
     });
@@ -115,13 +94,6 @@ describe('ol.events', function() {
       var key2 = ol.events.listen(target, 'foo', listener);
       expect(key1).to.equal(key2);
       expect(add.callCount).to.be(1);
-    });
-    it('only treats listeners as same when all args are equal', function() {
-      var listener = function() {};
-      ol.events.listen(target, 'foo', listener, {});
-      ol.events.listen(target, 'foo', listener, {});
-      ol.events.listen(target, 'foo', listener, undefined);
-      expect(add.callCount).to.be(3);
     });
   });
 
@@ -209,15 +181,71 @@ describe('ol.events', function() {
       expect(key2.boundListener).to.equal(key1.boundListener);
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
     });
-    it('registers multiple listeners if this object is different', function() {
-      var target = new ol.events.EventTarget();
-      var listener = function() {};
-      var key1 = ol.events.listen(target, 'foo', listener, {});
-      var key2 = ol.events.listen(target, 'foo', listener, {});
-      expect(key1.boundListener).to.not.equal(key2.boundListener);
-      expect(target.getListeners('foo')).to.eql(
-          [key1.boundListener, key2.boundListener]);
-    });
   });
 
+  describe('Binding via .bind()', function() {
+    it('registers and unregisters bound methods', function() {
+      var called = 0;
+      var Prototype = function() {
+        this.bound = true;
+        this.method = this.method.bind(this);
+      };
+      Prototype.prototype.method = function() {
+        called++;
+        expect(this.bound).to.be(true);
+      };
+      var instance = new Prototype();
+      var target = new ol.events.EventTarget();
+
+      var key1 = ol.events.listen(target, 'foo', instance.method);
+      expect(target.getListeners('foo')).to.eql([key1.boundListener]);
+      target.dispatchEvent('foo');
+      expect(called).to.be(1);
+      ol.events.unlisten(target, 'foo', instance.method);
+      expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
+      target.dispatchEvent('foo');
+      expect(called).to.be(1);
+
+      var key2 = ol.events.listen(target, 'foo', instance.method);
+      expect(target.getListeners('foo')).to.eql([key2.boundListener]);
+      target.dispatchEvent('foo');
+      expect(called).to.be(2);
+      ol.events.unlistenByKey(key2);
+      expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
+      target.dispatchEvent('foo');
+      expect(called).to.be(2);
+    });
+
+    it('registers and unregisters bound handlers', function() {
+      var called = 0;
+      var Prototype = function() {
+        this.bound = true;
+      };
+      Prototype.handler = function() {
+        called++;
+        expect(this.bound).to.be(true);
+      };
+      var instance = new Prototype();
+      var target = new ol.events.EventTarget();
+
+      var boundHandler = Prototype.handler.bind(instance);
+      var key1 = ol.events.listen(target, 'foo', boundHandler);
+      expect(target.getListeners('foo')).to.eql([key1.boundListener]);
+      target.dispatchEvent('foo');
+      expect(called).to.be(1);
+      ol.events.unlisten(target, 'foo', boundHandler);
+      expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
+      target.dispatchEvent('foo');
+      expect(called).to.be(1);
+
+      var key2 = ol.events.listen(target, 'foo', Prototype.handler.bind(instance));
+      expect(target.getListeners('foo')).to.eql([key2.boundListener]);
+      target.dispatchEvent('foo');
+      expect(called).to.be(2);
+      ol.events.unlistenByKey(key2);
+      expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
+      target.dispatchEvent('foo');
+      expect(called).to.be(2);
+    });
+  });
 });

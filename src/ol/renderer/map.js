@@ -43,6 +43,7 @@ ol.renderer.Map = function(container, map) {
    */
   this.layerRendererListeners_ = {};
 
+  this.handleLayerRendererChange_ = this.handleLayerRendererChange_.bind(this);
 };
 ol.inherits(ol.renderer.Map, ol.Disposable);
 
@@ -210,7 +211,7 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
     if (renderer) {
       this.layerRenderers_[layerKey] = renderer;
       this.layerRendererListeners_[layerKey] = ol.events.listen(renderer,
-          ol.events.EventType.CHANGE, this.handleLayerRendererChange_, this);
+          ol.events.EventType.CHANGE, this.handleLayerRendererChange_);
     } else {
       throw new Error('Unable to create renderer for layer: ' + layer.getType());
     }

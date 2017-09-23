@@ -51,7 +51,7 @@ ol.control.Rotate = function(opt_options) {
   button.appendChild(this.label_);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      ol.control.Rotate.prototype.handleClick_, this);
+      this.handleClick_.bind(this));
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
@@ -59,7 +59,7 @@ ol.control.Rotate = function(opt_options) {
   element.className = cssClasses;
   element.appendChild(button);
 
-  var render = options.render ? options.render : ol.control.Rotate.render;
+  var render = options.render ? options.render : ol.control.Rotate.render.bind(this);
 
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 

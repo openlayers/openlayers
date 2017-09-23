@@ -42,9 +42,9 @@ goog.require('ol.structs.RBush');
 ol.interaction.Snap = function(opt_options) {
 
   ol.interaction.Pointer.call(this, {
-    handleEvent: ol.interaction.Snap.handleEvent_,
+    handleEvent: ol.interaction.Snap.handleEvent_.bind(this),
     handleDownEvent: ol.functions.TRUE,
-    handleUpEvent: ol.interaction.Snap.handleUpEvent_
+    handleUpEvent: ol.interaction.Snap.handleUpEvent_.bind(this)
   });
 
   var options = opt_options ? opt_options : {};
@@ -84,6 +84,10 @@ ol.interaction.Snap = function(opt_options) {
    * @private
    */
   this.featureChangeListenerKeys_ = {};
+
+  this.handleFeatureChange_ = this.handleFeatureChange_.bind(this);
+  this.handleFeatureAdd_ = this.handleFeatureAdd_.bind(this);
+  this.handleFeatureRemove_ = this.handleFeatureRemove_.bind(this);
 
   /**
    * Extents are preserved so indexed segment can be quickly removed
@@ -175,7 +179,7 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     this.featureChangeListenerKeys_[feature_uid] = ol.events.listen(
         feature,
         ol.events.EventType.CHANGE,
-        this.handleFeatureChange_, this);
+        this.handleFeatureChange_);
   }
 };
 
@@ -310,16 +314,16 @@ ol.interaction.Snap.prototype.setMap = function(map) {
     if (this.features_) {
       keys.push(
           ol.events.listen(this.features_, ol.CollectionEventType.ADD,
-              this.handleFeatureAdd_, this),
+              this.handleFeatureAdd_),
           ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-              this.handleFeatureRemove_, this)
+              this.handleFeatureRemove_)
       );
     } else if (this.source_) {
       keys.push(
           ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
-              this.handleFeatureAdd_, this),
+              this.handleFeatureAdd_),
           ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
-              this.handleFeatureRemove_, this)
+              this.handleFeatureRemove_)
       );
     }
     features.forEach(this.forEachFeatureAdd_, this);

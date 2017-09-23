@@ -44,7 +44,7 @@ ol.control.Zoom = function(opt_options) {
   );
 
   ol.events.listen(inElement, ol.events.EventType.CLICK,
-      ol.control.Zoom.prototype.handleClick_.bind(this, delta));
+      this.handleClick_.bind(this, delta));
 
   var outElement = document.createElement('button');
   outElement.className = className + '-out';
@@ -55,7 +55,7 @@ ol.control.Zoom = function(opt_options) {
   );
 
   ol.events.listen(outElement, ol.events.EventType.CLICK,
-      ol.control.Zoom.prototype.handleClick_.bind(this, -delta));
+      this.handleClick_.bind(this, -delta));
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;

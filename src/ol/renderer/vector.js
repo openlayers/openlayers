@@ -80,13 +80,13 @@ ol.renderer.vector.renderFeature = function(
     imageState = imageStyle.getImageState();
     if (imageState == ol.ImageState.LOADED ||
         imageState == ol.ImageState.ERROR) {
-      imageStyle.unlistenImageChange(listener, null);
+      imageStyle.unlistenImageChange(listener);
     } else {
       if (imageState == ol.ImageState.IDLE) {
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      imageStyle.listenImageChange(listener, null);
+      imageStyle.listenImageChange(listener);
       loading = true;
     }
   }

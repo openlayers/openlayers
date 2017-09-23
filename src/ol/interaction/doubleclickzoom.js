@@ -25,7 +25,7 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
   this.delta_ = options.delta ? options.delta : 1;
 
   ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.DoubleClickZoom.handleEvent
+    handleEvent: ol.interaction.DoubleClickZoom.handleEvent.bind(this)
   });
 
   /**
