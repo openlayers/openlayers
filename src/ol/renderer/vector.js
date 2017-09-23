@@ -68,13 +68,11 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {function(this: T, ol.events.Event)} listener Listener function.
- * @param {T} thisArg Value to use as `this` when executing `listener`.
+ * @param {function(ol.events.Event)} listener Listener function.
  * @return {boolean} `true` if style is loading.
- * @template T
  */
 ol.renderer.vector.renderFeature = function(
-    replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+    replayGroup, feature, style, squaredTolerance, listener) {
   var loading = false;
   var imageStyle, imageState;
   imageStyle = style.getImage();
@@ -82,13 +80,13 @@ ol.renderer.vector.renderFeature = function(
     imageState = imageStyle.getImageState();
     if (imageState == ol.ImageState.LOADED ||
         imageState == ol.ImageState.ERROR) {
-      imageStyle.unlistenImageChange(listener, thisArg);
+      imageStyle.unlistenImageChange(listener, null);
     } else {
       if (imageState == ol.ImageState.IDLE) {
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      imageStyle.listenImageChange(listener, thisArg);
+      imageStyle.listenImageChange(listener, null);
       loading = true;
     }
   }

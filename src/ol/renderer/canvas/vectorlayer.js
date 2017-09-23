@@ -351,7 +351,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
          */
         function(feature) {
           features.push(feature);
-        }, this);
+        });
     features.sort(vectorLayerRenderOrder);
     for (var i = 0, ii = features.length; i < ii; ++i) {
       renderFeature(features[i]);
@@ -390,13 +390,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature = function(feature, resol
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],
           ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_.bind(this)) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_.bind(this)) || loading;
   }
   return loading;
 };

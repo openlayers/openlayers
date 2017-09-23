@@ -285,7 +285,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
           feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
-  };
+  }.bind(this);
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
@@ -295,7 +295,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
          */
         function(feature) {
           features.push(feature);
-        }, this);
+        });
     features.sort(vectorLayerRenderOrder);
     features.forEach(renderFeature, this);
   } else {
@@ -332,13 +332,13 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolu
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],
           ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_.bind(this)) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_.bind(this)) || loading;
   }
   return loading;
 };
