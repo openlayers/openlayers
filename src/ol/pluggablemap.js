@@ -477,8 +477,7 @@ ol.PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_
   var layerFilter = opt_options.layerFilter !== undefined ?
     opt_options.layerFilter : ol.functions.TRUE;
   return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, callback, null,
-      layerFilter, null);
+      coordinate, this.frameState_, hitTolerance, callback, layerFilter);
 };
 
 
@@ -506,36 +505,31 @@ ol.PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback
+ * @param {function(ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback
  *     Layer callback. This callback will receive two arguments: first is the
  *     {@link ol.layer.Layer layer}, second argument is an array representing
  *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
  *     that do not currently support this argument. To stop detection, callback
  *     functions can return a truthy value.
- * @param {S=} opt_this Value to use as `this` when executing `callback`.
- * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
+ * @param {(function(ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
  *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
  *     value. Only layers which are visible and for which this function returns
  *     `true` will be tested for features. By default, all visible layers will
  *     be tested.
- * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
- * @template S,T,U
+ * @template T
  * @api
  */
-ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_layerFilter) {
   if (!this.frameState_) {
     return;
   }
-  var thisArg = opt_this !== undefined ? opt_this : null;
   var layerFilter = opt_layerFilter !== undefined ?
     opt_layerFilter : ol.functions.TRUE;
-  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
-      pixel, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+      pixel, this.frameState_, callback, layerFilter);
 };
 
 
@@ -545,7 +539,6 @@ ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_th
  * @param {ol.Pixel} pixel Pixel.
  * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {boolean} Is there a feature at the given pixel?
- * @template U
  * @api
  */
 ol.PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
@@ -559,7 +552,7 @@ ol.PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, layerFilter, null);
+      coordinate, this.frameState_, hitTolerance, layerFilter);
 };
 
 

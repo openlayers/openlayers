@@ -237,7 +237,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, frameState, hitTolerance, callback) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
@@ -277,7 +278,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
             var key = ol.getUid(feature).toString();
             if (!(key in features)) {
               features[key] = true;
-              return callback.call(thisArg, feature, layer);
+              return callback(feature, layer);
             }
           });
     }

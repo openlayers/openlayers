@@ -217,7 +217,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
@@ -236,7 +236,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
-            return callback.call(thisArg, feature, layer);
+            return callback(feature, layer);
           }
         });
   }

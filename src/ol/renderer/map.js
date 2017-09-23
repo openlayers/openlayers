@@ -92,19 +92,15 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (ol.Feature|ol.render.Feature),
- *     ol.layer.Layer): T} callback Feature callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ * @param {function((ol.Feature|ol.render.Feature), ol.layer.Layer): T} callback Feature callback.
+ * @param {function(ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
- * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result.
- * @template S,T,U
+ * @template T
  */
-ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
-    layerFilter, thisArg2) {
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, layerFilter) {
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
@@ -118,7 +114,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
     var key = ol.getUid(feature).toString();
     var managed = frameState.layerStates[ol.getUid(layer)].managed;
     if (!(key in frameState.skippedFeatureUids && !managed)) {
-      return callback.call(thisArg, feature, managed ? layer : null);
+      return callback(feature, managed ? layer : null);
     }
   }
 
@@ -142,12 +138,12 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
     var layerState = layerStates[i];
     var layer = layerState.layer;
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
+        layerFilter(layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+            frameState, hitTolerance, forEachFeatureAtCoordinate);
       }
       if (result) {
         return result;
@@ -162,36 +158,30 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
  * @abstract
  * @param {ol.Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
- *     callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ * @param {function(ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer callback.
+ * @param {function(ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
- * @param {U} thisArg2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result.
- * @template S,T,U
+ * @template T
  */
-ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-    layerFilter, thisArg2) {};
+ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, layerFilter) {};
 
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
+ * @param {function(ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
  *     layers will be tested.
- * @param {U} thisArg Value to use as `this` when executing `layerFilter`.
  * @return {boolean} Is there a feature at the given coordinate?
- * @template U
  */
-ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
+ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, hitTolerance, ol.functions.TRUE, this, layerFilter, thisArg);
+      coordinate, frameState, hitTolerance, ol.functions.TRUE, layerFilter);
 
   return hasFeature !== undefined;
 };

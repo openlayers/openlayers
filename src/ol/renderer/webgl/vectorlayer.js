@@ -134,7 +134,8 @@ ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, frameState, hitTolerance, callback) {
   if (!this.replayGroup_ || !this.layerState_) {
     return undefined;
   } else {
@@ -156,7 +157,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
-            return callback.call(thisArg, feature, layer);
+            return callback(feature, layer);
           }
         });
   }
@@ -184,13 +185,13 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordi
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback) {
   var coordinate = ol.transform.apply(
       frameState.pixelToCoordinateTransform, pixel.slice());
   var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 
   if (hasFeature) {
-    return callback.call(thisArg, this.getLayer(), null);
+    return callback(this.getLayer(), null);
   } else {
     return undefined;
   }

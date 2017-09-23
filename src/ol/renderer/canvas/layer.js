@@ -100,18 +100,17 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+ * @param {function(ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
- * @template S,T,U
+ * @template T
  */
-ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, ol.functions.TRUE, this);
+      coordinate, frameState, 0, ol.functions.TRUE);
 
   if (hasFeature) {
-    return callback.call(thisArg, this.getLayer(), null);
+    return callback(this.getLayer(), null);
   } else {
     return undefined;
   }
