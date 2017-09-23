@@ -163,6 +163,88 @@ describe('ol.renderer.canvas.Map', function() {
     });
   });
 
+  describe('#forEachLayerAtCoordinate', function() {
+
+    var layer, map, target;
+
+    beforeEach(function(done) {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new _ol_Map_({
+        pixelRatio: 1,
+        target: target,
+        view: new _ol_View_({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+
+      // 1 x 1 pixel black icon
+      var img = document.createElement('img');
+      img.onload = function() {
+        done();
+      };
+      img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
+
+      layer = new _ol_layer_Vector_({
+        source: new _ol_source_Vector_({
+          features: [
+            new _ol_Feature_({
+              geometry: new Point([0, 0])
+            })
+          ]
+        }),
+        style: new _ol_style_Style_({
+          image: new _ol_style_Icon_({
+            img: img,
+            imgSize: [1, 1]
+          })
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('calls callback for clicks inside of the hitTolerance', function() {
+      map.addLayer(layer);
+      map.renderSync();
+      var cb1 = sinon.spy();
+      var cb2 = sinon.spy();
+
+      var pixel = map.getPixelFromCoordinate([0, 0]);
+
+      var pixelsInside = [
+        [pixel[0] + 9, pixel[1]],
+        [pixel[0] - 9, pixel[1]],
+        [pixel[0], pixel[1] + 9],
+        [pixel[0], pixel[1] - 9]
+      ];
+
+      var pixelsOutside = [
+        [pixel[0] + 9, pixel[1] + 9],
+        [pixel[0] - 9, pixel[1] + 9],
+        [pixel[0] + 9, pixel[1] - 9],
+        [pixel[0] - 9, pixel[1] - 9]
+      ];
+
+      for (var i = 0; i < 4; i++) {
+        map.forEachLayerAtPixel(pixelsInside[i], cb1, {hitTolerance: 10});
+      }
+      expect(cb1.callCount).to.be(4);
+      expect(cb1.firstCall.args[0]).to.be(layer);
+
+      for (var j = 0; j < 4; j++) {
+        map.forEachLayerAtPixel(pixelsOutside[j], cb2, {hitTolerance: 10});
+      }
+      expect(cb2).not.to.be.called();
+    });
+  });
+
   describe('#renderFrame()', function() {
     var layer, map, renderer;
 
