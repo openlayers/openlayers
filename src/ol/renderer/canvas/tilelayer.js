@@ -179,24 +179,28 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
         tile = tile.getInterimTile();
       }
       if (this.isDrawableTile_(tile)) {
+        var inTransition = false;
         if (tile.getState() == ol.TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-          var inTransition = tile.inTransition && tile.inTransition(ol.getUid(this));
+          inTransition = tile.inTransition && tile.inTransition(ol.getUid(this));
           if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
             newTiles = true;
           }
         }
-        continue;
+        if (!inTransition) {
+          continue;
+        }
       }
 
-      var fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
-          tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
-      if (!fullyLoaded) {
-        var childTileRange = tileGrid.getTileCoordChildTileRange(
-            tile.tileCoord, tmpTileRange, tmpExtent);
-        if (childTileRange) {
-          findLoadedTiles(z + 1, childTileRange);
-        }
+      var childTileRange = tileGrid.getTileCoordChildTileRange(
+          tile.tileCoord, tmpTileRange, tmpExtent);
+      var covered = false;
+      if (childTileRange) {
+        covered = findLoadedTiles(z + 1, childTileRange);
+      }
+      if (!covered) {
+        tileGrid.forEachTileCoordParentTileRange(
+            tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       }
 
     }
