@@ -1,5 +1,3 @@
-// FIXME find correct globalCompositeOperation
-
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('ol');
@@ -183,8 +181,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       if (this.isDrawableTile_(tile)) {
         if (tile.getState() == ol.TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-          var inTransition = tile.getAlpha && tile.getAlpha(ol.getUid(this), frameState.time) !== 1;
-          if (!newTiles && (this.renderedTiles.indexOf(tile) === -1 || inTransition)) {
+          var inTransition = tile.inTransition && tile.inTransition(ol.getUid(this));
+          if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
             newTiles = true;
           }
         }
@@ -250,7 +248,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
         y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
         w = currentTilePixelSize[0] * currentScale / oversampling;
         h = currentTilePixelSize[1] * currentScale / oversampling;
-        this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter);
+        this.drawTileImage(tile, frameState, layerState, x, y, w, h, tileGutter, z === currentZ);
         this.renderedTiles.push(tile);
       }
     }
@@ -293,20 +291,21 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
  * @param {number} w Width of the tile.
  * @param {number} h Height of the tile.
  * @param {number} gutter Tile gutter.
+ * @param {boolean} transition Apply an alpha transition.
  */
-ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter) {
+ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter, transition) {
   var image = tile.getImage(this.getLayer());
   if (!image) {
     return;
   }
-  var alpha = tile.getAlpha(ol.getUid(this), frameState.time);
+  var alpha = transition ? tile.getAlpha(ol.getUid(this), frameState.time) : 1;
   if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
   }
   var alphaChanged = alpha !== this.context.globalAlpha;
   if (alphaChanged) {
     this.context.save();
-    this.context.globalAlpha = Math.min(0.5, alpha);
+    this.context.globalAlpha = alpha;
   }
   this.context.drawImage(image, gutter, gutter,
       image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);

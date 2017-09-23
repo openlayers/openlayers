@@ -58,7 +58,8 @@ ol.Tile = function(tileCoord, state, opt_options) {
     250 : options.transition;
 
   /**
-   * Lookup of start times for rendering transitions.
+   * Lookup of start times for rendering transitions.  If the start time is
+   * equal to -1, the transition is complete.
    * @type {Object.<number, number>}
    */
   this.transitionStarts_ = {};
@@ -193,10 +194,28 @@ ol.Tile.prototype.getAlpha = function(id, time) {
   if (!start) {
     start = time;
     this.transitionStarts_[id] = start;
+  } else if (start === -1) {
+    return 1;
   }
+
   var delta = time - start + (1000 / 60); // avoid rendering at 0
   if (delta >= this.transition_) {
+    this.transitionStarts_[id] = -1;
     return 1;
   }
   return ol.easing.easeIn(delta / this.transition_);
+};
+
+/**
+ * Determine if a tile is in an alpha transition.  A tile is considered in
+ * transition if tile.getAlpha() has not yet been called or has been called
+ * and returned 1.
+ * @param {number} id An id for the renderer.
+ * @return {boolean} The tile is in transition.
+ */
+ol.Tile.prototype.inTransition = function(id) {
+  if (!this.transition_) {
+    return false;
+  }
+  return this.transitionStarts_[id] !== -1;
 };

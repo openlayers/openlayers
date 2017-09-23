@@ -224,7 +224,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
  * @inheritDoc
  */
 ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
-    tile, frameState, layerState, x, y, w, h, gutter) {
+    tile, frameState, layerState, x, y, w, h, gutter, transition) {
   var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
   this.createReplayGroup_(vectorImageTile, frameState);
   if (this.context) {
