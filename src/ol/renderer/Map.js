@@ -162,6 +162,7 @@ _ol_renderer_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, fr
  * @abstract
  * @param {ol.Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -173,7 +174,7 @@ _ol_renderer_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, fr
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-_ol_renderer_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+_ol_renderer_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, hitTolerance, callback, thisArg,
     layerFilter, thisArg2) {};
 
 

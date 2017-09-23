@@ -573,7 +573,7 @@ _ol_renderer_webgl_Map_.prototype.hasFeatureAtCoordinate = function(coordinate, 
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+_ol_renderer_webgl_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, hitTolerance, callback, thisArg,
     layerFilter, thisArg2) {
   if (this.getGL().isContextLost()) {
     return false;

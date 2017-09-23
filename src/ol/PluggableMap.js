@@ -584,12 +584,14 @@ _ol_PluggableMap_.prototype.forEachLayerAtPixel = function(pixel, callback, opt_
   if (!this.frameState_) {
     return;
   }
-  var thisArg = opt_this !== undefined ? opt_this : null;
-  var layerFilter = opt_layerFilter !== undefined ? opt_layerFilter : TRUE;
-  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
+  opt_options = opt_options !== undefined ? opt_options : {};
+  var hitTolerance = opt_options.hitTolerance !== undefined ?
+    opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
+  var layerFilter = opt_options.layerFilter !== undefined ?
+    opt_options.layerFilter : TRUE;
   return this.renderer_.forEachLayerAtPixel(
-      pixel, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+      pixel, this.frameState_, hitTolerance, callback, null,
+      layerFilter, null);
 };
 
 

@@ -118,7 +118,7 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachFeatureAtCoordinate = f
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+_ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
