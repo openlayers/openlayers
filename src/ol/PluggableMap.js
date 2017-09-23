@@ -574,20 +574,13 @@ _ol_PluggableMap_.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
  *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
  *     that do not currently support this argument. To stop detection, callback
  *     functions can return a truthy value.
- * @param {S=} opt_this Value to use as `this` when executing `callback`.
- * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
- *     filter function. The filter function will receive one argument, the
- *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
- *     value. Only layers which are visible and for which this function returns
- *     `true` will be tested for features. By default, all visible layers will
- *     be tested.
- * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
+ * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
- * @template S,T,U
+ * @template S,T
  * @api
  */
-_ol_PluggableMap_.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+_ol_PluggableMap_.prototype.forEachLayerAtPixel = function(pixel, callback, opt_options) {
   if (!this.frameState_) {
     return;
   }
