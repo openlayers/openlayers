@@ -1,10 +1,72 @@
-
-
 goog.require('ol');
 goog.require('ol.ImageTile');
+goog.require('ol.Tile');
 goog.require('ol.TileState');
 
+
 describe('ol.Tile', function() {
+  describe('constructor', function()  {
+    it('sets a default transition', function() {
+      var coord = [0, 0, 0];
+      var tile = new ol.Tile(coord, ol.TileState.IDLE);
+      expect(tile.transition_).to.equal(275);
+    });
+
+    it('allows the transition to be set', function() {
+      var coord = [0, 0, 0];
+      var transition = 500;
+      var tile = new ol.Tile(coord, ol.TileState.IDLE, {transition: transition});
+      expect(tile.transition_).to.equal(transition);
+    });
+  });
+
+  describe('#getAlpha()', function() {
+    it('returns the alpha value for a tile in transition', function() {
+      var coord = [0, 0, 0];
+      var tile = new ol.Tile(coord, ol.TileState.IDLE);
+      var id = 'test';
+      var time = Date.now();
+
+      var startAlpha = tile.getAlpha(id, time);
+      expect(startAlpha > 0).to.be(true);
+      expect(startAlpha < 1).to.be(true);
+
+      time += tile.transition_ / 2;
+      var midAlpha = tile.getAlpha(id, time);
+      expect(midAlpha > startAlpha).to.be(true);
+      expect(midAlpha < 1).to.be(true);
+
+      time += tile.transition_ / 2;
+      var endAlpha = tile.getAlpha(id, time);
+      expect(endAlpha).to.be(1);
+    });
+  });
+
+  describe('#inTransition()', function() {
+    it('determines if the tile is in transition', function() {
+      var coord = [0, 0, 0];
+      var tile = new ol.Tile(coord, ol.TileState.IDLE);
+      var id = 'test';
+      var time = Date.now();
+
+      expect(tile.inTransition(id)).to.be(true);
+
+      // start of transition
+      tile.getAlpha(id, time);
+      expect(tile.inTransition(id)).to.be(true);
+
+      // mid way through transition
+      time += tile.transition_ / 2;
+      tile.getAlpha(id, time);
+      expect(tile.inTransition(id)).to.be(true);
+
+      // end of transition
+      time += tile.transition_ / 2;
+      tile.getAlpha(id, time);
+      expect(tile.inTransition(id)).to.be(false);
+    });
+  });
+
   describe('interimChain', function() {
     var head, renderTile;
     beforeEach(function() {
