@@ -527,10 +527,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var maxAngle = /** @type {number} */ (instruction[6]);
         var measure = /** @type {function(string):number} */ (instruction[7]);
         var offsetY = /** @type {number} */ (instruction[8]);
-        var strokeWidth = /** @type {number} */ (instruction[9]);
-        var text = /** @type {string} */ (instruction[10]);
-        var align = /** @type {number} */ (instruction[11]);
-        var textScale = /** @type {number} */ (instruction[12]);
+        var text = /** @type {string} */ (instruction[9]);
+        var align = /** @type {number} */ (instruction[10]);
+        var textScale = /** @type {number} */ (instruction[11]);
 
         var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
         var textLength = measure(text);
@@ -540,11 +539,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
               pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle, this.chars_);
           var numChars = text.length;
           if (chars) {
+            var fillHeight = images[images.length - 1].height;
             for (var c = 0, cc = images.length; c < cc; ++c) {
               var char = chars[c % numChars]; // x, y, rotation
               var label = images[c];
               anchorX = label.width / 2;
-              anchorY = baseline * label.height + 2 * (0.5 - baseline) * strokeWidth - offsetY;
+              anchorY = baseline * label.height + (0.5 - baseline) * (label.height - fillHeight) - offsetY;
               this.replayImage_(context, char[0], char[1], label, anchorX, anchorY,
                   label.height, 1, 0, 0, char[2], textScale, false, label.width);
             }
