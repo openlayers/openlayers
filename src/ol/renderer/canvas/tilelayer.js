@@ -5,7 +5,6 @@ goog.require('ol.LayerType');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
-goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.renderer.Type');
@@ -238,7 +237,15 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     this.renderedTiles.length = 0;
     /** @type {Array.<number>} */
     var zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort(ol.array.numberSafeCompareFunction);
+    zs.sort(function(a, b) {
+      if (a === z) {
+        return 1;
+      } else if (b === z) {
+        return -1;
+      } else {
+        return a > b ? 1 : a < b ? -1 : 0;
+      }
+    });
     var currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
     var tileExtent, tileGutter, tilesToDraw, w, h;
     for (i = 0, ii = zs.length; i < ii; ++i) {
