@@ -383,7 +383,6 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
   var stroke = !!strokeState;
   var textState = this.textState_;
   var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
-  var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth * pixelRatio : 0;
 
   var labels = [];
   var text = this.text_;
@@ -409,13 +408,13 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
     begin, end, labels, baseline,
     textState.exceedLength, textState.maxAngle,
     ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio),
-    offsetY, strokeWidth, this.text_, align, this.textScale_
+    offsetY, this.text_, align, this.textScale_
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
     begin, end, labels, baseline,
     textState.exceedLength, textState.maxAngle,
     ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, 1),
-    offsetY, strokeWidth, this.text_, align, this.textScale_ / pixelRatio
+    offsetY, this.text_, align, this.textScale_ / pixelRatio
   ]);
 };
 

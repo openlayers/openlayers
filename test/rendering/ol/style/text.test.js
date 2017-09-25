@@ -99,7 +99,7 @@ describe('ol.rendering.style.Text', function() {
     var uglyPath = [163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
     var polygon = [151, 17, 163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
 
-    function createLineString(coords, textAlign, maxAngle) {
+    function createLineString(coords, textAlign, maxAngle, strokeColor, strokeWidth) {
       var geom = new ol.geom.LineString();
       geom.setFlatCoordinates('XY', coords);
       var style = new ol.style.Style({
@@ -113,7 +113,8 @@ describe('ol.rendering.style.Text', function() {
           maxAngle: maxAngle,
           placement: 'line',
           stroke: new ol.style.Stroke({
-            color: 'white'
+            color: strokeColor || 'white',
+            width: strokeWidth
           })
         })
       });
@@ -282,13 +283,20 @@ describe('ol.rendering.style.Text', function() {
       it('renders text along a linestring', function(done) {
         createMap('canvas');
         createLineString(nicePath);
-        expectResemble(map, 'rendering/ol/style/expected/text-linestring-nice.png', 2.5, done);
+        expectResemble(map, 'rendering/ol/style/expected/text-linestring-nice.png', 2.8, done);
+      });
+
+      it('aligns text along a linestring correctly with `textBaseline` option', function(done) {
+        createMap('canvas');
+        createLineString(nicePath, undefined, undefined, 'cyan', 3);
+        map.getView().setResolution(0.25);
+        expectResemble(map, 'rendering/ol/style/expected/text-linestring-nice-baseline.png', 6.2, done);
       });
 
       it('renders text along a linestring with `textAlign: \'left\'`', function(done) {
         createMap('canvas');
         createLineString(nicePath, 'left');
-        expectResemble(map, 'rendering/ol/style/expected/text-linestring-left-nice.png', 2.5, done);
+        expectResemble(map, 'rendering/ol/style/expected/text-linestring-left-nice.png', 2.8, done);
       });
 
       it('renders text along a rotated linestring', function(done) {
