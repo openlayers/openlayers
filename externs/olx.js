@@ -472,7 +472,7 @@ olx.TileOptions;
 
 /**
  * A duration for tile opacity transitions.  By default, tiles will render with
- * a opacity transition that lasts 275 ms.  To change the duration, pass a
+ * an opacity transition that lasts 275 ms.  To change the duration, pass a
  * number in milliseconds.  A duration of 0 disables the opacity transition.
  * @type {number|undefined}
  * @api
