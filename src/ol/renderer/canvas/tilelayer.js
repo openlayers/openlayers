@@ -227,9 +227,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
         canvas.width = width;
         canvas.height = height;
       } else {
-        if (this.renderedExtent_ && !ol.extent.equals(imageExtent, this.renderedExtent_)) {
-          context.clearRect(0, 0, width, height);
-        }
+        context.clearRect(0, 0, width, height);
         oversampling = this.oversampling_;
       }
     }
