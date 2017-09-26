@@ -85,7 +85,7 @@
     "serve-files": "1.0.1",
     "sinon": "3.3.0",
     "slimerjs": "0.10.3",
-    "url-polyfill": "^1.0.7"
+    "url-polyfill": "^1.0.8"
   },
   "eslintConfig": {
     "extends": "openlayers",
