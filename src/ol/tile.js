@@ -55,7 +55,7 @@ ol.Tile = function(tileCoord, state, opt_options) {
    * @type {number}
    */
   this.transition_ = options.transition === undefined ?
-    275 : options.transition;
+    250 : options.transition;
 
   /**
    * Lookup of start times for rendering transitions.  If the start time is

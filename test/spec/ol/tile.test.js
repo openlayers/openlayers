@@ -9,7 +9,7 @@ describe('ol.Tile', function() {
     it('sets a default transition', function() {
       var coord = [0, 0, 0];
       var tile = new ol.Tile(coord, ol.TileState.IDLE);
-      expect(tile.transition_).to.equal(275);
+      expect(tile.transition_).to.equal(250);
     });
 
     it('allows the transition to be set', function() {
