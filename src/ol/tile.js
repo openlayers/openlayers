@@ -200,7 +200,6 @@ ol.Tile.prototype.getAlpha = function(id, time) {
 
   var delta = time - start + (1000 / 60); // avoid rendering at 0
   if (delta >= this.transition_) {
-    this.transitionStarts_[id] = -1;
     return 1;
   }
   return ol.easing.easeIn(delta / this.transition_);
@@ -218,4 +217,14 @@ ol.Tile.prototype.inTransition = function(id) {
     return false;
   }
   return this.transitionStarts_[id] !== -1;
+};
+
+/**
+ * Mark a transition as complete.
+ * @param {number} id An id for the renderer.
+ */
+ol.Tile.prototype.endTransition = function(id) {
+  if (this.transition_) {
+    this.transitionStarts_[id] = -1;
+  }
 };

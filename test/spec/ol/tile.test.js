@@ -47,22 +47,9 @@ describe('ol.Tile', function() {
       var coord = [0, 0, 0];
       var tile = new ol.Tile(coord, ol.TileState.IDLE);
       var id = 'test';
-      var time = Date.now();
 
       expect(tile.inTransition(id)).to.be(true);
-
-      // start of transition
-      tile.getAlpha(id, time);
-      expect(tile.inTransition(id)).to.be(true);
-
-      // mid way through transition
-      time += tile.transition_ / 2;
-      tile.getAlpha(id, time);
-      expect(tile.inTransition(id)).to.be(true);
-
-      // end of transition
-      time += tile.transition_ / 2;
-      tile.getAlpha(id, time);
+      tile.endTransition(id);
       expect(tile.inTransition(id)).to.be(false);
     });
   });

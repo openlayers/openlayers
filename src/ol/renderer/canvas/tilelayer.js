@@ -178,15 +178,16 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
         tile = tile.getInterimTile();
       }
       if (this.isDrawableTile_(tile)) {
-        var inTransition = false;
+        var uid = ol.getUid(this);
         if (tile.getState() == ol.TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-          inTransition = tile.inTransition && tile.inTransition(ol.getUid(this));
+          var inTransition = tile.inTransition(uid);
           if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
             newTiles = true;
           }
         }
-        if (!inTransition) {
+        if (tile.getAlpha(uid, frameState.time) === 1) {
+          // don't look for alt tiles if alpha is 1
           continue;
         }
       }
@@ -310,7 +311,8 @@ ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState
   if (!image) {
     return;
   }
-  var alpha = transition ? tile.getAlpha(ol.getUid(this), frameState.time) : 1;
+  var uid = ol.getUid(this);
+  var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
   if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
   }
@@ -327,6 +329,8 @@ ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState
   }
   if (alpha !== 1) {
     frameState.animate = true;
+  } else if (transition) {
+    tile.endTransition(uid);
   }
 };
 
