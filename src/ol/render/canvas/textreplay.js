@@ -197,13 +197,13 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
     return;
   }
 
-  this.beginGeometry(geometry, feature);
   var begin = this.coordinates.length;
 
   var geometryType = geometry.getType();
   var flatCoordinates = null;
   var end = 2;
   var stride = 2;
+  var i, ii;
 
   if (this.textState_.placement === ol.style.TextPlacement.LINE) {
     var ends;
@@ -218,10 +218,11 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
     } else if (geometryType == ol.geom.GeometryType.MULTI_POLYGON) {
       var endss = geometry.getEndss();
       ends = [];
-      for (var i = 0, ii = endss.length; i < ii; ++i) {
+      for (i = 0, ii = endss.length; i < ii; ++i) {
         ends.push(endss[i][0]);
       }
     }
+    this.beginGeometry(geometry, feature);
     var textAlign = textState.textAlign;
     var flatOffset = 0;
     var flatEnd;
@@ -239,8 +240,11 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
       this.drawChars_(begin, end);
       begin = end;
     }
+    this.endGeometry(geometry, feature);
 
   } else {
+    var label = this.getImage_(this.text_, !!this.textFillState_, !!this.textStrokeState_);
+    var width = label.width / this.pixelRatio;
     switch (geometryType) {
       case ol.geom.GeometryType.POINT:
       case ol.geom.GeometryType.MULTI_POINT:
@@ -259,18 +263,31 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
         break;
       case ol.geom.GeometryType.POLYGON:
         flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
+        if (!textState.exceedLength && flatCoordinates[2] / this.resolution < width) {
+          return;
+        }
+        stride = 3;
         break;
       case ol.geom.GeometryType.MULTI_POLYGON:
-        flatCoordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+        var interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
+        flatCoordinates = [];
+        for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
+          if (textState.exceedLength || interiorPoints[i + 2] / this.resolution >= width) {
+            flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
+          }
+        }
         end = flatCoordinates.length;
+        if (end == 0) {
+          return;
+        }
         break;
       default:
     }
     end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
-    this.drawTextImage_(begin, end);
+    this.beginGeometry(geometry, feature);
+    this.drawTextImage_(label, begin, end);
+    this.endGeometry(geometry, feature);
   }
-
-  this.endGeometry(geometry, feature);
 };
 
 
@@ -343,18 +360,17 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
 
 /**
  * @private
+ * @param {HTMLCanvasElement} label Label.
  * @param {number} begin Begin.
  * @param {number} end End.
  */
-ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(begin, end) {
+ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, end) {
   var textState = this.textState_;
   var strokeState = this.textStrokeState_;
   var pixelRatio = this.pixelRatio;
   var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
   var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
   var strokeWidth = strokeState && strokeState.lineWidth ? strokeState.lineWidth : 0;
-
-  var label = this.getImage_(this.text_, !!this.textFillState_, !!this.textStrokeState_);
 
   var anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
   var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;

@@ -195,4 +195,18 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
+  describe('#getInteriorPoints', function() {
+
+    it('returns XYM multipoint with intersection width as M', function() {
+      var geom = new ol.geom.MultiPolygon([
+        [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
+        [[[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]]
+      ]);
+      var interiorPoints = geom.getInteriorPoints();
+      expect(interiorPoints.getType()).to.be('MultiPoint');
+      expect(interiorPoints.layout).to.be('XYM');
+      expect(interiorPoints.getCoordinates()).to.eql([[0.5, 0.5, 1], [1.5, 1.5, 1]]);
+    });
+  });
+
 });

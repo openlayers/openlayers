@@ -541,6 +541,17 @@ describe('ol.geom.Polygon', function() {
 
   });
 
+  describe('#getInteriorPoint', function() {
+
+    it('returns XYM point with intersection width as M', function() {
+      var geom = new ol.geom.Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
+      var interiorPoint = geom.getInteriorPoint();
+      expect(interiorPoint.getType()).to.be('Point');
+      expect(interiorPoint.layout).to.be('XYM');
+      expect(interiorPoint.getCoordinates()).to.eql([0.5, 0.5, 1]);
+    });
+  });
+
   describe('ol.geom.Polygon.fromExtent', function() {
     it('creates the correct polygon', function() {
       var extent = [1, 2, 3, 5];
