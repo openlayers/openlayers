@@ -7676,8 +7676,9 @@ olx.style.TextOptions;
 
 
 /**
- * When `placement` is set to `'line'`, allow text to exceed the length of the
- * path that it follows. Default is `false`.
+ * For polygon labels or when `placement` is set to `'line'`, allow text to
+ * exceed the width of the polygon at the the label position or the length of
+ * the path that it follows. Default is `false`.
  * @type {boolean|undefined}
  * @api
  */

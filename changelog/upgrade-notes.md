@@ -2,6 +2,10 @@
 
 ### Next Release
 
+#### Behavior change for polygon labels
+
+Polygon labels are now only rendered when the label does not exceed the polygon at the label position. To get the old behavior, configure your `ol.style.Text` with `exceedLength: true`.
+
 #### Minor change for custom `tileLoadFunction` with `ol.source.VectorTile`
 
 It is no longer necessary to set the projection on the tile. Instead, the `readFeatures` method must be called with the tile's extent as `extent` option and the view's projection as `featureProjection`.
