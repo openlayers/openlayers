@@ -1,9 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -36,19 +34,14 @@ var vectorLayer = new ol.layer.Vector({
     url: 'data/geojson/countries.geojson',
     format: new ol.format.GeoJSON()
   }),
-  style: function(feature, resolution) {
-    style.getText().setText(resolution < 5000 ? feature.get('name') : '');
+  style: function(feature) {
+    style.getText().setText(feature.get('name'));
     return style;
   }
 });
 
 var map = new ol.Map({
-  layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
-    }),
-    vectorLayer
-  ],
+  layers: [vectorLayer],
   target: 'map',
   view: new ol.View({
     center: [0, 0],
@@ -56,36 +49,32 @@ var map = new ol.Map({
   })
 });
 
-var highlightStyleCache = {};
+var highlightStyle = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: '#f00',
+    width: 1
+  }),
+  fill: new ol.style.Fill({
+    color: 'rgba(255,0,0,0.1)'
+  }),
+  text: new ol.style.Text({
+    font: '12px Calibri,sans-serif',
+    fill: new ol.style.Fill({
+      color: '#000'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#f00',
+      width: 3
+    })
+  })
+});
 
 var featureOverlay = new ol.layer.Vector({
   source: new ol.source.Vector(),
   map: map,
-  style: function(feature, resolution) {
-    var text = resolution < 5000 ? feature.get('name') : '';
-    if (!highlightStyleCache[text]) {
-      highlightStyleCache[text] = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: '#f00',
-          width: 1
-        }),
-        fill: new ol.style.Fill({
-          color: 'rgba(255,0,0,0.1)'
-        }),
-        text: new ol.style.Text({
-          font: '12px Calibri,sans-serif',
-          text: text,
-          fill: new ol.style.Fill({
-            color: '#000'
-          }),
-          stroke: new ol.style.Stroke({
-            color: '#f00',
-            width: 3
-          })
-        })
-      });
-    }
-    return highlightStyleCache[text];
+  style: function(feature) {
+    highlightStyle.getText().setText(feature.get('name'));
+    return highlightStyle;
   }
 });
 
