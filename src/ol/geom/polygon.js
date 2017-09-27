@@ -210,11 +210,12 @@ ol.geom.Polygon.prototype.getFlatInteriorPoint = function() {
 
 /**
  * Return an interior point of the polygon.
- * @return {ol.geom.Point} Interior point.
+ * @return {ol.geom.Point} Interior point as XYM coordinate, where M is the
+ * length of the horizontal intersection that the point belongs to.
  * @api
  */
 ol.geom.Polygon.prototype.getInteriorPoint = function() {
-  return new ol.geom.Point(this.getFlatInteriorPoint());
+  return new ol.geom.Point(this.getFlatInteriorPoint(), ol.geom.GeometryLayout.XYM);
 };
 
 
