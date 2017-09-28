@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "clean-css-cli": "4.1.10",
-    "coveralls": "2.13.1",
+    "coveralls": "3.0.0",
     "debounce": "^1.0.0",
     "eslint": "4.7.2",
     "eslint-config-openlayers": "7.0.0",
