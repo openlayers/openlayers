@@ -58,7 +58,8 @@ describe('layer clipping', function() {
     it('clips to all parts of the MultiPolygon', function(done) {
 
       var source = new ol.source.XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        transition: 0
       });
 
       var layer = new ol.layer.Tile({

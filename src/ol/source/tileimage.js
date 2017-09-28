@@ -39,7 +39,8 @@ ol.source.TileImage = function(options) {
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
     urls: options.urls,
-    wrapX: options.wrapX
+    wrapX: options.wrapX,
+    transition: options.transition
   });
 
   /**
@@ -52,7 +53,7 @@ ol.source.TileImage = function(options) {
   /**
    * @protected
    * @type {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
-   *        ?string, ol.TileLoadFunctionType)}
+   *        ?string, ol.TileLoadFunctionType, olx.TileOptions=)}
    */
   this.tileClass = options.tileClass !== undefined ?
     options.tileClass : ol.ImageTile;
@@ -222,7 +223,8 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
       tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
-      this.tileLoadFunction);
+      this.tileLoadFunction,
+      this.tileOptions);
   tile.key = key;
   ol.events.listen(tile, ol.events.EventType.CHANGE,
       this.handleTileChange, this);

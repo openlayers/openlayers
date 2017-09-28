@@ -43,7 +43,8 @@ ol.source.TileJSON = function(options) {
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    wrapX: options.wrapX !== undefined ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true,
+    transition: options.transition
   });
 
   if (options.url) {

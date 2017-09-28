@@ -54,7 +54,8 @@ ol.source.XYZ = function(opt_options) {
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
     urls: options.urls,
-    wrapX: options.wrapX !== undefined ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true,
+    transition: options.transition
   });
 
 };

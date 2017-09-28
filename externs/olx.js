@@ -464,6 +464,23 @@ olx.SphereMetricOptions.prototype.radius;
 
 
 /**
+ * Options for tile constructors.
+ * @typedef {{transition: (number|undefined)}}
+ */
+olx.TileOptions;
+
+
+/**
+ * A duration for tile opacity transitions.  By default, tiles will render with
+ * an opacity transition that lasts 250 ms.  To change the duration, pass a
+ * number in milliseconds.  A duration of 0 disables the opacity transition.
+ * @type {number|undefined}
+ * @api
+ */
+olx.TileOptions.prototype.transition;
+
+
+/**
  * Object literal with options for the {@link ol.Map#forEachFeatureAtPixel} and
  * {@link ol.Map#hasFeatureAtPixel} methods.
  * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),
@@ -4597,7 +4614,8 @@ olx.source;
  *     maxZoom: (number|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     transition: (number|undefined)}}
  */
 olx.source.BingMapsOptions;
 
@@ -4679,6 +4697,15 @@ olx.source.BingMapsOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.BingMapsOptions.prototype.wrapX;
+
+
+/**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.transition;
 
 
 /**
@@ -4845,7 +4872,8 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined)}}
+ *            wrapX: (boolean|undefined),
+ *            transition: (number|undefined)}}
  */
 olx.source.TileImageOptions;
 
@@ -4999,6 +5027,15 @@ olx.source.TileImageOptions.prototype.wrapX;
 
 
 /**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileImageOptions.prototype.transition;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            format: (ol.format.Feature|undefined),
@@ -5014,7 +5051,8 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined)}}
+ *            wrapX: (boolean|undefined),
+ *            transition: (number|undefined)}}
  */
 olx.source.VectorTileOptions;
 
@@ -5152,6 +5190,15 @@ olx.source.VectorTileOptions.prototype.urls;
  * @api
  */
 olx.source.VectorTileOptions.prototype.wrapX;
+
+
+/**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.transition;
 
 
 /**
@@ -6070,7 +6117,8 @@ olx.source.ImageStaticOptions.prototype.url;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     transition: (number|undefined)}}
  */
 olx.source.TileArcGISRestOptions;
 
@@ -6185,6 +6233,15 @@ olx.source.TileArcGISRestOptions.prototype.wrapX;
 
 
 /**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.transition;
+
+
+/**
  * ArcGIS Rest service urls. Use this instead of `url` when the ArcGIS Service supports multiple
  * urls for export requests.
  * @type {Array.<string>|undefined}
@@ -6202,7 +6259,8 @@ olx.source.TileArcGISRestOptions.prototype.urls;
  *     tileJSON: (TileJSON|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     transition: (number|undefined)}}
  */
 olx.source.TileJSONOptions;
 
@@ -6294,6 +6352,15 @@ olx.source.TileJSONOptions.prototype.wrapX;
 
 
 /**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.transition;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     params: Object.<string,*>,
@@ -6311,7 +6378,8 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     transition: (number|undefined)}}
  */
 olx.source.TileWMSOptions;
 
@@ -6476,6 +6544,15 @@ olx.source.TileWMSOptions.prototype.wrapX;
 
 
 /**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileWMSOptions.prototype.transition;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
  *     format: (ol.format.Feature|undefined),
@@ -6630,7 +6707,8 @@ olx.source.VectorOptions.prototype.wrapX;
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
  *                          ol.TileLoadFunctionType)|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     transition: (number|undefined)}}
  */
 olx.source.WMTSOptions;
 
@@ -6815,6 +6893,15 @@ olx.source.WMTSOptions.prototype.wrapX;
 
 
 /**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.transition;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
@@ -6831,7 +6918,8 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     transition: (number|undefined)}}
  */
 olx.source.XYZOptions;
 
@@ -6987,6 +7075,16 @@ olx.source.XYZOptions.prototype.urls;
  */
 olx.source.XYZOptions.prototype.wrapX;
 
+
+/**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.XYZOptions.prototype.transition;
+
+
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
@@ -7111,7 +7209,8 @@ olx.source.CartoDBOptions.prototype.account;
  *     reprojectionErrorThreshold: (number|undefined),
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
- *     size: ol.Size}}
+ *     size: ol.Size,
+ *     transition: (number|undefined)}}
  */
 olx.source.ZoomifyOptions;
 
@@ -7200,6 +7299,15 @@ olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
  * @api
  */
 olx.source.ZoomifyOptions.prototype.size;
+
+
+/**
+ * Duration of the opacity transition for rendering.  To disable the opacity
+ * transition, pass `transition: 0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.ZoomifyOptions.prototype.transition;
 
 
 /**

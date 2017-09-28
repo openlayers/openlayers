@@ -51,7 +51,8 @@ ol.source.VectorTile = function(options) {
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
     urls: options.urls,
-    wrapX: options.wrapX === undefined ? true : options.wrapX
+    wrapX: options.wrapX === undefined ? true : options.wrapX,
+    transition: options.transition
   });
 
   /**
@@ -125,7 +126,8 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),
         this.sourceTiles_, pixelRatio, projection, this.tileClass,
-        this.handleTileChange.bind(this));
+        this.handleTileChange.bind(this),
+        this.tileOptions);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;

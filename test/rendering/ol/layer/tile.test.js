@@ -72,12 +72,28 @@ describe('ol.rendering.layer.Tile', function() {
     });
   }
 
+  describe('with tile transition', function() {
+    it('renders correctly after the transition', function(done) {
+      createMap('canvas');
+      var source = new ol.source.XYZ({
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+      });
+      waitForTiles([source], {}, function() {
+        setTimeout(function() {
+          expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
+              IMAGE_TOLERANCE, done);
+        }, 500);
+      });
+    });
+  });
+
   describe('single tile layer', function() {
     var source;
 
     beforeEach(function() {
       source = new ol.source.XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        transition: 0
       });
     });
 
@@ -104,10 +120,12 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source1 = new ol.source.XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        transition: 0
       });
       source2 = new ol.source.XYZ({
-        url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png',
+        transition: 0
       });
     });
 
@@ -176,7 +194,8 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source = new ol.source.XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        transition: 0
       });
     });
 
@@ -205,7 +224,8 @@ describe('ol.rendering.layer.Tile', function() {
         url: 'rendering/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
         tileGrid: ol.tilegrid.createXYZ({
           tileSize: tileSize.split('x')
-        })
+        }),
+        transition: 0
       });
     }
 
@@ -255,7 +275,8 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source = new ol.source.XYZ({
-        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
+        transition: 0
       });
       onAddLayer = function(evt) {
         evt.element.on('render', function(e) {

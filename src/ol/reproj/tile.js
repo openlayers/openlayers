@@ -34,8 +34,7 @@ goog.require('ol.reproj.Triangulation');
 ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
     pixelRatio, gutter, getTileFunction,
-    opt_errorThreshold,
-    opt_renderEdges) {
+    opt_errorThreshold, opt_renderEdges) {
   ol.Tile.call(this, tileCoord, ol.TileState.IDLE);
 
   /**

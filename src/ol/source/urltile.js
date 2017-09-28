@@ -29,7 +29,8 @@ ol.source.UrlTile = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio,
-    wrapX: options.wrapX
+    wrapX: options.wrapX,
+    transition: options.transition
   });
 
   /**

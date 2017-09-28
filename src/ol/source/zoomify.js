@@ -139,7 +139,8 @@ ol.source.Zoomify = function(opt_options) {
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: ol.source.Zoomify.Tile_,
     tileGrid: tileGrid,
-    tileUrlFunction: tileUrlFunction
+    tileUrlFunction: tileUrlFunction,
+    transition: options.transition
   });
 
 };
@@ -154,12 +155,13 @@ ol.inherits(ol.source.Zoomify, ol.source.TileImage);
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {olx.TileOptions=} opt_options Tile options.
  * @private
  */
 ol.source.Zoomify.Tile_ = function(
-    tileCoord, state, src, crossOrigin, tileLoadFunction) {
+    tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-  ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction);
+  ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
 
   /**
    * @private

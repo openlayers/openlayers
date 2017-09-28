@@ -71,6 +71,12 @@ ol.source.Tile = function(options) {
    */
   this.key_ = '';
 
+  /**
+   * @protected
+   * @type {olx.TileOptions}
+   */
+  this.tileOptions = {transition: options.transition};
+
 };
 ol.inherits(ol.source.Tile, ol.source.Source);
 

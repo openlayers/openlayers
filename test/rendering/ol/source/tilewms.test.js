@@ -51,7 +51,8 @@ describe('ol.rendering.source.TileWMS', function() {
         'LAYERS': 'layer'
       },
       gutter: gutter,
-      url: 'rendering/ol/data/tiles/wms/wms' + gutter + '.png'
+      url: 'rendering/ol/data/tiles/wms/wms' + gutter + '.png',
+      transition: 0
     });
   }
 

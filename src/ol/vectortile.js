@@ -13,10 +13,11 @@ goog.require('ol.TileState');
  * @param {string} src Data source url.
  * @param {ol.format.Feature} format Feature format.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {olx.TileOptions=} opt_options Tile options.
  */
-ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
+ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
-  ol.Tile.call(this, tileCoord, state);
+  ol.Tile.call(this, tileCoord, state, opt_options);
 
   /**
    * @type {number}

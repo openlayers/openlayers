@@ -39,7 +39,8 @@ ol.source.TileArcGISRest = function(opt_options) {
     tileLoadFunction: options.tileLoadFunction,
     url: options.url,
     urls: options.urls,
-    wrapX: options.wrapX !== undefined ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true,
+    transition: options.transition
   });
 
   /**

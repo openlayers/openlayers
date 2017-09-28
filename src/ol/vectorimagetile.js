@@ -30,12 +30,13 @@ goog.require('ol.featureloader');
  *     instantiate for source tiles.
  * @param {function(this: ol.source.VectorTile, ol.events.Event)} handleTileChange
  *     Function to call when a source tile's state changes.
+ * @param {olx.TileOptions=} opt_options Tile options.
  */
 ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
     urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
-    pixelRatio, projection, tileClass, handleTileChange) {
+    pixelRatio, projection, tileClass, handleTileChange, opt_options) {
 
-  ol.Tile.call(this, tileCoord, state);
+  ol.Tile.call(this, tileCoord, state, opt_options);
 
   /**
    * @private

@@ -65,7 +65,8 @@ describe('ol.rendering.layer.VectorTile', function() {
       source = new ol.source.VectorTile({
         format: new ol.format.MVT(),
         tileGrid: ol.tilegrid.createXYZ(),
-        url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf'
+        url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf',
+        transition: 0
       });
     });
 
