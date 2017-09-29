@@ -2,6 +2,7 @@
 
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.MultiPoint');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Vector');
@@ -44,10 +45,10 @@ describe('ol.rendering.style.Circle', function() {
 
   describe('#render', function() {
 
-    function createFeatures() {
+    function createFeatures(multi) {
       var feature;
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([-20, 18])
+        geometry: multi ? new ol.geom.MultiPoint([[-20, 18]]) : new ol.geom.Point([-20, 18])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -60,7 +61,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([-10, 18])
+        geometry: multi ? new ol.geom.MultiPoint([[-10, 18]]) : new ol.geom.Point([-10, 18])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -73,7 +74,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([4, 18])
+        geometry: multi ? new ol.geom.MultiPoint([[4, 18]]) : new ol.geom.Point([4, 18])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -86,7 +87,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([-20, 3])
+        geometry: multi ? new ol.geom.MultiPoint([[-20, 3]]) : new ol.geom.Point([-20, 3])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -103,7 +104,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([-10, 3])
+        geometry: multi ? new ol.geom.MultiPoint([[-10, 3]]) : new ol.geom.Point([-10, 3])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -120,7 +121,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([4, 3])
+        geometry: multi ? new ol.geom.MultiPoint([[4, 3]]) : new ol.geom.Point([4, 3])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -137,7 +138,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([-20, -15])
+        geometry: multi ? new ol.geom.MultiPoint([[-20, -15]]) : new ol.geom.Point([-20, -15])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -151,7 +152,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([-10, -15])
+        geometry: multi ? new ol.geom.MultiPoint([[-10, -15]]) : new ol.geom.Point([-10, -15])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -168,7 +169,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
-        geometry: new ol.geom.Point([4, -15])
+        geometry: multi ? new ol.geom.MultiPoint([[4, -15]]) : new ol.geom.Point([4, -15])
       });
       feature.setStyle(new ol.style.Style({
         image: new ol.style.Circle({
@@ -185,9 +186,16 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
     }
 
-    it('tests the canvas renderer', function(done) {
+    it('renders point geometries', function(done) {
       createMap('canvas');
       createFeatures();
+      expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
+          8.0, done);
+    });
+
+    it('renders multipoint geometries', function(done) {
+      createMap('canvas');
+      createFeatures(true);
       expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
           8.0, done);
     });
