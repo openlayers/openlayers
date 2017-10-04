@@ -309,13 +309,16 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  */
 ol.interaction.Draw.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode_.POINT && this.freehandCondition_(event);
-  var pass = !this.freehand_;
+  var pass = true;
   if (this.freehand_ &&
-      event.type === ol.MapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+      event.type === ol.MapBrowserEventType.POINTERDRAG &&
+      this.sketchFeature_ !== null) {
     this.addToDrawing_(event);
     pass = false;
-  } else if (event.type ===
-      ol.MapBrowserEventType.POINTERMOVE) {
+  } else if (this.freehand_ &&
+      event.type === ol.MapBrowserEventType.POINTERDOWN) {
+    pass = false;
+  } else if (event.type === ol.MapBrowserEventType.POINTERMOVE) {
     pass = this.handlePointerMove_(event);
   } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
     pass = false;
