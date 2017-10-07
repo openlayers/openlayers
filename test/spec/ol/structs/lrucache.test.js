@@ -188,6 +188,66 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
+  describe('#remove()', function() {
+    it('removes an item from the cache', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+
+      cache.remove('oldish');
+      expect(cache.getCount()).to.eql(3);
+      expect(cache.getValues()).to.eql(['newest', 'newish', 'oldest']);
+    });
+
+    it('works when removing the oldest item', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+
+      cache.remove('oldest');
+      expect(cache.getCount()).to.eql(3);
+      expect(cache.peekLastKey()).to.eql('oldish');
+      expect(cache.getValues()).to.eql(['newest', 'newish', 'oldish']);
+    });
+
+    it('works when removing the newest item', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+
+      cache.remove('newest');
+      expect(cache.getCount()).to.eql(3);
+      expect(cache.peekFirstKey()).to.eql('newish');
+      expect(cache.getValues()).to.eql(['newish', 'oldish', 'oldest']);
+    });
+
+    it('returns the removed item', function() {
+      var cache = new ol.structs.LRUCache();
+      var item = {};
+      cache.set('key', item);
+
+      var returned = cache.remove('key');
+      expect(returned).to.be(item);
+    });
+
+    it('throws if the key does not exist', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('foo', 'foo');
+      cache.set('bar', 'bar');
+
+      var call = function() {
+        cache.remove('bam');
+      };
+      expect(call).to.throwException();
+    });
+  });
+
   describe('clearing the cache', function() {
     it('clears the cache', function() {
       fillLRUCache(lruCache);
