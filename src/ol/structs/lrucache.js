@@ -197,6 +197,15 @@ ol.structs.LRUCache.prototype.peekLastKey = function() {
 
 
 /**
+ * Get the key of the newest item in the cache.  Throws if the cache is empty.
+ * @return {string} The newest key.
+ */
+ol.structs.LRUCache.prototype.peekFirstKey = function() {
+  return this.newest_.key_;
+};
+
+
+/**
  * @return {T} value Value.
  */
 ol.structs.LRUCache.prototype.pop = function() {

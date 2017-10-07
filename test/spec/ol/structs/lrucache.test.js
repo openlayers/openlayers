@@ -164,6 +164,30 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
+  describe('#peekFirstKey()', function() {
+    it('returns the newest key in the cache', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+      expect(cache.peekFirstKey()).to.eql('newest');
+    });
+
+    it('works if the cache has one item', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('key', 'value');
+      expect(cache.peekFirstKey()).to.eql('key');
+    });
+
+    it('throws if the cache is empty', function() {
+      var cache = new ol.structs.LRUCache();
+      expect(function() {
+        cache.peekFirstKey();
+      }).to.throwException();
+    });
+  });
+
   describe('peeking at the last value', function() {
     it('returns the last key', function() {
       fillLRUCache(lruCache);
