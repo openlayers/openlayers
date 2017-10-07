@@ -1,5 +1,3 @@
-
-
 goog.require('ol.ImageTile');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
@@ -9,6 +7,7 @@ goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.Projection');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.TileImage');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid');
 
 
@@ -52,7 +51,7 @@ describe('ol.source.TileImage', function() {
       expect(source.getKey()).to.be('');
       source.getTileInternal(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
       expect(source.tileCache.getCount()).to.be(1);
-      tile = source.tileCache.get(source.getKeyZXY(0, 0, -1));
+      tile = source.tileCache.get(ol.tilecoord.getKeyZXY(0, 0, -1));
     });
 
     it('gets the tile from the cache', function() {

@@ -6,6 +6,7 @@ goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.size');
 goog.require('ol.source.Tile');
+goog.require('ol.tilecoord');
 
 
 /**
@@ -38,7 +39,7 @@ ol.inherits(ol.source.TileDebug, ol.source.Tile);
  * @inheritDoc
  */
 ol.source.TileDebug.prototype.getTile = function(z, x, y) {
-  var tileCoordKey = this.getKeyZXY(z, x, y);
+  var tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.source.TileDebug.Tile_} */ (this.tileCache.get(tileCoordKey));
   } else {
