@@ -275,15 +275,13 @@ describe('ol.source.TileWMS', function() {
   });
 
   describe('#setUrls()', function() {
-    it ('resets coordKeyPrefix_', function() {
-      var urls = ['u1', 'u2'];
-      var source1 = new ol.source.TileWMS({
-        urls: urls
+    it ('updates the source key', function() {
+      var source = new ol.source.TileWMS({
+        urls: ['u1', 'u2']
       });
-      var source2 = new ol.source.TileWMS({});
-      expect(source2.coordKeyPrefix_).to.be.empty();
-      source2.setUrls(urls);
-      expect(source2.coordKeyPrefix_).to.equal(source1.coordKeyPrefix_);
+      var originalKey = source.getKey();
+      source.setUrls(['u3', 'u4']);
+      expect(source.getKey() !== originalKey).to.be(true);
     });
   });
 });
