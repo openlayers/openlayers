@@ -5,7 +5,9 @@ goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
+
 
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
@@ -40,7 +42,7 @@ ol.inherits(MockTile, ol.source.Tile);
  * @inheritDoc
  */
 MockTile.prototype.getTile = function(z, x, y) {
-  var key = this.getKeyZXY(z, x, y);
+  var key = ol.tilecoord.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(key)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(key));
   } else {
