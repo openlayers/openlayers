@@ -155,6 +155,7 @@ ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
  */
 ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
   this.tileUrlFunction = tileUrlFunction;
+  this.tileCache.pruneExceptNewestZ();
   if (typeof opt_key !== 'undefined') {
     this.setKey(opt_key);
   } else {
