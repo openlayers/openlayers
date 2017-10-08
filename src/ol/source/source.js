@@ -67,6 +67,7 @@ ol.inherits(ol.source.Source, ol.Object);
 
 /**
  * Turns the attributions option into an attributions function.
+ * @suppress {deprecated}
  * @param {ol.AttributionLike|undefined} attributionLike The attribution option.
  * @return {?ol.Attribution2} An attribution function (or null).
  */

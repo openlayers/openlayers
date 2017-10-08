@@ -22,6 +22,7 @@ goog.require('ol.tilegrid');
  *     ..
  *
  * @constructor
+ * @deprecated This class is deprecated and will removed in the next major release.
  * @param {olx.AttributionOptions} options Attribution options.
  * @struct
  * @api
