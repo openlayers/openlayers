@@ -2,6 +2,8 @@
 
 ### Next Release
 
+### v4.4.0
+
 #### Behavior change for polygon labels
 
 Polygon labels are now only rendered when the label does not exceed the polygon at the label position. To get the old behavior, configure your `ol.style.Text` with `exceedLength: true`.
