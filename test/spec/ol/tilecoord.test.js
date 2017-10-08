@@ -1,5 +1,3 @@
-
-
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -20,6 +18,23 @@ describe('ol.TileCoord', function() {
       var tileCoord = [3, 3, 5];
       var s = ol.tilecoord.quadKey(tileCoord);
       expect(s).to.eql('213');
+    });
+  });
+
+  describe('getKey()', function() {
+    it('returns a key for a tile coord', function() {
+      var key = ol.tilecoord.getKey([1, 2, 3]);
+      expect(key).to.eql('1/2/3');
+    });
+  });
+
+  describe('fromKey()', function() {
+    it('returns a tile coord given a key', function() {
+      var tileCoord = [1, 2, 3];
+      var key = ol.tilecoord.getKey(tileCoord);
+
+      var returned = ol.tilecoord.fromKey(key);
+      expect(returned).to.eql(tileCoord);
     });
   });
 
