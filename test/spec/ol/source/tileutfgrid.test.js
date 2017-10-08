@@ -165,21 +165,15 @@ describe('ol.source.TileUTFGrid', function() {
 
     it('sets up correct attribution', function() {
       var source = getTileUTFGrid();
-      expect(source.getAttributions()).to.be(null);
+      expect(source.getAttributions2()).to.be(null);
 
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
-      var attributions = source.getAttributions();
+      var attributions = source.getAttributions2();
       expect(attributions).to.not.be(null);
-      expect(attributions).to.have.length(1);
-      expect(attributions[0].getHTML()).to.be(tileJson.attribution);
-      var tileRanges = attributions[0].tileRanges_;
-      for (var z = tileJson.minzoom; z <= tileJson.maxzoom; z++) {
-        var key = z.toString();
-        expect(key in tileRanges).to.be(true);
-      }
+      expect(typeof attributions).to.be('function');
     });
 
     it('sets correct state', function() {

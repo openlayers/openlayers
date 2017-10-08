@@ -215,8 +215,6 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
 
-  this.updateAttributions(
-      frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
   var animating = frameState.viewHints[ol.ViewHint.ANIMATING];

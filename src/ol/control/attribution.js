@@ -3,11 +3,13 @@
 goog.provide('ol.control.Attribution');
 
 goog.require('ol');
-goog.require('ol.dom');
+goog.require('ol.array');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
+goog.require('ol.layer.Layer');
 goog.require('ol.obj');
 
 
@@ -117,22 +119,17 @@ ol.control.Attribution = function(opt_options) {
   });
 
   /**
+   * A list of currently rendered resolutions.
+   * @type {Array.<string>}
+   * @private
+   */
+  this.renderedAttributions_ = [];
+
+  /**
    * @private
    * @type {boolean}
    */
   this.renderedVisible_ = true;
-
-  /**
-   * @private
-   * @type {Object.<string, Element>}
-   */
-  this.attributionElements_ = {};
-
-  /**
-   * @private
-   * @type {Object.<string, boolean>}
-   */
-  this.attributionElementRenderedVisible_ = {};
 
   /**
    * @private
@@ -145,59 +142,62 @@ ol.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
- * @param {?olx.FrameState} frameState Frame state.
- * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
+ * Get a list of visible attributions.
+ * @param {olx.FrameState} frameState Frame state.
+ * @return {Array.<string>} Attributions.
+ * @private
  */
-ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
-  var i, ii, j, jj, tileRanges, source, sourceAttribution,
-      sourceAttributionKey, sourceAttributions, sourceKey;
-  var intersectsTileRange;
+ol.control.Attribution.prototype.getSourceAttributions_ = function(frameState) {
+  /**
+   * Used to determine if an attribution already exists.
+   * @type {Object.<string, boolean>}
+   */
+  var lookup = {};
+
+  /**
+   * A list of visible attributions.
+   * @type {Array.<string>}
+   */
+  var visibleAttributions = [];
+
   var layerStatesArray = frameState.layerStatesArray;
-  /** @type {Object.<string, ol.Attribution>} */
-  var attributions = ol.obj.assign({}, frameState.attributions);
-  /** @type {Object.<string, ol.Attribution>} */
-  var hiddenAttributions = {};
-  var uniqueAttributions = {};
-  var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
-  for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
-    source = layerStatesArray[i].layer.getSource();
+  var resolution = frameState.viewState.resolution;
+  for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    var layerState = layerStatesArray[i];
+    if (!ol.layer.Layer.visibleAtResolution(layerState, resolution)) {
+      continue;
+    }
+
+    var source = layerState.layer.getSource();
     if (!source) {
       continue;
     }
-    sourceKey = ol.getUid(source).toString();
-    sourceAttributions = source.getAttributions();
-    if (!sourceAttributions) {
+
+    var attributionGetter = source.getAttributions2();
+    if (!attributionGetter) {
       continue;
     }
-    for (j = 0, jj = sourceAttributions.length; j < jj; j++) {
-      sourceAttribution = sourceAttributions[j];
-      sourceAttributionKey = ol.getUid(sourceAttribution).toString();
-      if (sourceAttributionKey in attributions) {
-        continue;
-      }
-      tileRanges = frameState.usedTiles[sourceKey];
-      if (tileRanges) {
-        var tileGrid = /** @type {ol.source.Tile} */ (source).getTileGridForProjection(projection);
-        intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
-            tileRanges, tileGrid, projection);
-      } else {
-        intersectsTileRange = false;
-      }
-      if (intersectsTileRange) {
-        if (sourceAttributionKey in hiddenAttributions) {
-          delete hiddenAttributions[sourceAttributionKey];
+
+    var attributions = attributionGetter(frameState);
+    if (!attributions) {
+      continue;
+    }
+
+    if (Array.isArray(attributions)) {
+      for (var j = 0, jj = attributions.length; j < jj; ++j) {
+        if (!(attributions[j] in lookup)) {
+          visibleAttributions.push(attributions[j]);
+          lookup[attributions[j]] = true;
         }
-        var html = sourceAttribution.getHTML();
-        if (!(html in uniqueAttributions)) {
-          uniqueAttributions[html] = true;
-          attributions[sourceAttributionKey] = sourceAttribution;
-        }
-      } else {
-        hiddenAttributions[sourceAttributionKey] = sourceAttribution;
+      }
+    } else {
+      if (!(attributions in lookup)) {
+        visibleAttributions.push(attributions);
+        lookup[attributions] = true;
       }
     }
   }
-  return [attributions, hiddenAttributions];
+  return visibleAttributions;
 };
 
 
@@ -217,7 +217,6 @@ ol.control.Attribution.render = function(mapEvent) {
  * @param {?olx.FrameState} frameState Frame state.
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
-
   if (!frameState) {
     if (this.renderedVisible_) {
       this.element.style.display = 'none';
@@ -226,65 +225,38 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     return;
   }
 
-  var attributions = this.getSourceAttributions(frameState);
-  /** @type {Object.<string, ol.Attribution>} */
-  var visibleAttributions = attributions[0];
-  /** @type {Object.<string, ol.Attribution>} */
-  var hiddenAttributions = attributions[1];
-
-  var attributionElement, attributionKey;
-  for (attributionKey in this.attributionElements_) {
-    if (attributionKey in visibleAttributions) {
-      if (!this.attributionElementRenderedVisible_[attributionKey]) {
-        this.attributionElements_[attributionKey].style.display = '';
-        this.attributionElementRenderedVisible_[attributionKey] = true;
-      }
-      delete visibleAttributions[attributionKey];
-    } else if (attributionKey in hiddenAttributions) {
-      if (this.attributionElementRenderedVisible_[attributionKey]) {
-        this.attributionElements_[attributionKey].style.display = 'none';
-        delete this.attributionElementRenderedVisible_[attributionKey];
-      }
-      delete hiddenAttributions[attributionKey];
-    } else {
-      ol.dom.removeNode(this.attributionElements_[attributionKey]);
-      delete this.attributionElements_[attributionKey];
-      delete this.attributionElementRenderedVisible_[attributionKey];
-    }
-  }
-  for (attributionKey in visibleAttributions) {
-    attributionElement = document.createElement('LI');
-    attributionElement.innerHTML =
-        visibleAttributions[attributionKey].getHTML();
-    this.ulElement_.appendChild(attributionElement);
-    this.attributionElements_[attributionKey] = attributionElement;
-    this.attributionElementRenderedVisible_[attributionKey] = true;
-  }
-  for (attributionKey in hiddenAttributions) {
-    attributionElement = document.createElement('LI');
-    attributionElement.innerHTML =
-        hiddenAttributions[attributionKey].getHTML();
-    attributionElement.style.display = 'none';
-    this.ulElement_.appendChild(attributionElement);
-    this.attributionElements_[attributionKey] = attributionElement;
+  var attributions = this.getSourceAttributions_(frameState);
+  if (ol.array.equals(attributions, this.renderedAttributions_)) {
+    return;
   }
 
-  var renderVisible =
-      !ol.obj.isEmpty(this.attributionElementRenderedVisible_) ||
-      !ol.obj.isEmpty(frameState.logos);
-  if (this.renderedVisible_ != renderVisible) {
-    this.element.style.display = renderVisible ? '' : 'none';
-    this.renderedVisible_ = renderVisible;
+  // remove everything but the logo
+  while (this.ulElement_.lastChild !== this.logoLi_) {
+    this.ulElement_.removeChild(this.ulElement_.lastChild);
   }
-  if (renderVisible &&
-      ol.obj.isEmpty(this.attributionElementRenderedVisible_)) {
+
+  // append the attributions
+  for (var i = 0, ii = attributions.length; i < ii; ++i) {
+    var element = document.createElement('LI');
+    element.innerHTML = attributions[i];
+    this.ulElement_.appendChild(element);
+  }
+
+
+  if (attributions.length === 0 && this.renderedAttributions_.length > 0) {
     this.element.classList.add('ol-logo-only');
-  } else {
+  } else if (this.renderedAttributions_.length === 0 && attributions.length > 0) {
     this.element.classList.remove('ol-logo-only');
   }
 
-  this.insertLogos_(frameState);
+  var visible = attributions.length > 0 || !ol.obj.isEmpty(frameState.logos);
+  if (this.renderedVisible_ != visible) {
+    this.element.style.display = visible ? '' : 'none';
+    this.renderedVisible_ = visible;
+  }
 
+  this.renderedAttributions_ = attributions;
+  this.insertLogos_(frameState);
 };
 
 

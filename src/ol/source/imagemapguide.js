@@ -141,7 +141,7 @@ ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution
     var imageUrl = this.getUrl(this.url_, this.params_, extent, size,
         projection);
     image = new ol.Image(extent, resolution, pixelRatio,
-        this.getAttributions(), imageUrl, this.crossOrigin_,
+        imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
     ol.events.listen(image, ol.events.EventType.CHANGE,
         this.handleImageChange, this);

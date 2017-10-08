@@ -11,13 +11,11 @@ goog.require('ol.ImageState');
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {ol.ImageCanvasLoader=} opt_loader Optional loader function to
  *     support asynchronous canvas drawing.
  */
-ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
-    canvas, opt_loader) {
+ol.ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader) {
 
   /**
    * Optional canvas loader function.
@@ -29,7 +27,7 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   var state = opt_loader !== undefined ?
     ol.ImageState.IDLE : ol.ImageState.LOADED;
 
-  ol.ImageBase.call(this, extent, resolution, pixelRatio, state, attributions);
+  ol.ImageBase.call(this, extent, resolution, pixelRatio, state);
 
   /**
    * @private

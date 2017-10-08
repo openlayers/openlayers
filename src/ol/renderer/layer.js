@@ -166,23 +166,6 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
 
 
 /**
- * @param {Object.<string, ol.Attribution>} attributionsSet Attributions
- *     set (target).
- * @param {Array.<ol.Attribution>} attributions Attributions (source).
- * @protected
- */
-ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attributions) {
-  if (attributions) {
-    var attribution, i, ii;
-    for (i = 0, ii = attributions.length; i < ii; ++i) {
-      attribution = attributions[i];
-      attributionsSet[ol.getUid(attribution).toString()] = attribution;
-    }
-  }
-};
-
-
-/**
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.source.Source} source Source.
  * @protected

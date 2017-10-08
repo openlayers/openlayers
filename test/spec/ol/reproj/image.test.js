@@ -12,7 +12,7 @@ describe('ol.reproj.Image', function() {
         ol.proj.get('EPSG:3857'), ol.proj.get('EPSG:4326'),
         [-180, -85, 180, 85], 10, pixelRatio,
         function(extent, resolution, pixelRatio) {
-          return new ol.Image(extent, resolution, pixelRatio, [],
+          return new ol.Image(extent, resolution, pixelRatio,
               'data:image/gif;base64,' +
               'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,
               function(image, src) {
