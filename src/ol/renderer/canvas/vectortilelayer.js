@@ -159,6 +159,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
     var sourceTileCoord = sourceTile.tileCoord;
     var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
     var sharedExtent = ol.extent.getIntersection(tileExtent, sourceTileExtent);
+    var bufferedExtent = ol.extent.equals(sourceTileExtent, sharedExtent) ? null :
+      ol.extent.buffer(sharedExtent, layer.getRenderBuffer() * resolution);
     var tileProjection = sourceTile.getProjection();
     var reproject = false;
     if (!ol.proj.equivalent(projection, tileProjection)) {
@@ -210,7 +212,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
         }
         feature.getGeometry().transform(tileProjection, projection);
       }
-      renderFeature.call(this, feature);
+      if (!bufferedExtent || ol.extent.intersects(bufferedExtent, feature.getExtent())) {
+        renderFeature.call(this, feature);
+      }
     }
     replayGroup.finish();
     sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
