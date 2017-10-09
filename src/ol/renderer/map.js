@@ -212,8 +212,8 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
     var type = this.getType();
     for (var i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {
       var plugin = layerRendererPlugins[i];
-      if (plugin.handles(type, layer)) {
-        renderer = plugin.create(this, layer);
+      if (plugin['handles'](type, layer)) {
+        renderer = plugin['create'](this, layer);
         break;
       }
     }

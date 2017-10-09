@@ -239,7 +239,7 @@ ol.PluggableMap = function(options) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ = optionsInternal.mapRendererPlugin.create(this.viewport_, this);
+  this.renderer_ = optionsInternal.mapRendererPlugin['create'](this.viewport_, this);
 
   /**
    * @type {function(Event)|undefined}
@@ -1418,7 +1418,7 @@ ol.PluggableMap.createOptionsInternal = function(options) {
     var rendererType = rendererTypes[i];
     for (var j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
       var candidate = mapRendererPlugins[j];
-      if (candidate.handles(rendererType)) {
+      if (candidate['handles'](rendererType)) {
         mapRendererPlugin = candidate;
         break outer;
       }
