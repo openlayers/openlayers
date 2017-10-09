@@ -61,7 +61,7 @@ ol.inherits(ol.ImageTile, ol.Tile);
 ol.ImageTile.prototype.disposeInternal = function() {
   if (this.state == ol.TileState.LOADING) {
     this.unlistenImage_();
-    this.image_.src = ol.ImageTile.blankImageUrl;
+    this.image_ = ol.ImageTile.getBlankImage();
   }
   if (this.interimTile) {
     this.interimTile.dispose();
@@ -98,7 +98,7 @@ ol.ImageTile.prototype.getKey = function() {
 ol.ImageTile.prototype.handleImageError_ = function() {
   this.state = ol.TileState.ERROR;
   this.unlistenImage_();
-  this.image_.src = ol.ImageTile.blankImageUrl;
+  this.image_ = ol.ImageTile.getBlankImage();
   this.changed();
 };
 
@@ -150,12 +150,12 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
 
 
 /**
- * Data URI for a blank image.
- * @type {string}
+ * Get a 1-pixel blank image.
+ * @return {HTMLCanvasElement} Blank image.
  */
-ol.ImageTile.blankImageUrl = (function() {
+ol.ImageTile.getBlankImage = function() {
   var ctx = ol.dom.createCanvasContext2D(1, 1);
   ctx.fillStyle = 'rgba(0,0,0,0)';
   ctx.fillRect(0, 0, 1, 1);
-  return ctx.canvas.toDataURL('image/png');
-})();
+  return ctx.canvas;
+};
