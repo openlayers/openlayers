@@ -4250,6 +4250,7 @@ olx.layer.TileOptions.prototype.zIndex;
  *     renderBuffer: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     map: (ol.PluggableMap|undefined),
+ *     declutter: (boolean|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
@@ -4333,6 +4334,14 @@ olx.layer.VectorOptions.prototype.source;
 
 
 /**
+ * Declutter images and text. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.declutter;
+
+
+/**
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
@@ -4389,6 +4398,7 @@ olx.layer.VectorOptions.prototype.zIndex;
  *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
  *     renderOrder: (ol.RenderOrderFunction|undefined),
  *     source: (ol.source.VectorTile|undefined),
+ *     declutter: (boolean|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
@@ -4422,7 +4432,8 @@ olx.layer.VectorTileOptions.prototype.renderBuffer;
  *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance than the other options.
  *
- * The default is `'hybrid'`.
+ * When `declutter` is set to `true`, `'hybrid'` will be used instead of
+ * `'image'`. The default is `'hybrid'`.
  * @type {ol.layer.VectorTileRenderType|string|undefined}
  * @api
  */
@@ -4496,6 +4507,14 @@ olx.layer.VectorTileOptions.prototype.preload;
  * @api
  */
 olx.layer.VectorTileOptions.prototype.source;
+
+
+/**
+ * Declutter images and text. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.declutter;
 
 
 /**

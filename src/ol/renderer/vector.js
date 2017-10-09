@@ -57,7 +57,7 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 };
@@ -180,7 +180,7 @@ ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, s
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 };
@@ -205,7 +205,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geomet
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 };
@@ -231,7 +231,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 };
@@ -252,14 +252,14 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
     }
     var imageReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.IMAGE);
-    imageReplay.setImageStyle(imageStyle);
+    imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
     imageReplay.drawPoint(geometry, feature);
   }
   var textStyle = style.getText();
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
     textReplay.drawText(geometry, feature);
   }
 };
@@ -280,14 +280,14 @@ ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, s
     }
     var imageReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.IMAGE);
-    imageReplay.setImageStyle(imageStyle);
+    imageReplay.setImageStyle(imageStyle, replayGroup.addDeclutter(false));
     imageReplay.drawMultiPoint(geometry, feature);
   }
   var textStyle = style.getText();
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(!!imageStyle));
     textReplay.drawText(geometry, feature);
   }
 };
@@ -313,7 +313,7 @@ ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, styl
   if (textStyle) {
     var textReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.TEXT);
-    textReplay.setTextStyle(textStyle);
+    textReplay.setTextStyle(textStyle, replayGroup.addDeclutter(false));
     textReplay.drawText(geometry, feature);
   }
 };

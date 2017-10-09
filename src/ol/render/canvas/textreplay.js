@@ -22,11 +22,19 @@ goog.require('ol.style.TextPlacement');
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
+ * @param {?} declutterTree Declutter tree.
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+ol.render.canvas.TextReplay = function(
+    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+  ol.render.canvas.Replay.call(this,
+      tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
+  /**
+   * @private
+   * @type {Array.<*>}
+   */
+  this.declutterGroup_;
 
   /**
    * @private
@@ -238,7 +246,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
       }
       end = this.appendFlatCoordinates(flatCoordinates, flatOffset, flatEnd, stride, false, false);
       flatOffset = ends[o];
-      this.drawChars_(begin, end);
+      this.drawChars_(begin, end, this.declutterGroup_);
       begin = end;
     }
     this.endGeometry(geometry, feature);
@@ -378,12 +386,12 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
   var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
   this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
-    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
     1, true, label.width
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
-    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
     1 / pixelRatio, true, label.width
   ]);
 };
@@ -393,8 +401,9 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
  * @private
  * @param {number} begin Begin.
  * @param {number} end End.
+ * @param {Array.<*>} declutterGroup Declutter group.
  */
-ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
+ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   var pixelRatio = this.pixelRatio;
   var strokeState = this.textStrokeState_;
   var fill = !!this.textFillState_;
@@ -423,13 +432,13 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
   var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
   var widths = {};
   this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-    begin, end, labels, baseline,
+    begin, end, labels, baseline, declutterGroup,
     textState.exceedLength, textState.maxAngle,
     ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio * this.textScale_),
     offsetY, this.text_, align, 1
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-    begin, end, labels, baseline,
+    begin, end, labels, baseline, declutterGroup,
     textState.exceedLength, textState.maxAngle,
     ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, this.textScale_),
     offsetY, this.text_, align, 1 / pixelRatio
@@ -440,11 +449,12 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
 /**
  * @inheritDoc
  */
-ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
+ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
   var textState, fillState, strokeState;
   if (!textStyle) {
     this.text_ = '';
   } else {
+    this.declutterGroup_ = /** @type {Array.<*>} */ (declutterGroup);
     var textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
       fillState = this.textFillState_ = null;

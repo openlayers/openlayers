@@ -28,6 +28,7 @@ var map = new ol.Map({
       imagerySet: 'Aerial'
     })
   }), new ol.layer.Vector({
+    declutter: true,
     source: new ol.source.Vector({
       format: new ol.format.GeoJSON(),
       url: 'data/geojson/vienna-streets.geojson'

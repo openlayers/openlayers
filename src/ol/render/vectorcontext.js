@@ -123,11 +123,13 @@ ol.render.VectorContext.prototype.setFillStrokeStyle = function(fillStyle, strok
 
 /**
  * @param {ol.style.Image} imageStyle Image style.
+ * @param {Array.<*>=} opt_declutterGroup Declutter.
  */
-ol.render.VectorContext.prototype.setImageStyle = function(imageStyle) {};
+ol.render.VectorContext.prototype.setImageStyle = function(imageStyle, opt_declutterGroup) {};
 
 
 /**
  * @param {ol.style.Text} textStyle Text style.
+ * @param {Array.<*>=} opt_declutterGroup Declutter.
  */
-ol.render.VectorContext.prototype.setTextStyle = function(textStyle) {};
+ol.render.VectorContext.prototype.setTextStyle = function(textStyle, opt_declutterGroup) {};

@@ -33,6 +33,12 @@ ol.layer.Vector = function(opt_options) {
   ol.layer.Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
+   * @private
+   * @type {boolean}
+   */
+  this.declutter_ = options.declutter !== undefined ? options.declutter : false;
+
+  /**
    * @type {number}
    * @private
    */
@@ -78,6 +84,22 @@ ol.layer.Vector = function(opt_options) {
 
 };
 ol.inherits(ol.layer.Vector, ol.layer.Layer);
+
+
+/**
+ * @return {boolean} Declutter.
+ */
+ol.layer.Vector.prototype.getDeclutter = function() {
+  return this.declutter_;
+};
+
+
+/**
+ * @param {boolean} declutter Declutter.
+ */
+ol.layer.Vector.prototype.setDeclutter = function(declutter) {
+  this.declutter_ = declutter;
+};
 
 
 /**
