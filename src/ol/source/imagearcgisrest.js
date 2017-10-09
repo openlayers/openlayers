@@ -169,7 +169,7 @@ ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resoluti
       projection, params);
 
   this.image_ = new ol.Image(extent, resolution, pixelRatio,
-      this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
+      url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
 

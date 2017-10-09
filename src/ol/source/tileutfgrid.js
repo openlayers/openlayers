@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileUTFGrid');
 
 goog.require('ol');
-goog.require('ol.Attribution');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
@@ -198,20 +197,13 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
   if (tileJSON.attribution !== undefined) {
     var attributionExtent = extent !== undefined ?
       extent : epsg4326Projection.getExtent();
-    /** @type {Object.<string, Array.<ol.TileRange>>} */
-    var tileRanges = {};
-    var z, zKey;
-    for (z = minZoom; z <= maxZoom; ++z) {
-      zKey = z.toString();
-      tileRanges[zKey] =
-          [tileGrid.getTileRangeForExtentAndZ(attributionExtent, z)];
-    }
-    this.setAttributions([
-      new ol.Attribution({
-        html: tileJSON.attribution,
-        tileRanges: tileRanges
-      })
-    ]);
+
+    this.setAttributions(function(frameState) {
+      if (ol.extent.intersects(attributionExtent, frameState.extent)) {
+        return [tileJSON.attribution];
+      }
+      return null;
+    });
   }
 
   this.setState(ol.source.State.READY);

@@ -7,7 +7,6 @@
 goog.provide('ol.source.TileJSON');
 
 goog.require('ol');
-goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.asserts');
 goog.require('ol.extent');
@@ -136,23 +135,17 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   this.tileUrlFunction =
       ol.TileUrlFunction.createFromTemplates(tileJSON.tiles, tileGrid);
 
-  if (tileJSON.attribution !== undefined && !this.getAttributions()) {
+  if (tileJSON.attribution !== undefined && !this.getAttributions2()) {
     var attributionExtent = extent !== undefined ?
       extent : epsg4326Projection.getExtent();
-    /** @type {Object.<string, Array.<ol.TileRange>>} */
-    var tileRanges = {};
-    var z, zKey;
-    for (z = minZoom; z <= maxZoom; ++z) {
-      zKey = z.toString();
-      tileRanges[zKey] =
-          [tileGrid.getTileRangeForExtentAndZ(attributionExtent, z)];
-    }
-    this.setAttributions([
-      new ol.Attribution({
-        html: tileJSON.attribution,
-        tileRanges: tileRanges
-      })
-    ]);
+
+    this.setAttributions(function(frameState) {
+      if (ol.extent.intersects(attributionExtent, frameState.extent)) {
+        return [tileJSON.attribution];
+      }
+      return null;
+    });
+
   }
   this.tileJSON_ = tileJSON;
   this.setState(ol.source.State.READY);

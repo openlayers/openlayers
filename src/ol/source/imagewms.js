@@ -225,7 +225,7 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
       projection, params);
 
   this.image_ = new ol.Image(requestExtent, resolution, pixelRatio,
-      this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
+      url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
 

@@ -35,7 +35,13 @@ ol.source.Source = function(options) {
    * @private
    * @type {Array.<ol.Attribution>}
    */
-  this.attributions_ = ol.source.Source.toAttributionsArray_(options.attributions);
+  this.attributions_ = null;
+
+  /**
+   * @private
+   * @type {?ol.Attribution2}
+   */
+  this.attributions2_ = this.adaptAttributions_(options.attributions);
 
   /**
    * @private
@@ -60,36 +66,61 @@ ol.source.Source = function(options) {
 ol.inherits(ol.source.Source, ol.Object);
 
 /**
- * Turns various ways of defining an attribution to an array of `ol.Attributions`.
- *
- * @param {ol.AttributionLike|undefined}
- *     attributionLike The attributions as string, array of strings,
- *     `ol.Attribution`, array of `ol.Attribution` or undefined.
- * @return {Array.<ol.Attribution>} The array of `ol.Attribution` or null if
- *     `undefined` was given.
+ * Turns the attributions option into an attributions function.
+ * @suppress {deprecated}
+ * @param {ol.AttributionLike|undefined} attributionLike The attribution option.
+ * @return {?ol.Attribution2} An attribution function (or null).
  */
-ol.source.Source.toAttributionsArray_ = function(attributionLike) {
-  if (typeof attributionLike === 'string') {
-    return [new ol.Attribution({html: attributionLike})];
-  } else if (attributionLike instanceof ol.Attribution) {
-    return [attributionLike];
-  } else if (Array.isArray(attributionLike)) {
-    var len = attributionLike.length;
-    var attributions = new Array(len);
-    for (var i = 0; i < len; i++) {
-      var item = attributionLike[i];
-      if (typeof item === 'string') {
-        attributions[i] = new ol.Attribution({html: item});
-      } else {
-        attributions[i] = item;
-      }
-    }
-    return attributions;
-  } else {
+ol.source.Source.prototype.adaptAttributions_ = function(attributionLike) {
+  if (!attributionLike) {
     return null;
   }
-};
+  if (attributionLike instanceof ol.Attribution) {
 
+    // TODO: remove attributions_ in next major release
+    this.attributions_ = [attributionLike];
+
+    return function(frameState) {
+      return [attributionLike.getHTML()];
+    };
+  }
+  if (Array.isArray(attributionLike)) {
+    if (attributionLike[0] instanceof ol.Attribution) {
+
+      // TODO: remove attributions_ in next major release
+      this.attributions_ = attributionLike;
+
+      var attributions = attributionLike.map(function(attribution) {
+        return attribution.getHTML();
+      });
+      return function(frameState) {
+        return attributions;
+      };
+    }
+
+    // TODO: remove attributions_ in next major release
+    this.attributions_ = attributionLike.map(function(attribution) {
+      return new ol.Attribution({html: attribution});
+    });
+
+    return function(frameState) {
+      return attributionLike;
+    };
+  }
+
+  if (typeof attributionLike === 'function') {
+    return attributionLike;
+  }
+
+  // TODO: remove attributions_ in next major release
+  this.attributions_ = [
+    new ol.Attribution({html: attributionLike})
+  ];
+
+  return function(frameState) {
+    return [attributionLike];
+  };
+};
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
@@ -112,6 +143,15 @@ ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
  */
 ol.source.Source.prototype.getAttributions = function() {
   return this.attributions_;
+};
+
+
+/**
+ * Get the attribution function for the source.
+ * @return {?ol.Attribution2} Attribution function.
+ */
+ol.source.Source.prototype.getAttributions2 = function() {
+  return this.attributions2_;
 };
 
 
@@ -172,12 +212,12 @@ ol.source.Source.prototype.refresh = function() {
 /**
  * Set the attributions of the source.
  * @param {ol.AttributionLike|undefined} attributions Attributions.
- *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution}`,
- *     `Array<{@link ol.Attribution}>` or `undefined`.
+ *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution2}`,
+ *     or `undefined`.
  * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
-  this.attributions_ = ol.source.Source.toAttributionsArray_(attributions);
+  this.attributions2_ = this.adaptAttributions_(attributions);
   this.changed();
 };
 

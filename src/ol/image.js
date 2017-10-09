@@ -14,16 +14,13 @@ goog.require('ol.extent');
  * @param {ol.Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-ol.Image = function(extent, resolution, pixelRatio, attributions, src,
-    crossOrigin, imageLoadFunction) {
+ol.Image = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
-  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
-      attributions);
+  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE);
 
   /**
    * @private

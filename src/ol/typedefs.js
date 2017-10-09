@@ -46,13 +46,23 @@ ol.AtlasManagerInfo;
  * A type that can be used to provide attribution information for data sources.
  *
  * It represents either
- * * a simple string (e.g. `'© Acme Inc.'`),
- * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`),
- * * an instance of `{@link ol.Attribution}`,
- * * or an array with multiple `{@link ol.Attribution}` instances.
- * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
+ * * a simple string (e.g. `'© Acme Inc.'`)
+ * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
+ * * a function that returns a string or array of strings (`{@link ol.Attribution2}`)
+ *
+ * Note that the `{@link ol.Attribution}` constructor is deprecated.
+ * @typedef {string|Array.<string>|ol.Attribution2|ol.Attribution|Array.<ol.Attribution>}
  */
 ol.AttributionLike;
+
+
+/**
+ * A function that returns a string or an array of strings representing source
+ * attributions.
+ *
+ * @typedef {function(olx.FrameState): (string|Array.<string>)}
+ */
+ol.Attribution2;
 
 
 /**

@@ -781,7 +781,8 @@ ol.View.prototype.getState = function() {
     center: center.slice(),
     projection: projection !== undefined ? projection : null,
     resolution: resolution,
-    rotation: rotation
+    rotation: rotation,
+    zoom: this.getZoom()
   });
 };
 

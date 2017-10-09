@@ -22,12 +22,10 @@ describe('ol.renderer.Layer', function() {
       var extent = [];
       var resolution = 1;
       var pixelRatio = 1;
-      var attributions = [];
       var src = '';
       var crossOrigin = '';
       imageLoadFunction = sinon.spy();
-      image = new ol.Image(extent, resolution, pixelRatio, attributions,
-          src, crossOrigin, imageLoadFunction);
+      image = new ol.Image(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction);
     });
 
     describe('load IDLE image', function() {

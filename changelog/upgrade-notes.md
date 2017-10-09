@@ -2,6 +2,36 @@
 
 ### Next Release
 
+#### Deprecation of `ol.Attribution`
+
+`ol.Attribution` is deprecated and will be removed in the next major version.  Instead, you can construct a source with a string attribution or an array of strings.  For dynamic attributions, you can provide a function that gets called with the current frame state.
+
+Before:
+```js
+var source = new ol.source.XYZ({
+  attributions: [
+    new ol.Attribution({html: 'some attribution'})
+  ]
+});
+```
+
+After:
+```js
+var source = new ol.source.XYZ({
+  attributions: 'some attribution'
+});
+```
+
+In addition to passing a string or an array of strings for the `attributions` option, you can also pass a function that will get called with the current frame state.
+```js
+var source = new ol.source.XYZ({
+  attributions: function(frameState) {
+    // inspect the frame state and return attributions
+    return 'some attribution'; // or ['multiple', 'attributions'] or null
+  }
+});
+```
+
 ### v4.4.0
 
 #### Behavior change for polygon labels

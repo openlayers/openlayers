@@ -5487,7 +5487,7 @@ olx.source.OSMOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     crossOrigin: (null|string|undefined),
  *     hidpi: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -5503,7 +5503,7 @@ olx.source.ImageArcGISRestOptions;
 
 /**
  * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.attributions;
@@ -8329,7 +8329,6 @@ olx.view.FitOptions.prototype.callback;
 
 /**
  * @typedef {{animate: boolean,
- *     attributions: Object.<string, ol.Attribution>,
  *     coordinateToPixelTransform: ol.Transform,
  *     extent: (null|ol.Extent),
  *     focus: ol.Coordinate,
@@ -8377,7 +8376,8 @@ olx.FrameState.prototype.viewState;
  * @typedef {{center: ol.Coordinate,
  *     projection: ol.proj.Projection,
  *     resolution: number,
- *     rotation: number}}
+ *     rotation: number,
+ *     zoom: number}}
  */
 olx.ViewState;
 
@@ -8408,6 +8408,14 @@ olx.ViewState.prototype.resolution;
  * @api
  */
 olx.ViewState.prototype.rotation;
+
+
+/**
+ * The current zoom level.
+ * @type {number}
+ * @api
+ */
+olx.ViewState.prototype.zoom;
 
 
 /**

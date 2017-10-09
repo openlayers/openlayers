@@ -100,15 +100,12 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
 
   var state = ol.ImageState.LOADED;
-  var attributions = [];
 
   if (this.sourceImage_) {
     state = ol.ImageState.IDLE;
-    attributions = this.sourceImage_.getAttributions();
   }
 
-  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
-      state, attributions);
+  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
 };
 ol.inherits(ol.reproj.Image, ol.ImageBase);
 

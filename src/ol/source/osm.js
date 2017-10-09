@@ -1,7 +1,6 @@
 goog.provide('ol.source.OSM');
 
 goog.require('ol');
-goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
 
@@ -51,11 +50,9 @@ ol.inherits(ol.source.OSM, ol.source.XYZ);
  * The attribution containing a link to the OpenStreetMap Copyright and License
  * page.
  * @const
- * @type {ol.Attribution}
+ * @type {string}
  * @api
  */
-ol.source.OSM.ATTRIBUTION = new ol.Attribution({
-  html: '&copy; ' +
+ol.source.OSM.ATTRIBUTION = '&copy; ' +
       '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
-      'contributors.'
-});
+      'contributors.';

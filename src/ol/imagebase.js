@@ -13,17 +13,10 @@ goog.require('ol.events.EventType');
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
- * @param {Array.<ol.Attribution>} attributions Attributions.
  */
-ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
+ol.ImageBase = function(extent, resolution, pixelRatio, state) {
 
   ol.events.EventTarget.call(this);
-
-  /**
-   * @private
-   * @type {Array.<ol.Attribution>}
-   */
-  this.attributions_ = attributions;
 
   /**
    * @protected
@@ -58,14 +51,6 @@ ol.inherits(ol.ImageBase, ol.events.EventTarget);
  */
 ol.ImageBase.prototype.changed = function() {
   this.dispatchEvent(ol.events.EventType.CHANGE);
-};
-
-
-/**
- * @return {Array.<ol.Attribution>} Attributions.
- */
-ol.ImageBase.prototype.getAttributions = function() {
-  return this.attributions_;
 };
 
 
