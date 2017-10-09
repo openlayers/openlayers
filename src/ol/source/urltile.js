@@ -5,6 +5,7 @@ goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileEventType');
+goog.require('ol.tilecoord');
 
 
 /**
@@ -155,6 +156,7 @@ ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
  */
 ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
   this.tileUrlFunction = tileUrlFunction;
+  this.tileCache.pruneExceptNewestZ();
   if (typeof opt_key !== 'undefined') {
     this.setKey(opt_key);
   } else {
@@ -194,7 +196,7 @@ ol.source.UrlTile.prototype.setUrls = function(urls) {
  * @inheritDoc
  */
 ol.source.UrlTile.prototype.useTile = function(z, x, y) {
-  var tileCoordKey = this.getKeyZXY(z, x, y);
+  var tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
   }

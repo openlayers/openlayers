@@ -117,6 +117,34 @@ ol.structs.LRUCache.prototype.get = function(key) {
 
 
 /**
+ * Remove an entry from the cache.
+ * @param {string} key The entry key.
+ * @return {T} The removed entry.
+ */
+ol.structs.LRUCache.prototype.remove = function(key) {
+  var entry = this.entries_[key];
+  ol.asserts.assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+  if (entry === this.newest_) {
+    this.newest_ = /** @type {ol.LRUCacheEntry} */ (entry.older);
+    if (this.newest_) {
+      this.newest_.newer = null;
+    }
+  } else if (entry === this.oldest_) {
+    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+    if (this.oldest_) {
+      this.oldest_.older = null;
+    }
+  } else {
+    entry.newer.older = entry.older;
+    entry.older.newer = entry.newer;
+  }
+  delete this.entries_[key];
+  --this.count_;
+  return entry.value_;
+};
+
+
+/**
  * @return {number} Count.
  */
 ol.structs.LRUCache.prototype.getCount = function() {
@@ -165,6 +193,15 @@ ol.structs.LRUCache.prototype.peekLast = function() {
  */
 ol.structs.LRUCache.prototype.peekLastKey = function() {
   return this.oldest_.key_;
+};
+
+
+/**
+ * Get the key of the newest item in the cache.  Throws if the cache is empty.
+ * @return {string} The newest key.
+ */
+ol.structs.LRUCache.prototype.peekFirstKey = function() {
+  return this.newest_.key_;
 };
 
 

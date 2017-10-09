@@ -32,6 +32,26 @@ ol.tilecoord.getKeyZXY = function(z, x, y) {
 
 
 /**
+ * Get the key for a tile coord.
+ * @param {ol.TileCoord} tileCoord The tile coord.
+ * @return {string} Key.
+ */
+ol.tilecoord.getKey = function(tileCoord) {
+  return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
+};
+
+
+/**
+ * Get a tile coord given a key.
+ * @param {string} key The tile coord key.
+ * @return {ol.TileCoord} The tile coord.
+ */
+ol.tilecoord.fromKey = function(key) {
+  return key.split('/').map(Number);
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coord.
  * @return {number} Hash.
  */

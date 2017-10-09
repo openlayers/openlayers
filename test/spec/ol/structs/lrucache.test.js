@@ -164,6 +164,30 @@ describe('ol.structs.LRUCache', function() {
     });
   });
 
+  describe('#peekFirstKey()', function() {
+    it('returns the newest key in the cache', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+      expect(cache.peekFirstKey()).to.eql('newest');
+    });
+
+    it('works if the cache has one item', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('key', 'value');
+      expect(cache.peekFirstKey()).to.eql('key');
+    });
+
+    it('throws if the cache is empty', function() {
+      var cache = new ol.structs.LRUCache();
+      expect(function() {
+        cache.peekFirstKey();
+      }).to.throwException();
+    });
+  });
+
   describe('peeking at the last value', function() {
     it('returns the last key', function() {
       fillLRUCache(lruCache);
@@ -185,6 +209,66 @@ describe('ol.structs.LRUCache', function() {
       expect(function() {
         lruCache.peekLastKey();
       }).to.throwException();
+    });
+  });
+
+  describe('#remove()', function() {
+    it('removes an item from the cache', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+
+      cache.remove('oldish');
+      expect(cache.getCount()).to.eql(3);
+      expect(cache.getValues()).to.eql(['newest', 'newish', 'oldest']);
+    });
+
+    it('works when removing the oldest item', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+
+      cache.remove('oldest');
+      expect(cache.getCount()).to.eql(3);
+      expect(cache.peekLastKey()).to.eql('oldish');
+      expect(cache.getValues()).to.eql(['newest', 'newish', 'oldish']);
+    });
+
+    it('works when removing the newest item', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('oldest', 'oldest');
+      cache.set('oldish', 'oldish');
+      cache.set('newish', 'newish');
+      cache.set('newest', 'newest');
+
+      cache.remove('newest');
+      expect(cache.getCount()).to.eql(3);
+      expect(cache.peekFirstKey()).to.eql('newish');
+      expect(cache.getValues()).to.eql(['newish', 'oldish', 'oldest']);
+    });
+
+    it('returns the removed item', function() {
+      var cache = new ol.structs.LRUCache();
+      var item = {};
+      cache.set('key', item);
+
+      var returned = cache.remove('key');
+      expect(returned).to.be(item);
+    });
+
+    it('throws if the key does not exist', function() {
+      var cache = new ol.structs.LRUCache();
+      cache.set('foo', 'foo');
+      cache.set('bar', 'bar');
+
+      var call = function() {
+        cache.remove('bam');
+      };
+      expect(call).to.throwException();
     });
   });
 
