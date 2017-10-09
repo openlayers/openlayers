@@ -326,7 +326,7 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     context.font = textState.font;
     if (stroke) {
       context.strokeStyle = strokeState.strokeStyle;
-      context.lineWidth = strokeState.lineWidth;
+      context.lineWidth = strokeWidth * pixelRatio;
       context.lineCap = strokeState.lineCap;
       context.lineJoin = strokeState.lineJoin;
       context.miterLimit = strokeState.miterLimit;
