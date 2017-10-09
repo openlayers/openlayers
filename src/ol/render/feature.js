@@ -1,8 +1,12 @@
 goog.provide('ol.render.Feature');
 
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.flat.center');
+goog.require('ol.geom.flat.interiorpoint');
+goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.transform');
 
@@ -44,6 +48,18 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
    * @type {Array.<number>}
    */
   this.flatCoordinates_ = flatCoordinates;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.flatInteriorPoints_ = null;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.flatMidpoints_ = null;
 
   /**
    * @private
@@ -100,6 +116,66 @@ ol.render.Feature.prototype.getExtent = function() {
 
   }
   return this.extent_;
+};
+
+
+/**
+ * @return {Array.<number>} Flat interior points.
+ */
+ol.render.Feature.prototype.getFlatInteriorPoint = function() {
+  if (!this.flatInteriorPoints_) {
+    var flatCenter = ol.extent.getCenter(this.getExtent());
+    this.flatInteriorPoints_ = ol.geom.flat.interiorpoint.linearRings(
+        this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
+  }
+  return this.flatInteriorPoints_;
+};
+
+
+/**
+ * @return {Array.<number>} Flat interior points.
+ */
+ol.render.Feature.prototype.getFlatInteriorPoints = function() {
+  if (!this.flatInteriorPoints_) {
+    var flatCenters = ol.geom.flat.center.linearRingss(
+        this.flatCoordinates_, 0, this.ends_, 2);
+    this.flatInteriorPoints_ = ol.geom.flat.interiorpoint.linearRingss(
+        this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
+  }
+  return this.flatInteriorPoints_;
+};
+
+
+/**
+ * @return {Array.<number>} Flat midpoint.
+ */
+ol.render.Feature.prototype.getFlatMidpoint = function() {
+  if (!this.flatMidpoints_) {
+    this.flatMidpoints_ = ol.geom.flat.interpolate.lineString(
+        this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
+  }
+  return this.flatMidpoints_;
+};
+
+
+/**
+ * @return {Array.<number>} Flat midpoints.
+ */
+ol.render.Feature.prototype.getFlatMidpoints = function() {
+  if (!this.flatMidpoints_) {
+    this.flatMidpoints_ = [];
+    var flatCoordinates = this.flatCoordinates_;
+    var offset = 0;
+    var ends = this.ends_;
+    for (var i = 0, ii = ends.length; i < ii; ++i) {
+      var end = ends[i];
+      var midpoint = ol.geom.flat.interpolate.lineString(
+          flatCoordinates, offset, end, 2, 0.5);
+      ol.array.extend(this.flatMidpoints_, midpoint);
+      offset = end;
+    }
+  }
+  return this.flatMidpoints_;
 };
 
 /**
