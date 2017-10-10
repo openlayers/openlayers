@@ -26,7 +26,8 @@ function flood(pixels, data) {
 var key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 var elevation = new ol.source.XYZ({
   url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
-  crossOrigin: 'anonymous'
+  crossOrigin: 'anonymous',
+  transition: 0
 });
 
 var raster = new ol.source.Raster({
