@@ -126,18 +126,19 @@ ol.render.canvas.TextReplay.labelCache_ = new ol.structs.LRUCache();
  * @return {ol.Size} Measurement.
  */
 ol.render.canvas.TextReplay.measureTextHeight = (function() {
-  var textContainer;
+  var span;
   return function(font, lines, widths) {
-    if (!textContainer) {
-      textContainer = document.createElement('span');
-      textContainer.textContent = 'M';
-      textContainer.style.visibility = 'hidden';
-      textContainer.style.whiteSpace = 'nowrap';
+    if (!span) {
+      span = document.createElement('span');
+      span.textContent = 'M';
+      span.style.margin = span.style.padding = '0 !important';
+      span.style.position = 'absolute !important';
+      span.style.left = '-99999px !important';
     }
-    textContainer.style.font = font;
-    document.body.appendChild(textContainer);
-    var height = textContainer.offsetHeight;
-    document.body.removeChild(textContainer);
+    span.style.font = font;
+    document.body.appendChild(span);
+    var height = span.offsetHeight;
+    document.body.removeChild(span);
     return height;
   };
 })();
