@@ -383,6 +383,14 @@ goog.require('ol.has');
   };
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
+    if (showMap) {
+      var wrapper = document.createElement('div');
+      wrapper.style.width = canvas.width + 'px';
+      wrapper.style.height = canvas.height + 'px';
+      wrapper.appendChild(canvas);
+      document.body.appendChild(wrapper);
+      document.body.appendChild(document.createTextNode(referenceImage));
+    }
     var width = canvas.width;
     var height = canvas.height;
     var image = new Image();
@@ -394,14 +402,6 @@ goog.require('ol.has');
       referenceCanvas.height = image.height;
       var referenceContext = referenceCanvas.getContext('2d');
       referenceContext.drawImage(image, 0, 0, image.width, image.height);
-      if (showMap) {
-        var wrapper = document.createElement('div');
-        wrapper.style.width = canvas.width + 'px';
-        wrapper.style.height = canvas.height + 'px';
-        wrapper.appendChild(canvas);
-        document.body.appendChild(wrapper);
-        document.body.appendChild(document.createTextNode(referenceImage));
-      }
       var context = canvas.getContext('2d');
       var output = context.createImageData(canvas.width, canvas.height);
       var mismatchPx = pixelmatch(

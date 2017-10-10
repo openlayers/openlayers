@@ -17,14 +17,14 @@ describe('ol.rendering.style.Text', function() {
 
   var map, vectorSource;
 
-  function createMap(renderer) {
+  function createMap(renderer, opt_pixelRatio) {
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
     map = new ol.Map({
-      pixelRatio: 1,
+      pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(200, 200),
       renderer: renderer,
       layers: [vectorLayer],
@@ -152,6 +152,12 @@ describe('ol.rendering.style.Text', function() {
       createFeatures();
       map.getView().setRotation(Math.PI / 7);
       expectResemble(map, 'rendering/ol/style/expected/text-rotated-canvas.png', IMAGE_TOLERANCE, done);
+    });
+
+    it('renders correct stroke with pixelRatio != 1', function(done) {
+      createMap('canvas', 2);
+      createFeatures();
+      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', IMAGE_TOLERANCE, done);
     });
 
     it('renders multiline text with alignment options', function(done) {
