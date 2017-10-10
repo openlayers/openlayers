@@ -6,7 +6,8 @@ docs: >
   This example showcases a number of options that can be set on text styles.
   When "Text/Wrap" is chosen (for example for the line features), the label is
   wrapped by inserting the character `\n`, which will create a multi-line
-  label.
+  label. The "Open Sans" web font will be loaded on demand, to show dynamic font
+  loading.
 tags: "geojson, vector, openstreetmap, label"
 ---
 <div id="map" class="map"></div>
@@ -70,7 +71,7 @@ tags: "geojson, vector, openstreetmap, label"
     <select id="points-font">
       <option value="Arial" selected="selected">Arial</option>
       <option value="Courier New">Courier New</option>
-      <option value="Quattrocento Sans">Quattrocento</option>
+      <option value="Open Sans">Open Sans</option>
       <option value="Verdana">Verdana</option>
     </select>
     <br />
@@ -179,7 +180,7 @@ tags: "geojson, vector, openstreetmap, label"
     <select id="lines-font">
       <option value="Arial">Arial</option>
       <option value="Courier New" selected="selected">Courier New</option>
-      <option value="Quattrocento Sans">Quattrocento</option>
+      <option value="Open Sans">Open Sans</option>
       <option value="Verdana">Verdana</option>
     </select>
     <br />
@@ -288,7 +289,7 @@ tags: "geojson, vector, openstreetmap, label"
     <select id="polygons-font">
       <option value="Arial">Arial</option>
       <option value="Courier New">Courier New</option>
-      <option value="Quattrocento Sans">Quattrocento</option>
+      <option value="Open Sans">Open Sans</option>
       <option value="Verdana" selected="selected">Verdana</option>
     </select>
     <br />

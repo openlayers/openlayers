@@ -11,6 +11,7 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
+var openSansAdded = false;
 
 var myDom = {
   points: {
@@ -96,6 +97,13 @@ var createTextStyle = function(feature, resolution, dom) {
   var maxAngle = dom.maxangle ? parseFloat(dom.maxangle.value) : undefined;
   var exceedLength = dom.exceedlength ? (dom.exceedlength.value == 'true') : undefined;
   var rotation = parseFloat(dom.rotation.value);
+  if (dom.font.value == 'Open Sans' && !openSansAdded) {
+    var openSans = document.createElement('link');
+    openSans.href = 'https://fonts.googleapis.com/css?family=Open+Sans';
+    openSans.rel = 'stylesheet';
+    document.getElementsByTagName('head')[0].appendChild(openSans);
+    openSansAdded = true;
+  }
   var font = weight + ' ' + size + ' ' + dom.font.value;
   var fillColor = dom.color.value;
   var outlineColor = dom.outline.value;
