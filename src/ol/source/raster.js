@@ -181,6 +181,8 @@ ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, proj
   frameState.focus = center;
   frameState.size[0] = Math.round(ol.extent.getWidth(extent) / resolution);
   frameState.size[1] = Math.round(ol.extent.getHeight(extent) / resolution);
+  frameState.time = Date.now();
+  frameState.animate = false;
 
   var viewState = frameState.viewState;
   viewState.center = center;
@@ -234,6 +236,11 @@ ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, p
   }
 
   frameState.tileQueue.loadMoreTiles(16, 16);
+
+  if (frameState.animate) {
+    requestAnimationFrame(this.changed.bind(this));
+  }
+
   return this.renderedImageCanvas_;
 };
 
