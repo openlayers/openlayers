@@ -18,14 +18,15 @@ describe('ol.rendering.style.Text', function() {
   var map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
+    var pixelRatio = opt_pixelRatio || 1;
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
     map = new ol.Map({
-      pixelRatio: opt_pixelRatio || 1,
-      target: createMapDiv(200, 200),
+      pixelRatio: pixelRatio,
+      target: createMapDiv(200 / pixelRatio, 200 / pixelRatio),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -157,7 +158,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders correct stroke with pixelRatio != 1', function(done) {
       createMap('canvas', 2);
       createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', IMAGE_TOLERANCE, done);
+      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', 2.8, done);
     });
 
     it('renders multiline text with alignment options', function(done) {
