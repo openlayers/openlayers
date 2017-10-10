@@ -102,7 +102,8 @@ function xyz2rgb(x) {
 
 var raster = new ol.source.Raster({
   sources: [new ol.source.Stamen({
-    layer: 'watercolor'
+    layer: 'watercolor',
+    transition: 0
   })],
   operation: function(pixels, data) {
     var hcl = rgb2hcl(pixels[0]);

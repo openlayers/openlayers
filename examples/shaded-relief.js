@@ -104,7 +104,8 @@ function shade(inputs, data) {
 
 var elevation = new ol.source.XYZ({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
-  crossOrigin: 'anonymous'
+  crossOrigin: 'anonymous',
+  transition: 0
 });
 
 var raster = new ol.source.Raster({
