@@ -317,10 +317,10 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     var width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
     var lineHeight = ol.render.canvas.TextReplay.measureTextHeight(textState.font);
     var height = lineHeight * numLines;
-    var renderWidth = (width + 2 * strokeWidth);
+    var renderWidth = (width + strokeWidth);
     var context = ol.dom.createCanvasContext2D(
         Math.ceil(renderWidth * scale),
-        Math.ceil((height + 2 * strokeWidth) * scale));
+        Math.ceil((height + strokeWidth) * scale));
     label = context.canvas;
     ol.render.canvas.TextReplay.labelCache_.set(key, label);
     context.scale(scale, scale);
@@ -342,16 +342,16 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     context.textBaseline = 'top';
     context.textAlign = 'center';
     var leftRight = (0.5 - align);
-    var x = align * label.width / scale + leftRight * 2 * strokeWidth;
+    var x = align * label.width / scale + leftRight * strokeWidth;
     var i;
     if (stroke) {
       for (i = 0; i < numLines; ++i) {
-        context.strokeText(lines[i], x + leftRight * widths[i], strokeWidth + i * lineHeight);
+        context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * strokeWidth + i * lineHeight);
       }
     }
     if (fill) {
       for (i = 0; i < numLines; ++i) {
-        context.fillText(lines[i], x + leftRight * widths[i], strokeWidth + i * lineHeight);
+        context.fillText(lines[i], x + leftRight * widths[i], 0.5 * strokeWidth + i * lineHeight);
       }
     }
   }
