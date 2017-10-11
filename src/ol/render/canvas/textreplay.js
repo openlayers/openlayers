@@ -32,7 +32,7 @@ ol.render.canvas.TextReplay = function(
 
   /**
    * @private
-   * @type {Array.<*>}
+   * @type {ol.DeclutterGroup}
    */
   this.declutterGroup_;
 
@@ -401,7 +401,7 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
  * @private
  * @param {number} begin Begin.
  * @param {number} end End.
- * @param {Array.<*>} declutterGroup Declutter group.
+ * @param {ol.DeclutterGroup} declutterGroup Declutter group.
  */
 ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   var pixelRatio = this.pixelRatio;
@@ -454,7 +454,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutt
   if (!textStyle) {
     this.text_ = '';
   } else {
-    this.declutterGroup_ = /** @type {Array.<*>} */ (declutterGroup);
+    this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);
     var textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
       fillState = this.textFillState_ = null;

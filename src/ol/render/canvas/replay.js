@@ -156,7 +156,7 @@ ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} anchorX Anchor X.
  * @param {number} anchorY Anchor Y.
- * @param {Array.<*>} declutterGroup Declutter group.
+ * @param {ol.DeclutterGroup} declutterGroup Declutter group.
  * @param {number} height Height.
  * @param {number} opacity Opacity.
  * @param {number} originX Origin X.
@@ -383,7 +383,7 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
 
 
 /**
- * @param {Array.<*>} declutterGroup Declutter group.
+ * @param {ol.DeclutterGroup} declutterGroup Declutter group.
  */
 ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
   if (declutterGroup && declutterGroup.length > 5) {
@@ -537,7 +537,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
         anchorX = /** @type {number} */ (instruction[4]);
         anchorY = /** @type {number} */ (instruction[5]);
-        declutterGroup = /** @type {Array.<*>} */ (instruction[6]);
+        declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[6]);
         var height = /** @type {number} */ (instruction[7]);
         var opacity = /** @type {number} */ (instruction[8]);
         var originX = /** @type {number} */ (instruction[9]);
@@ -565,7 +565,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var images =  /** @type {Array.<HTMLCanvasElement>} */ (instruction[3]);
         // Remaining arguments in DRAW_CHARS are in alphabetical order
         var baseline = /** @type {number} */ (instruction[4]);
-        declutterGroup = /** @type {Array.<*>} */ (instruction[5]);
+        declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[5]);
         var exceedLength = /** @type {number} */ (instruction[6]);
         var maxAngle = /** @type {number} */ (instruction[7]);
         var measure = /** @type {function(string):number} */ (instruction[8]);

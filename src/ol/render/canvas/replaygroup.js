@@ -41,13 +41,7 @@ ol.render.canvas.ReplayGroup = function(
   this.declutterTree_ = declutterTree;
 
   /**
-   * Container for decluttered replay instructions that need to be rendered or
-   * omitted together, i.e. when styles render both an image and text. The basic
-   * elements of this array are `[minX, minY, maxX, maxY, count]`, where the
-   * first four entries are the rendered extent in pixel space. `count` is the
-   * number of replay instructions in the group. In addition to these basic
-   * elements, declutter instructions are appended to the array.
-   * @type {Array.<*>}
+   * @type {ol.DeclutterGroup}
    * @private
    */
   this.declutterGroup_ = null;
@@ -224,7 +218,7 @@ ol.render.canvas.ReplayGroup.replayDeclutterHitDetection = function(
 
 /**
  * @param {boolean} group Group with previous replay.
- * @return {Array.<*>} Declutter instruction group.
+ * @return {ol.DeclutterGroup} Declutter instruction group.
  */
 ol.render.canvas.ReplayGroup.prototype.addDeclutter = function(group) {
   var declutter = null;
@@ -297,7 +291,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  *     to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
  *     callback.
- * @param {Object.<string, Array.<*>>} declutterReplays Declutter replays.
+ * @param {Object.<string, ol.DeclutterGroup>} declutterReplays Declutter
+ *     replays.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -426,7 +421,8 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  *     to skip.
  * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
  *     to replay. Default is {@link ol.render.replay.ORDER}
- * @param {Object.<string, Array.<*>>=} opt_declutterReplays Declutter replays.
+ * @param {Object.<string, ol.DeclutterGroup>=} opt_declutterReplays Declutter
+ *     replays.
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(context,
     transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {
@@ -479,7 +475,8 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context,
  *     Feature callback.
  * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
  *     extent.
- * @param {Object.<string, Array.<*>>=} opt_declutterReplays Declutter replays.
+ * @param {Object.<string, ol.DeclutterGroup>=} opt_declutterReplays Declutter
+ *     replays.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -527,7 +524,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @private
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number, number, boolean, Array.<Array.<*>>)>}
+ *                number, number, boolean, Array.<ol.DeclutterGroup>)>}
  */
 ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': ol.render.canvas.PolygonReplay,

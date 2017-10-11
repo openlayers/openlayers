@@ -4334,7 +4334,9 @@ olx.layer.VectorOptions.prototype.source;
 
 
 /**
- * Declutter images and text. Default is `false`.
+ * Declutter images and text. Decluttering is applied to all image and text
+ * styles, and the priority is defined by the z-index of the style. Higher
+ * z-index means higher priority. Default is `false`.
  * @type {boolean|undefined}
  * @api
  */
@@ -4510,7 +4512,10 @@ olx.layer.VectorTileOptions.prototype.source;
 
 
 /**
- * Declutter images and text. Default is `false`.
+ * Declutter images and text. Decluttering is applied to all image and text
+ * styles, and the priority is defined by the z-index of the style. Higher
+ * z-index means higher priority. When set to `true`, a `renderMode` of
+ * `'image'` will be overridden with `'hybrid'`. Default is `false`.
  * @type {boolean|undefined}
  * @api
  */
