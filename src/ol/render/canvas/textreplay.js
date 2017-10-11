@@ -309,6 +309,7 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     var fillState = this.textFillState_;
     var textState = this.textState_;
     var pixelRatio = this.pixelRatio;
+    var scale = this.textScale_ * pixelRatio;
     var align =  ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
     var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
@@ -318,15 +319,15 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     var height = lineHeight * numLines;
     var renderWidth = (width + 2 * strokeWidth);
     var context = ol.dom.createCanvasContext2D(
-        Math.ceil(renderWidth * pixelRatio),
-        Math.ceil((height + 2 * strokeWidth) * pixelRatio));
+        Math.ceil(renderWidth * scale),
+        Math.ceil((height + 2 * strokeWidth) * scale));
     label = context.canvas;
     ol.render.canvas.TextReplay.labelCache_.set(key, label);
-    context.scale(pixelRatio, pixelRatio);
+    context.scale(scale, scale);
     context.font = textState.font;
     if (stroke) {
       context.strokeStyle = strokeState.strokeStyle;
-      context.lineWidth = strokeWidth * (ol.has.SAFARI ? pixelRatio : 1);
+      context.lineWidth = strokeWidth * (ol.has.SAFARI ? scale : 1);
       context.lineCap = strokeState.lineCap;
       context.lineJoin = strokeState.lineJoin;
       context.miterLimit = strokeState.miterLimit;
@@ -341,7 +342,7 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     context.textBaseline = 'top';
     context.textAlign = 'center';
     var leftRight = (0.5 - align);
-    var x = align * label.width / pixelRatio + leftRight * 2 * strokeWidth;
+    var x = align * label.width / scale + leftRight * 2 * strokeWidth;
     var i;
     if (stroke) {
       for (i = 0; i < numLines; ++i) {
@@ -377,12 +378,12 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
   this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-    this.textScale_, true, label.width
+    1, true, label.width
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-    this.textScale_ / pixelRatio, true, label.width
+    1 / pixelRatio, true, label.width
   ]);
 };
 
@@ -423,14 +424,14 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
   this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
     begin, end, labels, baseline,
     textState.exceedLength, textState.maxAngle,
-    ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio),
-    offsetY, this.text_, align, this.textScale_
+    ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio * this.textScale_),
+    offsetY, this.text_, align, 1
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
     begin, end, labels, baseline,
     textState.exceedLength, textState.maxAngle,
-    ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, 1),
-    offsetY, this.text_, align, this.textScale_ / pixelRatio
+    ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, this.textScale_),
+    offsetY, this.text_, align, 1 / pixelRatio
   ]);
 };
 
@@ -530,7 +531,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
       strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeState.lineWidth +
       strokeState.lineJoin + strokeState.miterLimit + '[' + strokeState.lineDash.join() + ']' :
       '';
-    this.textKey_ = textState.font + textState.textAlign;
+    this.textKey_ = textState.font + (textState.textAlign || '?') + this.textScale_;
     this.fillKey_ = fillState ?
       (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + ol.getUid(fillState.fillStyle))) :
       '';
