@@ -10,6 +10,7 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.math');
 goog.require('ol.proj');
+goog.require('ol.reproj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.WMSServerType');
@@ -110,14 +111,14 @@ ol.inherits(ol.source.TileWMS, ol.source.TileImage);
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
   var projectionObj = ol.proj.get(projection);
+  var sourceProjectionObj = this.getProjection();
 
   var tileGrid = this.getTileGrid();
   if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projectionObj);
   }
 
-  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(
-      coordinate, resolution);
+  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
 
   if (tileGrid.getResolutions().length <= tileCoord[0]) {
     return undefined;
@@ -125,14 +126,19 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
 
   var tileResolution = tileGrid.getResolution(tileCoord[0]);
   var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  var tileSize = ol.size.toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+
 
   var gutter = this.gutter_;
   if (gutter !== 0) {
     tileSize = ol.size.buffer(tileSize, gutter, this.tmpSize);
-    tileExtent = ol.extent.buffer(tileExtent,
-        tileResolution * gutter, tileExtent);
+    tileExtent = ol.extent.buffer(tileExtent, tileResolution * gutter, tileExtent);
+  }
+
+  if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
+    tileResolution = ol.reproj.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
+    tileExtent = ol.proj.transformExtent(tileExtent, projectionObj, sourceProjectionObj);
+    coordinate = ol.proj.transform(coordinate, projectionObj, sourceProjectionObj);
   }
 
   var baseParams = {
@@ -152,7 +158,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
   baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      1, projectionObj, baseParams);
+      1, sourceProjectionObj || projectionObj, baseParams);
 };
 
 

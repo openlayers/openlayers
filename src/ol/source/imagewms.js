@@ -10,6 +10,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.proj');
+goog.require('ol.reproj');
 goog.require('ol.source.Image');
 goog.require('ol.source.WMSServerType');
 goog.require('ol.string');
@@ -136,6 +137,13 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolut
   if (this.url_ === undefined) {
     return undefined;
   }
+  var projectionObj = ol.proj.get(projection);
+  var sourceProjectionObj = this.getProjection();
+
+  if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
+    resolution = ol.reproj.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
+    coordinate = ol.proj.transform(coordinate, projectionObj, sourceProjectionObj);
+  }
 
   var extent = ol.extent.getForViewAndSize(
       coordinate, resolution, 0,
@@ -158,7 +166,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolut
 
   return this.getRequestUrl_(
       extent, ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
-      1, ol.proj.get(projection), baseParams);
+      1, sourceProjectionObj || projectionObj, baseParams);
 };
 
 
