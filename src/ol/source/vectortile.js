@@ -118,12 +118,10 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
     var tileCoord = [z, x, y];
     var urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
-    var tileUrl = urlTileCoord ?
-      this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
     var tile = new ol.VectorImageTile(
         tileCoord,
-        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        tileUrl !== undefined ? tileUrl : '',
+        urlTileCoord !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        this.getRevision(),
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),
         this.sourceTiles_, pixelRatio, projection, this.tileClass,

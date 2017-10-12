@@ -1,11 +1,14 @@
-
-
+goog.require('ol.Map');
+goog.require('ol.View');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
 goog.require('ol.format.MVT');
+goog.require('ol.layer.VectorTile');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.VectorTile');
 goog.require('ol.tilegrid');
+goog.require('ol.tilegrid.TileGrid');
 
 describe('ol.source.VectorTile', function() {
 
@@ -69,6 +72,81 @@ describe('ol.source.VectorTile', function() {
       });
       tile.load();
     });
+  });
+
+  describe('different source and render tile grids', function() {
+
+    var source, map, loaded, requested, target;
+
+    beforeEach(function() {
+
+      loaded = [];
+      requested = 0;
+
+      function tileUrlFunction(tileUrl) {
+        ++requested;
+        if (tileUrl.toString() == '6,27,55') {
+          return tileUrl.join('/');
+        }
+      }
+
+      function tileLoadFunction(tile, src) {
+        tile.setLoader(function() {});
+        loaded.push(src);
+      }
+
+      var proj = ol.proj.Projection({
+        code: 'EPSG:3006',
+        units: 'm'
+      });
+
+      var extent = [665584.2026596286, 7033250.839875697, 667162.0221431496, 7035280.378636755];
+
+      source = new ol.source.VectorTile({
+        projection: proj,
+        tileGrid: new ol.tilegrid.TileGrid({
+          origin: [218128, 6126002],
+          resolutions: [4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5]
+        }),
+        tileUrlFunction: tileUrlFunction,
+        tileLoadFunction: tileLoadFunction
+      });
+
+      target = document.createElement('div');
+      target.style.width = target.style.height = '100px';
+      document.body.appendChild(target);
+
+      map = new ol.Map({
+        layers: [
+          new ol.layer.VectorTile({
+            visible: true,
+            extent: extent,
+            source: source
+          })
+        ],
+        target: target,
+        view: new ol.View({
+          projection: proj,
+          zoom: 11,
+          center: [666373.1624999996, 7034265.3572]
+        })
+      });
+
+    });
+
+    afterEach(function() {
+      document.body.removeChild(target);
+    });
+
+    it('loads available tiles', function(done) {
+      map.renderSync();
+      setTimeout(function() {
+        expect(requested).to.be.greaterThan(1);
+        expect(loaded).to.eql(['6/27/55']);
+        done();
+      }, 0);
+    });
+
   });
 
 });
