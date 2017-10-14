@@ -48,7 +48,7 @@ function main() {
     const moduleName = ext.name || ext.module;
     const options = {
       extend: true,
-      entry: require.resolve(ext.module),
+      input: require.resolve(ext.module),
       format: 'iife',
       exports: 'named',
       plugins: [
