@@ -1174,7 +1174,7 @@ olx.control;
  *     label: (string|Node|undefined),
  *     collapseLabel: (string|Node|undefined),
  *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined)}}
+ *     target: (Element|string|undefined)}}
  */
 olx.control.AttributionOptions;
 
@@ -1188,8 +1188,9 @@ olx.control.AttributionOptions.prototype.className;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.AttributionOptions.prototype.target;
@@ -1349,7 +1350,7 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
  *     labelActive: (string|Node|undefined),
  *     tipLabel: (string|undefined),
  *     keys: (boolean|undefined),
- *     target: (Element|undefined),
+ *     target: (Element|string|undefined),
  *     source: (Element|string|undefined)}}
  */
 olx.control.FullScreenOptions;
@@ -1399,8 +1400,9 @@ olx.control.FullScreenOptions.prototype.keys;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.FullScreenOptions.prototype.target;
@@ -1417,7 +1419,7 @@ olx.control.FullScreenOptions.prototype.source;
  *     coordinateFormat: (ol.CoordinateFormatType|undefined),
  *     projection: ol.ProjectionLike,
  *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined),
+ *     target: (Element|string|undefined),
  *     undefinedHTML: (string|undefined)}}
  */
 olx.control.MousePositionOptions;
@@ -1457,8 +1459,9 @@ olx.control.MousePositionOptions.prototype.render;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.MousePositionOptions.prototype.target;
@@ -1479,7 +1482,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     label: (string|Node|undefined),
  *     layers: (Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined),
  *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined),
+ *     target: (Element|string|undefined),
  *     tipLabel: (string|undefined),
  *     view: (ol.View|undefined)}}
  */
@@ -1542,7 +1545,7 @@ olx.control.OverviewMapOptions.prototype.render;
 /**
  * Specify a target if you want the control to be rendered outside of the map's
  * viewport.
- * @type {Element|undefined}
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.OverviewMapOptions.prototype.target;
@@ -1569,7 +1572,7 @@ olx.control.OverviewMapOptions.prototype.view;
  * @typedef {{className: (string|undefined),
  *     minWidth: (number|undefined),
  *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined),
+ *     target: (Element|string|undefined),
  *     units: (ol.control.ScaleLineUnits|string|undefined)}}
  */
 olx.control.ScaleLineOptions;
@@ -1601,8 +1604,9 @@ olx.control.ScaleLineOptions.prototype.render;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.ScaleLineOptions.prototype.target;
@@ -1621,7 +1625,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     className: (string|undefined),
  *     label: (string|Element|undefined),
  *     tipLabel: (string|undefined),
- *     target: (Element|undefined),
+ *     target: (Element|string|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     resetNorth: (function()|undefined),
  *     autoHide: (boolean|undefined)}}
@@ -1689,8 +1693,9 @@ olx.control.RotateOptions.prototype.resetNorth;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.RotateOptions.prototype.target;
@@ -1704,7 +1709,7 @@ olx.control.RotateOptions.prototype.target;
  *     zoomInTipLabel: (string|undefined),
  *     zoomOutTipLabel: (string|undefined),
  *     delta: (number|undefined),
- *     target: (Element|undefined)}}
+ *     target: (Element|string|undefined)}}
  */
 olx.control.ZoomOptions;
 
@@ -1768,8 +1773,9 @@ olx.control.ZoomOptions.prototype.delta;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.ZoomOptions.prototype.target;
@@ -1828,7 +1834,7 @@ olx.control.ZoomSliderOptions.prototype.render;
 
 /**
  * @typedef {{className: (string|undefined),
- *     target: (Element|undefined),
+ *     target: (Element|string|undefined),
  *     label: (string|Node|undefined),
  *     tipLabel: (string|undefined),
  *     extent: (ol.Extent|undefined)}}
@@ -1845,8 +1851,9 @@ olx.control.ZoomToExtentOptions.prototype.className;
 
 
 /**
- * Target.
- * @type {Element|undefined}
+ * Specify a target if you want the control to be rendered outside of the map's
+ * viewport.
+ * @type {Element|string|undefined}
  * @api
  */
 olx.control.ZoomToExtentOptions.prototype.target;
