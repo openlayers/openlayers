@@ -31,7 +31,7 @@ goog.require('ol.style.Style');
  */
 ol.interaction.Extent = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * Extent of the drawn box

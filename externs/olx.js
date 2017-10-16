@@ -3138,6 +3138,7 @@ olx.interaction.DrawOptions.prototype.wrapX;
 /**
  * @typedef {{extent: (ol.Extent|undefined),
  *     boxStyle: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
+ *     pixelTolerance: (number|undefined),
  *     pointerStyle: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
@@ -3158,6 +3159,14 @@ olx.interaction.ExtentOptions.prototype.extent;
  * @api
  */
 olx.interaction.ExtentOptions.prototype.boxStyle;
+
+/**
+ * Pixel tolerance for considering the pointer close enough to a segment or
+ * vertex for editing. Default is `10`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.ExtentOptions.prototype.pixelTolerance;
 
 /**
  * Style for the cursor used to draw the extent.
