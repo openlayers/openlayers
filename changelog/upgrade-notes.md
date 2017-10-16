@@ -2,6 +2,10 @@
 
 ### Next Release
 
+#### Removed GeoJSON crs workaround for GeoServer
+
+Previous version of GeoServer returned invalid crs in GeoJSON output.  The workaround in `ol.format.GeoJSON` used to read this crs code is now removed.
+
 #### Deprecation of `ol.Attribution`
 
 `ol.Attribution` is deprecated and will be removed in the next major version.  Instead, you can construct a source with a string attribution or an array of strings.  For dynamic attributions, you can provide a function that gets called with the current frame state.
