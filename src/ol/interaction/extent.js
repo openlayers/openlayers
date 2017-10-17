@@ -31,6 +31,8 @@ goog.require('ol.style.Style');
  */
 ol.interaction.Extent = function(opt_options) {
 
+  var options = opt_options || {};
+
   /**
    * Extent of the drawn box
    * @type {ol.Extent}
@@ -50,7 +52,8 @@ ol.interaction.Extent = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.pixelTolerance_ = 10;
+  this.pixelTolerance_ = options.pixelTolerance !== undefined ?
+    options.pixelTolerance : 10;
 
   /**
    * Is the pointer snapped to an extent vertex
