@@ -1,0 +1,94 @@
+goog.provide('ol.Raster');
+
+goog.require('ol');
+goog.require('ol.asserts');
+goog.require('ol.has');
+goog.require('ol.Object');
+goog.require('ol.RasterType');
+
+
+/**
+ * @classdesc Basic container for raw, binary raster data.
+ * @constructor
+ * @extends {ol.Object}
+ * @param {ArrayBuffer} raster Raster data.
+ * @param {number} stride Number of columns.
+ */
+ol.Raster = function(raster, stride) {
+
+  ol.Object.call(this);
+
+  /**
+   * @type {ArrayBuffer}
+   * @private
+   */
+  this.raster_ = raster;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.stride_ = stride;
+};
+ol.inherits(ol.Raster, ol.Object);
+
+
+/**
+ * @param {ol.RasterType=} type Return an array with the specified type.
+ * @return {ArrayBuffer|ol.TypedArray} Raster data.
+ */
+ol.Raster.prototype.getRaster = function(type) {
+  return type ? this.asArray_(type) : this.raster_;
+};
+
+
+/**
+ * @return {number} Stride.
+ */
+ol.Raster.prototype.getStride = function() {
+  return this.stride_;
+};
+
+
+/**
+ * @param {ol.RasterType} type Type of the raster.
+ * @return {ol.TypedArray} Array.
+ * @private
+ */
+ol.Raster.prototype.asArray_ = function(type) {
+  var view = ol.Raster.getArrayConstructor(type);
+  return new view(this.raster_);
+};
+
+
+/**
+ * @param {ol.RasterType} type Raster type.
+ * @return {?} Typed array constructor.
+ * @api
+ */
+ol.Raster.getArrayConstructor = function(type) {
+  if (ol.has.RASTER) {
+    ol.asserts.assert(type in ol.RasterType, 61);
+    return ol.Raster.typeMap_[type];
+  }
+};
+
+
+/**
+ * @return {Object} Type map.
+ * @private
+ */
+ol.Raster.typeMap_ = function() {
+  var /** @type {Object} */ typeMap;
+  if (ol.has.RASTER) {
+    typeMap[ol.RasterType.UINT8] = window.Uint8Array;
+    typeMap[ol.RasterType.INT8] = window.Int8Array;
+    typeMap[ol.RasterType.UINT16] = window.Uint16Array;
+    typeMap[ol.RasterType.INT16] = window.Int16Array;
+    typeMap[ol.RasterType.UINT32] = window.Uint32Array;
+    typeMap[ol.RasterType.INT32] = window.Int32Array;
+    typeMap[ol.RasterType.FLOAT32] = window.Float32Array;
+    typeMap[ol.RasterType.FLOAT64] = window.Float64Array;
+  }
+  return typeMap;
+}();
