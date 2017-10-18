@@ -66,6 +66,30 @@ export const GEOLOCATION = 'geolocation' in navigator;
 
 
 /**
+ * Is the client's processor has a little-endian architecture?
+ * @const
+ * @type {boolean|undefined}
+ * @api
+ */
+export const LITTLE_ENDIAN = (
+  /**
+   * @return {boolean|undefined} Little endian or could not identify.
+   */
+  function() {
+    if ('ArrayBuffer' in window) {
+      var buffer = new window.ArrayBuffer(4);
+      var data = new window.Uint32Array(buffer);
+      var view = new window.Uint8Array(buffer);
+
+      data[0] = 0x12345678;
+      return view[0] === 0x78;
+    } else {
+      return undefined;
+    }
+  })();
+
+
+/**
  * True if browser supports touch events.
  * @const
  * @type {boolean}
@@ -89,6 +113,14 @@ export const POINTER = 'PointerEvent' in window;
  */
 export const MSPOINTER = !!(navigator.msPointerEnabled);
 
+
+/**
+ * True if browser supports typed arrays, therefore rasters.
+ * @const
+ * @type {boolean}
+ * @api
+ */
+export const RASTER = 'ArrayBuffer' in window;
 
 /**
  * True if both OpenLayers and browser support WebGL.
