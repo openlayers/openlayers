@@ -220,3 +220,11 @@ Duplicate item added to a unique collection.  For example, it may be that you tr
 ### 59
 
 Invalid command found in the PBF.  This indicates that the loaded vector tile may be corrupt.
+
+### 60
+
+Raster layers are not supported by the browser.
+
+### 61
+
+Invalid raster type. Valid types are `8bitInteger`, `8bitUnsignedInteger`, `16bitInteger`, `16bitUnsignedInteger`, `32bitInteger`, `32bitUnsignedInteger`, `32bitFloat`, `64bitFloat`.
