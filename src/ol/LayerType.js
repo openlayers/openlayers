@@ -8,6 +8,7 @@
  */
 export default {
   IMAGE: 'IMAGE',
+  RASTER: 'RASTER',
   TILE: 'TILE',
   VECTOR_TILE: 'VECTOR_TILE',
   VECTOR: 'VECTOR'
