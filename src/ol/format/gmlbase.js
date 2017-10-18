@@ -197,14 +197,19 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = /** @type {Object} */ (objectStack[0]);
-  context['srsName'] = node.firstElementChild.getAttribute('srsName');
-  context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
+  var newContext = ol.obj.assign({}, context);
+  if (node.firstElementChild.hasAttribute('srsName')) {
+    newContext['srsName'] = node.firstElementChild.getAttribute('srsName');
+  }
+  if (node.firstElementChild.hasAttribute('srsDimension')) {
+    newContext['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
+  }
   /** @type {ol.geom.Geometry} */
   var geometry = ol.xml.pushParseAndPop(null,
       this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (geometry) {
     return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, false, context));
+      ol.format.Feature.transformWithOptions(geometry, false, newContext));
   } else {
     return undefined;
   }

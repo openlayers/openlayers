@@ -134,7 +134,8 @@ ol.format.WFS.prototype.readFeatures;
 ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
   var context = /** @type {ol.XmlNodeStackItem} */ ({
     'featureType': this.featureType_,
-    'featureNS': this.featureNS_
+    'featureNS': this.featureNS_,
+    'srsName': this.readProjectionFromNode(node)
   });
   ol.obj.assign(context, this.getReadOptions(node,
       opt_options ? opt_options : {}));
@@ -1075,6 +1076,9 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
   if (node.firstElementChild &&
       node.firstElementChild.firstElementChild) {
     node = node.firstElementChild.firstElementChild;
+    if (node.hasAttribute('srsName')) {
+      return node.getAttribute('srsName');
+    }
     for (var n = node.firstElementChild; n; n = n.nextElementSibling) {
       if (!(n.childNodes.length === 0 ||
           (n.childNodes.length === 1 &&
