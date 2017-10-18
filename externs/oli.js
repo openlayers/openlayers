@@ -340,6 +340,18 @@ oli.source.ImageEvent.prototype.image;
 /**
  * @interface
  */
+oli.source.RasterBaseEvent = function() {};
+
+
+/**
+ * @type {ol.RasterBand}
+ */
+oli.source.RasterBaseEvent.prototype.band;
+
+
+/**
+ * @interface
+ */
 oli.source.RasterEvent = function() {};
 
 

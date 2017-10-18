@@ -252,6 +252,17 @@ ol.PreRenderFunction;
 
 
 /**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            extent: (null|ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.ProjectionLike,
+ *            bands: (Array.<ol.RasterBand>|undefined),
+ *            state: (ol.source.State|undefined)}}
+ */
+ol.RasterBaseOptions;
+
+
+/**
  * A function that takes an array of input data, performs some operation, and
  * returns an array of ouput data.
  * For `pixel` type operations, the function will be called with an array of
@@ -269,6 +280,17 @@ ol.PreRenderFunction;
  *     (Array.<number>|ImageData)}
  */
 ol.RasterOperation;
+
+
+/**
+ * Common indices for raster data.
+ * @typedef {{max: (number|undefined),
+      min: (number|undefined),
+      sum: (number|undefined),
+      count: (number|undefined),
+      variance: (number|undefined)}}
+ */
+ol.RasterStatistics;
 
 
 /**
@@ -425,6 +447,14 @@ ol.StyleRenderFunction;
  *            snapToPixel: boolean}}
  */
 ol.StyleImageOptions;
+
+
+/**
+ * Typed arrays supported by the raster module.
+ * @typedef {Uint8Array|Int8Array|Uint16Array|Int16Array|Uint32Array|
+ *    Int32Array|Float32Array|Float64Array}
+ */
+ol.TypedArray;
 
 
 /**
