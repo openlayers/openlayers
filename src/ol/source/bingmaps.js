@@ -67,7 +67,8 @@ ol.source.BingMaps = function(options) {
 
   var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       this.imagerySet_ +
-      '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_;
+      '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_ +
+      '&c=' + this.culture_;
 
   ol.net.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
       'jsonp');
