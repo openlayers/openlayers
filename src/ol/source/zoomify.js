@@ -33,25 +33,26 @@ ol.source.Zoomify = function(opt_options) {
   var imageWidth = size[0];
   var imageHeight = size[1];
   var tierSizeInTiles = [];
-  var tileSize = ol.DEFAULT_TILE_SIZE;
+  var tileSize = options.tileSize || ol.DEFAULT_TILE_SIZE;
+  var tileSizeForTierSizeCalculation = tileSize;
 
   switch (tierSizeCalculation) {
     case ol.source.Zoomify.TierSizeCalculation_.DEFAULT:
-      while (imageWidth > tileSize || imageHeight > tileSize) {
+      while (imageWidth > tileSizeForTierSizeCalculation || imageHeight > tileSizeForTierSizeCalculation) {
         tierSizeInTiles.push([
-          Math.ceil(imageWidth / tileSize),
-          Math.ceil(imageHeight / tileSize)
+          Math.ceil(imageWidth / tileSizeForTierSizeCalculation),
+          Math.ceil(imageHeight / tileSizeForTierSizeCalculation)
         ]);
-        tileSize += tileSize;
+        tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
       }
       break;
     case ol.source.Zoomify.TierSizeCalculation_.TRUNCATED:
       var width = imageWidth;
       var height = imageHeight;
-      while (width > tileSize || height > tileSize) {
+      while (width > tileSizeForTierSizeCalculation || height > tileSizeForTierSizeCalculation) {
         tierSizeInTiles.push([
-          Math.ceil(width / tileSize),
-          Math.ceil(height / tileSize)
+          Math.ceil(width / tileSizeForTierSizeCalculation),
+          Math.ceil(height / tileSizeForTierSizeCalculation)
         ]);
         width >>= 1;
         height >>= 1;
@@ -79,6 +80,7 @@ ol.source.Zoomify = function(opt_options) {
 
   var extent = [0, -size[1], size[0], 0];
   var tileGrid = new ol.tilegrid.TileGrid({
+    tileSize: tileSize,
     extent: extent,
     origin: ol.extent.getTopLeft(extent),
     resolutions: resolutions
@@ -113,7 +115,8 @@ ol.source.Zoomify = function(opt_options) {
           var tileIndex =
               tileCoordX +
               tileCoordY * tierSizeInTiles[tileCoordZ][0];
-          var tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / ol.DEFAULT_TILE_SIZE) | 0;
+          var tileSize = tileGrid.getTileSize(tileCoordZ);
+          var tileGroup = ((tileIndex + tileCountUpToTier[tileCoordZ]) / tileSize) | 0;
           var localContext = {
             'z': tileCoordZ,
             'x': tileCoordX,
@@ -180,7 +183,7 @@ ol.source.Zoomify.Tile_.prototype.getImage = function() {
   if (this.zoomifyImage_) {
     return this.zoomifyImage_;
   }
-  var tileSize = ol.DEFAULT_TILE_SIZE;
+  var tileSize = this.tileSize_;
   var image = ol.ImageTile.prototype.getImage.call(this);
   if (this.state == ol.TileState.LOADED) {
     if (image.width == tileSize && image.height == tileSize) {
