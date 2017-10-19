@@ -1,6 +1,9 @@
 goog.provide('ol.structs.LRUCache');
 
+goog.require('ol');
 goog.require('ol.asserts');
+goog.require('ol.events.EventTarget');
+goog.require('ol.events.EventType');
 
 
 /**
@@ -8,11 +11,15 @@ goog.require('ol.asserts');
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
  * items from the cache is the responsibility of the user.
  * @constructor
+ * @extends {ol.events.EventTarget}
+ * @fires ol.events.Event
  * @struct
  * @template T
  * @param {number=} opt_highWaterMark High water mark.
  */
 ol.structs.LRUCache = function(opt_highWaterMark) {
+
+  ol.events.EventTarget.call(this);
 
   /**
    * @type {number}
@@ -45,6 +52,8 @@ ol.structs.LRUCache = function(opt_highWaterMark) {
 
 };
 
+ol.inherits(ol.structs.LRUCache, ol.events.EventTarget);
+
 
 /**
  * @return {boolean} Can expire cache.
@@ -62,6 +71,7 @@ ol.structs.LRUCache.prototype.clear = function() {
   this.entries_ = {};
   this.oldest_ = null;
   this.newest_ = null;
+  this.dispatchEvent(ol.events.EventType.CLEAR);
 };
 
 
@@ -254,4 +264,16 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
   this.newest_ = entry;
   this.entries_[key] = entry;
   ++this.count_;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
+ol.structs.LRUCache.prototype.pruneAndSet = function(key, value) {
+  while (this.canExpireCache()) {
+    this.pop();
+  }
+  this.set(key, value);
 };

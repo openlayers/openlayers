@@ -12,6 +12,7 @@ ol.events.EventType = {
    */
   CHANGE: 'change',
 
+  CLEAR: 'clear',
   CLICK: 'click',
   DBLCLICK: 'dblclick',
   DRAGENTER: 'dragenter',

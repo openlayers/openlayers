@@ -1,9 +1,71 @@
-
-
+goog.require('ol.events');
+goog.require('ol.obj');
 goog.require('ol.render.canvas');
 
 
 describe('ol.render.canvas', function() {
+
+  var font = document.createElement('link');
+  font.href = 'https://fonts.googleapis.com/css?family=Inconsolata';
+  font.rel = 'stylesheet';
+  var head = document.getElementsByTagName('head')[0];
+
+  describe('ol.render.canvas.checkFont()', function() {
+
+    var checkFont = ol.render.canvas.checkFont;
+
+    it('does not clear the label cache for unavailable fonts', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      var spy = sinon.spy();
+      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      checkFont('12px foo,sans-serif');
+      setTimeout(function() {
+        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+        expect(spy.callCount).to.be(0);
+        done();
+      }, 1600);
+    });
+
+    it('does not clear the label cache for available fonts', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      var spy = sinon.spy();
+      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      checkFont('12px sans-serif');
+      setTimeout(function() {
+        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+        expect(spy.callCount).to.be(0);
+        done();
+      }, 800);
+    });
+
+    it('does not clear the label cache for the \'monospace\' font', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      var spy = sinon.spy();
+      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      checkFont('12px monospace');
+      setTimeout(function() {
+        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+        expect(spy.callCount).to.be(0);
+        done();
+      }, 800);
+    });
+
+    it('clears the label cache for fonts that become available', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      head.appendChild(font);
+      var spy = sinon.spy();
+      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      checkFont('12px Inconsolata');
+      setTimeout(function() {
+        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+        head.removeChild(font);
+        expect(spy.callCount).to.be(1);
+        done();
+      }, 1600);
+    });
+
+  });
+
 
   describe('rotateAtOffset', function() {
     it('rotates a canvas at an offset point', function() {

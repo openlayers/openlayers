@@ -11,7 +11,6 @@ goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Instruction');
 goog.require('ol.render.canvas.Replay');
 goog.require('ol.render.replay');
-goog.require('ol.structs.LRUCache');
 goog.require('ol.style.TextPlacement');
 
 
@@ -121,19 +120,8 @@ ol.render.canvas.TextReplay = function(
    */
   this.widths_ = {};
 
-  while (ol.render.canvas.TextReplay.labelCache_.canExpireCache()) {
-    ol.render.canvas.TextReplay.labelCache_.pop();
-  }
-
 };
 ol.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
-
-
-/**
- * @private
- * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
- */
-ol.render.canvas.TextReplay.labelCache_ = new ol.structs.LRUCache();
 
 
 /**
@@ -324,7 +312,8 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, fill, stroke) {
   var label;
   var key = (stroke ? this.strokeKey_ : '') + this.textKey_ + text + (fill ? this.fillKey_ : '');
 
-  if (!ol.render.canvas.TextReplay.labelCache_.containsKey(key)) {
+  var labelCache = ol.render.canvas.labelCache;
+  if (!labelCache.containsKey(key)) {
     var strokeState = this.textStrokeState_;
     var fillState = this.textFillState_;
     var textState = this.textState_;
@@ -344,7 +333,7 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, fill, stroke) {
         Math.ceil(renderWidth * scale),
         Math.ceil((height + strokeWidth) * scale));
     label = context.canvas;
-    ol.render.canvas.TextReplay.labelCache_.set(key, label);
+    labelCache.pruneAndSet(key, label);
     if (scale != 1) {
       context.scale(scale, scale);
     }
@@ -379,7 +368,7 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, fill, stroke) {
       }
     }
   }
-  return ol.render.canvas.TextReplay.labelCache_.get(key);
+  return labelCache.get(key);
 };
 
 
@@ -537,6 +526,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutt
     if (!textState) {
       textState = this.textState_ = /** @type {ol.CanvasTextState} */ ({});
     }
+    ol.render.canvas.checkFont(font);
     textState.exceedLength = textStyle.getExceedLength();
     textState.font = font;
     textState.maxAngle = textStyle.getMaxAngle();

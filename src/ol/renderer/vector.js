@@ -94,6 +94,7 @@ ol.renderer.vector.renderFeature = function(
   }
   ol.renderer.vector.renderFeature_(replayGroup, feature, style,
       squaredTolerance);
+
   return loading;
 };
 

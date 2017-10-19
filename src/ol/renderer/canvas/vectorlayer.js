@@ -4,6 +4,8 @@ goog.require('ol');
 goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 goog.require('ol.render.EventType');
@@ -73,6 +75,8 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
    */
   this.context_ = ol.dom.createCanvasContext2D();
 
+  ol.events.listen(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
+
 };
 ol.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 
@@ -96,6 +100,15 @@ ol.renderer.canvas.VectorLayer['handles'] = function(type, layer) {
  */
 ol.renderer.canvas.VectorLayer['create'] = function(mapRenderer, layer) {
   return new ol.renderer.canvas.VectorLayer(/** @type {ol.layer.Vector} */ (layer));
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorLayer.prototype.disposeInternal = function() {
+  ol.events.unlisten(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
+  ol.renderer.canvas.Layer.prototype.disposeInternal.call(this);
 };
 
 
@@ -260,6 +273,17 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
 
 
 /**
+ * @param {ol.events.Event} event Event.
+ */
+ol.renderer.canvas.VectorLayer.prototype.handleFontsChanged_ = function(event) {
+  var layer = this.getLayer();
+  if (layer.getVisible() && this.replayGroup_) {
+    layer.changed();
+  }
+};
+
+
+/**
  * Handle changes in image style state.
  * @param {ol.events.Event} event Image style change event.
  * @private
@@ -410,7 +434,7 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature = function(feature, resol
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_, this);
   }
   return loading;
 };

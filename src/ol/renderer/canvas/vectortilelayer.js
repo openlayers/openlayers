@@ -4,6 +4,8 @@ goog.require('ol');
 goog.require('ol.LayerType');
 goog.require('ol.TileState');
 goog.require('ol.dom');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 goog.require('ol.layer.VectorTileRenderType');
@@ -61,6 +63,9 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
   this.zDirection =
       layer.getRenderMode() == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
+
+  ol.events.listen(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
+
 };
 ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
 
@@ -106,6 +111,15 @@ ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS = {
   'image': [ol.render.ReplayType.DEFAULT],
   'hybrid': [ol.render.ReplayType.IMAGE, ol.render.ReplayType.TEXT, ol.render.ReplayType.DEFAULT],
   'vector': ol.render.replay.ORDER
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorTileLayer.prototype.disposeInternal = function() {
+  ol.events.unlisten(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
+  ol.renderer.canvas.TileLayer.prototype.disposeInternal.call(this);
 };
 
 
@@ -335,6 +349,17 @@ ol.renderer.canvas.VectorTileLayer.prototype.getReplayTransform_ = function(tile
 
 
 /**
+ * @param {ol.events.Event} event Event.
+ */
+ol.renderer.canvas.VectorTileLayer.prototype.handleFontsChanged_ = function(event) {
+  var layer = this.getLayer();
+  if (layer.getVisible() && this.renderedLayerRevision_ !== undefined) {
+    layer.changed();
+  }
+};
+
+
+/**
  * Handle changes in image style state.
  * @param {ol.events.Event} event Image style change event.
  * @private
@@ -443,7 +468,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles, squaredTolerance,
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_, this);
   }
   return loading;
 };

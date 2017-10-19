@@ -1,6 +1,9 @@
 goog.provide('ol.render.canvas');
 
 
+goog.require('ol.css');
+goog.require('ol.dom');
+goog.require('ol.structs.LRUCache');
 goog.require('ol.transform');
 
 
@@ -79,6 +82,73 @@ ol.render.canvas.defaultTextBaseline = 'middle';
  * @type {number}
  */
 ol.render.canvas.defaultLineWidth = 1;
+
+
+/**
+ * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
+ */
+ol.render.canvas.labelCache = new ol.structs.LRUCache();
+
+
+/**
+ * @type {!Object.<string, boolean>}
+ */
+ol.render.canvas.checkedFonts_ = {};
+
+
+/**
+ * Clears the label cache when a font becomes available.
+ * @param {string} fontSpec CSS font spec.
+ */
+ol.render.canvas.checkFont = (function() {
+  var checked = ol.render.canvas.checkedFonts_;
+  var labelCache = ol.render.canvas.labelCache;
+  var text = 'wmytzilWMYTZIL@#/&?$%10';
+  var context, referenceWidth;
+
+  function isAvailable(fontFamily) {
+    if (!context) {
+      context = ol.dom.createCanvasContext2D();
+      context.font = '32px monospace';
+      referenceWidth = context.measureText(text).width;
+    }
+    var available = true;
+    if (fontFamily != 'monospace') {
+      context.font = '32px ' + fontFamily + ',monospace';
+      var width = context.measureText(text).width;
+      // If width and referenceWidth are the same, then the 'monospace'
+      // fallback was used instead of the font we wanted, so the font is not
+      // available.
+      available = width != referenceWidth;
+    }
+    return available;
+  }
+
+  return function(fontSpec) {
+    var fontFamilies = ol.css.getFontFamilies(fontSpec);
+    if (!fontFamilies) {
+      return;
+    }
+    fontFamilies.forEach(function(fontFamily) {
+      if (!checked[fontFamily]) {
+        checked[fontFamily] = true;
+        if (!isAvailable(fontFamily)) {
+          var callCount = 0;
+          var interval = window.setInterval(function() {
+            ++callCount;
+            var available = isAvailable(fontFamily);
+            if (available || callCount >= 60) {
+              window.clearInterval(interval);
+              if (available) {
+                labelCache.clear();
+              }
+            }
+          }, 25);
+        }
+      }
+    });
+  };
+})();
 
 
 /**
