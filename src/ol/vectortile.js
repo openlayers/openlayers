@@ -92,6 +92,7 @@ ol.VectorTile.prototype.disposeInternal = function() {
 /**
  * Gets the extent of the vector tile.
  * @return {ol.Extent} The extent.
+ * @api
  */
 ol.VectorTile.prototype.getExtent = function() {
   return this.extent_ || ol.VectorTile.DEFAULT_EXTENT;
