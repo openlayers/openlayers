@@ -1,5 +1,6 @@
 
 
+goog.require('ol');
 goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.proj.Projection');
@@ -28,6 +29,13 @@ describe('ol.source.Zoomify', function() {
     return new ol.source.Zoomify({
       url: iipUrl,
       size: size
+    });
+  }
+  function getZoomifySourceWith1024pxTiles() {
+    return new ol.source.Zoomify({
+      url: zoomifyUrl,
+      size: size,
+      tileSize: 1024
     });
   }
 
@@ -148,6 +156,14 @@ describe('ol.source.Zoomify', function() {
       }
     });
 
+    it('has expected tileSize', function() {
+      var sources = [getZoomifySource(), getZoomifySourceWith1024pxTiles()];
+      var expectedTileSizes = [ol.DEFAULT_TILE_SIZE, 1024];
+      for (var i = 0; i < sources.length; i++) {
+        var tileGrid = sources[i].getTileGrid();
+        expect(tileGrid.getTileSize()).to.eql(expectedTileSizes[i]);
+      }
+    });
   });
 
   describe('tierSizeCalculation configuration', function() {
