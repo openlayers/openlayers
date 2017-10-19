@@ -59,7 +59,8 @@ ol.Overlay = function(options) {
    * @type {Element}
    */
   this.element_ = document.createElement('DIV');
-  this.element_.className = 'ol-overlay-container ' + ol.css.CLASS_SELECTABLE;
+  this.element_.className = options.className !== undefined ?
+    options.className : 'ol-overlay-container ' + ol.css.CLASS_SELECTABLE;
   this.element_.style.position = 'absolute';
 
   /**

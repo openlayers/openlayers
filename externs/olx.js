@@ -521,7 +521,8 @@ olx.AtPixelOptions.prototype.hitTolerance;
  *     insertFirst: (boolean|undefined),
  *     autoPan: (boolean|undefined),
  *     autoPanAnimation: (olx.OverlayPanOptions|undefined),
- *     autoPanMargin: (number|undefined)}}
+ *     autoPanMargin: (number|undefined),
+ *     className: (string|undefined)}}
  */
 olx.OverlayOptions;
 
@@ -623,6 +624,12 @@ olx.OverlayOptions.prototype.autoPanAnimation;
  */
 olx.OverlayOptions.prototype.autoPanMargin;
 
+/**
+ * CSS class name. Default is `ol-overlay-container ol-selectable`.
+ * @type {string|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.className;
 
 /**
  * @typedef {{
