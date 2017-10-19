@@ -403,6 +403,9 @@ ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
 ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
     ol.xml.makeStructureNS(
         ol.format.OWS.NAMESPACE_URIS_, {
+          'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'AccessConstraints': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
           'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
           'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
               ol.format.XSD.readString),
