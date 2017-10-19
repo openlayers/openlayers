@@ -21,7 +21,6 @@ ol.style.IconImageCache = function() {
   this.cacheSize_ = 0;
 
   /**
-   * @const
    * @type {number}
    * @private
    */
@@ -90,4 +89,14 @@ ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color, iconIm
   var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;
+};
+
+
+/**
+ * Set cache max size.
+ * @param {number} maxCacheSize Cache max size.
+ */
+ol.style.IconImageCache.prototype.setMaxCacheSize = function(maxCacheSize) {
+  this.maxCacheSize_ = maxCacheSize;
+  this.expire();
 };

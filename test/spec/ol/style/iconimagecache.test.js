@@ -66,4 +66,25 @@ describe('ol.style.IconImageCache', function() {
       expect(cache.get('4', null, null)).to.not.be(null);
     });
   });
+
+  describe('#setMaxCacheSize', function() {
+    it('sets max cache size and expires cache', function() {
+      var cache = ol.style.iconImageCache;
+
+      var i, src, iconImage;
+
+      for (i = 0; i < 3; ++i) {
+        src = i + '';
+        iconImage = new ol.style.IconImage(null, src);
+        cache.set(src, null, null, iconImage);
+      }
+
+      expect(cache.cacheSize_).to.eql(3);
+
+      cache.setMaxCacheSize(2);
+
+      expect(cache.maxCacheSize_).to.eql(2);
+      expect(cache.cacheSize_).to.eql(2);
+    });
+  });
 });
