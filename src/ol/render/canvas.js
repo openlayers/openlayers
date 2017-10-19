@@ -108,7 +108,7 @@ ol.render.canvas.checkFont = (function() {
 
   function isAvailable(fontFamily) {
     if (!context) {
-      context = ol.dom.createCanvasContext2D();
+      context = ol.dom.createCanvasContext2D(1, 1);
       context.font = '32px monospace';
       referenceWidth = context.measureText(text).width;
     }
@@ -120,6 +120,10 @@ ol.render.canvas.checkFont = (function() {
       // fallback was used instead of the font we wanted, so the font is not
       // available.
       available = width != referenceWidth;
+      // Setting the font back to a different one works around an issue in
+      // Safari where subsequent `context.font` assignments with the same font
+      // will not re-attempt to use a font that is currently loading.
+      context.font = '32px monospace';
     }
     return available;
   }
