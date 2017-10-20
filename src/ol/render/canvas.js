@@ -91,7 +91,7 @@ ol.render.canvas.labelCache = new ol.structs.LRUCache();
 
 
 /**
- * @type {!Object.<string, boolean>}
+ * @type {!Object.<string, (number)>}
  */
 ol.render.canvas.checkedFonts_ = {};
 
@@ -128,29 +128,39 @@ ol.render.canvas.checkFont = (function() {
     return available;
   }
 
+  function check() {
+    var done = true;
+    for (var font in checked) {
+      if (checked[font] < 60) {
+        if (isAvailable(font)) {
+          checked[font] = 60;
+          labelCache.clear();
+        } else {
+          ++checked[font];
+          done = false;
+        }
+      }
+    }
+    if (!done) {
+      window.setTimeout(check, 32);
+    }
+  }
+
   return function(fontSpec) {
     var fontFamilies = ol.css.getFontFamilies(fontSpec);
     if (!fontFamilies) {
       return;
     }
-    fontFamilies.forEach(function(fontFamily) {
-      if (!checked[fontFamily]) {
-        checked[fontFamily] = true;
+    for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
+      var fontFamily = fontFamilies[i];
+      if (!(fontFamily in checked)) {
+        checked[fontFamily] = 60;
         if (!isAvailable(fontFamily)) {
-          var callCount = 0;
-          var interval = window.setInterval(function() {
-            ++callCount;
-            var available = isAvailable(fontFamily);
-            if (available || callCount >= 60) {
-              window.clearInterval(interval);
-              if (available) {
-                labelCache.clear();
-              }
-            }
-          }, 25);
+          checked[fontFamily] = 0;
+          window.setTimeout(check, 25);
         }
       }
-    });
+    }
   };
 })();
 
