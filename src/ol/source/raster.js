@@ -23,8 +23,8 @@ goog.require('ol.transform');
 
 /**
  * @classdesc
- * A source that transforms data from any number of input sources using an array
- * of {@link ol.RasterOperation} functions to transform input pixel values into
+ * A source that transforms data from any number of input sources using an
+ * {@link ol.RasterOperation} function to transform input pixel values into
  * output pixel values.
  *
  * @constructor
