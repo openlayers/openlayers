@@ -6,12 +6,15 @@ goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.style.Text');
 
 
 describe('ol.rendering.layer.Vector', function() {
@@ -459,6 +462,295 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
+  });
+
+  describe('decluttering', function() {
+
+    beforeEach(function() {
+      source = new ol.source.Vector();
+    });
+
+    it('declutters text', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point(center),
+        text: 'center'
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        text: 'west'
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        text: 'east'
+      }));
+
+      layer.setDeclutter(true);
+      layer.setStyle(function(feature) {
+        return new ol.style.Style({
+          text: new ol.style.Text({
+            text: feature.get('text'),
+            font: '12px sans-serif'
+          })
+        });
+      });
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter.png',
+            2.2, done);
+      });
+    });
+
+    it('declutters text and respects z-index', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point(center),
+        text: 'center',
+        zIndex: 2
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        text: 'west',
+        zIndex: 3
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        text: 'east',
+        zIndex: 1
+      }));
+
+      layer.setDeclutter(true);
+      layer.setStyle(function(feature) {
+        return new ol.style.Style({
+          zIndex: feature.get('zIndex'),
+          text: new ol.style.Text({
+            text: feature.get('text'),
+            font: '12px sans-serif'
+          })
+        });
+      });
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-zindex.png',
+            3.9, done);
+      });
+    });
+
+    it('declutters images', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point(center)
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] - 550, center[1]])
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] + 550, center[1]])
+      }));
+
+      layer.setDeclutter(true);
+      layer.setStyle(function(feature) {
+        return new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 15,
+            stroke: new ol.style.Stroke({
+              color: 'blue'
+            })
+          })
+        });
+      });
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-image.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('declutters images and respects z-index', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point(center),
+        zIndex: 2
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        zIndex: 3
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        zIndex: 1
+      }));
+
+      layer.setDeclutter(true);
+      layer.setStyle(function(feature) {
+        return new ol.style.Style({
+          zIndex: feature.get('zIndex'),
+          image: new ol.style.Circle({
+            radius: 15,
+            stroke: new ol.style.Stroke({
+              color: 'blue'
+            })
+          })
+        });
+      });
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-image-zindex.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('declutters image & text groups', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point(center),
+        text: 'center'
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        text: 'west'
+      }));
+      source.addFeature(new ol.Feature({
+        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        text: 'east'
+      }));
+
+      layer.setDeclutter(true);
+      layer.setStyle(function(feature) {
+        return new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 5,
+            stroke: new ol.style.Stroke({
+              color: 'blue'
+            })
+          }),
+          text: new ol.style.Text({
+            text: feature.get('text'),
+            font: '12px sans-serif',
+            textBaseline: 'bottom',
+            offsetY: -5
+          })
+        });
+      });
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-group.png',
+            2.2, done);
+      });
+    });
+
+    it('declutters text along lines and images', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      var point = new ol.Feature(new ol.geom.Point(center));
+      point.setStyle(new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 8,
+          stroke: new ol.style.Stroke({
+            color: 'blue'
+          })
+        })
+      }));
+      var line = new ol.Feature(new ol.geom.LineString([
+        [center[0] - 650, center[1] - 200],
+        [center[0] + 650, center[1] - 200]
+      ]));
+      line.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#CCC',
+          width: 12
+        }),
+        text: new ol.style.Text({
+          placement: 'line',
+          text: 'east-west',
+          font: '12px sans-serif'
+        })
+      }));
+
+      source.addFeature(point);
+      source.addFeature(line);
+
+      layer.setDeclutter(true);
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('declutters text along lines and images with z-index', function(done) {
+      createMap('canvas');
+      var layer = new ol.layer.Vector({
+        source: source
+      });
+      map.addLayer(layer);
+
+      var point = new ol.Feature(new ol.geom.Point(center));
+      point.setStyle(new ol.style.Style({
+        zIndex: 2,
+        image: new ol.style.Circle({
+          radius: 8,
+          stroke: new ol.style.Stroke({
+            color: 'blue'
+          })
+        })
+      }));
+      var line = new ol.Feature(new ol.geom.LineString([
+        [center[0] - 650, center[1] - 200],
+        [center[0] + 650, center[1] - 200]
+      ]));
+      line.setStyle(new ol.style.Style({
+        zIndex: 1,
+        stroke: new ol.style.Stroke({
+          color: '#CCC',
+          width: 12
+        }),
+        text: new ol.style.Text({
+          placement: 'line',
+          text: 'east-west',
+          font: '12px sans-serif'
+        })
+      }));
+
+      source.addFeature(point);
+      source.addFeature(line);
+
+      layer.setDeclutter(true);
+
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line-zindex.png',
+            4.1, done);
+      });
+    });
   });
 
 });
