@@ -187,7 +187,7 @@ ol.render.canvas.ReplayGroup.getCircleArray_ = function(radius) {
 
 ol.render.canvas.ReplayGroup.replayDeclutter = function(declutterReplays, context, rotation) {
   var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
-  for (var z = zs.length - 1; z >= 0; --z) {
+  for (var z = 0, zz = zs.length; z < zz; ++z) {
     var replayData = declutterReplays[zs[z].toString()];
     for (var i = 0, ii = replayData.length; i < ii;) {
       var replay = replayData[i++];
