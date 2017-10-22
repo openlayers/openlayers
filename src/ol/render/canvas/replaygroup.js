@@ -485,12 +485,10 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     featureCallback, opt_hitExtent, opt_declutterReplays) {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(function(a, b) {
-    return b - a;
-  });
+  zs.sort(ol.array.numberSafeCompareFunction);
 
-  var i, ii, j, replays, replay, result;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
+  var i, j, replays, replay, result;
+  for (i = zs.length - 1; i >= 0; --i) {
     var zIndexKey = zs[i].toString();
     replays = this.replaysByZIndex_[zIndexKey];
     for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
