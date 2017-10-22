@@ -120,7 +120,7 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileCoord, projection);
     var tile = new ol.VectorImageTile(
         tileCoord,
-        urlTileCoord !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        urlTileCoord !== null ? ol.TileState.IDLE : ol.TileState.EMPTY,
         this.getRevision(),
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),
