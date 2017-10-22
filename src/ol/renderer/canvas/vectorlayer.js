@@ -234,9 +234,10 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
   } else {
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
-    var layer = this.getLayer();
+    var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     /** @type {Object.<string, boolean>} */
     var features = {};
+    var declutterReplays = layer.getDeclutter() ? {} : null;
     var result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
         rotation, hitTolerance, {},
         /**
@@ -249,7 +250,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
             features[key] = true;
             return callback.call(thisArg, feature, layer);
           }
-        }, null);
+        }, declutterReplays);
     if (this.declutterTree_) {
       this.declutterTree_.clear();
     }

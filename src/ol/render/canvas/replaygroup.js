@@ -201,11 +201,11 @@ ol.render.canvas.ReplayGroup.replayDeclutter = function(declutterReplays, contex
 ol.render.canvas.ReplayGroup.replayDeclutterHitDetection = function(
     declutterReplays, context, rotation, featureCallback, hitExtent) {
   var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
-  for (var z = zs.length - 1; z >= 0; --z) {
+  for (var z = 0, zz = zs.length; z < zz; ++z) {
     var replayData = declutterReplays[zs[z].toString()];
-    for (var i = 0, ii = replayData.length; i < ii;) {
-      var replay = replayData[i++];
-      var transform = replayData[i++];
+    for (var i = replayData.length - 1; i >= 0;) {
+      var transform = replayData[i--];
+      var replay = replayData[i--];
       var result = replay.replayHitDetection(context, transform, rotation, {},
           featureCallback, hitExtent);
       if (result) {
@@ -327,33 +327,34 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
   var mask = ol.render.canvas.ReplayGroup.getCircleArray_(hitTolerance);
 
-  var result = this.replayHitDetection_(context, transform, rotation,
-      skippedFeaturesHash,
-      /**
-       * @param {ol.Feature|ol.render.Feature} feature Feature.
-       * @return {?} Callback result.
-       */
-      function(feature) {
-        var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
-        for (var i = 0; i < contextSize; i++) {
-          for (var j = 0; j < contextSize; j++) {
-            if (mask[i][j]) {
-              if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-                var result = callback(feature);
-                if (result) {
-                  return result;
-                } else {
-                  context.clearRect(0, 0, contextSize, contextSize);
-                  return undefined;
-                }
-              }
+  /**
+   * @param {ol.Feature|ol.render.Feature} feature Feature.
+   * @return {?} Callback result.
+   */
+  function hitDetectionCallback(feature) {
+    var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
+    for (var i = 0; i < contextSize; i++) {
+      for (var j = 0; j < contextSize; j++) {
+        if (mask[i][j]) {
+          if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
+            var result = callback(feature);
+            if (result) {
+              return result;
+            } else {
+              context.clearRect(0, 0, contextSize, contextSize);
+              return undefined;
             }
           }
         }
-      }, hitExtent);
+      }
+    }
+  }
+
+  var result = this.replayHitDetection_(context, transform, rotation,
+      skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
   if (!result && declutterReplays) {
     result = ol.render.canvas.ReplayGroup.replayDeclutterHitDetection(
-        declutterReplays, context, rotation, callback, hitExtent);
+        declutterReplays, context, rotation, hitDetectionCallback, hitExtent);
   }
   return result;
 };
