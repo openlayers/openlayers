@@ -477,10 +477,11 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
 
-      source.addFeature(new ol.Feature({
+      var centerFeature = new ol.Feature({
         geometry: new ol.geom.Point(center),
         text: 'center'
-      }));
+      });
+      source.addFeature(centerFeature);
       source.addFeature(new ol.Feature({
         geometry: new ol.geom.Point([center[0] - 550, center[1]]),
         text: 'west'
@@ -501,6 +502,9 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map.once('postrender', function() {
+        var hitDetected = map.getFeaturesAtPixel([42, 42]);
+        expect(hitDetected).to.have.length(1);
+        expect(hitDetected[0]).to.equal(centerFeature);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter.png',
             2.2, done);
       });
@@ -553,9 +557,10 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
 
-      source.addFeature(new ol.Feature({
+      var centerFeature = new ol.Feature({
         geometry: new ol.geom.Point(center)
-      }));
+      });
+      source.addFeature(centerFeature);
       source.addFeature(new ol.Feature({
         geometry: new ol.geom.Point([center[0] - 550, center[1]])
       }));
@@ -576,6 +581,9 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map.once('postrender', function() {
+        var hitDetected = map.getFeaturesAtPixel([40, 40]);
+        expect(hitDetected).to.have.length(1);
+        expect(hitDetected[0]).to.equal(centerFeature);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-image.png',
             IMAGE_TOLERANCE, done);
       });
@@ -747,6 +755,9 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
 
       map.once('postrender', function() {
+        var hitDetected = map.getFeaturesAtPixel([35, 46]);
+        expect(hitDetected).to.have.length(1);
+        expect(hitDetected[0]).to.equal(line);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line-zindex.png',
             4.1, done);
       });
