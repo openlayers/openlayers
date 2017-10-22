@@ -82,6 +82,11 @@ describe('ol.format.OWS 1.1', function() {
 
     var serviceIdentification = obj.ServiceIdentification;
     expect(serviceIdentification).to.be.ok();
+    expect(serviceIdentification.Abstract).to.eql(
+        'Service that contrains the map access interface to some TileMatrixSets'
+    );
+    expect(serviceIdentification.AccessConstraints).to.eql('none');
+    expect(serviceIdentification.Fees).to.eql('none');
     expect(serviceIdentification.Title).to.eql('Web Map Tile Service');
     expect(serviceIdentification.ServiceTypeVersion).to.eql('1.0.0');
     expect(serviceIdentification.ServiceType).to.eql('OGC WMTS');
