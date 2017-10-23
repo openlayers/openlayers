@@ -29,7 +29,7 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
    * @private
    */
   this.declutterTree_ = vectorLayer.getDeclutter() ?
-    ol.ext.rbush(9, ['[0]', '[1]', '[2]', '[3]']) : null;
+    ol.ext.rbush(9) : null;
 
   /**
    * @private

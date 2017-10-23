@@ -389,8 +389,15 @@ ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
   if (declutterGroup && declutterGroup.length > 5) {
     var groupCount = declutterGroup[4];
     if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
-      if (!this.declutterTree.collides(this.declutterTree.toBBox(declutterGroup))) {
-        this.declutterTree.insert(declutterGroup.slice(0, 4));
+      /** @type {ol.RBushEntry} */
+      var box = {
+        minX: /** @type {number} */ (declutterGroup[0]),
+        minY: /** @type {number} */ (declutterGroup[1]),
+        maxX: /** @type {number} */ (declutterGroup[2]),
+        maxY: /** @type {number} */ (declutterGroup[3])
+      };
+      if (!this.declutterTree.collides(box)) {
+        this.declutterTree.insert(box);
         var drawImage = ol.render.canvas.drawImage;
         for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
           if (declutterGroup[j]) {

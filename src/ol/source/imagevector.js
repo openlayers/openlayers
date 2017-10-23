@@ -60,7 +60,7 @@ ol.source.ImageVector = function(options) {
    * Declutter tree.
    * @private
    */
-  this.declutterTree_ = ol.ext.rbush(9, ['[0]', '[1]', '[2]', '[3]']);
+  this.declutterTree_ = ol.ext.rbush(9);
 
   /**
    * @private

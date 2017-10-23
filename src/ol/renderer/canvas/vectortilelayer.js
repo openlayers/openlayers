@@ -38,7 +38,7 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
    * Declutter tree.
    * @private
      */
-  this.declutterTree_ = layer.getDeclutter() ? ol.ext.rbush(9, ['[0]', '[1]', '[2]', '[3]']) : null;
+  this.declutterTree_ = layer.getDeclutter() ? ol.ext.rbush(9) : null;
 
   /**
    * @private
