@@ -54,27 +54,25 @@ describe('ol.proj', function() {
     });
 
     it('gives that urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
-        'equivalent',
-    function() {
+        'equivalent', function() {
       _testAllEquivalent([
         'urn:ogc:def:crs:EPSG:6.6:4326',
         'EPSG:4326'
       ]);
     });
 
-    it('gives that CRS:84, EPSG:4326 are ' +
-       'not equivalent',
-    function() {
-      var proj1 = new ol.proj.Projection({
-        code: 'CRS:84'
-      });
-      var proj2 = new ol.proj.Projection({
-        code: 'EPSG:4326'
-      });
-      expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
-    });
+    it('gives that CRS:84, EPSG:4326 are not equivalent',
+        function() {
+          var proj1 = new ol.proj.Projection({
+            code: 'CRS:84'
+          });
+          var proj2 = new ol.proj.Projection({
+            code: 'EPSG:4326'
+          });
+          expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
+        });
 
-    it('requires code and units to be equal for projection evquivalence',
+    it('requires code and units to be equal for projection equivalence',
         function() {
           var proj1 = new ol.proj.Projection({
             code: 'EPSG:3857',
@@ -87,20 +85,21 @@ describe('ol.proj', function() {
           expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
         });
 
-    it('requires code and axis orientation to be equal for projection evquivalence',
-        function() {
-          var proj1 = new ol.proj.Projection({
-            code: 'EPSG:3857',
-            axisOrientation: 'enu'
-          });
-          var proj2 = new ol.proj.Projection({
-            code: 'EPSG:3857',
-            axisOrientation: 'neu'
-          });
-          expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
-        });
+    it('requires code and axis orientation to be equal for projection' +
+        'equivalence',
+    function() {
+      var proj1 = new ol.proj.Projection({
+        code: 'EPSG:3857',
+        axisOrientation: 'enu'
+      });
+      var proj2 = new ol.proj.Projection({
+        code: 'EPSG:3857',
+        axisOrientation: 'neu'
+      });
+      expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
+    });
 
-    it('requires code and extent to be equal for projection evquivalence',
+    it('requires code and extent to be equal for projection equivalence',
         function() {
           var proj1 = new ol.proj.Projection({
             code: 'EPSG:3857'
@@ -112,7 +111,7 @@ describe('ol.proj', function() {
           expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
         });
 
-    it('requires code and units to be equal for projection evquivalence',
+    it('requires code and units to be equal for projection equivalence',
         function() {
           var proj1 = new ol.proj.Projection({
             code: 'EPSG:3857',
