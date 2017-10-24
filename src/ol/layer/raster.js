@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.LayerType');
 goog.require('ol.layer.Layer');
 goog.require('ol.obj');
-goog.require('ol.style.Raster');
+goog.require('ol.style.Monochrome');
 
 
 /**
@@ -33,7 +33,7 @@ ol.layer.Raster = function(opt_options) {
 
   /**
    * User provided style.
-   * @type {ol.style.Raster}
+   * @type {ol.RasterStyle}
    * @private
    */
   this.style_ = null;
@@ -77,7 +77,7 @@ ol.layer.Raster.prototype.getSource;
 /**
  * Get the style for cells. This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Raster} Layer style.
+ * @return {ol.style.Monochrome|ol.style.Pseudocolor|ol.style.RGB} Layer style.
  * @api
  */
 ol.layer.Raster.prototype.getStyle = function() {
@@ -108,10 +108,11 @@ ol.layer.Raster.prototype.getUpdateWhileInteracting = function() {
  *`undefined` the default style is used. If it is `null` the layer has no style
  * (a `null` style), so it will not be rendered. See {@link ol.style} for
  * information on the default style.
- * @param {ol.style.Raster|null|undefined} style Layer style.
+ * @param {ol.RasterStyle|null|undefined}
+ * style Layer style.
  * @api
  */
 ol.layer.Raster.prototype.setStyle = function(style) {
-  this.style_ = style !== undefined ? style : ol.style.Raster.defaultStyle;
+  this.style_ = style !== undefined ? style : ol.style.Monochrome.defaultStyle();
   this.changed();
 };

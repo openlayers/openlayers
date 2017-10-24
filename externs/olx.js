@@ -2174,7 +2174,7 @@ olx.layer.ImageOptions.prototype.zIndex;
  *     opacity: (number|undefined),
  *     source: (ol.source.RasterBase|undefined),
  *     map: (ol.PluggableMap|undefined),
- *     style: (ol.style.Raster|undefined),
+ *     style: (ol.RasterStyle|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
  *     visible: (boolean|undefined),
@@ -2238,7 +2238,7 @@ olx.layer.RasterOptions.prototype.source;
 /**
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
- * @type {ol.style.Raster|undefined}
+ * @type {ol.RasterStyle|undefined}
  * @api
  */
 olx.layer.RasterOptions.prototype.style;
@@ -5579,6 +5579,121 @@ olx.style.IconOptions.prototype.src;
 
 
 /**
+ * @typedef {{min: (number|undefined),
+ *    max: (number|undefined),
+ *    band: (number|undefined)}}
+ */
+olx.style.MonochromeOptions;
+
+
+/**
+ * Minimum cell value. Lower cell values are automatically clamped to 0.
+ * Default value is the calculated minimum of the styled band.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.MonochromeOptions.prototype.min;
+
+
+/**
+ * Maximum cell value. Higher cell values are automatically clamped to 255.
+ * Default value is the calculated maximum of the styled band.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.MonochromeOptions.prototype.max;
+
+
+/**
+ * Band index.
+ * Default value is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.MonochromeOptions.prototype.band;
+
+
+/**
+ * @typedef {{min: (number|undefined),
+ *    max: (number|undefined),
+ *    band: (number|undefined),
+ *    startColor: (ol.Color|string|undefined),
+ *    endColor: (ol.Color|string|undefined),
+ *    mode: ol.style.PseudocolorMode,
+ *    breakpoints: (Array.<ol.PseudocolorMap>|undefined)}}
+ */
+olx.style.PseudocolorOptions;
+
+
+/**
+ * Minimum cell value. Lower cell values are colored to the start color.
+ * Default value is the calculated minimum of the styled band.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.min;
+
+
+/**
+ * Maximum cell value. Higher cell values are colored to the end color.
+ * Default value is the calculated maximum of the styled band.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.max;
+
+
+/**
+ * Band index.
+ * Default value is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.band;
+
+
+/**
+ * Start color.
+ * Default is black.
+ * @type {ol.Color|string}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.startColor;
+
+
+/**
+ * End color.
+ * Default is white. Ignored in `categorized` mode.
+ * @type {ol.Color|string}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.endColor;
+
+
+/**
+ * Pseudocolor styling mode. Currently supported types are `'categorized'` and
+ * `'interpolate'`. The interpolate mode interpolates colors between edge values
+ * and breakpoints in a linear fashion. In categorized mode, an interval has a
+ * single color. With this mode, apart from the maximum value, an interval's
+ * lower value is inclusive, while the upper value is exclusive.
+ * Default value is `'interpolate'`.
+ * @type {ol.style.PseudocolorMode}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.mode;
+
+
+/**
+ * Additional breakpoints defined with color maps having a value and a color.
+ * See {@link ol.style.Pseudocolor#createColorMap} for creating color maps
+ * automatically.
+ * @type {Array.<ol.PseudocolorMap>}
+ * @api
+ */
+olx.style.PseudocolorOptions.prototype.breakpoints;
+
+
+/**
  * Specify radius for regular polygons, or radius1 and radius2 for stars.
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     points: number,
@@ -5692,6 +5807,38 @@ olx.style.RegularShapeOptions.prototype.rotateWithView;
  * @type {ol.style.AtlasManager|undefined}
  */
 olx.style.RegularShapeOptions.prototype.atlasManager;
+
+
+/**
+ * @typedef {{red: ol.style.Monochrome,
+ *      green: ol.style.Monochrome,
+ *      blue: ol.style.Monochrome}}
+ */
+olx.style.RGBOptions;
+
+
+/**
+ * The monochrome band associated to the RGB composite's red channel.
+ * @type {ol.style.Monochrome}
+ * @api
+ */
+olx.style.RGBOptions.prototype.red;
+
+
+/**
+ * The monochrome band associated to the RGB composite's green channel.
+ * @type {ol.style.Monochrome}
+ * @api
+ */
+olx.style.RGBOptions.prototype.green;
+
+
+/**
+ * The monochrome band associated to the RGB composite's blue channel.
+ * @type {ol.style.Monochrome}
+ * @api
+ */
+olx.style.RGBOptions.prototype.blue;
 
 
 /**

@@ -252,6 +252,14 @@ ol.PreRenderFunction;
 
 
 /**
+ * A color map representing a single break.
+ * @typedef {{value: number,
+ *            color: (ol.Color|string)}}
+ */
+ol.PseudocolorMap;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
@@ -291,6 +299,12 @@ ol.RasterOperation;
       variance: (number|undefined)}}
  */
 ol.RasterStatistics;
+
+
+/**
+ * @typedef {ol.style.Monochrome|ol.style.Pseudocolor|ol.style.RGB}
+ */
+ol.RasterStyle;
 
 
 /**

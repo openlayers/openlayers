@@ -76,5 +76,12 @@
  *      );
  *```
  *
+ * Raster styles.
+ *
+ * If no style is defined, the following default style is used:
+ * ```js
+ *  var style = new ol.style.Monochrome();
+ * ```
+ *
  * @namespace ol.style
  */
