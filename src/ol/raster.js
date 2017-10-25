@@ -13,8 +13,9 @@ goog.require('ol.RasterType');
  * @extends {ol.Object}
  * @param {ArrayBuffer} raster Raster data.
  * @param {number} stride Number of columns.
+ * @param {ol.Size} resolution Cell resolution.
  */
-ol.Raster = function(raster, stride) {
+ol.Raster = function(raster, stride, resolution) {
 
   ol.Object.call(this);
 
@@ -51,6 +52,14 @@ ol.Raster.prototype.getStride = function() {
 
 
 /**
+ * @return {ol.Size} Resolution.
+ */
+ol.Raster.prototype.getStride = function() {
+  return this.resolution_;
+};
+
+
+/**
  * @param {ol.RasterType} type Type of the raster.
  * @return {ol.TypedArray} Array.
  * @private
@@ -79,7 +88,7 @@ ol.Raster.getArrayConstructor = function(type) {
  * @private
  */
 ol.Raster.typeMap_ = function() {
-  var /** @type {Object} */ typeMap;
+  var typeMap = {};
   if (ol.has.RASTER) {
     typeMap[ol.RasterType.UINT8] = window.Uint8Array;
     typeMap[ol.RasterType.INT8] = window.Int8Array;

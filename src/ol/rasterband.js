@@ -15,11 +15,12 @@ goog.require('ol.RasterType');
  * @extends {ol.Object}
  * @param {ArrayBuffer|Array.<number>} raster Raster data.
  * @param {number} stride Number of columns.
+ * @param {ol.Size} resolution Cell resolution.
  * @param {ol.RasterType} type Raster data type.
  * @param {number=} nullvalue Null value.
  * @param {function(number):number=} convert Type conversion function.
  */
-ol.RasterBand = function(raster, stride, type, nullvalue, convert) {
+ol.RasterBand = function(raster, stride, resolution, type, nullvalue, convert) {
 
   ol.Object.call(this);
 
@@ -39,7 +40,7 @@ ol.RasterBand = function(raster, stride, type, nullvalue, convert) {
    * @type {ol.Raster}
    * @private
    */
-  this.raster_ = this.createRaster_(raster, stride, type, convert);
+  this.raster_ = this.createRaster_(raster, stride, resolution, type, convert);
 
   /**
    * @type {ol.RasterStatistics}
@@ -82,6 +83,16 @@ ol.RasterBand.prototype.getRaster = function(opt_type) {
  */
 ol.RasterBand.prototype.getStride = function() {
   return this.raster_.getStride();
+};
+
+
+/**
+ * Returns the resolution (x,y) of this band.
+ * @return {ol.Size} Resolution.
+ * @api
+ */
+ol.RasterBand.prototype.getResolution = function() {
+  return this.raster_.getResolution();
 };
 
 
@@ -190,12 +201,14 @@ ol.RasterBand.prototype.setNullValue = function(nullValue) {
  * converts raster values between different data types.
  * @param {ArrayBuffer|Array.<number>} raster Raster data.
  * @param {number} stride Number of columns.
+ * @param {ol.Size} resolution Cell resolution.
  * @param {ol.RasterType} type Raster data type.
  * @param {function(number):number=} opt_convert Type conversion function.
  * @observable
  * @api
  */
-ol.RasterBand.prototype.setRaster = function(raster, stride, type, opt_convert) {
+ol.RasterBand.prototype.setRaster = function(raster, stride, resolution, type,
+    opt_convert) {
   ol.asserts.assert(type in ol.RasterType, 61);
   this.raster_ = this.createRaster_(raster, stride, type, opt_convert);
 };
