@@ -7326,6 +7326,17 @@ olx.source.ZoomifyOptions.prototype.size;
 
 
 /**
+ * Extent for the TileGrid that is created. Default sets the TileGrid in the
+ * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the
+ * extent to the first quadrant (the default for OpenLayers 2) set the extent
+ * as `[0, 0, width, height]`.
+ * @type {ol.Extent|undefined}
+ * @api
+ */
+olx.source.ZoomifyOptions.prototype.extent;
+
+
+/**
  * Duration of the opacity transition for rendering.  To disable the opacity
  * transition, pass `transition: 0`.
  * @type {number|undefined}
