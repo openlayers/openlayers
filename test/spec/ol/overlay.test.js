@@ -44,6 +44,12 @@ describe('ol.Overlay', function() {
       expect(instance).to.be.an(ol.Overlay);
     });
 
+    it('can be constructed with className', function() {
+      var instance = new ol.Overlay({className: 'my-class'});
+      expect(instance).to.be.an(ol.Overlay);
+      expect(instance.element_.className).to.be('my-class');
+    });
+
   });
 
   describe('#getId()', function() {
