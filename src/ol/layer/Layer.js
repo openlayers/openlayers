@@ -183,7 +183,7 @@ Layer.prototype.setMap = function(map) {
           var layerState = this.getLayerState();
           var zIndex = this.getZIndex();
           layerState.managed = false;
-          layerState.zIndex = (goog.isDef(zIndex) && zIndex !== 0) ? zIndex : Infinity;
+          layerState.zIndex = zIndex !== undefined ? zIndex : Infinity;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[getUid(this)] = layerState;
         }, this);

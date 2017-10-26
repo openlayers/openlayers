@@ -3067,6 +3067,14 @@ olx.interaction.SelectOptions.prototype.hitTolerance;
 
 
 /**
+ * The z-index for layer rendering. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.zIndex;
+
+
+/**
  * Options for snap
  * @typedef {{
  *     features: (ol.Collection.<ol.Feature>|undefined),

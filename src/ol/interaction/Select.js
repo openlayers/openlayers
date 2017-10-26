@@ -97,7 +97,7 @@ var Select = function(opt_options) {
       Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true,
-    zIndex: goog.isDef(options.zIndex) ? options.zIndex : Infinity
+    zIndex: options.zIndex !== undefined ? options.zIndex : 0
   });
 
   /**
