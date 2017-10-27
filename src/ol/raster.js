@@ -31,6 +31,12 @@ if (ol.ENABLE_RASTER) {
      * @private
      */
     this.stride_ = stride;
+
+    /**
+     * @type {ol.Size}
+     * @private
+     */
+    this.resolution_ = resolution;
   };
   ol.inherits(ol.Raster, ol.Object);
 
@@ -55,7 +61,7 @@ if (ol.ENABLE_RASTER) {
   /**
    * @return {ol.Size} Resolution.
    */
-  ol.Raster.prototype.getStride = function() {
+  ol.Raster.prototype.getResolution = function() {
     return this.resolution_;
   };
 

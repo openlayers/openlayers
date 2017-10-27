@@ -152,12 +152,14 @@ if (ol.ENABLE_RASTER) {
   /**
    * @param {ArrayBuffer|Array.<number>} raster Raster data.
    * @param {number} stride Stride.
+   * @param {ol.Size} resolution Cell resolution.
    * @param {ol.RasterType} type Raster data type.
    * @param {function(number):number=} convert Type conversion function.
    * @return {ol.Raster} Binary raster.
    * @private
    */
-  ol.RasterBand.prototype.createRaster_ = function(raster, stride, type, convert) {
+  ol.RasterBand.prototype.createRaster_ = function(raster, stride, resolution, type,
+      convert) {
     var buffer;
     if (!(raster instanceof window.ArrayBuffer)) {
       var ctor = ol.Raster.getArrayConstructor(type);
@@ -170,7 +172,7 @@ if (ol.ENABLE_RASTER) {
     } else {
       buffer = raster;
     }
-    return new ol.Raster(buffer, stride);
+    return new ol.Raster(buffer, stride, resolution);
   };
 
 
@@ -211,7 +213,7 @@ if (ol.ENABLE_RASTER) {
   ol.RasterBand.prototype.setRaster = function(raster, stride, resolution, type,
       opt_convert) {
     ol.asserts.assert(type in ol.RasterType, 61);
-    this.raster_ = this.createRaster_(raster, stride, type, opt_convert);
+    this.raster_ = this.createRaster_(raster, stride, resolution, type, opt_convert);
   };
 
 }
