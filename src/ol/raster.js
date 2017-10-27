@@ -84,7 +84,7 @@ if (ol.ENABLE_RASTER) {
    */
   ol.Raster.getArrayConstructor = function(type) {
     if (ol.has.RASTER) {
-      ol.asserts.assert(type in ol.RasterType, 61);
+      ol.asserts.assert(type in ol.Raster.typeMap_, 61);
       return ol.Raster.typeMap_[type];
     }
   };

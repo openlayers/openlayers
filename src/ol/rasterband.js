@@ -1,11 +1,8 @@
 goog.provide('ol.RasterBand');
 
 goog.require('ol');
-goog.require('ol.asserts');
-goog.require('ol.events');
 goog.require('ol.Object');
 goog.require('ol.Raster');
-goog.require('ol.RasterType');
 
 if (ol.ENABLE_RASTER) {
 
@@ -56,9 +53,6 @@ if (ol.ENABLE_RASTER) {
     };
     this.calculateStatistics();
 
-    ol.events.listen(
-        this, 'change:raster',
-        this.handleRasterChange_, this);
   };
   ol.inherits(ol.RasterBand, ol.Object);
 
@@ -177,15 +171,6 @@ if (ol.ENABLE_RASTER) {
 
 
   /**
-   * @private
-   */
-  ol.RasterBand.prototype.handleRasterChange_ = function() {
-    this.calculateStatistics();
-    this.changed();
-  };
-
-
-  /**
    * Set the null value of the raster band.
    * @param {number} nullValue Null value.
    * @fires ol.events.Event#event:change
@@ -194,26 +179,6 @@ if (ol.ENABLE_RASTER) {
   ol.RasterBand.prototype.setNullValue = function(nullValue) {
     this.null_ = nullValue;
     this.changed();
-  };
-
-
-  /**
-   * Set the raw raster data of the band. The raw matrix of the band can be in
-   * an array, though an explicit data type and the number of columns have to be
-   * provided. An optional converter function can be provided, which correctly
-   * converts raster values between different data types.
-   * @param {ArrayBuffer|Array.<number>} raster Raster data.
-   * @param {number} stride Number of columns.
-   * @param {ol.Size} resolution Cell resolution.
-   * @param {ol.RasterType} type Raster data type.
-   * @param {function(number):number=} opt_convert Type conversion function.
-   * @observable
-   * @api
-   */
-  ol.RasterBand.prototype.setRaster = function(raster, stride, resolution, type,
-      opt_convert) {
-    ol.asserts.assert(type in ol.RasterType, 61);
-    this.raster_ = this.createRaster_(raster, stride, resolution, type, opt_convert);
   };
 
 }
