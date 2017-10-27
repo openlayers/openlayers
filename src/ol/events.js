@@ -10,11 +10,11 @@ goog.require('ol.obj');
 ol.events.bindListener_ = function(listenerObj) {
   var boundListener = function(evt) {
     var listener = listenerObj.listener;
-    var bindTo = listenerObj.bindTo || listenerObj.target;
+    var target = listenerObj.target;
     if (listenerObj.callOnce) {
       ol.events.unlistenByKey(listenerObj);
     }
-    return listener.call(bindTo, evt);
+    return listener.call(target, evt);
   };
   listenerObj.boundListener = boundListener;
   return boundListener;
@@ -27,19 +27,16 @@ ol.events.bindListener_ = function(listenerObj) {
  *
  * @param {!Array<!ol.EventsKey>} listeners Array of listeners.
  * @param {!Function} listener The listener function.
- * @param {Object=} opt_this The `this` value inside the listener.
  * @param {boolean=} opt_setDeleteIndex Set the deleteIndex on the matching
  *     listener, for {@link ol.events.unlistenByKey}.
  * @return {ol.EventsKey|undefined} The matching listener object.
  * @private
  */
-ol.events.findListener_ = function(listeners, listener, opt_this,
-    opt_setDeleteIndex) {
+ol.events.findListener_ = function(listeners, listener, opt_setDeleteIndex) {
   var listenerObj;
   for (var i = 0, ii = listeners.length; i < ii; ++i) {
     listenerObj = listeners[i];
-    if (listenerObj.listener === listener &&
-        listenerObj.bindTo === opt_this) {
+    if (listenerObj.listener === listener) {
       if (opt_setDeleteIndex) {
         listenerObj.deleteIndex = i;
       }
@@ -114,20 +111,18 @@ ol.events.removeListeners_ = function(target, type) {
  *
  * @param {ol.EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
- *     listener. Default is the `target`.
+ * @param {ol.EventsListenerFunctionType} listener Listener. The `this` keyword is set to
+ *     the `target` by default.
  * @param {boolean=} opt_once If true, add the listener as one-off listener.
  * @return {ol.EventsKey} Unique key for the listener.
  */
-ol.events.listen = function(target, type, listener, opt_this, opt_once) {
+ol.events.listen = function(target, type, listener, opt_once) {
   var listenerMap = ol.events.getListenerMap_(target);
   var listeners = listenerMap[type];
   if (!listeners) {
     listeners = listenerMap[type] = [];
   }
-  var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
-      false);
+  var listenerObj = ol.events.findListener_(listeners, listener, false);
   if (listenerObj) {
     if (!opt_once) {
       // Turn one-off listener into a permanent one.
@@ -135,7 +130,6 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
     }
   } else {
     listenerObj = /** @type {ol.EventsKey} */ ({
-      bindTo: opt_this,
       callOnce: !!opt_once,
       listener: listener,
       target: target,
@@ -164,13 +158,12 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
  *
  * @param {ol.EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
- *     listener. Default is the `target`.
+ * @param {ol.EventsListenerFunctionType} listener Listener. The `this` keyword is set to
+ *     the `target` by default.
  * @return {ol.EventsKey} Key for unlistenByKey.
  */
-ol.events.listenOnce = function(target, type, listener, opt_this) {
-  return ol.events.listen(target, type, listener, opt_this, true);
+ol.events.listenOnce = function(target, type, listener) {
+  return ol.events.listen(target, type, listener, true);
 };
 
 
@@ -183,15 +176,13 @@ ol.events.listenOnce = function(target, type, listener, opt_this) {
  *
  * @param {ol.EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.EventsListenerFunctionType} listener Listener.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
- *     listener. Default is the `target`.
+ * @param {ol.EventsListenerFunctionType} listener Listener. The `this` keyword is set to
+ *     the `target` by default.
  */
-ol.events.unlisten = function(target, type, listener, opt_this) {
+ol.events.unlisten = function(target, type, listener) {
   var listeners = ol.events.getListeners(target, type);
   if (listeners) {
-    var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
-        true);
+    var listenerObj = ol.events.findListener_(listeners, listener, true);
     if (listenerObj) {
       ol.events.unlistenByKey(listenerObj);
     }

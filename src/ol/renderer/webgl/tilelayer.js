@@ -379,7 +379,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback) {
   if (!this.framebuffer) {
     return undefined;
   }
@@ -401,7 +401,7 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, fram
       gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
   if (imageData[3] > 0) {
-    return callback.call(thisArg, this.getLayer(), imageData);
+    return callback(this.getLayer(), imageData);
   } else {
     return undefined;
   }

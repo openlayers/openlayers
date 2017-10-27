@@ -26,7 +26,7 @@ goog.require('ol.interaction.Interaction');
 ol.interaction.KeyboardZoom = function(opt_options) {
 
   ol.interaction.Interaction.call(this, {
-    handleEvent: ol.interaction.KeyboardZoom.handleEvent
+    handleEvent: ol.interaction.KeyboardZoom.handleEvent.bind(this)
   });
 
   var options = opt_options ? opt_options : {};

@@ -134,7 +134,8 @@ ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, frameState, hitTolerance, callback) {
   if (!this.replayGroup_ || !this.layerState_) {
     return undefined;
   } else {
@@ -156,7 +157,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
-            return callback.call(thisArg, feature, layer);
+            return callback(feature, layer);
           }
         });
   }
@@ -184,13 +185,13 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordi
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback) {
   var coordinate = ol.transform.apply(
       frameState.pixelToCoordinateTransform, pixel.slice());
   var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 
   if (hasFeature) {
-    return callback.call(thisArg, this.getLayer(), null);
+    return callback(this.getLayer(), null);
   } else {
     return undefined;
   }
@@ -282,7 +283,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
           feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
-  };
+  }.bind(this);
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
@@ -292,7 +293,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
          */
         function(feature) {
           features.push(feature);
-        }, this);
+        });
     features.sort(vectorLayerRenderOrder);
     features.forEach(renderFeature, this);
   } else {
@@ -329,13 +330,13 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolu
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],
           ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_.bind(this)) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_.bind(this)) || loading;
   }
   return loading;
 };

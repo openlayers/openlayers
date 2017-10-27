@@ -81,7 +81,7 @@ ol.interaction.Translate = function(opt_options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
-      this.handleActiveChanged_, this);
+      this.handleActiveChanged_);
 
 };
 ol.inherits(ol.interaction.Translate, ol.interaction.Pointer);

@@ -94,7 +94,7 @@ ol.source.ImageVector = function(options) {
   this.setStyle(options.style);
 
   ol.events.listen(this.source_, ol.events.EventType.CHANGE,
-      this.handleSourceChange_, this);
+      this.handleSourceChange_.bind(this));
 
 };
 ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
@@ -277,7 +277,7 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+        this.handleImageChange_.bind(this)) || loading;
   }
   return loading;
 };

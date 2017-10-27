@@ -58,13 +58,15 @@ ol.layer.Layer = function(options) {
    */
   this.sourceChangeKey_ = null;
 
+  this.handleSourceChange_ = this.handleSourceChange_.bind(this);
+
   if (options.map) {
     this.setMap(options.map);
   }
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.Property.SOURCE),
-      this.handleSourcePropertyChange_, this);
+      this.handleSourcePropertyChange_);
 
   var source = options.source ? options.source : null;
   this.setSource(source);
@@ -146,7 +148,7 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
   var source = this.getSource();
   if (source) {
     this.sourceChangeKey_ = ol.events.listen(source,
-        ol.events.EventType.CHANGE, this.handleSourceChange_, this);
+        ol.events.EventType.CHANGE, this.handleSourceChange_);
   }
   this.changed();
 };
@@ -184,9 +186,9 @@ ol.layer.Layer.prototype.setMap = function(map) {
           layerState.zIndex = Infinity;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[ol.getUid(this)] = layerState;
-        }, this);
+        }.bind(this));
     this.mapRenderKey_ = ol.events.listen(
-        this, ol.events.EventType.CHANGE, map.render, map);
+        this, ol.events.EventType.CHANGE, map.render);
     this.changed();
   }
 };

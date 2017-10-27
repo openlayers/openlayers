@@ -96,7 +96,7 @@ ol.renderer.canvas.IntermediateCanvas.prototype.getImageTransform = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -109,7 +109,7 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate = fun
        * @return {?} Callback result.
        */
       function(feature) {
-        return callback.call(thisArg, feature, layer);
+        return callback(feature, layer);
       });
 };
 
@@ -117,7 +117,7 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate = fun
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback) {
   if (!this.getImage()) {
     return undefined;
   }
@@ -139,7 +139,7 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = funct
 
     var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
     if (imageData[3] > 0) {
-      return callback.call(thisArg, this.getLayer(),  imageData);
+      return callback(this.getLayer(),  imageData);
     } else {
       return undefined;
     }

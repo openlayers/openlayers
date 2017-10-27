@@ -99,7 +99,7 @@ ol.control.Attribution = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
+  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_.bind(this));
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL +
@@ -110,7 +110,7 @@ ol.control.Attribution = function(opt_options) {
   element.appendChild(this.ulElement_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : ol.control.Attribution.render;
+  var render = options.render ? options.render : ol.control.Attribution.render.bind(this);
 
   ol.control.Control.call(this, {
     element: element,

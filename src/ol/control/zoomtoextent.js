@@ -40,7 +40,7 @@ ol.control.ZoomToExtent = function(opt_options) {
   );
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, this);
+      this.handleClick_.bind(this));
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;

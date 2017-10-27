@@ -215,12 +215,10 @@ ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
 
 /**
  * @abstract
- * @param {function(this: T, ol.events.Event)} listener Listener function.
- * @param {T} thisArg Value to use as `this` when executing `listener`.
+ * @param {function(ol.events.Event)} listener Listener function.
  * @return {ol.EventsKey|undefined} Listener key.
- * @template T
  */
-ol.style.Image.prototype.listenImageChange = function(listener, thisArg) {};
+ol.style.Image.prototype.listenImageChange = function(listener) {};
 
 
 /**
@@ -232,8 +230,6 @@ ol.style.Image.prototype.load = function() {};
 
 /**
  * @abstract
- * @param {function(this: T, ol.events.Event)} listener Listener function.
- * @param {T} thisArg Value to use as `this` when executing `listener`.
- * @template T
+ * @param {function(ol.events.Event)} listener Listener function.
  */
-ol.style.Image.prototype.unlistenImageChange = function(listener, thisArg) {};
+ol.style.Image.prototype.unlistenImageChange = function(listener) {};

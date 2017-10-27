@@ -43,15 +43,6 @@ describe('ol.Observable', function() {
       expect(listener.callCount).to.be(2);
     });
 
-    it('accepts an optional `this` arg for the listener', function() {
-      var thisArg = {};
-      observable.on('foo', listener, thisArg);
-
-      observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
-      expect(listener.calledOn(thisArg)).to.be(true);
-    });
-
     it('returns a listener key', function() {
       var key = observable.on('foo', listener);
 
@@ -108,15 +99,6 @@ describe('ol.Observable', function() {
       expect(listener.callCount).to.be(2);
     });
 
-    it('accepts an optional `this` arg for the listener', function() {
-      var thisArg = {};
-      observable.once('foo', listener, thisArg);
-
-      observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
-      expect(listener.calledOn(thisArg)).to.be(true);
-    });
-
     it('returns a listener key', function() {
       var key = observable.once('foo', listener);
 
@@ -141,24 +123,6 @@ describe('ol.Observable', function() {
       observable.un('foo', listener);
       observable.dispatchEvent('foo');
       expect(listener.calledOnce).to.be(true);
-    });
-
-    it('accepts a `this` arg', function() {
-      var thisArg = {};
-      observable.on('foo', listener, thisArg);
-
-      observable.dispatchEvent('foo');
-      expect(listener.calledOnce).to.be(true);
-
-      // will not unregister without the same thisArg
-      observable.un('foo', listener);
-      observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(2);
-
-      // properly unregister by providing the same thisArg
-      observable.un('foo', listener, thisArg);
-      observable.dispatchEvent('foo');
-      expect(listener.callCount).to.be(2);
     });
 
   });

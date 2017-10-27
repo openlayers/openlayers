@@ -76,6 +76,8 @@ ol.pointer.PointerEventHandler = function(element) {
    */
   this.eventSourceList_ = [];
 
+  this.eventHandler_ = this.eventHandler_.bind(this);
+
   this.registerSources();
 };
 ol.inherits(ol.pointer.PointerEventHandler, ol.events.EventTarget);
@@ -177,7 +179,7 @@ ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
  */
 ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
   events.forEach(function(eventName) {
-    ol.events.listen(this.element_, eventName, this.eventHandler_, this);
+    ol.events.listen(this.element_, eventName, this.eventHandler_);
   }, this);
 };
 
@@ -189,7 +191,7 @@ ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
  */
 ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
   events.forEach(function(e) {
-    ol.events.unlisten(this.element_, e, this.eventHandler_, this);
+    ol.events.unlisten(this.element_, e, this.eventHandler_);
   }, this);
 };
 

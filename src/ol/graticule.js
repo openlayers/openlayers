@@ -12,6 +12,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Text');
+goog.require('ol.events');
 
 
 /**
@@ -144,6 +145,8 @@ ol.Graticule = function(opt_options) {
    * @private
    */
   this.parallelsLabels_ = null;
+
+  this.handlePostCompose_ = this.handlePostCompose_.bind(this);
 
   if (options.showLabels == true) {
     var degreesToString = ol.coordinate.degreesToStringHDMS;
@@ -647,13 +650,15 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
  */
 ol.Graticule.prototype.setMap = function(map) {
   if (this.map_) {
-    this.map_.un(ol.render.EventType.POSTCOMPOSE,
-        this.handlePostCompose_, this);
+    ol.events.unlisten(map,
+        ol.render.EventType.POSTCOMPOSE,
+        this.handlePostCompose_);
     this.map_.render();
   }
   if (map) {
-    map.on(ol.render.EventType.POSTCOMPOSE,
-        this.handlePostCompose_, this);
+    ol.events.listen(map,
+        ol.render.EventType.POSTCOMPOSE,
+        this.handlePostCompose_);
     map.render();
   }
   this.map_ = map;

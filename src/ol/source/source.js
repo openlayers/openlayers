@@ -62,6 +62,7 @@ ol.source.Source = function(options) {
    */
   this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
+  this.refresh = this.refresh.bind(this);
 };
 ol.inherits(ol.source.Source, ol.Object);
 

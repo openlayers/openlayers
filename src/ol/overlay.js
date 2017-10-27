@@ -105,25 +105,27 @@ ol.Overlay = function(options) {
    */
   this.mapPostrenderListenerKey_ = null;
 
+  this.render = this.render.bind(this);
+
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.Overlay.Property_.ELEMENT),
-      this.handleElementChanged, this);
+      this.handleElementChanged);
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.Overlay.Property_.MAP),
-      this.handleMapChanged, this);
+      this.handleMapChanged);
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.Overlay.Property_.OFFSET),
-      this.handleOffsetChanged, this);
+      this.handleOffsetChanged);
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.Overlay.Property_.POSITION),
-      this.handlePositionChanged, this);
+      this.handlePositionChanged);
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.Overlay.Property_.POSITIONING),
-      this.handlePositioningChanged, this);
+      this.handlePositioningChanged);
 
   if (options.element !== undefined) {
     this.setElement(options.element);
@@ -239,7 +241,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
   var map = this.getMap();
   if (map) {
     this.mapPostrenderListenerKey_ = ol.events.listen(map,
-        ol.MapEventType.POSTRENDER, this.render, this);
+        ol.MapEventType.POSTRENDER, this.render);
     this.updatePixelPosition();
     var container = this.stopEvent_ ?
       map.getOverlayContainerStopEvent() : map.getOverlayContainer();

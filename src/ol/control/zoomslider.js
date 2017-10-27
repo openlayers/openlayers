@@ -114,18 +114,18 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragger_ = new ol.pointer.PointerEventHandler(containerElement);
 
   ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERDOWN,
-      this.handleDraggerStart_, this);
+      this.handleDraggerStart_.bind(this));
   ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERMOVE,
-      this.handleDraggerDrag_, this);
+      this.handleDraggerDrag_.bind(this));
   ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERUP,
-      this.handleDraggerEnd_, this);
+      this.handleDraggerEnd_.bind(this));
 
   ol.events.listen(containerElement, ol.events.EventType.CLICK,
-      this.handleContainerClick_, this);
+      this.handleContainerClick_.bind(this));
   ol.events.listen(thumbElement, ol.events.EventType.CLICK,
       ol.events.Event.stopPropagation);
 
-  var render = options.render ? options.render : ol.control.ZoomSlider.render;
+  var render = options.render ? options.render : ol.control.ZoomSlider.render.bind(this);
 
   ol.control.Control.call(this, {
     element: containerElement,

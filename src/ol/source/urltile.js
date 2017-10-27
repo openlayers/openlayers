@@ -69,6 +69,7 @@ ol.source.UrlTile = function(options) {
    */
   this.tileLoadingKeys_ = {};
 
+  this.handleTileChange = this.handleTileChange.bind(this);
 };
 ol.inherits(ol.source.UrlTile, ol.source.Tile);
 

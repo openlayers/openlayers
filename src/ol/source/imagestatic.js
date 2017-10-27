@@ -49,7 +49,7 @@ ol.source.ImageStatic = function(options) {
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 
   ol.events.listen(this.image_, ol.events.EventType.CHANGE,
-      this.handleImageChange, this);
+      this.handleImageChange);
 
 };
 ol.inherits(ol.source.ImageStatic, ol.source.Image);

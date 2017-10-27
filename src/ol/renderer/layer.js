@@ -27,6 +27,7 @@ ol.renderer.Layer = function(layer) {
    */
   this.layer_ = layer;
 
+  this.handleImageChange_ = this.handleImageChange_.bind(this);
 
 };
 ol.inherits(ol.renderer.Layer, ol.Observable);
@@ -36,11 +37,10 @@ ol.inherits(ol.renderer.Layer, ol.Observable);
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} hitTolerance Hit tolerance in pixels.
- * @param {function(this: S, (ol.Feature|ol.render.Feature), ol.layer.Layer): T}
+ * @param {function((ol.Feature|ol.render.Feature), ol.layer.Layer): T}
  *     callback Feature callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
- * @template S,T
+ * @template T
  */
 ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 
@@ -117,7 +117,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
   if (imageState != ol.ImageState.LOADED &&
       imageState != ol.ImageState.ERROR) {
     ol.events.listen(image, ol.events.EventType.CHANGE,
-        this.handleImageChange_, this);
+        this.handleImageChange_);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();

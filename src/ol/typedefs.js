@@ -199,8 +199,7 @@ ol.EventsConditionType;
 /**
  * Key to use with {@link ol.Observable#unByKey}.
  *
- * @typedef {{bindTo: (Object|undefined),
- *     boundListener: (ol.EventsListenerFunctionType|undefined),
+ * @typedef {{boundListener: (ol.EventsListenerFunctionType|undefined),
  *     callOnce: boolean,
  *     deleteIndex: (number|undefined),
  *     listener: ol.EventsListenerFunctionType,

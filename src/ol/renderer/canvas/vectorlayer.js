@@ -217,7 +217,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
@@ -236,7 +236,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
-            return callback.call(thisArg, feature, layer);
+            return callback(feature, layer);
           }
         });
   }
@@ -349,7 +349,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
          */
         function(feature) {
           features.push(feature);
-        }, this);
+        });
     features.sort(vectorLayerRenderOrder);
     for (var i = 0, ii = features.length; i < ii; ++i) {
       renderFeature(features[i]);
@@ -388,13 +388,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature = function(feature, resol
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],
           ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_.bind(this)) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_.bind(this)) || loading;
   }
   return loading;
 };

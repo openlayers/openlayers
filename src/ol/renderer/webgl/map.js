@@ -87,9 +87,9 @@ ol.renderer.webgl.Map = function(container, map) {
   this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
   ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
-      this.handleWebGLContextLost, this);
+      this.handleWebGLContextLost.bind(this));
   ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
-      this.handleWebGLContextRestored, this);
+      this.handleWebGLContextRestored.bind(this));
 
   /**
    * @private
@@ -501,8 +501,8 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
-    layerFilter, thisArg2) {
+ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback,
+    layerFilter) {
   var result;
 
   if (this.getGL().isContextLost()) {
@@ -517,11 +517,11 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
-        layerFilter.call(thisArg2, layer)) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution)
+        && layerFilter(layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, hitTolerance, callback, thisArg);
+          coordinate, frameState, hitTolerance, callback);
       if (result) {
         return result;
       }
@@ -534,7 +534,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
+ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter) {
   var hasFeature = false;
 
   if (this.getGL().isContextLost()) {
@@ -549,8 +549,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, fr
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
-        layerFilter.call(thisArg, layer)) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) && layerFilter(layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       hasFeature =
           layerRenderer.hasFeatureAtCoordinate(coordinate, frameState);
@@ -566,8 +565,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, fr
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-    layerFilter, thisArg2) {
+ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, layerFilter) {
   if (this.getGL().isContextLost()) {
     return false;
   }
@@ -582,10 +580,9 @@ ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState
     var layerState = layerStates[i];
     var layer = layerState.layer;
     if (ol.layer.Layer.visibleAtResolution(layerState, viewState.resolution) &&
-        layerFilter.call(thisArg, layer)) {
+        layerFilter(layer)) {
       var layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layer));
-      result = layerRenderer.forEachLayerAtPixel(
-          pixel, frameState, callback, thisArg);
+      result = layerRenderer.forEachLayerAtPixel(pixel, frameState, callback);
       if (result) {
         return result;
       }

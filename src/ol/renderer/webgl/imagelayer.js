@@ -95,7 +95,8 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, frameState, hitTolerance, callback) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -109,7 +110,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coo
        * @return {?} Callback result.
        */
       function(feature) {
-        return callback.call(thisArg, feature, layer);
+        return callback(feature, layer);
       });
 };
 
@@ -235,7 +236,7 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvas
  */
 ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, ol.functions.TRUE, this);
+      coordinate, frameState, 0, ol.functions.TRUE);
   return hasFeature !== undefined;
 };
 
@@ -243,7 +244,7 @@ ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordin
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback) {
   if (!this.image_ || !this.image_.getImage()) {
     return undefined;
   }
@@ -254,10 +255,10 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fra
     var coordinate = ol.transform.apply(
         frameState.pixelToCoordinateTransform, pixel.slice());
     var hasFeature = this.forEachFeatureAtCoordinate(
-        coordinate, frameState, 0, ol.functions.TRUE, this);
+        coordinate, frameState, 0, ol.functions.TRUE);
 
     if (hasFeature) {
-      return callback.call(thisArg, this.getLayer(), null);
+      return callback(this.getLayer(), null);
     } else {
       return undefined;
     }
@@ -289,7 +290,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fra
 
     var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
     if (imageData[3] > 0) {
-      return callback.call(thisArg, this.getLayer(),  imageData);
+      return callback(this.getLayer(),  imageData);
     } else {
       return undefined;
     }

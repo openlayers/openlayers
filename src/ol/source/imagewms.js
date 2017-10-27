@@ -238,7 +238,7 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
   this.renderedRevision_ = this.getRevision();
 
   ol.events.listen(this.image_, ol.events.EventType.CHANGE,
-      this.handleImageChange, this);
+      this.handleImageChange);
 
   return this.image_;
 

@@ -180,7 +180,7 @@ ol.reproj.Image.prototype.load = function() {
               this.unlistenSource_();
               this.reproject_();
             }
-          }, this);
+          }.bind(this));
       this.sourceImage_.load();
     }
   }

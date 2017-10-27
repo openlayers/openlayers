@@ -87,6 +87,9 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
     this.determineTainting_();
   }
 
+  this.handleImageError_ =   this.handleImageError_.bind(this);
+  this.handleImageLoad_ = this.handleImageLoad_.bind(this);
+
 };
 ol.inherits(ol.style.IconImage, ol.events.EventTarget);
 
@@ -223,9 +226,9 @@ ol.style.IconImage.prototype.load = function() {
     this.imageState_ = ol.ImageState.LOADING;
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, this),
+          this.handleImageError_),
       ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, this)
+          this.handleImageLoad_)
     ];
     try {
       this.image_.src = this.src_;

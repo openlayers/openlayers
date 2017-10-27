@@ -11,6 +11,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.source.Vector');
+goog.require('ol.events');
 
 
 /**
@@ -69,8 +70,8 @@ ol.source.Cluster = function(options) {
    */
   this.source = options.source;
 
-  this.source.on(ol.events.EventType.CHANGE,
-      ol.source.Cluster.prototype.refresh, this);
+  ol.events.listen(this.source, ol.events.EventType.CHANGE,
+      this.refresh);
 };
 ol.inherits(ol.source.Cluster, ol.source.Vector);
 

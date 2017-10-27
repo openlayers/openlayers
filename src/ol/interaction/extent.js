@@ -82,10 +82,10 @@ ol.interaction.Extent = function(opt_options) {
 
   /* Inherit ol.interaction.Pointer */
   ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.Extent.handleDownEvent_,
-    handleDragEvent: ol.interaction.Extent.handleDragEvent_,
-    handleEvent: ol.interaction.Extent.handleEvent_,
-    handleUpEvent: ol.interaction.Extent.handleUpEvent_
+    handleDownEvent: ol.interaction.Extent.handleDownEvent_.bind(this),
+    handleDragEvent: ol.interaction.Extent.handleDragEvent_.bind(this),
+    handleEvent: ol.interaction.Extent.handleEvent_.bind(this),
+    handleUpEvent: ol.interaction.Extent.handleUpEvent_.bind(this)
   });
 
   /**

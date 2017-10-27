@@ -228,7 +228,7 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
       this.tileOptions);
   tile.key = key;
   ol.events.listen(tile, ol.events.EventType.CHANGE,
-      this.handleTileChange, this);
+      this.handleTileChange);
   return tile;
 };
 

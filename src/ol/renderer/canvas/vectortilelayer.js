@@ -173,7 +173,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
 
     /**
      * @param {ol.Feature|ol.render.Feature} feature Feature.
-     * @this {ol.renderer.canvas.VectorTileLayer}
      */
     var renderFeature = function(feature) {
       var styles;
@@ -192,7 +191,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
         this.dirty_ = this.dirty_ || dirty;
         replayState.dirty = replayState.dirty || dirty;
       }
-    };
+    }.bind(this);
 
     var features = sourceTile.getFeatures();
     if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
@@ -210,7 +209,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
         }
         feature.getGeometry().transform(tileProjection, projection);
       }
-      renderFeature.call(this, feature);
+      renderFeature(feature);
     }
     replayGroup.finish();
     sourceTile.setReplayGroup(layer, tile.tileCoord.toString(), replayGroup);
@@ -237,7 +236,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(
+    coordinate, frameState, hitTolerance, callback) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
@@ -277,7 +277,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
             var key = ol.getUid(feature).toString();
             if (!(key in features)) {
               features[key] = true;
-              return callback.call(thisArg, feature, layer);
+              return callback(feature, layer);
             }
           });
     }
@@ -412,12 +412,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
     for (var i = 0, ii = styles.length; i < ii; ++i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i], squaredTolerance,
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_.bind(this)) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles, squaredTolerance,
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_.bind(this)) || loading;
   }
   return loading;
 };

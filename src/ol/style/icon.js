@@ -353,9 +353,8 @@ ol.style.Icon.prototype.getSize = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
-  return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE,
-      listener, thisArg);
+ol.style.Icon.prototype.listenImageChange = function(listener) {
+  return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE, listener);
 };
 
 
@@ -375,7 +374,6 @@ ol.style.Icon.prototype.load = function() {
 /**
  * @override
  */
-ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
-  ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,
-      listener, thisArg);
+ol.style.Icon.prototype.unlistenImageChange = function(listener) {
+  ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE, listener);
 };

@@ -77,7 +77,7 @@ ol.control.ScaleLine = function(opt_options) {
    */
   this.renderedHTML_ = '';
 
-  var render = options.render ? options.render : ol.control.ScaleLine.render;
+  var render = options.render ? options.render : ol.control.ScaleLine.render.bind(this);
 
   ol.control.Control.call(this, {
     element: this.element_,
@@ -87,7 +87,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.control.ScaleLine.Property_.UNITS),
-      this.handleUnitsChanged_, this);
+      this.handleUnitsChanged_.bind(this));
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
       ol.control.ScaleLineUnits.METRIC);

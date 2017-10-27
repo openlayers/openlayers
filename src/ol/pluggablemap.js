@@ -133,11 +133,15 @@ ol.PluggableMap = function(options) {
    */
   this.viewChangeListenerKey_ = null;
 
+  this.handleViewPropertyChanged_ = this.handleViewPropertyChanged_.bind(this);
+
   /**
    * @private
    * @type {Array.<ol.EventsKey>}
    */
   this.layerGroupPropertyListenerKeys_ = null;
+
+  this.render = this.render.bind(this);
 
   /**
    * @private
@@ -190,7 +194,7 @@ ol.PluggableMap = function(options) {
   this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this, options.moveTolerance);
   for (var key in ol.MapBrowserEventType) {
     ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEventType[key],
-        this.handleMapBrowserEvent, this);
+        this.handleMapBrowserEvent.bind(this));
   }
 
   /**
@@ -205,10 +209,12 @@ ol.PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
+  this.handleBrowserEvent = this.handleBrowserEvent.bind(this);
+
   ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
-      this.handleBrowserEvent, this);
+      this.handleBrowserEvent);
   ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, this);
+      this.handleBrowserEvent);
 
   /**
    * @type {ol.Collection.<ol.control.Control>}
@@ -276,13 +282,13 @@ ol.PluggableMap = function(options) {
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
-      this.handleLayerGroupChanged_, this);
+      this.handleLayerGroupChanged_);
   ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
-      this.handleViewChanged_, this);
+      this.handleViewChanged_);
   ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
-      this.handleSizeChanged_, this);
+      this.handleSizeChanged_);
   ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
-      this.handleTargetChanged_, this);
+      this.handleTargetChanged_);
 
   // setProperties will trigger the rendering of the map if the map
   // is "defined" already.
@@ -297,21 +303,21 @@ ol.PluggableMap = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls, ol.CollectionEventType.ADD,
-      /**
-       * @param {ol.Collection.Event} event Collection event.
-       */
-      function(event) {
-        event.element.setMap(this);
-      }, this);
+  ol.events.listen(this.controls, ol.CollectionEventType.ADD, (
+    /**
+     * @param {ol.Collection.Event} event Collection event.
+     */
+    function(event) {
+      event.element.setMap(this);
+    }).bind(this));
 
-  ol.events.listen(this.controls, ol.CollectionEventType.REMOVE,
-      /**
-       * @param {ol.Collection.Event} event Collection event.
-       */
-      function(event) {
-        event.element.setMap(null);
-      }, this);
+  ol.events.listen(this.controls, ol.CollectionEventType.REMOVE, (
+    /**
+     * @param {ol.Collection.Event} event Collection event.
+     */
+    function(event) {
+      event.element.setMap(null);
+    }).bind(this));
 
   this.interactions.forEach(
       /**
@@ -322,44 +328,44 @@ ol.PluggableMap = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions, ol.CollectionEventType.ADD,
-      /**
-       * @param {ol.Collection.Event} event Collection event.
-       */
-      function(event) {
-        event.element.setMap(this);
-      }, this);
+  ol.events.listen(this.interactions, ol.CollectionEventType.ADD, (
+    /**
+     * @param {ol.Collection.Event} event Collection event.
+     */
+    function(event) {
+      event.element.setMap(this);
+    }).bind(this));
 
-  ol.events.listen(this.interactions, ol.CollectionEventType.REMOVE,
-      /**
-       * @param {ol.Collection.Event} event Collection event.
-       */
-      function(event) {
-        event.element.setMap(null);
-      }, this);
+  ol.events.listen(this.interactions, ol.CollectionEventType.REMOVE, (
+    /**
+     * @param {ol.Collection.Event} event Collection event.
+     */
+    function(event) {
+      event.element.setMap(null);
+    }).bind(this));
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
-      /**
-       * @param {ol.Collection.Event} event Collection event.
-       */
-      function(event) {
-        this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
-      }, this);
+  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD, (
+    /**
+     * @param {ol.Collection.Event} event Collection event.
+     */
+    function(event) {
+      this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
+    }).bind(this));
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
-      /**
-       * @param {ol.Collection.Event} event Collection event.
-       */
-      function(event) {
-        var overlay = /** @type {ol.Overlay} */ (event.element);
-        var id = overlay.getId();
-        if (id !== undefined) {
-          delete this.overlayIdIndex_[id.toString()];
-        }
-        event.element.setMap(null);
-      }, this);
+  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE, (
+    /**
+     * @param {ol.Collection.Event} event Collection event.
+     */
+    function(event) {
+      var overlay = /** @type {ol.Overlay} */ (event.element);
+      var id = overlay.getId();
+      if (id !== undefined) {
+        delete this.overlayIdIndex_[id.toString()];
+      }
+      event.element.setMap(null);
+    }).bind(this));
 
 };
 ol.inherits(ol.PluggableMap, ol.Object);
@@ -430,9 +436,9 @@ ol.PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
   this.renderer_.dispose();
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
-      this.handleBrowserEvent, this);
+      this.handleBrowserEvent);
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, this);
+      this.handleBrowserEvent);
   if (this.handleResize_ !== undefined) {
     window.removeEventListener(ol.events.EventType.RESIZE,
         this.handleResize_, false);
@@ -477,8 +483,7 @@ ol.PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_
   var layerFilter = opt_options.layerFilter !== undefined ?
     opt_options.layerFilter : ol.functions.TRUE;
   return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, callback, null,
-      layerFilter, null);
+      coordinate, this.frameState_, hitTolerance, callback, layerFilter);
 };
 
 
@@ -506,36 +511,31 @@ ol.PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback
+ * @param {function(ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback
  *     Layer callback. This callback will receive two arguments: first is the
  *     {@link ol.layer.Layer layer}, second argument is an array representing
  *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
  *     that do not currently support this argument. To stop detection, callback
  *     functions can return a truthy value.
- * @param {S=} opt_this Value to use as `this` when executing `callback`.
- * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
+ * @param {(function(ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
  *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
  *     value. Only layers which are visible and for which this function returns
  *     `true` will be tested for features. By default, all visible layers will
  *     be tested.
- * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
- * @template S,T,U
+ * @template T
  * @api
  */
-ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_layerFilter) {
   if (!this.frameState_) {
     return;
   }
-  var thisArg = opt_this !== undefined ? opt_this : null;
   var layerFilter = opt_layerFilter !== undefined ?
     opt_layerFilter : ol.functions.TRUE;
-  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
-      pixel, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+      pixel, this.frameState_, callback, layerFilter);
 };
 
 
@@ -545,7 +545,6 @@ ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_th
  * @param {ol.Pixel} pixel Pixel.
  * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {boolean} Is there a feature at the given pixel?
- * @template U
  * @api
  */
 ol.PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
@@ -559,7 +558,7 @@ ol.PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, layerFilter, null);
+      coordinate, this.frameState_, hitTolerance, layerFilter);
 };
 
 
@@ -954,9 +953,9 @@ ol.PluggableMap.prototype.handleTargetChanged_ = function() {
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
       ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYDOWN,
-          this.handleBrowserEvent, this),
+          this.handleBrowserEvent),
       ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYPRESS,
-          this.handleBrowserEvent, this)
+          this.handleBrowserEvent)
     ];
 
     if (!this.handleResize_) {
@@ -1005,10 +1004,10 @@ ol.PluggableMap.prototype.handleViewChanged_ = function() {
     this.viewport_.setAttribute('data-view', ol.getUid(view));
     this.viewPropertyListenerKey_ = ol.events.listen(
         view, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleViewPropertyChanged_, this);
+        this.handleViewPropertyChanged_);
     this.viewChangeListenerKey_ = ol.events.listen(
         view, ol.events.EventType.CHANGE,
-        this.handleViewPropertyChanged_, this);
+        this.handleViewPropertyChanged_);
   }
   this.render();
 };
@@ -1027,10 +1026,10 @@ ol.PluggableMap.prototype.handleLayerGroupChanged_ = function() {
     this.layerGroupPropertyListenerKeys_ = [
       ol.events.listen(
           layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
-          this.render, this),
+          this.render),
       ol.events.listen(
           layerGroup, ol.events.EventType.CHANGE,
-          this.render, this)
+          this.render)
     ];
   }
   this.render();
