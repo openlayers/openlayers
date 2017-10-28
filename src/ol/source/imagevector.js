@@ -162,7 +162,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(
-        coordinate, resolution, 0, hitTolerance, skippedFeatureUids,
+        coordinate, resolution, 0, hitTolerance, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
