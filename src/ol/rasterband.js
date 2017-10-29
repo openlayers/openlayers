@@ -115,23 +115,29 @@ if (ol.ENABLE_RASTER) {
    */
   ol.RasterBand.prototype.calculateStatistics = function() {
     var raster = this.getRaster(this.type_);
-    var stat = this.statistics_;
+    var stat = this.getStatistics();
+    var nullValue = this.getNullValue();
     var min = Infinity;
     var max = -Infinity;
     var sum = 0;
-    var count = raster.length;
+    var count = 0;
     var i;
 
     for (i = 0; i < raster.length; ++i) {
-      sum += raster[i];
-      min = raster[i] < min ? raster[i] : min;
-      max = raster[i] > max ? raster[i] : max;
+      if (raster[i] !== nullValue) {
+        sum += raster[i];
+        min = raster[i] < min ? raster[i] : min;
+        max = raster[i] > max ? raster[i] : max;
+        count++;
+      }
     }
     var avg = sum / count;
     var variance = 0;
 
     for (i = 0; i < raster.length; ++i) {
-      variance += Math.pow(raster[i] - avg, 2);
+      if (raster[i] !== nullValue) {
+        variance += Math.pow(raster[i] - avg, 2);
+      }
     }
     variance /= count;
 
@@ -177,7 +183,11 @@ if (ol.ENABLE_RASTER) {
    * @api
    */
   ol.RasterBand.prototype.setNullValue = function(nullValue) {
+    var oldNull = this.null_;
     this.null_ = nullValue;
+    if (oldNull !== nullValue) {
+      this.calculateStatistics();
+    }
     this.changed();
   };
 
