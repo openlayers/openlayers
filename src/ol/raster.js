@@ -12,16 +12,17 @@ if (ol.ENABLE_RASTER) {
    * @classdesc Basic container for raw, binary raster data.
    * @constructor
    * @extends {ol.Object}
-   * @param {ArrayBuffer} raster Raster data.
+   * @param {ArrayBuffer|Array.<number>} raster Raster data.
    * @param {number} stride Number of columns.
    * @param {ol.Size} resolution Cell resolution.
+   * @param {boolean} binary Store raster in a buffer.
    */
-  ol.Raster = function(raster, stride, resolution) {
+  ol.Raster = function(raster, stride, resolution, binary) {
 
     ol.Object.call(this);
 
     /**
-     * @type {ArrayBuffer}
+     * @type {ArrayBuffer|Array.<number>}
      * @private
      */
     this.raster_ = raster;
@@ -37,16 +38,26 @@ if (ol.ENABLE_RASTER) {
      * @private
      */
     this.resolution_ = resolution;
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.binary_ = binary;
   };
   ol.inherits(ol.Raster, ol.Object);
 
 
   /**
    * @param {ol.RasterType=} type Return an array with the specified type.
-   * @return {ArrayBuffer|ol.TypedArray} Raster data.
+   * @return {ArrayBuffer|ol.TypedArray|Array.<number>} Raster data.
    */
   ol.Raster.prototype.getRaster = function(type) {
-    return type ? this.asArray_(type) : this.raster_;
+    if (this.binary_) {
+      return type ? this.asArray_(type) : this.raster_;
+    } else {
+      return this.raster_;
+    }
   };
 
 
@@ -83,7 +94,7 @@ if (ol.ENABLE_RASTER) {
    * @api
    */
   ol.Raster.getArrayConstructor = function(type) {
-    if (ol.has.RASTER) {
+    if (ol.has.TYPED_ARRAY) {
       ol.asserts.assert(type in ol.Raster.typeMap_, 61);
       return ol.Raster.typeMap_[type];
     }
@@ -96,7 +107,7 @@ if (ol.ENABLE_RASTER) {
    */
   ol.Raster.typeMap_ = function() {
     var typeMap = {};
-    if (ol.has.RASTER) {
+    if (ol.has.TYPED_ARRAY) {
       typeMap[ol.RasterType.UINT8] = window.Uint8Array;
       typeMap[ol.RasterType.INT8] = window.Int8Array;
       typeMap[ol.RasterType.UINT16] = window.Uint16Array;

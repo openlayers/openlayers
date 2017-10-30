@@ -260,12 +260,25 @@ ol.PseudocolorMap;
 
 
 /**
+ * @typedef {{binary: (boolean|undefined),
+              convert: (function(number):number|undefined),
+              nullvalue: (number|undefined),
+              raster: (ArrayBuffer|Array.<number>),
+              resolution: ol.Size,
+              stride: number,
+              type: ol.RasterType}}
+ */
+ol.RasterBandOptions;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            bands: (Array.<ol.RasterBand>|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
- *            bands: (Array.<ol.RasterBand>|undefined),
- *            state: (ol.source.State|undefined)}}
+ *            state: (ol.source.State|undefined),
+ *            wrapX: (boolean|undefined)}}
  */
 ol.RasterBaseOptions;
 

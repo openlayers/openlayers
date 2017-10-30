@@ -1,6 +1,7 @@
 goog.provide('ol.RasterBand');
 
 goog.require('ol');
+goog.require('ol.has');
 goog.require('ol.Object');
 goog.require('ol.Raster');
 
@@ -11,14 +12,9 @@ if (ol.ENABLE_RASTER) {
    * raster sources.
    * @constructor
    * @extends {ol.Object}
-   * @param {ArrayBuffer|Array.<number>} raster Raster data.
-   * @param {number} stride Number of columns.
-   * @param {ol.Size} resolution Cell resolution.
-   * @param {ol.RasterType} type Raster data type.
-   * @param {number=} nullvalue Null value.
-   * @param {function(number):number=} convert Type conversion function.
+   * @param {ol.RasterBandOptions} options Options.
    */
-  ol.RasterBand = function(raster, stride, resolution, type, nullvalue, convert) {
+  ol.RasterBand = function(options) {
 
     ol.Object.call(this);
 
@@ -26,19 +22,24 @@ if (ol.ENABLE_RASTER) {
      * @type {ol.RasterType}
      * @private
      */
-    this.type_ = type;
+    this.type_ = options.type;
 
     /**
      * @type {number|null}
      * @private
      */
-    this.null_ = nullvalue || null;
+    this.null_ = options.nullvalue || null;
+
+    var binary = typeof options.binary === 'boolean' ? options.binary :
+      ol.has.TYPED_ARRAY;
 
     /**
      * @type {ol.Raster}
      * @private
      */
-    this.raster_ = this.createRaster_(raster, stride, resolution, type, convert);
+    this.raster_ = binary ? this.createRaster_(options.raster, options.stride,
+        options.resolution, options.type, options.convert) :
+      new ol.Raster(options.raster, options.stride, options.resolution, false);
 
     /**
      * @type {ol.RasterStatistics}
@@ -61,12 +62,11 @@ if (ol.ENABLE_RASTER) {
    * Returns the raw raster data if no data type is specified. Otherwise, returns
    * a typed array through the raster can also be written.
    * @param {ol.RasterType=} opt_type Data type.
-   * @return {ArrayBuffer|ol.TypedArray} Raw raster data.
-   * @observable
+   * @return {ArrayBuffer|ol.TypedArray|Array.<number>} Raw raster data.
    * @api
    */
   ol.RasterBand.prototype.getRaster = function(opt_type) {
-    return /** @type {ArrayBuffer|ol.TypedArray} */ (
+    return /** @type {ArrayBuffer|ol.TypedArray|Array.<number>} */ (
       this.raster_.getRaster(opt_type));
   };
 
@@ -155,13 +155,15 @@ if (ol.ENABLE_RASTER) {
    * @param {ol.Size} resolution Cell resolution.
    * @param {ol.RasterType} type Raster data type.
    * @param {function(number):number=} convert Type conversion function.
-   * @return {ol.Raster} Binary raster.
+   * @return {ol.Raster} Raster object.
    * @private
    */
   ol.RasterBand.prototype.createRaster_ = function(raster, stride, resolution, type,
       convert) {
     var buffer;
-    if (!(raster instanceof window.ArrayBuffer)) {
+    if (raster instanceof window.ArrayBuffer) {
+      buffer = raster;
+    } else {
       var ctor = ol.Raster.getArrayConstructor(type);
       buffer = new window.ArrayBuffer(raster.length * ctor.BYTES_PER_ELEMENT);
       var view = new ctor(buffer);
@@ -169,10 +171,8 @@ if (ol.ENABLE_RASTER) {
       for (var i = 0; i < raster.length; ++i) {
         view[i] = hasFunction ? convert(raster[i]) : raster[i];
       }
-    } else {
-      buffer = raster;
     }
-    return new ol.Raster(buffer, stride, resolution);
+    return new ol.Raster(buffer, stride, resolution, true);
   };
 
 
