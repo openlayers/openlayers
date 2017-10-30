@@ -27,7 +27,8 @@ if (ol.ENABLE_RASTER) {
       extent: options.extent,
       logo: options.logo,
       projection: options.projection,
-      state: options.state
+      state: options.state,
+      wrapX: options.wrapX
     });
 
 
@@ -37,20 +38,21 @@ if (ol.ENABLE_RASTER) {
      */
     this.bands_ = [];
 
-    var bands = options.bands ? options.bands : [];
-    for (var i = 0; i < bands.length; ++i) {
-      this.addBand(bands[i]);
+    var bands = options.bands ? options.bands : this.loadBands();
+    if (bands) {
+      for (var i = 0; i < bands.length; ++i) {
+        this.addBand_(bands[i]);
+      }
     }
   };
   ol.inherits(ol.source.RasterBase, ol.source.Source);
 
 
   /**
-   * Used by subclasses. Not designed for arbitrarily adding new bands.
    * @param {ol.RasterBand} band Raster band.
-   * @protected
+   * @private
    */
-  ol.source.RasterBase.prototype.addBand = function(band) {
+  ol.source.RasterBase.prototype.addBand_ = function(band) {
     this.bands_.push(band);
     this.setupChangeEvents_(band);
     this.dispatchEvent(
@@ -80,15 +82,7 @@ if (ol.ENABLE_RASTER) {
 
 
   /**
-   * @param {number} index Band index.
-   * @return {ol.RasterBand} Raster band.
-   */
-  ol.source.RasterBase.prototype.getBand = function(index) {
-    return this.bands_[index];
-  };
-
-
-  /**
+   * Used by the renderer for querying a band in an extent.
    * @abstract
    * @param {ol.Extent} extent Extent.
    * @param {number} index Band index.
@@ -96,6 +90,24 @@ if (ol.ENABLE_RASTER) {
    * @protected
    */
   ol.source.RasterBase.prototype.getRaster = function(extent, index) {};
+
+
+  /**
+   * @inheritDoc
+   */
+  ol.source.RasterBase.prototype.getResolutions = function() {
+    return undefined;
+  };
+
+
+  /**
+   * Main function of every raster source responsible for acquiring and parsing
+   * raster data.
+   * @abstract
+   * @return {Array.<ol.RasterBand>|null} Raster bands.
+   * @protected
+   */
+  ol.source.RasterBase.prototype.loadBands = function() {};
 
 
   /**
