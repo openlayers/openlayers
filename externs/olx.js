@@ -7226,7 +7226,8 @@ olx.source.CartoDBOptions.prototype.account;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size,
- *     transition: (number|undefined)}}
+ *     transition: (number|undefined),
+ *     tileSize: (number|undefined)}}
  */
 olx.source.ZoomifyOptions;
 
