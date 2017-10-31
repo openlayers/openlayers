@@ -3,6 +3,7 @@ goog.provide('ol.render.canvas.TextReplay');
 goog.require('ol');
 goog.require('ol.colorlike');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.geom.flat.straightchunk');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.has');
@@ -219,6 +220,9 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
   var i, ii;
 
   if (this.textState_.placement === ol.style.TextPlacement.LINE) {
+    if (!ol.extent.intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
+      return;
+    }
     var ends;
     flatCoordinates = geometry.getFlatCoordinates();
     stride = geometry.getStride();
@@ -248,7 +252,10 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
       } else {
         flatEnd = ends[o];
       }
-      end = this.appendFlatCoordinates(flatCoordinates, flatOffset, flatEnd, stride, false, false);
+      for (i = flatOffset; i < flatEnd; i += stride) {
+        this.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+      }
+      end = this.coordinates.length;
       flatOffset = ends[o];
       this.drawChars_(begin, end, this.declutterGroup_);
       begin = end;
