@@ -7,6 +7,7 @@ goog.require('ol.TileUrlFunction');
 goog.require('ol.asserts');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -176,9 +177,9 @@ ol.source.Zoomify.Tile_ = function(
 
   /**
    * @private
-   * @type {ol.Size|number}
+   * @type {ol.Size}
    */
-  this.tileSize_ = tileGrid.getTileSize(tileCoord[0]);
+  this.tileSize_ = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]));
 };
 ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
 
@@ -190,14 +191,14 @@ ol.source.Zoomify.Tile_.prototype.getImage = function() {
   if (this.zoomifyImage_) {
     return this.zoomifyImage_;
   }
-  var tileSize = (Array.isArray(this.tileSize_) ? this.tileSize_[0] : this.tileSize_);
   var image = ol.ImageTile.prototype.getImage.call(this);
   if (this.state == ol.TileState.LOADED) {
-    if (image.width == tileSize && image.height == tileSize) {
+    var tileSize = this.tileSize_;
+    if (image.width == tileSize[0] && image.height == tileSize[1]) {
       this.zoomifyImage_ = image;
       return image;
     } else {
-      var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
+      var context = ol.dom.createCanvasContext2D(tileSize[0], tileSize[1]);
       context.drawImage(image, 0, 0);
       this.zoomifyImage_ = context.canvas;
       return context.canvas;
