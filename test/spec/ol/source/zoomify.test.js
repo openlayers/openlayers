@@ -248,11 +248,6 @@ describe('ol.source.Zoomify', function() {
 
   describe('uses a custom tileClass', function() {
 
-    it('uses "ol.source.Zoomify.Tile_" as tileClass', function() {
-      var source = getZoomifySource();
-      expect(source.tileClass).to.be(ol.source.Zoomify.Tile_);
-    });
-
     it('returns expected tileClass instances via "getTile"', function() {
       var source = getZoomifySource();
       var tile = source.getTile(0, 0, -1, 1, proj);

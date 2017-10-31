@@ -12,62 +12,6 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
- * @constructor
- * @extends {ol.ImageTile}
- * @param {ol.tilegrid.TileGrid} tileGrid TileGrid that the tile belongs to.
- * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
- * @param {string} src Image source URI.
- * @param {?string} crossOrigin Cross origin.
- * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @param {olx.TileOptions=} opt_options Tile options.
- * @private
- */
-var ZoomifyTileClass = function(
-    tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
-
-  ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
-
-  /**
-   * @private
-   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
-   */
-  this.zoomifyImage_ = null;
-
-  /**
-   * @private
-   * @type {ol.Size|number}
-   */
-  this.tileSize_ = tileGrid.getTileSize(tileCoord[0]);
-};
-ol.inherits(ZoomifyTileClass, ol.ImageTile);
-
-
-/**
- * @inheritDoc
- */
-ZoomifyTileClass.prototype.getImage = function() {
-  if (this.zoomifyImage_) {
-    return this.zoomifyImage_;
-  }
-  var tileSize = (Array.isArray(this.tileSize_) ? this.tileSize_[0] : this.tileSize_);
-  var image = ol.ImageTile.prototype.getImage.call(this);
-  if (this.state == ol.TileState.LOADED) {
-    if (image.width == tileSize && image.height == tileSize) {
-      this.zoomifyImage_ = image;
-      return image;
-    } else {
-      var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
-      context.drawImage(image, 0, 0);
-      this.zoomifyImage_ = context.canvas;
-      return context.canvas;
-    }
-  } else {
-    return image;
-  }
-};
-
-/**
  * @classdesc
  * Layer source for tile data in Zoomify format (both Zoomify and Internet
  * Imaging Protocol are supported).
@@ -189,7 +133,7 @@ ol.source.Zoomify = function(opt_options) {
 
   var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(createFromTemplate));
 
-  ol.source.Zoomify.Tile_ = ZoomifyTileClass.bind(null, tileGrid);
+  var ZoomifyTileClass = ol.source.Zoomify.Tile_.bind(null, tileGrid);
 
   ol.source.TileImage.call(this, {
     attributions: options.attributions,
@@ -198,7 +142,7 @@ ol.source.Zoomify = function(opt_options) {
     logo: options.logo,
     projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    tileClass: ol.source.Zoomify.Tile_,
+    tileClass: ZoomifyTileClass,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction,
     transition: options.transition
@@ -207,6 +151,61 @@ ol.source.Zoomify = function(opt_options) {
 };
 ol.inherits(ol.source.Zoomify, ol.source.TileImage);
 
+/**
+ * @constructor
+ * @extends {ol.ImageTile}
+ * @param {ol.tilegrid.TileGrid} tileGrid TileGrid that the tile belongs to.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.TileState} state State.
+ * @param {string} src Image source URI.
+ * @param {?string} crossOrigin Cross origin.
+ * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
+ * @param {olx.TileOptions=} opt_options Tile options.
+ * @private
+ */
+ol.source.Zoomify.Tile_ = function(
+    tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+
+  ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
+   */
+  this.zoomifyImage_ = null;
+
+  /**
+   * @private
+   * @type {ol.Size|number}
+   */
+  this.tileSize_ = tileGrid.getTileSize(tileCoord[0]);
+};
+ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.Zoomify.Tile_.prototype.getImage = function() {
+  if (this.zoomifyImage_) {
+    return this.zoomifyImage_;
+  }
+  var tileSize = (Array.isArray(this.tileSize_) ? this.tileSize_[0] : this.tileSize_);
+  var image = ol.ImageTile.prototype.getImage.call(this);
+  if (this.state == ol.TileState.LOADED) {
+    if (image.width == tileSize && image.height == tileSize) {
+      this.zoomifyImage_ = image;
+      return image;
+    } else {
+      var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
+      context.drawImage(image, 0, 0);
+      this.zoomifyImage_ = context.canvas;
+      return context.canvas;
+    }
+  } else {
+    return image;
+  }
+};
 
 /**
  * @enum {string}
