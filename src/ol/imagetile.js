@@ -19,7 +19,6 @@ goog.require('ol.events.EventType');
  * @param {olx.TileOptions=} opt_options Tile options.
  */
 ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
-  var options = opt_options || {};
 
   ol.Tile.call(this, tileCoord, state, opt_options);
 
@@ -52,14 +51,6 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, op
    */
   this.tileLoadFunction_ = tileLoadFunction;
 
-  var tileCoordZ = tileCoord[0];
-  var tileGridTileSize = (options.tileGrid ? options.tileGrid.getTileSize(tileCoordZ) : undefined);
-
-  /**
-   * @protected
-   * @type {number}
-   */
-  this.tileSize_ = tileGridTileSize || ol.DEFAULT_TILE_SIZE;
 };
 ol.inherits(ol.ImageTile, ol.Tile);
 

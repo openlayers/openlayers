@@ -75,10 +75,7 @@ ol.source.Tile = function(options) {
    * @protected
    * @type {olx.TileOptions}
    */
-  this.tileOptions = {
-    transition: options.transition,
-    tileGrid: this.tileGrid
-  };
+  this.tileOptions = {transition: options.transition};
 
 };
 ol.inherits(ol.source.Tile, ol.source.Source);
