@@ -322,8 +322,6 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
   var label;
   var key = (stroke ? this.strokeKey_ : '') + this.textKey_ + text + (fill ? this.fillKey_ : '');
 
-  var lines = text.split('\n');
-  var numLines = lines.length;
   if (!ol.render.canvas.TextReplay.labelCache_.containsKey(key)) {
     var strokeState = this.textStrokeState_;
     var fillState = this.textFillState_;
@@ -333,6 +331,8 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     var align =  ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
     var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
+    var lines = text.split('\n');
+    var numLines = lines.length;
     var widths = [];
     var width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
     var lineHeight = ol.render.canvas.TextReplay.measureTextHeight(textState.font);
@@ -351,7 +351,7 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
       context.lineCap = strokeState.lineCap;
       context.lineJoin = strokeState.lineJoin;
       context.miterLimit = strokeState.miterLimit;
-      if (ol.has.CANVAS_LINE_DASH) {
+      if (ol.has.CANVAS_LINE_DASH && strokeState.lineDash.length) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }
