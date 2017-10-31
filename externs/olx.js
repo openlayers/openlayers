@@ -7233,7 +7233,8 @@ olx.source.CartoDBOptions.prototype.account;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size,
- *     transition: (number|undefined)}}
+ *     transition: (number|undefined),
+ *     tileSize: (number|undefined)}}
  */
 olx.source.ZoomifyOptions;
 
@@ -7331,6 +7332,15 @@ olx.source.ZoomifyOptions.prototype.size;
  * @api
  */
 olx.source.ZoomifyOptions.prototype.transition;
+
+
+/**
+ * Tile size. Same tile size is used for all zoom levels. Default value is
+ * `OpenLayers.DEFAULT_TILE_SIZE`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.ZoomifyOptions.prototype.tileSize;
 
 
 /**
