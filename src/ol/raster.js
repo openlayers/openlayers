@@ -15,9 +15,8 @@ if (ol.ENABLE_RASTER) {
    * @param {ArrayBuffer|Array.<number>} raster Raster data.
    * @param {number} stride Number of columns.
    * @param {ol.Size} resolution Cell resolution.
-   * @param {boolean} binary Store raster in a buffer.
    */
-  ol.Raster = function(raster, stride, resolution, binary) {
+  ol.Raster = function(raster, stride, resolution) {
 
     ol.Object.call(this);
 
@@ -43,7 +42,7 @@ if (ol.ENABLE_RASTER) {
      * @type {boolean}
      * @private
      */
-    this.binary_ = binary;
+    this.binary_ = !(Array.isArray(raster));
   };
   ol.inherits(ol.Raster, ol.Object);
 

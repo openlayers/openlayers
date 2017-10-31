@@ -37,9 +37,9 @@ if (ol.ENABLE_RASTER) {
      * @type {ol.Raster}
      * @private
      */
-    this.raster_ = binary ? this.createRaster_(options.raster, options.stride,
+    this.raster_ = binary ? this.createBinaryRaster_(options.raster, options.stride,
         options.resolution, options.type, options.convert) :
-      new ol.Raster(options.raster, options.stride, options.resolution, false);
+      new ol.Raster(options.raster, options.stride, options.resolution);
 
     /**
      * @type {ol.RasterStatistics}
@@ -158,8 +158,8 @@ if (ol.ENABLE_RASTER) {
    * @return {ol.Raster} Raster object.
    * @private
    */
-  ol.RasterBand.prototype.createRaster_ = function(raster, stride, resolution, type,
-      convert) {
+  ol.RasterBand.prototype.createBinaryRaster_ = function(raster, stride,
+      resolution, type, convert) {
     var buffer;
     if (raster instanceof window.ArrayBuffer) {
       buffer = raster;
@@ -172,7 +172,7 @@ if (ol.ENABLE_RASTER) {
         view[i] = hasFunction ? convert(raster[i]) : raster[i];
       }
     }
-    return new ol.Raster(buffer, stride, resolution, true);
+    return new ol.Raster(buffer, stride, resolution);
   };
 
 
