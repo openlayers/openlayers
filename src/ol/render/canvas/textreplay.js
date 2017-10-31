@@ -135,18 +135,22 @@ ol.render.canvas.TextReplay.labelCache_ = new ol.structs.LRUCache();
  */
 ol.render.canvas.TextReplay.measureTextHeight = (function() {
   var span;
-  return function(font, lines, widths) {
-    if (!span) {
-      span = document.createElement('span');
-      span.textContent = 'M';
-      span.style.margin = span.style.padding = '0 !important';
-      span.style.position = 'absolute !important';
-      span.style.left = '-99999px !important';
+  var heights = {};
+  return function(font) {
+    var height = heights[font];
+    if (height == undefined) {
+      if (!span) {
+        span = document.createElement('span');
+        span.textContent = 'M';
+        span.style.margin = span.style.padding = '0 !important';
+        span.style.position = 'absolute !important';
+        span.style.left = '-99999px !important';
+      }
+      span.style.font = font;
+      document.body.appendChild(span);
+      height = heights[font] = span.offsetHeight;
+      document.body.removeChild(span);
     }
-    span.style.font = font;
-    document.body.appendChild(span);
-    var height = span.offsetHeight;
-    document.body.removeChild(span);
     return height;
   };
 })();
