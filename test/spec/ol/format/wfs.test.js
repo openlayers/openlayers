@@ -1,5 +1,3 @@
-
-
 goog.require('ol.Feature');
 goog.require('ol.format.GML2');
 goog.require('ol.format.WFS');
@@ -13,6 +11,20 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 describe('ol.format.WFS', function() {
+
+  describe('featureType', function() {
+
+    it('#getFeatureType #setFeatureType', function() {
+      var format = new ol.format.WFS({
+        featureNS: 'http://www.openplans.org/topp',
+        featureType: ['foo', 'bar']
+      });
+      expect(format.getFeatureType()).to.eql(['foo', 'bar']);
+      format.setFeatureType('baz');
+      expect(format.getFeatureType()).to.eql('baz');
+    });
+
+  });
 
   describe('when parsing TOPP states GML from WFS', function() {
 

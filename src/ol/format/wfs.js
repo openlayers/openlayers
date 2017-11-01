@@ -117,6 +117,22 @@ ol.format.WFS.DEFAULT_VERSION = '1.1.0';
 
 
 /**
+ * @return {Array.<string>|string|undefined} featureType
+ */
+ol.format.WFS.prototype.getFeatureType = function() {
+  return this.featureType_;
+};
+
+
+/**
+ * @param {Array.<string>|string|undefined} featureType Feature type(s) to parse.
+ */
+ol.format.WFS.prototype.setFeatureType = function(featureType) {
+  this.featureType_ = featureType;
+};
+
+
+/**
  * Read all features from a WFS FeatureCollection.
  *
  * @function
