@@ -77,7 +77,7 @@ var getText = function(feature, resolution, dom) {
     text = '';
   } else if (type == 'shorten') {
     text = text.trunc(12);
-  } else if (type == 'wrap') {
+  } else if (type == 'wrap' && dom.placement.value != 'line') {
     text = stringDivider(text, 16, '\n');
   }
 
