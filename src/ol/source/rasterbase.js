@@ -24,13 +24,17 @@ if (ol.ENABLE_RASTER) {
   ol.source.RasterBase = function(options) {
     ol.source.Source.call(this, {
       attributions: options.attributions,
-      extent: options.extent,
       logo: options.logo,
       projection: options.projection,
       state: options.state,
       wrapX: options.wrapX
     });
 
+    /**
+     * @private
+     * @type {ol.Extent}
+     */
+    this.extent_ = options.extent;
 
     /**
      * @private
@@ -38,11 +42,12 @@ if (ol.ENABLE_RASTER) {
      */
     this.bands_ = [];
 
-    var bands = options.bands ? options.bands : this.loadBands();
-    if (bands) {
-      for (var i = 0; i < bands.length; ++i) {
-        this.addBand_(bands[i]);
+    if (options.bands) {
+      for (var i = 0; i < options.bands.length; ++i) {
+        this.addBand(options.bands[i]);
       }
+    } else {
+      this.loadBands();
     }
   };
   ol.inherits(ol.source.RasterBase, ol.source.Source);
@@ -50,13 +55,10 @@ if (ol.ENABLE_RASTER) {
 
   /**
    * @param {ol.RasterBand} band Raster band.
-   * @private
    */
-  ol.source.RasterBase.prototype.addBand_ = function(band) {
+  ol.source.RasterBase.prototype.addBand = function(band) {
     this.bands_.push(band);
     this.setupChangeEvents_(band);
-    this.dispatchEvent(
-        new ol.source.RasterBase.Event(ol.source.RasterBase.EventType_.ADDBAND, band));
     this.changed();
   };
 
@@ -78,6 +80,14 @@ if (ol.ENABLE_RASTER) {
    */
   ol.source.RasterBase.prototype.getBands = function() {
     return this.bands_;
+  };
+
+
+  /**
+   * @return {ol.Extent} Extent.
+   */
+  ol.source.RasterBase.prototype.getExtent = function() {
+    return this.extent_;
   };
 
 
@@ -104,10 +114,18 @@ if (ol.ENABLE_RASTER) {
    * Main function of every raster source responsible for acquiring and parsing
    * raster data.
    * @abstract
-   * @return {Array.<ol.RasterBand>|null} Raster bands.
    * @protected
    */
   ol.source.RasterBase.prototype.loadBands = function() {};
+
+
+  /**
+   * @param {ol.Extent} extent Extent.
+   */
+  ol.source.RasterBase.prototype.setExtent = function(extent) {
+    this.extent_ = extent;
+    this.changed();
+  };
 
 
   /**
@@ -154,12 +172,6 @@ if (ol.ENABLE_RASTER) {
    * @private
    */
   ol.source.RasterBase.EventType_ = {
-
-    /**
-     * Triggered when a raster band is added.
-     * @event ol.source.RasterBase.Event#addband
-     */
-    ADDBAND: 'addband',
 
     /**
      * Triggered when a raster band is changed.
