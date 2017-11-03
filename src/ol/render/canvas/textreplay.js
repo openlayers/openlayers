@@ -115,6 +115,12 @@ ol.render.canvas.TextReplay = function(
    */
   this.strokeKey_ = '';
 
+  /**
+   * @private
+   * @type {Object.<string, number>}
+   */
+  this.widths_ = {};
+
   while (ol.render.canvas.TextReplay.labelCache_.canExpireCache()) {
     ol.render.canvas.TextReplay.labelCache_.pop();
   }
@@ -158,19 +164,23 @@ ol.render.canvas.TextReplay.measureTextHeight = (function() {
 
 
 /**
- * @this {Object}
- * @param {CanvasRenderingContext2D} context Context.
- * @param {number} pixelRatio Pixel ratio.
+ * @param {string} font Font.
  * @param {string} text Text.
  * @return {number} Width.
  */
-ol.render.canvas.TextReplay.getTextWidth = function(context, pixelRatio, text) {
-  var width = this[text];
-  if (!width) {
-    this[text] = width = context.measureText(text).width;
-  }
-  return width * pixelRatio;
-};
+ol.render.canvas.TextReplay.measureTextWidth = (function() {
+  var measureContext;
+  var currentFont;
+  return function(font, text) {
+    if (!measureContext) {
+      measureContext = ol.dom.createCanvasContext2D(1, 1);
+    }
+    if (font != currentFont) {
+      currentFont = measureContext.font = font;
+    }
+    return measureContext.measureText(text).width;
+  };
+})();
 
 
 /**
@@ -180,24 +190,17 @@ ol.render.canvas.TextReplay.getTextWidth = function(context, pixelRatio, text) {
  * each line.
  * @return {number} Width of the whole text.
  */
-ol.render.canvas.TextReplay.measureTextWidths = (function() {
-  var context;
-  return function(font, lines, widths) {
-    if (!context) {
-      context = ol.dom.createCanvasContext2D(1, 1);
-    }
-    context.font = font;
-    var numLines = lines.length;
-    var width = 0;
-    var currentWidth, i;
-    for (i = 0; i < numLines; ++i) {
-      currentWidth = context.measureText(lines[i]).width;
-      width = Math.max(width, currentWidth);
-      widths.push(currentWidth);
-    }
-    return width;
-  };
-})();
+ol.render.canvas.TextReplay.measureTextWidths = function(font, lines, widths) {
+  var numLines = lines.length;
+  var width = 0;
+  var currentWidth, i;
+  for (i = 0; i < numLines; ++i) {
+    currentWidth = ol.render.canvas.TextReplay.measureTextWidth(font, lines[i]);
+    width = Math.max(width, currentWidth);
+    widths.push(currentWidth);
+  }
+  return width;
+};
 
 
 /**
@@ -263,7 +266,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
     this.endGeometry(geometry, feature);
 
   } else {
-    var label = this.getImage_(this.text_, !!this.textFillState_, !!this.textStrokeState_);
+    var label = this.getImage(this.text_, !!this.textFillState_, !!this.textStrokeState_);
     var width = label.width / this.pixelRatio;
     switch (geometryType) {
       case ol.geom.GeometryType.POINT:
@@ -312,13 +315,12 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
 
 
 /**
- * @private
  * @param {string} text Text.
  * @param {boolean} fill Fill.
  * @param {boolean} stroke Stroke.
  * @return {HTMLCanvasElement} Image.
  */
-ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
+ol.render.canvas.TextReplay.prototype.getImage = function(text, fill, stroke) {
   var label;
   var key = (stroke ? this.strokeKey_ : '') + this.textKey_ + text + (fill ? this.fillKey_ : '');
 
@@ -343,7 +345,9 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
         Math.ceil((height + strokeWidth) * scale));
     label = context.canvas;
     ol.render.canvas.TextReplay.labelCache_.set(key, label);
-    context.scale(scale, scale);
+    if (scale != 1) {
+      context.scale(scale, scale);
+    }
     context.font = textState.font;
     if (stroke) {
       context.strokeStyle = strokeState.strokeStyle;
@@ -422,37 +426,36 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutte
   var textState = this.textState_;
   var baseline = ol.render.replay.TEXT_ALIGN[textState.textBaseline];
 
-  var labels = [];
-  var text = this.text_;
-  var numChars = this.text_.length;
-  var i;
-
-  if (stroke) {
-    for (i = 0; i < numChars; ++i) {
-      labels.push(this.getImage_(text.charAt(i), false, stroke));
-    }
-  }
-  if (fill) {
-    for (i = 0; i < numChars; ++i) {
-      labels.push(this.getImage_(text.charAt(i), fill, false));
-    }
-  }
-
-  var context = labels[0].getContext('2d');
   var offsetY = this.textOffsetY_ * pixelRatio;
-  var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
-  var widths = {};
+  var textAlign = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
+  var text = this.text_;
+  var font = textState.font;
+  var textScale = this.textScale_;
+  var strokeWidth = strokeState ? strokeState.lineWidth * textScale / 2 : 0;
+  var widths = this.widths_;
   this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-    begin, end, labels, baseline, declutterGroup,
-    textState.exceedLength, textState.maxAngle,
-    ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio * this.textScale_),
-    offsetY, this.text_, align, 1
+    begin, end, baseline, declutterGroup,
+    textState.exceedLength, fill, textState.maxAngle,
+    function(text) {
+      var width = widths[text];
+      if (!width) {
+        width = widths[text] = ol.render.canvas.TextReplay.measureTextWidth(font, text);
+      }
+      return width * textScale * pixelRatio;
+    },
+    offsetY, stroke, strokeWidth * pixelRatio, text, textAlign, 1
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-    begin, end, labels, baseline, declutterGroup,
-    textState.exceedLength, textState.maxAngle,
-    ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, this.textScale_),
-    offsetY, this.text_, align, 1 / pixelRatio
+    begin, end, baseline, declutterGroup,
+    textState.exceedLength, fill, textState.maxAngle,
+    function(text) {
+      var width = widths[text];
+      if (!width) {
+        width = widths[text] = ol.render.canvas.TextReplay.measureTextWidth(font, text);
+      }
+      return width * textScale;
+    },
+    offsetY, stroke, strokeWidth, text, textAlign, 1 / pixelRatio
   ]);
 };
 

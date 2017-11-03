@@ -358,7 +358,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       map.getView().fit(vectorSource.getExtent());
-      expectResemble(map, 'rendering/ol/style/expected/text-multilinestring.png', 6.9, done);
+      expectResemble(map, 'rendering/ol/style/expected/text-multilinestring.png', 7, done);
     });
 
     it('renders text along a Polygon', function(done) {

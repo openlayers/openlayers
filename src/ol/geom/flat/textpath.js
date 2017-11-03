@@ -13,16 +13,12 @@ goog.require('ol.math');
  * width of the character passed as 1st argument.
  * @param {number} startM m along the path where the text starts.
  * @param {number} maxAngle Max angle between adjacent chars in radians.
- * @param {Array.<Array.<number>>=} opt_result Array that will be populated with the
- * result. Each entry consists of an array of x, y and z of the char to draw.
- * If provided, this array will not be truncated to the number of characters of
- * the `text`.
- * @return {Array.<Array.<number>>} The result array of null if `maxAngle` was
- * exceeded.
+ * @return {Array.<Array.<*>>} The result array of null if `maxAngle` was
+ * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
 ol.geom.flat.textpath.lineString = function(
-    flatCoordinates, offset, end, stride, text, measure, startM, maxAngle, opt_result) {
-  var result = opt_result ? opt_result : [];
+    flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
+  var result = [];
 
   // Keep text upright
   var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
@@ -37,11 +33,15 @@ ol.geom.flat.textpath.lineString = function(
   var segmentM = 0;
   var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
-  var index, previousAngle;
+  var chunk = '';
+  var chunkLength = 0;
+  var data, index, previousAngle;
   for (var i = 0; i < numChars; ++i) {
     index = reverse ? numChars - i - 1 : i;
-    var char = text[index];
-    var charLength = measure(char);
+    var char = text.charAt(index);
+    chunk = reverse ? char + chunk : chunk + char;
+    var charLength = measure(chunk) - chunkLength;
+    chunkLength += charLength;
     var charM = startM + charLength / 2;
     while (offset < end - stride && segmentM + segmentLength < charM) {
       x1 = x2;
@@ -64,11 +64,27 @@ ol.geom.flat.textpath.lineString = function(
         return null;
       }
     }
-    previousAngle = angle;
     var interpolate = segmentPos / segmentLength;
     var x = ol.math.lerp(x1, x2, interpolate);
     var y = ol.math.lerp(y1, y2, interpolate);
-    result[index] = [x, y, angle];
+    if (previousAngle == angle) {
+      if (reverse) {
+        data[0] = x;
+        data[1] = y;
+        data[2] = charLength / 2;
+      }
+      data[4] = chunk;
+    } else {
+      chunk = char;
+      chunkLength = charLength;
+      data = [x, y, charLength / 2, angle, chunk];
+      if (reverse) {
+        result.unshift(data);
+      } else {
+        result.push(data);
+      }
+      previousAngle = angle;
+    }
     startM += charLength;
   }
   return result;
