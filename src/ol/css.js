@@ -49,7 +49,7 @@ ol.css.CLASS_CONTROL = 'ol-control';
  * Get the list of font families from a font spec.  Note that this doesn't work
  * for font families that have commas in them.
  * @param {string} The CSS font property.
- * @return {Array.<string>} The font families (or null if the input spec is invalid).
+ * @return {Object.<string>} The font families (or null if the input spec is invalid).
  */
 ol.css.getFontFamilies = (function() {
   var style;
