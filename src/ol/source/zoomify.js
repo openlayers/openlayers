@@ -33,6 +33,7 @@ ol.source.Zoomify = function(opt_options) {
 
   var imageWidth = size[0];
   var imageHeight = size[1];
+  var extent = options.extent || [0, -size[1], size[0], 0];
   var tierSizeInTiles = [];
   var tileSize = options.tileSize || ol.DEFAULT_TILE_SIZE;
   var tileSizeForTierSizeCalculation = tileSize;
@@ -79,7 +80,6 @@ ol.source.Zoomify = function(opt_options) {
   }
   resolutions.reverse();
 
-  var extent = [0, -size[1], size[0], 0];
   var tileGrid = new ol.tilegrid.TileGrid({
     tileSize: tileSize,
     extent: extent,

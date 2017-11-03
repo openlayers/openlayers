@@ -7233,6 +7233,7 @@ olx.source.CartoDBOptions.prototype.account;
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size,
+ *     extent: (ol.Extent|undefined),
  *     transition: (number|undefined),
  *     tileSize: (number|undefined)}}
  */
@@ -7323,6 +7324,17 @@ olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
  * @api
  */
 olx.source.ZoomifyOptions.prototype.size;
+
+
+/**
+ * Extent for the TileGrid that is created. Default sets the TileGrid in the
+ * fourth quadrant, meaning extent is `[0, -height, width, 0]`. To change the
+ * extent to the first quadrant (the default for OpenLayers 2) set the extent
+ * as `[0, 0, width, height]`.
+ * @type {ol.Extent|undefined}
+ * @api
+ */
+olx.source.ZoomifyOptions.prototype.extent;
 
 
 /**

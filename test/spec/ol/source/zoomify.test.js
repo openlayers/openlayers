@@ -25,6 +25,13 @@ describe('ol.source.Zoomify', function() {
       size: size
     });
   }
+  function getZoomifySourceWithExtentInFirstQuadrant() {
+    return new ol.source.Zoomify({
+      url: zoomifyUrl,
+      size: size,
+      extent: [0, 0, size[0], size[1]]
+    });
+  }
   function getIIPSource() {
     return new ol.source.Zoomify({
       url: iipUrl,
@@ -164,6 +171,31 @@ describe('ol.source.Zoomify', function() {
         expect(tileGrid.getTileSize()).to.eql(expectedTileSizes[i]);
       }
     });
+
+    it('has expected extent', function() {
+      var sources = [getZoomifySource(), getZoomifySourceWithExtentInFirstQuadrant()];
+      var expectedExtents = [
+        [0, -size[1], size[0], 0],
+        [0, 0, size[0], size[1]]
+      ];
+      for (var i = 0; i < sources.length; i++) {
+        var tileGrid = sources[i].getTileGrid();
+        expect(tileGrid.getExtent()).to.eql(expectedExtents[i]);
+      }
+    });
+
+    it('has expected origin', function() {
+      var sources = [getZoomifySource(), getZoomifySourceWithExtentInFirstQuadrant()];
+      var expectedOrigins = [
+        [0, 0],
+        [0, size[1]]
+      ];
+      for (var i = 0; i < sources.length; i++) {
+        var tileGrid = sources[i].getTileGrid();
+        expect(tileGrid.getOrigin()).to.eql(expectedOrigins[i]);
+      }
+    });
+
   });
 
   describe('tierSizeCalculation configuration', function() {
