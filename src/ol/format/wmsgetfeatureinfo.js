@@ -64,6 +64,22 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
 
 
 /**
+ * @return {Array.<string>} layers
+ */
+ol.format.WMSGetFeatureInfo.prototype.getLayers = function() {
+  return this.layers_;
+};
+
+
+/**
+ * @param {Array.<string>} layers Layers to parse.
+ */
+ol.format.WMSGetFeatureInfo.prototype.setLayers = function(layers) {
+  this.layers_ = layers;
+};
+
+
+/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Array.<ol.Feature>} Features.

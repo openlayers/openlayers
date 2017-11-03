@@ -1,9 +1,23 @@
-
-
 goog.require('ol.format.WMSGetFeatureInfo');
 
 
 describe('ol.format.WMSGetFeatureInfo', function() {
+
+  describe('#getLayers', function() {
+
+    it('returns null if layers is undefined', function() {
+      var format = new ol.format.WMSGetFeatureInfo();
+      expect(format.getLayers()).to.be(null);
+    });
+
+    it('returns the value provided in the layers option', function() {
+      var format = new ol.format.WMSGetFeatureInfo({
+        layers: ['a', 'z']
+      });
+      expect(format.getLayers()).to.eql(['a', 'z']);
+    });
+
+  });
 
   describe('#readFormat', function() {
 
@@ -139,21 +153,19 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '   </AAA62_feature>' +
             '  </AAA62_layer>' +
             '</msGMLOutput>';
-        var features = new ol.format.WMSGetFeatureInfo().readFeatures(text);
+        var format = new ol.format.WMSGetFeatureInfo();
+        var features = format.readFeatures(text);
         expect(features.length).to.be(2);
         expect(features[0].get('OBJECTID')).to.be('287');
         expect(features[1].get('OBJECTID')).to.be('1251');
-        var aaa64Features = new ol.format.WMSGetFeatureInfo({
-          layers: ['AAA64']
-        }).readFeatures(text);
+        format.setLayers(['AAA64']);
+        var aaa64Features = format.readFeatures(text);
         expect(aaa64Features.length).to.be(1);
-        var allFeatures = new ol.format.WMSGetFeatureInfo({
-          layers: ['AAA64', 'AAA62']
-        }).readFeatures(text);
+        format.setLayers(['AAA64', 'AAA62']);
+        var allFeatures = format.readFeatures(text);
         expect(allFeatures.length).to.be(2);
-        var dummyFeatures = new ol.format.WMSGetFeatureInfo({
-          layers: ['foo', 'bar']
-        }).readFeatures(text);
+        format.setLayers(['foo', 'bar']);
+        var dummyFeatures = format.readFeatures(text);
         expect(dummyFeatures.length).to.be(0);
       });
 
