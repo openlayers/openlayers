@@ -331,12 +331,15 @@ ol.proj.equivalent = function(projection1, projection2) {
     return true;
   }
   var equalUnits = projection1.getUnits() === projection2.getUnits();
+  var equalAxis = projection1.getAxisOrientation() === projection2.getAxisOrientation();
+  var equalExtent = projection1.getExtent() === projection2.getExtent();
+  var equal = equalUnits && equalAxis && equalExtent;
   if (projection1.getCode() === projection2.getCode()) {
-    return equalUnits;
+    return equal;
   } else {
     var transformFn = ol.proj.getTransformFromProjections(
         projection1, projection2);
-    return transformFn === ol.proj.cloneTransform && equalUnits;
+    return transformFn === ol.proj.cloneTransform && equal;
   }
 };
 
