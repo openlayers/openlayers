@@ -7,7 +7,9 @@ goog.require('ol.View');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
+goog.require('ol.obj');
 goog.require('ol.proj');
+goog.require('ol.render.canvas');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
@@ -17,6 +19,24 @@ goog.require('ol.style.Text');
 describe('ol.renderer.canvas.VectorLayer', function() {
 
   describe('constructor', function() {
+
+    var head = document.getElementsByTagName('head')[0];
+    var font = document.createElement('link');
+    font.href = 'https://fonts.googleapis.com/css?family=Droid+Sans';
+    font.rel = 'stylesheet';
+
+    var target;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '256px';
+      target.style.height = '256px';
+      document.body.appendChild(target);
+    });
+
+    afterEach(function() {
+      document.body.removeChild(target);
+    });
 
     it('creates a new instance', function() {
       var layer = new ol.layer.Vector({
@@ -64,6 +84,101 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       expect(spy.getCall(0).args[3]).to.be(layerStyle);
       expect(spy.getCall(1).args[3]).to.be(featureStyle);
       document.body.removeChild(target);
+    });
+
+    it('does not re-render for unavailable fonts', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      var map = new ol.Map({
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        }),
+        target: target
+      });
+      var layerStyle = new ol.style.Style({
+        text: new ol.style.Text({
+          text: 'layer',
+          font: '12px "Unavailable Font",sans-serif'
+        })
+      });
+
+      var feature = new ol.Feature(new ol.geom.Point([0, 0]));
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        }),
+        style: layerStyle
+      });
+      map.addLayer(layer);
+      var revision = layer.getRevision();
+      setTimeout(function() {
+        expect(layer.getRevision()).to.be(revision);
+        done();
+      }, 800);
+    });
+
+    it('does not re-render for available fonts', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      var map = new ol.Map({
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        }),
+        target: target
+      });
+      var layerStyle = new ol.style.Style({
+        text: new ol.style.Text({
+          text: 'layer',
+          font: '12px sans-serif'
+        })
+      });
+
+      var feature = new ol.Feature(new ol.geom.Point([0, 0]));
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        }),
+        style: layerStyle
+      });
+      map.addLayer(layer);
+      var revision = layer.getRevision();
+      setTimeout(function() {
+        expect(layer.getRevision()).to.be(revision);
+        done();
+      }, 800);
+    });
+
+    it('re-renders for fonts that become available', function(done) {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      head.appendChild(font);
+      var map = new ol.Map({
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        }),
+        target: target
+      });
+      var layerStyle = new ol.style.Style({
+        text: new ol.style.Text({
+          text: 'layer',
+          font: '12px "Droid Sans",sans-serif'
+        })
+      });
+
+      var feature = new ol.Feature(new ol.geom.Point([0, 0]));
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        }),
+        style: layerStyle
+      });
+      map.addLayer(layer);
+      var revision = layer.getRevision();
+      setTimeout(function() {
+        expect(layer.getRevision()).to.be(revision + 1);
+        head.removeChild(font);
+        done();
+      }, 1600);
     });
 
   });

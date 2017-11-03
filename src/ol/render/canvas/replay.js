@@ -596,7 +596,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                 chars = /** @type {string} */ (part[4]);
                 label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, false, true);
                 anchorX = /** @type {number} */ (part[2]) + strokeWidth;
-                anchorY = baseline * label.height + (0.5 - baseline) * strokeWidth - offsetY;
+                anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                 this.replayImage_(context,
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
