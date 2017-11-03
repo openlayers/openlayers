@@ -103,13 +103,14 @@ ol.render.canvas.checkedFonts_ = {};
 ol.render.canvas.checkFont = (function() {
   var checked = ol.render.canvas.checkedFonts_;
   var labelCache = ol.render.canvas.labelCache;
+  var font = '32px monospace';
   var text = 'wmytzilWMYTZIL@#/&?$%10';
   var context, referenceWidth;
 
   function isAvailable(fontFamily) {
     if (!context) {
       context = ol.dom.createCanvasContext2D(1, 1);
-      context.font = '32px monospace';
+      context.font = font;
       referenceWidth = context.measureText(text).width;
     }
     var available = true;
@@ -123,7 +124,7 @@ ol.render.canvas.checkFont = (function() {
       // Setting the font back to a different one works around an issue in
       // Safari where subsequent `context.font` assignments with the same font
       // will not re-attempt to use a font that is currently loading.
-      context.font = '32px monospace';
+      context.font = font;
     }
     return available;
   }
