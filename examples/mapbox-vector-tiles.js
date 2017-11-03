@@ -15,6 +15,7 @@ var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
+      declutter: true,
       source: new ol.source.VectorTile({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
           '© <a href="https://www.openstreetmap.org/copyright">' +

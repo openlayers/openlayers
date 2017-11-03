@@ -3,6 +3,7 @@ goog.provide('ol.render.canvas.TextReplay');
 goog.require('ol');
 goog.require('ol.colorlike');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.geom.flat.straightchunk');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.has');
@@ -22,11 +23,19 @@ goog.require('ol.style.TextPlacement');
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
+ * @param {?} declutterTree Declutter tree.
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+ol.render.canvas.TextReplay = function(
+    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+  ol.render.canvas.Replay.call(this,
+      tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
+  /**
+   * @private
+   * @type {ol.DeclutterGroup}
+   */
+  this.declutterGroup_;
 
   /**
    * @private
@@ -127,18 +136,22 @@ ol.render.canvas.TextReplay.labelCache_ = new ol.structs.LRUCache();
  */
 ol.render.canvas.TextReplay.measureTextHeight = (function() {
   var span;
-  return function(font, lines, widths) {
-    if (!span) {
-      span = document.createElement('span');
-      span.textContent = 'M';
-      span.style.margin = span.style.padding = '0 !important';
-      span.style.position = 'absolute !important';
-      span.style.left = '-99999px !important';
+  var heights = {};
+  return function(font) {
+    var height = heights[font];
+    if (height == undefined) {
+      if (!span) {
+        span = document.createElement('span');
+        span.textContent = 'M';
+        span.style.margin = span.style.padding = '0 !important';
+        span.style.position = 'absolute !important';
+        span.style.left = '-99999px !important';
+      }
+      span.style.font = font;
+      document.body.appendChild(span);
+      height = heights[font] = span.offsetHeight;
+      document.body.removeChild(span);
     }
-    span.style.font = font;
-    document.body.appendChild(span);
-    var height = span.offsetHeight;
-    document.body.removeChild(span);
     return height;
   };
 })();
@@ -207,6 +220,9 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
   var i, ii;
 
   if (this.textState_.placement === ol.style.TextPlacement.LINE) {
+    if (!ol.extent.intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
+      return;
+    }
     var ends;
     flatCoordinates = geometry.getFlatCoordinates();
     stride = geometry.getStride();
@@ -236,9 +252,12 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
       } else {
         flatEnd = ends[o];
       }
-      end = this.appendFlatCoordinates(flatCoordinates, flatOffset, flatEnd, stride, false, false);
+      for (i = flatOffset; i < flatEnd; i += stride) {
+        this.coordinates.push(flatCoordinates[i], flatCoordinates[i + 1]);
+      }
+      end = this.coordinates.length;
       flatOffset = ends[o];
-      this.drawChars_(begin, end);
+      this.drawChars_(begin, end, this.declutterGroup_);
       begin = end;
     }
     this.endGeometry(geometry, feature);
@@ -303,8 +322,6 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
   var label;
   var key = (stroke ? this.strokeKey_ : '') + this.textKey_ + text + (fill ? this.fillKey_ : '');
 
-  var lines = text.split('\n');
-  var numLines = lines.length;
   if (!ol.render.canvas.TextReplay.labelCache_.containsKey(key)) {
     var strokeState = this.textStrokeState_;
     var fillState = this.textFillState_;
@@ -314,6 +331,8 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
     var align =  ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
     var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
+    var lines = text.split('\n');
+    var numLines = lines.length;
     var widths = [];
     var width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
     var lineHeight = ol.render.canvas.TextReplay.measureTextHeight(textState.font);
@@ -332,7 +351,7 @@ ol.render.canvas.TextReplay.prototype.getImage_ = function(text, fill, stroke) {
       context.lineCap = strokeState.lineCap;
       context.lineJoin = strokeState.lineJoin;
       context.miterLimit = strokeState.miterLimit;
-      if (ol.has.CANVAS_LINE_DASH) {
+      if (ol.has.CANVAS_LINE_DASH && strokeState.lineDash.length) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }
@@ -378,12 +397,12 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
   var anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
   this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
-    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
     1, true, label.width
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
-    label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
+    this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
     1 / pixelRatio, true, label.width
   ]);
 };
@@ -393,8 +412,9 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
  * @private
  * @param {number} begin Begin.
  * @param {number} end End.
+ * @param {ol.DeclutterGroup} declutterGroup Declutter group.
  */
-ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
+ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   var pixelRatio = this.pixelRatio;
   var strokeState = this.textStrokeState_;
   var fill = !!this.textFillState_;
@@ -423,13 +443,13 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
   var align = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
   var widths = {};
   this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-    begin, end, labels, baseline,
+    begin, end, labels, baseline, declutterGroup,
     textState.exceedLength, textState.maxAngle,
     ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, pixelRatio * this.textScale_),
     offsetY, this.text_, align, 1
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
-    begin, end, labels, baseline,
+    begin, end, labels, baseline, declutterGroup,
     textState.exceedLength, textState.maxAngle,
     ol.render.canvas.TextReplay.getTextWidth.bind(widths, context, this.textScale_),
     offsetY, this.text_, align, 1 / pixelRatio
@@ -440,11 +460,12 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end) {
 /**
  * @inheritDoc
  */
-ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
+ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
   var textState, fillState, strokeState;
   if (!textStyle) {
     this.text_ = '';
   } else {
+    this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);
     var textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
       fillState = this.textFillState_ = null;

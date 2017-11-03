@@ -168,6 +168,20 @@ ol.CoordinateFormatType;
 
 
 /**
+ * Container for decluttered replay instructions that need to be rendered or
+ * omitted together, i.e. when styles render both an image and text, or for the
+ * characters that form text along lines. The basic elements of this array are
+ * `[minX, minY, maxX, maxY, count]`, where the first four entries are the
+ * rendered extent of the group in pixel space. `count` is the number of styles
+ * in the group, i.e. 2 when an image and a text are grouped, or 1 otherwise.
+ * In addition to these four elements, declutter instruction arrays (i.e. the
+ * arguments to @{link ol.render.canvas.drawImage} are appended to the array.
+ * @typedef {Array.<*>}
+ */
+ol.DeclutterGroup;
+
+
+/**
  * A function that takes a {@link ol.MapBrowserEvent} and two
  * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.

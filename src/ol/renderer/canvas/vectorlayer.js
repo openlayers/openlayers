@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
@@ -22,6 +23,13 @@ goog.require('ol.renderer.vector');
 ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
   ol.renderer.canvas.Layer.call(this, vectorLayer);
+
+  /**
+   * Declutter tree.
+   * @private
+   */
+  this.declutterTree_ = vectorLayer.getDeclutter() ?
+    ol.ext.rbush(9) : null;
 
   /**
    * @private
@@ -209,6 +217,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   if (clipped) {
     context.restore();
   }
+  if (this.declutterTree_) {
+    this.declutterTree_.clear();
+  }
   this.postCompose(context, frameState, layerState, transform);
 
 };
@@ -223,10 +234,11 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
   } else {
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
-    var layer = this.getLayer();
+    var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     /** @type {Object.<string, boolean>} */
     var features = {};
-    return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
+    var declutterReplays = layer.getDeclutter() ? {} : null;
+    var result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
         rotation, hitTolerance, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -238,7 +250,11 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
             features[key] = true;
             return callback.call(thisArg, feature, layer);
           }
-        });
+        }, declutterReplays);
+    if (this.declutterTree_) {
+      this.declutterTree_.clear();
+    }
+    return result;
   }
 };
 
@@ -317,7 +333,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
 
   var replayGroup = new ol.render.canvas.ReplayGroup(
       ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution,
-      pixelRatio, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
+      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.

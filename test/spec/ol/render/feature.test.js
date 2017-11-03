@@ -1,5 +1,7 @@
-
-
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
 goog.require('ol.render.Feature');
 
 
@@ -48,6 +50,51 @@ describe('ol.render.Feature', function() {
   describe('#getFlatCoordinates()', function() {
     it('returns the flat coordinates it was created with', function() {
       expect(renderFeature.getFlatCoordinates()).to.equal(flatCoordinates);
+    });
+  });
+
+  describe('#getFlatInteriorPoint()', function() {
+    it('returns correct point and caches it', function() {
+      var polygon = new ol.geom.Polygon([[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]]);
+      var feature = new ol.render.Feature('Polygon', polygon.getOrientedFlatCoordinates(),
+          polygon.getEnds());
+      expect(feature.getFlatInteriorPoint()).to.eql([5, 5, 10]);
+      expect(feature.getFlatInteriorPoint()).to.be(feature.flatInteriorPoints_);
+    });
+  });
+
+  describe('#getFlatInteriorPoints()', function() {
+    it('returns correct points and caches them', function() {
+      var polygon = new ol.geom.MultiPolygon([
+        [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]],
+        [[[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]]
+      ]);
+      var feature = new ol.render.Feature('MultiPolygon', polygon.getOrientedFlatCoordinates(),
+          polygon.getEndss());
+      expect(feature.getFlatInteriorPoints()).to.eql([5, 5, 10, 15, 5, 10]);
+      expect(feature.getFlatInteriorPoints()).to.be(feature.flatInteriorPoints_);
+    });
+  });
+
+  describe('#getFlatMidpoint()', function() {
+    it('returns correct point', function() {
+      var line = new ol.geom.LineString([[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]);
+      var feature = new ol.render.Feature('LineString', line.getFlatCoordinates());
+      expect(feature.getFlatMidpoint()).to.eql([10, 10]);
+      expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);
+    });
+  });
+
+  describe('#getFlatMidpoints()', function() {
+    it('returns correct points and caches them', function() {
+      var line = new ol.geom.MultiLineString([
+        [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
+        [[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]
+      ]);
+      var feature = new ol.render.Feature('MultiLineString', line.getFlatCoordinates(),
+          line.getEnds());
+      expect(feature.getFlatMidpoints()).to.eql([10, 10, 20, 10]);
+      expect(feature.getFlatMidpoints()).to.be(feature.flatMidpoints_);
     });
   });
 

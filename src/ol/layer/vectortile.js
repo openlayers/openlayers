@@ -34,17 +34,23 @@ ol.layer.VectorTile = function(opt_options) {
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
     options.useInterimTilesOnError : true);
 
-  ol.asserts.assert(options.renderMode == undefined ||
-      options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
-      options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
-      options.renderMode == ol.layer.VectorTileRenderType.VECTOR,
+  var renderMode = options.renderMode;
+
+  ol.asserts.assert(renderMode == undefined ||
+      renderMode == ol.layer.VectorTileRenderType.IMAGE ||
+      renderMode == ol.layer.VectorTileRenderType.HYBRID ||
+      renderMode == ol.layer.VectorTileRenderType.VECTOR,
   28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+
+  if (options.declutter && renderMode == ol.layer.VectorTileRenderType.IMAGE) {
+    renderMode = ol.layer.VectorTileRenderType.HYBRID;
+  }
 
   /**
    * @private
    * @type {ol.layer.VectorTileRenderType|string}
    */
-  this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
+  this.renderMode_ = renderMode || ol.layer.VectorTileRenderType.HYBRID;
 
   /**
    * The layer type.

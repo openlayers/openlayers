@@ -12,6 +12,7 @@ goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.obj');
 goog.require('ol.render.VectorContext');
+goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Instruction');
 goog.require('ol.transform');
 
@@ -24,10 +25,22 @@ goog.require('ol.transform');
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
+ * @param {?} declutterTree Declutter tree.
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
+ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   ol.render.VectorContext.call(this);
+
+  /**
+   * @type {?}
+   */
+  this.declutterTree = declutterTree;
+
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.tmpExtent_ = ol.extent.createEmpty();
 
   /**
    * @protected
@@ -129,12 +142,6 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
 
   /**
    * @private
-   * @type {!ol.Transform}
-   */
-  this.resetTransform_ = ol.transform.create();
-
-  /**
-   * @private
    * @type {Array.<Array.<number>>}
    */
   this.chars_ = [];
@@ -149,6 +156,7 @@ ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @param {HTMLImageElement|HTMLCanvasElement|HTMLVideoElement} image Image.
  * @param {number} anchorX Anchor X.
  * @param {number} anchorY Anchor Y.
+ * @param {ol.DeclutterGroup} declutterGroup Declutter group.
  * @param {number} height Height.
  * @param {number} opacity Opacity.
  * @param {number} originX Origin X.
@@ -159,7 +167,7 @@ ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @param {number} width Width.
  */
 ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, anchorX, anchorY,
-    height, opacity, originX, originY, rotation, scale, snapToPixel, width) {
+    declutterGroup, height, opacity, originX, originY, rotation, scale, snapToPixel, width) {
   var localTransform = this.tmpLocalTransform_;
   anchorX *= scale;
   anchorY *= scale;
@@ -169,28 +177,37 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image, 
     x = Math.round(x);
     y = Math.round(y);
   }
-  if (rotation !== 0) {
-    var centerX = x + anchorX;
-    var centerY = y + anchorY;
-    ol.transform.compose(localTransform,
-        centerX, centerY, 1, 1, rotation, -centerX, -centerY);
-    context.setTransform.apply(context, localTransform);
-  }
-  var alpha = context.globalAlpha;
-  if (opacity != 1) {
-    context.globalAlpha = alpha * opacity;
-  }
 
   var w = (width + originX > image.width) ? image.width - originX : width;
   var h = (height + originY > image.height) ? image.height - originY : height;
+  var box = this.tmpExtent_;
 
-  context.drawImage(image, originX, originY, w, h, x, y, w * scale, h * scale);
-
-  if (opacity != 1) {
-    context.globalAlpha = alpha;
-  }
+  var transform = null;
   if (rotation !== 0) {
-    context.setTransform.apply(context, this.resetTransform_);
+    var centerX = x + anchorX;
+    var centerY = y + anchorY;
+    transform = ol.transform.compose(localTransform,
+        centerX, centerY, 1, 1, rotation, -centerX, -centerY);
+    ol.extent.createOrUpdateEmpty(box);
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x, y]));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x + w, y]));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x + w, y + h]));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, [x, y + w]));
+  } else {
+    ol.extent.createOrUpdate(x, y, x + w * scale, y + h * scale, box);
+  }
+  var canvas = context.canvas;
+  var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+  if (declutterGroup) {
+    if (!intersects && declutterGroup[4] == 1) {
+      return;
+    }
+    ol.extent.extend(declutterGroup, box);
+    declutterGroup.push(intersects ?
+      [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
+      null);
+  } else if (intersects) {
+    ol.render.canvas.drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
   }
 };
 
@@ -360,7 +377,37 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
   }
   context.fill();
   if (this.fillOrigin_) {
-    context.setTransform.apply(context, this.resetTransform_);
+    context.setTransform.apply(context, ol.render.canvas.resetTransform_);
+  }
+};
+
+
+/**
+ * @param {ol.DeclutterGroup} declutterGroup Declutter group.
+ */
+ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
+  if (declutterGroup && declutterGroup.length > 5) {
+    var groupCount = declutterGroup[4];
+    if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
+      /** @type {ol.RBushEntry} */
+      var box = {
+        minX: /** @type {number} */ (declutterGroup[0]),
+        minY: /** @type {number} */ (declutterGroup[1]),
+        maxX: /** @type {number} */ (declutterGroup[2]),
+        maxY: /** @type {number} */ (declutterGroup[3])
+      };
+      if (!this.declutterTree.collides(box)) {
+        this.declutterTree.insert(box);
+        var drawImage = ol.render.canvas.drawImage;
+        for (var j = 5, jj = declutterGroup.length; j < jj; ++j) {
+          if (declutterGroup[j]) {
+            drawImage.apply(undefined, /** @type {Array} */ (declutterGroup[j]));
+          }
+        }
+      }
+      declutterGroup.length = 5;
+      ol.extent.createOrUpdateEmpty(declutterGroup);
+    }
   }
 };
 
@@ -401,7 +448,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
   var dd; // end of per-instruction data
-  var anchorX, anchorY, prevX, prevY, roundX, roundY;
+  var anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup;
   var pendingFill = 0;
   var pendingStroke = 0;
   var coordinateCache = this.coordinateCache_;
@@ -497,24 +544,26 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
         anchorX = /** @type {number} */ (instruction[4]);
         anchorY = /** @type {number} */ (instruction[5]);
-        var height = /** @type {number} */ (instruction[6]);
-        var opacity = /** @type {number} */ (instruction[7]);
-        var originX = /** @type {number} */ (instruction[8]);
-        var originY = /** @type {number} */ (instruction[9]);
-        var rotateWithView = /** @type {boolean} */ (instruction[10]);
-        var rotation = /** @type {number} */ (instruction[11]);
-        var scale = /** @type {number} */ (instruction[12]);
-        var snapToPixel = /** @type {boolean} */ (instruction[13]);
-        var width = /** @type {number} */ (instruction[14]);
+        declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[6]);
+        var height = /** @type {number} */ (instruction[7]);
+        var opacity = /** @type {number} */ (instruction[8]);
+        var originX = /** @type {number} */ (instruction[9]);
+        var originY = /** @type {number} */ (instruction[10]);
+        var rotateWithView = /** @type {boolean} */ (instruction[11]);
+        var rotation = /** @type {number} */ (instruction[12]);
+        var scale = /** @type {number} */ (instruction[13]);
+        var snapToPixel = /** @type {boolean} */ (instruction[14]);
+        var width = /** @type {number} */ (instruction[15]);
 
         if (rotateWithView) {
           rotation += viewRotation;
         }
         for (; d < dd; d += 2) {
-          this.replayImage_(context, pixelCoordinates[d], pixelCoordinates[d + 1],
-              image, anchorX, anchorY, height, opacity, originX, originY,
-              rotation, scale, snapToPixel, width);
+          this.replayImage_(context,
+              pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
+              declutterGroup, height, opacity, originX, originY, rotation, scale, snapToPixel, width);
         }
+        this.renderDeclutter_(declutterGroup);
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_CHARS:
@@ -523,13 +572,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var images =  /** @type {Array.<HTMLCanvasElement>} */ (instruction[3]);
         // Remaining arguments in DRAW_CHARS are in alphabetical order
         var baseline = /** @type {number} */ (instruction[4]);
-        var exceedLength = /** @type {number} */ (instruction[5]);
-        var maxAngle = /** @type {number} */ (instruction[6]);
-        var measure = /** @type {function(string):number} */ (instruction[7]);
-        var offsetY = /** @type {number} */ (instruction[8]);
-        var text = /** @type {string} */ (instruction[9]);
-        var align = /** @type {number} */ (instruction[10]);
-        var textScale = /** @type {number} */ (instruction[11]);
+        declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[5]);
+        var exceedLength = /** @type {number} */ (instruction[6]);
+        var maxAngle = /** @type {number} */ (instruction[7]);
+        var measure = /** @type {function(string):number} */ (instruction[8]);
+        var offsetY = /** @type {number} */ (instruction[9]);
+        var text = /** @type {string} */ (instruction[10]);
+        var align = /** @type {number} */ (instruction[11]);
+        var textScale = /** @type {number} */ (instruction[12]);
 
         var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
         var textLength = measure(text);
@@ -545,12 +595,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
               var label = images[c];
               anchorX = label.width / 2;
               anchorY = baseline * label.height + (0.5 - baseline) * (label.height - fillHeight) - offsetY;
-              this.replayImage_(context, char[0], char[1], label, anchorX, anchorY,
-                  label.height, 1, 0, 0, char[2], textScale, false, label.width);
+              this.replayImage_(context, char[0], char[1], label,
+                  anchorX, anchorY, declutterGroup, label.height, 1, 0, 0, char[2], textScale, false, label.width);
             }
           }
         }
-
+        this.renderDeclutter_(declutterGroup);
         ++i;
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:

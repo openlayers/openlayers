@@ -6,6 +6,10 @@ goog.require('ol.format.MVT');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.obj');
 goog.require('ol.source.VectorTile');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
+goog.require('ol.style.Text');
 goog.require('ol.tilegrid');
 
 
@@ -13,10 +17,11 @@ describe('ol.rendering.layer.VectorTile', function() {
 
   var map;
 
-  function createMap(renderer, opt_pixelRatio) {
+  function createMap(renderer, opt_pixelRatio, opt_size) {
+    var size = opt_size || 50;
     map = new ol.Map({
       pixelRatio: opt_pixelRatio || 1,
-      target: createMapDiv(50, 50),
+      target: createMapDiv(size, size),
       renderer: renderer,
       view: new ol.View({
         center: [1825927.7316762917, 6143091.089223046],
@@ -101,6 +106,34 @@ describe('ol.rendering.layer.VectorTile', function() {
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
             14.8, done);
+      });
+    });
+
+    it('declutters text and images', function(done) {
+      createMap('canvas', 1, 100);
+      map.getView().setZoom(13.8);
+      var style = function(feature, resolution) {
+        var geom = feature.getGeometry();
+        if (geom.getType() == 'Point') {
+          return new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 7,
+              fill: new ol.style.Fill({
+                color: 'red'
+              })
+            }),
+            text: new ol.style.Text({
+              text: feature.get('name_en'),
+              font: '12px sans-serif',
+              textBaseline: 'bottom',
+              offsetY: -7
+            })
+          });
+        }
+      };
+      waitForTiles(source, {declutter: true, style: style}, function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-declutter.png',
+            8.5, done);
       });
     });
 

@@ -54,6 +54,13 @@ ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
 
 
 /**
+ * @param {ol.style.Style} style Style.
+ * @param {boolean} group Group with previous replay.
+ */
+ol.render.webgl.ReplayGroup.prototype.addDeclutter = function(style, group) {};
+
+
+/**
  * @param {ol.webgl.Context} context WebGL context.
  * @return {function()} Delete resources function.
  */

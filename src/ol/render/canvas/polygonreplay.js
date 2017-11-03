@@ -19,11 +19,13 @@ goog.require('ol.render.canvas.Replay');
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {boolean} overlaps The replay can have overlapping geometries.
+ * @param {?} declutterTree Declutter tree.
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, pixelRatio, overlaps) {
-
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, pixelRatio, overlaps);
+ol.render.canvas.PolygonReplay = function(
+    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+  ol.render.canvas.Replay.call(this,
+      tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
   /**
    * @private
