@@ -64,9 +64,10 @@ if (ol.ENABLE_RASTER) {
    * @inheritDoc
    */
   ol.source.ArcGrid.prototype.getRaster = function(extent, index) {
-    var rasterExtent = this.getExtent();
+    var band = this.getBands()[0];
+    var rasterExtent = band.getExtent();
     if (rasterExtent && ol.extent.intersects(extent, rasterExtent)) {
-      return this.getBands()[0];
+      return band;
     }
     return null;
   };
@@ -156,11 +157,11 @@ if (ol.ENABLE_RASTER) {
     var extent = [header['XLLCORNER'], header['YLLCORNER']];
     extent.push(header['XLLCORNER'] + header['CELLSIZE'] * header['NCOLS']);
     extent.push(header['YLLCORNER'] + header['CELLSIZE'] * header['NROWS']);
-    this.setExtent(extent);
 
     // Create a band from the parsed data.
     var band = new ol.RasterBand({
       convert: this.convert_,
+      extent: extent,
       nullvalue: header['NODATA_VALUE'],
       raster: raster,
       resolution: [header['CELLSIZE'], header['CELLSIZE']],

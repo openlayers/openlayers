@@ -30,6 +30,12 @@ if (ol.ENABLE_RASTER) {
      */
     this.null_ = options.nullvalue || null;
 
+    /**
+     * @type {ol.Extent}
+     * @private
+     */
+    this.extent_ = options.extent;
+
     var binary = typeof options.binary === 'boolean' ? options.binary :
       ol.has.TYPED_ARRAY;
 
@@ -78,6 +84,16 @@ if (ol.ENABLE_RASTER) {
    */
   ol.RasterBand.prototype.getStride = function() {
     return this.raster_.getStride();
+  };
+
+
+  /**
+   * Returns the extent of this band.
+   * @return {ol.Extent} Exent.
+   * @api
+   */
+  ol.RasterBand.prototype.getExtent = function() {
+    return this.extent_;
   };
 
 

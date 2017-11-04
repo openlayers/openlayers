@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
+goog.require('ol.extent');
 goog.require('ol.ObjectEventType');
 goog.require('ol.source.Source');
 
@@ -29,12 +30,6 @@ if (ol.ENABLE_RASTER) {
       state: options.state,
       wrapX: options.wrapX
     });
-
-    /**
-     * @private
-     * @type {ol.Extent|undefined}
-     */
-    this.extent_ = options.extent;
 
     /**
      * @private
@@ -76,18 +71,28 @@ if (ol.ENABLE_RASTER) {
 
 
   /**
+   * Get every raster band from this source.
    * @return {Array.<ol.RasterBand>} Raster bands.
+   * @api
    */
   ol.source.RasterBase.prototype.getBands = function() {
-    return this.bands_;
+    return this.bands_.slice();
   };
 
 
   /**
+   * Get the extent of the bands in this source.
    * @return {ol.Extent|undefined} Extent.
+   * @api
    */
   ol.source.RasterBase.prototype.getExtent = function() {
-    return this.extent_;
+    var bands = this.getBands();
+    var extent = ol.extent.createEmpty();
+    var i, ii;
+    for (i = 0, ii = bands.length; i < ii; ++i) {
+      ol.extent.extend(extent, bands[i].getExtent());
+    }
+    return extent;
   };
 
 
@@ -117,15 +122,6 @@ if (ol.ENABLE_RASTER) {
    * @protected
    */
   ol.source.RasterBase.prototype.loadBands = function() {};
-
-
-  /**
-   * @param {ol.Extent} extent Extent.
-   */
-  ol.source.RasterBase.prototype.setExtent = function(extent) {
-    this.extent_ = extent;
-    this.changed();
-  };
 
 
   /**
