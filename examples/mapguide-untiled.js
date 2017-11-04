@@ -24,8 +24,8 @@ var map = new ol.Map({
         params: {
           MAPDEFINITION: mdf,
           FORMAT: 'PNG',
-	      USERNAME: 'OpenLayers',
-	      PASSWORD: 'OpenLayers'
+          USERNAME: 'OpenLayers',
+          PASSWORD: 'OpenLayers'
         },
         ratio: 2
       })
