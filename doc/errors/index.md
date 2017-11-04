@@ -223,7 +223,7 @@ Invalid command found in the PBF.  This indicates that the loaded vector tile ma
 
 ### 60
 
-Raster layers are not supported by the browser.
+Typed arrays are not supported by the browser.
 
 ### 61
 
@@ -232,3 +232,7 @@ Invalid raster type. Valid types are `8bitInteger`, `8bitUnsignedInteger`, `16bi
 ### 62
 
 Pseudocolor mode must be one of `categorized` or `interpolate`.
+
+### 63
+
+Either raw raster content, or a valid URL must be supplied.

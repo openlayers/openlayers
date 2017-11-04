@@ -32,7 +32,7 @@ if (ol.ENABLE_RASTER) {
 
     /**
      * @private
-     * @type {ol.Extent}
+     * @type {ol.Extent|undefined}
      */
     this.extent_ = options.extent;
 
@@ -84,7 +84,7 @@ if (ol.ENABLE_RASTER) {
 
 
   /**
-   * @return {ol.Extent} Extent.
+   * @return {ol.Extent|undefined} Extent.
    */
   ol.source.RasterBase.prototype.getExtent = function() {
     return this.extent_;

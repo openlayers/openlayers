@@ -2776,6 +2776,86 @@ olx.render.State.prototype.rotation;
 
 
 /**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            convert: (function(number):number|undefined),
+ *            extent: (null|ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.ProjectionLike,
+ *            raster: (string|undefined),
+ *            type: (ol.RasterType|undefined),
+ *            url: (string|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+olx.source.ArcGridOptions;
+
+
+/**
+ * Attributions.
+ * @type {ol.AttributionLike|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.attributions;
+
+
+/**
+ * Optional function to convert each cell, when the source's data type does not
+ * match the provided type.
+ * @type {function(number):number|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.convert;
+
+
+/**
+ * Logo.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.logo;
+
+
+/**
+ * Projection.
+ * @type {ol.ProjectionLike}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.projection;
+
+
+/**
+ * Raw content of an ArcGrid file.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.raster;
+
+
+/**
+ * Data type of the raster layer. Default is `32bitFloat`.
+ * @type {ol.RasterType|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.type;
+
+
+/**
+ * Setting this option instructs the source to load the ArcGrid file using an
+ * XHR loader with a GET request.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.url;
+
+
+/**
+ * WrapX. Default is true
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.wrapX;
+
+
+/**
  * @typedef {{cacheSize: (number|undefined),
  *     culture: (string|undefined),
  *     hidpi: (boolean|undefined),
