@@ -3,6 +3,7 @@ goog.provide('ol.proj');
 goog.require('ol');
 goog.require('ol.Sphere');
 goog.require('ol.extent');
+goog.require('ol.math');
 goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
@@ -282,8 +283,13 @@ ol.proj.fromLonLat = function(coordinate, opt_projection) {
  * @api
  */
 ol.proj.toLonLat = function(coordinate, opt_projection) {
-  return ol.proj.transform(coordinate,
+  var lonLat = ol.proj.transform(coordinate,
       opt_projection !== undefined ? opt_projection : 'EPSG:3857', 'EPSG:4326');
+  var lon = lonLat[0];
+  if (lon < -180 || lon > 180) {
+    lonLat[0] = ol.math.modulo(lon + 180, 360) - 180;
+  }
+  return lonLat;
 };
 
 

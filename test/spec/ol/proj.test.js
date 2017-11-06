@@ -1,6 +1,5 @@
-
-
 goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
 
@@ -10,6 +9,30 @@ describe('ol.proj', function() {
   afterEach(function() {
     ol.proj.clearAllProjections();
     ol.proj.addCommon();
+  });
+
+  describe('toLonLat()', function() {
+    var cases = [{
+      from: [0, 0],
+      to: [0, 0]
+    }, {
+      from: [-12356463.478053365, 5700582.732404122],
+      to: [-111, 45.5]
+    }, {
+      from: [2 * ol.proj.EPSG3857.HALF_SIZE - 12356463.478053365, 5700582.732404122],
+      to: [-111, 45.5]
+    }, {
+      from: [-4 * ol.proj.EPSG3857.HALF_SIZE - 12356463.478053365, 5700582.732404122],
+      to: [-111, 45.5]
+    }];
+
+    cases.forEach(function(c) {
+      it('works for ' + c.from.join(', '), function() {
+        var lonLat = ol.proj.toLonLat(c.from);
+        expect(lonLat[0]).to.roughlyEqual(c.to[0], 1e-9);
+        expect(lonLat[1]).to.roughlyEqual(c.to[1], 1e-9);
+      });
+    });
   });
 
   describe('projection equivalence', function() {
