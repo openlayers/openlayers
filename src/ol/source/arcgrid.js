@@ -31,11 +31,6 @@ if (ol.ENABLE_RASTER) {
      */
     this.raster_ = options.raster;
 
-    /**
-     * @private
-     * @type {string|undefined}
-     */
-    this.url_ = options.url;
 
     /**
      * @private
@@ -54,6 +49,8 @@ if (ol.ENABLE_RASTER) {
       logo: options.logo,
       projection: options.projection,
       state: ol.source.State.READY,
+      url: options.url,
+      wcs: options.wcs,
       wrapX: options.wrapX
     });
   };
@@ -77,11 +74,22 @@ if (ol.ENABLE_RASTER) {
    * @inheritDoc
    */
   ol.source.ArcGrid.prototype.loadBands = function() {
-    if (this.url_) {
+    if (this.getURL()) {
       this.loadRasterXhr_();
     } else {
       this.parseRaster_();
     }
+  };
+
+
+  /**
+   * @inheritDoc
+   */
+  ol.source.RasterBase.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
+    var getCoverageURL = ol.source.RasterBase.prototype.createWCSGetCoverageURL.call(
+        this, url, wcsParams);
+
+    return getCoverageURL;
   };
 
 
@@ -92,7 +100,7 @@ if (ol.ENABLE_RASTER) {
     this.setState(ol.source.State.LOADING);
 
     var xhr = new XMLHttpRequest();
-    var url = /** @type {string} */ (this.url_);
+    var url = /** @type {string} */ (this.getURL());
     xhr.open('GET', url, true);
     /**
      * @param {Event} event Event.

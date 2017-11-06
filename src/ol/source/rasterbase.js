@@ -37,6 +37,13 @@ if (ol.ENABLE_RASTER) {
      */
     this.bands_ = [];
 
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.url_ = options.wcs ? this.createWCSGetCoverageURL(options.url,
+        options.wcsParams) : options.url;
+
     if (options.bands) {
       for (var i = 0; i < options.bands.length; ++i) {
         this.addBand(options.bands[i]);
@@ -122,6 +129,29 @@ if (ol.ENABLE_RASTER) {
    * @protected
    */
   ol.source.RasterBase.prototype.loadBands = function() {};
+
+
+  /**
+   * @param {string} url Base URL.
+   * @param {olx.WCSParams} wcsParams WCS parameters.
+   * @return {string} WCS GetCoverage URL.
+   * @protected
+   */
+  ol.source.RasterBase.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
+    var getCoverageURL = url;
+
+    return getCoverageURL;
+  };
+
+
+  /**
+   * Returns the URL associated to this source, if any.
+   * @return {string|undefined} URL.
+   * @api
+   */
+  ol.source.RasterBase.prototype.getURL = function() {
+    return this.url_;
+  };
 
 
   /**
