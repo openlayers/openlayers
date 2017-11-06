@@ -3,9 +3,9 @@ goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.source.ImageMapGuide');
 
-var mdf = 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
+var mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
 var agentUrl =
-    'http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous';
+    'http://www.buoyshark.com/mapguide/mapagent/mapagent.fcgi?';
 var bounds = [
   -87.865114442365922,
   43.665065564837931,
@@ -23,7 +23,9 @@ var map = new ol.Map({
         metersPerUnit: 111319.4908, //value returned from mapguide
         params: {
           MAPDEFINITION: mdf,
-          FORMAT: 'PNG'
+          FORMAT: 'PNG',
+          USERNAME: 'OpenLayers',
+          PASSWORD: 'OpenLayers'
         },
         ratio: 2
       })
