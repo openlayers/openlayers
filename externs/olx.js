@@ -273,9 +273,10 @@ olx.interaction.InteractionOptions;
 
 /**
  * Method called by the map to notify the interaction that a browser event was
- * dispatched to the map. The function may return `false` to prevent the
+ * dispatched to the map. If the function returns a falsy value,
  * propagation of the event to other interactions in the map's interactions
- * chain.
+ * chain will be prevented (this includes functions with no explicit return). See 
+ * {@link https://developer.mozilla.org/en-US/docs/Glossary/Falsy}
  * @type {function(ol.MapBrowserEvent):boolean}
  * @api
  */
