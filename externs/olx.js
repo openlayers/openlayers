@@ -2777,7 +2777,6 @@ olx.render.State.prototype.rotation;
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            convert: (function(number):number|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
@@ -2796,15 +2795,6 @@ olx.source.ArcGridOptions;
  * @api
  */
 olx.source.ArcGridOptions.prototype.attributions;
-
-
-/**
- * Optional function to convert each cell, when the source's data type does not
- * match the provided type.
- * @type {function(number):number|undefined}
- * @api
- */
-olx.source.ArcGridOptions.prototype.convert;
 
 
 /**

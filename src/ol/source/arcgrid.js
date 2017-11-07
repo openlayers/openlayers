@@ -39,12 +39,6 @@ if (ol.ENABLE_RASTER) {
      */
     this.type_ = options.type || ol.RasterType.FLOAT32;
 
-    /**
-     * @private
-     * @type{function(number):number|undefined}
-     */
-    this.convert_ = options.convert;
-
     ol.source.RasterBase.call(this, {
       attributions: options.attributions,
       logo: options.logo,
@@ -171,9 +165,8 @@ if (ol.ENABLE_RASTER) {
 
     // Create a band from the parsed data.
     var band = new ol.RasterBand({
-      convert: this.convert_,
       extent: extent,
-      nullvalue: header['NODATA_VALUE'],
+      nodata: header['NODATA_VALUE'],
       raster: raster,
       resolution: [header['CELLSIZE'], header['CELLSIZE']],
       stride: header['NCOLS'],

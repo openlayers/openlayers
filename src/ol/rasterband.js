@@ -44,7 +44,7 @@ if (ol.ENABLE_RASTER) {
      * @private
      */
     this.raster_ = binary ? this.createBinaryRaster_(options.raster, options.stride,
-        options.resolution, options.type, options.convert) :
+        options.resolution, options.type) :
       new ol.Raster(options.raster, options.stride, options.resolution);
 
     /**
@@ -170,12 +170,11 @@ if (ol.ENABLE_RASTER) {
    * @param {number} stride Stride.
    * @param {ol.Size} resolution Cell resolution.
    * @param {ol.RasterType} type Raster data type.
-   * @param {function(number):number=} convert Type conversion function.
    * @return {ol.Raster} Raster object.
    * @private
    */
   ol.RasterBand.prototype.createBinaryRaster_ = function(raster, stride,
-      resolution, type, convert) {
+      resolution, type) {
     var buffer;
     if (raster instanceof window.ArrayBuffer) {
       buffer = raster;
@@ -183,9 +182,8 @@ if (ol.ENABLE_RASTER) {
       var ctor = ol.Raster.getArrayConstructor(type);
       buffer = new window.ArrayBuffer(raster.length * ctor.BYTES_PER_ELEMENT);
       var view = new ctor(buffer);
-      var hasFunction = convert && typeof convert === 'function';
       for (var i = 0; i < raster.length; ++i) {
-        view[i] = hasFunction ? convert(raster[i]) : raster[i];
+        view[i] = raster[i];
       }
     }
     return new ol.Raster(buffer, stride, resolution);

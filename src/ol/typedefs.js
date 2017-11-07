@@ -261,7 +261,6 @@ ol.PseudocolorMap;
 
 /**
  * @typedef {{binary: (boolean|undefined),
-              convert: (function(number):number|undefined),
               extent: ol.Extent,
               nodata: (number|undefined),
               raster: (ArrayBuffer|Array.<number>),
