@@ -118,6 +118,11 @@ GeoJSONFeature.prototype.id;
 GeoJSONFeature.prototype.properties;
 
 
+/**
+ * @type {string|undefined}
+ */
+GeoJSONFeature.prototype.geometry_name;
+
 
 /**
  * @constructor

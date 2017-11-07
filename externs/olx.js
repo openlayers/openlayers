@@ -2002,6 +2002,7 @@ olx.format.WriteOptions.prototype.decimals;
 /**
  * @typedef {{defaultDataProjection: ol.ProjectionLike,
  *     geometryName: (string|undefined),
+ *     extractGeometryName: (boolean|undefined),
  *     featureProjection: ol.ProjectionLike}}
  */
 olx.format.GeoJSONOptions;
@@ -2030,6 +2031,18 @@ olx.format.GeoJSONOptions.prototype.featureProjection;
  * @api
  */
 olx.format.GeoJSONOptions.prototype.geometryName;
+
+
+/**
+ * Certain GeoJSON providers include the geometry_name field in the feature
+ * geoJSON. If set to `true` the geoJSON reader will look for that field to
+ * set the geometry name. If both this field is set to `true` and a
+ * `geometryName` is provided, the `geometryName` will take precedence.
+ * Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.format.GeoJSONOptions.prototype.extractGeometryName;
 
 
 /**
