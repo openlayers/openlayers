@@ -28,7 +28,7 @@ if (ol.ENABLE_RASTER) {
      * @type {number|null}
      * @private
      */
-    this.null_ = options.nullvalue || null;
+    this.null_ = options.nodata || null;
 
     /**
      * @type {ol.Extent}
