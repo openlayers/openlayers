@@ -1,5 +1,3 @@
-
-
 goog.require('ol');
 goog.require('ol.obj');
 goog.require('ol.Feature');
@@ -305,6 +303,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       this.tileKeys = [key];
       this.sourceTiles_ = {};
       this.sourceTiles_[key] = sourceTile;
+      this.wrappedTileCoord = arguments[0];
     };
     ol.inherits(TileClass, ol.VectorImageTile);
 

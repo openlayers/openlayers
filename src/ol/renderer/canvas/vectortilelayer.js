@@ -284,7 +284,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var tile, tileCoord, tileExtent;
   for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
     tile = renderedTiles[i];
-    tileCoord = tile.tileCoord;
+    tileCoord = tile.wrappedTileCoord;
     tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     bufferedExtent = ol.extent.buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
     if (!ol.extent.containsCoordinate(bufferedExtent, coordinate)) {
