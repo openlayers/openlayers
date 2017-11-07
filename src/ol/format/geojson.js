@@ -58,7 +58,7 @@ ol.format.GeoJSON = function(opt_options) {
    * @type {boolean|undefined}
    * @private
    */
-  this.readGeometryNameFromGeoJSON_ = options.readGeometryNameFromGeoJSON;
+  this.extractGeometryName_ = options.extractGeometryName;
 
 };
 ol.inherits(ol.format.GeoJSON, ol.format.JSONFeature);
@@ -384,7 +384,7 @@ ol.format.GeoJSON.prototype.readFeatureFromObject = function(
   var feature = new ol.Feature();
   if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
-  } else if (this.readGeometryNameFromGeoJSON_ && geoJSONFeature.geometry_name !== undefined) {
+  } else if (this.extractGeometryName_ && geoJSONFeature.geometry_name !== undefined) {
     feature.setGeometryName(geoJSONFeature.geometry_name);
   }
   feature.setGeometry(geometry);

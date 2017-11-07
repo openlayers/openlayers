@@ -1994,7 +1994,7 @@ olx.format.WriteOptions.prototype.decimals;
 /**
  * @typedef {{defaultDataProjection: ol.ProjectionLike,
  *     geometryName: (string|undefined),
- *     readGeometryNameFromGeoJSON: (boolean|undefined),
+ *     extractGeometryName: (boolean|undefined),
  *     featureProjection: ol.ProjectionLike}}
  */
 olx.format.GeoJSONOptions;
@@ -2034,7 +2034,7 @@ olx.format.GeoJSONOptions.prototype.geometryName;
  * @type {boolean|undefined}
  * @api
  */
-olx.format.GeoJSONOptions.prototype.readGeometryNameFromGeoJSON;
+olx.format.GeoJSONOptions.prototype.extractGeometryName;
 
 
 /**
