@@ -5,12 +5,12 @@ goog.require('ol.math');
 
 
 /**
- * This RegExp matches # followed by 3 or 6 hex digits.
+ * This RegExp matches # followed by 3, 4, 6, or 8 hex digits.
  * @const
  * @type {RegExp}
  * @private
  */
-ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
+ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
 
 
 /**
@@ -138,18 +138,30 @@ ol.color.fromStringInternal_ = function(s) {
 
   if (ol.color.HEX_COLOR_RE_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
-    ol.asserts.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
-    var d = n == 3 ? 1 : 2; // number of digits per channel
+    var d; // number of digits per channel
+    if (n <= 4) {
+      d = 1;
+    } else {
+      d = 2;
+    }
+    var hasAlpha = n === 4 || n === 8;
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
     b = parseInt(s.substr(1 + 2 * d, d), 16);
+    if (hasAlpha) {
+      a = parseInt(s.substr(1 + 3 * d, d), 16);
+    } else {
+      a = 255;
+    }
     if (d == 1) {
       r = (r << 4) + r;
       g = (g << 4) + g;
       b = (b << 4) + b;
+      if (hasAlpha) {
+        a = (a << 4) + a;
+      }
     }
-    a = 1;
-    color = [r, g, b, a];
+    color = [r, g, b, a / 255];
   } else if (s.indexOf('rgba(') == 0) { // rgba()
     parts = s.slice(5, -1).split(',').map(Number);
     color = ol.color.normalize(parts);
