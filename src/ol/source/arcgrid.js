@@ -7,6 +7,7 @@ goog.require('ol.RasterBand');
 goog.require('ol.RasterType');
 goog.require('ol.source.RasterBase');
 goog.require('ol.source.State');
+goog.require('ol.uri');
 
 
 if (ol.ENABLE_RASTER) {
@@ -50,7 +51,7 @@ if (ol.ENABLE_RASTER) {
       projection: options.projection,
       state: ol.source.State.READY,
       url: options.url,
-      wcs: options.wcs,
+      wcsParams: options.wcsParams,
       wrapX: options.wrapX
     });
   };
@@ -85,11 +86,13 @@ if (ol.ENABLE_RASTER) {
   /**
    * @inheritDoc
    */
-  ol.source.RasterBase.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
+  ol.source.ArcGrid.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
     var getCoverageURL = ol.source.RasterBase.prototype.createWCSGetCoverageURL.call(
         this, url, wcsParams);
+    var arcGridParams = {};
+    arcGridParams['FORMAT'] = wcsParams.format ? wcsParams.format : 'ArcGrid';
 
-    return getCoverageURL;
+    return ol.uri.appendParams(getCoverageURL, arcGridParams);
   };
 
 

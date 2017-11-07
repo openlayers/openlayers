@@ -263,7 +263,7 @@ ol.PseudocolorMap;
  * @typedef {{binary: (boolean|undefined),
               convert: (function(number):number|undefined),
               extent: ol.Extent,
-              nullvalue: (number|undefined),
+              nodata: (number|undefined),
               raster: (ArrayBuffer|Array.<number>),
               resolution: ol.Size,
               stride: number,
@@ -278,6 +278,7 @@ ol.RasterBandOptions;
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
+ *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
  */
 ol.RasterBaseOptions;

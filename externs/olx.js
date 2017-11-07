@@ -2784,6 +2784,7 @@ olx.render.State.prototype.rotation;
  *            raster: (string|undefined),
  *            type: (ol.RasterType|undefined),
  *            url: (string|undefined),
+ *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
  */
 olx.source.ArcGridOptions;
@@ -2815,7 +2816,7 @@ olx.source.ArcGridOptions.prototype.logo;
 
 
 /**
- * Projection.
+ * Projection. It must be supplied for WCS versions 1.0.0 and 1.1.0.
  * @type {ol.ProjectionLike}
  * @api
  */
@@ -2845,6 +2846,15 @@ olx.source.ArcGridOptions.prototype.type;
  * @api
  */
 olx.source.ArcGridOptions.prototype.url;
+
+
+/**
+ * WCS request parameters. If they are present, the URL is treated as a base URL
+ * for a WCS server, and the supplied parameters are appended to it.
+ * @type {olx.WCSParams|undefined}
+ * @api
+ */
+olx.source.ArcGridOptions.prototype.wcsParams;
 
 
 /**
@@ -6553,3 +6563,77 @@ olx.style.AtlasManagerOptions.prototype.maxSize;
  * @api
  */
 olx.style.AtlasManagerOptions.prototype.space;
+
+
+/**
+ * @typedef {{extent: (ol.Extent|undefined),
+ *            format: (string|undefined),
+ *            layer: string,
+ *            params: (Object|undefined),
+ *            resolution: (ol.Size|number|undefined),
+ *            size: (ol.Size|undefined),
+ *            version: (string|undefined)}}
+ * @api
+ */
+olx.WCSParams;
+
+
+/**
+ * WCS version. Versions 1.0.0, 1.1.0, and 2.0.1 are supported. Default is 1.1.0.
+ * @type {string|undefined}
+ * @api
+ */
+olx.WCSParams.prototype.version;
+
+
+/**
+ * Coverage extent. Required for versions 1.0.0 and 1.1.0.
+ * @type {ol.Extent|undefined}
+ * @api
+ */
+olx.WCSParams.prototype.extent;
+
+
+/**
+ * Number of rows and number of columns. `size` and `resolution` are exclusive
+ * parameters, but one of them is mandatory for WCS version 1.0.0.
+ * @type {ol.Size|undefined}
+ * @api
+ */
+olx.WCSParams.prototype.size;
+
+
+/**
+ * Cell resolution. If the X and Y resolutions are different, they can be specified
+ * in an array. `size` and `resolution` are exclusive parameters, but one of them
+ * is mandatory for WCS version 1.0.0.
+ * @type {ol.Size|number|undefined}
+ * @api
+ */
+olx.WCSParams.prototype.resolution;
+
+
+/**
+ * Layer name of the specified coverage.
+ * @type {string}
+ * @api
+ */
+olx.WCSParams.prototype.layer;
+
+
+/**
+ * Coverage format. Default is 'ArcGrid' for ArcGrid sources, and 'image/tiff'
+ * for GeoTIFF sources.
+ * @type {string|undefined}
+ * @api
+ */
+olx.WCSParams.prototype.format;
+
+
+/**
+ * Other parameters which will be appended directly in a KVP format to the end
+ * of the WCS GetCoverage URL.
+ * @type {Object|undefined}
+ * @api
+ */
+olx.WCSParams.prototype.params;

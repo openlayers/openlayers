@@ -5,8 +5,10 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
+goog.require('ol.obj');
 goog.require('ol.ObjectEventType');
 goog.require('ol.source.Source');
+goog.require('ol.uri');
 
 
 if (ol.ENABLE_RASTER) {
@@ -41,7 +43,7 @@ if (ol.ENABLE_RASTER) {
      * @private
      * @type {string|undefined}
      */
-    this.url_ = options.wcs ? this.createWCSGetCoverageURL(options.url,
+    this.url_ = options.wcsParams ? this.createWCSGetCoverageURL(options.url,
         options.wcsParams) : options.url;
 
     if (options.bands) {
@@ -138,9 +140,46 @@ if (ol.ENABLE_RASTER) {
    * @protected
    */
   ol.source.RasterBase.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
-    var getCoverageURL = url;
+    var version = wcsParams.version === '1.0.0' ? '1.0.0' : wcsParams.version ===
+      '2.0.1' ? '2.0.1' : ol.DEFAULT_WCS_VERSION;
 
-    return getCoverageURL;
+    var baseParams = {
+      'SERVICE': 'WCS',
+      'REQUEST': 'GetCoverage',
+      'VERSION': version
+    };
+
+    switch (version) {
+      case '1.0.0':
+        baseParams['BBOX'] = wcsParams.extent.join(',');
+        baseParams['CRS'] = this.getProjection().getCode();
+        baseParams['COVERAGE'] = wcsParams.layer;
+        if (wcsParams.resolution) {
+          var res = wcsParams.resolution;
+          baseParams['RESX'] = Array.isArray(res) ? res[0] : res;
+          baseParams['RESY'] = Array.isArray(res) ? res[1] : res;
+        } else if (wcsParams.size) {
+          baseParams['WIDTH'] = wcsParams.size[0];
+          baseParams['HEIGHT'] = wcsParams.size[1];
+        }
+        break;
+      case '1.1.0':
+        baseParams['BOUNDINGBOX'] = wcsParams.extent.join(',') + ',' +
+          this.getProjection().getCode();
+        baseParams['IDENTIFIER'] = wcsParams.layer;
+        break;
+      case '2.0.1':
+        baseParams['COVERAGEID'] = wcsParams.layer;
+        break;
+      default:
+        break;
+    }
+
+    if (wcsParams.params) {
+      ol.obj.assign(baseParams, wcsParams.params);
+    }
+
+    return ol.uri.appendParams(url, baseParams);
   };
 
 
