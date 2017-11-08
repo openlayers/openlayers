@@ -241,7 +241,8 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
       !this.getProjection() ||
       !projection ||
       ol.proj.equivalent(this.getProjection(), projection)) {
-    return this.getTileInternal(z, x, y, pixelRatio, /** @type {!ol.proj.Projection} */ (projection));
+    var sourceProjection = this.getProjection() || projection;
+    return this.getTileInternal(z, x, y, pixelRatio, /** @type {!ol.proj.Projection} */ (sourceProjection));
   } else {
     var cache = this.getTileCacheForProjection(projection);
     var tileCoord = [z, x, y];
