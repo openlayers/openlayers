@@ -341,7 +341,7 @@ ol.View.prototype.animate = function(var_args) {
  * @api
  */
 ol.View.prototype.getAnimating = function() {
-  return this.getHints()[ol.ViewHint.ANIMATING] > 0;
+  return this.hints_[ol.ViewHint.ANIMATING] > 0;
 };
 
 
@@ -351,7 +351,7 @@ ol.View.prototype.getAnimating = function() {
  * @api
  */
 ol.View.prototype.getInteracting = function() {
-  return this.getHints()[ol.ViewHint.INTERACTING] > 0;
+  return this.hints_[ol.ViewHint.INTERACTING] > 0;
 };
 
 
@@ -360,7 +360,7 @@ ol.View.prototype.getInteracting = function() {
  * @api
  */
 ol.View.prototype.cancelAnimations = function() {
-  this.setHint(ol.ViewHint.ANIMATING, -this.getHints()[ol.ViewHint.ANIMATING]);
+  this.setHint(ol.ViewHint.ANIMATING, -this.hints_[ol.ViewHint.ANIMATING]);
   for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
     var series = this.animations_[i];
     if (series[0].callback) {
