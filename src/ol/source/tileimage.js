@@ -237,11 +237,11 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+  var sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
   if (!ol.ENABLE_RASTER_REPROJECTION ||
-      !this.getProjection() ||
-      !projection ||
-      ol.proj.equivalent(this.getProjection(), projection)) {
-    return this.getTileInternal(z, x, y, pixelRatio, /** @type {!ol.proj.Projection} */ (this.getProjection() || projection));
+      !sourceProjection || !projection ||
+      ol.proj.equivalent(sourceProjection, projection)) {
+    return this.getTileInternal(z, x, y, pixelRatio, sourceProjection || projection);
   } else {
     var cache = this.getTileCacheForProjection(projection);
     var tileCoord = [z, x, y];
@@ -254,7 +254,6 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
     if (tile && tile.key == key) {
       return tile;
     } else {
-      var sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
       var targetTileGrid = this.getTileGridForProjection(projection);
       var wrappedTileCoord =
