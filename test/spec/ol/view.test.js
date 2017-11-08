@@ -1,5 +1,3 @@
-
-
 goog.require('ol');
 goog.require('ol.Map');
 goog.require('ol.View');
@@ -943,12 +941,12 @@ describe('ol.View', function() {
       });
     });
 
-    it('returns correct zoom levels', function() {
+    it('returns correct zoom levels (with resolutions array)', function() {
       view.setResolution(undefined);
       expect(view.getZoom()).to.be(undefined);
 
       view.setResolution(513);
-      expect(view.getZoom()).to.be(undefined);
+      expect(view.getZoom()).to.roughlyEqual(Math.log(512 / 513) / Math.LN2, 1e-9);
 
       view.setResolution(512);
       expect(view.getZoom()).to.be(0);
@@ -966,7 +964,7 @@ describe('ol.View', function() {
       expect(view.getZoom()).to.be(5);
 
       view.setResolution(15);
-      expect(view.getZoom()).to.be(undefined);
+      expect(view.getZoom()).to.roughlyEqual(Math.log(512 / 15) / Math.LN2, 1e-9);
     });
 
     it('works for resolution arrays with variable zoom factors', function() {
@@ -1070,6 +1068,8 @@ describe('ol.View', function() {
       expect(view.getZoomForResolution(max / 2)).to.be(1);
 
       expect(view.getZoomForResolution(max / 4)).to.be(2);
+
+      expect(view.getZoomForResolution(2 * max)).to.be(-1);
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function() {
