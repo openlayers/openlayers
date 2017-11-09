@@ -74,12 +74,6 @@ ol.render.canvas.TextReplay = function(
 
   /**
    * @private
-   * @type {number}
-   */
-  this.textScale_ = 0;
-
-  /**
-   * @private
    * @type {?ol.CanvasFillState}
    */
   this.textFillState_ = null;
@@ -92,9 +86,9 @@ ol.render.canvas.TextReplay = function(
 
   /**
    * @private
-   * @type {?ol.CanvasTextState}
+   * @type {ol.CanvasTextState}
    */
-  this.textState_ = null;
+  this.textState_ = {};
 
   /**
    * @private
@@ -210,7 +204,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
   var stride = 2;
   var i, ii;
 
-  if (this.textState_.placement === ol.style.TextPlacement.LINE) {
+  if (textState.placement === ol.style.TextPlacement.LINE) {
     if (!ol.extent.intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
       return;
     }
@@ -318,7 +312,7 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, fill, stroke) {
     var fillState = this.textFillState_;
     var textState = this.textState_;
     var pixelRatio = this.pixelRatio;
-    var scale = this.textScale_ * pixelRatio;
+    var scale = textState.scale * pixelRatio;
     var align =  ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
     var strokeWidth = stroke && strokeState.lineWidth ? strokeState.lineWidth : 0;
 
@@ -419,7 +413,7 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutte
   var textAlign = ol.render.replay.TEXT_ALIGN[textState.textAlign || ol.render.canvas.defaultTextAlign];
   var text = this.text_;
   var font = textState.font;
-  var textScale = this.textScale_;
+  var textScale = textState.scale;
   var strokeWidth = strokeState ? strokeState.lineWidth * textScale / 2 : 0;
   var widths = this.widths_;
   this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
@@ -458,95 +452,72 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutt
     this.text_ = '';
   } else {
     this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);
+
     var textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
       fillState = this.textFillState_ = null;
     } else {
-      var textFillStyleColor = textFillStyle.getColor();
-      var fillStyle = ol.colorlike.asColorLike(textFillStyleColor ?
-        textFillStyleColor : ol.render.canvas.defaultFillStyle);
       fillState = this.textFillState_;
       if (!fillState) {
         fillState = this.textFillState_ = /** @type {ol.CanvasFillState} */ ({});
       }
-      fillState.fillStyle = fillStyle;
+      fillState.fillStyle = ol.colorlike.asColorLike(
+          textFillStyle.getColor() || ol.render.canvas.defaultFillStyle);
     }
+
     var textStrokeStyle = textStyle.getStroke();
     if (!textStrokeStyle) {
       strokeState = this.textStrokeState_ = null;
     } else {
-      var textStrokeStyleColor = textStrokeStyle.getColor();
-      var textStrokeStyleLineCap = textStrokeStyle.getLineCap();
-      var textStrokeStyleLineDash = textStrokeStyle.getLineDash();
-      var textStrokeStyleLineDashOffset = textStrokeStyle.getLineDashOffset();
-      var textStrokeStyleLineJoin = textStrokeStyle.getLineJoin();
-      var textStrokeStyleWidth = textStrokeStyle.getWidth();
-      var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
-      var lineCap = textStrokeStyleLineCap !== undefined ?
-        textStrokeStyleLineCap : ol.render.canvas.defaultLineCap;
-      var lineDash = textStrokeStyleLineDash ?
-        textStrokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
-      var lineDashOffset = textStrokeStyleLineDashOffset !== undefined ?
-        textStrokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset;
-      var lineJoin = textStrokeStyleLineJoin !== undefined ?
-        textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
-      var lineWidth = textStrokeStyleWidth !== undefined ?
-        textStrokeStyleWidth : ol.render.canvas.defaultLineWidth;
-      var miterLimit = textStrokeStyleMiterLimit !== undefined ?
-        textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
-      var strokeStyle = ol.colorlike.asColorLike(textStrokeStyleColor ?
-        textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle);
       strokeState = this.textStrokeState_;
       if (!strokeState) {
         strokeState = this.textStrokeState_ = /** @type {ol.CanvasStrokeState} */ ({});
       }
-      strokeState.lineCap = lineCap;
-      strokeState.lineDash = lineDash;
-      strokeState.lineDashOffset = lineDashOffset;
-      strokeState.lineJoin = lineJoin;
-      strokeState.lineWidth = lineWidth;
-      strokeState.miterLimit = miterLimit;
-      strokeState.strokeStyle = strokeStyle;
+      var lineDash = textStrokeStyle.getLineDash();
+      var lineDashOffset = textStrokeStyle.getLineDashOffset();
+      var lineWidth = textStrokeStyle.getWidth();
+      var miterLimit = textStrokeStyle.getMiterLimit();
+      strokeState.lineCap = textStrokeStyle.getLineCap() || ol.render.canvas.defaultLineCap;
+      strokeState.lineDash = lineDash ? lineDash.slice() : ol.render.canvas.defaultLineDash;
+      strokeState.lineDashOffset =
+          lineDashOffset === undefined ? ol.render.canvas.defaultLineDashOffset : lineDashOffset;
+      strokeState.lineJoin = textStrokeStyle.getLineJoin() || ol.render.canvas.defaultLineJoin;
+      strokeState.lineWidth =
+          lineWidth === undefined ? ol.render.canvas.defaultLineWidth : lineWidth;
+      strokeState.miterLimit =
+          miterLimit === undefined ? ol.render.canvas.defaultMiterLimit : miterLimit;
+      strokeState.strokeStyle = ol.colorlike.asColorLike(
+          textStrokeStyle.getColor() || ol.render.canvas.defaultStrokeStyle);
     }
-    var textFont = textStyle.getFont();
-    var textOffsetX = textStyle.getOffsetX();
-    var textOffsetY = textStyle.getOffsetY();
-    var textRotateWithView = textStyle.getRotateWithView();
-    var textRotation = textStyle.getRotation();
-    var textScale = textStyle.getScale();
-    var textText = textStyle.getText();
-    var textTextAlign = textStyle.getTextAlign();
-    var textTextBaseline = textStyle.getTextBaseline();
-    var font = textFont !== undefined ?
-      textFont : ol.render.canvas.defaultFont;
-    var textAlign = textTextAlign;
-    var textBaseline = textTextBaseline !== undefined ?
-      textTextBaseline : ol.render.canvas.defaultTextBaseline;
+
     textState = this.textState_;
-    if (!textState) {
-      textState = this.textState_ = /** @type {ol.CanvasTextState} */ ({});
-    }
+    var font = textStyle.getFont() || ol.render.canvas.defaultFont;
     ol.render.canvas.checkFont(font);
+    var textScale = textStyle.getScale();
     textState.exceedLength = textStyle.getExceedLength();
     textState.font = font;
     textState.maxAngle = textStyle.getMaxAngle();
     textState.placement = textStyle.getPlacement();
-    textState.textAlign = textAlign;
-    textState.textBaseline = textBaseline;
+    textState.textAlign = textStyle.getTextAlign();
+    textState.textBaseline = textStyle.getTextBaseline() || ol.render.canvas.defaultTextBaseline;
+    textState.scale = textScale === undefined ? 1 : textScale;
 
-    this.text_ = textText !== undefined ? textText : '';
-    this.textOffsetX_ = textOffsetX !== undefined ? textOffsetX : 0;
-    this.textOffsetY_ = textOffsetY !== undefined ? textOffsetY : 0;
-    this.textRotateWithView_ = textRotateWithView !== undefined ? textRotateWithView : false;
-    this.textRotation_ = textRotation !== undefined ? textRotation : 0;
-    this.textScale_ = textScale !== undefined ? textScale : 1;
+    var textOffsetX = textStyle.getOffsetX();
+    var textOffsetY = textStyle.getOffsetY();
+    var textRotateWithView = textStyle.getRotateWithView();
+    var textRotation = textStyle.getRotation();
+    this.text_ = textStyle.getText() || '';
+    this.textOffsetX_ = textOffsetX === undefined ? 0 : textOffsetX;
+    this.textOffsetY_ = textOffsetY === undefined ? 0 : textOffsetY;
+    this.textRotateWithView_ = textRotateWithView === undefined ? false : textRotateWithView;
+    this.textRotation_ = textRotation === undefined ? 0 : textRotation;
 
     this.strokeKey_ = strokeState ?
       (typeof strokeState.strokeStyle == 'string' ? strokeState.strokeStyle : ol.getUid(strokeState.strokeStyle)) +
       strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeState.lineWidth +
       strokeState.lineJoin + strokeState.miterLimit + '[' + strokeState.lineDash.join() + ']' :
       '';
-    this.textKey_ = textState.font + (textState.textAlign || '?') + this.textScale_;
+    this.textKey_ = textState.font + (textState.textAlign || '?') + textState.scale;
     this.fillKey_ = fillState ?
       (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + ol.getUid(fillState.fillStyle))) :
       '';
