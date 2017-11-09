@@ -6,7 +6,7 @@ goog.require('ol.render.canvas');
 describe('ol.render.canvas', function() {
 
   var font = document.createElement('link');
-  font.href = 'https://fonts.googleapis.com/css?family=Inconsolata';
+  font.href = 'https://fonts.googleapis.com/css?family=Abel&text=wmytzilWMYTZIL%40%23%2F%26%3F%24%2510';
   font.rel = 'stylesheet';
   var head = document.getElementsByTagName('head')[0];
 
@@ -55,7 +55,7 @@ describe('ol.render.canvas', function() {
       head.appendChild(font);
       var spy = sinon.spy();
       ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
-      checkFont('12px Inconsolata');
+      checkFont('12px Abel');
       setTimeout(function() {
         ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
         head.removeChild(font);
