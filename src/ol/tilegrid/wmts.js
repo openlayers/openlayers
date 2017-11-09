@@ -93,8 +93,9 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
   var tileHeightPropName = 'TileHeight';
 
   var projection;
-  projection = ol.proj.get(matrixSet[supportedCRSPropName].replace(
-      /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'));
+  var code = matrixSet[supportedCRSPropName];
+  projection = ol.proj.get(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+      ol.proj.get(code);
   var metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
   var switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';

@@ -113,6 +113,7 @@ describe('ol.source.WMTS', function() {
       });
 
       expect(options.matrixSet).to.be.eql('google3857');
+      expect(options.projection.getCode()).to.be.eql('EPSG:3857');
     });
 
     it('can find a MatrixSet by equivalent SRS identifier', function() {
@@ -123,8 +124,31 @@ describe('ol.source.WMTS', function() {
       });
 
       expect(options.matrixSet).to.be.eql('google3857');
+      expect(options.projection.getCode()).to.be.eql('EPSG:900913');
     });
 
+    it('can find the default MatrixSet', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+        layer: 'BlueMarbleNextGeneration',
+        requestEncoding: 'REST'
+      });
+
+      expect(options.matrixSet).to.be.eql('BigWorldPixel');
+      expect(options.projection.getCode()).to.be.eql('urn:ogc:def:crs:OGC:1.3:CRS84');
+    });
+
+    it('uses the projection of the default MatrixSet if the config\'s projection is not supported', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+        layer: 'BlueMarbleNextGeneration',
+        projection: new ol.proj.Projection({
+          code: 'EPSG:2056',
+          units: 'm'
+        })
+      });
+
+      expect(options.matrixSet).to.be.eql('BigWorldPixel');
+      expect(options.projection.getCode()).to.be.eql('urn:ogc:def:crs:OGC:1.3:CRS84');
+    });
   });
 
   describe('when creating tileUrlFunction', function() {
