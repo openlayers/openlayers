@@ -88,7 +88,7 @@ ol.render.canvas.TextReplay = function(
    * @private
    * @type {ol.CanvasTextState}
    */
-  this.textState_ = {};
+  this.textState_ = /** @type {ol.CanvasTextState} */ ({});
 
   /**
    * @private

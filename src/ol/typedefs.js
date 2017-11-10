@@ -87,6 +87,28 @@ ol.CanvasFunctionType;
 
 
 /**
+ * @typedef {{currentFillStyle: (ol.ColorLike|undefined),
+ *            currentStrokeStyle: (ol.ColorLike|undefined),
+ *            currentLineCap: (string|undefined),
+ *            currentLineDash: Array.<number>,
+ *            currentLineDashOffset: (number|undefined),
+ *            currentLineJoin: (string|undefined),
+ *            currentLineWidth: (number|undefined),
+ *            currentMiterLimit: (number|undefined),
+ *            lastStroke: (number|undefined),
+ *            fillStyle: (ol.ColorLike|undefined),
+ *            strokeStyle: (ol.ColorLike|undefined),
+ *            lineCap: (string|undefined),
+ *            lineDash: Array.<number>,
+ *            lineDashOffset: (number|undefined),
+ *            lineJoin: (string|undefined),
+ *            lineWidth: (number|undefined),
+ *            miterLimit: (number|undefined)}|null}
+ */
+ol.CanvasFillStrokeState;
+
+
+/**
  * @typedef {{lineCap: string,
  *            lineDash: Array.<number>,
  *            lineDashOffset: number,
