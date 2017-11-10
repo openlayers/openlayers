@@ -101,6 +101,24 @@ ol.style.Text = function(opt_options) {
    * @type {number}
    */
   this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
+
+  /**
+   * @private
+   * @type {ol.style.Fill}
+   */
+  this.backgroundFill_ = options.backgroundFill ? options.backgroundFill : null;
+
+  /**
+   * @private
+   * @type {ol.style.Stroke}
+   */
+  this.backgroundStroke_ = options.backgroundStroke ? options.backgroundStroke : null;
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.padding_ = options.padding === undefined ? null : options.padding;
 };
 
 
@@ -280,6 +298,36 @@ ol.style.Text.prototype.getTextBaseline = function() {
 
 
 /**
+ * Get the background fill style for the text.
+ * @return {ol.style.Fill} Fill style.
+ * @api
+ */
+ol.style.Text.prototype.getBackgroundFill = function() {
+  return this.backgroundFill_;
+};
+
+
+/**
+ * Get the background stroke style for the text.
+ * @return {ol.style.Stroke} Stroke style.
+ * @api
+ */
+ol.style.Text.prototype.getBackgroundStroke = function() {
+  return this.backgroundStroke_;
+};
+
+
+/**
+ * Get the padding for the text.
+ * @return {Array.<number>} Padding.
+ * @api
+ */
+ol.style.Text.prototype.getPadding = function() {
+  return this.padding_;
+};
+
+
+/**
  * Set the `exceedLength` property.
  *
  * @param {boolean} exceedLength Let text exceed the path that it follows.
@@ -419,4 +467,37 @@ ol.style.Text.prototype.setTextAlign = function(textAlign) {
  */
 ol.style.Text.prototype.setTextBaseline = function(textBaseline) {
   this.textBaseline_ = textBaseline;
+};
+
+
+/**
+ * Set the background fill.
+ *
+ * @param {ol.style.Fill} fill Fill style.
+ * @api
+ */
+ol.style.Text.prototype.setBackgroundFill = function(fill) {
+  this.backgroundFill_ = fill;
+};
+
+
+/**
+ * Set the background stroke.
+ *
+ * @param {ol.style.Stroke} stroke Stroke style.
+ * @api
+ */
+ol.style.Text.prototype.setBackgroundStroke = function(stroke) {
+  this.backgroundStroke_ = stroke;
+};
+
+
+/**
+ * Set the padding (`[top, right, bottom, left]`).
+ *
+ * @param {!Array.<number>} padding Padding.
+ * @api
+ */
+ol.style.Text.prototype.setPadding = function(padding) {
+  this.padding_ = padding;
 };

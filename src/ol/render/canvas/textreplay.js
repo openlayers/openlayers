@@ -290,6 +290,11 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
     }
     end = this.appendFlatCoordinates(flatCoordinates, 0, end, stride, false, false);
     this.beginGeometry(geometry, feature);
+    if (textState.backgroundFill || textState.backgroundStroke) {
+      this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
+      this.updateFillStyle(this.state, this.applyFill, geometry);
+      this.updateStrokeStyle(this.state, this.applyStroke);
+    }
     this.drawTextImage_(label, begin, end);
     this.endGeometry(geometry, feature);
   }
@@ -385,12 +390,18 @@ ol.render.canvas.TextReplay.prototype.drawTextImage_ = function(label, begin, en
   this.instructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-    1, true, label.width
+    1, true, label.width,
+    textState.padding == ol.render.canvas.defaultPadding ?
+      ol.render.canvas.defaultPadding : textState.padding.map(function(p) {
+        return p * pixelRatio;
+      }),
+    !!textState.backgroundFill, !!textState.backgroundStroke
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
-    1 / pixelRatio, true, label.width
+    1 / pixelRatio, true, label.width, textState.padding,
+    !!textState.backgroundFill, !!textState.backgroundStroke
   ]);
 };
 
@@ -500,6 +511,9 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutt
     textState.placement = textStyle.getPlacement();
     textState.textAlign = textStyle.getTextAlign();
     textState.textBaseline = textStyle.getTextBaseline() || ol.render.canvas.defaultTextBaseline;
+    textState.backgroundFill = textStyle.getBackgroundFill();
+    textState.backgroundStroke = textStyle.getBackgroundStroke();
+    textState.padding = textStyle.getPadding() || ol.render.canvas.defaultPadding;
     textState.scale = textScale === undefined ? 1 : textScale;
 
     var textOffsetX = textStyle.getOffsetX();

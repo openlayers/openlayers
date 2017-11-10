@@ -275,7 +275,7 @@ olx.interaction.InteractionOptions;
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. If the function returns a falsy value,
  * propagation of the event to other interactions in the map's interactions
- * chain will be prevented (this includes functions with no explicit return). See 
+ * chain will be prevented (this includes functions with no explicit return). See
  * {@link https://developer.mozilla.org/en-US/docs/Glossary/Falsy}
  * @type {function(ol.MapBrowserEvent):boolean}
  * @api
@@ -7861,7 +7861,10 @@ olx.style.StrokeOptions.prototype.width;
  *     textAlign: (string|undefined),
  *     textBaseline: (string|undefined),
  *     fill: (ol.style.Fill|undefined),
- *     stroke: (ol.style.Stroke|undefined)}}
+ *     stroke: (ol.style.Stroke|undefined),
+ *     backgroundFill: (ol.style.Fill|undefined),
+ *     backgroundStroke: (ol.style.Stroke|undefined),
+ *     padding: (Array.<number>|undefined)}}
  */
 olx.style.TextOptions;
 
@@ -7988,6 +7991,34 @@ olx.style.TextOptions.prototype.fill;
  * @api
  */
 olx.style.TextOptions.prototype.stroke;
+
+
+/**
+ * Fill style for the text background when `placement` is `'point'`. Default is
+ * no fill.
+ * @type {ol.style.Fill|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.backgroundFill;
+
+
+/**
+ * Stroke style for the text background  when `placement` is `'point'`. Default
+ * is no stroke.
+ * @type {ol.style.Stroke|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.backgroundStroke;
+
+
+/**
+ * Padding in pixels around the text for decluttering and background. The order
+ * of values in the array is `[top, right, bottom, left]`. Default is
+ * `[0, 0, 0, 0]`.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.padding;
 
 
 /**
