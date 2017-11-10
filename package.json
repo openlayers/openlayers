@@ -48,7 +48,7 @@
     "rbush": "2.0.1",
     "rollup": "^0.51.3",
     "rollup-plugin-cleanup": "^2.0.0",
-    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^3.0.0",
     "temp": "0.8.3",
     "walk": "2.3.9"
