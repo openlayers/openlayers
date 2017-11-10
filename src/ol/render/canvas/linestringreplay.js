@@ -1,10 +1,6 @@
 goog.provide('ol.render.canvas.LineStringReplay');
 
 goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.colorlike');
-goog.require('ol.extent');
-goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Instruction');
 goog.require('ol.render.canvas.Replay');
 
@@ -24,49 +20,6 @@ ol.render.canvas.LineStringReplay = function(
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   ol.render.canvas.Replay.call(this,
       tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.bufferedMaxExtent_ = null;
-
-  /**
-   * @private
-   * @type {{currentStrokeStyle: (ol.ColorLike|undefined),
-   *         currentLineCap: (string|undefined),
-   *         currentLineDash: Array.<number>,
-   *         currentLineDashOffset: (number|undefined),
-   *         currentLineJoin: (string|undefined),
-   *         currentLineWidth: (number|undefined),
-   *         currentMiterLimit: (number|undefined),
-   *         lastStroke: (number|undefined),
-   *         strokeStyle: (ol.ColorLike|undefined),
-   *         lineCap: (string|undefined),
-   *         lineDash: Array.<number>,
-   *         lineDashOffset: (number|undefined),
-   *         lineJoin: (string|undefined),
-   *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
-   */
-  this.state_ = {
-    currentStrokeStyle: undefined,
-    currentLineCap: undefined,
-    currentLineDash: null,
-    currentLineDashOffset: undefined,
-    currentLineJoin: undefined,
-    currentLineWidth: undefined,
-    currentMiterLimit: undefined,
-    lastStroke: undefined,
-    strokeStyle: undefined,
-    lineCap: undefined,
-    lineDash: null,
-    lineDashOffset: undefined,
-    lineJoin: undefined,
-    lineWidth: undefined,
-    miterLimit: undefined
-  };
-
 };
 ol.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
@@ -94,71 +47,14 @@ ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ = function(flat
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringReplay.prototype.getBufferedMaxExtent = function() {
-  if (!this.bufferedMaxExtent_) {
-    this.bufferedMaxExtent_ = ol.extent.clone(this.maxExtent);
-    if (this.maxLineWidth > 0) {
-      var width = this.resolution * (this.maxLineWidth + 1) / 2;
-      ol.extent.buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
-    }
-  }
-  return this.bufferedMaxExtent_;
-};
-
-
-/**
- * @private
- */
-ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
-  var state = this.state_;
-  var strokeStyle = state.strokeStyle;
-  var lineCap = state.lineCap;
-  var lineDash = state.lineDash;
-  var lineDashOffset = state.lineDashOffset;
-  var lineJoin = state.lineJoin;
-  var lineWidth = state.lineWidth;
-  var miterLimit = state.miterLimit;
-  if (state.currentStrokeStyle != strokeStyle ||
-      state.currentLineCap != lineCap ||
-      !ol.array.equals(state.currentLineDash, lineDash) ||
-      state.currentLineDashOffset != lineDashOffset ||
-      state.currentLineJoin != lineJoin ||
-      state.currentLineWidth != lineWidth ||
-      state.currentMiterLimit != miterLimit) {
-    if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
-      this.instructions.push([ol.render.canvas.Instruction.STROKE]);
-      state.lastStroke = this.coordinates.length;
-    }
-    state.lastStroke = 0;
-    this.instructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      strokeStyle, lineWidth * this.pixelRatio, lineCap, lineJoin, miterLimit,
-      this.applyPixelRatio(lineDash), lineDashOffset * this.pixelRatio
-    ], [
-      ol.render.canvas.Instruction.BEGIN_PATH
-    ]);
-    state.currentStrokeStyle = strokeStyle;
-    state.currentLineCap = lineCap;
-    state.currentLineDash = lineDash;
-    state.currentLineDashOffset = lineDashOffset;
-    state.currentLineJoin = lineJoin;
-    state.currentLineWidth = lineWidth;
-    state.currentMiterLimit = miterLimit;
-  }
-};
-
-
-/**
- * @inheritDoc
- */
 ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
-  var state = this.state_;
+  var state = this.state;
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
-  this.setStrokeStyle_();
+  this.updateStrokeStyle(state, true);
   this.beginGeometry(lineStringGeometry, feature);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
@@ -179,13 +75,13 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
-  var state = this.state_;
+  var state = this.state;
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
-  this.setStrokeStyle_();
+  this.updateStrokeStyle(state, true);
   this.beginGeometry(multiLineStringGeometry, feature);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
@@ -212,44 +108,10 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.finish = function() {
-  var state = this.state_;
+  var state = this.state;
   if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   this.reverseHitDetectionInstructions();
-  this.state_ = null;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  var strokeStyleColor = strokeStyle.getColor();
-  this.state_.strokeStyle = ol.colorlike.asColorLike(strokeStyleColor ?
-    strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
-  var strokeStyleLineCap = strokeStyle.getLineCap();
-  this.state_.lineCap = strokeStyleLineCap !== undefined ?
-    strokeStyleLineCap : ol.render.canvas.defaultLineCap;
-  var strokeStyleLineDash = strokeStyle.getLineDash();
-  this.state_.lineDash = strokeStyleLineDash ?
-    strokeStyleLineDash : ol.render.canvas.defaultLineDash;
-  var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
-  this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-    strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset;
-  var strokeStyleLineJoin = strokeStyle.getLineJoin();
-  this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
-    strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
-  var strokeStyleWidth = strokeStyle.getWidth();
-  this.state_.lineWidth = strokeStyleWidth !== undefined ?
-    strokeStyleWidth : ol.render.canvas.defaultLineWidth;
-  var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-  this.state_.miterLimit = strokeStyleMiterLimit !== undefined ?
-    strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
-
-  if (this.state_.lineWidth > this.maxLineWidth) {
-    this.maxLineWidth = this.state_.lineWidth;
-    // invalidate the buffered max extent cache
-    this.bufferedMaxExtent_ = null;
-  }
+  this.state = null;
 };
