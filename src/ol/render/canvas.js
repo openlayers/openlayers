@@ -105,7 +105,7 @@ ol.render.canvas.checkFont = (function() {
   var labelCache = ol.render.canvas.labelCache;
   var font = '32px monospace';
   var text = 'wmytzilWMYTZIL@#/&?$%10';
-  var context, referenceWidth;
+  var context, interval, referenceWidth;
 
   function isAvailable(fontFamily) {
     if (!context) {
@@ -142,8 +142,9 @@ ol.render.canvas.checkFont = (function() {
         }
       }
     }
-    if (!done) {
-      window.setTimeout(check, 32);
+    if (done) {
+      window.clearInterval(interval);
+      interval = undefined;
     }
   }
 
@@ -158,7 +159,9 @@ ol.render.canvas.checkFont = (function() {
         checked[fontFamily] = 60;
         if (!isAvailable(fontFamily)) {
           checked[fontFamily] = 0;
-          window.setTimeout(check, 25);
+          if (interval === undefined) {
+            interval = window.setInterval(check, 32);
+          }
         }
       }
     }
