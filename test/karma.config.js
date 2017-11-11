@@ -108,7 +108,8 @@ module.exports = function(karma) {
         username: 'openlayers',
         accessKey: process.env.SAUCE_ACCESS_KEY,
         connectOptions: {
-          noSslBumpDomains: 'all'
+          noSslBumpDomains: 'all',
+          connectRetries: 5
         }
       },
       hostname: 'travis.dev',
