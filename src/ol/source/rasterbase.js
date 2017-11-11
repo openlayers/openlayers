@@ -140,8 +140,7 @@ if (ol.ENABLE_RASTER) {
    * @protected
    */
   ol.source.RasterBase.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
-    var version = wcsParams.version === '1.0.0' ? '1.0.0' : wcsParams.version ===
-      '2.0.1' ? '2.0.1' : ol.DEFAULT_WCS_VERSION;
+    var version = wcsParams.version === '1.0.0' ? '1.0.0' : ol.DEFAULT_WCS_VERSION;
 
     var baseParams = {
       'SERVICE': 'WCS',
@@ -162,11 +161,6 @@ if (ol.ENABLE_RASTER) {
           baseParams['WIDTH'] = wcsParams.size[0];
           baseParams['HEIGHT'] = wcsParams.size[1];
         }
-        break;
-      case '1.1.0':
-        baseParams['BOUNDINGBOX'] = wcsParams.extent.join(',') + ',' +
-          this.getProjection().getCode();
-        baseParams['IDENTIFIER'] = wcsParams.layer;
         break;
       case '2.0.1':
         baseParams['COVERAGEID'] = wcsParams.layer;

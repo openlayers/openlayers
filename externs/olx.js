@@ -3047,6 +3047,77 @@ olx.source.ClusterOptions.prototype.wrapX;
 
 
 /**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            extent: (null|ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.ProjectionLike,
+ *            raster: (string|undefined),
+ *            url: (string|undefined),
+ *            wcsParams: (olx.WCSParams|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+olx.source.GeoTIFFOptions;
+
+
+/**
+ * Attributions.
+ * @type {ol.AttributionLike|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.attributions;
+
+
+/**
+ * Logo.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.logo;
+
+
+/**
+ * Projection.
+ * @type {ol.ProjectionLike}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.projection;
+
+
+/**
+ * Raw content of a GeoTIFF file.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.raster;
+
+
+/**
+ * Setting this option instructs the source to load the GeoTIFF file using an
+ * XHR loader with a GET request.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.url;
+
+
+/**
+ * WCS request parameters. If they are present, the URL is treated as a base URL
+ * for a WCS server, and the supplied parameters are appended to it.
+ * @type {olx.WCSParams|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.wcsParams;
+
+
+/**
+ * WrapX. Default is true
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.GeoTIFFOptions.prototype.wrapX;
+
+
+/**
  * @typedef {{preemptive: (boolean|undefined),
  *     jsonp: (boolean|undefined),
  *     tileJSON: (TileJSON|undefined),
@@ -6569,7 +6640,7 @@ olx.WCSParams;
 
 
 /**
- * WCS version. Versions 1.0.0, 1.1.0, and 2.0.1 are supported. Default is 1.1.0.
+ * WCS version. Versions 1.0.0 and 2.0.1 are supported. Default is 2.0.1.
  * @type {string|undefined}
  * @api
  */
@@ -6577,7 +6648,8 @@ olx.WCSParams.prototype.version;
 
 
 /**
- * Coverage extent. Required for versions 1.0.0 and 1.1.0.
+ * Coverage extent. Required for version 1.0.0, but can be useful for version 2.0.1
+ * GeoTIFFs, when the server does not encode the extent in the returned file.
  * @type {ol.Extent|undefined}
  * @api
  */
