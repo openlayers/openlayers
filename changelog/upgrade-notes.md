@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next Release
+### v4.5.0
 
 #### Removed GeoJSON crs workaround for GeoServer
 
