@@ -149,6 +149,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
 
   /**
    * @private
+   * @type {number}
+   */
+  this.viewRotation_ = 0;
+
+  /**
+   * @private
    * @type {!ol.Transform}
    */
   this.tmpLocalTransform_ = ol.transform.create();
@@ -160,6 +166,34 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, pixelRatio,
   this.resetTransform_ = ol.transform.create();
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Coordinate} p1 1st point of the background box.
+ * @param {ol.Coordinate} p2 2nd point of the background box.
+ * @param {ol.Coordinate} p3 3rd point of the background box.
+ * @param {ol.Coordinate} p4 4th point of the background box.
+ * @param {Array.<*>} fillInstruction Fill instruction.
+ * @param {Array.<*>} strokeInstruction Stroke instruction.
+ */
+ol.render.canvas.Replay.prototype.replayTextBackground_ = function(context, p1, p2, p3, p4,
+    fillInstruction, strokeInstruction) {
+  context.beginPath();
+  context.moveTo.apply(context, p1);
+  context.lineTo.apply(context, p2);
+  context.lineTo.apply(context, p3);
+  context.lineTo.apply(context, p4);
+  context.lineTo.apply(context, p1);
+  if (fillInstruction) {
+    this.fillOrigin_ = /** @type {Array.<number>} */ (fillInstruction[2]);
+    this.fill_(context);
+  }
+  if (strokeInstruction) {
+    this.setStrokeStyle_(context, /** @type {Array.<*>} */ (strokeInstruction));
+    context.stroke();
+  }
+};
 
 
 /**
@@ -179,13 +213,13 @@ ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @param {boolean} snapToPixel Snap to pixel.
  * @param {number} width Width.
  * @param {Array.<number>} padding Padding.
- * @param {boolean} fill Background fill.
- * @param {boolean} stroke Backgroud stroke.
+ * @param {Array.<*>} fillInstruction Fill instruction.
+ * @param {Array.<*>} strokeInstruction Stroke instruction.
  */
 ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
     anchorX, anchorY, declutterGroup, height, opacity, originX, originY,
-    rotation, scale, snapToPixel, width, padding, fill, stroke) {
-  var fillStroke = fill || stroke;
+    rotation, scale, snapToPixel, width, padding, fillInstruction, strokeInstruction) {
+  var fillStroke = fillInstruction || strokeInstruction;
   var localTransform = this.tmpLocalTransform_;
   anchorX *= scale;
   anchorY *= scale;
@@ -204,7 +238,14 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
   var boxX = x - padding[3];
   var boxY = y - padding[0];
 
-  var p1, p2, p3, p4;
+  /** @type {ol.Coordinate} */
+  var p1;
+  /** @type {ol.Coordinate} */
+  var p2;
+  /** @type {ol.Coordinate} */
+  var p3;
+  /** @type {ol.Coordinate} */
+  var p4;
   if (fillStroke || rotation !== 0) {
     p1 = [boxX, boxY];
     p2 = [boxX + boxW, boxY];
@@ -220,10 +261,10 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
         centerX, centerY, 1, 1, rotation, -centerX, -centerY);
 
     ol.extent.createOrUpdateEmpty(box);
-    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, /** @type {Array.<number>} */ (p1)));
-    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, /** @type {Array.<number>} */ (p2)));
-    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, /** @type {Array.<number>} */ (p3)));
-    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, /** @type {Array.<number>} */ (p4)));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p1));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p2));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p3));
+    ol.extent.extendCoordinate(box, ol.transform.apply(localTransform, p4));
   } else {
     ol.extent.createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
   }
@@ -233,47 +274,19 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
     if (!intersects && declutterGroup[4] == 1) {
       return;
     }
-    /** @type {ol.CanvasFillStrokeState} */
-    var state;
-    if (intersects && fillStroke) {
-      state = /** @type {ol.CanvasFillStrokeState} */ ({});
-      if (fill) {
-        state.fillStyle = context.fillStyle;
-      }
-      if (stroke) {
-        state.strokeStyle = context.strokeStyle;
-        state.lineWidth = context.lineWidth;
-        state.lineCap = context.lineCap;
-        state.lineJoin = context.lineJoin;
-        state.miterLimit = context.miterLimit;
-        if (ol.has.CANVAS_LINE_DASH) {
-          state.lineDashOffset = context.lineDashOffset;
-          state.lineDash = context.getLineDash();
-        }
-      }
-    }
     ol.extent.extend(declutterGroup, box);
     var declutterArgs = intersects ?
       [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
       null;
     if (declutterArgs && fillStroke) {
-      declutterArgs.push(state, p1, p2, p3, p4);
+      declutterArgs.push(fillInstruction, strokeInstruction, p1, p2, p3, p4);
     }
     declutterGroup.push(declutterArgs);
   } else if (intersects) {
     if (fillStroke) {
-      context.beginPath();
-      context.moveTo.apply(context, p1);
-      context.lineTo.apply(context, p2);
-      context.lineTo.apply(context, p3);
-      context.lineTo.apply(context, p4);
-      context.lineTo.apply(context, p1);
-      if (fill) {
-        context.fill();
-      }
-      if (stroke) {
-        context.stroke();
-      }
+      this.replayTextBackground_(context, p1, p2, p3, p4,
+          /** @type {Array.<*>} */ (fillInstruction),
+          /** @type {Array.<*>} */ (strokeInstruction));
     }
     ol.render.canvas.drawImage(context, transform, opacity, image, originX, originY, w, h, x, y, scale);
   }
@@ -435,17 +448,34 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {number} rotation Rotation.
  */
-ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
+ol.render.canvas.Replay.prototype.fill_ = function(context) {
   if (this.fillOrigin_) {
     var origin = ol.transform.apply(this.renderedTransform_, this.fillOrigin_.slice());
     context.translate(origin[0], origin[1]);
-    context.rotate(rotation);
+    context.rotate(this.viewRotation_);
   }
   context.fill();
   if (this.fillOrigin_) {
     context.setTransform.apply(context, ol.render.canvas.resetTransform_);
+  }
+};
+
+
+/**
+ * @private
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {Array.<*>} instruction Instruction.
+ */
+ol.render.canvas.Replay.prototype.setStrokeStyle_ = function(context, instruction) {
+  context.strokeStyle = /** @type {ol.ColorLike} */ (instruction[1]);
+  context.lineWidth = /** @type {number} */ (instruction[2]);
+  context.lineCap = /** @type {string} */ (instruction[3]);
+  context.lineJoin = /** @type {string} */ (instruction[4]);
+  context.miterLimit = /** @type {number} */ (instruction[5]);
+  if (ol.has.CANVAS_LINE_DASH) {
+    context.lineDashOffset = /** @type {number} */ (instruction[7]);
+    context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
   }
 };
 
@@ -471,30 +501,9 @@ ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
           var declutterData = /** @type {Array} */ (declutterGroup[j]);
           if (declutterData) {
             if (declutterData.length > 11) {
-              var context = /** @type {CanvasRenderingContext2D} */ (declutterData[0]);
-              context.beginPath();
-              context.moveTo.apply(context, declutterData[12]);
-              context.lineTo.apply(context, declutterData[13]);
-              context.lineTo.apply(context, declutterData[14]);
-              context.lineTo.apply(context, declutterData[15]);
-              context.lineTo.apply(context, declutterData[12]);
-              var state = /** @type {ol.CanvasFillStrokeState} */ (declutterData[11]);
-              if (state.fillStyle) {
-                context.fillStyle = state.fillStyle;
-                context.fill();
-              }
-              if (state.strokeStyle) {
-                context.strokeStyle = state.strokeStyle;
-                context.lineWidth = /** @type {number} */ (state.lineWidth);
-                context.lineCap = /** @type {string} */ (state.lineCap);
-                context.lineJoin = /** @type {string} */ (state.lineJoin);
-                context.miterLimit = /** @type {number} */ (state.miterLimit);
-                if (ol.has.CANVAS_LINE_DASH) {
-                  context.lineDashOffset = /** @type {number} */ (state.lineDashOffset);
-                  context.setLineDash(state.lineDash);
-                }
-                context.stroke();
-              }
+              this.replayTextBackground_(declutterData[0],
+                  declutterData[13], declutterData[14], declutterData[15], declutterData[16],
+                  declutterData[11], declutterData[12]);
             }
             drawImage.apply(undefined, declutterData);
           }
@@ -511,7 +520,6 @@ ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
  * @private
  * @param {CanvasRenderingContext2D} context Context.
  * @param {ol.Transform} transform Transform.
- * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {Array.<*>} instructions Instructions array.
@@ -523,7 +531,7 @@ ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay_ = function(
-    context, transform, viewRotation, skippedFeaturesHash,
+    context, transform, skippedFeaturesHash,
     instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
@@ -546,7 +554,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var anchorX, anchorY, prevX, prevY, roundX, roundY, declutterGroup, image;
   var pendingFill = 0;
   var pendingStroke = 0;
+  var lastFillInstruction = null;
+  var lastStrokeInstruction = null;
   var coordinateCache = this.coordinateCache_;
+  var viewRotation = this.viewRotation_;
 
   var state = /** @type {olx.render.State} */ ({
     context: context,
@@ -579,7 +590,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
         if (pendingFill > batchSize) {
-          this.fill_(context, viewRotation);
+          this.fill_(context);
           pendingFill = 0;
         }
         if (pendingStroke > batchSize) {
@@ -667,7 +678,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           this.replayImage_(context,
               pixelCoordinates[d], pixelCoordinates[d + 1], image, anchorX, anchorY,
               declutterGroup, height, opacity, originX, originY, rotation, scale,
-              snapToPixel, width, padding, backgroundFill, backgroundStroke);
+              snapToPixel, width, padding,
+              backgroundFill ? /** @type {Array.<*>} */ (lastFillInstruction) : null,
+              backgroundStroke ? /** @type {Array.<*>} */ (lastStrokeInstruction) : null);
         }
         this.renderDeclutter_(declutterGroup);
         ++i;
@@ -707,7 +720,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                     /** @type {number} */ (part[3]), textScale, false, label.width,
-                    ol.render.canvas.defaultPadding, false, false);
+                    ol.render.canvas.defaultPadding, null, null);
               }
             }
             if (fill) {
@@ -721,7 +734,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                     /** @type {number} */ (part[0]), /** @type {number} */ (part[1]), label,
                     anchorX, anchorY, declutterGroup, label.height, 1, 0, 0,
                     /** @type {number} */ (part[3]), textScale, false, label.width,
-                    ol.render.canvas.defaultPadding, false, false);
+                    ol.render.canvas.defaultPadding, null, null);
               }
             }
           }
@@ -743,7 +756,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (batchSize) {
           pendingFill++;
         } else {
-          this.fill_(context, viewRotation);
+          this.fill_(context);
         }
         ++i;
         break;
@@ -773,10 +786,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_FILL_STYLE:
+        lastFillInstruction = instruction;
         this.fillOrigin_ = instruction[2];
 
         if (pendingFill) {
-          this.fill_(context, viewRotation);
+          this.fill_(context);
           pendingFill = 0;
           if (pendingStroke) {
             context.stroke();
@@ -788,19 +802,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
+        lastStrokeInstruction = instruction;
         if (pendingStroke) {
           context.stroke();
           pendingStroke = 0;
         }
-        context.strokeStyle = /** @type {ol.ColorLike} */ (instruction[1]);
-        context.lineWidth = /** @type {number} */ (instruction[2]);
-        context.lineCap = /** @type {string} */ (instruction[3]);
-        context.lineJoin = /** @type {string} */ (instruction[4]);
-        context.miterLimit = /** @type {number} */ (instruction[5]);
-        if (ol.has.CANVAS_LINE_DASH) {
-          context.lineDashOffset = /** @type {number} */ (instruction[7]);
-          context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
-        }
+        this.setStrokeStyle_(context, /** @type {Array.<*>} */ (instruction));
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
@@ -817,7 +824,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     }
   }
   if (pendingFill) {
-    this.fill_(context, viewRotation);
+    this.fill_(context);
   }
   if (pendingStroke) {
     context.stroke();
@@ -835,9 +842,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  */
 ol.render.canvas.Replay.prototype.replay = function(
     context, transform, viewRotation, skippedFeaturesHash) {
-  var instructions = this.instructions;
-  this.replay_(context, transform, viewRotation,
-      skippedFeaturesHash, instructions, undefined, undefined);
+  this.viewRotation_ = viewRotation;
+  this.replay_(context, transform,
+      skippedFeaturesHash, this.instructions, undefined, undefined);
 };
 
 
@@ -857,9 +864,9 @@ ol.render.canvas.Replay.prototype.replay = function(
 ol.render.canvas.Replay.prototype.replayHitDetection = function(
     context, transform, viewRotation, skippedFeaturesHash,
     opt_featureCallback, opt_hitExtent) {
-  var instructions = this.hitDetectionInstructions;
-  return this.replay_(context, transform, viewRotation,
-      skippedFeaturesHash, instructions, opt_featureCallback, opt_hitExtent);
+  this.viewRotation_ = viewRotation;
+  return this.replay_(context, transform, skippedFeaturesHash,
+      this.hitDetectionInstructions, opt_featureCallback, opt_hitExtent);
 };
 
 
