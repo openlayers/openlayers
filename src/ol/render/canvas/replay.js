@@ -1005,7 +1005,7 @@ ol.render.canvas.Replay.prototype.updateStrokeStyle = function(state, applyStrok
   var miterLimit = state.miterLimit;
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
-      !ol.array.equals(state.currentLineDash, lineDash) ||
+      (lineDash != state.currentLineDash && !ol.array.equals(state.currentLineDash, lineDash)) ||
       state.currentLineDashOffset != lineDashOffset ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
