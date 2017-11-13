@@ -197,6 +197,7 @@ ol.proj.Projection.prototype.getWorldExtent = function() {
  * wnu - westing, northing, up - some planetary coordinate systems have
  *     "west positive" coordinate systems
  * @return {string} Axis orientation.
+ * @api
  */
 ol.proj.Projection.prototype.getAxisOrientation = function() {
   return this.axisOrientation_;
