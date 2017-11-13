@@ -174,6 +174,9 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     ol.proj.Units.METERS;
   var pointResolution =
       ol.proj.getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
+  if (units != ol.control.ScaleLineUnits.DEGREES) {
+    pointResolution *= projection.getMetersPerUnit();
+  }
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';

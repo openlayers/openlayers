@@ -1,9 +1,9 @@
-
-
+goog.require('ol');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 
 describe('ol.control.ScaleLine', function() {
   var map;
@@ -264,6 +264,40 @@ describe('ol.control.ScaleLine', function() {
       map.renderSync();
       var innerHtml4326 = ctrl.element_.innerHTML;
       expect(innerHtml4326).to.not.be(innerHtml3857);
+    });
+
+    it('Projection\'s metersPerUnit affect scale for non-degree units', function() {
+      var ctrl = new ol.control.ScaleLine();
+      ctrl.setMap(map);
+      map.setView(new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        resolutions: [1],
+        projection: new ol.proj.Projection({
+          code: 'METERS',
+          units: 'm',
+          getPointResolution: function(r) {
+            return r;
+          }
+        })
+      }));
+      map.renderSync();
+      expect(ctrl.element_.innerText).to.be('100 m');
+      map.setView(new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        resolutions: [1],
+        projection: new ol.proj.Projection({
+          code: 'PIXELS',
+          units: 'pixels',
+          metersPerUnit: 1 / 1000,
+          getPointResolution: function(r) {
+            return r;
+          }
+        })
+      }));
+      map.renderSync();
+      expect(ctrl.element_.innerText).to.be('100 mm');
     });
   });
 
