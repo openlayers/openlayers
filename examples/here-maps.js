@@ -3,8 +3,8 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.XYZ');
 
-var appId = 'a2qhegvZZFIuJDkkqjhQ';
-var appCode = 'lPJ3iaFLJDhD8fIAyU582A';
+var appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
+var appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';
 var hereLayers = [
   {
     base: 'base',
