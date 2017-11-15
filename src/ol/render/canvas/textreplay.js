@@ -120,53 +120,6 @@ ol.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
 
 /**
  * @param {string} font Font to use for measuring.
- * @return {ol.Size} Measurement.
- */
-ol.render.canvas.TextReplay.measureTextHeight = (function() {
-  var span;
-  var heights = {};
-  return function(font) {
-    var height = heights[font];
-    if (height == undefined) {
-      if (!span) {
-        span = document.createElement('span');
-        span.textContent = 'M';
-        span.style.margin = span.style.padding = '0 !important';
-        span.style.position = 'absolute !important';
-        span.style.left = '-99999px !important';
-      }
-      span.style.font = font;
-      document.body.appendChild(span);
-      height = heights[font] = span.offsetHeight;
-      document.body.removeChild(span);
-    }
-    return height;
-  };
-})();
-
-
-/**
- * @param {string} font Font.
- * @param {string} text Text.
- * @return {number} Width.
- */
-ol.render.canvas.TextReplay.measureTextWidth = (function() {
-  var measureContext;
-  var currentFont;
-  return function(font, text) {
-    if (!measureContext) {
-      measureContext = ol.dom.createCanvasContext2D(1, 1);
-    }
-    if (font != currentFont) {
-      currentFont = measureContext.font = font;
-    }
-    return measureContext.measureText(text).width;
-  };
-})();
-
-
-/**
- * @param {string} font Font to use for measuring.
  * @param {Array.<string>} lines Lines to measure.
  * @param {Array.<number>} widths Array will be populated with the widths of
  * each line.
@@ -177,7 +130,7 @@ ol.render.canvas.TextReplay.measureTextWidths = function(font, lines, widths) {
   var width = 0;
   var currentWidth, i;
   for (i = 0; i < numLines; ++i) {
-    currentWidth = ol.render.canvas.TextReplay.measureTextWidth(font, lines[i]);
+    currentWidth = ol.render.canvas.measureTextWidth(font, lines[i]);
     width = Math.max(width, currentWidth);
     widths.push(currentWidth);
   }
@@ -325,7 +278,7 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, fill, stroke) {
     var numLines = lines.length;
     var widths = [];
     var width = ol.render.canvas.TextReplay.measureTextWidths(textState.font, lines, widths);
-    var lineHeight = ol.render.canvas.TextReplay.measureTextHeight(textState.font);
+    var lineHeight = ol.render.canvas.measureTextHeight(textState.font);
     var height = lineHeight * numLines;
     var renderWidth = (width + strokeWidth);
     var context = ol.dom.createCanvasContext2D(
@@ -433,7 +386,7 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutte
     function(text) {
       var width = widths[text];
       if (!width) {
-        width = widths[text] = ol.render.canvas.TextReplay.measureTextWidth(font, text);
+        width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
       }
       return width * textScale * pixelRatio;
     },
@@ -445,7 +398,7 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutte
     function(text) {
       var width = widths[text];
       if (!width) {
-        width = widths[text] = ol.render.canvas.TextReplay.measureTextWidth(font, text);
+        width = widths[text] = ol.render.canvas.measureTextWidth(font, text);
       }
       return width * textScale;
     },

@@ -3,6 +3,7 @@ goog.provide('ol.render.canvas');
 
 goog.require('ol.css');
 goog.require('ol.dom');
+goog.require('ol.obj');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.transform');
 
@@ -98,9 +99,21 @@ ol.render.canvas.labelCache = new ol.structs.LRUCache();
 
 
 /**
- * @type {!Object.<string, (number)>}
+ * @type {!Object.<string, number>}
  */
 ol.render.canvas.checkedFonts_ = {};
+
+
+/**
+ * @type {CanvasRenderingContext2D}
+ */
+ol.render.canvas.measureContext_ = null;
+
+
+/**
+ * @type {!Object.<string, number>}
+ */
+ol.render.canvas.textHeights_ = {};
 
 
 /**
@@ -112,14 +125,12 @@ ol.render.canvas.checkFont = (function() {
   var labelCache = ol.render.canvas.labelCache;
   var font = '32px monospace';
   var text = 'wmytzilWMYTZIL@#/&?$%10';
-  var context, interval, referenceWidth;
+  var interval, referenceWidth;
 
   function isAvailable(fontFamily) {
-    if (!context) {
-      context = ol.dom.createCanvasContext2D(1, 1);
-      context.font = font;
-      referenceWidth = context.measureText(text).width;
-    }
+    var context = ol.render.canvas.getMeasureContext();
+    context.font = font;
+    referenceWidth = context.measureText(text).width;
     var available = true;
     if (fontFamily != 'monospace') {
       context.font = '32px ' + fontFamily + ',monospace';
@@ -128,10 +139,6 @@ ol.render.canvas.checkFont = (function() {
       // fallback was used instead of the font we wanted, so the font is not
       // available.
       available = width != referenceWidth;
-      // Setting the font back to a different one works around an issue in
-      // Safari where subsequent `context.font` assignments with the same font
-      // will not re-attempt to use a font that is currently loading.
-      context.font = font;
     }
     return available;
   }
@@ -143,6 +150,9 @@ ol.render.canvas.checkFont = (function() {
         if (isAvailable(font)) {
           checked[font] = 60;
           labelCache.clear();
+          ol.obj.clear(ol.render.canvas.textHeights_);
+          // Make sure that loaded fonts are picked up by Safari
+          ol.render.canvas.measureContext_ = null;
         } else {
           ++checked[font];
           done = false;
@@ -174,6 +184,59 @@ ol.render.canvas.checkFont = (function() {
     }
   };
 })();
+
+
+/**
+ * @return {CanvasRenderingContext2D} Measure context.
+ */
+ol.render.canvas.getMeasureContext = function() {
+  var context = ol.render.canvas.measureContext_;
+  if (!context) {
+    context = ol.render.canvas.measureContext_ = ol.dom.createCanvasContext2D(1, 1);
+  }
+  return context;
+};
+
+
+/**
+ * @param {string} font Font to use for measuring.
+ * @return {ol.Size} Measurement.
+ */
+ol.render.canvas.measureTextHeight = (function() {
+  var span;
+  var heights = ol.render.canvas.textHeights_;
+  return function(font) {
+    var height = heights[font];
+    if (height == undefined) {
+      if (!span) {
+        span = document.createElement('span');
+        span.textContent = 'M';
+        span.style.margin = span.style.padding = '0 !important';
+        span.style.position = 'absolute !important';
+        span.style.left = '-99999px !important';
+      }
+      span.style.font = font;
+      document.body.appendChild(span);
+      height = heights[font] = span.offsetHeight;
+      document.body.removeChild(span);
+    }
+    return height;
+  };
+})();
+
+
+/**
+ * @param {string} font Font.
+ * @param {string} text Text.
+ * @return {number} Width.
+ */
+ol.render.canvas.measureTextWidth = function(font, text) {
+  var measureContext = ol.render.canvas.getMeasureContext();
+  if (font != measureContext.font) {
+    measureContext.font = font;
+  }
+  return measureContext.measureText(text).width;
+};
 
 
 /**
