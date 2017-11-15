@@ -15,6 +15,7 @@ goog.require('ol.obj');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Instruction');
+goog.require('ol.render.replay');
 goog.require('ol.transform');
 
 
@@ -691,29 +692,30 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var baseline = /** @type {number} */ (instruction[3]);
         declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[4]);
         var exceedLength = /** @type {number} */ (instruction[5]);
-        var fill = /** @type {boolean} */ (instruction[6]);
+        var fillKey = /** @type {string} */ (instruction[6]);
         var maxAngle = /** @type {number} */ (instruction[7]);
         var measure = /** @type {function(string):number} */ (instruction[8]);
         var offsetY = /** @type {number} */ (instruction[9]);
-        var stroke = /** @type {boolean} */ (instruction[10]);
+        var strokeKey = /** @type {string} */ (instruction[10]);
         var strokeWidth =  /** @type {number} */ (instruction[11]);
         var text = /** @type {string} */ (instruction[12]);
-        var textAlign = /** @type {number} */ (instruction[13]);
+        var textKey = /** @type {string} */ (instruction[13]);
         var textScale = /** @type {number} */ (instruction[14]);
 
         var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
         var textLength = measure(text);
         if (exceedLength || textLength <= pathLength) {
-          var startM = (pathLength - textLength) * textAlign;
+          var textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
+          var startM = (pathLength - textLength) * ol.render.replay.TEXT_ALIGN[textAlign];
           var parts = ol.geom.flat.textpath.lineString(
               pixelCoordinates, begin, end, 2, text, measure, startM, maxAngle);
           if (parts) {
             var c, cc, chars, label, part;
-            if (stroke) {
+            if (strokeKey) {
               for (c = 0, cc = parts.length; c < cc; ++c) {
                 part = parts[c]; // x, y, anchorX, rotation, chunk
                 chars = /** @type {string} */ (part[4]);
-                label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, false, true);
+                label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, '', strokeKey);
                 anchorX = /** @type {number} */ (part[2]) + strokeWidth;
                 anchorY = baseline * label.height + (0.5 - baseline) * 2 * strokeWidth - offsetY;
                 this.replayImage_(context,
@@ -723,11 +725,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                     ol.render.canvas.defaultPadding, null, null);
               }
             }
-            if (fill) {
+            if (fillKey) {
               for (c = 0, cc = parts.length; c < cc; ++c) {
                 part = parts[c]; // x, y, anchorX, rotation, chunk
                 chars = /** @type {string} */ (part[4]);
-                label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, true, false);
+                label = /** @type {ol.render.canvas.TextReplay} */ (this).getImage(chars, textKey, fillKey, '');
                 anchorX = /** @type {number} */ (part[2]);
                 anchorY = baseline * label.height - offsetY;
                 this.replayImage_(context,
