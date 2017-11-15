@@ -54,7 +54,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
-  this.updateStrokeStyle(state, true);
+  this.updateStrokeStyle(state, this.applyStroke);
   this.beginGeometry(lineStringGeometry, feature);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
@@ -81,7 +81,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
-  this.updateStrokeStyle(state, true);
+  this.updateStrokeStyle(state, this.applyStroke);
   this.beginGeometry(multiLineStringGeometry, feature);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
@@ -114,4 +114,18 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
   }
   this.reverseHitDetectionInstructions();
   this.state = null;
+};
+
+
+/**
+ * @inheritDoc.
+ */
+ol.render.canvas.LineStringReplay.prototype.applyStroke = function(state) {
+  if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
+    this.instructions.push([ol.render.canvas.Instruction.STROKE]);
+    state.lastStroke = this.coordinates.length;
+  }
+  state.lastStroke = 0;
+  ol.render.canvas.Replay.prototype.applyStroke.call(this, state);
+  this.instructions.push([ol.render.canvas.Instruction.BEGIN_PATH]);
 };

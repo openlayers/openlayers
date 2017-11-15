@@ -214,16 +214,10 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
   var state = this.state;
   var fillStyle = state.fillStyle;
-  if (fillStyle !== undefined && (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle)) {
-    var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
-    if (typeof fillStyle !== 'string') {
-      var fillExtent = geometry.getExtent();
-      fillInstruction.push([fillExtent[0], fillExtent[3]]);
-    }
-    this.instructions.push(fillInstruction);
-    state.currentFillStyle = state.fillStyle;
+  if (fillStyle !== undefined) {
+    this.updateFillStyle(state, this.applyFill, geometry);
   }
   if (state.strokeStyle !== undefined) {
-    this.updateStrokeStyle(state, false);
+    this.updateStrokeStyle(state, this.applyStroke);
   }
 };

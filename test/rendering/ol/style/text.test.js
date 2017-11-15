@@ -403,6 +403,32 @@ describe('ol.rendering.style.Text', function() {
       expectResemble(map, 'rendering/ol/style/expected/text-multipolygon.png', 4.4, done);
     });
 
+    it('renders text background', function(done) {
+      createMap('canvas');
+      createFeatures();
+      var features = vectorSource.getFeatures();
+      features[0].getStyle().getText().setBackgroundFill(new ol.style.Fill({
+        color: 'red'
+      }));
+      features[1].getStyle().getText().setBackgroundFill(new ol.style.Fill({
+        color: 'red'
+      }));
+      features[1].getStyle().getText().setBackgroundStroke(new ol.style.Stroke({
+        color: 'blue',
+        width: 3
+      }));
+      features[2].getStyle().getText().setBackgroundFill(new ol.style.Fill({
+        color: 'red'
+      }));
+      features[2].getStyle().getText().setBackgroundStroke(new ol.style.Stroke({
+        color: 'blue',
+        width: 3
+      }));
+      features[2].getStyle().getText().setPadding([5, 10, 15, 0]);
+      map.getView().fit(vectorSource.getExtent());
+      expectResemble(map, 'rendering/ol/style/expected/text-background.png', IMAGE_TOLERANCE, done);
+    });
+
     where('WebGL').it('tests the webgl renderer without rotation', function(done) {
       createMap('webgl');
       createFeatures();

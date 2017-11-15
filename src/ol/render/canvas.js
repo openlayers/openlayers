@@ -79,6 +79,13 @@ ol.render.canvas.defaultTextBaseline = 'middle';
 
 /**
  * @const
+ * @type {Array.<number>}
+ */
+ol.render.canvas.defaultPadding = [0, 0, 0, 0];
+
+
+/**
+ * @const
  * @type {number}
  */
 ol.render.canvas.defaultLineWidth = 1;
