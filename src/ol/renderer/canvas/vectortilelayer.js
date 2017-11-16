@@ -381,9 +381,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
   var pixelRatio = frameState.pixelRatio;
   var rotation = frameState.viewState.rotation;
   var size = frameState.size;
-  var offsetX = Math.round(pixelRatio * size[0] / 2);
-  var offsetY = Math.round(pixelRatio * size[1] / 2);
-  ol.render.canvas.rotateAtOffset(context, -rotation, offsetX, offsetY);
+  var offsetX, offsetY;
+  if (rotation) {
+    offsetX = Math.round(pixelRatio * size[0] / 2);
+    offsetY = Math.round(pixelRatio * size[1] / 2);
+    ol.render.canvas.rotateAtOffset(context, -rotation, offsetX, offsetY);
+  }
   var tiles = this.renderedTiles;
   var tileGrid = source.getTileGridForProjection(frameState.viewState.projection);
   var clips = [];
@@ -441,6 +444,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
   if (declutterReplays) {
     ol.render.canvas.ReplayGroup.replayDeclutter(declutterReplays, context, rotation);
     this.declutterTree_.clear();
+  }
+  if (rotation) {
+    ol.render.canvas.rotateAtOffset(context, rotation,
+        /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
   }
   ol.renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);
 };
