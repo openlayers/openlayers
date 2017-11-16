@@ -12,56 +12,72 @@ describe('ol.render.canvas', function() {
 
   describe('ol.render.canvas.checkFont()', function() {
 
+    beforeEach(function() {
+      ol.obj.clear(ol.render.canvas.checkedFonts_);
+      ol.render.canvas.getMeasureContext();
+      ol.render.canvas.measureTextHeight('12px sans-serif');
+    });
+
     var checkFont = ol.render.canvas.checkFont;
+    var retries = 60;
 
-    it('does not clear the label cache for unavailable fonts', function(done) {
-      ol.obj.clear(ol.render.canvas.checkedFonts_);
+    it('does not clear label cache and measurements for unavailable fonts', function(done) {
+      this.timeout(3000);
       var spy = sinon.spy();
       ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      var interval = setInterval(function() {
+        if (ol.render.canvas.checkedFonts_['foo'] == retries && ol.render.canvas.checkedFonts_['sans-serif'] == retries) {
+          clearInterval(interval);
+          ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+          expect(spy.callCount).to.be(0);
+          expect(ol.render.canvas.measureContext_).to.not.be(null);
+          expect(ol.render.canvas.textHeights_).to.not.eql({});
+          done();
+        }
+      }, 32);
       checkFont('12px foo,sans-serif');
-      setTimeout(function() {
-        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
-        expect(spy.callCount).to.be(0);
-        done();
-      }, 1600);
     });
 
-    it('does not clear the label cache for available fonts', function(done) {
-      ol.obj.clear(ol.render.canvas.checkedFonts_);
+    it('does not clear label cache and measurements for available fonts', function(done) {
       var spy = sinon.spy();
       ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      var interval = setInterval(function() {
+        if (ol.render.canvas.checkedFonts_['sans-serif'] == retries) {
+          clearInterval(interval);
+          ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+          expect(spy.callCount).to.be(0);
+          expect(ol.render.canvas.measureContext_).to.not.be(null);
+          expect(ol.render.canvas.textHeights_).to.not.eql({});
+          done();
+        }
+      }, 32);
       checkFont('12px sans-serif');
-      setTimeout(function() {
-        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
-        expect(spy.callCount).to.be(0);
-        done();
-      }, 800);
     });
 
-    it('does not clear the label cache for the \'monospace\' font', function(done) {
-      ol.obj.clear(ol.render.canvas.checkedFonts_);
+    it('does not clear label cache and measurements for the \'monospace\' font', function(done) {
       var spy = sinon.spy();
       ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      var interval = setInterval(function() {
+        if (ol.render.canvas.checkedFonts_['monospace'] == retries) {
+          clearInterval(interval);
+          ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+          expect(spy.callCount).to.be(0);
+          expect(ol.render.canvas.measureContext_).to.not.be(null);
+          expect(ol.render.canvas.textHeights_).to.not.eql({});
+          done();
+        }
+      }, 32);
       checkFont('12px monospace');
-      setTimeout(function() {
-        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
-        expect(spy.callCount).to.be(0);
-        done();
-      }, 800);
     });
 
-    it('clears the label cache for fonts that become available', function(done) {
-      ol.obj.clear(ol.render.canvas.checkedFonts_);
+    it('clears label cache and measurements for fonts that become available', function(done) {
       head.appendChild(font);
-      var spy = sinon.spy();
-      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
-      checkFont('12px Abel');
-      setTimeout(function() {
-        ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
-        head.removeChild(font);
-        expect(spy.callCount).to.be(1);
+      ol.events.listen(ol.render.canvas.labelCache, 'clear', function() {
+        expect(ol.render.canvas.measureContext_).to.be(null);
+        expect(ol.render.canvas.textHeights_).to.eql({});
         done();
-      }, 1600);
+      });
+      checkFont('12px Abel');
     });
 
   });

@@ -121,6 +121,7 @@ ol.render.canvas.textHeights_ = {};
  * @param {string} fontSpec CSS font spec.
  */
 ol.render.canvas.checkFont = (function() {
+  var retries = 60;
   var checked = ol.render.canvas.checkedFonts_;
   var labelCache = ol.render.canvas.labelCache;
   var font = '32px monospace';
@@ -146,13 +147,13 @@ ol.render.canvas.checkFont = (function() {
   function check() {
     var done = true;
     for (var font in checked) {
-      if (checked[font] < 60) {
+      if (checked[font] < retries) {
         if (isAvailable(font)) {
-          checked[font] = 60;
-          labelCache.clear();
+          checked[font] = retries;
           ol.obj.clear(ol.render.canvas.textHeights_);
           // Make sure that loaded fonts are picked up by Safari
           ol.render.canvas.measureContext_ = null;
+          labelCache.clear();
         } else {
           ++checked[font];
           done = false;
@@ -173,7 +174,7 @@ ol.render.canvas.checkFont = (function() {
     for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
       var fontFamily = fontFamilies[i];
       if (!(fontFamily in checked)) {
-        checked[fontFamily] = 60;
+        checked[fontFamily] = retries;
         if (!isAvailable(fontFamily)) {
           checked[fontFamily] = 0;
           if (interval === undefined) {
