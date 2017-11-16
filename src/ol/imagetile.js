@@ -23,6 +23,12 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, op
   ol.Tile.call(this, tileCoord, state, opt_options);
 
   /**
+   * @private
+   * @type {?string}
+   */
+  this.crossOrigin_ = crossOrigin;
+
+  /**
    * Image URI
    *
    * @private
@@ -124,7 +130,14 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
  * @api
  */
 ol.ImageTile.prototype.load = function() {
-  if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
+  if (this.state == ol.TileState.ERROR) {
+    this.state = ol.TileState.IDLE;
+    this.image_ = new Image();
+    if (this.crossOrigin_ !== null) {
+      this.image_.crossOrigin = this.crossOrigin_;
+    }
+  }
+  if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
