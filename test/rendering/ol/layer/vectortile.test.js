@@ -1,10 +1,12 @@
-
-
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.MVT');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.obj');
+goog.require('ol.source.Vector');
 goog.require('ol.source.VectorTile');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -88,6 +90,32 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated.png',
+            14, done);
+      });
+    });
+
+    it('renders rotated view correctly with vector layer on top', function(done) {
+      createMap('canvas');
+      var vectorSource = new ol.source.Vector({
+        features: [
+          new ol.Feature(new ol.geom.Point([1825727.7316762917, 6143091.089223046]))
+        ]
+      });
+      map.addLayer(new ol.layer.Vector({
+        zIndex: 1,
+        source: vectorSource,
+        style: new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 10,
+            fill: new ol.style.Fill({
+              color: 'red'
+            })
+          })
+        })
+      }));
+      map.getView().setRotation(Math.PI / 4);
+      waitForTiles(source, {}, function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-vector-rotated.png',
             14, done);
       });
     });
