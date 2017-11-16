@@ -304,6 +304,17 @@ describe('ol.rendering.style.Text', function() {
         expectResemble(map, 'rendering/ol/style/expected/text-linestring-nice.png', 2.8, done);
       });
 
+      it('uses correct font with different styles', function(done) {
+        createMap('canvas');
+        createLineString(nicePath);
+        map.getView().setResolution(0.25);
+        vectorSource.getFeatures()[0].getStyle().getText().setFont('18px monospace');
+        vectorSource.getFeatures()[1].getStyle().getText().setFont('italic 38px serif');
+        vectorSource.getFeatures()[1].getStyle().getText().setTextBaseline('middle');
+        vectorSource.getFeatures()[2].getStyle().getText().setTextBaseline('middle');
+        expectResemble(map, 'rendering/ol/style/expected/text-linestring-nice-multi-font.png', 7.54, done);
+      });
+
       it('renders text along a linestring with scale != 1', function(done) {
         createMap('canvas');
         createLineString(nicePath, undefined, undefined, undefined, undefined, 2);
