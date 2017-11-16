@@ -68,11 +68,14 @@ describe('ol.ImageTile', function() {
       var tileLoadFunction = ol.source.Image.defaultImageLoadFunction;
       var tile = new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      ol.events.listen(tile, ol.events.EventType.CHANGE, function(event) {
+      var key = ol.events.listen(tile, ol.events.EventType.CHANGE, function(event) {
         var state = tile.getState();
         if (state == ol.TileState.ERROR) {
           expect(state).to.be(ol.TileState.ERROR);
-          expect(tile.image_.src).to.be(ol.ImageTile.blankImageUrl);
+          expect(tile.image_).to.be.a(HTMLCanvasElement);
+          ol.events.unlistenByKey(key);
+          tile.load();
+          expect(tile.image_).to.be.a(HTMLImageElement);
           done();
         }
       });
