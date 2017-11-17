@@ -419,21 +419,26 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
-      var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
-        return element['name'] == 'GetEncoding';
-      });
-      var encodings = constraint['AllowedValues']['Value'];
+      if (gets[i]['Constraint']) {
+        var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
+          return element['name'] == 'GetEncoding';
+        });
+        var encodings = constraint['AllowedValues']['Value'];
 
-      if (requestEncoding === '') {
-        // requestEncoding not provided, use the first encoding from the list
-        requestEncoding = encodings[0];
-      }
-      if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
-        if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
-          urls.push(/** @type {string} */ (gets[i]['href']));
+        if (requestEncoding === '') {
+          // requestEncoding not provided, use the first encoding from the list
+          requestEncoding = encodings[0];
         }
-      } else {
-        break;
+        if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
+          if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
+            urls.push(/** @type {string} */ (gets[i]['href']));
+          }
+        } else {
+          break;
+        }
+      } else if (gets[i]['href']) {
+        requestEncoding = ol.source.WMTSRequestEncoding.KVP;
+        urls.push(/** @type {string} */ (gets[i]['href']));
       }
     }
   }

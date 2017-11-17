@@ -11,10 +11,11 @@ describe('ol.source.WMTS', function() {
 
   describe('when creating options from capabilities', function() {
     var parser = new ol.format.WMTSCapabilities();
-    var capabilities;
+    var capabilities, content;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ogcsample.xml', function(xml) {
         try {
+          content = xml;
           capabilities = parser.read(xml);
         } catch (e) {
           done(e);
@@ -148,6 +149,32 @@ describe('ol.source.WMTS', function() {
 
       expect(options.matrixSet).to.be.eql('BigWorldPixel');
       expect(options.projection.getCode()).to.be.eql('urn:ogc:def:crs:OGC:1.3:CRS84');
+    });
+
+    it('doesn\'t fail if the GetCap doesn\'t contains Constraint tags', function() {
+      var tmpXml = content.replace(/<ows:Constraint[\s\S]*?<\/ows:Constraint>/g, '');
+      var tmpCapabilities = parser.read(tmpXml);
+      expect(tmpCapabilities['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'][0]['Constraint']).to.be(undefined);
+      var options = ol.source.WMTS.optionsFromCapabilities(tmpCapabilities,
+          {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857'});
+      expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
+      expect(options.matrixSet).to.be.eql('google3857');
+    });
+
+    it('set KVP as default request encoding if the GetCap doesn\'t contains Constraint and ResourceUrl tags', function() {
+      var tmpXml = content.replace(/<ows:Constraint[\s\S]*?<\/ows:Constraint>/g, '');
+      tmpXml = tmpXml.replace(/<ResourceURL[\s\S]*?"\/>/g, '');
+
+      var tmpCapabilities = parser.read(tmpXml);
+      expect(tmpCapabilities['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'][0]['Constraint']).to.be(undefined);
+      expect(tmpCapabilities['Contents']['Layer'][0]['ResourceURL']).to.be(undefined);
+      var options = ol.source.WMTS.optionsFromCapabilities(tmpCapabilities,
+          {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857'});
+      expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
+      expect(options.matrixSet).to.be.eql('google3857');
+      expect(options.urls).to.be.an('array');
+      expect(options.urls).to.have.length(1);
+      expect(options.urls[0]).to.be.eql('http://www.maps.bob/cgi-bin/MiraMon5_0.cgi?');
     });
   });
 
