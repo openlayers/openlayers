@@ -175,6 +175,7 @@ if (ol.ENABLE_RASTER) {
     this.addBand(band);
 
     this.raster_ = undefined;
+    this.setState(ol.source.State.READY);
   };
 
 }
