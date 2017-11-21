@@ -179,7 +179,7 @@ function addInteraction() {
   var type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
   draw = new ol.interaction.Draw({
     source: source,
-    type: /** @type {ol.geom.GeometryType} */ (type),
+    type: type,
     style: new ol.style.Style({
       fill: new ol.style.Fill({
         color: 'rgba(255, 255, 255, 0.2)'

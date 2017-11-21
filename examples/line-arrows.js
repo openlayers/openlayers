@@ -62,5 +62,5 @@ var map = new ol.Map({
 
 map.addInteraction(new ol.interaction.Draw({
   source: source,
-  type: /** @type {ol.geom.GeometryType} */ ('LineString')
+  type: 'LineString'
 }));

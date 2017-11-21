@@ -54,7 +54,7 @@ var typeSelect = document.getElementById('type');
 function addInteractions() {
   draw = new ol.interaction.Draw({
     source: source,
-    type: /** @type {ol.geom.GeometryType} */ (typeSelect.value)
+    type: typeSelect.value
   });
   map.addInteraction(draw);
   snap = new ol.interaction.Snap({source: source});

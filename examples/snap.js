@@ -86,19 +86,19 @@ var Draw = {
   },
   Point: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('Point')
+    type: 'Point'
   }),
   LineString: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('LineString')
+    type: 'LineString'
   }),
   Polygon: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('Polygon')
+    type: 'Polygon'
   }),
   Circle: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('Circle')
+    type: 'Circle'
   }),
   getActive: function() {
     return this.activeType ? this[this.activeType].getActive() : false;

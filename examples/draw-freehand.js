@@ -33,7 +33,7 @@ function addInteraction() {
   if (value !== 'None') {
     draw = new ol.interaction.Draw({
       source: source,
-      type: /** @type {ol.geom.GeometryType} */ (typeSelect.value),
+      type: typeSelect.value,
       freehand: true
     });
     map.addInteraction(draw);
