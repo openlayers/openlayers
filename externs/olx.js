@@ -3004,7 +3004,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
  *     snapTolerance: (number|undefined),
- *     type: ol.geom.GeometryType,
+ *     type: (ol.geom.GeometryType|string),
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
  *     finishCondition: (ol.EventsConditionType|undefined),
@@ -3058,7 +3058,7 @@ olx.interaction.DrawOptions.prototype.snapTolerance;
 /**
  * Drawing type ('Point', 'LineString', 'Polygon', 'MultiPoint',
  * 'MultiLineString', 'MultiPolygon' or 'Circle').
- * @type {ol.geom.GeometryType}
+ * @type {ol.geom.GeometryType|string}
  * @api
  */
 olx.interaction.DrawOptions.prototype.type;

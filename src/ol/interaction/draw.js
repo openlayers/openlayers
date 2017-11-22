@@ -88,7 +88,7 @@ ol.interaction.Draw = function(options) {
    * @type {ol.geom.GeometryType}
    * @private
    */
-  this.type_ = options.type;
+  this.type_ = /** @type {ol.geom.GeometryType} */ (options.type);
 
   /**
    * Drawing mode (derived from geometry type.

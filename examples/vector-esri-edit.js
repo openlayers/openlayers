@@ -64,7 +64,7 @@ var raster = new ol.layer.Tile({
 
 var draw = new ol.interaction.Draw({
   source: vectorSource,
-  type: /** @type {ol.geom.GeometryType} */ ('Polygon')
+  type: 'Polygon'
 });
 
 var select = new ol.interaction.Select();
