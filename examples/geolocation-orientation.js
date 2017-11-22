@@ -23,9 +23,9 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions: {
       collapsible: false
-    })
+    }
   }),
   view: view
 });
@@ -46,14 +46,14 @@ var positions = new ol.geom.LineString([],
     /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
 
 // Geolocation Control
-var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
+var geolocation = new ol.Geolocation({
   projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
     enableHighAccuracy: true,
     timeout: 600000
   }
-}));
+});
 
 var deltaMean = 500; // the geolocation sampling period mean in ms
 

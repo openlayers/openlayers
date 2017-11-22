@@ -11,9 +11,9 @@ goog.require('ol.tilegrid.WMTS');
 var map = new ol.Map({
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     zoom: 5,

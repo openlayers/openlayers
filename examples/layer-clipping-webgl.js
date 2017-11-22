@@ -22,9 +22,9 @@ if (!ol.has.WEBGL) {
     renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
     target: 'map',
     controls: ol.control.defaults({
-      attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      attributionOptions: {
         collapsible: false
-      })
+      }
     }),
     view: new ol.View({
       center: [0, 0],
