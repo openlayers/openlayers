@@ -70,10 +70,9 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
   this.replayGroup_ = null;
 
   /**
-   * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = ol.dom.createCanvasContext2D();
+  this.context = ol.dom.createCanvasContext2D();
 
   ol.events.listen(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
 
@@ -139,7 +138,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   }
   var replayGroup = this.replayGroup_;
   if (replayGroup && !replayGroup.isEmpty()) {
-    var layer = this.getLayer();
+    var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     var drawOffsetX = 0;
     var drawOffsetY = 0;
     var replayContext;
@@ -155,9 +154,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         drawWidth = drawHeight = drawSize;
       }
       // resize and clear
-      this.context_.canvas.width = drawWidth;
-      this.context_.canvas.height = drawHeight;
-      replayContext = this.context_;
+      this.context.canvas.width = drawWidth;
+      this.context.canvas.height = drawHeight;
+      replayContext = this.context;
     } else {
       replayContext = context;
     }

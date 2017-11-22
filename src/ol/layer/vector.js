@@ -3,6 +3,7 @@ goog.provide('ol.layer.Vector');
 goog.require('ol');
 goog.require('ol.LayerType');
 goog.require('ol.layer.Layer');
+goog.require('ol.layer.VectorRenderType');
 goog.require('ol.obj');
 goog.require('ol.style.Style');
 
@@ -74,6 +75,12 @@ ol.layer.Vector = function(opt_options) {
    */
   this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
     options.updateWhileInteracting : false;
+
+  /**
+   * @private
+   * @type {ol.layer.VectorTileRenderType|string}
+   */
+  this.renderMode_ = options.renderMode || ol.layer.VectorRenderType.VECTOR;
 
   /**
    * The layer type.
@@ -194,6 +201,14 @@ ol.layer.Vector.prototype.setStyle = function(style) {
   this.styleFunction_ = style === null ?
     undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
+};
+
+
+/**
+ * @return {ol.layer.VectorRenderType|string} The render mode.
+ */
+ol.layer.Vector.prototype.getRenderMode = function() {
+  return this.renderMode_;
 };
 
 

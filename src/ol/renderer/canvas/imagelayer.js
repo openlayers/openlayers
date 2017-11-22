@@ -1,9 +1,13 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('ol');
+goog.require('ol.ImageCanvas');
 goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
+goog.require('ol.layer.VectorRenderType');
+goog.require('ol.obj');
+goog.require('ol.plugins');
 goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
 goog.require('ol.transform');
@@ -31,6 +35,12 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
    */
   this.imageTransform_ = ol.transform.create();
 
+  /**
+   * @private
+   * @type {ol.renderer.canvas.VectorLayer}
+   */
+  this.vectorRenderer_ = null;
+
 };
 ol.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.IntermediateCanvas);
 
@@ -42,7 +52,9 @@ ol.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.IntermediateCanvas
  * @return {boolean} The renderer can render the layer.
  */
 ol.renderer.canvas.ImageLayer['handles'] = function(type, layer) {
-  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.IMAGE;
+  return type === ol.renderer.Type.CANVAS && (layer.getType() === ol.LayerType.IMAGE ||
+      layer.getType() === ol.LayerType.VECTOR &&
+      /** @type {ol.layer.Vector} */ (layer).getRenderMode() === ol.layer.VectorRenderType.IMAGE);
 };
 
 
@@ -53,7 +65,17 @@ ol.renderer.canvas.ImageLayer['handles'] = function(type, layer) {
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
 ol.renderer.canvas.ImageLayer['create'] = function(mapRenderer, layer) {
-  return new ol.renderer.canvas.ImageLayer(/** @type {ol.layer.Image} */ (layer));
+  var renderer = new ol.renderer.canvas.ImageLayer(/** @type {ol.layer.Image} */ (layer));
+  if (layer.getType() === ol.LayerType.VECTOR) {
+    var candidates = ol.plugins.getLayerRendererPlugins();
+    for (var i = 0, ii = candidates.length; i < ii; ++i) {
+      var candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
+      if (candidate !== ol.renderer.canvas.ImageLayer && candidate['handles'](ol.renderer.Type.CANVAS, layer)) {
+        renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
+      }
+    }
+  }
+  return renderer;
 };
 
 
@@ -105,12 +127,31 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
         projection = sourceProjection;
       }
     }
-    image = imageSource.getImage(
-        renderedExtent, viewResolution, pixelRatio, projection);
-    if (image) {
-      var loaded = this.loadImage(image);
-      if (loaded) {
-        this.image_ = image;
+    if (this.vectorRenderer_) {
+      var context = this.vectorRenderer_.context;
+      var imageFrameState = /** @type {olx.FrameState} */ (ol.obj.assign({}, frameState, {
+        size: [
+          ol.extent.getWidth(renderedExtent) / viewResolution,
+          ol.extent.getHeight(renderedExtent) / viewResolution
+        ],
+        viewState: /** @type {olx.ViewState} */ (ol.obj.assign({}, frameState.viewState, {
+          rotation: 0
+        }))
+      }));
+      if (this.vectorRenderer_.prepareFrame(imageFrameState, layerState)) {
+        context.canvas.width = imageFrameState.size[0] * pixelRatio;
+        context.canvas.height = imageFrameState.size[1] * pixelRatio;
+        this.vectorRenderer_.composeFrame(imageFrameState, layerState, context);
+      }
+      this.image_ = new ol.ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
+    } else {
+      image = imageSource.getImage(
+          renderedExtent, viewResolution, pixelRatio, projection);
+      if (image) {
+        var loaded = this.loadImage(image);
+        if (loaded) {
+          this.image_ = image;
+        }
       }
     }
   }
@@ -139,4 +180,24 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
   }
 
   return !!this.image_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  if (this.vectorRenderer_) {
+    return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
+  } else {
+    return ol.renderer.canvas.IntermediateCanvas.prototype.forEachFeatureAtCoordinate.call(this, coordinate, frameState, hitTolerance, callback, thisArg);
+  }
+};
+
+
+/**
+ * @param {ol.renderer.canvas.VectorLayer} renderer Vector renderer.
+ */
+ol.renderer.canvas.ImageLayer.prototype.setVectorRenderer = function(renderer) {
+  this.vectorRenderer_ = renderer;
 };

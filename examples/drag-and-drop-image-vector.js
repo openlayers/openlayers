@@ -7,10 +7,9 @@ goog.require('ol.format.KML');
 goog.require('ol.format.TopoJSON');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragAndDrop');
-goog.require('ol.layer.Image');
+goog.require('ol.layer.Vector');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
-goog.require('ol.source.ImageVector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -115,11 +114,10 @@ dragAndDropInteraction.on('addfeatures', function(event) {
   var vectorSource = new ol.source.Vector({
     features: event.features
   });
-  map.addLayer(new ol.layer.Image({
-    source: new ol.source.ImageVector({
-      source: vectorSource,
-      style: styleFunction
-    })
+  map.addLayer(new ol.layer.Vector({
+    renderMode: 'image',
+    source: vectorSource,
+    style: styleFunction
   }));
   map.getView().fit(vectorSource.getExtent());
 });
