@@ -68,11 +68,11 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
 
 
 /**
- * @inheritDoc
+ * Removes all layer renderers.
  */
-ol.renderer.Map.prototype.disposeInternal = function() {
-  for (var id in this.layerRenderers_) {
-    this.layerRenderers_[id].dispose();
+ol.renderer.Map.prototype.removeLayerRenderers = function() {
+  for (var key in this.layerRenderers_) {
+    this.removeLayerRendererByKey_(key).dispose();
   }
 };
 
