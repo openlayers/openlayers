@@ -30,9 +30,9 @@ var map = new ol.Map({
   layers: [raster, vector],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     center: [0, 0],

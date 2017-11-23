@@ -92,8 +92,7 @@ app.Drag.prototype.handleDragEvent = function(evt) {
   var deltaX = evt.coordinate[0] - this.coordinate_[0];
   var deltaY = evt.coordinate[1] - this.coordinate_[1];
 
-  var geometry = /** @type {ol.geom.SimpleGeometry} */
-      (this.feature_.getGeometry());
+  var geometry = this.feature_.getGeometry();
   geometry.translate(deltaX, deltaY);
 
   this.coordinate_[0] = evt.coordinate[0];

@@ -23,11 +23,11 @@ var layers = [
   }),
   new ol.layer.Tile({
     extent: extent,
-    source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+    source: new ol.source.TileWMS({
       attributions: ['Iowa State University'],
       url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
       params: {'LAYERS': 'nexrad-n0r-wmst'}
-    }))
+    })
   })
 ];
 var map = new ol.Map({
