@@ -233,7 +233,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
         }
         feature.getGeometry().transform(tileProjection, projection);
       }
-      if (!bufferedExtent || ol.extent.intersects(bufferedExtent, feature.getExtent())) {
+      if (!bufferedExtent || ol.extent.intersects(bufferedExtent, feature.getGeometry().getExtent())) {
         renderFeature.call(this, feature);
       }
     }
