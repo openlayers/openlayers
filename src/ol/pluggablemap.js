@@ -1141,7 +1141,6 @@ ol.PluggableMap.prototype.renderFrame_ = function(time) {
     viewState = view.getState();
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
-      attributions: {},
       coordinateToPixelTransform: this.coordinateToPixelTransform_,
       extent: extent,
       focus: !this.focus_ ? viewState.center : this.focus_,

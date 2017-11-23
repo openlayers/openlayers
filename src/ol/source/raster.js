@@ -107,7 +107,6 @@ ol.source.Raster = function(options) {
    */
   this.frameState_ = {
     animate: false,
-    attributions: {},
     coordinateToPixelTransform: ol.transform.create(),
     extent: null,
     focus: null,
