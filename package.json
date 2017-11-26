@@ -46,7 +46,7 @@
     "pbf": "3.1.0",
     "pixelworks": "1.1.0",
     "rbush": "2.0.1",
-    "rollup": "^0.51.3",
+    "rollup": "^0.52.0",
     "rollup-plugin-cleanup": "^2.0.0",
     "rollup-plugin-commonjs": "^8.2.6",
     "rollup-plugin-node-resolve": "^3.0.0",
