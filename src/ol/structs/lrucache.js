@@ -268,12 +268,10 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
 
 
 /**
- * @param {string} key Key.
- * @param {T} value Value.
+ * Prune the cache.
  */
-ol.structs.LRUCache.prototype.pruneAndSet = function(key, value) {
+ol.structs.LRUCache.prototype.prune = function() {
   while (this.canExpireCache()) {
     this.pop();
   }
-  this.set(key, value);
 };
