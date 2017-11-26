@@ -2,7 +2,7 @@ goog.provide('ol.style.Monochrome');
 
 goog.require('ol');
 
-if (ol.ENABLE_RASTER) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
    * @classdesc

@@ -2,29 +2,29 @@ goog.provide('ol.source.GeoTIFF');
 
 goog.require('ol');
 goog.require('ol.asserts');
+goog.require('ol.coverage.Matrix');
+goog.require('ol.coverage.Band');
+goog.require('ol.coverage.MatrixType');
 goog.require('ol.ext.GeoTIFF');
 goog.require('ol.extent');
 goog.require('ol.has');
-goog.require('ol.Raster');
-goog.require('ol.RasterBand');
-goog.require('ol.RasterType');
-goog.require('ol.source.RasterBase');
+goog.require('ol.source.Coverage');
 goog.require('ol.source.State');
 goog.require('ol.uri');
 
 
-if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
+if (ol.ENABLE_COVERAGE && ol.ENABLE_GEOTIFF) {
 
   /**
   * @classdesc
   * Layer source for GeoTIFF rasters.
   *
   * @constructor
-  * @extends {ol.source.RasterBase}
-  * @fires ol.source.RasterBase.Event
+  * @extends {ol.source.Coverage}
+  * @fires ol.source.Coverage.Event
   * @param {olx.source.GeoTIFFOptions=} options Options.
   * @api
-   */
+  */
   ol.source.GeoTIFF = function(options) {
 
     ol.asserts.assert(options.raster || options.url, 63);
@@ -34,7 +34,7 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
      * @private
      * @type {ArrayBuffer|undefined}
      */
-    this.raster_ = options.raster;
+    this.data_ = options.data;
 
     /**
      * @private
@@ -42,7 +42,7 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
      */
     this.extent_ = options.wcsParams ? options.wcsParams.extent : undefined;
 
-    ol.source.RasterBase.call(this, {
+    ol.source.Coverage.call(this, {
       attributions: options.attributions,
       logo: options.logo,
       projection: options.projection,
@@ -52,13 +52,13 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
       wrapX: options.wrapX
     });
   };
-  ol.inherits(ol.source.GeoTIFF, ol.source.RasterBase);
+  ol.inherits(ol.source.GeoTIFF, ol.source.Coverage);
 
 
   /**
    * @inheritDoc
    */
-  ol.source.GeoTIFF.prototype.getRaster = function(extent, index) {
+  ol.source.GeoTIFF.prototype.getCoverage = function(extent, index) {
     var band = this.getBands()[index];
     var rasterExtent = band.getExtent();
     if (rasterExtent && ol.extent.intersects(extent, rasterExtent)) {
@@ -73,9 +73,9 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
    */
   ol.source.GeoTIFF.prototype.loadBands = function() {
     if (this.getURL()) {
-      this.loadRasterXhr_();
+      this.loadCoverageXhr_();
     } else {
-      this.parseRaster_();
+      this.parseCoverage_();
     }
   };
 
@@ -84,7 +84,7 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
    * @inheritDoc
    */
   ol.source.GeoTIFF.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
-    var getCoverageURL = ol.source.RasterBase.prototype.createWCSGetCoverageURL.call(
+    var getCoverageURL = ol.source.Coverage.prototype.createWCSGetCoverageURL.call(
         this, url, wcsParams);
     var geoTiffParams = {};
     geoTiffParams['FORMAT'] = wcsParams.format ? wcsParams.format : 'image/tiff';
@@ -96,7 +96,7 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
   /**
    * @private
    */
-  ol.source.GeoTIFF.prototype.loadRasterXhr_ = function() {
+  ol.source.GeoTIFF.prototype.loadCoverageXhr_ = function() {
     this.setState(ol.source.State.LOADING);
 
     var xhr = new XMLHttpRequest();
@@ -112,8 +112,8 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
       if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
         var source = xhr.response;
         if (source) {
-          this.raster_ = source;
-          this.parseRaster_();
+          this.data_ = /**  @type {ArrayBuffer} */ (source);
+          this.parseCoverage_();
         } else {
           this.setState(ol.source.State.ERROR);
         }
@@ -134,24 +134,24 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
   /**
    * @private
    */
-  ol.source.GeoTIFF.prototype.parseRaster_ = function() {
+  ol.source.GeoTIFF.prototype.parseCoverage_ = function() {
     if (this.getState() !== ol.source.State.LOADING) {
       this.setState(ol.source.State.LOADING);
     }
 
-    var tiff = ol.ext.GeoTIFF.parse(this.raster_);
+    var tiff = ol.ext.GeoTIFF.parse(this.data_);
     var numBands = tiff.getImageCount();
-    var band, buffer, height, width, resolution, extent, raster, type, nodata, i;
+    var band, buffer, height, width, resolution, extent, matrix, type, nodata, i;
 
     for (i = 0; i < numBands; ++i) {
       band = tiff.getImage(i);
       height = band.getHeight();
       width = band.getWidth();
-      raster = band.readRasters()[0];
-      buffer = raster.buffer;
-      nodata = band.getFileDirectory() ? parseFloat(
-          band.getFileDirectory().GDAL_NODATA) : undefined;
-      type = this.getType_(raster);
+      matrix = band.readRasters()[0];
+      buffer = matrix.buffer;
+      nodata =  band.getFileDirectory() ? parseFloat(
+          /** @type {string} */ (band.getFileDirectory()['GDAL_NODATA'])) : undefined;
+      type = this.getType_(matrix);
 
       try {
         resolution = band.getResolution().slice(0, 2);
@@ -172,16 +172,16 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
           continue;
         }
       }
-      this.addBand(new ol.RasterBand({
+      this.addBand(new ol.coverage.Band({
         extent: extent,
         nodata: nodata,
-        raster: buffer,
+        matrix: buffer,
         resolution: resolution,
         stride: width,
         type: type
       }));
 
-      this.raster_ = undefined;
+      this.data_ = undefined;
     }
 
     if (this.getState() === ol.source.State.LOADING) {
@@ -192,18 +192,19 @@ if (ol.ENABLE_RASTER && ol.ENABLE_GEOTIFF) {
 
   /**
    * @param {ol.TypedArray} typedArr Typed array.
-   * @returns {ol.RasterType} Raster type.
+   * @returns {ol.coverage.MatrixType} Raster type.
    * @private
    */
   ol.source.GeoTIFF.prototype.getType_ = function(typedArr) {
     var ctor, i;
-    for (i in ol.RasterType) {
-      ctor = ol.Raster.getArrayConstructor(ol.RasterType[i]);
+    var types = ol.coverage.MatrixType;
+    for (i in types) {
+      ctor = ol.coverage.Matrix.getArrayConstructor(types[i]);
       if (typedArr instanceof ctor) {
-        return ol.RasterType[i];
+        return types[i];
       }
     }
-    return ol.RasterType.FLOAT32;
+    return types.FLOAT32;
   };
 
 }

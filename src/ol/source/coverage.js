@@ -1,4 +1,4 @@
-goog.provide('ol.source.RasterBase');
+goog.provide('ol.source.Coverage');
 
 goog.require('ol');
 goog.require('ol.events');
@@ -11,20 +11,20 @@ goog.require('ol.source.Source');
 goog.require('ol.uri');
 
 
-if (ol.ENABLE_RASTER) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
    * @classdesc
    * Abstract base class; normally only used for creating subclasses and not
    * instantiated in apps.
-   * Base class for sources providing a single raster.
+   * Base class for sources providing a single coverage.
    *
    * @constructor
    * @abstract
    * @extends {ol.source.Source}
-   * @param {ol.RasterBaseOptions} options Raster source options.
+   * @param {ol.CoverageSourceOptions} options Coverage source options.
    */
-  ol.source.RasterBase = function(options) {
+  ol.source.Coverage = function(options) {
     ol.source.Source.call(this, {
       attributions: options.attributions,
       logo: options.logo,
@@ -35,7 +35,7 @@ if (ol.ENABLE_RASTER) {
 
     /**
      * @private
-     * @type {Array.<ol.RasterBand>}
+     * @type {Array.<ol.coverage.Band>}
      */
     this.bands_ = [];
 
@@ -54,13 +54,13 @@ if (ol.ENABLE_RASTER) {
       this.loadBands();
     }
   };
-  ol.inherits(ol.source.RasterBase, ol.source.Source);
+  ol.inherits(ol.source.Coverage, ol.source.Source);
 
 
   /**
-   * @param {ol.RasterBand} band Raster band.
+   * @param {ol.coverage.Band} band Coverage band.
    */
-  ol.source.RasterBase.prototype.addBand = function(band) {
+  ol.source.Coverage.prototype.addBand = function(band) {
     this.bands_.push(band);
     this.setupChangeEvents_(band);
     this.changed();
@@ -68,23 +68,23 @@ if (ol.ENABLE_RASTER) {
 
 
   /**
-   * @param {ol.RasterBand} band Raster band.
+   * @param {ol.coverage.Band} band Coverage band.
    * @private
    */
-  ol.source.RasterBase.prototype.setupChangeEvents_ = function(band) {
+  ol.source.Coverage.prototype.setupChangeEvents_ = function(band) {
     ol.events.listen(band, ol.events.EventType.CHANGE,
-        this.handleRasterChange_, this);
+        this.handleCoverageChange_, this);
     ol.events.listen(band, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleRasterChange_, this);
+        this.handleCoverageChange_, this);
   };
 
 
   /**
-   * Get every raster band from this source.
-   * @return {Array.<ol.RasterBand>} Raster bands.
+   * Get every coverage band from this source.
+   * @return {Array.<ol.coverage.Band>} Coverage bands.
    * @api
    */
-  ol.source.RasterBase.prototype.getBands = function() {
+  ol.source.Coverage.prototype.getBands = function() {
     return this.bands_.slice();
   };
 
@@ -94,7 +94,7 @@ if (ol.ENABLE_RASTER) {
    * @return {ol.Extent|undefined} Extent.
    * @api
    */
-  ol.source.RasterBase.prototype.getExtent = function() {
+  ol.source.Coverage.prototype.getExtent = function() {
     var bands = this.getBands();
     var extent = ol.extent.createEmpty();
     var i, ii;
@@ -110,27 +110,27 @@ if (ol.ENABLE_RASTER) {
    * @abstract
    * @param {ol.Extent} extent Extent.
    * @param {number} index Band index.
-   * @return {ol.RasterBand} Single band.
+   * @return {ol.coverage.Band} Single band.
    * @protected
    */
-  ol.source.RasterBase.prototype.getRaster = function(extent, index) {};
+  ol.source.Coverage.prototype.getCoverage = function(extent, index) {};
 
 
   /**
    * @inheritDoc
    */
-  ol.source.RasterBase.prototype.getResolutions = function() {
+  ol.source.Coverage.prototype.getResolutions = function() {
     return undefined;
   };
 
 
   /**
-   * Main function of every raster source responsible for acquiring and parsing
-   * raster data.
+   * Main function of every coverage source responsible for acquiring and parsing
+   * coverage data.
    * @abstract
    * @protected
    */
-  ol.source.RasterBase.prototype.loadBands = function() {};
+  ol.source.Coverage.prototype.loadBands = function() {};
 
 
   /**
@@ -139,7 +139,7 @@ if (ol.ENABLE_RASTER) {
    * @return {string} WCS GetCoverage URL.
    * @protected
    */
-  ol.source.RasterBase.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
+  ol.source.Coverage.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
     var version = wcsParams.version === '1.0.0' ? '1.0.0' : ol.DEFAULT_WCS_VERSION;
 
     var baseParams = {
@@ -182,59 +182,59 @@ if (ol.ENABLE_RASTER) {
    * @return {string|undefined} URL.
    * @api
    */
-  ol.source.RasterBase.prototype.getURL = function() {
+  ol.source.Coverage.prototype.getURL = function() {
     return this.url_;
   };
 
 
   /**
-   * Handle raster change events.
+   * Handle coverage change events.
    * @param {ol.events.Event} event Event.
    * @private
    */
-  ol.source.RasterBase.prototype.handleRasterChange_ = function(event) {
-    var band = /** @type {ol.RasterBand} */ (event.target);
+  ol.source.Coverage.prototype.handleCoverageChange_ = function(event) {
+    var band = /** @type {ol.coverage.Band} */ (event.target);
     this.changed();
-    this.dispatchEvent(new ol.source.RasterBase.Event(
-        ol.source.RasterBase.EventType_.CHANGEBAND, band));
+    this.dispatchEvent(new ol.source.Coverage.Event(
+        ol.source.Coverage.EventType_.CHANGEBAND, band));
   };
 
 
   /**
    * @classdesc
-   * Events emitted by {@link ol.source.RasterBase} instances are instances of this
+   * Events emitted by {@link ol.source.Coverage} instances are instances of this
    * type.
    *
    * @constructor
    * @extends {ol.events.Event}
-   * @implements {oli.source.RasterBaseEvent}
+   * @implements {oli.source.CoverageEvent}
    * @param {string} type Type.
-   * @param {ol.RasterBand} band The raster band.
+   * @param {ol.coverage.Band} band The coverage band.
    */
-  ol.source.RasterBase.Event = function(type, band) {
+  ol.source.Coverage.Event = function(type, band) {
 
     ol.events.Event.call(this, type);
 
     /**
-     * The raster band related to the event.
-     * @type {ol.RasterBand}
+     * The coverage band related to the event.
+     * @type {ol.coverage.Band}
      * @api
      */
     this.band = band;
 
   };
-  ol.inherits(ol.source.RasterBase.Event, ol.events.Event);
+  ol.inherits(ol.source.Coverage.Event, ol.events.Event);
 
 
   /**
    * @enum {string}
    * @private
    */
-  ol.source.RasterBase.EventType_ = {
+  ol.source.Coverage.EventType_ = {
 
     /**
-     * Triggered when a raster band is changed.
-     * @event ol.source.RasterBase.Event#changeband
+     * Triggered when a coverage band is changed.
+     * @event ol.source.Coverage.Event#changeband
      * @api
      */
     CHANGEBAND: 'changeband'

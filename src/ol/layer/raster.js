@@ -6,11 +6,11 @@ goog.require('ol.layer.Layer');
 goog.require('ol.obj');
 goog.require('ol.style.Monochrome');
 
-if (ol.ENABLE_RASTER) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
    * @classdesc
-   * Raster data that is rendered client-side.
+   * Coverage data rendered as a traditional raster layer.
    * Note that any property set in the options is set as a {@link ol.Object}
    * property on the layer object; for example, setting `title: 'My Title'` in the
    * options means that `title` is observable, and has get/set accessors.
@@ -34,7 +34,7 @@ if (ol.ENABLE_RASTER) {
 
     /**
      * User provided style.
-     * @type {ol.RasterStyle}
+     * @type {ol.CoverageStyle}
      * @private
      */
     this.style_ = null;
@@ -42,25 +42,11 @@ if (ol.ENABLE_RASTER) {
     this.setStyle(options.style);
 
     /**
-     * @type {boolean}
-     * @private
-     */
-    this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
-      options.updateWhileAnimating : false;
-
-    /**
-     * @type {boolean}
-     * @private
-     */
-    this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
-      options.updateWhileInteracting : false;
-
-    /**
      * The layer type.
      * @protected
      * @type {ol.LayerType}
      */
-    this.type = ol.LayerType.RASTER;
+    this.type = ol.LayerType.IMAGE;
 
   };
   ol.inherits(ol.layer.Raster, ol.layer.Layer);
@@ -69,7 +55,7 @@ if (ol.ENABLE_RASTER) {
   /**
    * Return the associated source of the raster layer.
    * @function
-   * @return {ol.source.RasterBase} Source.
+   * @return {ol.source.Coverage} Source.
    * @api
    */
   ol.layer.Raster.prototype.getSource;
@@ -87,29 +73,11 @@ if (ol.ENABLE_RASTER) {
 
 
   /**
-   * @return {boolean} Whether the rendered layer should be updated while
-   *     animating.
-   */
-  ol.layer.Raster.prototype.getUpdateWhileAnimating = function() {
-    return this.updateWhileAnimating_;
-  };
-
-
-  /**
-   * @return {boolean} Whether the rendered layer should be updated while
-   *     interacting.
-   */
-  ol.layer.Raster.prototype.getUpdateWhileInteracting = function() {
-    return this.updateWhileInteracting_;
-  };
-
-
-  /**
    * Set the style for cells.  This can be a single style object. If it is
    *`undefined` the default style is used. If it is `null` the layer has no style
    * (a `null` style), so it will not be rendered. See {@link ol.style} for
    * information on the default style.
-   * @param {ol.RasterStyle|null|undefined}
+   * @param {ol.CoverageStyle|null|undefined}
    * style Layer style.
    * @api
    */

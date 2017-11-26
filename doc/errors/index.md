@@ -227,7 +227,7 @@ Typed arrays are not supported by the browser.
 
 ### 61
 
-Invalid raster type. Valid types are `8bitInteger`, `8bitUnsignedInteger`, `16bitInteger`, `16bitUnsignedInteger`, `32bitInteger`, `32bitUnsignedInteger`, `32bitFloat`, `64bitFloat`.
+Invalid data type. Valid types are `8bitInteger`, `8bitUnsignedInteger`, `16bitInteger`, `16bitUnsignedInteger`, `32bitInteger`, `32bitUnsignedInteger`, `32bitFloat`, `64bitFloat`.
 
 ### 62
 
@@ -235,4 +235,4 @@ Pseudocolor mode must be one of `categorized` or `interpolate`.
 
 ### 63
 
-Either raw raster content, or a valid URL must be supplied.
+Either raw coverage content, or a valid URL must be supplied.

@@ -140,6 +140,47 @@ ol.CircleRenderOptions;
 
 
 /**
+ * @typedef {{binary: (boolean|undefined),
+ *             extent: ol.Extent,
+ *             nodata: (number|undefined),
+ *             matrix: (ArrayBuffer|Array.<number>),
+ *             resolution: ol.Size,
+ *             stride: number,
+ *             type: ol.coverage.MatrixType}}
+ */
+ol.CoverageBandOptions;
+
+
+/**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            bands: (Array.<ol.coverage.Band>|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.ProjectionLike,
+ *            state: (ol.source.State|undefined),
+ *            wcsParams: (olx.WCSParams|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+ol.CoverageSourceOptions;
+
+
+/**
+ * Common indices for coverage data.
+ * @typedef {{max: (number|undefined),
+ *     min: (number|undefined),
+ *     sum: (number|undefined),
+ *     count: (number|undefined),
+ *     variance: (number|undefined)}}
+ */
+ol.CoverageStatistics;
+
+
+/**
+ * @typedef {ol.style.Monochrome|ol.style.Pseudocolor|ol.style.RGB}
+ */
+ol.CoverageStyle;
+
+
+/**
  * Container for decluttered replay instructions that need to be rendered or
  * omitted together, i.e. when styles render both an image and text, or for the
  * characters that form text along lines. The basic elements of this array are
@@ -260,30 +301,6 @@ ol.PseudocolorMap;
 
 
 /**
- * @typedef {{binary: (boolean|undefined),
-              extent: ol.Extent,
-              nodata: (number|undefined),
-              raster: (ArrayBuffer|Array.<number>),
-              resolution: ol.Size,
-              stride: number,
-              type: ol.RasterType}}
- */
-ol.RasterBandOptions;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            bands: (Array.<ol.RasterBand>|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            wcsParams: (olx.WCSParams|undefined),
- *            wrapX: (boolean|undefined)}}
- */
-ol.RasterBaseOptions;
-
-
-/**
  * A function that takes an array of input data, performs some operation, and
  * returns an array of ouput data.
  * For `pixel` type operations, the function will be called with an array of
@@ -301,23 +318,6 @@ ol.RasterBaseOptions;
  *     (Array.<number>|ImageData)}
  */
 ol.RasterOperation;
-
-
-/**
- * Common indices for raster data.
- * @typedef {{max: (number|undefined),
-      min: (number|undefined),
-      sum: (number|undefined),
-      count: (number|undefined),
-      variance: (number|undefined)}}
- */
-ol.RasterStatistics;
-
-
-/**
- * @typedef {ol.style.Monochrome|ol.style.Pseudocolor|ol.style.RGB}
- */
-ol.RasterStyle;
 
 
 /**

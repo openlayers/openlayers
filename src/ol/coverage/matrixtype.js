@@ -1,16 +1,16 @@
-goog.provide('ol.RasterType');
+goog.provide('ol.coverage.MatrixType');
 
 goog.require('ol');
 
-if (ol.ENABLE_RASTER) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
-   * A raster data type of the following values: `8bitUnsignedInteger`, `8bitInteger`,
+   * A coverage data type of the following values: `8bitUnsignedInteger`, `8bitInteger`,
    * `16bitUnsignedInteger`, `16bitInteger`, `32bitUnsignedInteger`, `32bitInteger`,
    * `32bitFloat`, `64bitFloat`.
    * @enum {string}
    */
-  ol.RasterType = {
+  ol.coverage.MatrixType = {
     UINT8: '8bitUnsignedInteger',
     INT8: '8bitInteger',
     UINT16: '16bitUnsignedInteger',

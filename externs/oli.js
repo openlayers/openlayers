@@ -340,13 +340,13 @@ oli.source.ImageEvent.prototype.image;
 /**
  * @interface
  */
-oli.source.RasterBaseEvent = function() {};
+oli.source.CoverageEvent = function() {};
 
 
 /**
- * @type {ol.RasterBand}
+ * @type {ol.coverage.Band}
  */
-oli.source.RasterBaseEvent.prototype.band;
+oli.source.CoverageEvent.prototype.band;
 
 
 /**

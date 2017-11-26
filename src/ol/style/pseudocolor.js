@@ -6,7 +6,7 @@ goog.require('ol.color');
 goog.require('ol.obj');
 goog.require('ol.style.PseudocolorMode');
 
-if (ol.ENABLE_RASTER) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
    * @classdesc

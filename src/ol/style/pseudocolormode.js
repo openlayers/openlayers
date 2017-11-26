@@ -1,10 +1,14 @@
 goog.provide('ol.style.PseudocolorMode');
 
+goog.require('ol');
 
-/**
- * @enum {string}
- */
-ol.style.PseudocolorMode = {
-  CATEGORIZED: 'categorized',
-  INTERPOLATE: 'interpolate'
-};
+if (ol.ENABLE_COVERAGE) {
+
+  /**
+   * @enum {string}
+   */
+  ol.style.PseudocolorMode = {
+    CATEGORIZED: 'categorized',
+    INTERPOLATE: 'interpolate'
+  };
+}

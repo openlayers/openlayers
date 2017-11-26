@@ -2168,15 +2168,12 @@ olx.layer.ImageOptions.prototype.zIndex;
 
 
 /**
- * @typedef {{renderOrder: (ol.RenderOrderFunction|null|undefined),
- *     minResolution: (number|undefined),
+ * @typedef {{minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
- *     source: (ol.source.RasterBase|undefined),
+ *     source: (ol.source.Coverage|undefined),
  *     map: (ol.PluggableMap|undefined),
- *     style: (ol.RasterStyle|undefined),
- *     updateWhileAnimating: (boolean|undefined),
- *     updateWhileInteracting: (boolean|undefined),
+ *     style: (ol.CoverageStyle|undefined),
  *     visible: (boolean|undefined),
  *     zIndex: (number|undefined)}}
  */
@@ -2229,7 +2226,7 @@ olx.layer.RasterOptions.prototype.opacity;
 
 /**
  * Source.
- * @type {ol.source.RasterBase}
+ * @type {ol.source.Coverage}
  * @api
  */
 olx.layer.RasterOptions.prototype.source;
@@ -2238,30 +2235,10 @@ olx.layer.RasterOptions.prototype.source;
 /**
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
- * @type {ol.RasterStyle|undefined}
+ * @type {ol.CoverageStyle|undefined}
  * @api
  */
 olx.layer.RasterOptions.prototype.style;
-
-
-/**
- * When set to `true`, cells will be recreated during animations.
- * This means that no portions will be shown clipped, but the setting will have a
- * performance impact for large layers. When set to `false`,
- * batches will be recreated when no animation is active.  Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.layer.RasterOptions.prototype.updateWhileAnimating;
-
-
-/**
- * When set to `true`, cells will be recreated during interactions.
- * See also `updateWhileAnimating`. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.layer.RasterOptions.prototype.updateWhileInteracting;
 
 
 /**
@@ -2780,8 +2757,8 @@ olx.render.State.prototype.rotation;
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
- *            raster: (string|undefined),
- *            type: (ol.RasterType|undefined),
+ *            data: (string|undefined),
+ *            type: (ol.coverage.MatrixType|undefined),
  *            url: (string|undefined),
  *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
@@ -2818,12 +2795,12 @@ olx.source.ArcGridOptions.prototype.projection;
  * @type {string|undefined}
  * @api
  */
-olx.source.ArcGridOptions.prototype.raster;
+olx.source.ArcGridOptions.prototype.data;
 
 
 /**
  * Data type of the raster layer. Default is `32bitFloat`.
- * @type {ol.RasterType|undefined}
+ * @type {ol.coverage.MatrixType|undefined}
  * @api
  */
 olx.source.ArcGridOptions.prototype.type;
@@ -3051,7 +3028,7 @@ olx.source.ClusterOptions.prototype.wrapX;
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
- *            raster: (string|undefined),
+ *            data: (ArrayBuffer|undefined),
  *            url: (string|undefined),
  *            wcsParams: (olx.WCSParams|undefined),
  *            wrapX: (boolean|undefined)}}
@@ -3084,11 +3061,13 @@ olx.source.GeoTIFFOptions.prototype.projection;
 
 
 /**
- * Raw content of a GeoTIFF file.
- * @type {string|undefined}
+ * Raw content of a GeoTIFF file. Must be an ArrayBuffer. See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer}
+ * for more info.
+ * @type {ArrayBuffer|undefined}
  * @api
  */
-olx.source.GeoTIFFOptions.prototype.raster;
+olx.source.GeoTIFFOptions.prototype.data;
 
 
 /**

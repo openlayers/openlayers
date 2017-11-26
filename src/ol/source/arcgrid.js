@@ -2,23 +2,23 @@ goog.provide('ol.source.ArcGrid');
 
 goog.require('ol');
 goog.require('ol.asserts');
+goog.require('ol.coverage.Band');
+goog.require('ol.coverage.MatrixType');
 goog.require('ol.extent');
-goog.require('ol.RasterBand');
-goog.require('ol.RasterType');
-goog.require('ol.source.RasterBase');
+goog.require('ol.source.Coverage');
 goog.require('ol.source.State');
 goog.require('ol.uri');
 
 
-if (ol.ENABLE_RASTER) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
   * @classdesc
   * Layer source for raster data in ArcInfo ASCII Grid format.
   *
   * @constructor
-  * @extends {ol.source.RasterBase}
-  * @fires ol.source.RasterBase.Event
+  * @extends {ol.source.Coverage}
+  * @fires ol.source.Coverage.Event
   * @param {olx.source.ArcGridOptions=} options Options.
   * @api
    */
@@ -30,16 +30,16 @@ if (ol.ENABLE_RASTER) {
      * @private
      * @type {string|undefined}
      */
-    this.raster_ = options.raster;
+    this.data_ = options.data;
 
 
     /**
      * @private
-     * @type {ol.RasterType}
+     * @type {ol.coverage.MatrixType}
      */
-    this.type_ = options.type || ol.RasterType.FLOAT32;
+    this.type_ = options.type || ol.coverage.MatrixType.FLOAT32;
 
-    ol.source.RasterBase.call(this, {
+    ol.source.Coverage.call(this, {
       attributions: options.attributions,
       logo: options.logo,
       projection: options.projection,
@@ -49,16 +49,16 @@ if (ol.ENABLE_RASTER) {
       wrapX: options.wrapX
     });
   };
-  ol.inherits(ol.source.ArcGrid, ol.source.RasterBase);
+  ol.inherits(ol.source.ArcGrid, ol.source.Coverage);
 
 
   /**
    * @inheritDoc
    */
-  ol.source.ArcGrid.prototype.getRaster = function(extent, index) {
+  ol.source.ArcGrid.prototype.getCoverage = function(extent, index) {
     var band = this.getBands()[0];
-    var rasterExtent = band.getExtent();
-    if (rasterExtent && ol.extent.intersects(extent, rasterExtent)) {
+    var coverageExtent = band.getExtent();
+    if (coverageExtent && ol.extent.intersects(extent, coverageExtent)) {
       return band;
     }
     return null;
@@ -70,9 +70,9 @@ if (ol.ENABLE_RASTER) {
    */
   ol.source.ArcGrid.prototype.loadBands = function() {
     if (this.getURL()) {
-      this.loadRasterXhr_();
+      this.loadCoverageXhr_();
     } else {
-      this.parseRaster_();
+      this.parseCoverage_();
     }
   };
 
@@ -81,7 +81,7 @@ if (ol.ENABLE_RASTER) {
    * @inheritDoc
    */
   ol.source.ArcGrid.prototype.createWCSGetCoverageURL = function(url, wcsParams) {
-    var getCoverageURL = ol.source.RasterBase.prototype.createWCSGetCoverageURL.call(
+    var getCoverageURL = ol.source.Coverage.prototype.createWCSGetCoverageURL.call(
         this, url, wcsParams);
     var arcGridParams = {};
     arcGridParams['FORMAT'] = wcsParams.format ? wcsParams.format : 'ArcGrid';
@@ -93,7 +93,7 @@ if (ol.ENABLE_RASTER) {
   /**
    * @private
    */
-  ol.source.ArcGrid.prototype.loadRasterXhr_ = function() {
+  ol.source.ArcGrid.prototype.loadCoverageXhr_ = function() {
     this.setState(ol.source.State.LOADING);
 
     var xhr = new XMLHttpRequest();
@@ -108,8 +108,8 @@ if (ol.ENABLE_RASTER) {
       if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
         var source = xhr.responseText;
         if (source) {
-          this.raster_ = source;
-          this.parseRaster_();
+          this.data_ = source;
+          this.parseCoverage_();
         } else {
           this.setState(ol.source.State.ERROR);
         }
@@ -130,12 +130,12 @@ if (ol.ENABLE_RASTER) {
   /**
    * @private
    */
-  ol.source.ArcGrid.prototype.parseRaster_ = function() {
+  ol.source.ArcGrid.prototype.parseCoverage_ = function() {
     if (this.getState() !== ol.source.State.LOADING) {
       this.setState(ol.source.State.LOADING);
     }
 
-    var source = this.raster_.split('\n');
+    var source = this.data_.split('\n');
     var i, ii;
 
     // Parse the header and check for its validity.
@@ -153,9 +153,9 @@ if (ol.ENABLE_RASTER) {
     }
 
     // Parse the raster.
-    var raster = [];
+    var matrix = [];
     for (i = 6, ii = source.length; i < ii; ++i) {
-      raster = raster.concat(source[i].split(' ').map(parseFloat));
+      matrix = matrix.concat(source[i].split(' ').map(parseFloat));
     }
 
     // Calculate and set the layer's extent.
@@ -164,17 +164,17 @@ if (ol.ENABLE_RASTER) {
     extent.push(header['YLLCORNER'] + header['CELLSIZE'] * header['NROWS']);
 
     // Create a band from the parsed data.
-    var band = new ol.RasterBand({
+    var band = new ol.coverage.Band({
       extent: extent,
       nodata: header['NODATA_VALUE'],
-      raster: raster,
+      matrix: matrix,
       resolution: [header['CELLSIZE'], header['CELLSIZE']],
-      stride: header['NCOLS'],
+      stride: /** @type {number} */ (header['NCOLS']),
       type: this.type_
     });
     this.addBand(band);
 
-    this.raster_ = undefined;
+    this.data_ = undefined;
     this.setState(ol.source.State.READY);
   };
 
