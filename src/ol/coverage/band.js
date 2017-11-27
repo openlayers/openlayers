@@ -36,16 +36,22 @@ if (ol.ENABLE_COVERAGE) {
      */
     this.extent_ = options.extent;
 
-    var binary = typeof options.binary === 'boolean' ? options.binary :
+
+    /**
+     * @type {boolean}
+     * @private
+     */
+    this.binary_ = typeof options.binary === 'boolean' ? options.binary :
       ol.has.TYPED_ARRAY;
 
     /**
      * @type {ol.coverage.Matrix}
      * @private
      */
-    this.matrix_ = binary ? this.createBinaryMatrix_(options.matrix, options.stride,
-        options.resolution, options.type) :
-      new ol.coverage.Matrix(options.matrix, options.stride, options.resolution);
+    this.matrix_ = this.binary_ ? this.createBinaryMatrix_(options.matrix,
+        options.stride, options.resolution, this.binary_, options.type) :
+      new ol.coverage.Matrix(options.matrix, options.stride, options.resolution,
+          this.binary_);
 
     /**
      * @type {ol.CoverageStatistics}
@@ -73,7 +79,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.coverage.Band.prototype.getCoverageData = function(opt_buffer) {
     if (opt_buffer) {
-      return this.matrix_.binary_ ? this.matrix_.getData() : undefined;
+      return this.matrix_.getData();
     }
     return /** @type {ol.TypedArray|Array.<number>} */ (
       this.matrix_.getData(this.type_));
@@ -172,12 +178,13 @@ if (ol.ENABLE_COVERAGE) {
    * @param {ArrayBuffer|Array.<number>} matrix Coverage data.
    * @param {number} stride Stride.
    * @param {ol.Size} resolution Cell resolution.
+   * @param {boolean} binary This is a binary coverage.
    * @param {ol.coverage.MatrixType} type CoverageData data type.
    * @return {ol.coverage.Matrix} Coverage object.
    * @private
    */
   ol.coverage.Band.prototype.createBinaryMatrix_ = function(matrix, stride,
-      resolution, type) {
+      resolution, binary, type) {
     var buffer;
     if (matrix instanceof window.ArrayBuffer) {
       buffer = matrix;
@@ -189,7 +196,7 @@ if (ol.ENABLE_COVERAGE) {
         view[i] = matrix[i];
       }
     }
-    return new ol.coverage.Matrix(buffer, stride, resolution);
+    return new ol.coverage.Matrix(buffer, stride, resolution, binary);
   };
 
 

@@ -15,8 +15,9 @@ if (ol.ENABLE_COVERAGE) {
    * @param {ArrayBuffer|Array.<number>} matrix Coverage data.
    * @param {number} stride Number of columns.
    * @param {ol.Size} resolution Cell resolution.
+   * @param {boolean} binary This is a binary coverage.
    */
-  ol.coverage.Matrix = function(matrix, stride, resolution) {
+  ol.coverage.Matrix = function(matrix, stride, resolution, binary) {
 
     ol.Object.call(this);
 
@@ -42,7 +43,7 @@ if (ol.ENABLE_COVERAGE) {
      * @type {boolean}
      * @private
      */
-    this.binary_ = !(Array.isArray(matrix));
+    this.binary_ = binary;
   };
   ol.inherits(ol.coverage.Matrix, ol.Object);
 
