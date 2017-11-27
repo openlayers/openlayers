@@ -123,7 +123,7 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = funct
   }
 
   if (this.getLayer().getSource().forEachFeatureAtCoordinate !== ol.nullFunction) {
-    // for ImageVector sources use the original hit-detection logic,
+    // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     return ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {

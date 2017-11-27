@@ -248,7 +248,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fra
   }
 
   if (this.getLayer().getSource().forEachFeatureAtCoordinate !== ol.nullFunction) {
-    // for ImageVector sources use the original hit-detection logic,
+    // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     var coordinate = ol.transform.apply(
         frameState.pixelToCoordinateTransform, pixel.slice());

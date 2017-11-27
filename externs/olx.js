@@ -4276,12 +4276,13 @@ olx.layer.VectorOptions;
 
 
 /**
- * Render mode for vectors:
- *  * `'image'`: Vectors are rendered as images. Great performance, but
+ * Render mode for vector layers:
+ *  * `'image'`: Vector layers are rendered as images. Great performance, but
  *    point symbols and texts are always rotated with the view and pixels are
  *    scaled during zoom animations.
- *  * `'vector'`: Vectors are rendered as vectors. Most accurate rendering
+ *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance.
+ * Default is `vector`.
  * @type {ol.layer.VectorRenderType|string|undefined}
  * @api
  */
