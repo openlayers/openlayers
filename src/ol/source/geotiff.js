@@ -2,10 +2,10 @@ goog.provide('ol.source.GeoTIFF');
 
 goog.require('ol');
 goog.require('ol.asserts');
-goog.require('ol.coverage.Matrix');
 goog.require('ol.coverage.Band');
+goog.require('ol.coverage.geotiff');
+goog.require('ol.coverage.Matrix');
 goog.require('ol.coverage.MatrixType');
-goog.require('ol.ext.GeoTIFF');
 goog.require('ol.extent');
 goog.require('ol.has');
 goog.require('ol.source.Coverage');
@@ -13,7 +13,7 @@ goog.require('ol.source.State');
 goog.require('ol.uri');
 
 
-if (ol.ENABLE_COVERAGE && ol.ENABLE_GEOTIFF) {
+if (ol.ENABLE_COVERAGE) {
 
   /**
   * @classdesc
@@ -139,7 +139,10 @@ if (ol.ENABLE_COVERAGE && ol.ENABLE_GEOTIFF) {
       this.setState(ol.source.State.LOADING);
     }
 
-    var tiff = ol.ext.GeoTIFF.parse(this.data_);
+    var GeoTIFF = ol.coverage.geotiff.get();
+    ol.asserts.assert(GeoTIFF, 64);
+
+    var tiff = GeoTIFF.parse(/** @type {ArrayBuffer} */ (this.data_));
     var numBands = tiff.getImageCount();
     var band, buffer, height, width, resolution, extent, matrix, type, nodata, i;
 
@@ -205,6 +208,18 @@ if (ol.ENABLE_COVERAGE && ol.ENABLE_GEOTIFF) {
       }
     }
     return types.FLOAT32;
+  };
+
+
+  /**
+   * Register GeoTIFF. If not explicitly registered, it will be assumed that
+   * GeoTIFF will be loaded in the global namespace.
+   *
+   * @param {GeoTIFF} geotiff GeoTIFF.
+   * @api
+   */
+  ol.source.GeoTIFF.setGeoTIFF = function(geotiff) {
+    ol.coverage.geotiff.set(geotiff);
   };
 
 }

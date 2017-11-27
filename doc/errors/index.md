@@ -236,3 +236,7 @@ Pseudocolor mode must be one of `categorized` or `interpolate`.
 ### 63
 
 Either raw coverage content, or a valid URL must be supplied.
+
+### 64
+
+GeoTIFF.js must be loaded in order to parse GeoTIFF coverages.
