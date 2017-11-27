@@ -7853,6 +7853,7 @@ olx.style.StrokeOptions.prototype.width;
  *     maxAngle: (number|undefined),
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined),
+ *     overflow: (boolean|undefined),
  *     placement: (ol.style.TextPlacement|string|undefined),
  *     scale: (number|undefined),
  *     rotateWithView: (boolean|undefined),
@@ -7870,10 +7871,13 @@ olx.style.TextOptions;
 
 
 /**
+ * **Deprecated**. Use the `overflow` option instead.
+ *
  * For polygon labels or when `placement` is set to `'line'`, allow text to
- * exceed the width of the polygon at the the label position or the length of
+ * exceed the width of the polygon at the label position or the length of
  * the path that it follows. Default is `false`.
  * @type {boolean|undefined}
+ * @deprecated
  * @api
  */
 olx.style.TextOptions.prototype.exceedLength;
@@ -7915,6 +7919,16 @@ olx.style.TextOptions.prototype.offsetX;
  * @api
  */
 olx.style.TextOptions.prototype.offsetY;
+
+
+/**
+ * For polygon labels or when `placement` is set to `'line'`, allow text to
+ * exceed the width of the polygon at the label position or the length of
+ * the path that it follows. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.overflow;
 
 
 /**

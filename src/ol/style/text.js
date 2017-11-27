@@ -82,7 +82,7 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.exceedLength_ = options.exceedLength !== undefined ? options.exceedLength : false;
+  this.overflow_ = options.overflow !== undefined ? options.overflow : false;
 
   /**
    * @private
@@ -142,7 +142,7 @@ ol.style.Text.prototype.clone = function() {
     font: this.getFont(),
     placement: this.getPlacement(),
     maxAngle: this.getMaxAngle(),
-    exceedLength: this.getExceedLength(),
+    overflow: this.getOverflow(),
     rotation: this.getRotation(),
     rotateWithView: this.getRotateWithView(),
     scale: this.getScale(),
@@ -158,12 +158,12 @@ ol.style.Text.prototype.clone = function() {
 
 
 /**
- * Get the `exceedLength` configuration.
- * @return {boolean} Let text exceed the length of the path they follow.
+ * Get the `overflow` configuration.
+ * @return {boolean} Let text overflow the length of the path they follow.
  * @api
  */
-ol.style.Text.prototype.getExceedLength = function() {
-  return this.exceedLength_;
+ol.style.Text.prototype.getOverflow = function() {
+  return this.overflow_;
 };
 
 
@@ -328,13 +328,13 @@ ol.style.Text.prototype.getPadding = function() {
 
 
 /**
- * Set the `exceedLength` property.
+ * Set the `overflow` property.
  *
- * @param {boolean} exceedLength Let text exceed the path that it follows.
+ * @param {boolean} overflow Let text overflow the path that it follows.
  * @api
  */
-ol.style.Text.prototype.setExceedLength = function(exceedLength) {
-  this.exceedLength_ = exceedLength;
+ol.style.Text.prototype.setOverflow = function(overflow) {
+  this.overflow_ = overflow;
 };
 
 

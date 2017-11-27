@@ -38,7 +38,7 @@ var myDom = {
     weight: document.getElementById('lines-weight'),
     placement: document.getElementById('lines-placement'),
     maxangle: document.getElementById('lines-maxangle'),
-    exceedlength: document.getElementById('lines-exceedlength'),
+    overflow: document.getElementById('lines-overflow'),
     size: document.getElementById('lines-size'),
     offsetX: document.getElementById('lines-offset-x'),
     offsetY: document.getElementById('lines-offset-y'),
@@ -56,7 +56,7 @@ var myDom = {
     weight: document.getElementById('polygons-weight'),
     placement: document.getElementById('polygons-placement'),
     maxangle: document.getElementById('polygons-maxangle'),
-    exceedlength: document.getElementById('polygons-exceedlength'),
+    overflow: document.getElementById('polygons-overflow'),
     size: document.getElementById('polygons-size'),
     offsetX: document.getElementById('polygons-offset-x'),
     offsetY: document.getElementById('polygons-offset-y'),
@@ -95,7 +95,7 @@ var createTextStyle = function(feature, resolution, dom) {
   var weight = dom.weight.value;
   var placement = dom.placement ? dom.placement.value : undefined;
   var maxAngle = dom.maxangle ? parseFloat(dom.maxangle.value) : undefined;
-  var exceedLength = dom.exceedlength ? (dom.exceedlength.value == 'true') : undefined;
+  var overflow = dom.overflow ? (dom.overflow.value == 'true') : undefined;
   var rotation = parseFloat(dom.rotation.value);
   if (dom.font.value == '\'Open Sans\'' && !openSansAdded) {
     var openSans = document.createElement('link');
@@ -120,7 +120,7 @@ var createTextStyle = function(feature, resolution, dom) {
     offsetY: offsetY,
     placement: placement,
     maxAngle: maxAngle,
-    exceedLength: exceedLength,
+    overflow: overflow,
     rotation: rotation
   });
 };

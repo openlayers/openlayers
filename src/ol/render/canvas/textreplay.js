@@ -239,7 +239,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
         break;
       case ol.geom.GeometryType.POLYGON:
         flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
-        if (!textState.exceedLength && flatCoordinates[2] / this.resolution < width) {
+        if (!textState.overflow && flatCoordinates[2] / this.resolution < width) {
           return;
         }
         stride = 3;
@@ -248,7 +248,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
         var interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
         flatCoordinates = [];
         for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {
-          if (textState.exceedLength || interiorPoints[i + 2] / this.resolution >= width) {
+          if (textState.overflow || interiorPoints[i + 2] / this.resolution >= width) {
             flatCoordinates.push(interiorPoints[i], interiorPoints[i + 1]);
           }
         }
@@ -434,7 +434,7 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutte
   }
   this.instructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
     begin, end, baseline, declutterGroup,
-    textState.exceedLength, fillKey, textState.maxAngle,
+    textState.overflow, fillKey, textState.maxAngle,
     function(text) {
       var width = widths[text];
       if (!width) {
@@ -446,7 +446,7 @@ ol.render.canvas.TextReplay.prototype.drawChars_ = function(begin, end, declutte
   ]);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.DRAW_CHARS,
     begin, end, baseline, declutterGroup,
-    textState.exceedLength, fillKey, textState.maxAngle,
+    textState.overflow, fillKey, textState.maxAngle,
     function(text) {
       var width = widths[text];
       if (!width) {
@@ -510,7 +510,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutt
     var font = textStyle.getFont() || ol.render.canvas.defaultFont;
     ol.render.canvas.checkFont(font);
     var textScale = textStyle.getScale();
-    textState.exceedLength = textStyle.getExceedLength();
+    textState.overflow = textStyle.getOverflow();
     textState.font = font;
     textState.maxAngle = textStyle.getMaxAngle();
     textState.placement = textStyle.getPlacement();
