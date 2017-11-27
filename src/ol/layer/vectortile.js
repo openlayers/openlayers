@@ -24,6 +24,17 @@ goog.require('ol.obj');
 ol.layer.VectorTile = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
+  var renderMode = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
+  ol.asserts.assert(renderMode == undefined ||
+      renderMode == ol.layer.VectorTileRenderType.IMAGE ||
+      renderMode == ol.layer.VectorTileRenderType.HYBRID ||
+      renderMode == ol.layer.VectorTileRenderType.VECTOR,
+  28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+  if (options.declutter && renderMode == ol.layer.VectorTileRenderType.IMAGE) {
+    renderMode = ol.layer.VectorTileRenderType.HYBRID;
+  }
+  options.renderMode = renderMode;
+
   var baseOptions = ol.obj.assign({}, options);
 
   delete baseOptions.preload;
@@ -33,24 +44,6 @@ ol.layer.VectorTile = function(opt_options) {
   this.setPreload(options.preload ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
     options.useInterimTilesOnError : true);
-
-  var renderMode = options.renderMode;
-
-  ol.asserts.assert(renderMode == undefined ||
-      renderMode == ol.layer.VectorTileRenderType.IMAGE ||
-      renderMode == ol.layer.VectorTileRenderType.HYBRID ||
-      renderMode == ol.layer.VectorTileRenderType.VECTOR,
-  28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-
-  if (options.declutter && renderMode == ol.layer.VectorTileRenderType.IMAGE) {
-    renderMode = ol.layer.VectorTileRenderType.HYBRID;
-  }
-
-  /**
-   * @private
-   * @type {ol.layer.VectorTileRenderType|string}
-   */
-  this.renderMode_ = renderMode || ol.layer.VectorTileRenderType.HYBRID;
 
   /**
    * The layer type.
@@ -71,14 +64,6 @@ ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
  */
 ol.layer.VectorTile.prototype.getPreload = function() {
   return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
-};
-
-
-/**
- * @return {ol.layer.VectorTileRenderType|string} The render mode.
- */
-ol.layer.VectorTile.prototype.getRenderMode = function() {
-  return this.renderMode_;
 };
 
 

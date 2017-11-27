@@ -8,7 +8,6 @@ goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.renderer.Type');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.source.ImageVector');
 goog.require('ol.transform');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
@@ -248,8 +247,8 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fra
     return undefined;
   }
 
-  if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
-    // for ImageVector sources use the original hit-detection logic,
+  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== ol.nullFunction) {
+    // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     var coordinate = ol.transform.apply(
         frameState.pixelToCoordinateTransform, pixel.slice());

@@ -14,7 +14,11 @@ goog.require('ol.transform');
 
 
 /**
+ * @deprecated
  * @classdesc
+ * **Deprecated**. Use an `ol.layer.Vector` with `renderMode: 'image'` and an
+ * `ol.source.Vector` instead.
+ *
  * An image source whose images are canvas elements into which vector features
  * read from a vector source (`ol.source.Vector`) are drawn. An
  * `ol.source.ImageVector` object is to be used as the `source` of an image

@@ -6,6 +6,35 @@
 
 To update your applications, simply replace `exceedLength` with `overflow`.
 
+#### Deprecation of `ol.source.ImageVector`
+
+Rendering vector sources as image is now directly supported by `ol.layer.Vector` with the new `renderMode: 'image'` configuration option. Change code like this:
+
+```js
+new ol.layer.Image({
+  source: new ol.source.ImageVector({
+    style: myStyle,
+    source: new ol.source.Vector({
+      url: 'my/data.json',
+      format: new ol.format.GeoJSON()
+    })
+  })
+});
+```
+to:
+
+```js
+new ol.layer.Vector({
+  renderMode: 'image',
+  style: myStyle,
+  source: new ol.source.Vector({
+    url: 'my/data.json',
+    format: new ol.format.GeoJSON()
+  })
+});
+```
+
+
 ### v4.5.0
 
 #### Removed GeoJSON crs workaround for GeoServer

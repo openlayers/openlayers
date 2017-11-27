@@ -4262,6 +4262,7 @@ olx.layer.TileOptions.prototype.zIndex;
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     renderBuffer: (number|undefined),
+ *     renderMode: (ol.layer.VectorRenderType|string|undefined),
  *     source: (ol.source.Vector|undefined),
  *     map: (ol.PluggableMap|undefined),
  *     declutter: (boolean|undefined),
@@ -4272,6 +4273,20 @@ olx.layer.TileOptions.prototype.zIndex;
  *     zIndex: (number|undefined)}}
  */
 olx.layer.VectorOptions;
+
+
+/**
+ * Render mode for vector layers:
+ *  * `'image'`: Vector layers are rendered as images. Great performance, but
+ *    point symbols and texts are always rotated with the view and pixels are
+ *    scaled during zoom animations.
+ *  * `'vector'`: Vector layers are rendered as vectors. Most accurate rendering
+ *    even during animations, but slower performance.
+ * Default is `vector`.
+ * @type {ol.layer.VectorRenderType|string|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.renderMode;
 
 
 /**
@@ -4455,6 +4470,7 @@ olx.layer.VectorTileOptions.prototype.renderBuffer;
  */
 olx.layer.VectorTileOptions.prototype.renderMode;
 
+
 /**
  * Render order. Function to be used when sorting features before rendering. By
  * default features are drawn in the order that they are created.
@@ -4579,7 +4595,7 @@ olx.layer.VectorTileOptions.prototype.visible;
  * @type {number|undefined}
  * @api
  */
-olx.layer.VectorOptions.prototype.zIndex;
+olx.layer.VectorTileOptions.prototype.zIndex;
 
 
 /**
