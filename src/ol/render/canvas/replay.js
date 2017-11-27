@@ -691,7 +691,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var end = /** @type {number} */ (instruction[2]);
         var baseline = /** @type {number} */ (instruction[3]);
         declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[4]);
-        var exceedLength = /** @type {number} */ (instruction[5]);
+        var overflow = /** @type {number} */ (instruction[5]);
         var fillKey = /** @type {string} */ (instruction[6]);
         var maxAngle = /** @type {number} */ (instruction[7]);
         var measure = /** @type {function(string):number} */ (instruction[8]);
@@ -704,7 +704,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
 
         var pathLength = ol.geom.flat.length.lineString(pixelCoordinates, begin, end, 2);
         var textLength = measure(text);
-        if (exceedLength || textLength <= pathLength) {
+        if (overflow || textLength <= pathLength) {
           var textAlign = /** @type {ol.render.canvas.TextReplay} */ (this).textStates[textKey].textAlign;
           var startM = (pathLength - textLength) * ol.render.replay.TEXT_ALIGN[textAlign];
           var parts = ol.geom.flat.textpath.lineString(

@@ -382,7 +382,7 @@ describe('ol.rendering.style.Text', function() {
           text: 'Hello world',
           font: 'bold 24px sans-serif',
           placement: 'line',
-          exceedLength: true
+          overflow: true
         })
       }));
       vectorSource.addFeature(feature);
@@ -406,7 +406,7 @@ describe('ol.rendering.style.Text', function() {
           text: 'Hello world',
           font: 'bold 24px sans-serif',
           placement: 'line',
-          exceedLength: true
+          overflow: true
         })
       }));
       vectorSource.addFeature(feature);

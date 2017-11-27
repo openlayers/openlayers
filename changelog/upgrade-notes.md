@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+### Next release
+
+#### Renamed `exceedLength` option of `ol.style.Text` to `overflow`
+
+To update your applications, simply replace `exceedLength` with `overflow`.
+
 ### v4.5.0
 
 #### Removed GeoJSON crs workaround for GeoServer
