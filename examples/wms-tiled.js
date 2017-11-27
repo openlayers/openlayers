@@ -14,7 +14,9 @@ var layers = [
     source: new ol.source.TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
-      serverType: 'geoserver'
+      serverType: 'geoserver',
+      // Countries have transparency, so do not fade tiles:
+      transition: 0
     })
   })
 ];
