@@ -129,6 +129,9 @@ ol.render.canvas.TextReplay = function(
    */
   this.widths_ = {};
 
+  var labelCache = ol.render.canvas.labelCache;
+  labelCache.prune();
+
 };
 ol.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
 
@@ -301,7 +304,7 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, textKey, fillKey
         Math.ceil(renderWidth * scale),
         Math.ceil((height + strokeWidth) * scale));
     label = context.canvas;
-    labelCache.pruneAndSet(key, label);
+    labelCache.set(key, label);
     if (scale != 1) {
       context.scale(scale, scale);
     }
