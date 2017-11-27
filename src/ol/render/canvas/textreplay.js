@@ -536,7 +536,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle, declutt
       strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeState.lineWidth +
       strokeState.lineJoin + strokeState.miterLimit + '[' + strokeState.lineDash.join() + ']' :
       '';
-    this.textKey_ = textState.font + (textState.textAlign || '?') + textState.scale;
+    this.textKey_ = textState.font + textState.scale + (textState.textAlign || '?');
     this.fillKey_ = fillState ?
       (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + ol.getUid(fillState.fillStyle))) :
       '';
