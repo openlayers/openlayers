@@ -138,6 +138,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   }
   var replayGroup = this.replayGroup_;
   if (replayGroup && !replayGroup.isEmpty()) {
+    if (this.declutterTree_) {
+      this.declutterTree_.clear();
+    }
     var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     var drawOffsetX = 0;
     var drawOffsetY = 0;
@@ -229,9 +232,6 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   if (clipped) {
     context.restore();
   }
-  if (this.declutterTree_) {
-    this.declutterTree_.clear();
-  }
   this.postCompose(context, frameState, layerState, transform);
 
 };
@@ -249,7 +249,6 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
     var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     /** @type {Object.<string, boolean>} */
     var features = {};
-    var declutterReplays = layer.getDeclutter() ? {} : null;
     var result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
         rotation, hitTolerance, {},
         /**
@@ -262,10 +261,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
             features[key] = true;
             return callback.call(thisArg, feature, layer);
           }
-        }, declutterReplays);
-    if (this.declutterTree_) {
-      this.declutterTree_.clear();
-    }
+        }, null);
     return result;
   }
 };

@@ -185,32 +185,20 @@ ol.render.canvas.ReplayGroup.getCircleArray_ = function(radius) {
 };
 
 
+/**
+ * @param {!Object.<string, Array.<*>>} declutterReplays Declutter replays.
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {number} rotation Rotation.
+ */
 ol.render.canvas.ReplayGroup.replayDeclutter = function(declutterReplays, context, rotation) {
   var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
+  var skippedFeatureUids = {};
   for (var z = 0, zz = zs.length; z < zz; ++z) {
     var replayData = declutterReplays[zs[z].toString()];
     for (var i = 0, ii = replayData.length; i < ii;) {
       var replay = replayData[i++];
       var transform = replayData[i++];
-      replay.replay(context, transform, rotation, {});
-    }
-  }
-};
-
-
-ol.render.canvas.ReplayGroup.replayDeclutterHitDetection = function(
-    declutterReplays, context, rotation, featureCallback, hitExtent) {
-  var zs = Object.keys(declutterReplays).map(Number).sort(ol.array.numberSafeCompareFunction);
-  for (var z = 0, zz = zs.length; z < zz; ++z) {
-    var replayData = declutterReplays[zs[z].toString()];
-    for (var i = replayData.length - 1; i >= 0;) {
-      var transform = replayData[i--];
-      var replay = replayData[i--];
-      var result = replay.replayHitDetection(context, transform, rotation, {},
-          featureCallback, hitExtent);
-      if (result) {
-        return result;
-      }
+      replay.replay(context, transform, rotation, skippedFeatureUids);
     }
   }
 };
@@ -326,6 +314,12 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   }
 
   var mask = ol.render.canvas.ReplayGroup.getCircleArray_(hitTolerance);
+  var declutteredFeatures;
+  if (this.declutterTree_) {
+    declutteredFeatures = this.declutterTree_.all().map(function(entry) {
+      return entry.value;
+    });
+  }
 
   /**
    * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -337,7 +331,10 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
       for (var j = 0; j < contextSize; j++) {
         if (mask[i][j]) {
           if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-            var result = callback(feature);
+            var result;
+            if (!declutteredFeatures || declutteredFeatures.indexOf(feature) !== -1) {
+              result = callback(feature);
+            }
             if (result) {
               return result;
             } else {
@@ -350,13 +347,8 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     }
   }
 
-  var result = this.replayHitDetection_(context, transform, rotation,
+  return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
-  if (!result && declutterReplays) {
-    result = ol.render.canvas.ReplayGroup.replayDeclutterHitDetection(
-        declutterReplays, context, rotation, hitDetectionCallback, hitExtent);
-  }
-  return result;
 };
 
 

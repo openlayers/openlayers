@@ -483,8 +483,9 @@ ol.render.canvas.Replay.prototype.setStrokeStyle_ = function(context, instructio
 
 /**
  * @param {ol.DeclutterGroup} declutterGroup Declutter group.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
+ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup, feature) {
   if (declutterGroup && declutterGroup.length > 5) {
     var groupCount = declutterGroup[4];
     if (groupCount == 1 || groupCount == declutterGroup.length - 5) {
@@ -493,7 +494,8 @@ ol.render.canvas.Replay.prototype.renderDeclutter_ = function(declutterGroup) {
         minX: /** @type {number} */ (declutterGroup[0]),
         minY: /** @type {number} */ (declutterGroup[1]),
         maxX: /** @type {number} */ (declutterGroup[2]),
-        maxY: /** @type {number} */ (declutterGroup[3])
+        maxY: /** @type {number} */ (declutterGroup[3]),
+        value: feature
       };
       if (!this.declutterTree.collides(box)) {
         this.declutterTree.insert(box);
@@ -651,7 +653,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
         anchorX = /** @type {number} */ (instruction[4]);
         anchorY = /** @type {number} */ (instruction[5]);
-        declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[6]);
+        declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[6]);
         var height = /** @type {number} */ (instruction[7]);
         var opacity = /** @type {number} */ (instruction[8]);
         var originX = /** @type {number} */ (instruction[9]);
@@ -683,14 +685,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
               backgroundFill ? /** @type {Array.<*>} */ (lastFillInstruction) : null,
               backgroundStroke ? /** @type {Array.<*>} */ (lastStrokeInstruction) : null);
         }
-        this.renderDeclutter_(declutterGroup);
+        this.renderDeclutter_(declutterGroup, feature);
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_CHARS:
         var begin = /** @type {number} */ (instruction[1]);
         var end = /** @type {number} */ (instruction[2]);
         var baseline = /** @type {number} */ (instruction[3]);
-        declutterGroup = /** @type {ol.DeclutterGroup} */ (instruction[4]);
+        declutterGroup = featureCallback ? null : /** @type {ol.DeclutterGroup} */ (instruction[4]);
         var overflow = /** @type {number} */ (instruction[5]);
         var fillKey = /** @type {string} */ (instruction[6]);
         var maxAngle = /** @type {number} */ (instruction[7]);
@@ -741,7 +743,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             }
           }
         }
-        this.renderDeclutter_(declutterGroup);
+        this.renderDeclutter_(declutterGroup, feature);
         ++i;
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:

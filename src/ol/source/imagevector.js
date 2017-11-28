@@ -152,12 +152,13 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
     this.canvasContext_.clearRect(0, 0, size[0], size[1]);
   }
 
+  this.declutterTree_.clear();
+
   var transform = this.getTransform_(ol.extent.getCenter(extent),
       resolution, pixelRatio, size);
   replayGroup.replay(this.canvasContext_, transform, 0, {});
 
   this.replayGroup_ = replayGroup;
-  this.declutterTree_.clear();
 
   return this.canvasContext_.canvas;
 };
@@ -186,7 +187,6 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
             return callback(feature);
           }
         }, null);
-    this.declutterTree_.clear();
     return result;
   }
 };
