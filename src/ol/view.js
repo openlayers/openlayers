@@ -180,6 +180,12 @@ ol.View.prototype.applyOptions_ = function(options) {
   } else if (options.zoom !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
+
+    if (this.resolutions_) { // in case map zoom is out of min/max zoom range
+      properties[ol.ViewProperty.RESOLUTION] = ol.math.clamp(
+          Number(this.getResolution() || properties[ol.ViewProperty.RESOLUTION]),
+          this.minResolution_, this.maxResolution_);
+    }
   }
   properties[ol.ViewProperty.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
@@ -815,7 +821,7 @@ ol.View.prototype.getZoomForResolution = function(resolution) {
   var max, zoomFactor;
   if (this.resolutions_) {
     var nearest = ol.array.linearFindNearest(this.resolutions_, resolution, 1);
-    offset += nearest;
+    offset = nearest;
     max = this.resolutions_[nearest];
     if (nearest == this.resolutions_.length - 1) {
       zoomFactor = 2;
@@ -1103,8 +1109,9 @@ ol.View.createResolutionConstraint_ = function(options) {
 
   if (options.resolutions !== undefined) {
     var resolutions = options.resolutions;
-    maxResolution = resolutions[0];
-    minResolution = resolutions[resolutions.length - 1];
+    maxResolution = resolutions[minZoom];
+    minResolution = resolutions[maxZoom] !== undefined ?
+      resolutions[maxZoom] : resolutions[resolutions.length - 1];
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
