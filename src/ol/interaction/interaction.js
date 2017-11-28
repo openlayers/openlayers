@@ -181,12 +181,14 @@ ol.interaction.Interaction.zoom = function(view, resolution, opt_anchor, opt_dur
 ol.interaction.Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
   var currentResolution = view.getResolution();
   var resolution = view.constrainResolution(currentResolution, delta, 0);
-  var resolutions = view.getResolutions();
 
-  resolution = ol.math.clamp(
-      resolution,
-      view.getMinResolution() || resolutions[resolutions.length - 1],
-      view.getMaxResolution() || resolutions[0]);
+  if (resolution !== undefined) {
+    var resolutions = view.getResolutions();
+    resolution = ol.math.clamp(
+        resolution,
+        view.getMinResolution() || resolutions[resolutions.length - 1],
+        view.getMaxResolution() || resolutions[0]);
+  }
 
   // If we have a constraint on center, we need to change the anchor so that the
   // new center is within the extent. We first calculate the new center, apply
