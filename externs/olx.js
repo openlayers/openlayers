@@ -3005,6 +3005,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     source: (ol.source.Vector|undefined),
  *     snapTolerance: (number|undefined),
  *     type: (ol.geom.GeometryType|string),
+ *     stopClick: (boolean|undefined),
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
  *     finishCondition: (ol.EventsConditionType|undefined),
@@ -3062,6 +3063,15 @@ olx.interaction.DrawOptions.prototype.snapTolerance;
  * @api
  */
 olx.interaction.DrawOptions.prototype.type;
+
+
+/**
+ * Stop click, singleclick, and doubleclick events from firing during drawing.
+ * Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.stopClick;
 
 
 /**
