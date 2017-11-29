@@ -1139,11 +1139,15 @@ ol.PluggableMap.prototype.renderFrame_ = function(time) {
       layerStates[ol.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
+    var center = viewState.center;
+    var pixelResolution = viewState.resolution / this.pixelRatio_;
+    center[0] = Math.round(center[0] / pixelResolution) * pixelResolution;
+    center[1] = Math.round(center[1] / pixelResolution) * pixelResolution;
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       coordinateToPixelTransform: this.coordinateToPixelTransform_,
       extent: extent,
-      focus: !this.focus_ ? viewState.center : this.focus_,
+      focus: !this.focus_ ? center : this.focus_,
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
