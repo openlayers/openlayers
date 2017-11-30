@@ -172,7 +172,9 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // contact. isMouseActionButton returns true in these cases (evt.button is set
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states
-  if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
+  // We only fire click, singleclick, and doubleclick if nobody has called
+  // event.stopPropagation() or event.preventDefault().
+  if (!newEvent.propagationStopped && !this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
     this.emulateClick_(this.down_);
   }
 
