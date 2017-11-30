@@ -21,7 +21,7 @@ BUILDS=dist
 #
 # URL for canonical repo.
 #
-REMOTE=https://github.com/openlayers/openlayers.git
+REMOTE=https://github.com/ahocevar/openlayers.git
 
 #
 # Display usage and exit.
@@ -98,7 +98,7 @@ main() {
   npm install
   build_js ${PROFILES}
   build_css
-  npm publish
+  npm publish --tag beta
 }
 
 if test ${#} -ne 1; then
