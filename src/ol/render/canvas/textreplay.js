@@ -281,7 +281,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
  */
 ol.render.canvas.TextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey) {
   var label;
-  var key = strokeKey + textKey + text + fillKey;
+  var key = strokeKey + textKey + text + fillKey + this.pixelRatio;
 
   var labelCache = ol.render.canvas.labelCache;
   if (!labelCache.containsKey(key)) {
@@ -323,19 +323,19 @@ ol.render.canvas.TextReplay.prototype.getImage = function(text, textKey, fillKey
     if (fillKey) {
       context.fillStyle = fillState.fillStyle;
     }
-    context.textBaseline = 'top';
+    context.textBaseline = 'middle';
     context.textAlign = 'center';
     var leftRight = (0.5 - align);
     var x = align * label.width / scale + leftRight * strokeWidth;
     var i;
     if (strokeKey) {
       for (i = 0; i < numLines; ++i) {
-        context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * strokeWidth + i * lineHeight);
+        context.strokeText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
       }
     }
     if (fillKey) {
       for (i = 0; i < numLines; ++i) {
-        context.fillText(lines[i], x + leftRight * widths[i], 0.5 * strokeWidth + i * lineHeight);
+        context.fillText(lines[i], x + leftRight * widths[i], 0.5 * (strokeWidth + lineHeight) + i * lineHeight);
       }
     }
   }

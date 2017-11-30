@@ -163,7 +163,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders correct stroke with pixelRatio != 1', function(done) {
       createMap('canvas', 2);
       createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', 2.8, done);
+      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', 2.9, done);
     });
 
     it('renders text correctly with scale != 1', function(done) {
@@ -260,6 +260,101 @@ describe('ol.rendering.style.Text', function() {
       expectResemble(map, 'rendering/ol/style/expected/text-align-offset-canvas.png', 6, done);
     });
 
+    it('renders text along a MultiLineString', function(done) {
+      createMap('canvas');
+      var line = new ol.geom.LineString();
+      line.setFlatCoordinates('XY', nicePath);
+      var geom = new ol.geom.MultiLineString(null);
+      geom.appendLineString(line);
+      line = line.clone();
+      line.translate(0, 50);
+      geom.appendLineString(line);
+      line = line.clone();
+      line.translate(0, -100);
+      geom.appendLineString(line);
+      var feature = new ol.Feature(geom);
+      feature.setStyle(new ol.style.Style({
+        text: new ol.style.Text({
+          text: 'Hello world',
+          placement: 'line',
+          font: 'bold 30px sans-serif'
+        })
+      }));
+      vectorSource.addFeature(feature);
+      map.getView().fit(vectorSource.getExtent());
+      expectResemble(map, 'rendering/ol/style/expected/text-multilinestring.png', 7, done);
+    });
+
+    it('renders text along a Polygon', function(done) {
+      createMap('canvas');
+      var geom = new ol.geom.Polygon(null);
+      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
+      var feature = new ol.Feature(geom);
+      feature.setStyle(new ol.style.Style({
+        text: new ol.style.Text({
+          text: 'Hello world',
+          font: 'bold 24px sans-serif',
+          placement: 'line',
+          overflow: true
+        })
+      }));
+      vectorSource.addFeature(feature);
+      map.getView().fit(vectorSource.getExtent());
+      expectResemble(map, 'rendering/ol/style/expected/text-polygon.png', IMAGE_TOLERANCE, done);
+    });
+
+    it('renders text along a MultiPolygon', function(done) {
+      createMap('canvas');
+      var geom = new ol.geom.Polygon(null);
+      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
+      var multiPolygon = new ol.geom.MultiPolygon(null);
+      multiPolygon.appendPolygon(geom);
+      geom = geom.clone();
+      geom.translate(0, 30);
+      multiPolygon.appendPolygon(geom);
+      geom = geom.clone();
+      geom.translate(0, -60);
+      multiPolygon.appendPolygon(geom);
+      var feature = new ol.Feature(multiPolygon);
+      feature.setStyle(new ol.style.Style({
+        text: new ol.style.Text({
+          text: 'Hello world',
+          font: 'bold 24px sans-serif',
+          placement: 'line',
+          overflow: true
+        })
+      }));
+      vectorSource.addFeature(feature);
+      map.getView().fit(vectorSource.getExtent());
+      expectResemble(map, 'rendering/ol/style/expected/text-multipolygon.png', 4.4, done);
+    });
+
+    it('renders text background', function(done) {
+      createMap('canvas');
+      createFeatures();
+      var features = vectorSource.getFeatures();
+      features[0].getStyle().getText().setBackgroundFill(new ol.style.Fill({
+        color: 'red'
+      }));
+      features[1].getStyle().getText().setBackgroundFill(new ol.style.Fill({
+        color: 'red'
+      }));
+      features[1].getStyle().getText().setBackgroundStroke(new ol.style.Stroke({
+        color: 'blue',
+        width: 3
+      }));
+      features[2].getStyle().getText().setBackgroundFill(new ol.style.Fill({
+        color: 'red'
+      }));
+      features[2].getStyle().getText().setBackgroundStroke(new ol.style.Stroke({
+        color: 'blue',
+        width: 3
+      }));
+      features[2].getStyle().getText().setPadding([5, 10, 15, 0]);
+      map.getView().fit(vectorSource.getExtent());
+      expectResemble(map, 'rendering/ol/style/expected/text-background.png', IMAGE_TOLERANCE, done);
+    });
+
     describe('Text along an ugly upside down path, keep text upright', function() {
 
       it('renders text along a linestring with auto-align', function(done) {
@@ -347,97 +442,7 @@ describe('ol.rendering.style.Text', function() {
         createLineString(nicePath, 'left');
         expectResemble(map, 'rendering/ol/style/expected/text-linestring-left-nice-rotated.png', 4.5, done);
       });
-    });
 
-    it('renders text along a MultiLineString', function(done) {
-      createMap('canvas');
-      var line = new ol.geom.LineString();
-      line.setFlatCoordinates('XY', nicePath);
-      var geom = new ol.geom.MultiLineString(null);
-      geom.appendLineString(line);
-      line.translate(0, 50);
-      geom.appendLineString(line);
-      line.translate(0, -100);
-      geom.appendLineString(line);
-      var feature = new ol.Feature(geom);
-      feature.setStyle(new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'Hello world',
-          placement: 'line',
-          font: 'bold 30px sans-serif'
-        })
-      }));
-      vectorSource.addFeature(feature);
-      map.getView().fit(vectorSource.getExtent());
-      expectResemble(map, 'rendering/ol/style/expected/text-multilinestring.png', 7, done);
-    });
-
-    it('renders text along a Polygon', function(done) {
-      createMap('canvas');
-      var geom = new ol.geom.Polygon(null);
-      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      var feature = new ol.Feature(geom);
-      feature.setStyle(new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'Hello world',
-          font: 'bold 24px sans-serif',
-          placement: 'line',
-          overflow: true
-        })
-      }));
-      vectorSource.addFeature(feature);
-      map.getView().fit(vectorSource.getExtent());
-      expectResemble(map, 'rendering/ol/style/expected/text-polygon.png', IMAGE_TOLERANCE, done);
-    });
-
-    it('renders text along a MultiPolygon', function(done) {
-      createMap('canvas');
-      var geom = new ol.geom.Polygon(null);
-      geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      var multiPolygon = new ol.geom.MultiPolygon(null);
-      multiPolygon.appendPolygon(geom);
-      geom.translate(0, 30);
-      multiPolygon.appendPolygon(geom);
-      geom.translate(0, -60);
-      multiPolygon.appendPolygon(geom);
-      var feature = new ol.Feature(multiPolygon);
-      feature.setStyle(new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'Hello world',
-          font: 'bold 24px sans-serif',
-          placement: 'line',
-          overflow: true
-        })
-      }));
-      vectorSource.addFeature(feature);
-      map.getView().fit(vectorSource.getExtent());
-      expectResemble(map, 'rendering/ol/style/expected/text-multipolygon.png', 4.4, done);
-    });
-
-    it('renders text background', function(done) {
-      createMap('canvas');
-      createFeatures();
-      var features = vectorSource.getFeatures();
-      features[0].getStyle().getText().setBackgroundFill(new ol.style.Fill({
-        color: 'red'
-      }));
-      features[1].getStyle().getText().setBackgroundFill(new ol.style.Fill({
-        color: 'red'
-      }));
-      features[1].getStyle().getText().setBackgroundStroke(new ol.style.Stroke({
-        color: 'blue',
-        width: 3
-      }));
-      features[2].getStyle().getText().setBackgroundFill(new ol.style.Fill({
-        color: 'red'
-      }));
-      features[2].getStyle().getText().setBackgroundStroke(new ol.style.Stroke({
-        color: 'blue',
-        width: 3
-      }));
-      features[2].getStyle().getText().setPadding([5, 10, 15, 0]);
-      map.getView().fit(vectorSource.getExtent());
-      expectResemble(map, 'rendering/ol/style/expected/text-background.png', IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the webgl renderer without rotation', function(done) {
