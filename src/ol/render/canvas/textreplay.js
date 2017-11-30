@@ -281,7 +281,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
  */
 ol.render.canvas.TextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey) {
   var label;
-  var key = strokeKey + textKey + text + fillKey;
+  var key = strokeKey + textKey + text + fillKey + this.pixelRatio;
 
   var labelCache = ol.render.canvas.labelCache;
   if (!labelCache.containsKey(key)) {

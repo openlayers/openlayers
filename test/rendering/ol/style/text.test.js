@@ -163,7 +163,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders correct stroke with pixelRatio != 1', function(done) {
       createMap('canvas', 2);
       createFeatures();
-      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', 2.8, done);
+      expectResemble(map, 'rendering/ol/style/expected/text-canvas-hidpi.png', 2.9, done);
     });
 
     it('renders text correctly with scale != 1', function(done) {
