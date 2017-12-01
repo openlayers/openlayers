@@ -67,7 +67,7 @@ describe('ol.style.IconImageCache', function() {
     });
   });
 
-  describe('#setMaxCacheSize', function() {
+  describe('#setSize', function() {
     it('sets max cache size and expires cache', function() {
       var cache = ol.style.iconImageCache;
 
@@ -81,7 +81,7 @@ describe('ol.style.IconImageCache', function() {
 
       expect(cache.cacheSize_).to.eql(3);
 
-      cache.setMaxCacheSize(2);
+      cache.setSize(2);
 
       expect(cache.maxCacheSize_).to.eql(2);
       expect(cache.cacheSize_).to.eql(2);
