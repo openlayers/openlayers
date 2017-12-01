@@ -4,6 +4,7 @@ goog.require('ol.color');
 
 
 /**
+ * Singleton class. Available through {@link ol.style.iconImageCache}.
  * @constructor
  */
 ol.style.IconImageCache = function() {
@@ -21,7 +22,6 @@ ol.style.IconImageCache = function() {
   this.cacheSize_ = 0;
 
   /**
-   * @const
    * @type {number}
    * @private
    */
@@ -90,4 +90,17 @@ ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color, iconIm
   var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;
+};
+
+
+/**
+ * Set the cache size of the icon cache. Default is `32`. Change this value when
+ * your map uses more than 32 different icon images and you are not caching icon
+ * styles on the application level.
+ * @param {number} maxCacheSize Cache max size.
+ * @api
+ */
+ol.style.IconImageCache.prototype.setSize = function(maxCacheSize) {
+  this.maxCacheSize_ = maxCacheSize;
+  this.expire();
 };
