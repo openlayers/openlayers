@@ -188,6 +188,11 @@ function generateExports(symbols, namespace, provides) {
  *     error generating it.
  */
 function main(config, callback) {
+  if (config.exports.length === 0) {
+    callback(null, '');
+    return;
+  }
+
   async.waterfall([
     getSymbols.bind(null, config.exports),
     filterSymbols,
