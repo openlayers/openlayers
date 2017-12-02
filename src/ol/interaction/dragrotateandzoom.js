@@ -14,9 +14,7 @@ goog.require('ol.interaction.Pointer');
  * on the map.  By default, this interaction is limited to when the shift
  * key is held down.
  *
- * This interaction is only supported for mouse devices.
- *
- * And this interaction is not included in the default interactions.
+ * This interaction is not included in the default interactions.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
@@ -74,10 +72,6 @@ ol.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return;
-  }
-
   var map = mapBrowserEvent.map;
   var size = map.getSize();
   var offset = mapBrowserEvent.pixel;
@@ -110,10 +104,6 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return true;
-  }
-
   var map = mapBrowserEvent.map;
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
@@ -133,10 +123,6 @@ ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!ol.events.condition.mouseOnly(mapBrowserEvent)) {
-    return false;
-  }
-
   if (this.condition_(mapBrowserEvent)) {
     mapBrowserEvent.map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
