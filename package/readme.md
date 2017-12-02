@@ -37,6 +37,7 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Rollup & Uglify](https://gist.github.com/tschaub/8beb328ea72b36446fc2198d008287de)
  * Using [Rollup & Closure Compiler](https://gist.github.com/tschaub/32a5692bedac5254da24fa3b12072f35)
  * Using [Webpack & Uglify](https://gist.github.com/tschaub/79025aef325cd2837364400a105405b8)
+ * Using [Webpack & Closure Compiler](https://gist.github.com/ahocevar/8ceafc6293455ba491dd9be12c15761f)
  * Using [Browserify & Uglify](https://gist.github.com/tschaub/4bfb209a8f809823f1495b2e4436018e)
 
 ## Module Identifiers
@@ -46,7 +47,3 @@ The module identifiers above (e.g. `ol/map`) are like the `ol.Map` names in the 
 Constructors are exported from dedicated modules.  For example, the `ol/layer/tile` module exports the `Tile` layer constructor.
 
 Utility functions are available as properties of the default export from utility modules.  For example, the `getCenter` function is a property of the default export from the `ol/extent` utility module.
-
-## Caveats
-
- * The WebGL renderer is not available in this package.
