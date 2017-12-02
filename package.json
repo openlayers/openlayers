@@ -150,5 +150,16 @@
       "module": "pixelworks",
       "import": "Processor"
     }
-  ]
+  ],
+  "jspm" : {
+    "main": "ol",
+    "dependencies": {
+      "css": "jspm:css@*"
+    },
+    "shim": {
+      "ol": {
+        "deps": ["./ol.css!"]
+      }
+    }
+  }
 }
