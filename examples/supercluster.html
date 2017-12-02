@@ -1,0 +1,16 @@
+---
+layout: example.html
+title: SuperCluster Map
+shortdesc: Example of a clustered points.
+docs: >
+  This page uses an `ol.source.ImageVector` to consume clustered vector with style set using a `createClusterIcon` function.
+
+  The clustered source is the result of the use of [supercluster](https://github.com/mapbox/supercluster), a third party JavaScript library dedicated to clustering.
+
+  To improve performance, we use HTML5 web worker and consume Earthquakes data as GeoJSON as `supercluster` uses GeoJSON as input.
+
+tags: "cluster, geojson, worker, supercluster"
+---
+
+<div id="map" class="map"></div>
+
