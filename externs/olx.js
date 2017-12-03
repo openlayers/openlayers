@@ -3141,7 +3141,7 @@ olx.interaction.DrawOptions.prototype.condition;
  * can be used to either limit the scope of the feature being drawn, or to
  * skip events caused by panning/zooming on a touch device. By default
  * {@link ol.events.condition.always}, i.e. it is always updated.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.updateSketchCondition;

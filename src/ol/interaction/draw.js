@@ -276,7 +276,7 @@ ol.interaction.Draw = function(options) {
     this.freehandCondition_ = ol.events.condition.always;
   } else {
     this.freehandCondition_ = options.freehandCondition ?
-    options.freehandCondition : ol.events.condition.shiftKeyOnly;
+      options.freehandCondition : ol.events.condition.shiftKeyOnly;
   }
 
   /**
@@ -284,7 +284,7 @@ ol.interaction.Draw = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.updateSketchCondition_ = options.updateSketchCondition ?
-      options.updateSketchCondition : ol.events.condition.always;
+    options.updateSketchCondition : ol.events.condition.always;
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
