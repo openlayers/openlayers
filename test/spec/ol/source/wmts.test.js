@@ -267,7 +267,7 @@ describe('ol.source.WMTS', function() {
           'http://2.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg'
         ],
         tileGrid: new ol.tilegrid.WMTS({
-          matrixIds: [0,1,2,3,4,5,6,7],
+          matrixIds: [0, 1, 2, 3, 4, 5, 6, 7],
           origin: [2690000, 1285000],
           resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250]
         })
@@ -278,7 +278,7 @@ describe('ol.source.WMTS', function() {
         'https://b.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpg'
       ];
       source.setUrls(urls);
-      var tileUrl1 = source.tileUrlFunction([2,9,4],1,projection);
+      var tileUrl1 = source.tileUrlFunction([2, 9, 4], 1, projection);
       expect(tileUrl1).to.match(/https\:\/\/[ab]\.example\.com\/2\/-5\/9\.jpg/);
     });
   });

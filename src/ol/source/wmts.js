@@ -147,7 +147,7 @@ ol.source.WMTS = function(options) {
           return url;
         }
       });
-  }
+  };
 
   var tileUrlFunction = (urls && urls.length > 0) ?
     ol.TileUrlFunction.createFromTileUrlFunctions(
@@ -185,8 +185,8 @@ ol.source.WMTS.prototype.setUrls = function(urls) {
   this.urls = urls;
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
-      this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_.bind(this))), key);
+    this.fixedTileUrlFunction.bind(this) :
+    ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_.bind(this))), key);
 };
 
 /**
