@@ -230,6 +230,70 @@ describe('ol.source.WMTS', function() {
         });
   });
 
+  describe('#setUrls()', function() {
+    it('sets the URL for the source', function() {
+      var source = new ol.source.WMTS({});
+
+      var urls = [
+        'https://a.example.com/',
+        'https://b.example.com/',
+        'https://c.example.com/'
+      ];
+      source.setUrls(urls);
+
+      expect(source.getUrls()).to.eql(urls);
+    });
+
+    it('updates the key for the source', function() {
+      var source = new ol.source.WMTS({});
+
+      var urls = [
+        'https://a.example.com/',
+        'https://b.example.com/',
+        'https://c.example.com/'
+      ];
+      source.setUrls(urls);
+
+      expect(source.getKey()).to.eql(urls.join('\n'));
+    });
+
+    it('generates the correct tileUrlFunction during application of setUrl()', function() {
+      var projection = ol.proj.get('EPSG:3857');
+      var source = new ol.source.WMTS({
+        projection: projection,
+        requestEncoding: 'REST',
+        urls: [
+          'http://1.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg',
+          'http://2.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg'
+        ],
+        tileGrid: new ol.tilegrid.WMTS({
+          matrixIds: [0, 1, 2, 3, 4, 5, 6, 7],
+          origin: [2690000, 1285000],
+          resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250]
+        })
+      });
+
+      var urls = [
+        'https://a.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpg',
+        'https://b.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpg'
+      ];
+      source.setUrls(urls);
+      var tileUrl1 = source.tileUrlFunction([2, 9, 4], 1, projection);
+      expect(tileUrl1).to.match(/https\:\/\/[ab]\.example\.com\/2\/-5\/9\.jpg/);
+    });
+  });
+
+  describe('url option', function() {
+    it('expands url template', function() {
+      var tileSource = new ol.source.WMTS({
+        url: '{1-3}'
+      });
+
+      var urls = tileSource.getUrls();
+      expect(urls).to.eql(['1', '2', '3']);
+    });
+  });
+
   describe('#getUrls', function() {
 
     var sourceOptions;
