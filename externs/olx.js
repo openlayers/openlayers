@@ -3015,6 +3015,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     condition: (ol.EventsConditionType|undefined),
  *     freehand: (boolean|undefined),
  *     freehandCondition: (ol.EventsConditionType|undefined),
+ *     updateSketchCondition: (ol.EventsConditionType|undefined),
  *     wrapX: (boolean|undefined)}}
  */
 olx.interaction.DrawOptions;
