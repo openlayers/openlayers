@@ -279,6 +279,13 @@ ol.interaction.Draw = function(options) {
       options.freehandCondition : ol.events.condition.shiftKeyOnly;
   }
 
+  /**
+   * @private
+   * @type {ol.EventsConditionType}
+   */
+  this.updateSketchCondition_ = options.updateSketchCondition ?
+    options.updateSketchCondition : ol.events.condition.always;
+
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
       this.updateState_, this);
@@ -525,6 +532,9 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
+  if (!this.updateSketchCondition_(event)) {
+    return;
+  }
   var coordinate = event.coordinate;
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates, last;
