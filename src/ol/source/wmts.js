@@ -105,8 +105,9 @@ ol.source.WMTS = function(options) {
   /**
    * @param {string} template Template.
    * @return {ol.TileUrlFunctionType} Tile URL function.
+   * @private
    */
-  function createFromWMTSTemplate(template) {
+  this.createFromWMTSTemplate_ = function(template) {
 
     // TODO: we may want to create our own appendParams function so that params
     // order conforms to wmts spec guidance, and so that we can avoid to escape
@@ -148,12 +149,9 @@ ol.source.WMTS = function(options) {
       });
   }
 
-  // Store it as accessible function to be used  later on:
-  this.createFromWMTSTemplate = createFromWMTSTemplate;
-
   var tileUrlFunction = (urls && urls.length > 0) ?
     ol.TileUrlFunction.createFromTileUrlFunctions(
-        urls.map(createFromWMTSTemplate)) :
+        urls.map(this.createFromWMTSTemplate_)) :
     ol.TileUrlFunction.nullTileUrlFunction;
 
   ol.source.TileImage.call(this, {
@@ -181,15 +179,14 @@ ol.inherits(ol.source.WMTS, ol.source.TileImage);
 /**
  * Set the URLs to use for requests.
  * URLs may contain OCG conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
- * @param {Array.<string>} urls URLs.
- * @api stable
+ * @override
  */
 ol.source.WMTS.prototype.setUrls = function(urls) {
   this.urls = urls;
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate.bind(this))), key);
+      ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_.bind(this))), key);
 };
 
 /**
