@@ -327,8 +327,9 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
             var tileMatrixSet = ol.array.find(tileMatrixSets, function(el) {
               return el['Identifier'] == elt['TileMatrixSet'];
             });
-            var supportedCRS = tileMatrixSet['SupportedCRS'].replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3');
-            var proj1 = ol.proj.get(supportedCRS);
+            var supportedCRS = tileMatrixSet['SupportedCRS'];
+            var proj1 = ol.proj.get(supportedCRS.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+                ol.proj.get(supportedCRS);
             var proj2 = ol.proj.get(config['projection']);
             if (proj1 && proj2) {
               return ol.proj.equivalent(proj1, proj2);
@@ -387,11 +388,18 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   });
 
   var projection;
+  var code = matrixSetObj['SupportedCRS'];
+  if (code) {
+    projection = ol.proj.get(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+        ol.proj.get(code);
+  }
   if ('projection' in config) {
-    projection = ol.proj.get(config['projection']);
-  } else {
-    projection = ol.proj.get(matrixSetObj['SupportedCRS'].replace(
-        /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'));
+    var projConfig = ol.proj.get(config['projection']);
+    if (projConfig) {
+      if (!projection || ol.proj.equivalent(projConfig, projection)) {
+        projection = projConfig;
+      }
+    }
   }
 
   var wgs84BoundingBox = l['WGS84BoundingBox'];
@@ -424,21 +432,26 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
-      var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
-        return element['name'] == 'GetEncoding';
-      });
-      var encodings = constraint['AllowedValues']['Value'];
+      if (gets[i]['Constraint']) {
+        var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
+          return element['name'] == 'GetEncoding';
+        });
+        var encodings = constraint['AllowedValues']['Value'];
 
-      if (requestEncoding === '') {
-        // requestEncoding not provided, use the first encoding from the list
-        requestEncoding = encodings[0];
-      }
-      if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
-        if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
-          urls.push(/** @type {string} */ (gets[i]['href']));
+        if (requestEncoding === '') {
+          // requestEncoding not provided, use the first encoding from the list
+          requestEncoding = encodings[0];
         }
-      } else {
-        break;
+        if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
+          if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
+            urls.push(/** @type {string} */ (gets[i]['href']));
+          }
+        } else {
+          break;
+        }
+      } else if (gets[i]['href']) {
+        requestEncoding = ol.source.WMTSRequestEncoding.KVP;
+        urls.push(/** @type {string} */ (gets[i]['href']));
       }
     }
   }
