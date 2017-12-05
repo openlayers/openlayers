@@ -40,7 +40,7 @@
   "dependencies": {
     "async": "2.6.0",
     "closure-util": "1.26.0",
-    "fs-extra": "4.0.2",
+    "fs-extra": "4.0.3",
     "jsdoc": "3.5.5",
     "nomnom": "1.8.1",
     "pbf": "3.1.0",
