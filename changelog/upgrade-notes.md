@@ -1,6 +1,6 @@
 ## Upgrade notes
 
-### Next release
+### v4.6.0
 
 #### Renamed `exceedLength` option of `ol.style.Text` to `overflow`
 
