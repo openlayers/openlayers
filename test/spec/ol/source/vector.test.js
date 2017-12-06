@@ -1,10 +1,12 @@
-
-
 goog.require('ol.events');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
+goog.require('ol.layer.Vector');
+goog.require('ol.loadingstrategy');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 
@@ -416,6 +418,44 @@ describe('ol.source.Vector', function() {
   });
 
   describe('#loadFeatures', function() {
+
+    describe('with the "bbox" strategy', function() {
+
+
+      it('requests the view extent plus render buffer', function(done) {
+        var center = [-97.6114, 38.8403];
+        var source = new ol.source.Vector({
+          strategy: ol.loadingstrategy.bbox,
+          loader: function(extent) {
+            setTimeout(function() {
+              var lonLatExtent = ol.proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+              expect(lonLatExtent[0]).to.roughlyEqual(-99.261474609, 1e-9);
+              expect(lonLatExtent[2]).to.roughlyEqual(-95.965576171, 1e-9);
+              done();
+            }, 0);
+          }
+        });
+        var div = document.createElement('div');
+        div.style.width = div.style.height = '100px';
+        document.body.appendChild(div);
+        var map = new ol.Map({
+          target: div,
+          layers: [
+            new ol.layer.Vector({
+              source: source
+            })
+          ],
+          view: new ol.View({
+            center: ol.proj.fromLonLat(center),
+            zoom: 7
+          })
+        });
+        map.renderSync();
+        map.setTarget(null);
+        document.body.removeChild(div);
+      });
+
+    });
 
     describe('with no loader and the "all" strategy', function() {
 
