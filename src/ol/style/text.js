@@ -78,11 +78,14 @@ ol.style.Text = function(opt_options) {
    */
   this.placement_ = options.placement !== undefined ? options.placement : ol.style.TextPlacement.POINT;
 
+  //TODO Use options.overflow directly after removing @deprecated exceedLength
+  var overflow = options.overflow === undefined ? options.exceedLength : options.overflow;
+
   /**
    * @private
    * @type {boolean}
    */
-  this.overflow_ = options.overflow !== undefined ? options.overflow : false;
+  this.overflow_ = overflow !== undefined ? overflow : false;
 
   /**
    * @private
