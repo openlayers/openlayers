@@ -550,6 +550,17 @@ describe('ol.geom.Polygon', function() {
       expect(interiorPoint.layout).to.be('XYM');
       expect(interiorPoint.getCoordinates()).to.eql([0.5, 0.5, 1]);
     });
+
+    it('returns XYM point for donut polygons', function() {
+      var geom = new ol.geom.Polygon([
+        [[0.5, 0.5], [0.5, 2.5], [2.5, 2.5], [2.5, 0.5], [0.5, 0.5]],
+        [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]]
+      ]);
+      var interiorPoint = geom.getInteriorPoint();
+      expect(interiorPoint.getType()).to.be('Point');
+      expect(interiorPoint.layout).to.be('XYM');
+      expect(interiorPoint.getCoordinates()).to.eql([0.75, 1.5, 0.5]);
+    });
   });
 
   describe('ol.geom.Polygon.fromExtent', function() {
