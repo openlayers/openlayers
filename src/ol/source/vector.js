@@ -763,12 +763,11 @@ ol.source.Vector.prototype.loadFeatures = function(
 
 
 /**
- * Remove the current extent from the list of loaded extent.
+ * Remove an extent from the list of loaded extents.
  * @param {ol.Extent} extent Extent.
  * @api
  */
-ol.source.Vector.prototype.removeFromLoadedExtent = function(
-    extent) {
+ol.source.Vector.prototype.removeLoadedExtent = function(extent) {
   var loadedExtentsRtree = this.loadedExtentsRtree_;
   var obj;
   loadedExtentsRtree.forEachInExtent(extent, function(object) {

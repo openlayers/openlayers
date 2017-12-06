@@ -6684,6 +6684,37 @@ olx.source.VectorOptions.prototype.format;
  * The loader function used to load features, from a remote source for example.
  * If this is not set and `url` is set, the source will create and use an XHR
  * feature loader.
+ *
+ * Example:
+ *
+ * ```js
+ * var vectorSource = new ol.source.Vector({
+ *   format: new ol.format.GeoJSON(),
+ *   loader: function(extent, resolution, projection) {
+ *      var proj = projection.getCode();
+ *      var url = 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
+ *          'version=1.1.0&request=GetFeature&typename=osm:water_areas&' +
+ *          'outputFormat=application/json&srsname=' + proj + '&' +
+ *          'bbox=' + extent.join(',') + ',' + proj;
+ *      var xhr = new XMLHttpRequest();
+ *      xhr.open('GET', url);
+ *      var onError = function() {
+ *        vectorSource.removeLoadedExtent(extent);
+ *      }
+ *      xhr.onerror = onError;
+ *      xhr.onload = function() {
+ *        if (xhr.status == 200) {
+ *          vectorSource.addFeatures(
+ *              vectorSource.getFormat().readFeatures(xhr.responseText));
+ *        } else {
+ *          onError();
+ *        }
+ *      }
+ *      xhr.send();
+ *    },
+ *    strategy: ol.loadingstrategy.bbox
+ *  });
+ * ```
  * @type {ol.FeatureLoader|undefined}
  * @api
  */
