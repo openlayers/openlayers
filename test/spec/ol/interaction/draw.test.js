@@ -585,6 +585,29 @@ describe('ol.interaction.Draw', function() {
       expect(source.getFeatures()).to.have.length(0);
     });
 
+    it('will tolerate removeLastPoint being called when no coordinates', function() {
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 40, 30);
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+
+      simulateEvent('pointermove', 100, 100);
+
+      expect(function() {
+        draw.removeLastPoint();
+        draw.removeLastPoint();
+        draw.removeLastPoint();
+      }).to.not.throwException();
+
+    });
+
+
     it('draws polygon with clicks, finishing on last point', function() {
       // first point
       simulateEvent('pointermove', 10, 20);
