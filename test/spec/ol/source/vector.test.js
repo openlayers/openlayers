@@ -451,6 +451,19 @@ describe('ol.source.Vector', function() {
         expect(count1).to.eql(1);
         expect(count2).to.eql(1);
       });
+
+      it('removes extents with #removeLoadedExtent()', function(done) {
+        var source = new ol.source.Vector();
+        source.setLoader(function(bbox, resolution, projection) {
+          setTimeout(function() {
+            expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
+            source.removeLoadedExtent(bbox);
+            expect(source.loadedExtentsRtree_.getAll()).to.have.length(0);
+            done();
+          }, 0);
+        });
+        source.loadFeatures([-10000, -10000, 10000, 10000], 1, ol.proj.get('EPSG:3857'));
+      });
     });
 
   });
