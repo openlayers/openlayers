@@ -498,4 +498,52 @@ describe('ol.layer.Group', function() {
     layer3.dispose();
   });
 
+  it('uses the layer group zIndex if layer has no zIndex', function() {
+    var layer10 = new ol.layer.Layer({
+      source: new ol.source.Source({
+        projection: 'EPSG:4326'
+      })
+    });
+    layer10.setZIndex(10);
+
+    var layerUndefined = new ol.layer.Layer({
+      source: new ol.source.Source({
+        projection: 'EPSG:4326'
+      })
+    });
+
+    var layer0 = new ol.layer.Layer({
+      source: new ol.source.Source({
+        projection: 'EPSG:4326'
+      })
+    });
+    layer0.setZIndex(0);
+
+    var layerM1 = new ol.layer.Layer({
+      source: new ol.source.Source({
+        projection: 'EPSG:4326'
+      })
+    });
+    layerM1.setZIndex(-1);
+
+    var layerGroup = new ol.layer.Group({
+      layers: [layerUndefined, layer10, layerM1, layer0]
+    });
+    layerGroup.setZIndex(15);
+
+    var layerStatesArray = layerGroup.getLayerStatesArray();
+    var initialArray = layerStatesArray.slice();
+    ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+    expect(layerStatesArray[1]).to.eql(initialArray[3]);
+    expect(layerStatesArray[3]).to.eql(initialArray[0]);
+    expect(layerStatesArray[0]).to.eql(initialArray[2]);
+    expect(layerStatesArray[2]).to.eql(initialArray[1]);
+
+    layer10.dispose();
+    layerM1.dispose();
+    layer0.dispose();
+    layerUndefined.dispose();
+    layerGroup.dispose();
+  });
+
 });
