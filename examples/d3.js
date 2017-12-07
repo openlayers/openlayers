@@ -40,8 +40,7 @@ d3.json('data/topojson/us.json', function(error, us) {
    * @param {ol.proj.Projection} projection Projection.
    * @return {HTMLCanvasElement} A canvas element.
    */
-  var canvasFunction = function(extent, resolution, pixelRatio,
-      size, projection) {
+  var canvasFunction = function(extent, resolution, pixelRatio, size, projection) {
     var canvasWidth = size[0];
     var canvasHeight = size[1];
 
@@ -50,14 +49,14 @@ d3.json('data/topojson/us.json', function(error, us) {
 
     var context = canvas.node().getContext('2d');
 
-    var d3Projection = d3.geo.mercator().scale(1).translate([0, 0]);
-    var d3Path = d3.geo.path().projection(d3Projection);
+    var d3Projection = d3.geoMercator().scale(1).translate([0, 0]);
+    var d3Path = d3.geoPath().projection(d3Projection);
 
     var pixelBounds = d3Path.bounds(features);
     var pixelBoundsWidth = pixelBounds[1][0] - pixelBounds[0][0];
     var pixelBoundsHeight = pixelBounds[1][1] - pixelBounds[0][1];
 
-    var geoBounds = d3.geo.bounds(features);
+    var geoBounds = d3.geoBounds(features);
     var geoBoundsLeftBottom = ol.proj.transform(
         geoBounds[0], 'EPSG:4326', projection);
     var geoBoundsRightTop = ol.proj.transform(
@@ -81,7 +80,7 @@ d3.json('data/topojson/us.json', function(error, us) {
     d3Path(features);
     context.stroke();
 
-    return canvas[0][0];
+    return canvas.node();
   };
 
   var layer = new ol.layer.Image({

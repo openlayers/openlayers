@@ -144,13 +144,13 @@ var chart = d3.select('#plot').append('svg')
     .attr('width', barWidth * bins)
     .attr('height', plotHeight);
 
-var chartRect = chart[0][0].getBoundingClientRect();
+var chartRect = chart.node().getBoundingClientRect();
 
 var tip = d3.select(document.body).append('div')
     .attr('class', 'tip');
 
 function plot(resolution, counts, threshold) {
-  var yScale = d3.scale.linear()
+  var yScale = d3.scaleLinear()
       .domain([0, d3.max(counts.values)])
       .range([0, plotHeight]);
 
