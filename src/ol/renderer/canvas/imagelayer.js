@@ -127,8 +127,9 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
         projection = sourceProjection;
       }
     }
-    if (this.vectorRenderer_) {
-      var context = this.vectorRenderer_.context;
+    var vectorRenderer = this.vectorRenderer_;
+    if (vectorRenderer) {
+      var context = vectorRenderer.context;
       var imageFrameState = /** @type {olx.FrameState} */ (ol.obj.assign({}, frameState, {
         size: [
           ol.extent.getWidth(renderedExtent) / viewResolution,
@@ -138,12 +139,12 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
           rotation: 0
         }))
       }));
-      if (this.vectorRenderer_.prepareFrame(imageFrameState, layerState)) {
+      if (vectorRenderer.prepareFrame(imageFrameState, layerState) && vectorRenderer.replayGroupChanged) {
         context.canvas.width = imageFrameState.size[0] * pixelRatio;
         context.canvas.height = imageFrameState.size[1] * pixelRatio;
-        this.vectorRenderer_.composeFrame(imageFrameState, layerState, context);
+        vectorRenderer.composeFrame(imageFrameState, layerState, context);
+        this.image_ = new ol.ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
       }
-      this.image_ = new ol.ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
     } else {
       image = imageSource.getImage(
           renderedExtent, viewResolution, pixelRatio, projection);

@@ -70,6 +70,12 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
   this.replayGroup_ = null;
 
   /**
+   * A new replay group had to be created by `prepareFrame()`
+   * @type {boolean}
+   */
+  this.replayGroupChanged = true;
+
+  /**
    * @type {CanvasRenderingContext2D}
    */
   this.context = ol.dom.createCanvasContext2D();
@@ -343,6 +349,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
       ol.extent.containsExtent(this.renderedExtent_, extent)) {
+    this.replayGroupChanged = false;
     return true;
   }
 
@@ -400,6 +407,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
   this.renderedExtent_ = extent;
   this.replayGroup_ = replayGroup;
 
+  this.replayGroupChanged = true;
   return true;
 };
 
