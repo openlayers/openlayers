@@ -290,6 +290,14 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       ], buffer));
     });
 
+    it('sets replayGroupChanged correctly', function() {
+      frameState.extent = [-10000, -10000, 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroupChanged).to.be(true);
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroupChanged).to.be(false);
+    });
+
   });
 
 });
