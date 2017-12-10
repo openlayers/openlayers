@@ -8525,7 +8525,7 @@ olx.view.FitOptions.prototype.callback;
  *     pixelToCoordinateTransform: ol.Transform,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,
  *     size: ol.Size,
- *     skippedFeatureUids: Object.<string, boolean>,
+ *     skippedFeatureUids: !Object.<string, boolean>,
  *     tileQueue: ol.TileQueue,
  *     time: number,
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
