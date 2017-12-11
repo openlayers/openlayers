@@ -226,10 +226,6 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
   anchorY *= scale;
   x -= anchorX;
   y -= anchorY;
-  if (snapToPixel) {
-    x = Math.round(x);
-    y = Math.round(y);
-  }
 
   var w = (width + originX > image.width) ? image.width - originX : width;
   var h = (height + originY > image.height) ? image.height - originY : height;
@@ -271,6 +267,12 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
   }
   var canvas = context.canvas;
   var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+
+  if (snapToPixel) {
+    x = Math.round(x);
+    y = Math.round(y);
+  }
+
   if (declutterGroup) {
     if (!intersects && declutterGroup[4] == 1) {
       return;

@@ -571,11 +571,11 @@ describe('ol.rendering.layer.Vector', function() {
       });
       source.addFeature(centerFeature);
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
 
@@ -612,11 +612,11 @@ describe('ol.rendering.layer.Vector', function() {
       });
       source.addFeature(centerFeature);
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
 
@@ -652,12 +652,12 @@ describe('ol.rendering.layer.Vector', function() {
         zIndex: 2
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] - 540, center[1]]),
         text: 'west',
         zIndex: 3
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] + 540, center[1]]),
         text: 'east',
         zIndex: 1
       }));
@@ -691,10 +691,10 @@ describe('ol.rendering.layer.Vector', function() {
       });
       source.addFeature(centerFeature);
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]])
+        geometry: new ol.geom.Point([center[0] - 540, center[1]])
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]])
+        geometry: new ol.geom.Point([center[0] + 540, center[1]])
       }));
 
       layer.setDeclutter(true);
@@ -731,10 +731,10 @@ describe('ol.rendering.layer.Vector', function() {
       });
       source.addFeature(centerFeature);
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]])
+        geometry: new ol.geom.Point([center[0] - 540, center[1]])
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]])
+        geometry: new ol.geom.Point([center[0] + 540, center[1]])
       }));
 
       layer.setDeclutter(true);
@@ -770,11 +770,11 @@ describe('ol.rendering.layer.Vector', function() {
         zIndex: 2
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] - 540, center[1]]),
         zIndex: 3
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] + 540, center[1]]),
         zIndex: 1
       }));
 
@@ -809,11 +809,11 @@ describe('ol.rendering.layer.Vector', function() {
         text: 'center'
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] - 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
       source.addFeature(new ol.Feature({
-        geometry: new ol.geom.Point([center[0] + 550, center[1]]),
+        geometry: new ol.geom.Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
 
