@@ -1,4 +1,4 @@
-//! NAMESPACE=ol.render.webgl.circlereplay.defaultshader
+//! NAMESPACE=_ol_render_webgl_circlereplay_defaultshader_
 
 
 //! COMMON

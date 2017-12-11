@@ -106,22 +106,6 @@ Called internally to parse the library for annotations and write out a `build/in
 
 Builds examples and the example index.
 
-## `check-example.js`
-
-Runs an example in PhantomJS and returns an exit code != 0 after printing a stack trace when something is wrong with the example.
-
-To check the `simple.html` example when on master, first run the `build-examples.js` task, then invoke
-
-    node tasks/check-example.js build/hosted/master/simple.html
-
-
-## `serve.js`
-
-Run a debug server that provides all library sources unminified.  Provides a static server for examples and tests.  See the `--help` option for more detail.
-
-    node tasks/serve.js --help
-
-
 ## `test.js`
 
 Run the tests once in a headless browser.  Note that you can also run the tests by running the `serve.js` task and then visiting the root of the test directory in your browser.
