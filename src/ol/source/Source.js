@@ -1,11 +1,11 @@
-goog.provide('ol.source.Source');
-
-goog.require('ol');
-goog.require('ol.Attribution');
-goog.require('ol.Object');
-goog.require('ol.proj');
-goog.require('ol.source.State');
-
+/**
+ * @module ol/source/Source
+ */
+import _ol_ from '../index.js';
+import _ol_Attribution_ from '../Attribution.js';
+import _ol_Object_ from '../Object.js';
+import _ol_proj_ from '../proj.js';
+import _ol_source_State_ from '../source/State.js';
 
 /**
  * @classdesc
@@ -21,15 +21,15 @@ goog.require('ol.source.State');
  * @param {ol.SourceSourceOptions} options Source options.
  * @api
  */
-ol.source.Source = function(options) {
+var _ol_source_Source_ = function(options) {
 
-  ol.Object.call(this);
+  _ol_Object_.call(this);
 
   /**
    * @private
    * @type {ol.proj.Projection}
    */
-  this.projection_ = ol.proj.get(options.projection);
+  this.projection_ = _ol_proj_.get(options.projection);
 
   /**
    * @private
@@ -54,7 +54,7 @@ ol.source.Source = function(options) {
    * @type {ol.source.State}
    */
   this.state_ = options.state !== undefined ?
-    options.state : ol.source.State.READY;
+    options.state : _ol_source_State_.READY;
 
   /**
    * @private
@@ -63,7 +63,8 @@ ol.source.Source = function(options) {
   this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
 };
-ol.inherits(ol.source.Source, ol.Object);
+
+_ol_.inherits(_ol_source_Source_, _ol_Object_);
 
 /**
  * Turns the attributions option into an attributions function.
@@ -71,11 +72,11 @@ ol.inherits(ol.source.Source, ol.Object);
  * @param {ol.AttributionLike|undefined} attributionLike The attribution option.
  * @return {?ol.Attribution2} An attribution function (or null).
  */
-ol.source.Source.prototype.adaptAttributions_ = function(attributionLike) {
+_ol_source_Source_.prototype.adaptAttributions_ = function(attributionLike) {
   if (!attributionLike) {
     return null;
   }
-  if (attributionLike instanceof ol.Attribution) {
+  if (attributionLike instanceof _ol_Attribution_) {
 
     // TODO: remove attributions_ in next major release
     this.attributions_ = [attributionLike];
@@ -85,7 +86,7 @@ ol.source.Source.prototype.adaptAttributions_ = function(attributionLike) {
     };
   }
   if (Array.isArray(attributionLike)) {
-    if (attributionLike[0] instanceof ol.Attribution) {
+    if (attributionLike[0] instanceof _ol_Attribution_) {
 
       // TODO: remove attributions_ in next major release
       this.attributions_ = attributionLike;
@@ -100,7 +101,7 @@ ol.source.Source.prototype.adaptAttributions_ = function(attributionLike) {
 
     // TODO: remove attributions_ in next major release
     this.attributions_ = attributionLike.map(function(attribution) {
-      return new ol.Attribution({html: attribution});
+      return new _ol_Attribution_({html: attribution});
     });
 
     return function(frameState) {
@@ -114,7 +115,7 @@ ol.source.Source.prototype.adaptAttributions_ = function(attributionLike) {
 
   // TODO: remove attributions_ in next major release
   this.attributions_ = [
-    new ol.Attribution({html: attributionLike})
+    new _ol_Attribution_({html: attributionLike})
   ];
 
   return function(frameState) {
@@ -133,7 +134,7 @@ ol.source.Source.prototype.adaptAttributions_ = function(attributionLike) {
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
+_ol_source_Source_.prototype.forEachFeatureAtCoordinate = _ol_.nullFunction;
 
 
 /**
@@ -141,7 +142,7 @@ ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
  * @return {Array.<ol.Attribution>} Attributions.
  * @api
  */
-ol.source.Source.prototype.getAttributions = function() {
+_ol_source_Source_.prototype.getAttributions = function() {
   return this.attributions_;
 };
 
@@ -150,7 +151,7 @@ ol.source.Source.prototype.getAttributions = function() {
  * Get the attribution function for the source.
  * @return {?ol.Attribution2} Attribution function.
  */
-ol.source.Source.prototype.getAttributions2 = function() {
+_ol_source_Source_.prototype.getAttributions2 = function() {
   return this.attributions2_;
 };
 
@@ -160,7 +161,7 @@ ol.source.Source.prototype.getAttributions2 = function() {
  * @return {string|olx.LogoOptions|undefined} Logo.
  * @api
  */
-ol.source.Source.prototype.getLogo = function() {
+_ol_source_Source_.prototype.getLogo = function() {
   return this.logo_;
 };
 
@@ -170,7 +171,7 @@ ol.source.Source.prototype.getLogo = function() {
  * @return {ol.proj.Projection} Projection.
  * @api
  */
-ol.source.Source.prototype.getProjection = function() {
+_ol_source_Source_.prototype.getProjection = function() {
   return this.projection_;
 };
 
@@ -179,7 +180,7 @@ ol.source.Source.prototype.getProjection = function() {
  * @abstract
  * @return {Array.<number>|undefined} Resolutions.
  */
-ol.source.Source.prototype.getResolutions = function() {};
+_ol_source_Source_.prototype.getResolutions = function() {};
 
 
 /**
@@ -187,7 +188,7 @@ ol.source.Source.prototype.getResolutions = function() {};
  * @return {ol.source.State} State.
  * @api
  */
-ol.source.Source.prototype.getState = function() {
+_ol_source_Source_.prototype.getState = function() {
   return this.state_;
 };
 
@@ -195,7 +196,7 @@ ol.source.Source.prototype.getState = function() {
 /**
  * @return {boolean|undefined} Wrap X.
  */
-ol.source.Source.prototype.getWrapX = function() {
+_ol_source_Source_.prototype.getWrapX = function() {
   return this.wrapX_;
 };
 
@@ -204,7 +205,7 @@ ol.source.Source.prototype.getWrapX = function() {
  * Refreshes the source and finally dispatches a 'change' event.
  * @api
  */
-ol.source.Source.prototype.refresh = function() {
+_ol_source_Source_.prototype.refresh = function() {
   this.changed();
 };
 
@@ -216,7 +217,7 @@ ol.source.Source.prototype.refresh = function() {
  *     or `undefined`.
  * @api
  */
-ol.source.Source.prototype.setAttributions = function(attributions) {
+_ol_source_Source_.prototype.setAttributions = function(attributions) {
   this.attributions2_ = this.adaptAttributions_(attributions);
   this.changed();
 };
@@ -226,7 +227,7 @@ ol.source.Source.prototype.setAttributions = function(attributions) {
  * Set the logo of the source.
  * @param {string|olx.LogoOptions|undefined} logo Logo.
  */
-ol.source.Source.prototype.setLogo = function(logo) {
+_ol_source_Source_.prototype.setLogo = function(logo) {
   this.logo_ = logo;
 };
 
@@ -236,7 +237,8 @@ ol.source.Source.prototype.setLogo = function(logo) {
  * @param {ol.source.State} state State.
  * @protected
  */
-ol.source.Source.prototype.setState = function(state) {
+_ol_source_Source_.prototype.setState = function(state) {
   this.state_ = state;
   this.changed();
 };
+export default _ol_source_Source_;

@@ -1,5 +1,5 @@
-goog.require('ol.geom.flat.textpath');
-goog.require('ol.geom.flat.length');
+import _ol_geom_flat_textpath_ from '../../../../../src/ol/geom/flat/textpath.js';
+import _ol_geom_flat_length_ from '../../../../../src/ol/geom/flat/length.js';
 
 describe('textpath', function() {
 
@@ -16,27 +16,27 @@ describe('textpath', function() {
 
   it('center-aligns text on a horizontal line', function() {
     var startM = 50 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         horizontal, 0, horizontal.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions).to.eql([[40, 0, 5, 0, 'foo']]);
   });
 
   it('left-aligns text on a horizontal line', function() {
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         horizontal, 0, horizontal.length, 2, 'foo', measure, 0, Infinity);
     expect(instructions).to.eql([[5, 0, 5, 0, 'foo']]);
   });
 
   it('right-aligns text on a horizontal line', function() {
     var startM = 100 - 30;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         horizontal, 0, horizontal.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions).to.eql([[75, 0, 5, 0, 'foo']]);
   });
 
   it('draws text on a vertical line', function() {
     var startM = 50 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         vertical, 0, vertical.length, 2, 'foo', measure, startM, Infinity);
     var a = 90 * Math.PI / 180;
     expect(instructions).to.eql([[0, 40, 5, a, 'foo']]);
@@ -44,7 +44,7 @@ describe('textpath', function() {
 
   it('draws text on a diagonal line', function() {
     var startM = Math.sqrt(2) * 50 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         diagonal, 0, diagonal.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
@@ -52,7 +52,7 @@ describe('textpath', function() {
 
   it('draws reverse text on a diagonal line', function() {
     var startM = Math.sqrt(2) * 50 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         reverse, 0, reverse.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(-45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
@@ -60,16 +60,16 @@ describe('textpath', function() {
 
   it('renders long text with extrapolation', function() {
     var startM = 50 - 75;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         horizontal, 0, horizontal.length, 2, 'foo-foo-foo-foo', measure, startM, Infinity);
     expect(instructions[0]).to.eql([-20, 0, 5, 0, 'foo-foo-foo-foo']);
     expect(instructions.length).to.be(1);
   });
 
   it('renders angled text', function() {
-    var length = ol.geom.flat.length.lineString(angled, 0, angled.length, 2);
+    var length = _ol_geom_flat_length_.lineString(angled, 0, angled.length, 2);
     var startM = length / 2 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         angled, 0, angled.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.eql(45 * Math.PI / 180);
     expect(instructions[0][4]).to.be('fo');
@@ -78,34 +78,34 @@ describe('textpath', function() {
   });
 
   it('respects maxAngle', function() {
-    var length = ol.geom.flat.length.lineString(angled, 0, angled.length, 2);
+    var length = _ol_geom_flat_length_.lineString(angled, 0, angled.length, 2);
     var startM = length / 2 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         angled, 0, angled.length, 2, 'foo', measure, startM, Math.PI / 4);
     expect(instructions).to.be(null);
   });
 
   it('uses the smallest angle for maxAngleDelta', function() {
-    var length = ol.geom.flat.length.lineString(reverseangled, 0, reverseangled.length, 2);
+    var length = _ol_geom_flat_length_.lineString(reverseangled, 0, reverseangled.length, 2);
     var startM = length / 2 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         reverseangled, 0, reverseangled.length, 2, 'foo', measure, startM, Math.PI);
     expect(instructions).to.not.be(undefined);
   });
 
   it('respects the offset option', function() {
-    var length = ol.geom.flat.length.lineString(angled, 2, angled.length, 2);
+    var length = _ol_geom_flat_length_.lineString(angled, 2, angled.length, 2);
     var startM = length / 2 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         angled, 2, angled.length, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(-45 * Math.PI / 180);
     expect(instructions.length).to.be(1);
   });
 
   it('respects the end option', function() {
-    var length = ol.geom.flat.length.lineString(angled, 0, 4, 2);
+    var length = _ol_geom_flat_length_.lineString(angled, 0, 4, 2);
     var startM = length / 2 - 15;
-    var instructions = ol.geom.flat.textpath.lineString(
+    var instructions = _ol_geom_flat_textpath_.lineString(
         angled, 0, 4, 2, 'foo', measure, startM, Infinity);
     expect(instructions[0][3]).to.be(45 * Math.PI / 180);
     expect(instructions.length).to.be(1);

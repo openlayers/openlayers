@@ -1,10 +1,10 @@
-goog.provide('ol.interaction.ModifyEventType');
-
-
+/**
+ * @module ol/interaction/ModifyEventType
+ */
 /**
  * @enum {string}
  */
-ol.interaction.ModifyEventType = {
+var _ol_interaction_ModifyEventType_ = {
   /**
    * Triggered upon feature modification start
    * @event ol.interaction.Modify.Event#modifystart
@@ -18,3 +18,5 @@ ol.interaction.ModifyEventType = {
    */
   MODIFYEND: 'modifyend'
 };
+
+export default _ol_interaction_ModifyEventType_;

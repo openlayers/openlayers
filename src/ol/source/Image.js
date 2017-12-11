@@ -1,14 +1,14 @@
-goog.provide('ol.source.Image');
-
-goog.require('ol');
-goog.require('ol.ImageState');
-goog.require('ol.array');
-goog.require('ol.events.Event');
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.reproj.Image');
-goog.require('ol.source.Source');
-
+/**
+ * @module ol/source/Image
+ */
+import _ol_ from '../index.js';
+import _ol_ImageState_ from '../ImageState.js';
+import _ol_array_ from '../array.js';
+import _ol_events_Event_ from '../events/Event.js';
+import _ol_extent_ from '../extent.js';
+import _ol_proj_ from '../proj.js';
+import _ol_reproj_Image_ from '../reproj/Image.js';
+import _ol_source_Source_ from '../source/Source.js';
 
 /**
  * @classdesc
@@ -22,8 +22,8 @@ goog.require('ol.source.Source');
  * @param {ol.SourceImageOptions} options Single image source options.
  * @api
  */
-ol.source.Image = function(options) {
-  ol.source.Source.call(this, {
+var _ol_source_Image_ = function(options) {
+  _ol_source_Source_.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
@@ -52,14 +52,15 @@ ol.source.Image = function(options) {
    */
   this.reprojectedRevision_ = 0;
 };
-ol.inherits(ol.source.Image, ol.source.Source);
+
+_ol_.inherits(_ol_source_Image_, _ol_source_Source_);
 
 
 /**
  * @return {Array.<number>} Resolutions.
  * @override
  */
-ol.source.Image.prototype.getResolutions = function() {
+_ol_source_Image_.prototype.getResolutions = function() {
   return this.resolutions_;
 };
 
@@ -69,9 +70,9 @@ ol.source.Image.prototype.getResolutions = function() {
  * @param {number} resolution Resolution.
  * @return {number} Resolution.
  */
-ol.source.Image.prototype.findNearestResolution = function(resolution) {
+_ol_source_Image_.prototype.findNearestResolution = function(resolution) {
   if (this.resolutions_) {
-    var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
+    var idx = _ol_array_.linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
   }
   return resolution;
@@ -85,12 +86,12 @@ ol.source.Image.prototype.findNearestResolution = function(resolution) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  */
-ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+_ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   var sourceProjection = this.getProjection();
-  if (!ol.ENABLE_RASTER_REPROJECTION ||
+  if (!_ol_.ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
-      ol.proj.equivalent(sourceProjection, projection)) {
+      _ol_proj_.equivalent(sourceProjection, projection)) {
     if (sourceProjection) {
       projection = sourceProjection;
     }
@@ -98,17 +99,17 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
   } else {
     if (this.reprojectedImage_) {
       if (this.reprojectedRevision_ == this.getRevision() &&
-          ol.proj.equivalent(
+          _ol_proj_.equivalent(
               this.reprojectedImage_.getProjection(), projection) &&
           this.reprojectedImage_.getResolution() == resolution &&
-          ol.extent.equals(this.reprojectedImage_.getExtent(), extent)) {
+          _ol_extent_.equals(this.reprojectedImage_.getExtent(), extent)) {
         return this.reprojectedImage_;
       }
       this.reprojectedImage_.dispose();
       this.reprojectedImage_ = null;
     }
 
-    this.reprojectedImage_ = new ol.reproj.Image(
+    this.reprojectedImage_ = new _ol_reproj_Image_(
         sourceProjection, projection, extent, resolution, pixelRatio,
         function(extent, resolution, pixelRatio) {
           return this.getImageInternal(extent, resolution,
@@ -130,7 +131,7 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
  * @return {ol.ImageBase} Single image.
  * @protected
  */
-ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
+_ol_source_Image_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
 
 
 /**
@@ -138,22 +139,22 @@ ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelR
  * @param {ol.events.Event} event Event.
  * @protected
  */
-ol.source.Image.prototype.handleImageChange = function(event) {
+_ol_source_Image_.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   switch (image.getState()) {
-    case ol.ImageState.LOADING:
+    case _ol_ImageState_.LOADING:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADSTART,
+          new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADSTART,
               image));
       break;
-    case ol.ImageState.LOADED:
+    case _ol_ImageState_.LOADED:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADEND,
+          new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADEND,
               image));
       break;
-    case ol.ImageState.ERROR:
+    case _ol_ImageState_.ERROR:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADERROR,
+          new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADERROR,
               image));
       break;
     default:
@@ -168,7 +169,7 @@ ol.source.Image.prototype.handleImageChange = function(event) {
  * @param {ol.Image} image Image.
  * @param {string} src Source.
  */
-ol.source.Image.defaultImageLoadFunction = function(image, src) {
+_ol_source_Image_.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
 };
 
@@ -184,9 +185,9 @@ ol.source.Image.defaultImageLoadFunction = function(image, src) {
  * @param {string} type Type.
  * @param {ol.Image} image The image.
  */
-ol.source.Image.Event = function(type, image) {
+_ol_source_Image_.Event = function(type, image) {
 
-  ol.events.Event.call(this, type);
+  _ol_events_Event_.call(this, type);
 
   /**
    * The image related to the event.
@@ -196,14 +197,14 @@ ol.source.Image.Event = function(type, image) {
   this.image = image;
 
 };
-ol.inherits(ol.source.Image.Event, ol.events.Event);
+_ol_.inherits(_ol_source_Image_.Event, _ol_events_Event_);
 
 
 /**
  * @enum {string}
  * @private
  */
-ol.source.Image.EventType_ = {
+_ol_source_Image_.EventType_ = {
 
   /**
    * Triggered when an image starts loading.
@@ -227,3 +228,4 @@ ol.source.Image.EventType_ = {
   IMAGELOADERROR: 'imageloaderror'
 
 };
+export default _ol_source_Image_;

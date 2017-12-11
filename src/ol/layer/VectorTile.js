@@ -1,13 +1,13 @@
-goog.provide('ol.layer.VectorTile');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.asserts');
-goog.require('ol.layer.TileProperty');
-goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorTileRenderType');
-goog.require('ol.obj');
-
+/**
+ * @module ol/layer/VectorTile
+ */
+import _ol_ from '../index.js';
+import _ol_LayerType_ from '../LayerType.js';
+import _ol_asserts_ from '../asserts.js';
+import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
+import _ol_layer_Vector_ from '../layer/Vector.js';
+import _ol_layer_VectorTileRenderType_ from '../layer/VectorTileRenderType.js';
+import _ol_obj_ from '../obj.js';
 
 /**
  * @classdesc
@@ -21,25 +21,25 @@ goog.require('ol.obj');
  * @param {olx.layer.VectorTileOptions=} opt_options Options.
  * @api
  */
-ol.layer.VectorTile = function(opt_options) {
+var _ol_layer_VectorTile_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var renderMode = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
-  ol.asserts.assert(renderMode == undefined ||
-      renderMode == ol.layer.VectorTileRenderType.IMAGE ||
-      renderMode == ol.layer.VectorTileRenderType.HYBRID ||
-      renderMode == ol.layer.VectorTileRenderType.VECTOR,
+  var renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
+  _ol_asserts_.assert(renderMode == undefined ||
+      renderMode == _ol_layer_VectorTileRenderType_.IMAGE ||
+      renderMode == _ol_layer_VectorTileRenderType_.HYBRID ||
+      renderMode == _ol_layer_VectorTileRenderType_.VECTOR,
   28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
-  if (options.declutter && renderMode == ol.layer.VectorTileRenderType.IMAGE) {
-    renderMode = ol.layer.VectorTileRenderType.HYBRID;
+  if (options.declutter && renderMode == _ol_layer_VectorTileRenderType_.IMAGE) {
+    renderMode = _ol_layer_VectorTileRenderType_.HYBRID;
   }
   options.renderMode = renderMode;
 
-  var baseOptions = ol.obj.assign({}, options);
+  var baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  ol.layer.Vector.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  _ol_layer_Vector_.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   this.setPreload(options.preload ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
@@ -50,10 +50,11 @@ ol.layer.VectorTile = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = ol.LayerType.VECTOR_TILE;
+  this.type = _ol_LayerType_.VECTOR_TILE;
 
 };
-ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
+
+_ol_.inherits(_ol_layer_VectorTile_, _ol_layer_Vector_);
 
 
 /**
@@ -62,8 +63,10 @@ ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
  * @observable
  * @api
  */
-ol.layer.VectorTile.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
+_ol_layer_VectorTile_.prototype.getPreload = function() {
+  return (
+  /** @type {number} */ this.get(_ol_layer_TileProperty_.PRELOAD)
+  );
 };
 
 
@@ -73,9 +76,10 @@ ol.layer.VectorTile.prototype.getPreload = function() {
  * @observable
  * @api
  */
-ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean} */ (
-    this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
+_ol_layer_VectorTile_.prototype.getUseInterimTilesOnError = function() {
+  return (
+  /** @type {boolean} */ this.get(_ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR)
+  );
 };
 
 
@@ -85,8 +89,8 @@ ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
  * @observable
  * @api
  */
-ol.layer.VectorTile.prototype.setPreload = function(preload) {
-  this.set(ol.layer.TileProperty.PRELOAD, preload);
+_ol_layer_VectorTile_.prototype.setPreload = function(preload) {
+  this.set(_ol_layer_TileProperty_.PRELOAD, preload);
 };
 
 
@@ -96,9 +100,9 @@ ol.layer.VectorTile.prototype.setPreload = function(preload) {
  * @observable
  * @api
  */
-ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
+_ol_layer_VectorTile_.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
-      ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+      _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
 
 
@@ -108,4 +112,5 @@ ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTil
  * @return {ol.source.VectorTile} Source.
  * @api
  */
-ol.layer.VectorTile.prototype.getSource;
+_ol_layer_VectorTile_.prototype.getSource;
+export default _ol_layer_VectorTile_;

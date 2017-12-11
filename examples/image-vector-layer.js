@@ -1,32 +1,32 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import _ol_style_Style_ from '../src/ol/style/Style.js';
+import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 
-var style = new ol.style.Style({
-  fill: new ol.style.Fill({
+var style = new _ol_style_Style_({
+  fill: new _ol_style_Fill_({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
-  stroke: new ol.style.Stroke({
+  stroke: new _ol_style_Stroke_({
     color: '#319FD3',
     width: 1
   }),
-  text: new ol.style.Text()
+  text: new _ol_style_Text_()
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Vector({
+    new _ol_layer_Vector_({
       renderMode: 'image',
-      source: new ol.source.Vector({
+      source: new _ol_source_Vector_({
         url: 'data/geojson/countries.geojson',
-        format: new ol.format.GeoJSON()
+        format: new _ol_format_GeoJSON_()
       }),
       style: function(feature) {
         style.getText().setText(feature.get('name'));
@@ -35,21 +35,21 @@ var map = new ol.Map({
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 1
   })
 });
 
-var featureOverlay = new ol.layer.Vector({
-  source: new ol.source.Vector(),
+var featureOverlay = new _ol_layer_Vector_({
+  source: new _ol_source_Vector_(),
   map: map,
-  style: new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  style: new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: '#f00',
       width: 1
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255,0,0,0.1)'
     })
   })

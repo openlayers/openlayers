@@ -1,10 +1,8 @@
-
-
-goog.require('ol.Disposable');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Polygon');
-goog.require('ol.render.Box');
+import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
+import _ol_Map_ from '../../../../src/ol/Map.js';
+import _ol_View_ from '../../../../src/ol/View.js';
+import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
 
 
 describe('ol.render.Box', function() {
@@ -12,14 +10,14 @@ describe('ol.render.Box', function() {
   var box, map, target;
 
   beforeEach(function() {
-    box = new ol.render.Box('test-box');
+    box = new _ol_render_Box_('test-box');
 
     target = document.createElement('div');
     document.body.appendChild(target);
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: target,
-      view: new ol.View({
+      view: new _ol_View_({
         center: [0, 0],
         zoom: 0
       })
@@ -35,9 +33,9 @@ describe('ol.render.Box', function() {
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      var obj = new ol.render.Box('test-box');
-      expect(obj).to.be.a(ol.render.Box);
-      expect(obj).to.be.a(ol.Disposable);
+      var obj = new _ol_render_Box_('test-box');
+      expect(obj).to.be.a(_ol_render_Box_);
+      expect(obj).to.be.a(_ol_Disposable_);
       obj.dispose();
     });
     it('creates an absolutely positioned DIV with a className', function() {
@@ -69,7 +67,7 @@ describe('ol.render.Box', function() {
     it('creates a polygon geometry', function() {
       expect(box.getGeometry()).to.be(null);
       box.setPixels([1, 2], [3, 4]);
-      expect(box.getGeometry()).to.be.a(ol.geom.Polygon);
+      expect(box.getGeometry()).to.be.a(_ol_geom_Polygon_);
     });
   });
 

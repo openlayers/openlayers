@@ -1,6 +1,8 @@
-goog.provide('ol.net');
-
-goog.require('ol');
+/**
+ * @module ol/net
+ */
+import _ol_ from './index.js';
+var _ol_net_ = {};
 
 
 /**
@@ -14,9 +16,9 @@ goog.require('ol');
  * @param {string=} opt_callbackParam Custom query parameter for the JSONP
  *     callback. Default is 'callback'.
  */
-ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
+_ol_net_.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
   var script = document.createElement('script');
-  var key = 'olc_' + ol.getUid(callback);
+  var key = 'olc_' + _ol_.getUid(callback);
   function cleanup() {
     delete window[key];
     script.parentNode.removeChild(script);
@@ -37,3 +39,4 @@ ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
   };
   document.getElementsByTagName('head')[0].appendChild(script);
 };
+export default _ol_net_;

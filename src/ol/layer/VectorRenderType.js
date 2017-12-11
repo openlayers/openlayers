@@ -1,5 +1,6 @@
-goog.provide('ol.layer.VectorRenderType');
-
+/**
+ * @module ol/layer/VectorRenderType
+ */
 /**
  * @enum {string}
  * Render mode for vector layers:
@@ -10,7 +11,9 @@ goog.provide('ol.layer.VectorRenderType');
  *    even during animations, but slower performance.
  * @api
  */
-ol.layer.VectorRenderType = {
+var _ol_layer_VectorRenderType_ = {
   IMAGE: 'image',
   VECTOR: 'vector'
 };
+
+export default _ol_layer_VectorRenderType_;

@@ -1,85 +1,85 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.Circle');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+import _ol_Feature_ from '../src/ol/Feature.js';
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_control_ from '../src/ol/control.js';
+import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import _ol_geom_Circle_ from '../src/ol/geom/Circle.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var image = new ol.style.Circle({
+var image = new _ol_style_Circle_({
   radius: 5,
   fill: null,
-  stroke: new ol.style.Stroke({color: 'red', width: 1})
+  stroke: new _ol_style_Stroke_({color: 'red', width: 1})
 });
 
 var styles = {
-  'Point': new ol.style.Style({
+  'Point': new _ol_style_Style_({
     image: image
   }),
-  'LineString': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'LineString': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 1
     })
   }),
-  'MultiLineString': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'MultiLineString': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 1
     })
   }),
-  'MultiPoint': new ol.style.Style({
+  'MultiPoint': new _ol_style_Style_({
     image: image
   }),
-  'MultiPolygon': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'MultiPolygon': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'yellow',
       width: 1
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255, 255, 0, 0.1)'
     })
   }),
-  'Polygon': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'Polygon': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'blue',
       lineDash: [4],
       width: 3
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   }),
-  'GeometryCollection': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'GeometryCollection': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'magenta',
       width: 2
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'magenta'
     }),
-    image: new ol.style.Circle({
+    image: new _ol_style_Circle_({
       radius: 10,
       fill: null,
-      stroke: new ol.style.Stroke({
+      stroke: new _ol_style_Stroke_({
         color: 'magenta'
       })
     })
   }),
-  'Circle': new ol.style.Style({
-    stroke: new ol.style.Stroke({
+  'Circle': new _ol_style_Style_({
+    stroke: new _ol_style_Stroke_({
       color: 'red',
       width: 2
     }),
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: 'rgba(255,0,0,0.2)'
     })
   })
@@ -160,31 +160,31 @@ var geojsonObject = {
   }]
 };
 
-var vectorSource = new ol.source.Vector({
-  features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+var vectorSource = new _ol_source_Vector_({
+  features: (new _ol_format_GeoJSON_()).readFeatures(geojsonObject)
 });
 
-vectorSource.addFeature(new ol.Feature(new ol.geom.Circle([5e6, 7e6], 1e6)));
+vectorSource.addFeature(new _ol_Feature_(new _ol_geom_Circle_([5e6, 7e6], 1e6)));
 
-var vectorLayer = new ol.layer.Vector({
+var vectorLayer = new _ol_layer_Vector_({
   source: vectorSource,
   style: styleFunction
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     }),
     vectorLayer
   ],
   target: 'map',
-  controls: ol.control.defaults({
+  controls: _ol_control_.defaults({
     attributionOptions: {
       collapsible: false
     }
   }),
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

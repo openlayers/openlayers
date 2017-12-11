@@ -1,6 +1,6 @@
-goog.require('ol.events');
-goog.require('ol.obj');
-goog.require('ol.render.canvas');
+import _ol_events_ from '../../../../../src/ol/events.js';
+import _ol_obj_ from '../../../../../src/ol/obj.js';
+import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 
 
 describe('ol.render.canvas', function() {
@@ -13,25 +13,25 @@ describe('ol.render.canvas', function() {
   describe('ol.render.canvas.checkFont()', function() {
 
     beforeEach(function() {
-      ol.obj.clear(ol.render.canvas.checkedFonts_);
-      ol.render.canvas.getMeasureContext();
-      ol.render.canvas.measureTextHeight('12px sans-serif');
+      _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
+      _ol_render_canvas_.getMeasureContext();
+      _ol_render_canvas_.measureTextHeight('12px sans-serif');
     });
 
-    var checkFont = ol.render.canvas.checkFont;
+    var checkFont = _ol_render_canvas_.checkFont;
     var retries = 60;
 
     it('does not clear label cache and measurements for unavailable fonts', function(done) {
       this.timeout(3000);
       var spy = sinon.spy();
-      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
       var interval = setInterval(function() {
-        if (ol.render.canvas.checkedFonts_['foo'] == retries && ol.render.canvas.checkedFonts_['sans-serif'] == retries) {
+        if (_ol_render_canvas_.checkedFonts_['foo'] == retries && _ol_render_canvas_.checkedFonts_['sans-serif'] == retries) {
           clearInterval(interval);
-          ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+          _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
-          expect(ol.render.canvas.measureContext_).to.not.be(null);
-          expect(ol.render.canvas.textHeights_).to.not.eql({});
+          expect(_ol_render_canvas_.measureContext_).to.not.be(null);
+          expect(_ol_render_canvas_.textHeights_).to.not.eql({});
           done();
         }
       }, 32);
@@ -40,14 +40,14 @@ describe('ol.render.canvas', function() {
 
     it('does not clear label cache and measurements for available fonts', function(done) {
       var spy = sinon.spy();
-      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
       var interval = setInterval(function() {
-        if (ol.render.canvas.checkedFonts_['sans-serif'] == retries) {
+        if (_ol_render_canvas_.checkedFonts_['sans-serif'] == retries) {
           clearInterval(interval);
-          ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+          _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
-          expect(ol.render.canvas.measureContext_).to.not.be(null);
-          expect(ol.render.canvas.textHeights_).to.not.eql({});
+          expect(_ol_render_canvas_.measureContext_).to.not.be(null);
+          expect(_ol_render_canvas_.textHeights_).to.not.eql({});
           done();
         }
       }, 32);
@@ -56,14 +56,14 @@ describe('ol.render.canvas', function() {
 
     it('does not clear label cache and measurements for the \'monospace\' font', function(done) {
       var spy = sinon.spy();
-      ol.events.listen(ol.render.canvas.labelCache, 'clear', spy);
+      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
       var interval = setInterval(function() {
-        if (ol.render.canvas.checkedFonts_['monospace'] == retries) {
+        if (_ol_render_canvas_.checkedFonts_['monospace'] == retries) {
           clearInterval(interval);
-          ol.events.unlisten(ol.render.canvas.labelCache, 'clear', spy);
+          _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
-          expect(ol.render.canvas.measureContext_).to.not.be(null);
-          expect(ol.render.canvas.textHeights_).to.not.eql({});
+          expect(_ol_render_canvas_.measureContext_).to.not.be(null);
+          expect(_ol_render_canvas_.textHeights_).to.not.eql({});
           done();
         }
       }, 32);
@@ -72,9 +72,9 @@ describe('ol.render.canvas', function() {
 
     it('clears label cache and measurements for fonts that become available', function(done) {
       head.appendChild(font);
-      ol.events.listen(ol.render.canvas.labelCache, 'clear', function() {
-        expect(ol.render.canvas.measureContext_).to.be(null);
-        expect(ol.render.canvas.textHeights_).to.eql({});
+      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', function() {
+        expect(_ol_render_canvas_.measureContext_).to.be(null);
+        expect(_ol_render_canvas_.textHeights_).to.eql({});
         done();
       });
       checkFont('12px Abel');
@@ -89,7 +89,7 @@ describe('ol.render.canvas', function() {
         translate: sinon.spy(),
         rotate: sinon.spy()
       };
-      ol.render.canvas.rotateAtOffset(context, Math.PI, 10, 10);
+      _ol_render_canvas_.rotateAtOffset(context, Math.PI, 10, 10);
       expect(context.translate.callCount).to.be(2);
       expect(context.translate.firstCall.args).to.eql([10, 10]);
       expect(context.translate.secondCall.args).to.eql([-10, -10]);

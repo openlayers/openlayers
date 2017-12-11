@@ -1,17 +1,17 @@
-goog.provide('ol.source.ImageVector');
-
-goog.require('ol');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.ext.rbush');
-goog.require('ol.extent');
-goog.require('ol.render.canvas.ReplayGroup');
-goog.require('ol.renderer.vector');
-goog.require('ol.source.ImageCanvas');
-goog.require('ol.style.Style');
-goog.require('ol.transform');
-
+/**
+ * @module ol/source/ImageVector
+ */
+import _ol_ from '../index.js';
+import _ol_dom_ from '../dom.js';
+import _ol_events_ from '../events.js';
+import _ol_events_EventType_ from '../events/EventType.js';
+import _ol_ext_rbush_ from 'rbush';
+import _ol_extent_ from '../extent.js';
+import _ol_render_canvas_ReplayGroup_ from '../render/canvas/ReplayGroup.js';
+import _ol_renderer_vector_ from '../renderer/vector.js';
+import _ol_source_ImageCanvas_ from '../source/ImageCanvas.js';
+import _ol_style_Style_ from '../style/Style.js';
+import _ol_transform_ from '../transform.js';
 
 /**
  * @deprecated
@@ -34,7 +34,7 @@ goog.require('ol.transform');
  * @param {olx.source.ImageVectorOptions} options Options.
  * @api
  */
-ol.source.ImageVector = function(options) {
+var _ol_source_ImageVector_ = function(options) {
 
   /**
    * @private
@@ -46,13 +46,13 @@ ol.source.ImageVector = function(options) {
    * @private
    * @type {ol.Transform}
    */
-  this.transform_ = ol.transform.create();
+  this.transform_ = _ol_transform_.create();
 
   /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.canvasContext_ = ol.dom.createCanvasContext2D();
+  this.canvasContext_ = _ol_dom_.createCanvasContext2D();
 
   /**
    * @private
@@ -64,7 +64,7 @@ ol.source.ImageVector = function(options) {
    * Declutter tree.
    * @private
    */
-  this.declutterTree_ = ol.ext.rbush(9);
+  this.declutterTree_ = _ol_ext_rbush_(9);
 
   /**
    * @private
@@ -78,7 +78,7 @@ ol.source.ImageVector = function(options) {
    */
   this.replayGroup_ = null;
 
-  ol.source.ImageCanvas.call(this, {
+  _ol_source_ImageCanvas_.call(this, {
     attributions: options.attributions,
     canvasFunction: this.canvasFunctionInternal_.bind(this),
     logo: options.logo,
@@ -104,11 +104,12 @@ ol.source.ImageVector = function(options) {
 
   this.setStyle(options.style);
 
-  ol.events.listen(this.source_, ol.events.EventType.CHANGE,
+  _ol_events_.listen(this.source_, _ol_events_EventType_.CHANGE,
       this.handleSourceChange_, this);
 
 };
-ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
+
+_ol_.inherits(_ol_source_ImageVector_, _ol_source_ImageCanvas_);
 
 
 /**
@@ -120,10 +121,10 @@ ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
  * @return {HTMLCanvasElement} Canvas element.
  * @private
  */
-ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resolution, pixelRatio, size, projection) {
+_ol_source_ImageVector_.prototype.canvasFunctionInternal_ = function(extent, resolution, pixelRatio, size, projection) {
 
-  var replayGroup = new ol.render.canvas.ReplayGroup(
-      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
+  var replayGroup = new _ol_render_canvas_ReplayGroup_(
+      _ol_renderer_vector_.getTolerance(resolution, pixelRatio), extent,
       resolution, pixelRatio, this.source_.getOverlaps(), this.declutterTree_, this.renderBuffer_);
 
   this.source_.loadFeatures(extent, resolution, projection);
@@ -154,7 +155,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
 
   this.declutterTree_.clear();
 
-  var transform = this.getTransform_(ol.extent.getCenter(extent),
+  var transform = this.getTransform_(_ol_extent_.getCenter(extent),
       resolution, pixelRatio, size);
   replayGroup.replay(this.canvasContext_, transform, 0, {});
 
@@ -167,7 +168,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
 /**
  * @inheritDoc
  */
-ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
+_ol_source_ImageVector_.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, hitTolerance, skippedFeatureUids, callback) {
   if (!this.replayGroup_) {
     return undefined;
@@ -181,7 +182,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          var key = ol.getUid(feature).toString();
+          var key = _ol_.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback(feature);
@@ -197,7 +198,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
  * @return {ol.source.Vector} Source.
  * @api
  */
-ol.source.ImageVector.prototype.getSource = function() {
+_ol_source_ImageVector_.prototype.getSource = function() {
   return this.source_;
 };
 
@@ -209,7 +210,7 @@ ol.source.ImageVector.prototype.getSource = function() {
  *     Layer style.
  * @api
  */
-ol.source.ImageVector.prototype.getStyle = function() {
+_ol_source_ImageVector_.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -219,7 +220,7 @@ ol.source.ImageVector.prototype.getStyle = function() {
  * @return {ol.StyleFunction|undefined} Layer style function.
  * @api
  */
-ol.source.ImageVector.prototype.getStyleFunction = function() {
+_ol_source_ImageVector_.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
 
@@ -232,7 +233,7 @@ ol.source.ImageVector.prototype.getStyleFunction = function() {
  * @return {!ol.Transform} Transform.
  * @private
  */
-ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {
+_ol_source_ImageVector_.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {
   var dx1 = size[0] / 2;
   var dy1 = size[1] / 2;
   var sx = pixelRatio / resolution;
@@ -240,7 +241,7 @@ ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pix
   var dx2 = -center[0];
   var dy2 = -center[1];
 
-  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
+  return _ol_transform_.compose(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
 };
 
 
@@ -249,7 +250,7 @@ ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pix
  * @param {ol.events.Event} event Image style change event.
  * @private
  */
-ol.source.ImageVector.prototype.handleImageChange_ = function(event) {
+_ol_source_ImageVector_.prototype.handleImageChange_ = function(event) {
   this.changed();
 };
 
@@ -257,7 +258,7 @@ ol.source.ImageVector.prototype.handleImageChange_ = function(event) {
 /**
  * @private
  */
-ol.source.ImageVector.prototype.handleSourceChange_ = function() {
+_ol_source_ImageVector_.prototype.handleSourceChange_ = function() {
   // setState will trigger a CHANGE event, so we always rely
   // change events by calling setState.
   this.setState(this.source_.getState());
@@ -272,7 +273,7 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
  * @return {boolean} `true` if an image is loading.
  * @private
  */
-ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, pixelRatio, replayGroup) {
+_ol_source_ImageVector_.prototype.renderFeature_ = function(feature, resolution, pixelRatio, replayGroup) {
   var styles;
   var styleFunction = feature.getStyleFunction();
   if (styleFunction) {
@@ -288,9 +289,9 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
     styles = [styles];
   }
   for (i = 0, ii = styles.length; i < ii; ++i) {
-    loading = ol.renderer.vector.renderFeature(
+    loading = _ol_renderer_vector_.renderFeature(
         replayGroup, feature, styles[i],
-        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
         this.handleImageChange_, this) || loading;
   }
   return loading;
@@ -308,9 +309,10 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
  *     style Layer style.
  * @api
  */
-ol.source.ImageVector.prototype.setStyle = function(style) {
-  this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
+_ol_source_ImageVector_.prototype.setStyle = function(style) {
+  this.style_ = style !== undefined ? style : _ol_style_Style_.defaultFunction;
   this.styleFunction_ = !style ?
-    undefined : ol.style.Style.createFunction(this.style_);
+    undefined : _ol_style_Style_.createFunction(this.style_);
   this.changed();
 };
+export default _ol_source_ImageVector_;

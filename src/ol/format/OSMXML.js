@@ -1,19 +1,19 @@
+/**
+ * @module ol/format/OSMXML
+ */
 // FIXME add typedef for stack state objects
-goog.provide('ol.format.OSMXML');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.Feature');
-goog.require('ol.format.Feature');
-goog.require('ol.format.XMLFeature');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.xml');
-
+import _ol_ from '../index.js';
+import _ol_array_ from '../array.js';
+import _ol_Feature_ from '../Feature.js';
+import _ol_format_Feature_ from '../format/Feature.js';
+import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import _ol_geom_LineString_ from '../geom/LineString.js';
+import _ol_geom_Point_ from '../geom/Point.js';
+import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import _ol_obj_ from '../obj.js';
+import _ol_proj_ from '../proj.js';
+import _ol_xml_ from '../xml.js';
 
 /**
  * @classdesc
@@ -24,15 +24,16 @@ goog.require('ol.xml');
  * @extends {ol.format.XMLFeature}
  * @api
  */
-ol.format.OSMXML = function() {
-  ol.format.XMLFeature.call(this);
+var _ol_format_OSMXML_ = function() {
+  _ol_format_XMLFeature_.call(this);
 
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = ol.proj.get('EPSG:4326');
+  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
 };
-ol.inherits(ol.format.OSMXML, ol.format.XMLFeature);
+
+_ol_.inherits(_ol_format_OSMXML_, _ol_format_XMLFeature_);
 
 
 /**
@@ -40,7 +41,7 @@ ol.inherits(ol.format.OSMXML, ol.format.XMLFeature);
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.OSMXML.readNode_ = function(node, objectStack) {
+_ol_format_OSMXML_.readNode_ = function(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var id = node.getAttribute('id');
@@ -51,13 +52,13 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   ];
   state.nodes[id] = coordinates;
 
-  var values = ol.xml.pushParseAndPop({
+  var values = _ol_xml_.pushParseAndPop({
     tags: {}
-  }, ol.format.OSMXML.NODE_PARSERS_, node, objectStack);
-  if (!ol.obj.isEmpty(values.tags)) {
-    var geometry = new ol.geom.Point(coordinates);
-    ol.format.Feature.transformWithOptions(geometry, false, options);
-    var feature = new ol.Feature(geometry);
+  }, _ol_format_OSMXML_.NODE_PARSERS_, node, objectStack);
+  if (!_ol_obj_.isEmpty(values.tags)) {
+    var geometry = new _ol_geom_Point_(coordinates);
+    _ol_format_Feature_.transformWithOptions(geometry, false, options);
+    var feature = new _ol_Feature_(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
     state.features.push(feature);
@@ -70,13 +71,13 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.OSMXML.readWay_ = function(node, objectStack) {
+_ol_format_OSMXML_.readWay_ = function(node, objectStack) {
   var id = node.getAttribute('id');
-  var values = ol.xml.pushParseAndPop({
+  var values = _ol_xml_.pushParseAndPop({
     id: id,
     ndrefs: [],
     tags: {}
-  }, ol.format.OSMXML.WAY_PARSERS_, node, objectStack);
+  }, _ol_format_OSMXML_.WAY_PARSERS_, node, objectStack);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   state.ways.push(values);
 };
@@ -87,7 +88,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.OSMXML.readNd_ = function(node, objectStack) {
+_ol_format_OSMXML_.readNd_ = function(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.ndrefs.push(node.getAttribute('ref'));
 };
@@ -98,7 +99,7 @@ ol.format.OSMXML.readNd_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.OSMXML.readTag_ = function(node, objectStack) {
+_ol_format_OSMXML_.readTag_ = function(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.tags[node.getAttribute('k')] = node.getAttribute('v');
 };
@@ -109,7 +110,7 @@ ol.format.OSMXML.readTag_ = function(node, objectStack) {
  * @private
  * @type {Array.<string>}
  */
-ol.format.OSMXML.NAMESPACE_URIS_ = [
+_ol_format_OSMXML_.NAMESPACE_URIS_ = [
   null
 ];
 
@@ -119,10 +120,10 @@ ol.format.OSMXML.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.OSMXML.NAMESPACE_URIS_, {
-      'nd': ol.format.OSMXML.readNd_,
-      'tag': ol.format.OSMXML.readTag_
+_ol_format_OSMXML_.WAY_PARSERS_ = _ol_xml_.makeStructureNS(
+    _ol_format_OSMXML_.NAMESPACE_URIS_, {
+      'nd': _ol_format_OSMXML_.readNd_,
+      'tag': _ol_format_OSMXML_.readTag_
     });
 
 
@@ -131,10 +132,10 @@ ol.format.OSMXML.WAY_PARSERS_ = ol.xml.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.OSMXML.PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.OSMXML.NAMESPACE_URIS_, {
-      'node': ol.format.OSMXML.readNode_,
-      'way': ol.format.OSMXML.readWay_
+_ol_format_OSMXML_.PARSERS_ = _ol_xml_.makeStructureNS(
+    _ol_format_OSMXML_.NAMESPACE_URIS_, {
+      'node': _ol_format_OSMXML_.readNode_,
+      'way': _ol_format_OSMXML_.readWay_
     });
 
 
@@ -143,9 +144,9 @@ ol.format.OSMXML.PARSERS_ = ol.xml.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.OSMXML.NAMESPACE_URIS_, {
-      'tag': ol.format.OSMXML.readTag_
+_ol_format_OSMXML_.NODE_PARSERS_ = _ol_xml_.makeStructureNS(
+    _ol_format_OSMXML_.NAMESPACE_URIS_, {
+      'tag': _ol_format_OSMXML_.readTag_
     });
 
 
@@ -158,20 +159,20 @@ ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeStructureNS(
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.format.OSMXML.prototype.readFeatures;
+_ol_format_OSMXML_.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
+_ol_format_OSMXML_.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = this.getReadOptions(node, opt_options);
   if (node.localName == 'osm') {
-    var state = ol.xml.pushParseAndPop({
+    var state = _ol_xml_.pushParseAndPop({
       nodes: {},
       ways: [],
       features: []
-    }, ol.format.OSMXML.PARSERS_, node, [options]);
+    }, _ol_format_OSMXML_.PARSERS_, node, [options]);
     // parse nodes in ways
     for (var j = 0; j < state.ways.length; j++) {
       var values = /** @type {Object} */ (state.ways[j]);
@@ -179,20 +180,20 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
       var flatCoordinates = [];
       for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
         var point = state.nodes[values.ndrefs[i]];
-        ol.array.extend(flatCoordinates, point);
+        _ol_array_.extend(flatCoordinates, point);
       }
       var geometry;
       if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
         // closed way
-        geometry = new ol.geom.Polygon(null);
-        geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates,
+        geometry = new _ol_geom_Polygon_(null);
+        geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates,
             [flatCoordinates.length]);
       } else {
-        geometry = new ol.geom.LineString(null);
-        geometry.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
+        geometry = new _ol_geom_LineString_(null);
+        geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates);
       }
-      ol.format.Feature.transformWithOptions(geometry, false, options);
-      var feature = new ol.Feature(geometry);
+      _ol_format_Feature_.transformWithOptions(geometry, false, options);
+      var feature = new _ol_Feature_(geometry);
       feature.setId(values.id);
       feature.setProperties(values.tags);
       state.features.push(feature);
@@ -213,25 +214,26 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @return {ol.proj.Projection} Projection.
  * @api
  */
-ol.format.OSMXML.prototype.readProjection;
+_ol_format_OSMXML_.prototype.readProjection;
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.OSMXML.prototype.writeFeatureNode = function(feature, opt_options) {};
+_ol_format_OSMXML_.prototype.writeFeatureNode = function(feature, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.OSMXML.prototype.writeFeaturesNode = function(features, opt_options) {};
+_ol_format_OSMXML_.prototype.writeFeaturesNode = function(features, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.OSMXML.prototype.writeGeometryNode = function(geometry, opt_options) {};
+_ol_format_OSMXML_.prototype.writeGeometryNode = function(geometry, opt_options) {};
+export default _ol_format_OSMXML_;

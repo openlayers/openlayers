@@ -1,8 +1,8 @@
-goog.provide('ol.format.filter.GreaterThan');
-
-goog.require('ol');
-goog.require('ol.format.filter.ComparisonBinary');
-
+/**
+ * @module ol/format/filter/GreaterThan
+ */
+import _ol_ from '../../index.js';
+import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
 
 /**
  * @classdesc
@@ -14,7 +14,9 @@ goog.require('ol.format.filter.ComparisonBinary');
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-ol.format.filter.GreaterThan = function(propertyName, expression) {
-  ol.format.filter.ComparisonBinary.call(this, 'PropertyIsGreaterThan', propertyName, expression);
+var _ol_format_filter_GreaterThan_ = function(propertyName, expression) {
+  _ol_format_filter_ComparisonBinary_.call(this, 'PropertyIsGreaterThan', propertyName, expression);
 };
-ol.inherits(ol.format.filter.GreaterThan, ol.format.filter.ComparisonBinary);
+
+_ol_.inherits(_ol_format_filter_GreaterThan_, _ol_format_filter_ComparisonBinary_);
+export default _ol_format_filter_GreaterThan_;

@@ -1,9 +1,10 @@
-goog.provide('ol.render.EventType');
-
+/**
+ * @module ol/render/EventType
+ */
 /**
  * @enum {string}
  */
-ol.render.EventType = {
+var _ol_render_EventType_ = {
   /**
    * @event ol.render.Event#postcompose
    * @api
@@ -20,3 +21,5 @@ ol.render.EventType = {
    */
   RENDER: 'render'
 };
+
+export default _ol_render_EventType_;

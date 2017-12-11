@@ -1,17 +1,17 @@
+/**
+ * @module ol/control/Attribution
+ */
 // FIXME handle date line wrap
 
-goog.provide('ol.control.Attribution');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.control.Control');
-goog.require('ol.css');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.layer.Layer');
-goog.require('ol.obj');
-
+import _ol_ from '../index.js';
+import _ol_array_ from '../array.js';
+import _ol_control_Control_ from '../control/Control.js';
+import _ol_css_ from '../css.js';
+import _ol_dom_ from '../dom.js';
+import _ol_events_ from '../events.js';
+import _ol_events_EventType_ from '../events/EventType.js';
+import _ol_layer_Layer_ from '../layer/Layer.js';
+import _ol_obj_ from '../obj.js';
 
 /**
  * @classdesc
@@ -25,7 +25,7 @@ goog.require('ol.obj');
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
  * @api
  */
-ol.control.Attribution = function(opt_options) {
+var _ol_control_Attribution_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -99,10 +99,10 @@ ol.control.Attribution = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
+  _ol_events_.listen(button, _ol_events_EventType_.CLICK, this.handleClick_, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL +
+  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
+      _ol_css_.CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');
@@ -110,9 +110,9 @@ ol.control.Attribution = function(opt_options) {
   element.appendChild(this.ulElement_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : ol.control.Attribution.render;
+  var render = options.render ? options.render : _ol_control_Attribution_.render;
 
-  ol.control.Control.call(this, {
+  _ol_control_Control_.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -138,7 +138,8 @@ ol.control.Attribution = function(opt_options) {
   this.logoElements_ = {};
 
 };
-ol.inherits(ol.control.Attribution, ol.control.Control);
+
+_ol_.inherits(_ol_control_Attribution_, _ol_control_Control_);
 
 
 /**
@@ -147,7 +148,7 @@ ol.inherits(ol.control.Attribution, ol.control.Control);
  * @return {Array.<string>} Attributions.
  * @private
  */
-ol.control.Attribution.prototype.getSourceAttributions_ = function(frameState) {
+_ol_control_Attribution_.prototype.getSourceAttributions_ = function(frameState) {
   /**
    * Used to determine if an attribution already exists.
    * @type {Object.<string, boolean>}
@@ -164,7 +165,7 @@ ol.control.Attribution.prototype.getSourceAttributions_ = function(frameState) {
   var resolution = frameState.viewState.resolution;
   for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     var layerState = layerStatesArray[i];
-    if (!ol.layer.Layer.visibleAtResolution(layerState, resolution)) {
+    if (!_ol_layer_Layer_.visibleAtResolution(layerState, resolution)) {
       continue;
     }
 
@@ -207,7 +208,7 @@ ol.control.Attribution.prototype.getSourceAttributions_ = function(frameState) {
  * @this {ol.control.Attribution}
  * @api
  */
-ol.control.Attribution.render = function(mapEvent) {
+_ol_control_Attribution_.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
@@ -216,7 +217,7 @@ ol.control.Attribution.render = function(mapEvent) {
  * @private
  * @param {?olx.FrameState} frameState Frame state.
  */
-ol.control.Attribution.prototype.updateElement_ = function(frameState) {
+_ol_control_Attribution_.prototype.updateElement_ = function(frameState) {
   if (!frameState) {
     if (this.renderedVisible_) {
       this.element.style.display = 'none';
@@ -226,7 +227,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var attributions = this.getSourceAttributions_(frameState);
-  if (ol.array.equals(attributions, this.renderedAttributions_)) {
+  if (_ol_array_.equals(attributions, this.renderedAttributions_)) {
     return;
   }
 
@@ -249,7 +250,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     this.element.classList.remove('ol-logo-only');
   }
 
-  var visible = attributions.length > 0 || !ol.obj.isEmpty(frameState.logos);
+  var visible = attributions.length > 0 || !_ol_obj_.isEmpty(frameState.logos);
   if (this.renderedVisible_ != visible) {
     this.element.style.display = visible ? '' : 'none';
     this.renderedVisible_ = visible;
@@ -264,7 +265,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
  * @param {?olx.FrameState} frameState Frame state.
  * @private
  */
-ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
+_ol_control_Attribution_.prototype.insertLogos_ = function(frameState) {
 
   var logo;
   var logos = frameState.logos;
@@ -272,7 +273,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
 
   for (logo in logoElements) {
     if (!(logo in logos)) {
-      ol.dom.removeNode(logoElements[logo]);
+      _ol_dom_.removeNode(logoElements[logo]);
       delete logoElements[logo];
     }
   }
@@ -299,7 +300,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     }
   }
 
-  this.logoLi_.style.display = !ol.obj.isEmpty(logos) ? '' : 'none';
+  this.logoLi_.style.display = !_ol_obj_.isEmpty(logos) ? '' : 'none';
 
 };
 
@@ -308,7 +309,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
  * @param {Event} event The event to handle
  * @private
  */
-ol.control.Attribution.prototype.handleClick_ = function(event) {
+_ol_control_Attribution_.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleToggle_();
 };
@@ -317,12 +318,12 @@ ol.control.Attribution.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-ol.control.Attribution.prototype.handleToggle_ = function() {
+_ol_control_Attribution_.prototype.handleToggle_ = function() {
   this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
-    ol.dom.replaceNode(this.collapseLabel_, this.label_);
+    _ol_dom_.replaceNode(this.collapseLabel_, this.label_);
   } else {
-    ol.dom.replaceNode(this.label_, this.collapseLabel_);
+    _ol_dom_.replaceNode(this.label_, this.collapseLabel_);
   }
   this.collapsed_ = !this.collapsed_;
 };
@@ -333,7 +334,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
  * @return {boolean} True if the widget is collapsible.
  * @api
  */
-ol.control.Attribution.prototype.getCollapsible = function() {
+_ol_control_Attribution_.prototype.getCollapsible = function() {
   return this.collapsible_;
 };
 
@@ -343,7 +344,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
  * @param {boolean} collapsible True if the widget is collapsible.
  * @api
  */
-ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
+_ol_control_Attribution_.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
     return;
   }
@@ -362,7 +363,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
  * @param {boolean} collapsed True if the widget is collapsed.
  * @api
  */
-ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
+_ol_control_Attribution_.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
     return;
   }
@@ -376,6 +377,7 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
  * @return {boolean} True if the widget is collapsed.
  * @api
  */
-ol.control.Attribution.prototype.getCollapsed = function() {
+_ol_control_Attribution_.prototype.getCollapsed = function() {
   return this.collapsed_;
 };
+export default _ol_control_Attribution_;

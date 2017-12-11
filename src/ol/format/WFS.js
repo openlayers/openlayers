@@ -1,18 +1,18 @@
-goog.provide('ol.format.WFS');
-
-goog.require('ol');
-goog.require('ol.asserts');
-goog.require('ol.format.GML2');
-goog.require('ol.format.GML3');
-goog.require('ol.format.GMLBase');
-goog.require('ol.format.filter');
-goog.require('ol.format.XMLFeature');
-goog.require('ol.format.XSD');
-goog.require('ol.geom.Geometry');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.xml');
-
+/**
+ * @module ol/format/WFS
+ */
+import _ol_ from '../index.js';
+import _ol_asserts_ from '../asserts.js';
+import _ol_format_GML2_ from '../format/GML2.js';
+import _ol_format_GML3_ from '../format/GML3.js';
+import _ol_format_GMLBase_ from '../format/GMLBase.js';
+import _ol_format_filter_ from '../format/filter.js';
+import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import _ol_format_XSD_ from '../format/XSD.js';
+import _ol_geom_Geometry_ from '../geom/Geometry.js';
+import _ol_obj_ from '../obj.js';
+import _ol_proj_ from '../proj.js';
+import _ol_xml_ from '../xml.js';
 
 /**
  * @classdesc
@@ -27,7 +27,7 @@ goog.require('ol.xml');
  * @extends {ol.format.XMLFeature}
  * @api
  */
-ol.format.WFS = function(opt_options) {
+var _ol_format_WFS_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   /**
@@ -47,7 +47,7 @@ ol.format.WFS = function(opt_options) {
    * @type {ol.format.GMLBase}
    */
   this.gmlFormat_ = options.gmlFormat ?
-    options.gmlFormat : new ol.format.GML3();
+    options.gmlFormat : new _ol_format_GML3_();
 
   /**
    * @private
@@ -55,53 +55,54 @@ ol.format.WFS = function(opt_options) {
    */
   this.schemaLocation_ = options.schemaLocation ?
     options.schemaLocation :
-    ol.format.WFS.SCHEMA_LOCATIONS[ol.format.WFS.DEFAULT_VERSION];
+    _ol_format_WFS_.SCHEMA_LOCATIONS[_ol_format_WFS_.DEFAULT_VERSION];
 
-  ol.format.XMLFeature.call(this);
+  _ol_format_XMLFeature_.call(this);
 };
-ol.inherits(ol.format.WFS, ol.format.XMLFeature);
+
+_ol_.inherits(_ol_format_WFS_, _ol_format_XMLFeature_);
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WFS.FEATURE_PREFIX = 'feature';
+_ol_format_WFS_.FEATURE_PREFIX = 'feature';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WFS.XMLNS = 'http://www.w3.org/2000/xmlns/';
+_ol_format_WFS_.XMLNS = 'http://www.w3.org/2000/xmlns/';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WFS.OGCNS = 'http://www.opengis.net/ogc';
+_ol_format_WFS_.OGCNS = 'http://www.opengis.net/ogc';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WFS.WFSNS = 'http://www.opengis.net/wfs';
+_ol_format_WFS_.WFSNS = 'http://www.opengis.net/wfs';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.format.WFS.FESNS = 'http://www.opengis.net/fes';
+_ol_format_WFS_.FESNS = 'http://www.opengis.net/fes';
 
 
 /**
  * @const
  * @type {Object.<string, string>}
  */
-ol.format.WFS.SCHEMA_LOCATIONS = {
+_ol_format_WFS_.SCHEMA_LOCATIONS = {
   '1.1.0': 'http://www.opengis.net/wfs ' +
       'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd',
   '1.0.0': 'http://www.opengis.net/wfs ' +
@@ -113,13 +114,13 @@ ol.format.WFS.SCHEMA_LOCATIONS = {
  * @const
  * @type {string}
  */
-ol.format.WFS.DEFAULT_VERSION = '1.1.0';
+_ol_format_WFS_.DEFAULT_VERSION = '1.1.0';
 
 
 /**
  * @return {Array.<string>|string|undefined} featureType
  */
-ol.format.WFS.prototype.getFeatureType = function() {
+_ol_format_WFS_.prototype.getFeatureType = function() {
   return this.featureType_;
 };
 
@@ -127,7 +128,7 @@ ol.format.WFS.prototype.getFeatureType = function() {
 /**
  * @param {Array.<string>|string|undefined} featureType Feature type(s) to parse.
  */
-ol.format.WFS.prototype.setFeatureType = function(featureType) {
+_ol_format_WFS_.prototype.setFeatureType = function(featureType) {
   this.featureType_ = featureType;
 };
 
@@ -141,24 +142,24 @@ ol.format.WFS.prototype.setFeatureType = function(featureType) {
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.format.WFS.prototype.readFeatures;
+_ol_format_WFS_.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
+_ol_format_WFS_.prototype.readFeaturesFromNode = function(node, opt_options) {
   var context = /** @type {ol.XmlNodeStackItem} */ ({
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
   });
-  ol.obj.assign(context, this.getReadOptions(node,
+  _ol_obj_.assign(context, this.getReadOptions(node,
       opt_options ? opt_options : {}));
   var objectStack = [context];
-  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
+  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[_ol_format_GMLBase_.GMLNS][
       'featureMember'] =
-      ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readFeaturesInternal);
-  var features = ol.xml.pushParseAndPop([],
+      _ol_xml_.makeArrayPusher(_ol_format_GMLBase_.prototype.readFeaturesInternal);
+  var features = _ol_xml_.pushParseAndPop([],
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
   if (!features) {
@@ -175,14 +176,14 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @return {ol.WFSTransactionResponse|undefined} Transaction response.
  * @api
  */
-ol.format.WFS.prototype.readTransactionResponse = function(source) {
-  if (ol.xml.isDocument(source)) {
+_ol_format_WFS_.prototype.readTransactionResponse = function(source) {
+  if (_ol_xml_.isDocument(source)) {
     return this.readTransactionResponseFromDocument(
         /** @type {Document} */ (source));
-  } else if (ol.xml.isNode(source)) {
+  } else if (_ol_xml_.isNode(source)) {
     return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    var doc = ol.xml.parse(source);
+    var doc = _ol_xml_.parse(source);
     return this.readTransactionResponseFromDocument(doc);
   } else {
     return undefined;
@@ -198,15 +199,15 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
  *     FeatureCollection metadata.
  * @api
  */
-ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
-  if (ol.xml.isDocument(source)) {
+_ol_format_WFS_.prototype.readFeatureCollectionMetadata = function(source) {
+  if (_ol_xml_.isDocument(source)) {
     return this.readFeatureCollectionMetadataFromDocument(
         /** @type {Document} */ (source));
-  } else if (ol.xml.isNode(source)) {
+  } else if (_ol_xml_.isNode(source)) {
     return this.readFeatureCollectionMetadataFromNode(
         /** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    var doc = ol.xml.parse(source);
+    var doc = _ol_xml_.parse(source);
     return this.readFeatureCollectionMetadataFromDocument(doc);
   } else {
     return undefined;
@@ -219,7 +220,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
  * @return {ol.WFSFeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
-ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
+_ol_format_WFS_.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readFeatureCollectionMetadataFromNode(n);
@@ -234,10 +235,10 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
+_ol_format_WFS_.FEATURE_COLLECTION_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'boundedBy': ol.xml.makeObjectPropertySetter(
-        ol.format.GMLBase.prototype.readGeometryElement, 'bounds')
+    'boundedBy': _ol_xml_.makeObjectPropertySetter(
+        _ol_format_GMLBase_.prototype.readGeometryElement, 'bounds')
   }
 };
 
@@ -247,14 +248,14 @@ ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
  * @return {ol.WFSFeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
-ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
+_ol_format_WFS_.prototype.readFeatureCollectionMetadataFromNode = function(node) {
   var result = {};
-  var value = ol.format.XSD.readNonNegativeIntegerString(
+  var value = _ol_format_XSD_.readNonNegativeIntegerString(
       node.getAttribute('numberOfFeatures'));
   result['numberOfFeatures'] = value;
-  return ol.xml.pushParseAndPop(
+  return _ol_xml_.pushParseAndPop(
       /** @type {ol.WFSFeatureCollectionMetadata} */ (result),
-      ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, [], this.gmlFormat_);
+      _ol_format_WFS_.FEATURE_COLLECTION_PARSERS_, node, [], this.gmlFormat_);
 };
 
 
@@ -263,14 +264,14 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WFS.TRANSACTION_SUMMARY_PARSERS_ = {
+_ol_format_WFS_.TRANSACTION_SUMMARY_PARSERS_ = {
   'http://www.opengis.net/wfs': {
-    'totalInserted': ol.xml.makeObjectPropertySetter(
-        ol.format.XSD.readNonNegativeInteger),
-    'totalUpdated': ol.xml.makeObjectPropertySetter(
-        ol.format.XSD.readNonNegativeInteger),
-    'totalDeleted': ol.xml.makeObjectPropertySetter(
-        ol.format.XSD.readNonNegativeInteger)
+    'totalInserted': _ol_xml_.makeObjectPropertySetter(
+        _ol_format_XSD_.readNonNegativeInteger),
+    'totalUpdated': _ol_xml_.makeObjectPropertySetter(
+        _ol_format_XSD_.readNonNegativeInteger),
+    'totalDeleted': _ol_xml_.makeObjectPropertySetter(
+        _ol_format_XSD_.readNonNegativeInteger)
   }
 };
 
@@ -281,9 +282,9 @@ ol.format.WFS.TRANSACTION_SUMMARY_PARSERS_ = {
  * @return {Object|undefined} Transaction Summary.
  * @private
  */
-ol.format.WFS.readTransactionSummary_ = function(node, objectStack) {
-  return ol.xml.pushParseAndPop(
-      {}, ol.format.WFS.TRANSACTION_SUMMARY_PARSERS_, node, objectStack);
+_ol_format_WFS_.readTransactionSummary_ = function(node, objectStack) {
+  return _ol_xml_.pushParseAndPop(
+      {}, _ol_format_WFS_.TRANSACTION_SUMMARY_PARSERS_, node, objectStack);
 };
 
 
@@ -292,9 +293,9 @@ ol.format.WFS.readTransactionSummary_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WFS.OGC_FID_PARSERS_ = {
+_ol_format_WFS_.OGC_FID_PARSERS_ = {
   'http://www.opengis.net/ogc': {
-    'FeatureId': ol.xml.makeArrayPusher(function(node, objectStack) {
+    'FeatureId': _ol_xml_.makeArrayPusher(function(node, objectStack) {
       return node.getAttribute('fid');
     })
   }
@@ -306,8 +307,8 @@ ol.format.WFS.OGC_FID_PARSERS_ = {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.WFS.fidParser_ = function(node, objectStack) {
-  ol.xml.parseNode(ol.format.WFS.OGC_FID_PARSERS_, node, objectStack);
+_ol_format_WFS_.fidParser_ = function(node, objectStack) {
+  _ol_xml_.parseNode(_ol_format_WFS_.OGC_FID_PARSERS_, node, objectStack);
 };
 
 
@@ -316,9 +317,9 @@ ol.format.WFS.fidParser_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WFS.INSERT_RESULTS_PARSERS_ = {
+_ol_format_WFS_.INSERT_RESULTS_PARSERS_ = {
   'http://www.opengis.net/wfs': {
-    'Feature': ol.format.WFS.fidParser_
+    'Feature': _ol_format_WFS_.fidParser_
   }
 };
 
@@ -329,9 +330,9 @@ ol.format.WFS.INSERT_RESULTS_PARSERS_ = {
  * @return {Array.<string>|undefined} Insert results.
  * @private
  */
-ol.format.WFS.readInsertResults_ = function(node, objectStack) {
-  return ol.xml.pushParseAndPop(
-      [], ol.format.WFS.INSERT_RESULTS_PARSERS_, node, objectStack);
+_ol_format_WFS_.readInsertResults_ = function(node, objectStack) {
+  return _ol_xml_.pushParseAndPop(
+      [], _ol_format_WFS_.INSERT_RESULTS_PARSERS_, node, objectStack);
 };
 
 
@@ -340,12 +341,12 @@ ol.format.WFS.readInsertResults_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
+_ol_format_WFS_.TRANSACTION_RESPONSE_PARSERS_ = {
   'http://www.opengis.net/wfs': {
-    'TransactionSummary': ol.xml.makeObjectPropertySetter(
-        ol.format.WFS.readTransactionSummary_, 'transactionSummary'),
-    'InsertResults': ol.xml.makeObjectPropertySetter(
-        ol.format.WFS.readInsertResults_, 'insertIds')
+    'TransactionSummary': _ol_xml_.makeObjectPropertySetter(
+        _ol_format_WFS_.readTransactionSummary_, 'transactionSummary'),
+    'InsertResults': _ol_xml_.makeObjectPropertySetter(
+        _ol_format_WFS_.readInsertResults_, 'insertIds')
   }
 };
 
@@ -354,7 +355,7 @@ ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
  * @param {Document} doc Document.
  * @return {ol.WFSTransactionResponse|undefined} Transaction response.
  */
-ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
+_ol_format_WFS_.prototype.readTransactionResponseFromDocument = function(doc) {
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readTransactionResponseFromNode(n);
@@ -368,10 +369,10 @@ ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
  * @param {Node} node Node.
  * @return {ol.WFSTransactionResponse|undefined} Transaction response.
  */
-ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
-  return ol.xml.pushParseAndPop(
+_ol_format_WFS_.prototype.readTransactionResponseFromNode = function(node) {
+  return _ol_xml_.pushParseAndPop(
       /** @type {ol.WFSTransactionResponse} */({}),
-      ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_, node, []);
+      _ol_format_WFS_.TRANSACTION_RESPONSE_PARSERS_, node, []);
 };
 
 
@@ -379,9 +380,9 @@ ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.WFS.QUERY_SERIALIZERS_ = {
+_ol_format_WFS_.QUERY_SERIALIZERS_ = {
   'http://www.opengis.net/wfs': {
-    'PropertyName': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
+    'PropertyName': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode)
   }
 };
 
@@ -392,17 +393,17 @@ ol.format.WFS.QUERY_SERIALIZERS_ = {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
+_ol_format_WFS_.writeFeature_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var featureType = context['featureType'];
   var featureNS = context['featureNS'];
   var gmlVersion = context['gmlVersion'];
-  var child = ol.xml.createElementNS(featureNS, featureType);
+  var child = _ol_xml_.createElementNS(featureNS, featureType);
   node.appendChild(child);
   if (gmlVersion === 2) {
-    ol.format.GML2.prototype.writeFeatureElement(child, feature, objectStack);
+    _ol_format_GML2_.prototype.writeFeatureElement(child, feature, objectStack);
   } else {
-    ol.format.GML3.prototype.writeFeatureElement(child, feature, objectStack);
+    _ol_format_GML3_.prototype.writeFeatureElement(child, feature, objectStack);
   }
 };
 
@@ -413,9 +414,9 @@ ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
-  var filter = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
-  var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'FeatureId');
+_ol_format_WFS_.writeOgcFidFilter_ = function(node, fid, objectStack) {
+  var filter = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, 'Filter');
+  var child = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, 'FeatureId');
   filter.appendChild(child);
   child.setAttribute('fid', fid);
   node.appendChild(filter);
@@ -428,9 +429,9 @@ ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
  * @returns {string} The value of the typeName property.
  * @private
  */
-ol.format.WFS.getTypeName_ = function(featurePrefix, featureType) {
+_ol_format_WFS_.getTypeName_ = function(featurePrefix, featureType) {
   featurePrefix = featurePrefix ? featurePrefix :
-    ol.format.WFS.FEATURE_PREFIX;
+    _ol_format_WFS_.FEATURE_PREFIX;
   var prefix = featurePrefix + ':';
   // The featureType already contains the prefix.
   if (featureType.indexOf(prefix) === 0) {
@@ -447,19 +448,19 @@ ol.format.WFS.getTypeName_ = function(featurePrefix, featureType) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
+_ol_format_WFS_.writeDelete_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  ol.asserts.assert(feature.getId() !== undefined, 26); // Features must have an id set
+  _ol_asserts_.assert(feature.getId() !== undefined, 26); // Features must have an id set
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   var featureNS = context['featureNS'];
-  var typeName = ol.format.WFS.getTypeName_(featurePrefix, featureType);
+  var typeName = _ol_format_WFS_.getTypeName_(featurePrefix, featureType);
   node.setAttribute('typeName', typeName);
-  ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
+  _ol_xml_.setAttributeNS(node, _ol_format_WFS_.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
   if (fid !== undefined) {
-    ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
+    _ol_format_WFS_.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
 
@@ -470,16 +471,16 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
+_ol_format_WFS_.writeUpdate_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  ol.asserts.assert(feature.getId() !== undefined, 27); // Features must have an id set
+  _ol_asserts_.assert(feature.getId() !== undefined, 27); // Features must have an id set
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   var featureNS = context['featureNS'];
-  var typeName = ol.format.WFS.getTypeName_(featurePrefix, featureType);
+  var typeName = _ol_format_WFS_.getTypeName_(featurePrefix, featureType);
   var geometryName = feature.getGeometryName();
   node.setAttribute('typeName', typeName);
-  ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
+  _ol_xml_.setAttributeNS(node, _ol_format_WFS_.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
   if (fid !== undefined) {
@@ -489,19 +490,19 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
       var value = feature.get(keys[i]);
       if (value !== undefined) {
         var name = keys[i];
-        if (value instanceof ol.geom.Geometry) {
+        if (value instanceof _ol_geom_Geometry_) {
           name = geometryName;
         }
         values.push({name: name, value: value});
       }
     }
-    ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ (
+    _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ (
       {'gmlVersion': context['gmlVersion'], node: node,
         'hasZ': context['hasZ'], 'srsName': context['srsName']}),
-    ol.format.WFS.TRANSACTION_SERIALIZERS_,
-    ol.xml.makeSimpleNodeFactory('Property'), values,
+    _ol_format_WFS_.TRANSACTION_SERIALIZERS_,
+    _ol_xml_.makeSimpleNodeFactory('Property'), values,
     objectStack);
-    ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
+    _ol_format_WFS_.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
 
@@ -512,25 +513,25 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
-  var name = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Name');
+_ol_format_WFS_.writeProperty_ = function(node, pair, objectStack) {
+  var name = _ol_xml_.createElementNS(_ol_format_WFS_.WFSNS, 'Name');
   var context = objectStack[objectStack.length - 1];
   var gmlVersion = context['gmlVersion'];
   node.appendChild(name);
-  ol.format.XSD.writeStringTextNode(name, pair.name);
+  _ol_format_XSD_.writeStringTextNode(name, pair.name);
   if (pair.value !== undefined && pair.value !== null) {
-    var value = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Value');
+    var value = _ol_xml_.createElementNS(_ol_format_WFS_.WFSNS, 'Value');
     node.appendChild(value);
-    if (pair.value instanceof ol.geom.Geometry) {
+    if (pair.value instanceof _ol_geom_Geometry_) {
       if (gmlVersion === 2) {
-        ol.format.GML2.prototype.writeGeometryElement(value,
+        _ol_format_GML2_.prototype.writeGeometryElement(value,
             pair.value, objectStack);
       } else {
-        ol.format.GML3.prototype.writeGeometryElement(value,
+        _ol_format_GML3_.prototype.writeGeometryElement(value,
             pair.value, objectStack);
       }
     } else {
-      ol.format.XSD.writeStringTextNode(value, pair.value);
+      _ol_format_XSD_.writeStringTextNode(value, pair.value);
     }
   }
 };
@@ -543,7 +544,7 @@ ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeNative_ = function(node, nativeElement, objectStack) {
+_ol_format_WFS_.writeNative_ = function(node, nativeElement, objectStack) {
   if (nativeElement.vendorId) {
     node.setAttribute('vendorId', nativeElement.vendorId);
   }
@@ -551,7 +552,7 @@ ol.format.WFS.writeNative_ = function(node, nativeElement, objectStack) {
     node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
   }
   if (nativeElement.value !== undefined) {
-    ol.format.XSD.writeStringTextNode(node, nativeElement.value);
+    _ol_format_XSD_.writeStringTextNode(node, nativeElement.value);
   }
 };
 
@@ -560,13 +561,13 @@ ol.format.WFS.writeNative_ = function(node, nativeElement, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
+_ol_format_WFS_.TRANSACTION_SERIALIZERS_ = {
   'http://www.opengis.net/wfs': {
-    'Insert': ol.xml.makeChildAppender(ol.format.WFS.writeFeature_),
-    'Update': ol.xml.makeChildAppender(ol.format.WFS.writeUpdate_),
-    'Delete': ol.xml.makeChildAppender(ol.format.WFS.writeDelete_),
-    'Property': ol.xml.makeChildAppender(ol.format.WFS.writeProperty_),
-    'Native': ol.xml.makeChildAppender(ol.format.WFS.writeNative_)
+    'Insert': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeFeature_),
+    'Update': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeUpdate_),
+    'Delete': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeDelete_),
+    'Property': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeProperty_),
+    'Native': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeNative_)
   }
 };
 
@@ -577,7 +578,7 @@ ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
+_ol_format_WFS_.writeQuery_ = function(node, featureType, objectStack) {
   var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var featurePrefix = context['featurePrefix'];
   var featureNS = context['featureNS'];
@@ -586,7 +587,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
   var typeName;
   // If feature prefix is not defined, we must not use the default prefix.
   if (featurePrefix) {
-    typeName = ol.format.WFS.getTypeName_(featurePrefix, featureType);
+    typeName = _ol_format_WFS_.getTypeName_(featurePrefix, featureType);
   } else {
     typeName = featureType;
   }
@@ -595,20 +596,20 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     node.setAttribute('srsName', srsName);
   }
   if (featureNS) {
-    ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
+    _ol_xml_.setAttributeNS(node, _ol_format_WFS_.XMLNS, 'xmlns:' + featurePrefix,
         featureNS);
   }
-  var item = /** @type {ol.XmlNodeStackItem} */ (ol.obj.assign({}, context));
+  var item = /** @type {ol.XmlNodeStackItem} */ (_ol_obj_.assign({}, context));
   item.node = node;
-  ol.xml.pushSerializeAndPop(item,
-      ol.format.WFS.QUERY_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory('PropertyName'), propertyNames,
+  _ol_xml_.pushSerializeAndPop(item,
+      _ol_format_WFS_.QUERY_SERIALIZERS_,
+      _ol_xml_.makeSimpleNodeFactory('PropertyName'), propertyNames,
       objectStack);
   var filter = context['filter'];
   if (filter) {
-    var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
+    var child = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, 'Filter');
     node.appendChild(child);
-    ol.format.WFS.writeFilterCondition_(child, filter, objectStack);
+    _ol_format_WFS_.writeFilterCondition_(child, filter, objectStack);
   }
 };
 
@@ -619,12 +620,12 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeFilterCondition_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeFilterCondition_ = function(node, filter, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
-  ol.xml.pushSerializeAndPop(item,
-      ol.format.WFS.GETFEATURE_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory(filter.getTagName()),
+  _ol_xml_.pushSerializeAndPop(item,
+      _ol_format_WFS_.GETFEATURE_SERIALIZERS_,
+      _ol_xml_.makeSimpleNodeFactory(filter.getTagName()),
       [filter], objectStack);
 };
 
@@ -635,12 +636,12 @@ ol.format.WFS.writeFilterCondition_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeBboxFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeBboxFilter_ = function(node, filter, objectStack) {
   var context = objectStack[objectStack.length - 1];
   context['srsName'] = filter.srsName;
 
-  ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
-  ol.format.GML3.prototype.writeGeometryElement(node, filter.extent, objectStack);
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
+  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.extent, objectStack);
 };
 
 
@@ -650,12 +651,12 @@ ol.format.WFS.writeBboxFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeContainsFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeContainsFilter_ = function(node, filter, objectStack) {
   var context = objectStack[objectStack.length - 1];
   context['srsName'] = filter.srsName;
 
-  ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
-  ol.format.GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
+  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 };
 
 
@@ -665,12 +666,12 @@ ol.format.WFS.writeContainsFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeIntersectsFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeIntersectsFilter_ = function(node, filter, objectStack) {
   var context = objectStack[objectStack.length - 1];
   context['srsName'] = filter.srsName;
 
-  ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
-  ol.format.GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
+  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 };
 
 
@@ -680,12 +681,12 @@ ol.format.WFS.writeIntersectsFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeWithinFilter_ = function(node, filter, objectStack) {
   var context = objectStack[objectStack.length - 1];
   context['srsName'] = filter.srsName;
 
-  ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
-  ol.format.GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
+  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 };
 
 
@@ -695,23 +696,23 @@ ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeDuringFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeDuringFilter_ = function(node, filter, objectStack) {
 
-  var valueReference = ol.xml.createElementNS(ol.format.WFS.FESNS, 'ValueReference');
-  ol.format.XSD.writeStringTextNode(valueReference, filter.propertyName);
+  var valueReference = _ol_xml_.createElementNS(_ol_format_WFS_.FESNS, 'ValueReference');
+  _ol_format_XSD_.writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
-  var timePeriod = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'TimePeriod');
+  var timePeriod = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'TimePeriod');
 
   node.appendChild(timePeriod);
 
-  var begin = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'begin');
+  var begin = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'begin');
   timePeriod.appendChild(begin);
-  ol.format.WFS.writeTimeInstant_(begin, filter.begin);
+  _ol_format_WFS_.writeTimeInstant_(begin, filter.begin);
 
-  var end = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'end');
+  var end = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'end');
   timePeriod.appendChild(end);
-  ol.format.WFS.writeTimeInstant_(end, filter.end);
+  _ol_format_WFS_.writeTimeInstant_(end, filter.end);
 };
 
 
@@ -721,15 +722,15 @@ ol.format.WFS.writeDuringFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeLogicalFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeLogicalFilter_ = function(node, filter, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
   var conditions = filter.conditions;
   for (var i = 0, ii = conditions.length; i < ii; ++i) {
     var condition = conditions[i];
-    ol.xml.pushSerializeAndPop(item,
-        ol.format.WFS.GETFEATURE_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory(condition.getTagName()),
+    _ol_xml_.pushSerializeAndPop(item,
+        _ol_format_WFS_.GETFEATURE_SERIALIZERS_,
+        _ol_xml_.makeSimpleNodeFactory(condition.getTagName()),
         [condition], objectStack);
   }
 };
@@ -741,13 +742,13 @@ ol.format.WFS.writeLogicalFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeNotFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeNotFilter_ = function(node, filter, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
   var condition = filter.condition;
-  ol.xml.pushSerializeAndPop(item,
-      ol.format.WFS.GETFEATURE_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory(condition.getTagName()),
+  _ol_xml_.pushSerializeAndPop(item,
+      _ol_format_WFS_.GETFEATURE_SERIALIZERS_,
+      _ol_xml_.makeSimpleNodeFactory(condition.getTagName()),
       [condition], objectStack);
 };
 
@@ -758,12 +759,12 @@ ol.format.WFS.writeNotFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeComparisonFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeComparisonFilter_ = function(node, filter, objectStack) {
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
-  ol.format.WFS.writeOgcPropertyName_(node, filter.propertyName);
-  ol.format.WFS.writeOgcLiteral_(node, '' + filter.expression);
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.propertyName);
+  _ol_format_WFS_.writeOgcLiteral_(node, '' + filter.expression);
 };
 
 
@@ -773,8 +774,8 @@ ol.format.WFS.writeComparisonFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeIsNullFilter_ = function(node, filter, objectStack) {
-  ol.format.WFS.writeOgcPropertyName_(node, filter.propertyName);
+_ol_format_WFS_.writeIsNullFilter_ = function(node, filter, objectStack) {
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.propertyName);
 };
 
 
@@ -784,16 +785,16 @@ ol.format.WFS.writeIsNullFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeIsBetweenFilter_ = function(node, filter, objectStack) {
-  ol.format.WFS.writeOgcPropertyName_(node, filter.propertyName);
+_ol_format_WFS_.writeIsBetweenFilter_ = function(node, filter, objectStack) {
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.propertyName);
 
-  var lowerBoundary = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'LowerBoundary');
+  var lowerBoundary = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, 'LowerBoundary');
   node.appendChild(lowerBoundary);
-  ol.format.WFS.writeOgcLiteral_(lowerBoundary, '' + filter.lowerBoundary);
+  _ol_format_WFS_.writeOgcLiteral_(lowerBoundary, '' + filter.lowerBoundary);
 
-  var upperBoundary = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'UpperBoundary');
+  var upperBoundary = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, 'UpperBoundary');
   node.appendChild(upperBoundary);
-  ol.format.WFS.writeOgcLiteral_(upperBoundary, '' + filter.upperBoundary);
+  _ol_format_WFS_.writeOgcLiteral_(upperBoundary, '' + filter.upperBoundary);
 };
 
 
@@ -803,15 +804,15 @@ ol.format.WFS.writeIsBetweenFilter_ = function(node, filter, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeIsLikeFilter_ = function(node, filter, objectStack) {
+_ol_format_WFS_.writeIsLikeFilter_ = function(node, filter, objectStack) {
   node.setAttribute('wildCard', filter.wildCard);
   node.setAttribute('singleChar', filter.singleChar);
   node.setAttribute('escapeChar', filter.escapeChar);
   if (filter.matchCase !== undefined) {
     node.setAttribute('matchCase', filter.matchCase.toString());
   }
-  ol.format.WFS.writeOgcPropertyName_(node, filter.propertyName);
-  ol.format.WFS.writeOgcLiteral_(node, '' + filter.pattern);
+  _ol_format_WFS_.writeOgcPropertyName_(node, filter.propertyName);
+  _ol_format_WFS_.writeOgcLiteral_(node, '' + filter.pattern);
 };
 
 
@@ -821,9 +822,9 @@ ol.format.WFS.writeIsLikeFilter_ = function(node, filter, objectStack) {
  * @param {string} value Value.
  * @private
  */
-ol.format.WFS.writeOgcExpression_ = function(tagName, node, value) {
-  var property = ol.xml.createElementNS(ol.format.WFS.OGCNS, tagName);
-  ol.format.XSD.writeStringTextNode(property, value);
+_ol_format_WFS_.writeOgcExpression_ = function(tagName, node, value) {
+  var property = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, tagName);
+  _ol_format_XSD_.writeStringTextNode(property, value);
   node.appendChild(property);
 };
 
@@ -833,8 +834,8 @@ ol.format.WFS.writeOgcExpression_ = function(tagName, node, value) {
  * @param {string} value PropertyName value.
  * @private
  */
-ol.format.WFS.writeOgcPropertyName_ = function(node, value) {
-  ol.format.WFS.writeOgcExpression_('PropertyName', node, value);
+_ol_format_WFS_.writeOgcPropertyName_ = function(node, value) {
+  _ol_format_WFS_.writeOgcExpression_('PropertyName', node, value);
 };
 
 
@@ -843,8 +844,8 @@ ol.format.WFS.writeOgcPropertyName_ = function(node, value) {
  * @param {string} value PropertyName value.
  * @private
  */
-ol.format.WFS.writeOgcLiteral_ = function(node, value) {
-  ol.format.WFS.writeOgcExpression_('Literal', node, value);
+_ol_format_WFS_.writeOgcLiteral_ = function(node, value) {
+  _ol_format_WFS_.writeOgcExpression_('Literal', node, value);
 };
 
 
@@ -853,13 +854,13 @@ ol.format.WFS.writeOgcLiteral_ = function(node, value) {
  * @param {string} time PropertyName value.
  * @private
  */
-ol.format.WFS.writeTimeInstant_ = function(node, time) {
-  var timeInstant = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'TimeInstant');
+_ol_format_WFS_.writeTimeInstant_ = function(node, time) {
+  var timeInstant = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'TimeInstant');
   node.appendChild(timeInstant);
 
-  var timePosition = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'timePosition');
+  var timePosition = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'timePosition');
   timeInstant.appendChild(timePosition);
-  ol.format.XSD.writeStringTextNode(timePosition, time);
+  _ol_format_XSD_.writeStringTextNode(timePosition, time);
 };
 
 
@@ -867,28 +868,28 @@ ol.format.WFS.writeTimeInstant_ = function(node, time) {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
+_ol_format_WFS_.GETFEATURE_SERIALIZERS_ = {
   'http://www.opengis.net/wfs': {
-    'Query': ol.xml.makeChildAppender(ol.format.WFS.writeQuery_)
+    'Query': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeQuery_)
   },
   'http://www.opengis.net/ogc': {
-    'During': ol.xml.makeChildAppender(ol.format.WFS.writeDuringFilter_),
-    'And': ol.xml.makeChildAppender(ol.format.WFS.writeLogicalFilter_),
-    'Or': ol.xml.makeChildAppender(ol.format.WFS.writeLogicalFilter_),
-    'Not': ol.xml.makeChildAppender(ol.format.WFS.writeNotFilter_),
-    'BBOX': ol.xml.makeChildAppender(ol.format.WFS.writeBboxFilter_),
-    'Contains': ol.xml.makeChildAppender(ol.format.WFS.writeContainsFilter_),
-    'Intersects': ol.xml.makeChildAppender(ol.format.WFS.writeIntersectsFilter_),
-    'Within': ol.xml.makeChildAppender(ol.format.WFS.writeWithinFilter_),
-    'PropertyIsEqualTo': ol.xml.makeChildAppender(ol.format.WFS.writeComparisonFilter_),
-    'PropertyIsNotEqualTo': ol.xml.makeChildAppender(ol.format.WFS.writeComparisonFilter_),
-    'PropertyIsLessThan': ol.xml.makeChildAppender(ol.format.WFS.writeComparisonFilter_),
-    'PropertyIsLessThanOrEqualTo': ol.xml.makeChildAppender(ol.format.WFS.writeComparisonFilter_),
-    'PropertyIsGreaterThan': ol.xml.makeChildAppender(ol.format.WFS.writeComparisonFilter_),
-    'PropertyIsGreaterThanOrEqualTo': ol.xml.makeChildAppender(ol.format.WFS.writeComparisonFilter_),
-    'PropertyIsNull': ol.xml.makeChildAppender(ol.format.WFS.writeIsNullFilter_),
-    'PropertyIsBetween': ol.xml.makeChildAppender(ol.format.WFS.writeIsBetweenFilter_),
-    'PropertyIsLike': ol.xml.makeChildAppender(ol.format.WFS.writeIsLikeFilter_)
+    'During': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeDuringFilter_),
+    'And': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeLogicalFilter_),
+    'Or': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeLogicalFilter_),
+    'Not': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeNotFilter_),
+    'BBOX': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeBboxFilter_),
+    'Contains': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeContainsFilter_),
+    'Intersects': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeIntersectsFilter_),
+    'Within': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeWithinFilter_),
+    'PropertyIsEqualTo': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeComparisonFilter_),
+    'PropertyIsNotEqualTo': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeComparisonFilter_),
+    'PropertyIsLessThan': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeComparisonFilter_),
+    'PropertyIsLessThanOrEqualTo': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeComparisonFilter_),
+    'PropertyIsGreaterThan': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeComparisonFilter_),
+    'PropertyIsGreaterThanOrEqualTo': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeComparisonFilter_),
+    'PropertyIsNull': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeIsNullFilter_),
+    'PropertyIsBetween': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeIsBetweenFilter_),
+    'PropertyIsLike': _ol_xml_.makeChildAppender(_ol_format_WFS_.writeIsLikeFilter_)
   }
 };
 
@@ -900,9 +901,9 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
  * @return {Node} Result.
  * @api
  */
-ol.format.WFS.writeFilter = function(filter) {
-  var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
-  ol.format.WFS.writeFilterCondition_(child, filter, []);
+_ol_format_WFS_.writeFilter = function(filter) {
+  var child = _ol_xml_.createElementNS(_ol_format_WFS_.OGCNS, 'Filter');
+  _ol_format_WFS_.writeFilterCondition_(child, filter, []);
   return child;
 };
 
@@ -913,13 +914,13 @@ ol.format.WFS.writeFilter = function(filter) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
+_ol_format_WFS_.writeGetFeature_ = function(node, featureTypes, objectStack) {
   var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  var item = /** @type {ol.XmlNodeStackItem} */ (ol.obj.assign({}, context));
+  var item = /** @type {ol.XmlNodeStackItem} */ (_ol_obj_.assign({}, context));
   item.node = node;
-  ol.xml.pushSerializeAndPop(item,
-      ol.format.WFS.GETFEATURE_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory('Query'), featureTypes,
+  _ol_xml_.pushSerializeAndPop(item,
+      _ol_format_WFS_.GETFEATURE_SERIALIZERS_,
+      _ol_xml_.makeSimpleNodeFactory('Query'), featureTypes,
       objectStack);
 };
 
@@ -931,8 +932,8 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
  * @return {Node} Result.
  * @api
  */
-ol.format.WFS.prototype.writeGetFeature = function(options) {
-  var node = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'GetFeature');
+_ol_format_WFS_.prototype.writeGetFeature = function(options) {
+  var node = _ol_xml_.createElementNS(_ol_format_WFS_.WFSNS, 'GetFeature');
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', '1.1.0');
   var filter;
@@ -957,19 +958,19 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     }
     filter = options.filter;
     if (options.bbox) {
-      ol.asserts.assert(options.geometryName,
+      _ol_asserts_.assert(options.geometryName,
           12); // `options.geometryName` must also be provided when `options.bbox` is set
-      var bbox = ol.format.filter.bbox(
+      var bbox = _ol_format_filter_.bbox(
           /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
       if (filter) {
         // if bbox and filter are both set, combine the two into a single filter
-        filter = ol.format.filter.and(filter, bbox);
+        filter = _ol_format_filter_.and(filter, bbox);
       } else {
         filter = bbox;
       }
     }
   }
-  ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
+  _ol_xml_.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation_);
   /** @type {ol.XmlNodeStackItem} */
   var context = {
@@ -981,9 +982,9 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     'filter': filter,
     'propertyNames': options.propertyNames ? options.propertyNames : []
   };
-  ol.asserts.assert(Array.isArray(options.featureTypes),
+  _ol_asserts_.assert(Array.isArray(options.featureTypes),
       11); // `options.featureTypes` should be an Array
-  ol.format.WFS.writeGetFeature_(node, /** @type {!Array.<string>} */ (options.featureTypes), [context]);
+  _ol_format_WFS_.writeGetFeature_(node, /** @type {!Array.<string>} */ (options.featureTypes), [context]);
   return node;
 };
 
@@ -998,12 +999,12 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  * @return {Node} Result.
  * @api
  */
-ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
+_ol_format_WFS_.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {
   var objectStack = [];
-  var node = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Transaction');
+  var node = _ol_xml_.createElementNS(_ol_format_WFS_.WFSNS, 'Transaction');
   var version = options.version ?
-    options.version : ol.format.WFS.DEFAULT_VERSION;
+    options.version : _ol_format_WFS_.DEFAULT_VERSION;
   var gmlVersion = version === '1.0.0' ? 2 : 3;
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', version);
@@ -1016,44 +1017,44 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
       node.setAttribute('handle', options.handle);
     }
   }
-  var schemaLocation = ol.format.WFS.SCHEMA_LOCATIONS[version];
-  ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
+  var schemaLocation = _ol_format_WFS_.SCHEMA_LOCATIONS[version];
+  _ol_xml_.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', schemaLocation);
-  var featurePrefix = options.featurePrefix ? options.featurePrefix : ol.format.WFS.FEATURE_PREFIX;
+  var featurePrefix = options.featurePrefix ? options.featurePrefix : _ol_format_WFS_.FEATURE_PREFIX;
   if (inserts) {
     obj = {node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': featurePrefix,
       'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
-    ol.obj.assign(obj, baseObj);
-    ol.xml.pushSerializeAndPop(obj,
-        ol.format.WFS.TRANSACTION_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('Insert'), inserts,
+    _ol_obj_.assign(obj, baseObj);
+    _ol_xml_.pushSerializeAndPop(obj,
+        _ol_format_WFS_.TRANSACTION_SERIALIZERS_,
+        _ol_xml_.makeSimpleNodeFactory('Insert'), inserts,
         objectStack);
   }
   if (updates) {
     obj = {node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': featurePrefix,
       'gmlVersion': gmlVersion, 'hasZ': options.hasZ, 'srsName': options.srsName};
-    ol.obj.assign(obj, baseObj);
-    ol.xml.pushSerializeAndPop(obj,
-        ol.format.WFS.TRANSACTION_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('Update'), updates,
+    _ol_obj_.assign(obj, baseObj);
+    _ol_xml_.pushSerializeAndPop(obj,
+        _ol_format_WFS_.TRANSACTION_SERIALIZERS_,
+        _ol_xml_.makeSimpleNodeFactory('Update'), updates,
         objectStack);
   }
   if (deletes) {
-    ol.xml.pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
+    _ol_xml_.pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': featurePrefix,
       'gmlVersion': gmlVersion, 'srsName': options.srsName},
-    ol.format.WFS.TRANSACTION_SERIALIZERS_,
-    ol.xml.makeSimpleNodeFactory('Delete'), deletes,
+    _ol_format_WFS_.TRANSACTION_SERIALIZERS_,
+    _ol_xml_.makeSimpleNodeFactory('Delete'), deletes,
     objectStack);
   }
   if (options.nativeElements) {
-    ol.xml.pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
+    _ol_xml_.pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': featurePrefix,
       'gmlVersion': gmlVersion, 'srsName': options.srsName},
-    ol.format.WFS.TRANSACTION_SERIALIZERS_,
-    ol.xml.makeSimpleNodeFactory('Native'), options.nativeElements,
+    _ol_format_WFS_.TRANSACTION_SERIALIZERS_,
+    _ol_xml_.makeSimpleNodeFactory('Native'), options.nativeElements,
     objectStack);
   }
   return node;
@@ -1068,13 +1069,13 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
  * @return {?ol.proj.Projection} Projection.
  * @api
  */
-ol.format.WFS.prototype.readProjection;
+_ol_format_WFS_.prototype.readProjection;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
+_ol_format_WFS_.prototype.readProjectionFromDocument = function(doc) {
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readProjectionFromNode(n);
@@ -1087,7 +1088,7 @@ ol.format.WFS.prototype.readProjectionFromDocument = function(doc) {
 /**
  * @inheritDoc
  */
-ol.format.WFS.prototype.readProjectionFromNode = function(node) {
+_ol_format_WFS_.prototype.readProjectionFromNode = function(node) {
   if (node.firstElementChild &&
       node.firstElementChild.firstElementChild) {
     node = node.firstElementChild.firstElementChild;
@@ -1097,10 +1098,11 @@ ol.format.WFS.prototype.readProjectionFromNode = function(node) {
           n.firstChild.nodeType === 3))) {
         var objectStack = [{}];
         this.gmlFormat_.readGeometryElement(n, objectStack);
-        return ol.proj.get(objectStack.pop().srsName);
+        return _ol_proj_.get(objectStack.pop().srsName);
       }
     }
   }
 
   return null;
 };
+export default _ol_format_WFS_;

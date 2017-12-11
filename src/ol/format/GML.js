@@ -1,7 +1,7 @@
-goog.provide('ol.format.GML');
-
-goog.require('ol.format.GML3');
-
+/**
+ * @module ol/format/GML
+ */
+import _ol_format_GML3_ from '../format/GML3.js';
 
 /**
  * @classdesc
@@ -15,7 +15,7 @@ goog.require('ol.format.GML3');
  * @extends {ol.format.GMLBase}
  * @api
  */
-ol.format.GML = ol.format.GML3;
+var _ol_format_GML_ = _ol_format_GML3_;
 
 
 /**
@@ -27,7 +27,7 @@ ol.format.GML = ol.format.GML3;
  * @return {string} Result.
  * @api
  */
-ol.format.GML.prototype.writeFeatures;
+_ol_format_GML_.prototype.writeFeatures;
 
 
 /**
@@ -39,4 +39,5 @@ ol.format.GML.prototype.writeFeatures;
  * @return {Node} Node.
  * @api
  */
-ol.format.GML.prototype.writeFeaturesNode;
+_ol_format_GML_.prototype.writeFeaturesNode;
+export default _ol_format_GML_;

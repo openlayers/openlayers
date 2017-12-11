@@ -1,9 +1,7 @@
-
-
-goog.require('ol.style.AtlasManager');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
+import _ol_style_AtlasManager_ from '../../../../src/ol/style/AtlasManager.js';
+import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.style.Circle', function() {
@@ -11,7 +9,7 @@ describe('ol.style.Circle', function() {
   describe('#constructor', function() {
 
     it('creates a canvas if no atlas is used (no fill-style)', function() {
-      var style = new ol.style.Circle({radius: 10});
+      var style = new _ol_style_Circle_({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([21, 21]);
@@ -24,9 +22,9 @@ describe('ol.style.Circle', function() {
     });
 
     it('creates a canvas if no atlas is used (fill-style)', function() {
-      var style = new ol.style.Circle({
+      var style = new _ol_style_Circle_({
         radius: 10,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#FFFF00'
         })
       });
@@ -42,8 +40,8 @@ describe('ol.style.Circle', function() {
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
-      var atlasManager = new ol.style.AtlasManager({initialSize: 512});
-      var style = new ol.style.Circle({radius: 10, atlasManager: atlasManager});
+      var atlasManager = new _ol_style_AtlasManager_({initialSize: 512});
+      var style = new _ol_style_Circle_({radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([512, 512]);
@@ -56,11 +54,11 @@ describe('ol.style.Circle', function() {
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
-      var atlasManager = new ol.style.AtlasManager({initialSize: 512});
-      var style = new ol.style.Circle({
+      var atlasManager = new _ol_style_AtlasManager_({initialSize: 512});
+      var style = new _ol_style_Circle_({
         radius: 10,
         atlasManager: atlasManager,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#FFFF00'
         })
       });
@@ -79,18 +77,18 @@ describe('ol.style.Circle', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Circle', function() {
-      var original = new ol.style.Circle();
+      var original = new _ol_style_Circle_();
       var clone = original.clone();
-      expect(clone).to.be.an(ol.style.Circle);
+      expect(clone).to.be.an(_ol_style_Circle_);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new ol.style.Circle({
-        fill: new ol.style.Fill({
+      var original = new _ol_style_Circle_({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         }),
         radius: 5,
@@ -108,11 +106,11 @@ describe('ol.style.Circle', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new ol.style.Circle({
-        fill: new ol.style.Fill({
+      var original = new _ol_style_Circle_({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         })
       });
@@ -131,39 +129,39 @@ describe('ol.style.Circle', function() {
   describe('#getChecksum', function() {
 
     it('calculates the same hash code for default options', function() {
-      var style1 = new ol.style.Circle();
-      var style2 = new ol.style.Circle();
+      var style1 = new _ol_style_Circle_();
+      var style2 = new _ol_style_Circle_();
       expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (radius)', function() {
-      var style1 = new ol.style.Circle();
-      var style2 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_();
+      var style2 = new _ol_style_Circle_({
         radius: 5
       });
       expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
 
     it('calculates the same hash code (radius)', function() {
-      var style1 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_({
         radius: 5
       });
-      var style2 = new ol.style.Circle({
+      var style2 = new _ol_style_Circle_({
         radius: 5
       });
       expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (color)', function() {
-      var style1 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         })
       });
-      var style2 = new ol.style.Circle({
+      var style2 = new _ol_style_Circle_({
         radius: 5,
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         })
       });
@@ -171,12 +169,12 @@ describe('ol.style.Circle', function() {
     });
 
     it('calculates the same hash code (everything set)', function() {
-      var style1 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -185,12 +183,12 @@ describe('ol.style.Circle', function() {
           width: 2
         })
       });
-      var style2 = new ol.style.Circle({
+      var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -203,12 +201,12 @@ describe('ol.style.Circle', function() {
     });
 
     it('calculates not the same hash code (stroke width differs)', function() {
-      var style1 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -217,12 +215,12 @@ describe('ol.style.Circle', function() {
           width: 3
         })
       });
-      var style2 = new ol.style.Circle({
+      var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -235,21 +233,21 @@ describe('ol.style.Circle', function() {
     });
 
     it('invalidates a cached checksum if values change (fill)', function() {
-      var style1 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         })
       });
-      var style2 = new ol.style.Circle({
+      var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         })
       });
@@ -260,21 +258,21 @@ describe('ol.style.Circle', function() {
     });
 
     it('invalidates a cached checksum if values change (stroke)', function() {
-      var style1 = new ol.style.Circle({
+      var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         })
       });
-      var style2 = new ol.style.Circle({
+      var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         })
       });
@@ -288,9 +286,9 @@ describe('ol.style.Circle', function() {
 
   describe('#setRadius', function() {
     it('changes the circle radius', function() {
-      var style = new ol.style.Circle({
+      var style = new _ol_style_Circle_({
         radius: 10,
-        fill: new ol.style.Fill({
+        fill: new _ol_style_Fill_({
           color: '#FFFF00'
         })
       });

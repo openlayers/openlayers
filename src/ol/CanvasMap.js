@@ -1,25 +1,26 @@
-goog.provide('ol.CanvasMap');
+/**
+ * @module ol/CanvasMap
+ */
+import _ol_ from './index.js';
+import _ol_PluggableMap_ from './PluggableMap.js';
+import _ol_PluginType_ from './PluginType.js';
+import _ol_control_ from './control.js';
+import _ol_interaction_ from './interaction.js';
+import _ol_obj_ from './obj.js';
+import _ol_plugins_ from './plugins.js';
+import _ol_renderer_canvas_ImageLayer_ from './renderer/canvas/ImageLayer.js';
+import _ol_renderer_canvas_Map_ from './renderer/canvas/Map.js';
+import _ol_renderer_canvas_TileLayer_ from './renderer/canvas/TileLayer.js';
+import _ol_renderer_canvas_VectorLayer_ from './renderer/canvas/VectorLayer.js';
+import _ol_renderer_canvas_VectorTileLayer_ from './renderer/canvas/VectorTileLayer.js';
 
-goog.require('ol');
-goog.require('ol.PluggableMap');
-goog.require('ol.PluginType');
-goog.require('ol.control');
-goog.require('ol.interaction');
-goog.require('ol.obj');
-goog.require('ol.plugins');
-goog.require('ol.renderer.canvas.ImageLayer');
-goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.canvas.TileLayer');
-goog.require('ol.renderer.canvas.VectorLayer');
-goog.require('ol.renderer.canvas.VectorTileLayer');
 
-
-ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.canvas.Map);
-ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
-  ol.renderer.canvas.ImageLayer,
-  ol.renderer.canvas.TileLayer,
-  ol.renderer.canvas.VectorLayer,
-  ol.renderer.canvas.VectorTileLayer
+_ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_canvas_Map_);
+_ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
+  _ol_renderer_canvas_ImageLayer_,
+  _ol_renderer_canvas_TileLayer_,
+  _ol_renderer_canvas_VectorLayer_,
+  _ol_renderer_canvas_VectorTileLayer_
 ]);
 
 
@@ -71,16 +72,18 @@ ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
  * @fires ol.render.Event#precompose
  * @api
  */
-ol.CanvasMap = function(options) {
-  options = ol.obj.assign({}, options);
+var _ol_CanvasMap_ = function(options) {
+  options = _ol_obj_.assign({}, options);
   delete options.renderer;
   if (!options.controls) {
-    options.controls = ol.control.defaults();
+    options.controls = _ol_control_.defaults();
   }
   if (!options.interactions) {
-    options.interactions = ol.interaction.defaults();
+    options.interactions = _ol_interaction_.defaults();
   }
 
-  ol.PluggableMap.call(this, options);
+  _ol_PluggableMap_.call(this, options);
 };
-ol.inherits(ol.CanvasMap, ol.PluggableMap);
+
+_ol_.inherits(_ol_CanvasMap_, _ol_PluggableMap_);
+export default _ol_CanvasMap_;

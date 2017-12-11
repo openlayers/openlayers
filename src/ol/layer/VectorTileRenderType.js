@@ -1,5 +1,6 @@
-goog.provide('ol.layer.VectorTileRenderType');
-
+/**
+ * @module ol/layer/VectorTileRenderType
+ */
 /**
  * @enum {string}
  * Render mode for vector tiles:
@@ -13,8 +14,10 @@ goog.provide('ol.layer.VectorTileRenderType');
  *    even during animations, but slower performance than the other options.
  * @api
  */
-ol.layer.VectorTileRenderType = {
+var _ol_layer_VectorTileRenderType_ = {
   IMAGE: 'image',
   HYBRID: 'hybrid',
   VECTOR: 'vector'
 };
+
+export default _ol_layer_VectorTileRenderType_;

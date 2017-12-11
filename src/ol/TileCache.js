@@ -1,9 +1,9 @@
-goog.provide('ol.TileCache');
-
-goog.require('ol');
-goog.require('ol.structs.LRUCache');
-goog.require('ol.tilecoord');
-
+/**
+ * @module ol/TileCache
+ */
+import _ol_ from './index.js';
+import _ol_structs_LRUCache_ from './structs/LRUCache.js';
+import _ol_tilecoord_ from './tilecoord.js';
 
 /**
  * @constructor
@@ -11,18 +11,19 @@ goog.require('ol.tilecoord');
  * @param {number=} opt_highWaterMark High water mark.
  * @struct
  */
-ol.TileCache = function(opt_highWaterMark) {
+var _ol_TileCache_ = function(opt_highWaterMark) {
 
-  ol.structs.LRUCache.call(this, opt_highWaterMark);
+  _ol_structs_LRUCache_.call(this, opt_highWaterMark);
 
 };
-ol.inherits(ol.TileCache, ol.structs.LRUCache);
+
+_ol_.inherits(_ol_TileCache_, _ol_structs_LRUCache_);
 
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.TileCache.prototype.expireCache = function(usedTiles) {
+_ol_TileCache_.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
     tile = this.peekLast();
@@ -39,17 +40,18 @@ ol.TileCache.prototype.expireCache = function(usedTiles) {
 /**
  * Prune all tiles from the cache that don't have the same z as the newest tile.
  */
-ol.TileCache.prototype.pruneExceptNewestZ = function() {
+_ol_TileCache_.prototype.pruneExceptNewestZ = function() {
   if (this.getCount() === 0) {
     return;
   }
   var key = this.peekFirstKey();
-  var tileCoord = ol.tilecoord.fromKey(key);
+  var tileCoord = _ol_tilecoord_.fromKey(key);
   var z = tileCoord[0];
   this.forEach(function(tile) {
     if (tile.tileCoord[0] !== z) {
-      this.remove(ol.tilecoord.getKey(tile.tileCoord));
+      this.remove(_ol_tilecoord_.getKey(tile.tileCoord));
       tile.dispose();
     }
   }, this);
 };
+export default _ol_TileCache_;

@@ -1,18 +1,18 @@
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.MVT');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.obj');
-goog.require('ol.source.Vector');
-goog.require('ol.source.VectorTile');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
-goog.require('ol.tilegrid');
+import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import _ol_Map_ from '../../../../src/ol/Map.js';
+import _ol_View_ from '../../../../src/ol/View.js';
+import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
+import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
+import _ol_obj_ from '../../../../src/ol/obj.js';
+import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
+import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.rendering.layer.VectorTile', function() {
@@ -21,11 +21,11 @@ describe('ol.rendering.layer.VectorTile', function() {
 
   function createMap(renderer, opt_pixelRatio, opt_size) {
     var size = opt_size || 50;
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size, size),
       renderer: renderer,
-      view: new ol.View({
+      view: new _ol_View_({
         center: [1825927.7316762917, 6143091.089223046],
         zoom: 14
       })
@@ -61,17 +61,17 @@ describe('ol.rendering.layer.VectorTile', function() {
     var options = {
       source: source
     };
-    ol.obj.assign(options, layerOptions);
-    map.addLayer(new ol.layer.VectorTile(options));
+    _ol_obj_.assign(options, layerOptions);
+    map.addLayer(new _ol_layer_VectorTile_(options));
   }
 
   describe('vector tile layer', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.VectorTile({
-        format: new ol.format.MVT(),
-        tileGrid: ol.tilegrid.createXYZ(),
+      source = new _ol_source_VectorTile_({
+        format: new _ol_format_MVT_(),
+        tileGrid: _ol_tilegrid_.createXYZ(),
         url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf',
         transition: 0
       });
@@ -96,18 +96,18 @@ describe('ol.rendering.layer.VectorTile', function() {
 
     it('renders rotated view correctly with vector layer on top', function(done) {
       createMap('canvas');
-      var vectorSource = new ol.source.Vector({
+      var vectorSource = new _ol_source_Vector_({
         features: [
-          new ol.Feature(new ol.geom.Point([1825727.7316762917, 6143091.089223046]))
+          new _ol_Feature_(new _ol_geom_Point_([1825727.7316762917, 6143091.089223046]))
         ]
       });
-      map.addLayer(new ol.layer.Vector({
+      map.addLayer(new _ol_layer_Vector_({
         zIndex: 1,
         source: vectorSource,
-        style: new ol.style.Style({
-          image: new ol.style.Circle({
+        style: new _ol_style_Style_({
+          image: new _ol_style_Circle_({
             radius: 10,
-            fill: new ol.style.Fill({
+            fill: new _ol_style_Fill_({
               color: 'red'
             })
           })
@@ -143,14 +143,14 @@ describe('ol.rendering.layer.VectorTile', function() {
       var style = function(feature, resolution) {
         var geom = feature.getGeometry();
         if (geom.getType() == 'Point') {
-          return new ol.style.Style({
-            image: new ol.style.Circle({
+          return new _ol_style_Style_({
+            image: new _ol_style_Circle_({
               radius: 7,
-              fill: new ol.style.Fill({
+              fill: new _ol_style_Fill_({
                 color: 'red'
               })
             }),
-            text: new ol.style.Text({
+            text: new _ol_style_Text_({
               text: feature.get('name_en'),
               font: '12px sans-serif',
               textBaseline: 'bottom',

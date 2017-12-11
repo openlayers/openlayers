@@ -1,8 +1,8 @@
-goog.provide('ol.source.OSM');
-
-goog.require('ol');
-goog.require('ol.source.XYZ');
-
+/**
+ * @module ol/source/OSM
+ */
+import _ol_ from '../index.js';
+import _ol_source_XYZ_ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -13,7 +13,7 @@ goog.require('ol.source.XYZ');
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
  * @api
  */
-ol.source.OSM = function(opt_options) {
+var _ol_source_OSM_ = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -21,7 +21,7 @@ ol.source.OSM = function(opt_options) {
   if (options.attributions !== undefined) {
     attributions = options.attributions;
   } else {
-    attributions = [ol.source.OSM.ATTRIBUTION];
+    attributions = [_ol_source_OSM_.ATTRIBUTION];
   }
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -30,7 +30,7 @@ ol.source.OSM = function(opt_options) {
   var url = options.url !== undefined ?
     options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-  ol.source.XYZ.call(this, {
+  _ol_source_XYZ_.call(this, {
     attributions: attributions,
     cacheSize: options.cacheSize,
     crossOrigin: crossOrigin,
@@ -43,7 +43,8 @@ ol.source.OSM = function(opt_options) {
   });
 
 };
-ol.inherits(ol.source.OSM, ol.source.XYZ);
+
+_ol_.inherits(_ol_source_OSM_, _ol_source_XYZ_);
 
 
 /**
@@ -53,6 +54,7 @@ ol.inherits(ol.source.OSM, ol.source.XYZ);
  * @type {string}
  * @api
  */
-ol.source.OSM.ATTRIBUTION = '&copy; ' +
+_ol_source_OSM_.ATTRIBUTION = '&copy; ' +
       '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
       'contributors.';
+export default _ol_source_OSM_;

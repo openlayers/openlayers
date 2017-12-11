@@ -1,16 +1,16 @@
-goog.provide('ol.source.Zoomify');
-
-goog.require('ol');
-goog.require('ol.ImageTile');
-goog.require('ol.TileState');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.asserts');
-goog.require('ol.dom');
-goog.require('ol.extent');
-goog.require('ol.size');
-goog.require('ol.source.TileImage');
-goog.require('ol.tilegrid.TileGrid');
-
+/**
+ * @module ol/source/Zoomify
+ */
+import _ol_ from '../index.js';
+import _ol_ImageTile_ from '../ImageTile.js';
+import _ol_TileState_ from '../TileState.js';
+import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import _ol_asserts_ from '../asserts.js';
+import _ol_dom_ from '../dom.js';
+import _ol_extent_ from '../extent.js';
+import _ol_size_ from '../size.js';
+import _ol_source_TileImage_ from '../source/TileImage.js';
+import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
 
 /**
  * @classdesc
@@ -22,24 +22,24 @@ goog.require('ol.tilegrid.TileGrid');
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
  * @api
  */
-ol.source.Zoomify = function(opt_options) {
+var _ol_source_Zoomify_ = function(opt_options) {
 
   var options = opt_options || {};
 
   var size = options.size;
   var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
     options.tierSizeCalculation :
-    ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
+    _ol_source_Zoomify_.TierSizeCalculation_.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];
   var extent = options.extent || [0, -size[1], size[0], 0];
   var tierSizeInTiles = [];
-  var tileSize = options.tileSize || ol.DEFAULT_TILE_SIZE;
+  var tileSize = options.tileSize || _ol_.DEFAULT_TILE_SIZE;
   var tileSizeForTierSizeCalculation = tileSize;
 
   switch (tierSizeCalculation) {
-    case ol.source.Zoomify.TierSizeCalculation_.DEFAULT:
+    case _ol_source_Zoomify_.TierSizeCalculation_.DEFAULT:
       while (imageWidth > tileSizeForTierSizeCalculation || imageHeight > tileSizeForTierSizeCalculation) {
         tierSizeInTiles.push([
           Math.ceil(imageWidth / tileSizeForTierSizeCalculation),
@@ -48,7 +48,7 @@ ol.source.Zoomify = function(opt_options) {
         tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
       }
       break;
-    case ol.source.Zoomify.TierSizeCalculation_.TRUNCATED:
+    case _ol_source_Zoomify_.TierSizeCalculation_.TRUNCATED:
       var width = imageWidth;
       var height = imageHeight;
       while (width > tileSizeForTierSizeCalculation || height > tileSizeForTierSizeCalculation) {
@@ -61,7 +61,7 @@ ol.source.Zoomify = function(opt_options) {
       }
       break;
     default:
-      ol.asserts.assert(false, 53); // Unknown `tierSizeCalculation` configured
+      _ol_asserts_.assert(false, 53); // Unknown `tierSizeCalculation` configured
       break;
   }
 
@@ -80,10 +80,10 @@ ol.source.Zoomify = function(opt_options) {
   }
   resolutions.reverse();
 
-  var tileGrid = new ol.tilegrid.TileGrid({
+  var tileGrid = new _ol_tilegrid_TileGrid_({
     tileSize: tileSize,
     extent: extent,
-    origin: ol.extent.getTopLeft(extent),
+    origin: _ol_extent_.getTopLeft(extent),
     resolutions: resolutions
   });
 
@@ -91,7 +91,7 @@ ol.source.Zoomify = function(opt_options) {
   if (url && url.indexOf('{TileGroup}') == -1 && url.indexOf('{tileIndex}') == -1) {
     url += '{TileGroup}/{z}-{x}-{y}.jpg';
   }
-  var urls = ol.TileUrlFunction.expandUrl(url);
+  var urls = _ol_TileUrlFunction_.expandUrl(url);
 
   /**
    * @param {string} template Template.
@@ -132,11 +132,11 @@ ol.source.Zoomify = function(opt_options) {
       });
   }
 
-  var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(createFromTemplate));
+  var tileUrlFunction = _ol_TileUrlFunction_.createFromTileUrlFunctions(urls.map(createFromTemplate));
 
-  var ZoomifyTileClass = ol.source.Zoomify.Tile_.bind(null, tileGrid);
+  var ZoomifyTileClass = _ol_source_Zoomify_.Tile_.bind(null, tileGrid);
 
-  ol.source.TileImage.call(this, {
+  _ol_source_TileImage_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -150,7 +150,8 @@ ol.source.Zoomify = function(opt_options) {
   });
 
 };
-ol.inherits(ol.source.Zoomify, ol.source.TileImage);
+
+_ol_.inherits(_ol_source_Zoomify_, _ol_source_TileImage_);
 
 /**
  * @constructor
@@ -164,10 +165,10 @@ ol.inherits(ol.source.Zoomify, ol.source.TileImage);
  * @param {olx.TileOptions=} opt_options Tile options.
  * @private
  */
-ol.source.Zoomify.Tile_ = function(
+_ol_source_Zoomify_.Tile_ = function(
     tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-  ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+  _ol_ImageTile_.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
 
   /**
    * @private
@@ -179,26 +180,26 @@ ol.source.Zoomify.Tile_ = function(
    * @private
    * @type {ol.Size}
    */
-  this.tileSize_ = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]));
+  this.tileSize_ = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]));
 };
-ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
+_ol_.inherits(_ol_source_Zoomify_.Tile_, _ol_ImageTile_);
 
 
 /**
  * @inheritDoc
  */
-ol.source.Zoomify.Tile_.prototype.getImage = function() {
+_ol_source_Zoomify_.Tile_.prototype.getImage = function() {
   if (this.zoomifyImage_) {
     return this.zoomifyImage_;
   }
-  var image = ol.ImageTile.prototype.getImage.call(this);
-  if (this.state == ol.TileState.LOADED) {
+  var image = _ol_ImageTile_.prototype.getImage.call(this);
+  if (this.state == _ol_TileState_.LOADED) {
     var tileSize = this.tileSize_;
     if (image.width == tileSize[0] && image.height == tileSize[1]) {
       this.zoomifyImage_ = image;
       return image;
     } else {
-      var context = ol.dom.createCanvasContext2D(tileSize[0], tileSize[1]);
+      var context = _ol_dom_.createCanvasContext2D(tileSize[0], tileSize[1]);
       context.drawImage(image, 0, 0);
       this.zoomifyImage_ = context.canvas;
       return context.canvas;
@@ -212,7 +213,8 @@ ol.source.Zoomify.Tile_.prototype.getImage = function() {
  * @enum {string}
  * @private
  */
-ol.source.Zoomify.TierSizeCalculation_ = {
+_ol_source_Zoomify_.TierSizeCalculation_ = {
   DEFAULT: 'default',
   TRUNCATED: 'truncated'
 };
+export default _ol_source_Zoomify_;

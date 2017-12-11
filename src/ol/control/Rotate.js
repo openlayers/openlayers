@@ -1,12 +1,12 @@
-goog.provide('ol.control.Rotate');
-
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol');
-goog.require('ol.control.Control');
-goog.require('ol.css');
-goog.require('ol.easing');
-
+/**
+ * @module ol/control/Rotate
+ */
+import _ol_events_ from '../events.js';
+import _ol_events_EventType_ from '../events/EventType.js';
+import _ol_ from '../index.js';
+import _ol_control_Control_ from '../control/Control.js';
+import _ol_css_ from '../css.js';
+import _ol_easing_ from '../easing.js';
 
 /**
  * @classdesc
@@ -19,7 +19,7 @@ goog.require('ol.easing');
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
  * @api
  */
-ol.control.Rotate = function(opt_options) {
+var _ol_control_Rotate_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -50,20 +50,20 @@ ol.control.Rotate = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(this.label_);
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
-      ol.control.Rotate.prototype.handleClick_, this);
+  _ol_events_.listen(button, _ol_events_EventType_.CLICK,
+      _ol_control_Rotate_.prototype.handleClick_, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL;
+  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
+      _ol_css_.CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
 
-  var render = options.render ? options.render : ol.control.Rotate.render;
+  var render = options.render ? options.render : _ol_control_Rotate_.render;
 
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
-  ol.control.Control.call(this, {
+  _ol_control_Control_.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -88,18 +88,19 @@ ol.control.Rotate = function(opt_options) {
   this.rotation_ = undefined;
 
   if (this.autoHide_) {
-    this.element.classList.add(ol.css.CLASS_HIDDEN);
+    this.element.classList.add(_ol_css_.CLASS_HIDDEN);
   }
 
 };
-ol.inherits(ol.control.Rotate, ol.control.Control);
+
+_ol_.inherits(_ol_control_Rotate_, _ol_control_Control_);
 
 
 /**
  * @param {Event} event The event to handle
  * @private
  */
-ol.control.Rotate.prototype.handleClick_ = function(event) {
+_ol_control_Rotate_.prototype.handleClick_ = function(event) {
   event.preventDefault();
   if (this.callResetNorth_ !== undefined) {
     this.callResetNorth_();
@@ -112,7 +113,7 @@ ol.control.Rotate.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-ol.control.Rotate.prototype.resetNorth_ = function() {
+_ol_control_Rotate_.prototype.resetNorth_ = function() {
   var map = this.getMap();
   var view = map.getView();
   if (!view) {
@@ -125,7 +126,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
       view.animate({
         rotation: 0,
         duration: this.duration_,
-        easing: ol.easing.easeOut
+        easing: _ol_easing_.easeOut
       });
     } else {
       view.setRotation(0);
@@ -140,7 +141,7 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
  * @this {ol.control.Rotate}
  * @api
  */
-ol.control.Rotate.render = function(mapEvent) {
+_ol_control_Rotate_.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (!frameState) {
     return;
@@ -149,11 +150,11 @@ ol.control.Rotate.render = function(mapEvent) {
   if (rotation != this.rotation_) {
     var transform = 'rotate(' + rotation + 'rad)';
     if (this.autoHide_) {
-      var contains = this.element.classList.contains(ol.css.CLASS_HIDDEN);
+      var contains = this.element.classList.contains(_ol_css_.CLASS_HIDDEN);
       if (!contains && rotation === 0) {
-        this.element.classList.add(ol.css.CLASS_HIDDEN);
+        this.element.classList.add(_ol_css_.CLASS_HIDDEN);
       } else if (contains && rotation !== 0) {
-        this.element.classList.remove(ol.css.CLASS_HIDDEN);
+        this.element.classList.remove(_ol_css_.CLASS_HIDDEN);
       }
     }
     this.label_.style.msTransform = transform;
@@ -162,3 +163,4 @@ ol.control.Rotate.render = function(mapEvent) {
   }
   this.rotation_ = rotation;
 };
+export default _ol_control_Rotate_;

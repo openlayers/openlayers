@@ -1,20 +1,20 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.BingMaps');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.BingMaps({
+    new _ol_layer_Tile_({
+      source: new _ol_source_BingMaps_({
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
         imagerySet: 'Aerial'
       })
     })
   ],
-  view: new ol.View({
+  view: new _ol_View_({
     center: [-13553864, 5918250],
     zoom: 11,
     minZoom: 9,

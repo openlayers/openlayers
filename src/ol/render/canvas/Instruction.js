@@ -1,9 +1,10 @@
-goog.provide('ol.render.canvas.Instruction');
-
+/**
+ * @module ol/render/canvas/Instruction
+ */
 /**
  * @enum {number}
  */
-ol.render.canvas.Instruction = {
+var _ol_render_canvas_Instruction_ = {
   BEGIN_GEOMETRY: 0,
   BEGIN_PATH: 1,
   CIRCLE: 2,
@@ -18,3 +19,5 @@ ol.render.canvas.Instruction = {
   SET_STROKE_STYLE: 11,
   STROKE: 12
 };
+
+export default _ol_render_canvas_Instruction_;

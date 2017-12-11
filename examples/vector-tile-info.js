@@ -1,18 +1,18 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.MVT');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.source.VectorTile');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_format_MVT_ from '../src/ol/format/MVT.js';
+import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
+import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   }),
-  layers: [new ol.layer.VectorTile({
-    source: new ol.source.VectorTile({
-      format: new ol.format.MVT(),
+  layers: [new _ol_layer_VectorTile_({
+    source: new _ol_source_VectorTile_({
+      format: new _ol_format_MVT_(),
       url: 'https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap/VectorTileServer/tile/{z}/{y}/{x}.pbf'
     })
   })]

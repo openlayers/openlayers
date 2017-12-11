@@ -1,35 +1,35 @@
-goog.provide('ol.PluggableMap');
-
-goog.require('ol');
-goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
-goog.require('ol.MapBrowserEvent');
-goog.require('ol.MapBrowserEventHandler');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
-goog.require('ol.MapProperty');
-goog.require('ol.Object');
-goog.require('ol.ObjectEventType');
-goog.require('ol.TileQueue');
-goog.require('ol.View');
-goog.require('ol.ViewHint');
-goog.require('ol.asserts');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventType');
-goog.require('ol.extent');
-goog.require('ol.functions');
-goog.require('ol.has');
-goog.require('ol.layer.Group');
-goog.require('ol.obj');
-goog.require('ol.plugins');
-goog.require('ol.renderer.Type');
-goog.require('ol.size');
-goog.require('ol.structs.PriorityQueue');
-goog.require('ol.transform');
-
+/**
+ * @module ol/PluggableMap
+ */
+import _ol_ from './index.js';
+import _ol_Collection_ from './Collection.js';
+import _ol_CollectionEventType_ from './CollectionEventType.js';
+import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
+import _ol_MapBrowserEventHandler_ from './MapBrowserEventHandler.js';
+import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
+import _ol_MapEvent_ from './MapEvent.js';
+import _ol_MapEventType_ from './MapEventType.js';
+import _ol_MapProperty_ from './MapProperty.js';
+import _ol_Object_ from './Object.js';
+import _ol_ObjectEventType_ from './ObjectEventType.js';
+import _ol_TileQueue_ from './TileQueue.js';
+import _ol_View_ from './View.js';
+import _ol_ViewHint_ from './ViewHint.js';
+import _ol_asserts_ from './asserts.js';
+import _ol_dom_ from './dom.js';
+import _ol_events_ from './events.js';
+import _ol_events_Event_ from './events/Event.js';
+import _ol_events_EventType_ from './events/EventType.js';
+import _ol_extent_ from './extent.js';
+import _ol_functions_ from './functions.js';
+import _ol_has_ from './has.js';
+import _ol_layer_Group_ from './layer/Group.js';
+import _ol_obj_ from './obj.js';
+import _ol_plugins_ from './plugins.js';
+import _ol_renderer_Type_ from './renderer/Type.js';
+import _ol_size_ from './size.js';
+import _ol_structs_PriorityQueue_ from './structs/PriorityQueue.js';
+import _ol_transform_ from './transform.js';
 
 /**
  * @constructor
@@ -41,11 +41,11 @@ goog.require('ol.transform');
  * @fires ol.render.Event#precompose
  * @api
  */
-ol.PluggableMap = function(options) {
+var _ol_PluggableMap_ = function(options) {
 
-  ol.Object.call(this);
+  _ol_Object_.call(this);
 
-  var optionsInternal = ol.PluggableMap.createOptionsInternal(options);
+  var optionsInternal = _ol_PluggableMap_.createOptionsInternal(options);
 
   /**
    * @type {boolean}
@@ -68,7 +68,7 @@ ol.PluggableMap = function(options) {
    * @type {number}
    */
   this.pixelRatio_ = options.pixelRatio !== undefined ?
-    options.pixelRatio : ol.has.DEVICE_PIXEL_RATIO;
+    options.pixelRatio : _ol_has_.DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -94,13 +94,13 @@ ol.PluggableMap = function(options) {
    * @private
    * @type {ol.Transform}
    */
-  this.coordinateToPixelTransform_ = ol.transform.create();
+  this.coordinateToPixelTransform_ = _ol_transform_.create();
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.pixelToCoordinateTransform_ = ol.transform.create();
+  this.pixelToCoordinateTransform_ = _ol_transform_.create();
 
   /**
    * @private
@@ -144,7 +144,7 @@ ol.PluggableMap = function(options) {
    * @type {Element}
    */
   this.viewport_ = document.createElement('DIV');
-  this.viewport_.className = 'ol-viewport' + (ol.has.TOUCH ? ' ol-touch' : '');
+  this.viewport_.className = 'ol-viewport' + (_ol_has_.TOUCH ? ' ol-touch' : '');
   this.viewport_.style.position = 'relative';
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
@@ -168,18 +168,18 @@ ol.PluggableMap = function(options) {
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
   var overlayEvents = [
-    ol.events.EventType.CLICK,
-    ol.events.EventType.DBLCLICK,
-    ol.events.EventType.MOUSEDOWN,
-    ol.events.EventType.TOUCHSTART,
-    ol.events.EventType.MSPOINTERDOWN,
-    ol.MapBrowserEventType.POINTERDOWN,
-    ol.events.EventType.MOUSEWHEEL,
-    ol.events.EventType.WHEEL
+    _ol_events_EventType_.CLICK,
+    _ol_events_EventType_.DBLCLICK,
+    _ol_events_EventType_.MOUSEDOWN,
+    _ol_events_EventType_.TOUCHSTART,
+    _ol_events_EventType_.MSPOINTERDOWN,
+    _ol_MapBrowserEventType_.POINTERDOWN,
+    _ol_events_EventType_.MOUSEWHEEL,
+    _ol_events_EventType_.WHEEL
   ];
   for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
-    ol.events.listen(this.overlayContainerStopEvent_, overlayEvents[i],
-        ol.events.Event.stopPropagation);
+    _ol_events_.listen(this.overlayContainerStopEvent_, overlayEvents[i],
+        _ol_events_Event_.stopPropagation);
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
@@ -187,9 +187,9 @@ ol.PluggableMap = function(options) {
    * @private
    * @type {ol.MapBrowserEventHandler}
    */
-  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this, options.moveTolerance);
-  for (var key in ol.MapBrowserEventType) {
-    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEventType[key],
+  this.mapBrowserEventHandler_ = new _ol_MapBrowserEventHandler_(this, options.moveTolerance);
+  for (var key in _ol_MapBrowserEventType_) {
+    _ol_events_.listen(this.mapBrowserEventHandler_, _ol_MapBrowserEventType_[key],
         this.handleMapBrowserEvent, this);
   }
 
@@ -205,22 +205,22 @@ ol.PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
+  _ol_events_.listen(this.viewport_, _ol_events_EventType_.WHEEL,
       this.handleBrowserEvent, this);
-  ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
+  _ol_events_.listen(this.viewport_, _ol_events_EventType_.MOUSEWHEEL,
       this.handleBrowserEvent, this);
 
   /**
    * @type {ol.Collection.<ol.control.Control>}
    * @protected
    */
-  this.controls = optionsInternal.controls || new ol.Collection();
+  this.controls = optionsInternal.controls || new _ol_Collection_();
 
   /**
    * @type {ol.Collection.<ol.interaction.Interaction>}
    * @protected
    */
-  this.interactions = optionsInternal.interactions || new ol.Collection();
+  this.interactions = optionsInternal.interactions || new _ol_Collection_();
 
   /**
    * @type {ol.Collection.<ol.Overlay>}
@@ -263,7 +263,7 @@ ol.PluggableMap = function(options) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new ol.TileQueue(
+  this.tileQueue_ = new _ol_TileQueue_(
       this.getTilePriority.bind(this),
       this.handleTileChange_.bind(this));
 
@@ -274,14 +274,14 @@ ol.PluggableMap = function(options) {
    */
   this.skippedFeatureUids_ = {};
 
-  ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
+  _ol_events_.listen(
+      this, _ol_Object_.getChangeEventType(_ol_MapProperty_.LAYERGROUP),
       this.handleLayerGroupChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
+  _ol_events_.listen(this, _ol_Object_.getChangeEventType(_ol_MapProperty_.VIEW),
       this.handleViewChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
+  _ol_events_.listen(this, _ol_Object_.getChangeEventType(_ol_MapProperty_.SIZE),
       this.handleSizeChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
+  _ol_events_.listen(this, _ol_Object_.getChangeEventType(_ol_MapProperty_.TARGET),
       this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
@@ -297,7 +297,7 @@ ol.PluggableMap = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls, ol.CollectionEventType.ADD,
+  _ol_events_.listen(this.controls, _ol_CollectionEventType_.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -305,7 +305,7 @@ ol.PluggableMap = function(options) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls, ol.CollectionEventType.REMOVE,
+  _ol_events_.listen(this.controls, _ol_CollectionEventType_.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -322,7 +322,7 @@ ol.PluggableMap = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions, ol.CollectionEventType.ADD,
+  _ol_events_.listen(this.interactions, _ol_CollectionEventType_.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -330,7 +330,7 @@ ol.PluggableMap = function(options) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions, ol.CollectionEventType.REMOVE,
+  _ol_events_.listen(this.interactions, _ol_CollectionEventType_.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -340,7 +340,7 @@ ol.PluggableMap = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
+  _ol_events_.listen(this.overlays_, _ol_CollectionEventType_.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -348,7 +348,7 @@ ol.PluggableMap = function(options) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
+  _ol_events_.listen(this.overlays_, _ol_CollectionEventType_.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -362,7 +362,8 @@ ol.PluggableMap = function(options) {
       }, this);
 
 };
-ol.inherits(ol.PluggableMap, ol.Object);
+
+_ol_.inherits(_ol_PluggableMap_, _ol_Object_);
 
 
 /**
@@ -370,7 +371,7 @@ ol.inherits(ol.PluggableMap, ol.Object);
  * @param {ol.control.Control} control Control.
  * @api
  */
-ol.PluggableMap.prototype.addControl = function(control) {
+_ol_PluggableMap_.prototype.addControl = function(control) {
   this.getControls().push(control);
 };
 
@@ -380,7 +381,7 @@ ol.PluggableMap.prototype.addControl = function(control) {
  * @param {ol.interaction.Interaction} interaction Interaction to add.
  * @api
  */
-ol.PluggableMap.prototype.addInteraction = function(interaction) {
+_ol_PluggableMap_.prototype.addInteraction = function(interaction) {
   this.getInteractions().push(interaction);
 };
 
@@ -392,7 +393,7 @@ ol.PluggableMap.prototype.addInteraction = function(interaction) {
  * @param {ol.layer.Base} layer Layer.
  * @api
  */
-ol.PluggableMap.prototype.addLayer = function(layer) {
+_ol_PluggableMap_.prototype.addLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
   layers.push(layer);
 };
@@ -403,7 +404,7 @@ ol.PluggableMap.prototype.addLayer = function(layer) {
  * @param {ol.Overlay} overlay Overlay.
  * @api
  */
-ol.PluggableMap.prototype.addOverlay = function(overlay) {
+_ol_PluggableMap_.prototype.addOverlay = function(overlay) {
   this.getOverlays().push(overlay);
 };
 
@@ -413,7 +414,7 @@ ol.PluggableMap.prototype.addOverlay = function(overlay) {
  * @param {ol.Overlay} overlay Overlay.
  * @private
  */
-ol.PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
+_ol_PluggableMap_.prototype.addOverlayInternal_ = function(overlay) {
   var id = overlay.getId();
   if (id !== undefined) {
     this.overlayIdIndex_[id.toString()] = overlay;
@@ -426,14 +427,14 @@ ol.PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
  *
  * @inheritDoc
  */
-ol.PluggableMap.prototype.disposeInternal = function() {
+_ol_PluggableMap_.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
-  ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
+  _ol_events_.unlisten(this.viewport_, _ol_events_EventType_.WHEEL,
       this.handleBrowserEvent, this);
-  ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
+  _ol_events_.unlisten(this.viewport_, _ol_events_EventType_.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    window.removeEventListener(ol.events.EventType.RESIZE,
+    window.removeEventListener(_ol_events_EventType_.RESIZE,
         this.handleResize_, false);
     this.handleResize_ = undefined;
   }
@@ -442,7 +443,7 @@ ol.PluggableMap.prototype.disposeInternal = function() {
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
-  ol.Object.prototype.disposeInternal.call(this);
+  _ol_Object_.prototype.disposeInternal.call(this);
 };
 
 
@@ -465,7 +466,7 @@ ol.PluggableMap.prototype.disposeInternal = function() {
  * @template S,T
  * @api
  */
-ol.PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) {
+_ol_PluggableMap_.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) {
   if (!this.frameState_) {
     return;
   }
@@ -474,7 +475,7 @@ ol.PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   var layerFilter = opt_options.layerFilter !== undefined ?
-    opt_options.layerFilter : ol.functions.TRUE;
+    opt_options.layerFilter : _ol_functions_.TRUE;
   return this.renderer_.forEachFeatureAtCoordinate(
       coordinate, this.frameState_, hitTolerance, callback, null,
       layerFilter, null);
@@ -489,7 +490,7 @@ ol.PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_
  * `null` if none were found.
  * @api
  */
-ol.PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
+_ol_PluggableMap_.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
   var features = null;
   this.forEachFeatureAtPixel(pixel, function(feature) {
     if (!features) {
@@ -524,13 +525,13 @@ ol.PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
  * @template S,T,U
  * @api
  */
-ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+_ol_PluggableMap_.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
   if (!this.frameState_) {
     return;
   }
   var thisArg = opt_this !== undefined ? opt_this : null;
   var layerFilter = opt_layerFilter !== undefined ?
-    opt_layerFilter : ol.functions.TRUE;
+    opt_layerFilter : _ol_functions_.TRUE;
   var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
       pixel, this.frameState_, callback, thisArg,
@@ -547,14 +548,14 @@ ol.PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_th
  * @template U
  * @api
  */
-ol.PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
+_ol_PluggableMap_.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   if (!this.frameState_) {
     return false;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
   var layerFilter = opt_options.layerFilter !== undefined ?
-    opt_options.layerFilter : ol.functions.TRUE;
+    opt_options.layerFilter : _ol_functions_.TRUE;
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
@@ -568,7 +569,7 @@ ol.PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
  * @return {ol.Coordinate} Coordinate.
  * @api
  */
-ol.PluggableMap.prototype.getEventCoordinate = function(event) {
+_ol_PluggableMap_.prototype.getEventCoordinate = function(event) {
   return this.getCoordinateFromPixel(this.getEventPixel(event));
 };
 
@@ -579,7 +580,7 @@ ol.PluggableMap.prototype.getEventCoordinate = function(event) {
  * @return {ol.Pixel} Pixel.
  * @api
  */
-ol.PluggableMap.prototype.getEventPixel = function(event) {
+_ol_PluggableMap_.prototype.getEventPixel = function(event) {
   var viewportPosition = this.viewport_.getBoundingClientRect();
   var eventPosition = event.changedTouches ? event.changedTouches[0] : event;
   return [
@@ -598,9 +599,10 @@ ol.PluggableMap.prototype.getEventPixel = function(event) {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.getTarget = function() {
-  return /** @type {Element|string|undefined} */ (
-    this.get(ol.MapProperty.TARGET));
+_ol_PluggableMap_.prototype.getTarget = function() {
+  return (
+    /** @type {Element|string|undefined} */ this.get(_ol_MapProperty_.TARGET)
+  );
 };
 
 
@@ -611,7 +613,7 @@ ol.PluggableMap.prototype.getTarget = function() {
  * @return {Element} The element that the map is rendered in.
  * @api
  */
-ol.PluggableMap.prototype.getTargetElement = function() {
+_ol_PluggableMap_.prototype.getTargetElement = function() {
   var target = this.getTarget();
   if (target !== undefined) {
     return typeof target === 'string' ?
@@ -630,12 +632,12 @@ ol.PluggableMap.prototype.getTargetElement = function() {
  * @return {ol.Coordinate} The coordinate for the pixel position.
  * @api
  */
-ol.PluggableMap.prototype.getCoordinateFromPixel = function(pixel) {
+_ol_PluggableMap_.prototype.getCoordinateFromPixel = function(pixel) {
   var frameState = this.frameState_;
   if (!frameState) {
     return null;
   } else {
-    return ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
+    return _ol_transform_.apply(frameState.pixelToCoordinateTransform, pixel.slice());
   }
 };
 
@@ -646,7 +648,7 @@ ol.PluggableMap.prototype.getCoordinateFromPixel = function(pixel) {
  * @return {ol.Collection.<ol.control.Control>} Controls.
  * @api
  */
-ol.PluggableMap.prototype.getControls = function() {
+_ol_PluggableMap_.prototype.getControls = function() {
   return this.controls;
 };
 
@@ -657,7 +659,7 @@ ol.PluggableMap.prototype.getControls = function() {
  * @return {ol.Collection.<ol.Overlay>} Overlays.
  * @api
  */
-ol.PluggableMap.prototype.getOverlays = function() {
+_ol_PluggableMap_.prototype.getOverlays = function() {
   return this.overlays_;
 };
 
@@ -670,7 +672,7 @@ ol.PluggableMap.prototype.getOverlays = function() {
  * @return {ol.Overlay} Overlay.
  * @api
  */
-ol.PluggableMap.prototype.getOverlayById = function(id) {
+_ol_PluggableMap_.prototype.getOverlayById = function(id) {
   var overlay = this.overlayIdIndex_[id.toString()];
   return overlay !== undefined ? overlay : null;
 };
@@ -684,7 +686,7 @@ ol.PluggableMap.prototype.getOverlayById = function(id) {
  * @return {ol.Collection.<ol.interaction.Interaction>} Interactions.
  * @api
  */
-ol.PluggableMap.prototype.getInteractions = function() {
+_ol_PluggableMap_.prototype.getInteractions = function() {
   return this.interactions;
 };
 
@@ -695,8 +697,10 @@ ol.PluggableMap.prototype.getInteractions = function() {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.getLayerGroup = function() {
-  return /** @type {ol.layer.Group} */ (this.get(ol.MapProperty.LAYERGROUP));
+_ol_PluggableMap_.prototype.getLayerGroup = function() {
+  return (
+    /** @type {ol.layer.Group} */ this.get(_ol_MapProperty_.LAYERGROUP)
+  );
 };
 
 
@@ -705,7 +709,7 @@ ol.PluggableMap.prototype.getLayerGroup = function() {
  * @return {!ol.Collection.<ol.layer.Base>} Layers.
  * @api
  */
-ol.PluggableMap.prototype.getLayers = function() {
+_ol_PluggableMap_.prototype.getLayers = function() {
   var layers = this.getLayerGroup().getLayers();
   return layers;
 };
@@ -718,12 +722,12 @@ ol.PluggableMap.prototype.getLayers = function() {
  * @return {ol.Pixel} A pixel position in the map viewport.
  * @api
  */
-ol.PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
+_ol_PluggableMap_.prototype.getPixelFromCoordinate = function(coordinate) {
   var frameState = this.frameState_;
   if (!frameState) {
     return null;
   } else {
-    return ol.transform.apply(frameState.coordinateToPixelTransform,
+    return _ol_transform_.apply(frameState.coordinateToPixelTransform,
         coordinate.slice(0, 2));
   }
 };
@@ -733,7 +737,7 @@ ol.PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
  * Get the map renderer.
  * @return {ol.renderer.Map} Renderer
  */
-ol.PluggableMap.prototype.getRenderer = function() {
+_ol_PluggableMap_.prototype.getRenderer = function() {
   return this.renderer_;
 };
 
@@ -744,8 +748,10 @@ ol.PluggableMap.prototype.getRenderer = function() {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.getSize = function() {
-  return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
+_ol_PluggableMap_.prototype.getSize = function() {
+  return (
+    /** @type {ol.Size|undefined} */ this.get(_ol_MapProperty_.SIZE)
+  );
 };
 
 
@@ -756,8 +762,10 @@ ol.PluggableMap.prototype.getSize = function() {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
+_ol_PluggableMap_.prototype.getView = function() {
+  return (
+    /** @type {ol.View} */ this.get(_ol_MapProperty_.VIEW)
+  );
 };
 
 
@@ -766,7 +774,7 @@ ol.PluggableMap.prototype.getView = function() {
  * @return {Element} Viewport.
  * @api
  */
-ol.PluggableMap.prototype.getViewport = function() {
+_ol_PluggableMap_.prototype.getViewport = function() {
   return this.viewport_;
 };
 
@@ -778,7 +786,7 @@ ol.PluggableMap.prototype.getViewport = function() {
  * events.
  * @return {!Element} The map's overlay container.
  */
-ol.PluggableMap.prototype.getOverlayContainer = function() {
+_ol_PluggableMap_.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
 };
 
@@ -790,7 +798,7 @@ ol.PluggableMap.prototype.getOverlayContainer = function() {
  * don't trigger any {@link ol.MapBrowserEvent}.
  * @return {!Element} The map's overlay container that stops events.
  */
-ol.PluggableMap.prototype.getOverlayContainerStopEvent = function() {
+_ol_PluggableMap_.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
 };
 
@@ -802,15 +810,15 @@ ol.PluggableMap.prototype.getOverlayContainerStopEvent = function() {
  * @param {number} tileResolution Tile resolution.
  * @return {number} Tile priority.
  */
-ol.PluggableMap.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, tileResolution) {
+_ol_PluggableMap_.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, tileResolution) {
   // Filter out tiles at higher zoom levels than the current zoom level, or that
   // are outside the visible extent.
   var frameState = this.frameState_;
   if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
-    return ol.structs.PriorityQueue.DROP;
+    return _ol_structs_PriorityQueue_.DROP;
   }
   if (!frameState.wantedTiles[tileSourceKey][tile.getKey()]) {
-    return ol.structs.PriorityQueue.DROP;
+    return _ol_structs_PriorityQueue_.DROP;
   }
   // Prioritize the highest zoom level tiles closest to the focus.
   // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).
@@ -829,9 +837,9 @@ ol.PluggableMap.prototype.getTilePriority = function(tile, tileSourceKey, tileCe
  * @param {Event} browserEvent Browser event.
  * @param {string=} opt_type Type.
  */
-ol.PluggableMap.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
+_ol_PluggableMap_.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
-  var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
+  var mapBrowserEvent = new _ol_MapBrowserEvent_(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
 };
 
@@ -839,7 +847,7 @@ ol.PluggableMap.prototype.handleBrowserEvent = function(browserEvent, opt_type) 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
  */
-ol.PluggableMap.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
+_ol_PluggableMap_.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   if (!this.frameState_) {
     // With no view defined, we cannot translate pixels into geographical
     // coordinates so interactions cannot be used.
@@ -867,7 +875,7 @@ ol.PluggableMap.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
 /**
  * @protected
  */
-ol.PluggableMap.prototype.handlePostRender = function() {
+_ol_PluggableMap_.prototype.handlePostRender = function() {
 
   var frameState = this.frameState_;
 
@@ -886,11 +894,11 @@ ol.PluggableMap.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[ol.ViewHint.ANIMATING]) {
+      if (hints[_ol_ViewHint_.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[ol.ViewHint.INTERACTING]) {
+      if (hints[_ol_ViewHint_.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -913,7 +921,7 @@ ol.PluggableMap.prototype.handlePostRender = function() {
 /**
  * @private
  */
-ol.PluggableMap.prototype.handleSizeChanged_ = function() {
+_ol_PluggableMap_.prototype.handleSizeChanged_ = function() {
   this.render();
 };
 
@@ -921,7 +929,7 @@ ol.PluggableMap.prototype.handleSizeChanged_ = function() {
 /**
  * @private
  */
-ol.PluggableMap.prototype.handleTargetChanged_ = function() {
+_ol_PluggableMap_.prototype.handleTargetChanged_ = function() {
   // target may be undefined, null, a string or an Element.
   // If it's a string we convert it to an Element before proceeding.
   // If it's not now an Element we remove the viewport from the DOM.
@@ -934,16 +942,16 @@ ol.PluggableMap.prototype.handleTargetChanged_ = function() {
 
   if (this.keyHandlerKeys_) {
     for (var i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
-      ol.events.unlistenByKey(this.keyHandlerKeys_[i]);
+      _ol_events_.unlistenByKey(this.keyHandlerKeys_[i]);
     }
     this.keyHandlerKeys_ = null;
   }
 
   if (!targetElement) {
     this.renderer_.removeLayerRenderers();
-    ol.dom.removeNode(this.viewport_);
+    _ol_dom_.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      window.removeEventListener(ol.events.EventType.RESIZE,
+      window.removeEventListener(_ol_events_EventType_.RESIZE,
           this.handleResize_, false);
       this.handleResize_ = undefined;
     }
@@ -953,15 +961,15 @@ ol.PluggableMap.prototype.handleTargetChanged_ = function() {
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
-      ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYDOWN,
+      _ol_events_.listen(keyboardEventTarget, _ol_events_EventType_.KEYDOWN,
           this.handleBrowserEvent, this),
-      ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYPRESS,
+      _ol_events_.listen(keyboardEventTarget, _ol_events_EventType_.KEYPRESS,
           this.handleBrowserEvent, this)
     ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      window.addEventListener(ol.events.EventType.RESIZE,
+      window.addEventListener(_ol_events_EventType_.RESIZE,
           this.handleResize_, false);
     }
   }
@@ -975,7 +983,7 @@ ol.PluggableMap.prototype.handleTargetChanged_ = function() {
 /**
  * @private
  */
-ol.PluggableMap.prototype.handleTileChange_ = function() {
+_ol_PluggableMap_.prototype.handleTileChange_ = function() {
   this.render();
 };
 
@@ -983,7 +991,7 @@ ol.PluggableMap.prototype.handleTileChange_ = function() {
 /**
  * @private
  */
-ol.PluggableMap.prototype.handleViewPropertyChanged_ = function() {
+_ol_PluggableMap_.prototype.handleViewPropertyChanged_ = function() {
   this.render();
 };
 
@@ -991,23 +999,23 @@ ol.PluggableMap.prototype.handleViewPropertyChanged_ = function() {
 /**
  * @private
  */
-ol.PluggableMap.prototype.handleViewChanged_ = function() {
+_ol_PluggableMap_.prototype.handleViewChanged_ = function() {
   if (this.viewPropertyListenerKey_) {
-    ol.events.unlistenByKey(this.viewPropertyListenerKey_);
+    _ol_events_.unlistenByKey(this.viewPropertyListenerKey_);
     this.viewPropertyListenerKey_ = null;
   }
   if (this.viewChangeListenerKey_) {
-    ol.events.unlistenByKey(this.viewChangeListenerKey_);
+    _ol_events_.unlistenByKey(this.viewChangeListenerKey_);
     this.viewChangeListenerKey_ = null;
   }
   var view = this.getView();
   if (view) {
-    this.viewport_.setAttribute('data-view', ol.getUid(view));
-    this.viewPropertyListenerKey_ = ol.events.listen(
-        view, ol.ObjectEventType.PROPERTYCHANGE,
+    this.viewport_.setAttribute('data-view', _ol_.getUid(view));
+    this.viewPropertyListenerKey_ = _ol_events_.listen(
+        view, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
-    this.viewChangeListenerKey_ = ol.events.listen(
-        view, ol.events.EventType.CHANGE,
+    this.viewChangeListenerKey_ = _ol_events_.listen(
+        view, _ol_events_EventType_.CHANGE,
         this.handleViewPropertyChanged_, this);
   }
   this.render();
@@ -1017,19 +1025,19 @@ ol.PluggableMap.prototype.handleViewChanged_ = function() {
 /**
  * @private
  */
-ol.PluggableMap.prototype.handleLayerGroupChanged_ = function() {
+_ol_PluggableMap_.prototype.handleLayerGroupChanged_ = function() {
   if (this.layerGroupPropertyListenerKeys_) {
-    this.layerGroupPropertyListenerKeys_.forEach(ol.events.unlistenByKey);
+    this.layerGroupPropertyListenerKeys_.forEach(_ol_events_.unlistenByKey);
     this.layerGroupPropertyListenerKeys_ = null;
   }
   var layerGroup = this.getLayerGroup();
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
-      ol.events.listen(
-          layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
+      _ol_events_.listen(
+          layerGroup, _ol_ObjectEventType_.PROPERTYCHANGE,
           this.render, this),
-      ol.events.listen(
-          layerGroup, ol.events.EventType.CHANGE,
+      _ol_events_.listen(
+          layerGroup, _ol_events_EventType_.CHANGE,
           this.render, this)
     ];
   }
@@ -1040,7 +1048,7 @@ ol.PluggableMap.prototype.handleLayerGroupChanged_ = function() {
 /**
  * @return {boolean} Is rendered.
  */
-ol.PluggableMap.prototype.isRendered = function() {
+_ol_PluggableMap_.prototype.isRendered = function() {
   return !!this.frameState_;
 };
 
@@ -1049,7 +1057,7 @@ ol.PluggableMap.prototype.isRendered = function() {
  * Requests an immediate render in a synchronous manner.
  * @api
  */
-ol.PluggableMap.prototype.renderSync = function() {
+_ol_PluggableMap_.prototype.renderSync = function() {
   if (this.animationDelayKey_) {
     cancelAnimationFrame(this.animationDelayKey_);
   }
@@ -1061,7 +1069,7 @@ ol.PluggableMap.prototype.renderSync = function() {
  * Request a map rendering (at the next animation frame).
  * @api
  */
-ol.PluggableMap.prototype.render = function() {
+_ol_PluggableMap_.prototype.render = function() {
   if (this.animationDelayKey_ === undefined) {
     this.animationDelayKey_ = requestAnimationFrame(
         this.animationDelay_);
@@ -1076,7 +1084,7 @@ ol.PluggableMap.prototype.render = function() {
  *     if the control was not found).
  * @api
  */
-ol.PluggableMap.prototype.removeControl = function(control) {
+_ol_PluggableMap_.prototype.removeControl = function(control) {
   return this.getControls().remove(control);
 };
 
@@ -1088,7 +1096,7 @@ ol.PluggableMap.prototype.removeControl = function(control) {
  *     undefined if the interaction was not found).
  * @api
  */
-ol.PluggableMap.prototype.removeInteraction = function(interaction) {
+_ol_PluggableMap_.prototype.removeInteraction = function(interaction) {
   return this.getInteractions().remove(interaction);
 };
 
@@ -1100,7 +1108,7 @@ ol.PluggableMap.prototype.removeInteraction = function(interaction) {
  *     layer was not found).
  * @api
  */
-ol.PluggableMap.prototype.removeLayer = function(layer) {
+_ol_PluggableMap_.prototype.removeLayer = function(layer) {
   var layers = this.getLayerGroup().getLayers();
   return layers.remove(layer);
 };
@@ -1113,7 +1121,7 @@ ol.PluggableMap.prototype.removeLayer = function(layer) {
  *     if the overlay was not found).
  * @api
  */
-ol.PluggableMap.prototype.removeOverlay = function(overlay) {
+_ol_PluggableMap_.prototype.removeOverlay = function(overlay) {
   return this.getOverlays().remove(overlay);
 };
 
@@ -1122,21 +1130,21 @@ ol.PluggableMap.prototype.removeOverlay = function(overlay) {
  * @param {number} time Time.
  * @private
  */
-ol.PluggableMap.prototype.renderFrame_ = function(time) {
+_ol_PluggableMap_.prototype.renderFrame_ = function(time) {
   var i, ii, viewState;
 
   var size = this.getSize();
   var view = this.getView();
-  var extent = ol.extent.createEmpty();
+  var extent = _ol_extent_.createEmpty();
   var previousFrameState = this.frameState_;
   /** @type {?olx.FrameState} */
   var frameState = null;
-  if (size !== undefined && ol.size.hasArea(size) && view && view.isDef()) {
+  if (size !== undefined && _ol_size_.hasArea(size) && view && view.isDef()) {
     var viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerStates[ol.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
+      layerStates[_ol_.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
     var center = viewState.center;
@@ -1151,7 +1159,7 @@ ol.PluggableMap.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
-      logos: ol.obj.assign({}, this.logos_),
+      logos: _ol_obj_.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],
@@ -1167,7 +1175,7 @@ ol.PluggableMap.prototype.renderFrame_ = function(time) {
   }
 
   if (frameState) {
-    frameState.extent = ol.extent.getForViewAndSize(viewState.center,
+    frameState.extent = _ol_extent_.getForViewAndSize(viewState.center,
         viewState.resolution, viewState.rotation, frameState.size, extent);
   }
 
@@ -1183,29 +1191,29 @@ ol.PluggableMap.prototype.renderFrame_ = function(time) {
 
     if (previousFrameState) {
       var moveStart = !this.previousExtent_ ||
-                  (!ol.extent.isEmpty(this.previousExtent_) &&
-                  !ol.extent.equals(frameState.extent, this.previousExtent_));
+                  (!_ol_extent_.isEmpty(this.previousExtent_) &&
+                  !_ol_extent_.equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
-            new ol.MapEvent(ol.MapEventType.MOVESTART, this, previousFrameState));
-        this.previousExtent_ = ol.extent.createOrUpdateEmpty(this.previousExtent_);
+            new _ol_MapEvent_(_ol_MapEventType_.MOVESTART, this, previousFrameState));
+        this.previousExtent_ = _ol_extent_.createOrUpdateEmpty(this.previousExtent_);
       }
     }
 
     var idle = this.previousExtent_ &&
-        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
-        !ol.extent.equals(frameState.extent, this.previousExtent_);
+        !frameState.viewHints[_ol_ViewHint_.ANIMATING] &&
+        !frameState.viewHints[_ol_ViewHint_.INTERACTING] &&
+        !_ol_extent_.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
       this.dispatchEvent(
-          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
-      ol.extent.clone(frameState.extent, this.previousExtent_);
+          new _ol_MapEvent_(_ol_MapEventType_.MOVEEND, this, frameState));
+      _ol_extent_.clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
+      new _ol_MapEvent_(_ol_MapEventType_.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 
@@ -1219,8 +1227,8 @@ ol.PluggableMap.prototype.renderFrame_ = function(time) {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.setLayerGroup = function(layerGroup) {
-  this.set(ol.MapProperty.LAYERGROUP, layerGroup);
+_ol_PluggableMap_.prototype.setLayerGroup = function(layerGroup) {
+  this.set(_ol_MapProperty_.LAYERGROUP, layerGroup);
 };
 
 
@@ -1230,8 +1238,8 @@ ol.PluggableMap.prototype.setLayerGroup = function(layerGroup) {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.setSize = function(size) {
-  this.set(ol.MapProperty.SIZE, size);
+_ol_PluggableMap_.prototype.setSize = function(size) {
+  this.set(_ol_MapProperty_.SIZE, size);
 };
 
 
@@ -1242,8 +1250,8 @@ ol.PluggableMap.prototype.setSize = function(size) {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.setTarget = function(target) {
-  this.set(ol.MapProperty.TARGET, target);
+_ol_PluggableMap_.prototype.setTarget = function(target) {
+  this.set(_ol_MapProperty_.TARGET, target);
 };
 
 
@@ -1253,16 +1261,16 @@ ol.PluggableMap.prototype.setTarget = function(target) {
  * @observable
  * @api
  */
-ol.PluggableMap.prototype.setView = function(view) {
-  this.set(ol.MapProperty.VIEW, view);
+_ol_PluggableMap_.prototype.setView = function(view) {
+  this.set(_ol_MapProperty_.VIEW, view);
 };
 
 
 /**
  * @param {ol.Feature} feature Feature.
  */
-ol.PluggableMap.prototype.skipFeature = function(feature) {
-  var featureUid = ol.getUid(feature).toString();
+_ol_PluggableMap_.prototype.skipFeature = function(feature) {
+  var featureUid = _ol_.getUid(feature).toString();
   this.skippedFeatureUids_[featureUid] = true;
   this.render();
 };
@@ -1273,7 +1281,7 @@ ol.PluggableMap.prototype.skipFeature = function(feature) {
  * third-party code changes the size of the map viewport.
  * @api
  */
-ol.PluggableMap.prototype.updateSize = function() {
+_ol_PluggableMap_.prototype.updateSize = function() {
   var targetElement = this.getTargetElement();
 
   if (!targetElement) {
@@ -1299,8 +1307,8 @@ ol.PluggableMap.prototype.updateSize = function() {
 /**
  * @param {ol.Feature} feature Feature.
  */
-ol.PluggableMap.prototype.unskipFeature = function(feature) {
-  var featureUid = ol.getUid(feature).toString();
+_ol_PluggableMap_.prototype.unskipFeature = function(feature) {
+  var featureUid = _ol_.getUid(feature).toString();
   delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
@@ -1310,9 +1318,9 @@ ol.PluggableMap.prototype.unskipFeature = function(feature) {
  * @type {Array.<ol.renderer.Type>}
  * @const
  */
-ol.PluggableMap.DEFAULT_RENDERER_TYPES = [
-  ol.renderer.Type.CANVAS,
-  ol.renderer.Type.WEBGL
+_ol_PluggableMap_.DEFAULT_RENDERER_TYPES = [
+  _ol_renderer_Type_.CANVAS,
+  _ol_renderer_Type_.WEBGL
 ];
 
 
@@ -1320,7 +1328,7 @@ ol.PluggableMap.DEFAULT_RENDERER_TYPES = [
  * @const
  * @type {string}
  */
-ol.PluggableMap.LOGO_URL = 'data:image/png;base64,' +
+_ol_PluggableMap_.LOGO_URL = 'data:image/png;base64,' +
     'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBI' +
     'WXMAAAHGAAABxgEXwfpGAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAA' +
     'AhNQTFRF////AP//AICAgP//AFVVQECA////K1VVSbbbYL/fJ05idsTYJFtbbcjbJllmZszW' +
@@ -1348,7 +1356,7 @@ ol.PluggableMap.LOGO_URL = 'data:image/png;base64,' +
  * @param {olx.MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
-ol.PluggableMap.createOptionsInternal = function(options) {
+_ol_PluggableMap_.createOptionsInternal = function(options) {
 
   /**
    * @type {Element|Document}
@@ -1368,28 +1376,28 @@ ol.PluggableMap.createOptionsInternal = function(options) {
   var logos = {};
   if (options.logo === undefined ||
       (typeof options.logo === 'boolean' && options.logo)) {
-    logos[ol.PluggableMap.LOGO_URL] = 'https://openlayers.org/';
+    logos[_ol_PluggableMap_.LOGO_URL] = 'https://openlayers.org/';
   } else {
     var logo = options.logo;
     if (typeof logo === 'string') {
       logos[logo] = '';
     } else if (logo instanceof HTMLElement) {
-      logos[ol.getUid(logo).toString()] = logo;
+      logos[_ol_.getUid(logo).toString()] = logo;
     } else if (logo) {
-      ol.asserts.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      ol.asserts.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
+      _ol_asserts_.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      _ol_asserts_.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       logos[logo.src] = logo.href;
     }
   }
 
-  var layerGroup = (options.layers instanceof ol.layer.Group) ?
-    options.layers : new ol.layer.Group({layers: options.layers});
-  values[ol.MapProperty.LAYERGROUP] = layerGroup;
+  var layerGroup = (options.layers instanceof _ol_layer_Group_) ?
+    options.layers : new _ol_layer_Group_({layers: options.layers});
+  values[_ol_MapProperty_.LAYERGROUP] = layerGroup;
 
-  values[ol.MapProperty.TARGET] = options.target;
+  values[_ol_MapProperty_.TARGET] = options.target;
 
-  values[ol.MapProperty.VIEW] = options.view !== undefined ?
-    options.view : new ol.View();
+  values[_ol_MapProperty_.VIEW] = options.view !== undefined ?
+    options.view : new _ol_View_();
 
   /**
    * @type {Array.<ol.renderer.Type>}
@@ -1402,13 +1410,13 @@ ol.PluggableMap.createOptionsInternal = function(options) {
     } else if (typeof options.renderer === 'string') {
       rendererTypes = [options.renderer];
     } else {
-      ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
+      _ol_asserts_.assert(false, 46); // Incorrect format for `renderer` option
     }
     if (rendererTypes.indexOf(/** @type {ol.renderer.Type} */ ('dom')) >= 0) {
-      rendererTypes = rendererTypes.concat(ol.PluggableMap.DEFAULT_RENDERER_TYPES);
+      rendererTypes = rendererTypes.concat(_ol_PluggableMap_.DEFAULT_RENDERER_TYPES);
     }
   } else {
-    rendererTypes = ol.PluggableMap.DEFAULT_RENDERER_TYPES;
+    rendererTypes = _ol_PluggableMap_.DEFAULT_RENDERER_TYPES;
   }
 
   /**
@@ -1416,7 +1424,7 @@ ol.PluggableMap.createOptionsInternal = function(options) {
    */
   var mapRendererPlugin;
 
-  var mapRendererPlugins = ol.plugins.getMapRendererPlugins();
+  var mapRendererPlugins = _ol_plugins_.getMapRendererPlugins();
   outer: for (var i = 0, ii = rendererTypes.length; i < ii; ++i) {
     var rendererType = rendererTypes[i];
     for (var j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
@@ -1435,9 +1443,9 @@ ol.PluggableMap.createOptionsInternal = function(options) {
   var controls;
   if (options.controls !== undefined) {
     if (Array.isArray(options.controls)) {
-      controls = new ol.Collection(options.controls.slice());
+      controls = new _ol_Collection_(options.controls.slice());
     } else {
-      ol.asserts.assert(options.controls instanceof ol.Collection,
+      _ol_asserts_.assert(options.controls instanceof _ol_Collection_,
           47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
@@ -1446,9 +1454,9 @@ ol.PluggableMap.createOptionsInternal = function(options) {
   var interactions;
   if (options.interactions !== undefined) {
     if (Array.isArray(options.interactions)) {
-      interactions = new ol.Collection(options.interactions.slice());
+      interactions = new _ol_Collection_(options.interactions.slice());
     } else {
-      ol.asserts.assert(options.interactions instanceof ol.Collection,
+      _ol_asserts_.assert(options.interactions instanceof _ol_Collection_,
           48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
@@ -1457,14 +1465,14 @@ ol.PluggableMap.createOptionsInternal = function(options) {
   var overlays;
   if (options.overlays !== undefined) {
     if (Array.isArray(options.overlays)) {
-      overlays = new ol.Collection(options.overlays.slice());
+      overlays = new _ol_Collection_(options.overlays.slice());
     } else {
-      ol.asserts.assert(options.overlays instanceof ol.Collection,
+      _ol_asserts_.assert(options.overlays instanceof _ol_Collection_,
           49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }
   } else {
-    overlays = new ol.Collection();
+    overlays = new _ol_Collection_();
   }
 
   return {
@@ -1478,3 +1486,4 @@ ol.PluggableMap.createOptionsInternal = function(options) {
   };
 
 };
+export default _ol_PluggableMap_;

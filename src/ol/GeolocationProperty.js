@@ -1,10 +1,10 @@
-goog.provide('ol.GeolocationProperty');
-
-
+/**
+ * @module ol/GeolocationProperty
+ */
 /**
  * @enum {string}
  */
-ol.GeolocationProperty = {
+var _ol_GeolocationProperty_ = {
   ACCURACY: 'accuracy',
   ACCURACY_GEOMETRY: 'accuracyGeometry',
   ALTITUDE: 'altitude',
@@ -16,3 +16,5 @@ ol.GeolocationProperty = {
   TRACKING: 'tracking',
   TRACKING_OPTIONS: 'trackingOptions'
 };
+
+export default _ol_GeolocationProperty_;

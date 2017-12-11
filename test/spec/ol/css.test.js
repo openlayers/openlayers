@@ -1,4 +1,4 @@
-goog.require('ol.css');
+import _ol_css_ from '../../../src/ol/css.js';
 
 describe('ol.css', function() {
 
@@ -25,7 +25,7 @@ describe('ol.css', function() {
 
     cases.forEach(function(c, i) {
       it('works for ' + c.font, function() {
-        var families = ol.css.getFontFamilies(c.font);
+        var families = _ol_css_.getFontFamilies(c.font);
         if (c.families === null) {
           expect(families).to.be(null);
           return;

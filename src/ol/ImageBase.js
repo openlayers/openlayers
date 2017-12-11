@@ -1,9 +1,9 @@
-goog.provide('ol.ImageBase');
-
-goog.require('ol');
-goog.require('ol.events.EventTarget');
-goog.require('ol.events.EventType');
-
+/**
+ * @module ol/ImageBase
+ */
+import _ol_ from './index.js';
+import _ol_events_EventTarget_ from './events/EventTarget.js';
+import _ol_events_EventType_ from './events/EventType.js';
 
 /**
  * @constructor
@@ -14,9 +14,9 @@ goog.require('ol.events.EventType');
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
  */
-ol.ImageBase = function(extent, resolution, pixelRatio, state) {
+var _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
 
-  ol.events.EventTarget.call(this);
+  _ol_events_EventTarget_.call(this);
 
   /**
    * @protected
@@ -43,21 +43,22 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state) {
   this.state = state;
 
 };
-ol.inherits(ol.ImageBase, ol.events.EventTarget);
+
+_ol_.inherits(_ol_ImageBase_, _ol_events_EventTarget_);
 
 
 /**
  * @protected
  */
-ol.ImageBase.prototype.changed = function() {
-  this.dispatchEvent(ol.events.EventType.CHANGE);
+_ol_ImageBase_.prototype.changed = function() {
+  this.dispatchEvent(_ol_events_EventType_.CHANGE);
 };
 
 
 /**
  * @return {ol.Extent} Extent.
  */
-ol.ImageBase.prototype.getExtent = function() {
+_ol_ImageBase_.prototype.getExtent = function() {
   return this.extent;
 };
 
@@ -66,13 +67,13 @@ ol.ImageBase.prototype.getExtent = function() {
  * @abstract
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  */
-ol.ImageBase.prototype.getImage = function() {};
+_ol_ImageBase_.prototype.getImage = function() {};
 
 
 /**
  * @return {number} PixelRatio.
  */
-ol.ImageBase.prototype.getPixelRatio = function() {
+_ol_ImageBase_.prototype.getPixelRatio = function() {
   return this.pixelRatio_;
 };
 
@@ -80,7 +81,7 @@ ol.ImageBase.prototype.getPixelRatio = function() {
 /**
  * @return {number} Resolution.
  */
-ol.ImageBase.prototype.getResolution = function() {
+_ol_ImageBase_.prototype.getResolution = function() {
   return /** @type {number} */ (this.resolution);
 };
 
@@ -88,7 +89,7 @@ ol.ImageBase.prototype.getResolution = function() {
 /**
  * @return {ol.ImageState} State.
  */
-ol.ImageBase.prototype.getState = function() {
+_ol_ImageBase_.prototype.getState = function() {
   return this.state;
 };
 
@@ -97,4 +98,5 @@ ol.ImageBase.prototype.getState = function() {
  * Load not yet loaded URI.
  * @abstract
  */
-ol.ImageBase.prototype.load = function() {};
+_ol_ImageBase_.prototype.load = function() {};
+export default _ol_ImageBase_;

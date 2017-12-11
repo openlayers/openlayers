@@ -1,16 +1,14 @@
-
-
-goog.require('ol.format.WMTSCapabilities');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.tilegrid.WMTS');
-goog.require('ol.source.WMTS');
+import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
+import _ol_proj_ from '../../../../src/ol/proj.js';
+import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import _ol_tilegrid_WMTS_ from '../../../../src/ol/tilegrid/WMTS.js';
+import _ol_source_WMTS_ from '../../../../src/ol/source/WMTS.js';
 
 
 describe('ol.source.WMTS', function() {
 
   describe('when creating options from capabilities', function() {
-    var parser = new ol.format.WMTSCapabilities();
+    var parser = new _ol_format_WMTSCapabilities_();
     var capabilities, content;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ogcsample.xml', function(xml) {
@@ -25,7 +23,7 @@ describe('ol.source.WMTS', function() {
     });
 
     it('returns null if the layer was not found in the capabilities', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+      var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
         layer: 'invalid'
       });
 
@@ -33,7 +31,7 @@ describe('ol.source.WMTS', function() {
     });
 
     it('passes the crossOrigin option', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+      var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
         matrixSet: 'google3857',
         crossOrigin: ''
@@ -44,7 +42,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options = ol.source.WMTS.optionsFromCapabilities(
+          var options = _ol_source_WMTS_.optionsFromCapabilities(
               capabilities,
               {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857'});
 
@@ -59,12 +57,12 @@ describe('ol.source.WMTS', function() {
 
           expect(options.format).to.be.eql('image/jpeg');
 
-          expect(options.projection).to.be.a(ol.proj.Projection);
-          expect(options.projection).to.be.eql(ol.proj.get('EPSG:3857'));
+          expect(options.projection).to.be.a(_ol_proj_Projection_);
+          expect(options.projection).to.be.eql(_ol_proj_.get('EPSG:3857'));
 
           expect(options.requestEncoding).to.be.eql('KVP');
 
-          expect(options.tileGrid).to.be.a(ol.tilegrid.WMTS);
+          expect(options.tileGrid).to.be.a(_ol_tilegrid_WMTS_);
 
           expect(options.style).to.be.eql('DarkBlue');
 
@@ -76,7 +74,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create REST options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+          var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
             layer: 'BlueMarbleNextGeneration',
             matrixSet: 'google3857',
             requestEncoding: 'REST'
@@ -93,12 +91,12 @@ describe('ol.source.WMTS', function() {
 
           expect(options.format).to.be.eql('image/png');
 
-          expect(options.projection).to.be.a(ol.proj.Projection);
-          expect(options.projection).to.be.eql(ol.proj.get('EPSG:3857'));
+          expect(options.projection).to.be.a(_ol_proj_Projection_);
+          expect(options.projection).to.be.eql(_ol_proj_.get('EPSG:3857'));
 
           expect(options.requestEncoding).to.be.eql('REST');
 
-          expect(options.tileGrid).to.be.a(ol.tilegrid.WMTS);
+          expect(options.tileGrid).to.be.a(_ol_tilegrid_WMTS_);
 
           expect(options.style).to.be.eql('DarkBlue');
 
@@ -107,7 +105,7 @@ describe('ol.source.WMTS', function() {
         });
 
     it('can find a MatrixSet by SRS identifier', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+      var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
         projection: 'EPSG:3857',
         requestEncoding: 'REST'
@@ -118,7 +116,7 @@ describe('ol.source.WMTS', function() {
     });
 
     it('can find a MatrixSet by equivalent SRS identifier', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+      var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
         projection: 'EPSG:900913',
         requestEncoding: 'REST'
@@ -129,7 +127,7 @@ describe('ol.source.WMTS', function() {
     });
 
     it('can find the default MatrixSet', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+      var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
         requestEncoding: 'REST'
       });
@@ -139,9 +137,9 @@ describe('ol.source.WMTS', function() {
     });
 
     it('uses the projection of the default MatrixSet if the config\'s projection is not supported', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+      var options = _ol_source_WMTS_.optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
-        projection: new ol.proj.Projection({
+        projection: new _ol_proj_Projection_({
           code: 'EPSG:2056',
           units: 'm'
         })
@@ -155,7 +153,7 @@ describe('ol.source.WMTS', function() {
       var tmpXml = content.replace(/<ows:Constraint[\s\S]*?<\/ows:Constraint>/g, '');
       var tmpCapabilities = parser.read(tmpXml);
       expect(tmpCapabilities['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'][0]['Constraint']).to.be(undefined);
-      var options = ol.source.WMTS.optionsFromCapabilities(tmpCapabilities,
+      var options = _ol_source_WMTS_.optionsFromCapabilities(tmpCapabilities,
           {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857'});
       expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
       expect(options.matrixSet).to.be.eql('google3857');
@@ -168,7 +166,7 @@ describe('ol.source.WMTS', function() {
       var tmpCapabilities = parser.read(tmpXml);
       expect(tmpCapabilities['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'][0]['Constraint']).to.be(undefined);
       expect(tmpCapabilities['Contents']['Layer'][0]['ResourceURL']).to.be(undefined);
-      var options = ol.source.WMTS.optionsFromCapabilities(tmpCapabilities,
+      var options = _ol_source_WMTS_.optionsFromCapabilities(tmpCapabilities,
           {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857'});
       expect(options.layer).to.be.eql('BlueMarbleNextGeneration');
       expect(options.matrixSet).to.be.eql('google3857');
@@ -182,14 +180,14 @@ describe('ol.source.WMTS', function() {
 
     it('can replace lowercase REST parameters',
         function() {
-          var source = new ol.source.WMTS({
+          var source = new _ol_source_WMTS_({
             layer: 'layer',
             style: 'default',
             urls: ['http://www.example.com/wmts/coastlines/{layer}/{style}/' +
              '{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
             matrixSet: 'EPSG:3857',
             requestEncoding: 'REST',
-            tileGrid: new ol.tilegrid.WMTS({
+            tileGrid: new _ol_tilegrid_WMTS_({
               origin: [-20037508.342789244, 20037508.342789244],
               resolutions: [559082264.029 * 0.28E-3,
                 279541132.015 * 0.28E-3,
@@ -198,7 +196,7 @@ describe('ol.source.WMTS', function() {
             })
           });
 
-          var projection = ol.proj.get('EPSG:3857');
+          var projection = _ol_proj_.get('EPSG:3857');
           var url = source.tileUrlFunction(
               source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
@@ -208,14 +206,14 @@ describe('ol.source.WMTS', function() {
 
     it('can replace camelcase REST parameters',
         function() {
-          var source = new ol.source.WMTS({
+          var source = new _ol_source_WMTS_({
             layer: 'layer',
             style: 'default',
             urls: ['http://www.example.com/wmts/coastlines/{Layer}/{Style}/' +
              '{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
             matrixSet: 'EPSG:3857',
             requestEncoding: 'REST',
-            tileGrid: new ol.tilegrid.WMTS({
+            tileGrid: new _ol_tilegrid_WMTS_({
               origin: [-20037508.342789244, 20037508.342789244],
               resolutions: [559082264.029 * 0.28E-3,
                 279541132.015 * 0.28E-3,
@@ -224,7 +222,7 @@ describe('ol.source.WMTS', function() {
             })
           });
 
-          var projection = ol.proj.get('EPSG:3857');
+          var projection = _ol_proj_.get('EPSG:3857');
           var url = source.tileUrlFunction(
               source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
@@ -234,7 +232,7 @@ describe('ol.source.WMTS', function() {
   });
 
   describe('when creating options from Esri capabilities', function() {
-    var parser = new ol.format.WMTSCapabilities();
+    var parser = new _ol_format_WMTSCapabilities_();
     var capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/arcgis.xml', function(xml) {
@@ -249,7 +247,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create KVP options from spec/ol/format/wmts/arcgis.xml',
         function() {
-          var options = ol.source.WMTS.optionsFromCapabilities(
+          var options = _ol_source_WMTS_.optionsFromCapabilities(
               capabilities, {
                 layer: 'Demographics_USA_Population_Density',
                 requestEncoding: 'KVP',
@@ -265,7 +263,7 @@ describe('ol.source.WMTS', function() {
 
     it('can create REST options from spec/ol/format/wmts/arcgis.xml',
         function() {
-          var options = ol.source.WMTS.optionsFromCapabilities(
+          var options = _ol_source_WMTS_.optionsFromCapabilities(
               capabilities, {
                 layer: 'Demographics_USA_Population_Density',
                 matrixSet: 'default028mm'
@@ -283,7 +281,7 @@ describe('ol.source.WMTS', function() {
 
   describe('#setUrls()', function() {
     it('sets the URL for the source', function() {
-      var source = new ol.source.WMTS({});
+      var source = new _ol_source_WMTS_({});
 
       var urls = [
         'https://a.example.com/',
@@ -296,7 +294,7 @@ describe('ol.source.WMTS', function() {
     });
 
     it('updates the key for the source', function() {
-      var source = new ol.source.WMTS({});
+      var source = new _ol_source_WMTS_({});
 
       var urls = [
         'https://a.example.com/',
@@ -309,15 +307,15 @@ describe('ol.source.WMTS', function() {
     });
 
     it('generates the correct tileUrlFunction during application of setUrl()', function() {
-      var projection = ol.proj.get('EPSG:3857');
-      var source = new ol.source.WMTS({
+      var projection = _ol_proj_.get('EPSG:3857');
+      var source = new _ol_source_WMTS_({
         projection: projection,
         requestEncoding: 'REST',
         urls: [
           'http://1.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg',
           'http://2.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg'
         ],
-        tileGrid: new ol.tilegrid.WMTS({
+        tileGrid: new _ol_tilegrid_WMTS_({
           matrixIds: [0, 1, 2, 3, 4, 5, 6, 7],
           origin: [2690000, 1285000],
           resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250]
@@ -336,7 +334,7 @@ describe('ol.source.WMTS', function() {
 
   describe('url option', function() {
     it('expands url template', function() {
-      var tileSource = new ol.source.WMTS({
+      var tileSource = new _ol_source_WMTS_({
         url: '{1-3}'
       });
 
@@ -356,7 +354,7 @@ describe('ol.source.WMTS', function() {
         style: 'default',
         matrixSet: 'foo',
         requestEncoding: 'REST',
-        tileGrid: new ol.tilegrid.WMTS({
+        tileGrid: new _ol_tilegrid_WMTS_({
           origin: [0, 0],
           resolutions: [],
           matrixIds: []
@@ -367,7 +365,7 @@ describe('ol.source.WMTS', function() {
     describe('using a "url" option', function() {
       beforeEach(function() {
         sourceOptions.url = 'some_wmts_url';
-        source = new ol.source.WMTS(sourceOptions);
+        source = new _ol_source_WMTS_(sourceOptions);
       });
 
       it('returns the WMTS URLs', function() {
@@ -380,7 +378,7 @@ describe('ol.source.WMTS', function() {
     describe('using a "urls" option', function() {
       beforeEach(function() {
         sourceOptions.urls = ['some_wmts_url1', 'some_wmts_url2'];
-        source = new ol.source.WMTS(sourceOptions);
+        source = new _ol_source_WMTS_(sourceOptions);
       });
 
       it('returns the WMTS URLs', function() {
@@ -397,12 +395,12 @@ describe('ol.source.WMTS', function() {
     var source;
 
     beforeEach(function() {
-      source = new ol.source.WMTS({
+      source = new _ol_source_WMTS_({
         layer: 'layer',
         style: 'default',
         matrixSet: 'foo',
         requestEncoding: 'REST',
-        tileGrid: new ol.tilegrid.WMTS({
+        tileGrid: new _ol_tilegrid_WMTS_({
           origin: [0, 0],
           resolutions: [],
           matrixIds: []

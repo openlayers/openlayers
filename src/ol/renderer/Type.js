@@ -1,11 +1,13 @@
-goog.provide('ol.renderer.Type');
-
-
+/**
+ * @module ol/renderer/Type
+ */
 /**
  * Available renderers: `'canvas'` or `'webgl'`.
  * @enum {string}
  */
-ol.renderer.Type = {
+var _ol_renderer_Type_ = {
   CANVAS: 'canvas',
   WEBGL: 'webgl'
 };
+
+export default _ol_renderer_Type_;

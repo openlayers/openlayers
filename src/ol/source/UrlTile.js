@@ -1,12 +1,12 @@
-goog.provide('ol.source.UrlTile');
-
-goog.require('ol');
-goog.require('ol.TileState');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.source.Tile');
-goog.require('ol.source.TileEventType');
-goog.require('ol.tilecoord');
-
+/**
+ * @module ol/source/UrlTile
+ */
+import _ol_ from '../index.js';
+import _ol_TileState_ from '../TileState.js';
+import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import _ol_source_Tile_ from '../source/Tile.js';
+import _ol_source_TileEventType_ from '../source/TileEventType.js';
+import _ol_tilecoord_ from '../tilecoord.js';
 
 /**
  * @classdesc
@@ -18,9 +18,9 @@ goog.require('ol.tilecoord');
  * @extends {ol.source.Tile}
  * @param {ol.SourceUrlTileOptions} options Image tile options.
  */
-ol.source.UrlTile = function(options) {
+var _ol_source_UrlTile_ = function(options) {
 
-  ol.source.Tile.call(this, {
+  _ol_source_Tile_.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
@@ -46,7 +46,7 @@ ol.source.UrlTile = function(options) {
    */
   this.tileUrlFunction = this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    ol.TileUrlFunction.nullTileUrlFunction;
+    _ol_TileUrlFunction_.nullTileUrlFunction;
 
   /**
    * @protected
@@ -70,21 +70,22 @@ ol.source.UrlTile = function(options) {
   this.tileLoadingKeys_ = {};
 
 };
-ol.inherits(ol.source.UrlTile, ol.source.Tile);
+
+_ol_.inherits(_ol_source_UrlTile_, _ol_source_Tile_);
 
 
 /**
  * @type {ol.TileUrlFunctionType|undefined}
  * @protected
  */
-ol.source.UrlTile.prototype.fixedTileUrlFunction;
+_ol_source_UrlTile_.prototype.fixedTileUrlFunction;
 
 /**
  * Return the tile load function of the source.
  * @return {ol.TileLoadFunctionType} TileLoadFunction
  * @api
  */
-ol.source.UrlTile.prototype.getTileLoadFunction = function() {
+_ol_source_UrlTile_.prototype.getTileLoadFunction = function() {
   return this.tileLoadFunction;
 };
 
@@ -94,7 +95,7 @@ ol.source.UrlTile.prototype.getTileLoadFunction = function() {
  * @return {ol.TileUrlFunctionType} TileUrlFunction
  * @api
  */
-ol.source.UrlTile.prototype.getTileUrlFunction = function() {
+_ol_source_UrlTile_.prototype.getTileUrlFunction = function() {
   return this.tileUrlFunction;
 };
 
@@ -106,7 +107,7 @@ ol.source.UrlTile.prototype.getTileUrlFunction = function() {
  * @return {!Array.<string>|null} URLs.
  * @api
  */
-ol.source.UrlTile.prototype.getUrls = function() {
+_ol_source_UrlTile_.prototype.getUrls = function() {
   return this.urls;
 };
 
@@ -116,22 +117,22 @@ ol.source.UrlTile.prototype.getUrls = function() {
  * @param {ol.events.Event} event Event.
  * @protected
  */
-ol.source.UrlTile.prototype.handleTileChange = function(event) {
+_ol_source_UrlTile_.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
-  var uid = ol.getUid(tile);
+  var uid = _ol_.getUid(tile);
   var tileState = tile.getState();
   var type;
-  if (tileState == ol.TileState.LOADING) {
+  if (tileState == _ol_TileState_.LOADING) {
     this.tileLoadingKeys_[uid] = true;
-    type = ol.source.TileEventType.TILELOADSTART;
+    type = _ol_source_TileEventType_.TILELOADSTART;
   } else if (uid in this.tileLoadingKeys_) {
     delete this.tileLoadingKeys_[uid];
-    type = tileState == ol.TileState.ERROR ? ol.source.TileEventType.TILELOADERROR :
-      (tileState == ol.TileState.LOADED || tileState == ol.TileState.ABORT) ?
-        ol.source.TileEventType.TILELOADEND : undefined;
+    type = tileState == _ol_TileState_.ERROR ? _ol_source_TileEventType_.TILELOADERROR :
+      (tileState == _ol_TileState_.LOADED || tileState == _ol_TileState_.ABORT) ?
+        _ol_source_TileEventType_.TILELOADEND : undefined;
   }
   if (type != undefined) {
-    this.dispatchEvent(new ol.source.Tile.Event(type, tile));
+    this.dispatchEvent(new _ol_source_Tile_.Event(type, tile));
   }
 };
 
@@ -141,7 +142,7 @@ ol.source.UrlTile.prototype.handleTileChange = function(event) {
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @api
  */
-ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
+_ol_source_UrlTile_.prototype.setTileLoadFunction = function(tileLoadFunction) {
   this.tileCache.clear();
   this.tileLoadFunction = tileLoadFunction;
   this.changed();
@@ -154,7 +155,7 @@ ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
  * @param {string=} opt_key Optional new tile key for the source.
  * @api
  */
-ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
+_ol_source_UrlTile_.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
   this.tileUrlFunction = tileUrlFunction;
   this.tileCache.pruneExceptNewestZ();
   if (typeof opt_key !== 'undefined') {
@@ -170,11 +171,11 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_k
  * @param {string} url URL.
  * @api
  */
-ol.source.UrlTile.prototype.setUrl = function(url) {
-  var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
+_ol_source_UrlTile_.prototype.setUrl = function(url) {
+  var urls = this.urls = _ol_TileUrlFunction_.expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), url);
+    _ol_TileUrlFunction_.createFromTemplates(urls, this.tileGrid), url);
 };
 
 
@@ -183,21 +184,22 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
  * @param {Array.<string>} urls URLs.
  * @api
  */
-ol.source.UrlTile.prototype.setUrls = function(urls) {
+_ol_source_UrlTile_.prototype.setUrls = function(urls) {
   this.urls = urls;
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), key);
+    _ol_TileUrlFunction_.createFromTemplates(urls, this.tileGrid), key);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.source.UrlTile.prototype.useTile = function(z, x, y) {
-  var tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
+_ol_source_UrlTile_.prototype.useTile = function(z, x, y) {
+  var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
   }
 };
+export default _ol_source_UrlTile_;

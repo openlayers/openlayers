@@ -1,7 +1,7 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.XYZ');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
 var urls = [
   'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-jan/{z}/{x}/{y}.png',
@@ -10,16 +10,16 @@ var urls = [
   'https://{a-c}.tiles.mapbox.com/v3/mapbox.blue-marble-topo-bathy-jul/{z}/{x}/{y}.png'
 ];
 
-var source = new ol.source.XYZ();
+var source = new _ol_source_XYZ_();
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new ol.layer.Tile({
+    new _ol_layer_Tile_({
       source: source
     })
   ],
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })

@@ -1,9 +1,9 @@
-goog.provide('ol.webgl.Fragment');
-
-goog.require('ol');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Shader');
-
+/**
+ * @module ol/webgl/Fragment
+ */
+import _ol_ from '../index.js';
+import _ol_webgl_ from '../webgl.js';
+import _ol_webgl_Shader_ from '../webgl/Shader.js';
 
 /**
  * @constructor
@@ -11,15 +11,17 @@ goog.require('ol.webgl.Shader');
  * @param {string} source Source.
  * @struct
  */
-ol.webgl.Fragment = function(source) {
-  ol.webgl.Shader.call(this, source);
+var _ol_webgl_Fragment_ = function(source) {
+  _ol_webgl_Shader_.call(this, source);
 };
-ol.inherits(ol.webgl.Fragment, ol.webgl.Shader);
+
+_ol_.inherits(_ol_webgl_Fragment_, _ol_webgl_Shader_);
 
 
 /**
  * @inheritDoc
  */
-ol.webgl.Fragment.prototype.getType = function() {
-  return ol.webgl.FRAGMENT_SHADER;
+_ol_webgl_Fragment_.prototype.getType = function() {
+  return _ol_webgl_.FRAGMENT_SHADER;
 };
+export default _ol_webgl_Fragment_;

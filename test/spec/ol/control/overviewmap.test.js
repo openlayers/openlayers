@@ -1,9 +1,7 @@
-
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control.Control');
-goog.require('ol.control.OverviewMap');
+import _ol_Map_ from '../../../../src/ol/Map.js';
+import _ol_View_ from '../../../../src/ol/View.js';
+import _ol_control_Control_ from '../../../../src/ol/control/Control.js';
+import _ol_control_OverviewMap_ from '../../../../src/ol/control/OverviewMap.js';
 
 describe('ol.control.OverviewMap', function() {
   var map, target;
@@ -11,7 +9,7 @@ describe('ol.control.OverviewMap', function() {
   beforeEach(function() {
     target = document.createElement('div');
     document.body.appendChild(target);
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: target
     });
   });
@@ -25,23 +23,23 @@ describe('ol.control.OverviewMap', function() {
 
   describe('constructor', function() {
     it('creates an overview map with the default options', function() {
-      var control = new ol.control.OverviewMap();
-      expect(control).to.be.a(ol.control.OverviewMap);
-      expect(control).to.be.a(ol.control.Control);
+      var control = new _ol_control_OverviewMap_();
+      expect(control).to.be.a(_ol_control_OverviewMap_);
+      expect(control).to.be.a(_ol_control_Control_);
     });
   });
 
   describe('setMap()', function() {
 
     it('keeps ovmap view rotation in sync with map view rotation', function() {
-      var view = new ol.View({
+      var view = new _ol_View_({
         center: [0, 0],
         zoom: 0,
         rotation: 0
       });
       map.setView(view);
 
-      var control = new ol.control.OverviewMap();
+      var control = new _ol_control_OverviewMap_();
       map.addControl(control);
       var ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
@@ -51,12 +49,12 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('maintains rotation in sync if view added later', function() {
-      var control = new ol.control.OverviewMap();
+      var control = new _ol_control_OverviewMap_();
       map.addControl(control);
       var ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
 
-      var view = new ol.View({
+      var view = new _ol_View_({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -67,10 +65,10 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('stops listening to old maps', function() {
-      var control = new ol.control.OverviewMap();
+      var control = new _ol_control_OverviewMap_();
       var ovView = control.ovmap_.getView();
 
-      var view = new ol.View({
+      var view = new _ol_View_({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -88,7 +86,7 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('set target to null', function() {
-      var control = new ol.control.OverviewMap();
+      var control = new _ol_control_OverviewMap_();
 
       map.addControl(control);
 

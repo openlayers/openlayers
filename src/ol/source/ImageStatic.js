@@ -1,15 +1,15 @@
-goog.provide('ol.source.ImageStatic');
-
-goog.require('ol');
-goog.require('ol.Image');
-goog.require('ol.ImageState');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.source.Image');
-
+/**
+ * @module ol/source/ImageStatic
+ */
+import _ol_ from '../index.js';
+import _ol_Image_ from '../Image.js';
+import _ol_ImageState_ from '../ImageState.js';
+import _ol_dom_ from '../dom.js';
+import _ol_events_ from '../events.js';
+import _ol_events_EventType_ from '../events/EventType.js';
+import _ol_extent_ from '../extent.js';
+import _ol_proj_ from '../proj.js';
+import _ol_source_Image_ from '../source/Image.js';
 
 /**
  * @classdesc
@@ -20,7 +20,7 @@ goog.require('ol.source.Image');
  * @param {olx.source.ImageStaticOptions} options Options.
  * @api
  */
-ol.source.ImageStatic = function(options) {
+var _ol_source_ImageStatic_ = function(options) {
   var imageExtent = options.imageExtent;
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -28,19 +28,19 @@ ol.source.ImageStatic = function(options) {
 
   var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
       options.imageLoadFunction !== undefined ?
-        options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+        options.imageLoadFunction : _ol_source_Image_.defaultImageLoadFunction;
 
-  ol.source.Image.call(this, {
+  _ol_source_Image_.call(this, {
     attributions: options.attributions,
     logo: options.logo,
-    projection: ol.proj.get(options.projection)
+    projection: _ol_proj_.get(options.projection)
   });
 
   /**
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
+  this.image_ = new _ol_Image_(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
 
   /**
    * @private
@@ -48,18 +48,19 @@ ol.source.ImageStatic = function(options) {
    */
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
+  _ol_events_.listen(this.image_, _ol_events_EventType_.CHANGE,
       this.handleImageChange, this);
 
 };
-ol.inherits(ol.source.ImageStatic, ol.source.Image);
+
+_ol_.inherits(_ol_source_ImageStatic_, _ol_source_Image_);
 
 
 /**
  * @inheritDoc
  */
-ol.source.ImageStatic.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-  if (ol.extent.intersects(extent, this.image_.getExtent())) {
+_ol_source_ImageStatic_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+  if (_ol_extent_.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
   return null;
@@ -69,8 +70,8 @@ ol.source.ImageStatic.prototype.getImageInternal = function(extent, resolution, 
 /**
  * @inheritDoc
  */
-ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
-  if (this.image_.getState() == ol.ImageState.LOADED) {
+_ol_source_ImageStatic_.prototype.handleImageChange = function(evt) {
+  if (this.image_.getState() == _ol_ImageState_.LOADED) {
     var imageExtent = this.image_.getExtent();
     var image = this.image_.getImage();
     var imageWidth, imageHeight;
@@ -81,15 +82,16 @@ ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
       imageWidth = image.width;
       imageHeight = image.height;
     }
-    var resolution = ol.extent.getHeight(imageExtent) / imageHeight;
-    var targetWidth = Math.ceil(ol.extent.getWidth(imageExtent) / resolution);
+    var resolution = _ol_extent_.getHeight(imageExtent) / imageHeight;
+    var targetWidth = Math.ceil(_ol_extent_.getWidth(imageExtent) / resolution);
     if (targetWidth != imageWidth) {
-      var context = ol.dom.createCanvasContext2D(targetWidth, imageHeight);
+      var context = _ol_dom_.createCanvasContext2D(targetWidth, imageHeight);
       var canvas = context.canvas;
       context.drawImage(image, 0, 0, imageWidth, imageHeight,
           0, 0, canvas.width, canvas.height);
       this.image_.setImage(canvas);
     }
   }
-  ol.source.Image.prototype.handleImageChange.call(this, evt);
+  _ol_source_Image_.prototype.handleImageChange.call(this, evt);
 };
+export default _ol_source_ImageStatic_;

@@ -1,9 +1,9 @@
-goog.provide('ol.Attribution');
-
-goog.require('ol.TileRange');
-goog.require('ol.math');
-goog.require('ol.tilegrid');
-
+/**
+ * @module ol/Attribution
+ */
+import _ol_TileRange_ from './TileRange.js';
+import _ol_math_ from './math.js';
+import _ol_tilegrid_ from './tilegrid.js';
 
 /**
  * @classdesc
@@ -27,7 +27,7 @@ goog.require('ol.tilegrid');
  * @struct
  * @api
  */
-ol.Attribution = function(options) {
+var _ol_Attribution_ = function(options) {
 
   /**
    * @private
@@ -49,7 +49,7 @@ ol.Attribution = function(options) {
  * @return {string} The attribution HTML.
  * @api
  */
-ol.Attribution.prototype.getHTML = function() {
+_ol_Attribution_.prototype.getHTML = function() {
   return this.html_;
 };
 
@@ -60,7 +60,7 @@ ol.Attribution.prototype.getHTML = function() {
  * @param {!ol.proj.Projection} projection Projection.
  * @return {boolean} Intersects any tile range.
  */
-ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid, projection) {
+_ol_Attribution_.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid, projection) {
   if (!this.tileRanges_) {
     return true;
   }
@@ -77,13 +77,13 @@ ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid,
         return true;
       }
       var extentTileRange = tileGrid.getTileRangeForExtentAndZ(
-          ol.tilegrid.extentFromProjection(projection), parseInt(zKey, 10));
+          _ol_tilegrid_.extentFromProjection(projection), parseInt(zKey, 10));
       var width = extentTileRange.getWidth();
       if (tileRange.minX < extentTileRange.minX ||
           tileRange.maxX > extentTileRange.maxX) {
-        if (testTileRange.intersects(new ol.TileRange(
-            ol.math.modulo(tileRange.minX, width),
-            ol.math.modulo(tileRange.maxX, width),
+        if (testTileRange.intersects(new _ol_TileRange_(
+            _ol_math_.modulo(tileRange.minX, width),
+            _ol_math_.modulo(tileRange.maxX, width),
             tileRange.minY, tileRange.maxY))) {
           return true;
         }
@@ -96,3 +96,4 @@ ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid,
   }
   return false;
 };
+export default _ol_Attribution_;

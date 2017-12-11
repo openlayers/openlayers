@@ -1,20 +1,20 @@
-goog.provide('ol.renderer.canvas.VectorLayer');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.ViewHint');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.ext.rbush');
-goog.require('ol.extent');
-goog.require('ol.render.EventType');
-goog.require('ol.render.canvas');
-goog.require('ol.render.canvas.ReplayGroup');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.renderer.vector');
-
+/**
+ * @module ol/renderer/canvas/VectorLayer
+ */
+import _ol_ from '../../index.js';
+import _ol_LayerType_ from '../../LayerType.js';
+import _ol_ViewHint_ from '../../ViewHint.js';
+import _ol_dom_ from '../../dom.js';
+import _ol_events_ from '../../events.js';
+import _ol_events_EventType_ from '../../events/EventType.js';
+import _ol_ext_rbush_ from 'rbush';
+import _ol_extent_ from '../../extent.js';
+import _ol_render_EventType_ from '../../render/EventType.js';
+import _ol_render_canvas_ from '../../render/canvas.js';
+import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
+import _ol_renderer_Type_ from '../Type.js';
+import _ol_renderer_canvas_Layer_ from '../canvas/Layer.js';
+import _ol_renderer_vector_ from '../vector.js';
 
 /**
  * @constructor
@@ -22,16 +22,16 @@ goog.require('ol.renderer.vector');
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  * @api
  */
-ol.renderer.canvas.VectorLayer = function(vectorLayer) {
+var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
 
-  ol.renderer.canvas.Layer.call(this, vectorLayer);
+  _ol_renderer_canvas_Layer_.call(this, vectorLayer);
 
   /**
    * Declutter tree.
    * @private
    */
   this.declutterTree_ = vectorLayer.getDeclutter() ?
-    ol.ext.rbush(9) : null;
+    _ol_ext_rbush_(9) : null;
 
   /**
    * @private
@@ -55,7 +55,7 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
    * @private
    * @type {ol.Extent}
    */
-  this.renderedExtent_ = ol.extent.createEmpty();
+  this.renderedExtent_ = _ol_extent_.createEmpty();
 
   /**
    * @private
@@ -78,12 +78,13 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
   /**
    * @type {CanvasRenderingContext2D}
    */
-  this.context = ol.dom.createCanvasContext2D();
+  this.context = _ol_dom_.createCanvasContext2D();
 
-  ol.events.listen(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
+  _ol_events_.listen(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
 
 };
-ol.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
+
+_ol_.inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
 
 
 /**
@@ -92,8 +93,8 @@ ol.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-ol.renderer.canvas.VectorLayer['handles'] = function(type, layer) {
-  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.VECTOR;
+_ol_renderer_canvas_VectorLayer_['handles'] = function(type, layer) {
+  return type === _ol_renderer_Type_.CANVAS && layer.getType() === _ol_LayerType_.VECTOR;
 };
 
 
@@ -103,24 +104,24 @@ ol.renderer.canvas.VectorLayer['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.VectorLayer} The layer renderer.
  */
-ol.renderer.canvas.VectorLayer['create'] = function(mapRenderer, layer) {
-  return new ol.renderer.canvas.VectorLayer(/** @type {ol.layer.Vector} */ (layer));
+_ol_renderer_canvas_VectorLayer_['create'] = function(mapRenderer, layer) {
+  return new _ol_renderer_canvas_VectorLayer_(/** @type {ol.layer.Vector} */ (layer));
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.disposeInternal = function() {
-  ol.events.unlisten(ol.render.canvas.labelCache, ol.events.EventType.CLEAR, this.handleFontsChanged_, this);
-  ol.renderer.canvas.Layer.prototype.disposeInternal.call(this);
+_ol_renderer_canvas_VectorLayer_.prototype.disposeInternal = function() {
+  _ol_events_.unlisten(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
+  _ol_renderer_canvas_Layer_.prototype.disposeInternal.call(this);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, layerState, context) {
+_ol_renderer_canvas_VectorLayer_.prototype.composeFrame = function(frameState, layerState, context) {
 
   var extent = frameState.extent;
   var pixelRatio = frameState.pixelRatio;
@@ -152,7 +153,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var drawOffsetY = 0;
     var replayContext;
     var transparentLayer = layerState.opacity !== 1;
-    var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
+    var hasRenderListeners = layer.hasListener(_ol_render_EventType_.RENDER);
     if (transparentLayer || hasRenderListeners) {
       var drawWidth = context.canvas.width;
       var drawHeight = context.canvas.height;
@@ -184,13 +185,13 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 
     var width = frameState.size[0] * pixelRatio;
     var height = frameState.size[1] * pixelRatio;
-    ol.render.canvas.rotateAtOffset(replayContext, -rotation,
+    _ol_render_canvas_.rotateAtOffset(replayContext, -rotation,
         width / 2, height / 2);
     replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
-        !ol.extent.containsExtent(projectionExtent, extent)) {
+        !_ol_extent_.containsExtent(projectionExtent, extent)) {
       var startX = extent[0];
-      var worldWidth = ol.extent.getWidth(projectionExtent);
+      var worldWidth = _ol_extent_.getWidth(projectionExtent);
       var world = 0;
       var offsetX;
       while (startX < projectionExtent[0]) {
@@ -212,7 +213,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
       // restore original transform for render and compose events
       transform = this.getTransform(frameState, 0);
     }
-    ol.render.canvas.rotateAtOffset(replayContext, rotation,
+    _ol_render_canvas_.rotateAtOffset(replayContext, rotation,
         width / 2, height / 2);
 
     if (replayContext != context) {
@@ -246,7 +247,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+_ol_renderer_canvas_VectorLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
@@ -262,7 +263,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
          * @return {?} Callback result.
          */
         function(feature) {
-          var key = ol.getUid(feature).toString();
+          var key = _ol_.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback.call(thisArg, feature, layer);
@@ -276,7 +277,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
 /**
  * @param {ol.events.Event} event Event.
  */
-ol.renderer.canvas.VectorLayer.prototype.handleFontsChanged_ = function(event) {
+_ol_renderer_canvas_VectorLayer_.prototype.handleFontsChanged_ = function(event) {
   var layer = this.getLayer();
   if (layer.getVisible() && this.replayGroup_) {
     layer.changed();
@@ -289,7 +290,7 @@ ol.renderer.canvas.VectorLayer.prototype.handleFontsChanged_ = function(event) {
  * @param {ol.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
+_ol_renderer_canvas_VectorLayer_.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -297,15 +298,15 @@ ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ = function(even
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, layerState) {
+_ol_renderer_canvas_VectorLayer_.prototype.prepareFrame = function(frameState, layerState) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
 
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
-  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
+  var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
+  var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
@@ -324,22 +325,22 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
   if (vectorLayerRenderOrder === undefined) {
-    vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
+    vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
   }
 
-  var extent = ol.extent.buffer(frameStateExtent,
+  var extent = _ol_extent_.buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
   var projectionExtent = viewState.projection.getExtent();
 
   if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
-      !ol.extent.containsExtent(projectionExtent, frameState.extent)) {
+      !_ol_extent_.containsExtent(projectionExtent, frameState.extent)) {
     // For the replay group, we need an extent that intersects the real world
     // (-180° to +180°). To support geometries in a coordinate range from -540°
     // to +540°, we add at least 1 world width on each side of the projection
     // extent. If the viewport is wider than the world, we need to add half of
     // the viewport width to make sure we cover the whole viewport.
-    var worldWidth = ol.extent.getWidth(projectionExtent);
-    var buffer = Math.max(ol.extent.getWidth(extent) / 2, worldWidth);
+    var worldWidth = _ol_extent_.getWidth(projectionExtent);
+    var buffer = Math.max(_ol_extent_.getWidth(extent) / 2, worldWidth);
     extent[0] = projectionExtent[0] - buffer;
     extent[2] = projectionExtent[2] + buffer;
   }
@@ -348,7 +349,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      ol.extent.containsExtent(this.renderedExtent_, extent)) {
+      _ol_extent_.containsExtent(this.renderedExtent_, extent)) {
     this.replayGroupChanged = false;
     return true;
   }
@@ -357,8 +358,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
 
   this.dirty_ = false;
 
-  var replayGroup = new ol.render.canvas.ReplayGroup(
-      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent, resolution,
+  var replayGroup = new _ol_render_canvas_ReplayGroup_(
+      _ol_renderer_vector_.getTolerance(resolution, pixelRatio), extent, resolution,
       pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
@@ -421,23 +422,24 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.canvas.VectorLayer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
+_ol_renderer_canvas_VectorLayer_.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
   if (!styles) {
     return false;
   }
   var loading = false;
   if (Array.isArray(styles)) {
     for (var i = 0, ii = styles.length; i < ii; ++i) {
-      loading = ol.renderer.vector.renderFeature(
+      loading = _ol_renderer_vector_.renderFeature(
           replayGroup, feature, styles[i],
-          ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+          _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
           this.handleStyleImageChange_, this) || loading;
     }
   } else {
-    loading = ol.renderer.vector.renderFeature(
+    loading = _ol_renderer_vector_.renderFeature(
         replayGroup, feature, styles,
-        ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
+        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
         this.handleStyleImageChange_, this);
   }
   return loading;
 };
+export default _ol_renderer_canvas_VectorLayer_;

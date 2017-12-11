@@ -1,16 +1,16 @@
-goog.provide('ol.renderer.canvas.TileLayer');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.TileRange');
-goog.require('ol.TileState');
-goog.require('ol.ViewHint');
-goog.require('ol.dom');
-goog.require('ol.extent');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.canvas.IntermediateCanvas');
-goog.require('ol.transform');
-
+/**
+ * @module ol/renderer/canvas/TileLayer
+ */
+import _ol_ from '../../index.js';
+import _ol_LayerType_ from '../../LayerType.js';
+import _ol_TileRange_ from '../../TileRange.js';
+import _ol_TileState_ from '../../TileState.js';
+import _ol_ViewHint_ from '../../ViewHint.js';
+import _ol_dom_ from '../../dom.js';
+import _ol_extent_ from '../../extent.js';
+import _ol_renderer_Type_ from '../Type.js';
+import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
+import _ol_transform_ from '../../transform.js';
 
 /**
  * @constructor
@@ -18,15 +18,15 @@ goog.require('ol.transform');
  * @param {ol.layer.Tile|ol.layer.VectorTile} tileLayer Tile layer.
  * @api
  */
-ol.renderer.canvas.TileLayer = function(tileLayer) {
+var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
 
-  ol.renderer.canvas.IntermediateCanvas.call(this, tileLayer);
+  _ol_renderer_canvas_IntermediateCanvas_.call(this, tileLayer);
 
   /**
    * @protected
    * @type {CanvasRenderingContext2D}
    */
-  this.context = this.context === null ? null :  ol.dom.createCanvasContext2D();
+  this.context = this.context === null ? null :  _ol_dom_.createCanvasContext2D();
 
   /**
    * @private
@@ -56,19 +56,19 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
    * @protected
    * @type {ol.Extent}
    */
-  this.tmpExtent = ol.extent.createEmpty();
+  this.tmpExtent = _ol_extent_.createEmpty();
 
   /**
    * @private
    * @type {ol.TileRange}
    */
-  this.tmpTileRange_ = new ol.TileRange(0, 0, 0, 0);
+  this.tmpTileRange_ = new _ol_TileRange_(0, 0, 0, 0);
 
   /**
    * @private
    * @type {ol.Transform}
    */
-  this.imageTransform_ = ol.transform.create();
+  this.imageTransform_ = _ol_transform_.create();
 
   /**
    * @protected
@@ -77,7 +77,8 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
   this.zDirection = 0;
 
 };
-ol.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.IntermediateCanvas);
+
+_ol_.inherits(_ol_renderer_canvas_TileLayer_, _ol_renderer_canvas_IntermediateCanvas_);
 
 
 /**
@@ -86,8 +87,8 @@ ol.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.IntermediateCanvas)
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-ol.renderer.canvas.TileLayer['handles'] = function(type, layer) {
-  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.TILE;
+_ol_renderer_canvas_TileLayer_['handles'] = function(type, layer) {
+  return type === _ol_renderer_Type_.CANVAS && layer.getType() === _ol_LayerType_.TILE;
 };
 
 
@@ -97,8 +98,8 @@ ol.renderer.canvas.TileLayer['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.TileLayer} The layer renderer.
  */
-ol.renderer.canvas.TileLayer['create'] = function(mapRenderer, layer) {
-  return new ol.renderer.canvas.TileLayer(/** @type {ol.layer.Tile} */ (layer));
+_ol_renderer_canvas_TileLayer_['create'] = function(mapRenderer, layer) {
+  return new _ol_renderer_canvas_TileLayer_(/** @type {ol.layer.Tile} */ (layer));
 };
 
 
@@ -107,18 +108,18 @@ ol.renderer.canvas.TileLayer['create'] = function(mapRenderer, layer) {
  * @param {ol.Tile} tile Tile.
  * @return {boolean} Tile is drawable.
  */
-ol.renderer.canvas.TileLayer.prototype.isDrawableTile_ = function(tile) {
+_ol_renderer_canvas_TileLayer_.prototype.isDrawableTile_ = function(tile) {
   var tileState = tile.getState();
   var useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
-  return tileState == ol.TileState.LOADED ||
-      tileState == ol.TileState.EMPTY ||
-      tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+  return tileState == _ol_TileState_.LOADED ||
+      tileState == _ol_TileState_.EMPTY ||
+      tileState == _ol_TileState_.ERROR && !useInterimTilesOnError;
 };
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layerState) {
+_ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
   var size = frameState.size;
@@ -137,9 +138,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   var extent = frameState.extent;
 
   if (layerState.extent !== undefined) {
-    extent = ol.extent.getIntersection(extent, layerState.extent);
+    extent = _ol_extent_.getIntersection(extent, layerState.extent);
   }
-  if (ol.extent.isEmpty(extent)) {
+  if (_ol_extent_.isEmpty(extent)) {
     // Return false to prevent the rendering of the layer.
     return false;
   }
@@ -165,10 +166,10 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      if (tile.getState() == ol.TileState.ERROR) {
+      if (tile.getState() == _ol_TileState_.ERROR) {
         if (!tileLayer.getUseInterimTilesOnError()) {
           // When useInterimTilesOnError is false, we consider the error tile as loaded.
-          tile.setState(ol.TileState.LOADED);
+          tile.setState(_ol_TileState_.LOADED);
         } else if (tileLayer.getPreload() > 0) {
           // Preloaded tiles for lower resolutions might have finished loading.
           newTiles = true;
@@ -178,8 +179,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
         tile = tile.getInterimTile();
       }
       if (this.isDrawableTile_(tile)) {
-        var uid = ol.getUid(this);
-        if (tile.getState() == ol.TileState.LOADED) {
+        var uid = _ol_.getUid(this);
+        if (tile.getState() == _ol_TileState_.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
           var inTransition = tile.inTransition(uid);
           if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
@@ -208,10 +209,10 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
 
   var renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
   var hints = frameState.viewHints;
-  var animatingOrInteracting = hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING];
+  var animatingOrInteracting = hints[_ol_ViewHint_.ANIMATING] || hints[_ol_ViewHint_.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
     newTiles ||
-        !(this.renderedExtent_ && ol.extent.containsExtent(this.renderedExtent_, extent)) ||
+        !(this.renderedExtent_ && _ol_extent_.containsExtent(this.renderedExtent_, extent)) ||
         this.renderedRevision != sourceRevision ||
         oversampling != this.oversampling_ ||
         !animatingOrInteracting && renderedResolution != this.renderedResolution
@@ -228,7 +229,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
         canvas.width = width;
         canvas.height = height;
       } else {
-        if (this.renderedExtent_ && !ol.extent.equals(imageExtent, this.renderedExtent_)) {
+        if (this.renderedExtent_ && !_ol_extent_.equals(imageExtent, this.renderedExtent_)) {
           context.clearRect(0, 0, width, height);
         }
         oversampling = this.oversampling_;
@@ -274,13 +275,13 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   }
 
   var scale = this.renderedResolution / viewResolution;
-  var transform = ol.transform.compose(this.imageTransform_,
+  var transform = _ol_transform_.compose(this.imageTransform_,
       pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
       scale, scale,
       0,
       (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio,
       (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
-  ol.transform.compose(this.coordinateToCanvasPixelTransform,
+  _ol_transform_.compose(this.coordinateToCanvasPixelTransform,
       pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
       pixelRatio / viewResolution, -pixelRatio / viewResolution,
       0,
@@ -308,12 +309,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
  * @param {number} gutter Tile gutter.
  * @param {boolean} transition Apply an alpha transition.
  */
-ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter, transition) {
+_ol_renderer_canvas_TileLayer_.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter, transition) {
   var image = tile.getImage(this.getLayer());
   if (!image) {
     return;
   }
-  var uid = ol.getUid(this);
+  var uid = _ol_.getUid(this);
   var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
   if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
@@ -340,7 +341,7 @@ ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.getImage = function() {
+_ol_renderer_canvas_TileLayer_.prototype.getImage = function() {
   var context = this.context;
   return context ? context.canvas : null;
 };
@@ -350,12 +351,13 @@ ol.renderer.canvas.TileLayer.prototype.getImage = function() {
  * @function
  * @return {ol.layer.Tile|ol.layer.VectorTile}
  */
-ol.renderer.canvas.TileLayer.prototype.getLayer;
+_ol_renderer_canvas_TileLayer_.prototype.getLayer;
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.getImageTransform = function() {
+_ol_renderer_canvas_TileLayer_.prototype.getImageTransform = function() {
   return this.imageTransform_;
 };
+export default _ol_renderer_canvas_TileLayer_;

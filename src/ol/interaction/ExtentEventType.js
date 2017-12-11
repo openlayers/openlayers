@@ -1,10 +1,10 @@
-goog.provide('ol.interaction.ExtentEventType');
-
-
+/**
+ * @module ol/interaction/ExtentEventType
+ */
 /**
  * @enum {string}
  */
-ol.interaction.ExtentEventType = {
+var _ol_interaction_ExtentEventType_ = {
   /**
    * Triggered after the extent is changed
    * @event ol.interaction.Extent.Event#extentchanged
@@ -12,3 +12,5 @@ ol.interaction.ExtentEventType = {
    */
   EXTENTCHANGED: 'extentchanged'
 };
+
+export default _ol_interaction_ExtentEventType_;

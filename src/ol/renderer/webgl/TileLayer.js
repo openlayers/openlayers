@@ -1,24 +1,24 @@
+/**
+ * @module ol/renderer/webgl/TileLayer
+ */
 // FIXME large resolutions lead to too large framebuffers :-(
 // FIXME animated shaders! check in redraw
 
-goog.provide('ol.renderer.webgl.TileLayer');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.TileRange');
-goog.require('ol.TileState');
-goog.require('ol.array');
-goog.require('ol.extent');
-goog.require('ol.math');
-goog.require('ol.renderer.Type');
-goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.renderer.webgl.tilelayershader');
-goog.require('ol.renderer.webgl.tilelayershader.Locations');
-goog.require('ol.size');
-goog.require('ol.transform');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Buffer');
-
+import _ol_ from '../../index.js';
+import _ol_LayerType_ from '../../LayerType.js';
+import _ol_TileRange_ from '../../TileRange.js';
+import _ol_TileState_ from '../../TileState.js';
+import _ol_array_ from '../../array.js';
+import _ol_extent_ from '../../extent.js';
+import _ol_math_ from '../../math.js';
+import _ol_renderer_Type_ from '../Type.js';
+import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
+import _ol_renderer_webgl_tilelayershader_ from '../webgl/tilelayershader.js';
+import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayershader/Locations.js';
+import _ol_size_ from '../../size.js';
+import _ol_transform_ from '../../transform.js';
+import _ol_webgl_ from '../../webgl.js';
+import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -27,21 +27,21 @@ goog.require('ol.webgl.Buffer');
  * @param {ol.layer.Tile} tileLayer Tile layer.
  * @api
  */
-ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
+var _ol_renderer_webgl_TileLayer_ = function(mapRenderer, tileLayer) {
 
-  ol.renderer.webgl.Layer.call(this, mapRenderer, tileLayer);
+  _ol_renderer_webgl_Layer_.call(this, mapRenderer, tileLayer);
 
   /**
    * @private
    * @type {ol.webgl.Fragment}
    */
-  this.fragmentShader_ = ol.renderer.webgl.tilelayershader.fragment;
+  this.fragmentShader_ = _ol_renderer_webgl_tilelayershader_.fragment;
 
   /**
    * @private
    * @type {ol.webgl.Vertex}
    */
-  this.vertexShader_ = ol.renderer.webgl.tilelayershader.vertex;
+  this.vertexShader_ = _ol_renderer_webgl_tilelayershader_.vertex;
 
   /**
    * @private
@@ -53,7 +53,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {ol.webgl.Buffer}
    */
-  this.renderArrayBuffer_ = new ol.webgl.Buffer([
+  this.renderArrayBuffer_ = new _ol_webgl_Buffer_([
     0, 0, 0, 1,
     1, 0, 1, 1,
     0, 1, 0, 0,
@@ -85,7 +85,8 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
   this.tmpSize_ = [0, 0];
 
 };
-ol.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
+
+_ol_.inherits(_ol_renderer_webgl_TileLayer_, _ol_renderer_webgl_Layer_);
 
 
 /**
@@ -94,8 +95,8 @@ ol.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-ol.renderer.webgl.TileLayer['handles'] = function(type, layer) {
-  return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.TILE;
+_ol_renderer_webgl_TileLayer_['handles'] = function(type, layer) {
+  return type === _ol_renderer_Type_.WEBGL && layer.getType() === _ol_LayerType_.TILE;
 };
 
 
@@ -105,8 +106,8 @@ ol.renderer.webgl.TileLayer['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.TileLayer} The layer renderer.
  */
-ol.renderer.webgl.TileLayer['create'] = function(mapRenderer, layer) {
-  return new ol.renderer.webgl.TileLayer(
+_ol_renderer_webgl_TileLayer_['create'] = function(mapRenderer, layer) {
+  return new _ol_renderer_webgl_TileLayer_(
       /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
       /** @type {ol.layer.Tile} */ (layer)
   );
@@ -116,17 +117,17 @@ ol.renderer.webgl.TileLayer['create'] = function(mapRenderer, layer) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
+_ol_renderer_webgl_TileLayer_.prototype.disposeInternal = function() {
   var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
-  ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
+  _ol_renderer_webgl_Layer_.prototype.disposeInternal.call(this);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
+_ol_renderer_webgl_TileLayer_.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   var mapRenderer = this.mapRenderer;
 
   return (
@@ -154,8 +155,8 @@ ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, 
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
-  ol.renderer.webgl.Layer.prototype.handleWebGLContextLost.call(this);
+_ol_renderer_webgl_TileLayer_.prototype.handleWebGLContextLost = function() {
+  _ol_renderer_webgl_Layer_.prototype.handleWebGLContextLost.call(this);
   this.locations_ = null;
 };
 
@@ -163,7 +164,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerState, context) {
+_ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var mapRenderer = this.mapRenderer;
   var gl = context.getGL();
@@ -180,7 +181,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   var tilePixelSize =
       tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
   var pixelRatio = tilePixelSize[0] /
-      ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
+      _ol_size_.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
   var tilePixelResolution = tileResolution / pixelRatio;
   var tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
 
@@ -200,7 +201,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
     var maxDimension = Math.max(
         tileRangeSize[0] * tilePixelSize[0],
         tileRangeSize[1] * tilePixelSize[1]);
-    var framebufferDimension = ol.math.roundUpToPowerOfTwo(maxDimension);
+    var framebufferDimension = _ol_math_.roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
     var minX = origin[0] +
@@ -216,22 +217,22 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
     gl.viewport(0, 0, framebufferDimension, framebufferDimension);
 
     gl.clearColor(0, 0, 0, 0);
-    gl.clear(ol.webgl.COLOR_BUFFER_BIT);
-    gl.disable(ol.webgl.BLEND);
+    gl.clear(_ol_webgl_.COLOR_BUFFER_BIT);
+    gl.disable(_ol_webgl_.BLEND);
 
     var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
     if (!this.locations_) {
-      this.locations_ = new ol.renderer.webgl.tilelayershader.Locations(gl, program);
+      this.locations_ = new _ol_renderer_webgl_tilelayershader_Locations_(gl, program);
     }
 
-    context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
+    context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.renderArrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
-        this.locations_.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
+        this.locations_.a_position, 2, _ol_webgl_.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.locations_.a_texCoord);
     gl.vertexAttribPointer(
-        this.locations_.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
+        this.locations_.a_texCoord, 2, _ol_webgl_.FLOAT, false, 16, 8);
     gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
@@ -245,8 +246,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 
     var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     var allTilesLoaded = true;
-    var tmpExtent = ol.extent.createEmpty();
-    var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
+    var tmpExtent = _ol_extent_.createEmpty();
+    var tmpTileRange = new _ol_TileRange_(0, 0, 0, 0);
     var childTileRange, drawable, fullyLoaded, tile, tileState;
     var x, y, tileExtent;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
@@ -256,25 +257,25 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
         if (layerState.extent !== undefined) {
           // ignore tiles outside layer extent
           tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-          if (!ol.extent.intersects(tileExtent, layerState.extent)) {
+          if (!_ol_extent_.intersects(tileExtent, layerState.extent)) {
             continue;
           }
         }
         tileState = tile.getState();
-        drawable = tileState == ol.TileState.LOADED ||
-            tileState == ol.TileState.EMPTY ||
-            tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+        drawable = tileState == _ol_TileState_.LOADED ||
+            tileState == _ol_TileState_.EMPTY ||
+            tileState == _ol_TileState_.ERROR && !useInterimTilesOnError;
         if (!drawable) {
           tile = tile.getInterimTile();
         }
         tileState = tile.getState();
-        if (tileState == ol.TileState.LOADED) {
+        if (tileState == _ol_TileState_.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
           }
-        } else if (tileState == ol.TileState.EMPTY ||
-                   (tileState == ol.TileState.ERROR &&
+        } else if (tileState == _ol_TileState_.EMPTY ||
+                   (tileState == _ol_TileState_.ERROR &&
                     !useInterimTilesOnError)) {
           continue;
         }
@@ -296,7 +297,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 
     /** @type {Array.<number>} */
     var zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort(ol.array.numberSafeCompareFunction);
+    zs.sort(_ol_array_.numberSafeCompareFunction);
     var u_tileOffset = new Float32Array(4);
     var i, ii, tileKey, tilesToDraw;
     for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -314,8 +315,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
             framebufferExtentDimension - 1;
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, tilePixelSize,
-            tileGutter * pixelRatio, ol.webgl.LINEAR, ol.webgl.LINEAR);
-        gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
+            tileGutter * pixelRatio, _ol_webgl_.LINEAR, _ol_webgl_.LINEAR);
+        gl.drawArrays(_ol_webgl_.TRIANGLE_STRIP, 0, 4);
       }
     }
 
@@ -341,7 +342,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
        * @param {ol.Tile} tile Tile.
        */
       function(tile) {
-        if (tile.getState() == ol.TileState.LOADED &&
+        if (tile.getState() == _ol_TileState_.LOADED &&
             !mapRenderer.isTileTextureLoaded(tile) &&
             !tileTextureQueue.isKeyQueued(tile.getKey())) {
           tileTextureQueue.enqueue([
@@ -356,21 +357,21 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   this.updateLogos(frameState, tileSource);
 
   var texCoordMatrix = this.texCoordMatrix;
-  ol.transform.reset(texCoordMatrix);
-  ol.transform.translate(texCoordMatrix,
+  _ol_transform_.reset(texCoordMatrix);
+  _ol_transform_.translate(texCoordMatrix,
       (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
       (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]));
   if (viewState.rotation !== 0) {
-    ol.transform.rotate(texCoordMatrix, viewState.rotation);
+    _ol_transform_.rotate(texCoordMatrix, viewState.rotation);
   }
-  ol.transform.scale(texCoordMatrix,
+  _ol_transform_.scale(texCoordMatrix,
       frameState.size[0] * viewState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
       frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]));
-  ol.transform.translate(texCoordMatrix, -0.5, -0.5);
+  _ol_transform_.translate(texCoordMatrix, -0.5, -0.5);
 
   return true;
 };
@@ -379,7 +380,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+_ol_renderer_webgl_TileLayer_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.framebuffer) {
     return undefined;
   }
@@ -388,7 +389,7 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, fram
     pixel[0] / frameState.size[0],
     (frameState.size[1] - pixel[1]) / frameState.size[1]];
 
-  var pixelOnFrameBufferScaled = ol.transform.apply(
+  var pixelOnFrameBufferScaled = _ol_transform_.apply(
       this.texCoordMatrix, pixelOnMapScaled.slice());
   var pixelOnFrameBuffer = [
     pixelOnFrameBufferScaled[0] * this.framebufferDimension,
@@ -406,3 +407,4 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, fram
     return undefined;
   }
 };
+export default _ol_renderer_webgl_TileLayer_;

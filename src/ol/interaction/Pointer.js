@@ -1,12 +1,12 @@
-goog.provide('ol.interaction.Pointer');
-
-goog.require('ol');
-goog.require('ol.functions');
-goog.require('ol.MapBrowserEventType');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.obj');
-
+/**
+ * @module ol/interaction/Pointer
+ */
+import _ol_ from '../index.js';
+import _ol_functions_ from '../functions.js';
+import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
+import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
+import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import _ol_obj_ from '../obj.js';
 
 /**
  * @classdesc
@@ -23,14 +23,14 @@ goog.require('ol.obj');
  * @extends {ol.interaction.Interaction}
  * @api
  */
-ol.interaction.Pointer = function(opt_options) {
+var _ol_interaction_Pointer_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
   var handleEvent = options.handleEvent ?
-    options.handleEvent : ol.interaction.Pointer.handleEvent;
+    options.handleEvent : _ol_interaction_Pointer_.handleEvent;
 
-  ol.interaction.Interaction.call(this, {
+  _ol_interaction_Interaction_.call(this, {
     handleEvent: handleEvent
   });
 
@@ -39,28 +39,28 @@ ol.interaction.Pointer = function(opt_options) {
    * @private
    */
   this.handleDownEvent_ = options.handleDownEvent ?
-    options.handleDownEvent : ol.interaction.Pointer.handleDownEvent;
+    options.handleDownEvent : _ol_interaction_Pointer_.handleDownEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleDragEvent_ = options.handleDragEvent ?
-    options.handleDragEvent : ol.interaction.Pointer.handleDragEvent;
+    options.handleDragEvent : _ol_interaction_Pointer_.handleDragEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleMoveEvent_ = options.handleMoveEvent ?
-    options.handleMoveEvent : ol.interaction.Pointer.handleMoveEvent;
+    options.handleMoveEvent : _ol_interaction_Pointer_.handleMoveEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent):boolean}
    * @private
    */
   this.handleUpEvent_ = options.handleUpEvent ?
-    options.handleUpEvent : ol.interaction.Pointer.handleUpEvent;
+    options.handleUpEvent : _ol_interaction_Pointer_.handleUpEvent;
 
   /**
    * @type {boolean}
@@ -81,14 +81,15 @@ ol.interaction.Pointer = function(opt_options) {
   this.targetPointers = [];
 
 };
-ol.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
+
+_ol_.inherits(_ol_interaction_Pointer_, _ol_interaction_Interaction_);
 
 
 /**
  * @param {Array.<ol.pointer.PointerEvent>} pointerEvents List of events.
  * @return {ol.Pixel} Centroid pixel.
  */
-ol.interaction.Pointer.centroid = function(pointerEvents) {
+_ol_interaction_Pointer_.centroid = function(pointerEvents) {
   var length = pointerEvents.length;
   var clientX = 0;
   var clientY = 0;
@@ -106,12 +107,11 @@ ol.interaction.Pointer.centroid = function(pointerEvents) {
  *     or pointerup event.
  * @private
  */
-ol.interaction.Pointer.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
+_ol_interaction_Pointer_.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
-  return (
-    type === ol.MapBrowserEventType.POINTERDOWN ||
-      type === ol.MapBrowserEventType.POINTERDRAG ||
-      type === ol.MapBrowserEventType.POINTERUP);
+  return type === _ol_MapBrowserEventType_.POINTERDOWN ||
+    type === _ol_MapBrowserEventType_.POINTERDRAG ||
+    type === _ol_MapBrowserEventType_.POINTERUP;
 };
 
 
@@ -119,21 +119,21 @@ ol.interaction.Pointer.prototype.isPointerDraggingEvent_ = function(mapBrowserEv
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @private
  */
-ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
+_ol_interaction_Pointer_.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
 
     var id = event.pointerId.toString();
-    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
+    if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERUP) {
       delete this.trackedPointers_[id];
     } else if (mapBrowserEvent.type ==
-        ol.MapBrowserEventType.POINTERDOWN) {
+        _ol_MapBrowserEventType_.POINTERDOWN) {
       this.trackedPointers_[id] = event;
     } else if (id in this.trackedPointers_) {
       // update only when there was a pointerdown event for this pointer
       this.trackedPointers_[id] = event;
     }
-    this.targetPointers = ol.obj.getValues(this.trackedPointers_);
+    this.targetPointers = _ol_obj_.getValues(this.trackedPointers_);
   }
 };
 
@@ -142,7 +142,7 @@ ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEve
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleDragEvent = ol.nullFunction;
+_ol_interaction_Pointer_.handleDragEvent = _ol_.nullFunction;
 
 
 /**
@@ -150,7 +150,7 @@ ol.interaction.Pointer.handleDragEvent = ol.nullFunction;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleUpEvent = ol.functions.FALSE;
+_ol_interaction_Pointer_.handleUpEvent = _ol_functions_.FALSE;
 
 
 /**
@@ -158,14 +158,14 @@ ol.interaction.Pointer.handleUpEvent = ol.functions.FALSE;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleDownEvent = ol.functions.FALSE;
+_ol_interaction_Pointer_.handleDownEvent = _ol_functions_.FALSE;
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleMoveEvent = ol.nullFunction;
+_ol_interaction_Pointer_.handleMoveEvent = _ol_.nullFunction;
 
 
 /**
@@ -177,26 +177,26 @@ ol.interaction.Pointer.handleMoveEvent = ol.nullFunction;
  * @this {ol.interaction.Pointer}
  * @api
  */
-ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof ol.MapBrowserPointerEvent)) {
+_ol_interaction_Pointer_.handleEvent = function(mapBrowserEvent) {
+  if (!(mapBrowserEvent instanceof _ol_MapBrowserPointerEvent_)) {
     return true;
   }
 
   var stopEvent = false;
   this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
-    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDRAG) {
+    if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
-    } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
+    } else if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERUP) {
       var handledUp = this.handleUpEvent_(mapBrowserEvent);
       this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
     }
   } else {
-    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDOWN) {
+    if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERDOWN) {
       var handled = this.handleDownEvent_(mapBrowserEvent);
       this.handlingDownUpSequence = handled;
       stopEvent = this.shouldStopEvent(handled);
-    } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE) {
+    } else if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERMOVE) {
       this.handleMoveEvent_(mapBrowserEvent);
     }
   }
@@ -217,6 +217,7 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
  * @return {boolean} Should the event be stopped?
  * @protected
  */
-ol.interaction.Pointer.prototype.shouldStopEvent = function(handled) {
+_ol_interaction_Pointer_.prototype.shouldStopEvent = function(handled) {
   return handled;
 };
+export default _ol_interaction_Pointer_;

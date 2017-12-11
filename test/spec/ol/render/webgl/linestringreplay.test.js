@@ -1,22 +1,20 @@
-
-
-goog.require('ol');
-goog.require('ol.Feature');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.render.webgl.LineStringReplay');
-goog.require('ol.render.webgl.linestringreplay.defaultshader');
-goog.require('ol.render.webgl.linestringreplay.defaultshader.Locations');
-goog.require('ol.style.Stroke');
+import _ol_ from '../../../../../src/ol.js';
+import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
+import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
+import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
+import _ol_render_webgl_linestringreplay_defaultshader_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
+import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader/Locations.js';
+import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.LineStringReplay', function() {
   var replay;
 
-  var strokeStyle1 = new ol.style.Stroke({
+  var strokeStyle1 = new _ol_style_Stroke_({
     color: [0, 255, 0, 0.4]
   });
 
-  var strokeStyle2 = new ol.style.Stroke({
+  var strokeStyle2 = new _ol_style_Stroke_({
     color: [255, 0, 0, 1],
     lineCap: 'square',
     lineJoin: 'miter'
@@ -25,7 +23,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
   beforeEach(function() {
     var tolerance = 0.1;
     var maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new ol.render.webgl.LineStringReplay(tolerance, maxExtent);
+    replay = new _ol_render_webgl_LineStringReplay_(tolerance, maxExtent);
   });
 
   describe('#setFillStrokeStyle', function() {
@@ -58,7 +56,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('sets the buffer data', function() {
       var linestring;
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 2000], [2000, 3000]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawLineString(linestring, null);
@@ -68,7 +66,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       expect(replay.startIndices).to.have.length(1);
       expect(replay.startIndicesFeature).to.have.length(1);
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       replay.drawLineString(linestring, null);
       expect(replay.vertices).to.have.length(140);
@@ -84,7 +82,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('sets the buffer data', function() {
       var multilinestring;
 
-      multilinestring = new ol.geom.MultiLineString(
+      multilinestring = new _ol_geom_MultiLineString_(
           [[[1000, 2000], [2000, 3000]],
             [[1000, 3000], [2000, 4000], [3000, 3000]]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
@@ -102,13 +100,13 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('triangulates linestrings', function() {
       var linestring;
 
-      var stroke = new ol.style.Stroke({
+      var stroke = new _ol_style_Stroke_({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
       });
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -123,12 +121,12 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('optionally creates miters', function() {
       var linestring;
 
-      var stroke = new ol.style.Stroke({
+      var stroke = new _ol_style_Stroke_({
         color: [0, 255, 0, 1],
         lineCap: 'butt'
       });
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -143,11 +141,11 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('optionally creates caps', function() {
       var linestring;
 
-      var stroke = new ol.style.Stroke({
+      var stroke = new _ol_style_Stroke_({
         color: [0, 255, 0, 1]
       });
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -164,13 +162,13 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('respects segment orientation', function() {
       var linestring;
 
-      var stroke = new ol.style.Stroke({
+      var stroke = new _ol_style_Stroke_({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
       });
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 3000], [2000, 2000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -185,13 +183,13 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('closes boundaries', function() {
       var linestring;
 
-      var stroke = new ol.style.Stroke({
+      var stroke = new _ol_style_Stroke_({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
       });
 
-      linestring = new ol.geom.LineString(
+      linestring = new _ol_geom_LineString_(
           [[1000, 3000], [2000, 4000], [3000, 3000], [1000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -231,7 +229,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('returns the locations used by the shaders', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          ol.render.webgl.linestringreplay.defaultshader.Locations);
+          _ol_render_webgl_linestringreplay_defaultshader_Locations_);
     });
 
     it('gets and compiles the shaders', function() {
@@ -240,8 +238,8 @@ describe('ol.render.webgl.LineStringReplay', function() {
 
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(context.getProgram.calledWithExactly(
-          ol.render.webgl.linestringreplay.defaultshader.fragment,
-          ol.render.webgl.linestringreplay.defaultshader.vertex)).to.be(true);
+          _ol_render_webgl_linestringreplay_defaultshader_.fragment,
+          _ol_render_webgl_linestringreplay_defaultshader_.vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -288,14 +286,14 @@ describe('ol.render.webgl.LineStringReplay', function() {
 
   describe('#drawReplay', function() {
     var gl, context;
-    var feature1 = new ol.Feature({
-      geometry: new ol.geom.LineString([[0, 0], [500, 500]])
+    var feature1 = new _ol_Feature_({
+      geometry: new _ol_geom_LineString_([[0, 0], [500, 500]])
     });
-    var feature2 = new ol.Feature({
-      geometry: new ol.geom.LineString([[0, 0], [500, 500]])
+    var feature2 = new _ol_Feature_({
+      geometry: new _ol_geom_LineString_([[0, 0], [500, 500]])
     });
-    var feature3 = new ol.Feature({
-      geometry: new ol.geom.LineString([[0, 0], [500, 500]])
+    var feature3 = new _ol_Feature_({
+      geometry: new _ol_geom_LineString_([[0, 0], [500, 500]])
     });
     beforeEach(function() {
       gl = {
@@ -353,7 +351,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawLineString(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
       var skippedFeatHash = {};
-      skippedFeatHash[ol.getUid(feature2).toString()] = true;
+      skippedFeatHash[_ol_.getUid(feature2).toString()] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);
       expect(replay.setStrokeStyle_.calledOnce).to.be(true);

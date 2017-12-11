@@ -1,9 +1,10 @@
-goog.provide('ol.source.TileEventType');
-
+/**
+ * @module ol/source/TileEventType
+ */
 /**
  * @enum {string}
  */
-ol.source.TileEventType = {
+var _ol_source_TileEventType_ = {
 
   /**
    * Triggered when a tile starts loading.
@@ -28,3 +29,5 @@ ol.source.TileEventType = {
   TILELOADERROR: 'tileloaderror'
 
 };
+
+export default _ol_source_TileEventType_;

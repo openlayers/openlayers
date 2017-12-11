@@ -1,10 +1,10 @@
-goog.provide('ol.interaction.TranslateEventType');
-
-
+/**
+ * @module ol/interaction/TranslateEventType
+ */
 /**
  * @enum {string}
  */
-ol.interaction.TranslateEventType = {
+var _ol_interaction_TranslateEventType_ = {
   /**
    * Triggered upon feature translation start.
    * @event ol.interaction.Translate.Event#translatestart
@@ -24,3 +24,5 @@ ol.interaction.TranslateEventType = {
    */
   TRANSLATEEND: 'translateend'
 };
+
+export default _ol_interaction_TranslateEventType_;

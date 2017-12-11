@@ -1,9 +1,10 @@
-goog.provide('ol.MapEventType');
-
+/**
+ * @module ol/MapEventType
+ */
 /**
  * @enum {string}
  */
-ol.MapEventType = {
+var _ol_MapEventType_ = {
 
   /**
    * Triggered after a map frame is rendered.
@@ -27,3 +28,5 @@ ol.MapEventType = {
   MOVEEND: 'moveend'
 
 };
+
+export default _ol_MapEventType_;

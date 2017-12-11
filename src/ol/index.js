@@ -1,4 +1,7 @@
-goog.provide('ol');
+/**
+ * @module ol/index
+ */
+var _ol_ = {};
 
 
 /**
@@ -11,7 +14,7 @@ goog.provide('ol');
 /**
  * @define {boolean} Assume touch.  Default is `false`.
  */
-ol.ASSUME_TOUCH = false;
+_ol_.ASSUME_TOUCH = false;
 
 
 /**
@@ -19,32 +22,32 @@ ol.ASSUME_TOUCH = false;
  * see https://github.com/openlayers/openlayers/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
  */
-ol.DEFAULT_MAX_ZOOM = 42;
+_ol_.DEFAULT_MAX_ZOOM = 42;
 
 
 /**
  * @define {number} Default min zoom level for the map view.  Default is `0`.
  */
-ol.DEFAULT_MIN_ZOOM = 0;
+_ol_.DEFAULT_MIN_ZOOM = 0;
 
 
 /**
  * @define {number} Default maximum allowed threshold  (in pixels) for
  *     reprojection triangulation. Default is `0.5`.
  */
-ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
+_ol_.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
 
 
 /**
  * @define {number} Default tile size.
  */
-ol.DEFAULT_TILE_SIZE = 256;
+_ol_.DEFAULT_TILE_SIZE = 256;
 
 
 /**
  * @define {string} Default WMS version.
  */
-ol.DEFAULT_WMS_VERSION = '1.3.0';
+_ol_.DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
@@ -52,21 +55,21 @@ ol.DEFAULT_WMS_VERSION = '1.3.0';
  *     this to false at compile time in advanced mode removes all code
  *     supporting the Canvas renderer from the build.
  */
-ol.ENABLE_CANVAS = true;
+_ol_.ENABLE_CANVAS = true;
 
 
 /**
  * @define {boolean} Enable integration with the Proj4js library.  Default is
  *     `true`.
  */
-ol.ENABLE_PROJ4JS = true;
+_ol_.ENABLE_PROJ4JS = true;
 
 
 /**
  * @define {boolean} Enable automatic reprojection of raster sources. Default is
  *     `true`.
  */
-ol.ENABLE_RASTER_REPROJECTION = true;
+_ol_.ENABLE_RASTER_REPROJECTION = true;
 
 
 /**
@@ -74,7 +77,7 @@ ol.ENABLE_RASTER_REPROJECTION = true;
  *     this to false at compile time in advanced mode removes all code
  *     supporting the WebGL renderer from the build.
  */
-ol.ENABLE_WEBGL = true;
+_ol_.ENABLE_WEBGL = true;
 
 
 /**
@@ -82,14 +85,14 @@ ol.ENABLE_WEBGL = true;
  *     This should be set to `false` for production builds (if `ol.ENABLE_WEBGL`
  *     is `true`).
  */
-ol.DEBUG_WEBGL = true;
+_ol_.DEBUG_WEBGL = true;
 
 
 /**
  * @define {number} The size in pixels of the first atlas image. Default is
  * `256`.
  */
-ol.INITIAL_ATLAS_SIZE = 256;
+_ol_.INITIAL_ATLAS_SIZE = 256;
 
 
 /**
@@ -97,27 +100,27 @@ ol.INITIAL_ATLAS_SIZE = 256;
  * `-1`, meaning it is not used (and `ol.WEBGL_MAX_TEXTURE_SIZE` is
  * used instead).
  */
-ol.MAX_ATLAS_SIZE = -1;
+_ol_.MAX_ATLAS_SIZE = -1;
 
 
 /**
  * @define {number} Maximum mouse wheel delta.
  */
-ol.MOUSEWHEELZOOM_MAXDELTA = 1;
+_ol_.MOUSEWHEELZOOM_MAXDELTA = 1;
 
 
 /**
  * @define {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
  */
-ol.OVERVIEWMAP_MAX_RATIO = 0.75;
+_ol_.OVERVIEWMAP_MAX_RATIO = 0.75;
 
 
 /**
  * @define {number} Minimum width and/or height extent ratio that determines
  * when the overview map should be zoomed in.
  */
-ol.OVERVIEWMAP_MIN_RATIO = 0.1;
+_ol_.OVERVIEWMAP_MIN_RATIO = 0.1;
 
 
 /**
@@ -130,7 +133,7 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
  *     If too many tiles are required, no tiles are loaded and
  *     `ol.TileState.ERROR` state is set. Default is `100`.
  */
-ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
+_ol_.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
 
 
 /**
@@ -140,7 +143,7 @@ ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
  *     At most `2*(2^this)` triangles are created for each triangulated
  *     extent (tile/image). Default is `10`.
  */
-ol.RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
+_ol_.RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
 
 
 /**
@@ -152,25 +155,25 @@ ol.RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
  *     subdivison is forced (up to `ol.RASTER_REPROJECTION_MAX_SUBDIVISION`).
  *     Default is `0.25`.
  */
-ol.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH = 0.25;
+_ol_.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH = 0.25;
 
 
 /**
  * @define {number} Tolerance for geometry simplification in device pixels.
  */
-ol.SIMPLIFY_TOLERANCE = 0.5;
+_ol_.SIMPLIFY_TOLERANCE = 0.5;
 
 
 /**
  * @define {number} Texture cache high water mark.
  */
-ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
+_ol_.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
  * @define {string} OpenLayers version.
  */
-ol.VERSION = '';
+_ol_.VERSION = 'v4.6.4';
 
 
 /**
@@ -179,7 +182,7 @@ ol.VERSION = '';
  * @const
  * @type {number|undefined}
  */
-ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
+_ol_.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
 
 
 /**
@@ -187,7 +190,7 @@ ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
  * @const
  * @type {Array.<string>}
  */
-ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
+_ol_.WEBGL_EXTENSIONS; // value is set in `ol.has`
 
 
 /**
@@ -212,7 +215,7 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
  * @function
  * @api
  */
-ol.inherits = function(childCtor, parentCtor) {
+_ol_.inherits = function(childCtor, parentCtor) {
   childCtor.prototype = Object.create(parentCtor.prototype);
   childCtor.prototype.constructor = childCtor;
 };
@@ -223,7 +226,7 @@ ol.inherits = function(childCtor, parentCtor) {
  *
  * @return {undefined} Nothing.
  */
-ol.nullFunction = function() {};
+_ol_.nullFunction = function() {};
 
 
 /**
@@ -234,9 +237,9 @@ ol.nullFunction = function() {};
  * @param {Object} obj The object to get the unique ID for.
  * @return {number} The unique ID for the object.
  */
-ol.getUid = function(obj) {
+_ol_.getUid = function(obj) {
   return obj.ol_uid ||
-      (obj.ol_uid = ++ol.uidCounter_);
+      (obj.ol_uid = ++_ol_.uidCounter_);
 };
 
 
@@ -245,4 +248,5 @@ ol.getUid = function(obj) {
  * @type {number}
  * @private
  */
-ol.uidCounter_ = 0;
+_ol_.uidCounter_ = 0;
+export default _ol_;

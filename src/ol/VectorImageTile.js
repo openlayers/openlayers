@@ -1,14 +1,14 @@
-goog.provide('ol.VectorImageTile');
-
-goog.require('ol');
-goog.require('ol.Tile');
-goog.require('ol.TileState');
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.events.EventType');
-goog.require('ol.featureloader');
-
+/**
+ * @module ol/VectorImageTile
+ */
+import _ol_ from './index.js';
+import _ol_Tile_ from './Tile.js';
+import _ol_TileState_ from './TileState.js';
+import _ol_dom_ from './dom.js';
+import _ol_events_ from './events.js';
+import _ol_extent_ from './extent.js';
+import _ol_events_EventType_ from './events/EventType.js';
+import _ol_featureloader_ from './featureloader.js';
 
 /**
  * @constructor
@@ -32,11 +32,11 @@ goog.require('ol.featureloader');
  *     Function to call when a source tile's state changes.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-ol.VectorImageTile = function(tileCoord, state, sourceRevision, format,
+var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
     tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
     sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
 
-  ol.Tile.call(this, tileCoord, state, opt_options);
+  _ol_Tile_.call(this, tileCoord, state, opt_options);
 
   /**
    * @private
@@ -93,25 +93,25 @@ ol.VectorImageTile = function(tileCoord, state, sourceRevision, format,
     var resolution = tileGrid.getResolution(tileCoord[0]);
     var sourceZ = sourceTileGrid.getZForResolution(resolution);
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
-      var sharedExtent = ol.extent.getIntersection(extent,
+      var sharedExtent = _ol_extent_.getIntersection(extent,
           sourceTileGrid.getTileCoordExtent(sourceTileCoord));
       var sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
-        sharedExtent = ol.extent.getIntersection(sharedExtent, sourceExtent);
+        sharedExtent = _ol_extent_.getIntersection(sharedExtent, sourceExtent);
       }
-      if (ol.extent.getWidth(sharedExtent) / resolution >= 0.5 &&
-          ol.extent.getHeight(sharedExtent) / resolution >= 0.5) {
+      if (_ol_extent_.getWidth(sharedExtent) / resolution >= 0.5 &&
+          _ol_extent_.getHeight(sharedExtent) / resolution >= 0.5) {
         // only include source tile if overlap is at least 1 pixel
         var sourceTileKey = sourceTileCoord.toString();
         var sourceTile = sourceTiles[sourceTileKey];
         if (!sourceTile) {
           var tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
-              tileUrl == undefined ? ol.TileState.EMPTY : ol.TileState.IDLE,
+              tileUrl == undefined ? _ol_TileState_.EMPTY : _ol_TileState_.IDLE,
               tileUrl == undefined ? '' : tileUrl,
               format, tileLoadFunction);
           this.sourceTileListenerKeys_.push(
-              ol.events.listen(sourceTile, ol.events.EventType.CHANGE, handleTileChange));
+              _ol_events_.listen(sourceTile, _ol_events_EventType_.CHANGE, handleTileChange));
         }
         sourceTile.consumers++;
         this.tileKeys.push(sourceTileKey);
@@ -120,13 +120,14 @@ ol.VectorImageTile = function(tileCoord, state, sourceRevision, format,
   }
 
 };
-ol.inherits(ol.VectorImageTile, ol.Tile);
+
+_ol_.inherits(_ol_VectorImageTile_, _ol_Tile_);
 
 
 /**
  * @inheritDoc
  */
-ol.VectorImageTile.prototype.disposeInternal = function() {
+_ol_VectorImageTile_.prototype.disposeInternal = function() {
   for (var i = 0, ii = this.tileKeys.length; i < ii; ++i) {
     var sourceTileKey = this.tileKeys[i];
     var sourceTile = this.getTile(sourceTileKey);
@@ -138,16 +139,16 @@ ol.VectorImageTile.prototype.disposeInternal = function() {
   }
   this.tileKeys.length = 0;
   this.sourceTiles_ = null;
-  this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.loadListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.loadListenerKeys_.length = 0;
   if (this.interimTile) {
     this.interimTile.dispose();
   }
-  this.state = ol.TileState.ABORT;
+  this.state = _ol_TileState_.ABORT;
   this.changed();
-  this.sourceTileListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.sourceTileListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.sourceTileListenerKeys_.length = 0;
-  ol.Tile.prototype.disposeInternal.call(this);
+  _ol_Tile_.prototype.disposeInternal.call(this);
 };
 
 
@@ -155,10 +156,10 @@ ol.VectorImageTile.prototype.disposeInternal = function() {
  * @param {ol.layer.Layer} layer Layer.
  * @return {CanvasRenderingContext2D} The rendering context.
  */
-ol.VectorImageTile.prototype.getContext = function(layer) {
-  var key = ol.getUid(layer).toString();
+_ol_VectorImageTile_.prototype.getContext = function(layer) {
+  var key = _ol_.getUid(layer).toString();
   if (!(key in this.context_)) {
-    this.context_[key] = ol.dom.createCanvasContext2D();
+    this.context_[key] = _ol_dom_.createCanvasContext2D();
   }
   return this.context_[key];
 };
@@ -169,7 +170,7 @@ ol.VectorImageTile.prototype.getContext = function(layer) {
  * @param {ol.layer.Layer} layer Layer.
  * @return {HTMLCanvasElement} Canvas.
  */
-ol.VectorImageTile.prototype.getImage = function(layer) {
+_ol_VectorImageTile_.prototype.getImage = function(layer) {
   return this.getReplayState(layer).renderedTileRevision == -1 ?
     null : this.getContext(layer).canvas;
 };
@@ -179,8 +180,8 @@ ol.VectorImageTile.prototype.getImage = function(layer) {
  * @param {ol.layer.Layer} layer Layer.
  * @return {ol.TileReplayState} The replay state.
  */
-ol.VectorImageTile.prototype.getReplayState = function(layer) {
-  var key = ol.getUid(layer).toString();
+_ol_VectorImageTile_.prototype.getReplayState = function(layer) {
+  var key = _ol_.getUid(layer).toString();
   if (!(key in this.replayState_)) {
     this.replayState_[key] = {
       dirty: false,
@@ -196,7 +197,7 @@ ol.VectorImageTile.prototype.getReplayState = function(layer) {
 /**
  * @inheritDoc
  */
-ol.VectorImageTile.prototype.getKey = function() {
+_ol_VectorImageTile_.prototype.getKey = function() {
   return this.tileKeys.join('/') + '-' + this.sourceRevision_;
 };
 
@@ -205,7 +206,7 @@ ol.VectorImageTile.prototype.getKey = function() {
  * @param {string} tileKey Key (tileCoord) of the source tile.
  * @return {ol.VectorTile} Source tile.
  */
-ol.VectorImageTile.prototype.getTile = function(tileKey) {
+_ol_VectorImageTile_.prototype.getTile = function(tileKey) {
   return this.sourceTiles_[tileKey];
 };
 
@@ -213,7 +214,7 @@ ol.VectorImageTile.prototype.getTile = function(tileKey) {
 /**
  * @inheritDoc
  */
-ol.VectorImageTile.prototype.load = function() {
+_ol_VectorImageTile_.prototype.load = function() {
   // Source tiles with LOADED state - we just count them because once they are
   // loaded, we're no longer listening to state changes.
   var leftToLoad = 0;
@@ -221,23 +222,23 @@ ol.VectorImageTile.prototype.load = function() {
   // an ERROR state after another load attempt.
   var errorSourceTiles = {};
 
-  if (this.state == ol.TileState.IDLE) {
-    this.setState(ol.TileState.LOADING);
+  if (this.state == _ol_TileState_.IDLE) {
+    this.setState(_ol_TileState_.LOADING);
   }
-  if (this.state == ol.TileState.LOADING) {
+  if (this.state == _ol_TileState_.LOADING) {
     this.tileKeys.forEach(function(sourceTileKey) {
       var sourceTile = this.getTile(sourceTileKey);
-      if (sourceTile.state == ol.TileState.IDLE) {
+      if (sourceTile.state == _ol_TileState_.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
       }
-      if (sourceTile.state == ol.TileState.LOADING) {
-        var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function(e) {
+      if (sourceTile.state == _ol_TileState_.LOADING) {
+        var key = _ol_events_.listen(sourceTile, _ol_events_EventType_.CHANGE, function(e) {
           var state = sourceTile.getState();
-          if (state == ol.TileState.LOADED ||
-              state == ol.TileState.ERROR) {
-            var uid = ol.getUid(sourceTile);
-            if (state == ol.TileState.ERROR) {
+          if (state == _ol_TileState_.LOADED ||
+              state == _ol_TileState_.ERROR) {
+            var uid = _ol_.getUid(sourceTile);
+            if (state == _ol_TileState_.ERROR) {
               errorSourceTiles[uid] = true;
             } else {
               --leftToLoad;
@@ -262,24 +263,24 @@ ol.VectorImageTile.prototype.load = function() {
 /**
  * @private
  */
-ol.VectorImageTile.prototype.finishLoading_ = function() {
+_ol_VectorImageTile_.prototype.finishLoading_ = function() {
   var loaded = this.tileKeys.length;
   var empty = 0;
   for (var i = loaded - 1; i >= 0; --i) {
     var state = this.getTile(this.tileKeys[i]).getState();
-    if (state != ol.TileState.LOADED) {
+    if (state != _ol_TileState_.LOADED) {
       --loaded;
     }
-    if (state == ol.TileState.EMPTY) {
+    if (state == _ol_TileState_.EMPTY) {
       ++empty;
     }
   }
   if (loaded == this.tileKeys.length) {
-    this.loadListenerKeys_.forEach(ol.events.unlistenByKey);
+    this.loadListenerKeys_.forEach(_ol_events_.unlistenByKey);
     this.loadListenerKeys_.length = 0;
-    this.setState(ol.TileState.LOADED);
+    this.setState(_ol_TileState_.LOADED);
   } else {
-    this.setState(empty == this.tileKeys.length ? ol.TileState.EMPTY : ol.TileState.ERROR);
+    this.setState(empty == this.tileKeys.length ? _ol_TileState_.EMPTY : _ol_TileState_.ERROR);
   }
 };
 
@@ -289,9 +290,10 @@ ol.VectorImageTile.prototype.finishLoading_ = function() {
  * @param {ol.VectorTile} tile Vector tile.
  * @param {string} url URL.
  */
-ol.VectorImageTile.defaultLoadFunction = function(tile, url) {
-  var loader = ol.featureloader.loadFeaturesXhr(
+_ol_VectorImageTile_.defaultLoadFunction = function(tile, url) {
+  var loader = _ol_featureloader_.loadFeaturesXhr(
       url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
 
   tile.setLoader(loader);
 };
+export default _ol_VectorImageTile_;

@@ -1,35 +1,33 @@
-
-
-goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.style');
-goog.require('ol.style.IconImage');
+import _ol_ from '../../../../src/ol.js';
+import _ol_events_ from '../../../../src/ol/events.js';
+import _ol_style_ from '../../../../src/ol/style.js';
+import _ol_style_IconImage_ from '../../../../src/ol/style/IconImage.js';
 
 describe('ol.style.IconImageCache', function() {
   var originalMaxCacheSize;
 
   beforeEach(function() {
-    var cache = ol.style.iconImageCache;
+    var cache = _ol_style_.iconImageCache;
     cache.clear();
     originalMaxCacheSize = cache.maxCacheSize;
     cache.maxCacheSize_ = 4;
   });
 
   afterEach(function() {
-    var cache = ol.style.iconImageCache;
+    var cache = _ol_style_.iconImageCache;
     cache.maxCacheSize_ = originalMaxCacheSize;
     cache.clear();
   });
 
   describe('#expire', function() {
     it('expires images when expected', function() {
-      var cache = ol.style.iconImageCache;
+      var cache = _ol_style_.iconImageCache;
 
       var i, src, iconImage;
 
       for (i = 0; i < 4; ++i) {
         src = i + '';
-        iconImage = new ol.style.IconImage(null, src);
+        iconImage = new _ol_style_IconImage_(null, src);
         cache.set(src, null, null, iconImage);
       }
 
@@ -39,7 +37,7 @@ describe('ol.style.IconImageCache', function() {
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
-      iconImage = new ol.style.IconImage(null, src);
+      iconImage = new _ol_style_IconImage_(null, src);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
@@ -47,16 +45,16 @@ describe('ol.style.IconImageCache', function() {
       expect(cache.cacheSize_).to.eql(3);
 
       src = '0';
-      iconImage = new ol.style.IconImage(null, src);
-      ol.events.listen(iconImage, 'change',
-          ol.nullFunction, false);
+      iconImage = new _ol_style_IconImage_(null, src);
+      _ol_events_.listen(iconImage, 'change',
+          _ol_.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
-      iconImage = new ol.style.IconImage(null, src);
-      ol.events.listen(iconImage, 'change',
-          ol.nullFunction, false);
+      iconImage = new _ol_style_IconImage_(null, src);
+      _ol_events_.listen(iconImage, 'change',
+          _ol_.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
@@ -69,13 +67,13 @@ describe('ol.style.IconImageCache', function() {
 
   describe('#setSize', function() {
     it('sets max cache size and expires cache', function() {
-      var cache = ol.style.iconImageCache;
+      var cache = _ol_style_.iconImageCache;
 
       var i, src, iconImage;
 
       for (i = 0; i < 3; ++i) {
         src = i + '';
-        iconImage = new ol.style.IconImage(null, src);
+        iconImage = new _ol_style_IconImage_(null, src);
         cache.set(src, null, null, iconImage);
       }
 

@@ -1,8 +1,11 @@
-goog.provide('ol.interaction.Property');
-
+/**
+ * @module ol/interaction/Property
+ */
 /**
  * @enum {string}
  */
-ol.interaction.Property = {
+var _ol_interaction_Property_ = {
   ACTIVE: 'active'
 };
+
+export default _ol_interaction_Property_;

@@ -1,11 +1,11 @@
-goog.provide('ol.interaction.DragZoom');
-
-goog.require('ol');
-goog.require('ol.easing');
-goog.require('ol.events.condition');
-goog.require('ol.extent');
-goog.require('ol.interaction.DragBox');
-
+/**
+ * @module ol/interaction/DragZoom
+ */
+import _ol_ from '../index.js';
+import _ol_easing_ from '../easing.js';
+import _ol_events_condition_ from '../events/condition.js';
+import _ol_extent_ from '../extent.js';
+import _ol_interaction_DragBox_ from '../interaction/DragBox.js';
 
 /**
  * @classdesc
@@ -21,11 +21,11 @@ goog.require('ol.interaction.DragBox');
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
  * @api
  */
-ol.interaction.DragZoom = function(opt_options) {
+var _ol_interaction_DragZoom_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var condition = options.condition ?
-    options.condition : ol.events.condition.shiftKeyOnly;
+    options.condition : _ol_events_condition_.shiftKeyOnly;
 
   /**
    * @private
@@ -39,19 +39,20 @@ ol.interaction.DragZoom = function(opt_options) {
    */
   this.out_ = options.out !== undefined ? options.out : false;
 
-  ol.interaction.DragBox.call(this, {
+  _ol_interaction_DragBox_.call(this, {
     condition: condition,
     className: options.className || 'ol-dragzoom'
   });
 
 };
-ol.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
+
+_ol_.inherits(_ol_interaction_DragZoom_, _ol_interaction_DragBox_);
 
 
 /**
  * @inheritDoc
  */
-ol.interaction.DragZoom.prototype.onBoxEnd = function() {
+_ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
   var map = this.getMap();
 
   var view = /** @type {!ol.View} */ (map.getView());
@@ -62,26 +63,27 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
 
   if (this.out_) {
     var mapExtent = view.calculateExtent(size);
-    var boxPixelExtent = ol.extent.createOrUpdateFromCoordinates([
-      map.getPixelFromCoordinate(ol.extent.getBottomLeft(extent)),
-      map.getPixelFromCoordinate(ol.extent.getTopRight(extent))]);
+    var boxPixelExtent = _ol_extent_.createOrUpdateFromCoordinates([
+      map.getPixelFromCoordinate(_ol_extent_.getBottomLeft(extent)),
+      map.getPixelFromCoordinate(_ol_extent_.getTopRight(extent))]);
     var factor = view.getResolutionForExtent(boxPixelExtent, size);
 
-    ol.extent.scaleFromCenter(mapExtent, 1 / factor);
+    _ol_extent_.scaleFromCenter(mapExtent, 1 / factor);
     extent = mapExtent;
   }
 
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));
 
-  var center = ol.extent.getCenter(extent);
+  var center = _ol_extent_.getCenter(extent);
   center = view.constrainCenter(center);
 
   view.animate({
     resolution: resolution,
     center: center,
     duration: this.duration_,
-    easing: ol.easing.easeOut
+    easing: _ol_easing_.easeOut
   });
 
 };
+export default _ol_interaction_DragZoom_;

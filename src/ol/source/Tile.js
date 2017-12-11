@@ -1,15 +1,15 @@
-goog.provide('ol.source.Tile');
-
-goog.require('ol');
-goog.require('ol.TileCache');
-goog.require('ol.TileState');
-goog.require('ol.events.Event');
-goog.require('ol.proj');
-goog.require('ol.size');
-goog.require('ol.source.Source');
-goog.require('ol.tilecoord');
-goog.require('ol.tilegrid');
-
+/**
+ * @module ol/source/Tile
+ */
+import _ol_ from '../index.js';
+import _ol_TileCache_ from '../TileCache.js';
+import _ol_TileState_ from '../TileState.js';
+import _ol_events_Event_ from '../events/Event.js';
+import _ol_proj_ from '../proj.js';
+import _ol_size_ from '../size.js';
+import _ol_source_Source_ from '../source/Source.js';
+import _ol_tilecoord_ from '../tilecoord.js';
+import _ol_tilegrid_ from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -23,9 +23,9 @@ goog.require('ol.tilegrid');
  * @param {ol.SourceTileOptions} options Tile source options.
  * @api
  */
-ol.source.Tile = function(options) {
+var _ol_source_Tile_ = function(options) {
 
-  ol.source.Source.call(this, {
+  _ol_source_Source_.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
@@ -57,7 +57,7 @@ ol.source.Tile = function(options) {
    * @protected
    * @type {ol.TileCache}
    */
-  this.tileCache = new ol.TileCache(options.cacheSize);
+  this.tileCache = new _ol_TileCache_(options.cacheSize);
 
   /**
    * @protected
@@ -78,13 +78,14 @@ ol.source.Tile = function(options) {
   this.tileOptions = {transition: options.transition};
 
 };
-ol.inherits(ol.source.Tile, ol.source.Source);
+
+_ol_.inherits(_ol_source_Tile_, _ol_source_Source_);
 
 
 /**
  * @return {boolean} Can expire cache.
  */
-ol.source.Tile.prototype.canExpireCache = function() {
+_ol_source_Tile_.prototype.canExpireCache = function() {
   return this.tileCache.canExpireCache();
 };
 
@@ -93,7 +94,7 @@ ol.source.Tile.prototype.canExpireCache = function() {
  * @param {ol.proj.Projection} projection Projection.
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
+_ol_source_Tile_.prototype.expireCache = function(projection, usedTiles) {
   var tileCache = this.getTileCacheForProjection(projection);
   if (tileCache) {
     tileCache.expireCache(usedTiles);
@@ -110,7 +111,7 @@ ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
  *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.Tile.prototype.forEachLoadedTile = function(projection, z, tileRange, callback) {
+_ol_source_Tile_.prototype.forEachLoadedTile = function(projection, z, tileRange, callback) {
   var tileCache = this.getTileCacheForProjection(projection);
   if (!tileCache) {
     return false;
@@ -120,11 +121,11 @@ ol.source.Tile.prototype.forEachLoadedTile = function(projection, z, tileRange, 
   var tile, tileCoordKey, loaded;
   for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
-      tileCoordKey = ol.tilecoord.getKeyZXY(z, x, y);
+      tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
       loaded = false;
       if (tileCache.containsKey(tileCoordKey)) {
         tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
-        loaded = tile.getState() === ol.TileState.LOADED;
+        loaded = tile.getState() === _ol_TileState_.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
         }
@@ -142,7 +143,7 @@ ol.source.Tile.prototype.forEachLoadedTile = function(projection, z, tileRange, 
  * @param {ol.proj.Projection} projection Projection.
  * @return {number} Gutter.
  */
-ol.source.Tile.prototype.getGutter = function(projection) {
+_ol_source_Tile_.prototype.getGutter = function(projection) {
   return 0;
 };
 
@@ -152,7 +153,7 @@ ol.source.Tile.prototype.getGutter = function(projection) {
  * @return {string} The key for all tiles.
  * @protected
  */
-ol.source.Tile.prototype.getKey = function() {
+_ol_source_Tile_.prototype.getKey = function() {
   return this.key_;
 };
 
@@ -162,7 +163,7 @@ ol.source.Tile.prototype.getKey = function() {
  * @param {string} key The key for tiles.
  * @protected
  */
-ol.source.Tile.prototype.setKey = function(key) {
+_ol_source_Tile_.prototype.setKey = function(key) {
   if (this.key_ !== key) {
     this.key_ = key;
     this.changed();
@@ -174,7 +175,7 @@ ol.source.Tile.prototype.setKey = function(key) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {boolean} Opaque.
  */
-ol.source.Tile.prototype.getOpaque = function(projection) {
+_ol_source_Tile_.prototype.getOpaque = function(projection) {
   return this.opaque_;
 };
 
@@ -182,7 +183,7 @@ ol.source.Tile.prototype.getOpaque = function(projection) {
 /**
  * @inheritDoc
  */
-ol.source.Tile.prototype.getResolutions = function() {
+_ol_source_Tile_.prototype.getResolutions = function() {
   return this.tileGrid.getResolutions();
 };
 
@@ -196,7 +197,7 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {ol.proj.Projection} projection Projection.
  * @return {!ol.Tile} Tile.
  */
-ol.source.Tile.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
+_ol_source_Tile_.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
 
 
 /**
@@ -204,7 +205,7 @@ ol.source.Tile.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
  * @return {ol.tilegrid.TileGrid} Tile grid.
  * @api
  */
-ol.source.Tile.prototype.getTileGrid = function() {
+_ol_source_Tile_.prototype.getTileGrid = function() {
   return this.tileGrid;
 };
 
@@ -213,9 +214,9 @@ ol.source.Tile.prototype.getTileGrid = function() {
  * @param {ol.proj.Projection} projection Projection.
  * @return {!ol.tilegrid.TileGrid} Tile grid.
  */
-ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
+_ol_source_Tile_.prototype.getTileGridForProjection = function(projection) {
   if (!this.tileGrid) {
-    return ol.tilegrid.getForProjection(projection);
+    return _ol_tilegrid_.getForProjection(projection);
   } else {
     return this.tileGrid;
   }
@@ -227,9 +228,9 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
  * @return {ol.TileCache} Tile cache.
  * @protected
  */
-ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
+_ol_source_Tile_.prototype.getTileCacheForProjection = function(projection) {
   var thisProj = this.getProjection();
-  if (thisProj && !ol.proj.equivalent(thisProj, projection)) {
+  if (thisProj && !_ol_proj_.equivalent(thisProj, projection)) {
     return null;
   } else {
     return this.tileCache;
@@ -244,7 +245,7 @@ ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
  * @param {number} pixelRatio Pixel ratio.
  * @return {number} Tile pixel ratio.
  */
-ol.source.Tile.prototype.getTilePixelRatio = function(pixelRatio) {
+_ol_source_Tile_.prototype.getTilePixelRatio = function(pixelRatio) {
   return this.tilePixelRatio_;
 };
 
@@ -255,14 +256,14 @@ ol.source.Tile.prototype.getTilePixelRatio = function(pixelRatio) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Size} Tile size.
  */
-ol.source.Tile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
+_ol_source_Tile_.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
   var tilePixelRatio = this.getTilePixelRatio(pixelRatio);
-  var tileSize = ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize);
+  var tileSize = _ol_size_.toSize(tileGrid.getTileSize(z), this.tmpSize);
   if (tilePixelRatio == 1) {
     return tileSize;
   } else {
-    return ol.size.scale(tileSize, tilePixelRatio, this.tmpSize);
+    return _ol_size_.scale(tileSize, tilePixelRatio, this.tmpSize);
   }
 };
 
@@ -276,21 +277,21 @@ ol.source.Tile.prototype.getTilePixelSize = function(z, pixelRatio, projection) 
  * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
  *     null if no tile URL should be created for the passed `tileCoord`.
  */
-ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_projection) {
+_ol_source_Tile_.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_projection) {
   var projection = opt_projection !== undefined ?
     opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
   if (this.getWrapX() && projection.isGlobal()) {
-    tileCoord = ol.tilegrid.wrapX(tileGrid, tileCoord, projection);
+    tileCoord = _ol_tilegrid_.wrapX(tileGrid, tileCoord, projection);
   }
-  return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
+  return _ol_tilecoord_.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.source.Tile.prototype.refresh = function() {
+_ol_source_Tile_.prototype.refresh = function() {
   this.tileCache.clear();
   this.changed();
 };
@@ -303,7 +304,7 @@ ol.source.Tile.prototype.refresh = function() {
  * @param {number} y Tile coordinate y.
  * @param {ol.proj.Projection} projection Projection.
  */
-ol.source.Tile.prototype.useTile = ol.nullFunction;
+_ol_source_Tile_.prototype.useTile = _ol_.nullFunction;
 
 
 /**
@@ -317,9 +318,9 @@ ol.source.Tile.prototype.useTile = ol.nullFunction;
  * @param {string} type Type.
  * @param {ol.Tile} tile The tile.
  */
-ol.source.Tile.Event = function(type, tile) {
+_ol_source_Tile_.Event = function(type, tile) {
 
-  ol.events.Event.call(this, type);
+  _ol_events_Event_.call(this, type);
 
   /**
    * The tile related to the event.
@@ -329,4 +330,5 @@ ol.source.Tile.Event = function(type, tile) {
   this.tile = tile;
 
 };
-ol.inherits(ol.source.Tile.Event, ol.events.Event);
+_ol_.inherits(_ol_source_Tile_.Event, _ol_events_Event_);
+export default _ol_source_Tile_;

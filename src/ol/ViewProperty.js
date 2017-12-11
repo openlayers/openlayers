@@ -1,10 +1,13 @@
-goog.provide('ol.ViewProperty');
-
+/**
+ * @module ol/ViewProperty
+ */
 /**
  * @enum {string}
  */
-ol.ViewProperty = {
+var _ol_ViewProperty_ = {
   CENTER: 'center',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
 };
+
+export default _ol_ViewProperty_;

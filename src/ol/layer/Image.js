@@ -1,9 +1,9 @@
-goog.provide('ol.layer.Image');
-
-goog.require('ol');
-goog.require('ol.LayerType');
-goog.require('ol.layer.Layer');
-
+/**
+ * @module ol/layer/Image
+ */
+import _ol_ from '../index.js';
+import _ol_LayerType_ from '../LayerType.js';
+import _ol_layer_Layer_ from '../layer/Layer.js';
 
 /**
  * @classdesc
@@ -19,19 +19,20 @@ goog.require('ol.layer.Layer');
  * @param {olx.layer.ImageOptions=} opt_options Layer options.
  * @api
  */
-ol.layer.Image = function(opt_options) {
+var _ol_layer_Image_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
-  ol.layer.Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
+  _ol_layer_Layer_.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
 
   /**
    * The layer type.
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = ol.LayerType.IMAGE;
+  this.type = _ol_LayerType_.IMAGE;
 
 };
-ol.inherits(ol.layer.Image, ol.layer.Layer);
+
+_ol_.inherits(_ol_layer_Image_, _ol_layer_Layer_);
 
 
 /**
@@ -40,4 +41,5 @@ ol.inherits(ol.layer.Image, ol.layer.Layer);
  * @return {ol.source.Image} Source.
  * @api
  */
-ol.layer.Image.prototype.getSource;
+_ol_layer_Image_.prototype.getSource;
+export default _ol_layer_Image_;

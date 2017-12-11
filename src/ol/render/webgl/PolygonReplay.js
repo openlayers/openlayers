@@ -1,24 +1,24 @@
-goog.provide('ol.render.webgl.PolygonReplay');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.color');
-goog.require('ol.extent');
-goog.require('ol.obj');
-goog.require('ol.geom.flat.contains');
-goog.require('ol.geom.flat.orient');
-goog.require('ol.geom.flat.transform');
-goog.require('ol.render.webgl.polygonreplay.defaultshader');
-goog.require('ol.render.webgl.polygonreplay.defaultshader.Locations');
-goog.require('ol.render.webgl.LineStringReplay');
-goog.require('ol.render.webgl.Replay');
-goog.require('ol.render.webgl');
-goog.require('ol.style.Stroke');
-goog.require('ol.structs.LinkedList');
-goog.require('ol.structs.RBush');
-goog.require('ol.webgl');
-goog.require('ol.webgl.Buffer');
-
+/**
+ * @module ol/render/webgl/PolygonReplay
+ */
+import _ol_ from '../../index.js';
+import _ol_array_ from '../../array.js';
+import _ol_color_ from '../../color.js';
+import _ol_extent_ from '../../extent.js';
+import _ol_obj_ from '../../obj.js';
+import _ol_geom_flat_contains_ from '../../geom/flat/contains.js';
+import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
+import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
+import _ol_render_webgl_polygonreplay_defaultshader_ from '../webgl/polygonreplay/defaultshader.js';
+import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../webgl/polygonreplay/defaultshader/Locations.js';
+import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
+import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
+import _ol_render_webgl_ from '../webgl.js';
+import _ol_style_Stroke_ from '../../style/Stroke.js';
+import _ol_structs_LinkedList_ from '../../structs/LinkedList.js';
+import _ol_structs_RBush_ from '../../structs/RBush.js';
+import _ol_webgl_ from '../../webgl.js';
+import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -27,10 +27,10 @@ goog.require('ol.webgl.Buffer');
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
-  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
+var _ol_render_webgl_PolygonReplay_ = function(tolerance, maxExtent) {
+  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
 
-  this.lineStringReplay = new ol.render.webgl.LineStringReplay(
+  this.lineStringReplay = new _ol_render_webgl_LineStringReplay_(
       tolerance, maxExtent);
 
   /**
@@ -62,7 +62,8 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
   };
 
 };
-ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
+
+_ol_.inherits(_ol_render_webgl_PolygonReplay_, _ol_render_webgl_Replay_);
 
 
 /**
@@ -72,11 +73,11 @@ ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
  * @param {number} stride Stride.
  * @private
  */
-ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(
+_ol_render_webgl_PolygonReplay_.prototype.drawCoordinates_ = function(
     flatCoordinates, holeFlatCoordinates, stride) {
   // Triangulate the polygon
-  var outerRing = new ol.structs.LinkedList();
-  var rtree = new ol.structs.RBush();
+  var outerRing = new _ol_structs_LinkedList_();
+  var rtree = new _ol_structs_RBush_();
   // Initialize the outer ring
   this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
   var maxCoords = this.getMaxCoords_(outerRing);
@@ -87,9 +88,9 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(
     var holeLists = [];
     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
       var holeList = {
-        list: new ol.structs.LinkedList(),
+        list: new _ol_structs_LinkedList_(),
         maxCoords: undefined,
-        rtree: new ol.structs.RBush()
+        rtree: new _ol_structs_RBush_()
       };
       holeLists.push(holeList);
       this.processFlatCoordinates_(holeFlatCoordinates[i],
@@ -137,9 +138,9 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean} clockwise Coordinate order should be clockwise.
  */
-ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
+_ol_render_webgl_PolygonReplay_.prototype.processFlatCoordinates_ = function(
     flatCoordinates, stride, list, rtree, clockwise) {
-  var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates,
+  var isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(flatCoordinates,
       0, flatCoordinates.length, stride);
   var i, ii;
   var n = this.vertices.length / 2;
@@ -189,7 +190,7 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
  * @param {ol.structs.LinkedList} list Polygons ring.
  * @return {Array.<number>} Max X coordinates.
  */
-ol.render.webgl.PolygonReplay.prototype.getMaxCoords_ = function(list) {
+_ol_render_webgl_PolygonReplay_.prototype.getMaxCoords_ = function(list) {
   var start = list.firstItem();
   var seg = start;
   var maxCoords = [seg.p0.x, seg.p0.y];
@@ -213,15 +214,15 @@ ol.render.webgl.PolygonReplay.prototype.getMaxCoords_ = function(list) {
  * @param {boolean} ccw The orientation of the polygon is counter-clockwise.
  * @return {boolean} There were reclassified points.
  */
-ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, rtree, ccw) {
+_ol_render_webgl_PolygonReplay_.prototype.classifyPoints_ = function(list, rtree, ccw) {
   var start = list.firstItem();
   var s0 = start;
   var s1 = list.nextItem();
   var pointsReclassified = false;
   do {
-    var reflex = ccw ? ol.render.webgl.triangleIsCounterClockwise(s1.p1.x,
+    var reflex = ccw ? _ol_render_webgl_.triangleIsCounterClockwise(s1.p1.x,
         s1.p1.y, s0.p1.x, s0.p1.y, s0.p0.x, s0.p0.y) :
-      ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
+      _ol_render_webgl_.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
           s0.p1.y, s1.p1.x, s1.p1.y);
     if (reflex === undefined) {
       this.removeItem_(s0, s1, list, rtree);
@@ -251,7 +252,7 @@ ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, rtree, 
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @return {boolean} Bridging was successful.
  */
-ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
+_ol_render_webgl_PolygonReplay_.prototype.bridgeHole_ = function(hole, holeMaxX,
     list, listMaxX, rtree) {
   var seg = hole.firstItem();
   while (seg.p1.x !== holeMaxX) {
@@ -272,7 +273,7 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
     var intersection = this.calculateIntersection_(p1, p2, currSeg.p0,
         currSeg.p1, true);
     var dist = Math.abs(p1.x - intersection[0]);
-    if (dist < minDist && ol.render.webgl.triangleIsCounterClockwise(p1.x, p1.y,
+    if (dist < minDist && _ol_render_webgl_.triangleIsCounterClockwise(p1.x, p1.y,
         currSeg.p0.x, currSeg.p0.y, currSeg.p1.x, currSeg.p1.y) !== undefined) {
       minDist = dist;
       p5 = {x: intersection[0], y: intersection[1], i: -1};
@@ -324,7 +325,7 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  */
-ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
+_ol_render_webgl_PolygonReplay_.prototype.triangulate_ = function(list, rtree) {
   var ccw = false;
   var simple = this.isSimple_(list, rtree);
 
@@ -377,7 +378,7 @@ ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
  * @param {boolean} ccw Orientation of the polygon is counter-clockwise.
  * @return {boolean} There were processed ears.
  */
-ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple, ccw) {
+_ol_render_webgl_PolygonReplay_.prototype.clipEars_ = function(list, rtree, simple, ccw) {
   var numIndices = this.indices.length;
   var start = list.firstItem();
   var s0 = list.getPrevItem();
@@ -403,7 +404,7 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple
           variableCriterion) {
         //The diagonal is completely inside the polygon
         if (simple || p0.reflex === false || p2.reflex === false ||
-            ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
+            _ol_geom_flat_orient_.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
               p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
           //The diagonal is persumably valid, we have an ear
           this.indices[numIndices++] = p0.i;
@@ -435,7 +436,7 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple
  * @param {boolean=} opt_touch Resolve touching segments.
  * @return {boolean} There were resolved intersections.
 */
-ol.render.webgl.PolygonReplay.prototype.resolveSelfIntersections_ = function(
+_ol_render_webgl_PolygonReplay_.prototype.resolveSelfIntersections_ = function(
     list, rtree, opt_touch) {
   var start = list.firstItem();
   list.nextItem();
@@ -503,7 +504,7 @@ ol.render.webgl.PolygonReplay.prototype.resolveSelfIntersections_ = function(
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @return {boolean} The polygon is simple.
  */
-ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list, rtree) {
+_ol_render_webgl_PolygonReplay_.prototype.isSimple_ = function(list, rtree) {
   var start = list.firstItem();
   var seg = start;
   do {
@@ -521,7 +522,7 @@ ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list, rtree) {
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
  * @return {boolean} Orientation is clockwise.
  */
-ol.render.webgl.PolygonReplay.prototype.isClockwise_ = function(list) {
+_ol_render_webgl_PolygonReplay_.prototype.isClockwise_ = function(list) {
   var length = list.getLength() * 2;
   var flatCoordinates = new Array(length);
   var start = list.firstItem();
@@ -532,7 +533,7 @@ ol.render.webgl.PolygonReplay.prototype.isClockwise_ = function(list) {
     flatCoordinates[i++] = seg.p0.y;
     seg = list.nextItem();
   } while (seg !== start);
-  return ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, 0, length, 2);
+  return _ol_geom_flat_orient_.linearRingIsClockwise(flatCoordinates, 0, length, 2);
 };
 
 
@@ -541,7 +542,7 @@ ol.render.webgl.PolygonReplay.prototype.isClockwise_ = function(list) {
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  */
-ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
+_ol_render_webgl_PolygonReplay_.prototype.splitPolygon_ = function(list, rtree) {
   var start = list.firstItem();
   var s0 = start;
   do {
@@ -552,8 +553,8 @@ ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
       var intersection = this.calculateIntersection_(s0.p0,
           s0.p1, s1.p0, s1.p1);
       var p = this.createPoint_(intersection[0], intersection[1], n);
-      var newPolygon = new ol.structs.LinkedList();
-      var newRtree = new ol.structs.RBush();
+      var newPolygon = new _ol_structs_LinkedList_();
+      var newRtree = new _ol_structs_RBush_();
       this.insertItem_(p, s0.p1, newPolygon, newRtree);
       s0.p1 = p;
       rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y),
@@ -587,7 +588,7 @@ ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
  * @param {number} i Index.
  * @return {ol.WebglPolygonVertex} List item.
  */
-ol.render.webgl.PolygonReplay.prototype.createPoint_ = function(x, y, i) {
+_ol_render_webgl_PolygonReplay_.prototype.createPoint_ = function(x, y, i) {
   var numVertices = this.vertices.length;
   this.vertices[numVertices++] = x;
   this.vertices[numVertices++] = y;
@@ -610,7 +611,7 @@ ol.render.webgl.PolygonReplay.prototype.createPoint_ = function(x, y, i) {
  * @param {ol.structs.RBush=} opt_rtree Insert the segment into the R-Tree.
  * @return {ol.WebglPolygonSegment} segment.
  */
-ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
+_ol_render_webgl_PolygonReplay_.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
   var seg = {
     p0: p0,
     p1: p1
@@ -631,7 +632,7 @@ ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt
   * @param {ol.structs.LinkedList} list Polygon ring.
   * @param {ol.structs.RBush} rtree R-Tree of the polygon.
   */
-ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
+_ol_render_webgl_PolygonReplay_.prototype.removeItem_ = function(s0, s1, list, rtree) {
   if (list.getCurrItem() === s1) {
     list.removeItem();
     s0.p1 = s1.p1;
@@ -651,7 +652,7 @@ ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtr
  * @param {boolean=} opt_reflex Only include reflex points.
  * @return {Array.<ol.WebglPolygonVertex>} Points in the triangle.
  */
-ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
+_ol_render_webgl_PolygonReplay_.prototype.getPointsInTriangle_ = function(p0, p1,
     p2, rtree, opt_reflex) {
   var i, ii, j, p;
   var result = [];
@@ -664,7 +665,7 @@ ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
       if (typeof p === 'object' && (!opt_reflex || p.reflex)) {
         if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) &&
             (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 &&
-            ol.geom.flat.contains.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y,
+            _ol_geom_flat_contains_.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y,
               p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
           result.push(p);
         }
@@ -682,7 +683,7 @@ ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
  * @return {Array.<ol.WebglPolygonSegment>} Intersecting segments.
  */
-ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_touch) {
+_ol_render_webgl_PolygonReplay_.prototype.getIntersections_ = function(segment, rtree, opt_touch) {
   var p0 = segment.p0;
   var p1 = segment.p1;
   var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x),
@@ -712,14 +713,14 @@ ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, rt
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
  * @return {Array.<number>|undefined} Intersection coordinates.
  */
-ol.render.webgl.PolygonReplay.prototype.calculateIntersection_ = function(p0,
+_ol_render_webgl_PolygonReplay_.prototype.calculateIntersection_ = function(p0,
     p1, p2, p3, opt_touch) {
   var denom = (p3.y - p2.y) * (p1.x - p0.x) - (p3.x - p2.x) * (p1.y - p0.y);
   if (denom !== 0) {
     var ua = ((p3.x - p2.x) * (p0.y - p2.y) - (p3.y - p2.y) * (p0.x - p2.x)) / denom;
     var ub = ((p1.x - p0.x) * (p0.y - p2.y) - (p1.y - p0.y) * (p0.x - p2.x)) / denom;
-    if ((!opt_touch && ua > ol.render.webgl.EPSILON && ua < 1 - ol.render.webgl.EPSILON &&
-        ub > ol.render.webgl.EPSILON && ub < 1 - ol.render.webgl.EPSILON) || (opt_touch &&
+    if ((!opt_touch && ua > _ol_render_webgl_.EPSILON && ua < 1 - _ol_render_webgl_.EPSILON &&
+        ub > _ol_render_webgl_.EPSILON && ub < 1 - _ol_render_webgl_.EPSILON) || (opt_touch &&
         ua >= 0 && ua <= 1 && ub >= 0 && ub <= 1)) {
       return [p0.x + ua * (p1.x - p0.x), p0.y + ua * (p1.y - p0.y)];
     }
@@ -737,7 +738,7 @@ ol.render.webgl.PolygonReplay.prototype.calculateIntersection_ = function(p0,
  * @param {ol.WebglPolygonVertex} p4 Point after the end of the diagonal.
  * @return {boolean} Diagonal is inside the polygon.
  */
-ol.render.webgl.PolygonReplay.prototype.diagonalIsInside_ = function(p0, p1, p2, p3, p4) {
+_ol_render_webgl_PolygonReplay_.prototype.diagonalIsInside_ = function(p0, p1, p2, p3, p4) {
   if (p1.reflex === undefined || p3.reflex === undefined) {
     return false;
   }
@@ -754,7 +755,7 @@ ol.render.webgl.PolygonReplay.prototype.diagonalIsInside_ = function(p0, p1, p2,
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
+_ol_render_webgl_PolygonReplay_.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
   var endss = multiPolygonGeometry.getEndss();
   var stride = multiPolygonGeometry.getStride();
   var currIndex = this.indices.length;
@@ -765,14 +766,14 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygon
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     if (ends.length > 0) {
-      var outerRing = ol.geom.flat.transform.translate(flatCoordinates, start, ends[0],
+      var outerRing = _ol_geom_flat_transform_.translate(flatCoordinates, start, ends[0],
           stride, -this.origin[0], -this.origin[1]);
       if (outerRing.length) {
         var holes = [];
         var holeFlatCoords;
         for (j = 1, jj = ends.length; j < jj; ++j) {
           if (ends[j] !== ends[j - 1]) {
-            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[j - 1],
+            holeFlatCoords = _ol_geom_flat_transform_.translate(flatCoordinates, ends[j - 1],
                 ends[j], stride, -this.origin[0], -this.origin[1]);
             holes.push(holeFlatCoords);
           }
@@ -800,19 +801,19 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygon
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
+_ol_render_webgl_PolygonReplay_.prototype.drawPolygon = function(polygonGeometry, feature) {
   var ends = polygonGeometry.getEnds();
   var stride = polygonGeometry.getStride();
   if (ends.length > 0) {
     var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
-    var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
+    var outerRing = _ol_geom_flat_transform_.translate(flatCoordinates, 0, ends[0],
         stride, -this.origin[0], -this.origin[1]);
     if (outerRing.length) {
       var holes = [];
       var i, ii, holeFlatCoords;
       for (i = 1, ii = ends.length; i < ii; ++i) {
         if (ends[i] !== ends[i - 1]) {
-          holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+          holeFlatCoords = _ol_geom_flat_transform_.translate(flatCoordinates, ends[i - 1],
               ends[i], stride, -this.origin[0], -this.origin[1]);
           holes.push(holeFlatCoords);
         }
@@ -836,12 +837,12 @@ ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, 
 /**
  * @inheritDoc
  **/
-ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
+_ol_render_webgl_PolygonReplay_.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
+  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new ol.webgl.Buffer(this.indices);
+  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
 
   this.startIndices.push(this.indices.length);
 
@@ -860,7 +861,7 @@ ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(context) {
+_ol_render_webgl_PolygonReplay_.prototype.getDeleteResourcesFunction = function(context) {
   var verticesBuffer = this.verticesBuffer;
   var indicesBuffer = this.indicesBuffer;
   var lineDeleter = this.lineStringReplay.getDeleteResourcesFunction(context);
@@ -875,17 +876,17 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(co
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+_ol_render_webgl_PolygonReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
   var fragmentShader, vertexShader;
-  fragmentShader = ol.render.webgl.polygonreplay.defaultshader.fragment;
-  vertexShader = ol.render.webgl.polygonreplay.defaultshader.vertex;
+  fragmentShader = _ol_render_webgl_polygonreplay_defaultshader_.fragment;
+  vertexShader = _ol_render_webgl_polygonreplay_defaultshader_.vertex;
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
-    locations = new ol.render.webgl.polygonreplay.defaultshader.Locations(gl, program);
+    locations = new _ol_render_webgl_polygonreplay_defaultshader_Locations_(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;
@@ -895,7 +896,7 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, siz
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
       false, 8, 0);
 
   return locations;
@@ -905,7 +906,7 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, siz
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.shutDownProgram = function(gl, locations) {
+_ol_render_webgl_PolygonReplay_.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
 };
 
@@ -913,7 +914,7 @@ ol.render.webgl.PolygonReplay.prototype.shutDownProgram = function(gl, locations
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+_ol_render_webgl_PolygonReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
   var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
   var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
@@ -924,7 +925,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skipp
     gl.depthFunc(gl.NOTEQUAL);
   }
 
-  if (!ol.obj.isEmpty(skippedFeaturesHash)) {
+  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     //Draw by style groups to minimize drawElements() calls.
@@ -951,7 +952,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skipp
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
+_ol_render_webgl_PolygonReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
@@ -965,11 +966,11 @@ ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = functio
         this.startIndices[featureIndex] >= groupStart) {
       start = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = ol.getUid(feature).toString();
+      featureUid = _ol_.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
-          (opt_hitExtent === undefined || ol.extent.intersects(
+          (opt_hitExtent === undefined || _ol_extent_.intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -996,7 +997,7 @@ ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = functio
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
-ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+_ol_render_webgl_PolygonReplay_.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -1009,7 +1010,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, conte
         this.startIndices[featureIndex] >= groupStart) {
       featureStart = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = ol.getUid(feature).toString();
+      featureUid = _ol_.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid]) {
         if (start !== end) {
@@ -1035,7 +1036,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, conte
  * @param {WebGLRenderingContext} gl gl.
  * @param {Array.<number>} color Color.
  */
-ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
+_ol_render_webgl_PolygonReplay_.prototype.setFillStyle_ = function(gl, color) {
   gl.uniform4fv(this.defaultLocations_.u_color, color);
 };
 
@@ -1043,17 +1044,17 @@ ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+_ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
   if (!(fillStyleColor instanceof CanvasGradient) &&
       !(fillStyleColor instanceof CanvasPattern)) {
-    fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
+    fillStyleColor = _ol_color_.asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
-    }) || ol.render.webgl.defaultFillStyle;
+    }) || _ol_render_webgl_.defaultFillStyle;
   } else {
-    fillStyleColor = ol.render.webgl.defaultFillStyle;
+    fillStyleColor = _ol_render_webgl_.defaultFillStyle;
   }
-  if (!this.state_.fillColor || !ol.array.equals(fillStyleColor, this.state_.fillColor)) {
+  if (!this.state_.fillColor || !_ol_array_.equals(fillStyleColor, this.state_.fillColor)) {
     this.state_.fillColor = fillStyleColor;
     this.state_.changed = true;
     this.styles_.push(fillStyleColor);
@@ -1062,10 +1063,11 @@ ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle,
   if (strokeStyle) {
     this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
   } else {
-    var nullStrokeStyle = new ol.style.Stroke({
+    var nullStrokeStyle = new _ol_style_Stroke_({
       color: [0, 0, 0, 0],
       lineWidth: 0
     });
     this.lineStringReplay.setFillStrokeStyle(null, nullStrokeStyle);
   }
 };
+export default _ol_render_webgl_PolygonReplay_;

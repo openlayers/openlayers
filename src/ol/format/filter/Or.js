@@ -1,8 +1,8 @@
-goog.provide('ol.format.filter.Or');
-
-goog.require('ol');
-goog.require('ol.format.filter.LogicalNary');
-
+/**
+ * @module ol/format/filter/Or
+ */
+import _ol_ from '../../index.js';
+import _ol_format_filter_LogicalNary_ from '../filter/LogicalNary.js';
 
 /**
  * @classdesc
@@ -13,8 +13,10 @@ goog.require('ol.format.filter.LogicalNary');
  * @extends {ol.format.filter.LogicalNary}
  * @api
  */
-ol.format.filter.Or = function(conditions) {
+var _ol_format_filter_Or_ = function(conditions) {
   var params = ['Or'].concat(Array.prototype.slice.call(arguments));
-  ol.format.filter.LogicalNary.apply(this, params);
+  _ol_format_filter_LogicalNary_.apply(this, params);
 };
-ol.inherits(ol.format.filter.Or, ol.format.filter.LogicalNary);
+
+_ol_.inherits(_ol_format_filter_Or_, _ol_format_filter_LogicalNary_);
+export default _ol_format_filter_Or_;

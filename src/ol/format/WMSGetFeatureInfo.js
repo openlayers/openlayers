@@ -1,12 +1,12 @@
-goog.provide('ol.format.WMSGetFeatureInfo');
-
-goog.require('ol');
-goog.require('ol.array');
-goog.require('ol.format.GML2');
-goog.require('ol.format.XMLFeature');
-goog.require('ol.obj');
-goog.require('ol.xml');
-
+/**
+ * @module ol/format/WMSGetFeatureInfo
+ */
+import _ol_ from '../index.js';
+import _ol_array_ from '../array.js';
+import _ol_format_GML2_ from '../format/GML2.js';
+import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import _ol_obj_ from '../obj.js';
+import _ol_xml_ from '../xml.js';
 
 /**
  * @classdesc
@@ -18,7 +18,7 @@ goog.require('ol.xml');
  * @param {olx.format.WMSGetFeatureInfoOptions=} opt_options Options.
  * @api
  */
-ol.format.WMSGetFeatureInfo = function(opt_options) {
+var _ol_format_WMSGetFeatureInfo_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -33,7 +33,7 @@ ol.format.WMSGetFeatureInfo = function(opt_options) {
    * @private
    * @type {ol.format.GML2}
    */
-  this.gmlFormat_ = new ol.format.GML2();
+  this.gmlFormat_ = new _ol_format_GML2_();
 
 
   /**
@@ -42,9 +42,10 @@ ol.format.WMSGetFeatureInfo = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
-  ol.format.XMLFeature.call(this);
+  _ol_format_XMLFeature_.call(this);
 };
-ol.inherits(ol.format.WMSGetFeatureInfo, ol.format.XMLFeature);
+
+_ol_.inherits(_ol_format_WMSGetFeatureInfo_, _ol_format_XMLFeature_);
 
 
 /**
@@ -52,7 +53,7 @@ ol.inherits(ol.format.WMSGetFeatureInfo, ol.format.XMLFeature);
  * @type {string}
  * @private
  */
-ol.format.WMSGetFeatureInfo.featureIdentifier_ = '_feature';
+_ol_format_WMSGetFeatureInfo_.featureIdentifier_ = '_feature';
 
 
 /**
@@ -60,13 +61,13 @@ ol.format.WMSGetFeatureInfo.featureIdentifier_ = '_feature';
  * @type {string}
  * @private
  */
-ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
+_ol_format_WMSGetFeatureInfo_.layerIdentifier_ = '_layer';
 
 
 /**
  * @return {Array.<string>} layers
  */
-ol.format.WMSGetFeatureInfo.prototype.getLayers = function() {
+_ol_format_WMSGetFeatureInfo_.prototype.getLayers = function() {
   return this.layers_;
 };
 
@@ -74,7 +75,7 @@ ol.format.WMSGetFeatureInfo.prototype.getLayers = function() {
 /**
  * @param {Array.<string>} layers Layers to parse.
  */
-ol.format.WMSGetFeatureInfo.prototype.setLayers = function(layers) {
+_ol_format_WMSGetFeatureInfo_.prototype.setLayers = function(layers) {
   this.layers_ = layers;
 };
 
@@ -85,7 +86,7 @@ ol.format.WMSGetFeatureInfo.prototype.setLayers = function(layers) {
  * @return {Array.<ol.Feature>} Features.
  * @private
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
+_ol_format_WMSGetFeatureInfo_.prototype.readFeatures_ = function(node, objectStack) {
   node.setAttribute('namespaceURI', this.featureNS_);
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
@@ -101,34 +102,34 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
       }
       var context = objectStack[0];
 
-      var toRemove = ol.format.WMSGetFeatureInfo.layerIdentifier_;
+      var toRemove = _ol_format_WMSGetFeatureInfo_.layerIdentifier_;
       var layerName = layer.localName.replace(toRemove, '');
 
-      if (this.layers_ && !ol.array.includes(this.layers_, layerName)) {
+      if (this.layers_ && !_ol_array_.includes(this.layers_, layerName)) {
         continue;
       }
 
       var featureType = layerName +
-          ol.format.WMSGetFeatureInfo.featureIdentifier_;
+          _ol_format_WMSGetFeatureInfo_.featureIdentifier_;
 
       context['featureType'] = featureType;
       context['featureNS'] = this.featureNS_;
 
       var parsers = {};
-      parsers[featureType] = ol.xml.makeArrayPusher(
+      parsers[featureType] = _ol_xml_.makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
-      var parsersNS = ol.xml.makeStructureNS(
+      var parsersNS = _ol_xml_.makeStructureNS(
           [context['featureNS'], null], parsers);
       layer.setAttribute('namespaceURI', this.featureNS_);
-      var layerFeatures = ol.xml.pushParseAndPop(
+      var layerFeatures = _ol_xml_.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (layerFeatures) {
-        ol.array.extend(features, layerFeatures);
+        _ol_array_.extend(features, layerFeatures);
       }
     }
   }
   if (localName == 'FeatureCollection') {
-    var gmlFeatures = ol.xml.pushParseAndPop([],
+    var gmlFeatures = _ol_xml_.pushParseAndPop([],
         this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
         [{}], this.gmlFormat_);
     if (gmlFeatures) {
@@ -148,16 +149,16 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeatures;
+_ol_format_WMSGetFeatureInfo_.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
+_ol_format_WMSGetFeatureInfo_.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = {};
   if (opt_options) {
-    ol.obj.assign(options, this.getReadOptions(node, opt_options));
+    _ol_obj_.assign(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);
 };
@@ -167,18 +168,19 @@ ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_
  * Not implemented.
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.writeFeatureNode = function(feature, opt_options) {};
+_ol_format_WMSGetFeatureInfo_.prototype.writeFeatureNode = function(feature, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.writeFeaturesNode = function(features, opt_options) {};
+_ol_format_WMSGetFeatureInfo_.prototype.writeFeaturesNode = function(features, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.writeGeometryNode = function(geometry, opt_options) {};
+_ol_format_WMSGetFeatureInfo_.prototype.writeGeometryNode = function(geometry, opt_options) {};
+export default _ol_format_WMSGetFeatureInfo_;

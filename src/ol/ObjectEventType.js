@@ -1,9 +1,10 @@
-goog.provide('ol.ObjectEventType');
-
+/**
+ * @module ol/ObjectEventType
+ */
 /**
  * @enum {string}
  */
-ol.ObjectEventType = {
+var _ol_ObjectEventType_ = {
   /**
    * Triggered when a property is changed.
    * @event ol.Object.Event#propertychange
@@ -11,3 +12,5 @@ ol.ObjectEventType = {
    */
   PROPERTYCHANGE: 'propertychange'
 };
+
+export default _ol_ObjectEventType_;

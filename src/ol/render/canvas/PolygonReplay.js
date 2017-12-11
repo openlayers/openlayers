@@ -1,12 +1,12 @@
-goog.provide('ol.render.canvas.PolygonReplay');
-
-goog.require('ol');
-goog.require('ol.color');
-goog.require('ol.geom.flat.simplify');
-goog.require('ol.render.canvas');
-goog.require('ol.render.canvas.Instruction');
-goog.require('ol.render.canvas.Replay');
-
+/**
+ * @module ol/render/canvas/PolygonReplay
+ */
+import _ol_ from '../../index.js';
+import _ol_color_ from '../../color.js';
+import _ol_geom_flat_simplify_ from '../../geom/flat/simplify.js';
+import _ol_render_canvas_ from '../canvas.js';
+import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
+import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
 
 /**
  * @constructor
@@ -19,12 +19,13 @@ goog.require('ol.render.canvas.Replay');
  * @param {?} declutterTree Declutter tree.
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(
+var _ol_render_canvas_PolygonReplay_ = function(
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-  ol.render.canvas.Replay.call(this,
+  _ol_render_canvas_Replay_.call(this,
       tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 };
-ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
+
+_ol_.inherits(_ol_render_canvas_PolygonReplay_, _ol_render_canvas_Replay_);
 
 
 /**
@@ -35,12 +36,12 @@ ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
  * @private
  * @return {number} End.
  */
-ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
+_ol_render_canvas_PolygonReplay_.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
   var state = this.state;
   var fill = state.fillStyle !== undefined;
   var stroke = state.strokeStyle != undefined;
   var numEnds = ends.length;
-  var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
+  var beginPathInstruction = [_ol_render_canvas_Instruction_.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
   for (var i = 0; i < numEnds; ++i) {
@@ -49,25 +50,25 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
     var myEnd = this.appendFlatCoordinates(
         flatCoordinates, offset, end, stride, true, !stroke);
     var moveToLineToInstruction =
-        [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
+        [_ol_render_canvas_Instruction_.MOVE_TO_LINE_TO, myBegin, myEnd];
     this.instructions.push(moveToLineToInstruction);
     this.hitDetectionInstructions.push(moveToLineToInstruction);
     if (stroke) {
       // Performance optimization: only call closePath() when we have a stroke.
       // Otherwise the ring is closed already (see appendFlatCoordinates above).
-      var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
+      var closePathInstruction = [_ol_render_canvas_Instruction_.CLOSE_PATH];
       this.instructions.push(closePathInstruction);
       this.hitDetectionInstructions.push(closePathInstruction);
     }
     offset = end;
   }
-  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  var fillInstruction = [_ol_render_canvas_Instruction_.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (fill) {
     this.instructions.push(fillInstruction);
   }
   if (stroke) {
-    var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
+    var strokeInstruction = [_ol_render_canvas_Instruction_.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
@@ -78,7 +79,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
+_ol_render_canvas_PolygonReplay_.prototype.drawCircle = function(circleGeometry, feature) {
   var state = this.state;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -89,12 +90,12 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   this.beginGeometry(circleGeometry, feature);
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)
+    _ol_render_canvas_Instruction_.SET_FILL_STYLE,
+    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
@@ -104,17 +105,17 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
       flatCoordinates, 0, flatCoordinates.length, stride, false, false);
-  var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
-  var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
+  var beginPathInstruction = [_ol_render_canvas_Instruction_.BEGIN_PATH];
+  var circleInstruction = [_ol_render_canvas_Instruction_.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
-  var fillInstruction = [ol.render.canvas.Instruction.FILL];
+  var fillInstruction = [_ol_render_canvas_Instruction_.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (state.fillStyle !== undefined) {
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
+    var strokeInstruction = [_ol_render_canvas_Instruction_.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
   }
@@ -125,18 +126,18 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
+_ol_render_canvas_PolygonReplay_.prototype.drawPolygon = function(polygonGeometry, feature) {
   var state = this.state;
   this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)]
+    _ol_render_canvas_Instruction_.SET_FILL_STYLE,
+    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)]
   );
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
@@ -152,7 +153,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
+_ol_render_canvas_PolygonReplay_.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
   var state = this.state;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -163,12 +164,12 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
   this.beginGeometry(multiPolygonGeometry, feature);
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push([
-    ol.render.canvas.Instruction.SET_FILL_STYLE,
-    ol.color.asString(ol.render.canvas.defaultFillStyle)
+    _ol_render_canvas_Instruction_.SET_FILL_STYLE,
+    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
-      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
       state.miterLimit, state.lineDash, state.lineDashOffset
     ]);
@@ -189,7 +190,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.finish = function() {
+_ol_render_canvas_PolygonReplay_.prototype.finish = function() {
   this.reverseHitDetectionInstructions();
   this.state = null;
   // We want to preserve topology when drawing polygons.  Polygons are
@@ -201,7 +202,7 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
     var coordinates = this.coordinates;
     var i, ii;
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
-      coordinates[i] = ol.geom.flat.simplify.snap(coordinates[i], tolerance);
+      coordinates[i] = _ol_geom_flat_simplify_.snap(coordinates[i], tolerance);
     }
   }
 };
@@ -211,7 +212,7 @@ ol.render.canvas.PolygonReplay.prototype.finish = function() {
  * @private
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
+_ol_render_canvas_PolygonReplay_.prototype.setFillStrokeStyles_ = function(geometry) {
   var state = this.state;
   var fillStyle = state.fillStyle;
   if (fillStyle !== undefined) {
@@ -221,3 +222,4 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
     this.updateStrokeStyle(state, this.applyStroke);
   }
 };
+export default _ol_render_canvas_PolygonReplay_;
