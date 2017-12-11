@@ -95,7 +95,7 @@ describe('ol.source.VectorTile', function() {
         loaded.push(src);
       }
 
-      var proj = ol.proj.Projection({
+      var proj = new ol.proj.Projection({
         code: 'EPSG:3006',
         units: 'm'
       });
