@@ -1,6 +1,6 @@
 {
   "name": "ol",
-  "version": "4.6.3",
+  "version": "4.6.4",
   "description": "OpenLayers as ES2015 modules",
   "main": "index.js",
   "module": "index.js",
