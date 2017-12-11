@@ -248,6 +248,32 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
+    it('unskips features correctly with renderMode: \'image\'', function(done) {
+      createMap('canvas');
+      addCircle(500);
+      addPolygon(300);
+      map.skipFeature(source.getFeatures()[1]);
+      map.addLayer(new ol.layer.Vector({
+        renderMode: 'image',
+        source: source,
+        style: new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(255,0,0,0.5)'
+          }),
+          stroke: new ol.style.Stroke({
+            width: 2,
+            color: 'black'
+          })
+        })
+      }));
+      map.renderSync();
+      map.unskipFeature(source.getFeatures()[1]);
+      map.once('postrender', function() {
+        expectResemble(map, 'rendering/ol/layer/expected/vector.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
       source = new ol.source.Vector({
