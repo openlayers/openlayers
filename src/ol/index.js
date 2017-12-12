@@ -63,13 +63,6 @@ export var DEBUG_WEBGL = true;
 
 
 /**
- * TODO: move this to MouseWheelZoom.js
- * @type {number} Maximum mouse wheel delta.
- */
-export var MOUSEWHEELZOOM_MAXDELTA = 1;
-
-
-/**
  * TODO: move this to OverviewMap.js
  * @type {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
@@ -234,7 +227,6 @@ export default {
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
-  MOUSEWHEELZOOM_MAXDELTA: MOUSEWHEELZOOM_MAXDELTA,
   OVERVIEWMAP_MAX_RATIO: OVERVIEWMAP_MAX_RATIO,
   OVERVIEWMAP_MIN_RATIO: OVERVIEWMAP_MIN_RATIO,
   RASTER_REPROJECTION_MAX_SUBDIVISION: RASTER_REPROJECTION_MAX_SUBDIVISION,
