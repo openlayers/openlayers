@@ -2,7 +2,7 @@
  * @module ol/View
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import {DEFAULT_MIN_ZOOM, inherits, getUid, nullFunction} from './index.js';
+import {inherits, getUid, nullFunction} from './index.js';
 import _ol_CenterConstraint_ from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
 import _ol_ResolutionConstraint_ from './ResolutionConstraint.js';
@@ -21,6 +21,13 @@ import _ol_math_ from './math.js';
 import _ol_obj_ from './obj.js';
 import _ol_proj_ from './proj.js';
 import _ol_proj_Units_ from './proj/Units.js';
+
+
+/**
+ * @type {number} Default min zoom level for the map view.
+ */
+var DEFAULT_MIN_ZOOM = 0;
+
 
 /**
  * @classdesc

@@ -19,12 +19,6 @@ export var ASSUME_TOUCH = false;
 
 
 /**
- * @type {number} Default min zoom level for the map view.  Default is `0`.
- */
-export var DEFAULT_MIN_ZOOM = 0;
-
-
-/**
  * @type {number} Default maximum allowed threshold  (in pixels) for
  *     reprojection triangulation. Default is `0.5`.
  */
@@ -264,7 +258,6 @@ export default {
   inherits: inherits,
   VERSION: VERSION,
   ASSUME_TOUCH: ASSUME_TOUCH,
-  DEFAULT_MIN_ZOOM: DEFAULT_MIN_ZOOM,
   DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD: DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
   ENABLE_CANVAS: ENABLE_CANVAS,
