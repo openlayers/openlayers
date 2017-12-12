@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Raster
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_ImageCanvas_ from '../ImageCanvas.js';
 import _ol_TileQueue_ from '../TileQueue.js';
 import _ol_dom_ from '../dom.js';
@@ -78,7 +78,7 @@ var _ol_source_Raster_ = function(options) {
   var layerStatesArray = _ol_source_Raster_.getLayerStatesArray_(this.renderers_);
   var layerStates = {};
   for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-    layerStates[_ol_.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
+    layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
   }
 
   /**
@@ -137,7 +137,7 @@ var _ol_source_Raster_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_Raster_, _ol_source_Image_);
+inherits(_ol_source_Raster_, _ol_source_Image_);
 
 
 /**
@@ -456,7 +456,7 @@ _ol_source_Raster_.Event = function(type, frameState, data) {
   this.data = data;
 
 };
-_ol_.inherits(_ol_source_Raster_.Event, _ol_events_Event_);
+inherits(_ol_source_Raster_.Event, _ol_events_Event_);
 
 
 /**

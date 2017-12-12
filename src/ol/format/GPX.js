@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GPX
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
 import _ol_format_Feature_ from '../format/Feature.js';
@@ -41,7 +41,7 @@ var _ol_format_GPX_ = function(opt_options) {
   this.readExtensions_ = options.readExtensions;
 };
 
-_ol_.inherits(_ol_format_GPX_, _ol_format_XMLFeature_);
+inherits(_ol_format_GPX_, _ol_format_XMLFeature_);
 
 
 /**

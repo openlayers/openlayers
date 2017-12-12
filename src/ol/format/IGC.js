@@ -1,7 +1,7 @@
 /**
  * @module ol/format/IGC
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_IGCZ_ from '../format/IGCZ.js';
@@ -39,7 +39,7 @@ var _ol_format_IGC_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_IGC_, _ol_format_TextFeature_);
+inherits(_ol_format_IGC_, _ol_format_TextFeature_);
 
 
 /**

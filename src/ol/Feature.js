@@ -4,7 +4,7 @@
 import _ol_asserts_ from './asserts.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventType_ from './events/EventType.js';
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_Object_ from './Object.js';
 import _ol_geom_Geometry_ from './geom/Geometry.js';
 import _ol_style_Style_ from './style/Style.js';
@@ -107,7 +107,7 @@ var _ol_Feature_ = function(opt_geometryOrProperties) {
   }
 };
 
-_ol_.inherits(_ol_Feature_, _ol_Object_);
+inherits(_ol_Feature_, _ol_Object_);
 
 
 /**

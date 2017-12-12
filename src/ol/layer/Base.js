@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Base
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_layer_Property_ from '../layer/Property.js';
 import _ol_math_ from '../math.js';
@@ -60,7 +60,7 @@ var _ol_layer_Base_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_layer_Base_, _ol_Object_);
+inherits(_ol_layer_Base_, _ol_Object_);
 
 
 /**

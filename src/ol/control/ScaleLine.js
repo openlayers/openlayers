@@ -1,7 +1,7 @@
 /**
  * @module ol/control/ScaleLine
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_control_Control_ from '../control/Control.js';
@@ -94,7 +94,7 @@ var _ol_control_ScaleLine_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_control_ScaleLine_, _ol_control_Control_);
+inherits(_ol_control_ScaleLine_, _ol_control_Control_);
 
 
 /**

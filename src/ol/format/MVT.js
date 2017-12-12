@@ -3,7 +3,7 @@
  */
 //FIXME Implement projection handling
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_ext_PBF_ from 'pbf';
 import _ol_format_Feature_ from '../format/Feature.js';
@@ -79,7 +79,7 @@ var _ol_format_MVT_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_MVT_, _ol_format_Feature_);
+inherits(_ol_format_MVT_, _ol_format_Feature_);
 
 
 /**

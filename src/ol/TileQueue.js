@@ -1,7 +1,7 @@
 /**
  * @module ol/TileQueue
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventType_ from './events/EventType.js';
@@ -55,7 +55,7 @@ var _ol_TileQueue_ = function(tilePriorityFunction, tileChangeCallback) {
 
 };
 
-_ol_.inherits(_ol_TileQueue_, _ol_structs_PriorityQueue_);
+inherits(_ol_TileQueue_, _ol_structs_PriorityQueue_);
 
 
 /**

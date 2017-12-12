@@ -1,7 +1,7 @@
 /**
  * @module ol/Map
  */
-import _ol_ from './index.js';
+import {ENABLE_CANVAS, ENABLE_WEBGL, inherits} from './index.js';
 import _ol_PluggableMap_ from './PluggableMap.js';
 import _ol_PluginType_ from './PluginType.js';
 import _ol_control_ from './control.js';
@@ -19,7 +19,7 @@ import _ol_renderer_webgl_TileLayer_ from './renderer/webgl/TileLayer.js';
 import _ol_renderer_webgl_VectorLayer_ from './renderer/webgl/VectorLayer.js';
 
 
-if (_ol_.ENABLE_CANVAS) {
+if (ENABLE_CANVAS) {
   _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_canvas_Map_);
   _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
     _ol_renderer_canvas_ImageLayer_,
@@ -29,7 +29,7 @@ if (_ol_.ENABLE_CANVAS) {
   ]);
 }
 
-if (_ol_.ENABLE_WEBGL) {
+if (ENABLE_WEBGL) {
   _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_webgl_Map_);
   _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
     _ol_renderer_webgl_ImageLayer_,
@@ -99,5 +99,6 @@ var _ol_Map_ = function(options) {
   _ol_PluggableMap_.call(this, options);
 };
 
-_ol_.inherits(_ol_Map_, _ol_PluggableMap_);
+inherits(_ol_Map_, _ol_PluggableMap_);
+
 export default _ol_Map_;

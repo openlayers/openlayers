@@ -1,7 +1,7 @@
 /**
  * @module ol/source/UrlTile
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_source_Tile_ from '../source/Tile.js';
@@ -71,7 +71,7 @@ var _ol_source_UrlTile_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_UrlTile_, _ol_source_Tile_);
+inherits(_ol_source_UrlTile_, _ol_source_Tile_);
 
 
 /**
@@ -119,7 +119,7 @@ _ol_source_UrlTile_.prototype.getUrls = function() {
  */
 _ol_source_UrlTile_.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
-  var uid = _ol_.getUid(tile);
+  var uid = getUid(tile);
   var tileState = tile.getState();
   var type;
   if (tileState == _ol_TileState_.LOADING) {

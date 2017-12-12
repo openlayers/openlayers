@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {inherits} from '../../../../src/ol/index.js';
 import _ol_Tile_ from '../../../../src/ol/Tile.js';
 import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
 import _ol_proj_ from '../../../../src/ol/proj.js';
@@ -35,7 +35,7 @@ var MockTile = function(tileStates) {
   }
 
 };
-_ol_.inherits(MockTile, _ol_source_Tile_);
+inherits(MockTile, _ol_source_Tile_);
 
 
 /**

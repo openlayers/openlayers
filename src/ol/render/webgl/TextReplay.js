@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/TextReplay
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import _ol_dom_ from '../../dom.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
@@ -114,7 +114,7 @@ var _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
 
 };
 
-_ol_.inherits(_ol_render_webgl_TextReplay_, _ol_render_webgl_TextureReplay_);
+inherits(_ol_render_webgl_TextReplay_, _ol_render_webgl_TextureReplay_);
 
 
 /**
@@ -189,7 +189,7 @@ _ol_render_webgl_TextReplay_.prototype.drawText = function(geometry, feature) {
             this.images_.push(image);
           } else {
             currentImage = this.images_[this.images_.length - 1];
-            if (_ol_.getUid(currentImage) != _ol_.getUid(image)) {
+            if (getUid(currentImage) != getUid(image)) {
               this.groupIndices.push(this.indices.length);
               this.images_.push(image);
             }

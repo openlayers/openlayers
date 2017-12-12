@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj/Image
  */
-import _ol_ from '../index.js';
+import {DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD, inherits} from '../index.js';
 import _ol_ImageBase_ from '../ImageBase.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_events_ from '../events.js';
@@ -48,7 +48,7 @@ var _ol_reproj_Image_ = function(sourceProj, targetProj,
   var sourceResolution = _ol_reproj_.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
-  var errorThresholdInPixels = _ol_.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
+  var errorThresholdInPixels = DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
   /**
    * @private
@@ -108,7 +108,7 @@ var _ol_reproj_Image_ = function(sourceProj, targetProj,
   _ol_ImageBase_.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
 };
 
-_ol_.inherits(_ol_reproj_Image_, _ol_ImageBase_);
+inherits(_ol_reproj_Image_, _ol_ImageBase_);
 
 
 /**

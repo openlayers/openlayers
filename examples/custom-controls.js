@@ -1,4 +1,4 @@
-import _ol_ from '../src/ol/index.js';
+import {inherits} from '../src/ol/index.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
@@ -49,7 +49,7 @@ app.RotateNorthControl = function(opt_options) {
   });
 
 };
-_ol_.inherits(app.RotateNorthControl, _ol_control_Control_);
+inherits(app.RotateNorthControl, _ol_control_Control_);
 
 
 //

@@ -1,7 +1,7 @@
 /**
  * @module ol/source/TileUTFGrid
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
@@ -74,7 +74,7 @@ var _ol_source_TileUTFGrid_ = function(options) {
   }
 };
 
-_ol_.inherits(_ol_source_TileUTFGrid_, _ol_source_Tile_);
+inherits(_ol_source_TileUTFGrid_, _ol_source_Tile_);
 
 
 /**
@@ -308,7 +308,7 @@ _ol_source_TileUTFGrid_.Tile_ = function(tileCoord, state, src, extent, preempti
   this.jsonp_ = jsonp;
 
 };
-_ol_.inherits(_ol_source_TileUTFGrid_.Tile_, _ol_Tile_);
+inherits(_ol_source_TileUTFGrid_.Tile_, _ol_Tile_);
 
 
 /**

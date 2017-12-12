@@ -7,7 +7,7 @@
  * @see http://mapbox.com/developers/api/
  */
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_extent_ from '../extent.js';
@@ -65,7 +65,7 @@ var _ol_source_TileJSON_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_TileJSON_, _ol_source_TileImage_);
+inherits(_ol_source_TileJSON_, _ol_source_TileImage_);
 
 
 /**

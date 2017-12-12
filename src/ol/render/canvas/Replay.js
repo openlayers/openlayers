@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/Replay
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits, nullFunction} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import _ol_extent_ from '../../extent.js';
@@ -167,7 +167,7 @@ var _ol_render_canvas_Replay_ = function(tolerance, maxExtent, resolution, pixel
   this.resetTransform_ = _ol_transform_.create();
 };
 
-_ol_.inherits(_ol_render_canvas_Replay_, _ol_render_VectorContext_);
+inherits(_ol_render_canvas_Replay_, _ol_render_VectorContext_);
 
 
 /**
@@ -584,7 +584,7 @@ _ol_render_canvas_Replay_.prototype.replay_ = function(
       case _ol_render_canvas_Instruction_.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
         if ((skipFeatures &&
-            skippedFeaturesHash[_ol_.getUid(feature).toString()]) ||
+            skippedFeaturesHash[getUid(feature).toString()]) ||
             !feature.getGeometry()) {
           i = /** @type {number} */ (instruction[2]);
         } else if (opt_hitExtent !== undefined && !_ol_extent_.intersects(
@@ -1048,7 +1048,7 @@ _ol_render_canvas_Replay_.prototype.endGeometry = function(geometry, feature) {
 /**
  * FIXME empty description for jsdoc
  */
-_ol_render_canvas_Replay_.prototype.finish = _ol_.nullFunction;
+_ol_render_canvas_Replay_.prototype.finish = nullFunction;
 
 
 /**

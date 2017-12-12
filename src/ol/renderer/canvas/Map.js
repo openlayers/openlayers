@@ -4,7 +4,7 @@
 // FIXME offset panning
 
 import _ol_transform_ from '../../transform.js';
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_css_ from '../../css.js';
 import _ol_dom_ from '../../dom.js';
@@ -60,7 +60,7 @@ var _ol_renderer_canvas_Map_ = function(container, map) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_Map_, _ol_renderer_Map_);
+inherits(_ol_renderer_canvas_Map_, _ol_renderer_Map_);
 
 
 /**

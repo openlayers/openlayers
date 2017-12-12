@@ -1,7 +1,7 @@
 /**
  * @module ol/ImageCanvas
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_ImageBase_ from './ImageBase.js';
 import _ol_ImageState_ from './ImageState.js';
 
@@ -43,7 +43,7 @@ var _ol_ImageCanvas_ = function(extent, resolution, pixelRatio, canvas, opt_load
 
 };
 
-_ol_.inherits(_ol_ImageCanvas_, _ol_ImageBase_);
+inherits(_ol_ImageCanvas_, _ol_ImageBase_);
 
 
 /**

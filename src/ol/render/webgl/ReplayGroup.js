@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/ReplayGroup
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_extent_ from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
@@ -51,7 +51,7 @@ var _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderBuf
 
 };
 
-_ol_.inherits(_ol_render_webgl_ReplayGroup_, _ol_render_ReplayGroup_);
+inherits(_ol_render_webgl_ReplayGroup_, _ol_render_ReplayGroup_);
 
 
 /**

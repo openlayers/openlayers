@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/ReplayGroup
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_dom_ from '../../dom.js';
 import _ol_extent_ from '../../extent.js';
@@ -102,7 +102,7 @@ var _ol_render_canvas_ReplayGroup_ = function(
   this.hitDetectionTransform_ = _ol_transform_.create();
 };
 
-_ol_.inherits(_ol_render_canvas_ReplayGroup_, _ol_render_ReplayGroup_);
+inherits(_ol_render_canvas_ReplayGroup_, _ol_render_ReplayGroup_);
 
 
 /**

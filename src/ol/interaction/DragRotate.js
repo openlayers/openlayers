@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DragRotate
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_RotationConstraint_ from '../RotationConstraint.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
@@ -52,7 +52,7 @@ var _ol_interaction_DragRotate_ = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 };
 
-_ol_.inherits(_ol_interaction_DragRotate_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_DragRotate_, _ol_interaction_Pointer_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/control/OverviewMap
  */
-import _ol_ from '../index.js';
+import {OVERVIEWMAP_MAX_RATIO, OVERVIEWMAP_MIN_RATIO, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_PluggableMap_ from '../PluggableMap.js';
 import _ol_MapEventType_ from '../MapEventType.js';
@@ -188,7 +188,7 @@ var _ol_control_OverviewMap_ = function(opt_options) {
   });
 };
 
-_ol_.inherits(_ol_control_OverviewMap_, _ol_control_Control_);
+inherits(_ol_control_OverviewMap_, _ol_control_Control_);
 
 
 /**
@@ -336,10 +336,10 @@ _ol_control_OverviewMap_.prototype.validateExtent_ = function() {
   var ovmapWidth = ovmapSize[0];
   var ovmapHeight = ovmapSize[1];
 
-  if (boxWidth < ovmapWidth * _ol_.OVERVIEWMAP_MIN_RATIO ||
-      boxHeight < ovmapHeight * _ol_.OVERVIEWMAP_MIN_RATIO ||
-      boxWidth > ovmapWidth * _ol_.OVERVIEWMAP_MAX_RATIO ||
-      boxHeight > ovmapHeight * _ol_.OVERVIEWMAP_MAX_RATIO) {
+  if (boxWidth < ovmapWidth * OVERVIEWMAP_MIN_RATIO ||
+      boxHeight < ovmapHeight * OVERVIEWMAP_MIN_RATIO ||
+      boxWidth > ovmapWidth * OVERVIEWMAP_MAX_RATIO ||
+      boxHeight > ovmapHeight * OVERVIEWMAP_MAX_RATIO) {
     this.resetExtent_();
   } else if (!_ol_extent_.containsExtent(ovextent, extent)) {
     this.recenter_();
@@ -353,7 +353,7 @@ _ol_control_OverviewMap_.prototype.validateExtent_ = function() {
  * @private
  */
 _ol_control_OverviewMap_.prototype.resetExtent_ = function() {
-  if (_ol_.OVERVIEWMAP_MAX_RATIO === 0 || _ol_.OVERVIEWMAP_MIN_RATIO === 0) {
+  if (OVERVIEWMAP_MAX_RATIO === 0 || OVERVIEWMAP_MIN_RATIO === 0) {
     return;
   }
 
@@ -371,8 +371,8 @@ _ol_control_OverviewMap_.prototype.resetExtent_ = function() {
   // box sizes using the min and max ratio, pick the step in the middle used
   // to calculate the extent from the main map to set it to the overview map,
   var steps = Math.log(
-      _ol_.OVERVIEWMAP_MAX_RATIO / _ol_.OVERVIEWMAP_MIN_RATIO) / Math.LN2;
-  var ratio = 1 / (Math.pow(2, steps / 2) * _ol_.OVERVIEWMAP_MIN_RATIO);
+      OVERVIEWMAP_MAX_RATIO / OVERVIEWMAP_MIN_RATIO) / Math.LN2;
+  var ratio = 1 / (Math.pow(2, steps / 2) * OVERVIEWMAP_MIN_RATIO);
   _ol_extent_.scaleFromCenter(extent, ratio);
   ovview.fit(extent);
 };

@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/Replay
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_extent_ from '../../extent.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
 import _ol_transform_ from '../../transform.js';
@@ -113,7 +113,7 @@ var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
 
 };
 
-_ol_.inherits(_ol_render_webgl_Replay_, _ol_render_VectorContext_);
+inherits(_ol_render_webgl_Replay_, _ol_render_VectorContext_);
 
 
 /**

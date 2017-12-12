@@ -1,7 +1,7 @@
 /**
  * @module ol/tilegrid/TileGrid
  */
-import _ol_ from '../index.js';
+import {DEFAULT_TILE_SIZE} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_TileRange_ from '../TileRange.js';
 import _ol_array_ from '../array.js';
@@ -112,7 +112,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
    */
   this.tileSize_ = options.tileSize !== undefined ?
     options.tileSize :
-    !this.tileSizes_ ? _ol_.DEFAULT_TILE_SIZE : null;
+    !this.tileSizes_ ? DEFAULT_TILE_SIZE : null;
   _ol_asserts_.assert(
       (!this.tileSize_ && this.tileSizes_) ||
       (this.tileSize_ && !this.tileSizes_),

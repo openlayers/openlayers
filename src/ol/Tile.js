@@ -1,7 +1,7 @@
 /**
  * @module ol/Tile
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_easing_ from './easing.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
@@ -66,7 +66,7 @@ var _ol_Tile_ = function(tileCoord, state, opt_options) {
 
 };
 
-_ol_.inherits(_ol_Tile_, _ol_events_EventTarget_);
+inherits(_ol_Tile_, _ol_events_EventTarget_);
 
 
 /**

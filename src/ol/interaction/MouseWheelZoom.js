@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import _ol_ from '../index.js';
+import {MOUSEWHEELZOOM_MAXDELTA, inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_easing_ from '../easing.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -108,7 +108,7 @@ var _ol_interaction_MouseWheelZoom_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_MouseWheelZoom_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_MouseWheelZoom_, _ol_interaction_Interaction_);
 
 
 /**
@@ -252,7 +252,7 @@ _ol_interaction_MouseWheelZoom_.prototype.handleWheelZoom_ = function(map) {
   if (view.getAnimating()) {
     view.cancelAnimations();
   }
-  var maxDelta = _ol_.MOUSEWHEELZOOM_MAXDELTA;
+  var maxDelta = MOUSEWHEELZOOM_MAXDELTA;
   var delta = _ol_math_.clamp(this.delta_, -maxDelta, maxDelta);
   _ol_interaction_Interaction_.zoomByDelta(view, -delta, this.lastAnchor_,
       this.duration_);

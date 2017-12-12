@@ -1,7 +1,7 @@
 /**
  * @module ol/View
  */
-import _ol_ from './index.js';
+import {DEFAULT_MIN_ZOOM, DEFAULT_TILE_SIZE, inherits, getUid, nullFunction} from './index.js';
 import _ol_CenterConstraint_ from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
 import _ol_ResolutionConstraint_ from './ResolutionConstraint.js';
@@ -113,7 +113,7 @@ var _ol_View_ = function(opt_options) {
   this.applyOptions_(options);
 };
 
-_ol_.inherits(_ol_View_, _ol_Object_);
+inherits(_ol_View_, _ol_Object_);
 
 
 /**
@@ -500,7 +500,7 @@ _ol_View_.prototype.calculateCenterZoom = function(resolution, anchor) {
  */
 _ol_View_.prototype.getSizeFromViewport_ = function() {
   var size = [100, 100];
-  var selector = '.ol-viewport[data-view="' + _ol_.getUid(this) + '"]';
+  var selector = '.ol-viewport[data-view="' + getUid(this) + '"]';
   var element = document.querySelector(selector);
   if (element) {
     var metrics = getComputedStyle(element);
@@ -942,7 +942,7 @@ _ol_View_.prototype.fit = function(geometryOrExtent, opt_options) {
   var centerX = centerRotX * cosAngle - centerRotY * sinAngle;
   var centerY = centerRotY * cosAngle + centerRotX * sinAngle;
   var center = [centerX, centerY];
-  var callback = options.callback ? options.callback : _ol_.nullFunction;
+  var callback = options.callback ? options.callback : nullFunction;
 
   if (options.duration !== undefined) {
     this.animate({
@@ -1104,7 +1104,7 @@ _ol_View_.createResolutionConstraint_ = function(options) {
   var defaultZoomFactor = 2;
 
   var minZoom = options.minZoom !== undefined ?
-    options.minZoom : _ol_.DEFAULT_MIN_ZOOM;
+    options.minZoom : DEFAULT_MIN_ZOOM;
 
   var maxZoom = options.maxZoom !== undefined ?
     options.maxZoom : defaultMaxZoom;
@@ -1129,11 +1129,11 @@ _ol_View_.createResolutionConstraint_ = function(options) {
             projection.getMetersPerUnit() :
       Math.max(_ol_extent_.getWidth(extent), _ol_extent_.getHeight(extent));
 
-    var defaultMaxResolution = size / _ol_.DEFAULT_TILE_SIZE / Math.pow(
-        defaultZoomFactor, _ol_.DEFAULT_MIN_ZOOM);
+    var defaultMaxResolution = size / DEFAULT_TILE_SIZE / Math.pow(
+        defaultZoomFactor, DEFAULT_MIN_ZOOM);
 
     var defaultMinResolution = defaultMaxResolution / Math.pow(
-        defaultZoomFactor, defaultMaxZoom - _ol_.DEFAULT_MIN_ZOOM);
+        defaultZoomFactor, defaultMaxZoom - DEFAULT_MIN_ZOOM);
 
     // user provided maxResolution takes precedence
     maxResolution = options.maxResolution;

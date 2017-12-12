@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/Circle
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
@@ -25,7 +25,7 @@ var _ol_geom_Circle_ = function(center, opt_radius, opt_layout) {
   this.setCenterAndRadius(center, radius, opt_layout);
 };
 
-_ol_.inherits(_ol_geom_Circle_, _ol_geom_SimpleGeometry_);
+inherits(_ol_geom_Circle_, _ol_geom_SimpleGeometry_);
 
 
 /**

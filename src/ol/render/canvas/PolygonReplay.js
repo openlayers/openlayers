@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/PolygonReplay
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_color_ from '../../color.js';
 import _ol_geom_flat_simplify_ from '../../geom/flat/simplify.js';
 import _ol_render_canvas_ from '../canvas.js';
@@ -25,7 +25,7 @@ var _ol_render_canvas_PolygonReplay_ = function(
       tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 };
 
-_ol_.inherits(_ol_render_canvas_PolygonReplay_, _ol_render_canvas_Replay_);
+inherits(_ol_render_canvas_PolygonReplay_, _ol_render_canvas_Replay_);
 
 
 /**

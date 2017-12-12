@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/GeometryCollection
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_extent_ from '../extent.js';
@@ -31,7 +31,7 @@ var _ol_geom_GeometryCollection_ = function(opt_geometries) {
   this.listenGeometriesChange_();
 };
 
-_ol_.inherits(_ol_geom_GeometryCollection_, _ol_geom_Geometry_);
+inherits(_ol_geom_GeometryCollection_, _ol_geom_Geometry_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/Immediate
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_extent_ from '../../extent.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
 import _ol_render_ReplayType_ from '../ReplayType.js';
@@ -84,7 +84,7 @@ var _ol_render_webgl_Immediate_ = function(context, center, resolution, rotation
 
 };
 
-_ol_.inherits(_ol_render_webgl_Immediate_, _ol_render_VectorContext_);
+inherits(_ol_render_webgl_Immediate_, _ol_render_VectorContext_);
 
 
 /**

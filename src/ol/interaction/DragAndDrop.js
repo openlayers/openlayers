@@ -3,7 +3,7 @@
  */
 // FIXME should handle all geo-referenced data, not just vector data
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_functions_ from '../functions.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
@@ -63,7 +63,7 @@ var _ol_interaction_DragAndDrop_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_DragAndDrop_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_DragAndDrop_, _ol_interaction_Interaction_);
 
 
 /**
@@ -277,5 +277,5 @@ _ol_interaction_DragAndDrop_.Event = function(type, file, opt_features, opt_proj
   this.projection = opt_projection;
 
 };
-_ol_.inherits(_ol_interaction_DragAndDrop_.Event, _ol_events_Event_);
+inherits(_ol_interaction_DragAndDrop_.Event, _ol_events_Event_);
 export default _ol_interaction_DragAndDrop_;

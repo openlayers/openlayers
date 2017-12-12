@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Layer
  */
-import _ol_ from '../index.js';
+import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_Observable_ from '../Observable.js';
 import _ol_TileState_ from '../TileState.js';
@@ -30,7 +30,7 @@ var _ol_renderer_Layer_ = function(layer) {
 
 };
 
-_ol_.inherits(_ol_renderer_Layer_, _ol_Observable_);
+inherits(_ol_renderer_Layer_, _ol_Observable_);
 
 
 /**
@@ -43,7 +43,7 @@ _ol_.inherits(_ol_renderer_Layer_, _ol_Observable_);
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-_ol_renderer_Layer_.prototype.forEachFeatureAtCoordinate = _ol_.nullFunction;
+_ol_renderer_Layer_.prototype.forEachFeatureAtCoordinate = nullFunction;
 
 
 /**
@@ -152,7 +152,7 @@ _ol_renderer_Layer_.prototype.scheduleExpireCache = function(frameState, tileSou
      * @param {olx.FrameState} frameState Frame state.
      */
     var postRenderFunction = function(tileSource, map, frameState) {
-      var tileSourceKey = _ol_.getUid(tileSource).toString();
+      var tileSourceKey = getUid(tileSource).toString();
       if (tileSourceKey in frameState.usedTiles) {
         tileSource.expireCache(frameState.viewState.projection,
             frameState.usedTiles[tileSourceKey]);
@@ -194,7 +194,7 @@ _ol_renderer_Layer_.prototype.updateLogos = function(frameState, source) {
  */
 _ol_renderer_Layer_.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
-  var tileSourceKey = _ol_.getUid(tileSource).toString();
+  var tileSourceKey = getUid(tileSource).toString();
   var zKey = z.toString();
   if (tileSourceKey in usedTiles) {
     if (zKey in usedTiles[tileSourceKey]) {
@@ -232,7 +232,7 @@ _ol_renderer_Layer_.prototype.updateUsedTiles = function(usedTiles, tileSource, 
 _ol_renderer_Layer_.prototype.manageTilePyramid = function(
     frameState, tileSource, tileGrid, pixelRatio, projection, extent,
     currentZ, preload, opt_tileCallback, opt_this) {
-  var tileSourceKey = _ol_.getUid(tileSource).toString();
+  var tileSourceKey = getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
   }

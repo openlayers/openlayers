@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol/index.js';
+import {getUid, inherits} from '../../../../../src/ol/index.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../../src/ol/Map.js';
@@ -66,7 +66,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         this.setProjection(_ol_proj_.get('EPSG:4326'));
         tileCallback(this);
       };
-      _ol_.inherits(TileClass, _ol_VectorTile_);
+      inherits(TileClass, _ol_VectorTile_);
       source = new _ol_source_VectorTile_({
         format: new _ol_format_MVT_(),
         tileClass: TileClass,
@@ -305,7 +305,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       this.sourceTiles_[key] = sourceTile;
       this.wrappedTileCoord = arguments[0];
     };
-    _ol_.inherits(TileClass, _ol_VectorImageTile_);
+    inherits(TileClass, _ol_VectorImageTile_);
 
     beforeEach(function() {
       replayGroup = {};
@@ -336,7 +336,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           rotation: 0
         }
       };
-      frameState.layerStates[_ol_.getUid(layer)] = {};
+      frameState.layerStates[getUid(layer)] = {};
       renderer.renderedTiles = [new TileClass([0, 0, -1])];
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, 0, spy, undefined);

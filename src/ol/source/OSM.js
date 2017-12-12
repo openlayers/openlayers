@@ -1,7 +1,7 @@
 /**
  * @module ol/source/OSM
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_source_XYZ_ from '../source/XYZ.js';
 
 /**
@@ -44,7 +44,7 @@ var _ol_source_OSM_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_source_OSM_, _ol_source_XYZ_);
+inherits(_ol_source_OSM_, _ol_source_XYZ_);
 
 
 /**

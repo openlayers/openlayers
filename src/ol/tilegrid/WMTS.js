@@ -1,7 +1,7 @@
 /**
  * @module ol/tilegrid/WMTS
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_proj_ from '../proj.js';
 import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
@@ -35,7 +35,7 @@ var _ol_tilegrid_WMTS_ = function(options) {
   });
 };
 
-_ol_.inherits(_ol_tilegrid_WMTS_, _ol_tilegrid_TileGrid_);
+inherits(_ol_tilegrid_WMTS_, _ol_tilegrid_TileGrid_);
 
 
 /**

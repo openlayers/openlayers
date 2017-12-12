@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/TextureReplay
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_extent_ from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturereplay/defaultshader.js';
@@ -112,7 +112,7 @@ var _ol_render_webgl_TextureReplay_ = function(tolerance, maxExtent) {
   this.width = undefined;
 };
 
-_ol_.inherits(_ol_render_webgl_TextureReplay_, _ol_render_webgl_Replay_);
+inherits(_ol_render_webgl_TextureReplay_, _ol_render_webgl_Replay_);
 
 
 /**
@@ -253,7 +253,7 @@ _ol_render_webgl_TextureReplay_.prototype.createTextures = function(textures, im
   for (i = 0; i < ii; ++i) {
     image = images[i];
 
-    uid = _ol_.getUid(image).toString();
+    uid = getUid(image).toString();
     if (uid in texturePerImage) {
       texture = texturePerImage[uid];
     } else {
@@ -388,7 +388,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawReplaySkipping = function(gl, cont
         this.startIndices[featureIndex] <= groupEnd) {
       var feature = this.startIndicesFeature[featureIndex];
 
-      var featureUid = _ol_.getUid(feature).toString();
+      var featureUid = getUid(feature).toString();
       if (skippedFeaturesHash[featureUid] !== undefined) {
         // feature should be skipped
         if (start !== end) {
@@ -434,7 +434,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawHitDetectionReplayOneByOne = funct
         this.startIndices[featureIndex] >= groupStart) {
       start = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = _ol_.getUid(feature).toString();
+      featureUid = getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&

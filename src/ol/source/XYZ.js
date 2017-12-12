@@ -1,7 +1,7 @@
 /**
  * @module ol/source/XYZ
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -60,5 +60,5 @@ var _ol_source_XYZ_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_source_XYZ_, _ol_source_TileImage_);
+inherits(_ol_source_XYZ_, _ol_source_TileImage_);
 export default _ol_source_XYZ_;

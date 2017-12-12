@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageStatic
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_dom_ from '../dom.js';
@@ -53,7 +53,7 @@ var _ol_source_ImageStatic_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_ImageStatic_, _ol_source_Image_);
+inherits(_ol_source_ImageStatic_, _ol_source_Image_);
 
 
 /**

@@ -6,7 +6,7 @@
  * @see https://developers.google.com/maps/documentation/javascript/reference
  */
 
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_AssertionError_ from './AssertionError.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import _ol_Object_ from './Object.js';
@@ -56,7 +56,7 @@ var _ol_Collection_ = function(opt_array, opt_options) {
 
 };
 
-_ol_.inherits(_ol_Collection_, _ol_Object_);
+inherits(_ol_Collection_, _ol_Object_);
 
 
 /**
@@ -302,5 +302,6 @@ _ol_Collection_.Event = function(type, opt_element) {
   this.element = opt_element;
 
 };
-_ol_.inherits(_ol_Collection_.Event, _ol_events_Event_);
+inherits(_ol_Collection_.Event, _ol_events_Event_);
+
 export default _ol_Collection_;

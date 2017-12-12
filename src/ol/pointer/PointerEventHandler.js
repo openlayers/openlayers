@@ -31,7 +31,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventTarget_ from '../events/EventTarget.js';
 import _ol_has_ from '../has.js';
@@ -78,7 +78,7 @@ var _ol_pointer_PointerEventHandler_ = function(element) {
   this.registerSources();
 };
 
-_ol_.inherits(_ol_pointer_PointerEventHandler_, _ol_events_EventTarget_);
+inherits(_ol_pointer_PointerEventHandler_, _ol_events_EventTarget_);
 
 
 /**

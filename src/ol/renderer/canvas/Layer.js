@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/Layer
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_extent_ from '../../extent.js';
 import _ol_functions_ from '../../functions.js';
 import _ol_render_Event_ from '../../render/Event.js';
@@ -35,7 +35,7 @@ var _ol_renderer_canvas_Layer_ = function(layer) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_Layer_, _ol_renderer_Layer_);
+inherits(_ol_renderer_canvas_Layer_, _ol_renderer_Layer_);
 
 
 /**

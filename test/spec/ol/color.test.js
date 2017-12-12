@@ -1,6 +1,4 @@
 import _ol_color_ from '../../../src/ol/color.js';
-import _ol_ from '../../../src/ol/index.js';
-
 
 describe('ol.color', function() {
 
@@ -64,12 +62,6 @@ describe('ol.color', function() {
       var spy = _ol_color_.fromStringInternal_;
       spy.restore();
     });
-
-    if (_ol_.ENABLE_NAMED_COLORS) {
-      it('can parse named colors', function() {
-        expect(_ol_color_.fromString('red')).to.eql([255, 0, 0, 1]);
-      });
-    }
 
     it('can parse 3-digit hex colors', function() {
       expect(_ol_color_.fromString('#087')).to.eql([0, 136, 119, 1]);

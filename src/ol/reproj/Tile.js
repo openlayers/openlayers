@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj/Tile
  */
-import _ol_ from '../index.js';
+import {DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD, inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
@@ -136,7 +136,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   }
 
   var errorThresholdInPixels = opt_errorThreshold !== undefined ?
-    opt_errorThreshold : _ol_.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
+    opt_errorThreshold : DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
   /**
    * @private
@@ -187,7 +187,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   }
 };
 
-_ol_.inherits(_ol_reproj_Tile_, _ol_Tile_);
+inherits(_ol_reproj_Tile_, _ol_Tile_);
 
 
 /**

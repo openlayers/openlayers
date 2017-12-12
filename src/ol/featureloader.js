@@ -1,7 +1,7 @@
 /**
  * @module ol/featureloader
  */
-import _ol_ from './index.js';
+import {nullFunction} from './index.js';
 import _ol_format_FormatType_ from './format/FormatType.js';
 import _ol_xml_ from './xml.js';
 var _ol_featureloader_ = {};
@@ -96,6 +96,6 @@ _ol_featureloader_.xhr = function(url, format) {
        */
       function(features, dataProjection) {
         this.addFeatures(features);
-      }, /* FIXME handle error */ _ol_.nullFunction);
+      }, /* FIXME handle error */ nullFunction);
 };
 export default _ol_featureloader_;

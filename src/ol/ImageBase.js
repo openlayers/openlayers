@@ -1,7 +1,7 @@
 /**
  * @module ol/ImageBase
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
 import _ol_events_EventType_ from './events/EventType.js';
 
@@ -44,7 +44,7 @@ var _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
 
 };
 
-_ol_.inherits(_ol_ImageBase_, _ol_events_EventTarget_);
+inherits(_ol_ImageBase_, _ol_events_EventTarget_);
 
 
 /**

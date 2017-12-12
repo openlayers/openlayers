@@ -1,7 +1,7 @@
 /**
  * @module ol/proj
  */
-import _ol_ from './index.js';
+import {ENABLE_PROJ4JS} from './index.js';
 import _ol_Sphere_ from './Sphere.js';
 import _ol_extent_ from './extent.js';
 import _ol_math_ from './math.js';
@@ -32,7 +32,7 @@ _ol_proj_.METERS_PER_UNIT = _ol_proj_Units_.METERS_PER_UNIT;
 _ol_proj_.SPHERE_ = new _ol_Sphere_(_ol_Sphere_.DEFAULT_RADIUS);
 
 
-if (_ol_.ENABLE_PROJ4JS) {
+if (ENABLE_PROJ4JS) {
   /**
    * Register proj4. If not explicitly registered, it will be assumed that
    * proj4js will be loaded in the global namespace. For example in a
@@ -311,7 +311,7 @@ _ol_proj_.get = function(projectionLike) {
   } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
     projection = _ol_proj_projections_.get(code);
-    if (_ol_.ENABLE_PROJ4JS && !projection) {
+    if (ENABLE_PROJ4JS && !projection) {
       var proj4js = _ol_proj_proj4_.get();
       if (typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
@@ -380,7 +380,7 @@ _ol_proj_.getTransformFromProjections = function(sourceProjection, destinationPr
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
   var transform = _ol_proj_transforms_.get(sourceCode, destinationCode);
-  if (_ol_.ENABLE_PROJ4JS && !transform) {
+  if (ENABLE_PROJ4JS && !transform) {
     var proj4js = _ol_proj_proj4_.get();
     if (typeof proj4js == 'function') {
       var sourceDef = proj4js.defs(sourceCode);

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GML2
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
@@ -39,7 +39,7 @@ var _ol_format_GML2_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_GML2_, _ol_format_GMLBase_);
+inherits(_ol_format_GML2_, _ol_format_GMLBase_);
 
 
 /**

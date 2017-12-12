@@ -2,7 +2,7 @@
  * @module ol/layer/Heatmap
  */
 import _ol_events_ from '../events.js';
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_dom_ from '../dom.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -118,7 +118,7 @@ var _ol_layer_Heatmap_ = function(opt_options) {
   _ol_events_.listen(this, _ol_render_EventType_.RENDER, this.handleRender_, this);
 };
 
-_ol_.inherits(_ol_layer_Heatmap_, _ol_layer_Vector_);
+inherits(_ol_layer_Heatmap_, _ol_layer_Vector_);
 
 
 /**

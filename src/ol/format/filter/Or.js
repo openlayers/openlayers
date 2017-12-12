@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Or
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_format_filter_LogicalNary_ from '../filter/LogicalNary.js';
 
 /**
@@ -18,5 +18,5 @@ var _ol_format_filter_Or_ = function(conditions) {
   _ol_format_filter_LogicalNary_.apply(this, params);
 };
 
-_ol_.inherits(_ol_format_filter_Or_, _ol_format_filter_LogicalNary_);
+inherits(_ol_format_filter_Or_, _ol_format_filter_LogicalNary_);
 export default _ol_format_filter_Or_;

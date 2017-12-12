@@ -1,7 +1,7 @@
 /**
  * @module ol/source/WMTS
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_array_ from '../array.js';
 import _ol_extent_ from '../extent.js';
@@ -176,7 +176,7 @@ var _ol_source_WMTS_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_WMTS_, _ol_source_TileImage_);
+inherits(_ol_source_WMTS_, _ol_source_TileImage_);
 
 /**
  * Set the URLs to use for requests.

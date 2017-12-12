@@ -1,10 +1,8 @@
 /**
  * @module ol/source/Vector
  */
-// FIXME bulk feature upload - suppress events
-// FIXME make change-detection more refined (notably, geometry hint)
 
-import _ol_ from '../index.js';
+import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_ObjectEventType_ from '../ObjectEventType.js';
@@ -51,7 +49,7 @@ var _ol_source_Vector_ = function(opt_options) {
    * @private
    * @type {ol.FeatureLoader}
    */
-  this.loader_ = _ol_.nullFunction;
+  this.loader_ = nullFunction;
 
   /**
    * @private
@@ -152,7 +150,7 @@ var _ol_source_Vector_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_source_Vector_, _ol_source_Source_);
+inherits(_ol_source_Vector_, _ol_source_Source_);
 
 
 /**
@@ -176,7 +174,7 @@ _ol_source_Vector_.prototype.addFeature = function(feature) {
  * @protected
  */
 _ol_source_Vector_.prototype.addFeatureInternal = function(feature) {
-  var featureKey = _ol_.getUid(feature).toString();
+  var featureKey = getUid(feature).toString();
 
   if (!this.addToIndex_(featureKey, feature)) {
     return;
@@ -264,7 +262,7 @@ _ol_source_Vector_.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = features.length; i < length; i++) {
     feature = features[i];
-    featureKey = _ol_.getUid(feature).toString();
+    featureKey = getUid(feature).toString();
     if (this.addToIndex_(featureKey, feature)) {
       newFeatures.push(feature);
     }
@@ -272,7 +270,7 @@ _ol_source_Vector_.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
     feature = newFeatures[i];
-    featureKey = _ol_.getUid(feature).toString();
+    featureKey = getUid(feature).toString();
     this.setupChangeEvents_(featureKey, feature);
 
     var geometry = feature.getGeometry();
@@ -680,7 +678,7 @@ _ol_source_Vector_.prototype.getUrl = function() {
  */
 _ol_source_Vector_.prototype.handleFeatureChange_ = function(event) {
   var feature = /** @type {ol.Feature} */ (event.target);
-  var featureKey = _ol_.getUid(feature).toString();
+  var featureKey = getUid(feature).toString();
   var geometry = feature.getGeometry();
   if (!geometry) {
     if (!(featureKey in this.nullGeometryFeatures_)) {
@@ -791,7 +789,7 @@ _ol_source_Vector_.prototype.removeLoadedExtent = function(extent) {
  * @api
  */
 _ol_source_Vector_.prototype.removeFeature = function(feature) {
-  var featureKey = _ol_.getUid(feature).toString();
+  var featureKey = getUid(feature).toString();
   if (featureKey in this.nullGeometryFeatures_) {
     delete this.nullGeometryFeatures_[featureKey];
   } else {
@@ -810,7 +808,7 @@ _ol_source_Vector_.prototype.removeFeature = function(feature) {
  * @protected
  */
 _ol_source_Vector_.prototype.removeFeatureInternal = function(feature) {
-  var featureKey = _ol_.getUid(feature).toString();
+  var featureKey = getUid(feature).toString();
   this.featureChangeKeys_[featureKey].forEach(_ol_events_.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];
   var id = feature.getId();
@@ -878,5 +876,5 @@ _ol_source_Vector_.Event = function(type, opt_feature) {
   this.feature = opt_feature;
 
 };
-_ol_.inherits(_ol_source_Vector_.Event, _ol_events_Event_);
+inherits(_ol_source_Vector_.Event, _ol_events_Event_);
 export default _ol_source_Vector_;

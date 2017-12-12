@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageArcGISRest
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
@@ -97,7 +97,7 @@ var _ol_source_ImageArcGISRest_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_source_ImageArcGISRest_, _ol_source_Image_);
+inherits(_ol_source_ImageArcGISRest_, _ol_source_Image_);
 
 
 /**

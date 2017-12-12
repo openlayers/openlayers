@@ -1,12 +1,13 @@
 /**
  * @module ol/control/Rotate
  */
-import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_ from '../index.js';
+
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import _ol_easing_ from '../easing.js';
+import _ol_events_ from '../events.js';
+import _ol_events_EventType_ from '../events/EventType.js';
+import {inherits} from '../index.js';
 
 /**
  * @classdesc
@@ -93,7 +94,7 @@ var _ol_control_Rotate_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_control_Rotate_, _ol_control_Control_);
+inherits(_ol_control_Rotate_, _ol_control_Control_);
 
 
 /**

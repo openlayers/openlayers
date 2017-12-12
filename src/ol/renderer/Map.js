@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/Map
  */
-import _ol_ from '../index.js';
+import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -45,7 +45,7 @@ var _ol_renderer_Map_ = function(container, map) {
 
 };
 
-_ol_.inherits(_ol_renderer_Map_, _ol_Disposable_);
+inherits(_ol_renderer_Map_, _ol_Disposable_);
 
 
 /**
@@ -116,8 +116,8 @@ _ol_renderer_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, fr
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature, layer) {
-    var key = _ol_.getUid(feature).toString();
-    var managed = frameState.layerStates[_ol_.getUid(layer)].managed;
+    var key = getUid(feature).toString();
+    var managed = frameState.layerStates[getUid(layer)].managed;
     if (!(key in frameState.skippedFeatureUids && !managed)) {
       return callback.call(thisArg, feature, managed ? layer : null);
     }
@@ -204,7 +204,7 @@ _ol_renderer_Map_.prototype.hasFeatureAtCoordinate = function(coordinate, frameS
  * @return {ol.renderer.Layer} Layer renderer.
  */
 _ol_renderer_Map_.prototype.getLayerRenderer = function(layer) {
-  var layerKey = _ol_.getUid(layer).toString();
+  var layerKey = getUid(layer).toString();
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {
@@ -293,7 +293,7 @@ _ol_renderer_Map_.prototype.removeLayerRendererByKey_ = function(layerKey) {
  * Render.
  * @param {?olx.FrameState} frameState Frame state.
  */
-_ol_renderer_Map_.prototype.renderFrame = _ol_.nullFunction;
+_ol_renderer_Map_.prototype.renderFrame = nullFunction;
 
 
 /**

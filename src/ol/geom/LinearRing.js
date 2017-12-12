@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/LinearRing
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
@@ -43,7 +43,7 @@ var _ol_geom_LinearRing_ = function(coordinates, opt_layout) {
 
 };
 
-_ol_.inherits(_ol_geom_LinearRing_, _ol_geom_SimpleGeometry_);
+inherits(_ol_geom_LinearRing_, _ol_geom_SimpleGeometry_);
 
 
 /**

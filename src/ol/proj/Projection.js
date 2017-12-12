@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/Projection
  */
-import _ol_ from '../index.js';
+import {ENABLE_PROJ4JS} from '../index.js';
 import _ol_proj_Units_ from '../proj/Units.js';
 import _ol_proj_proj4_ from '../proj/proj4.js';
 
@@ -108,7 +108,7 @@ var _ol_proj_Projection_ = function(options) {
   this.metersPerUnit_ = options.metersPerUnit;
 
   var code = options.code;
-  if (_ol_.ENABLE_PROJ4JS) {
+  if (ENABLE_PROJ4JS) {
     var proj4js = _ol_proj_proj4_.get();
     if (typeof proj4js == 'function') {
       var def = proj4js.defs(code);

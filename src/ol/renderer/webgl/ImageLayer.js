@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/webgl/ImageLayer
  */
-import _ol_ from '../../index.js';
+import {ENABLE_RASTER_REPROJECTION, inherits, nullFunction} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import _ol_dom_ from '../../dom.js';
@@ -45,7 +45,7 @@ var _ol_renderer_webgl_ImageLayer_ = function(mapRenderer, imageLayer) {
 
 };
 
-_ol_.inherits(_ol_renderer_webgl_ImageLayer_, _ol_renderer_webgl_Layer_);
+inherits(_ol_renderer_webgl_ImageLayer_, _ol_renderer_webgl_Layer_);
 
 
 /**
@@ -142,7 +142,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.prepareFrame = function(frameState, lay
   if (!hints[_ol_ViewHint_.ANIMATING] && !hints[_ol_ViewHint_.INTERACTING] &&
       !_ol_extent_.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
-    if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+    if (!ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
         projection = sourceProjection;
@@ -248,7 +248,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.forEachLayerAtPixel = function(pixel, f
     return undefined;
   }
 
-  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== _ol_.nullFunction) {
+  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== nullFunction) {
     // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     var coordinate = _ol_transform_.apply(

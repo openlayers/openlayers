@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/Geometry
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_extent_ from '../extent.js';
 import _ol_functions_ from '../functions.js';
@@ -66,7 +66,7 @@ var _ol_geom_Geometry_ = function() {
 
 };
 
-_ol_.inherits(_ol_geom_Geometry_, _ol_Object_);
+inherits(_ol_geom_Geometry_, _ol_Object_);
 
 
 /**

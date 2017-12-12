@@ -1,7 +1,7 @@
 /**
  * @module ol/format/TopoJSON
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
@@ -49,7 +49,7 @@ var _ol_format_TopoJSON_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_TopoJSON_, _ol_format_JSONFeature_);
+inherits(_ol_format_TopoJSON_, _ol_format_JSONFeature_);
 
 
 /**

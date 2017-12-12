@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Translate
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_Object_ from '../Object.js';
 import _ol_events_ from '../events.js';
@@ -85,7 +85,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_Translate_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Translate_, _ol_interaction_Pointer_);
 
 
 /**
@@ -293,5 +293,5 @@ _ol_interaction_Translate_.Event = function(type, features, coordinate) {
    */
   this.coordinate = coordinate;
 };
-_ol_.inherits(_ol_interaction_Translate_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Translate_.Event, _ol_events_Event_);
 export default _ol_interaction_Translate_;

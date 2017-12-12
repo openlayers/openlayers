@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Stroke
  */
-import _ol_ from '../index.js';
+import {getUid} from '../index.js';
 
 /**
  * @classdesc
@@ -257,7 +257,7 @@ _ol_style_Stroke_.prototype.getChecksum = function() {
       if (typeof this.color_ === 'string') {
         this.checksum_ += this.color_;
       } else {
-        this.checksum_ += _ol_.getUid(this.color_).toString();
+        this.checksum_ += getUid(this.color_).toString();
       }
     } else {
       this.checksum_ += '-';

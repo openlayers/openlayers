@@ -1,4 +1,4 @@
-import _ol_ from '../src/ol/index.js';
+import {inherits} from '../src/ol/index.js';
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
@@ -61,7 +61,7 @@ app.Drag = function() {
   this.previousCursor_ = undefined;
 
 };
-_ol_.inherits(app.Drag, _ol_interaction_Pointer_);
+inherits(app.Drag, _ol_interaction_Pointer_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/vector
  */
-import _ol_ from '../index.js';
+import {SIMPLIFY_TOLERANCE, getUid} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_render_ReplayType_ from '../render/ReplayType.js';
@@ -14,7 +14,7 @@ var _ol_renderer_vector_ = {};
  * @return {number} Order.
  */
 _ol_renderer_vector_.defaultOrder = function(feature1, feature2) {
-  return _ol_.getUid(feature1) - _ol_.getUid(feature2);
+  return getUid(feature1) - getUid(feature2);
 };
 
 
@@ -35,7 +35,7 @@ _ol_renderer_vector_.getSquaredTolerance = function(resolution, pixelRatio) {
  * @return {number} Pixel tolerance.
  */
 _ol_renderer_vector_.getTolerance = function(resolution, pixelRatio) {
-  return _ol_.SIMPLIFY_TOLERANCE * resolution / pixelRatio;
+  return SIMPLIFY_TOLERANCE * resolution / pixelRatio;
 };
 
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj/Triangulation
  */
-import _ol_ from '../index.js';
+import {RASTER_REPROJECTION_MAX_SUBDIVISION, RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_proj_ from '../proj.js';
@@ -112,7 +112,7 @@ var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
       destinationTopLeft, destinationTopRight,
       destinationBottomRight, destinationBottomLeft,
       sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
-      _ol_.RASTER_REPROJECTION_MAX_SUBDIVISION);
+      RASTER_REPROJECTION_MAX_SUBDIVISION);
 
   if (this.wrapsXInSource_) {
     var leftBound = Infinity;
@@ -213,11 +213,11 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
       var targetCoverageX =
           _ol_extent_.getWidth(targetQuadExtent) / this.targetWorldWidth_;
       needsSubdivision |=
-          targetCoverageX > _ol_.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
+          targetCoverageX > RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
     }
     if (!wrapsX && this.sourceProj_.isGlobal() && sourceCoverageX) {
       needsSubdivision |=
-          sourceCoverageX > _ol_.RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
+          sourceCoverageX > RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
     }
   }
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Comparison
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_format_filter_Filter_ from '../filter/Filter.js';
 
 /**
@@ -29,5 +29,6 @@ var _ol_format_filter_Comparison_ = function(tagName, propertyName) {
   this.propertyName = propertyName;
 };
 
-_ol_.inherits(_ol_format_filter_Comparison_, _ol_format_filter_Filter_);
+inherits(_ol_format_filter_Comparison_, _ol_format_filter_Filter_);
+
 export default _ol_format_filter_Comparison_;

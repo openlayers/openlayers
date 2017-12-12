@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
@@ -181,7 +181,7 @@ describe('ol.renderer.canvas.Map', function() {
       layerRenderer.getImage = function() {
         return null;
       };
-      renderer.layerRenderers_[_ol_.getUid(layer)] = layerRenderer;
+      renderer.layerRenderers_[getUid(layer)] = layerRenderer;
     });
 
   });

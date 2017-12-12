@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Pointer
  */
-import _ol_ from '../index.js';
+import {inherits, nullFunction} from '../index.js';
 import _ol_functions_ from '../functions.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
@@ -82,7 +82,7 @@ var _ol_interaction_Pointer_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_Pointer_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_Pointer_, _ol_interaction_Interaction_);
 
 
 /**
@@ -142,7 +142,7 @@ _ol_interaction_Pointer_.prototype.updateTrackedPointers_ = function(mapBrowserE
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleDragEvent = _ol_.nullFunction;
+_ol_interaction_Pointer_.handleDragEvent = nullFunction;
 
 
 /**
@@ -165,7 +165,7 @@ _ol_interaction_Pointer_.handleDownEvent = _ol_functions_.FALSE;
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleMoveEvent = _ol_.nullFunction;
+_ol_interaction_Pointer_.handleMoveEvent = nullFunction;
 
 
 /**

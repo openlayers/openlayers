@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/EPSG3857
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_math_ from '../math.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
 import _ol_proj_Units_ from '../proj/Units.js';
@@ -29,7 +29,7 @@ _ol_proj_EPSG3857_.Projection_ = function(code) {
     }
   });
 };
-_ol_.inherits(_ol_proj_EPSG3857_.Projection_, _ol_proj_Projection_);
+inherits(_ol_proj_EPSG3857_.Projection_, _ol_proj_Projection_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/ImageReplay
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
 import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
 
@@ -107,7 +107,7 @@ var _ol_render_canvas_ImageReplay_ = function(
 
 };
 
-_ol_.inherits(_ol_render_canvas_ImageReplay_, _ol_render_canvas_Replay_);
+inherits(_ol_render_canvas_ImageReplay_, _ol_render_canvas_Replay_);
 
 
 /**

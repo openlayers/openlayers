@@ -3,7 +3,7 @@
  */
 // FIXME handle geolocation not supported
 
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_GeolocationProperty_ from './GeolocationProperty.js';
 import _ol_Object_ from './Object.js';
 import _ol_Sphere_ from './Sphere.js';
@@ -90,7 +90,7 @@ var _ol_Geolocation_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_Geolocation_, _ol_Object_);
+inherits(_ol_Geolocation_, _ol_Object_);
 
 
 /**

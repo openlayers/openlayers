@@ -1,7 +1,7 @@
 /**
  * @module ol/format/EsriJSON
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_extent_ from '../extent.js';
@@ -45,7 +45,7 @@ var _ol_format_EsriJSON_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_EsriJSON_, _ol_format_JSONFeature_);
+inherits(_ol_format_EsriJSON_, _ol_format_JSONFeature_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/webgl/Context
  */
-import _ol_ from '../index.js';
+import {WEBGL_EXTENSIONS, getUid, inherits} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
 import _ol_array_ from '../array.js';
 import _ol_events_ from '../events.js';
@@ -78,7 +78,7 @@ var _ol_webgl_Context_ = function(canvas, gl) {
    * @type {boolean}
    */
   this.hasOESElementIndexUint = _ol_array_.includes(
-      _ol_.WEBGL_EXTENSIONS, 'OES_element_index_uint');
+      WEBGL_EXTENSIONS, 'OES_element_index_uint');
 
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {
@@ -92,7 +92,7 @@ var _ol_webgl_Context_ = function(canvas, gl) {
 
 };
 
-_ol_.inherits(_ol_webgl_Context_, _ol_Disposable_);
+inherits(_ol_webgl_Context_, _ol_Disposable_);
 
 
 /**
@@ -105,7 +105,7 @@ _ol_.inherits(_ol_webgl_Context_, _ol_Disposable_);
 _ol_webgl_Context_.prototype.bindBuffer = function(target, buf) {
   var gl = this.getGL();
   var arr = buf.getArray();
-  var bufferKey = String(_ol_.getUid(buf));
+  var bufferKey = String(getUid(buf));
   if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -133,7 +133,7 @@ _ol_webgl_Context_.prototype.bindBuffer = function(target, buf) {
  */
 _ol_webgl_Context_.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
-  var bufferKey = String(_ol_.getUid(buf));
+  var bufferKey = String(getUid(buf));
   var bufferCacheEntry = this.bufferCache_[bufferKey];
   if (!gl.isContextLost()) {
     gl.deleteBuffer(bufferCacheEntry.buffer);
@@ -204,7 +204,7 @@ _ol_webgl_Context_.prototype.getHitDetectionFramebuffer = function() {
  * @return {WebGLShader} Shader.
  */
 _ol_webgl_Context_.prototype.getShader = function(shaderObject) {
-  var shaderKey = String(_ol_.getUid(shaderObject));
+  var shaderKey = String(getUid(shaderObject));
   if (shaderKey in this.shaderCache_) {
     return this.shaderCache_[shaderKey];
   } else {
@@ -229,7 +229,7 @@ _ol_webgl_Context_.prototype.getShader = function(shaderObject) {
 _ol_webgl_Context_.prototype.getProgram = function(
     fragmentShaderObject, vertexShaderObject) {
   var programKey =
-      _ol_.getUid(fragmentShaderObject) + '/' + _ol_.getUid(vertexShaderObject);
+      getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
   if (programKey in this.programCache_) {
     return this.programCache_[programKey];
   } else {

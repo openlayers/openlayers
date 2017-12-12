@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WMTSCapabilities
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_format_OWS_ from '../format/OWS.js';
 import _ol_format_XLink_ from '../format/XLink.js';
@@ -27,7 +27,7 @@ var _ol_format_WMTSCapabilities_ = function() {
   this.owsParser_ = new _ol_format_OWS_();
 };
 
-_ol_.inherits(_ol_format_WMTSCapabilities_, _ol_format_XML_);
+inherits(_ol_format_WMTSCapabilities_, _ol_format_XML_);
 
 
 /**

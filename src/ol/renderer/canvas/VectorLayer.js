@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/VectorLayer
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import _ol_dom_ from '../../dom.js';
@@ -84,7 +84,7 @@ var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
+inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
 
 
 /**
@@ -263,7 +263,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.forEachFeatureAtCoordinate = function
          * @return {?} Callback result.
          */
         function(feature) {
-          var key = _ol_.getUid(feature).toString();
+          var key = getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback.call(thisArg, feature, layer);

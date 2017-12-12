@@ -3,7 +3,7 @@
  */
 // FIXME draw drag box
 import _ol_events_Event_ from '../events/Event.js';
-import _ol_ from '../index.js';
+import {inherits, nullFunction} from '../index.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_render_Box_ from '../render/Box.js';
@@ -68,7 +68,7 @@ var _ol_interaction_DragBox_ = function(opt_options) {
     options.boxEndCondition : _ol_interaction_DragBox_.defaultBoxEndCondition;
 };
 
-_ol_.inherits(_ol_interaction_DragBox_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_DragBox_, _ol_interaction_Pointer_);
 
 
 /**
@@ -121,7 +121,7 @@ _ol_interaction_DragBox_.prototype.getGeometry = function() {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
-_ol_interaction_DragBox_.prototype.onBoxEnd = _ol_.nullFunction;
+_ol_interaction_DragBox_.prototype.onBoxEnd = nullFunction;
 
 
 /**
@@ -231,5 +231,5 @@ _ol_interaction_DragBox_.Event = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-_ol_.inherits(_ol_interaction_DragBox_.Event, _ol_events_Event_);
+inherits(_ol_interaction_DragBox_.Event, _ol_events_Event_);
 export default _ol_interaction_DragBox_;

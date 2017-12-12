@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Image
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_LayerType_ from '../LayerType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 
@@ -32,7 +32,7 @@ var _ol_layer_Image_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_layer_Image_, _ol_layer_Layer_);
+inherits(_ol_layer_Image_, _ol_layer_Layer_);
 
 
 /**

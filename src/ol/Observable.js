@@ -1,7 +1,7 @@
 /**
  * @module ol/Observable
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
 import _ol_events_EventType_ from './events/EventType.js';
@@ -32,7 +32,7 @@ var _ol_Observable_ = function() {
 
 };
 
-_ol_.inherits(_ol_Observable_, _ol_events_EventTarget_);
+inherits(_ol_Observable_, _ol_events_EventTarget_);
 
 
 /**

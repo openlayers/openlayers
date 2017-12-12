@@ -1,7 +1,7 @@
 /**
  * @module ol/control/FullScreen
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import _ol_dom_ from '../dom.js';
@@ -90,7 +90,7 @@ var _ol_control_FullScreen_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_control_FullScreen_, _ol_control_Control_);
+inherits(_ol_control_FullScreen_, _ol_control_Control_);
 
 
 /**

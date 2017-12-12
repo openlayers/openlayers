@@ -1,8 +1,8 @@
 /**
  * @module ol/has
  */
-import _ol_ from './index.js';
-import _ol_webgl_ from './webgl.js';
+import {ENABLE_CANVAS, ASSUME_TOUCH, HAS_WEBGL} from './index.js';
+
 var _ol_has_ = {};
 
 var ua = typeof navigator !== 'undefined' ?
@@ -57,7 +57,7 @@ _ol_has_.CANVAS_LINE_DASH = false;
  * @type {boolean}
  * @api
  */
-_ol_has_.CANVAS = _ol_.ENABLE_CANVAS && (
+_ol_has_.CANVAS = ENABLE_CANVAS && (
   /**
    * @return {boolean} Canvas supported.
    */
@@ -105,7 +105,7 @@ _ol_has_.GEOLOCATION = 'geolocation' in navigator;
  * @type {boolean}
  * @api
  */
-_ol_has_.TOUCH = _ol_.ASSUME_TOUCH || 'ontouchstart' in window;
+_ol_has_.TOUCH = ASSUME_TOUCH || 'ontouchstart' in window;
 
 
 /**
@@ -125,41 +125,12 @@ _ol_has_.MSPOINTER = !!(navigator.msPointerEnabled);
 
 
 /**
- * True if both OpenLayers and browser support WebGL.  Always `false`
- * if `ol.ENABLE_WEBGL` is set to `false` at compile time.
+ * True if both OpenLayers and browser support WebGL.
  * @const
  * @type {boolean}
  * @api
  */
-_ol_has_.WEBGL;
+_ol_has_.WEBGL = HAS_WEBGL;
 
 
-(function() {
-  if (_ol_.ENABLE_WEBGL) {
-    var hasWebGL = false;
-    var textureSize;
-    var /** @type {Array.<string>} */ extensions = [];
-
-    if ('WebGLRenderingContext' in window) {
-      try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (document.createElement('CANVAS'));
-        var gl = _ol_webgl_.getContext(canvas, {
-          failIfMajorPerformanceCaveat: true
-        });
-        if (gl) {
-          hasWebGL = true;
-          textureSize = /** @type {number} */
-            (gl.getParameter(gl.MAX_TEXTURE_SIZE));
-          extensions = gl.getSupportedExtensions();
-        }
-      } catch (e) {
-        // pass
-      }
-    }
-    _ol_has_.WEBGL = hasWebGL;
-    _ol_.WEBGL_EXTENSIONS = extensions;
-    _ol_.WEBGL_MAX_TEXTURE_SIZE = textureSize;
-  }
-})();
 export default _ol_has_;

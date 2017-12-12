@@ -5,7 +5,7 @@
 // FIXME need to handle large thick features (where pixel size matters)
 // FIXME add offset and end to ol.geom.flat.transform.transform2D?
 
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import _ol_extent_ from '../../extent.js';
@@ -238,7 +238,7 @@ var _ol_render_canvas_Immediate_ = function(context, pixelRatio, extent, transfo
 
 };
 
-_ol_.inherits(_ol_render_canvas_Immediate_, _ol_render_VectorContext_);
+inherits(_ol_render_canvas_Immediate_, _ol_render_VectorContext_);
 
 
 /**

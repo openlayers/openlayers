@@ -31,7 +31,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_pointer_EventSource_ from '../pointer/EventSource.js';
 
 /**
@@ -62,7 +62,7 @@ var _ol_pointer_MouseSource_ = function(dispatcher) {
   this.lastTouches = [];
 };
 
-_ol_.inherits(_ol_pointer_MouseSource_, _ol_pointer_EventSource_);
+inherits(_ol_pointer_MouseSource_, _ol_pointer_EventSource_);
 
 
 /**

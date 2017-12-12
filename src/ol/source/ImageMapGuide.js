@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageMapGuide
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -100,7 +100,7 @@ var _ol_source_ImageMapGuide_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_ImageMapGuide_, _ol_source_Image_);
+inherits(_ol_source_ImageMapGuide_, _ol_source_Image_);
 
 
 /**

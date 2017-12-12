@@ -1,7 +1,7 @@
 /**
  * @module ol/PluggableMap
  */
-import _ol_ from './index.js';
+import {getUid, inherits} from './index.js';
 import _ol_Collection_ from './Collection.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
@@ -363,7 +363,7 @@ var _ol_PluggableMap_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_PluggableMap_, _ol_Object_);
+inherits(_ol_PluggableMap_, _ol_Object_);
 
 
 /**
@@ -1010,7 +1010,7 @@ _ol_PluggableMap_.prototype.handleViewChanged_ = function() {
   }
   var view = this.getView();
   if (view) {
-    this.viewport_.setAttribute('data-view', _ol_.getUid(view));
+    this.viewport_.setAttribute('data-view', getUid(view));
     this.viewPropertyListenerKey_ = _ol_events_.listen(
         view, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
@@ -1144,7 +1144,7 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerStates[_ol_.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
+      layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
     var center = viewState.center;
@@ -1270,7 +1270,7 @@ _ol_PluggableMap_.prototype.setView = function(view) {
  * @param {ol.Feature} feature Feature.
  */
 _ol_PluggableMap_.prototype.skipFeature = function(feature) {
-  var featureUid = _ol_.getUid(feature).toString();
+  var featureUid = getUid(feature).toString();
   this.skippedFeatureUids_[featureUid] = true;
   this.render();
 };
@@ -1308,7 +1308,7 @@ _ol_PluggableMap_.prototype.updateSize = function() {
  * @param {ol.Feature} feature Feature.
  */
 _ol_PluggableMap_.prototype.unskipFeature = function(feature) {
-  var featureUid = _ol_.getUid(feature).toString();
+  var featureUid = getUid(feature).toString();
   delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
@@ -1382,7 +1382,7 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     if (typeof logo === 'string') {
       logos[logo] = '';
     } else if (logo instanceof HTMLElement) {
-      logos[_ol_.getUid(logo).toString()] = logo;
+      logos[getUid(logo).toString()] = logo;
     } else if (logo) {
       _ol_asserts_.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
       _ol_asserts_.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.

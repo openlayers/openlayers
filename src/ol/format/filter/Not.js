@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/Not
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_format_filter_Filter_ from '../filter/Filter.js';
 
 /**
@@ -24,5 +24,5 @@ var _ol_format_filter_Not_ = function(condition) {
   this.condition = condition;
 };
 
-_ol_.inherits(_ol_format_filter_Not_, _ol_format_filter_Filter_);
+inherits(_ol_format_filter_Not_, _ol_format_filter_Filter_);
 export default _ol_format_filter_Not_;

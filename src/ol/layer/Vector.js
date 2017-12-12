@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Vector
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_LayerType_ from '../LayerType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_layer_VectorRenderType_ from '../layer/VectorRenderType.js';
@@ -91,7 +91,7 @@ var _ol_layer_Vector_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_layer_Vector_, _ol_layer_Layer_);
+inherits(_ol_layer_Vector_, _ol_layer_Layer_);
 
 
 /**

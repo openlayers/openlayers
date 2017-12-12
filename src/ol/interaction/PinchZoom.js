@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/PinchZoom
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_functions_ from '../functions.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
@@ -59,7 +59,7 @@ var _ol_interaction_PinchZoom_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_PinchZoom_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_PinchZoom_, _ol_interaction_Pointer_);
 
 
 /**

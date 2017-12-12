@@ -1,7 +1,7 @@
 /**
  * @module ol/source/TileArcGISRest
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_obj_ from '../obj.js';
@@ -58,7 +58,7 @@ var _ol_source_TileArcGISRest_ = function(opt_options) {
   this.setKey(this.getKeyForParams_());
 };
 
-_ol_.inherits(_ol_source_TileArcGISRest_, _ol_source_TileImage_);
+inherits(_ol_source_TileArcGISRest_, _ol_source_TileImage_);
 
 
 /**

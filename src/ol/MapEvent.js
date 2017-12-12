@@ -1,7 +1,7 @@
 /**
  * @module ol/MapEvent
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_events_Event_ from './events/Event.js';
 
 /**
@@ -36,5 +36,5 @@ var _ol_MapEvent_ = function(type, map, opt_frameState) {
 
 };
 
-_ol_.inherits(_ol_MapEvent_, _ol_events_Event_);
+inherits(_ol_MapEvent_, _ol_events_Event_);
 export default _ol_MapEvent_;
