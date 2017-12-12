@@ -63,13 +63,6 @@ export var DEBUG_WEBGL = true;
 
 
 /**
- * TODO: move this to renderer/vector.js
- * @type {number} Tolerance for geometry simplification in device pixels.
- */
-export var SIMPLIFY_TOLERANCE = 0.5;
-
-
-/**
  * @type {string} OpenLayers version.
  */
 export var VERSION = 'v4.6.4';
@@ -187,7 +180,6 @@ export default {
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
-  SIMPLIFY_TOLERANCE: SIMPLIFY_TOLERANCE,
   HAS_WEBGL: HAS_WEBGL,
   WEBGL_MAX_TEXTURE_SIZE: WEBGL_MAX_TEXTURE_SIZE,
   WEBGL_EXTENSIONS: WEBGL_EXTENSIONS
