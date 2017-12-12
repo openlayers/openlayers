@@ -1,10 +1,32 @@
 /**
  * @module ol/reproj/Triangulation
  */
-import {RASTER_REPROJECTION_MAX_SUBDIVISION, RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH} from '../index.js';
 import _ol_extent_ from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_proj_ from '../proj.js';
+
+
+/**
+ * @type {number} Maximum number of subdivision steps during raster
+ *     reprojection triangulation. Prevents high memory usage and large
+ *     number of proj4 calls (for certain transformations and areas).
+ *     At most `2*(2^this)` triangles are created for each triangulated
+ *     extent (tile/image).
+ */
+var MAX_SUBDIVISION = 10;
+
+
+/**
+ * @type {number} Maximum allowed size of triangle relative to world width.
+ *     When transforming corners of world extent between certain projections,
+ *     the resulting triangulation seems to have zero error and no subdivision
+ *     is performed.
+ *     If the triangle width is more than this (relative to world width; 0-1),
+ *     subdivison is forced (up to `MAX_SUBDIVISION`).
+ *     Default is `0.25`.
+ */
+var MAX_TRIANGLE_WIDTH = 0.25;
+
 
 /**
  * @classdesc
@@ -112,7 +134,7 @@ var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
       destinationTopLeft, destinationTopRight,
       destinationBottomRight, destinationBottomLeft,
       sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
-      RASTER_REPROJECTION_MAX_SUBDIVISION);
+      MAX_SUBDIVISION);
 
   if (this.wrapsXInSource_) {
     var leftBound = Infinity;
@@ -213,11 +235,11 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
       var targetCoverageX =
           _ol_extent_.getWidth(targetQuadExtent) / this.targetWorldWidth_;
       needsSubdivision |=
-          targetCoverageX > RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
+          targetCoverageX > MAX_TRIANGLE_WIDTH;
     }
     if (!wrapsX && this.sourceProj_.isGlobal() && sourceCoverageX) {
       needsSubdivision |=
-          sourceCoverageX > RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH;
+          sourceCoverageX > MAX_TRIANGLE_WIDTH;
     }
   }
 

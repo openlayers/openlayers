@@ -63,30 +63,6 @@ export var DEBUG_WEBGL = true;
 
 
 /**
- * TODO: move this to Triangulation.js
- * @type {number} Maximum number of subdivision steps during raster
- *     reprojection triangulation. Prevents high memory usage and large
- *     number of proj4 calls (for certain transformations and areas).
- *     At most `2*(2^this)` triangles are created for each triangulated
- *     extent (tile/image). Default is `10`.
- */
-export var RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
-
-
-/**
- * TODO: move this to Triangulation.js
- * @type {number} Maximum allowed size of triangle relative to world width.
- *     When transforming corners of world extent between certain projections,
- *     the resulting triangulation seems to have zero error and no subdivision
- *     is performed.
- *     If the triangle width is more than this (relative to world width; 0-1),
- *     subdivison is forced (up to `RASTER_REPROJECTION_MAX_SUBDIVISION`).
- *     Default is `0.25`.
- */
-export var RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH = 0.25;
-
-
-/**
  * TODO: move this to renderer/vector.js
  * @type {number} Tolerance for geometry simplification in device pixels.
  */
@@ -211,8 +187,6 @@ export default {
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
-  RASTER_REPROJECTION_MAX_SUBDIVISION: RASTER_REPROJECTION_MAX_SUBDIVISION,
-  RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH: RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH,
   SIMPLIFY_TOLERANCE: SIMPLIFY_TOLERANCE,
   HAS_WEBGL: HAS_WEBGL,
   WEBGL_MAX_TEXTURE_SIZE: WEBGL_MAX_TEXTURE_SIZE,
