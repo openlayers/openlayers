@@ -7443,7 +7443,7 @@ olx.source.ZoomifyOptions.prototype.transition;
 
 /**
  * Tile size. Same tile size is used for all zoom levels. Default value is
- * `OpenLayers.DEFAULT_TILE_SIZE`.
+ * `256`.
  * @type {number|undefined}
  * @api
  */

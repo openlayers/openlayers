@@ -1,7 +1,8 @@
 /**
  * @module ol/View
  */
-import {DEFAULT_MIN_ZOOM, DEFAULT_TILE_SIZE, inherits, getUid, nullFunction} from './index.js';
+import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
+import {DEFAULT_MIN_ZOOM, inherits, getUid, nullFunction} from './index.js';
 import _ol_CenterConstraint_ from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
 import _ol_ResolutionConstraint_ from './ResolutionConstraint.js';

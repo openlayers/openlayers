@@ -19,14 +19,6 @@ export var ASSUME_TOUCH = false;
 
 
 /**
- * TODO: rename this to something having to do with tile grids
- * see https://github.com/openlayers/openlayers/issues/2076
- * @type {number} Default maximum zoom for default tile grids.
- */
-export var DEFAULT_MAX_ZOOM = 42;
-
-
-/**
  * @type {number} Default min zoom level for the map view.  Default is `0`.
  */
 export var DEFAULT_MIN_ZOOM = 0;
@@ -37,12 +29,6 @@ export var DEFAULT_MIN_ZOOM = 0;
  *     reprojection triangulation. Default is `0.5`.
  */
 export var DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
-
-
-/**
- * @type {number} Default tile size.
- */
-export var DEFAULT_TILE_SIZE = 256;
 
 
 /**
@@ -278,10 +264,8 @@ export default {
   inherits: inherits,
   VERSION: VERSION,
   ASSUME_TOUCH: ASSUME_TOUCH,
-  DEFAULT_MAX_ZOOM: DEFAULT_MAX_ZOOM,
   DEFAULT_MIN_ZOOM: DEFAULT_MIN_ZOOM,
   DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD: DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD,
-  DEFAULT_TILE_SIZE: DEFAULT_TILE_SIZE,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
   ENABLE_CANVAS: ENABLE_CANVAS,
   ENABLE_PROJ4JS: ENABLE_PROJ4JS,

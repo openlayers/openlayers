@@ -1,4 +1,4 @@
-import {DEFAULT_TILE_SIZE} from '../../../../src/ol/index.js';
+import {DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_Zoomify_ from '../../../../src/ol/source/Zoomify.js';
