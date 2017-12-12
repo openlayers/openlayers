@@ -1,7 +1,5 @@
-
-
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
+import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
+import _ol_source_OSM_ from '../../../../src/ol/source/OSM.js';
 
 
 describe('ol.layer.Tile', function() {
@@ -11,8 +9,8 @@ describe('ol.layer.Tile', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new ol.layer.Tile({
-        source: new ol.source.OSM()
+      layer = new _ol_layer_Tile_({
+        source: new _ol_source_OSM_()
       });
     });
 
@@ -21,7 +19,7 @@ describe('ol.layer.Tile', function() {
     });
 
     it('creates an instance', function() {
-      expect(layer).to.be.a(ol.layer.Tile);
+      expect(layer).to.be.a(_ol_layer_Tile_);
     });
 
     it('provides default preload', function() {

@@ -1,40 +1,40 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.layer.Tile');
-goog.require('ol.proj');
-goog.require('ol.source.Stamen');
-goog.require('ol.source.TileWMS');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_extent_ from '../src/ol/extent.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_proj_ from '../src/ol/proj.js';
+import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
 function threeHoursAgo() {
   return new Date(Math.round(Date.now() / 3600000) * 3600000 - 3600000 * 3);
 }
 
-var extent = ol.proj.transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
+var extent = _ol_proj_.transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
 var startDate = threeHoursAgo();
 var frameRate = 0.5; // frames per second
 var animationId = null;
 
 var layers = [
-  new ol.layer.Tile({
-    source: new ol.source.Stamen({
+  new _ol_layer_Tile_({
+    source: new _ol_source_Stamen_({
       layer: 'terrain'
     })
   }),
-  new ol.layer.Tile({
+  new _ol_layer_Tile_({
     extent: extent,
-    source: new ol.source.TileWMS({
+    source: new _ol_source_TileWMS_({
       attributions: ['Iowa State University'],
       url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
       params: {'LAYERS': 'nexrad-n0r-wmst'}
     })
   })
 ];
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: layers,
   target: 'map',
-  view: new ol.View({
-    center: ol.extent.getCenter(extent),
+  view: new _ol_View_({
+    center: _ol_extent_.getCenter(extent),
     zoom: 4
   })
 });

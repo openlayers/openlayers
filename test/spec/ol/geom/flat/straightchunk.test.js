@@ -1,4 +1,4 @@
-goog.require('ol.geom.flat.straightchunk');
+import _ol_geom_flat_straightchunk_ from '../../../../../src/ol/geom/flat/straightchunk.js';
 
 
 describe('ol.geom.flat.straightchunk', function() {
@@ -10,12 +10,12 @@ describe('ol.geom.flat.straightchunk', function() {
       var stride = 3;
 
       it('returns whole line with angle delta', function() {
-        var got = ol.geom.flat.straightchunk.lineString(Math.PI / 4, flatCoords, 0, 6, stride);
+        var got = _ol_geom_flat_straightchunk_.lineString(Math.PI / 4, flatCoords, 0, 6, stride);
         expect(got).to.eql([0, 6]);
       });
 
       it('returns whole line with zero angle delta', function() {
-        var got = ol.geom.flat.straightchunk.lineString(0, flatCoords, 0, 6, stride);
+        var got = _ol_geom_flat_straightchunk_.lineString(0, flatCoords, 0, 6, stride);
         expect(got).to.eql([0, 6]);
       });
 
@@ -26,12 +26,12 @@ describe('ol.geom.flat.straightchunk', function() {
       var stride = 2;
 
       it('returns whole line if straight enough', function() {
-        var got = ol.geom.flat.straightchunk.lineString(Math.PI, flatCoords, 0, 8, stride);
+        var got = _ol_geom_flat_straightchunk_.lineString(Math.PI, flatCoords, 0, 8, stride);
         expect(got).to.eql([0, 8]);
       });
 
       it('returns first matching chunk if all chunk lengths are the same', function() {
-        var got = ol.geom.flat.straightchunk.lineString(Math.PI / 4, flatCoords, 0, 8, stride);
+        var got = _ol_geom_flat_straightchunk_.lineString(Math.PI / 4, flatCoords, 0, 8, stride);
         expect(got).to.eql([0, 4]);
       });
 
@@ -42,12 +42,12 @@ describe('ol.geom.flat.straightchunk', function() {
       var stride = 2;
 
       it('returns stright chunk from within the linestring', function() {
-        var got = ol.geom.flat.straightchunk.lineString(0, flatCoords, 0, 18, stride);
+        var got = _ol_geom_flat_straightchunk_.lineString(0, flatCoords, 0, 18, stride);
         expect(got).to.eql([10, 16]);
       });
 
       it('returns long chunk at the end if angle and length within threshold', function() {
-        var got = ol.geom.flat.straightchunk.lineString(Math.PI / 4, flatCoords, 0, 18, stride);
+        var got = _ol_geom_flat_straightchunk_.lineString(Math.PI / 4, flatCoords, 0, 18, stride);
         expect(got).to.eql([10, 18]);
       });
 

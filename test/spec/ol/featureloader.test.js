@@ -1,8 +1,6 @@
-
-
-goog.require('ol.featureloader');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.source.Vector');
+import _ol_featureloader_ from '../../../src/ol/featureloader.js';
+import _ol_format_GeoJSON_ from '../../../src/ol/format/GeoJSON.js';
+import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
 
 
 describe('ol.featureloader', function() {
@@ -15,13 +13,13 @@ describe('ol.featureloader', function() {
 
     beforeEach(function() {
       url = 'spec/ol/data/point.json';
-      format = new ol.format.GeoJSON();
+      format = new _ol_format_GeoJSON_();
 
-      source = new ol.source.Vector();
+      source = new _ol_source_Vector_();
     });
 
     it('adds features to the source', function(done) {
-      loader = ol.featureloader.xhr(url, format);
+      loader = _ol_featureloader_.xhr(url, format);
       source.on('addfeature', function(e) {
         expect(source.getFeatures().length).to.be.greaterThan(0);
         done();
@@ -34,7 +32,7 @@ describe('ol.featureloader', function() {
         url = function(extent, resolution, projection) {
           return 'spec/ol/data/point.json';
         };
-        loader = ol.featureloader.xhr(url, format);
+        loader = _ol_featureloader_.xhr(url, format);
 
         source.on('addfeature', function(e) {
           expect(source.getFeatures().length).to.be.greaterThan(0);
@@ -54,7 +52,7 @@ describe('ol.featureloader', function() {
           done();
           return 'spec/ol/data/point.json';
         };
-        loader = ol.featureloader.xhr(url, format);
+        loader = _ol_featureloader_.xhr(url, format);
         loader.call(source, [], 1, 'EPSG:3857');
       });
     });

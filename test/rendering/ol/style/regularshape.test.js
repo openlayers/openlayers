@@ -1,15 +1,13 @@
-
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');
+import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import _ol_Map_ from '../../../../src/ol/Map.js';
+import _ol_View_ from '../../../../src/ol/View.js';
+import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
+import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.rendering.style.RegularShape', function() {
@@ -17,17 +15,17 @@ describe('ol.rendering.style.RegularShape', function() {
   var map, vectorSource;
 
   function createMap(renderer) {
-    vectorSource = new ol.source.Vector();
-    var vectorLayer = new ol.layer.Vector({
+    vectorSource = new _ol_source_Vector_();
+    var vectorLayer = new _ol_layer_Vector_({
       source: vectorSource
     });
 
-    map = new ol.Map({
+    map = new _ol_Map_({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
-      view: new ol.View({
+      view: new _ol_View_({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -44,12 +42,12 @@ describe('ol.rendering.style.RegularShape', function() {
 
   function createFeatures(stroke, fill) {
     var feature;
-    feature = new ol.Feature({
-      geometry: new ol.geom.Point([-15, 15])
+    feature = new _ol_Feature_({
+      geometry: new _ol_geom_Point_([-15, 15])
     });
     // square
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
+    feature.setStyle(new _ol_style_Style_({
+      image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
         points: 4,
@@ -59,12 +57,12 @@ describe('ol.rendering.style.RegularShape', function() {
     }));
     vectorSource.addFeature(feature);
 
-    feature = new ol.Feature({
-      geometry: new ol.geom.Point([8, 15])
+    feature = new _ol_Feature_({
+      geometry: new _ol_geom_Point_([8, 15])
     });
     // triangle
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
+    feature.setStyle(new _ol_style_Style_({
+      image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
         points: 3,
@@ -75,12 +73,12 @@ describe('ol.rendering.style.RegularShape', function() {
     }));
     vectorSource.addFeature(feature);
 
-    feature = new ol.Feature({
-      geometry: new ol.geom.Point([-10, -8])
+    feature = new _ol_Feature_({
+      geometry: new _ol_geom_Point_([-10, -8])
     });
     // star
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
+    feature.setStyle(new _ol_style_Style_({
+      image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
         points: 5,
@@ -91,12 +89,12 @@ describe('ol.rendering.style.RegularShape', function() {
     }));
     vectorSource.addFeature(feature);
 
-    feature = new ol.Feature({
-      geometry: new ol.geom.Point([12, -8])
+    feature = new _ol_Feature_({
+      geometry: new _ol_geom_Point_([12, -8])
     });
     // cross
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
+    feature.setStyle(new _ol_style_Style_({
+      image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
         points: 4,
@@ -110,8 +108,8 @@ describe('ol.rendering.style.RegularShape', function() {
 
 
   describe('#render', function() {
-    var stroke = new ol.style.Stroke({width: 2});
-    var fill = new ol.style.Fill({color: 'red'});
+    var stroke = new _ol_style_Stroke_({width: 2});
+    var fill = new _ol_style_Fill_({color: 'red'});
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
@@ -121,7 +119,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
     it('supports lineDash', function(done) {
       createMap('canvas');
-      createFeatures(new ol.style.Stroke({
+      createFeatures(new _ol_style_Stroke_({
         lineDash: [10, 5]
       }));
       expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedash.png', 5, done);
@@ -129,7 +127,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
     it('supports lineDashOffset', function(done) {
       createMap('canvas');
-      createFeatures(new ol.style.Stroke({
+      createFeatures(new _ol_style_Stroke_({
         lineDash: [10, 5],
         lineDashOffset: 5
       }));
@@ -145,8 +143,8 @@ describe('ol.rendering.style.RegularShape', function() {
   });
 
   describe('uses the default fill and stroke color', function() {
-    var stroke = new ol.style.Stroke();
-    var fill = new ol.style.Fill();
+    var stroke = new _ol_style_Stroke_();
+    var fill = new _ol_style_Fill_();
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');

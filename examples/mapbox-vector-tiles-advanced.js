@@ -1,15 +1,15 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.MVT');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.proj');
-goog.require('ol.source.VectorTile');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
-goog.require('ol.tilegrid.TileGrid');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_format_MVT_ from '../src/ol/format/MVT.js';
+import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
+import _ol_proj_ from '../src/ol/proj.js';
+import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
+import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import _ol_style_Icon_ from '../src/ol/style/Icon.js';
+import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import _ol_style_Style_ from '../src/ol/style/Style.js';
+import _ol_style_Text_ from '../src/ol/style/Text.js';
+import _ol_tilegrid_TileGrid_ from '../src/ol/tilegrid/TileGrid.js';
 
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
@@ -30,26 +30,26 @@ function tileUrlFunction(tileCoord) {
           ((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1));
 }
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.VectorTile({
-      source: new ol.source.VectorTile({
+    new _ol_layer_VectorTile_({
+      source: new _ol_source_VectorTile_({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
           '© <a href="https://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
-        format: new ol.format.MVT(),
-        tileGrid: new ol.tilegrid.TileGrid({
-          extent: ol.proj.get('EPSG:3857').getExtent(),
+        format: new _ol_format_MVT_(),
+        tileGrid: new _ol_tilegrid_TileGrid_({
+          extent: _ol_proj_.get('EPSG:3857').getExtent(),
           resolutions: resolutions,
           tileSize: 512
         }),
         tileUrlFunction: tileUrlFunction
       }),
-      style: createMapboxStreetsV6Style(ol.style.Style, ol.style.Fill, ol.style.Stroke, ol.style.Icon, ol.style.Text)
+      style: createMapboxStreetsV6Style(_ol_style_Style_, _ol_style_Fill_, _ol_style_Stroke_, _ol_style_Icon_, _ol_style_Text_)
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     minZoom: 1,
     zoom: 2

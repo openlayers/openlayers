@@ -1,28 +1,28 @@
-goog.require('ol.Attribution');
-goog.require('ol.proj');
-goog.require('ol.source.Source');
+import _ol_Attribution_ from '../../../../src/ol/Attribution.js';
+import _ol_proj_ from '../../../../src/ol/proj.js';
+import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
 
 
 describe('ol.source.Source', function() {
 
   describe('constructor', function() {
     it('returns a source', function() {
-      var source = new ol.source.Source({
-        projection: ol.proj.get('EPSG:4326')
+      var source = new _ol_source_Source_({
+        projection: _ol_proj_.get('EPSG:4326')
       });
-      expect(source).to.be.a(ol.source.Source);
+      expect(source).to.be.a(_ol_source_Source_);
     });
   });
 
   describe('config option `attributions`', function() {
     it('accepts undefined', function() {
-      var source = new ol.source.Source({});
+      var source = new _ol_source_Source_({});
       var attributions = source.getAttributions2();
       expect(attributions).to.be(null);
     });
 
     it('accepts a single string', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: 'Humpty'
       });
       var attributions = source.getAttributions2();
@@ -32,7 +32,7 @@ describe('ol.source.Source', function() {
     });
 
     it('accepts an array of strings', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: ['Humpty', 'Dumpty']
       });
       var attributions = source.getAttributions2();
@@ -42,7 +42,7 @@ describe('ol.source.Source', function() {
     });
 
     it('accepts a function that returns a string', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: function() {
           return 'Humpty';
         }
@@ -54,7 +54,7 @@ describe('ol.source.Source', function() {
     });
 
     it('accepts a function that returns an array of strings', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: function() {
           return ['Humpty', 'Dumpty'];
         }
@@ -68,8 +68,8 @@ describe('ol.source.Source', function() {
 
   describe('#refresh()', function() {
     it('dispatches the change event', function() {
-      var source = new ol.source.Source({
-        projection: ol.proj.get('EPSG:4326')
+      var source = new _ol_source_Source_({
+        projection: _ol_proj_.get('EPSG:4326')
       });
       var changedSpy = sinon.spy();
       source.on('change', changedSpy);
@@ -80,49 +80,49 @@ describe('ol.source.Source', function() {
 
   describe('#getAttributions()', function() {
     it('maintains backwards compatibility for string option', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: 'foo'
       });
       var attributions = source.getAttributions();
       expect(attributions.length).to.be(1);
-      expect(attributions[0]).to.be.an(ol.Attribution);
+      expect(attributions[0]).to.be.an(_ol_Attribution_);
       expect(attributions[0].getHTML()).to.be('foo');
     });
 
     it('maintains backwards compatibility for array of strings option', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: ['foo', 'bar']
       });
       var attributions = source.getAttributions();
       expect(attributions.length).to.be(2);
-      expect(attributions[0]).to.be.an(ol.Attribution);
+      expect(attributions[0]).to.be.an(_ol_Attribution_);
       expect(attributions[0].getHTML()).to.be('foo');
-      expect(attributions[1]).to.be.an(ol.Attribution);
+      expect(attributions[1]).to.be.an(_ol_Attribution_);
       expect(attributions[1].getHTML()).to.be('bar');
     });
 
     it('maintains backwards compatibility for ol.Attribution option', function() {
-      var source = new ol.source.Source({
-        attributions: new ol.Attribution({html: 'foo'})
+      var source = new _ol_source_Source_({
+        attributions: new _ol_Attribution_({html: 'foo'})
       });
       var attributions = source.getAttributions();
       expect(attributions.length).to.be(1);
-      expect(attributions[0]).to.be.an(ol.Attribution);
+      expect(attributions[0]).to.be.an(_ol_Attribution_);
       expect(attributions[0].getHTML()).to.be('foo');
     });
 
     it('maintains backwards compatibility for array of strings option', function() {
-      var source = new ol.source.Source({
+      var source = new _ol_source_Source_({
         attributions: [
-          new ol.Attribution({html: 'foo'}),
-          new ol.Attribution({html: 'bar'})
+          new _ol_Attribution_({html: 'foo'}),
+          new _ol_Attribution_({html: 'bar'})
         ]
       });
       var attributions = source.getAttributions();
       expect(attributions.length).to.be(2);
-      expect(attributions[0]).to.be.an(ol.Attribution);
+      expect(attributions[0]).to.be.an(_ol_Attribution_);
       expect(attributions[0].getHTML()).to.be('foo');
-      expect(attributions[1]).to.be.an(ol.Attribution);
+      expect(attributions[1]).to.be.an(_ol_Attribution_);
       expect(attributions[1].getHTML()).to.be('bar');
     });
   });
@@ -131,7 +131,7 @@ describe('ol.source.Source', function() {
     var source = null;
 
     beforeEach(function() {
-      source = new ol.source.Source({
+      source = new _ol_source_Source_({
         attributions: 'before'
       });
     });

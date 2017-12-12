@@ -1,0 +1,278 @@
+/**
+ * @module ol/structs/LRUCache
+ */
+import _ol_ from '../index.js';
+import _ol_asserts_ from '../asserts.js';
+import _ol_events_EventTarget_ from '../events/EventTarget.js';
+import _ol_events_EventType_ from '../events/EventType.js';
+
+/**
+ * Implements a Least-Recently-Used cache where the keys do not conflict with
+ * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
+ * items from the cache is the responsibility of the user.
+ * @constructor
+ * @extends {ol.events.EventTarget}
+ * @fires ol.events.Event
+ * @struct
+ * @template T
+ * @param {number=} opt_highWaterMark High water mark.
+ */
+var _ol_structs_LRUCache_ = function(opt_highWaterMark) {
+
+  _ol_events_EventTarget_.call(this);
+
+  /**
+   * @type {number}
+   */
+  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.count_ = 0;
+
+  /**
+   * @private
+   * @type {!Object.<string, ol.LRUCacheEntry>}
+   */
+  this.entries_ = {};
+
+  /**
+   * @private
+   * @type {?ol.LRUCacheEntry}
+   */
+  this.oldest_ = null;
+
+  /**
+   * @private
+   * @type {?ol.LRUCacheEntry}
+   */
+  this.newest_ = null;
+
+};
+
+_ol_.inherits(_ol_structs_LRUCache_, _ol_events_EventTarget_);
+
+
+/**
+ * @return {boolean} Can expire cache.
+ */
+_ol_structs_LRUCache_.prototype.canExpireCache = function() {
+  return this.getCount() > this.highWaterMark;
+};
+
+
+/**
+ * FIXME empty description for jsdoc
+ */
+_ol_structs_LRUCache_.prototype.clear = function() {
+  this.count_ = 0;
+  this.entries_ = {};
+  this.oldest_ = null;
+  this.newest_ = null;
+  this.dispatchEvent(_ol_events_EventType_.CLEAR);
+};
+
+
+/**
+ * @param {string} key Key.
+ * @return {boolean} Contains key.
+ */
+_ol_structs_LRUCache_.prototype.containsKey = function(key) {
+  return this.entries_.hasOwnProperty(key);
+};
+
+
+/**
+ * @param {function(this: S, T, string, ol.structs.LRUCache): ?} f The function
+ *     to call for every entry from the oldest to the newer. This function takes
+ *     3 arguments (the entry value, the entry key and the LRUCache object).
+ *     The return value is ignored.
+ * @param {S=} opt_this The object to use as `this` in `f`.
+ * @template S
+ */
+_ol_structs_LRUCache_.prototype.forEach = function(f, opt_this) {
+  var entry = this.oldest_;
+  while (entry) {
+    f.call(opt_this, entry.value_, entry.key_, this);
+    entry = entry.newer;
+  }
+};
+
+
+/**
+ * @param {string} key Key.
+ * @return {T} Value.
+ */
+_ol_structs_LRUCache_.prototype.get = function(key) {
+  var entry = this.entries_[key];
+  _ol_asserts_.assert(entry !== undefined,
+      15); // Tried to get a value for a key that does not exist in the cache
+  if (entry === this.newest_) {
+    return entry.value_;
+  } else if (entry === this.oldest_) {
+    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (this.oldest_.newer);
+    this.oldest_.older = null;
+  } else {
+    entry.newer.older = entry.older;
+    entry.older.newer = entry.newer;
+  }
+  entry.newer = null;
+  entry.older = this.newest_;
+  this.newest_.newer = entry;
+  this.newest_ = entry;
+  return entry.value_;
+};
+
+
+/**
+ * Remove an entry from the cache.
+ * @param {string} key The entry key.
+ * @return {T} The removed entry.
+ */
+_ol_structs_LRUCache_.prototype.remove = function(key) {
+  var entry = this.entries_[key];
+  _ol_asserts_.assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+  if (entry === this.newest_) {
+    this.newest_ = /** @type {ol.LRUCacheEntry} */ (entry.older);
+    if (this.newest_) {
+      this.newest_.newer = null;
+    }
+  } else if (entry === this.oldest_) {
+    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+    if (this.oldest_) {
+      this.oldest_.older = null;
+    }
+  } else {
+    entry.newer.older = entry.older;
+    entry.older.newer = entry.newer;
+  }
+  delete this.entries_[key];
+  --this.count_;
+  return entry.value_;
+};
+
+
+/**
+ * @return {number} Count.
+ */
+_ol_structs_LRUCache_.prototype.getCount = function() {
+  return this.count_;
+};
+
+
+/**
+ * @return {Array.<string>} Keys.
+ */
+_ol_structs_LRUCache_.prototype.getKeys = function() {
+  var keys = new Array(this.count_);
+  var i = 0;
+  var entry;
+  for (entry = this.newest_; entry; entry = entry.older) {
+    keys[i++] = entry.key_;
+  }
+  return keys;
+};
+
+
+/**
+ * @return {Array.<T>} Values.
+ */
+_ol_structs_LRUCache_.prototype.getValues = function() {
+  var values = new Array(this.count_);
+  var i = 0;
+  var entry;
+  for (entry = this.newest_; entry; entry = entry.older) {
+    values[i++] = entry.value_;
+  }
+  return values;
+};
+
+
+/**
+ * @return {T} Last value.
+ */
+_ol_structs_LRUCache_.prototype.peekLast = function() {
+  return this.oldest_.value_;
+};
+
+
+/**
+ * @return {string} Last key.
+ */
+_ol_structs_LRUCache_.prototype.peekLastKey = function() {
+  return this.oldest_.key_;
+};
+
+
+/**
+ * Get the key of the newest item in the cache.  Throws if the cache is empty.
+ * @return {string} The newest key.
+ */
+_ol_structs_LRUCache_.prototype.peekFirstKey = function() {
+  return this.newest_.key_;
+};
+
+
+/**
+ * @return {T} value Value.
+ */
+_ol_structs_LRUCache_.prototype.pop = function() {
+  var entry = this.oldest_;
+  delete this.entries_[entry.key_];
+  if (entry.newer) {
+    entry.newer.older = null;
+  }
+  this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+  if (!this.oldest_) {
+    this.newest_ = null;
+  }
+  --this.count_;
+  return entry.value_;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
+_ol_structs_LRUCache_.prototype.replace = function(key, value) {
+  this.get(key);  // update `newest_`
+  this.entries_[key].value_ = value;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
+_ol_structs_LRUCache_.prototype.set = function(key, value) {
+  _ol_asserts_.assert(!(key in this.entries_),
+      16); // Tried to set a value for a key that is used already
+  var entry = /** @type {ol.LRUCacheEntry} */ ({
+    key_: key,
+    newer: null,
+    older: this.newest_,
+    value_: value
+  });
+  if (!this.newest_) {
+    this.oldest_ = entry;
+  } else {
+    this.newest_.newer = entry;
+  }
+  this.newest_ = entry;
+  this.entries_[key] = entry;
+  ++this.count_;
+};
+
+
+/**
+ * Prune the cache.
+ */
+_ol_structs_LRUCache_.prototype.prune = function() {
+  while (this.canExpireCache()) {
+    this.pop();
+  }
+};
+export default _ol_structs_LRUCache_;

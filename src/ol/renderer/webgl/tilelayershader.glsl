@@ -1,4 +1,4 @@
-//! NAMESPACE=ol.renderer.webgl.tilelayershader
+//! NAMESPACE=_ol_renderer_webgl_tilelayershader_
 
 
 //! COMMON

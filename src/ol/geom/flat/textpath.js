@@ -1,6 +1,8 @@
-goog.provide('ol.geom.flat.textpath');
-
-goog.require('ol.math');
+/**
+ * @module ol/geom/flat/textpath
+ */
+import _ol_math_ from '../../math.js';
+var _ol_geom_flat_textpath_ = {};
 
 
 /**
@@ -16,7 +18,7 @@ goog.require('ol.math');
  * @return {Array.<Array.<*>>} The result array of null if `maxAngle` was
  * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
-ol.geom.flat.textpath.lineString = function(
+_ol_geom_flat_textpath_.lineString = function(
     flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
   var result = [];
 
@@ -65,8 +67,8 @@ ol.geom.flat.textpath.lineString = function(
       }
     }
     var interpolate = segmentPos / segmentLength;
-    var x = ol.math.lerp(x1, x2, interpolate);
-    var y = ol.math.lerp(y1, y2, interpolate);
+    var x = _ol_math_.lerp(x1, x2, interpolate);
+    var y = _ol_math_.lerp(y1, y2, interpolate);
     if (previousAngle == angle) {
       if (reverse) {
         data[0] = x;
@@ -89,3 +91,4 @@ ol.geom.flat.textpath.lineString = function(
   }
   return result;
 };
+export default _ol_geom_flat_textpath_;

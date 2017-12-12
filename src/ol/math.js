@@ -1,6 +1,8 @@
-goog.provide('ol.math');
-
-goog.require('ol.asserts');
+/**
+ * @module ol/math
+ */
+import _ol_asserts_ from './asserts.js';
+var _ol_math_ = {};
 
 
 /**
@@ -11,7 +13,7 @@ goog.require('ol.asserts');
  * @return {number} The input number if it is within bounds, or the nearest
  *     number within the bounds.
  */
-ol.math.clamp = function(value, min, max) {
+_ol_math_.clamp = function(value, min, max) {
   return Math.min(Math.max(value, min), max);
 };
 
@@ -25,7 +27,7 @@ ol.math.clamp = function(value, min, max) {
  * @param {number} x X.
  * @return {number} Hyperbolic cosine of x.
  */
-ol.math.cosh = (function() {
+_ol_math_.cosh = (function() {
   // Wrapped in a iife, to save the overhead of checking for the native
   // implementation on every invocation.
   var cosh;
@@ -47,8 +49,8 @@ ol.math.cosh = (function() {
  * @param {number} x X.
  * @return {number} The smallest power of two greater than or equal to x.
  */
-ol.math.roundUpToPowerOfTwo = function(x) {
-  ol.asserts.assert(0 < x, 29); // `x` must be greater than `0`
+_ol_math_.roundUpToPowerOfTwo = function(x) {
+  _ol_asserts_.assert(0 < x, 29); // `x` must be greater than `0`
   return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
 };
 
@@ -64,7 +66,7 @@ ol.math.roundUpToPowerOfTwo = function(x) {
  * @param {number} y2 Y2.
  * @return {number} Squared distance.
  */
-ol.math.squaredSegmentDistance = function(x, y, x1, y1, x2, y2) {
+_ol_math_.squaredSegmentDistance = function(x, y, x1, y1, x2, y2) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   if (dx !== 0 || dy !== 0) {
@@ -77,7 +79,7 @@ ol.math.squaredSegmentDistance = function(x, y, x1, y1, x2, y2) {
       y1 += dy * t;
     }
   }
-  return ol.math.squaredDistance(x, y, x1, y1);
+  return _ol_math_.squaredDistance(x, y, x1, y1);
 };
 
 
@@ -89,7 +91,7 @@ ol.math.squaredSegmentDistance = function(x, y, x1, y1, x2, y2) {
  * @param {number} y2 Y2.
  * @return {number} Squared distance.
  */
-ol.math.squaredDistance = function(x1, y1, x2, y2) {
+_ol_math_.squaredDistance = function(x1, y1, x2, y2) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   return dx * dx + dy * dy;
@@ -103,7 +105,7 @@ ol.math.squaredDistance = function(x1, y1, x2, y2) {
  *                                     in row-major order.
  * @return {Array.<number>} The resulting vector.
  */
-ol.math.solveLinearSystem = function(mat) {
+_ol_math_.solveLinearSystem = function(mat) {
   var n = mat.length;
 
   for (var i = 0; i < n; i++) {
@@ -158,7 +160,7 @@ ol.math.solveLinearSystem = function(mat) {
  * @param {number} angleInRadians Angle in radians.
  * @return {number} Angle in degrees.
  */
-ol.math.toDegrees = function(angleInRadians) {
+_ol_math_.toDegrees = function(angleInRadians) {
   return angleInRadians * 180 / Math.PI;
 };
 
@@ -169,7 +171,7 @@ ol.math.toDegrees = function(angleInRadians) {
  * @param {number} angleInDegrees Angle in degrees.
  * @return {number} Angle in radians.
  */
-ol.math.toRadians = function(angleInDegrees) {
+_ol_math_.toRadians = function(angleInDegrees) {
   return angleInDegrees * Math.PI / 180;
 };
 
@@ -180,7 +182,7 @@ ol.math.toRadians = function(angleInDegrees) {
  * @param {number} b Divisor.
  * @return {number} Modulo.
  */
-ol.math.modulo = function(a, b) {
+_ol_math_.modulo = function(a, b) {
   var r = a % b;
   return r * b < 0 ? r + b : r;
 };
@@ -193,6 +195,7 @@ ol.math.modulo = function(a, b) {
  * @param {number} x Value to be interpolated.
  * @return {number} Interpolated value.
  */
-ol.math.lerp = function(a, b, x) {
+_ol_math_.lerp = function(a, b, x) {
   return a + x * (b - a);
 };
+export default _ol_math_;

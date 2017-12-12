@@ -1,135 +1,136 @@
-goog.provide('ol.render.canvas');
-
-
-goog.require('ol.css');
-goog.require('ol.dom');
-goog.require('ol.obj');
-goog.require('ol.structs.LRUCache');
-goog.require('ol.transform');
+/**
+ * @module ol/render/canvas
+ */
+import _ol_css_ from '../css.js';
+import _ol_dom_ from '../dom.js';
+import _ol_obj_ from '../obj.js';
+import _ol_structs_LRUCache_ from '../structs/LRUCache.js';
+import _ol_transform_ from '../transform.js';
+var _ol_render_canvas_ = {};
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultFont = '10px sans-serif';
+_ol_render_canvas_.defaultFont = '10px sans-serif';
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultFillStyle = [0, 0, 0, 1];
+_ol_render_canvas_.defaultFillStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultLineCap = 'round';
+_ol_render_canvas_.defaultLineCap = 'round';
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-ol.render.canvas.defaultLineDash = [];
+_ol_render_canvas_.defaultLineDash = [];
 
 
 /**
  * @const
  * @type {number}
  */
-ol.render.canvas.defaultLineDashOffset = 0;
+_ol_render_canvas_.defaultLineDashOffset = 0;
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultLineJoin = 'round';
+_ol_render_canvas_.defaultLineJoin = 'round';
 
 
 /**
  * @const
  * @type {number}
  */
-ol.render.canvas.defaultMiterLimit = 10;
+_ol_render_canvas_.defaultMiterLimit = 10;
 
 
 /**
  * @const
  * @type {ol.Color}
  */
-ol.render.canvas.defaultStrokeStyle = [0, 0, 0, 1];
+_ol_render_canvas_.defaultStrokeStyle = [0, 0, 0, 1];
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextAlign = 'center';
+_ol_render_canvas_.defaultTextAlign = 'center';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.canvas.defaultTextBaseline = 'middle';
+_ol_render_canvas_.defaultTextBaseline = 'middle';
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-ol.render.canvas.defaultPadding = [0, 0, 0, 0];
+_ol_render_canvas_.defaultPadding = [0, 0, 0, 0];
 
 
 /**
  * @const
  * @type {number}
  */
-ol.render.canvas.defaultLineWidth = 1;
+_ol_render_canvas_.defaultLineWidth = 1;
 
 
 /**
  * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
  */
-ol.render.canvas.labelCache = new ol.structs.LRUCache();
+_ol_render_canvas_.labelCache = new _ol_structs_LRUCache_();
 
 
 /**
  * @type {!Object.<string, number>}
  */
-ol.render.canvas.checkedFonts_ = {};
+_ol_render_canvas_.checkedFonts_ = {};
 
 
 /**
  * @type {CanvasRenderingContext2D}
  */
-ol.render.canvas.measureContext_ = null;
+_ol_render_canvas_.measureContext_ = null;
 
 
 /**
  * @type {!Object.<string, number>}
  */
-ol.render.canvas.textHeights_ = {};
+_ol_render_canvas_.textHeights_ = {};
 
 
 /**
  * Clears the label cache when a font becomes available.
  * @param {string} fontSpec CSS font spec.
  */
-ol.render.canvas.checkFont = (function() {
+_ol_render_canvas_.checkFont = (function() {
   var retries = 60;
-  var checked = ol.render.canvas.checkedFonts_;
-  var labelCache = ol.render.canvas.labelCache;
+  var checked = _ol_render_canvas_.checkedFonts_;
+  var labelCache = _ol_render_canvas_.labelCache;
   var font = '32px monospace';
   var text = 'wmytzilWMYTZIL@#/&?$%10';
   var interval, referenceWidth;
 
   function isAvailable(fontFamily) {
-    var context = ol.render.canvas.getMeasureContext();
+    var context = _ol_render_canvas_.getMeasureContext();
     context.font = font;
     referenceWidth = context.measureText(text).width;
     var available = true;
@@ -150,9 +151,9 @@ ol.render.canvas.checkFont = (function() {
       if (checked[font] < retries) {
         if (isAvailable(font)) {
           checked[font] = retries;
-          ol.obj.clear(ol.render.canvas.textHeights_);
+          _ol_obj_.clear(_ol_render_canvas_.textHeights_);
           // Make sure that loaded fonts are picked up by Safari
-          ol.render.canvas.measureContext_ = null;
+          _ol_render_canvas_.measureContext_ = null;
           labelCache.clear();
         } else {
           ++checked[font];
@@ -167,7 +168,7 @@ ol.render.canvas.checkFont = (function() {
   }
 
   return function(fontSpec) {
-    var fontFamilies = ol.css.getFontFamilies(fontSpec);
+    var fontFamilies = _ol_css_.getFontFamilies(fontSpec);
     if (!fontFamilies) {
       return;
     }
@@ -190,10 +191,10 @@ ol.render.canvas.checkFont = (function() {
 /**
  * @return {CanvasRenderingContext2D} Measure context.
  */
-ol.render.canvas.getMeasureContext = function() {
-  var context = ol.render.canvas.measureContext_;
+_ol_render_canvas_.getMeasureContext = function() {
+  var context = _ol_render_canvas_.measureContext_;
   if (!context) {
-    context = ol.render.canvas.measureContext_ = ol.dom.createCanvasContext2D(1, 1);
+    context = _ol_render_canvas_.measureContext_ = _ol_dom_.createCanvasContext2D(1, 1);
   }
   return context;
 };
@@ -203,9 +204,9 @@ ol.render.canvas.getMeasureContext = function() {
  * @param {string} font Font to use for measuring.
  * @return {ol.Size} Measurement.
  */
-ol.render.canvas.measureTextHeight = (function() {
+_ol_render_canvas_.measureTextHeight = (function() {
   var span;
-  var heights = ol.render.canvas.textHeights_;
+  var heights = _ol_render_canvas_.textHeights_;
   return function(font) {
     var height = heights[font];
     if (height == undefined) {
@@ -231,8 +232,8 @@ ol.render.canvas.measureTextHeight = (function() {
  * @param {string} text Text.
  * @return {number} Width.
  */
-ol.render.canvas.measureTextWidth = function(font, text) {
-  var measureContext = ol.render.canvas.getMeasureContext();
+_ol_render_canvas_.measureTextWidth = function(font, text) {
+  var measureContext = _ol_render_canvas_.getMeasureContext();
   if (font != measureContext.font) {
     measureContext.font = font;
   }
@@ -246,7 +247,7 @@ ol.render.canvas.measureTextWidth = function(font, text) {
  * @param {number} offsetX X offset.
  * @param {number} offsetY Y offset.
  */
-ol.render.canvas.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
+_ol_render_canvas_.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
   if (rotation !== 0) {
     context.translate(offsetX, offsetY);
     context.rotate(rotation);
@@ -255,7 +256,7 @@ ol.render.canvas.rotateAtOffset = function(context, rotation, offsetX, offsetY) 
 };
 
 
-ol.render.canvas.resetTransform_ = ol.transform.create();
+_ol_render_canvas_.resetTransform_ = _ol_transform_.create();
 
 
 /**
@@ -271,7 +272,7 @@ ol.render.canvas.resetTransform_ = ol.transform.create();
  * @param {number} y Y.
  * @param {number} scale Scale.
  */
-ol.render.canvas.drawImage = function(context,
+_ol_render_canvas_.drawImage = function(context,
     transform, opacity, image, originX, originY, w, h, x, y, scale) {
   var alpha;
   if (opacity != 1) {
@@ -288,6 +289,7 @@ ol.render.canvas.drawImage = function(context,
     context.globalAlpha = alpha;
   }
   if (transform) {
-    context.setTransform.apply(context, ol.render.canvas.resetTransform_);
+    context.setTransform.apply(context, _ol_render_canvas_.resetTransform_);
   }
 };
+export default _ol_render_canvas_;

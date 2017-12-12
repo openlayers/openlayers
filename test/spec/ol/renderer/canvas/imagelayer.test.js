@@ -1,8 +1,8 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.ImageStatic');
+import _ol_Map_ from '../../../../../src/ol/Map.js';
+import _ol_View_ from '../../../../../src/ol/View.js';
+import _ol_layer_Image_ from '../../../../../src/ol/layer/Image.js';
+import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
+import _ol_source_ImageStatic_ from '../../../../../src/ol/source/ImageStatic.js';
 
 
 describe('ol.renderer.canvas.ImageLayer', function() {
@@ -11,7 +11,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
 
     var map, target, source;
     beforeEach(function(done) {
-      var projection = new ol.proj.Projection({
+      var projection = new _ol_proj_Projection_({
         code: 'custom-image',
         units: 'pixels',
         extent: [0, 0, 200, 200]
@@ -20,18 +20,18 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      source = new ol.source.ImageStatic({
+      source = new _ol_source_ImageStatic_({
         url: 'spec/ol/data/dot.png',
         projection: projection,
         imageExtent: [0, 0, 20, 20]
       });
-      map = new ol.Map({
+      map = new _ol_Map_({
         pixelRatio: 1,
         target: target,
-        layers: [new ol.layer.Image({
+        layers: [new _ol_layer_Image_({
           source: source
         })],
-        view: new ol.View({
+        view: new _ol_View_({
           projection: projection,
           center: [10, 10],
           zoom: 2,

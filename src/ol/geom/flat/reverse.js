@@ -1,4 +1,7 @@
-goog.provide('ol.geom.flat.reverse');
+/**
+ * @module ol/geom/flat/reverse
+ */
+var _ol_geom_flat_reverse_ = {};
 
 
 /**
@@ -7,7 +10,7 @@ goog.provide('ol.geom.flat.reverse');
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-ol.geom.flat.reverse.coordinates = function(flatCoordinates, offset, end, stride) {
+_ol_geom_flat_reverse_.coordinates = function(flatCoordinates, offset, end, stride) {
   while (offset < end - stride) {
     var i;
     for (i = 0; i < stride; ++i) {
@@ -19,3 +22,4 @@ ol.geom.flat.reverse.coordinates = function(flatCoordinates, offset, end, stride
     end -= stride;
   }
 };
+export default _ol_geom_flat_reverse_;

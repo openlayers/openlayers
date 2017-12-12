@@ -1,9 +1,12 @@
-goog.provide('ol.style');
-
-goog.require('ol.style.IconImageCache');
+/**
+ * @module ol/style
+ */
+import _ol_style_IconImageCache_ from './style/IconImageCache.js';
+var _ol_style_ = {};
 
 /**
  * The {@link ol.style.IconImageCache} for {@link ol.style.Icon} images.
  * @api
  */
-ol.style.iconImageCache = new ol.style.IconImageCache();
+_ol_style_.iconImageCache = new _ol_style_IconImageCache_();
+export default _ol_style_;

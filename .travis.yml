@@ -1,14 +1,9 @@
-sudo: false
 language: node_js
 node_js:
 - '8'
 cache:
   directories:
   - node_modules
-before_script:
-- rm src/ol/renderer/webgl/*shader.js
-- rm src/ol/renderer/webgl/*shader/locations.js
-script: make ci
 after_success:
 - cat coverage/lcov.info | coveralls
 branches:

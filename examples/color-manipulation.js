@@ -1,9 +1,9 @@
 // NOCOMPILE
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.source.Raster');
-goog.require('ol.source.Stamen');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import _ol_source_Raster_ from '../src/ol/source/Raster.js';
+import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 
 
 /**
@@ -100,8 +100,8 @@ function xyz2rgb(x) {
     12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055);
 }
 
-var raster = new ol.source.Raster({
-  sources: [new ol.source.Stamen({
+var raster = new _ol_source_Raster_({
+  sources: [new _ol_source_Stamen_({
     layer: 'watercolor',
     transition: 0
   })],
@@ -148,14 +148,14 @@ raster.on('beforeoperations', function(event) {
   }
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Image({
+    new _ol_layer_Image_({
       source: raster
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 2500000],
     zoom: 2,
     maxZoom: 18

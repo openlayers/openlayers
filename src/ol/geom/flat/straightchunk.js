@@ -1,4 +1,7 @@
-goog.provide('ol.geom.flat.straightchunk');
+/**
+ * @module ol/geom/flat/straightchunk
+ */
+var _ol_geom_flat_straightchunk_ = {};
 
 
 /**
@@ -10,7 +13,7 @@ goog.provide('ol.geom.flat.straightchunk');
  * @return {Array.<number>} Start and end of the first suitable chunk of the
  * given `flatCoordinates`.
  */
-ol.geom.flat.straightchunk.lineString = function(maxAngle, flatCoordinates, offset, end, stride) {
+_ol_geom_flat_straightchunk_.lineString = function(maxAngle, flatCoordinates, offset, end, stride) {
   var chunkStart = offset;
   var chunkEnd = offset;
   var chunkM = 0;
@@ -47,3 +50,4 @@ ol.geom.flat.straightchunk.lineString = function(maxAngle, flatCoordinates, offs
   m += m23;
   return m > chunkM ? [start, i] : [chunkStart, chunkEnd];
 };
+export default _ol_geom_flat_straightchunk_;

@@ -1,4 +1,4 @@
-//! NAMESPACE=ol.renderer.webgl.defaultmapshader
+//! NAMESPACE=_ol_renderer_webgl_defaultmapshader_
 
 
 //! COMMON

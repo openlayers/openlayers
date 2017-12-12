@@ -1,13 +1,13 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.control.MousePosition');
-goog.require('ol.coordinate');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_control_ from '../src/ol/control.js';
+import _ol_control_MousePosition_ from '../src/ol/control/MousePosition.js';
+import _ol_coordinate_ from '../src/ol/coordinate.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
-var mousePositionControl = new ol.control.MousePosition({
-  coordinateFormat: ol.coordinate.createStringXY(4),
+var mousePositionControl = new _ol_control_MousePosition_({
+  coordinateFormat: _ol_coordinate_.createStringXY(4),
   projection: 'EPSG:4326',
   // comment the following two lines to have the mouse position
   // be placed within the map.
@@ -16,19 +16,19 @@ var mousePositionControl = new ol.control.MousePosition({
   undefinedHTML: '&nbsp;'
 });
 
-var map = new ol.Map({
-  controls: ol.control.defaults({
+var map = new _ol_Map_({
+  controls: _ol_control_.defaults({
     attributionOptions: {
       collapsible: false
     }
   }).extend([mousePositionControl]),
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     })
   ],
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: [0, 0],
     zoom: 2
   })
@@ -41,6 +41,6 @@ projectionSelect.addEventListener('change', function(event) {
 
 var precisionInput = document.getElementById('precision');
 precisionInput.addEventListener('change', function(event) {
-  var format = ol.coordinate.createStringXY(event.target.valueAsNumber);
+  var format = _ol_coordinate_.createStringXY(event.target.valueAsNumber);
   mousePositionControl.setCoordinateFormat(format);
 });

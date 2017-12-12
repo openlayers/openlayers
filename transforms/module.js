@@ -57,8 +57,7 @@ function resolve(fromName, toName) {
   }
 
   const back = new Array(fromLength - commonDepth).join('../') || './';
-  // TODO: remove .toLowerCase() after running tasks/filename-case-from-module.js
-  let relative = back + toParts.slice(commonDepth).join('/').toLowerCase();
+  let relative = back + toParts.slice(commonDepth).join('/');
   if (relative.endsWith('/')) {
     relative += 'index';
   }

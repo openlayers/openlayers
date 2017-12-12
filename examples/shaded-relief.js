@@ -1,11 +1,11 @@
 // NOCOMPILE
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
-goog.require('ol.source.Raster');
-goog.require('ol.source.XYZ');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import _ol_source_Raster_ from '../src/ol/source/Raster.js';
+import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
 
 /**
@@ -102,30 +102,30 @@ function shade(inputs, data) {
   return {data: shadeData, width: width, height: height};
 }
 
-var elevation = new ol.source.XYZ({
+var elevation = new _ol_source_XYZ_({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
   crossOrigin: 'anonymous',
   transition: 0
 });
 
-var raster = new ol.source.Raster({
+var raster = new _ol_source_Raster_({
   sources: [elevation],
   operationType: 'image',
   operation: shade
 });
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     }),
-    new ol.layer.Image({
+    new _ol_layer_Image_({
       opacity: 0.3,
       source: raster
     })
   ],
-  view: new ol.View({
+  view: new _ol_View_({
     extent: [-13675026, 4439648, -13580856, 4580292],
     center: [-13615645, 4497969],
     minZoom: 10,

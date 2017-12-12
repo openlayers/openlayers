@@ -1,6 +1,4 @@
-
-
-goog.require('ol.RotationConstraint');
+import _ol_RotationConstraint_ from '../../../src/ol/RotationConstraint.js';
 
 
 describe('ol.RotationConstraint', function() {
@@ -8,7 +6,7 @@ describe('ol.RotationConstraint', function() {
   describe('SnapToZero', function() {
 
     it('returns expected rotation value', function() {
-      var rotationConstraint = ol.RotationConstraint.createSnapToZero(0.3);
+      var rotationConstraint = _ol_RotationConstraint_.createSnapToZero(0.3);
 
       expect(rotationConstraint(0.1, 0)).to.eql(0);
       expect(rotationConstraint(0.2, 0)).to.eql(0);

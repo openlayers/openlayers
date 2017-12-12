@@ -1,8 +1,8 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.source.Raster');
-goog.require('ol.source.XYZ');
+import _ol_Map_ from '../../../../src/ol/Map.js';
+import _ol_View_ from '../../../../src/ol/View.js';
+import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
+import _ol_source_Raster_ from '../../../../src/ol/source/Raster.js';
+import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 
 where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
 
@@ -28,11 +28,11 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
 
   var map;
   function createMap(renderer, pixelRatio) {
-    map = new ol.Map({
+    map = new _ol_Map_({
       target: createMapDiv(200, 200),
       pixelRatio: pixelRatio,
       renderer: renderer,
-      view: new ol.View({
+      view: new _ol_View_({
         center: [0, 0],
         zoom: 0
       })
@@ -50,12 +50,12 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
     it('renders the result of an operation', function(done) {
       createMap('canvas', 1);
 
-      var source = new ol.source.XYZ({
+      var source = new _ol_source_XYZ_({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });
 
-      var raster = new ol.source.Raster({
+      var raster = new _ol_source_Raster_({
         sources: [source],
         operation: function(pixels) {
           var pixel = pixels[0];
@@ -75,7 +75,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
         expectResemble(map, 'rendering/ol/source/expected/raster-1.png', IMAGE_TOLERANCE, done);
       });
 
-      var layer = new ol.layer.Image({source: raster});
+      var layer = new _ol_layer_Image_({source: raster});
 
       map.addLayer(layer);
     });

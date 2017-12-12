@@ -1,62 +1,60 @@
-
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.style.Style');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Text');
+import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 
 
 describe('ol.style.Style', function() {
 
-  var testFill = new ol.style.Fill({
+  var testFill = new _ol_style_Fill_({
     color: 'rgba(255, 255, 255, 0.6)'
   });
 
-  var testStroke = new ol.style.Stroke({
+  var testStroke = new _ol_style_Stroke_({
     color: '#319FD3',
     width: 1
   });
 
-  var testText = new ol.style.Text({
+  var testText = new _ol_style_Text_({
     font: '12px Calibri,sans-serif',
-    fill: new ol.style.Fill({
+    fill: new _ol_style_Fill_({
       color: '#000'
     }),
-    stroke: new ol.style.Stroke({
+    stroke: new _ol_style_Stroke_({
       color: '#fff',
       width: 3
     })
   });
 
-  var testImage = new ol.style.Circle({
+  var testImage = new _ol_style_Circle_({
     radius: 5
   });
 
   describe('#clone', function() {
 
     it('creates a new ol.style.Style', function() {
-      var original = new ol.style.Style();
+      var original = new _ol_style_Style_();
       var clone = original.clone();
-      expect(clone).to.be.an(ol.style.Style);
+      expect(clone).to.be.an(_ol_style_Style_);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new ol.style.Style({
-        geometry: new ol.geom.Point([0, 0, 0]),
-        fill: new ol.style.Fill({
+      var original = new _ol_style_Style_({
+        geometry: new _ol_geom_Point_([0, 0, 0]),
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        image: new ol.style.Circle({
+        image: new _ol_style_Circle_({
           radius: 5
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         }),
-        text: new ol.style.Text({
+        text: new _ol_style_Text_({
           text: 'test'
         }),
         zIndex: 2
@@ -71,18 +69,18 @@ describe('ol.style.Style', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new ol.style.Style({
-        geometry: new ol.geom .Point([0, 0, 0]),
-        fill: new ol.style.Fill({
+      var original = new _ol_style_Style_({
+        geometry: new _ol_geom_Point_([0, 0, 0]),
+        fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
-        image: new ol.style.Circle({
+        image: new _ol_style_Circle_({
           radius: 5
         }),
-        stroke: new ol.style.Stroke({
+        stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         }),
-        text: new ol.style.Text({
+        text: new _ol_style_Text_({
           text: 'test'
         })
       });
@@ -109,7 +107,7 @@ describe('ol.style.Style', function() {
   describe('#setZIndex', function() {
 
     it('sets the zIndex', function() {
-      var style = new ol.style.Style();
+      var style = new _ol_style_Style_();
 
       style.setZIndex(0.7);
       expect(style.getZIndex()).to.be(0.7);
@@ -117,7 +115,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getFill', function() {
-    var style = new ol.style.Style({
+    var style = new _ol_style_Style_({
       fill: testFill
     });
 
@@ -127,7 +125,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setFill', function() {
-    var style = new ol.style.Style();
+    var style = new _ol_style_Style_();
 
     it('sets the fill style of a style', function() {
       style.setFill(testFill);
@@ -136,7 +134,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getImage', function() {
-    var style = new ol.style.Style({
+    var style = new _ol_style_Style_({
       image: testImage
     });
 
@@ -146,7 +144,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setImage', function() {
-    var style = new ol.style.Style();
+    var style = new _ol_style_Style_();
 
     it('sets the image style of a style', function() {
       style.setImage(testImage);
@@ -155,7 +153,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getStroke', function() {
-    var style = new ol.style.Style({
+    var style = new _ol_style_Style_({
       stroke: testStroke
     });
 
@@ -165,7 +163,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setStroke', function() {
-    var style = new ol.style.Style();
+    var style = new _ol_style_Style_();
 
     it('sets the stroke style of a style', function() {
       style.setStroke(testStroke);
@@ -174,7 +172,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getText', function() {
-    var style = new ol.style.Style({
+    var style = new _ol_style_Style_({
       text: testText
     });
 
@@ -184,7 +182,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setText', function() {
-    var style = new ol.style.Style();
+    var style = new _ol_style_Style_();
 
     it('sets the text style of a style', function() {
       style.setText(testText);
@@ -193,25 +191,25 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setGeometry', function() {
-    var style = new ol.style.Style();
+    var style = new _ol_style_Style_();
 
     it('creates a geometry function from a string', function() {
-      var feature = new ol.Feature();
-      feature.set('myGeom', new ol.geom.Point([0, 0]));
+      var feature = new _ol_Feature_();
+      feature.set('myGeom', new _ol_geom_Point_([0, 0]));
       style.setGeometry('myGeom');
       expect(style.getGeometryFunction()(feature))
           .to.eql(feature.get('myGeom'));
     });
 
     it('creates a geometry function from a geometry', function() {
-      var geom = new ol.geom.Point([0, 0]);
+      var geom = new _ol_geom_Point_([0, 0]);
       style.setGeometry(geom);
       expect(style.getGeometryFunction()())
           .to.eql(geom);
     });
 
     it('returns the configured geometry function', function() {
-      var geom = new ol.geom.Point([0, 0]);
+      var geom = new _ol_geom_Point_([0, 0]);
       style.setGeometry(function() {
         return geom;
       });
@@ -223,10 +221,10 @@ describe('ol.style.Style', function() {
   describe('#getGeometry', function() {
 
     it('returns whatever was passed to setGeometry', function() {
-      var style = new ol.style.Style();
+      var style = new _ol_style_Style_();
       style.setGeometry('foo');
       expect(style.getGeometry()).to.eql('foo');
-      var geom = new ol.geom.Point([1, 2]);
+      var geom = new _ol_geom_Point_([1, 2]);
       style.setGeometry(geom);
       expect(style.getGeometry()).to.eql(geom);
       var fn = function() {
@@ -243,15 +241,15 @@ describe('ol.style.Style', function() {
 });
 
 describe('ol.style.Style.createFunction()', function() {
-  var style = new ol.style.Style();
+  var style = new _ol_style_Style_();
 
   it('creates a style function from a single style', function() {
-    var styleFunction = ol.style.Style.createFunction(style);
+    var styleFunction = _ol_style_Style_.createFunction(style);
     expect(styleFunction()).to.eql([style]);
   });
 
   it('creates a style function from an array of styles', function() {
-    var styleFunction = ol.style.Style.createFunction([style]);
+    var styleFunction = _ol_style_Style_.createFunction([style]);
     expect(styleFunction()).to.eql([style]);
   });
 
@@ -259,13 +257,13 @@ describe('ol.style.Style.createFunction()', function() {
     var original = function() {
       return [style];
     };
-    var styleFunction = ol.style.Style.createFunction(original);
+    var styleFunction = _ol_style_Style_.createFunction(original);
     expect(styleFunction).to.be(original);
   });
 
   it('throws on (some) unexpected input', function() {
     expect(function() {
-      ol.style.Style.createFunction({bogus: 'input'});
+      _ol_style_Style_.createFunction({bogus: 'input'});
     }).to.throwException();
   });
 

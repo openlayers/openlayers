@@ -1,8 +1,8 @@
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');
+import _ol_Map_ from '../src/ol/Map.js';
+import _ol_View_ from '../src/ol/View.js';
+import _ol_control_ from '../src/ol/control.js';
+import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 // default zoom, center and rotation
 var zoom = 2;
@@ -23,19 +23,19 @@ if (window.location.hash !== '') {
   }
 }
 
-var map = new ol.Map({
+var map = new _ol_Map_({
   layers: [
-    new ol.layer.Tile({
-      source: new ol.source.OSM()
+    new _ol_layer_Tile_({
+      source: new _ol_source_OSM_()
     })
   ],
-  controls: ol.control.defaults({
+  controls: _ol_control_.defaults({
     attributionOptions: {
       collapsible: false
     }
   }),
   target: 'map',
-  view: new ol.View({
+  view: new _ol_View_({
     center: center,
     zoom: zoom,
     rotation: rotation

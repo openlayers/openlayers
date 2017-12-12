@@ -1,4 +1,7 @@
-goog.provide('ol.css');
+/**
+ * @module ol/css
+ */
+var _ol_css_ = {};
 
 
 /**
@@ -7,7 +10,7 @@ goog.provide('ol.css');
  * @const
  * @type {string}
  */
-ol.css.CLASS_HIDDEN = 'ol-hidden';
+_ol_css_.CLASS_HIDDEN = 'ol-hidden';
 
 
 /**
@@ -16,7 +19,7 @@ ol.css.CLASS_HIDDEN = 'ol-hidden';
  * @const
  * @type {string}
  */
-ol.css.CLASS_SELECTABLE = 'ol-selectable';
+_ol_css_.CLASS_SELECTABLE = 'ol-selectable';
 
 /**
  * The CSS class that we'll give the DOM elements to have them unselectable.
@@ -24,7 +27,7 @@ ol.css.CLASS_SELECTABLE = 'ol-selectable';
  * @const
  * @type {string}
  */
-ol.css.CLASS_UNSELECTABLE = 'ol-unselectable';
+_ol_css_.CLASS_UNSELECTABLE = 'ol-unselectable';
 
 
 /**
@@ -33,7 +36,7 @@ ol.css.CLASS_UNSELECTABLE = 'ol-unselectable';
  * @const
  * @type {string}
  */
-ol.css.CLASS_UNSUPPORTED = 'ol-unsupported';
+_ol_css_.CLASS_UNSUPPORTED = 'ol-unsupported';
 
 
 /**
@@ -42,7 +45,7 @@ ol.css.CLASS_UNSUPPORTED = 'ol-unsupported';
  * @const
  * @type {string}
  */
-ol.css.CLASS_CONTROL = 'ol-control';
+_ol_css_.CLASS_CONTROL = 'ol-control';
 
 
 /**
@@ -51,7 +54,7 @@ ol.css.CLASS_CONTROL = 'ol-control';
  * @param {string} The CSS font property.
  * @return {Object.<string>} The font families (or null if the input spec is invalid).
  */
-ol.css.getFontFamilies = (function() {
+_ol_css_.getFontFamilies = (function() {
   var style;
   var cache = {};
   return function(font) {
@@ -70,3 +73,4 @@ ol.css.getFontFamilies = (function() {
     return cache[font];
   };
 })();
+export default _ol_css_;
