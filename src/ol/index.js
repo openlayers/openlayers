@@ -6,13 +6,6 @@ import webgl from './webgl.js';
 
 
 /**
- * Constants defined with the define tag cannot be changed in application
- * code, but can be set at compile time.
- * Some reduce the size of the build in advanced compile mode.
- */
-
-
-/**
  * @type {boolean} Assume touch.  Default is `false`.
  */
 export var ASSUME_TOUCH = false;
@@ -67,23 +60,6 @@ export var ENABLE_WEBGL = true;
  *     is `true`).
  */
 export var DEBUG_WEBGL = true;
-
-
-/**
- * TODO: get rid of this or move it to AtlasManager.js
- * @type {number} The size in pixels of the first atlas image. Default is
- * `256`.
- */
-export var INITIAL_ATLAS_SIZE = 256;
-
-
-/**
- * TODO: get rid of this or move it to AtlasManager.js
- * @type {number} The maximum size in pixels of atlas images. Default is
- * `-1`, meaning it is not used (and `WEBGL_MAX_TEXTURE_SIZE` is
- * used instead).
- */
-export var MAX_ATLAS_SIZE = -1;
 
 
 /**
@@ -265,8 +241,6 @@ export default {
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
-  INITIAL_ATLAS_SIZE: INITIAL_ATLAS_SIZE,
-  MAX_ATLAS_SIZE: MAX_ATLAS_SIZE,
   MOUSEWHEELZOOM_MAXDELTA: MOUSEWHEELZOOM_MAXDELTA,
   OVERVIEWMAP_MAX_RATIO: OVERVIEWMAP_MAX_RATIO,
   OVERVIEWMAP_MIN_RATIO: OVERVIEWMAP_MIN_RATIO,

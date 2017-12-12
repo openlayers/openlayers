@@ -1,8 +1,20 @@
 /**
  * @module ol/style/AtlasManager
  */
-import {INITIAL_ATLAS_SIZE, MAX_ATLAS_SIZE, WEBGL_MAX_TEXTURE_SIZE, nullFunction} from '../index.js';
+import {WEBGL_MAX_TEXTURE_SIZE, nullFunction} from '../index.js';
 import _ol_style_Atlas_ from '../style/Atlas.js';
+
+
+/**
+ * @type {number} The size in pixels of the first atlas image.
+ */
+var INITIAL_ATLAS_SIZE = 256;
+
+/**
+ * @type {number} The maximum size in pixels of atlas images.
+ */
+var MAX_ATLAS_SIZE = -1;
+
 
 /**
  * Manages the creation of image atlases.
