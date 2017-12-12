@@ -1,4 +1,3 @@
-import _ol_ from '../../../src/ol/index.js';
 import _ol_Map_ from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
@@ -1014,29 +1013,6 @@ describe('ol.View', function() {
 
       view.setZoom(25);
       expect(view.getZoom()).to.be(20);
-    });
-  });
-
-  describe('#getZoom() - custom ol.DEFAULT_MIN_ZOOM', function() {
-    var defaultMinZoom = _ol_.DEFAULT_MIN_ZOOM;
-
-    afterEach(function() {
-      _ol_.DEFAULT_MIN_ZOOM = defaultMinZoom;
-    });
-
-    it('respects custom ol.DEFAULT_MIN_ZOOM', function() {
-      _ol_.DEFAULT_MIN_ZOOM = 2;
-
-      var view = new _ol_View_();
-
-      view.setZoom(1);
-      expect(view.getZoom()).to.be(2);
-
-      view.setZoom(2);
-      expect(view.getZoom()).to.be(2);
-
-      view.setZoom(3);
-      expect(view.getZoom()).to.be(3);
     });
   });
 

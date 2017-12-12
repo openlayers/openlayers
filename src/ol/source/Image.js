@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Image
  */
-import _ol_ from '../index.js';
+import {ENABLE_RASTER_REPROJECTION, inherits} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_array_ from '../array.js';
 import _ol_events_Event_ from '../events/Event.js';
@@ -53,7 +53,7 @@ var _ol_source_Image_ = function(options) {
   this.reprojectedRevision_ = 0;
 };
 
-_ol_.inherits(_ol_source_Image_, _ol_source_Source_);
+inherits(_ol_source_Image_, _ol_source_Source_);
 
 
 /**
@@ -88,7 +88,7 @@ _ol_source_Image_.prototype.findNearestResolution = function(resolution) {
  */
 _ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   var sourceProjection = this.getProjection();
-  if (!_ol_.ENABLE_RASTER_REPROJECTION ||
+  if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
       _ol_proj_.equivalent(sourceProjection, projection)) {
@@ -197,7 +197,7 @@ _ol_source_Image_.Event = function(type, image) {
   this.image = image;
 
 };
-_ol_.inherits(_ol_source_Image_.Event, _ol_events_Event_);
+inherits(_ol_source_Image_.Event, _ol_events_Event_);
 
 
 /**

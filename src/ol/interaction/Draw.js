@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Draw
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_Object_ from '../Object.js';
@@ -290,7 +290,7 @@ var _ol_interaction_Draw_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_interaction_Draw_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Draw_, _ol_interaction_Pointer_);
 
 
 /**
@@ -899,5 +899,5 @@ _ol_interaction_Draw_.Event = function(type, feature) {
   this.feature = feature;
 
 };
-_ol_.inherits(_ol_interaction_Draw_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Draw_.Event, _ol_events_Event_);
 export default _ol_interaction_Draw_;

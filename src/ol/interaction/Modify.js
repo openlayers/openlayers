@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Modify
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_Feature_ from '../Feature.js';
@@ -227,7 +227,7 @@ var _ol_interaction_Modify_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_interaction_Modify_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Modify_, _ol_interaction_Pointer_);
 
 
 /**
@@ -627,7 +627,7 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      var uid = _ol_.getUid(segmentDataMatch.feature);
+      var uid = getUid(segmentDataMatch.feature);
       var depth = segmentDataMatch.depth;
       if (depth) {
         uid += '-' + depth.join('-'); // separate feature components
@@ -662,7 +662,7 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
 
         this.dragSegments_.push([segmentDataMatch, 1]);
         componentSegments[uid][1] = segmentDataMatch;
-      } else if (this.insertVertexCondition_(evt) && _ol_.getUid(segment) in this.vertexSegments_ &&
+      } else if (this.insertVertexCondition_(evt) && getUid(segment) in this.vertexSegments_ &&
           (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
@@ -890,14 +890,14 @@ _ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
               _ol_coordinate_.equals(closestSegment[1], segment[1]) ||
               (_ol_coordinate_.equals(closestSegment[0], segment[1]) &&
               _ol_coordinate_.equals(closestSegment[1], segment[0])))) {
-            vertexSegments[_ol_.getUid(segment)] = true;
+            vertexSegments[getUid(segment)] = true;
           } else {
             break;
           }
         }
       }
 
-      vertexSegments[_ol_.getUid(closestSegment)] = true;
+      vertexSegments[getUid(closestSegment)] = true;
       this.vertexSegments_ = vertexSegments;
       return;
     }
@@ -1053,7 +1053,7 @@ _ol_interaction_Modify_.prototype.removeVertex_ = function() {
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
-    uid = _ol_.getUid(segmentData.feature);
+    uid = getUid(segmentData.feature);
     if (segmentData.depth) {
       // separate feature components
       uid += '-' + segmentData.depth.join('-');
@@ -1232,5 +1232,5 @@ _ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent)
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
 };
-_ol_.inherits(_ol_interaction_Modify_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Modify_.Event, _ol_events_Event_);
 export default _ol_interaction_Modify_;

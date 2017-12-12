@@ -1,7 +1,7 @@
 /**
  * @module ol/MapBrowserEvent
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_MapEvent_ from './MapEvent.js';
 
 /**
@@ -56,7 +56,7 @@ var _ol_MapBrowserEvent_ = function(type, map, browserEvent, opt_dragging,
 
 };
 
-_ol_.inherits(_ol_MapBrowserEvent_, _ol_MapEvent_);
+inherits(_ol_MapBrowserEvent_, _ol_MapEvent_);
 
 
 /**

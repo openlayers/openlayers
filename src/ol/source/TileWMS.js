@@ -1,11 +1,8 @@
 /**
  * @module ol/source/TileWMS
  */
-// FIXME add minZoom support
-// FIXME add date line wrap (tile coord transform)
-// FIXME cannot be shared between maps with different projections
 
-import _ol_ from '../index.js';
+import {DEFAULT_WMS_VERSION, inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_extent_ from '../extent.js';
 import _ol_obj_ from '../obj.js';
@@ -94,7 +91,7 @@ var _ol_source_TileWMS_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_source_TileWMS_, _ol_source_TileImage_);
+inherits(_ol_source_TileWMS_, _ol_source_TileImage_);
 
 
 /**
@@ -145,7 +142,7 @@ _ol_source_TileWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolu
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': _ol_.DEFAULT_WMS_VERSION,
+    'VERSION': DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
     'FORMAT': 'image/png',
     'TRANSPARENT': true,
@@ -316,7 +313,7 @@ _ol_source_TileWMS_.prototype.fixedTileUrlFunction = function(tileCoord, pixelRa
 
   var baseParams = {
     'SERVICE': 'WMS',
-    'VERSION': _ol_.DEFAULT_WMS_VERSION,
+    'VERSION': DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
     'FORMAT': 'image/png',
     'TRANSPARENT': true
@@ -343,7 +340,7 @@ _ol_source_TileWMS_.prototype.updateParams = function(params) {
  * @private
  */
 _ol_source_TileWMS_.prototype.updateV13_ = function() {
-  var version = this.params_['VERSION'] || _ol_.DEFAULT_WMS_VERSION;
+  var version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
   this.v13_ = _ol_string_.compareVersions(version, '1.3') >= 0;
 };
 export default _ol_source_TileWMS_;

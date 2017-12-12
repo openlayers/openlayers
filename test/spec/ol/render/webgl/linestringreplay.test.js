@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
@@ -351,7 +351,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawLineString(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
       var skippedFeatHash = {};
-      skippedFeatHash[_ol_.getUid(feature2).toString()] = true;
+      skippedFeatHash[getUid(feature2).toString()] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);
       expect(replay.setStrokeStyle_.calledOnce).to.be(true);

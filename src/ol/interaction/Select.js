@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Select
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_array_ from '../array.js';
 import _ol_events_ from '../events.js';
@@ -143,7 +143,7 @@ var _ol_interaction_Select_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_Select_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_Select_, _ol_interaction_Interaction_);
 
 
 /**
@@ -152,7 +152,7 @@ _ol_.inherits(_ol_interaction_Select_, _ol_interaction_Interaction_);
  * @private
  */
 _ol_interaction_Select_.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
-  var key = _ol_.getUid(feature);
+  var key = getUid(feature);
   this.featureLayerAssociation_[key] = layer;
 };
 
@@ -187,7 +187,7 @@ _ol_interaction_Select_.prototype.getHitTolerance = function() {
  * @api
  */
 _ol_interaction_Select_.prototype.getLayer = function(feature) {
-  var key = _ol_.getUid(feature);
+  var key = getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
 
@@ -372,7 +372,7 @@ _ol_interaction_Select_.prototype.removeFeature_ = function(evt) {
  * @private
  */
 _ol_interaction_Select_.prototype.removeFeatureLayerAssociation_ = function(feature) {
-  var key = _ol_.getUid(feature);
+  var key = getUid(feature);
   delete this.featureLayerAssociation_[key];
 };
 
@@ -415,7 +415,7 @@ _ol_interaction_Select_.Event = function(type, selected, deselected, mapBrowserE
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
-_ol_.inherits(_ol_interaction_Select_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Select_.Event, _ol_events_Event_);
 
 
 /**

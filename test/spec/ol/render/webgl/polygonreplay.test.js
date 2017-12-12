@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
@@ -460,7 +460,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
       replay.drawPolygon(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
       var skippedFeatHash = {};
-      skippedFeatHash[_ol_.getUid(feature2).toString()] = true;
+      skippedFeatHash[getUid(feature2).toString()] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);
       expect(replay.setFillStyle_.calledOnce).to.be(true);

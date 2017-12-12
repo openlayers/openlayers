@@ -1,7 +1,7 @@
 /**
  * @module ol/Image
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_ImageBase_ from './ImageBase.js';
 import _ol_ImageState_ from './ImageState.js';
 import _ol_events_ from './events.js';
@@ -57,7 +57,7 @@ var _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imag
 
 };
 
-_ol_.inherits(_ol_Image_, _ol_ImageBase_);
+inherits(_ol_Image_, _ol_ImageBase_);
 
 
 /**

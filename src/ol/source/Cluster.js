@@ -1,10 +1,8 @@
 /**
  * @module ol/source/Cluster
  */
-// FIXME keep cluster cache by resolution ?
-// FIXME distance not respected because of the centroid
 
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -73,7 +71,7 @@ var _ol_source_Cluster_ = function(options) {
       _ol_source_Cluster_.prototype.refresh, this);
 };
 
-_ol_.inherits(_ol_source_Cluster_, _ol_source_Vector_);
+inherits(_ol_source_Cluster_, _ol_source_Vector_);
 
 
 /**
@@ -153,7 +151,7 @@ _ol_source_Cluster_.prototype.cluster = function() {
 
   for (var i = 0, ii = features.length; i < ii; i++) {
     var feature = features[i];
-    if (!(_ol_.getUid(feature).toString() in clustered)) {
+    if (!(getUid(feature).toString() in clustered)) {
       var geometry = this.geometryFunction(feature);
       if (geometry) {
         var coordinates = geometry.getCoordinates();
@@ -162,7 +160,7 @@ _ol_source_Cluster_.prototype.cluster = function() {
 
         var neighbors = this.source.getFeaturesInExtent(extent);
         neighbors = neighbors.filter(function(neighbor) {
-          var uid = _ol_.getUid(neighbor).toString();
+          var uid = getUid(neighbor).toString();
           if (!(uid in clustered)) {
             clustered[uid] = true;
             return true;

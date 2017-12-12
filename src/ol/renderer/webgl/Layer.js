@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/webgl/Layer
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
@@ -86,7 +86,7 @@ var _ol_renderer_webgl_Layer_ = function(mapRenderer, layer) {
 
 };
 
-_ol_.inherits(_ol_renderer_webgl_Layer_, _ol_renderer_Layer_);
+inherits(_ol_renderer_webgl_Layer_, _ol_renderer_Layer_);
 
 
 /**

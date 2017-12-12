@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/PolygonReplay
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_color_ from '../../color.js';
 import _ol_extent_ from '../../extent.js';
@@ -63,7 +63,7 @@ var _ol_render_webgl_PolygonReplay_ = function(tolerance, maxExtent) {
 
 };
 
-_ol_.inherits(_ol_render_webgl_PolygonReplay_, _ol_render_webgl_Replay_);
+inherits(_ol_render_webgl_PolygonReplay_, _ol_render_webgl_Replay_);
 
 
 /**
@@ -966,7 +966,7 @@ _ol_render_webgl_PolygonReplay_.prototype.drawHitDetectionReplayOneByOne = funct
         this.startIndices[featureIndex] >= groupStart) {
       start = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = _ol_.getUid(feature).toString();
+      featureUid = getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
@@ -1010,7 +1010,7 @@ _ol_render_webgl_PolygonReplay_.prototype.drawReplaySkipping_ = function(gl, con
         this.startIndices[featureIndex] >= groupStart) {
       featureStart = this.startIndices[featureIndex];
       feature = this.startIndicesFeature[featureIndex];
-      featureUid = _ol_.getUid(feature).toString();
+      featureUid = getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid]) {
         if (start !== end) {

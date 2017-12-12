@@ -1,7 +1,7 @@
 /**
  * @module ol/render/Event
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_events_Event_ from '../events/Event.js';
 
 /**
@@ -52,5 +52,5 @@ var _ol_render_Event_ = function(
 
 };
 
-_ol_.inherits(_ol_render_Event_, _ol_events_Event_);
+inherits(_ol_render_Event_, _ol_events_Event_);
 export default _ol_render_Event_;

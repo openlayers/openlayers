@@ -1,7 +1,7 @@
 /**
  * @module ol/source/BingMaps
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_extent_ from '../extent.js';
 import _ol_net_ from '../net.js';
@@ -75,7 +75,7 @@ var _ol_source_BingMaps_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
+inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
 
 
 /**

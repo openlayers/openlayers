@@ -1,7 +1,7 @@
 /**
  * @module ol/VectorImageTile
  */
-import _ol_ from './index.js';
+import {getUid, inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_dom_ from './dom.js';
@@ -121,7 +121,7 @@ var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
 
 };
 
-_ol_.inherits(_ol_VectorImageTile_, _ol_Tile_);
+inherits(_ol_VectorImageTile_, _ol_Tile_);
 
 
 /**
@@ -157,7 +157,7 @@ _ol_VectorImageTile_.prototype.disposeInternal = function() {
  * @return {CanvasRenderingContext2D} The rendering context.
  */
 _ol_VectorImageTile_.prototype.getContext = function(layer) {
-  var key = _ol_.getUid(layer).toString();
+  var key = getUid(layer).toString();
   if (!(key in this.context_)) {
     this.context_[key] = _ol_dom_.createCanvasContext2D();
   }
@@ -181,7 +181,7 @@ _ol_VectorImageTile_.prototype.getImage = function(layer) {
  * @return {ol.TileReplayState} The replay state.
  */
 _ol_VectorImageTile_.prototype.getReplayState = function(layer) {
-  var key = _ol_.getUid(layer).toString();
+  var key = getUid(layer).toString();
   if (!(key in this.replayState_)) {
     this.replayState_[key] = {
       dirty: false,
@@ -237,7 +237,7 @@ _ol_VectorImageTile_.prototype.load = function() {
           var state = sourceTile.getState();
           if (state == _ol_TileState_.LOADED ||
               state == _ol_TileState_.ERROR) {
-            var uid = _ol_.getUid(sourceTile);
+            var uid = getUid(sourceTile);
             if (state == _ol_TileState_.ERROR) {
               errorSourceTiles[uid] = true;
             } else {

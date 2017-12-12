@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DoubleClickZoom
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 
@@ -36,7 +36,7 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_DoubleClickZoom_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_DoubleClickZoom_, _ol_interaction_Interaction_);
 
 
 /**

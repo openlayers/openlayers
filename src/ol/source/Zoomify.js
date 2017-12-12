@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Zoomify
  */
-import _ol_ from '../index.js';
+import {DEFAULT_TILE_SIZE, inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
@@ -35,7 +35,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
   var imageHeight = size[1];
   var extent = options.extent || [0, -size[1], size[0], 0];
   var tierSizeInTiles = [];
-  var tileSize = options.tileSize || _ol_.DEFAULT_TILE_SIZE;
+  var tileSize = options.tileSize || DEFAULT_TILE_SIZE;
   var tileSizeForTierSizeCalculation = tileSize;
 
   switch (tierSizeCalculation) {
@@ -151,7 +151,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_source_Zoomify_, _ol_source_TileImage_);
+inherits(_ol_source_Zoomify_, _ol_source_TileImage_);
 
 /**
  * @constructor
@@ -182,7 +182,7 @@ _ol_source_Zoomify_.Tile_ = function(
    */
   this.tileSize_ = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]));
 };
-_ol_.inherits(_ol_source_Zoomify_.Tile_, _ol_ImageTile_);
+inherits(_ol_source_Zoomify_.Tile_, _ol_ImageTile_);
 
 
 /**

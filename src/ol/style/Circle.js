@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Circle
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_style_RegularShape_ from '../style/RegularShape.js';
 
 /**
@@ -28,7 +28,7 @@ var _ol_style_Circle_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_style_Circle_, _ol_style_RegularShape_);
+inherits(_ol_style_Circle_, _ol_style_RegularShape_);
 
 
 /**

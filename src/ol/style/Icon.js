@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Icon
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_color_ from '../color.js';
@@ -86,7 +86,7 @@ var _ol_style_Icon_ = function(opt_options) {
       5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
-    src = image.src || _ol_.getUid(image).toString();
+    src = image.src || getUid(image).toString();
   }
   _ol_asserts_.assert(src !== undefined && src.length > 0,
       6); // A defined and non-empty `src` or `image` must be provided
@@ -173,7 +173,7 @@ var _ol_style_Icon_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_style_Icon_, _ol_style_Image_);
+inherits(_ol_style_Icon_, _ol_style_Image_);
 
 
 /**

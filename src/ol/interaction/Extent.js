@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Extent
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
@@ -123,7 +123,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
   }
 };
 
-_ol_.inherits(_ol_interaction_Extent_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Extent_, _ol_interaction_Pointer_);
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
@@ -464,5 +464,5 @@ _ol_interaction_Extent_.Event = function(extent) {
   this.extent = extent;
 
 };
-_ol_.inherits(_ol_interaction_Extent_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Extent_.Event, _ol_events_Event_);
 export default _ol_interaction_Extent_;

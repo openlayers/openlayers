@@ -1,7 +1,7 @@
 /**
  * @module ol/AssertionError
  */
-import _ol_ from './index.js';
+import {VERSION, inherits} from './index.js';
 
 /**
  * Error object thrown when an assertion failed. This is an ECMA-262 Error,
@@ -14,7 +14,7 @@ import _ol_ from './index.js';
  */
 var _ol_AssertionError_ = function(code) {
 
-  var path = _ol_.VERSION ? _ol_.VERSION.split('-')[0] : 'latest';
+  var path = VERSION ? VERSION.split('-')[0] : 'latest';
 
   /**
    * @type {string}
@@ -36,5 +36,6 @@ var _ol_AssertionError_ = function(code) {
 
 };
 
-_ol_.inherits(_ol_AssertionError_, Error);
+inherits(_ol_AssertionError_, Error);
+
 export default _ol_AssertionError_;

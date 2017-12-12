@@ -4,7 +4,7 @@
 // TODO: serialize dataProjection as crs member when writing
 // see https://github.com/openlayers/openlayers/issues/2078
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
@@ -62,7 +62,7 @@ var _ol_format_GeoJSON_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_GeoJSON_, _ol_format_JSONFeature_);
+inherits(_ol_format_GeoJSON_, _ol_format_JSONFeature_);
 
 
 /**

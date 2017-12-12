@@ -1,7 +1,7 @@
 /**
  * @module ol/Overlay
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_MapEventType_ from './MapEventType.js';
 import _ol_Object_ from './Object.js';
 import _ol_OverlayPositioning_ from './OverlayPositioning.js';
@@ -147,7 +147,7 @@ var _ol_Overlay_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_Overlay_, _ol_Object_);
+inherits(_ol_Overlay_, _ol_Object_);
 
 
 /**

@@ -1,4 +1,4 @@
-import _ol_ from '../../../src/ol/index.js';
+import {getUid} from '../../../src/ol/index.js';
 import _ol_net_ from '../../../src/ol/net.js';
 
 describe('ol.net', function() {
@@ -17,7 +17,7 @@ describe('ol.net', function() {
         expect(removeChild.called).to.be(true);
         done();
       };
-      key = 'olc_' + _ol_.getUid(callback);
+      key = 'olc_' + getUid(callback);
       return callback;
     }
 

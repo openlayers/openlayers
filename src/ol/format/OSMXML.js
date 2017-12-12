@@ -2,7 +2,7 @@
  * @module ol/format/OSMXML
  */
 // FIXME add typedef for stack state objects
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
@@ -33,7 +33,7 @@ var _ol_format_OSMXML_ = function() {
   this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
 };
 
-_ol_.inherits(_ol_format_OSMXML_, _ol_format_XMLFeature_);
+inherits(_ol_format_OSMXML_, _ol_format_XMLFeature_);
 
 
 /**

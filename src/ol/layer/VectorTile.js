@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/VectorTile
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_LayerType_ from '../LayerType.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
@@ -54,7 +54,7 @@ var _ol_layer_VectorTile_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_layer_VectorTile_, _ol_layer_Vector_);
+inherits(_ol_layer_VectorTile_, _ol_layer_Vector_);
 
 
 /**

@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from '../../../../src/ol/index.js';
 import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
 import _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_proj_ from '../../../../src/ol/proj.js';
@@ -280,7 +280,7 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(_ol_.DEFAULT_MAX_ZOOM + 1);
+      expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
       expect(grid.getOrigin()).to.eql([-100, 100]);
     });
   });
@@ -313,7 +313,7 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(_ol_.DEFAULT_MAX_ZOOM + 1);
+      expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
     });
 
     it('accepts a number of zoom levels', function() {
@@ -341,7 +341,7 @@ describe('ol.tilegrid.TileGrid', function() {
       var resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
           360 * _ol_proj_.METERS_PER_UNIT['degrees'] /
-          _ol_.DEFAULT_TILE_SIZE / Math.pow(2, 5));
+          DEFAULT_TILE_SIZE / Math.pow(2, 5));
     });
 
     it('assumes origin is top-left', function() {
@@ -397,8 +397,8 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(tileGrid.getExtent()).to.eql(
           _ol_proj_.get('EPSG:3857').getExtent());
       expect(tileGrid.getMinZoom()).to.equal(0);
-      expect(tileGrid.getMaxZoom()).to.equal(_ol_.DEFAULT_MAX_ZOOM);
-      expect(tileGrid.getTileSize()).to.equal(_ol_.DEFAULT_TILE_SIZE);
+      expect(tileGrid.getMaxZoom()).to.equal(DEFAULT_MAX_ZOOM);
+      expect(tileGrid.getTileSize()).to.equal(DEFAULT_TILE_SIZE);
     });
 
     it('respects configuration options', function() {
@@ -424,7 +424,7 @@ describe('ol.tilegrid.TileGrid', function() {
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
       var resolutions = grid.getResolutions();
-      expect(resolutions.length).to.be(_ol_.DEFAULT_MAX_ZOOM + 1);
+      expect(resolutions.length).to.be(DEFAULT_MAX_ZOOM + 1);
       expect(grid.getTileSize()).to.eql(256);
     });
 

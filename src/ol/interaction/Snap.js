@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/Snap
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -149,7 +149,7 @@ var _ol_interaction_Snap_ = function(opt_options) {
   };
 };
 
-_ol_.inherits(_ol_interaction_Snap_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Snap_, _ol_interaction_Pointer_);
 
 
 /**
@@ -161,7 +161,7 @@ _ol_.inherits(_ol_interaction_Snap_, _ol_interaction_Pointer_);
  */
 _ol_interaction_Snap_.prototype.addFeature = function(feature, opt_listen) {
   var listen = opt_listen !== undefined ? opt_listen : true;
-  var feature_uid = _ol_.getUid(feature);
+  var feature_uid = getUid(feature);
   var geometry = feature.getGeometry();
   if (geometry) {
     var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
@@ -251,7 +251,7 @@ _ol_interaction_Snap_.prototype.handleFeatureRemove_ = function(evt) {
 _ol_interaction_Snap_.prototype.handleFeatureChange_ = function(evt) {
   var feature = /** @type {ol.Feature} */ (evt.target);
   if (this.handlingDownUpSequence) {
-    var uid = _ol_.getUid(feature);
+    var uid = getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
       this.pendingFeatures_[uid] = feature;
     }
@@ -270,7 +270,7 @@ _ol_interaction_Snap_.prototype.handleFeatureChange_ = function(evt) {
  */
 _ol_interaction_Snap_.prototype.removeFeature = function(feature, opt_unlisten) {
   var unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
-  var feature_uid = _ol_.getUid(feature);
+  var feature_uid = getUid(feature);
   var extent = this.indexedFeaturesExtents_[feature_uid];
   if (extent) {
     var rBush = this.rBush_;

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/XMLFeature
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
@@ -28,7 +28,7 @@ var _ol_format_XMLFeature_ = function() {
   _ol_format_Feature_.call(this);
 };
 
-_ol_.inherits(_ol_format_XMLFeature_, _ol_format_Feature_);
+inherits(_ol_format_XMLFeature_, _ol_format_Feature_);
 
 
 /**

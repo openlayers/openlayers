@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DragZoom
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_easing_ from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_extent_ from '../extent.js';
@@ -46,7 +46,7 @@ var _ol_interaction_DragZoom_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_DragZoom_, _ol_interaction_DragBox_);
+inherits(_ol_interaction_DragZoom_, _ol_interaction_DragBox_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WMSGetFeatureInfo
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_format_GML2_ from '../format/GML2.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
@@ -45,7 +45,7 @@ var _ol_format_WMSGetFeatureInfo_ = function(opt_options) {
   _ol_format_XMLFeature_.call(this);
 };
 
-_ol_.inherits(_ol_format_WMSGetFeatureInfo_, _ol_format_XMLFeature_);
+inherits(_ol_format_WMSGetFeatureInfo_, _ol_format_XMLFeature_);
 
 
 /**

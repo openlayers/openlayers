@@ -1,7 +1,7 @@
 /**
  * @module ol/CanvasMap
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_PluggableMap_ from './PluggableMap.js';
 import _ol_PluginType_ from './PluginType.js';
 import _ol_control_ from './control.js';
@@ -85,5 +85,6 @@ var _ol_CanvasMap_ = function(options) {
   _ol_PluggableMap_.call(this, options);
 };
 
-_ol_.inherits(_ol_CanvasMap_, _ol_PluggableMap_);
+inherits(_ol_CanvasMap_, _ol_PluggableMap_);
+
 export default _ol_CanvasMap_;

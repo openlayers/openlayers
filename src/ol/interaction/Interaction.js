@@ -3,7 +3,7 @@
  */
 // FIXME factor out key precondition (shift et. al)
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_easing_ from '../easing.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
@@ -45,7 +45,7 @@ var _ol_interaction_Interaction_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_interaction_Interaction_, _ol_Object_);
+inherits(_ol_interaction_Interaction_, _ol_Object_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/control/Zoom
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_control_Control_ from '../control/Control.js';
@@ -77,7 +77,7 @@ var _ol_control_Zoom_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_control_Zoom_, _ol_control_Control_);
+inherits(_ol_control_Zoom_, _ol_control_Control_);
 
 
 /**

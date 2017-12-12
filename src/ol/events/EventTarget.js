@@ -1,7 +1,7 @@
 /**
  * @module ol/events/EventTarget
  */
-import _ol_ from '../index.js';
+import {inherits, nullFunction} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
@@ -48,7 +48,7 @@ var _ol_events_EventTarget_ = function() {
 
 };
 
-_ol_.inherits(_ol_events_EventTarget_, _ol_Disposable_);
+inherits(_ol_events_EventTarget_, _ol_Disposable_);
 
 
 /**
@@ -96,7 +96,7 @@ _ol_events_EventTarget_.prototype.dispatchEvent = function(event) {
       var pendingRemovals = this.pendingRemovals_[type];
       delete this.pendingRemovals_[type];
       while (pendingRemovals--) {
-        this.removeEventListener(type, _ol_.nullFunction);
+        this.removeEventListener(type, nullFunction);
       }
       delete this.dispatching_[type];
     }
@@ -147,7 +147,7 @@ _ol_events_EventTarget_.prototype.removeEventListener = function(type, listener)
     var index = listeners.indexOf(listener);
     if (type in this.pendingRemovals_) {
       // make listener a no-op, and remove later in #dispatchEvent()
-      listeners[index] = _ol_.nullFunction;
+      listeners[index] = nullFunction;
       ++this.pendingRemovals_[type];
     } else {
       listeners.splice(index, 1);

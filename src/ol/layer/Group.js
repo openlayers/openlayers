@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Group
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_Object_ from '../Object.js';
@@ -68,7 +68,7 @@ var _ol_layer_Group_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_layer_Group_, _ol_layer_Base_);
+inherits(_ol_layer_Group_, _ol_layer_Base_);
 
 
 /**
@@ -103,7 +103,7 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
   var i, ii, layer;
   for (i = 0, ii = layersArray.length; i < ii; i++) {
     layer = layersArray[i];
-    this.listenerKeys_[_ol_.getUid(layer).toString()] = [
+    this.listenerKeys_[getUid(layer).toString()] = [
       _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
           this.handleLayerChange_, this),
       _ol_events_.listen(layer, _ol_events_EventType_.CHANGE,
@@ -121,7 +121,7 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
  */
 _ol_layer_Group_.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
-  var key = _ol_.getUid(layer).toString();
+  var key = getUid(layer).toString();
   this.listenerKeys_[key] = [
     _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleLayerChange_, this),
@@ -138,7 +138,7 @@ _ol_layer_Group_.prototype.handleLayersAdd_ = function(collectionEvent) {
  */
 _ol_layer_Group_.prototype.handleLayersRemove_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
-  var key = _ol_.getUid(layer).toString();
+  var key = getUid(layer).toString();
   this.listenerKeys_[key].forEach(_ol_events_.unlistenByKey);
   delete this.listenerKeys_[key];
   this.changed();

@@ -1,7 +1,7 @@
 /**
  * @module ol/style/AtlasManager
  */
-import _ol_ from '../index.js';
+import {INITIAL_ATLAS_SIZE, MAX_ATLAS_SIZE, WEBGL_MAX_TEXTURE_SIZE, nullFunction} from '../index.js';
 import _ol_style_Atlas_ from '../style/Atlas.js';
 
 /**
@@ -31,7 +31,7 @@ var _ol_style_AtlasManager_ = function(opt_options) {
    * @type {number}
    */
   this.currentSize_ = options.initialSize !== undefined ?
-    options.initialSize : _ol_.INITIAL_ATLAS_SIZE;
+    options.initialSize : INITIAL_ATLAS_SIZE;
 
   /**
    * The maximum size in pixels of atlas images.
@@ -39,9 +39,9 @@ var _ol_style_AtlasManager_ = function(opt_options) {
    * @type {number}
    */
   this.maxSize_ = options.maxSize !== undefined ?
-    options.maxSize : _ol_.MAX_ATLAS_SIZE != -1 ?
-      _ol_.MAX_ATLAS_SIZE : _ol_.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
-        _ol_.WEBGL_MAX_TEXTURE_SIZE : 2048;
+    options.maxSize : MAX_ATLAS_SIZE != -1 ?
+      MAX_ATLAS_SIZE : WEBGL_MAX_TEXTURE_SIZE !== undefined ?
+        WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
    * The size in pixels between images.
@@ -167,7 +167,7 @@ _ol_style_AtlasManager_.prototype.add = function(id, width, height,
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
   var renderHitCallback = opt_renderHitCallback !== undefined ?
-    opt_renderHitCallback : _ol_.nullFunction;
+    opt_renderHitCallback : nullFunction;
 
   var hitInfo = /** @type {ol.AtlasInfo} */ (this.add_(true,
       id, width, height, renderHitCallback, opt_this));

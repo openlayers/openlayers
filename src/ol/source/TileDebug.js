@@ -1,7 +1,7 @@
 /**
  * @module ol/source/TileDebug
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_dom_ from '../dom.js';
@@ -33,7 +33,7 @@ var _ol_source_TileDebug_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_TileDebug_, _ol_source_Tile_);
+inherits(_ol_source_TileDebug_, _ol_source_Tile_);
 
 
 /**
@@ -87,7 +87,7 @@ _ol_source_TileDebug_.Tile_ = function(tileCoord, tileSize, text) {
   this.canvas_ = null;
 
 };
-_ol_.inherits(_ol_source_TileDebug_.Tile_, _ol_Tile_);
+inherits(_ol_source_TileDebug_.Tile_, _ol_Tile_);
 
 
 /**

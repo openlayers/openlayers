@@ -1,7 +1,7 @@
 /**
  * @module ol/source/VectorTile
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_VectorImageTile_ from '../VectorImageTile.js';
 import _ol_VectorTile_ from '../VectorTile.js';
@@ -89,7 +89,7 @@ var _ol_source_VectorTile_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_VectorTile_, _ol_source_UrlTile_);
+inherits(_ol_source_VectorTile_, _ol_source_UrlTile_);
 
 
 /**

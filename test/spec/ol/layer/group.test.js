@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {getUid} from '../../../../src/ol/index.js';
 import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_extent_ from '../../../../src/ol/extent.js';
@@ -293,7 +293,7 @@ describe('ol.layer.Group', function() {
       layers.push(layer);
       expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(1);
 
-      var listeners = layerGroup.listenerKeys_[_ol_.getUid(layer)];
+      var listeners = layerGroup.listenerKeys_[getUid(layer)];
       expect(listeners.length).to.eql(2);
       expect(typeof listeners[0]).to.be('object');
       expect(typeof listeners[1]).to.be('object');

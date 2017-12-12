@@ -1,9 +1,8 @@
 /**
  * @module ol/control/MousePosition
  */
-// FIXME should listen on appropriate pane, once it is defined
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_Object_ from '../Object.js';
@@ -82,7 +81,7 @@ var _ol_control_MousePosition_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_control_MousePosition_, _ol_control_Control_);
+inherits(_ol_control_MousePosition_, _ol_control_Control_);
 
 
 /**

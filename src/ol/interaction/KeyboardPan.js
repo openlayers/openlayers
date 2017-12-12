@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/KeyboardPan
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_KeyCode_ from '../events/KeyCode.js';
@@ -65,7 +65,7 @@ var _ol_interaction_KeyboardPan_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_KeyboardPan_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_KeyboardPan_, _ol_interaction_Interaction_);
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} if it was a

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/Polyline
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
@@ -49,7 +49,7 @@ var _ol_format_Polyline_ = function(opt_options) {
     options.geometryLayout : _ol_geom_GeometryLayout_.XY;
 };
 
-_ol_.inherits(_ol_format_Polyline_, _ol_format_TextFeature_);
+inherits(_ol_format_Polyline_, _ol_format_TextFeature_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/source/CartoDB
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_State_ from '../source/State.js';
 import _ol_source_XYZ_ from '../source/XYZ.js';
@@ -55,7 +55,7 @@ var _ol_source_CartoDB_ = function(options) {
   this.initializeMap_();
 };
 
-_ol_.inherits(_ol_source_CartoDB_, _ol_source_XYZ_);
+inherits(_ol_source_CartoDB_, _ol_source_XYZ_);
 
 
 /**

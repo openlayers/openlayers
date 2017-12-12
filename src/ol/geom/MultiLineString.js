@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/MultiLineString
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_extent_ from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
@@ -51,7 +51,7 @@ var _ol_geom_MultiLineString_ = function(coordinates, opt_layout) {
 
 };
 
-_ol_.inherits(_ol_geom_MultiLineString_, _ol_geom_SimpleGeometry_);
+inherits(_ol_geom_MultiLineString_, _ol_geom_SimpleGeometry_);
 
 
 /**

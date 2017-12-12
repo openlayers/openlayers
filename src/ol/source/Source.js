@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Source
  */
-import _ol_ from '../index.js';
+import {inherits, nullFunction} from '../index.js';
 import _ol_Attribution_ from '../Attribution.js';
 import _ol_Object_ from '../Object.js';
 import _ol_proj_ from '../proj.js';
@@ -64,7 +64,7 @@ var _ol_source_Source_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_Source_, _ol_Object_);
+inherits(_ol_source_Source_, _ol_Object_);
 
 /**
  * Turns the attributions option into an attributions function.
@@ -134,7 +134,7 @@ _ol_source_Source_.prototype.adaptAttributions_ = function(attributionLike) {
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_source_Source_.prototype.forEachFeatureAtCoordinate = _ol_.nullFunction;
+_ol_source_Source_.prototype.forEachFeatureAtCoordinate = nullFunction;
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/source/TileImage
  */
-import _ol_ from '../index.js';
+import {ENABLE_RASTER_REPROJECTION, getUid, inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileCache_ from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
@@ -84,14 +84,14 @@ var _ol_source_TileImage_ = function(options) {
   this.renderReprojectionEdges_ = false;
 };
 
-_ol_.inherits(_ol_source_TileImage_, _ol_source_UrlTile_);
+inherits(_ol_source_TileImage_, _ol_source_UrlTile_);
 
 
 /**
  * @inheritDoc
  */
 _ol_source_TileImage_.prototype.canExpireCache = function() {
-  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+  if (!ENABLE_RASTER_REPROJECTION) {
     return _ol_source_UrlTile_.prototype.canExpireCache.call(this);
   }
   if (this.tileCache.canExpireCache()) {
@@ -111,7 +111,7 @@ _ol_source_TileImage_.prototype.canExpireCache = function() {
  * @inheritDoc
  */
 _ol_source_TileImage_.prototype.expireCache = function(projection, usedTiles) {
-  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+  if (!ENABLE_RASTER_REPROJECTION) {
     _ol_source_UrlTile_.prototype.expireCache.call(this, projection, usedTiles);
     return;
   }
@@ -129,7 +129,7 @@ _ol_source_TileImage_.prototype.expireCache = function(projection, usedTiles) {
  * @inheritDoc
  */
 _ol_source_TileImage_.prototype.getGutter = function(projection) {
-  if (_ol_.ENABLE_RASTER_REPROJECTION &&
+  if (ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection &&
       !_ol_proj_.equivalent(this.getProjection(), projection)) {
     return 0;
@@ -152,7 +152,7 @@ _ol_source_TileImage_.prototype.getGutterInternal = function() {
  * @inheritDoc
  */
 _ol_source_TileImage_.prototype.getOpaque = function(projection) {
-  if (_ol_.ENABLE_RASTER_REPROJECTION &&
+  if (ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection &&
       !_ol_proj_.equivalent(this.getProjection(), projection)) {
     return false;
@@ -166,7 +166,7 @@ _ol_source_TileImage_.prototype.getOpaque = function(projection) {
  * @inheritDoc
  */
 _ol_source_TileImage_.prototype.getTileGridForProjection = function(projection) {
-  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+  if (!ENABLE_RASTER_REPROJECTION) {
     return _ol_source_UrlTile_.prototype.getTileGridForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
@@ -174,7 +174,7 @@ _ol_source_TileImage_.prototype.getTileGridForProjection = function(projection) 
       (!thisProj || _ol_proj_.equivalent(thisProj, projection))) {
     return this.tileGrid;
   } else {
-    var projKey = _ol_.getUid(projection).toString();
+    var projKey = getUid(projection).toString();
     if (!(projKey in this.tileGridForProjection)) {
       this.tileGridForProjection[projKey] =
           _ol_tilegrid_.getForProjection(projection);
@@ -188,14 +188,14 @@ _ol_source_TileImage_.prototype.getTileGridForProjection = function(projection) 
  * @inheritDoc
  */
 _ol_source_TileImage_.prototype.getTileCacheForProjection = function(projection) {
-  if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+  if (!ENABLE_RASTER_REPROJECTION) {
     return _ol_source_UrlTile_.prototype.getTileCacheForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
   if (!thisProj || _ol_proj_.equivalent(thisProj, projection)) {
     return this.tileCache;
   } else {
-    var projKey = _ol_.getUid(projection).toString();
+    var projKey = getUid(projection).toString();
     if (!(projKey in this.tileCacheForProjection)) {
       this.tileCacheForProjection[projKey] = new _ol_TileCache_(this.tileCache.highWaterMark);
     }
@@ -239,7 +239,7 @@ _ol_source_TileImage_.prototype.createTile_ = function(z, x, y, pixelRatio, proj
  */
 _ol_source_TileImage_.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
-  if (!_ol_.ENABLE_RASTER_REPROJECTION ||
+  if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection || !projection ||
       _ol_proj_.equivalent(sourceProjection, projection)) {
     return this.getTileInternal(z, x, y, pixelRatio, sourceProjection || projection);
@@ -329,7 +329,7 @@ _ol_source_TileImage_.prototype.getTileInternal = function(z, x, y, pixelRatio, 
  * @api
  */
 _ol_source_TileImage_.prototype.setRenderReprojectionEdges = function(render) {
-  if (!_ol_.ENABLE_RASTER_REPROJECTION ||
+  if (!ENABLE_RASTER_REPROJECTION ||
       this.renderReprojectionEdges_ == render) {
     return;
   }
@@ -354,10 +354,10 @@ _ol_source_TileImage_.prototype.setRenderReprojectionEdges = function(render) {
  * @api
  */
 _ol_source_TileImage_.prototype.setTileGridForProjection = function(projection, tilegrid) {
-  if (_ol_.ENABLE_RASTER_REPROJECTION) {
+  if (ENABLE_RASTER_REPROJECTION) {
     var proj = _ol_proj_.get(projection);
     if (proj) {
-      var projKey = _ol_.getUid(proj).toString();
+      var projKey = getUid(proj).toString();
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = tilegrid;
       }

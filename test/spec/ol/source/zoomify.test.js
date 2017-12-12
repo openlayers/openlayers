@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {DEFAULT_TILE_SIZE} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_Zoomify_ from '../../../../src/ol/source/Zoomify.js';
@@ -162,7 +162,7 @@ describe('ol.source.Zoomify', function() {
 
     it('has expected tileSize', function() {
       var sources = [getZoomifySource(), getZoomifySourceWith1024pxTiles()];
-      var expectedTileSizes = [_ol_.DEFAULT_TILE_SIZE, 1024];
+      var expectedTileSizes = [DEFAULT_TILE_SIZE, 1024];
       for (var i = 0; i < sources.length; i++) {
         var tileGrid = sources[i].getTileGrid();
         expect(tileGrid.getTileSize()).to.eql(expectedTileSizes[i]);

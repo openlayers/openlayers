@@ -1,7 +1,7 @@
 /**
  * @module ol/ImageTile
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_dom_ from './dom.js';
@@ -59,7 +59,7 @@ var _ol_ImageTile_ = function(tileCoord, state, src, crossOrigin, tileLoadFuncti
 
 };
 
-_ol_.inherits(_ol_ImageTile_, _ol_Tile_);
+inherits(_ol_ImageTile_, _ol_Tile_);
 
 
 /**

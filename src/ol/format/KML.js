@@ -6,7 +6,7 @@
 // FIXME serialize arbitrary feature properties
 // FIXME don't parse style if extractStyles is false
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
 import _ol_asserts_ from '../asserts.js';
@@ -97,7 +97,7 @@ var _ol_format_KML_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_format_KML_, _ol_format_XMLFeature_);
+inherits(_ol_format_KML_, _ol_format_XMLFeature_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/format/WMSCapabilities
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_format_XLink_ from '../format/XLink.js';
 import _ol_format_XML_ from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
@@ -25,7 +25,7 @@ var _ol_format_WMSCapabilities_ = function() {
   this.version = undefined;
 };
 
-_ol_.inherits(_ol_format_WMSCapabilities_, _ol_format_XML_);
+inherits(_ol_format_WMSCapabilities_, _ol_format_XML_);
 
 
 /**

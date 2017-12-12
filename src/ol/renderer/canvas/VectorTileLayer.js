@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/VectorTileLayer
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_dom_ from '../../dom.js';
@@ -68,7 +68,7 @@ var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
+inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
 
 
 /**
@@ -303,7 +303,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.forEachFeatureAtCoordinate = func
            * @return {?} Callback result.
            */
           function(feature) {
-            var key = _ol_.getUid(feature).toString();
+            var key = getUid(feature).toString();
             if (!(key in features)) {
               features[key] = true;
               return callback.call(thisArg, feature, layer);

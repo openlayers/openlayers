@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {getUid} from '../../../../src/ol/index.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import _ol_proj_ from '../../../../src/ol/proj.js';
@@ -404,7 +404,7 @@ describe('ol.layer.Layer', function() {
         expect(frameState.layerStatesArray.length).to.be(1);
         var layerState = frameState.layerStatesArray[0];
         expect(layerState.layer).to.equal(layer);
-        expect(frameState.layerStates[_ol_.getUid(layer)]).to.equal(layerState);
+        expect(frameState.layerStates[getUid(layer)]).to.equal(layerState);
       });
     });
 

@@ -1,4 +1,4 @@
-import _ol_ from '../../../src/ol/index.js';
+import {getUid} from '../../../src/ol/index.js';
 import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
 import _ol_TileState_ from '../../../src/ol/TileState.js';
@@ -59,11 +59,11 @@ describe('ol.Tile', function() {
     beforeEach(function() {
       var tileCoord = [0, 0, 0];
       head = new _ol_ImageTile_(tileCoord, _ol_TileState_.IDLE);
-      _ol_.getUid(head);
+      getUid(head);
 
       var addToChain = function(tile, state) {
         var next = new _ol_ImageTile_(tileCoord, state);
-        _ol_.getUid(next);
+        getUid(next);
         tile.interimTile = next;
         return next;
       };
@@ -112,7 +112,7 @@ describe('ol.Tile', function() {
       head.refreshInterimChain();
       while (head.interimTile !== null) {
         //use property of ol.getUid returning increasing id's.
-        expect(_ol_.getUid(head) < _ol_.getUid(head.interimTile));
+        expect(getUid(head) < getUid(head.interimTile));
         head = head.interimTile;
       }
       done();

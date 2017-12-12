@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/DragPan
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_easing_ from '../easing.js';
@@ -59,7 +59,7 @@ var _ol_interaction_DragPan_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_DragPan_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_DragPan_, _ol_interaction_Pointer_);
 
 
 /**

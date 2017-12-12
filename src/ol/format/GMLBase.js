@@ -4,7 +4,7 @@
 // FIXME Envelopes should not be treated as geometries! readEnvelope_ is part
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
@@ -78,7 +78,7 @@ var _ol_format_GMLBase_ = function(opt_options) {
   _ol_format_XMLFeature_.call(this);
 };
 
-_ol_.inherits(_ol_format_GMLBase_, _ol_format_XMLFeature_);
+inherits(_ol_format_GMLBase_, _ol_format_XMLFeature_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/VectorTile
  */
-import _ol_ from './index.js';
+import {getUid, inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
 
@@ -75,7 +75,7 @@ var _ol_VectorTile_ = function(tileCoord, state, src, format, tileLoadFunction, 
 
 };
 
-_ol_.inherits(_ol_VectorTile_, _ol_Tile_);
+inherits(_ol_VectorTile_, _ol_Tile_);
 
 
 /**
@@ -146,7 +146,7 @@ _ol_VectorTile_.prototype.getProjection = function() {
  * @return {ol.render.ReplayGroup} Replay group.
  */
 _ol_VectorTile_.prototype.getReplayGroup = function(layer, key) {
-  return this.replayGroups_[_ol_.getUid(layer) + ',' + key];
+  return this.replayGroups_[getUid(layer) + ',' + key];
 };
 
 
@@ -230,7 +230,7 @@ _ol_VectorTile_.prototype.setProjection = function(projection) {
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  */
 _ol_VectorTile_.prototype.setReplayGroup = function(layer, key, replayGroup) {
-  this.replayGroups_[_ol_.getUid(layer) + ',' + key] = replayGroup;
+  this.replayGroups_[getUid(layer) + ',' + key] = replayGroup;
 };
 
 

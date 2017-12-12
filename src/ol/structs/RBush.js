@@ -1,7 +1,7 @@
 /**
  * @module ol/structs/RBush
  */
-import _ol_ from '../index.js';
+import {getUid} from '../index.js';
 import _ol_ext_rbush_ from 'rbush';
 import _ol_extent_ from '../extent.js';
 import _ol_obj_ from '../obj.js';
@@ -49,7 +49,7 @@ _ol_structs_RBush_.prototype.insert = function(extent, value) {
   };
 
   this.rbush_.insert(item);
-  this.items_[_ol_.getUid(value)] = item;
+  this.items_[getUid(value)] = item;
 };
 
 
@@ -73,7 +73,7 @@ _ol_structs_RBush_.prototype.load = function(extents, values) {
       value: value
     };
     items[i] = item;
-    this.items_[_ol_.getUid(value)] = item;
+    this.items_[getUid(value)] = item;
   }
   this.rbush_.load(items);
 };
@@ -85,7 +85,7 @@ _ol_structs_RBush_.prototype.load = function(extents, values) {
  * @return {boolean} Removed.
  */
 _ol_structs_RBush_.prototype.remove = function(value) {
-  var uid = _ol_.getUid(value);
+  var uid = getUid(value);
 
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
@@ -101,7 +101,7 @@ _ol_structs_RBush_.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 _ol_structs_RBush_.prototype.update = function(extent, value) {
-  var item = this.items_[_ol_.getUid(value)];
+  var item = this.items_[getUid(value)];
   var bbox = [item.minX, item.minY, item.maxX, item.maxY];
   if (!_ol_extent_.equals(bbox, extent)) {
     this.remove(value);

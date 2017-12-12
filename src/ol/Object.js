@@ -1,7 +1,7 @@
 /**
  * @module ol/Object
  */
-import _ol_ from './index.js';
+import {getUid, inherits} from './index.js';
 import _ol_ObjectEventType_ from './ObjectEventType.js';
 import _ol_Observable_ from './Observable.js';
 import _ol_events_Event_ from './events/Event.js';
@@ -59,7 +59,7 @@ var _ol_Object_ = function(opt_values) {
   // the order in which they were created.  This also helps to ensure that
   // object properties are always added in the same order, which helps many
   // JavaScript engines generate faster code.
-  _ol_.getUid(this);
+  getUid(this);
 
   /**
    * @private
@@ -72,7 +72,7 @@ var _ol_Object_ = function(opt_values) {
   }
 };
 
-_ol_.inherits(_ol_Object_, _ol_Observable_);
+inherits(_ol_Object_, _ol_Observable_);
 
 
 /**
@@ -223,5 +223,5 @@ _ol_Object_.Event = function(type, key, oldValue) {
   this.oldValue = oldValue;
 
 };
-_ol_.inherits(_ol_Object_.Event, _ol_events_Event_);
+inherits(_ol_Object_.Event, _ol_events_Event_);
 export default _ol_Object_;

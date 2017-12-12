@@ -1,7 +1,7 @@
 /**
  * @module ol/style/RegularShape
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_colorlike_ from '../colorlike.js';
 import _ol_dom_ from '../dom.js';
 import _ol_has_ from '../has.js';
@@ -135,7 +135,7 @@ var _ol_style_RegularShape_ = function(options) {
   });
 };
 
-_ol_.inherits(_ol_style_RegularShape_, _ol_style_Image_);
+inherits(_ol_style_RegularShape_, _ol_style_Image_);
 
 
 /**

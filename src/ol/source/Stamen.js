@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Stamen
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_source_OSM_ from '../source/OSM.js';
 import _ol_source_XYZ_ from '../source/XYZ.js';
 
@@ -39,7 +39,7 @@ var _ol_source_Stamen_ = function(options) {
   });
 };
 
-_ol_.inherits(_ol_source_Stamen_, _ol_source_XYZ_);
+inherits(_ol_source_Stamen_, _ol_source_XYZ_);
 
 
 /**

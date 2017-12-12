@@ -1,7 +1,7 @@
 /**
  * @module ol/style/IconImage
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_dom_ from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventTarget_ from '../events/EventTarget.js';
@@ -89,7 +89,7 @@ var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
 
 };
 
-_ol_.inherits(_ol_style_IconImage_, _ol_events_EventTarget_);
+inherits(_ol_style_IconImage_, _ol_events_EventTarget_);
 
 
 /**

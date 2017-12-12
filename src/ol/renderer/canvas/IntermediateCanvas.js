@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/IntermediateCanvas
  */
-import _ol_ from '../../index.js';
+import {inherits, nullFunction} from '../../index.js';
 import _ol_coordinate_ from '../../coordinate.js';
 import _ol_dom_ from '../../dom.js';
 import _ol_extent_ from '../../extent.js';
@@ -32,7 +32,7 @@ var _ol_renderer_canvas_IntermediateCanvas_ = function(layer) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_IntermediateCanvas_, _ol_renderer_canvas_Layer_);
+inherits(_ol_renderer_canvas_IntermediateCanvas_, _ol_renderer_canvas_Layer_);
 
 
 /**
@@ -123,7 +123,7 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = fun
     return undefined;
   }
 
-  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== _ol_.nullFunction) {
+  if (this.getLayer().getSource().forEachFeatureAtCoordinate !== nullFunction) {
     // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     return _ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate.apply(this, arguments);

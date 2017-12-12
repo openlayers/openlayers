@@ -1,7 +1,7 @@
 /**
  * @module ol/MapBrowserPointerEvent
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
 
 /**
@@ -27,5 +27,5 @@ var _ol_MapBrowserPointerEvent_ = function(type, map, pointerEvent, opt_dragging
 
 };
 
-_ol_.inherits(_ol_MapBrowserPointerEvent_, _ol_MapBrowserEvent_);
+inherits(_ol_MapBrowserPointerEvent_, _ol_MapBrowserEvent_);
 export default _ol_MapBrowserPointerEvent_;

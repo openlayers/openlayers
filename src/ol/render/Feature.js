@@ -1,7 +1,7 @@
 /**
  * @module ol/render/Feature
  */
-import _ol_ from '../index.js';
+import {nullFunction} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_extent_ from '../extent.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
@@ -244,7 +244,7 @@ _ol_render_Feature_.prototype.getStride = function() {
 /**
  * @return {undefined}
  */
-_ol_render_Feature_.prototype.getStyleFunction = _ol_.nullFunction;
+_ol_render_Feature_.prototype.getStyleFunction = nullFunction;
 
 
 /**

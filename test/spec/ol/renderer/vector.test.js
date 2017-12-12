@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {nullFunction} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
@@ -77,7 +77,7 @@ describe('ol.renderer.vector', function() {
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
-        var drawPointSpy = sinon.stub(imageReplay, 'drawPoint').callsFake(_ol_.nullFunction);
+        var drawPointSpy = sinon.stub(imageReplay, 'drawPoint').callsFake(nullFunction);
         _ol_renderer_vector_.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setImageStyleSpy.called).to.be(false);
@@ -90,7 +90,7 @@ describe('ol.renderer.vector', function() {
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
-        var drawMultiPointSpy = sinon.stub(imageReplay, 'drawMultiPoint').callsFake(_ol_.nullFunction);
+        var drawMultiPointSpy = sinon.stub(imageReplay, 'drawMultiPoint').callsFake(nullFunction);
         _ol_renderer_vector_.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setImageStyleSpy.called).to.be(false);
@@ -104,7 +104,7 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
             'setFillStrokeStyle');
-        var drawLineStringSpy = sinon.stub(lineStringReplay, 'drawLineString').callsFake(_ol_.nullFunction);
+        var drawLineStringSpy = sinon.stub(lineStringReplay, 'drawLineString').callsFake(nullFunction);
         _ol_renderer_vector_.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
@@ -119,7 +119,7 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
             'setFillStrokeStyle');
-        var drawMultiLineStringSpy = sinon.stub(lineStringReplay, 'drawMultiLineString').callsFake(_ol_.nullFunction);
+        var drawMultiLineStringSpy = sinon.stub(lineStringReplay, 'drawMultiLineString').callsFake(nullFunction);
         _ol_renderer_vector_.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
@@ -135,7 +135,7 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), 'Polygon');
         var setFillStrokeStyleSpy = sinon.spy(polygonReplay,
             'setFillStrokeStyle');
-        var drawPolygonSpy = sinon.stub(polygonReplay, 'drawPolygon').callsFake(_ol_.nullFunction);
+        var drawPolygonSpy = sinon.stub(polygonReplay, 'drawPolygon').callsFake(nullFunction);
         _ol_renderer_vector_.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
@@ -151,7 +151,7 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), 'Polygon');
         var setFillStrokeStyleSpy = sinon.spy(polygonReplay,
             'setFillStrokeStyle');
-        var drawMultiPolygonSpy = sinon.stub(polygonReplay, 'drawMultiPolygon').callsFake(_ol_.nullFunction);
+        var drawMultiPolygonSpy = sinon.stub(polygonReplay, 'drawMultiPolygon').callsFake(nullFunction);
         _ol_renderer_vector_.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);

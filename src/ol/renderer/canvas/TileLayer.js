@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/TileLayer
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_TileRange_ from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
@@ -78,7 +78,7 @@ var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_TileLayer_, _ol_renderer_canvas_IntermediateCanvas_);
+inherits(_ol_renderer_canvas_TileLayer_, _ol_renderer_canvas_IntermediateCanvas_);
 
 
 /**
@@ -179,7 +179,7 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
         tile = tile.getInterimTile();
       }
       if (this.isDrawableTile_(tile)) {
-        var uid = _ol_.getUid(this);
+        var uid = getUid(this);
         if (tile.getState() == _ol_TileState_.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
           var inTransition = tile.inTransition(uid);
@@ -314,7 +314,7 @@ _ol_renderer_canvas_TileLayer_.prototype.drawTileImage = function(tile, frameSta
   if (!image) {
     return;
   }
-  var uid = _ol_.getUid(this);
+  var uid = getUid(this);
   var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
   if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);

@@ -3,7 +3,7 @@
  */
 // FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
 
-import _ol_ from '../../index.js';
+import {WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK, inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_css_ from '../../css.js';
 import _ol_dom_ from '../../dom.js';
@@ -160,7 +160,7 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
   this.initializeGL_();
 };
 
-_ol_.inherits(_ol_renderer_webgl_Map_, _ol_renderer_Map_);
+inherits(_ol_renderer_webgl_Map_, _ol_renderer_Map_);
 
 
 /**
@@ -308,7 +308,7 @@ _ol_renderer_webgl_Map_.prototype.expireCache_ = function(map, frameState) {
   var gl = this.getGL();
   var textureCacheEntry;
   while (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
-      _ol_.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+      WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
     textureCacheEntry = this.textureCache_.peekLast();
     if (!textureCacheEntry) {
       if (+this.textureCache_.peekLastKey() == frameState.index) {
@@ -480,7 +480,7 @@ _ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
   this.calculateMatrices2D(frameState);
 
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
-      _ol_.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
+      WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
     frameState.postRenderFunctions.push(
         /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
     );

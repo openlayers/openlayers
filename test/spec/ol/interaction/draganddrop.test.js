@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {inherits} from '../../../../src/ol/index.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
 import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
@@ -101,7 +101,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
           this.dispatchEvent('load');
         };
       };
-      _ol_.inherits(FileReader, _ol_events_EventTarget_);
+      inherits(FileReader, _ol_events_EventTarget_);
     });
 
     afterEach(function() {

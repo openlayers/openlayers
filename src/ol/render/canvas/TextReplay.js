@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas/TextReplay
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import _ol_dom_ from '../../dom.js';
 import _ol_extent_ from '../../extent.js';
@@ -134,7 +134,7 @@ var _ol_render_canvas_TextReplay_ = function(
 
 };
 
-_ol_.inherits(_ol_render_canvas_TextReplay_, _ol_render_canvas_Replay_);
+inherits(_ol_render_canvas_TextReplay_, _ol_render_canvas_Replay_);
 
 
 /**
@@ -533,13 +533,13 @@ _ol_render_canvas_TextReplay_.prototype.setTextStyle = function(textStyle, declu
     this.textRotation_ = textRotation === undefined ? 0 : textRotation;
 
     this.strokeKey_ = strokeState ?
-      (typeof strokeState.strokeStyle == 'string' ? strokeState.strokeStyle : _ol_.getUid(strokeState.strokeStyle)) +
+      (typeof strokeState.strokeStyle == 'string' ? strokeState.strokeStyle : getUid(strokeState.strokeStyle)) +
       strokeState.lineCap + strokeState.lineDashOffset + '|' + strokeState.lineWidth +
       strokeState.lineJoin + strokeState.miterLimit + '[' + strokeState.lineDash.join() + ']' :
       '';
     this.textKey_ = textState.font + textState.scale + (textState.textAlign || '?');
     this.fillKey_ = fillState ?
-      (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + _ol_.getUid(fillState.fillStyle))) :
+      (typeof fillState.fillStyle == 'string' ? fillState.fillStyle : ('|' + getUid(fillState.fillStyle))) :
       '';
   }
 };

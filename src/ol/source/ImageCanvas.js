@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageCanvas
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_ImageCanvas_ from '../ImageCanvas.js';
 import _ol_extent_ from '../extent.js';
 import _ol_source_Image_ from '../source/Image.js';
@@ -52,7 +52,7 @@ var _ol_source_ImageCanvas_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_ImageCanvas_, _ol_source_Image_);
+inherits(_ol_source_ImageCanvas_, _ol_source_Image_);
 
 
 /**

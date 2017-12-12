@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/NotEqualTo
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
 
 /**
@@ -19,5 +19,5 @@ var _ol_format_filter_NotEqualTo_ = function(propertyName, expression, opt_match
   _ol_format_filter_ComparisonBinary_.call(this, 'PropertyIsNotEqualTo', propertyName, expression, opt_matchCase);
 };
 
-_ol_.inherits(_ol_format_filter_NotEqualTo_, _ol_format_filter_ComparisonBinary_);
+inherits(_ol_format_filter_NotEqualTo_, _ol_format_filter_ComparisonBinary_);
 export default _ol_format_filter_NotEqualTo_;

@@ -1,4 +1,4 @@
-import _ol_ from '../../../../../src/ol/index.js';
+import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
@@ -139,7 +139,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       _ol_renderer_vector_.renderFeature(replay, feature2, style2, 1);
       _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
       var skippedUids = {};
-      skippedUids[_ol_.getUid(feature1)] = true;
+      skippedUids[getUid(feature1)] = true;
       replay.replay(context, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
@@ -151,7 +151,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
       _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
       var skippedUids = {};
-      skippedUids[_ol_.getUid(feature3)] = true;
+      skippedUids[getUid(feature3)] = true;
       replay.replay(context, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
@@ -163,8 +163,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
       _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
       _ol_renderer_vector_.renderFeature(replay, feature3, style2, 1);
       var skippedUids = {};
-      skippedUids[_ol_.getUid(feature1)] = true;
-      skippedUids[_ol_.getUid(feature2)] = true;
+      skippedUids[getUid(feature1)] = true;
+      skippedUids[getUid(feature2)] = true;
       replay.replay(context, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);

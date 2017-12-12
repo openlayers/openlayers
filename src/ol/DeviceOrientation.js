@@ -2,7 +2,7 @@
  * @module ol/DeviceOrientation
  */
 import _ol_events_ from './events.js';
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_Object_ from './Object.js';
 import _ol_has_ from './has.js';
 import _ol_math_ from './math.js';
@@ -84,7 +84,7 @@ var _ol_DeviceOrientation_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_DeviceOrientation_, _ol_Object_);
+inherits(_ol_DeviceOrientation_, _ol_Object_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Tile
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_LayerType_ from '../LayerType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
@@ -43,7 +43,7 @@ var _ol_layer_Tile_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_layer_Tile_, _ol_layer_Layer_);
+inherits(_ol_layer_Tile_, _ol_layer_Layer_);
 
 
 /**

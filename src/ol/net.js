@@ -1,7 +1,7 @@
 /**
  * @module ol/net
  */
-import _ol_ from './index.js';
+import {getUid} from './index.js';
 var _ol_net_ = {};
 
 
@@ -18,7 +18,7 @@ var _ol_net_ = {};
  */
 _ol_net_.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
   var script = document.createElement('script');
-  var key = 'olc_' + _ol_.getUid(callback);
+  var key = 'olc_' + getUid(callback);
   function cleanup() {
     delete window[key];
     script.parentNode.removeChild(script);

@@ -1,4 +1,4 @@
-import _ol_ from '../../../../src/ol/index.js';
+import {getUid} from '../../../../src/ol/index.js';
 import _ol_style_ from '../../../../src/ol/style.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_IconImage_ from '../../../../src/ol/style/IconImage.js';
@@ -18,7 +18,7 @@ describe('ol.style.Icon', function() {
         imgSize: size
       });
       expect(_ol_style_IconImage_.get(
-          canvas, _ol_.getUid(canvas), size, '').getImage()).to.eql(canvas);
+          canvas, getUid(canvas), size, '').getImage()).to.eql(canvas);
     });
 
     it('imgSize overrides img.width and img.height', function(done) {

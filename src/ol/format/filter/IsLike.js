@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/IsLike
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
 
 /**
@@ -56,5 +56,5 @@ var _ol_format_filter_IsLike_ = function(propertyName, pattern,
   this.matchCase = opt_matchCase;
 };
 
-_ol_.inherits(_ol_format_filter_IsLike_, _ol_format_filter_Comparison_);
+inherits(_ol_format_filter_IsLike_, _ol_format_filter_Comparison_);
 export default _ol_format_filter_IsLike_;

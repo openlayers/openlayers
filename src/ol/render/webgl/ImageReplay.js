@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl/ImageReplay
  */
-import _ol_ from '../../index.js';
+import {getUid, inherits} from '../../index.js';
 import _ol_render_webgl_TextureReplay_ from '../webgl/TextureReplay.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
@@ -41,7 +41,7 @@ var _ol_render_webgl_ImageReplay_ = function(tolerance, maxExtent) {
 
 };
 
-_ol_.inherits(_ol_render_webgl_ImageReplay_, _ol_render_webgl_TextureReplay_);
+inherits(_ol_render_webgl_ImageReplay_, _ol_render_webgl_TextureReplay_);
 
 
 /**
@@ -122,7 +122,7 @@ _ol_render_webgl_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
     this.images_.push(image);
   } else {
     currentImage = this.images_[this.images_.length - 1];
-    if (_ol_.getUid(currentImage) != _ol_.getUid(image)) {
+    if (getUid(currentImage) != getUid(image)) {
       this.groupIndices.push(this.indices.length);
       this.images_.push(image);
     }
@@ -133,7 +133,7 @@ _ol_render_webgl_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
   } else {
     currentImage =
         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-    if (_ol_.getUid(currentImage) != _ol_.getUid(hitDetectionImage)) {
+    if (getUid(currentImage) != getUid(hitDetectionImage)) {
       this.hitDetectionGroupIndices.push(this.indices.length);
       this.hitDetectionImages_.push(hitDetectionImage);
     }

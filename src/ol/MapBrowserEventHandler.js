@@ -1,7 +1,7 @@
 /**
  * @module ol/MapBrowserEventHandler
  */
-import _ol_ from './index.js';
+import {inherits} from './index.js';
 import _ol_has_ from './has.js';
 import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from './MapBrowserPointerEvent.js';
@@ -110,7 +110,7 @@ var _ol_MapBrowserEventHandler_ = function(map, moveTolerance) {
 
 };
 
-_ol_.inherits(_ol_MapBrowserEventHandler_, _ol_events_EventTarget_);
+inherits(_ol_MapBrowserEventHandler_, _ol_events_EventTarget_);
 
 
 /**

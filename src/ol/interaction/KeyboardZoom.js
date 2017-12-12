@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction/KeyboardZoom
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
@@ -52,7 +52,7 @@ var _ol_interaction_KeyboardZoom_ = function(opt_options) {
 
 };
 
-_ol_.inherits(_ol_interaction_KeyboardZoom_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_KeyboardZoom_, _ol_interaction_Interaction_);
 
 
 /**

@@ -1,7 +1,7 @@
 /**
  * @module ol/structs/LRUCache
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_EventTarget_ from '../events/EventTarget.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -52,7 +52,7 @@ var _ol_structs_LRUCache_ = function(opt_highWaterMark) {
 
 };
 
-_ol_.inherits(_ol_structs_LRUCache_, _ol_events_EventTarget_);
+inherits(_ol_structs_LRUCache_, _ol_events_EventTarget_);
 
 
 /**

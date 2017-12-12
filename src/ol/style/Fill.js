@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Fill
  */
-import _ol_ from '../index.js';
+import {getUid} from '../index.js';
 import _ol_color_ from '../color.js';
 
 /**
@@ -74,7 +74,7 @@ _ol_style_Fill_.prototype.getChecksum = function() {
       this.color_ instanceof CanvasPattern ||
         this.color_ instanceof CanvasGradient
     ) {
-      this.checksum_ = _ol_.getUid(this.color_).toString();
+      this.checksum_ = getUid(this.color_).toString();
     } else {
       this.checksum_ = 'f' + (this.color_ ?
         _ol_color_.asString(this.color_) : '-');

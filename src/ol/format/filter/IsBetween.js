@@ -1,7 +1,7 @@
 /**
  * @module ol/format/filter/IsBetween
  */
-import _ol_ from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
 
 /**
@@ -31,5 +31,5 @@ var _ol_format_filter_IsBetween_ = function(propertyName, lowerBoundary, upperBo
   this.upperBoundary = upperBoundary;
 };
 
-_ol_.inherits(_ol_format_filter_IsBetween_, _ol_format_filter_Comparison_);
+inherits(_ol_format_filter_IsBetween_, _ol_format_filter_Comparison_);
 export default _ol_format_filter_IsBetween_;

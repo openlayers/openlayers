@@ -1,7 +1,7 @@
 /**
  * @module ol/source/ImageVector
  */
-import _ol_ from '../index.js';
+import {getUid, inherits} from '../index.js';
 import _ol_dom_ from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -109,7 +109,7 @@ var _ol_source_ImageVector_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_ImageVector_, _ol_source_ImageCanvas_);
+inherits(_ol_source_ImageVector_, _ol_source_ImageCanvas_);
 
 
 /**
@@ -182,7 +182,7 @@ _ol_source_ImageVector_.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          var key = _ol_.getUid(feature).toString();
+          var key = getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback(feature);

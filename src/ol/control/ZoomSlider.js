@@ -3,7 +3,7 @@
  */
 // FIXME should possibly show tooltip when dragging?
 
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
@@ -133,7 +133,7 @@ var _ol_control_ZoomSlider_ = function(opt_options) {
   });
 };
 
-_ol_.inherits(_ol_control_ZoomSlider_, _ol_control_Control_);
+inherits(_ol_control_ZoomSlider_, _ol_control_Control_);
 
 
 /**

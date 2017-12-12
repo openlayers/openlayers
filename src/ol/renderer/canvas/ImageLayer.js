@@ -1,7 +1,7 @@
 /**
  * @module ol/renderer/canvas/ImageLayer
  */
-import _ol_ from '../../index.js';
+import {ENABLE_RASTER_REPROJECTION, inherits} from '../../index.js';
 import _ol_ImageCanvas_ from '../../ImageCanvas.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
@@ -49,7 +49,7 @@ var _ol_renderer_canvas_ImageLayer_ = function(imageLayer) {
 
 };
 
-_ol_.inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas_);
+inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas_);
 
 
 /**
@@ -128,7 +128,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
   if (!hints[_ol_ViewHint_.ANIMATING] && !hints[_ol_ViewHint_.INTERACTING] &&
       !_ol_extent_.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
-    if (!_ol_.ENABLE_RASTER_REPROJECTION) {
+    if (!ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
         projection = sourceProjection;

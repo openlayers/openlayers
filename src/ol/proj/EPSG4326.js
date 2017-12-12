@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/EPSG4326
  */
-import _ol_ from '../index.js';
+import {inherits} from '../index.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
 import _ol_proj_Units_ from '../proj/Units.js';
 var _ol_proj_EPSG4326_ = {};
@@ -32,7 +32,7 @@ _ol_proj_EPSG4326_.Projection_ = function(code, opt_axisOrientation) {
     worldExtent: _ol_proj_EPSG4326_.EXTENT
   });
 };
-_ol_.inherits(_ol_proj_EPSG4326_.Projection_, _ol_proj_Projection_);
+inherits(_ol_proj_EPSG4326_.Projection_, _ol_proj_Projection_);
 
 
 /**

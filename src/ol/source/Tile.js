@@ -1,7 +1,7 @@
 /**
  * @module ol/source/Tile
  */
-import _ol_ from '../index.js';
+import {inherits, nullFunction} from '../index.js';
 import _ol_TileCache_ from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_Event_ from '../events/Event.js';
@@ -79,7 +79,7 @@ var _ol_source_Tile_ = function(options) {
 
 };
 
-_ol_.inherits(_ol_source_Tile_, _ol_source_Source_);
+inherits(_ol_source_Tile_, _ol_source_Source_);
 
 
 /**
@@ -304,7 +304,7 @@ _ol_source_Tile_.prototype.refresh = function() {
  * @param {number} y Tile coordinate y.
  * @param {ol.proj.Projection} projection Projection.
  */
-_ol_source_Tile_.prototype.useTile = _ol_.nullFunction;
+_ol_source_Tile_.prototype.useTile = nullFunction;
 
 
 /**
@@ -330,5 +330,5 @@ _ol_source_Tile_.Event = function(type, tile) {
   this.tile = tile;
 
 };
-_ol_.inherits(_ol_source_Tile_.Event, _ol_events_Event_);
+inherits(_ol_source_Tile_.Event, _ol_events_Event_);
 export default _ol_source_Tile_;
