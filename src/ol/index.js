@@ -63,22 +63,6 @@ export var DEBUG_WEBGL = true;
 
 
 /**
- * TODO: move this to OverviewMap.js
- * @type {number} Maximum width and/or height extent ratio that determines
- * when the overview map should be zoomed out.
- */
-export var OVERVIEWMAP_MAX_RATIO = 0.75;
-
-
-/**
- * TODO: move this to OverviewMap.js
- * @type {number} Minimum width and/or height extent ratio that determines
- * when the overview map should be zoomed in.
- */
-export var OVERVIEWMAP_MIN_RATIO = 0.1;
-
-
-/**
  * TODO: move this to Triangulation.js
  * @type {number} Maximum number of subdivision steps during raster
  *     reprojection triangulation. Prevents high memory usage and large
@@ -227,8 +211,6 @@ export default {
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
-  OVERVIEWMAP_MAX_RATIO: OVERVIEWMAP_MAX_RATIO,
-  OVERVIEWMAP_MIN_RATIO: OVERVIEWMAP_MIN_RATIO,
   RASTER_REPROJECTION_MAX_SUBDIVISION: RASTER_REPROJECTION_MAX_SUBDIVISION,
   RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH: RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH,
   SIMPLIFY_TOLERANCE: SIMPLIFY_TOLERANCE,
