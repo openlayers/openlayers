@@ -6,6 +6,7 @@ import webgl from './webgl.js';
 
 
 /**
+ * TODO: move to a separate ol-webgl package
  * @type {boolean} Include debuggable shader sources.  Default is `true`.
  *     This should be set to `false` for production builds.
  */
@@ -13,12 +14,7 @@ export var DEBUG_WEBGL = true;
 
 
 /**
- * @type {string} OpenLayers version.
- */
-export var VERSION = 'v4.6.4';
-
-
-/**
+ * TODO: move to a separate ol-webgl package
  * The maximum supported WebGL texture size in pixels. If WebGL is not
  * supported, the value is set to `undefined`.
  * @const
@@ -28,6 +24,7 @@ var WEBGL_MAX_TEXTURE_SIZE; // value is set below
 
 
 /**
+ * TODO: move to a separate ol-webgl package
  * List of supported WebGL extensions.
  * @const
  * @type {Array.<string>}
@@ -36,6 +33,7 @@ var WEBGL_EXTENSIONS; // value is set below
 
 
 /**
+ * TODO: move to a separate ol-webgl package
  * WebGL is available.
  * @type {boolean}
  */
@@ -59,6 +57,12 @@ if ('WebGLRenderingContext' in window) {
 }
 
 export {HAS_WEBGL, WEBGL_MAX_TEXTURE_SIZE, WEBGL_EXTENSIONS};
+
+
+/**
+ * @type {string} OpenLayers version.
+ */
+export var VERSION = 'v4.6.4';
 
 
 /**
