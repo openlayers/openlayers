@@ -10,7 +10,7 @@
 import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_extent_ from '../extent.js';
+import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import _ol_proj_ from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
@@ -121,7 +121,7 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
   if (tileJSON.bounds !== undefined) {
     var transform = _ol_proj_.getTransformFromProjections(
         epsg4326Projection, sourceProjection);
-    extent = _ol_extent_.applyTransform(tileJSON.bounds, transform);
+    extent = applyTransform(tileJSON.bounds, transform);
   }
 
   var minZoom = tileJSON.minzoom || 0;
@@ -141,7 +141,7 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
       extent : epsg4326Projection.getExtent();
 
     this.setAttributions(function(frameState) {
-      if (_ol_extent_.intersects(attributionExtent, frameState.extent)) {
+      if (intersects(attributionExtent, frameState.extent)) {
         return [tileJSON.attribution];
       }
       return null;

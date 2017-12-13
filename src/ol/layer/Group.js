@@ -9,7 +9,7 @@ import _ol_ObjectEventType_ from '../ObjectEventType.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {getIntersection} from '../extent.js';
 import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_State_ from '../source/State.js';
@@ -210,8 +210,7 @@ _ol_layer_Group_.prototype.getLayerStatesArray = function(opt_states) {
         layerState.minResolution, ownLayerState.minResolution);
     if (ownLayerState.extent !== undefined) {
       if (layerState.extent !== undefined) {
-        layerState.extent = _ol_extent_.getIntersection(
-            layerState.extent, ownLayerState.extent);
+        layerState.extent = getIntersection(layerState.extent, ownLayerState.extent);
       } else {
         layerState.extent = ownLayerState.extent;
       }

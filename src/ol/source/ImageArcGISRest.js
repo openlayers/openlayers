@@ -6,7 +6,7 @@ import _ol_Image_ from '../Image.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent, getHeight, getWidth} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Image_ from '../source/Image.js';
 import _ol_uri_ from '../uri.js';
@@ -128,7 +128,7 @@ _ol_source_ImageArcGISRest_.prototype.getImageInternal = function(extent, resolu
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
-      _ol_extent_.containsExtent(image.getExtent(), extent)) {
+      containsExtent(image.getExtent(), extent)) {
     return image;
   }
 
@@ -143,8 +143,8 @@ _ol_source_ImageArcGISRest_.prototype.getImageInternal = function(extent, resolu
   var centerX = (extent[0] + extent[2]) / 2;
   var centerY = (extent[1] + extent[3]) / 2;
   if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * _ol_extent_.getWidth(extent) / 2;
-    var halfHeight = this.ratio_ * _ol_extent_.getHeight(extent) / 2;
+    var halfWidth = this.ratio_ * getWidth(extent) / 2;
+    var halfHeight = this.ratio_ * getHeight(extent) / 2;
     extent[0] = centerX - halfWidth;
     extent[1] = centerY - halfHeight;
     extent[2] = centerX + halfWidth;
@@ -154,8 +154,8 @@ _ol_source_ImageArcGISRest_.prototype.getImageInternal = function(extent, resolu
   var imageResolution = resolution / pixelRatio;
 
   // Compute an integer width and height.
-  var width = Math.ceil(_ol_extent_.getWidth(extent) / imageResolution);
-  var height = Math.ceil(_ol_extent_.getHeight(extent) / imageResolution);
+  var width = Math.ceil(getWidth(extent) / imageResolution);
+  var height = Math.ceil(getHeight(extent) / imageResolution);
 
   // Modify the extent to match the integer width and height.
   extent[0] = centerX - imageResolution * width / 2;

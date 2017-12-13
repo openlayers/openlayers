@@ -8,7 +8,7 @@ import _ol_dom_ from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_events_EventType_ from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
-import _ol_extent_ from '../../extent.js';
+import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
@@ -55,7 +55,7 @@ var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
    * @private
    * @type {ol.Extent}
    */
-  this.renderedExtent_ = _ol_extent_.createEmpty();
+  this.renderedExtent_ = createEmpty();
 
   /**
    * @private
@@ -189,9 +189,9 @@ _ol_renderer_canvas_VectorLayer_.prototype.composeFrame = function(frameState, l
         width / 2, height / 2);
     replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
-        !_ol_extent_.containsExtent(projectionExtent, extent)) {
+        !containsExtent(projectionExtent, extent)) {
       var startX = extent[0];
-      var worldWidth = _ol_extent_.getWidth(projectionExtent);
+      var worldWidth = getWidth(projectionExtent);
       var world = 0;
       var offsetX;
       while (startX < projectionExtent[0]) {
@@ -328,28 +328,28 @@ _ol_renderer_canvas_VectorLayer_.prototype.prepareFrame = function(frameState, l
     vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
   }
 
-  var extent = _ol_extent_.buffer(frameStateExtent,
+  var extent = buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
   var projectionExtent = viewState.projection.getExtent();
 
   if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
-      !_ol_extent_.containsExtent(projectionExtent, frameState.extent)) {
+      !containsExtent(projectionExtent, frameState.extent)) {
     // For the replay group, we need an extent that intersects the real world
     // (-180° to +180°). To support geometries in a coordinate range from -540°
     // to +540°, we add at least 1 world width on each side of the projection
     // extent. If the viewport is wider than the world, we need to add half of
     // the viewport width to make sure we cover the whole viewport.
-    var worldWidth = _ol_extent_.getWidth(projectionExtent);
-    var buffer = Math.max(_ol_extent_.getWidth(extent) / 2, worldWidth);
-    extent[0] = projectionExtent[0] - buffer;
-    extent[2] = projectionExtent[2] + buffer;
+    var worldWidth = getWidth(projectionExtent);
+    var gutter = Math.max(getWidth(extent) / 2, worldWidth);
+    extent[0] = projectionExtent[0] - gutter;
+    extent[2] = projectionExtent[2] + gutter;
   }
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      _ol_extent_.containsExtent(this.renderedExtent_, extent)) {
+      containsExtent(this.renderedExtent_, extent)) {
     this.replayGroupChanged = false;
     return true;
   }

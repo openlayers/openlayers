@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
-import _ol_extent_ from '../../extent.js';
+import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/ReplayGroup.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_renderer_vector_ from '../vector.js';
@@ -44,7 +44,7 @@ var _ol_renderer_webgl_VectorLayer_ = function(mapRenderer, vectorLayer) {
    * @private
    * @type {ol.Extent}
    */
-  this.renderedExtent_ = _ol_extent_.createEmpty();
+  this.renderedExtent_ = createEmpty();
 
   /**
    * @private
@@ -241,14 +241,14 @@ _ol_renderer_webgl_VectorLayer_.prototype.prepareFrame = function(frameState, la
     vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
   }
 
-  var extent = _ol_extent_.buffer(frameStateExtent,
+  var extent = buffer(frameStateExtent,
       vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
       this.renderedRevision_ == vectorLayerRevision &&
       this.renderedRenderOrder_ == vectorLayerRenderOrder &&
-      _ol_extent_.containsExtent(this.renderedExtent_, extent)) {
+      containsExtent(this.renderedExtent_, extent)) {
     return true;
   }
 

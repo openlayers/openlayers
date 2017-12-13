@@ -7,7 +7,7 @@ import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {getArea, getCenter, getIntersection} from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
@@ -103,9 +103,9 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   var maxSourceExtent = this.sourceTileGrid_.getExtent();
 
   var limitedTargetExtent = maxTargetExtent ?
-    _ol_extent_.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+    getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
-  if (_ol_extent_.getArea(limitedTargetExtent) === 0) {
+  if (getArea(limitedTargetExtent) === 0) {
     // Tile is completely outside range -> EMPTY
     // TODO: is it actually correct that the source even creates the tile ?
     this.state = _ol_TileState_.EMPTY;
@@ -117,15 +117,14 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
     if (!maxSourceExtent) {
       maxSourceExtent = sourceProjExtent;
     } else {
-      maxSourceExtent = _ol_extent_.getIntersection(
-          maxSourceExtent, sourceProjExtent);
+      maxSourceExtent = getIntersection(maxSourceExtent, sourceProjExtent);
     }
   }
 
   var targetResolution = targetTileGrid.getResolution(
       this.wrappedTileCoord_[0]);
 
-  var targetCenter = _ol_extent_.getCenter(limitedTargetExtent);
+  var targetCenter = getCenter(limitedTargetExtent);
   var sourceResolution = _ol_reproj_.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
@@ -163,11 +162,11 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
       sourceExtent[3] = _ol_math_.clamp(
           sourceExtent[3], maxSourceExtent[1], maxSourceExtent[3]);
     } else {
-      sourceExtent = _ol_extent_.getIntersection(sourceExtent, maxSourceExtent);
+      sourceExtent = getIntersection(sourceExtent, maxSourceExtent);
     }
   }
 
-  if (!_ol_extent_.getArea(sourceExtent)) {
+  if (!getArea(sourceExtent)) {
     this.state = _ol_TileState_.EMPTY;
   } else {
     var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(

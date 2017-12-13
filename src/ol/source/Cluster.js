@@ -7,7 +7,7 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_source_Vector_ from '../source/Vector.js';
 
@@ -140,7 +140,7 @@ _ol_source_Cluster_.prototype.cluster = function() {
     return;
   }
   this.features.length = 0;
-  var extent = _ol_extent_.createEmpty();
+  var extent = createEmpty();
   var mapDistance = this.distance * this.resolution;
   var features = this.source.getFeatures();
 
@@ -155,8 +155,8 @@ _ol_source_Cluster_.prototype.cluster = function() {
       var geometry = this.geometryFunction(feature);
       if (geometry) {
         var coordinates = geometry.getCoordinates();
-        _ol_extent_.createOrUpdateFromCoordinate(coordinates, extent);
-        _ol_extent_.buffer(extent, mapDistance, extent);
+        createOrUpdateFromCoordinate(coordinates, extent);
+        buffer(extent, mapDistance, extent);
 
         var neighbors = this.source.getFeaturesInExtent(extent);
         neighbors = neighbors.filter(function(neighbor) {

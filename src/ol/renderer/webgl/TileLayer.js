@@ -9,7 +9,7 @@ import _ol_LayerType_ from '../../LayerType.js';
 import _ol_TileRange_ from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_array_ from '../../array.js';
-import _ol_extent_ from '../../extent.js';
+import {createEmpty, intersects} from '../../extent.js';
 import _ol_math_ from '../../math.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
@@ -246,7 +246,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
 
     var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     var allTilesLoaded = true;
-    var tmpExtent = _ol_extent_.createEmpty();
+    var tmpExtent = createEmpty();
     var tmpTileRange = new _ol_TileRange_(0, 0, 0, 0);
     var childTileRange, drawable, fullyLoaded, tile, tileState;
     var x, y, tileExtent;
@@ -257,7 +257,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
         if (layerState.extent !== undefined) {
           // ignore tiles outside layer extent
           tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
-          if (!_ol_extent_.intersects(tileExtent, layerState.extent)) {
+          if (!intersects(tileExtent, layerState.extent)) {
             continue;
           }
         }

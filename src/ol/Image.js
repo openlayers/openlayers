@@ -6,7 +6,7 @@ import _ol_ImageBase_ from './ImageBase.js';
 import _ol_ImageState_ from './ImageState.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventType_ from './events/EventType.js';
-import _ol_extent_ from './extent.js';
+import {getHeight} from './extent.js';
 
 /**
  * @constructor
@@ -88,7 +88,7 @@ _ol_Image_.prototype.handleImageError_ = function() {
  */
 _ol_Image_.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
-    this.resolution = _ol_extent_.getHeight(this.extent) / this.image_.height;
+    this.resolution = getHeight(this.extent) / this.image_.height;
   }
   this.state = _ol_ImageState_.LOADED;
   this.unlistenImage_();

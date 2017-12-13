@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/intersectsextent
  */
-import _ol_extent_ from '../../extent.js';
+import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
 import _ol_geom_flat_contains_ from '../flat/contains.js';
 import _ol_geom_flat_segments_ from '../flat/segments.js';
 var _ol_geom_flat_intersectsextent_ = {};
@@ -16,12 +16,12 @@ var _ol_geom_flat_intersectsextent_ = {};
  * @return {boolean} True if the geometry and the extent intersect.
  */
 _ol_geom_flat_intersectsextent_.lineString = function(flatCoordinates, offset, end, stride, extent) {
-  var coordinatesExtent = _ol_extent_.extendFlatCoordinates(
-      _ol_extent_.createEmpty(), flatCoordinates, offset, end, stride);
-  if (!_ol_extent_.intersects(extent, coordinatesExtent)) {
+  var coordinatesExtent = extendFlatCoordinates(
+      createEmpty(), flatCoordinates, offset, end, stride);
+  if (!intersects(extent, coordinatesExtent)) {
     return false;
   }
-  if (_ol_extent_.containsExtent(extent, coordinatesExtent)) {
+  if (containsExtent(extent, coordinatesExtent)) {
     return true;
   }
   if (coordinatesExtent[0] >= extent[0] &&
@@ -40,7 +40,7 @@ _ol_geom_flat_intersectsextent_.lineString = function(flatCoordinates, offset, e
        *     `false` otherwise.
        */
       function(point1, point2) {
-        return _ol_extent_.intersectsSegment(extent, point1, point2);
+        return intersectsSegment(extent, point1, point2);
       });
 };
 

@@ -7,7 +7,7 @@ import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_Event_ from '../events/Event.js';
-import _ol_extent_ from '../extent.js';
+import {boundingExtent, getArea} from '../extent.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
@@ -230,7 +230,7 @@ _ol_interaction_Extent_.handleUpEvent_ = function(mapBrowserEvent) {
   this.pointerHandler_ = null;
   //If bbox is zero area, set to null;
   var extent = this.getExtent();
-  if (!extent || _ol_extent_.getArea(extent) === 0) {
+  if (!extent || getArea(extent) === 0) {
     this.setExtent(null);
   }
   return false; //Stop handling downup sequence
@@ -269,7 +269,7 @@ _ol_interaction_Extent_.getDefaultPointerStyleFunction_ = function() {
  */
 _ol_interaction_Extent_.getPointHandler_ = function(fixedPoint) {
   return function(point) {
-    return _ol_extent_.boundingExtent([fixedPoint, point]);
+    return boundingExtent([fixedPoint, point]);
   };
 };
 
@@ -282,11 +282,11 @@ _ol_interaction_Extent_.getPointHandler_ = function(fixedPoint) {
 _ol_interaction_Extent_.getEdgeHandler_ = function(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
     return function(point) {
-      return _ol_extent_.boundingExtent([fixedP1, [point[0], fixedP2[1]]]);
+      return boundingExtent([fixedP1, [point[0], fixedP2[1]]]);
     };
   } else if (fixedP1[1] == fixedP2[1]) {
     return function(point) {
-      return _ol_extent_.boundingExtent([fixedP1, [fixedP2[0], point[1]]]);
+      return boundingExtent([fixedP1, [fixedP2[0], point[1]]]);
     };
   } else {
     return null;

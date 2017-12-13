@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {closestSquaredDistanceXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_LineString_ from '../geom/LineString.js';
@@ -89,8 +89,7 @@ _ol_geom_MultiLineString_.prototype.clone = function() {
  * @inheritDoc
  */
 _ol_geom_MultiLineString_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  if (minSquaredDistance <
-      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+  if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {

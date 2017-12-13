@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_array_ from '../array.js';
 import _ol_events_Event_ from '../events/Event.js';
-import _ol_extent_ from '../extent.js';
+import {equals} from '../extent.js';
 import _ol_proj_ from '../proj.js';
 import _ol_reproj_Image_ from '../reproj/Image.js';
 import _ol_source_Source_ from '../source/Source.js';
@@ -103,7 +103,7 @@ _ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, 
           _ol_proj_.equivalent(
               this.reprojectedImage_.getProjection(), projection) &&
           this.reprojectedImage_.getResolution() == resolution &&
-          _ol_extent_.equals(this.reprojectedImage_.getExtent(), extent)) {
+          equals(this.reprojectedImage_.getExtent(), extent)) {
         return this.reprojectedImage_;
       }
       this.reprojectedImage_.dispose();

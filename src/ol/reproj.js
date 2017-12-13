@@ -2,7 +2,7 @@
  * @module ol/reproj
  */
 import _ol_dom_ from './dom.js';
-import _ol_extent_ from './extent.js';
+import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
 import _ol_math_ from './math.js';
 import _ol_proj_ from './proj.js';
 var _ol_reproj_ = {};
@@ -43,7 +43,7 @@ _ol_reproj_.calculateSourceResolution = function(sourceProj, targetProj,
   // in order to achieve optimal results.
 
   var sourceExtent = sourceProj.getExtent();
-  if (!sourceExtent || _ol_extent_.containsCoordinate(sourceExtent, sourceCenter)) {
+  if (!sourceExtent || containsCoordinate(sourceExtent, sourceCenter)) {
     var compensationFactor =
         _ol_proj_.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
         sourceResolution;
@@ -105,13 +105,13 @@ _ol_reproj_.render = function(width, height, pixelRatio,
 
   context.scale(pixelRatio, pixelRatio);
 
-  var sourceDataExtent = _ol_extent_.createEmpty();
+  var sourceDataExtent = createEmpty();
   sources.forEach(function(src, i, arr) {
-    _ol_extent_.extend(sourceDataExtent, src.extent);
+    extend(sourceDataExtent, src.extent);
   });
 
-  var canvasWidthInUnits = _ol_extent_.getWidth(sourceDataExtent);
-  var canvasHeightInUnits = _ol_extent_.getHeight(sourceDataExtent);
+  var canvasWidthInUnits = getWidth(sourceDataExtent);
+  var canvasHeightInUnits = getHeight(sourceDataExtent);
   var stitchContext = _ol_dom_.createCanvasContext2D(
       Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
       Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
@@ -121,8 +121,8 @@ _ol_reproj_.render = function(width, height, pixelRatio,
   sources.forEach(function(src, i, arr) {
     var xPos = src.extent[0] - sourceDataExtent[0];
     var yPos = -(src.extent[3] - sourceDataExtent[3]);
-    var srcWidth = _ol_extent_.getWidth(src.extent);
-    var srcHeight = _ol_extent_.getHeight(src.extent);
+    var srcWidth = getWidth(src.extent);
+    var srcHeight = getHeight(src.extent);
 
     stitchContext.drawImage(
         src.image,
@@ -132,7 +132,7 @@ _ol_reproj_.render = function(width, height, pixelRatio,
         srcWidth * stitchScale, srcHeight * stitchScale);
   });
 
-  var targetTopLeft = _ol_extent_.getTopLeft(targetExtent);
+  var targetTopLeft = getTopLeft(targetExtent);
 
   triangulation.getTriangles().forEach(function(triangle, i, arr) {
     /* Calculate affine transform (src -> dst)

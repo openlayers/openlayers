@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/Layer
  */
 import {inherits} from '../../index.js';
-import _ol_extent_ from '../../extent.js';
+import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import _ol_functions_ from '../../functions.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
@@ -49,10 +49,10 @@ _ol_renderer_canvas_Layer_.prototype.clip = function(context, frameState, extent
   var width = frameState.size[0] * pixelRatio;
   var height = frameState.size[1] * pixelRatio;
   var rotation = frameState.viewState.rotation;
-  var topLeft = _ol_extent_.getTopLeft(/** @type {ol.Extent} */ (extent));
-  var topRight = _ol_extent_.getTopRight(/** @type {ol.Extent} */ (extent));
-  var bottomRight = _ol_extent_.getBottomRight(/** @type {ol.Extent} */ (extent));
-  var bottomLeft = _ol_extent_.getBottomLeft(/** @type {ol.Extent} */ (extent));
+  var topLeft = getTopLeft(/** @type {ol.Extent} */ (extent));
+  var topRight = getTopRight(/** @type {ol.Extent} */ (extent));
+  var bottomRight = getBottomRight(/** @type {ol.Extent} */ (extent));
+  var bottomLeft = getBottomLeft(/** @type {ol.Extent} */ (extent));
 
   _ol_transform_.apply(frameState.coordinateToPixelTransform, topLeft);
   _ol_transform_.apply(frameState.coordinateToPixelTransform, topRight);

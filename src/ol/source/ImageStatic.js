@@ -7,7 +7,7 @@ import _ol_ImageState_ from '../ImageState.js';
 import _ol_dom_ from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {intersects, getHeight, getWidth} from '../extent.js';
 import _ol_proj_ from '../proj.js';
 import _ol_source_Image_ from '../source/Image.js';
 
@@ -60,7 +60,7 @@ inherits(_ol_source_ImageStatic_, _ol_source_Image_);
  * @inheritDoc
  */
 _ol_source_ImageStatic_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-  if (_ol_extent_.intersects(extent, this.image_.getExtent())) {
+  if (intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
   return null;
@@ -82,8 +82,8 @@ _ol_source_ImageStatic_.prototype.handleImageChange = function(evt) {
       imageWidth = image.width;
       imageHeight = image.height;
     }
-    var resolution = _ol_extent_.getHeight(imageExtent) / imageHeight;
-    var targetWidth = Math.ceil(_ol_extent_.getWidth(imageExtent) / resolution);
+    var resolution = getHeight(imageExtent) / imageHeight;
+    var targetWidth = Math.ceil(getWidth(imageExtent) / resolution);
     if (targetWidth != imageWidth) {
       var context = _ol_dom_.createCanvasContext2D(targetWidth, imageHeight);
       var canvas = context.canvas;

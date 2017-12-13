@@ -9,7 +9,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_extent_ from '../extent.js';
+import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import _ol_functions_ from '../functions.js';
 import _ol_geom_Circle_ from '../geom/Circle.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
@@ -823,14 +823,14 @@ _ol_interaction_Draw_.createBox = function() {
      * @return {ol.geom.SimpleGeometry}
      */
     function(coordinates, opt_geometry) {
-      var extent = _ol_extent_.boundingExtent(coordinates);
+      var extent = boundingExtent(coordinates);
       var geometry = opt_geometry || new _ol_geom_Polygon_(null);
       geometry.setCoordinates([[
-        _ol_extent_.getBottomLeft(extent),
-        _ol_extent_.getBottomRight(extent),
-        _ol_extent_.getTopRight(extent),
-        _ol_extent_.getTopLeft(extent),
-        _ol_extent_.getBottomLeft(extent)
+        getBottomLeft(extent),
+        getBottomRight(extent),
+        getTopRight(extent),
+        getTopLeft(extent),
+        getBottomLeft(extent)
       ]]);
       return geometry;
     }

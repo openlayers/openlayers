@@ -8,7 +8,7 @@ import _ol_Image_ from '../Image.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_proj_ from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
@@ -146,8 +146,7 @@ _ol_source_ImageWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resol
     coordinate = _ol_proj_.transform(coordinate, projectionObj, sourceProjectionObj);
   }
 
-  var extent = _ol_extent_.getForViewAndSize(
-      coordinate, resolution, 0,
+  var extent = getForViewAndSize(coordinate, resolution, 0,
       _ol_source_ImageWMS_.GETFEATUREINFO_IMAGE_SIZE_);
 
   var baseParams = {
@@ -199,14 +198,14 @@ _ol_source_ImageWMS_.prototype.getImageInternal = function(extent, resolution, p
 
   var imageResolution = resolution / pixelRatio;
 
-  var center = _ol_extent_.getCenter(extent);
-  var viewWidth = Math.ceil(_ol_extent_.getWidth(extent) / imageResolution);
-  var viewHeight = Math.ceil(_ol_extent_.getHeight(extent) / imageResolution);
-  var viewExtent = _ol_extent_.getForViewAndSize(center, imageResolution, 0,
+  var center = getCenter(extent);
+  var viewWidth = Math.ceil(getWidth(extent) / imageResolution);
+  var viewHeight = Math.ceil(getHeight(extent) / imageResolution);
+  var viewExtent = getForViewAndSize(center, imageResolution, 0,
       [viewWidth, viewHeight]);
-  var requestWidth = Math.ceil(this.ratio_ * _ol_extent_.getWidth(extent) / imageResolution);
-  var requestHeight = Math.ceil(this.ratio_ * _ol_extent_.getHeight(extent) / imageResolution);
-  var requestExtent = _ol_extent_.getForViewAndSize(center, imageResolution, 0,
+  var requestWidth = Math.ceil(this.ratio_ * getWidth(extent) / imageResolution);
+  var requestHeight = Math.ceil(this.ratio_ * getHeight(extent) / imageResolution);
+  var requestExtent = getForViewAndSize(center, imageResolution, 0,
       [requestWidth, requestHeight]);
 
   var image = this.image_;
@@ -214,7 +213,7 @@ _ol_source_ImageWMS_.prototype.getImageInternal = function(extent, resolution, p
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
-      _ol_extent_.containsExtent(image.getExtent(), viewExtent)) {
+      containsExtent(image.getExtent(), viewExtent)) {
     return image;
   }
 
@@ -227,8 +226,8 @@ _ol_source_ImageWMS_.prototype.getImageInternal = function(extent, resolution, p
   };
   _ol_obj_.assign(params, this.params_);
 
-  this.imageSize_[0] = Math.round(_ol_extent_.getWidth(requestExtent) / imageResolution);
-  this.imageSize_[1] = Math.round(_ol_extent_.getHeight(requestExtent) / imageResolution);
+  this.imageSize_[0] = Math.round(getWidth(requestExtent) / imageResolution);
+  this.imageSize_[1] = Math.round(getHeight(requestExtent) / imageResolution);
 
   var url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio,
       projection, params);

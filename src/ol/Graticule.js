@@ -2,7 +2,7 @@
  * @module ol/Graticule
  */
 import _ol_coordinate_ from './coordinate.js';
-import _ol_extent_ from './extent.js';
+import {intersects, getCenter} from './extent.js';
 import _ol_geom_GeometryLayout_ from './geom/GeometryLayout.js';
 import _ol_geom_LineString_ from './geom/LineString.js';
 import _ol_geom_Point_ from './geom/Point.js';
@@ -254,7 +254,7 @@ _ol_Graticule_.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
 _ol_Graticule_.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredTolerance, extent, index) {
   var lineString = this.getMeridian_(lon, minLat, maxLat,
       squaredTolerance, index);
-  if (_ol_extent_.intersects(lineString.getExtent(), extent)) {
+  if (intersects(lineString.getExtent(), extent)) {
     if (this.meridiansLabels_) {
       var textPoint = this.getMeridianPoint_(lineString, extent, index);
       this.meridiansLabels_[index] = {
@@ -302,7 +302,7 @@ _ol_Graticule_.prototype.getMeridianPoint_ = function(lineString, extent, index)
 _ol_Graticule_.prototype.addParallel_ = function(lat, minLon, maxLon, squaredTolerance, extent, index) {
   var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
       index);
-  if (_ol_extent_.intersects(lineString.getExtent(), extent)) {
+  if (intersects(lineString.getExtent(), extent)) {
     if (this.parallelsLabels_) {
       var textPoint = this.getParallelPoint_(lineString, extent, index);
       this.parallelsLabels_[index] = {
@@ -632,8 +632,7 @@ _ol_Graticule_.prototype.updateProjectionInfo_ = function(projection) {
   this.toLonLatTransform_ = _ol_proj_.getTransform(
       projection, epsg4326Projection);
 
-  this.projectionCenterLonLat_ = this.toLonLatTransform_(
-      _ol_extent_.getCenter(extent));
+  this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(extent));
 
   this.projection_ = projection;
 };

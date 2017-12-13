@@ -7,7 +7,7 @@ import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {boundingExtent, createEmpty} from '../extent.js';
 import _ol_functions_ from '../functions.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
@@ -166,8 +166,7 @@ _ol_interaction_Snap_.prototype.addFeature = function(feature, opt_listen) {
   if (geometry) {
     var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
     if (segmentWriter) {
-      this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
-          _ol_extent_.createEmpty());
+      this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(createEmpty());
       segmentWriter.call(this, feature, geometry);
     }
   }
@@ -346,7 +345,7 @@ _ol_interaction_Snap_.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
   var upperRight = map.getCoordinateFromPixel(
       [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
-  var box = _ol_extent_.boundingExtent([lowerLeft, upperRight]);
+  var box = boundingExtent([lowerLeft, upperRight]);
 
   var segments = this.rBush_.getInExtent(box);
 
@@ -445,7 +444,7 @@ _ol_interaction_Snap_.prototype.writeCircleGeometry_ = function(feature, geometr
       feature: feature,
       segment: segment
     });
-    this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+    this.rBush_.insert(boundingExtent(segment), segmentData);
   }
 };
 
@@ -480,7 +479,7 @@ _ol_interaction_Snap_.prototype.writeLineStringGeometry_ = function(feature, geo
       feature: feature,
       segment: segment
     });
-    this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+    this.rBush_.insert(boundingExtent(segment), segmentData);
   }
 };
 
@@ -501,7 +500,7 @@ _ol_interaction_Snap_.prototype.writeMultiLineStringGeometry_ = function(feature
         feature: feature,
         segment: segment
       });
-      this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+      this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
 };
@@ -544,7 +543,7 @@ _ol_interaction_Snap_.prototype.writeMultiPolygonGeometry_ = function(feature, g
           feature: feature,
           segment: segment
         });
-        this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+        this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
   }
@@ -582,7 +581,7 @@ _ol_interaction_Snap_.prototype.writePolygonGeometry_ = function(feature, geomet
         feature: feature,
         segment: segment
       });
-      this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+      this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
 };

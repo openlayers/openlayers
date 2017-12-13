@@ -1,7 +1,8 @@
 /**
  * @module ol/reproj/Triangulation
  */
-import _ol_extent_ from '../extent.js';
+import {boundingExtent, createEmpty, extendCoordinate, getBottomLeft, getBottomRight,
+  getTopLeft, getTopRight, getWidth, intersects} from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_proj_ from '../proj.js';
 
@@ -104,27 +105,26 @@ var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
   this.canWrapXInSource_ = this.sourceProj_.canWrapX() &&
       !!maxSourceExtent &&
       !!this.sourceProj_.getExtent() &&
-      (_ol_extent_.getWidth(maxSourceExtent) ==
-       _ol_extent_.getWidth(this.sourceProj_.getExtent()));
+      (getWidth(maxSourceExtent) == getWidth(this.sourceProj_.getExtent()));
 
   /**
    * @type {?number}
    * @private
    */
   this.sourceWorldWidth_ = this.sourceProj_.getExtent() ?
-    _ol_extent_.getWidth(this.sourceProj_.getExtent()) : null;
+    getWidth(this.sourceProj_.getExtent()) : null;
 
   /**
    * @type {?number}
    * @private
    */
   this.targetWorldWidth_ = this.targetProj_.getExtent() ?
-    _ol_extent_.getWidth(this.targetProj_.getExtent()) : null;
+    getWidth(this.targetProj_.getExtent()) : null;
 
-  var destinationTopLeft = _ol_extent_.getTopLeft(targetExtent);
-  var destinationTopRight = _ol_extent_.getTopRight(targetExtent);
-  var destinationBottomRight = _ol_extent_.getBottomRight(targetExtent);
-  var destinationBottomLeft = _ol_extent_.getBottomLeft(targetExtent);
+  var destinationTopLeft = getTopLeft(targetExtent);
+  var destinationTopRight = getTopRight(targetExtent);
+  var destinationBottomRight = getBottomRight(targetExtent);
+  var destinationBottomLeft = getBottomLeft(targetExtent);
   var sourceTopLeft = this.transformInv_(destinationTopLeft);
   var sourceTopRight = this.transformInv_(destinationTopRight);
   var sourceBottomRight = this.transformInv_(destinationBottomRight);
@@ -217,9 +217,9 @@ _ol_reproj_Triangulation_.prototype.addTriangle_ = function(a, b, c,
 _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
     aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
 
-  var sourceQuadExtent = _ol_extent_.boundingExtent([aSrc, bSrc, cSrc, dSrc]);
+  var sourceQuadExtent = boundingExtent([aSrc, bSrc, cSrc, dSrc]);
   var sourceCoverageX = this.sourceWorldWidth_ ?
-    _ol_extent_.getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
+    getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
   var sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
 
   // when the quad is wrapped in the source projection
@@ -231,9 +231,8 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
 
   if (maxSubdivision > 0) {
     if (this.targetProj_.isGlobal() && this.targetWorldWidth_) {
-      var targetQuadExtent = _ol_extent_.boundingExtent([a, b, c, d]);
-      var targetCoverageX =
-          _ol_extent_.getWidth(targetQuadExtent) / this.targetWorldWidth_;
+      var targetQuadExtent = boundingExtent([a, b, c, d]);
+      var targetCoverageX = getWidth(targetQuadExtent) / this.targetWorldWidth_;
       needsSubdivision |=
           targetCoverageX > MAX_TRIANGLE_WIDTH;
     }
@@ -244,7 +243,7 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
   }
 
   if (!needsSubdivision && this.maxSourceExtent_) {
-    if (!_ol_extent_.intersects(sourceQuadExtent, this.maxSourceExtent_)) {
+    if (!intersects(sourceQuadExtent, this.maxSourceExtent_)) {
       // whole quad outside source projection extent -> ignore
       return;
     }
@@ -328,13 +327,13 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
  * @return {ol.Extent} Calculated extent.
  */
 _ol_reproj_Triangulation_.prototype.calculateSourceExtent = function() {
-  var extent = _ol_extent_.createEmpty();
+  var extent = createEmpty();
 
   this.triangles_.forEach(function(triangle, i, arr) {
     var src = triangle.source;
-    _ol_extent_.extendCoordinate(extent, src[0]);
-    _ol_extent_.extendCoordinate(extent, src[1]);
-    _ol_extent_.extendCoordinate(extent, src[2]);
+    extendCoordinate(extent, src[0]);
+    extendCoordinate(extent, src[1]);
+    extendCoordinate(extent, src[2]);
   });
 
   return extent;

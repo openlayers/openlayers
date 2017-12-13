@@ -2,7 +2,7 @@
  * @module ol/geom/Circle
  */
 import {inherits} from '../index.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
@@ -98,7 +98,7 @@ _ol_geom_Circle_.prototype.getCenter = function() {
 _ol_geom_Circle_.prototype.computeExtent = function(extent) {
   var flatCoordinates = this.flatCoordinates;
   var radius = flatCoordinates[this.stride] - flatCoordinates[0];
-  return _ol_extent_.createOrUpdate(
+  return createOrUpdate(
       flatCoordinates[0] - radius, flatCoordinates[1] - radius,
       flatCoordinates[0] + radius, flatCoordinates[1] + radius,
       extent);
@@ -141,7 +141,7 @@ _ol_geom_Circle_.prototype.getType = function() {
  */
 _ol_geom_Circle_.prototype.intersectsExtent = function(extent) {
   var circleExtent = this.getExtent();
-  if (_ol_extent_.intersects(extent, circleExtent)) {
+  if (intersects(extent, circleExtent)) {
     var center = this.getCenter();
 
     if (extent[0] <= center[0] && extent[2] >= center[0]) {
@@ -151,7 +151,7 @@ _ol_geom_Circle_.prototype.intersectsExtent = function(extent) {
       return true;
     }
 
-    return _ol_extent_.forEachCorner(extent, this.intersectsCoordinate, this);
+    return forEachCorner(extent, this.intersectsCoordinate, this);
   }
   return false;
 

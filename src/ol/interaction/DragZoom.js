@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_easing_ from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
 import _ol_interaction_DragBox_ from '../interaction/DragBox.js';
 
 /**
@@ -63,19 +63,19 @@ _ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
 
   if (this.out_) {
     var mapExtent = view.calculateExtent(size);
-    var boxPixelExtent = _ol_extent_.createOrUpdateFromCoordinates([
-      map.getPixelFromCoordinate(_ol_extent_.getBottomLeft(extent)),
-      map.getPixelFromCoordinate(_ol_extent_.getTopRight(extent))]);
+    var boxPixelExtent = createOrUpdateFromCoordinates([
+      map.getPixelFromCoordinate(getBottomLeft(extent)),
+      map.getPixelFromCoordinate(getTopRight(extent))]);
     var factor = view.getResolutionForExtent(boxPixelExtent, size);
 
-    _ol_extent_.scaleFromCenter(mapExtent, 1 / factor);
+    scaleFromCenter(mapExtent, 1 / factor);
     extent = mapExtent;
   }
 
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));
 
-  var center = _ol_extent_.getCenter(extent);
+  var center = getCenter(extent);
   center = view.constrainCenter(center);
 
   view.animate({

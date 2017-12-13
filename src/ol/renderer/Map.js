@@ -5,7 +5,7 @@ import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {getWidth} from '../extent.js';
 import _ol_functions_ from '../functions.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_plugins_ from '../plugins.js';
@@ -128,7 +128,7 @@ _ol_renderer_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, fr
   var translatedCoordinate = coordinate;
   if (projection.canWrapX()) {
     var projectionExtent = projection.getExtent();
-    var worldWidth = _ol_extent_.getWidth(projectionExtent);
+    var worldWidth = getWidth(projectionExtent);
     var x = coordinate[0];
     if (x < projectionExtent[0] || x > projectionExtent[2]) {
       var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);

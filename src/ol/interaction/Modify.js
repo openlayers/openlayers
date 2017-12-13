@@ -13,7 +13,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_extent_ from '../extent.js';
+import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
@@ -442,7 +442,7 @@ _ol_interaction_Modify_.prototype.writeLineStringGeometry_ = function(feature, g
       index: i,
       segment: segment
     });
-    this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+    this.rBush_.insert(boundingExtent(segment), segmentData);
   }
 };
 
@@ -466,7 +466,7 @@ _ol_interaction_Modify_.prototype.writeMultiLineStringGeometry_ = function(featu
         index: i,
         segment: segment
       });
-      this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+      this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
 };
@@ -491,7 +491,7 @@ _ol_interaction_Modify_.prototype.writePolygonGeometry_ = function(feature, geom
         index: i,
         segment: segment
       });
-      this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+      this.rBush_.insert(boundingExtent(segment), segmentData);
     }
   }
 };
@@ -518,7 +518,7 @@ _ol_interaction_Modify_.prototype.writeMultiPolygonGeometry_ = function(feature,
           index: i,
           segment: segment
         });
-        this.rBush_.insert(_ol_extent_.boundingExtent(segment), segmentData);
+        this.rBush_.insert(boundingExtent(segment), segmentData);
       }
     }
   }
@@ -552,7 +552,7 @@ _ol_interaction_Modify_.prototype.writeCircleGeometry_ = function(feature, geome
   });
   var featureSegments = [centerSegmentData, circumferenceSegmentData];
   centerSegmentData.featureSegments = circumferenceSegmentData.featureSegments = featureSegments;
-  this.rBush_.insert(_ol_extent_.createOrUpdateFromCoordinate(coordinates), centerSegmentData);
+  this.rBush_.insert(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
   this.rBush_.insert(geometry.getExtent(), circumferenceSegmentData);
 };
 
@@ -620,7 +620,7 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
     var insertVertices = [];
     var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     var vertex = geometry.getCoordinates();
-    var vertexExtent = _ol_extent_.boundingExtent([vertex]);
+    var vertexExtent = boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
     var componentSegments = {};
     segmentDataMatches.sort(_ol_interaction_Modify_.compareIndexes_);
@@ -774,10 +774,10 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
       var circumferenceSegmentData = segmentData.featureSegments[1];
       centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
       circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
-      this.rBush_.update(_ol_extent_.createOrUpdateFromCoordinate(coordinates), centerSegmentData);
+      this.rBush_.update(createOrUpdateFromCoordinate(coordinates), centerSegmentData);
       this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
     } else {
-      this.rBush_.update(_ol_extent_.boundingExtent(segmentData.segment),
+      this.rBush_.update(boundingExtent(segmentData.segment),
           segmentData);
     }
   }
@@ -850,8 +850,7 @@ _ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
         _ol_interaction_Modify_.pointDistanceToSegmentDataSquared_(pixelCoordinate, b);
   };
 
-  var box = _ol_extent_.buffer(
-      _ol_extent_.createOrUpdateFromCoordinate(pixelCoordinate),
+  var box = buffer(createOrUpdateFromCoordinate(pixelCoordinate),
       map.getView().getResolution() * this.pixelTolerance_);
 
   var rBush = this.rBush_;
@@ -1004,7 +1003,7 @@ _ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) 
     depth: depth,
     index: index
   });
-  rTree.insert(_ol_extent_.boundingExtent(newSegmentData.segment),
+  rTree.insert(boundingExtent(newSegmentData.segment),
       newSegmentData);
   this.dragSegments_.push([newSegmentData, 1]);
 
@@ -1015,7 +1014,7 @@ _ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) 
     depth: depth,
     index: index + 1
   });
-  rTree.insert(_ol_extent_.boundingExtent(newSegmentData2.segment),
+  rTree.insert(boundingExtent(newSegmentData2.segment),
       newSegmentData2);
   this.dragSegments_.push([newSegmentData2, 0]);
   this.ignoreNextSingleClick_ = true;
@@ -1142,7 +1141,7 @@ _ol_interaction_Modify_.prototype.removeVertex_ = function() {
           index: newIndex,
           segment: segments
         });
-        this.rBush_.insert(_ol_extent_.boundingExtent(newSegmentData.segment),
+        this.rBush_.insert(boundingExtent(newSegmentData.segment),
             newSegmentData);
       }
       this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);

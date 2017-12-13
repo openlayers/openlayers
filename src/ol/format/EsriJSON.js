@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent} from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
@@ -123,7 +123,7 @@ _ol_format_EsriJSON_.convertRings_ = function(rings, layout) {
     // loop over all outer rings and see if they contain our hole.
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
-      var containsHole = _ol_extent_.containsExtent(
+      var containsHole = containsExtent(
           new _ol_geom_LinearRing_(outerRing).getExtent(),
           new _ol_geom_LinearRing_(hole).getExtent()
       );

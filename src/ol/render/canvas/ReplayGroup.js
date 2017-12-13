@@ -4,7 +4,7 @@
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_dom_ from '../../dom.js';
-import _ol_extent_ from '../../extent.js';
+import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_ReplayGroup_ from '../ReplayGroup.js';
@@ -216,7 +216,7 @@ _ol_render_canvas_ReplayGroup_.prototype.addDeclutter = function(group) {
       declutter = this.declutterGroup_;
       /** @type {number} */ (declutter[4])++;
     } else {
-      declutter = this.declutterGroup_ = _ol_extent_.createEmpty();
+      declutter = this.declutterGroup_ = createEmpty();
       declutter.push(1);
     }
   }
@@ -309,9 +309,9 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
    */
   var hitExtent;
   if (this.renderBuffer_ !== undefined) {
-    hitExtent = _ol_extent_.createEmpty();
-    _ol_extent_.extendCoordinate(hitExtent, coordinate);
-    _ol_extent_.buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
+    hitExtent = createEmpty();
+    extendCoordinate(hitExtent, coordinate);
+    buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
   }
 
   var mask = _ol_render_canvas_ReplayGroup_.getCircleArray_(hitTolerance);

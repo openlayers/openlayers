@@ -4,7 +4,7 @@
 import {inherits, nullFunction} from '../../index.js';
 import _ol_coordinate_ from '../../coordinate.js';
 import _ol_dom_ from '../../dom.js';
-import _ol_extent_ from '../../extent.js';
+import {containsExtent, intersects} from '../../extent.js';
 import _ol_renderer_canvas_Layer_ from '../canvas/Layer.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -48,8 +48,8 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.composeFrame = function(frameS
     // clipped rendering if layer extent is set
     var extent = layerState.extent;
     var clipped = extent !== undefined &&
-        !_ol_extent_.containsExtent(extent, frameState.extent) &&
-        _ol_extent_.intersects(extent, frameState.extent);
+        !containsExtent(extent, frameState.extent) &&
+        intersects(extent, frameState.extent);
     if (clipped) {
       this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
     }

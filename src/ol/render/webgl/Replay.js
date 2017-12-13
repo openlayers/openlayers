@@ -2,7 +2,7 @@
  * @module ol/render/webgl/Replay
  */
 import {inherits} from '../../index.js';
-import _ol_extent_ from '../../extent.js';
+import {getCenter} from '../../extent.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_vec_Mat4_ from '../../vec/Mat4.js';
@@ -40,7 +40,7 @@ var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
    * @protected
    * @type {ol.Coordinate}
    */
-  this.origin = _ol_extent_.getCenter(maxExtent);
+  this.origin = getCenter(maxExtent);
 
   /**
    * @private

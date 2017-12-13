@@ -5,7 +5,7 @@ import {DEFAULT_TILE_SIZE} from './common.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_TileRange_ from '../TileRange.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdate, getTopLeft} from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_size_ from '../size.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -88,7 +88,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
 
   if (extent !== undefined &&
       !this.origin_ && !this.origins_) {
-    this.origin_ = _ol_extent_.getTopLeft(extent);
+    this.origin_ = getTopLeft(extent);
   }
 
   _ol_asserts_.assert(
@@ -313,7 +313,7 @@ _ol_tilegrid_TileGrid_.prototype.getTileRangeExtent = function(z, tileRange, opt
   var maxX = origin[0] + (tileRange.maxX + 1) * tileSize[0] * resolution;
   var minY = origin[1] + tileRange.minY * tileSize[1] * resolution;
   var maxY = origin[1] + (tileRange.maxY + 1) * tileSize[1] * resolution;
-  return _ol_extent_.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
+  return createOrUpdate(minX, minY, maxX, maxY, opt_extent);
 };
 
 
@@ -366,7 +366,7 @@ _ol_tilegrid_TileGrid_.prototype.getTileCoordExtent = function(tileCoord, opt_ex
   var minY = origin[1] + tileCoord[2] * tileSize[1] * resolution;
   var maxX = minX + tileSize[0] * resolution;
   var maxY = minY + tileSize[1] * resolution;
-  return _ol_extent_.createOrUpdate(minX, minY, maxX, maxY, opt_extent);
+  return createOrUpdate(minX, minY, maxX, maxY, opt_extent);
 };
 
 

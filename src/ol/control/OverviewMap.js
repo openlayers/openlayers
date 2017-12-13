@@ -17,7 +17,7 @@ import _ol_css_ from '../css.js';
 import _ol_dom_ from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
 
 
 /**
@@ -341,9 +341,9 @@ _ol_control_OverviewMap_.prototype.validateExtent_ = function() {
   var ovextent = ovview.calculateExtent(ovmapSize);
 
   var topLeftPixel =
-      ovmap.getPixelFromCoordinate(_ol_extent_.getTopLeft(extent));
+      ovmap.getPixelFromCoordinate(getTopLeft(extent));
   var bottomRightPixel =
-      ovmap.getPixelFromCoordinate(_ol_extent_.getBottomRight(extent));
+      ovmap.getPixelFromCoordinate(getBottomRight(extent));
 
   var boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
   var boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
@@ -356,7 +356,7 @@ _ol_control_OverviewMap_.prototype.validateExtent_ = function() {
       boxWidth > ovmapWidth * MAX_RATIO ||
       boxHeight > ovmapHeight * MAX_RATIO) {
     this.resetExtent_();
-  } else if (!_ol_extent_.containsExtent(ovextent, extent)) {
+  } else if (!containsExtent(ovextent, extent)) {
     this.recenter_();
   }
 };
@@ -388,7 +388,7 @@ _ol_control_OverviewMap_.prototype.resetExtent_ = function() {
   var steps = Math.log(
       MAX_RATIO / MIN_RATIO) / Math.LN2;
   var ratio = 1 / (Math.pow(2, steps / 2) * MIN_RATIO);
-  _ol_extent_.scaleFromCenter(extent, ratio);
+  scaleFromCenter(extent, ratio);
   ovview.fit(extent);
 };
 
@@ -434,8 +434,8 @@ _ol_control_OverviewMap_.prototype.updateBox_ = function() {
   var box = this.boxOverlay_.getElement();
   var extent = view.calculateExtent(mapSize);
   var ovresolution = ovview.getResolution();
-  var bottomLeft = _ol_extent_.getBottomLeft(extent);
-  var topRight = _ol_extent_.getTopRight(extent);
+  var bottomLeft = getBottomLeft(extent);
+  var topRight = getTopRight(extent);
 
   // set position using bottom left coordinates
   var rotateBottomLeft = this.calculateCoordinateRotate_(rotation, bottomLeft);

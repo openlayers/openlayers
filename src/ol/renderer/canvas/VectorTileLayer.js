@@ -8,7 +8,7 @@ import _ol_dom_ from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_events_EventType_ from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
-import _ol_extent_ from '../../extent.js';
+import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
 import _ol_proj_ from '../../proj.js';
 import _ol_proj_Units_ from '../../proj/Units.js';
@@ -180,9 +180,9 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
 
     var sourceTileCoord = sourceTile.tileCoord;
     var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
-    var sharedExtent = _ol_extent_.getIntersection(tileExtent, sourceTileExtent);
-    var bufferedExtent = _ol_extent_.equals(sourceTileExtent, sharedExtent) ? null :
-      _ol_extent_.buffer(sharedExtent, layer.getRenderBuffer() * resolution);
+    var sharedExtent = getIntersection(tileExtent, sourceTileExtent);
+    var bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
+      buffer(sharedExtent, layer.getRenderBuffer() * resolution);
     var tileProjection = sourceTile.getProjection();
     var reproject = false;
     if (!_ol_proj_.equivalent(projection, tileProjection)) {
@@ -234,7 +234,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
         }
         feature.getGeometry().transform(tileProjection, projection);
       }
-      if (!bufferedExtent || _ol_extent_.intersects(bufferedExtent, feature.getGeometry().getExtent())) {
+      if (!bufferedExtent || intersects(bufferedExtent, feature.getGeometry().getExtent())) {
         renderFeature.call(this, feature);
       }
     }
@@ -286,8 +286,8 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.forEachFeatureAtCoordinate = func
     tile = renderedTiles[i];
     tileCoord = tile.wrappedTileCoord;
     tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
-    bufferedExtent = _ol_extent_.buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
-    if (!_ol_extent_.containsCoordinate(bufferedExtent, coordinate)) {
+    bufferedExtent = buffer(tileExtent, hitTolerance * resolution, bufferedExtent);
+    if (!containsCoordinate(bufferedExtent, coordinate)) {
       continue;
     }
     for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
@@ -332,7 +332,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.getReplayTransform_ = function(ti
   var renderResolution = viewState.resolution / pixelRatio;
   var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
   var center = viewState.center;
-  var origin = _ol_extent_.getTopLeft(tileExtent);
+  var origin = getTopLeft(tileExtent);
   var size = frameState.size;
   var offsetX = Math.round(pixelRatio * size[0] / 2);
   var offsetY = Math.round(pixelRatio * size[1] / 2);

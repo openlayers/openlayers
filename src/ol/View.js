@@ -13,7 +13,7 @@ import _ol_array_ from './array.js';
 import _ol_asserts_ from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
 import _ol_easing_ from './easing.js';
-import _ol_extent_ from './extent.js';
+import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
 import _ol_geom_GeometryType_ from './geom/GeometryType.js';
 import _ol_geom_Polygon_ from './geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from './geom/SimpleGeometry.js';
@@ -614,7 +614,7 @@ _ol_View_.prototype.calculateExtent = function(opt_size) {
   var rotation = /** @type {!number} */ (this.getRotation());
   _ol_asserts_.assert(rotation !== undefined, 3); // The view rotation is not defined
 
-  return _ol_extent_.getForViewAndSize(center, resolution, rotation, size);
+  return getForViewAndSize(center, resolution, rotation, size);
 };
 
 
@@ -722,8 +722,8 @@ _ol_View_.prototype.getResolutions = function() {
  */
 _ol_View_.prototype.getResolutionForExtent = function(extent, opt_size) {
   var size = opt_size || this.getSizeFromViewport_();
-  var xResolution = _ol_extent_.getWidth(extent) / size[0];
-  var yResolution = _ol_extent_.getHeight(extent) / size[1];
+  var xResolution = getWidth(extent) / size[0];
+  var yResolution = getHeight(extent) / size[1];
   return Math.max(xResolution, yResolution);
 };
 
@@ -882,13 +882,13 @@ _ol_View_.prototype.fit = function(geometryOrExtent, opt_options) {
   if (!(geometryOrExtent instanceof _ol_geom_SimpleGeometry_)) {
     _ol_asserts_.assert(Array.isArray(geometryOrExtent),
         24); // Invalid extent or geometry provided as `geometry`
-    _ol_asserts_.assert(!_ol_extent_.isEmpty(geometryOrExtent),
+    _ol_asserts_.assert(!isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
     geometry = _ol_geom_Polygon_.fromExtent(geometryOrExtent);
   } else if (geometryOrExtent.getType() === _ol_geom_GeometryType_.CIRCLE) {
     geometryOrExtent = geometryOrExtent.getExtent();
     geometry = _ol_geom_Polygon_.fromExtent(geometryOrExtent);
-    geometry.rotate(this.getRotation(), _ol_extent_.getCenter(geometryOrExtent));
+    geometry.rotate(this.getRotation(), getCenter(geometryOrExtent));
   } else {
     geometry = geometryOrExtent;
   }
@@ -1135,7 +1135,7 @@ _ol_View_.createResolutionConstraint_ = function(options) {
       // use an extent that can fit the whole world if need be
       360 * _ol_proj_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
             projection.getMetersPerUnit() :
-      Math.max(_ol_extent_.getWidth(extent), _ol_extent_.getHeight(extent));
+      Math.max(getWidth(extent), getHeight(extent));
 
     var defaultMaxResolution = size / DEFAULT_TILE_SIZE / Math.pow(
         defaultZoomFactor, DEFAULT_MIN_ZOOM);

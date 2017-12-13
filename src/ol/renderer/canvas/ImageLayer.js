@@ -7,7 +7,7 @@ import _ol_ImageCanvas_ from '../../ImageCanvas.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import _ol_array_ from '../../array.js';
-import _ol_extent_ from '../../extent.js';
+import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_plugins_ from '../../plugins.js';
@@ -122,12 +122,11 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
 
   var renderedExtent = frameState.extent;
   if (layerState.extent !== undefined) {
-    renderedExtent = _ol_extent_.getIntersection(
-        renderedExtent, layerState.extent);
+    renderedExtent = getIntersection(renderedExtent, layerState.extent);
   }
 
   if (!hints[_ol_ViewHint_.ANIMATING] && !hints[_ol_ViewHint_.INTERACTING] &&
-      !_ol_extent_.isEmpty(renderedExtent)) {
+      !isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     if (!ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
@@ -140,8 +139,8 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
       var context = vectorRenderer.context;
       var imageFrameState = /** @type {olx.FrameState} */ (_ol_obj_.assign({}, frameState, {
         size: [
-          _ol_extent_.getWidth(renderedExtent) / viewResolution,
-          _ol_extent_.getHeight(renderedExtent) / viewResolution
+          getWidth(renderedExtent) / viewResolution,
+          getHeight(renderedExtent) / viewResolution
         ],
         viewState: /** @type {olx.ViewState} */ (_ol_obj_.assign({}, frameState.viewState, {
           rotation: 0

@@ -9,7 +9,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {Processor as _ol_ext_pixelworks_Processor_} from 'pixelworks';
-import _ol_extent_ from '../extent.js';
+import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import _ol_layer_Image_ from '../layer/Image.js';
 import _ol_layer_Tile_ from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
@@ -175,12 +175,12 @@ _ol_source_Raster_.prototype.updateFrameState_ = function(extent, resolution, pr
   frameState.viewState = /** @type {olx.ViewState} */ (
     _ol_obj_.assign({}, frameState.viewState));
 
-  var center = _ol_extent_.getCenter(extent);
+  var center = getCenter(extent);
 
   frameState.extent = extent.slice();
   frameState.focus = center;
-  frameState.size[0] = Math.round(_ol_extent_.getWidth(extent) / resolution);
-  frameState.size[1] = Math.round(_ol_extent_.getHeight(extent) / resolution);
+  frameState.size[0] = Math.round(getWidth(extent) / resolution);
+  frameState.size[1] = Math.round(getHeight(extent) / resolution);
   frameState.time = Date.now();
   frameState.animate = false;
 
@@ -226,7 +226,7 @@ _ol_source_Raster_.prototype.getImage = function(extent, resolution, pixelRatio,
   if (this.renderedImageCanvas_) {
     var renderedResolution = this.renderedImageCanvas_.getResolution();
     var renderedExtent = this.renderedImageCanvas_.getExtent();
-    if (resolution !== renderedResolution || !_ol_extent_.equals(extent, renderedExtent)) {
+    if (resolution !== renderedResolution || !equals(extent, renderedExtent)) {
       this.renderedImageCanvas_ = null;
     }
   }
@@ -288,7 +288,7 @@ _ol_source_Raster_.prototype.onWorkerComplete_ = function(frameState, err, outpu
   var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
   if (resolution !== this.requestedFrameState_.viewState.resolution ||
-      !_ol_extent_.equals(extent, this.requestedFrameState_.extent)) {
+      !equals(extent, this.requestedFrameState_.extent)) {
     return;
   }
 
@@ -296,8 +296,8 @@ _ol_source_Raster_.prototype.onWorkerComplete_ = function(frameState, err, outpu
   if (this.renderedImageCanvas_) {
     context = this.renderedImageCanvas_.getImage().getContext('2d');
   } else {
-    var width = Math.round(_ol_extent_.getWidth(extent) / resolution);
-    var height = Math.round(_ol_extent_.getHeight(extent) / resolution);
+    var width = Math.round(getWidth(extent) / resolution);
+    var height = Math.round(getHeight(extent) / resolution);
     context = _ol_dom_.createCanvasContext2D(width, height);
     this.renderedImageCanvas_ = new _ol_ImageCanvas_(extent, resolution, 1, context.canvas);
   }

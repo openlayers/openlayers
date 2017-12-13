@@ -11,7 +11,7 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent, equals} from '../extent.js';
 import _ol_featureloader_ from '../featureloader.js';
 import _ol_functions_ from '../functions.js';
 import _ol_loadingstrategy_ from '../loadingstrategy.js';
@@ -751,7 +751,7 @@ _ol_source_Vector_.prototype.loadFeatures = function(
          * @return {boolean} Contains.
          */
         function(object) {
-          return _ol_extent_.containsExtent(object.extent, extentToLoad);
+          return containsExtent(object.extent, extentToLoad);
         });
     if (!alreadyLoaded) {
       this.loader_.call(this, extentToLoad, resolution, projection);
@@ -770,7 +770,7 @@ _ol_source_Vector_.prototype.removeLoadedExtent = function(extent) {
   var loadedExtentsRtree = this.loadedExtentsRtree_;
   var obj;
   loadedExtentsRtree.forEachInExtent(extent, function(object) {
-    if (_ol_extent_.equals(object.extent, extent)) {
+    if (equals(object.extent, extent)) {
       obj = object;
       return true;
     }
