@@ -1,13 +1,20 @@
 /**
  * @module ol/interaction/MouseWheelZoom
  */
-import {MOUSEWHEELZOOM_MAXDELTA, inherits} from '../index.js';
+import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_easing_ from '../easing.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_has_ from '../has.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 import _ol_math_ from '../math.js';
+
+
+/**
+ * @type {number} Maximum mouse wheel delta.
+ */
+var MAX_DELTA = 1;
+
 
 /**
  * @classdesc
@@ -252,7 +259,7 @@ _ol_interaction_MouseWheelZoom_.prototype.handleWheelZoom_ = function(map) {
   if (view.getAnimating()) {
     view.cancelAnimations();
   }
-  var maxDelta = MOUSEWHEELZOOM_MAXDELTA;
+  var maxDelta = MAX_DELTA;
   var delta = _ol_math_.clamp(this.delta_, -maxDelta, maxDelta);
   _ol_interaction_Interaction_.zoomByDelta(view, -delta, this.lastAnchor_,
       this.duration_);

@@ -1,7 +1,7 @@
 /**
  * @module ol/tilegrid/TileGrid
  */
-import {DEFAULT_TILE_SIZE} from '../index.js';
+import {DEFAULT_TILE_SIZE} from './common.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_TileRange_ from '../TileRange.js';
 import _ol_array_ from '../array.js';

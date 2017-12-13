@@ -1,4 +1,4 @@
-import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from '../../../../src/ol/index.js';
+import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
 import _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_proj_ from '../../../../src/ol/proj.js';

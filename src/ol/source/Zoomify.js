@@ -1,7 +1,8 @@
 /**
  * @module ol/source/Zoomify
  */
-import {DEFAULT_TILE_SIZE, inherits} from '../index.js';
+import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
+import {inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';

@@ -1,7 +1,6 @@
 /**
  * @module ol/proj/Projection
  */
-import {ENABLE_PROJ4JS} from '../index.js';
 import _ol_proj_Units_ from '../proj/Units.js';
 import _ol_proj_proj4_ from '../proj/proj4.js';
 
@@ -108,20 +107,18 @@ var _ol_proj_Projection_ = function(options) {
   this.metersPerUnit_ = options.metersPerUnit;
 
   var code = options.code;
-  if (ENABLE_PROJ4JS) {
-    var proj4js = _ol_proj_proj4_.get();
-    if (typeof proj4js == 'function') {
-      var def = proj4js.defs(code);
-      if (def !== undefined) {
-        if (def.axis !== undefined && options.axisOrientation === undefined) {
-          this.axisOrientation_ = def.axis;
-        }
-        if (options.metersPerUnit === undefined) {
-          this.metersPerUnit_ = def.to_meter;
-        }
-        if (options.units === undefined) {
-          this.units_ = def.units;
-        }
+  var proj4js = _ol_proj_proj4_.get();
+  if (typeof proj4js == 'function') {
+    var def = proj4js.defs(code);
+    if (def !== undefined) {
+      if (def.axis !== undefined && options.axisOrientation === undefined) {
+        this.axisOrientation_ = def.axis;
+      }
+      if (options.metersPerUnit === undefined) {
+        this.metersPerUnit_ = def.to_meter;
+      }
+      if (options.units === undefined) {
+        this.units_ = def.units;
       }
     }
   }

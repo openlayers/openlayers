@@ -1,7 +1,8 @@
 /**
  * @module ol/renderer/webgl/ImageLayer
  */
-import {ENABLE_RASTER_REPROJECTION, inherits, nullFunction} from '../../index.js';
+import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
+import {inherits, nullFunction} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import _ol_dom_ from '../../dom.js';

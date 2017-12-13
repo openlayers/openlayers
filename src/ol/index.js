@@ -6,174 +6,15 @@ import webgl from './webgl.js';
 
 
 /**
- * Constants defined with the define tag cannot be changed in application
- * code, but can be set at compile time.
- * Some reduce the size of the build in advanced compile mode.
- */
-
-
-/**
- * @type {boolean} Assume touch.  Default is `false`.
- */
-export var ASSUME_TOUCH = false;
-
-
-/**
- * TODO: rename this to something having to do with tile grids
- * see https://github.com/openlayers/openlayers/issues/2076
- * @type {number} Default maximum zoom for default tile grids.
- */
-export var DEFAULT_MAX_ZOOM = 42;
-
-
-/**
- * @type {number} Default min zoom level for the map view.  Default is `0`.
- */
-export var DEFAULT_MIN_ZOOM = 0;
-
-
-/**
- * @type {number} Default maximum allowed threshold  (in pixels) for
- *     reprojection triangulation. Default is `0.5`.
- */
-export var DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
-
-
-/**
- * @type {number} Default tile size.
- */
-export var DEFAULT_TILE_SIZE = 256;
-
-
-/**
- * @type {string} Default WMS version.
- */
-export var DEFAULT_WMS_VERSION = '1.3.0';
-
-
-/**
- * @type {boolean} Enable the Canvas renderer.  Default is `true`. Setting
- *     this to false at compile time in advanced mode removes all code
- *     supporting the Canvas renderer from the build.
- */
-export var ENABLE_CANVAS = true;
-
-
-/**
- * @type {boolean} Enable integration with the Proj4js library.  Default is
- *     `true`.
- */
-export var ENABLE_PROJ4JS = true;
-
-
-/**
- * @type {boolean} Enable automatic reprojection of raster sources. Default is
- *     `true`.
- */
-export var ENABLE_RASTER_REPROJECTION = true;
-
-
-/**
- * @type {boolean} Enable the WebGL renderer.  Default is `true`. Setting
- *     this to false at compile time in advanced mode removes all code
- *     supporting the WebGL renderer from the build.
- */
-export var ENABLE_WEBGL = true;
-
-
-/**
+ * TODO: move to a separate ol-webgl package
  * @type {boolean} Include debuggable shader sources.  Default is `true`.
- *     This should be set to `false` for production builds (if `ENABLE_WEBGL`
- *     is `true`).
+ *     This should be set to `false` for production builds.
  */
 export var DEBUG_WEBGL = true;
 
 
 /**
- * TODO: get rid of this or move it to AtlasManager.js
- * @type {number} The size in pixels of the first atlas image. Default is
- * `256`.
- */
-export var INITIAL_ATLAS_SIZE = 256;
-
-
-/**
- * TODO: get rid of this or move it to AtlasManager.js
- * @type {number} The maximum size in pixels of atlas images. Default is
- * `-1`, meaning it is not used (and `WEBGL_MAX_TEXTURE_SIZE` is
- * used instead).
- */
-export var MAX_ATLAS_SIZE = -1;
-
-
-/**
- * TODO: move this to MouseWheelZoom.js
- * @type {number} Maximum mouse wheel delta.
- */
-export var MOUSEWHEELZOOM_MAXDELTA = 1;
-
-
-/**
- * TODO: move this to OverviewMap.js
- * @type {number} Maximum width and/or height extent ratio that determines
- * when the overview map should be zoomed out.
- */
-export var OVERVIEWMAP_MAX_RATIO = 0.75;
-
-
-/**
- * TODO: move this to OverviewMap.js
- * @type {number} Minimum width and/or height extent ratio that determines
- * when the overview map should be zoomed in.
- */
-export var OVERVIEWMAP_MIN_RATIO = 0.1;
-
-
-/**
- * TODO: move this to Triangulation.js
- * @type {number} Maximum number of subdivision steps during raster
- *     reprojection triangulation. Prevents high memory usage and large
- *     number of proj4 calls (for certain transformations and areas).
- *     At most `2*(2^this)` triangles are created for each triangulated
- *     extent (tile/image). Default is `10`.
- */
-export var RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
-
-
-/**
- * TODO: move this to Triangulation.js
- * @type {number} Maximum allowed size of triangle relative to world width.
- *     When transforming corners of world extent between certain projections,
- *     the resulting triangulation seems to have zero error and no subdivision
- *     is performed.
- *     If the triangle width is more than this (relative to world width; 0-1),
- *     subdivison is forced (up to `RASTER_REPROJECTION_MAX_SUBDIVISION`).
- *     Default is `0.25`.
- */
-export var RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH = 0.25;
-
-
-/**
- * TODO: move this to renderer/vector.js
- * @type {number} Tolerance for geometry simplification in device pixels.
- */
-export var SIMPLIFY_TOLERANCE = 0.5;
-
-
-/**
- * TODO: move this to webgl/Map.js
- * @type {number} Texture cache high water mark.
- */
-export var WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
-
-
-/**
- * @type {string} OpenLayers version.
- */
-export var VERSION = 'v4.6.4';
-
-
-/**
+ * TODO: move to a separate ol-webgl package
  * The maximum supported WebGL texture size in pixels. If WebGL is not
  * supported, the value is set to `undefined`.
  * @const
@@ -183,6 +24,7 @@ var WEBGL_MAX_TEXTURE_SIZE; // value is set below
 
 
 /**
+ * TODO: move to a separate ol-webgl package
  * List of supported WebGL extensions.
  * @const
  * @type {Array.<string>}
@@ -191,13 +33,14 @@ var WEBGL_EXTENSIONS; // value is set below
 
 
 /**
+ * TODO: move to a separate ol-webgl package
  * WebGL is available.
  * @type {boolean}
  */
 var HAS_WEBGL = false;
 
 
-if (ENABLE_WEBGL && 'WebGLRenderingContext' in window) {
+if ('WebGLRenderingContext' in window) {
   try {
     var canvas = /** @type {HTMLCanvasElement} */
         (document.createElement('CANVAS'));
@@ -214,6 +57,12 @@ if (ENABLE_WEBGL && 'WebGLRenderingContext' in window) {
 }
 
 export {HAS_WEBGL, WEBGL_MAX_TEXTURE_SIZE, WEBGL_EXTENSIONS};
+
+
+/**
+ * @type {string} OpenLayers version.
+ */
+export var VERSION = 'v4.6.4';
 
 
 /**
@@ -277,27 +126,8 @@ export default {
   nullFunction: nullFunction,
   inherits: inherits,
   VERSION: VERSION,
-  ASSUME_TOUCH: ASSUME_TOUCH,
-  DEFAULT_MAX_ZOOM: DEFAULT_MAX_ZOOM,
-  DEFAULT_MIN_ZOOM: DEFAULT_MIN_ZOOM,
-  DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD: DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD,
-  DEFAULT_TILE_SIZE: DEFAULT_TILE_SIZE,
-  DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
-  ENABLE_CANVAS: ENABLE_CANVAS,
-  ENABLE_PROJ4JS: ENABLE_PROJ4JS,
-  ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
-  ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
-  INITIAL_ATLAS_SIZE: INITIAL_ATLAS_SIZE,
-  MAX_ATLAS_SIZE: MAX_ATLAS_SIZE,
-  MOUSEWHEELZOOM_MAXDELTA: MOUSEWHEELZOOM_MAXDELTA,
-  OVERVIEWMAP_MAX_RATIO: OVERVIEWMAP_MAX_RATIO,
-  OVERVIEWMAP_MIN_RATIO: OVERVIEWMAP_MIN_RATIO,
-  RASTER_REPROJECTION_MAX_SUBDIVISION: RASTER_REPROJECTION_MAX_SUBDIVISION,
-  RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH: RASTER_REPROJECTION_MAX_TRIANGLE_WIDTH,
-  SIMPLIFY_TOLERANCE: SIMPLIFY_TOLERANCE,
   HAS_WEBGL: HAS_WEBGL,
-  WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK: WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK,
   WEBGL_MAX_TEXTURE_SIZE: WEBGL_MAX_TEXTURE_SIZE,
   WEBGL_EXTENSIONS: WEBGL_EXTENSIONS
 };

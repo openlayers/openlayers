@@ -1,9 +1,8 @@
 /**
  * @module ol/renderer/webgl/Map
  */
-// FIXME check against gl.getParameter(webgl.MAX_TEXTURE_SIZE)
 
-import {WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK, inherits} from '../../index.js';
+import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_css_ from '../../css.js';
 import _ol_dom_ from '../../dom.js';
@@ -21,6 +20,13 @@ import _ol_structs_PriorityQueue_ from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
 import _ol_webgl_ContextEventType_ from '../../webgl/ContextEventType.js';
+
+
+/**
+ * @type {number} Texture cache high water mark.
+ */
+var WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
+
 
 /**
  * @constructor

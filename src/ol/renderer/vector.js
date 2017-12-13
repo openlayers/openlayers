@@ -1,11 +1,17 @@
 /**
  * @module ol/renderer/vector
  */
-import {SIMPLIFY_TOLERANCE, getUid} from '../index.js';
+import {getUid} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_render_ReplayType_ from '../render/ReplayType.js';
 var _ol_renderer_vector_ = {};
+
+
+/**
+ * @type {number} Tolerance for geometry simplification in device pixels.
+ */
+var SIMPLIFY_TOLERANCE = 0.5;
 
 
 /**

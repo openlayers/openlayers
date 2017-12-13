@@ -7443,7 +7443,7 @@ olx.source.ZoomifyOptions.prototype.transition;
 
 /**
  * Tile size. Same tile size is used for all zoom levels. Default value is
- * `OpenLayers.DEFAULT_TILE_SIZE`.
+ * `256`.
  * @type {number|undefined}
  * @api
  */
@@ -8612,8 +8612,7 @@ olx.style.AtlasManagerOptions;
 
 
 /**
- * The size in pixels of the first atlas image. If no value is given the
- * `ol.INITIAL_ATLAS_SIZE` compile-time constant will be used.
+ * The size in pixels of the first atlas image. Default is `256`.
  * @type {number|undefined}
  * @api
  */
@@ -8621,11 +8620,8 @@ olx.style.AtlasManagerOptions.prototype.initialSize;
 
 
 /**
- * The maximum size in pixels of atlas images. If no value is given then
- * the `ol.MAX_ATLAS_SIZE` compile-time constant will be used. And if
- * `ol.MAX_ATLAS_SIZE` is set to `-1` (the default) then
- * `ol.WEBGL_MAX_TEXTURE_SIZE` will used if WebGL is supported. Otherwise
- * 2048 is used.
+ * The maximum size in pixels of atlas images. Default is
+ * `WEBGL_MAX_TEXTURE_SIZE` or 2048 if WebGL is not supported.
  * @type {number|undefined}
  * @api
  */

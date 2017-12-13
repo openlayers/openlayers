@@ -1,7 +1,7 @@
 /**
  * @module ol/tilegrid
  */
-import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './index.js';
+import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import _ol_size_ from './size.js';
 import _ol_extent_ from './extent.js';
 import _ol_extent_Corner_ from './extent/Corner.js';

@@ -1,7 +1,7 @@
 /**
  * @module ol/control/OverviewMap
  */
-import {OVERVIEWMAP_MAX_RATIO, OVERVIEWMAP_MIN_RATIO, inherits} from '../index.js';
+import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_PluggableMap_ from '../PluggableMap.js';
 import _ol_MapEventType_ from '../MapEventType.js';
@@ -18,6 +18,21 @@ import _ol_dom_ from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_extent_ from '../extent.js';
+
+
+/**
+ * @type {number} Maximum width and/or height extent ratio that determines
+ * when the overview map should be zoomed out.
+ */
+var MAX_RATIO = 0.75;
+
+
+/**
+ * @type {number} Minimum width and/or height extent ratio that determines
+ * when the overview map should be zoomed in.
+ */
+var MIN_RATIO = 0.1;
+
 
 /**
  * Create a new control with a map acting as an overview map for an other
@@ -336,10 +351,10 @@ _ol_control_OverviewMap_.prototype.validateExtent_ = function() {
   var ovmapWidth = ovmapSize[0];
   var ovmapHeight = ovmapSize[1];
 
-  if (boxWidth < ovmapWidth * OVERVIEWMAP_MIN_RATIO ||
-      boxHeight < ovmapHeight * OVERVIEWMAP_MIN_RATIO ||
-      boxWidth > ovmapWidth * OVERVIEWMAP_MAX_RATIO ||
-      boxHeight > ovmapHeight * OVERVIEWMAP_MAX_RATIO) {
+  if (boxWidth < ovmapWidth * MIN_RATIO ||
+      boxHeight < ovmapHeight * MIN_RATIO ||
+      boxWidth > ovmapWidth * MAX_RATIO ||
+      boxHeight > ovmapHeight * MAX_RATIO) {
     this.resetExtent_();
   } else if (!_ol_extent_.containsExtent(ovextent, extent)) {
     this.recenter_();
@@ -353,7 +368,7 @@ _ol_control_OverviewMap_.prototype.validateExtent_ = function() {
  * @private
  */
 _ol_control_OverviewMap_.prototype.resetExtent_ = function() {
-  if (OVERVIEWMAP_MAX_RATIO === 0 || OVERVIEWMAP_MIN_RATIO === 0) {
+  if (MAX_RATIO === 0 || MIN_RATIO === 0) {
     return;
   }
 
@@ -371,8 +386,8 @@ _ol_control_OverviewMap_.prototype.resetExtent_ = function() {
   // box sizes using the min and max ratio, pick the step in the middle used
   // to calculate the extent from the main map to set it to the overview map,
   var steps = Math.log(
-      OVERVIEWMAP_MAX_RATIO / OVERVIEWMAP_MIN_RATIO) / Math.LN2;
-  var ratio = 1 / (Math.pow(2, steps / 2) * OVERVIEWMAP_MIN_RATIO);
+      MAX_RATIO / MIN_RATIO) / Math.LN2;
+  var ratio = 1 / (Math.pow(2, steps / 2) * MIN_RATIO);
   _ol_extent_.scaleFromCenter(extent, ratio);
   ovview.fit(extent);
 };
