@@ -2,7 +2,8 @@
  * @module ol/source/TileWMS
  */
 
-import {DEFAULT_WMS_VERSION, inherits} from '../index.js';
+import {DEFAULT_WMS_VERSION} from './common.js';
+import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_extent_ from '../extent.js';
 import _ol_obj_ from '../obj.js';

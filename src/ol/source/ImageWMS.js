@@ -2,7 +2,8 @@
  * @module ol/source/ImageWMS
  */
 
-import {DEFAULT_WMS_VERSION, inherits} from '../index.js';
+import {DEFAULT_WMS_VERSION} from './common.js';
+import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
