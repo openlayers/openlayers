@@ -119,15 +119,3 @@ var uidCounter_ = 0;
 export function getUid(obj) {
   return obj.ol_uid || (obj.ol_uid = ++uidCounter_);
 }
-
-
-export default {
-  getUid: getUid,
-  nullFunction: nullFunction,
-  inherits: inherits,
-  VERSION: VERSION,
-  DEBUG_WEBGL: DEBUG_WEBGL,
-  HAS_WEBGL: HAS_WEBGL,
-  WEBGL_MAX_TEXTURE_SIZE: WEBGL_MAX_TEXTURE_SIZE,
-  WEBGL_EXTENSIONS: WEBGL_EXTENSIONS
-};
