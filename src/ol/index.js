@@ -6,12 +6,6 @@ import webgl from './webgl.js';
 
 
 /**
- * @type {boolean} Assume touch.  Default is `false`.
- */
-export var ASSUME_TOUCH = false;
-
-
-/**
  * @type {string} Default WMS version.
  */
 export var DEFAULT_WMS_VERSION = '1.3.0';
@@ -165,7 +159,6 @@ export default {
   nullFunction: nullFunction,
   inherits: inherits,
   VERSION: VERSION,
-  ASSUME_TOUCH: ASSUME_TOUCH,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
   ENABLE_CANVAS: ENABLE_CANVAS,
   ENABLE_PROJ4JS: ENABLE_PROJ4JS,

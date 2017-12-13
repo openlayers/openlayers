@@ -1,7 +1,7 @@
 /**
  * @module ol/has
  */
-import {ENABLE_CANVAS, ASSUME_TOUCH, HAS_WEBGL} from './index.js';
+import {ENABLE_CANVAS, HAS_WEBGL} from './index.js';
 
 var _ol_has_ = {};
 
@@ -105,7 +105,7 @@ _ol_has_.GEOLOCATION = 'geolocation' in navigator;
  * @type {boolean}
  * @api
  */
-_ol_has_.TOUCH = ASSUME_TOUCH || 'ontouchstart' in window;
+_ol_has_.TOUCH = 'ontouchstart' in window;
 
 
 /**
