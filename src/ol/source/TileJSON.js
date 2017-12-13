@@ -136,7 +136,7 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
   this.tileUrlFunction =
       _ol_TileUrlFunction_.createFromTemplates(tileJSON.tiles, tileGrid);
 
-  if (tileJSON.attribution !== undefined && !this.getAttributions2()) {
+  if (tileJSON.attribution !== undefined && !this.getAttributions()) {
     var attributionExtent = extent !== undefined ?
       extent : epsg4326Projection.getExtent();
 

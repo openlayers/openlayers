@@ -2,7 +2,6 @@
  * @module ol/source/Source
  */
 import {inherits, nullFunction} from '../index.js';
-import _ol_Attribution_ from '../Attribution.js';
 import _ol_Object_ from '../Object.js';
 import _ol_proj_ from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
@@ -33,15 +32,9 @@ var _ol_source_Source_ = function(options) {
 
   /**
    * @private
-   * @type {Array.<ol.Attribution>}
+   * @type {?ol.Attribution}
    */
-  this.attributions_ = null;
-
-  /**
-   * @private
-   * @type {?ol.Attribution2}
-   */
-  this.attributions2_ = this.adaptAttributions_(options.attributions);
+  this.attributions_ = this.adaptAttributions_(options.attributions);
 
   /**
    * @private
@@ -68,42 +61,14 @@ inherits(_ol_source_Source_, _ol_Object_);
 
 /**
  * Turns the attributions option into an attributions function.
- * @suppress {deprecated}
  * @param {ol.AttributionLike|undefined} attributionLike The attribution option.
- * @return {?ol.Attribution2} An attribution function (or null).
+ * @return {?ol.Attribution} An attribution function (or null).
  */
 _ol_source_Source_.prototype.adaptAttributions_ = function(attributionLike) {
   if (!attributionLike) {
     return null;
   }
-  if (attributionLike instanceof _ol_Attribution_) {
-
-    // TODO: remove attributions_ in next major release
-    this.attributions_ = [attributionLike];
-
-    return function(frameState) {
-      return [attributionLike.getHTML()];
-    };
-  }
   if (Array.isArray(attributionLike)) {
-    if (attributionLike[0] instanceof _ol_Attribution_) {
-
-      // TODO: remove attributions_ in next major release
-      this.attributions_ = attributionLike;
-
-      var attributions = attributionLike.map(function(attribution) {
-        return attribution.getHTML();
-      });
-      return function(frameState) {
-        return attributions;
-      };
-    }
-
-    // TODO: remove attributions_ in next major release
-    this.attributions_ = attributionLike.map(function(attribution) {
-      return new _ol_Attribution_({html: attribution});
-    });
-
     return function(frameState) {
       return attributionLike;
     };
@@ -112,11 +77,6 @@ _ol_source_Source_.prototype.adaptAttributions_ = function(attributionLike) {
   if (typeof attributionLike === 'function') {
     return attributionLike;
   }
-
-  // TODO: remove attributions_ in next major release
-  this.attributions_ = [
-    new _ol_Attribution_({html: attributionLike})
-  ];
 
   return function(frameState) {
     return [attributionLike];
@@ -138,21 +98,11 @@ _ol_source_Source_.prototype.forEachFeatureAtCoordinate = nullFunction;
 
 
 /**
- * Get the attributions of the source.
- * @return {Array.<ol.Attribution>} Attributions.
- * @api
+ * Get the attribution function for the source.
+ * @return {?ol.Attribution} Attribution function.
  */
 _ol_source_Source_.prototype.getAttributions = function() {
   return this.attributions_;
-};
-
-
-/**
- * Get the attribution function for the source.
- * @return {?ol.Attribution2} Attribution function.
- */
-_ol_source_Source_.prototype.getAttributions2 = function() {
-  return this.attributions2_;
 };
 
 
@@ -213,12 +163,12 @@ _ol_source_Source_.prototype.refresh = function() {
 /**
  * Set the attributions of the source.
  * @param {ol.AttributionLike|undefined} attributions Attributions.
- *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution2}`,
+ *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution}`,
  *     or `undefined`.
  * @api
  */
 _ol_source_Source_.prototype.setAttributions = function(attributions) {
-  this.attributions2_ = this.adaptAttributions_(attributions);
+  this.attributions_ = this.adaptAttributions_(attributions);
   this.changed();
 };
 

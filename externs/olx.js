@@ -24,21 +24,6 @@ olx.CollectionOptions.prototype.unique;
 
 
 /**
- * @typedef {{html: string,
- *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
- */
-olx.AttributionOptions;
-
-
-/**
- * HTML markup for this attribution.
- * @type {string}
- * @api
- */
-olx.AttributionOptions.prototype.html;
-
-
-/**
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.ProjectionLike}}

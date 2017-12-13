@@ -174,7 +174,7 @@ _ol_control_Attribution_.prototype.getSourceAttributions_ = function(frameState)
       continue;
     }
 
-    var attributionGetter = source.getAttributions2();
+    var attributionGetter = source.getAttributions();
     if (!attributionGetter) {
       continue;
     }

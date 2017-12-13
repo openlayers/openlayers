@@ -75,10 +75,9 @@ ol.AtlasManagerInfo;
  * It represents either
  * * a simple string (e.g. `'© Acme Inc.'`)
  * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`)
- * * a function that returns a string or array of strings (`{@link ol.Attribution2}`)
+ * * a function that returns a string or array of strings (`{@link ol.Attribution}`)
  *
- * Note that the `{@link ol.Attribution}` constructor is deprecated.
- * @typedef {string|Array.<string>|ol.Attribution2|ol.Attribution|Array.<ol.Attribution>}
+ * @typedef {string|Array.<string>|ol.Attribution}
  */
 ol.AttributionLike;
 
@@ -89,7 +88,7 @@ ol.AttributionLike;
  *
  * @typedef {function(olx.FrameState): (string|Array.<string>)}
  */
-ol.Attribution2;
+ol.Attribution;
 
 
 /**
