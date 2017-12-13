@@ -128,6 +128,12 @@ inherits(_ol_VectorImageTile_, _ol_Tile_);
  * @inheritDoc
  */
 _ol_VectorImageTile_.prototype.disposeInternal = function() {
+  this.state = _ol_TileState_.ABORT;
+  this.changed();
+  if (this.interimTile) {
+    this.interimTile.dispose();
+  }
+
   for (var i = 0, ii = this.tileKeys.length; i < ii; ++i) {
     var sourceTileKey = this.tileKeys[i];
     var sourceTile = this.getTile(sourceTileKey);
@@ -141,11 +147,6 @@ _ol_VectorImageTile_.prototype.disposeInternal = function() {
   this.sourceTiles_ = null;
   this.loadListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.loadListenerKeys_.length = 0;
-  if (this.interimTile) {
-    this.interimTile.dispose();
-  }
-  this.state = _ol_TileState_.ABORT;
-  this.changed();
   this.sourceTileListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.sourceTileListenerKeys_.length = 0;
   _ol_Tile_.prototype.disposeInternal.call(this);
