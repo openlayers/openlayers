@@ -1,7 +1,8 @@
 /**
  * @module ol/source/Image
  */
-import {ENABLE_RASTER_REPROJECTION, inherits} from '../index.js';
+import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
+import {inherits} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_array_ from '../array.js';
 import _ol_events_Event_ from '../events/Event.js';

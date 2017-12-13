@@ -12,13 +12,6 @@ export var DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * @type {boolean} Enable automatic reprojection of raster sources. Default is
- *     `true`.
- */
-export var ENABLE_RASTER_REPROJECTION = true;
-
-
-/**
  * @type {boolean} Include debuggable shader sources.  Default is `true`.
  *     This should be set to `false` for production builds.
  */
@@ -136,7 +129,6 @@ export default {
   inherits: inherits,
   VERSION: VERSION,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
-  ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   DEBUG_WEBGL: DEBUG_WEBGL,
   HAS_WEBGL: HAS_WEBGL,
   WEBGL_MAX_TEXTURE_SIZE: WEBGL_MAX_TEXTURE_SIZE,
