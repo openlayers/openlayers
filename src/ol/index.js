@@ -12,13 +12,6 @@ export var DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * @type {boolean} Enable integration with the Proj4js library.  Default is
- *     `true`.
- */
-export var ENABLE_PROJ4JS = true;
-
-
-/**
  * @type {boolean} Enable automatic reprojection of raster sources. Default is
  *     `true`.
  */
@@ -143,7 +136,6 @@ export default {
   inherits: inherits,
   VERSION: VERSION,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
-  ENABLE_PROJ4JS: ENABLE_PROJ4JS,
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   DEBUG_WEBGL: DEBUG_WEBGL,
   HAS_WEBGL: HAS_WEBGL,

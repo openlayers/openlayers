@@ -1,7 +1,6 @@
 /**
  * @module ol/proj
  */
-import {ENABLE_PROJ4JS} from './index.js';
 import _ol_Sphere_ from './Sphere.js';
 import _ol_extent_ from './extent.js';
 import _ol_math_ from './math.js';
@@ -32,23 +31,21 @@ _ol_proj_.METERS_PER_UNIT = _ol_proj_Units_.METERS_PER_UNIT;
 _ol_proj_.SPHERE_ = new _ol_Sphere_(_ol_Sphere_.DEFAULT_RADIUS);
 
 
-if (ENABLE_PROJ4JS) {
-  /**
-   * Register proj4. If not explicitly registered, it will be assumed that
-   * proj4js will be loaded in the global namespace. For example in a
-   * browserify ES6 environment you could use:
-   *
-   *     import ol from 'openlayers';
-   *     import proj4 from 'proj4';
-   *     ol.proj.setProj4(proj4);
-   *
-   * @param {Proj4} proj4 Proj4.
-   * @api
-   */
-  _ol_proj_.setProj4 = function(proj4) {
-    _ol_proj_proj4_.set(proj4);
-  };
-}
+/**
+ * Register proj4. If not explicitly registered, it will be assumed that
+ * proj4js will be loaded in the global namespace. For example in a
+ * browserify ES6 environment you could use:
+ *
+ *     import ol from 'openlayers';
+ *     import proj4 from 'proj4';
+ *     ol.proj.setProj4(proj4);
+ *
+ * @param {Proj4} proj4 Proj4.
+ * @api
+ */
+_ol_proj_.setProj4 = function(proj4) {
+  _ol_proj_proj4_.set(proj4);
+};
 
 
 /**
@@ -311,7 +308,7 @@ _ol_proj_.get = function(projectionLike) {
   } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
     projection = _ol_proj_projections_.get(code);
-    if (ENABLE_PROJ4JS && !projection) {
+    if (!projection) {
       var proj4js = _ol_proj_proj4_.get();
       if (typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
@@ -380,7 +377,7 @@ _ol_proj_.getTransformFromProjections = function(sourceProjection, destinationPr
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
   var transform = _ol_proj_transforms_.get(sourceCode, destinationCode);
-  if (ENABLE_PROJ4JS && !transform) {
+  if (!transform) {
     var proj4js = _ol_proj_proj4_.get();
     if (typeof proj4js == 'function') {
       var sourceDef = proj4js.defs(sourceCode);
