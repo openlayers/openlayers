@@ -24,35 +24,6 @@ olx.CollectionOptions.prototype.unique;
 
 
 /**
- * @typedef {{html: string,
- *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
- */
-olx.AttributionOptions;
-
-
-/**
- * HTML markup for this attribution.
- * @type {string}
- * @api
- */
-olx.AttributionOptions.prototype.html;
-
-
-/**
- * @typedef {{tracking: (boolean|undefined)}}
- */
-olx.DeviceOrientationOptions;
-
-
-/**
- * Start tracking. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.DeviceOrientationOptions.prototype.tracking;
-
-
-/**
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.ProjectionLike}}
@@ -5760,90 +5731,6 @@ olx.source.ImageCanvasOptions.prototype.state;
 
 
 /**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.ProjectionLike,
- *     ratio: (number|undefined),
- *     renderBuffer: (number|undefined),
- *     resolutions: (Array.<number>|undefined),
- *     source: ol.source.Vector,
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined)}}
- */
-olx.source.ImageVectorOptions;
-
-
-/**
- * Attributions.
- * @type {ol.AttributionLike|undefined}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.attributions;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.logo;
-
-
-/**
- * Projection.
- * @type {ol.ProjectionLike}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.projection;
-
-
-/**
- * Ratio. 1 means canvases are the size of the map viewport, 2 means twice the
- * width and height of the map viewport, and so on. Must be `1` or higher.
- * Default is `1.5`.
- * @type {number|undefined}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.ratio;
-
-
-/**
- * The buffer around the viewport extent used by the renderer when getting
- * features from the vector source for the rendering or hit-detection.
- * Recommended value: the size of the largest symbol, line width or label.
- * Default is 100 pixels.
- * @type {number|undefined}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.renderBuffer;
-
-
-/**
- * Resolutions. If specified, new canvases will be created for these resolutions
- * only.
- * @type {Array.<number>|undefined}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.resolutions;
-
-
-/**
- * The vector source from which the vector features drawn in canvas elements are
- * read.
- * @type {ol.source.Vector}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.source;
-
-
-/**
- * Style to use when rendering features to the canvas.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
- * @api
- */
-olx.source.ImageVectorOptions.prototype.style;
-
-
-/**
  * @typedef {{sources: Array.<ol.source.Source>,
  *     operation: (ol.RasterOperation|undefined),
  *     lib: (Object|undefined),
@@ -7906,7 +7793,6 @@ olx.style.StrokeOptions.prototype.width;
 
 /**
  * @typedef {{font: (string|undefined),
- *     exceedLength: (boolean|undefined),
  *     maxAngle: (number|undefined),
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined),
@@ -7925,19 +7811,6 @@ olx.style.StrokeOptions.prototype.width;
  *     padding: (Array.<number>|undefined)}}
  */
 olx.style.TextOptions;
-
-
-/**
- * **Deprecated**. Use the `overflow` option instead.
- *
- * For polygon labels or when `placement` is set to `'line'`, allow text to
- * exceed the width of the polygon at the label position or the length of
- * the path that it follows. Default is `false`.
- * @type {boolean|undefined}
- * @deprecated
- * @api
- */
-olx.style.TextOptions.prototype.exceedLength;
 
 
 /**

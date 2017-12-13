@@ -163,13 +163,13 @@ describe('ol.source.TileUTFGrid', function() {
 
     it('sets up correct attribution', function() {
       var source = getTileUTFGrid();
-      expect(source.getAttributions2()).to.be(null);
+      expect(source.getAttributions()).to.be(null);
 
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
-      var attributions = source.getAttributions2();
+      var attributions = source.getAttributions();
       expect(attributions).to.not.be(null);
       expect(typeof attributions).to.be('function');
     });

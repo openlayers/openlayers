@@ -2,14 +2,12 @@
  * @module ol/format/filter/ComparisonBinary
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
+import Comparison from '../filter/Comparison.js';
 
 /**
  * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
  * Base class for WFS GetFeature property binary comparison filters.
- *
- * deprecated: This class will no longer be exported starting from the next major version.
  *
  * @constructor
  * @abstract
@@ -18,12 +16,11 @@ import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
  * @extends {ol.format.filter.Comparison}
- * @api
  */
-var _ol_format_filter_ComparisonBinary_ = function(
+var ComparisonBinary = function(
     tagName, propertyName, expression, opt_matchCase) {
 
-  _ol_format_filter_Comparison_.call(this, tagName, propertyName);
+  Comparison.call(this, tagName, propertyName);
 
   /**
    * @public
@@ -38,5 +35,5 @@ var _ol_format_filter_ComparisonBinary_ = function(
   this.matchCase = opt_matchCase;
 };
 
-inherits(_ol_format_filter_ComparisonBinary_, _ol_format_filter_Comparison_);
-export default _ol_format_filter_ComparisonBinary_;
+inherits(ComparisonBinary, Comparison);
+export default ComparisonBinary;

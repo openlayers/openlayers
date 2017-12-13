@@ -2,15 +2,13 @@
  * @module ol/format/filter/Spatial
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Filter_ from '../filter/Filter.js';
+import Filter from '../filter/Filter.js';
 
 /**
  * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
  * Represents a spatial operator to test whether a geometry-valued property
  * relates to a given geometry.
- *
- * deprecated: This class will no longer be exported starting from the next major version.
  *
  * @constructor
  * @abstract
@@ -20,11 +18,10 @@ import _ol_format_filter_Filter_ from '../filter/Filter.js';
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
  * @extends {ol.format.filter.Filter}
- * @api
  */
-var _ol_format_filter_Spatial_ = function(tagName, geometryName, geometry, opt_srsName) {
+var Spatial = function(tagName, geometryName, geometry, opt_srsName) {
 
-  _ol_format_filter_Filter_.call(this, tagName);
+  Filter.call(this, tagName);
 
   /**
    * @public
@@ -45,5 +42,6 @@ var _ol_format_filter_Spatial_ = function(tagName, geometryName, geometry, opt_s
   this.srsName = opt_srsName;
 };
 
-inherits(_ol_format_filter_Spatial_, _ol_format_filter_Filter_);
-export default _ol_format_filter_Spatial_;
+inherits(Spatial, Filter);
+
+export default Spatial;
