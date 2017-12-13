@@ -12,13 +12,6 @@ export var ASSUME_TOUCH = false;
 
 
 /**
- * @type {number} Default maximum allowed threshold  (in pixels) for
- *     reprojection triangulation. Default is `0.5`.
- */
-export var DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
-
-
-/**
  * @type {string} Default WMS version.
  */
 export var DEFAULT_WMS_VERSION = '1.3.0';
@@ -173,7 +166,6 @@ export default {
   inherits: inherits,
   VERSION: VERSION,
   ASSUME_TOUCH: ASSUME_TOUCH,
-  DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD: DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
   ENABLE_CANVAS: ENABLE_CANVAS,
   ENABLE_PROJ4JS: ENABLE_PROJ4JS,

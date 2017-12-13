@@ -107,7 +107,7 @@ In case you are creating a custom build of OpenLayers and do not need the reproj
 See [Custom builds](custom-builds.html#defines) tutorial on how to do this.
 
 ### Triangulation precision threshold
-The default [triangulation error threshold](#dynamic-triangulation) in pixels is given by `DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD` (0.5 pixel).
+The default [triangulation error threshold](#dynamic-triangulation) in pixels is given by `ERROR_THRESHOLD` (0.5 pixel).
 In case a different threshold needs to be defined for different sources, the `reprojectionErrorThreshold` option can be passed when constructing the tile image source.
 
 ###Limiting visibility of reprojected map by extent
