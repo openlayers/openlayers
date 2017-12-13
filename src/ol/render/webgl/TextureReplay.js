@@ -2,7 +2,7 @@
  * @module ol/render/webgl/TextureReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_extent_ from '../../extent.js';
+import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturereplay/defaultshader.js';
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
@@ -438,7 +438,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawHitDetectionReplayOneByOne = funct
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
-          (opt_hitExtent === undefined || _ol_extent_.intersects(
+          (opt_hitExtent === undefined || intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

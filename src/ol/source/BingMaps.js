@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
-import _ol_extent_ from '../extent.js';
+import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import _ol_proj_ from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
@@ -185,21 +185,21 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
       var attributions = [];
       var zoom = frameState.viewState.zoom;
       resource.imageryProviders.map(function(imageryProvider) {
-        var intersects = false;
+        var intersecting = false;
         var coverageAreas = imageryProvider.coverageAreas;
         for (var i = 0, ii = coverageAreas.length; i < ii; ++i) {
           var coverageArea = coverageAreas[i];
           if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
             var bbox = coverageArea.bbox;
             var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-            var extent = _ol_extent_.applyTransform(epsg4326Extent, transform);
-            if (_ol_extent_.intersects(extent, frameState.extent)) {
-              intersects = true;
+            var extent = applyTransform(epsg4326Extent, transform);
+            if (intersects(extent, frameState.extent)) {
+              intersecting = true;
               break;
             }
           }
         }
-        if (intersects) {
+        if (intersecting) {
           attributions.push(imageryProvider.attribution);
         }
       });

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdate} from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
@@ -291,7 +291,7 @@ _ol_format_GML3_.prototype.readEnvelope_ = function(node, objectStack) {
   /** @type {Array.<number>} */
   var flatCoordinates = _ol_xml_.pushParseAndPop([null],
       this.ENVELOPE_PARSERS_, node, objectStack, this);
-  return _ol_extent_.createOrUpdate(flatCoordinates[1][0],
+  return createOrUpdate(flatCoordinates[1][0],
       flatCoordinates[1][1], flatCoordinates[2][0],
       flatCoordinates[2][1]);
 };

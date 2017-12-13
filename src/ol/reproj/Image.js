@@ -7,7 +7,7 @@ import _ol_ImageBase_ from '../ImageBase.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
 
@@ -43,9 +43,9 @@ var _ol_reproj_Image_ = function(sourceProj, targetProj,
   var maxTargetExtent = targetProj.getExtent();
 
   var limitedTargetExtent = maxTargetExtent ?
-    _ol_extent_.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+    getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
-  var targetCenter = _ol_extent_.getCenter(limitedTargetExtent);
+  var targetCenter = getCenter(limitedTargetExtent);
   var sourceResolution = _ol_reproj_.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
@@ -145,9 +145,8 @@ _ol_reproj_Image_.prototype.getProjection = function() {
 _ol_reproj_Image_.prototype.reproject_ = function() {
   var sourceState = this.sourceImage_.getState();
   if (sourceState == _ol_ImageState_.LOADED) {
-    var width = _ol_extent_.getWidth(this.targetExtent_) / this.targetResolution_;
-    var height =
-        _ol_extent_.getHeight(this.targetExtent_) / this.targetResolution_;
+    var width = getWidth(this.targetExtent_) / this.targetResolution_;
+    var height = getHeight(this.targetExtent_) / this.targetResolution_;
 
     this.canvas_ = _ol_reproj_.render(width, height, this.sourcePixelRatio_,
         this.sourceImage_.getResolution(), this.maxSourceExtent_,

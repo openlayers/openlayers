@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/contains
  */
-import _ol_extent_ from '../../extent.js';
+import {forEachCorner} from '../../extent.js';
 var _ol_geom_flat_contains_ = {};
 
 
@@ -14,7 +14,7 @@ var _ol_geom_flat_contains_ = {};
  * @return {boolean} Contains extent.
  */
 _ol_geom_flat_contains_.linearRingContainsExtent = function(flatCoordinates, offset, end, stride, extent) {
-  var outside = _ol_extent_.forEachCorner(extent,
+  var outside = forEachCorner(extent,
       /**
        * @param {ol.Coordinate} coordinate Coordinate.
        * @return {boolean} Contains (x, y).

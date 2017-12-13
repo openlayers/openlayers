@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_functions_ from '../functions.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
@@ -91,9 +91,8 @@ _ol_geom_SimpleGeometry_.prototype.containsXY = _ol_functions_.FALSE;
  * @inheritDoc
  */
 _ol_geom_SimpleGeometry_.prototype.computeExtent = function(extent) {
-  return _ol_extent_.createOrUpdateFromFlatCoordinates(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      extent);
+  return createOrUpdateFromFlatCoordinates(this.flatCoordinates,
+      0, this.flatCoordinates.length, this.stride, extent);
 };
 
 
@@ -289,7 +288,7 @@ _ol_geom_SimpleGeometry_.prototype.scale = function(sx, opt_sy, opt_anchor) {
   }
   var anchor = opt_anchor;
   if (!anchor) {
-    anchor = _ol_extent_.getCenter(this.getExtent());
+    anchor = getCenter(this.getExtent());
   }
   var flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {

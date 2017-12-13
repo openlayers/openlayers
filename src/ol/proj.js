@@ -2,7 +2,7 @@
  * @module ol/proj
  */
 import _ol_Sphere_ from './Sphere.js';
-import _ol_extent_ from './extent.js';
+import {applyTransform} from './extent.js';
 import _ol_math_ from './math.js';
 import _ol_proj_EPSG3857_ from './proj/EPSG3857.js';
 import _ol_proj_EPSG4326_ from './proj/EPSG4326.js';
@@ -472,7 +472,7 @@ _ol_proj_.transform = function(coordinate, source, destination) {
  */
 _ol_proj_.transformExtent = function(extent, source, destination) {
   var transformFn = _ol_proj_.getTransform(source, destination);
-  return _ol_extent_.applyTransform(extent, transformFn);
+  return applyTransform(extent, transformFn);
 };
 
 

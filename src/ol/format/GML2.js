@@ -2,7 +2,7 @@
  * @module ol/format/GML2
  */
 import {inherits} from '../index.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdate} from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
@@ -96,7 +96,7 @@ _ol_format_GML2_.prototype.readBox_ = function(node, objectStack) {
   /** @type {Array.<number>} */
   var flatCoordinates = _ol_xml_.pushParseAndPop([null],
       this.BOX_PARSERS_, node, objectStack, this);
-  return _ol_extent_.createOrUpdate(flatCoordinates[1][0],
+  return createOrUpdate(flatCoordinates[1][0],
       flatCoordinates[1][1], flatCoordinates[1][3],
       flatCoordinates[1][4]);
 };

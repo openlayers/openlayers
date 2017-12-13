@@ -20,7 +20,7 @@ import _ol_dom_ from './dom.js';
 import _ol_events_ from './events.js';
 import _ol_events_Event_ from './events/Event.js';
 import _ol_events_EventType_ from './events/EventType.js';
-import _ol_extent_ from './extent.js';
+import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import _ol_functions_ from './functions.js';
 import _ol_has_ from './has.js';
 import _ol_layer_Group_ from './layer/Group.js';
@@ -1135,7 +1135,7 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
 
   var size = this.getSize();
   var view = this.getView();
-  var extent = _ol_extent_.createEmpty();
+  var extent = createEmpty();
   var previousFrameState = this.frameState_;
   /** @type {?olx.FrameState} */
   var frameState = null;
@@ -1175,7 +1175,7 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
   }
 
   if (frameState) {
-    frameState.extent = _ol_extent_.getForViewAndSize(viewState.center,
+    frameState.extent = getForViewAndSize(viewState.center,
         viewState.resolution, viewState.rotation, frameState.size, extent);
   }
 
@@ -1191,24 +1191,24 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
 
     if (previousFrameState) {
       var moveStart = !this.previousExtent_ ||
-                  (!_ol_extent_.isEmpty(this.previousExtent_) &&
-                  !_ol_extent_.equals(frameState.extent, this.previousExtent_));
+                  (!isEmpty(this.previousExtent_) &&
+                  !equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
             new _ol_MapEvent_(_ol_MapEventType_.MOVESTART, this, previousFrameState));
-        this.previousExtent_ = _ol_extent_.createOrUpdateEmpty(this.previousExtent_);
+        this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
       }
     }
 
     var idle = this.previousExtent_ &&
         !frameState.viewHints[_ol_ViewHint_.ANIMATING] &&
         !frameState.viewHints[_ol_ViewHint_.INTERACTING] &&
-        !_ol_extent_.equals(frameState.extent, this.previousExtent_);
+        !equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
       this.dispatchEvent(
           new _ol_MapEvent_(_ol_MapEventType_.MOVEEND, this, frameState));
-      _ol_extent_.clone(frameState.extent, this.previousExtent_);
+      clone(frameState.extent, this.previousExtent_);
     }
   }
 

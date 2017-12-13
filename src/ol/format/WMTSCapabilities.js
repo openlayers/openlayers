@@ -2,7 +2,7 @@
  * @module ol/format/WMTSCapabilities
  */
 import {inherits} from '../index.js';
-import _ol_extent_ from '../extent.js';
+import {boundingExtent} from '../extent.js';
 import _ol_format_OWS_ from '../format/OWS.js';
 import _ol_format_XLink_ from '../format/XLink.js';
 import _ol_format_XML_ from '../format/XML.js';
@@ -186,7 +186,7 @@ _ol_format_WMTSCapabilities_.readWgs84BoundingBox_ = function(node, objectStack)
   if (coordinates.length != 2) {
     return undefined;
   }
-  return _ol_extent_.boundingExtent(coordinates);
+  return boundingExtent(coordinates);
 };
 
 

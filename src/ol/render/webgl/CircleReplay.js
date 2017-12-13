@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_color_ from '../../color.js';
-import _ol_extent_ from '../../extent.js';
+import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../webgl/circlereplay/defaultshader.js';
@@ -289,7 +289,7 @@ _ol_render_webgl_CircleReplay_.prototype.drawHitDetectionReplayOneByOne = functi
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
-          (opt_hitExtent === undefined || _ol_extent_.intersects(
+          (opt_hitExtent === undefined || intersects(
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);

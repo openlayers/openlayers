@@ -4,8 +4,9 @@
 import {getUid, inherits, nullFunction} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_colorlike_ from '../../colorlike.js';
-import _ol_extent_ from '../../extent.js';
-import _ol_extent_Relationship_ from '../../extent/Relationship.js';
+import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
+  createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
+import Relationship from '../../extent/Relationship.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
 import _ol_geom_flat_inflate_ from '../../geom/flat/inflate.js';
 import _ol_geom_flat_length_ from '../../geom/flat/length.js';
@@ -42,7 +43,7 @@ var _ol_render_canvas_Replay_ = function(tolerance, maxExtent, resolution, pixel
    * @private
    * @type {ol.Extent}
    */
-  this.tmpExtent_ = _ol_extent_.createEmpty();
+  this.tmpExtent_ = createEmpty();
 
   /**
    * @protected
@@ -258,13 +259,13 @@ _ol_render_canvas_Replay_.prototype.replayImage_ = function(context, x, y, image
     transform = _ol_transform_.compose(localTransform,
         centerX, centerY, 1, 1, rotation, -centerX, -centerY);
 
-    _ol_extent_.createOrUpdateEmpty(box);
-    _ol_extent_.extendCoordinate(box, _ol_transform_.apply(localTransform, p1));
-    _ol_extent_.extendCoordinate(box, _ol_transform_.apply(localTransform, p2));
-    _ol_extent_.extendCoordinate(box, _ol_transform_.apply(localTransform, p3));
-    _ol_extent_.extendCoordinate(box, _ol_transform_.apply(localTransform, p4));
+    createOrUpdateEmpty(box);
+    extendCoordinate(box, _ol_transform_.apply(localTransform, p1));
+    extendCoordinate(box, _ol_transform_.apply(localTransform, p2));
+    extendCoordinate(box, _ol_transform_.apply(localTransform, p3));
+    extendCoordinate(box, _ol_transform_.apply(localTransform, p4));
   } else {
-    _ol_extent_.createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
+    createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
   }
   var canvas = context.canvas;
   var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
@@ -278,7 +279,7 @@ _ol_render_canvas_Replay_.prototype.replayImage_ = function(context, x, y, image
     if (!intersects && declutterGroup[4] == 1) {
       return;
     }
-    _ol_extent_.extend(declutterGroup, box);
+    extend(declutterGroup, box);
     var declutterArgs = intersects ?
       [context, transform ? transform.slice(0) : null, opacity, image, originX, originY, w, h, x, y, scale] :
       null;
@@ -335,7 +336,7 @@ _ol_render_canvas_Replay_.prototype.appendFlatCoordinates = function(flatCoordin
   for (i = offset + stride; i < end; i += stride) {
     nextCoord[0] = flatCoordinates[i];
     nextCoord[1] = flatCoordinates[i + 1];
-    nextRel = _ol_extent_.coordinateRelationship(extent, nextCoord);
+    nextRel = coordinateRelationship(extent, nextCoord);
     if (nextRel !== lastRel) {
       if (skipped) {
         this.coordinates[myEnd++] = lastCoord[0];
@@ -344,7 +345,7 @@ _ol_render_canvas_Replay_.prototype.appendFlatCoordinates = function(flatCoordin
       this.coordinates[myEnd++] = nextCoord[0];
       this.coordinates[myEnd++] = nextCoord[1];
       skipped = false;
-    } else if (nextRel === _ol_extent_Relationship_.INTERSECTING) {
+    } else if (nextRel === Relationship.INTERSECTING) {
       this.coordinates[myEnd++] = nextCoord[0];
       this.coordinates[myEnd++] = nextCoord[1];
       skipped = false;
@@ -516,7 +517,7 @@ _ol_render_canvas_Replay_.prototype.renderDeclutter_ = function(declutterGroup, 
         }
       }
       declutterGroup.length = 5;
-      _ol_extent_.createOrUpdateEmpty(declutterGroup);
+      createOrUpdateEmpty(declutterGroup);
     }
   }
 };
@@ -587,7 +588,7 @@ _ol_render_canvas_Replay_.prototype.replay_ = function(
             skippedFeaturesHash[getUid(feature).toString()]) ||
             !feature.getGeometry()) {
           i = /** @type {number} */ (instruction[2]);
-        } else if (opt_hitExtent !== undefined && !_ol_extent_.intersects(
+        } else if (opt_hitExtent !== undefined && !intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {
           i = /** @type {number} */ (instruction[2]) + 1;
         } else {
@@ -1060,10 +1061,10 @@ _ol_render_canvas_Replay_.prototype.finish = nullFunction;
  */
 _ol_render_canvas_Replay_.prototype.getBufferedMaxExtent = function() {
   if (!this.bufferedMaxExtent_) {
-    this.bufferedMaxExtent_ = _ol_extent_.clone(this.maxExtent);
+    this.bufferedMaxExtent_ = clone(this.maxExtent);
     if (this.maxLineWidth > 0) {
       var width = this.resolution * (this.maxLineWidth + 1) / 2;
-      _ol_extent_.buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
+      buffer(this.bufferedMaxExtent_, width, this.bufferedMaxExtent_);
     }
   }
   return this.bufferedMaxExtent_;

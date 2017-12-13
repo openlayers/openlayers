@@ -2,7 +2,7 @@
  * @module ol/source/TileArcGISRest
  */
 import {inherits} from '../index.js';
-import _ol_extent_ from '../extent.js';
+import {createEmpty} from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_obj_ from '../obj.js';
 import _ol_size_ from '../size.js';
@@ -53,7 +53,7 @@ var _ol_source_TileArcGISRest_ = function(opt_options) {
    * @private
    * @type {ol.Extent}
    */
-  this.tmpExtent_ = _ol_extent_.createEmpty();
+  this.tmpExtent_ = createEmpty();
 
   this.setKey(this.getKeyForParams_());
 };

@@ -8,7 +8,7 @@
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_colorlike_ from '../../colorlike.js';
-import _ol_extent_ from '../../extent.js';
+import {intersects} from '../../extent.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../../geom/SimpleGeometry.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
@@ -402,7 +402,7 @@ _ol_render_canvas_Immediate_.prototype.drawRings_ = function(flatCoordinates, of
  * @api
  */
 _ol_render_canvas_Immediate_.prototype.drawCircle = function(geometry) {
-  if (!_ol_extent_.intersects(this.extent_, geometry.getExtent())) {
+  if (!intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.fillState_ || this.strokeState_) {
@@ -502,8 +502,7 @@ _ol_render_canvas_Immediate_.prototype.drawGeometry = function(geometry) {
  */
 _ol_render_canvas_Immediate_.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!geometry ||
-      !_ol_extent_.intersects(this.extent_, geometry.getExtent())) {
+  if (!geometry || !intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   this.setStyle(style);
@@ -573,7 +572,7 @@ _ol_render_canvas_Immediate_.prototype.drawMultiPoint = function(geometry) {
  * @override
  */
 _ol_render_canvas_Immediate_.prototype.drawLineString = function(geometry) {
-  if (!_ol_extent_.intersects(this.extent_, geometry.getExtent())) {
+  if (!intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_) {
@@ -602,7 +601,7 @@ _ol_render_canvas_Immediate_.prototype.drawLineString = function(geometry) {
  */
 _ol_render_canvas_Immediate_.prototype.drawMultiLineString = function(geometry) {
   var geometryExtent = geometry.getExtent();
-  if (!_ol_extent_.intersects(this.extent_, geometryExtent)) {
+  if (!intersects(this.extent_, geometryExtent)) {
     return;
   }
   if (this.strokeState_) {
@@ -635,7 +634,7 @@ _ol_render_canvas_Immediate_.prototype.drawMultiLineString = function(geometry) 
  * @override
  */
 _ol_render_canvas_Immediate_.prototype.drawPolygon = function(geometry) {
-  if (!_ol_extent_.intersects(this.extent_, geometry.getExtent())) {
+  if (!intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_ || this.fillState_) {
@@ -670,7 +669,7 @@ _ol_render_canvas_Immediate_.prototype.drawPolygon = function(geometry) {
  * @override
  */
 _ol_render_canvas_Immediate_.prototype.drawMultiPolygon = function(geometry) {
-  if (!_ol_extent_.intersects(this.extent_, geometry.getExtent())) {
+  if (!intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_ || this.fillState_) {

@@ -5,7 +5,7 @@
 import {DEFAULT_WMS_VERSION} from './common.js';
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_extent_ from '../extent.js';
+import {buffer, createEmpty} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_math_ from '../math.js';
 import _ol_proj_ from '../proj.js';
@@ -85,7 +85,7 @@ var _ol_source_TileWMS_ = function(opt_options) {
    * @private
    * @type {ol.Extent}
    */
-  this.tmpExtent_ = _ol_extent_.createEmpty();
+  this.tmpExtent_ = createEmpty();
 
   this.updateV13_();
   this.setKey(this.getKeyForParams_());
@@ -132,7 +132,7 @@ _ol_source_TileWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolu
   var gutter = this.gutter_;
   if (gutter !== 0) {
     tileSize = _ol_size_.buffer(tileSize, gutter, this.tmpSize);
-    tileExtent = _ol_extent_.buffer(tileExtent, tileResolution * gutter, tileExtent);
+    tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
   }
 
   if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
@@ -304,8 +304,7 @@ _ol_source_TileWMS_.prototype.fixedTileUrlFunction = function(tileCoord, pixelRa
   var gutter = this.gutter_;
   if (gutter !== 0) {
     tileSize = _ol_size_.buffer(tileSize, gutter, this.tmpSize);
-    tileExtent = _ol_extent_.buffer(tileExtent,
-        tileResolution * gutter, tileExtent);
+    tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
   }
 
   if (pixelRatio != 1) {

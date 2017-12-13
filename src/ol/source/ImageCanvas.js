@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_ImageCanvas_ from '../ImageCanvas.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import _ol_source_Image_ from '../source/Image.js';
 
 /**
@@ -66,14 +66,14 @@ _ol_source_ImageCanvas_.prototype.getImageInternal = function(extent, resolution
       this.renderedRevision_ == this.getRevision() &&
       canvas.getResolution() == resolution &&
       canvas.getPixelRatio() == pixelRatio &&
-      _ol_extent_.containsExtent(canvas.getExtent(), extent)) {
+      containsExtent(canvas.getExtent(), extent)) {
     return canvas;
   }
 
   extent = extent.slice();
-  _ol_extent_.scaleFromCenter(extent, this.ratio_);
-  var width = _ol_extent_.getWidth(extent) / resolution;
-  var height = _ol_extent_.getHeight(extent) / resolution;
+  scaleFromCenter(extent, this.ratio_);
+  var width = getWidth(extent) / resolution;
+  var height = getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
   var canvasElement = this.canvasFunction_(

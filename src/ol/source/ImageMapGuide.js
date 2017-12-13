@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Image_ from '../source/Image.js';
 import _ol_uri_ from '../uri.js';
@@ -126,16 +126,16 @@ _ol_source_ImageMapGuide_.prototype.getImageInternal = function(extent, resoluti
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
-      _ol_extent_.containsExtent(image.getExtent(), extent)) {
+      containsExtent(image.getExtent(), extent)) {
     return image;
   }
 
   if (this.ratio_ != 1) {
     extent = extent.slice();
-    _ol_extent_.scaleFromCenter(extent, this.ratio_);
+    scaleFromCenter(extent, this.ratio_);
   }
-  var width = _ol_extent_.getWidth(extent) / resolution;
-  var height = _ol_extent_.getHeight(extent) / resolution;
+  var width = getWidth(extent) / resolution;
+  var height = getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
   if (this.url_ !== undefined) {
@@ -174,8 +174,8 @@ _ol_source_ImageMapGuide_.prototype.getImageLoadFunction = function() {
  * @return {number} The computed map scale.
  */
 _ol_source_ImageMapGuide_.getScale = function(extent, size, metersPerUnit, dpi) {
-  var mcsW = _ol_extent_.getWidth(extent);
-  var mcsH = _ol_extent_.getHeight(extent);
+  var mcsW = getWidth(extent);
+  var mcsH = getHeight(extent);
   var devW = size[0];
   var devH = size[1];
   var mpp = 0.0254 / dpi;
@@ -209,7 +209,7 @@ _ol_source_ImageMapGuide_.prototype.updateParams = function(params) {
 _ol_source_ImageMapGuide_.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
   var scale = _ol_source_ImageMapGuide_.getScale(extent, size,
       this.metersPerUnit_, this.displayDpi_);
-  var center = _ol_extent_.getCenter(extent);
+  var center = getCenter(extent);
   var baseParams = {
     'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
     'VERSION': '2.0.0',

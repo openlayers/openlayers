@@ -3,8 +3,8 @@
  */
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import _ol_size_ from './size.js';
-import _ol_extent_ from './extent.js';
-import _ol_extent_Corner_ from './extent/Corner.js';
+import {containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth} from './extent.js';
+import Corner from './extent/Corner.js';
 import _ol_obj_ from './obj.js';
 import _ol_proj_ from './proj.js';
 import _ol_proj_Units_ from './proj/Units.js';
@@ -36,8 +36,8 @@ _ol_tilegrid_.wrapX = function(tileGrid, tileCoord, projection) {
   var z = tileCoord[0];
   var center = tileGrid.getTileCoordCenter(tileCoord);
   var projectionExtent = _ol_tilegrid_.extentFromProjection(projection);
-  if (!_ol_extent_.containsCoordinate(projectionExtent, center)) {
-    var worldWidth = _ol_extent_.getWidth(projectionExtent);
+  if (!containsCoordinate(projectionExtent, center)) {
+    var worldWidth = getWidth(projectionExtent);
     var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
     center[0] += worldWidth * worldsAway;
     return tileGrid.getTileCoordForCoordAndZ(center, z);
@@ -58,15 +58,14 @@ _ol_tilegrid_.wrapX = function(tileGrid, tileCoord, projection) {
  * @return {!ol.tilegrid.TileGrid} TileGrid instance.
  */
 _ol_tilegrid_.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  var corner = opt_corner !== undefined ?
-    opt_corner : _ol_extent_Corner_.TOP_LEFT;
+  var corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
 
   var resolutions = _ol_tilegrid_.resolutionsFromExtent(
       extent, opt_maxZoom, opt_tileSize);
 
   return new _ol_tilegrid_TileGrid_({
     extent: extent,
-    origin: _ol_extent_.getCorner(extent, corner),
+    origin: getCorner(extent, corner),
     resolutions: resolutions,
     tileSize: opt_tileSize
   });
@@ -107,8 +106,8 @@ _ol_tilegrid_.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize
   var maxZoom = opt_maxZoom !== undefined ?
     opt_maxZoom : DEFAULT_MAX_ZOOM;
 
-  var height = _ol_extent_.getHeight(extent);
-  var width = _ol_extent_.getWidth(extent);
+  var height = getHeight(extent);
+  var width = getWidth(extent);
 
   var tileSize = _ol_size_.toSize(opt_tileSize !== undefined ?
     opt_tileSize : DEFAULT_TILE_SIZE);
@@ -153,7 +152,7 @@ _ol_tilegrid_.extentFromProjection = function(projection) {
   if (!extent) {
     var half = 180 * _ol_proj_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
         projection.getMetersPerUnit();
-    extent = _ol_extent_.createOrUpdate(-half, -half, half, half);
+    extent = createOrUpdate(-half, -half, half, half);
   }
   return extent;
 };

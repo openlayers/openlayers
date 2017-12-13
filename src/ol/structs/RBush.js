@@ -3,7 +3,7 @@
  */
 import {getUid} from '../index.js';
 import _ol_ext_rbush_ from 'rbush';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdate, equals} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 
 /**
@@ -103,7 +103,7 @@ _ol_structs_RBush_.prototype.remove = function(value) {
 _ol_structs_RBush_.prototype.update = function(extent, value) {
   var item = this.items_[getUid(value)];
   var bbox = [item.minX, item.minY, item.maxX, item.maxY];
-  if (!_ol_extent_.equals(bbox, extent)) {
+  if (!equals(bbox, extent)) {
     this.remove(value);
     this.insert(extent, value);
   }
@@ -213,7 +213,7 @@ _ol_structs_RBush_.prototype.clear = function() {
 _ol_structs_RBush_.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
   var data = this.rbush_.data;
-  return _ol_extent_.createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
+  return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
 };
 
 

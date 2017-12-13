@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import _ol_dom_ from '../../dom.js';
-import _ol_extent_ from '../../extent.js';
+import {intersects} from '../../extent.js';
 import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
@@ -177,7 +177,7 @@ _ol_render_canvas_TextReplay_.prototype.drawText = function(geometry, feature) {
   var i, ii;
 
   if (textState.placement === _ol_style_TextPlacement_.LINE) {
-    if (!_ol_extent_.intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
+    if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
       return;
     }
     var ends;

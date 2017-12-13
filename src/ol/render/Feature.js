@@ -3,7 +3,7 @@
  */
 import {nullFunction} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
@@ -110,8 +110,8 @@ _ol_render_Feature_.prototype.getEndss = function() {
 _ol_render_Feature_.prototype.getExtent = function() {
   if (!this.extent_) {
     this.extent_ = this.type_ === _ol_geom_GeometryType_.POINT ?
-      _ol_extent_.createOrUpdateFromCoordinate(this.flatCoordinates_) :
-      _ol_extent_.createOrUpdateFromFlatCoordinates(
+      createOrUpdateFromCoordinate(this.flatCoordinates_) :
+      createOrUpdateFromFlatCoordinates(
           this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
 
   }
@@ -124,7 +124,7 @@ _ol_render_Feature_.prototype.getExtent = function() {
  */
 _ol_render_Feature_.prototype.getFlatInteriorPoint = function() {
   if (!this.flatInteriorPoints_) {
-    var flatCenter = _ol_extent_.getCenter(this.getExtent());
+    var flatCenter = getCenter(this.getExtent());
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRings(
         this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
   }
@@ -266,7 +266,7 @@ _ol_render_Feature_.prototype.getType = function() {
 _ol_render_Feature_.prototype.transform = function(source, destination) {
   var pixelExtent = source.getExtent();
   var projectedExtent = source.getWorldExtent();
-  var scale = _ol_extent_.getHeight(projectedExtent) / _ol_extent_.getHeight(pixelExtent);
+  var scale = getHeight(projectedExtent) / getHeight(pixelExtent);
   var transform = this.tmpTransform_;
   _ol_transform_.compose(transform,
       projectedExtent[0], projectedExtent[3],

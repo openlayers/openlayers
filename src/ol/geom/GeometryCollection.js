@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_obj_ from '../obj.js';
@@ -98,8 +98,7 @@ _ol_geom_GeometryCollection_.prototype.clone = function() {
  * @inheritDoc
  */
 _ol_geom_GeometryCollection_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  if (minSquaredDistance <
-      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+  if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   var geometries = this.geometries_;
@@ -131,10 +130,10 @@ _ol_geom_GeometryCollection_.prototype.containsXY = function(x, y) {
  * @inheritDoc
  */
 _ol_geom_GeometryCollection_.prototype.computeExtent = function(extent) {
-  _ol_extent_.createOrUpdateEmpty(extent);
+  createOrUpdateEmpty(extent);
   var geometries = this.geometries_;
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    _ol_extent_.extend(extent, geometries[i].getExtent());
+    extend(extent, geometries[i].getExtent());
   }
   return extent;
 };
@@ -254,7 +253,7 @@ _ol_geom_GeometryCollection_.prototype.rotate = function(angle, anchor) {
 _ol_geom_GeometryCollection_.prototype.scale = function(sx, opt_sy, opt_anchor) {
   var anchor = opt_anchor;
   if (!anchor) {
-    anchor = _ol_extent_.getCenter(this.getExtent());
+    anchor = getCenter(this.getExtent());
   }
   var geometries = this.geometries_;
   for (var i = 0, ii = geometries.length; i < ii; ++i) {

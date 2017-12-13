@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
-import _ol_extent_ from '../extent.js';
+import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import _ol_functions_ from '../functions.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import _ol_proj_ from '../proj.js';
@@ -32,7 +32,7 @@ var _ol_geom_Geometry_ = function() {
    * @private
    * @type {ol.Extent}
    */
-  this.extent_ = _ol_extent_.createEmpty();
+  this.extent_ = createEmpty();
 
   /**
    * @private
@@ -143,7 +143,7 @@ _ol_geom_Geometry_.prototype.getExtent = function(opt_extent) {
     this.extent_ = this.computeExtent(this.extent_);
     this.extentRevision_ = this.getRevision();
   }
-  return _ol_extent_.returnOrUpdate(this.extent_, opt_extent);
+  return returnOrUpdate(this.extent_, opt_extent);
 };
 
 
@@ -260,7 +260,7 @@ _ol_geom_Geometry_.prototype.transform = function(source, destination) {
     function(inCoordinates, outCoordinates, stride) {
       var pixelExtent = source.getExtent();
       var projectedExtent = source.getWorldExtent();
-      var scale = _ol_extent_.getHeight(projectedExtent) / _ol_extent_.getHeight(pixelExtent);
+      var scale = getHeight(projectedExtent) / getHeight(pixelExtent);
       _ol_transform_.compose(tmpTransform,
           projectedExtent[0], projectedExtent[3],
           scale, -scale, 0,

@@ -8,7 +8,7 @@ import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_dom_ from '../dom.js';
-import _ol_extent_ from '../extent.js';
+import {getTopLeft} from '../extent.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
@@ -84,7 +84,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
   var tileGrid = new _ol_tilegrid_TileGrid_({
     tileSize: tileSize,
     extent: extent,
-    origin: _ol_extent_.getTopLeft(extent),
+    origin: getTopLeft(extent),
     resolutions: resolutions
   });
 

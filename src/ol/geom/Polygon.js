@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
@@ -122,8 +122,7 @@ _ol_geom_Polygon_.prototype.clone = function() {
  * @inheritDoc
  */
 _ol_geom_Polygon_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  if (minSquaredDistance <
-      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+  if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
@@ -199,7 +198,7 @@ _ol_geom_Polygon_.prototype.getEnds = function() {
  */
 _ol_geom_Polygon_.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
-    var flatCenter = _ol_extent_.getCenter(this.getExtent());
+    var flatCenter = getCenter(this.getExtent());
     this.flatInteriorPoint_ = _ol_geom_flat_interiorpoint_.linearRings(
         this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
         flatCenter, 0);

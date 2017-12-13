@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {containsExtent} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_proj_ from '../proj.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
@@ -416,7 +416,7 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
     if (projectionExtent) {
       // If possible, do a sanity check on the extent - it should never be
       // bigger than the validity extent of the projection of a matrix set.
-      if (!_ol_extent_.containsExtent(projectionExtent, extent)) {
+      if (!containsExtent(projectionExtent, extent)) {
         extent = undefined;
       }
     }

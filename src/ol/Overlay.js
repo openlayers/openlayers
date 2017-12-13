@@ -8,7 +8,7 @@ import _ol_OverlayPositioning_ from './OverlayPositioning.js';
 import _ol_css_ from './css.js';
 import _ol_dom_ from './dom.js';
 import _ol_events_ from './events.js';
-import _ol_extent_ from './extent.js';
+import {containsExtent} from './extent.js';
 
 /**
  * @classdesc
@@ -363,7 +363,7 @@ _ol_Overlay_.prototype.panIntoView = function() {
       [_ol_dom_.outerWidth(element), _ol_dom_.outerHeight(element)]);
 
   var margin = this.autoPanMargin;
-  if (!_ol_extent_.containsExtent(mapRect, overlayRect)) {
+  if (!containsExtent(mapRect, overlayRect)) {
     // the overlay is not completely inside the viewport, so pan the map
     var offsetLeft = overlayRect[0] - mapRect[0];
     var offsetRight = mapRect[2] - overlayRect[2];

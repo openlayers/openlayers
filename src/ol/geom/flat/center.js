@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/center
  */
-import _ol_extent_ from '../../extent.js';
+import {createEmpty, createOrUpdateFromFlatCoordinates} from '../../extent.js';
 var _ol_geom_flat_center_ = {};
 
 
@@ -15,11 +15,10 @@ var _ol_geom_flat_center_ = {};
 _ol_geom_flat_center_.linearRingss = function(flatCoordinates, offset, endss, stride) {
   var flatCenters = [];
   var i, ii;
-  var extent = _ol_extent_.createEmpty();
+  var extent = createEmpty();
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    extent = _ol_extent_.createOrUpdateFromFlatCoordinates(
-        flatCoordinates, offset, ends[0], stride);
+    extent = createOrUpdateFromFlatCoordinates(flatCoordinates, offset, ends[0], stride);
     flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);
     offset = ends[ends.length - 1];
   }

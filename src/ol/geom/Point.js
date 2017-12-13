@@ -2,7 +2,7 @@
  * @module ol/geom/Point
  */
 import {inherits} from '../index.js';
-import _ol_extent_ from '../extent.js';
+import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
@@ -76,7 +76,7 @@ _ol_geom_Point_.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 _ol_geom_Point_.prototype.computeExtent = function(extent) {
-  return _ol_extent_.createOrUpdateFromCoordinate(this.flatCoordinates, extent);
+  return createOrUpdateFromCoordinate(this.flatCoordinates, extent);
 };
 
 
@@ -94,8 +94,7 @@ _ol_geom_Point_.prototype.getType = function() {
  * @api
  */
 _ol_geom_Point_.prototype.intersectsExtent = function(extent) {
-  return _ol_extent_.containsXY(extent,
-      this.flatCoordinates[0], this.flatCoordinates[1]);
+  return containsXY(extent, this.flatCoordinates[0], this.flatCoordinates[1]);
 };
 
 

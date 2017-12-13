@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_extent_ from '../../extent.js';
+import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_render_ReplayGroup_ from '../ReplayGroup.js';
@@ -244,9 +244,7 @@ _ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
   if (this.renderBuffer_ !== undefined) {
     // build an extent around the coordinate, so that only features that
     // intersect this extent are checked
-    hitExtent = _ol_extent_.buffer(
-        _ol_extent_.createOrUpdateFromCoordinate(coordinate),
-        resolution * this.renderBuffer_);
+    hitExtent = buffer(createOrUpdateFromCoordinate(coordinate), resolution * this.renderBuffer_);
   }
 
   return this.replayHitDetection_(context,

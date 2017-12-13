@@ -6,7 +6,7 @@ import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_dom_ from './dom.js';
 import _ol_events_ from './events.js';
-import _ol_extent_ from './extent.js';
+import {getHeight, getIntersection, getWidth} from './extent.js';
 import _ol_events_EventType_ from './events/EventType.js';
 import _ol_featureloader_ from './featureloader.js';
 
@@ -93,14 +93,14 @@ var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
     var resolution = tileGrid.getResolution(tileCoord[0]);
     var sourceZ = sourceTileGrid.getZForResolution(resolution);
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
-      var sharedExtent = _ol_extent_.getIntersection(extent,
+      var sharedExtent = getIntersection(extent,
           sourceTileGrid.getTileCoordExtent(sourceTileCoord));
       var sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
-        sharedExtent = _ol_extent_.getIntersection(sharedExtent, sourceExtent);
+        sharedExtent = getIntersection(sharedExtent, sourceExtent);
       }
-      if (_ol_extent_.getWidth(sharedExtent) / resolution >= 0.5 &&
-          _ol_extent_.getHeight(sharedExtent) / resolution >= 0.5) {
+      if (getWidth(sharedExtent) / resolution >= 0.5 &&
+          getHeight(sharedExtent) / resolution >= 0.5) {
         // only include source tile if overlap is at least 1 pixel
         var sourceTileKey = sourceTileCoord.toString();
         var sourceTile = sourceTiles[sourceTileKey];

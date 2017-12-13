@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_extent_ from '../extent.js';
+import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_Point_ from '../geom/Point.js';
@@ -62,8 +62,7 @@ _ol_geom_MultiPoint_.prototype.clone = function() {
  * @inheritDoc
  */
 _ol_geom_MultiPoint_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  if (minSquaredDistance <
-      _ol_extent_.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+  if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
   var flatCoordinates = this.flatCoordinates;
@@ -156,7 +155,7 @@ _ol_geom_MultiPoint_.prototype.intersectsExtent = function(extent) {
   for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
     x = flatCoordinates[i];
     y = flatCoordinates[i + 1];
-    if (_ol_extent_.containsXY(extent, x, y)) {
+    if (containsXY(extent, x, y)) {
       return true;
     }
   }

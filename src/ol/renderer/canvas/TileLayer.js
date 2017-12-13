@@ -7,7 +7,7 @@ import _ol_TileRange_ from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import _ol_dom_ from '../../dom.js';
-import _ol_extent_ from '../../extent.js';
+import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
 import _ol_transform_ from '../../transform.js';
@@ -56,7 +56,7 @@ var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
    * @protected
    * @type {ol.Extent}
    */
-  this.tmpExtent = _ol_extent_.createEmpty();
+  this.tmpExtent = createEmpty();
 
   /**
    * @private
@@ -138,9 +138,9 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
   var extent = frameState.extent;
 
   if (layerState.extent !== undefined) {
-    extent = _ol_extent_.getIntersection(extent, layerState.extent);
+    extent = getIntersection(extent, layerState.extent);
   }
-  if (_ol_extent_.isEmpty(extent)) {
+  if (isEmpty(extent)) {
     // Return false to prevent the rendering of the layer.
     return false;
   }
@@ -212,7 +212,7 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
   var animatingOrInteracting = hints[_ol_ViewHint_.ANIMATING] || hints[_ol_ViewHint_.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
     newTiles ||
-        !(this.renderedExtent_ && _ol_extent_.containsExtent(this.renderedExtent_, extent)) ||
+        !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||
         this.renderedRevision != sourceRevision ||
         oversampling != this.oversampling_ ||
         !animatingOrInteracting && renderedResolution != this.renderedResolution
@@ -229,7 +229,7 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
         canvas.width = width;
         canvas.height = height;
       } else {
-        if (this.renderedExtent_ && !_ol_extent_.equals(imageExtent, this.renderedExtent_)) {
+        if (this.renderedExtent_ && !equals(imageExtent, this.renderedExtent_)) {
           context.clearRect(0, 0, width, height);
         }
         oversampling = this.oversampling_;

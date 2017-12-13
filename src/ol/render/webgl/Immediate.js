@@ -2,7 +2,7 @@
  * @module ol/render/webgl/Immediate
  */
 import {inherits} from '../../index.js';
-import _ol_extent_ from '../../extent.js';
+import {intersects} from '../../extent.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
 import _ol_render_ReplayType_ from '../ReplayType.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
@@ -173,8 +173,7 @@ _ol_render_webgl_Immediate_.prototype.drawGeometry = function(geometry) {
  */
 _ol_render_webgl_Immediate_.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!geometry ||
-      !_ol_extent_.intersects(this.extent_, geometry.getExtent())) {
+  if (!geometry || !intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   this.setStyle(style);
