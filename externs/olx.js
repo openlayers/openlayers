@@ -39,20 +39,6 @@ olx.AttributionOptions.prototype.html;
 
 
 /**
- * @typedef {{tracking: (boolean|undefined)}}
- */
-olx.DeviceOrientationOptions;
-
-
-/**
- * Start tracking. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.DeviceOrientationOptions.prototype.tracking;
-
-
-/**
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.ProjectionLike}}
