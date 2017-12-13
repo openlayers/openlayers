@@ -1,7 +1,7 @@
 /**
  * @module ol/has
  */
-import {ENABLE_CANVAS, HAS_WEBGL} from './index.js';
+import {HAS_WEBGL} from './index.js';
 
 var _ol_has_ = {};
 
@@ -51,13 +51,12 @@ _ol_has_.CANVAS_LINE_DASH = false;
 
 
 /**
- * True if both the library and browser support Canvas.  Always `false`
- * if `ol.ENABLE_CANVAS` is set to `false` at compile time.
+ * True if the and browsers support Canvas.
  * @const
  * @type {boolean}
  * @api
  */
-_ol_has_.CANVAS = ENABLE_CANVAS && (
+_ol_has_.CANVAS = (
   /**
    * @return {boolean} Canvas supported.
    */

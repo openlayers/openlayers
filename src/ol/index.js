@@ -12,14 +12,6 @@ export var DEFAULT_WMS_VERSION = '1.3.0';
 
 
 /**
- * @type {boolean} Enable the Canvas renderer.  Default is `true`. Setting
- *     this to false at compile time in advanced mode removes all code
- *     supporting the Canvas renderer from the build.
- */
-export var ENABLE_CANVAS = true;
-
-
-/**
  * @type {boolean} Enable integration with the Proj4js library.  Default is
  *     `true`.
  */
@@ -160,7 +152,6 @@ export default {
   inherits: inherits,
   VERSION: VERSION,
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
-  ENABLE_CANVAS: ENABLE_CANVAS,
   ENABLE_PROJ4JS: ENABLE_PROJ4JS,
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
   ENABLE_WEBGL: ENABLE_WEBGL,

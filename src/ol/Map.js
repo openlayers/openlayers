@@ -1,7 +1,7 @@
 /**
  * @module ol/Map
  */
-import {ENABLE_CANVAS, ENABLE_WEBGL, inherits} from './index.js';
+import {ENABLE_WEBGL, inherits} from './index.js';
 import _ol_PluggableMap_ from './PluggableMap.js';
 import _ol_PluginType_ from './PluginType.js';
 import _ol_control_ from './control.js';
@@ -19,15 +19,13 @@ import _ol_renderer_webgl_TileLayer_ from './renderer/webgl/TileLayer.js';
 import _ol_renderer_webgl_VectorLayer_ from './renderer/webgl/VectorLayer.js';
 
 
-if (ENABLE_CANVAS) {
-  _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_canvas_Map_);
-  _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
-    _ol_renderer_canvas_ImageLayer_,
-    _ol_renderer_canvas_TileLayer_,
-    _ol_renderer_canvas_VectorLayer_,
-    _ol_renderer_canvas_VectorTileLayer_
-  ]);
-}
+_ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_canvas_Map_);
+_ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
+  _ol_renderer_canvas_ImageLayer_,
+  _ol_renderer_canvas_TileLayer_,
+  _ol_renderer_canvas_VectorLayer_,
+  _ol_renderer_canvas_VectorTileLayer_
+]);
 
 if (ENABLE_WEBGL) {
   _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_webgl_Map_);
