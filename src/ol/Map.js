@@ -1,7 +1,7 @@
 /**
  * @module ol/Map
  */
-import {ENABLE_WEBGL, inherits} from './index.js';
+import {inherits} from './index.js';
 import _ol_PluggableMap_ from './PluggableMap.js';
 import _ol_PluginType_ from './PluginType.js';
 import _ol_control_ from './control.js';
@@ -27,14 +27,13 @@ _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
   _ol_renderer_canvas_VectorTileLayer_
 ]);
 
-if (ENABLE_WEBGL) {
-  _ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_webgl_Map_);
-  _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
-    _ol_renderer_webgl_ImageLayer_,
-    _ol_renderer_webgl_TileLayer_,
-    _ol_renderer_webgl_VectorLayer_
-  ]);
-}
+// TODO: move these to new ol-webgl package
+_ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_webgl_Map_);
+_ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
+  _ol_renderer_webgl_ImageLayer_,
+  _ol_renderer_webgl_TileLayer_,
+  _ol_renderer_webgl_VectorLayer_
+]);
 
 
 /**

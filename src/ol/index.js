@@ -26,17 +26,8 @@ export var ENABLE_RASTER_REPROJECTION = true;
 
 
 /**
- * @type {boolean} Enable the WebGL renderer.  Default is `true`. Setting
- *     this to false at compile time in advanced mode removes all code
- *     supporting the WebGL renderer from the build.
- */
-export var ENABLE_WEBGL = true;
-
-
-/**
  * @type {boolean} Include debuggable shader sources.  Default is `true`.
- *     This should be set to `false` for production builds (if `ENABLE_WEBGL`
- *     is `true`).
+ *     This should be set to `false` for production builds.
  */
 export var DEBUG_WEBGL = true;
 
@@ -71,7 +62,7 @@ var WEBGL_EXTENSIONS; // value is set below
 var HAS_WEBGL = false;
 
 
-if (ENABLE_WEBGL && 'WebGLRenderingContext' in window) {
+if ('WebGLRenderingContext' in window) {
   try {
     var canvas = /** @type {HTMLCanvasElement} */
         (document.createElement('CANVAS'));
@@ -154,7 +145,6 @@ export default {
   DEFAULT_WMS_VERSION: DEFAULT_WMS_VERSION,
   ENABLE_PROJ4JS: ENABLE_PROJ4JS,
   ENABLE_RASTER_REPROJECTION: ENABLE_RASTER_REPROJECTION,
-  ENABLE_WEBGL: ENABLE_WEBGL,
   DEBUG_WEBGL: DEBUG_WEBGL,
   HAS_WEBGL: HAS_WEBGL,
   WEBGL_MAX_TEXTURE_SIZE: WEBGL_MAX_TEXTURE_SIZE,
