@@ -6,7 +6,7 @@ import _ol_TileState_ from '../../../../../src/ol/TileState.js';
 import _ol_VectorImageTile_ from '../../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../../src/ol/VectorTile.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
-import _ol_extent_ from '../../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import _ol_format_MVT_ from '../../../../../src/ol/format/MVT.js';
 import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
 import _ol_layer_VectorTile_ from '../../../../../src/ol/layer/VectorTile.js';

@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';

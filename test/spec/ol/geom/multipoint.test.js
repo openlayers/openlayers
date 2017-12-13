@@ -1,4 +1,4 @@
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 

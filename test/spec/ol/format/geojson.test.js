@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';

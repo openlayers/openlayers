@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';

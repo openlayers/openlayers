@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
-import _ol_extent_ from '../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../src/ol/extent.js';
 import _ol_geom_Circle_ from '../../../src/ol/geom/Circle.js';
 import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
 import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';

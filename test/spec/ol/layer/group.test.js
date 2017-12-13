@@ -1,7 +1,7 @@
 import {getUid} from '../../../../src/ol/index.js';
 import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_layer_Group_ from '../../../../src/ol/layer/Group.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
