@@ -7877,7 +7877,6 @@ olx.style.StrokeOptions.prototype.width;
 
 /**
  * @typedef {{font: (string|undefined),
- *     exceedLength: (boolean|undefined),
  *     maxAngle: (number|undefined),
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined),
@@ -7896,19 +7895,6 @@ olx.style.StrokeOptions.prototype.width;
  *     padding: (Array.<number>|undefined)}}
  */
 olx.style.TextOptions;
-
-
-/**
- * **Deprecated**. Use the `overflow` option instead.
- *
- * For polygon labels or when `placement` is set to `'line'`, allow text to
- * exceed the width of the polygon at the label position or the length of
- * the path that it follows. Default is `false`.
- * @type {boolean|undefined}
- * @deprecated
- * @api
- */
-olx.style.TextOptions.prototype.exceedLength;
 
 
 /**
