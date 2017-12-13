@@ -5,7 +5,7 @@
  * Relationship to an extent.
  * @enum {number}
  */
-var _ol_extent_Relationship_ = {
+export default {
   UNKNOWN: 0,
   INTERSECTING: 1,
   ABOVE: 2,
@@ -13,5 +13,3 @@ var _ol_extent_Relationship_ = {
   BELOW: 8,
   LEFT: 16
 };
-
-export default _ol_extent_Relationship_;
