@@ -6,7 +6,7 @@ import _ol_Object_ from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import _ol_functions_ from '../functions.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, getTransform} from '../proj.js';
 import _ol_proj_Units_ from '../proj/Units.js';
 import _ol_transform_ from '../transform.js';
 
@@ -255,7 +255,7 @@ _ol_geom_Geometry_.prototype.translate = function(deltaX, deltaY) {};
  */
 _ol_geom_Geometry_.prototype.transform = function(source, destination) {
   var tmpTransform = this.tmpTransform_;
-  source = _ol_proj_.get(source);
+  source = getProjection(source);
   var transformFn = source.getUnits() == _ol_proj_Units_.TILE_PIXELS ?
     function(inCoordinates, outCoordinates, stride) {
       var pixelExtent = source.getExtent();
@@ -267,9 +267,9 @@ _ol_geom_Geometry_.prototype.transform = function(source, destination) {
           0, 0);
       _ol_geom_flat_transform_.transform2D(inCoordinates, 0, inCoordinates.length, stride,
           tmpTransform, outCoordinates);
-      return _ol_proj_.getTransform(source, destination)(inCoordinates, outCoordinates, stride);
+      return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
     } :
-    _ol_proj_.getTransform(source, destination);
+    getTransform(source, destination);
   this.applyTransform(transformFn);
   return this;
 };

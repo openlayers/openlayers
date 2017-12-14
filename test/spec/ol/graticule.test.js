@@ -1,6 +1,6 @@
 import _ol_Graticule_ from '../../../src/ol/Graticule.js';
 import _ol_Map_ from '../../../src/ol/Map.js';
-import _ol_proj_ from '../../../src/ol/proj.js';
+import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../src/ol/style/Text.js';
 
@@ -18,7 +18,7 @@ describe('ol.Graticule', function() {
       createGraticule();
       var extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
@@ -36,7 +36,7 @@ describe('ol.Graticule', function() {
       });
       var extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
@@ -91,7 +91,7 @@ describe('ol.Graticule', function() {
       });
       var extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);

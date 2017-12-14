@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_TopoJSON_ from '../src/ol/format/TopoJSON.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -83,7 +83,7 @@ var map = new _ol_Map_({
   ],
   target: 'map',
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([-74.0064, 40.7142]),
+    center: fromLonLat([-74.0064, 40.7142]),
     maxZoom: 19,
     zoom: 15
   })

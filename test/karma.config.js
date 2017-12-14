@@ -5,6 +5,7 @@ const pkg = require('../package.json');
 
 module.exports = function(karma) {
   karma.set({
+    browserDisconnectTolerance: 2,
     frameworks: ['mocha'],
     client: {
       runInParent: true,

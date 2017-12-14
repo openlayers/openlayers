@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
 
@@ -42,8 +42,8 @@ function setProjection(code, name, proj4def, bbox) {
 
   var newProjCode = 'EPSG:' + code;
   proj4.defs(newProjCode, proj4def);
-  var newProj = _ol_proj_.get(newProjCode);
-  var fromLonLat = _ol_proj_.getTransform('EPSG:4326', newProj);
+  var newProj = getProjection(newProjCode);
+  var fromLonLat = getTransform('EPSG:4326', newProj);
 
   // very approximate calculation of projection extent
   var extent = _ol_extent_.applyTransform(

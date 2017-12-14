@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_format_WKT_ from '../../../../src/ol/format/WKT.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {transform} from '../../../../src/ol/proj.js';
 
 
 describe('ol.format.WKT', function() {
@@ -24,7 +24,7 @@ describe('ol.format.WKT', function() {
         featureProjection: 'EPSG:3857'
       });
       expect(geom.getCoordinates()).to.eql(
-          _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+          transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });
@@ -54,7 +54,7 @@ describe('ol.format.WKT', function() {
       });
       var geom = feature.getGeometry();
       expect(geom.getCoordinates()).to.eql(
-          _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+          transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });
@@ -91,9 +91,9 @@ describe('ol.format.WKT', function() {
       expect(point1.getType()).to.eql('Point');
       expect(point2.getType()).to.eql('Point');
       expect(point1.getCoordinates()).to.eql(
-          _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+          transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
       expect(point2.getCoordinates()).to.eql(
-          _ol_proj_.transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
+          transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
     });
   });
 

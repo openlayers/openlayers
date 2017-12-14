@@ -1,4 +1,4 @@
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
 
 
@@ -7,7 +7,7 @@ describe('ol.source.Source', function() {
   describe('constructor', function() {
     it('returns a source', function() {
       var source = new _ol_source_Source_({
-        projection: _ol_proj_.get('EPSG:4326')
+        projection: getProjection('EPSG:4326')
       });
       expect(source).to.be.a(_ol_source_Source_);
     });
@@ -68,7 +68,7 @@ describe('ol.source.Source', function() {
   describe('#refresh()', function() {
     it('dispatches the change event', function() {
       var source = new _ol_source_Source_({
-        projection: _ol_proj_.get('EPSG:4326')
+        projection: getProjection('EPSG:4326')
       });
       var changedSpy = sinon.spy();
       source.on('change', changedSpy);

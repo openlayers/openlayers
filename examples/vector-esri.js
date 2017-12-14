@@ -4,7 +4,7 @@ import _ol_format_EsriJSON_ from '../src/ol/format/EsriJSON.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -108,7 +108,7 @@ var map = new _ol_Map_({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new _ol_View_({
-    center: _ol_proj_.transform([-97.6114, 38.8403], 'EPSG:4326', 'EPSG:3857'),
+    center: fromLonLat([-97.6114, 38.8403]),
     zoom: 7
   })
 });

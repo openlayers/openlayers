@@ -8,7 +8,7 @@ import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, transformExtent} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -63,7 +63,7 @@ _ol_format_GML2_.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var containerSrs = context['srsName'];
   var axisOrientation = 'enu';
   if (containerSrs) {
-    var proj = _ol_proj_.get(containerSrs);
+    var proj = getProjection(containerSrs);
     if (proj) {
       axisOrientation = proj.getAxisOrientation();
     }
@@ -289,7 +289,7 @@ _ol_format_GML2_.prototype.writeGeometryElement = function(node, geometry, objec
   var value;
   if (Array.isArray(geometry)) {
     if (context.dataProjection) {
-      value = _ol_proj_.transformExtent(
+      value = transformExtent(
           geometry, context.featureProjection, context.dataProjection);
     } else {
       value = geometry;
@@ -467,7 +467,7 @@ _ol_format_GML2_.prototype.writeRing_ = function(node, ring, objectStack) {
 _ol_format_GML2_.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
   var axisOrientation = 'enu';
   if (opt_srsName) {
-    axisOrientation = _ol_proj_.get(opt_srsName).getAxisOrientation();
+    axisOrientation = getProjection(opt_srsName).getAxisOrientation();
   }
   var coords = ((axisOrientation.substr(0, 2) === 'en') ?
     point[0] + ',' + point[1] :

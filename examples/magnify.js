@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 
 var key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';
@@ -16,7 +16,7 @@ var map = new _ol_Map_({
   layers: [imagery],
   target: container,
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([-109, 46.5]),
+    center: fromLonLat([-109, 46.5]),
     zoom: 6
   })
 });

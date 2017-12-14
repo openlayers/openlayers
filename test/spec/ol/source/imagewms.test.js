@@ -1,5 +1,5 @@
 import _ol_source_ImageWMS_ from '../../../../src/ol/source/ImageWMS.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 
 
 describe('ol.source.ImageWMS', function() {
@@ -8,7 +8,7 @@ describe('ol.source.ImageWMS', function() {
   beforeEach(function() {
     extent = [10, 20, 30, 40];
     pixelRatio = 1;
-    projection = _ol_proj_.get('EPSG:4326');
+    projection = getProjection('EPSG:4326');
     resolution = 0.1;
     options = {
       params: {
@@ -121,7 +121,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('changes the BBOX order for EN axis orientations', function() {
       var source = new _ol_source_ImageWMS_(options);
-      projection = _ol_proj_.get('CRS:84');
+      projection = getProjection('CRS:84');
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;

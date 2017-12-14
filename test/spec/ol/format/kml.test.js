@@ -10,7 +10,7 @@ import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_proj_transforms_ from '../../../../src/ol/proj/transforms.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
@@ -80,12 +80,12 @@ describe('ol.format.KML', function() {
     describe('#readProjection', function() {
       it('returns the default projection from document', function() {
         var projection = format.readProjectionFromDocument();
-        expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+        expect(projection).to.eql(getProjection('EPSG:4326'));
       });
 
       it('returns the default projection from node', function() {
         var projection = format.readProjectionFromNode();
-        expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+        expect(projection).to.eql(getProjection('EPSG:4326'));
       });
     });
 
@@ -266,7 +266,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
           expect(g).to.be.an(_ol_geom_Point_);
-          var expectedPoint = _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857');
+          var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
           expect(g.getCoordinates()).to.eql(expectedPoint);
         });
@@ -310,7 +310,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
           expect(g).to.be.an(_ol_geom_Point_);
-          var expectedPoint = _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857');
+          var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
           expect(g.getCoordinates()).to.eql(expectedPoint);
         });
@@ -356,8 +356,8 @@ describe('ol.format.KML', function() {
         });
 
         it('can transform and write XYZ Point geometries', function() {
-          _ol_proj_.addProjection(new _ol_proj_Projection_({code: 'double'}));
-          _ol_proj_.addCoordinateTransforms('EPSG:4326', 'double',
+          addProjection(new _ol_proj_Projection_({code: 'double'}));
+          addCoordinateTransforms('EPSG:4326', 'double',
               function(coordinate) {
                 return [2 * coordinate[0], 2 * coordinate[1]];
               },
@@ -387,9 +387,9 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(_ol_xml_.parse(text));
 
           _ol_proj_transforms_.remove(
-              _ol_proj_.get('EPSG:4326'), _ol_proj_.get('double'));
+              getProjection('EPSG:4326'), getProjection('double'));
           _ol_proj_transforms_.remove(
-              _ol_proj_.get('double'), _ol_proj_.get('EPSG:4326'));
+              getProjection('double'), getProjection('EPSG:4326'));
         });
 
         it('can write XYM Point geometries', function() {
@@ -2849,7 +2849,7 @@ describe('ol.format.KML', function() {
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
           expect(g).to.be.an(_ol_geom_Point_);
-          var expectedPoint = _ol_proj_.transform([1, 2], 'EPSG:4326', 'EPSG:3857');
+          var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
           expect(g.getCoordinates()).to.eql(expectedPoint);
         });

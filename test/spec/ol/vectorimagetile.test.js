@@ -3,7 +3,7 @@ import _ol_VectorImageTile_ from '../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import _ol_format_GeoJSON_ from '../../../src/ol/format/GeoJSON.js';
-import _ol_proj_ from '../../../src/ol/proj.js';
+import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
 import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
 
@@ -17,7 +17,7 @@ describe('ol.VectorImageTile', function() {
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, _ol_proj_.get('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
 
     tile.load();
     var sourceTile = tile.getTile(tile.tileKeys[0]);
@@ -41,7 +41,7 @@ describe('ol.VectorImageTile', function() {
         }, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, _ol_proj_.get('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
 
     tile.load();
     var calls = 0;
@@ -65,7 +65,7 @@ describe('ol.VectorImageTile', function() {
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, _ol_proj_.get('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
 
     tile.load();
 
@@ -81,7 +81,7 @@ describe('ol.VectorImageTile', function() {
     var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {},
         _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, _ol_proj_.get('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
 
     tile.load();
 
@@ -105,7 +105,7 @@ describe('ol.VectorImageTile', function() {
           return url;
         }, tileGrid,
         _ol_tilegrid_.createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
-        sourceTiles, 1, _ol_proj_.get('EPSG:4326'), _ol_VectorTile_, function() {});
+        sourceTiles, 1, getProjection('EPSG:4326'), _ol_VectorTile_, function() {});
     tile.load();
     expect(tile.tileKeys.length).to.be(1);
     expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, -10]);
@@ -118,7 +118,7 @@ describe('ol.VectorImageTile', function() {
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
-        1, _ol_proj_.get('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
 
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
@@ -138,7 +138,7 @@ describe('ol.VectorImageTile', function() {
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
-        1, _ol_proj_.get('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
 
     tile.load();
     _ol_events_.listenOnce(tile, 'change', function() {

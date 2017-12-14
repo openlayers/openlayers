@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import _ol_control_ScaleLine_ from '../src/ol/control/ScaleLine.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
 
@@ -65,7 +65,7 @@ var map = new _ol_Map_({
   target: 'map',
   view: new _ol_View_({
     projection: projection,
-    center: _ol_proj_.fromLonLat([8.23, 46.86], projection),
+    center: fromLonLat([8.23, 46.86], projection),
     extent: extent,
     zoom: 2
   })

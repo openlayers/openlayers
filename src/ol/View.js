@@ -19,7 +19,7 @@ import _ol_geom_Polygon_ from './geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from './geom/SimpleGeometry.js';
 import _ol_math_ from './math.js';
 import _ol_obj_ from './obj.js';
-import _ol_proj_ from './proj.js';
+import {createProjection, METERS_PER_UNIT} from './proj.js';
 import _ol_proj_Units_ from './proj/Units.js';
 
 
@@ -116,7 +116,7 @@ var _ol_View_ = function(opt_options) {
    * @const
    * @type {ol.proj.Projection}
    */
-  this.projection_ = _ol_proj_.createProjection(options.projection, 'EPSG:3857');
+  this.projection_ = createProjection(options.projection, 'EPSG:3857');
 
   this.applyOptions_(options);
 };
@@ -1129,11 +1129,11 @@ _ol_View_.createResolutionConstraint_ = function(options) {
         resolutions);
   } else {
     // calculate the default min and max resolution
-    var projection = _ol_proj_.createProjection(options.projection, 'EPSG:3857');
+    var projection = createProjection(options.projection, 'EPSG:3857');
     var extent = projection.getExtent();
     var size = !extent ?
       // use an extent that can fit the whole world if need be
-      360 * _ol_proj_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
+      360 * METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
             projection.getMetersPerUnit() :
       Math.max(getWidth(extent), getHeight(extent));
 

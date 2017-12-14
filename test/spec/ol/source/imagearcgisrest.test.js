@@ -1,5 +1,5 @@
 import _ol_source_ImageArcGISRest_ from '../../../../src/ol/source/ImageArcGISRest.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 
 
 describe('ol.source.ImageArcGISRest', function() {
@@ -7,8 +7,8 @@ describe('ol.source.ImageArcGISRest', function() {
   var pixelRatio, options, projection, proj3857, resolution;
   beforeEach(function() {
     pixelRatio = 1;
-    projection = _ol_proj_.get('EPSG:4326');
-    proj3857 = _ol_proj_.get('EPSG:3857');
+    projection = getProjection('EPSG:4326');
+    proj3857 = getProjection('EPSG:3857');
     resolution = 0.1;
     options = {
       params: {},

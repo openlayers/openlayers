@@ -1,7 +1,7 @@
 import {inherits} from '../../../../src/ol/index.js';
 import _ol_Tile_ from '../../../../src/ol/Tile.js';
 import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
@@ -26,7 +26,7 @@ var MockTile = function(tileStates) {
   });
 
   _ol_source_Tile_.call(this, {
-    projection: _ol_proj_.get('EPSG:4326'),
+    projection: getProjection('EPSG:4326'),
     tileGrid: tileGrid
   });
 
@@ -57,13 +57,13 @@ describe('ol.source.Tile', function() {
   describe('constructor', function() {
     it('returns a tile source', function() {
       var source = new _ol_source_Tile_({
-        projection: _ol_proj_.get('EPSG:4326')
+        projection: getProjection('EPSG:4326')
       });
       expect(source).to.be.a(_ol_source_Source_);
       expect(source).to.be.a(_ol_source_Tile_);
     });
     it('sets a custom cache size', function() {
-      var projection = _ol_proj_.get('EPSG:4326');
+      var projection = getProjection('EPSG:4326');
       var source = new _ol_source_Tile_({
         projection: projection,
         cacheSize: 42

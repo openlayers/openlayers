@@ -7,7 +7,7 @@ import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.j
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
 describe('ol.format.WFS', function() {
@@ -67,7 +67,7 @@ describe('ol.format.WFS', function() {
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       var geom = feature.getGeometry();
       expect(geom).to.be.an(_ol_geom_MultiPolygon_);
-      var p = _ol_proj_.transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
+      var p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
       p.push(0);
       expect(geom.getFirstCoordinate()).to.eql(p);
     });

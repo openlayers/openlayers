@@ -10,7 +10,7 @@ import _ol_events_EventType_ from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
-import _ol_proj_ from '../../proj.js';
+import {equivalent as equivalentProjection} from '../../proj.js';
 import _ol_proj_Units_ from '../../proj/Units.js';
 import _ol_render_ReplayType_ from '../../render/ReplayType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
@@ -185,7 +185,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
       buffer(sharedExtent, layer.getRenderBuffer() * resolution);
     var tileProjection = sourceTile.getProjection();
     var reproject = false;
-    if (!_ol_proj_.equivalent(projection, tileProjection)) {
+    if (!equivalentProjection(projection, tileProjection)) {
       reproject = true;
       sourceTile.setProjection(projection);
     }

@@ -1,4 +1,4 @@
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_UrlTile_ from '../../../../src/ol/source/UrlTile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -168,7 +168,7 @@ describe('ol.source.UrlTile', function() {
     beforeEach(function() {
       sourceOptions = {
         tileGrid: _ol_tilegrid_.createXYZ({
-          extent: _ol_proj_.get('EPSG:4326').getExtent()
+          extent: getProjection('EPSG:4326').getExtent()
         })
       };
     });

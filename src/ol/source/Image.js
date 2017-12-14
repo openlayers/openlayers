@@ -7,7 +7,7 @@ import _ol_ImageState_ from '../ImageState.js';
 import _ol_array_ from '../array.js';
 import _ol_events_Event_ from '../events/Event.js';
 import {equals} from '../extent.js';
-import _ol_proj_ from '../proj.js';
+import {equivalent} from '../proj.js';
 import _ol_reproj_Image_ from '../reproj/Image.js';
 import _ol_source_Source_ from '../source/Source.js';
 
@@ -92,7 +92,7 @@ _ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, 
   if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
-      _ol_proj_.equivalent(sourceProjection, projection)) {
+      equivalent(sourceProjection, projection)) {
     if (sourceProjection) {
       projection = sourceProjection;
     }
@@ -100,7 +100,7 @@ _ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, 
   } else {
     if (this.reprojectedImage_) {
       if (this.reprojectedRevision_ == this.getRevision() &&
-          _ol_proj_.equivalent(
+          equivalent(
               this.reprojectedImage_.getProjection(), projection) &&
           this.reprojectedImage_.getResolution() == resolution &&
           equals(this.reprojectedImage_.getExtent(), extent)) {

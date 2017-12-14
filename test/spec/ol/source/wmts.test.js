@@ -1,5 +1,5 @@
 import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_tilegrid_WMTS_ from '../../../../src/ol/tilegrid/WMTS.js';
 import _ol_source_WMTS_ from '../../../../src/ol/source/WMTS.js';
@@ -58,7 +58,7 @@ describe('ol.source.WMTS', function() {
           expect(options.format).to.be.eql('image/jpeg');
 
           expect(options.projection).to.be.a(_ol_proj_Projection_);
-          expect(options.projection).to.be.eql(_ol_proj_.get('EPSG:3857'));
+          expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
 
           expect(options.requestEncoding).to.be.eql('KVP');
 
@@ -92,7 +92,7 @@ describe('ol.source.WMTS', function() {
           expect(options.format).to.be.eql('image/png');
 
           expect(options.projection).to.be.a(_ol_proj_Projection_);
-          expect(options.projection).to.be.eql(_ol_proj_.get('EPSG:3857'));
+          expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
 
           expect(options.requestEncoding).to.be.eql('REST');
 
@@ -196,7 +196,7 @@ describe('ol.source.WMTS', function() {
             })
           });
 
-          var projection = _ol_proj_.get('EPSG:3857');
+          var projection = getProjection('EPSG:3857');
           var url = source.tileUrlFunction(
               source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
@@ -222,7 +222,7 @@ describe('ol.source.WMTS', function() {
             })
           });
 
-          var projection = _ol_proj_.get('EPSG:3857');
+          var projection = getProjection('EPSG:3857');
           var url = source.tileUrlFunction(
               source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
@@ -307,7 +307,7 @@ describe('ol.source.WMTS', function() {
     });
 
     it('generates the correct tileUrlFunction during application of setUrl()', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var source = new _ol_source_WMTS_({
         projection: projection,
         requestEncoding: 'REST',

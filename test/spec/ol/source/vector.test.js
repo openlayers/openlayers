@@ -7,7 +7,7 @@ import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../../../../src/ol/loadingstrategy.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
 
@@ -428,7 +428,7 @@ describe('ol.source.Vector', function() {
           strategy: _ol_loadingstrategy_.bbox,
           loader: function(extent) {
             setTimeout(function() {
-              var lonLatExtent = _ol_proj_.transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+              var lonLatExtent = transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
               expect(lonLatExtent[0]).to.roughlyEqual(-99.261474609, 1e-9);
               expect(lonLatExtent[2]).to.roughlyEqual(-95.965576171, 1e-9);
               done();
@@ -446,7 +446,7 @@ describe('ol.source.Vector', function() {
             })
           ],
           view: new _ol_View_({
-            center: _ol_proj_.fromLonLat(center),
+            center: fromLonLat(center),
             zoom: 7
           })
         });
@@ -462,7 +462,7 @@ describe('ol.source.Vector', function() {
       it('stores the infinity extent in the Rtree', function() {
         var source = new _ol_source_Vector_();
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
-            _ol_proj_.get('EPSG:3857'));
+            getProjection('EPSG:3857'));
         var loadedExtents = source.loadedExtentsRtree_.getAll();
         expect(loadedExtents).to.have.length(1);
         expect(loadedExtents[0].extent).to.eql(
@@ -483,11 +483,11 @@ describe('ol.source.Vector', function() {
         };
         var source = new _ol_source_Vector_({loader: loader1});
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
-            _ol_proj_.get('EPSG:3857'));
+            getProjection('EPSG:3857'));
         source.setLoader(loader2);
         source.clear();
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
-            _ol_proj_.get('EPSG:3857'));
+            getProjection('EPSG:3857'));
         expect(count1).to.eql(1);
         expect(count2).to.eql(1);
       });
@@ -502,7 +502,7 @@ describe('ol.source.Vector', function() {
             done();
           }, 0);
         });
-        source.loadFeatures([-10000, -10000, 10000, 10000], 1, _ol_proj_.get('EPSG:3857'));
+        source.loadFeatures([-10000, -10000, 10000, 10000], 1, getProjection('EPSG:3857'));
       });
     });
 

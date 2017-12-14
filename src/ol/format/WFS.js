@@ -11,7 +11,7 @@ import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -1098,7 +1098,7 @@ _ol_format_WFS_.prototype.readProjectionFromNode = function(node) {
           n.firstChild.nodeType === 3))) {
         var objectStack = [{}];
         this.gmlFormat_.readGeometryElement(n, objectStack);
-        return _ol_proj_.get(objectStack.pop().srsName);
+        return getProjection(objectStack.pop().srsName);
       }
     }
   }

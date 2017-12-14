@@ -4,7 +4,7 @@
 import {boundingExtent, createEmpty, extendCoordinate, getBottomLeft, getBottomRight,
   getTopLeft, getTopRight, getWidth, intersects} from '../extent.js';
 import _ol_math_ from '../math.js';
-import _ol_proj_ from '../proj.js';
+import {getTransform} from '../proj.js';
 
 
 /**
@@ -58,7 +58,7 @@ var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
 
   /** @type {!Object.<string, ol.Coordinate>} */
   var transformInvCache = {};
-  var transformInv = _ol_proj_.getTransform(this.targetProj_, this.sourceProj_);
+  var transformInv = getTransform(this.targetProj_, this.sourceProj_);
 
   /**
    * @param {ol.Coordinate} c A coordinate.

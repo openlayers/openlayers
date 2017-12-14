@@ -5,12 +5,12 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 // creating the view
 var view = new _ol_View_({
-  center: _ol_proj_.fromLonLat([5.8713, 45.6452]),
+  center: fromLonLat([5.8713, 45.6452]),
   zoom: 19
 });
 
@@ -214,9 +214,7 @@ function simulatePositionChange(position) {
   var coords = position.coords;
   geolocation.set('accuracy', coords.accuracy);
   geolocation.set('heading', degToRad(coords.heading));
-  var position_ = [coords.longitude, coords.latitude];
-  var projectedPosition = _ol_proj_.transform(position_, 'EPSG:4326',
-      'EPSG:3857');
+  var projectedPosition = fromLonLat([coords.longitude, coords.latitude]);
   geolocation.set('position', projectedPosition);
   geolocation.set('speed', coords.speed);
   geolocation.changed();

@@ -7,7 +7,7 @@ import {easeOut} from '../src/ol/easing.js';
 import _ol_geom_Point_ from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -46,8 +46,7 @@ map.addLayer(vector);
 function addRandomFeature() {
   var x = Math.random() * 360 - 180;
   var y = Math.random() * 180 - 90;
-  var geom = new _ol_geom_Point_(_ol_proj_.transform([x, y],
-      'EPSG:4326', 'EPSG:3857'));
+  var geom = new _ol_geom_Point_(fromLonLat([x, y]));
   var feature = new _ol_Feature_(geom);
   source.addFeature(feature);
 }

@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {toLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 
@@ -37,10 +37,8 @@ function wrapLon(value) {
 function onMoveEnd(evt) {
   var map = evt.map;
   var extent = map.getView().calculateExtent(map.getSize());
-  var bottomLeft = _ol_proj_.transform(_ol_extent_.getBottomLeft(extent),
-      'EPSG:3857', 'EPSG:4326');
-  var topRight = _ol_proj_.transform(_ol_extent_.getTopRight(extent),
-      'EPSG:3857', 'EPSG:4326');
+  var bottomLeft = toLonLat(_ol_extent_.getBottomLeft(extent));
+  var topRight = toLonLat(_ol_extent_.getTopRight(extent));
   display('left', wrapLon(bottomLeft[0]));
   display('bottom', bottomLeft[1]);
   display('right', wrapLon(topRight[0]));

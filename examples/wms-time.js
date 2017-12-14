@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
@@ -10,7 +10,7 @@ function threeHoursAgo() {
   return new Date(Math.round(Date.now() / 3600000) * 3600000 - 3600000 * 3);
 }
 
-var extent = _ol_proj_.transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
+var extent = transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
 var startDate = threeHoursAgo();
 var frameRate = 0.5; // frames per second
 var animationId = null;

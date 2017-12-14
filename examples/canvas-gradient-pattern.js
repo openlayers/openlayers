@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
 import _ol_has_ from '../src/ol/has.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -96,7 +96,7 @@ var map = new _ol_Map_({
   ],
   target: 'map',
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([7, 52]),
+    center: fromLonLat([7, 52]),
     zoom: 3
   })
 });

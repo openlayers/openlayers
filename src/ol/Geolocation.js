@@ -12,7 +12,7 @@ import _ol_events_EventType_ from './events/EventType.js';
 import _ol_geom_Polygon_ from './geom/Polygon.js';
 import _ol_has_ from './has.js';
 import _ol_math_ from './math.js';
-import _ol_proj_ from './proj.js';
+import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
 import _ol_proj_EPSG4326_ from './proj/EPSG4326.js';
 
 /**
@@ -58,7 +58,7 @@ var _ol_Geolocation_ = function(opt_options) {
    * @private
    * @type {ol.TransformFunction}
    */
-  this.transform_ = _ol_proj_.identityTransform;
+  this.transform_ = identityTransform;
 
   /**
    * @private
@@ -108,8 +108,8 @@ _ol_Geolocation_.prototype.disposeInternal = function() {
 _ol_Geolocation_.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (projection) {
-    this.transform_ = _ol_proj_.getTransformFromProjections(
-        _ol_proj_.get('EPSG:4326'), projection);
+    this.transform_ = getTransformFromProjections(
+        getProjection('EPSG:4326'), projection);
     if (this.position_) {
       this.set(
           _ol_GeolocationProperty_.POSITION, this.transform_(this.position_));
@@ -332,7 +332,7 @@ _ol_Geolocation_.prototype.getTrackingOptions = function() {
  * @api
  */
 _ol_Geolocation_.prototype.setProjection = function(projection) {
-  this.set(_ol_GeolocationProperty_.PROJECTION, _ol_proj_.get(projection));
+  this.set(_ol_GeolocationProperty_.PROJECTION, getProjection(projection));
 };
 
 

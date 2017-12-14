@@ -5,7 +5,6 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_proj_ from '../src/ol/proj.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -94,7 +93,7 @@ flightsSource = new _ol_source_Vector_({
         var arcLine = arcGenerator.Arc(100, {offset: 10});
         if (arcLine.geometries.length === 1) {
           var line = new _ol_geom_LineString_(arcLine.geometries[0].coords);
-          line.transform(_ol_proj_.get('EPSG:4326'), _ol_proj_.get('EPSG:3857'));
+          line.transform('EPSG:4326', 'EPSG:3857');
 
           var feature = new _ol_Feature_({
             geometry: line,

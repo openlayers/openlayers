@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {transform} from '../../../../src/ol/proj.js';
 import _ol_source_TileImage_ from '../../../../src/ol/source/TileImage.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
@@ -25,7 +25,7 @@ describe('ol.rendering.layer.Tile', function() {
       target: createMapDiv(size[0], size[1]),
       renderer: renderer,
       view: new _ol_View_({
-        center: opt_center !== undefined ? opt_center : _ol_proj_.transform(
+        center: opt_center !== undefined ? opt_center : transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         resolutions: opt_resolutions,
         zoom: 5
@@ -285,7 +285,7 @@ describe('ol.rendering.layer.Tile', function() {
             stroke: new _ol_style_Stroke_({color: 'red', width: 1})
           }));
           e.vectorContext.drawPoint(new _ol_geom_Point_(
-              _ol_proj_.transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
+              transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
         });
       };
     });

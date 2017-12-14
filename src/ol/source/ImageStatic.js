@@ -8,7 +8,7 @@ import _ol_dom_ from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_source_Image_ from '../source/Image.js';
 
 /**
@@ -33,7 +33,7 @@ var _ol_source_ImageStatic_ = function(options) {
   _ol_source_Image_.call(this, {
     attributions: options.attributions,
     logo: options.logo,
-    projection: _ol_proj_.get(options.projection)
+    projection: getProjection(options.projection)
   });
 
   /**

@@ -8,7 +8,7 @@ import _ol_control_Control_ from '../control/Control.js';
 import _ol_control_ScaleLineUnits_ from '../control/ScaleLineUnits.js';
 import _ol_css_ from '../css.js';
 import _ol_events_ from '../events.js';
-import _ol_proj_ from '../proj.js';
+import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
 import _ol_proj_Units_ from '../proj/Units.js';
 
 /**
@@ -175,7 +175,7 @@ _ol_control_ScaleLine_.prototype.updateElement_ = function() {
     _ol_proj_Units_.DEGREES :
     _ol_proj_Units_.METERS;
   var pointResolution =
-      _ol_proj_.getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
+      getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
   if (units != _ol_control_ScaleLineUnits_.DEGREES) {
     pointResolution *= projection.getMetersPerUnit();
   }
@@ -183,7 +183,7 @@ _ol_control_ScaleLine_.prototype.updateElement_ = function() {
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
   if (units == _ol_control_ScaleLineUnits_.DEGREES) {
-    var metersPerDegree = _ol_proj_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES];
+    var metersPerDegree = METERS_PER_UNIT[_ol_proj_Units_.DEGREES];
     if (projection.getUnits() == _ol_proj_Units_.DEGREES) {
       nominalCount *= metersPerDegree;
     } else {

@@ -11,7 +11,7 @@ import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -43,7 +43,7 @@ var _ol_format_TopoJSON_ = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get(
+  this.defaultDataProjection = getProjection(
       options.defaultDataProjection ?
         options.defaultDataProjection : 'EPSG:4326');
 

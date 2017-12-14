@@ -6,7 +6,7 @@ import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_array_ from '../array.js';
 import {containsExtent} from '../extent.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, equivalent, transformExtent} from '../proj.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_source_WMTSRequestEncoding_ from '../source/WMTSRequestEncoding.js';
 import _ol_tilegrid_WMTS_ from '../tilegrid/WMTS.js';
@@ -330,11 +330,11 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
               return el['Identifier'] == elt['TileMatrixSet'];
             });
             var supportedCRS = tileMatrixSet['SupportedCRS'];
-            var proj1 = _ol_proj_.get(supportedCRS.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
-                _ol_proj_.get(supportedCRS);
-            var proj2 = _ol_proj_.get(config['projection']);
+            var proj1 = getProjection(supportedCRS.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+                getProjection(supportedCRS);
+            var proj2 = getProjection(config['projection']);
             if (proj1 && proj2) {
-              return _ol_proj_.equivalent(proj1, proj2);
+              return equivalent(proj1, proj2);
             } else {
               return supportedCRS == config['projection'];
             }
@@ -392,13 +392,13 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
   var projection;
   var code = matrixSetObj['SupportedCRS'];
   if (code) {
-    projection = _ol_proj_.get(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
-        _ol_proj_.get(code);
+    projection = getProjection(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+        getProjection(code);
   }
   if ('projection' in config) {
-    var projConfig = _ol_proj_.get(config['projection']);
+    var projConfig = getProjection(config['projection']);
     if (projConfig) {
-      if (!projection || _ol_proj_.equivalent(projConfig, projection)) {
+      if (!projection || equivalent(projConfig, projection)) {
         projection = projConfig;
       }
     }
@@ -407,10 +407,10 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
   var wgs84BoundingBox = l['WGS84BoundingBox'];
   var extent, wrapX;
   if (wgs84BoundingBox !== undefined) {
-    var wgs84ProjectionExtent = _ol_proj_.get('EPSG:4326').getExtent();
+    var wgs84ProjectionExtent = getProjection('EPSG:4326').getExtent();
     wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
         wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
-    extent = _ol_proj_.transformExtent(
+    extent = transformExtent(
         wgs84BoundingBox, 'EPSG:4326', projection);
     var projectionExtent = projection.getExtent();
     if (projectionExtent) {

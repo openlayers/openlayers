@@ -6,7 +6,7 @@ import _ol_size_ from './size.js';
 import {containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth} from './extent.js';
 import Corner from './extent/Corner.js';
 import _ol_obj_ from './obj.js';
-import _ol_proj_ from './proj.js';
+import {get as getProjection, METERS_PER_UNIT} from './proj.js';
 import _ol_proj_Units_ from './proj/Units.js';
 import _ol_tilegrid_TileGrid_ from './tilegrid/TileGrid.js';
 var _ol_tilegrid_ = {};
@@ -83,7 +83,7 @@ _ol_tilegrid_.createXYZ = function(opt_options) {
   _ol_obj_.assign(options, opt_options !== undefined ?
     opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
   if (options.extent === undefined) {
-    options.extent = _ol_proj_.get('EPSG:3857').getExtent();
+    options.extent = getProjection('EPSG:3857').getExtent();
   }
   options.resolutions = _ol_tilegrid_.resolutionsFromExtent(
       options.extent, options.maxZoom, options.tileSize);
@@ -147,10 +147,10 @@ _ol_tilegrid_.createForProjection = function(projection, opt_maxZoom, opt_tileSi
  * @return {ol.Extent} Extent.
  */
 _ol_tilegrid_.extentFromProjection = function(projection) {
-  projection = _ol_proj_.get(projection);
+  projection = getProjection(projection);
   var extent = projection.getExtent();
   if (!extent) {
-    var half = 180 * _ol_proj_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
+    var half = 180 * METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
         projection.getMetersPerUnit();
     extent = createOrUpdate(-half, -half, half, half);
   }

@@ -1,7 +1,7 @@
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, METERS_PER_UNIT} from '../../../../src/ol/proj.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -308,7 +308,7 @@ describe('ol.tilegrid.TileGrid', function() {
   describe('createForProjection', function() {
 
     it('allows easier creation of a tile grid', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(projection);
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
@@ -317,7 +317,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts a number of zoom levels', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(projection, 18);
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
@@ -326,7 +326,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts a big number of zoom levels', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(projection, 23);
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
@@ -340,12 +340,12 @@ describe('ol.tilegrid.TileGrid', function() {
       var grid = _ol_tilegrid_.createForProjection(projection);
       var resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
-          360 * _ol_proj_.METERS_PER_UNIT['degrees'] /
+          360 * METERS_PER_UNIT['degrees'] /
           DEFAULT_TILE_SIZE / Math.pow(2, 5));
     });
 
     it('assumes origin is top-left', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(projection);
       var origin = grid.getOrigin();
       var half = _ol_proj_EPSG3857_.HALF_SIZE;
@@ -353,7 +353,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts bottom-left as corner', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(
           projection, undefined, undefined, 'bottom-left');
       var origin = grid.getOrigin();
@@ -362,7 +362,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts bottom-right as corner', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(
           projection, undefined, undefined, 'bottom-right');
       var origin = grid.getOrigin();
@@ -371,7 +371,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts top-left as corner', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(
           projection, undefined, undefined, 'top-left');
       var origin = grid.getOrigin();
@@ -380,7 +380,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('accepts top-right as corner', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.createForProjection(
           projection, undefined, undefined, 'top-right');
       var origin = grid.getOrigin();
@@ -395,7 +395,7 @@ describe('ol.tilegrid.TileGrid', function() {
     it('uses defaults', function() {
       var tileGrid = _ol_tilegrid_.createXYZ();
       expect(tileGrid.getExtent()).to.eql(
-          _ol_proj_.get('EPSG:3857').getExtent());
+          getProjection('EPSG:3857').getExtent());
       expect(tileGrid.getMinZoom()).to.equal(0);
       expect(tileGrid.getMaxZoom()).to.equal(DEFAULT_MAX_ZOOM);
       expect(tileGrid.getTileSize()).to.equal(DEFAULT_TILE_SIZE);
@@ -419,7 +419,7 @@ describe('ol.tilegrid.TileGrid', function() {
   describe('getForProjection', function() {
 
     it('gets the default tile grid for a projection', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.getForProjection(projection);
       expect(grid).to.be.a(_ol_tilegrid_TileGrid_);
 
@@ -429,7 +429,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('stores the default tile grid on a projection', function() {
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       var grid = _ol_tilegrid_.getForProjection(projection);
       var gridAgain = _ol_tilegrid_.getForProjection(projection);
 
@@ -443,7 +443,7 @@ describe('ol.tilegrid.TileGrid', function() {
     var tileGrid;
     beforeEach(function() {
       tileGrid = _ol_tilegrid_.createForExtent(
-          _ol_proj_.get('EPSG:3857').getExtent(), 22);
+          getProjection('EPSG:3857').getExtent(), 22);
     });
 
     it('returns the tile range for one zoom level deeper', function() {
@@ -493,7 +493,7 @@ describe('ol.tilegrid.TileGrid', function() {
     var tileGrid;
     beforeEach(function() {
       tileGrid = _ol_tilegrid_.createForExtent(
-          _ol_proj_.get('EPSG:3857').getExtent(), 22);
+          getProjection('EPSG:3857').getExtent(), 22);
     });
 
     it('iterates as expected', function() {
@@ -552,7 +552,7 @@ describe('ol.tilegrid.TileGrid', function() {
     var tileGrid;
     beforeEach(function() {
       tileGrid = _ol_tilegrid_.createForExtent(
-          _ol_proj_.get('EPSG:3857').getExtent(), 22);
+          getProjection('EPSG:3857').getExtent(), 22);
     });
 
     it('returns the correct resolution at the equator', function() {

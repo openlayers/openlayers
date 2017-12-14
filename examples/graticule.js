@@ -2,7 +2,7 @@ import _ol_Graticule_ from '../src/ol/Graticule.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 
@@ -17,8 +17,7 @@ var map = new _ol_Map_({
   ],
   target: 'map',
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([4.8, 47.75]),
-    extent: _ol_proj_.get('EPSG:3857').getExtent(),
+    center: fromLonLat([4.8, 47.75]),
     zoom: 5
   })
 });

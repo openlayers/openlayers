@@ -2,13 +2,13 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_tilegrid_TileGrid_ from '../src/ol/tilegrid/TileGrid.js';
 
 
-var projExtent = _ol_proj_.get('EPSG:3857').getExtent();
+var projExtent = getProjection('EPSG:3857').getExtent();
 var startResolution = _ol_extent_.getWidth(projExtent) / 256;
 var resolutions = new Array(22);
 for (var i = 0, ii = resolutions.length; i < ii; ++i) {

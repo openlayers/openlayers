@@ -4,7 +4,7 @@
 import _ol_dom_ from './dom.js';
 import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
 import _ol_math_ from './math.js';
-import _ol_proj_ from './proj.js';
+import {getPointResolution, transform} from './proj.js';
 var _ol_reproj_ = {};
 
 
@@ -23,11 +23,10 @@ var _ol_reproj_ = {};
 _ol_reproj_.calculateSourceResolution = function(sourceProj, targetProj,
     targetCenter, targetResolution) {
 
-  var sourceCenter = _ol_proj_.transform(targetCenter, targetProj, sourceProj);
+  var sourceCenter = transform(targetCenter, targetProj, sourceProj);
 
   // calculate the ideal resolution of the source data
-  var sourceResolution =
-      _ol_proj_.getPointResolution(targetProj, targetResolution, targetCenter);
+  var sourceResolution = getPointResolution(targetProj, targetResolution, targetCenter);
 
   var targetMetersPerUnit = targetProj.getMetersPerUnit();
   if (targetMetersPerUnit !== undefined) {
@@ -44,8 +43,7 @@ _ol_reproj_.calculateSourceResolution = function(sourceProj, targetProj,
 
   var sourceExtent = sourceProj.getExtent();
   if (!sourceExtent || containsCoordinate(sourceExtent, sourceCenter)) {
-    var compensationFactor =
-        _ol_proj_.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
+    var compensationFactor = getPointResolution(sourceProj, sourceResolution, sourceCenter) /
         sourceResolution;
     if (isFinite(compensationFactor) && compensationFactor > 0) {
       sourceResolution /= compensationFactor;

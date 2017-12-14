@@ -2,14 +2,14 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {easeIn, easeOut} from '../src/ol/easing.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
-var london = _ol_proj_.fromLonLat([-0.12755, 51.507222]);
-var moscow = _ol_proj_.fromLonLat([37.6178, 55.7517]);
-var istanbul = _ol_proj_.fromLonLat([28.9744, 41.0128]);
-var rome = _ol_proj_.fromLonLat([12.5, 41.9]);
-var bern = _ol_proj_.fromLonLat([7.4458, 46.95]);
+var london = fromLonLat([-0.12755, 51.507222]);
+var moscow = fromLonLat([37.6178, 55.7517]);
+var istanbul = fromLonLat([28.9744, 41.0128]);
+var rome = fromLonLat([12.5, 41.9]);
+var bern = fromLonLat([7.4458, 46.95]);
 
 var view = new _ol_View_({
   center: istanbul,

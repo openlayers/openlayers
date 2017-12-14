@@ -1,10 +1,10 @@
 // NOCOMPILE
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getWidth, getCenter} from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import _ol_source_ImageCanvas_ from '../src/ol/source/ImageCanvas.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 
@@ -19,7 +19,7 @@ var map = new _ol_Map_({
   ],
   target: 'map',
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([-97, 38]),
+    center: fromLonLat([-97, 38]),
     zoom: 4
   })
 });
@@ -57,13 +57,11 @@ d3.json('data/topojson/us.json', function(error, us) {
     var pixelBoundsHeight = pixelBounds[1][1] - pixelBounds[0][1];
 
     var geoBounds = d3.geoBounds(features);
-    var geoBoundsLeftBottom = _ol_proj_.transform(
-        geoBounds[0], 'EPSG:4326', projection);
-    var geoBoundsRightTop = _ol_proj_.transform(
-        geoBounds[1], 'EPSG:4326', projection);
+    var geoBoundsLeftBottom = fromLonLat(geoBounds[0], projection);
+    var geoBoundsRightTop = fromLonLat(geoBounds[1], projection);
     var geoBoundsWidth = geoBoundsRightTop[0] - geoBoundsLeftBottom[0];
     if (geoBoundsWidth < 0) {
-      geoBoundsWidth += _ol_extent_.getWidth(projection.getExtent());
+      geoBoundsWidth += getWidth(projection.getExtent());
     }
     var geoBoundsHeight = geoBoundsRightTop[1] - geoBoundsLeftBottom[1];
 
@@ -72,8 +70,7 @@ d3.json('data/topojson/us.json', function(error, us) {
     var r = Math.max(widthResolution, heightResolution);
     var scale = r / (resolution / pixelRatio);
 
-    var center = _ol_proj_.transform(_ol_extent_.getCenter(extent),
-        projection, 'EPSG:4326');
+    var center = toLonLat(getCenter(extent), projection);
     d3Projection.scale(scale).center(center)
         .translate([canvasWidth / 2, canvasHeight / 2]);
     d3Path = d3Path.projection(d3Projection).context(context);

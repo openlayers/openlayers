@@ -12,7 +12,7 @@ import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -30,7 +30,7 @@ var _ol_format_OSMXML_ = function() {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
+  this.defaultDataProjection = getProjection('EPSG:4326');
 };
 
 inherits(_ol_format_OSMXML_, _ol_format_XMLFeature_);

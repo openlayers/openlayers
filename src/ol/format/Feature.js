@@ -3,7 +3,7 @@
  */
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
 /**
  * @classdesc
@@ -175,15 +175,15 @@ _ol_format_Feature_.prototype.writeGeometry = function(geometry, opt_options) {}
 _ol_format_Feature_.transformWithOptions = function(
     geometry, write, opt_options) {
   var featureProjection = opt_options ?
-    _ol_proj_.get(opt_options.featureProjection) : null;
+    getProjection(opt_options.featureProjection) : null;
   var dataProjection = opt_options ?
-    _ol_proj_.get(opt_options.dataProjection) : null;
+    getProjection(opt_options.dataProjection) : null;
   /**
    * @type {ol.geom.Geometry|ol.Extent}
    */
   var transformed;
   if (featureProjection && dataProjection &&
-      !_ol_proj_.equivalent(featureProjection, dataProjection)) {
+      !equivalentProjection(featureProjection, dataProjection)) {
     if (geometry instanceof _ol_geom_Geometry_) {
       transformed = (write ? geometry.clone() : geometry).transform(
           write ? featureProjection : dataProjection,
@@ -191,7 +191,7 @@ _ol_format_Feature_.transformWithOptions = function(
     } else {
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
-      transformed = _ol_proj_.transformExtent(
+      transformed = transformExtent(
           geometry,
           dataProjection,
           featureProjection);

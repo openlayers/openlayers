@@ -1,5 +1,5 @@
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import _ol_proj_ from '../../../src/ol/proj.js';
+import {getTransform} from '../../../src/ol/proj.js';
 
 
 describe('ol.extent', function() {
@@ -737,7 +737,7 @@ describe('ol.extent', function() {
   describe('#applyTransform()', function() {
 
     it('does transform', function() {
-      var transformFn = _ol_proj_.getTransform('EPSG:4326', 'EPSG:3857');
+      var transformFn = getTransform('EPSG:4326', 'EPSG:3857');
       var sourceExtent = [-15, -30, 45, 60];
       var destinationExtent = _ol_extent_.applyTransform(
           sourceExtent, transformFn);

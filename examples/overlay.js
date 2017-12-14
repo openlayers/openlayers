@@ -3,7 +3,7 @@ import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 
@@ -20,7 +20,7 @@ var map = new _ol_Map_({
   })
 });
 
-var pos = _ol_proj_.fromLonLat([16.3725, 48.208889]);
+var pos = fromLonLat([16.3725, 48.208889]);
 
 // Vienna marker
 var marker = new _ol_Overlay_({
@@ -47,8 +47,7 @@ map.addOverlay(popup);
 map.on('click', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.coordinate;
-  var hdms = _ol_coordinate_.toStringHDMS(_ol_proj_.transform(
-      coordinate, 'EPSG:3857', 'EPSG:4326'));
+  var hdms = _ol_coordinate_.toStringHDMS(toLonLat(coordinate));
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);

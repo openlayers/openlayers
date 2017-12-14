@@ -1,5 +1,5 @@
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 
 
 describe('ol.source.ImageStatic', function() {
@@ -10,7 +10,7 @@ describe('ol.source.ImageStatic', function() {
       -13637278.73946974, 4543799.13271362,
       -13617443.330629736, 4553927.038961405];
     pixelRatio = 1;
-    projection = _ol_proj_.get('EPSG:3857');
+    projection = getProjection('EPSG:3857');
     resolution = 38;
   });
 

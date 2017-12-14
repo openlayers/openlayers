@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_Raster_ from '../src/ol/source/Raster.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
@@ -49,7 +49,7 @@ var map = new _ol_Map_({
     })
   ],
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([-122.3267, 37.8377]),
+    center: fromLonLat([-122.3267, 37.8377]),
     zoom: 11
   })
 });
@@ -74,6 +74,6 @@ for (var i = 0, ii = locations.length; i < ii; ++i) {
 function relocate(event) {
   var data = event.target.dataset;
   var view = map.getView();
-  view.setCenter(_ol_proj_.fromLonLat(data.center.split(',').map(Number)));
+  view.setCenter(fromLonLat(data.center.split(',').map(Number)));
   view.setZoom(Number(data.zoom));
 }

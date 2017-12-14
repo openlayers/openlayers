@@ -3,7 +3,7 @@ import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {toLonLat} from '../src/ol/proj.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 
 
@@ -64,8 +64,7 @@ var map = new _ol_Map_({
  */
 map.on('singleclick', function(evt) {
   var coordinate = evt.coordinate;
-  var hdms = _ol_coordinate_.toStringHDMS(_ol_proj_.transform(
-      coordinate, 'EPSG:3857', 'EPSG:4326'));
+  var hdms = _ol_coordinate_.toStringHDMS(toLonLat(coordinate));
 
   content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
       '</code>';

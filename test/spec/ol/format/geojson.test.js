@@ -8,7 +8,7 @@ import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {fromLonLat, get as getProjection, toLonLat, transform} from '../../../../src/ol/proj.js';
 
 
 describe('ol.format.GeoJSON', function() {
@@ -211,7 +211,7 @@ describe('ol.format.GeoJSON', function() {
       });
       expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-          _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
 
     it('uses featureProjection passed to the constructor', function() {
@@ -219,7 +219,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeatures(pointGeoJSON);
       expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-          _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
 
     it('gives precedence to options passed to the read method', function() {
@@ -229,7 +229,7 @@ describe('ol.format.GeoJSON', function() {
       });
       expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
-          _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
 
     it('can read and transform a feature collection', function() {
@@ -238,18 +238,18 @@ describe('ol.format.GeoJSON', function() {
       });
       expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
-          _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
       expect(features[1].getGeometry().getCoordinates()).to.eql([
-        _ol_proj_.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-        _ol_proj_.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-        _ol_proj_.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-        _ol_proj_.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
+        transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
       ]);
       expect(features[2].getGeometry().getCoordinates()).to.eql([[
-        _ol_proj_.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-        _ol_proj_.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-        _ol_proj_.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-        _ol_proj_.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857')
+        transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+        transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+        transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857')
       ]]);
     });
 
@@ -342,7 +342,7 @@ describe('ol.format.GeoJSON', function() {
       expect(first.get('bam')).to.be('baz');
       expect(first.getGeometry()).to.be.a(_ol_geom_LineString_);
 
-      expect(format.readProjection(json)).to.be(_ol_proj_.get('EPSG:4326'));
+      expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
     });
 
   });
@@ -471,7 +471,7 @@ describe('ol.format.GeoJSON', function() {
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(_ol_geom_LineString_);
 
-      expect(format.readProjection(json)).to.be(_ol_proj_.get('EPSG:3857'));
+      expect(format.readProjection(json)).to.be(getProjection('EPSG:3857'));
 
     });
 
@@ -514,7 +514,7 @@ describe('ol.format.GeoJSON', function() {
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(_ol_geom_LineString_);
 
-      expect(format.readProjection(json)).to.be(_ol_proj_.get('EPSG:4326'));
+      expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
 
     });
 
@@ -597,18 +597,18 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('accepts featureProjection', function() {
-      var point = new _ol_geom_Point_(_ol_proj_.fromLonLat([10, 20]));
+      var point = new _ol_geom_Point_(fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point, {featureProjection: 'EPSG:3857'});
       var obj = JSON.parse(geojson);
-      expect(obj.coordinates).to.eql(_ol_proj_.toLonLat(point.getCoordinates()));
+      expect(obj.coordinates).to.eql(toLonLat(point.getCoordinates()));
     });
 
     it('respects featureProjection passed to constructor', function() {
       var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:3857'});
-      var point = new _ol_geom_Point_(_ol_proj_.fromLonLat([10, 20]));
+      var point = new _ol_geom_Point_(fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point);
       var obj = JSON.parse(geojson);
-      expect(obj.coordinates).to.eql(_ol_proj_.toLonLat(point.getCoordinates()));
+      expect(obj.coordinates).to.eql(toLonLat(point.getCoordinates()));
     });
 
     it('encodes linestring', function() {

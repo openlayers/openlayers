@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
@@ -16,39 +16,39 @@ proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
     '+units=m +no_defs');
-var proj27700 = _ol_proj_.get('EPSG:27700');
+var proj27700 = getProjection('EPSG:27700');
 proj27700.setExtent([0, 0, 700000, 1300000]);
 
 proj4.defs('EPSG:23032', '+proj=utm +zone=32 +ellps=intl ' +
     '+towgs84=-87,-98,-121,0,0,0,0 +units=m +no_defs');
-var proj23032 = _ol_proj_.get('EPSG:23032');
+var proj23032 = getProjection('EPSG:23032');
 proj23032.setExtent([-1206118.71, 4021309.92, 1295389.00, 8051813.28]);
 
 proj4.defs('EPSG:5479', '+proj=lcc +lat_1=-76.66666666666667 +lat_2=' +
     '-79.33333333333333 +lat_0=-78 +lon_0=163 +x_0=7000000 +y_0=5000000 ' +
     '+ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
-var proj5479 = _ol_proj_.get('EPSG:5479');
+var proj5479 = getProjection('EPSG:5479');
 proj5479.setExtent([6825737.53, 4189159.80, 9633741.96, 5782472.71]);
 
 proj4.defs('EPSG:21781', '+proj=somerc +lat_0=46.95240555555556 ' +
     '+lon_0=7.439583333333333 +k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
     '+towgs84=674.4,15.1,405.3,0,0,0,0 +units=m +no_defs');
-var proj21781 = _ol_proj_.get('EPSG:21781');
+var proj21781 = getProjection('EPSG:21781');
 proj21781.setExtent([485071.54, 75346.36, 828515.78, 299941.84]);
 
 proj4.defs('EPSG:3413', '+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 ' +
     '+x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
-var proj3413 = _ol_proj_.get('EPSG:3413');
+var proj3413 = getProjection('EPSG:3413');
 proj3413.setExtent([-4194304, -4194304, 4194304, 4194304]);
 
 proj4.defs('EPSG:2163', '+proj=laea +lat_0=45 +lon_0=-100 +x_0=0 +y_0=0 ' +
     '+a=6370997 +b=6370997 +units=m +no_defs');
-var proj2163 = _ol_proj_.get('EPSG:2163');
+var proj2163 = getProjection('EPSG:2163');
 proj2163.setExtent([-8040784.5135, -2577524.9210, 3668901.4484, 4785105.1096]);
 
 proj4.defs('ESRI:54009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 ' +
     '+units=m +no_defs');
-var proj54009 = _ol_proj_.get('ESRI:54009');
+var proj54009 = getProjection('ESRI:54009');
 proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
 
@@ -124,7 +124,7 @@ layers['grandcanyon'] = new _ol_layer_Tile_({
 });
 
 var startResolution =
-    _ol_extent_.getWidth(_ol_proj_.get('EPSG:3857').getExtent()) / 256;
+    _ol_extent_.getWidth(getProjection('EPSG:3857').getExtent()) / 256;
 var resolutions = new Array(22);
 for (var i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);
@@ -167,7 +167,7 @@ var renderEdgesCheckbox = document.getElementById('render-edges');
 var renderEdges = false;
 
 function updateViewProjection() {
-  var newProj = _ol_proj_.get(viewProjSelect.value);
+  var newProj = getProjection(viewProjSelect.value);
   var newProjExtent = newProj.getExtent();
   var newView = new _ol_View_({
     projection: newProj,
@@ -178,7 +178,7 @@ function updateViewProjection() {
   map.setView(newView);
 
   // Example how to prevent double occurrence of map by limiting layer extent
-  if (newProj == _ol_proj_.get('EPSG:3857')) {
+  if (newProj == getProjection('EPSG:3857')) {
     layers['bng'].setExtent([-1057216, 6405988, 404315, 8759696]);
   } else {
     layers['bng'].setExtent(undefined);

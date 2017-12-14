@@ -1,11 +1,11 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 
 function transform(extent) {
-  return _ol_proj_.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
+  return transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
 }
 
 var extents = {

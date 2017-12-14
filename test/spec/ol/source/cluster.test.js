@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_Cluster_ from '../../../../src/ol/source/Cluster.js';
 import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -12,7 +12,7 @@ describe('ol.source.Cluster', function() {
   describe('constructor', function() {
     it('returns a cluster source', function() {
       var source = new _ol_source_Cluster_({
-        projection: _ol_proj_.get('EPSG:4326'),
+        projection: getProjection('EPSG:4326'),
         source: new _ol_source_Vector_()
       });
       expect(source).to.be.a(_ol_source_Source_);
@@ -23,7 +23,7 @@ describe('ol.source.Cluster', function() {
 
   describe('#loadFeatures', function() {
     var extent = [-1, -1, 1, 1];
-    var projection = _ol_proj_.get('EPSG:3857');
+    var projection = getProjection('EPSG:3857');
     it('clusters a source with point features', function() {
       var source = new _ol_source_Cluster_({
         source: new _ol_source_Vector_({

@@ -5,7 +5,7 @@ import {inherits, nullFunction} from '../index.js';
 import _ol_TileCache_ from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_Event_ from '../events/Event.js';
-import _ol_proj_ from '../proj.js';
+import {equivalent} from '../proj.js';
 import _ol_size_ from '../size.js';
 import _ol_source_Source_ from '../source/Source.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -230,7 +230,7 @@ _ol_source_Tile_.prototype.getTileGridForProjection = function(projection) {
  */
 _ol_source_Tile_.prototype.getTileCacheForProjection = function(projection) {
   var thisProj = this.getProjection();
-  if (thisProj && !_ol_proj_.equivalent(thisProj, projection)) {
+  if (thisProj && !equivalent(thisProj, projection)) {
     return null;
   } else {
     return this.tileCache;

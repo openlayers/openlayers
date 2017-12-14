@@ -2,7 +2,7 @@
  * @module ol/geom/flat/geodesic
  */
 import _ol_math_ from '../../math.js';
-import _ol_proj_ from '../../proj.js';
+import {get as getProjection, getTransform} from '../../proj.js';
 var _ol_geom_flat_geodesic_ = {};
 
 
@@ -93,7 +93,7 @@ _ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredToleranc
 _ol_geom_flat_geodesic_.greatCircleArc = function(
     lon1, lat1, lon2, lat2, projection, squaredTolerance) {
 
-  var geoProjection = _ol_proj_.get('EPSG:4326');
+  var geoProjection = getProjection('EPSG:4326');
 
   var cosLat1 = Math.cos(_ol_math_.toRadians(lat1));
   var sinLat1 = Math.sin(_ol_math_.toRadians(lat1));
@@ -123,7 +123,7 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
             Math.atan2(Math.sin(theta) * sinD * cosLat1,
                 cosD - sinLat1 * Math.sin(lat));
         return [_ol_math_.toDegrees(lon), _ol_math_.toDegrees(lat)];
-      }, _ol_proj_.getTransform(geoProjection, projection), squaredTolerance);
+      }, getTransform(geoProjection, projection), squaredTolerance);
 };
 
 
@@ -137,7 +137,7 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
  * @return {Array.<number>} Flat coordinates.
  */
 _ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squaredTolerance) {
-  var epsg4326Projection = _ol_proj_.get('EPSG:4326');
+  var epsg4326Projection = getProjection('EPSG:4326');
   return _ol_geom_flat_geodesic_.line_(
       /**
        * @param {number} frac Fraction.
@@ -146,7 +146,7 @@ _ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squared
       function(frac) {
         return [lon, lat1 + ((lat2 - lat1) * frac)];
       },
-      _ol_proj_.getTransform(epsg4326Projection, projection), squaredTolerance);
+      getTransform(epsg4326Projection, projection), squaredTolerance);
 };
 
 
@@ -160,7 +160,7 @@ _ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squared
  * @return {Array.<number>} Flat coordinates.
  */
 _ol_geom_flat_geodesic_.parallel = function(lat, lon1, lon2, projection, squaredTolerance) {
-  var epsg4326Projection = _ol_proj_.get('EPSG:4326');
+  var epsg4326Projection = getProjection('EPSG:4326');
   return _ol_geom_flat_geodesic_.line_(
       /**
        * @param {number} frac Fraction.
@@ -169,6 +169,6 @@ _ol_geom_flat_geodesic_.parallel = function(lat, lon1, lon2, projection, squared
       function(frac) {
         return [lon1 + ((lon2 - lon1) * frac), lat];
       },
-      _ol_proj_.getTransform(epsg4326Projection, projection), squaredTolerance);
+      getTransform(epsg4326Projection, projection), squaredTolerance);
 };
 export default _ol_geom_flat_geodesic_;

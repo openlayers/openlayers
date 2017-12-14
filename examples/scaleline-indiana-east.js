@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ScaleLine_ from '../src/ol/control/ScaleLine.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat, transformExtent} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
@@ -24,9 +24,9 @@ var map = new _ol_Map_({
   target: 'map',
   view: new _ol_View_({
     projection: 'Indiana-East',
-    center: _ol_proj_.fromLonLat([-85.685, 39.891], 'Indiana-East'),
+    center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
     zoom: 7,
-    extent: _ol_proj_.transformExtent([-172.54, 23.81, -47.74, 86.46],
+    extent: transformExtent([-172.54, 23.81, -47.74, 86.46],
         'EPSG:4326', 'Indiana-East'),
     minZoom: 6
   })

@@ -12,7 +12,7 @@ import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_asserts_ from '../asserts.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_tilegrid_ from '../tilegrid.js';
@@ -38,7 +38,7 @@ var _ol_source_TileJSON_ = function(options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    projection: _ol_proj_.get('EPSG:3857'),
+    projection: getProjection('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: _ol_source_State_.LOADING,
     tileLoadFunction: options.tileLoadFunction,
@@ -114,12 +114,12 @@ _ol_source_TileJSON_.prototype.getTileJSON = function() {
  */
 _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
 
-  var epsg4326Projection = _ol_proj_.get('EPSG:4326');
+  var epsg4326Projection = getProjection('EPSG:4326');
 
   var sourceProjection = this.getProjection();
   var extent;
   if (tileJSON.bounds !== undefined) {
-    var transform = _ol_proj_.getTransformFromProjections(
+    var transform = getTransformFromProjections(
         epsg4326Projection, sourceProjection);
     extent = applyTransform(tileJSON.bounds, transform);
   }
