@@ -4,7 +4,7 @@
 import {inherits, nullFunction} from '../index.js';
 import _ol_MapEventType_ from '../MapEventType.js';
 import _ol_Object_ from '../Object.js';
-import _ol_dom_ from '../dom.js';
+import {removeNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 
 /**
@@ -82,7 +82,7 @@ inherits(_ol_control_Control_, _ol_Object_);
  * @inheritDoc
  */
 _ol_control_Control_.prototype.disposeInternal = function() {
-  _ol_dom_.removeNode(this.element);
+  removeNode(this.element);
   _ol_Object_.prototype.disposeInternal.call(this);
 };
 
@@ -107,7 +107,7 @@ _ol_control_Control_.prototype.getMap = function() {
  */
 _ol_control_Control_.prototype.setMap = function(map) {
   if (this.map_) {
-    _ol_dom_.removeNode(this.element);
+    removeNode(this.element);
   }
   for (var i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
     _ol_events_.unlistenByKey(this.listenerKeys[i]);

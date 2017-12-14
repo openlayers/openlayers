@@ -1,7 +1,6 @@
 /**
  * @module ol/dom
  */
-var _ol_dom_ = {};
 
 
 /**
@@ -10,7 +9,7 @@ var _ol_dom_ = {};
  * @param {number=} opt_height Canvas height.
  * @return {CanvasRenderingContext2D} The context.
  */
-_ol_dom_.createCanvasContext2D = function(opt_width, opt_height) {
+export function createCanvasContext2D(opt_width, opt_height) {
   var canvas = document.createElement('CANVAS');
   if (opt_width) {
     canvas.width = opt_width;
@@ -19,7 +18,7 @@ _ol_dom_.createCanvasContext2D = function(opt_width, opt_height) {
     canvas.height = opt_height;
   }
   return canvas.getContext('2d');
-};
+}
 
 
 /**
@@ -29,13 +28,13 @@ _ol_dom_.createCanvasContext2D = function(opt_width, opt_height) {
  * @param {!Element} element Element.
  * @return {number} The width.
  */
-_ol_dom_.outerWidth = function(element) {
+export function outerWidth(element) {
   var width = element.offsetWidth;
   var style = getComputedStyle(element);
   width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
 
   return width;
-};
+}
 
 
 /**
@@ -45,39 +44,38 @@ _ol_dom_.outerWidth = function(element) {
  * @param {!Element} element Element.
  * @return {number} The height.
  */
-_ol_dom_.outerHeight = function(element) {
+export function outerHeight(element) {
   var height = element.offsetHeight;
   var style = getComputedStyle(element);
   height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 
   return height;
-};
+}
 
 /**
  * @param {Node} newNode Node to replace old node
  * @param {Node} oldNode The node to be replaced
  */
-_ol_dom_.replaceNode = function(newNode, oldNode) {
+export function replaceNode(newNode, oldNode) {
   var parent = oldNode.parentNode;
   if (parent) {
     parent.replaceChild(newNode, oldNode);
   }
-};
+}
 
 /**
  * @param {Node} node The node to remove.
  * @returns {Node} The node that was removed or null.
  */
-_ol_dom_.removeNode = function(node) {
+export function removeNode(node) {
   return node && node.parentNode ? node.parentNode.removeChild(node) : null;
-};
+}
 
 /**
  * @param {Node} node The node to remove the children from.
  */
-_ol_dom_.removeChildren = function(node) {
+export function removeChildren(node) {
   while (node.lastChild) {
     node.removeChild(node.lastChild);
   }
-};
-export default _ol_dom_;
+}

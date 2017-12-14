@@ -4,7 +4,7 @@
 import {inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
-import _ol_dom_ from './dom.js';
+import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventType_ from './events/EventType.js';
 
@@ -168,7 +168,7 @@ _ol_ImageTile_.prototype.unlistenImage_ = function() {
  * @return {HTMLCanvasElement} Blank image.
  */
 _ol_ImageTile_.getBlankImage = function() {
-  var ctx = _ol_dom_.createCanvasContext2D(1, 1);
+  var ctx = createCanvasContext2D(1, 1);
   ctx.fillStyle = 'rgba(0,0,0,0)';
   ctx.fillRect(0, 0, 1, 1);
   return ctx.canvas;

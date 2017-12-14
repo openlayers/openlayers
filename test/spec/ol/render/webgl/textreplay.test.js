@@ -1,4 +1,4 @@
-import _ol_dom_ from '../../../../../src/ol/dom.js';
+import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
 import _ol_render_webgl_TextReplay_ from '../../../../../src/ol/render/webgl/TextReplay.js';
 import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
@@ -242,7 +242,7 @@ describe('ol.render.webgl.TextReplay', function() {
 
     it('returns the size of the label\'s bounding box in pixels', function() {
       var size;
-      var mCtx = _ol_dom_.createCanvasContext2D(0, 0);
+      var mCtx = createCanvasContext2D(0, 0);
       mCtx.font = '12px Arial';
       var width = mCtx.measureText('someText').width;
       var width2 = mCtx.measureText('anEvenLongerLine').width;

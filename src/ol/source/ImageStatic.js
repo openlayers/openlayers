@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_ImageState_ from '../ImageState.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
@@ -85,7 +85,7 @@ _ol_source_ImageStatic_.prototype.handleImageChange = function(evt) {
     var resolution = getHeight(imageExtent) / imageHeight;
     var targetWidth = Math.ceil(getWidth(imageExtent) / resolution);
     if (targetWidth != imageWidth) {
-      var context = _ol_dom_.createCanvasContext2D(targetWidth, imageHeight);
+      var context = createCanvasContext2D(targetWidth, imageHeight);
       var canvas = context.canvas;
       context.drawImage(image, 0, 0, imageWidth, imageHeight,
           0, 0, canvas.width, canvas.height);

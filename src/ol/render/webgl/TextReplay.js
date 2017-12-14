@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import _ol_colorlike_ from '../../colorlike.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_replay_ from '../replay.js';
@@ -38,7 +38,7 @@ var _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
    * @private
    * @type {HTMLCanvasElement}
    */
-  this.measureCanvas_ = _ol_dom_.createCanvasContext2D(0, 0).canvas;
+  this.measureCanvas_ = createCanvasContext2D(0, 0).canvas;
 
   /**
    * @private

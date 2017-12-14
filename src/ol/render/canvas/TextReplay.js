@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import _ol_colorlike_ from '../../colorlike.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
 import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
@@ -301,7 +301,7 @@ _ol_render_canvas_TextReplay_.prototype.getImage = function(text, textKey, fillK
     var lineHeight = _ol_render_canvas_.measureTextHeight(textState.font);
     var height = lineHeight * numLines;
     var renderWidth = (width + strokeWidth);
-    var context = _ol_dom_.createCanvasContext2D(
+    var context = createCanvasContext2D(
         Math.ceil(renderWidth * scale),
         Math.ceil((height + strokeWidth) * scale));
     label = context.canvas;

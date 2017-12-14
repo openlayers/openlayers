@@ -5,7 +5,7 @@
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_css_ from '../../css.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_has_ from '../../has.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
@@ -66,7 +66,7 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.clipTileContext_ = _ol_dom_.createCanvasContext2D();
+  this.clipTileContext_ = createCanvasContext2D();
 
   /**
    * @private

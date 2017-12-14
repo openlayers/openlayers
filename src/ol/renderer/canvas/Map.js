@@ -7,7 +7,7 @@ import _ol_transform_ from '../../transform.js';
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_css_ from '../../css.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
@@ -32,7 +32,7 @@ var _ol_renderer_canvas_Map_ = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = _ol_dom_.createCanvasContext2D();
+  this.context_ = createCanvasContext2D();
 
   /**
    * @private

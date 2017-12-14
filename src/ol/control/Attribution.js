@@ -7,7 +7,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
-import _ol_dom_ from '../dom.js';
+import {removeNode, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
@@ -273,7 +273,7 @@ _ol_control_Attribution_.prototype.insertLogos_ = function(frameState) {
 
   for (logo in logoElements) {
     if (!(logo in logos)) {
-      _ol_dom_.removeNode(logoElements[logo]);
+      removeNode(logoElements[logo]);
       delete logoElements[logo];
     }
   }
@@ -321,9 +321,9 @@ _ol_control_Attribution_.prototype.handleClick_ = function(event) {
 _ol_control_Attribution_.prototype.handleToggle_ = function() {
   this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
-    _ol_dom_.replaceNode(this.collapseLabel_, this.label_);
+    replaceNode(this.collapseLabel_, this.label_);
   } else {
-    _ol_dom_.replaceNode(this.label_, this.collapseLabel_);
+    replaceNode(this.label_, this.collapseLabel_);
   }
   this.collapsed_ = !this.collapsed_;
 };
