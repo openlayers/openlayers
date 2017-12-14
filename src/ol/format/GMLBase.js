@@ -12,7 +12,7 @@ import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
@@ -298,7 +298,7 @@ _ol_format_GMLBase_.prototype.readMultiLineString = function(node, objectStack) 
   var lineStrings = _ol_xml_.pushParseAndPop([],
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    var multiLineString = new _ol_geom_MultiLineString_(null);
+    var multiLineString = new MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
   } else {

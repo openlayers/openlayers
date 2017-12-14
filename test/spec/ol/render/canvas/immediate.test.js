@@ -1,7 +1,7 @@
 import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -111,7 +111,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiLineString');
 
-      var geometry = new _ol_geom_MultiLineString_([[[1, 2], [3, 4]]]);
+      var geometry = new MultiLineString([[[1, 2], [3, 4]]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiLineString.calledOnce).to.be(true);
       expect(context.drawMultiLineString.firstCall.calledWithExactly(geometry)).to.be(true);

@@ -3,7 +3,7 @@ import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_EsriJSON_ from '../../../../src/ol/format/EsriJSON.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -192,7 +192,7 @@ describe('ol.format.EsriJSON', function() {
       var feature = format.readFeature(multiLineStringEsriJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_MultiLineString_);
+      expect(geometry).to.be.an(MultiLineString);
       expect(geometry.getCoordinates()).to.eql([
         [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
         [[105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]]
@@ -487,7 +487,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiLineString_);
+      expect(obj).to.be.a(MultiLineString);
       expect(obj.getCoordinates()).to.eql([
         [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
         [[105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]]
@@ -505,7 +505,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiLineString_);
+      expect(obj).to.be.a(MultiLineString);
       expect(obj.getCoordinates()).to.eql([
         [[102.0, 0.0, 1], [103.0, 1.0, 1], [104.0, 0.0, 1], [105.0, 1.0, 1]],
         [[105.0, 3.0, 1], [106.0, 4.0, 1], [107.0, 3.0, 1], [108.0, 4.0, 1]]
@@ -523,7 +523,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiLineString_);
+      expect(obj).to.be.a(MultiLineString);
       expect(obj.getCoordinates()).to.eql([
         [[102.0, 0.0, 1], [103.0, 1.0, 1], [104.0, 0.0, 1], [105.0, 1.0, 1]],
         [[105.0, 3.0, 1], [106.0, 4.0, 1], [107.0, 3.0, 1], [108.0, 4.0, 1]]
@@ -542,7 +542,7 @@ describe('ol.format.EsriJSON', function() {
         ]]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiLineString_);
+      expect(obj).to.be.a(MultiLineString);
       expect(obj.getCoordinates()).to.eql([
         [[102, 0, 1, 2], [103, 1, 1, 2], [104, 0, 1, 2], [105, 1, 1, 2]],
         [[105, 3, 1, 2], [106, 4, 1, 2], [107, 3, 1, 2], [108, 4, 1, 2]]
@@ -903,7 +903,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes multilinestring', function() {
-      var multilinestring = new _ol_geom_MultiLineString_([
+      var multilinestring = new MultiLineString([
         [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]],
         [[105.0, 3.0], [106.0, 4.0], [107.0, 3.0], [108.0, 4.0]]
       ]);
@@ -913,7 +913,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZ multilinestring', function() {
-      var multilinestring = new _ol_geom_MultiLineString_([
+      var multilinestring = new MultiLineString([
         [[102.0, 0.0, 1], [103.0, 1.0, 2], [104.0, 0.0, 3], [105.0, 1.0, 4]],
         [[105.0, 3.0, 1], [106.0, 4.0, 2], [107.0, 3.0, 3], [108.0, 4.0, 4]]
       ], 'XYZ');
@@ -923,7 +923,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM multilinestring', function() {
-      var multilinestring = new _ol_geom_MultiLineString_([
+      var multilinestring = new MultiLineString([
         [[102.0, 0.0, 1], [103.0, 1.0, 2], [104.0, 0.0, 3], [105.0, 1.0, 4]],
         [[105.0, 3.0, 1], [106.0, 4.0, 2], [107.0, 3.0, 3], [108.0, 4.0, 4]]
       ], 'XYM');
@@ -933,7 +933,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM multilinestring', function() {
-      var multilinestring = new _ol_geom_MultiLineString_([
+      var multilinestring = new MultiLineString([
         [[102.0, 0.0, 1, 0], [103.0, 1.0, 2, 2], [104.0, 0.0, 3, 1],
           [105.0, 1.0, 4, 2]],
         [[105.0, 3.0, 1, 0], [106.0, 4.0, 2, 1], [107.0, 3.0, 3, 1],

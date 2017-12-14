@@ -6,7 +6,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
@@ -158,7 +158,7 @@ _ol_format_TopoJSON_.readMultiLineStringGeometry_ = function(object, arcs) {
   for (i = 0, ii = object.arcs.length; i < ii; ++i) {
     coordinates[i] = _ol_format_TopoJSON_.concatenateArcs_(object.arcs[i], arcs);
   }
-  return new _ol_geom_MultiLineString_(coordinates);
+  return new MultiLineString(coordinates);
 };
 
 

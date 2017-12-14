@@ -1,13 +1,13 @@
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 
 
 describe('ol.geom.MultiLineString', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      return new _ol_geom_MultiLineString_(null);
+      return new MultiLineString(null);
     }).not.to.throwException();
   });
 
@@ -15,7 +15,7 @@ describe('ol.geom.MultiLineString', function() {
 
     var multiLineString;
     beforeEach(function() {
-      multiLineString = new _ol_geom_MultiLineString_([]);
+      multiLineString = new MultiLineString([]);
     });
 
     it('defaults to layout XY', function() {
@@ -55,7 +55,7 @@ describe('ol.geom.MultiLineString', function() {
 
     var multiLineString;
     beforeEach(function() {
-      multiLineString = new _ol_geom_MultiLineString_(
+      multiLineString = new MultiLineString(
           [[[1, 2], [3, 4]], [[5, 6], [7, 8]]]);
     });
 
@@ -107,7 +107,7 @@ describe('ol.geom.MultiLineString', function() {
 
     var multiLineString;
     beforeEach(function() {
-      multiLineString = new _ol_geom_MultiLineString_(
+      multiLineString = new MultiLineString(
           [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
     });
 
@@ -139,7 +139,7 @@ describe('ol.geom.MultiLineString', function() {
 
     var multiLineString;
     beforeEach(function() {
-      multiLineString = new _ol_geom_MultiLineString_(
+      multiLineString = new MultiLineString(
           [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]],
           'XYM');
     });
@@ -287,7 +287,7 @@ describe('ol.geom.MultiLineString', function() {
 
     var multiLineString;
     beforeEach(function() {
-      multiLineString = new _ol_geom_MultiLineString_(
+      multiLineString = new MultiLineString(
           [[[1, 2, 3, 4], [5, 6, 7, 8]], [[9, 10, 11, 12], [13, 14, 15, 16]]]);
     });
 
@@ -318,21 +318,21 @@ describe('ol.geom.MultiLineString', function() {
   describe('#scale()', function() {
 
     it('scales a multi-linestring', function() {
-      var geom = new _ol_geom_MultiLineString_([[[-10, -20], [10, 20]], [[5, -10], [-5, 10]]]);
+      var geom = new MultiLineString([[[-10, -20], [10, 20]], [[5, -10], [-5, 10]]]);
       geom.scale(10);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[[-100, -200], [100, 200]], [[50, -100], [-50, 100]]]);
     });
 
     it('accepts sx and sy', function() {
-      var geom = new _ol_geom_MultiLineString_([[[-10, -20], [10, 20]], [[5, -10], [-5, 10]]]);
+      var geom = new MultiLineString([[[-10, -20], [10, 20]], [[5, -10], [-5, 10]]]);
       geom.scale(2, 3);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[[-20, -60], [20, 60]], [[10, -30], [-10, 30]]]);
     });
 
     it('accepts an anchor', function() {
-      var geom = new _ol_geom_MultiLineString_([[[-10, -20], [10, 20]], [[5, -10], [-5, 10]]]);
+      var geom = new MultiLineString([[[-10, -20], [10, 20]], [[5, -10], [-5, 10]]]);
       geom.scale(3, 2, [10, 20]);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[[-50, -60], [10, 20]], [[-5, -40], [-35, 0]]]);
@@ -343,7 +343,7 @@ describe('ol.geom.MultiLineString', function() {
   describe('#setLineStrings', function() {
 
     it('sets the line strings', function() {
-      var multiLineString = new _ol_geom_MultiLineString_(null);
+      var multiLineString = new MultiLineString(null);
       var lineString1 = new LineString([[1, 2], [3, 4]]);
       var lineString2 = new LineString([[5, 6], [7, 8]]);
       multiLineString.setLineStrings([lineString1, lineString2]);

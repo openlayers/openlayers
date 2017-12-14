@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
@@ -264,7 +264,7 @@ describe('ol.rendering.style.Text', function() {
       createMap('canvas');
       var line = new LineString();
       line.setFlatCoordinates('XY', nicePath);
-      var geom = new _ol_geom_MultiLineString_(null);
+      var geom = new MultiLineString(null);
       geom.appendLineString(line);
       line = line.clone();
       line.translate(0, 50);

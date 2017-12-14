@@ -3,7 +3,7 @@ import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
 import _ol_format_WFS_ from '../../../../src/ol/format/WFS.js';
 import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
@@ -697,7 +697,7 @@ describe('ol.format.WFS', function() {
     it('creates the correct srsName', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiLineString_([[
+        the_geom: new MultiLineString([[
           [-5178372.1885436, 1992365.7775042],
           [-4434792.7774889, 1601008.1927386],
           [-4043435.1927233, 2148908.8114105]
@@ -729,7 +729,7 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -748,7 +748,7 @@ describe('ol.format.WFS', function() {
 
     it('creates the correct update if geometry name is alias', function() {
       var format = new _ol_format_WFS_();
-      var updateFeature = new _ol_Feature_(new _ol_geom_MultiLineString_([[
+      var updateFeature = new _ol_Feature_(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -774,7 +774,7 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -797,7 +797,7 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -830,14 +830,14 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
         [-12240318, 6507071],
         [-12416429, 6604910]
       ]]));
-      updateFeature.set('geom2', new _ol_geom_MultiLineString_([[
+      updateFeature.set('geom2', new MultiLineString([[
         [-12000000, 6700000],
         [-12000001, 6700001],
         [-12000002, 6700002]

@@ -9,7 +9,7 @@ import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -273,7 +273,7 @@ _ol_format_GPX_.readTrk_ = function(node, objectStack) {
   var layoutOptions = /** @type {ol.LayoutOptions} */ (values['layoutOptions']);
   delete values['layoutOptions'];
   var layout = _ol_format_GPX_.applyLayoutOptions_(layoutOptions, flatCoordinates, ends);
-  var geometry = new _ol_geom_MultiLineString_(null);
+  var geometry = new MultiLineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates, ends);
   _ol_format_Feature_.transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);

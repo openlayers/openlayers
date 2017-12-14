@@ -1,5 +1,5 @@
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
@@ -87,7 +87,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatMidpoints()', function() {
     it('returns correct points and caches them', function() {
-      var line = new _ol_geom_MultiLineString_([
+      var line = new MultiLineString([
         [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
         [[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]
       ]);

@@ -10,7 +10,7 @@ import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
@@ -100,7 +100,7 @@ _ol_format_GML3_.prototype.readMultiCurve_ = function(node, objectStack) {
   var lineStrings = _ol_xml_.pushParseAndPop([],
       this.MULTICURVE_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    var multiLineString = new _ol_geom_MultiLineString_(null);
+    var multiLineString = new MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
   } else {

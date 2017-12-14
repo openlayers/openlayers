@@ -1,7 +1,7 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import _ol_render_webgl_linestringreplay_defaultshader_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
 import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader/Locations.js';
@@ -82,7 +82,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('sets the buffer data', function() {
       var multilinestring;
 
-      multilinestring = new _ol_geom_MultiLineString_(
+      multilinestring = new MultiLineString(
           [[[1000, 2000], [2000, 3000]],
             [[1000, 3000], [2000, 4000], [3000, 3000]]]);
       replay.setFillStrokeStyle(null, strokeStyle1);

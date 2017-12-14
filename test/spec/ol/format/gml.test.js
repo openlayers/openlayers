@@ -3,7 +3,7 @@ import _ol_format_GML_ from '../../../../src/ol/format/GML.js';
 import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -284,7 +284,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_MultiLineString_([[[1.1, 2], [3, 4.2]]])
+        geometry: new MultiLineString([[[1.1, 2], [3, 4.2]]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -771,7 +771,7 @@ describe('ol.format.GML3', function() {
             '  </gml:lineStringMember>' +
             '</gml:MultiLineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiLineString_);
+        expect(g).to.be.an(MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
         format = new _ol_format_GML_({srsName: 'CRS:84', multiCurve: false});
@@ -793,7 +793,7 @@ describe('ol.format.GML3', function() {
             '  </gml:lineStringMembers>' +
             '</gml:MultiLineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiLineString_);
+        expect(g).to.be.an(MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
       });
@@ -916,7 +916,7 @@ describe('ol.format.GML3', function() {
                 '  </gml:curveMember>' +
                 '</gml:MultiCurve>';
             var g = readGeometry(format, text);
-            expect(g).to.be.an(_ol_geom_MultiLineString_);
+            expect(g).to.be.an(MultiLineString);
             expect(g.getCoordinates()).to.eql(
                 [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
             var serialized = format.writeGeometryNode(g);
@@ -947,7 +947,7 @@ describe('ol.format.GML3', function() {
             '  </gml:curveMember>' +
             '</gml:MultiCurve>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiLineString_);
+        expect(g).to.be.an(MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
         format = new _ol_format_GML_({srsName: 'CRS:84', curve: true});

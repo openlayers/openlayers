@@ -18,7 +18,7 @@ import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
@@ -788,7 +788,7 @@ _ol_format_KML_.readGxMultiTrack_ = function(node, objectStack) {
   if (!lineStrings) {
     return undefined;
   }
-  var multiLineString = new _ol_geom_MultiLineString_(null);
+  var multiLineString = new MultiLineString(null);
   multiLineString.setLineStrings(lineStrings);
   return multiLineString;
 };
@@ -940,7 +940,7 @@ _ol_format_KML_.readMultiGeometry_ = function(node, objectStack) {
       multiGeometry.setFlatCoordinates(layout, flatCoordinates);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
     } else if (type == _ol_geom_GeometryType_.LINE_STRING) {
-      multiGeometry = new _ol_geom_MultiLineString_(null);
+      multiGeometry = new MultiLineString(null);
       multiGeometry.setLineStrings(geometries);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
     } else if (type == _ol_geom_GeometryType_.POLYGON) {

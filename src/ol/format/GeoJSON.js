@@ -11,7 +11,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
@@ -129,7 +129,7 @@ _ol_format_GeoJSON_.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiLineString} MultiLineString.
  */
 _ol_format_GeoJSON_.readMultiLineStringGeometry_ = function(object) {
-  return new _ol_geom_MultiLineString_(object.coordinates);
+  return new MultiLineString(object.coordinates);
 };
 
 

@@ -3,7 +3,7 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_render_canvas_ReplayGroup_ from '../../../../src/ol/render/canvas/ReplayGroup.js';
@@ -114,7 +114,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the multilinestring', function() {
-        feature.setGeometry(new _ol_geom_MultiLineString_([[[0, 0], [1, 1]]]));
+        feature.setGeometry(new MultiLineString([[[0, 0], [1, 1]]]));
         var lineStringReplay = replayGroup.getReplay(
             style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,

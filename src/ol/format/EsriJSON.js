@@ -11,7 +11,7 @@ import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
@@ -185,7 +185,7 @@ _ol_format_EsriJSON_.readLineStringGeometry_ = function(object) {
  */
 _ol_format_EsriJSON_.readMultiLineStringGeometry_ = function(object) {
   var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
-  return new _ol_geom_MultiLineString_(object.paths, layout);
+  return new MultiLineString(object.paths, layout);
 };
 
 

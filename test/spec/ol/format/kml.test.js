@@ -5,7 +5,7 @@ import _ol_format_KML_ from '../../../../src/ol/format/KML.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -1008,7 +1008,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_MultiLineString_);
+          expect(g).to.be.an(MultiLineString);
           expect(g.getCoordinates()).to.eql(
               [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]]);
           expect(g.get('extrude')).to.be.an('array');
@@ -1027,7 +1027,7 @@ describe('ol.format.KML', function() {
 
         it('can write MultiLineString geometries', function() {
           var layout = 'XYZ';
-          var multiLineString = new _ol_geom_MultiLineString_(
+          var multiLineString = new MultiLineString(
               [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], layout);
           var features = [new _ol_Feature_(multiLineString)];
           var node = format.writeFeaturesNode(features);
@@ -1289,7 +1289,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_MultiLineString_);
+          expect(g).to.be.an(MultiLineString);
           var gs = g.getLineStrings();
           expect(gs).to.have.length(2);
           expect(gs[0]).to.be.an(LineString);
