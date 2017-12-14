@@ -4,7 +4,7 @@
 import _ol_Collection_ from './Collection.js';
 import Attribution from './control/Attribution.js';
 import Rotate from './control/Rotate.js';
-import _ol_control_Zoom_ from './control/Zoom.js';
+import Zoom from './control/Zoom.js';
 var _ol_control_ = {};
 
 
@@ -28,7 +28,7 @@ _ol_control_.defaults = function(opt_options) {
 
   var zoomControl = options.zoom !== undefined ? options.zoom : true;
   if (zoomControl) {
-    controls.push(new _ol_control_Zoom_(options.zoomOptions));
+    controls.push(new Zoom(options.zoomOptions));
   }
 
   var rotateControl = options.rotate !== undefined ? options.rotate : true;
