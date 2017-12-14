@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Control from '../../../../src/ol/control/Control.js';
-import _ol_control_OverviewMap_ from '../../../../src/ol/control/OverviewMap.js';
+import OverviewMap from '../../../../src/ol/control/OverviewMap.js';
 
 describe('ol.control.OverviewMap', function() {
   var map, target;
@@ -23,8 +23,8 @@ describe('ol.control.OverviewMap', function() {
 
   describe('constructor', function() {
     it('creates an overview map with the default options', function() {
-      var control = new _ol_control_OverviewMap_();
-      expect(control).to.be.a(_ol_control_OverviewMap_);
+      var control = new OverviewMap();
+      expect(control).to.be.a(OverviewMap);
       expect(control).to.be.a(Control);
     });
   });
@@ -39,7 +39,7 @@ describe('ol.control.OverviewMap', function() {
       });
       map.setView(view);
 
-      var control = new _ol_control_OverviewMap_();
+      var control = new OverviewMap();
       map.addControl(control);
       var ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
@@ -49,7 +49,7 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('maintains rotation in sync if view added later', function() {
-      var control = new _ol_control_OverviewMap_();
+      var control = new OverviewMap();
       map.addControl(control);
       var ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
@@ -65,7 +65,7 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('stops listening to old maps', function() {
-      var control = new _ol_control_OverviewMap_();
+      var control = new OverviewMap();
       var ovView = control.ovmap_.getView();
 
       var view = new _ol_View_({
@@ -86,7 +86,7 @@ describe('ol.control.OverviewMap', function() {
     });
 
     it('set target to null', function() {
-      var control = new _ol_control_OverviewMap_();
+      var control = new OverviewMap();
 
       map.addControl(control);
 
