@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
@@ -28,7 +28,7 @@ import _ol_pointer_PointerEventHandler_ from '../pointer/PointerEventHandler.js'
  * @param {olx.control.ZoomSliderOptions=} opt_options Zoom slider options.
  * @api
  */
-var _ol_control_ZoomSlider_ = function(opt_options) {
+var ZoomSlider = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -47,7 +47,7 @@ var _ol_control_ZoomSlider_ = function(opt_options) {
    * @type {ol.control.ZoomSlider.Direction_}
    * @private
    */
-  this.direction_ = _ol_control_ZoomSlider_.Direction_.VERTICAL;
+  this.direction_ = ZoomSlider.Direction_.VERTICAL;
 
   /**
    * @type {boolean}
@@ -125,23 +125,23 @@ var _ol_control_ZoomSlider_ = function(opt_options) {
   _ol_events_.listen(thumbElement, _ol_events_EventType_.CLICK,
       _ol_events_Event_.stopPropagation);
 
-  var render = options.render ? options.render : _ol_control_ZoomSlider_.render;
+  var render = options.render ? options.render : ZoomSlider.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: containerElement,
     render: render
   });
 };
 
-inherits(_ol_control_ZoomSlider_, _ol_control_Control_);
+inherits(ZoomSlider, Control);
 
 
 /**
  * @inheritDoc
  */
-_ol_control_ZoomSlider_.prototype.disposeInternal = function() {
+ZoomSlider.prototype.disposeInternal = function() {
   this.dragger_.dispose();
-  _ol_control_Control_.prototype.disposeInternal.call(this);
+  Control.prototype.disposeInternal.call(this);
 };
 
 
@@ -151,7 +151,7 @@ _ol_control_ZoomSlider_.prototype.disposeInternal = function() {
  * @enum {number}
  * @private
  */
-_ol_control_ZoomSlider_.Direction_ = {
+ZoomSlider.Direction_ = {
   VERTICAL: 0,
   HORIZONTAL: 1
 };
@@ -160,8 +160,8 @@ _ol_control_ZoomSlider_.Direction_ = {
 /**
  * @inheritDoc
  */
-_ol_control_ZoomSlider_.prototype.setMap = function(map) {
-  _ol_control_Control_.prototype.setMap.call(this, map);
+ZoomSlider.prototype.setMap = function(map) {
+  Control.prototype.setMap.call(this, map);
   if (map) {
     map.render();
   }
@@ -175,7 +175,7 @@ _ol_control_ZoomSlider_.prototype.setMap = function(map) {
  *
  * @private
  */
-_ol_control_ZoomSlider_.prototype.initSlider_ = function() {
+ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
   var containerSize = {
     width: container.offsetWidth, height: container.offsetHeight
@@ -192,10 +192,10 @@ _ol_control_ZoomSlider_.prototype.initSlider_ = function() {
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
-    this.direction_ = _ol_control_ZoomSlider_.Direction_.HORIZONTAL;
+    this.direction_ = ZoomSlider.Direction_.HORIZONTAL;
     this.widthLimit_ = containerSize.width - thumbWidth;
   } else {
-    this.direction_ = _ol_control_ZoomSlider_.Direction_.VERTICAL;
+    this.direction_ = ZoomSlider.Direction_.VERTICAL;
     this.heightLimit_ = containerSize.height - thumbHeight;
   }
   this.sliderInitialized_ = true;
@@ -208,7 +208,7 @@ _ol_control_ZoomSlider_.prototype.initSlider_ = function() {
  * @this {ol.control.ZoomSlider}
  * @api
  */
-_ol_control_ZoomSlider_.render = function(mapEvent) {
+ZoomSlider.render = function(mapEvent) {
   if (!mapEvent.frameState) {
     return;
   }
@@ -227,7 +227,7 @@ _ol_control_ZoomSlider_.render = function(mapEvent) {
  * @param {Event} event The browser event to handle.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.handleContainerClick_ = function(event) {
+ZoomSlider.prototype.handleContainerClick_ = function(event) {
   var view = this.getMap().getView();
 
   var relativePosition = this.getRelativePosition_(
@@ -249,7 +249,7 @@ _ol_control_ZoomSlider_.prototype.handleContainerClick_ = function(event) {
  * @param {ol.pointer.PointerEvent} event The drag event.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.handleDraggerStart_ = function(event) {
+ZoomSlider.prototype.handleDraggerStart_ = function(event) {
   if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
     this.getMap().getView().setHint(_ol_ViewHint_.INTERACTING, 1);
     this.previousX_ = event.clientX;
@@ -265,7 +265,7 @@ _ol_control_ZoomSlider_.prototype.handleDraggerStart_ = function(event) {
  * @param {ol.pointer.PointerEvent|Event} event The drag event.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.handleDraggerDrag_ = function(event) {
+ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
   if (this.dragging_) {
     var element = this.element.firstElementChild;
     var deltaX = event.clientX - this.previousX_ + parseInt(element.style.left, 10);
@@ -285,7 +285,7 @@ _ol_control_ZoomSlider_.prototype.handleDraggerDrag_ = function(event) {
  * @param {ol.pointer.PointerEvent|Event} event The drag event.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.handleDraggerEnd_ = function(event) {
+ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
     var view = this.getMap().getView();
     view.setHint(_ol_ViewHint_.INTERACTING, -1);
@@ -309,11 +309,11 @@ _ol_control_ZoomSlider_.prototype.handleDraggerEnd_ = function(event) {
  * @param {number} res The res.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.setThumbPosition_ = function(res) {
+ZoomSlider.prototype.setThumbPosition_ = function(res) {
   var position = this.getPositionForResolution_(res);
   var thumb = this.element.firstElementChild;
 
-  if (this.direction_ == _ol_control_ZoomSlider_.Direction_.HORIZONTAL) {
+  if (this.direction_ == ZoomSlider.Direction_.HORIZONTAL) {
     thumb.style.left = this.widthLimit_ * position + 'px';
   } else {
     thumb.style.top = this.heightLimit_ * position + 'px';
@@ -331,9 +331,9 @@ _ol_control_ZoomSlider_.prototype.setThumbPosition_ = function(res) {
  * @return {number} The relative position of the thumb.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.getRelativePosition_ = function(x, y) {
+ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   var amount;
-  if (this.direction_ === _ol_control_ZoomSlider_.Direction_.HORIZONTAL) {
+  if (this.direction_ === ZoomSlider.Direction_.HORIZONTAL) {
     amount = x / this.widthLimit_;
   } else {
     amount = y / this.heightLimit_;
@@ -350,7 +350,7 @@ _ol_control_ZoomSlider_.prototype.getRelativePosition_ = function(x, y) {
  * @return {number} The corresponding resolution.
  * @private
  */
-_ol_control_ZoomSlider_.prototype.getResolutionForPosition_ = function(position) {
+ZoomSlider.prototype.getResolutionForPosition_ = function(position) {
   var fn = this.getMap().getView().getResolutionForValueFunction();
   return fn(1 - position);
 };
@@ -365,8 +365,8 @@ _ol_control_ZoomSlider_.prototype.getResolutionForPosition_ = function(position)
  * @return {number} The relative position value (between 0 and 1).
  * @private
  */
-_ol_control_ZoomSlider_.prototype.getPositionForResolution_ = function(res) {
+ZoomSlider.prototype.getPositionForResolution_ = function(res) {
   var fn = this.getMap().getView().getValueForResolutionFunction();
   return 1 - fn(res);
 };
-export default _ol_control_ZoomSlider_;
+export default ZoomSlider;

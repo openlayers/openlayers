@@ -2,7 +2,7 @@
  * @module ol/control/FullScreen
  */
 import {inherits} from '../index.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -25,7 +25,7 @@ import _ol_events_EventType_ from '../events/EventType.js';
  * @param {olx.control.FullScreenOptions=} opt_options Options.
  * @api
  */
-var _ol_control_FullScreen_ = function(opt_options) {
+var FullScreen = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -56,7 +56,7 @@ var _ol_control_FullScreen_ = function(opt_options) {
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
   var button = document.createElement('button');
-  button.className = this.cssClassName_ + '-' + _ol_control_FullScreen_.isFullScreen();
+  button.className = this.cssClassName_ + '-' + FullScreen.isFullScreen();
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(this.labelNode_);
@@ -66,12 +66,12 @@ var _ol_control_FullScreen_ = function(opt_options) {
 
   var cssClasses = this.cssClassName_ + ' ' + _ol_css_.CLASS_UNSELECTABLE +
       ' ' + _ol_css_.CLASS_CONTROL + ' ' +
-      (!_ol_control_FullScreen_.isFullScreenSupported() ? _ol_css_.CLASS_UNSUPPORTED : '');
+      (!FullScreen.isFullScreenSupported() ? _ol_css_.CLASS_UNSUPPORTED : '');
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     target: options.target
   });
@@ -90,14 +90,14 @@ var _ol_control_FullScreen_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_FullScreen_, _ol_control_Control_);
+inherits(FullScreen, Control);
 
 
 /**
  * @param {Event} event The event to handle
  * @private
  */
-_ol_control_FullScreen_.prototype.handleClick_ = function(event) {
+FullScreen.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleFullScreen_();
 };
@@ -106,16 +106,16 @@ _ol_control_FullScreen_.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-_ol_control_FullScreen_.prototype.handleFullScreen_ = function() {
-  if (!_ol_control_FullScreen_.isFullScreenSupported()) {
+FullScreen.prototype.handleFullScreen_ = function() {
+  if (!FullScreen.isFullScreenSupported()) {
     return;
   }
   var map = this.getMap();
   if (!map) {
     return;
   }
-  if (_ol_control_FullScreen_.isFullScreen()) {
-    _ol_control_FullScreen_.exitFullScreen();
+  if (FullScreen.isFullScreen()) {
+    FullScreen.exitFullScreen();
   } else {
     var element;
     if (this.source_) {
@@ -126,10 +126,10 @@ _ol_control_FullScreen_.prototype.handleFullScreen_ = function() {
       element = map.getTargetElement();
     }
     if (this.keys_) {
-      _ol_control_FullScreen_.requestFullScreenWithKeys(element);
+      FullScreen.requestFullScreenWithKeys(element);
 
     } else {
-      _ol_control_FullScreen_.requestFullScreen(element);
+      FullScreen.requestFullScreen(element);
     }
   }
 };
@@ -138,10 +138,10 @@ _ol_control_FullScreen_.prototype.handleFullScreen_ = function() {
 /**
  * @private
  */
-_ol_control_FullScreen_.prototype.handleFullScreenChange_ = function() {
+FullScreen.prototype.handleFullScreenChange_ = function() {
   var button = this.element.firstElementChild;
   var map = this.getMap();
-  if (_ol_control_FullScreen_.isFullScreen()) {
+  if (FullScreen.isFullScreen()) {
     button.className = this.cssClassName_ + '-true';
     replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
@@ -158,11 +158,11 @@ _ol_control_FullScreen_.prototype.handleFullScreenChange_ = function() {
  * @inheritDoc
  * @api
  */
-_ol_control_FullScreen_.prototype.setMap = function(map) {
-  _ol_control_Control_.prototype.setMap.call(this, map);
+FullScreen.prototype.setMap = function(map) {
+  Control.prototype.setMap.call(this, map);
   if (map) {
     this.listenerKeys.push(_ol_events_.listen(document,
-        _ol_control_FullScreen_.getChangeType_(),
+        FullScreen.getChangeType_(),
         this.handleFullScreenChange_, this)
     );
   }
@@ -171,7 +171,7 @@ _ol_control_FullScreen_.prototype.setMap = function(map) {
 /**
  * @return {boolean} Fullscreen is supported by the current platform.
  */
-_ol_control_FullScreen_.isFullScreenSupported = function() {
+FullScreen.isFullScreenSupported = function() {
   var body = document.body;
   return !!(
     body.webkitRequestFullscreen ||
@@ -184,7 +184,7 @@ _ol_control_FullScreen_.isFullScreenSupported = function() {
 /**
  * @return {boolean} Element is currently in fullscreen.
  */
-_ol_control_FullScreen_.isFullScreen = function() {
+FullScreen.isFullScreen = function() {
   return !!(
     document.webkitIsFullScreen || document.mozFullScreen ||
     document.msFullscreenElement || document.fullscreenElement
@@ -195,7 +195,7 @@ _ol_control_FullScreen_.isFullScreen = function() {
  * Request to fullscreen an element.
  * @param {Node} element Element to request fullscreen
  */
-_ol_control_FullScreen_.requestFullScreen = function(element) {
+FullScreen.requestFullScreen = function(element) {
   if (element.requestFullscreen) {
     element.requestFullscreen();
   } else if (element.msRequestFullscreen) {
@@ -211,20 +211,20 @@ _ol_control_FullScreen_.requestFullScreen = function(element) {
  * Request to fullscreen an element with keyboard input.
  * @param {Node} element Element to request fullscreen
  */
-_ol_control_FullScreen_.requestFullScreenWithKeys = function(element) {
+FullScreen.requestFullScreenWithKeys = function(element) {
   if (element.mozRequestFullScreenWithKeys) {
     element.mozRequestFullScreenWithKeys();
   } else if (element.webkitRequestFullscreen) {
     element.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
   } else {
-    _ol_control_FullScreen_.requestFullScreen(element);
+    FullScreen.requestFullScreen(element);
   }
 };
 
 /**
  * Exit fullscreen.
  */
-_ol_control_FullScreen_.exitFullScreen = function() {
+FullScreen.exitFullScreen = function() {
   if (document.exitFullscreen) {
     document.exitFullscreen();
   } else if (document.msExitFullscreen) {
@@ -240,7 +240,7 @@ _ol_control_FullScreen_.exitFullScreen = function() {
  * @return {string} Change type.
  * @private
  */
-_ol_control_FullScreen_.getChangeType_ = (function() {
+FullScreen.getChangeType_ = (function() {
   var changeType;
   return function() {
     if (!changeType) {
@@ -258,4 +258,4 @@ _ol_control_FullScreen_.getChangeType_ = (function() {
     return changeType;
   };
 })();
-export default _ol_control_FullScreen_;
+export default FullScreen;

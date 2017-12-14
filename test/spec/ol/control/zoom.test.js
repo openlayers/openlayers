@@ -1,12 +1,12 @@
-import _ol_control_Zoom_ from '../../../../src/ol/control/Zoom.js';
+import Zoom from '../../../../src/ol/control/Zoom.js';
 
 describe('ol.control.Zoom', function() {
 
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_control_Zoom_();
-      expect(instance).to.be.an(_ol_control_Zoom_);
+      var instance = new Zoom();
+      expect(instance).to.be.an(Zoom);
     });
 
   });

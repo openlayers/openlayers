@@ -2,7 +2,7 @@
  * @module ol/control/Rotate
  */
 
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
@@ -20,7 +20,7 @@ import {inherits} from '../index.js';
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
  * @api
  */
-var _ol_control_Rotate_ = function(opt_options) {
+var Rotate = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -52,7 +52,7 @@ var _ol_control_Rotate_ = function(opt_options) {
   button.appendChild(this.label_);
 
   _ol_events_.listen(button, _ol_events_EventType_.CLICK,
-      _ol_control_Rotate_.prototype.handleClick_, this);
+      Rotate.prototype.handleClick_, this);
 
   var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
       _ol_css_.CLASS_CONTROL;
@@ -60,11 +60,11 @@ var _ol_control_Rotate_ = function(opt_options) {
   element.className = cssClasses;
   element.appendChild(button);
 
-  var render = options.render ? options.render : _ol_control_Rotate_.render;
+  var render = options.render ? options.render : Rotate.render;
 
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -94,14 +94,14 @@ var _ol_control_Rotate_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_Rotate_, _ol_control_Control_);
+inherits(Rotate, Control);
 
 
 /**
  * @param {Event} event The event to handle
  * @private
  */
-_ol_control_Rotate_.prototype.handleClick_ = function(event) {
+Rotate.prototype.handleClick_ = function(event) {
   event.preventDefault();
   if (this.callResetNorth_ !== undefined) {
     this.callResetNorth_();
@@ -114,7 +114,7 @@ _ol_control_Rotate_.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-_ol_control_Rotate_.prototype.resetNorth_ = function() {
+Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
   var view = map.getView();
   if (!view) {
@@ -142,7 +142,7 @@ _ol_control_Rotate_.prototype.resetNorth_ = function() {
  * @this {ol.control.Rotate}
  * @api
  */
-_ol_control_Rotate_.render = function(mapEvent) {
+Rotate.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (!frameState) {
     return;
@@ -164,4 +164,4 @@ _ol_control_Rotate_.render = function(mapEvent) {
   }
   this.rotation_ = rotation;
 };
-export default _ol_control_Rotate_;
+export default Rotate;

@@ -1,12 +1,12 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_control_MousePosition_ from '../src/ol/control/MousePosition.js';
+import MousePosition from '../src/ol/control/MousePosition.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
-var mousePositionControl = new _ol_control_MousePosition_({
+var mousePositionControl = new MousePosition({
   coordinateFormat: _ol_coordinate_.createStringXY(4),
   projection: 'EPSG:4326',
   // comment the following two lines to have the mouse position

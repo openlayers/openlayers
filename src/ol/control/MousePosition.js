@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_Object_ from '../Object.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
 
 /**
@@ -22,7 +22,7 @@ import {getTransformFromProjections, identityTransform, get as getProjection} fr
  *     options.
  * @api
  */
-var _ol_control_MousePosition_ = function(opt_options) {
+var MousePosition = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -30,16 +30,16 @@ var _ol_control_MousePosition_ = function(opt_options) {
   element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
   var render = options.render ?
-    options.render : _ol_control_MousePosition_.render;
+    options.render : MousePosition.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
   });
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_control_MousePosition_.Property_.PROJECTION),
+      _ol_Object_.getChangeEventType(MousePosition.Property_.PROJECTION),
       this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {
@@ -81,7 +81,7 @@ var _ol_control_MousePosition_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_MousePosition_, _ol_control_Control_);
+inherits(MousePosition, Control);
 
 
 /**
@@ -90,7 +90,7 @@ inherits(_ol_control_MousePosition_, _ol_control_Control_);
  * @this {ol.control.MousePosition}
  * @api
  */
-_ol_control_MousePosition_.render = function(mapEvent) {
+MousePosition.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (!frameState) {
     this.mapProjection_ = null;
@@ -107,7 +107,7 @@ _ol_control_MousePosition_.render = function(mapEvent) {
 /**
  * @private
  */
-_ol_control_MousePosition_.prototype.handleProjectionChanged_ = function() {
+MousePosition.prototype.handleProjectionChanged_ = function() {
   this.transform_ = null;
 };
 
@@ -120,9 +120,9 @@ _ol_control_MousePosition_.prototype.handleProjectionChanged_ = function() {
  * @observable
  * @api
  */
-_ol_control_MousePosition_.prototype.getCoordinateFormat = function() {
+MousePosition.prototype.getCoordinateFormat = function() {
   return (
-    /** @type {ol.CoordinateFormatType|undefined} */ this.get(_ol_control_MousePosition_.Property_.COORDINATE_FORMAT)
+    /** @type {ol.CoordinateFormatType|undefined} */ this.get(MousePosition.Property_.COORDINATE_FORMAT)
   );
 };
 
@@ -134,9 +134,9 @@ _ol_control_MousePosition_.prototype.getCoordinateFormat = function() {
  * @observable
  * @api
  */
-_ol_control_MousePosition_.prototype.getProjection = function() {
+MousePosition.prototype.getProjection = function() {
   return (
-    /** @type {ol.proj.Projection|undefined} */ this.get(_ol_control_MousePosition_.Property_.PROJECTION)
+    /** @type {ol.proj.Projection|undefined} */ this.get(MousePosition.Property_.PROJECTION)
   );
 };
 
@@ -145,7 +145,7 @@ _ol_control_MousePosition_.prototype.getProjection = function() {
  * @param {Event} event Browser event.
  * @protected
  */
-_ol_control_MousePosition_.prototype.handleMouseMove = function(event) {
+MousePosition.prototype.handleMouseMove = function(event) {
   var map = this.getMap();
   this.lastMouseMovePixel_ = map.getEventPixel(event);
   this.updateHTML_(this.lastMouseMovePixel_);
@@ -156,7 +156,7 @@ _ol_control_MousePosition_.prototype.handleMouseMove = function(event) {
  * @param {Event} event Browser event.
  * @protected
  */
-_ol_control_MousePosition_.prototype.handleMouseOut = function(event) {
+MousePosition.prototype.handleMouseOut = function(event) {
   this.updateHTML_(null);
   this.lastMouseMovePixel_ = null;
 };
@@ -166,8 +166,8 @@ _ol_control_MousePosition_.prototype.handleMouseOut = function(event) {
  * @inheritDoc
  * @api
  */
-_ol_control_MousePosition_.prototype.setMap = function(map) {
-  _ol_control_Control_.prototype.setMap.call(this, map);
+MousePosition.prototype.setMap = function(map) {
+  Control.prototype.setMap.call(this, map);
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
@@ -187,8 +187,8 @@ _ol_control_MousePosition_.prototype.setMap = function(map) {
  * @observable
  * @api
  */
-_ol_control_MousePosition_.prototype.setCoordinateFormat = function(format) {
-  this.set(_ol_control_MousePosition_.Property_.COORDINATE_FORMAT, format);
+MousePosition.prototype.setCoordinateFormat = function(format) {
+  this.set(MousePosition.Property_.COORDINATE_FORMAT, format);
 };
 
 
@@ -199,8 +199,8 @@ _ol_control_MousePosition_.prototype.setCoordinateFormat = function(format) {
  * @observable
  * @api
  */
-_ol_control_MousePosition_.prototype.setProjection = function(projection) {
-  this.set(_ol_control_MousePosition_.Property_.PROJECTION, getProjection(projection));
+MousePosition.prototype.setProjection = function(projection) {
+  this.set(MousePosition.Property_.PROJECTION, getProjection(projection));
 };
 
 
@@ -208,7 +208,7 @@ _ol_control_MousePosition_.prototype.setProjection = function(projection) {
  * @param {?ol.Pixel} pixel Pixel.
  * @private
  */
-_ol_control_MousePosition_.prototype.updateHTML_ = function(pixel) {
+MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
   if (pixel && this.mapProjection_) {
     if (!this.transform_) {
@@ -243,8 +243,8 @@ _ol_control_MousePosition_.prototype.updateHTML_ = function(pixel) {
  * @enum {string}
  * @private
  */
-_ol_control_MousePosition_.Property_ = {
+MousePosition.Property_ = {
   PROJECTION: 'projection',
   COORDINATE_FORMAT: 'coordinateFormat'
 };
-export default _ol_control_MousePosition_;
+export default MousePosition;

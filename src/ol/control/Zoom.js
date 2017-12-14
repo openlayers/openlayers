@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
 
@@ -19,7 +19,7 @@ import {easeOut} from '../easing.js';
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
  * @api
  */
-var _ol_control_Zoom_ = function(opt_options) {
+var Zoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -44,7 +44,7 @@ var _ol_control_Zoom_ = function(opt_options) {
   );
 
   _ol_events_.listen(inElement, _ol_events_EventType_.CLICK,
-      _ol_control_Zoom_.prototype.handleClick_.bind(this, delta));
+      Zoom.prototype.handleClick_.bind(this, delta));
 
   var outElement = document.createElement('button');
   outElement.className = className + '-out';
@@ -55,7 +55,7 @@ var _ol_control_Zoom_ = function(opt_options) {
   );
 
   _ol_events_.listen(outElement, _ol_events_EventType_.CLICK,
-      _ol_control_Zoom_.prototype.handleClick_.bind(this, -delta));
+      Zoom.prototype.handleClick_.bind(this, -delta));
 
   var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
       _ol_css_.CLASS_CONTROL;
@@ -64,7 +64,7 @@ var _ol_control_Zoom_ = function(opt_options) {
   element.appendChild(inElement);
   element.appendChild(outElement);
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     target: options.target
   });
@@ -77,7 +77,7 @@ var _ol_control_Zoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_Zoom_, _ol_control_Control_);
+inherits(Zoom, Control);
 
 
 /**
@@ -85,7 +85,7 @@ inherits(_ol_control_Zoom_, _ol_control_Control_);
  * @param {Event} event The event to handle
  * @private
  */
-_ol_control_Zoom_.prototype.handleClick_ = function(delta, event) {
+Zoom.prototype.handleClick_ = function(delta, event) {
   event.preventDefault();
   this.zoomByDelta_(delta);
 };
@@ -95,7 +95,7 @@ _ol_control_Zoom_.prototype.handleClick_ = function(delta, event) {
  * @param {number} delta Zoom delta.
  * @private
  */
-_ol_control_Zoom_.prototype.zoomByDelta_ = function(delta) {
+Zoom.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
   var view = map.getView();
   if (!view) {
@@ -120,4 +120,4 @@ _ol_control_Zoom_.prototype.zoomByDelta_ = function(delta) {
     }
   }
 };
-export default _ol_control_Zoom_;
+export default Zoom;

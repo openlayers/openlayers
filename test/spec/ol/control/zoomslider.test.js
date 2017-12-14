@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_control_ZoomSlider_ from '../../../../src/ol/control/ZoomSlider.js';
+import ZoomSlider from '../../../../src/ol/control/ZoomSlider.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 
 describe('ol.control.ZoomSlider', function() {
@@ -9,7 +9,7 @@ describe('ol.control.ZoomSlider', function() {
   beforeEach(function() {
     target = document.createElement('div');
     document.body.appendChild(target);
-    zoomslider = new _ol_control_ZoomSlider_();
+    zoomslider = new ZoomSlider();
     map = new _ol_Map_({
       target: target,
       controls: [zoomslider]
@@ -59,7 +59,7 @@ describe('ol.control.ZoomSlider', function() {
 
   describe('#direction_', function() {
     it('is horizontal for wide containers', function() {
-      var control = new _ol_control_ZoomSlider_({});
+      var control = new ZoomSlider({});
       control.element.style.width = '1000px';
       control.element.style.height = '10px';
       control.setMap(map);
@@ -72,7 +72,7 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('is vertical for tall containers', function() {
-      var control = new _ol_control_ZoomSlider_({});
+      var control = new ZoomSlider({});
       control.element.style.width = '10px';
       control.element.style.height = '1000px';
 
@@ -102,7 +102,7 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('[horizontal] handles a drag sequence', function() {
-      var control = new _ol_control_ZoomSlider_();
+      var control = new ZoomSlider();
       map.addControl(control);
       map.getView().setZoom(0);
       control.element.style.width = '500px';
@@ -134,7 +134,7 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.dragging_).to.be(false);
     });
     it('[vertical] handles a drag sequence', function() {
-      var control = new _ol_control_ZoomSlider_();
+      var control = new ZoomSlider();
       control.element.style.width = '10px';
       control.element.style.height = '100px';
       control.element.firstChild.style.width = '10px';

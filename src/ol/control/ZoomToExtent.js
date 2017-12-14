@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 
 /**
@@ -17,7 +17,7 @@ import _ol_css_ from '../css.js';
  * @param {olx.control.ZoomToExtentOptions=} opt_options Options.
  * @api
  */
-var _ol_control_ZoomToExtent_ = function(opt_options) {
+var ZoomToExtent = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   /**
@@ -48,20 +48,20 @@ var _ol_control_ZoomToExtent_ = function(opt_options) {
   element.className = cssClasses;
   element.appendChild(button);
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     target: options.target
   });
 };
 
-inherits(_ol_control_ZoomToExtent_, _ol_control_Control_);
+inherits(ZoomToExtent, Control);
 
 
 /**
  * @param {Event} event The event to handle
  * @private
  */
-_ol_control_ZoomToExtent_.prototype.handleClick_ = function(event) {
+ZoomToExtent.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleZoomToExtent();
 };
@@ -70,10 +70,10 @@ _ol_control_ZoomToExtent_.prototype.handleClick_ = function(event) {
 /**
  * @protected
  */
-_ol_control_ZoomToExtent_.prototype.handleZoomToExtent = function() {
+ZoomToExtent.prototype.handleZoomToExtent = function() {
   var map = this.getMap();
   var view = map.getView();
   var extent = !this.extent ? view.getProjection().getExtent() : this.extent;
   view.fit(extent);
 };
-export default _ol_control_ZoomToExtent_;
+export default ZoomToExtent;

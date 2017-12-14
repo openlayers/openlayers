@@ -1,14 +1,14 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_control_OverviewMap_ from '../src/ol/control/OverviewMap.js';
+import OverviewMap from '../src/ol/control/OverviewMap.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import _ol_interaction_DragRotateAndZoom_ from '../src/ol/interaction/DragRotateAndZoom.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 
-var overviewMapControl = new _ol_control_OverviewMap_({
+var overviewMapControl = new OverviewMap({
   // see in overviewmap-custom.html to see the custom CSS used
   className: 'ol-overviewmap ol-custom-overviewmap',
   layers: [

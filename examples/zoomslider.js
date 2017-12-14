@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_control_ZoomSlider_ from '../src/ol/control/ZoomSlider.js';
+import ZoomSlider from '../src/ol/control/ZoomSlider.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
@@ -26,7 +26,7 @@ var createMap = function(divId) {
       zoom: 2
     })
   });
-  zoomslider = new _ol_control_ZoomSlider_();
+  zoomslider = new ZoomSlider();
   map.addControl(zoomslider);
   return map;
 };

@@ -36,7 +36,7 @@ import _ol_events_ from '../events.js';
  * @param {olx.control.ControlOptions} options Control options.
  * @api
  */
-var _ol_control_Control_ = function(options) {
+var Control = function(options) {
 
   _ol_Object_.call(this);
 
@@ -75,13 +75,13 @@ var _ol_control_Control_ = function(options) {
 
 };
 
-inherits(_ol_control_Control_, _ol_Object_);
+inherits(Control, _ol_Object_);
 
 
 /**
  * @inheritDoc
  */
-_ol_control_Control_.prototype.disposeInternal = function() {
+Control.prototype.disposeInternal = function() {
   removeNode(this.element);
   _ol_Object_.prototype.disposeInternal.call(this);
 };
@@ -92,7 +92,7 @@ _ol_control_Control_.prototype.disposeInternal = function() {
  * @return {ol.PluggableMap} Map.
  * @api
  */
-_ol_control_Control_.prototype.getMap = function() {
+Control.prototype.getMap = function() {
   return this.map_;
 };
 
@@ -105,7 +105,7 @@ _ol_control_Control_.prototype.getMap = function() {
  * @override
  * @api
  */
-_ol_control_Control_.prototype.setMap = function(map) {
+Control.prototype.setMap = function(map) {
   if (this.map_) {
     removeNode(this.element);
   }
@@ -136,9 +136,9 @@ _ol_control_Control_.prototype.setMap = function(map) {
  * @param {Element|string} target Target.
  * @api
  */
-_ol_control_Control_.prototype.setTarget = function(target) {
+Control.prototype.setTarget = function(target) {
   this.target_ = typeof target === 'string' ?
     document.getElementById(target) :
     target;
 };
-export default _ol_control_Control_;
+export default Control;

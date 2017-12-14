@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {removeNode, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -25,7 +25,7 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
  * @api
  */
-var _ol_control_Attribution_ = function(opt_options) {
+var Attribution = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -110,9 +110,9 @@ var _ol_control_Attribution_ = function(opt_options) {
   element.appendChild(this.ulElement_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : _ol_control_Attribution_.render;
+  var render = options.render ? options.render : Attribution.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -139,7 +139,7 @@ var _ol_control_Attribution_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_Attribution_, _ol_control_Control_);
+inherits(Attribution, Control);
 
 
 /**
@@ -148,7 +148,7 @@ inherits(_ol_control_Attribution_, _ol_control_Control_);
  * @return {Array.<string>} Attributions.
  * @private
  */
-_ol_control_Attribution_.prototype.getSourceAttributions_ = function(frameState) {
+Attribution.prototype.getSourceAttributions_ = function(frameState) {
   /**
    * Used to determine if an attribution already exists.
    * @type {Object.<string, boolean>}
@@ -208,7 +208,7 @@ _ol_control_Attribution_.prototype.getSourceAttributions_ = function(frameState)
  * @this {ol.control.Attribution}
  * @api
  */
-_ol_control_Attribution_.render = function(mapEvent) {
+Attribution.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
@@ -217,7 +217,7 @@ _ol_control_Attribution_.render = function(mapEvent) {
  * @private
  * @param {?olx.FrameState} frameState Frame state.
  */
-_ol_control_Attribution_.prototype.updateElement_ = function(frameState) {
+Attribution.prototype.updateElement_ = function(frameState) {
   if (!frameState) {
     if (this.renderedVisible_) {
       this.element.style.display = 'none';
@@ -265,7 +265,7 @@ _ol_control_Attribution_.prototype.updateElement_ = function(frameState) {
  * @param {?olx.FrameState} frameState Frame state.
  * @private
  */
-_ol_control_Attribution_.prototype.insertLogos_ = function(frameState) {
+Attribution.prototype.insertLogos_ = function(frameState) {
 
   var logo;
   var logos = frameState.logos;
@@ -309,7 +309,7 @@ _ol_control_Attribution_.prototype.insertLogos_ = function(frameState) {
  * @param {Event} event The event to handle
  * @private
  */
-_ol_control_Attribution_.prototype.handleClick_ = function(event) {
+Attribution.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleToggle_();
 };
@@ -318,7 +318,7 @@ _ol_control_Attribution_.prototype.handleClick_ = function(event) {
 /**
  * @private
  */
-_ol_control_Attribution_.prototype.handleToggle_ = function() {
+Attribution.prototype.handleToggle_ = function() {
   this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
     replaceNode(this.collapseLabel_, this.label_);
@@ -334,7 +334,7 @@ _ol_control_Attribution_.prototype.handleToggle_ = function() {
  * @return {boolean} True if the widget is collapsible.
  * @api
  */
-_ol_control_Attribution_.prototype.getCollapsible = function() {
+Attribution.prototype.getCollapsible = function() {
   return this.collapsible_;
 };
 
@@ -344,7 +344,7 @@ _ol_control_Attribution_.prototype.getCollapsible = function() {
  * @param {boolean} collapsible True if the widget is collapsible.
  * @api
  */
-_ol_control_Attribution_.prototype.setCollapsible = function(collapsible) {
+Attribution.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
     return;
   }
@@ -363,7 +363,7 @@ _ol_control_Attribution_.prototype.setCollapsible = function(collapsible) {
  * @param {boolean} collapsed True if the widget is collapsed.
  * @api
  */
-_ol_control_Attribution_.prototype.setCollapsed = function(collapsed) {
+Attribution.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
     return;
   }
@@ -377,7 +377,7 @@ _ol_control_Attribution_.prototype.setCollapsed = function(collapsed) {
  * @return {boolean} True if the widget is collapsed.
  * @api
  */
-_ol_control_Attribution_.prototype.getCollapsed = function() {
+Attribution.prototype.getCollapsed = function() {
   return this.collapsed_;
 };
-export default _ol_control_Attribution_;
+export default Attribution;
