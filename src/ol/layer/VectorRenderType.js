@@ -1,6 +1,7 @@
 /**
  * @module ol/layer/VectorRenderType
  */
+
 /**
  * @enum {string}
  * Render mode for vector layers:
@@ -11,9 +12,7 @@
  *    even during animations, but slower performance.
  * @api
  */
-var _ol_layer_VectorRenderType_ = {
+export default {
   IMAGE: 'image',
   VECTOR: 'vector'
 };
-
-export default _ol_layer_VectorRenderType_;

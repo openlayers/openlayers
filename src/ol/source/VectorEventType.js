@@ -1,10 +1,11 @@
 /**
  * @module ol/source/VectorEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_source_VectorEventType_ = {
+export default {
   /**
    * Triggered when a feature is added to the source.
    * @event ol.source.Vector.Event#addfeature
@@ -34,5 +35,3 @@ var _ol_source_VectorEventType_ = {
    */
   REMOVEFEATURE: 'removefeature'
 };
-
-export default _ol_source_VectorEventType_;

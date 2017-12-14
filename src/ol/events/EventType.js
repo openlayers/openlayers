@@ -1,11 +1,12 @@
 /**
  * @module ol/events/EventType
  */
+
 /**
  * @enum {string}
  * @const
  */
-var _ol_events_EventType_ = {
+export default {
   /**
    * Generic change event. Triggered when the revision counter is increased.
    * @event ol.events.Event#change
@@ -35,5 +36,3 @@ var _ol_events_EventType_ = {
   TOUCHEND: 'touchend',
   WHEEL: 'wheel'
 };
-
-export default _ol_events_EventType_;

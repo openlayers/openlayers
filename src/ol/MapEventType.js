@@ -1,10 +1,11 @@
 /**
  * @module ol/MapEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_MapEventType_ = {
+export default {
 
   /**
    * Triggered after a map frame is rendered.
@@ -28,5 +29,3 @@ var _ol_MapEventType_ = {
   MOVEEND: 'moveend'
 
 };
-
-export default _ol_MapEventType_;
