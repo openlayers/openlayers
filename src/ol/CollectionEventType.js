@@ -1,10 +1,11 @@
 /**
  * @module ol/CollectionEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_CollectionEventType_ = {
+export default {
   /**
    * Triggered when an item is added to the collection.
    * @event ol.Collection.Event#add
@@ -18,5 +19,3 @@ var _ol_CollectionEventType_ = {
    */
   REMOVE: 'remove'
 };
-
-export default _ol_CollectionEventType_;

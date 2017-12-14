@@ -1,10 +1,11 @@
 /**
  * @module ol/interaction/ModifyEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_interaction_ModifyEventType_ = {
+export default {
   /**
    * Triggered upon feature modification start
    * @event ol.interaction.Modify.Event#modifystart
@@ -18,5 +19,3 @@ var _ol_interaction_ModifyEventType_ = {
    */
   MODIFYEND: 'modifyend'
 };
-
-export default _ol_interaction_ModifyEventType_;

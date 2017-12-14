@@ -1,6 +1,7 @@
 /**
  * @module ol/layer/VectorTileRenderType
  */
+
 /**
  * @enum {string}
  * Render mode for vector tiles:
@@ -14,10 +15,8 @@
  *    even during animations, but slower performance than the other options.
  * @api
  */
-var _ol_layer_VectorTileRenderType_ = {
+export default {
   IMAGE: 'image',
   HYBRID: 'hybrid',
   VECTOR: 'vector'
 };
-
-export default _ol_layer_VectorTileRenderType_;

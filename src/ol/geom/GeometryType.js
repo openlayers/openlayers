@@ -1,13 +1,14 @@
 /**
  * @module ol/geom/GeometryType
  */
+
 /**
  * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
  */
-var GeometryType = {
+export default {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   LINEAR_RING: 'LinearRing',
@@ -18,5 +19,3 @@ var GeometryType = {
   GEOMETRY_COLLECTION: 'GeometryCollection',
   CIRCLE: 'Circle'
 };
-
-export default GeometryType;
