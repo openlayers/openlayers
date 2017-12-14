@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_math_ from '../math.js';
 
@@ -20,11 +20,11 @@ import _ol_math_ from '../math.js';
  * @api
  */
 var Point = function(coordinates, opt_layout) {
-  _ol_geom_SimpleGeometry_.call(this);
+  SimpleGeometry.call(this);
   this.setCoordinates(coordinates, opt_layout);
 };
 
-inherits(Point, _ol_geom_SimpleGeometry_);
+inherits(Point, SimpleGeometry);
 
 
 /**

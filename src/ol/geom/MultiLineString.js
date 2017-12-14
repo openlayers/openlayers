@@ -7,7 +7,7 @@ import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
@@ -27,7 +27,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  */
 var MultiLineString = function(coordinates, opt_layout) {
 
-  _ol_geom_SimpleGeometry_.call(this);
+  SimpleGeometry.call(this);
 
   /**
    * @type {Array.<number>}
@@ -51,7 +51,7 @@ var MultiLineString = function(coordinates, opt_layout) {
 
 };
 
-inherits(MultiLineString, _ol_geom_SimpleGeometry_);
+inherits(MultiLineString, SimpleGeometry);
 
 
 /**

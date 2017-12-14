@@ -8,7 +8,7 @@ import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
@@ -32,7 +32,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  */
 var MultiPolygon = function(coordinates, opt_layout) {
 
-  _ol_geom_SimpleGeometry_.call(this);
+  SimpleGeometry.call(this);
 
   /**
    * @type {Array.<Array.<number>>}
@@ -80,7 +80,7 @@ var MultiPolygon = function(coordinates, opt_layout) {
 
 };
 
-inherits(MultiPolygon, _ol_geom_SimpleGeometry_);
+inherits(MultiPolygon, SimpleGeometry);
 
 
 /**

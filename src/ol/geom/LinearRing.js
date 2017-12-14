@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -25,7 +25,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  */
 var LinearRing = function(coordinates, opt_layout) {
 
-  _ol_geom_SimpleGeometry_.call(this);
+  SimpleGeometry.call(this);
 
   /**
    * @private
@@ -43,7 +43,7 @@ var LinearRing = function(coordinates, opt_layout) {
 
 };
 
-inherits(LinearRing, _ol_geom_SimpleGeometry_);
+inherits(LinearRing, SimpleGeometry);
 
 
 /**

@@ -16,7 +16,7 @@ import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
 import GeometryType from './geom/GeometryType.js';
 import Polygon from './geom/Polygon.js';
-import _ol_geom_SimpleGeometry_ from './geom/SimpleGeometry.js';
+import SimpleGeometry from './geom/SimpleGeometry.js';
 import _ol_math_ from './math.js';
 import _ol_obj_ from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
@@ -879,7 +879,7 @@ _ol_View_.prototype.fit = function(geometryOrExtent, opt_options) {
   }
   /** @type {ol.geom.SimpleGeometry} */
   var geometry;
-  if (!(geometryOrExtent instanceof _ol_geom_SimpleGeometry_)) {
+  if (!(geometryOrExtent instanceof SimpleGeometry)) {
     _ol_asserts_.assert(Array.isArray(geometryOrExtent),
         24); // Invalid extent or geometry provided as `geometry`
     _ol_asserts_.assert(!isEmpty(geometryOrExtent),

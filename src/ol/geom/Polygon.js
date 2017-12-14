@@ -8,7 +8,7 @@ import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LinearRing from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_contains_ from '../geom/flat/contains.js';
@@ -37,7 +37,7 @@ import _ol_math_ from '../math.js';
  */
 var Polygon = function(coordinates, opt_layout) {
 
-  _ol_geom_SimpleGeometry_.call(this);
+  SimpleGeometry.call(this);
 
   /**
    * @type {Array.<number>}
@@ -85,7 +85,7 @@ var Polygon = function(coordinates, opt_layout) {
 
 };
 
-inherits(Polygon, _ol_geom_SimpleGeometry_);
+inherits(Polygon, SimpleGeometry);
 
 
 /**

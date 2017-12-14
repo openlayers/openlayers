@@ -14,7 +14,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 /**
  * @classdesc
@@ -208,7 +208,7 @@ _ol_format_WKT_.encode_ = function(geom) {
   var geometryEncoder = _ol_format_WKT_.GeometryEncoder_[type];
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
-  if (geom instanceof _ol_geom_SimpleGeometry_) {
+  if (geom instanceof SimpleGeometry) {
     var dimInfo = _ol_format_WKT_.encodeGeometryLayout_(geom);
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;

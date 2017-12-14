@@ -8,7 +8,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
@@ -324,7 +324,7 @@ _ol_format_Polyline_.prototype.readGeometry;
  * @inheritDoc
  */
 _ol_format_Polyline_.prototype.readGeometryFromText = function(text, opt_options) {
-  var stride = _ol_geom_SimpleGeometry_.getStrideForLayout(this.geometryLayout_);
+  var stride = SimpleGeometry.getStrideForLayout(this.geometryLayout_);
   var flatCoordinates = _ol_format_Polyline_.decodeDeltas(
       text, stride, this.factor_);
   _ol_geom_flat_flip_.flipXY(

@@ -10,7 +10,7 @@ import _ol_array_ from '../../array.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
-import _ol_geom_SimpleGeometry_ from '../../geom/SimpleGeometry.js';
+import SimpleGeometry from '../../geom/SimpleGeometry.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
@@ -412,7 +412,7 @@ _ol_render_canvas_Immediate_.prototype.drawCircle = function(geometry) {
     if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    var pixelCoordinates = _ol_geom_SimpleGeometry_.transform2D(
+    var pixelCoordinates = SimpleGeometry.transform2D(
         geometry, this.transform_, this.pixelCoordinates_);
     var dx = pixelCoordinates[2] - pixelCoordinates[0];
     var dy = pixelCoordinates[3] - pixelCoordinates[1];
