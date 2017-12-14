@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {removeNode, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -112,7 +112,7 @@ var Attribution = function(opt_options) {
 
   var render = options.render ? options.render : Attribution.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -139,7 +139,7 @@ var Attribution = function(opt_options) {
 
 };
 
-inherits(Attribution, _ol_control_Control_);
+inherits(Attribution, Control);
 
 
 /**

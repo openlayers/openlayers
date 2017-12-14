@@ -1,5 +1,5 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_control_Control_ from '../../../../src/ol/control/Control.js';
+import Control from '../../../../src/ol/control/Control.js';
 
 describe('ol.control.Control', function() {
   var map, control;
@@ -9,7 +9,7 @@ describe('ol.control.Control', function() {
       target: document.createElement('div')
     });
     var element = document.createElement('DIV');
-    control = new _ol_control_Control_({element: element});
+    control = new Control({element: element});
     control.setMap(map);
   });
 
@@ -33,7 +33,7 @@ describe('ol.control.Control\'s target', function() {
       var target = document.createElement('div');
       target.id = 'mycontrol';
       document.body.appendChild(target);
-      var ctrl = new _ol_control_Control_({target: 'mycontrol'});
+      var ctrl = new Control({target: 'mycontrol'});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
       target.parentNode.removeChild(target);
@@ -42,13 +42,13 @@ describe('ol.control.Control\'s target', function() {
       var target = document.createElement('div');
       target.id = 'mycontrol';
       document.body.appendChild(target);
-      var ctrl = new _ol_control_Control_({target: target});
+      var ctrl = new Control({target: target});
       expect(ctrl.target_.id).to.equal('mycontrol');
       ctrl.dispose();
       target.parentNode.removeChild(target);
     });
     it('ignores non-existing target id', function() {
-      var ctrl = new _ol_control_Control_({target: 'doesnotexist'});
+      var ctrl = new Control({target: 'doesnotexist'});
       expect(ctrl.target_).to.equal(null);
       ctrl.dispose();
     });

@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_Object_ from '../Object.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
 
 /**
@@ -32,7 +32,7 @@ var _ol_control_MousePosition_ = function(opt_options) {
   var render = options.render ?
     options.render : _ol_control_MousePosition_.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -81,7 +81,7 @@ var _ol_control_MousePosition_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_MousePosition_, _ol_control_Control_);
+inherits(_ol_control_MousePosition_, Control);
 
 
 /**
@@ -167,7 +167,7 @@ _ol_control_MousePosition_.prototype.handleMouseOut = function(event) {
  * @api
  */
 _ol_control_MousePosition_.prototype.setMap = function(map) {
-  _ol_control_Control_.prototype.setMap.call(this, map);
+  Control.prototype.setMap.call(this, map);
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(

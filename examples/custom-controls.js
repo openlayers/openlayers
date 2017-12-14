@@ -2,7 +2,7 @@ import {inherits} from '../src/ol/index.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_control_Control_ from '../src/ol/control/Control.js';
+import Control from '../src/ol/control/Control.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
@@ -43,13 +43,13 @@ app.RotateNorthControl = function(opt_options) {
   element.className = 'rotate-north ol-unselectable ol-control';
   element.appendChild(button);
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     target: options.target
   });
 
 };
-inherits(app.RotateNorthControl, _ol_control_Control_);
+inherits(app.RotateNorthControl, Control);
 
 
 //

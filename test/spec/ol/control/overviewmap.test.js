@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_control_Control_ from '../../../../src/ol/control/Control.js';
+import Control from '../../../../src/ol/control/Control.js';
 import _ol_control_OverviewMap_ from '../../../../src/ol/control/OverviewMap.js';
 
 describe('ol.control.OverviewMap', function() {
@@ -25,7 +25,7 @@ describe('ol.control.OverviewMap', function() {
     it('creates an overview map with the default options', function() {
       var control = new _ol_control_OverviewMap_();
       expect(control).to.be.a(_ol_control_OverviewMap_);
-      expect(control).to.be.a(_ol_control_Control_);
+      expect(control).to.be.a(Control);
     });
   });
 

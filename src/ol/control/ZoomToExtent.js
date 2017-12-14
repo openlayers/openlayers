@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 
 /**
@@ -48,13 +48,13 @@ var _ol_control_ZoomToExtent_ = function(opt_options) {
   element.className = cssClasses;
   element.appendChild(button);
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     target: options.target
   });
 };
 
-inherits(_ol_control_ZoomToExtent_, _ol_control_Control_);
+inherits(_ol_control_ZoomToExtent_, Control);
 
 
 /**

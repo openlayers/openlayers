@@ -2,7 +2,7 @@
  * @module ol/control/FullScreen
  */
 import {inherits} from '../index.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -71,7 +71,7 @@ var _ol_control_FullScreen_ = function(opt_options) {
   element.className = cssClasses;
   element.appendChild(button);
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     target: options.target
   });
@@ -90,7 +90,7 @@ var _ol_control_FullScreen_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_FullScreen_, _ol_control_Control_);
+inherits(_ol_control_FullScreen_, Control);
 
 
 /**
@@ -159,7 +159,7 @@ _ol_control_FullScreen_.prototype.handleFullScreenChange_ = function() {
  * @api
  */
 _ol_control_FullScreen_.prototype.setMap = function(map) {
-  _ol_control_Control_.prototype.setMap.call(this, map);
+  Control.prototype.setMap.call(this, map);
   if (map) {
     this.listenerKeys.push(_ol_events_.listen(document,
         _ol_control_FullScreen_.getChangeType_(),

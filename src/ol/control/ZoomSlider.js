@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
@@ -127,13 +127,13 @@ var _ol_control_ZoomSlider_ = function(opt_options) {
 
   var render = options.render ? options.render : _ol_control_ZoomSlider_.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: containerElement,
     render: render
   });
 };
 
-inherits(_ol_control_ZoomSlider_, _ol_control_Control_);
+inherits(_ol_control_ZoomSlider_, Control);
 
 
 /**
@@ -141,7 +141,7 @@ inherits(_ol_control_ZoomSlider_, _ol_control_Control_);
  */
 _ol_control_ZoomSlider_.prototype.disposeInternal = function() {
   this.dragger_.dispose();
-  _ol_control_Control_.prototype.disposeInternal.call(this);
+  Control.prototype.disposeInternal.call(this);
 };
 
 
@@ -161,7 +161,7 @@ _ol_control_ZoomSlider_.Direction_ = {
  * @inheritDoc
  */
 _ol_control_ZoomSlider_.prototype.setMap = function(map) {
-  _ol_control_Control_.prototype.setMap.call(this, map);
+  Control.prototype.setMap.call(this, map);
   if (map) {
     map.render();
   }

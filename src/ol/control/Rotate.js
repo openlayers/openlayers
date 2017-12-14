@@ -2,7 +2,7 @@
  * @module ol/control/Rotate
  */
 
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
@@ -64,7 +64,7 @@ var _ol_control_Rotate_ = function(opt_options) {
 
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -94,7 +94,7 @@ var _ol_control_Rotate_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_Rotate_, _ol_control_Control_);
+inherits(_ol_control_Rotate_, Control);
 
 
 /**

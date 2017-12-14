@@ -11,7 +11,7 @@ import _ol_ObjectEventType_ from '../ObjectEventType.js';
 import _ol_Overlay_ from '../Overlay.js';
 import _ol_OverlayPositioning_ from '../OverlayPositioning.js';
 import _ol_ViewProperty_ from '../ViewProperty.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_css_ from '../css.js';
 import {replaceNode} from '../dom.js';
@@ -158,7 +158,7 @@ var _ol_control_OverviewMap_ = function(opt_options) {
 
   var render = options.render ? options.render : _ol_control_OverviewMap_.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -203,7 +203,7 @@ var _ol_control_OverviewMap_ = function(opt_options) {
   });
 };
 
-inherits(_ol_control_OverviewMap_, _ol_control_Control_);
+inherits(_ol_control_OverviewMap_, Control);
 
 
 /**
@@ -222,7 +222,7 @@ _ol_control_OverviewMap_.prototype.setMap = function(map) {
     }
     this.ovmap_.setTarget(null);
   }
-  _ol_control_Control_.prototype.setMap.call(this, map);
+  Control.prototype.setMap.call(this, map);
 
   if (map) {
     this.ovmap_.setTarget(this.ovmapDiv_);

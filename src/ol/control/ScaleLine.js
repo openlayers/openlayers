@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_control_Control_ from '../control/Control.js';
+import Control from '../control/Control.js';
 import _ol_control_ScaleLineUnits_ from '../control/ScaleLineUnits.js';
 import _ol_css_ from '../css.js';
 import _ol_events_ from '../events.js';
@@ -79,7 +79,7 @@ var _ol_control_ScaleLine_ = function(opt_options) {
 
   var render = options.render ? options.render : _ol_control_ScaleLine_.render;
 
-  _ol_control_Control_.call(this, {
+  Control.call(this, {
     element: this.element_,
     render: render,
     target: options.target
@@ -94,7 +94,7 @@ var _ol_control_ScaleLine_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_ScaleLine_, _ol_control_Control_);
+inherits(_ol_control_ScaleLine_, Control);
 
 
 /**
