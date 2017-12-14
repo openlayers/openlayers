@@ -18,7 +18,7 @@ import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
-import _ol_control_MousePosition_ from '../src/ol/control/MousePosition.js';
+import MousePosition from '../src/ol/control/MousePosition.js';
 
 var raster = new _ol_layer_Tile_({
   source: new _ol_source_OSM_()
@@ -213,4 +213,4 @@ var snap = new _ol_interaction_Snap_({
   source: edges
 });
 map.addInteraction(snap);
-map.addControl(new _ol_control_MousePosition_());
+map.addControl(new MousePosition());
