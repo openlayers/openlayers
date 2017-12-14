@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_control_ScaleLine_ from '../src/ol/control/ScaleLine.js';
+import ScaleLine from '../src/ol/control/ScaleLine.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import {addProjection, addCoordinateTransforms, transform} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
@@ -71,7 +71,7 @@ var layers = [
 
 var map = new _ol_Map_({
   controls: _ol_control_.defaults().extend([
-    new _ol_control_ScaleLine_({
+    new ScaleLine({
       units: 'metric'
     })
   ]),

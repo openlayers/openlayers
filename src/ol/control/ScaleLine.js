@@ -26,7 +26,7 @@ import _ol_proj_Units_ from '../proj/Units.js';
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
  * @api
  */
-var _ol_control_ScaleLine_ = function(opt_options) {
+var ScaleLine = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -77,7 +77,7 @@ var _ol_control_ScaleLine_ = function(opt_options) {
    */
   this.renderedHTML_ = '';
 
-  var render = options.render ? options.render : _ol_control_ScaleLine_.render;
+  var render = options.render ? options.render : ScaleLine.render;
 
   Control.call(this, {
     element: this.element_,
@@ -86,7 +86,7 @@ var _ol_control_ScaleLine_ = function(opt_options) {
   });
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_control_ScaleLine_.Property_.UNITS),
+      this, _ol_Object_.getChangeEventType(ScaleLine.Property_.UNITS),
       this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
@@ -94,14 +94,14 @@ var _ol_control_ScaleLine_ = function(opt_options) {
 
 };
 
-inherits(_ol_control_ScaleLine_, Control);
+inherits(ScaleLine, Control);
 
 
 /**
  * @const
  * @type {Array.<number>}
  */
-_ol_control_ScaleLine_.LEADING_DIGITS = [1, 2, 5];
+ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 
 /**
@@ -111,9 +111,9 @@ _ol_control_ScaleLine_.LEADING_DIGITS = [1, 2, 5];
  * @observable
  * @api
  */
-_ol_control_ScaleLine_.prototype.getUnits = function() {
+ScaleLine.prototype.getUnits = function() {
   return (
-    /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(_ol_control_ScaleLine_.Property_.UNITS)
+    /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(ScaleLine.Property_.UNITS)
   );
 };
 
@@ -124,7 +124,7 @@ _ol_control_ScaleLine_.prototype.getUnits = function() {
  * @this {ol.control.ScaleLine}
  * @api
  */
-_ol_control_ScaleLine_.render = function(mapEvent) {
+ScaleLine.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
   if (!frameState) {
     this.viewState_ = null;
@@ -138,7 +138,7 @@ _ol_control_ScaleLine_.render = function(mapEvent) {
 /**
  * @private
  */
-_ol_control_ScaleLine_.prototype.handleUnitsChanged_ = function() {
+ScaleLine.prototype.handleUnitsChanged_ = function() {
   this.updateElement_();
 };
 
@@ -149,15 +149,15 @@ _ol_control_ScaleLine_.prototype.handleUnitsChanged_ = function() {
  * @observable
  * @api
  */
-_ol_control_ScaleLine_.prototype.setUnits = function(units) {
-  this.set(_ol_control_ScaleLine_.Property_.UNITS, units);
+ScaleLine.prototype.setUnits = function(units) {
+  this.set(ScaleLine.Property_.UNITS, units);
 };
 
 
 /**
  * @private
  */
-_ol_control_ScaleLine_.prototype.updateElement_ = function() {
+ScaleLine.prototype.updateElement_ = function() {
   var viewState = this.viewState_;
 
   if (!viewState) {
@@ -244,7 +244,7 @@ _ol_control_ScaleLine_.prototype.updateElement_ = function() {
       Math.log(this.minWidth_ * pointResolution) / Math.log(10));
   var count, width;
   while (true) {
-    count = _ol_control_ScaleLine_.LEADING_DIGITS[((i % 3) + 3) % 3] *
+    count = ScaleLine.LEADING_DIGITS[((i % 3) + 3) % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
@@ -280,7 +280,7 @@ _ol_control_ScaleLine_.prototype.updateElement_ = function() {
  * @enum {string}
  * @private
  */
-_ol_control_ScaleLine_.Property_ = {
+ScaleLine.Property_ = {
   UNITS: 'units'
 };
-export default _ol_control_ScaleLine_;
+export default ScaleLine;
