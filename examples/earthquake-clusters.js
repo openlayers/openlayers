@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_extent_ from '../src/ol/extent.js';
+import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_KML_ from '../src/ol/format/KML.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';

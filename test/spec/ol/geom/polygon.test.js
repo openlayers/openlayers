@@ -1,4 +1,4 @@
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';

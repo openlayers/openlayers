@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_DragZoom_ from '../../../../src/ol/interaction/DragZoom.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';

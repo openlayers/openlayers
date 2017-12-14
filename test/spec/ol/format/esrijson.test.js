@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_EsriJSON_ from '../../../../src/ol/format/EsriJSON.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';

@@ -1,6 +1,6 @@
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
-import _ol_extent_ from '../../../../src/ol/extent.js';
+import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_proj_ from '../../../../src/ol/proj.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
