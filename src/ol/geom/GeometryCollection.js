@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
-import _ol_geom_Geometry_ from '../geom/Geometry.js';
+import Geometry from '../geom/Geometry.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_obj_ from '../obj.js';
 
@@ -20,7 +20,7 @@ import _ol_obj_ from '../obj.js';
  */
 var _ol_geom_GeometryCollection_ = function(opt_geometries) {
 
-  _ol_geom_Geometry_.call(this);
+  Geometry.call(this);
 
   /**
    * @private
@@ -31,7 +31,7 @@ var _ol_geom_GeometryCollection_ = function(opt_geometries) {
   this.listenGeometriesChange_();
 };
 
-inherits(_ol_geom_GeometryCollection_, _ol_geom_Geometry_);
+inherits(_ol_geom_GeometryCollection_, Geometry);
 
 
 /**
@@ -321,6 +321,6 @@ _ol_geom_GeometryCollection_.prototype.translate = function(deltaX, deltaY) {
  */
 _ol_geom_GeometryCollection_.prototype.disposeInternal = function() {
   this.unlistenGeometriesChange_();
-  _ol_geom_Geometry_.prototype.disposeInternal.call(this);
+  Geometry.prototype.disposeInternal.call(this);
 };
 export default _ol_geom_GeometryCollection_;

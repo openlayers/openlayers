@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_functions_ from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
-import _ol_geom_Geometry_ from '../geom/Geometry.js';
+import Geometry from '../geom/Geometry.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import _ol_obj_ from '../obj.js';
@@ -21,7 +21,7 @@ import _ol_obj_ from '../obj.js';
  */
 var _ol_geom_SimpleGeometry_ = function() {
 
-  _ol_geom_Geometry_.call(this);
+  Geometry.call(this);
 
   /**
    * @protected
@@ -43,7 +43,7 @@ var _ol_geom_SimpleGeometry_ = function() {
 
 };
 
-inherits(_ol_geom_SimpleGeometry_, _ol_geom_Geometry_);
+inherits(_ol_geom_SimpleGeometry_, Geometry);
 
 
 /**

@@ -9,7 +9,7 @@ import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_filter_ from '../format/filter.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
-import _ol_geom_Geometry_ from '../geom/Geometry.js';
+import Geometry from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -490,7 +490,7 @@ _ol_format_WFS_.writeUpdate_ = function(node, feature, objectStack) {
       var value = feature.get(keys[i]);
       if (value !== undefined) {
         var name = keys[i];
-        if (value instanceof _ol_geom_Geometry_) {
+        if (value instanceof Geometry) {
           name = geometryName;
         }
         values.push({name: name, value: value});
@@ -522,7 +522,7 @@ _ol_format_WFS_.writeProperty_ = function(node, pair, objectStack) {
   if (pair.value !== undefined && pair.value !== null) {
     var value = _ol_xml_.createElementNS(_ol_format_WFS_.WFSNS, 'Value');
     node.appendChild(value);
-    if (pair.value instanceof _ol_geom_Geometry_) {
+    if (pair.value instanceof Geometry) {
       if (gmlVersion === 2) {
         _ol_format_GML2_.prototype.writeGeometryElement(value,
             pair.value, objectStack);

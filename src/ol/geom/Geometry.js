@@ -24,7 +24,7 @@ import _ol_transform_ from '../transform.js';
  * @extends {ol.Object}
  * @api
  */
-var _ol_geom_Geometry_ = function() {
+var Geometry = function() {
 
   _ol_Object_.call(this);
 
@@ -66,7 +66,7 @@ var _ol_geom_Geometry_ = function() {
 
 };
 
-inherits(_ol_geom_Geometry_, _ol_Object_);
+inherits(Geometry, _ol_Object_);
 
 
 /**
@@ -74,7 +74,7 @@ inherits(_ol_geom_Geometry_, _ol_Object_);
  * @abstract
  * @return {!ol.geom.Geometry} Clone.
  */
-_ol_geom_Geometry_.prototype.clone = function() {};
+Geometry.prototype.clone = function() {};
 
 
 /**
@@ -85,7 +85,7 @@ _ol_geom_Geometry_.prototype.clone = function() {};
  * @param {number} minSquaredDistance Minimum squared distance.
  * @return {number} Minimum squared distance.
  */
-_ol_geom_Geometry_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {};
+Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {};
 
 
 /**
@@ -96,7 +96,7 @@ _ol_geom_Geometry_.prototype.closestPointXY = function(x, y, closestPoint, minSq
  * @return {ol.Coordinate} Closest point.
  * @api
  */
-_ol_geom_Geometry_.prototype.getClosestPoint = function(point, opt_closestPoint) {
+Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
   var closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
   this.closestPointXY(point[0], point[1], closestPoint, Infinity);
   return closestPoint;
@@ -110,7 +110,7 @@ _ol_geom_Geometry_.prototype.getClosestPoint = function(point, opt_closestPoint)
  * @return {boolean} Contains coordinate.
  * @api
  */
-_ol_geom_Geometry_.prototype.intersectsCoordinate = function(coordinate) {
+Geometry.prototype.intersectsCoordinate = function(coordinate) {
   return this.containsXY(coordinate[0], coordinate[1]);
 };
 
@@ -121,7 +121,7 @@ _ol_geom_Geometry_.prototype.intersectsCoordinate = function(coordinate) {
  * @protected
  * @return {ol.Extent} extent Extent.
  */
-_ol_geom_Geometry_.prototype.computeExtent = function(extent) {};
+Geometry.prototype.computeExtent = function(extent) {};
 
 
 /**
@@ -129,7 +129,7 @@ _ol_geom_Geometry_.prototype.computeExtent = function(extent) {};
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-_ol_geom_Geometry_.prototype.containsXY = _ol_functions_.FALSE;
+Geometry.prototype.containsXY = _ol_functions_.FALSE;
 
 
 /**
@@ -138,7 +138,7 @@ _ol_geom_Geometry_.prototype.containsXY = _ol_functions_.FALSE;
  * @return {ol.Extent} extent Extent.
  * @api
  */
-_ol_geom_Geometry_.prototype.getExtent = function(opt_extent) {
+Geometry.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision_ != this.getRevision()) {
     this.extent_ = this.computeExtent(this.extent_);
     this.extentRevision_ = this.getRevision();
@@ -155,7 +155,7 @@ _ol_geom_Geometry_.prototype.getExtent = function(opt_extent) {
  * @param {ol.Coordinate} anchor The rotation center.
  * @api
  */
-_ol_geom_Geometry_.prototype.rotate = function(angle, anchor) {};
+Geometry.prototype.rotate = function(angle, anchor) {};
 
 
 /**
@@ -169,7 +169,7 @@ _ol_geom_Geometry_.prototype.rotate = function(angle, anchor) {};
  *     of the geometry extent).
  * @api
  */
-_ol_geom_Geometry_.prototype.scale = function(sx, opt_sy, opt_anchor) {};
+Geometry.prototype.scale = function(sx, opt_sy, opt_anchor) {};
 
 
 /**
@@ -184,7 +184,7 @@ _ol_geom_Geometry_.prototype.scale = function(sx, opt_sy, opt_anchor) {};
  *     geometry.
  * @api
  */
-_ol_geom_Geometry_.prototype.simplify = function(tolerance) {
+Geometry.prototype.simplify = function(tolerance) {
   return this.getSimplifiedGeometry(tolerance * tolerance);
 };
 
@@ -197,7 +197,7 @@ _ol_geom_Geometry_.prototype.simplify = function(tolerance) {
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
  */
-_ol_geom_Geometry_.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
+Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
 
 
 /**
@@ -205,7 +205,7 @@ _ol_geom_Geometry_.prototype.getSimplifiedGeometry = function(squaredTolerance) 
  * @abstract
  * @return {ol.geom.GeometryType} Geometry type.
  */
-_ol_geom_Geometry_.prototype.getType = function() {};
+Geometry.prototype.getType = function() {};
 
 
 /**
@@ -216,7 +216,7 @@ _ol_geom_Geometry_.prototype.getType = function() {};
  * @abstract
  * @param {ol.TransformFunction} transformFn Transform.
  */
-_ol_geom_Geometry_.prototype.applyTransform = function(transformFn) {};
+Geometry.prototype.applyTransform = function(transformFn) {};
 
 
 /**
@@ -225,7 +225,7 @@ _ol_geom_Geometry_.prototype.applyTransform = function(transformFn) {};
  * @param {ol.Extent} extent Extent.
  * @return {boolean} `true` if the geometry and the extent intersect.
  */
-_ol_geom_Geometry_.prototype.intersectsExtent = function(extent) {};
+Geometry.prototype.intersectsExtent = function(extent) {};
 
 
 /**
@@ -235,7 +235,7 @@ _ol_geom_Geometry_.prototype.intersectsExtent = function(extent) {};
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
  */
-_ol_geom_Geometry_.prototype.translate = function(deltaX, deltaY) {};
+Geometry.prototype.translate = function(deltaX, deltaY) {};
 
 
 /**
@@ -253,7 +253,7 @@ _ol_geom_Geometry_.prototype.translate = function(deltaX, deltaY) {};
  *     modified in place.
  * @api
  */
-_ol_geom_Geometry_.prototype.transform = function(source, destination) {
+Geometry.prototype.transform = function(source, destination) {
   var tmpTransform = this.tmpTransform_;
   source = getProjection(source);
   var transformFn = source.getUnits() == _ol_proj_Units_.TILE_PIXELS ?
@@ -273,4 +273,4 @@ _ol_geom_Geometry_.prototype.transform = function(source, destination) {
   this.applyTransform(transformFn);
   return this;
 };
-export default _ol_geom_Geometry_;
+export default Geometry;

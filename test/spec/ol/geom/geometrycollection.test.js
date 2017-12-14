@@ -1,4 +1,4 @@
-import _ol_geom_Geometry_ from '../../../../src/ol/geom/Geometry.js';
+import Geometry from '../../../../src/ol/geom/Geometry.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -22,7 +22,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     it('creates a geometry collection from an array of geometries', function() {
       expect(multi).to.be.a(_ol_geom_GeometryCollection_);
-      expect(multi).to.be.a(_ol_geom_Geometry_);
+      expect(multi).to.be.a(Geometry);
     });
 
     it('fires a change event when one of its component changes',
