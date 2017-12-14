@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -105,7 +105,7 @@ describe('ol.rendering.style.Text', function() {
     var polygon = [151, 17, 163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
 
     function createLineString(coords, textAlign, maxAngle, strokeColor, strokeWidth, scale) {
-      var geom = new _ol_geom_LineString_();
+      var geom = new LineString();
       geom.setFlatCoordinates('XY', coords);
       var style = new _ol_style_Style_({
         stroke: new _ol_style_Stroke_({
@@ -262,7 +262,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiLineString', function(done) {
       createMap('canvas');
-      var line = new _ol_geom_LineString_();
+      var line = new LineString();
       line.setFlatCoordinates('XY', nicePath);
       var geom = new _ol_geom_MultiLineString_(null);
       geom.appendLineString(line);

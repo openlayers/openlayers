@@ -1,6 +1,6 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import _ol_render_webgl_linestringreplay_defaultshader_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
@@ -56,7 +56,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('sets the buffer data', function() {
       var linestring;
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 2000], [2000, 3000]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawLineString(linestring, null);
@@ -66,7 +66,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       expect(replay.startIndices).to.have.length(1);
       expect(replay.startIndicesFeature).to.have.length(1);
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       replay.drawLineString(linestring, null);
       expect(replay.vertices).to.have.length(140);
@@ -106,7 +106,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
         lineJoin: 'bevel'
       });
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -126,7 +126,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
         lineCap: 'butt'
       });
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -145,7 +145,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
         color: [0, 255, 0, 1]
       });
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -168,7 +168,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
         lineJoin: 'bevel'
       });
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 3000], [2000, 2000], [3000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -189,7 +189,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
         lineJoin: 'bevel'
       });
 
-      linestring = new _ol_geom_LineString_(
+      linestring = new LineString(
           [[1000, 3000], [2000, 4000], [3000, 3000], [1000, 3000]]);
       var flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
@@ -287,13 +287,13 @@ describe('ol.render.webgl.LineStringReplay', function() {
   describe('#drawReplay', function() {
     var gl, context;
     var feature1 = new _ol_Feature_({
-      geometry: new _ol_geom_LineString_([[0, 0], [500, 500]])
+      geometry: new LineString([[0, 0], [500, 500]])
     });
     var feature2 = new _ol_Feature_({
-      geometry: new _ol_geom_LineString_([[0, 0], [500, 500]])
+      geometry: new LineString([[0, 0], [500, 500]])
     });
     var feature3 = new _ol_Feature_({
-      geometry: new _ol_geom_LineString_([[0, 0], [500, 500]])
+      geometry: new LineString([[0, 0], [500, 500]])
     });
     beforeEach(function() {
       gl = {

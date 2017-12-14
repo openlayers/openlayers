@@ -1,4 +1,4 @@
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
@@ -78,7 +78,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatMidpoint()', function() {
     it('returns correct point', function() {
-      var line = new _ol_geom_LineString_([[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]);
+      var line = new LineString([[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]);
       var feature = new _ol_render_Feature_('LineString', line.getFlatCoordinates());
       expect(feature.getFlatMidpoint()).to.eql([10, 10]);
       expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);

@@ -13,7 +13,7 @@ import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} 
 import _ol_functions_ from '../functions.js';
 import _ol_geom_Circle_ from '../geom/Circle.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
@@ -154,7 +154,7 @@ var _ol_interaction_Draw_ = function(options) {
       if (mode === _ol_interaction_Draw_.Mode_.POINT) {
         Constructor = Point;
       } else if (mode === _ol_interaction_Draw_.Mode_.LINE_STRING) {
-        Constructor = _ol_geom_LineString_;
+        Constructor = LineString;
       } else if (mode === _ol_interaction_Draw_.Mode_.POLYGON) {
         Constructor = _ol_geom_Polygon_;
       }
@@ -511,7 +511,7 @@ _ol_interaction_Draw_.prototype.startDrawing_ = function(event) {
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new _ol_Feature_(
-        new _ol_geom_LineString_(this.sketchLineCoords_));
+        new LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
   this.sketchFeature_ = new _ol_Feature_();
@@ -558,7 +558,7 @@ _ol_interaction_Draw_.prototype.modifyDrawing_ = function(event) {
   if (geometry instanceof _ol_geom_Polygon_ &&
       this.mode_ !== _ol_interaction_Draw_.Mode_.POLYGON) {
     if (!this.sketchLine_) {
-      this.sketchLine_ = new _ol_Feature_(new _ol_geom_LineString_(null));
+      this.sketchLine_ = new _ol_Feature_(new LineString(null));
     }
     var ring = geometry.getLinearRing(0);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());

@@ -9,7 +9,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -174,7 +174,7 @@ _ol_format_EsriJSON_.readPointGeometry_ = function(object) {
  */
 _ol_format_EsriJSON_.readLineStringGeometry_ = function(object) {
   var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
-  return new _ol_geom_LineString_(object.paths[0], layout);
+  return new LineString(object.paths[0], layout);
 };
 
 

@@ -2,7 +2,7 @@ import {inherits} from '../src/ol/index.js';
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
@@ -137,7 +137,7 @@ app.Drag.prototype.handleUpEvent = function() {
 var pointFeature = new _ol_Feature_(new Point([0, 0]));
 
 var lineFeature = new _ol_Feature_(
-    new _ol_geom_LineString_([[-1e7, 1e6], [-1e6, 3e6]]));
+    new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
 
 var polygonFeature = new _ol_Feature_(
     new _ol_geom_Polygon_([[[-3e6, -1e6], [-3e6, 1e6],

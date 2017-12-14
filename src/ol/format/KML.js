@@ -17,7 +17,7 @@ import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
@@ -816,7 +816,7 @@ _ol_format_KML_.readGxTrack_ = function(node, objectStack) {
     ++i) {
     flatCoordinates[4 * i + 3] = whens[i];
   }
-  var lineString = new _ol_geom_LineString_(null);
+  var lineString = new LineString(null);
   lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZM, flatCoordinates);
   return lineString;
 };
@@ -864,7 +864,7 @@ _ol_format_KML_.readLineString_ = function(node, objectStack) {
   var flatCoordinates =
       _ol_format_KML_.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var lineString = new _ol_geom_LineString_(null);
+    var lineString = new LineString(null);
     lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
     lineString.setProperties(properties);
     return lineString;

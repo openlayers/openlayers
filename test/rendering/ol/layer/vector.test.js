@@ -3,7 +3,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -58,7 +58,7 @@ describe('ol.rendering.layer.Vector', function() {
   }
 
   function addLineString(r) {
-    source.addFeature(new _ol_Feature_(new _ol_geom_LineString_([
+    source.addFeature(new _ol_Feature_(new LineString([
       [center[0] - r, center[1] - r],
       [center[0] + r, center[1] - r],
       [center[0] + r, center[1] + r],
@@ -75,7 +75,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders opacity correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new _ol_geom_LineString_([
+      var smallLine = new _ol_Feature_(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -101,7 +101,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders opacity correctly with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new _ol_geom_LineString_([
+      var smallLine = new _ol_Feature_(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -128,7 +128,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders transparent layers correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new _ol_geom_LineString_([
+      var smallLine = new _ol_Feature_(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -141,7 +141,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new _ol_Feature_(new _ol_geom_LineString_([
+      var smallLine2 = new _ol_Feature_(new LineString([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
@@ -167,7 +167,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders transparent layers correctly with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new _ol_geom_LineString_([
+      var smallLine = new _ol_Feature_(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -180,7 +180,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new _ol_Feature_(new _ol_geom_LineString_([
+      var smallLine2 = new _ol_Feature_(new LineString([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
@@ -881,7 +881,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new _ol_Feature_(new _ol_geom_LineString_([
+      var line = new _ol_Feature_(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -924,7 +924,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new _ol_Feature_(new _ol_geom_LineString_([
+      var line = new _ol_Feature_(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -968,7 +968,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new _ol_Feature_(new _ol_geom_LineString_([
+      var line = new _ol_Feature_(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));

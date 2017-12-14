@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
 import _ol_format_WFS_ from '../../../../src/ol/format/WFS.js';
 import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
@@ -934,14 +934,14 @@ describe('ol.format.WFS', function() {
     it('handles the WFS version', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2], [3, 4.2]]),
+        the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2], [3, 4.2]]),
+        the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -1021,14 +1021,14 @@ describe('ol.format.WFS', function() {
     it('handles 3D in WFS 1.0.0', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2, 4], [3, 4.2, 5]]),
+        the_geom: new LineString([[1.1, 2, 4], [3, 4.2, 5]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2, 6], [3, 4.2, 7]]),
+        the_geom: new LineString([[1.1, 2, 6], [3, 4.2, 7]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,

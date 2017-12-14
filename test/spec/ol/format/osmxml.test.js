@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_OSMXML_ from '../../../../src/ol/format/OSMXML.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
@@ -81,7 +81,7 @@ describe('ol.format.OSMXML', function() {
       var line = fs[2];
       expect(line).to.be.an(_ol_Feature_);
       g = line.getGeometry();
-      expect(g).to.be.an(_ol_geom_LineString_);
+      expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
     });
 
@@ -107,7 +107,7 @@ describe('ol.format.OSMXML', function() {
       var line = fs[2];
       expect(line).to.be.an(_ol_Feature_);
       var g = line.getGeometry();
-      expect(g).to.be.an(_ol_geom_LineString_);
+      expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
     });
 

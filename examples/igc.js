@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import _ol_format_IGC_ from '../src/ol/format/IGC.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -132,7 +132,7 @@ var displaySnap = function(coordinate) {
         closestFeature.get('PLT') + ' (' + date.toUTCString() + ')';
     var coordinates = [coordinate, [closestPoint[0], closestPoint[1]]];
     if (line === null) {
-      line = new _ol_geom_LineString_(coordinates);
+      line = new LineString(coordinates);
     } else {
       line.setCoordinates(coordinates);
     }

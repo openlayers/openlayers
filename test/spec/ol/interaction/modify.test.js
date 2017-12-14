@@ -6,7 +6,7 @@ import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
@@ -226,7 +226,7 @@ describe('ol.interaction.Modify', function() {
 
     it('deletes first vertex of a LineString', function() {
       var lineFeature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
@@ -262,7 +262,7 @@ describe('ol.interaction.Modify', function() {
 
     it('deletes last vertex of a LineString', function() {
       var lineFeature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
@@ -298,7 +298,7 @@ describe('ol.interaction.Modify', function() {
 
     it('deletes vertex of a LineString programmatically', function() {
       var lineFeature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
@@ -340,7 +340,7 @@ describe('ol.interaction.Modify', function() {
 
     it('keeps the third dimension', function() {
       var lineFeature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
         )
       });

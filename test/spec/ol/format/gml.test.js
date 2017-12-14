@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_GML_ from '../../../../src/ol/format/GML.js';
 import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
@@ -164,7 +164,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_([[1.1, 2], [3, 4.2]])
+        geometry: new LineString([[1.1, 2], [3, 4.2]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -442,7 +442,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -459,7 +459,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList>1 2 3 4</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text, config);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         var coordinates = g.getCoordinates();
         expect(coordinates[0].slice(0, 2)).to.eql(
             transform([1, 2], 'CRS:84', 'EPSG:3857'));
@@ -481,7 +481,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList srsDimension="2">2 1 4 3</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = formatWGS84.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -500,7 +500,7 @@ describe('ol.format.GML3', function() {
                 ' <gml:posList srsDimension="2">-90 -180 90 180</gml:posList>' +
                 '</gml:LineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
         var serialized = formatWGS84.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -563,7 +563,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
       });
 
@@ -677,7 +677,7 @@ describe('ol.format.GML3', function() {
             '  </gml:segments>' +
             '</gml:Curve>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         format = new _ol_format_GML_({srsName: 'CRS:84', curve: true});
         var serialized = format.writeGeometryNode(g);
@@ -1522,7 +1522,7 @@ describe('ol.format.GML3', function() {
     it('creates a LineString', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('geoserver_layer.1');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_LineString_);
+      expect(feature.getGeometry()).to.be.an(LineString);
     });
 
     it('creates a Polygon', function() {

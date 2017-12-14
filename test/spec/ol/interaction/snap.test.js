@@ -4,7 +4,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_interaction_Snap_ from '../../../../src/ol/interaction/Snap.js';
 
 
@@ -73,7 +73,7 @@ describe('ol.interaction.Snap', function() {
     });
 
     it('snaps to edges only', function() {
-      var point = new _ol_Feature_(new _ol_geom_LineString_([[-10, 0], [10, 0]]));
+      var point = new _ol_Feature_(new LineString([[-10, 0], [10, 0]]));
       var snapInteraction = new _ol_interaction_Snap_({
         features: new _ol_Collection_([point]),
         pixelTolerance: 5,
@@ -91,7 +91,7 @@ describe('ol.interaction.Snap', function() {
     });
 
     it('snaps to vertices only', function() {
-      var point = new _ol_Feature_(new _ol_geom_LineString_([[-10, 0], [10, 0]]));
+      var point = new _ol_Feature_(new LineString([[-10, 0], [10, 0]]));
       var snapInteraction = new _ol_interaction_Snap_({
         features: new _ol_Collection_([point]),
         pixelTolerance: 5,
@@ -136,7 +136,7 @@ describe('ol.interaction.Snap', function() {
       });
       snapInteraction.setMap(map);
 
-      feature.setGeometry(new _ol_geom_LineString_([[-10, 0], [10, 0]]));
+      feature.setGeometry(new LineString([[-10, 0], [10, 0]]));
 
       var event = {
         pixel: [7 + width / 2, height / 2 - 4],
@@ -148,7 +148,7 @@ describe('ol.interaction.Snap', function() {
     });
 
     it('handle geometry changes', function() {
-      var line = new _ol_Feature_(new _ol_geom_LineString_([[-10, 0], [0, 0]]));
+      var line = new _ol_Feature_(new LineString([[-10, 0], [0, 0]]));
       var snapInteraction = new _ol_interaction_Snap_({
         features: new _ol_Collection_([line]),
         pixelTolerance: 5,
@@ -169,8 +169,8 @@ describe('ol.interaction.Snap', function() {
 
     it('handle geometry name changes', function() {
       var line = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_([[-10, 0], [0, 0]]),
-        alt_geometry: new _ol_geom_LineString_([[-10, 0], [10, 0]])
+        geometry: new LineString([[-10, 0], [0, 0]]),
+        alt_geometry: new LineString([[-10, 0], [10, 0]])
       });
       var snapInteraction = new _ol_interaction_Snap_({
         features: new _ol_Collection_([line]),

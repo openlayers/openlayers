@@ -10,7 +10,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
@@ -311,7 +311,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
       }
     } else {
       geom = geometryType === _ol_geom_GeometryType_.POINT ? new Point(null) :
-        geometryType === _ol_geom_GeometryType_.LINE_STRING ? new _ol_geom_LineString_(null) :
+        geometryType === _ol_geom_GeometryType_.LINE_STRING ? new LineString(null) :
           geometryType === _ol_geom_GeometryType_.POLYGON ? new _ol_geom_Polygon_(null) :
             geometryType === _ol_geom_GeometryType_.MULTI_POINT ? new MultiPoint (null) :
               geometryType === _ol_geom_GeometryType_.MULTI_LINE_STRING ? new _ol_geom_MultiLineString_(null) :

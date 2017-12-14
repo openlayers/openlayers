@@ -4,7 +4,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../../../../src/ol/loadingstrategy.js';
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
@@ -92,7 +92,7 @@ describe('ol.source.Vector', function() {
     var features = [];
     var vectorSource;
     beforeEach(function() {
-      features.push(new _ol_Feature_(new _ol_geom_LineString_([[0, 0], [10, 10]])));
+      features.push(new _ol_Feature_(new LineString([[0, 0], [10, 10]])));
       features.push(new _ol_Feature_(new Point([0, 10])));
       features.push(new _ol_Feature_(new Point([10, 5])));
       vectorSource = new _ol_source_Vector_({

@@ -1,4 +1,4 @@
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
 import _ol_render_ from '../src/ol/render.js';
@@ -24,6 +24,6 @@ var style = new _ol_style_Style_({
 });
 vectorContext.setStyle(style);
 
-vectorContext.drawGeometry(new _ol_geom_LineString_([[10, 10], [90, 90]]));
+vectorContext.drawGeometry(new LineString([[10, 10], [90, 90]]));
 vectorContext.drawGeometry(new _ol_geom_Polygon_([[[2, 2], [98, 2], [2, 98], [2, 2]]]));
 vectorContext.drawGeometry(new Point([88, 88]));

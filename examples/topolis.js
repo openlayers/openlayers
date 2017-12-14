@@ -5,7 +5,7 @@ import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
@@ -113,7 +113,7 @@ topo.on('removenode', function(e) {
 topo.on('addedge', edgeToFeature);
 topo.on('modedge', function(e) {
   var feature = edges.getFeatureById(e.id);
-  feature.setGeometry(new _ol_geom_LineString_(e.coordinates));
+  feature.setGeometry(new LineString(e.coordinates));
 });
 topo.on('removeedge', function(e) {
   removeElementFeature(edges, e);
@@ -139,7 +139,7 @@ function nodeToFeature(node) {
 
 function edgeToFeature(edge) {
   var feature = new _ol_Feature_({
-    geometry: new _ol_geom_LineString_(edge.coordinates),
+    geometry: new LineString(edge.coordinates),
     edge: edge
   });
   feature.setId(edge.id);

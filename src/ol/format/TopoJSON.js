@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
@@ -140,7 +140,7 @@ _ol_format_TopoJSON_.readMultiPointGeometry_ = function(object, scale,
  */
 _ol_format_TopoJSON_.readLineStringGeometry_ = function(object, arcs) {
   var coordinates = _ol_format_TopoJSON_.concatenateArcs_(object.arcs, arcs);
-  return new _ol_geom_LineString_(coordinates);
+  return new LineString(coordinates);
 };
 
 

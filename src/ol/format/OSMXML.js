@@ -8,7 +8,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
@@ -189,7 +189,7 @@ _ol_format_OSMXML_.prototype.readFeaturesFromNode = function(node, opt_options) 
         geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates,
             [flatCoordinates.length]);
       } else {
-        geometry = new _ol_geom_LineString_(null);
+        geometry = new LineString(null);
         geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates);
       }
       _ol_format_Feature_.transformWithOptions(geometry, false, options);

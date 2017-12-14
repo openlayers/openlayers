@@ -6,7 +6,7 @@ import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -168,7 +168,7 @@ _ol_geom_MultiLineString_.prototype.getLineString = function(index) {
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
-  var lineString = new _ol_geom_LineString_(null);
+  var lineString = new LineString(null);
   lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
       index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
   return lineString;
@@ -190,7 +190,7 @@ _ol_geom_MultiLineString_.prototype.getLineStrings = function() {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    var lineString = new _ol_geom_LineString_(null);
+    var lineString = new LineString(null);
     lineString.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
     lineStrings.push(lineString);
     offset = end;

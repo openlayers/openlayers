@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -31,7 +31,7 @@ for (i = 0; i < count; ++i) {
   deltaY = delta * signY;
   endPoint = [startPoint[0] + deltaX, startPoint[1] + deltaY];
   features[i] = new _ol_Feature_({
-    'geometry': new _ol_geom_LineString_([startPoint, endPoint])
+    'geometry': new LineString([startPoint, endPoint])
   });
   startPoint = endPoint;
 }

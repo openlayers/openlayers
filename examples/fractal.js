@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 
@@ -11,7 +11,7 @@ var sin30 = Math.sin(Math.PI / 6);
 var rise = radius * sin30;
 var run = radius * cos30;
 
-var triangle = new _ol_geom_LineString_([
+var triangle = new LineString([
   [0, radius], [run, -rise], [-run, -rise], [0, radius]
 ]);
 

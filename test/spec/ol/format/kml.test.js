@@ -3,7 +3,7 @@ import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_format_KML_ from '../../../../src/ol/format/KML.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
@@ -194,7 +194,7 @@ describe('ol.format.KML', function() {
 
 
         it('can write properties', function() {
-          var lineString = new _ol_geom_LineString_([[1, 2], [3, 4]]);
+          var lineString = new LineString([[1, 2], [3, 4]]);
           lineString.set('extrude', false);
           lineString.set('tessellate', true);
           lineString.set('altitudeMode', 'clampToGround');
@@ -449,7 +449,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_LineString_);
+          expect(g).to.be.an(LineString);
           expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
           expect(g.get('extrude')).to.be(false);
           expect(g.get('tessellate')).to.be(true);
@@ -458,7 +458,7 @@ describe('ol.format.KML', function() {
 
         it('can write XY LineString geometries', function() {
           var layout = 'XY';
-          var lineString = new _ol_geom_LineString_([[1, 2], [3, 4]], layout);
+          var lineString = new LineString([[1, 2], [3, 4]], layout);
           var features = [new _ol_Feature_(lineString)];
           var node = format.writeFeaturesNode(features);
           var text =
@@ -478,7 +478,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZ LineString geometries', function() {
           var layout = 'XYZ';
-          var lineString = new _ol_geom_LineString_(
+          var lineString = new LineString(
               [[1, 2, 3], [4, 5, 6]], layout);
           var features = [new _ol_Feature_(lineString)];
           var node = format.writeFeaturesNode(features);
@@ -499,7 +499,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYM LineString geometries', function() {
           var layout = 'XYM';
-          var lineString = new _ol_geom_LineString_(
+          var lineString = new LineString(
               [[1, 2, 100], [3, 4, 200]], layout);
           var features = [new _ol_Feature_(lineString)];
           var node = format.writeFeaturesNode(features);
@@ -520,7 +520,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZM LineString geometries', function() {
           var layout = 'XYZM';
-          var lineString = new _ol_geom_LineString_(
+          var lineString = new LineString(
               [[1, 2, 3, 100], [4, 5, 6, 200]], layout);
           var features = [new _ol_Feature_(lineString)];
           var node = format.writeFeaturesNode(features);
@@ -1181,7 +1181,7 @@ describe('ol.format.KML', function() {
           var gs = g.getGeometries();
           expect(gs).to.have.length(4);
           expect(gs[0]).to.be.an(Point);
-          expect(gs[1]).to.be.an(_ol_geom_LineString_);
+          expect(gs[1]).to.be.an(LineString);
           expect(gs[2]).to.be.an(_ol_geom_Polygon_);
           expect(gs[3]).to.be.an(_ol_geom_Polygon_);
         });
@@ -1210,7 +1210,7 @@ describe('ol.format.KML', function() {
         it('can write GeometryCollection geometries', function() {
           var collection = new _ol_geom_GeometryCollection_([
             new Point([1, 2]),
-            new _ol_geom_LineString_([[1, 2], [3, 4]]),
+            new LineString([[1, 2], [3, 4]]),
             new _ol_geom_Polygon_([[[1, 2], [3, 4], [3, 2], [1, 2]]])
           ]);
           var features = [new _ol_Feature_(collection)];
@@ -1262,7 +1262,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_LineString_);
+          expect(g).to.be.an(LineString);
         });
 
         it('can read gx:MultiTrack', function() {
@@ -1292,7 +1292,7 @@ describe('ol.format.KML', function() {
           expect(g).to.be.an(_ol_geom_MultiLineString_);
           var gs = g.getLineStrings();
           expect(gs).to.have.length(2);
-          expect(gs[0]).to.be.an(_ol_geom_LineString_);
+          expect(gs[0]).to.be.an(LineString);
         });
 
         it('can read dateTime', function() {

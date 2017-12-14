@@ -7,7 +7,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
@@ -334,7 +334,7 @@ _ol_format_Polyline_.prototype.readGeometryFromText = function(text, opt_options
 
   return (
     /** @type {ol.geom.Geometry} */ _ol_format_Feature_.transformWithOptions(
-        new _ol_geom_LineString_(coordinates, this.geometryLayout_), false,
+        new LineString(coordinates, this.geometryLayout_), false,
         this.adaptOptions(opt_options))
   );
 };

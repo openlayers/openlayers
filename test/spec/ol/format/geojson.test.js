@@ -3,7 +3,7 @@ import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -164,7 +164,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeature(lineStringGeoJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getCoordinates()).to.eql(
           [[102.0, 0.0], [103.0, 1.0], [104.0, 0.0], [105.0, 1.0]]);
       expect(feature.get('prop0')).to.be('value0');
@@ -201,7 +201,7 @@ describe('ol.format.GeoJSON', function() {
       var features = format.readFeatures(featureCollectionGeoJSON);
       expect(features).to.have.length(3);
       expect(features[0].getGeometry()).to.be.an(Point);
-      expect(features[1].getGeometry()).to.be.an(_ol_geom_LineString_);
+      expect(features[1].getGeometry()).to.be.an(LineString);
       expect(features[2].getGeometry()).to.be.an(_ol_geom_Polygon_);
     });
 
@@ -274,13 +274,13 @@ describe('ol.format.GeoJSON', function() {
       expect(first).to.be.a(_ol_Feature_);
       expect(first.get('LINK_ID')).to.be(573730499);
       var firstGeom = first.getGeometry();
-      expect(firstGeom).to.be.a(_ol_geom_LineString_);
+      expect(firstGeom).to.be.a(LineString);
 
       var second = array[1];
       expect(second).to.be.a(_ol_Feature_);
       expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
       var secondGeom = second.getGeometry();
-      expect(secondGeom).to.be.a(_ol_geom_LineString_);
+      expect(secondGeom).to.be.a(LineString);
     });
 
     it('can parse a polygon geometry as an array of one feature', function() {
@@ -340,7 +340,7 @@ describe('ol.format.GeoJSON', function() {
       var first = features[0];
       expect(first).to.be.a(_ol_Feature_);
       expect(first.get('bam')).to.be('baz');
-      expect(first.getGeometry()).to.be.a(_ol_geom_LineString_);
+      expect(first.getGeometry()).to.be.a(LineString);
 
       expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
     });
@@ -368,7 +368,7 @@ describe('ol.format.GeoJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_LineString_);
+      expect(obj).to.be.a(LineString);
       expect(obj.getCoordinates()).to.eql([[10, 20], [30, 40]]);
       expect(obj.getLayout()).to.eql('XY');
     });
@@ -380,7 +380,7 @@ describe('ol.format.GeoJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_LineString_);
+      expect(obj).to.be.a(LineString);
       expect(obj.getLayout()).to.eql('XYZ');
       expect(obj.getCoordinates()).to.eql([[10, 20, 1534], [30, 40, 1420]]);
     });
@@ -419,7 +419,7 @@ describe('ol.format.GeoJSON', function() {
       expect(array.length).to.be(2);
       expect(array[0]).to.be.a(Point);
       expect(array[0].getLayout()).to.eql('XY');
-      expect(array[1]).to.be.a(_ol_geom_LineString_);
+      expect(array[1]).to.be.a(LineString);
       expect(array[1].getLayout()).to.eql('XY');
     });
 
@@ -469,7 +469,7 @@ describe('ol.format.GeoJSON', function() {
       var second = features[1];
       expect(second).to.be.a(_ol_Feature_);
       expect(second.get('bam')).to.be('baz');
-      expect(second.getGeometry()).to.be.a(_ol_geom_LineString_);
+      expect(second.getGeometry()).to.be.a(LineString);
 
       expect(format.readProjection(json)).to.be(getProjection('EPSG:3857'));
 
@@ -512,7 +512,7 @@ describe('ol.format.GeoJSON', function() {
       var second = features[1];
       expect(second).to.be.a(_ol_Feature_);
       expect(second.get('bam')).to.be('baz');
-      expect(second.getGeometry()).to.be.a(_ol_geom_LineString_);
+      expect(second.getGeometry()).to.be.a(LineString);
 
       expect(format.readProjection(json)).to.be(getProjection('EPSG:4326'));
 
@@ -612,7 +612,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('encodes linestring', function() {
-      var linestring = new _ol_geom_LineString_([[10, 20], [30, 40]]);
+      var linestring = new LineString([[10, 20], [30, 40]]);
       var geojson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
           format.readGeometry(geojson).getCoordinates());
@@ -731,7 +731,7 @@ describe('ol.format.GeoJSON', function() {
     it('encodes geometry collection', function() {
       var collection = new _ol_geom_GeometryCollection_([
         new Point([10, 20]),
-        new _ol_geom_LineString_([[30, 40], [50, 60]])
+        new LineString([[30, 40], [50, 60]])
       ]);
       var geojson = format.writeGeometry(collection);
       var got = format.readGeometry(geojson);
@@ -772,7 +772,7 @@ describe('ol.format.GeoJSON', function() {
     it('transforms and encodes geometry collection', function() {
       var collection = new _ol_geom_GeometryCollection_([
         new Point([2, 3]),
-        new _ol_geom_LineString_([[3, 2], [2, 1]])
+        new LineString([[3, 2], [2, 1]])
       ]);
       var geojson = format.writeGeometry(collection, {
         featureProjection: 'EPSG:3857'
@@ -803,7 +803,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('truncates a linestring with decimals option', function() {
-      var linestring = new _ol_geom_LineString_([[42.123456789, 38.987654321],
+      var linestring = new LineString([[42.123456789, 38.987654321],
         [43, 39]]);
       var geojson = format.writeGeometry(linestring, {
         decimals: 6
@@ -815,7 +815,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('rounds a linestring with decimals option = 0', function() {
-      var linestring = new _ol_geom_LineString_([[42.123456789, 38.987654321],
+      var linestring = new LineString([[42.123456789, 38.987654321],
         [43, 39]]);
       var geojson = format.writeGeometry(linestring, {
         decimals: 0

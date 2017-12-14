@@ -10,7 +10,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -368,7 +368,7 @@ _ol_format_GMLBase_.prototype.readLineString = function(node, objectStack) {
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var lineString = new _ol_geom_LineString_(null);
+    var lineString = new LineString(null);
     lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
     return lineString;
   } else {

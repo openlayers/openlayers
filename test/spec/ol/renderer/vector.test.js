@@ -1,6 +1,6 @@
 import {nullFunction} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
@@ -99,7 +99,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the linestring', function() {
-        feature.setGeometry(new _ol_geom_LineString_([[0, 0], [1, 1]]));
+        feature.setGeometry(new LineString([[0, 0], [1, 1]]));
         var lineStringReplay = replayGroup.getReplay(
             style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,

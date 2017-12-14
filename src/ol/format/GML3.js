@@ -9,7 +9,7 @@ import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import LineString from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
@@ -272,7 +272,7 @@ _ol_format_GML3_.prototype.readCurve_ = function(node, objectStack) {
   var flatCoordinates = _ol_xml_.pushParseAndPop([null],
       this.CURVE_PARSERS_, node, objectStack, this);
   if (flatCoordinates) {
-    var lineString = new _ol_geom_LineString_(null);
+    var lineString = new LineString(null);
     lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
     return lineString;
   } else {

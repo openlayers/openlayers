@@ -26,7 +26,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var _ol_geom_LineString_ = function(coordinates, opt_layout) {
+var LineString = function(coordinates, opt_layout) {
 
   _ol_geom_SimpleGeometry_.call(this);
 
@@ -58,7 +58,7 @@ var _ol_geom_LineString_ = function(coordinates, opt_layout) {
 
 };
 
-inherits(_ol_geom_LineString_, _ol_geom_SimpleGeometry_);
+inherits(LineString, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -66,7 +66,7 @@ inherits(_ol_geom_LineString_, _ol_geom_SimpleGeometry_);
  * @param {ol.Coordinate} coordinate Coordinate.
  * @api
  */
-_ol_geom_LineString_.prototype.appendCoordinate = function(coordinate) {
+LineString.prototype.appendCoordinate = function(coordinate) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {
@@ -82,8 +82,8 @@ _ol_geom_LineString_.prototype.appendCoordinate = function(coordinate) {
  * @override
  * @api
  */
-_ol_geom_LineString_.prototype.clone = function() {
-  var lineString = new _ol_geom_LineString_(null);
+LineString.prototype.clone = function() {
+  var lineString = new LineString(null);
   lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return lineString;
 };
@@ -92,7 +92,7 @@ _ol_geom_LineString_.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_LineString_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
@@ -120,7 +120,7 @@ _ol_geom_LineString_.prototype.closestPointXY = function(x, y, closestPoint, min
  * @template T,S
  * @api
  */
-_ol_geom_LineString_.prototype.forEachSegment = function(callback, opt_this) {
+LineString.prototype.forEachSegment = function(callback, opt_this) {
   return _ol_geom_flat_segments_.forEach(this.flatCoordinates, 0,
       this.flatCoordinates.length, this.stride, callback, opt_this);
 };
@@ -140,7 +140,7 @@ _ol_geom_LineString_.prototype.forEachSegment = function(callback, opt_this) {
  * @return {ol.Coordinate} Coordinate.
  * @api
  */
-_ol_geom_LineString_.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
+LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
   if (this.layout != _ol_geom_GeometryLayout_.XYM &&
       this.layout != _ol_geom_GeometryLayout_.XYZM) {
     return null;
@@ -157,7 +157,7 @@ _ol_geom_LineString_.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
  * @override
  * @api
  */
-_ol_geom_LineString_.prototype.getCoordinates = function() {
+LineString.prototype.getCoordinates = function() {
   return _ol_geom_flat_inflate_.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
@@ -173,7 +173,7 @@ _ol_geom_LineString_.prototype.getCoordinates = function() {
  * @return {ol.Coordinate} Coordinate of the interpolated point.
  * @api
  */
-_ol_geom_LineString_.prototype.getCoordinateAt = function(fraction, opt_dest) {
+LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
   return _ol_geom_flat_interpolate_.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       fraction, opt_dest);
@@ -185,7 +185,7 @@ _ol_geom_LineString_.prototype.getCoordinateAt = function(fraction, opt_dest) {
  * @return {number} Length (on projected plane).
  * @api
  */
-_ol_geom_LineString_.prototype.getLength = function() {
+LineString.prototype.getLength = function() {
   return _ol_geom_flat_length_.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
@@ -194,7 +194,7 @@ _ol_geom_LineString_.prototype.getLength = function() {
 /**
  * @return {Array.<number>} Flat midpoint.
  */
-_ol_geom_LineString_.prototype.getFlatMidpoint = function() {
+LineString.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
     this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
     this.flatMidpointRevision_ = this.getRevision();
@@ -206,12 +206,12 @@ _ol_geom_LineString_.prototype.getFlatMidpoint = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_LineString_.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
-  var simplifiedLineString = new _ol_geom_LineString_(null);
+  var simplifiedLineString = new LineString(null);
   simplifiedLineString.setFlatCoordinates(
       _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates);
   return simplifiedLineString;
@@ -222,7 +222,7 @@ _ol_geom_LineString_.prototype.getSimplifiedGeometryInternal = function(squaredT
  * @inheritDoc
  * @api
  */
-_ol_geom_LineString_.prototype.getType = function() {
+LineString.prototype.getType = function() {
   return _ol_geom_GeometryType_.LINE_STRING;
 };
 
@@ -231,7 +231,7 @@ _ol_geom_LineString_.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-_ol_geom_LineString_.prototype.intersectsExtent = function(extent) {
+LineString.prototype.intersectsExtent = function(extent) {
   return _ol_geom_flat_intersectsextent_.lineString(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       extent);
@@ -245,7 +245,7 @@ _ol_geom_LineString_.prototype.intersectsExtent = function(extent) {
  * @override
  * @api
  */
-_ol_geom_LineString_.prototype.setCoordinates = function(coordinates, opt_layout) {
+LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
     this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
   } else {
@@ -264,8 +264,8 @@ _ol_geom_LineString_.prototype.setCoordinates = function(coordinates, opt_layout
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-_ol_geom_LineString_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+LineString.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
-export default _ol_geom_LineString_;
+export default LineString;

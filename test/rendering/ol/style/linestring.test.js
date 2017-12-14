@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -44,7 +44,7 @@ describe('ol.rendering.style.LineString', function() {
       var feature;
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[-20, 20], [15, 20]]
         )
       });
@@ -54,7 +54,7 @@ describe('ol.rendering.style.LineString', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[-20, 15], [15, 15]]
         )
       });
@@ -64,7 +64,7 @@ describe('ol.rendering.style.LineString', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[-20, 10], [15, 10]]
         )
       });
@@ -76,7 +76,7 @@ describe('ol.rendering.style.LineString', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[-20, -20], [-2, 0], [15, -20]]
         )
       });
@@ -92,7 +92,7 @@ describe('ol.rendering.style.LineString', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_(
+        geometry: new LineString(
             [[-20, -15], [-2, 5], [15, -15]]
         )
       });

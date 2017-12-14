@@ -6,7 +6,7 @@ import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
@@ -284,7 +284,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_LineString_);
+      expect(geometry).to.be.a(LineString);
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
@@ -326,7 +326,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_LineString_);
+      expect(geometry).to.be.a(LineString);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [20, -40]]);
     });
@@ -363,7 +363,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       // expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_LineString_);
+      expect(geometry).to.be.a(LineString);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
     });
@@ -392,7 +392,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_LineString_);
+      expect(geometry).to.be.a(LineString);
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
@@ -1036,7 +1036,7 @@ describe('ol.interaction.Draw', function() {
       });
       map.addInteraction(draw);
       feature = new _ol_Feature_(
-          new _ol_geom_LineString_([[0, 0], [1, 1], [2, 0]]));
+          new LineString([[0, 0], [1, 1], [2, 0]]));
     });
 
     it('sets the initial state', function() {
