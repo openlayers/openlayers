@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_asserts_ from '../asserts.js';
 import Control from '../control/Control.js';
-import _ol_control_ScaleLineUnits_ from '../control/ScaleLineUnits.js';
+import ScaleLineUnits from '../control/ScaleLineUnits.js';
 import _ol_css_ from '../css.js';
 import _ol_events_ from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
@@ -90,7 +90,7 @@ var ScaleLine = function(opt_options) {
       this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
-      _ol_control_ScaleLineUnits_.METRIC);
+      ScaleLineUnits.METRIC);
 
 };
 
@@ -171,18 +171,18 @@ ScaleLine.prototype.updateElement_ = function() {
   var center = viewState.center;
   var projection = viewState.projection;
   var units = this.getUnits();
-  var pointResolutionUnits = units == _ol_control_ScaleLineUnits_.DEGREES ?
+  var pointResolutionUnits = units == ScaleLineUnits.DEGREES ?
     _ol_proj_Units_.DEGREES :
     _ol_proj_Units_.METERS;
   var pointResolution =
       getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
-  if (units != _ol_control_ScaleLineUnits_.DEGREES) {
+  if (units != ScaleLineUnits.DEGREES) {
     pointResolution *= projection.getMetersPerUnit();
   }
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
-  if (units == _ol_control_ScaleLineUnits_.DEGREES) {
+  if (units == ScaleLineUnits.DEGREES) {
     var metersPerDegree = METERS_PER_UNIT[_ol_proj_Units_.DEGREES];
     if (projection.getUnits() == _ol_proj_Units_.DEGREES) {
       nominalCount *= metersPerDegree;
@@ -198,7 +198,7 @@ ScaleLine.prototype.updateElement_ = function() {
     } else {
       suffix = '\u00b0'; // degrees
     }
-  } else if (units == _ol_control_ScaleLineUnits_.IMPERIAL) {
+  } else if (units == ScaleLineUnits.IMPERIAL) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution /= 0.0254;
@@ -209,10 +209,10 @@ ScaleLine.prototype.updateElement_ = function() {
       suffix = 'mi';
       pointResolution /= 1609.344;
     }
-  } else if (units == _ol_control_ScaleLineUnits_.NAUTICAL) {
+  } else if (units == ScaleLineUnits.NAUTICAL) {
     pointResolution /= 1852;
     suffix = 'nm';
-  } else if (units == _ol_control_ScaleLineUnits_.METRIC) {
+  } else if (units == ScaleLineUnits.METRIC) {
     if (nominalCount < 0.001) {
       suffix = 'μm';
       pointResolution *= 1000000;
@@ -225,7 +225,7 @@ ScaleLine.prototype.updateElement_ = function() {
       suffix = 'km';
       pointResolution /= 1000;
     }
-  } else if (units == _ol_control_ScaleLineUnits_.US) {
+  } else if (units == ScaleLineUnits.US) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution *= 39.37;
