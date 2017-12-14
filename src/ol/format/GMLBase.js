@@ -15,7 +15,7 @@ import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -264,7 +264,7 @@ _ol_format_GMLBase_.prototype.readPoint = function(node, objectStack) {
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var point = new _ol_geom_Point_(null);
+    var point = new Point(null);
     point.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
     return point;
   }

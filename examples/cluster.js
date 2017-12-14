@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
@@ -21,7 +21,7 @@ var features = new Array(count);
 var e = 4500000;
 for (var i = 0; i < count; ++i) {
   var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
-  features[i] = new _ol_Feature_(new _ol_geom_Point_(coordinates));
+  features[i] = new _ol_Feature_(new Point(coordinates));
 }
 
 var source = new _ol_source_Vector_({

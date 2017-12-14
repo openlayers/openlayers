@@ -1,5 +1,5 @@
 import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import Point from '../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../src/ol/geom/Polygon.js';
 import _ol_render_ from '../../../src/ol/render.js';
 import _ol_render_VectorContext_ from '../../../src/ol/render/VectorContext.js';
@@ -43,7 +43,7 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new _ol_geom_Point_([50, 50]));
+      vectorContext.drawGeometry(new Point([50, 50]));
 
       resembleCanvas(context.canvas,
           'rendering/ol/expected/render-point.png', IMAGE_TOLERANCE, done);

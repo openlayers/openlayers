@@ -6,7 +6,7 @@ import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
@@ -57,7 +57,7 @@ describe('ol.format.GML2', function() {
             '</gml:Point>';
 
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([-180, -90, 0]);
       });
 
@@ -68,7 +68,7 @@ describe('ol.format.GML2', function() {
             '</gml:Point>';
 
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([-180, -90, 42]);
       });
 
@@ -222,7 +222,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([1.1, 2])
+        geometry: new Point([1.1, 2])
       });
       feature.setId(1);
       var objectStack = [{
@@ -355,7 +355,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos srsDimension="2">1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -368,7 +368,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1E7 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
         text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
@@ -376,7 +376,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1e7 2</gml:pos>' +
             '</gml:Point>';
         g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
       });
 
@@ -390,7 +390,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text, config);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
             transform([1, 2], 'CRS:84', 'EPSG:3857'));
@@ -412,7 +412,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(formatNoSrs, text, config);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
             transform([1, 2], 'CRS:84', 'EPSG:3857'));
@@ -425,7 +425,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos srsDimension="2">2 1</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = formatWGS84.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -514,7 +514,7 @@ describe('ol.format.GML3', function() {
                 '  <gml:pos srsDimension="2">-90 -180</gml:pos>' +
                 '</gml:Point>';
             var g = readGeometry(format, text);
-            expect(g).to.be.an(_ol_geom_Point_);
+            expect(g).to.be.an(Point);
             expect(g.getCoordinates()).to.eql([-180, -90, 0]);
             var serialized = formatWGS84.writeGeometryNode(g);
             expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -1333,7 +1333,7 @@ describe('ol.format.GML3', function() {
 
     it('creates 2 geometries', function() {
       var feature = features[0];
-      expect(feature.get('center')).to.be.a(_ol_geom_Point_);
+      expect(feature.get('center')).to.be.a(Point);
       expect(feature.get('the_geom')).to.be.a(_ol_geom_MultiPolygon_);
     });
 
@@ -1534,7 +1534,7 @@ describe('ol.format.GML3', function() {
     it('creates a Point', function() {
       feature = features[2];
       expect(feature.getId()).to.equal('geoserver_layer.3');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature.getGeometry()).to.be.an(Point);
     });
 
 

@@ -6,7 +6,7 @@ import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
@@ -107,7 +107,7 @@ _ol_geom_MultiPoint_.prototype.getPoint = function(index) {
   if (index < 0 || n <= index) {
     return null;
   }
-  var point = new _ol_geom_Point_(null);
+  var point = new Point(null);
   point.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
       index * this.stride, (index + 1) * this.stride));
   return point;
@@ -127,7 +127,7 @@ _ol_geom_MultiPoint_.prototype.getPoints = function() {
   var points = [];
   var i, ii;
   for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    var point = new _ol_geom_Point_(null);
+    var point = new Point(null);
     point.setFlatCoordinates(layout, flatCoordinates.slice(i, i + stride));
     points.push(point);
   }

@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
@@ -50,7 +50,7 @@ describe('ol.rendering.style.Text', function() {
       var scale = opt_scale || 1;
       var feature;
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([-20, 18])
+        geometry: new Point([-20, 18])
       });
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
@@ -62,7 +62,7 @@ describe('ol.rendering.style.Text', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([-10, 0])
+        geometry: new Point([-10, 0])
       });
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
@@ -81,7 +81,7 @@ describe('ol.rendering.style.Text', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([20, 10])
+        geometry: new Point([20, 10])
       });
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
@@ -175,7 +175,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders multiline text with alignment options', function(done) {
       createMap('canvas');
       var feature;
-      feature = new _ol_Feature_(new _ol_geom_Point_([25, 0]));
+      feature = new _ol_Feature_(new Point([25, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nleft',
@@ -184,7 +184,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new _ol_geom_Point_([-25, 0]));
+      feature = new _ol_Feature_(new Point([-25, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nright',
@@ -193,7 +193,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new _ol_geom_Point_([0, 25]));
+      feature = new _ol_Feature_(new Point([0, 25]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nbottom',
@@ -202,7 +202,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new _ol_geom_Point_([0, -25]));
+      feature = new _ol_Feature_(new Point([0, -25]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'top\nHello world',
@@ -217,7 +217,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders multiline text with positioning options', function(done) {
       createMap('canvas');
       var feature;
-      feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      feature = new _ol_Feature_(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nleft',
@@ -227,7 +227,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      feature = new _ol_Feature_(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nright',
@@ -237,7 +237,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      feature = new _ol_Feature_(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nbottom',
@@ -247,7 +247,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      feature = new _ol_Feature_(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'top\nHello world',

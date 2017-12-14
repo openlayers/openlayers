@@ -9,7 +9,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -56,7 +56,7 @@ _ol_format_OSMXML_.readNode_ = function(node, objectStack) {
     tags: {}
   }, _ol_format_OSMXML_.NODE_PARSERS_, node, objectStack);
   if (!_ol_obj_.isEmpty(values.tags)) {
-    var geometry = new _ol_geom_Point_(coordinates);
+    var geometry = new Point(coordinates);
     _ol_format_Feature_.transformWithOptions(geometry, false, options);
     var feature = new _ol_Feature_(geometry);
     feature.setId(id);

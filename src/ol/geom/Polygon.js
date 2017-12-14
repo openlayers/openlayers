@@ -7,7 +7,7 @@ import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
@@ -215,7 +215,7 @@ _ol_geom_Polygon_.prototype.getFlatInteriorPoint = function() {
  * @api
  */
 _ol_geom_Polygon_.prototype.getInteriorPoint = function() {
-  return new _ol_geom_Point_(this.getFlatInteriorPoint(), _ol_geom_GeometryLayout_.XYM);
+  return new Point(this.getFlatInteriorPoint(), _ol_geom_GeometryLayout_.XYM);
 };
 
 

@@ -6,7 +6,7 @@ import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
@@ -163,7 +163,7 @@ describe('ol.format.EsriJSON', function() {
       var feature = format.readFeature(pointEsriJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_Point_);
+      expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
       expect(feature.get('prop0')).to.be('value0');
     });
@@ -227,7 +227,7 @@ describe('ol.format.EsriJSON', function() {
     it('can read a feature collection', function() {
       var features = format.readFeatures(featureCollectionEsriJSON);
       expect(features).to.have.length(3);
-      expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[1].getGeometry()).to.be.an(_ol_geom_LineString_);
       expect(features[2].getGeometry()).to.be.an(_ol_geom_Polygon_);
     });
@@ -237,7 +237,7 @@ describe('ol.format.EsriJSON', function() {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326'
       });
-      expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
@@ -247,7 +247,7 @@ describe('ol.format.EsriJSON', function() {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326'
       });
-      expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
       expect(features[1].getGeometry().getCoordinates()).to.eql([
@@ -268,7 +268,7 @@ describe('ol.format.EsriJSON', function() {
       var feature = new _ol_format_EsriJSON_({geometryName: 'the_geom'}).
           readFeature(pointEsriJSON);
       expect(feature.getGeometryName()).to.be('the_geom');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature.getGeometry()).to.be.an(Point);
     });
 
   });
@@ -336,7 +336,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Point_);
+      expect(obj).to.be.a(Point);
       expect(obj.getCoordinates()).to.eql([10, 20]);
       expect(obj.getLayout()).to.eql('XY');
     });
@@ -349,7 +349,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Point_);
+      expect(obj).to.be.a(Point);
       expect(obj.getCoordinates()).to.eql([10, 20, 10]);
       expect(obj.getLayout()).to.eql('XYZ');
     });
@@ -362,7 +362,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Point_);
+      expect(obj).to.be.a(Point);
       expect(obj.getCoordinates()).to.eql([10, 20, 10]);
       expect(obj.getLayout()).to.eql('XYM');
     });
@@ -376,7 +376,7 @@ describe('ol.format.EsriJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Point_);
+      expect(obj).to.be.a(Point);
       expect(obj.getCoordinates()).to.eql([10, 20, 0, 10]);
       expect(obj.getLayout()).to.eql('XYZM');
     });
@@ -746,7 +746,7 @@ describe('ol.format.EsriJSON', function() {
       var first = features[0];
       expect(first).to.be.a(_ol_Feature_);
       expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(_ol_geom_Point_);
+      expect(first.getGeometry()).to.be.a(Point);
 
       var second = features[1];
       expect(second).to.be.a(_ol_Feature_);
@@ -762,28 +762,28 @@ describe('ol.format.EsriJSON', function() {
   describe('#writeGeometry', function() {
 
     it('encodes point', function() {
-      var point = new _ol_geom_Point_([10, 20]);
+      var point = new Point([10, 20]);
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYZ point', function() {
-      var point = new _ol_geom_Point_([10, 20, 0], 'XYZ');
+      var point = new Point([10, 20, 0], 'XYZ');
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYM point', function() {
-      var point = new _ol_geom_Point_([10, 20, 0], 'XYM');
+      var point = new Point([10, 20, 0], 'XYM');
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
     });
 
     it('encodes XYZM point', function() {
-      var point = new _ol_geom_Point_([10, 20, 5, 0],
+      var point = new Point([10, 20, 5, 0],
           'XYZM');
       var esrijson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
@@ -989,7 +989,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('transforms and encodes a point', function() {
-      var point = new _ol_geom_Point_([2, 3]);
+      var point = new Point([2, 3]);
       var esrijson = format.writeGeometry(point, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
@@ -1050,13 +1050,13 @@ describe('ol.format.EsriJSON', function() {
         function() {
           var feature = new _ol_Feature_({'foo': 'bar'});
           feature.setGeometryName('mygeom');
-          feature.setGeometry(new _ol_geom_Point_([5, 10]));
+          feature.setGeometry(new Point([5, 10]));
           var esrijson = format.writeFeaturesObject([feature]);
           expect(esrijson.features[0].attributes.mygeom).to.eql(undefined);
         });
 
     it('writes out a feature without properties correctly', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Point_([5, 10]));
+      var feature = new _ol_Feature_(new Point([5, 10]));
       var esrijson = format.writeFeatureObject(feature);
       expect(esrijson.attributes).to.eql({});
     });

@@ -15,7 +15,7 @@ import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -579,7 +579,7 @@ _ol_interaction_Modify_.prototype.writeGeometryCollectionGeometry_ = function(fe
 _ol_interaction_Modify_.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new _ol_geom_Point_(coordinates));
+    vertexFeature = new _ol_Feature_(new Point(coordinates));
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {

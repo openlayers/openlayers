@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
@@ -61,7 +61,7 @@ var features = new Array(featureCount);
 var feature, geometry;
 var e = 25000000;
 for (i = 0; i < featureCount; ++i) {
-  geometry = new _ol_geom_Point_(
+  geometry = new Point(
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
   feature = new _ol_Feature_(geometry);
   feature.setStyle(

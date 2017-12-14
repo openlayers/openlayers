@@ -4,7 +4,7 @@ import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -590,16 +590,16 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var centerFeature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center),
+        geometry: new Point(center),
         text: 'center'
       });
       source.addFeature(centerFeature);
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]]),
+        geometry: new Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]]),
+        geometry: new Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
 
@@ -631,16 +631,16 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var centerFeature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center),
+        geometry: new Point(center),
         text: 'center'
       });
       source.addFeature(centerFeature);
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]]),
+        geometry: new Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]]),
+        geometry: new Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
 
@@ -671,17 +671,17 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center),
+        geometry: new Point(center),
         text: 'center',
         zIndex: 2
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]]),
+        geometry: new Point([center[0] - 540, center[1]]),
         text: 'west',
         zIndex: 3
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]]),
+        geometry: new Point([center[0] + 540, center[1]]),
         text: 'east',
         zIndex: 1
       }));
@@ -711,14 +711,14 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var centerFeature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center)
+        geometry: new Point(center)
       });
       source.addFeature(centerFeature);
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]])
+        geometry: new Point([center[0] - 540, center[1]])
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]])
+        geometry: new Point([center[0] + 540, center[1]])
       }));
 
       layer.setDeclutter(true);
@@ -751,14 +751,14 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var centerFeature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center)
+        geometry: new Point(center)
       });
       source.addFeature(centerFeature);
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]])
+        geometry: new Point([center[0] - 540, center[1]])
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]])
+        geometry: new Point([center[0] + 540, center[1]])
       }));
 
       layer.setDeclutter(true);
@@ -790,15 +790,15 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center),
+        geometry: new Point(center),
         zIndex: 2
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]]),
+        geometry: new Point([center[0] - 540, center[1]]),
         zIndex: 3
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]]),
+        geometry: new Point([center[0] + 540, center[1]]),
         zIndex: 1
       }));
 
@@ -829,15 +829,15 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_(center),
+        geometry: new Point(center),
         text: 'center'
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] - 540, center[1]]),
+        geometry: new Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
       source.addFeature(new _ol_Feature_({
-        geometry: new _ol_geom_Point_([center[0] + 540, center[1]]),
+        geometry: new Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
 
@@ -872,7 +872,7 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
 
-      var point = new _ol_Feature_(new _ol_geom_Point_(center));
+      var point = new _ol_Feature_(new Point(center));
       point.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
           radius: 8,
@@ -915,7 +915,7 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
 
-      var point = new _ol_Feature_(new _ol_geom_Point_(center));
+      var point = new _ol_Feature_(new Point(center));
       point.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
           radius: 8,
@@ -958,7 +958,7 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
 
-      var point = new _ol_Feature_(new _ol_geom_Point_(center));
+      var point = new _ol_Feature_(new Point(center));
       point.setStyle(new _ol_style_Style_({
         zIndex: 2,
         image: new _ol_style_Circle_({

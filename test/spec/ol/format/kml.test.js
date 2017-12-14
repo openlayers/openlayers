@@ -8,7 +8,7 @@ import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
@@ -239,7 +239,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Point_);
+          expect(g).to.be.an(Point);
           expect(g.getCoordinates()).to.eql([1, 2, 3]);
           expect(g.get('extrude')).to.be(false);
           expect(g.get('altitudeMode')).to.be('absolute');
@@ -265,7 +265,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Point_);
+          expect(g).to.be.an(Point);
           var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
           expect(g.getCoordinates()).to.eql(expectedPoint);
@@ -287,7 +287,7 @@ describe('ol.format.KML', function() {
           var f = format.readFeature(text);
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Point_);
+          expect(g).to.be.an(Point);
           expect(g.getCoordinates()).to.eql([1, 2, 3]);
         });
 
@@ -309,7 +309,7 @@ describe('ol.format.KML', function() {
           });
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Point_);
+          expect(g).to.be.an(Point);
           var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
           expect(g.getCoordinates()).to.eql(expectedPoint);
@@ -317,7 +317,7 @@ describe('ol.format.KML', function() {
 
         it('can write XY Point geometries', function() {
           var layout = 'XY';
-          var point = new _ol_geom_Point_([1, 2], layout);
+          var point = new Point([1, 2], layout);
           var features = [new _ol_Feature_(point)];
           var node = format.writeFeaturesNode(features);
           var text =
@@ -337,7 +337,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZ Point geometries', function() {
           var layout = 'XYZ';
-          var point = new _ol_geom_Point_([1, 2, 3], layout);
+          var point = new Point([1, 2, 3], layout);
           var features = [new _ol_Feature_(point)];
           var node = format.writeFeaturesNode(features);
           var text =
@@ -366,7 +366,7 @@ describe('ol.format.KML', function() {
               });
 
           var layout = 'XYZ';
-          var point = new _ol_geom_Point_([1, 2, 3], layout).transform(
+          var point = new Point([1, 2, 3], layout).transform(
               'EPSG:4326', 'double');
           var features = [new _ol_Feature_(point)];
           var node = format.writeFeaturesNode(features, {
@@ -394,7 +394,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYM Point geometries', function() {
           var layout = 'XYM';
-          var point = new _ol_geom_Point_([1, 2, 100], layout);
+          var point = new Point([1, 2, 100], layout);
           var features = [new _ol_Feature_(point)];
           var node = format.writeFeaturesNode(features);
           var text =
@@ -414,7 +414,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZM Point geometries', function() {
           var layout = 'XYZM';
-          var point = new _ol_geom_Point_([1, 2, 3, 100], layout);
+          var point = new Point([1, 2, 3, 100], layout);
           var features = [new _ol_Feature_(point)];
           var node = format.writeFeaturesNode(features);
           var text =
@@ -1180,7 +1180,7 @@ describe('ol.format.KML', function() {
           expect(g).to.be.an(_ol_geom_GeometryCollection_);
           var gs = g.getGeometries();
           expect(gs).to.have.length(4);
-          expect(gs[0]).to.be.an(_ol_geom_Point_);
+          expect(gs[0]).to.be.an(Point);
           expect(gs[1]).to.be.an(_ol_geom_LineString_);
           expect(gs[2]).to.be.an(_ol_geom_Polygon_);
           expect(gs[3]).to.be.an(_ol_geom_Polygon_);
@@ -1209,7 +1209,7 @@ describe('ol.format.KML', function() {
 
         it('can write GeometryCollection geometries', function() {
           var collection = new _ol_geom_GeometryCollection_([
-            new _ol_geom_Point_([1, 2]),
+            new Point([1, 2]),
             new _ol_geom_LineString_([[1, 2], [3, 4]]),
             new _ol_geom_Polygon_([[[1, 2], [3, 4], [3, 2], [1, 2]]])
           ]);
@@ -2848,7 +2848,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Point_);
+          expect(g).to.be.an(Point);
           var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
           expectedPoint.push(3);
           expect(g.getCoordinates()).to.eql(expectedPoint);
@@ -3198,7 +3198,7 @@ describe('ol.format.KML', function() {
         expect(geometry).to.be.an(_ol_geom_GeometryCollection_);
         var components = geometry.getGeometries();
         expect(components).to.have.length(2);
-        expect(components[0]).to.be.an(_ol_geom_Point_);
+        expect(components[0]).to.be.an(Point);
         expect(components[1]).to.be.an(_ol_geom_MultiPolygon_);
       });
 

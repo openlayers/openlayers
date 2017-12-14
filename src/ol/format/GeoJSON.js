@@ -14,7 +14,7 @@ import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -109,7 +109,7 @@ _ol_format_GeoJSON_.readGeometryCollectionGeometry_ = function(
  * @return {ol.geom.Point} Point.
  */
 _ol_format_GeoJSON_.readPointGeometry_ = function(object) {
-  return new _ol_geom_Point_(object.coordinates);
+  return new Point(object.coordinates);
 };
 
 

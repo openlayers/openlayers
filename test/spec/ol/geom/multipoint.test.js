@@ -1,6 +1,6 @@
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 
 
 describe('ol.geom.MultiPoint', function() {
@@ -39,9 +39,9 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('can append points', function() {
-      multiPoint.appendPoint(new _ol_geom_Point_([1, 2]));
+      multiPoint.appendPoint(new Point([1, 2]));
       expect(multiPoint.getCoordinates()).to.eql([[1, 2]]);
-      multiPoint.appendPoint(new _ol_geom_Point_([3, 4]));
+      multiPoint.appendPoint(new Point([3, 4]));
       expect(multiPoint.getCoordinates()).to.eql([[1, 2], [3, 4]]);
     });
 
@@ -157,10 +157,10 @@ describe('ol.geom.MultiPoint', function() {
     it('can return all points', function() {
       var points = multiPoint.getPoints();
       expect(points).to.have.length(2);
-      expect(points[0]).to.be.an(_ol_geom_Point_);
+      expect(points[0]).to.be.an(Point);
       expect(points[0].getLayout()).to.be('XYM');
       expect(points[0].getCoordinates()).to.eql([1, 2, 3]);
-      expect(points[1]).to.be.an(_ol_geom_Point_);
+      expect(points[1]).to.be.an(Point);
       expect(points[1].getLayout()).to.be('XYM');
       expect(points[1].getCoordinates()).to.eql([4, 5, 6]);
     });

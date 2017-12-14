@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
@@ -98,7 +98,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       createMap('canvas');
       var vectorSource = new _ol_source_Vector_({
         features: [
-          new _ol_Feature_(new _ol_geom_Point_([1825727.7316762917, 6143091.089223046]))
+          new _ol_Feature_(new Point([1825727.7316762917, 6143091.089223046]))
         ]
       });
       map.addLayer(new _ol_layer_Vector_({

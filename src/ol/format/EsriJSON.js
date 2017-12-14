@@ -14,7 +14,7 @@ import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
@@ -152,16 +152,16 @@ _ol_format_EsriJSON_.convertRings_ = function(rings, layout) {
 _ol_format_EsriJSON_.readPointGeometry_ = function(object) {
   var point;
   if (object.m !== undefined && object.z !== undefined) {
-    point = new _ol_geom_Point_([object.x, object.y, object.z, object.m],
+    point = new Point([object.x, object.y, object.z, object.m],
         _ol_geom_GeometryLayout_.XYZM);
   } else if (object.z !== undefined) {
-    point = new _ol_geom_Point_([object.x, object.y, object.z],
+    point = new Point([object.x, object.y, object.z],
         _ol_geom_GeometryLayout_.XYZ);
   } else if (object.m !== undefined) {
-    point = new _ol_geom_Point_([object.x, object.y, object.m],
+    point = new Point([object.x, object.y, object.m],
         _ol_geom_GeometryLayout_.XYM);
   } else {
-    point = new _ol_geom_Point_([object.x, object.y]);
+    point = new Point([object.x, object.y]);
   }
   return point;
 };

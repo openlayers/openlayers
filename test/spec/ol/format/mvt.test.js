@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
@@ -111,7 +111,7 @@ describe('ol.format.MVT', function() {
       var feature = format.createFeature_({}, rawFeature);
       _ol_format_MVT_.readRawGeometry_ = readRawGeometry_;
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.a(_ol_geom_Point_);
+      expect(geometry).to.be.a(Point);
       expect(feature.get('myGeom')).to.equal(geometry);
       expect(feature.get('geometry')).to.be('foo');
     });

@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -52,7 +52,7 @@ describe('ol.rendering.style.Icon', function() {
     function createFeatures(src, imgInfo, callback) {
       var feature;
       feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([0, 0])
+        geometry: new Point([0, 0])
       });
 
       var img = new Image();

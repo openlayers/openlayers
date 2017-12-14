@@ -4,7 +4,7 @@ import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
 import _ol_geom_Circle_ from '../../../src/ol/geom/Circle.js';
 import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import Point from '../../../src/ol/geom/Point.js';
 
 describe('ol.View', function() {
 
@@ -1273,14 +1273,14 @@ describe('ol.View', function() {
       expect(view.getCenter()[1]).to.be(47050);
 
       view.fit(
-          new _ol_geom_Point_([6000, 46000]),
+          new Point([6000, 46000]),
           {size: [200, 200], padding: [100, 0, 0, 100], minResolution: 2});
       expect(view.getResolution()).to.be(2);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
       view.fit(
-          new _ol_geom_Point_([6000, 46000]),
+          new Point([6000, 46000]),
           {size: [200, 200], padding: [100, 0, 0, 100], maxZoom: 6});
       expect(view.getResolution()).to.be(2);
       expect(view.getZoom()).to.be(6);

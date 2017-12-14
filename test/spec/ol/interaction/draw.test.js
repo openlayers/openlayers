@@ -10,7 +10,7 @@ import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../../../../src/ol/interaction/Draw.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
@@ -123,7 +123,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       var geometry = features[0].getGeometry();
       expect(features[0].getGeometryName()).to.equal('the_geom');
-      expect(geometry).to.be.a(_ol_geom_Point_);
+      expect(geometry).to.be.a(Point);
     });
   });
 
@@ -172,7 +172,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_Point_);
+      expect(geometry).to.be.a(Point);
       expect(geometry.getCoordinates()).to.eql([10, -20]);
     });
 

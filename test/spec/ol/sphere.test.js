@@ -8,7 +8,7 @@ import _ol_geom_GeometryCollection_ from '../../../src/ol/geom/GeometryCollectio
 import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import Point from '../../../src/ol/geom/Point.js';
 import _ol_proj_EPSG4326_ from '../../../src/ol/proj/EPSG4326.js';
 
 
@@ -115,7 +115,7 @@ describe('ol.Sphere', function() {
 
 describe('ol.Sphere.getLength()', function() {
   var cases = [{
-    geometry: new _ol_geom_Point_([0, 0]),
+    geometry: new Point([0, 0]),
     length: 0
   }, {
     geometry: new _ol_geom_MultiPoint_([[0, 0], [1, 1]]),

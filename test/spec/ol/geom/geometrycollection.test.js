@@ -1,7 +1,7 @@
 import _ol_geom_Geometry_ from '../../../../src/ol/geom/Geometry.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 
 describe('ol.geom.GeometryCollection', function() {
@@ -14,7 +14,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     var line, multi, point, poly;
     beforeEach(function() {
-      point = new _ol_geom_Point_([10, 20]);
+      point = new Point([10, 20]);
       line = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
       multi = new _ol_geom_GeometryCollection_([point, line, poly]);
@@ -43,7 +43,7 @@ describe('ol.geom.GeometryCollection', function() {
     });
 
     it('register new components', function(done) {
-      var point2 = new _ol_geom_Point_([10, 20]);
+      var point2 = new Point([10, 20]);
       multi.setGeometriesArray([point2]);
       multi.on('change', function() {
         done();
@@ -56,7 +56,7 @@ describe('ol.geom.GeometryCollection', function() {
   describe('#getGeometries', function() {
 
     it('returns a collection of geometries', function() {
-      var point = new _ol_geom_Point_([10, 20]);
+      var point = new Point([10, 20]);
       var line = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       var poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
       var multi = new _ol_geom_GeometryCollection_([point, line, poly]);
@@ -64,7 +64,7 @@ describe('ol.geom.GeometryCollection', function() {
       var geometries = multi.getGeometries();
       expect(geometries).to.be.an(Array);
       expect(geometries).to.have.length(3);
-      expect(geometries[0]).to.be.a(_ol_geom_Point_);
+      expect(geometries[0]).to.be.a(Point);
       expect(geometries[1]).to.be.a(_ol_geom_LineString_);
       expect(geometries[2]).to.be.a(_ol_geom_Polygon_);
     });
@@ -74,7 +74,7 @@ describe('ol.geom.GeometryCollection', function() {
   describe('#clone()', function() {
 
     it('has a working clone method', function() {
-      var point = new _ol_geom_Point_([10, 20]);
+      var point = new Point([10, 20]);
       var line = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       var poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
       var multi = new _ol_geom_GeometryCollection_([point, line, poly]);
@@ -87,7 +87,7 @@ describe('ol.geom.GeometryCollection', function() {
     });
 
     it('does a deep clone', function() {
-      var point = new _ol_geom_Point_([30, 40]);
+      var point = new Point([30, 40]);
       var originalGeometries = [point];
       var multi = new _ol_geom_GeometryCollection_(originalGeometries);
       var clone = multi.clone();
@@ -105,7 +105,7 @@ describe('ol.geom.GeometryCollection', function() {
   describe('#getExtent()', function() {
 
     it('returns the bounding extent', function() {
-      var point = new _ol_geom_Point_([10, 2]);
+      var point = new Point([10, 2]);
       var line = new _ol_geom_LineString_([[1, 20], [30, 40]]);
       var multi = new _ol_geom_GeometryCollection_([point, line]);
       var extent = multi.getExtent();
@@ -122,7 +122,7 @@ describe('ol.geom.GeometryCollection', function() {
     var point, line, poly, multi;
 
     beforeEach(function() {
-      point = new _ol_geom_Point_([5, 20]);
+      point = new Point([5, 20]);
       line = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
       multi = new _ol_geom_GeometryCollection_([point, line, poly]);
@@ -151,7 +151,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     var line, multi, point, poly;
     beforeEach(function() {
-      point = new _ol_geom_Point_([10, 20]);
+      point = new Point([10, 20]);
       line = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
       multi = new _ol_geom_GeometryCollection_([point, line, poly]);
@@ -176,7 +176,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     it('scales a collection', function() {
       var geom = new _ol_geom_GeometryCollection_([
-        new _ol_geom_Point_([-1, -2]),
+        new Point([-1, -2]),
         new _ol_geom_LineString_([[0, 0], [1, 2]])
       ]);
       geom.scale(10);
@@ -187,7 +187,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     it('accepts sx and sy', function() {
       var geom = new _ol_geom_GeometryCollection_([
-        new _ol_geom_Point_([-1, -2]),
+        new Point([-1, -2]),
         new _ol_geom_LineString_([[0, 0], [1, 2]])
       ]);
       geom.scale(2, 3);
@@ -198,7 +198,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     it('accepts an anchor', function() {
       var geom = new _ol_geom_GeometryCollection_([
-        new _ol_geom_Point_([-1, -2]),
+        new Point([-1, -2]),
         new _ol_geom_LineString_([[0, 0], [1, 2]])
       ]);
       geom.scale(10, 15, [-1, -2]);
@@ -213,7 +213,7 @@ describe('ol.geom.GeometryCollection', function() {
 
     var line, multi, point;
     beforeEach(function() {
-      point = new _ol_geom_Point_([10, 20]);
+      point = new Point([10, 20]);
       line = new _ol_geom_LineString_([[10, 20], [30, 40]]);
       multi = new _ol_geom_GeometryCollection_([point, line]);
     });
@@ -222,7 +222,7 @@ describe('ol.geom.GeometryCollection', function() {
       multi.transform('EPSG:4326', 'EPSG:3857');
 
       var geometries = multi.getGeometries();
-      expect(geometries[0]).to.be.a(_ol_geom_Point_);
+      expect(geometries[0]).to.be.a(Point);
       expect(geometries[1]).to.be.a(_ol_geom_LineString_);
 
       var coords = geometries[0].getCoordinates();

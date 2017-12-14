@@ -6,7 +6,7 @@ import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollec
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import {fromLonLat, get as getProjection, toLonLat, transform} from '../../../../src/ol/proj.js';
 
@@ -147,7 +147,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeature(pointGeoJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_Point_);
+      expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
       expect(feature.get('prop0')).to.be('value0');
     });
@@ -156,7 +156,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeature(pointGeoJSON.geometry);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_Point_);
+      expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
     });
 
@@ -200,7 +200,7 @@ describe('ol.format.GeoJSON', function() {
     it('can read a feature collection', function() {
       var features = format.readFeatures(featureCollectionGeoJSON);
       expect(features).to.have.length(3);
-      expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[1].getGeometry()).to.be.an(_ol_geom_LineString_);
       expect(features[2].getGeometry()).to.be.an(_ol_geom_Polygon_);
     });
@@ -209,7 +209,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeatures(pointGeoJSON, {
         featureProjection: 'EPSG:3857'
       });
-      expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
@@ -217,7 +217,7 @@ describe('ol.format.GeoJSON', function() {
     it('uses featureProjection passed to the constructor', function() {
       var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:3857'});
       var feature = format.readFeatures(pointGeoJSON);
-      expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
@@ -227,7 +227,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeatures(pointGeoJSON, {
         featureProjection: 'EPSG:3857'
       });
-      expect(feature[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
@@ -236,7 +236,7 @@ describe('ol.format.GeoJSON', function() {
       var features = format.readFeatures(featureCollectionGeoJSON, {
         featureProjection: 'EPSG:3857'
       });
-      expect(features[0].getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[0].getGeometry().getCoordinates()).to.eql(
           transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
       expect(features[1].getGeometry().getCoordinates()).to.eql([
@@ -257,7 +257,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = new _ol_format_GeoJSON_({geometryName: 'the_geom'}).
           readFeature(pointGeoJSON);
       expect(feature.getGeometryName()).to.be('the_geom');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature.getGeometry()).to.be.an(Point);
     });
 
   });
@@ -356,7 +356,7 @@ describe('ol.format.GeoJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Point_);
+      expect(obj).to.be.a(Point);
       expect(obj.getCoordinates()).to.eql([10, 20]);
       expect(obj.getLayout()).to.eql('XY');
     });
@@ -417,7 +417,7 @@ describe('ol.format.GeoJSON', function() {
       expect(geometryCollection).to.be.an(_ol_geom_GeometryCollection_);
       var array = geometryCollection.getGeometries();
       expect(array.length).to.be(2);
-      expect(array[0]).to.be.a(_ol_geom_Point_);
+      expect(array[0]).to.be.a(Point);
       expect(array[0].getLayout()).to.eql('XY');
       expect(array[1]).to.be.a(_ol_geom_LineString_);
       expect(array[1].getLayout()).to.eql('XY');
@@ -464,7 +464,7 @@ describe('ol.format.GeoJSON', function() {
       var first = features[0];
       expect(first).to.be.a(_ol_Feature_);
       expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(_ol_geom_Point_);
+      expect(first.getGeometry()).to.be.a(Point);
 
       var second = features[1];
       expect(second).to.be.a(_ol_Feature_);
@@ -507,7 +507,7 @@ describe('ol.format.GeoJSON', function() {
       var first = features[0];
       expect(first).to.be.a(_ol_Feature_);
       expect(first.get('foo')).to.be('bar');
-      expect(first.getGeometry()).to.be.a(_ol_geom_Point_);
+      expect(first.getGeometry()).to.be.a(Point);
 
       var second = features[1];
       expect(second).to.be.a(_ol_Feature_);
@@ -562,13 +562,13 @@ describe('ol.format.GeoJSON', function() {
         function() {
           var feature = new _ol_Feature_({'foo': 'bar'});
           feature.setGeometryName('mygeom');
-          feature.setGeometry(new _ol_geom_Point_([5, 10]));
+          feature.setGeometry(new Point([5, 10]));
           var geojson = format.writeFeaturesObject([feature]);
           expect(geojson.features[0].properties.mygeom).to.eql(undefined);
         });
 
     it('writes out a feature without properties correctly', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Point_([5, 10]));
+      var feature = new _ol_Feature_(new Point([5, 10]));
       var geojson = format.writeFeatureObject(feature);
       expect(geojson.properties).to.eql(null);
     });
@@ -590,14 +590,14 @@ describe('ol.format.GeoJSON', function() {
   describe('#writeGeometry', function() {
 
     it('encodes point', function() {
-      var point = new _ol_geom_Point_([10, 20]);
+      var point = new Point([10, 20]);
       var geojson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(geojson).getCoordinates());
     });
 
     it('accepts featureProjection', function() {
-      var point = new _ol_geom_Point_(fromLonLat([10, 20]));
+      var point = new Point(fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point, {featureProjection: 'EPSG:3857'});
       var obj = JSON.parse(geojson);
       expect(obj.coordinates).to.eql(toLonLat(point.getCoordinates()));
@@ -605,7 +605,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('respects featureProjection passed to constructor', function() {
       var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:3857'});
-      var point = new _ol_geom_Point_(fromLonLat([10, 20]));
+      var point = new Point(fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point);
       var obj = JSON.parse(geojson);
       expect(obj.coordinates).to.eql(toLonLat(point.getCoordinates()));
@@ -730,7 +730,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('encodes geometry collection', function() {
       var collection = new _ol_geom_GeometryCollection_([
-        new _ol_geom_Point_([10, 20]),
+        new Point([10, 20]),
         new _ol_geom_LineString_([[30, 40], [50, 60]])
       ]);
       var geojson = format.writeGeometry(collection);
@@ -756,7 +756,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('transforms and encodes a point', function() {
-      var point = new _ol_geom_Point_([2, 3]);
+      var point = new Point([2, 3]);
       var geojson = format.writeGeometry(point, {
         featureProjection: 'EPSG:3857'
       });
@@ -771,7 +771,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('transforms and encodes geometry collection', function() {
       var collection = new _ol_geom_GeometryCollection_([
-        new _ol_geom_Point_([2, 3]),
+        new Point([2, 3]),
         new _ol_geom_LineString_([[3, 2], [2, 1]])
       ]);
       var geojson = format.writeGeometry(collection, {
@@ -793,7 +793,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('truncates transformed point with decimals option', function() {
-      var point = new _ol_geom_Point_([2, 3]).transform('EPSG:4326', 'EPSG:3857');
+      var point = new Point([2, 3]).transform('EPSG:4326', 'EPSG:3857');
       var geojson = format.writeGeometry(point, {
         featureProjection: 'EPSG:3857',
         decimals: 2

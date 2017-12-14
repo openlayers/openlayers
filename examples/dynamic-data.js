@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_geom_MultiPoint_ from '../src/ol/geom/MultiPoint.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -68,7 +68,7 @@ map.on('postcompose', function(event) {
   vectorContext.setStyle(imageStyle);
   vectorContext.drawGeometry(new _ol_geom_MultiPoint_(coordinates));
 
-  var headPoint = new _ol_geom_Point_(coordinates[coordinates.length - 1]);
+  var headPoint = new Point(coordinates[coordinates.length - 1]);
 
   vectorContext.setStyle(headOuterImageStyle);
   vectorContext.drawGeometry(headPoint);

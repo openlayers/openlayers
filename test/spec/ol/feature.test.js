@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../src/ol/Feature.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import Point from '../../../src/ol/geom/Point.js';
 import _ol_obj_ from '../../../src/ol/obj.js';
 import _ol_style_Style_ from '../../../src/ol/style/Style.js';
 
@@ -28,11 +28,11 @@ describe('ol.Feature', function() {
 
     it('will set the default geometry', function() {
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([10, 20]),
+        geometry: new Point([10, 20]),
         foo: 'bar'
       });
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.a(_ol_geom_Point_);
+      expect(geometry).to.be.a(Point);
       expect(feature.get('geometry')).to.be(geometry);
     });
 
@@ -65,7 +65,7 @@ describe('ol.Feature', function() {
   describe('#getProperties()', function() {
 
     it('returns an object with all attributes', function() {
-      var point = new _ol_geom_Point_([15, 30]);
+      var point = new Point([15, 30]);
       var feature = new _ol_Feature_({
         foo: 'bar',
         ten: 10,
@@ -93,7 +93,7 @@ describe('ol.Feature', function() {
 
   describe('#getGeometry()', function() {
 
-    var point = new _ol_geom_Point_([15, 30]);
+    var point = new Point([15, 30]);
 
     it('returns undefined for unset geometry', function() {
       var feature = new _ol_Feature_();
@@ -123,7 +123,7 @@ describe('ol.Feature', function() {
       feature.setGeometry(point);
       expect(feature.getGeometry()).to.be(point);
 
-      var point2 = new _ol_geom_Point_([1, 2]);
+      var point2 = new Point([1, 2]);
       feature.setGeometry(point2);
       expect(feature.getGeometry()).to.be(point2);
     });
@@ -142,9 +142,9 @@ describe('ol.Feature', function() {
     });
 
     it('can be used to set the geometry', function() {
-      var point = new _ol_geom_Point_([3, 4]);
+      var point = new Point([3, 4]);
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([1, 2])
+        geometry: new Point([1, 2])
       });
       feature.set('geometry', point);
       expect(feature.get('geometry')).to.be(point);
@@ -162,8 +162,8 @@ describe('ol.Feature', function() {
       feature.set('getGeometry', 'x');
       expect(feature.get('getGeometry')).to.be('x');
 
-      feature.set('geometry', new _ol_geom_Point_([1, 2]));
-      expect(feature.getGeometry()).to.be.a(_ol_geom_Point_);
+      feature.set('geometry', new Point([1, 2]));
+      expect(feature.getGeometry()).to.be.a(Point);
 
     });
 
@@ -171,7 +171,7 @@ describe('ol.Feature', function() {
 
   describe('#setGeometry()', function() {
 
-    var point = new _ol_geom_Point_([15, 30]);
+    var point = new Point([15, 30]);
 
     it('sets the default geometry', function() {
       var feature = new _ol_Feature_();
@@ -185,7 +185,7 @@ describe('ol.Feature', function() {
       });
       expect(feature.getGeometry()).to.be(point);
 
-      var point2 = new _ol_geom_Point_([1, 2]);
+      var point2 = new Point([1, 2]);
       feature.setGeometry(point2);
       expect(feature.getGeometry()).to.be(point2);
     });
@@ -194,14 +194,14 @@ describe('ol.Feature', function() {
 
   describe('#setGeometryName()', function() {
 
-    var point = new _ol_geom_Point_([15, 30]);
+    var point = new Point([15, 30]);
 
     it('sets property where to to look at geometry', function() {
       var feature = new _ol_Feature_();
       feature.setGeometry(point);
       expect(feature.getGeometry()).to.be(point);
 
-      var point2 = new _ol_geom_Point_([1, 2]);
+      var point2 = new Point([1, 2]);
       feature.set('altGeometry', point2);
       expect(feature.getGeometry()).to.be(point);
       feature.setGeometryName('altGeometry');
@@ -216,7 +216,7 @@ describe('ol.Feature', function() {
     it('changes property listener', function() {
       var feature = new _ol_Feature_();
       feature.setGeometry(point);
-      var point2 = new _ol_geom_Point_([1, 2]);
+      var point2 = new Point([1, 2]);
       feature.set('altGeometry', point2);
       feature.setGeometryName('altGeometry');
 
@@ -229,7 +229,7 @@ describe('ol.Feature', function() {
     it('can use a different geometry name', function() {
       var feature = new _ol_Feature_();
       feature.setGeometryName('foo');
-      var point = new _ol_geom_Point_([10, 20]);
+      var point = new Point([10, 20]);
       feature.setGeometry(point);
       expect(feature.getGeometry()).to.be(point);
     });
@@ -401,7 +401,7 @@ describe('ol.Feature', function() {
       feature.setProperties({'fookey': 'fooval'});
       feature.setId(1);
       feature.setGeometryName('geom');
-      var geometry = new _ol_geom_Point_([1, 2]);
+      var geometry = new Point([1, 2]);
       feature.setGeometry(geometry);
       var style = new _ol_style_Style_({});
       feature.setStyle(style);
@@ -436,7 +436,7 @@ describe('ol.Feature', function() {
     it('dispatches a change event when geometry is set to null',
         function() {
           var feature = new _ol_Feature_({
-            geometry: new _ol_geom_Point_([0, 0])
+            geometry: new Point([0, 0])
           });
           var spy = sinon.spy();
           feature.on('change', spy);

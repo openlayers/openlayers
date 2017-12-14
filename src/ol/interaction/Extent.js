@@ -9,7 +9,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_Event_ from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -399,7 +399,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
 _ol_interaction_Extent_.prototype.createOrUpdatePointerFeature_ = function(vertex) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new _ol_geom_Point_(vertex));
+    vertexFeature = new _ol_Feature_(new Point(vertex));
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {

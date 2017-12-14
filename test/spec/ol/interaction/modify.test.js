@@ -7,7 +7,7 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -152,7 +152,7 @@ describe('ol.interaction.Modify', function() {
   describe('constructor', function() {
     it('adds features to the RTree', function() {
       var feature = new _ol_Feature_(
-          new _ol_geom_Point_([0, 0]));
+          new Point([0, 0]));
       var features = new _ol_Collection_([feature]);
       var modify = new _ol_interaction_Modify_({
         features: features
@@ -171,7 +171,7 @@ describe('ol.interaction.Modify', function() {
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(0);
 
-      feature.setGeometry(new _ol_geom_Point_([0, 10]));
+      feature.setGeometry(new Point([0, 10]));
       rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
@@ -179,7 +179,7 @@ describe('ol.interaction.Modify', function() {
 
     it('accepts a source', function() {
       var feature = new _ol_Feature_(
-          new _ol_geom_Point_([0, 0]));
+          new Point([0, 0]));
       var source = new _ol_source_Vector_({features: [feature]});
       var modify = new _ol_interaction_Modify_({source: source});
       var rbushEntries = modify.rBush_.getAll();

@@ -9,7 +9,7 @@ import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
 
@@ -104,7 +104,7 @@ _ol_format_TopoJSON_.readPointGeometry_ = function(object, scale, translate) {
   if (scale && translate) {
     _ol_format_TopoJSON_.transformVertex_(coordinates, scale, translate);
   }
-  return new _ol_geom_Point_(coordinates);
+  return new Point(coordinates);
 };
 
 

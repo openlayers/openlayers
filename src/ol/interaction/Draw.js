@@ -17,7 +17,7 @@ import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_interaction_DrawEventType_ from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -152,7 +152,7 @@ var _ol_interaction_Draw_ = function(options) {
       var Constructor;
       var mode = this.mode_;
       if (mode === _ol_interaction_Draw_.Mode_.POINT) {
-        Constructor = _ol_geom_Point_;
+        Constructor = Point;
       } else if (mode === _ol_interaction_Draw_.Mode_.LINE_STRING) {
         Constructor = _ol_geom_LineString_;
       } else if (mode === _ol_interaction_Draw_.Mode_.POLYGON) {
@@ -481,7 +481,7 @@ _ol_interaction_Draw_.prototype.atFinish_ = function(event) {
 _ol_interaction_Draw_.prototype.createOrUpdateSketchPoint_ = function(event) {
   var coordinates = event.coordinate.slice();
   if (!this.sketchPoint_) {
-    this.sketchPoint_ = new _ol_Feature_(new _ol_geom_Point_(coordinates));
+    this.sketchPoint_ = new _ol_Feature_(new Point(coordinates));
     this.updateSketchFeatures_();
   } else {
     var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());

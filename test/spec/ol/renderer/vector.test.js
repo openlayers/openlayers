@@ -1,7 +1,7 @@
 import {nullFunction} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
@@ -73,7 +73,7 @@ describe('ol.renderer.vector', function() {
     describe('call renderFeature with a loading icon', function() {
 
       it('does not render the point', function() {
-        feature.setGeometry(new _ol_geom_Point_([0, 0]));
+        feature.setGeometry(new Point([0, 0]));
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');

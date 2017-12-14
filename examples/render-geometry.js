@@ -1,5 +1,5 @@
 import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
 import _ol_render_ from '../src/ol/render.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -26,4 +26,4 @@ vectorContext.setStyle(style);
 
 vectorContext.drawGeometry(new _ol_geom_LineString_([[10, 10], [90, 90]]));
 vectorContext.drawGeometry(new _ol_geom_Polygon_([[[2, 2], [98, 2], [2, 98], [2, 2]]]));
-vectorContext.drawGeometry(new _ol_geom_Point_([88, 88]));
+vectorContext.drawGeometry(new Point([88, 88]));

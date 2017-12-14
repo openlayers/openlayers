@@ -3,7 +3,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_interaction_Snap_ from '../../../../src/ol/interaction/Snap.js';
 
@@ -56,7 +56,7 @@ describe('ol.interaction.Snap', function() {
     });
 
     it('can handle XYZ coordinates', function() {
-      var point = new _ol_Feature_(new _ol_geom_Point_([0, 0, 123]));
+      var point = new _ol_Feature_(new Point([0, 0, 123]));
       var snapInteraction = new _ol_interaction_Snap_({
         features: new _ol_Collection_([point])
       });

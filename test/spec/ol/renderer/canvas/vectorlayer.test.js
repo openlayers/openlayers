@@ -3,7 +3,7 @@ import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
-import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
@@ -66,8 +66,8 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           text: 'feature'
         })
       })];
-      var feature1 = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
-      var feature2 = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      var feature1 = new _ol_Feature_(new Point([0, 0]));
+      var feature2 = new _ol_Feature_(new Point([0, 0]));
       feature2.setStyle(featureStyle);
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
@@ -100,7 +100,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      var feature = new _ol_Feature_(new Point([0, 0]));
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [feature]
@@ -131,7 +131,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      var feature = new _ol_Feature_(new Point([0, 0]));
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [feature]
@@ -163,7 +163,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      var feature = new _ol_Feature_(new Point([0, 0]));
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [feature]

@@ -8,7 +8,7 @@ import _ol_VectorTile_ from '../../../../../src/ol/VectorTile.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import _ol_format_MVT_ from '../../../../../src/ol/format/MVT.js';
-import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_layer_VectorTile_ from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
@@ -55,8 +55,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           text: 'feature'
         })
       })];
-      feature1 = new _ol_Feature_(new _ol_geom_Point_([1, -1]));
-      feature2 = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+      feature1 = new _ol_Feature_(new Point([1, -1]));
+      feature2 = new _ol_Feature_(new Point([0, 0]));
       feature3 = new _ol_render_Feature_('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
       var TileClass = function() {
