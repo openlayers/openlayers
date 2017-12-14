@@ -1,10 +1,11 @@
 /**
  * @module ol/interaction/DrawEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_interaction_DrawEventType_ = {
+export default {
   /**
    * Triggered upon feature draw start
    * @event ol.interaction.Draw.Event#drawstart
@@ -18,5 +19,3 @@ var _ol_interaction_DrawEventType_ = {
    */
   DRAWEND: 'drawend'
 };
-
-export default _ol_interaction_DrawEventType_;

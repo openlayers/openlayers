@@ -1,10 +1,11 @@
 /**
  * @module ol/render/ReplayType
  */
+
 /**
  * @enum {string}
  */
-var _ol_render_ReplayType_ = {
+export default {
   CIRCLE: 'Circle',
   DEFAULT: 'Default',
   IMAGE: 'Image',
@@ -12,5 +13,3 @@ var _ol_render_ReplayType_ = {
   POLYGON: 'Polygon',
   TEXT: 'Text'
 };
-
-export default _ol_render_ReplayType_;

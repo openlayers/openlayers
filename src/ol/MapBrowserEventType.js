@@ -1,13 +1,13 @@
 /**
  * @module ol/MapBrowserEventType
  */
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 
 /**
  * Constants for event names.
  * @enum {string}
  */
-var _ol_MapBrowserEventType_ = {
+export default {
 
   /**
    * A true single click with no dragging and no double click. Note that this
@@ -22,14 +22,14 @@ var _ol_MapBrowserEventType_ = {
    * @event ol.MapBrowserEvent#click
    * @api
    */
-  CLICK: _ol_events_EventType_.CLICK,
+  CLICK: EventType.CLICK,
 
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick
    * @api
    */
-  DBLCLICK: _ol_events_EventType_.DBLCLICK,
+  DBLCLICK: EventType.DBLCLICK,
 
   /**
    * Triggered when a pointer is dragged.
@@ -54,5 +54,3 @@ var _ol_MapBrowserEventType_ = {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel'
 };
-
-export default _ol_MapBrowserEventType_;

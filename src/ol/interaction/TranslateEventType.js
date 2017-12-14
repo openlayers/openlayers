@@ -1,10 +1,11 @@
 /**
  * @module ol/interaction/TranslateEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_interaction_TranslateEventType_ = {
+export default {
   /**
    * Triggered upon feature translation start.
    * @event ol.interaction.Translate.Event#translatestart
@@ -24,5 +25,3 @@ var _ol_interaction_TranslateEventType_ = {
    */
   TRANSLATEEND: 'translateend'
 };
-
-export default _ol_interaction_TranslateEventType_;

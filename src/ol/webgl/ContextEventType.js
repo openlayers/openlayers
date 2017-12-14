@@ -1,12 +1,11 @@
 /**
  * @module ol/webgl/ContextEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_webgl_ContextEventType_ = {
+export default {
   LOST: 'webglcontextlost',
   RESTORED: 'webglcontextrestored'
 };
-
-export default _ol_webgl_ContextEventType_;

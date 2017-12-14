@@ -1,10 +1,11 @@
 /**
  * @module ol/ObjectEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_ObjectEventType_ = {
+export default {
   /**
    * Triggered when a property is changed.
    * @event ol.Object.Event#propertychange
@@ -12,5 +13,3 @@ var _ol_ObjectEventType_ = {
    */
   PROPERTYCHANGE: 'propertychange'
 };
-
-export default _ol_ObjectEventType_;

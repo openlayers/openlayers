@@ -1,10 +1,11 @@
 /**
  * @module ol/render/EventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_render_EventType_ = {
+export default {
   /**
    * @event ol.render.Event#postcompose
    * @api
@@ -21,5 +22,3 @@ var _ol_render_EventType_ = {
    */
   RENDER: 'render'
 };
-
-export default _ol_render_EventType_;

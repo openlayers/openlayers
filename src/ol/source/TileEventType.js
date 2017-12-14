@@ -1,10 +1,11 @@
 /**
  * @module ol/source/TileEventType
  */
+
 /**
  * @enum {string}
  */
-var _ol_source_TileEventType_ = {
+export default {
 
   /**
    * Triggered when a tile starts loading.
@@ -29,5 +30,3 @@ var _ol_source_TileEventType_ = {
   TILELOADERROR: 'tileloaderror'
 
 };
-
-export default _ol_source_TileEventType_;

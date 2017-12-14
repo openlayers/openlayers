@@ -1,11 +1,12 @@
 /**
  * @module ol/pointer/EventType
  */
+
 /**
  * Constants for event names.
  * @enum {string}
  */
-var _ol_pointer_EventType_ = {
+export default {
   POINTERMOVE: 'pointermove',
   POINTERDOWN: 'pointerdown',
   POINTERUP: 'pointerup',
@@ -15,5 +16,3 @@ var _ol_pointer_EventType_ = {
   POINTERLEAVE: 'pointerleave',
   POINTERCANCEL: 'pointercancel'
 };
-
-export default _ol_pointer_EventType_;
