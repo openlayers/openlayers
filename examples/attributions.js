@@ -1,11 +1,11 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_control_Attribution_ from '../src/ol/control/Attribution.js';
+import Attribution from '../src/ol/control/Attribution.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
-var attribution = new _ol_control_Attribution_({
+var attribution = new Attribution({
   collapsible: false
 });
 var map = new _ol_Map_({

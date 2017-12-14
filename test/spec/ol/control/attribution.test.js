@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_Tile_ from '../../../../src/ol/Tile.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_control_Attribution_ from '../../../../src/ol/control/Attribution.js';
+import Attribution from '../../../../src/ol/control/Attribution.js';
 import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -15,7 +15,7 @@ describe('ol.control.Attribution', function() {
     document.body.appendChild(target);
     map = new _ol_Map_({
       target: target,
-      controls: [new _ol_control_Attribution_({
+      controls: [new Attribution({
         collapsed: false,
         collapsible: false
       })],
