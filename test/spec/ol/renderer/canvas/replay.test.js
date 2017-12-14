@@ -3,7 +3,7 @@ import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
@@ -230,7 +230,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
         }
       });
       var point = new _ol_Feature_(new Point([45, 90]));
-      var multipoint = new _ol_Feature_(new _ol_geom_MultiPoint_(
+      var multipoint = new _ol_Feature_(new MultiPoint(
           [[45, 90], [90, 45]]));
       var linestring = new _ol_Feature_(new _ol_geom_LineString_(
           [[45, 90], [45, 45], [90, 45]]));

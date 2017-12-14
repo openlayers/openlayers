@@ -7,7 +7,7 @@ import _ol_format_WKT_ from '../../../src/ol/format/WKT.js';
 import _ol_geom_GeometryCollection_ from '../../../src/ol/geom/GeometryCollection.js';
 import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../src/ol/geom/Point.js';
 import _ol_proj_EPSG4326_ from '../../../src/ol/proj/EPSG4326.js';
 
@@ -118,7 +118,7 @@ describe('ol.Sphere.getLength()', function() {
     geometry: new Point([0, 0]),
     length: 0
   }, {
-    geometry: new _ol_geom_MultiPoint_([[0, 0], [1, 1]]),
+    geometry: new MultiPoint([[0, 0], [1, 1]]),
     length: 0
   }, {
     geometry: new _ol_geom_LineString_([

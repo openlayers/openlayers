@@ -4,7 +4,7 @@ import _ol_format_WFS_ from '../../../../src/ol/format/WFS.js';
 import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
@@ -864,14 +864,14 @@ describe('ol.format.WFS', function() {
     it('creates the correct transaction body', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -978,14 +978,14 @@ describe('ol.format.WFS', function() {
     it('do not add feature prefix twice', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -1063,14 +1063,14 @@ describe('ol.format.WFS', function() {
     it('handles 3D in WFS 1.1.0', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2, 3]]),
+        the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2, 3]]),
+        the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,

@@ -15,7 +15,7 @@ import _ol_geom_Circle_ from '../geom/Circle.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
+import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
@@ -672,7 +672,7 @@ _ol_interaction_Draw_.prototype.finishDrawing = function() {
 
   // cast multi-part geometries
   if (this.type_ === _ol_geom_GeometryType_.MULTI_POINT) {
-    sketchFeature.setGeometry(new _ol_geom_MultiPoint_([coordinates]));
+    sketchFeature.setGeometry(new MultiPoint([coordinates]));
   } else if (this.type_ === _ol_geom_GeometryType_.MULTI_LINE_STRING) {
     sketchFeature.setGeometry(new _ol_geom_MultiLineString_([coordinates]));
   } else if (this.type_ === _ol_geom_GeometryType_.MULTI_POLYGON) {

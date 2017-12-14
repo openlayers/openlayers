@@ -10,7 +10,7 @@ import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
+import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
@@ -921,7 +921,7 @@ _ol_format_WKT_.Parser.GeometryConstructor_ = {
   'POINT': Point,
   'LINESTRING': _ol_geom_LineString_,
   'POLYGON': _ol_geom_Polygon_,
-  'MULTIPOINT': _ol_geom_MultiPoint_,
+  'MULTIPOINT': MultiPoint,
   'MULTILINESTRING': _ol_geom_MultiLineString_,
   'MULTIPOLYGON': _ol_geom_MultiPolygon_
 };

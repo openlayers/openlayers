@@ -4,7 +4,7 @@ import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_render_canvas_ReplayGroup_ from '../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../src/ol/renderer/vector.js';
@@ -86,7 +86,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does not render the multipoint', function() {
-        feature.setGeometry(new _ol_geom_MultiPoint_([[0, 0], [1, 1]]));
+        feature.setGeometry(new MultiPoint([[0, 0], [1, 1]]));
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');

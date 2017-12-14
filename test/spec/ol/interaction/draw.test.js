@@ -8,7 +8,7 @@ import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
@@ -249,7 +249,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_MultiPoint_);
+      expect(geometry).to.be.a(MultiPoint);
       expect(geometry.getCoordinates()).to.eql([[30, -15]]);
     });
 

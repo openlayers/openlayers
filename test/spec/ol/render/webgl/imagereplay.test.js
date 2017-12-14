@@ -1,4 +1,4 @@
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import _ol_style_Image_ from '../../../../../src/ol/style/Image.js';
@@ -127,7 +127,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     it('sets the buffer data', function() {
       var multiPoint;
 
-      multiPoint = new _ol_geom_MultiPoint_(
+      multiPoint = new MultiPoint(
           [[1000, 2000], [2000, 3000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(64);
@@ -145,7 +145,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices[10]).to.be(6);
       expect(replay.indices[11]).to.be(7);
 
-      multiPoint = new _ol_geom_MultiPoint_(
+      multiPoint = new MultiPoint(
           [[3000, 4000], [4000, 5000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(128);

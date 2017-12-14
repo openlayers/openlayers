@@ -3,7 +3,7 @@ import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
@@ -30,7 +30,7 @@ describe('ol.render.webgl.Immediate', function() {
     line = new _ol_geom_LineString_([[0, 0], [5, 5]]);
     multiLine = new _ol_geom_MultiLineString_([[[0, 0], [5, 5]]]);
     point = new Point([0, 0]);
-    multiPoint = new _ol_geom_MultiPoint_([[0, 0]]);
+    multiPoint = new MultiPoint([[0, 0]]);
     polygon = new _ol_geom_Polygon_([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
     multiPolygon = new _ol_geom_MultiPolygon_([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
   });

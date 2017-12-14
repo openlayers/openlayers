@@ -4,7 +4,7 @@ import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
@@ -253,7 +253,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_MultiPoint_([[1.1, 2]])
+        geometry: new MultiPoint([[1.1, 2]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -724,7 +724,7 @@ describe('ol.format.GML3', function() {
             '  </gml:pointMember>' +
             '</gml:MultiPoint>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPoint_);
+        expect(g).to.be.an(MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -747,7 +747,7 @@ describe('ol.format.GML3', function() {
             '  </gml:pointMembers>' +
             '</gml:MultiPoint>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPoint_);
+        expect(g).to.be.an(MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
       });
 

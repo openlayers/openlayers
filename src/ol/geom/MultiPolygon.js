@@ -6,7 +6,7 @@ import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
+import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
@@ -228,7 +228,7 @@ _ol_geom_MultiPolygon_.prototype.getFlatInteriorPoints = function() {
  * @api
  */
 _ol_geom_MultiPolygon_.prototype.getInteriorPoints = function() {
-  var interiorPoints = new _ol_geom_MultiPoint_(null);
+  var interiorPoints = new MultiPoint(null);
   interiorPoints.setFlatCoordinates(_ol_geom_GeometryLayout_.XYM,
       this.getFlatInteriorPoints().slice());
   return interiorPoints;

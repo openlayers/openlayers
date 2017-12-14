@@ -6,7 +6,7 @@ import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollec
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
@@ -948,7 +948,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_MultiPoint_);
+          expect(g).to.be.an(MultiPoint);
           expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
           expect(g.get('extrude')).to.be.an('array');
           expect(g.get('extrude')).to.have.length(2);
@@ -962,7 +962,7 @@ describe('ol.format.KML', function() {
 
         it('can write MultiPoint geometries', function() {
           var layout = 'XYZ';
-          var multiPoint = new _ol_geom_MultiPoint_(
+          var multiPoint = new MultiPoint(
               [[1, 2, 3], [4, 5, 6]], layout);
           var features = [new _ol_Feature_(multiPoint)];
           var node = format.writeFeaturesNode(features);

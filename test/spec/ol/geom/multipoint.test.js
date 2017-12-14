@@ -1,5 +1,5 @@
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../src/ol/geom/Point.js';
 
 
@@ -7,7 +7,7 @@ describe('ol.geom.MultiPoint', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      return new _ol_geom_MultiPoint_(null);
+      return new MultiPoint(null);
     }).not.to.throwException();
   });
 
@@ -15,7 +15,7 @@ describe('ol.geom.MultiPoint', function() {
 
     var multiPoint;
     beforeEach(function() {
-      multiPoint = new _ol_geom_MultiPoint_([]);
+      multiPoint = new MultiPoint([]);
     });
 
     it('defaults to layout XY', function() {
@@ -51,7 +51,7 @@ describe('ol.geom.MultiPoint', function() {
 
     var multiPoint;
     beforeEach(function() {
-      multiPoint = new _ol_geom_MultiPoint_([[1, 2], [3, 4]]);
+      multiPoint = new MultiPoint([[1, 2], [3, 4]]);
     });
 
     it('has the expected layout', function() {
@@ -92,7 +92,7 @@ describe('ol.geom.MultiPoint', function() {
 
     var multiPoint;
     beforeEach(function() {
-      multiPoint = new _ol_geom_MultiPoint_([[1, 2, 3], [4, 5, 6]]);
+      multiPoint = new MultiPoint([[1, 2, 3], [4, 5, 6]]);
     });
 
     it('has the expected layout', function() {
@@ -121,7 +121,7 @@ describe('ol.geom.MultiPoint', function() {
 
     var multiPoint;
     beforeEach(function() {
-      multiPoint = new _ol_geom_MultiPoint_(
+      multiPoint = new MultiPoint(
           [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
@@ -171,7 +171,7 @@ describe('ol.geom.MultiPoint', function() {
 
     var multiPoint;
     beforeEach(function() {
-      multiPoint = new _ol_geom_MultiPoint_([[1, 2, 3, 4], [5, 6, 7, 8]]);
+      multiPoint = new MultiPoint([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
 
     it('has the expected layout', function() {
@@ -208,21 +208,21 @@ describe('ol.geom.MultiPoint', function() {
   describe('#scale()', function() {
 
     it('scales a multi-point', function() {
-      var geom = new _ol_geom_MultiPoint_([[-10, -20], [10, 20]]);
+      var geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(10);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-100, -200], [100, 200]]);
     });
 
     it('accepts sx and sy', function() {
-      var geom = new _ol_geom_MultiPoint_([[-10, -20], [10, 20]]);
+      var geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(2, 3);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-20, -60], [20, 60]]);
     });
 
     it('accepts an anchor', function() {
-      var geom = new _ol_geom_MultiPoint_([[-10, -20], [10, 20]]);
+      var geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(3, 2, [-10, -20]);
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-10, -20], [50, 60]]);
@@ -234,7 +234,7 @@ describe('ol.geom.MultiPoint', function() {
 
     var multi, transform;
     beforeEach(function() {
-      multi = new _ol_geom_MultiPoint_([[1, 2], [3, 4]]);
+      multi = new MultiPoint([[1, 2], [3, 4]]);
       transform = sinon.spy();
     });
 
@@ -271,10 +271,10 @@ describe('ol.geom.MultiPoint', function() {
   describe('#transform()', function() {
 
     it('transforms a geometry given CRS identifiers', function() {
-      var multi = new _ol_geom_MultiPoint_([[-111, 45], [111, -45]]).transform(
+      var multi = new MultiPoint([[-111, 45], [111, -45]]).transform(
           'EPSG:4326', 'EPSG:3857');
 
-      expect(multi).to.be.a(_ol_geom_MultiPoint_);
+      expect(multi).to.be.a(MultiPoint);
 
       var coords = multi.getCoordinates();
 

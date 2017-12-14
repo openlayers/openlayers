@@ -22,12 +22,12 @@ import _ol_math_ from '../math.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var _ol_geom_MultiPoint_ = function(coordinates, opt_layout) {
+var MultiPoint = function(coordinates, opt_layout) {
   _ol_geom_SimpleGeometry_.call(this);
   this.setCoordinates(coordinates, opt_layout);
 };
 
-inherits(_ol_geom_MultiPoint_, _ol_geom_SimpleGeometry_);
+inherits(MultiPoint, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -35,7 +35,7 @@ inherits(_ol_geom_MultiPoint_, _ol_geom_SimpleGeometry_);
  * @param {ol.geom.Point} point Point.
  * @api
  */
-_ol_geom_MultiPoint_.prototype.appendPoint = function(point) {
+MultiPoint.prototype.appendPoint = function(point) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = point.getFlatCoordinates().slice();
   } else {
@@ -51,8 +51,8 @@ _ol_geom_MultiPoint_.prototype.appendPoint = function(point) {
  * @override
  * @api
  */
-_ol_geom_MultiPoint_.prototype.clone = function() {
-  var multiPoint = new _ol_geom_MultiPoint_(null);
+MultiPoint.prototype.clone = function() {
+  var multiPoint = new MultiPoint(null);
   multiPoint.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return multiPoint;
 };
@@ -61,7 +61,7 @@ _ol_geom_MultiPoint_.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_MultiPoint_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+MultiPoint.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
@@ -89,7 +89,7 @@ _ol_geom_MultiPoint_.prototype.closestPointXY = function(x, y, closestPoint, min
  * @override
  * @api
  */
-_ol_geom_MultiPoint_.prototype.getCoordinates = function() {
+MultiPoint.prototype.getCoordinates = function() {
   return _ol_geom_flat_inflate_.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
@@ -101,7 +101,7 @@ _ol_geom_MultiPoint_.prototype.getCoordinates = function() {
  * @return {ol.geom.Point} Point.
  * @api
  */
-_ol_geom_MultiPoint_.prototype.getPoint = function(index) {
+MultiPoint.prototype.getPoint = function(index) {
   var n = !this.flatCoordinates ?
     0 : this.flatCoordinates.length / this.stride;
   if (index < 0 || n <= index) {
@@ -119,7 +119,7 @@ _ol_geom_MultiPoint_.prototype.getPoint = function(index) {
  * @return {Array.<ol.geom.Point>} Points.
  * @api
  */
-_ol_geom_MultiPoint_.prototype.getPoints = function() {
+MultiPoint.prototype.getPoints = function() {
   var flatCoordinates = this.flatCoordinates;
   var layout = this.layout;
   var stride = this.stride;
@@ -139,7 +139,7 @@ _ol_geom_MultiPoint_.prototype.getPoints = function() {
  * @inheritDoc
  * @api
  */
-_ol_geom_MultiPoint_.prototype.getType = function() {
+MultiPoint.prototype.getType = function() {
   return _ol_geom_GeometryType_.MULTI_POINT;
 };
 
@@ -148,7 +148,7 @@ _ol_geom_MultiPoint_.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-_ol_geom_MultiPoint_.prototype.intersectsExtent = function(extent) {
+MultiPoint.prototype.intersectsExtent = function(extent) {
   var flatCoordinates = this.flatCoordinates;
   var stride = this.stride;
   var i, ii, x, y;
@@ -170,7 +170,7 @@ _ol_geom_MultiPoint_.prototype.intersectsExtent = function(extent) {
  * @override
  * @api
  */
-_ol_geom_MultiPoint_.prototype.setCoordinates = function(coordinates, opt_layout) {
+MultiPoint.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
     this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
   } else {
@@ -189,8 +189,8 @@ _ol_geom_MultiPoint_.prototype.setCoordinates = function(coordinates, opt_layout
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-_ol_geom_MultiPoint_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+MultiPoint.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
-export default _ol_geom_MultiPoint_;
+export default MultiPoint;

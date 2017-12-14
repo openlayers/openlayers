@@ -2,7 +2,7 @@ import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
@@ -101,7 +101,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPoint');
 
-      var geometry = new _ol_geom_MultiPoint_([[1, 2], [3, 4]]);
+      var geometry = new MultiPoint([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiPoint.calledOnce).to.be(true);
       expect(context.drawMultiPoint.firstCall.calledWithExactly(geometry)).to.be(true);
