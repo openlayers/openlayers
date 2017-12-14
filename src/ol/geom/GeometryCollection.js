@@ -6,7 +6,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_obj_ from '../obj.js';
 
 /**
@@ -205,7 +205,7 @@ GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) 
  * @api
  */
 GeometryCollection.prototype.getType = function() {
-  return _ol_geom_GeometryType_.GEOMETRY_COLLECTION;
+  return GeometryType.GEOMETRY_COLLECTION;
 };
 
 

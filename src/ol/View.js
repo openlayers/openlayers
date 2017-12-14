@@ -14,7 +14,7 @@ import _ol_asserts_ from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
 import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
-import _ol_geom_GeometryType_ from './geom/GeometryType.js';
+import GeometryType from './geom/GeometryType.js';
 import Polygon from './geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from './geom/SimpleGeometry.js';
 import _ol_math_ from './math.js';
@@ -885,7 +885,7 @@ _ol_View_.prototype.fit = function(geometryOrExtent, opt_options) {
     _ol_asserts_.assert(!isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
     geometry = Polygon.fromExtent(geometryOrExtent);
-  } else if (geometryOrExtent.getType() === _ol_geom_GeometryType_.CIRCLE) {
+  } else if (geometryOrExtent.getType() === GeometryType.CIRCLE) {
     geometryOrExtent = geometryOrExtent.getExtent();
     geometry = Polygon.fromExtent(geometryOrExtent);
     geometry.rotate(this.getRotation(), getCenter(geometryOrExtent));

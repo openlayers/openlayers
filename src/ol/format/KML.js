@@ -16,7 +16,7 @@ import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -367,7 +367,7 @@ _ol_format_KML_.createFeatureStyleFunction_ = function(style, styleUrl,
       if (drawName) {
         if (this.getGeometry()) {
           drawName = (this.getGeometry().getType() ===
-                        _ol_geom_GeometryType_.POINT);
+                        GeometryType.POINT);
         }
       }
 
@@ -928,7 +928,7 @@ _ol_format_KML_.readMultiGeometry_ = function(node, objectStack) {
   if (homogeneous) {
     var layout;
     var flatCoordinates;
-    if (type == _ol_geom_GeometryType_.POINT) {
+    if (type == GeometryType.POINT) {
       var point = geometries[0];
       layout = point.getLayout();
       flatCoordinates = point.getFlatCoordinates();
@@ -939,15 +939,15 @@ _ol_format_KML_.readMultiGeometry_ = function(node, objectStack) {
       multiGeometry = new MultiPoint(null);
       multiGeometry.setFlatCoordinates(layout, flatCoordinates);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
-    } else if (type == _ol_geom_GeometryType_.LINE_STRING) {
+    } else if (type == GeometryType.LINE_STRING) {
       multiGeometry = new MultiLineString(null);
       multiGeometry.setLineStrings(geometries);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
-    } else if (type == _ol_geom_GeometryType_.POLYGON) {
+    } else if (type == GeometryType.POLYGON) {
       multiGeometry = new MultiPolygon(null);
       multiGeometry.setPolygons(geometries);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
-    } else if (type == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {
+    } else if (type == GeometryType.GEOMETRY_COLLECTION) {
       multiGeometry = new GeometryCollection(geometries);
     } else {
       _ol_asserts_.assert(false, 37); // Unknown geometry type found
@@ -2372,17 +2372,17 @@ _ol_format_KML_.writeMultiGeometry_ = function(node, geometry, objectStack) {
   var geometries;
   /** @type {function(*, Array.<*>, string=): (Node|undefined)} */
   var factory;
-  if (type == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {
+  if (type == GeometryType.GEOMETRY_COLLECTION) {
     geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
     factory = _ol_format_KML_.GEOMETRY_NODE_FACTORY_;
-  } else if (type == _ol_geom_GeometryType_.MULTI_POINT) {
+  } else if (type == GeometryType.MULTI_POINT) {
     geometries = /** @type {ol.geom.MultiPoint} */ (geometry).getPoints();
     factory = _ol_format_KML_.POINT_NODE_FACTORY_;
-  } else if (type == _ol_geom_GeometryType_.MULTI_LINE_STRING) {
+  } else if (type == GeometryType.MULTI_LINE_STRING) {
     geometries =
         (/** @type {ol.geom.MultiLineString} */ (geometry)).getLineStrings();
     factory = _ol_format_KML_.LINE_STRING_NODE_FACTORY_;
-  } else if (type == _ol_geom_GeometryType_.MULTI_POLYGON) {
+  } else if (type == GeometryType.MULTI_POLYGON) {
     geometries =
         (/** @type {ol.geom.MultiPolygon} */ (geometry)).getPolygons();
     factory = _ol_format_KML_.POLYGON_NODE_FACTORY_;

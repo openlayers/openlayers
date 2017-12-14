@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
@@ -318,7 +318,7 @@ Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
  * @api
  */
 Polygon.prototype.getType = function() {
-  return _ol_geom_GeometryType_.POLYGON;
+  return GeometryType.POLYGON;
 };
 
 

@@ -2,7 +2,7 @@
  * @module ol/style/Style
  */
 import _ol_asserts_ from '../asserts.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_style_Circle_ from '../style/Circle.js';
 import _ol_style_Fill_ from '../style/Fill.js';
 import _ol_style_Stroke_ from '../style/Stroke.js';
@@ -355,17 +355,17 @@ _ol_style_Style_.createDefaultEditing = function() {
   var white = [255, 255, 255, 1];
   var blue = [0, 153, 255, 1];
   var width = 3;
-  styles[_ol_geom_GeometryType_.POLYGON] = [
+  styles[GeometryType.POLYGON] = [
     new _ol_style_Style_({
       fill: new _ol_style_Fill_({
         color: [255, 255, 255, 0.5]
       })
     })
   ];
-  styles[_ol_geom_GeometryType_.MULTI_POLYGON] =
-      styles[_ol_geom_GeometryType_.POLYGON];
+  styles[GeometryType.MULTI_POLYGON] =
+      styles[GeometryType.POLYGON];
 
-  styles[_ol_geom_GeometryType_.LINE_STRING] = [
+  styles[GeometryType.LINE_STRING] = [
     new _ol_style_Style_({
       stroke: new _ol_style_Stroke_({
         color: white,
@@ -379,16 +379,16 @@ _ol_style_Style_.createDefaultEditing = function() {
       })
     })
   ];
-  styles[_ol_geom_GeometryType_.MULTI_LINE_STRING] =
-      styles[_ol_geom_GeometryType_.LINE_STRING];
+  styles[GeometryType.MULTI_LINE_STRING] =
+      styles[GeometryType.LINE_STRING];
 
-  styles[_ol_geom_GeometryType_.CIRCLE] =
-      styles[_ol_geom_GeometryType_.POLYGON].concat(
-          styles[_ol_geom_GeometryType_.LINE_STRING]
+  styles[GeometryType.CIRCLE] =
+      styles[GeometryType.POLYGON].concat(
+          styles[GeometryType.LINE_STRING]
       );
 
 
-  styles[_ol_geom_GeometryType_.POINT] = [
+  styles[GeometryType.POINT] = [
     new _ol_style_Style_({
       image: new _ol_style_Circle_({
         radius: width * 2,
@@ -403,13 +403,13 @@ _ol_style_Style_.createDefaultEditing = function() {
       zIndex: Infinity
     })
   ];
-  styles[_ol_geom_GeometryType_.MULTI_POINT] =
-      styles[_ol_geom_GeometryType_.POINT];
+  styles[GeometryType.MULTI_POINT] =
+      styles[GeometryType.POINT];
 
-  styles[_ol_geom_GeometryType_.GEOMETRY_COLLECTION] =
-      styles[_ol_geom_GeometryType_.POLYGON].concat(
-          styles[_ol_geom_GeometryType_.LINE_STRING],
-          styles[_ol_geom_GeometryType_.POINT]
+  styles[GeometryType.GEOMETRY_COLLECTION] =
+      styles[GeometryType.POLYGON].concat(
+          styles[GeometryType.LINE_STRING],
+          styles[GeometryType.POINT]
       );
 
   return styles;

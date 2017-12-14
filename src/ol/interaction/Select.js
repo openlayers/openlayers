@@ -8,7 +8,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_functions_ from '../functions.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_obj_ from '../obj.js';
@@ -329,10 +329,10 @@ _ol_interaction_Select_.prototype.setMap = function(map) {
  */
 _ol_interaction_Select_.getDefaultStyleFunction = function() {
   var styles = _ol_style_Style_.createDefaultEditing();
-  _ol_array_.extend(styles[_ol_geom_GeometryType_.POLYGON],
-      styles[_ol_geom_GeometryType_.LINE_STRING]);
-  _ol_array_.extend(styles[_ol_geom_GeometryType_.GEOMETRY_COLLECTION],
-      styles[_ol_geom_GeometryType_.LINE_STRING]);
+  _ol_array_.extend(styles[GeometryType.POLYGON],
+      styles[GeometryType.LINE_STRING]);
+  _ol_array_.extend(styles[GeometryType.GEOMETRY_COLLECTION],
+      styles[GeometryType.LINE_STRING]);
 
   return function(feature, resolution) {
     if (!feature.getGeometry()) {

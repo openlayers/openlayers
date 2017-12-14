@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -140,7 +140,7 @@ MultiPoint.prototype.getPoints = function() {
  * @api
  */
 MultiPoint.prototype.getType = function() {
-  return _ol_geom_GeometryType_.MULTI_POINT;
+  return GeometryType.MULTI_POINT;
 };
 
 

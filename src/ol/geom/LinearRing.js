@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
@@ -120,7 +120,7 @@ _ol_geom_LinearRing_.prototype.getSimplifiedGeometryInternal = function(squaredT
  * @api
  */
 _ol_geom_LinearRing_.prototype.getType = function() {
-  return _ol_geom_GeometryType_.LINEAR_RING;
+  return GeometryType.LINEAR_RING;
 };
 
 

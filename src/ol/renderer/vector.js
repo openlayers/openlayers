@@ -3,7 +3,7 @@
  */
 import {getUid} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_render_ReplayType_ from '../render/ReplayType.js';
 var _ol_renderer_vector_ = {};
 
@@ -140,7 +140,7 @@ _ol_renderer_vector_.renderFeature_ = function(
  * @private
  */
 _ol_renderer_vector_.renderGeometry_ = function(replayGroup, geometry, style, feature) {
-  if (geometry.getType() == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {
+  if (geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
     var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
     for (var i = 0, ii = geometries.length; i < ii; ++i) {
       _ol_renderer_vector_.renderGeometry_(replayGroup, geometries[i], style, feature);

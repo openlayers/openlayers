@@ -7,7 +7,7 @@
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
  */
-var _ol_geom_GeometryType_ = {
+var GeometryType = {
   POINT: 'Point',
   LINE_STRING: 'LineString',
   LINEAR_RING: 'LinearRing',
@@ -19,4 +19,4 @@ var _ol_geom_GeometryType_ = {
   CIRCLE: 'Circle'
 };
 
-export default _ol_geom_GeometryType_;
+export default GeometryType;

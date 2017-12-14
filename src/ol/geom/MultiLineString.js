@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
@@ -241,7 +241,7 @@ MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolera
  * @api
  */
 MultiLineString.prototype.getType = function() {
-  return _ol_geom_GeometryType_.MULTI_LINE_STRING;
+  return GeometryType.MULTI_LINE_STRING;
 };
 
 

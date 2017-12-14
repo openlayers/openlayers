@@ -9,7 +9,7 @@
  */
 
 import _ol_math_ from './math.js';
-import _ol_geom_GeometryType_ from './geom/GeometryType.js';
+import GeometryType from './geom/GeometryType.js';
 
 /**
  * @classdesc
@@ -121,25 +121,25 @@ _ol_Sphere_.getLength = function(geometry, opt_options) {
   var length = 0;
   var coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case _ol_geom_GeometryType_.POINT:
-    case _ol_geom_GeometryType_.MULTI_POINT: {
+    case GeometryType.POINT:
+    case GeometryType.MULTI_POINT: {
       break;
     }
-    case _ol_geom_GeometryType_.LINE_STRING:
-    case _ol_geom_GeometryType_.LINEAR_RING: {
+    case GeometryType.LINE_STRING:
+    case GeometryType.LINEAR_RING: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       length = _ol_Sphere_.getLength_(coordinates, radius);
       break;
     }
-    case _ol_geom_GeometryType_.MULTI_LINE_STRING:
-    case _ol_geom_GeometryType_.POLYGON: {
+    case GeometryType.MULTI_LINE_STRING:
+    case GeometryType.POLYGON: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         length += _ol_Sphere_.getLength_(coordinates[i], radius);
       }
       break;
     }
-    case _ol_geom_GeometryType_.MULTI_POLYGON: {
+    case GeometryType.MULTI_POLYGON: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
@@ -149,7 +149,7 @@ _ol_Sphere_.getLength = function(geometry, opt_options) {
       }
       break;
     }
-    case _ol_geom_GeometryType_.GEOMETRY_COLLECTION: {
+    case GeometryType.GEOMETRY_COLLECTION: {
       var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         length += _ol_Sphere_.getLength(geometries[i], opt_options);
@@ -217,14 +217,14 @@ _ol_Sphere_.getArea = function(geometry, opt_options) {
   var area = 0;
   var coordinates, coords, i, ii, j, jj;
   switch (type) {
-    case _ol_geom_GeometryType_.POINT:
-    case _ol_geom_GeometryType_.MULTI_POINT:
-    case _ol_geom_GeometryType_.LINE_STRING:
-    case _ol_geom_GeometryType_.MULTI_LINE_STRING:
-    case _ol_geom_GeometryType_.LINEAR_RING: {
+    case GeometryType.POINT:
+    case GeometryType.MULTI_POINT:
+    case GeometryType.LINE_STRING:
+    case GeometryType.MULTI_LINE_STRING:
+    case GeometryType.LINEAR_RING: {
       break;
     }
-    case _ol_geom_GeometryType_.POLYGON: {
+    case GeometryType.POLYGON: {
       coordinates = /** @type {ol.geom.Polygon} */ (geometry).getCoordinates();
       area = Math.abs(_ol_Sphere_.getArea_(coordinates[0], radius));
       for (i = 1, ii = coordinates.length; i < ii; ++i) {
@@ -232,7 +232,7 @@ _ol_Sphere_.getArea = function(geometry, opt_options) {
       }
       break;
     }
-    case _ol_geom_GeometryType_.MULTI_POLYGON: {
+    case GeometryType.MULTI_POLYGON: {
       coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
       for (i = 0, ii = coordinates.length; i < ii; ++i) {
         coords = coordinates[i];
@@ -243,7 +243,7 @@ _ol_Sphere_.getArea = function(geometry, opt_options) {
       }
       break;
     }
-    case _ol_geom_GeometryType_.GEOMETRY_COLLECTION: {
+    case GeometryType.GEOMETRY_COLLECTION: {
       var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         area += _ol_Sphere_.getArea(geometries[i], opt_options);

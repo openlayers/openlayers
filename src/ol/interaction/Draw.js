@@ -12,7 +12,7 @@ import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import _ol_functions_ from '../functions.js';
 import Circle from '../geom/Circle.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -133,7 +133,7 @@ var _ol_interaction_Draw_ = function(options) {
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
-    if (this.type_ === _ol_geom_GeometryType_.CIRCLE) {
+    if (this.type_ === GeometryType.CIRCLE) {
       /**
        * @param {!Array.<ol.Coordinate>} coordinates
        *     The coordinates.
@@ -671,11 +671,11 @@ _ol_interaction_Draw_.prototype.finishDrawing = function() {
   }
 
   // cast multi-part geometries
-  if (this.type_ === _ol_geom_GeometryType_.MULTI_POINT) {
+  if (this.type_ === GeometryType.MULTI_POINT) {
     sketchFeature.setGeometry(new MultiPoint([coordinates]));
-  } else if (this.type_ === _ol_geom_GeometryType_.MULTI_LINE_STRING) {
+  } else if (this.type_ === GeometryType.MULTI_LINE_STRING) {
     sketchFeature.setGeometry(new MultiLineString([coordinates]));
-  } else if (this.type_ === _ol_geom_GeometryType_.MULTI_POLYGON) {
+  } else if (this.type_ === GeometryType.MULTI_POLYGON) {
     sketchFeature.setGeometry(new MultiPolygon([coordinates]));
   }
 
@@ -847,16 +847,16 @@ _ol_interaction_Draw_.createBox = function() {
  */
 _ol_interaction_Draw_.getMode_ = function(type) {
   var mode;
-  if (type === _ol_geom_GeometryType_.POINT ||
-      type === _ol_geom_GeometryType_.MULTI_POINT) {
+  if (type === GeometryType.POINT ||
+      type === GeometryType.MULTI_POINT) {
     mode = _ol_interaction_Draw_.Mode_.POINT;
-  } else if (type === _ol_geom_GeometryType_.LINE_STRING ||
-      type === _ol_geom_GeometryType_.MULTI_LINE_STRING) {
+  } else if (type === GeometryType.LINE_STRING ||
+      type === GeometryType.MULTI_LINE_STRING) {
     mode = _ol_interaction_Draw_.Mode_.LINE_STRING;
-  } else if (type === _ol_geom_GeometryType_.POLYGON ||
-      type === _ol_geom_GeometryType_.MULTI_POLYGON) {
+  } else if (type === GeometryType.POLYGON ||
+      type === GeometryType.MULTI_POLYGON) {
     mode = _ol_interaction_Draw_.Mode_.POLYGON;
-  } else if (type === _ol_geom_GeometryType_.CIRCLE) {
+  } else if (type === GeometryType.CIRCLE) {
     mode = _ol_interaction_Draw_.Mode_.CIRCLE;
   }
   return /** @type {!ol.interaction.Draw.Mode_} */ (mode);

@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
@@ -340,7 +340,7 @@ MultiPolygon.prototype.getPolygons = function() {
  * @api
  */
 MultiPolygon.prototype.getType = function() {
-  return _ol_geom_GeometryType_.MULTI_POLYGON;
+  return GeometryType.MULTI_POLYGON;
 };
 
 

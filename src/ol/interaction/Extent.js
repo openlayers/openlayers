@@ -8,7 +8,7 @@ import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_Event_ from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
@@ -245,7 +245,7 @@ _ol_interaction_Extent_.handleUpEvent_ = function(mapBrowserEvent) {
 _ol_interaction_Extent_.getDefaultExtentStyleFunction_ = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
-    return style[_ol_geom_GeometryType_.POLYGON];
+    return style[GeometryType.POLYGON];
   };
 };
 
@@ -258,7 +258,7 @@ _ol_interaction_Extent_.getDefaultExtentStyleFunction_ = function() {
 _ol_interaction_Extent_.getDefaultPointerStyleFunction_ = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
-    return style[_ol_geom_GeometryType_.POINT];
+    return style[GeometryType.POINT];
   };
 };
 

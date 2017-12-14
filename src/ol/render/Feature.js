@@ -4,7 +4,7 @@
 import {nullFunction} from '../index.js';
 import _ol_array_ from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
@@ -109,7 +109,7 @@ _ol_render_Feature_.prototype.getEndss = function() {
  */
 _ol_render_Feature_.prototype.getExtent = function() {
   if (!this.extent_) {
-    this.extent_ = this.type_ === _ol_geom_GeometryType_.POINT ?
+    this.extent_ = this.type_ === GeometryType.POINT ?
       createOrUpdateFromCoordinate(this.flatCoordinates_) :
       createOrUpdateFromFlatCoordinates(
           this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);

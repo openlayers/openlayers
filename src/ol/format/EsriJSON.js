@@ -8,7 +8,7 @@ import {containsExtent} from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
+import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -61,24 +61,24 @@ _ol_format_EsriJSON_.readGeometry_ = function(object, opt_options) {
   /** @type {ol.geom.GeometryType} */
   var type;
   if (typeof object.x === 'number' && typeof object.y === 'number') {
-    type = _ol_geom_GeometryType_.POINT;
+    type = GeometryType.POINT;
   } else if (object.points) {
-    type = _ol_geom_GeometryType_.MULTI_POINT;
+    type = GeometryType.MULTI_POINT;
   } else if (object.paths) {
     if (object.paths.length === 1) {
-      type = _ol_geom_GeometryType_.LINE_STRING;
+      type = GeometryType.LINE_STRING;
     } else {
-      type = _ol_geom_GeometryType_.MULTI_LINE_STRING;
+      type = GeometryType.MULTI_LINE_STRING;
     }
   } else if (object.rings) {
     var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
     var rings = _ol_format_EsriJSON_.convertRings_(object.rings, layout);
     object = /** @type {EsriJSONGeometry} */(_ol_obj_.assign({}, object));
     if (rings.length === 1) {
-      type = _ol_geom_GeometryType_.POLYGON;
+      type = GeometryType.POLYGON;
       object.rings = rings[0];
     } else {
-      type = _ol_geom_GeometryType_.MULTI_POLYGON;
+      type = GeometryType.MULTI_POLYGON;
       object.rings = rings;
     }
   }
@@ -396,17 +396,17 @@ _ol_format_EsriJSON_.writeMultiPolygonGeometry_ = function(geometry,
  * @type {Object.<ol.geom.GeometryType, function(EsriJSONGeometry): ol.geom.Geometry>}
  */
 _ol_format_EsriJSON_.GEOMETRY_READERS_ = {};
-_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.POINT] =
+_ol_format_EsriJSON_.GEOMETRY_READERS_[GeometryType.POINT] =
   _ol_format_EsriJSON_.readPointGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.LINE_STRING] =
+_ol_format_EsriJSON_.GEOMETRY_READERS_[GeometryType.LINE_STRING] =
   _ol_format_EsriJSON_.readLineStringGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.POLYGON] =
+_ol_format_EsriJSON_.GEOMETRY_READERS_[GeometryType.POLYGON] =
   _ol_format_EsriJSON_.readPolygonGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_POINT] =
+_ol_format_EsriJSON_.GEOMETRY_READERS_[GeometryType.MULTI_POINT] =
   _ol_format_EsriJSON_.readMultiPointGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_LINE_STRING] =
+_ol_format_EsriJSON_.GEOMETRY_READERS_[GeometryType.MULTI_LINE_STRING] =
   _ol_format_EsriJSON_.readMultiLineStringGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_POLYGON] =
+_ol_format_EsriJSON_.GEOMETRY_READERS_[GeometryType.MULTI_POLYGON] =
   _ol_format_EsriJSON_.readMultiPolygonGeometry_;
 
 
@@ -416,17 +416,17 @@ _ol_format_EsriJSON_.GEOMETRY_READERS_[_ol_geom_GeometryType_.MULTI_POLYGON] =
  * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (EsriJSONGeometry)>}
  */
 _ol_format_EsriJSON_.GEOMETRY_WRITERS_ = {};
-_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.POINT] =
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[GeometryType.POINT] =
   _ol_format_EsriJSON_.writePointGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.LINE_STRING] =
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[GeometryType.LINE_STRING] =
   _ol_format_EsriJSON_.writeLineStringGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.POLYGON] =
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[GeometryType.POLYGON] =
   _ol_format_EsriJSON_.writePolygonGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.MULTI_POINT] =
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[GeometryType.MULTI_POINT] =
   _ol_format_EsriJSON_.writeMultiPointGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.MULTI_LINE_STRING] =
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[GeometryType.MULTI_LINE_STRING] =
   _ol_format_EsriJSON_.writeMultiLineStringGeometry_;
-_ol_format_EsriJSON_.GEOMETRY_WRITERS_[_ol_geom_GeometryType_.MULTI_POLYGON] =
+_ol_format_EsriJSON_.GEOMETRY_WRITERS_[GeometryType.MULTI_POLYGON] =
   _ol_format_EsriJSON_.writeMultiPolygonGeometry_;
 
 
