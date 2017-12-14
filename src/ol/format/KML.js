@@ -14,7 +14,7 @@ import _ol_color_ from '../color.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
-import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -911,7 +911,7 @@ _ol_format_KML_.readMultiGeometry_ = function(node, objectStack) {
     return null;
   }
   if (geometries.length === 0) {
-    return new _ol_geom_GeometryCollection_(geometries);
+    return new GeometryCollection(geometries);
   }
   /** @type {ol.geom.Geometry} */
   var multiGeometry;
@@ -948,12 +948,12 @@ _ol_format_KML_.readMultiGeometry_ = function(node, objectStack) {
       multiGeometry.setPolygons(geometries);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
     } else if (type == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {
-      multiGeometry = new _ol_geom_GeometryCollection_(geometries);
+      multiGeometry = new GeometryCollection(geometries);
     } else {
       _ol_asserts_.assert(false, 37); // Unknown geometry type found
     }
   } else {
-    multiGeometry = new _ol_geom_GeometryCollection_(geometries);
+    multiGeometry = new GeometryCollection(geometries);
   }
   return /** @type {ol.geom.Geometry} */ (multiGeometry);
 };

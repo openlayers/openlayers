@@ -9,7 +9,7 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
-import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -99,7 +99,7 @@ _ol_format_GeoJSON_.readGeometryCollectionGeometry_ = function(
       function(geometry) {
         return _ol_format_GeoJSON_.readGeometry_(geometry, opt_options);
       });
-  return new _ol_geom_GeometryCollection_(geometries);
+  return new GeometryCollection(geometries);
 };
 
 

@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
-import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -386,7 +386,7 @@ _ol_format_WKT_.prototype.writeFeaturesText = function(features, opt_options) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     geometries.push(features[i].getGeometry());
   }
-  var collection = new _ol_geom_GeometryCollection_(geometries);
+  var collection = new GeometryCollection(geometries);
   return this.writeGeometryText(collection, opt_options);
 };
 
@@ -671,7 +671,7 @@ _ol_format_WKT_.Parser.prototype.parseGeometry_ = function() {
     this.layout_ = this.parseGeometryLayout_();
     if (geomType == _ol_geom_GeometryType_.GEOMETRY_COLLECTION.toUpperCase()) {
       var geometries = this.parseGeometryCollectionText_();
-      return new _ol_geom_GeometryCollection_(geometries);
+      return new GeometryCollection(geometries);
     } else {
       var parser = _ol_format_WKT_.Parser.GeometryParser_[geomType];
       var ctor = _ol_format_WKT_.Parser.GeometryConstructor_[geomType];

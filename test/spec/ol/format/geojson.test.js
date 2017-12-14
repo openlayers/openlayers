@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
-import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
@@ -414,7 +414,7 @@ describe('ol.format.GeoJSON', function() {
       });
 
       var geometryCollection = format.readGeometry(str);
-      expect(geometryCollection).to.be.an(_ol_geom_GeometryCollection_);
+      expect(geometryCollection).to.be.an(GeometryCollection);
       var array = geometryCollection.getGeometries();
       expect(array.length).to.be(2);
       expect(array[0]).to.be.a(Point);
@@ -729,13 +729,13 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('encodes geometry collection', function() {
-      var collection = new _ol_geom_GeometryCollection_([
+      var collection = new GeometryCollection([
         new Point([10, 20]),
         new LineString([[30, 40], [50, 60]])
       ]);
       var geojson = format.writeGeometry(collection);
       var got = format.readGeometry(geojson);
-      expect(got).to.be.an(_ol_geom_GeometryCollection_);
+      expect(got).to.be.an(GeometryCollection);
       var gotGeometries = got.getGeometries();
       var geometries = collection.getGeometries();
       expect(geometries.length).to.equal(gotGeometries.length);
@@ -770,7 +770,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('transforms and encodes geometry collection', function() {
-      var collection = new _ol_geom_GeometryCollection_([
+      var collection = new GeometryCollection([
         new Point([2, 3]),
         new LineString([[3, 2], [2, 1]])
       ]);

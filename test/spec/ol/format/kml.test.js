@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_format_KML_ from '../../../../src/ol/format/KML.js';
-import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
+import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
@@ -1144,7 +1144,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_GeometryCollection_);
+          expect(g).to.be.an(GeometryCollection);
           expect(g.getGeometries()).to.be.empty();
         });
 
@@ -1177,7 +1177,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_GeometryCollection_);
+          expect(g).to.be.an(GeometryCollection);
           var gs = g.getGeometries();
           expect(gs).to.have.length(4);
           expect(gs[0]).to.be.an(Point);
@@ -1201,14 +1201,14 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_GeometryCollection_);
+          expect(g).to.be.an(GeometryCollection);
           var gs = g.getGeometries();
           expect(gs).to.have.length(1);
-          expect(gs[0]).to.be.an(_ol_geom_GeometryCollection_);
+          expect(gs[0]).to.be.an(GeometryCollection);
         });
 
         it('can write GeometryCollection geometries', function() {
-          var collection = new _ol_geom_GeometryCollection_([
+          var collection = new GeometryCollection([
             new Point([1, 2]),
             new LineString([[1, 2], [3, 4]]),
             new Polygon([[[1, 2], [3, 4], [3, 2], [1, 2]]])
@@ -3112,7 +3112,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_GeometryCollection_);
+          expect(g).to.be.an(GeometryCollection);
           expect(g.getGeometries()).to.be.empty();
         });
 
@@ -3186,7 +3186,7 @@ describe('ol.format.KML', function() {
         var feature = features[0];
         expect(feature).to.be.an(_ol_Feature_);
         var geometry = feature.getGeometry();
-        expect(geometry).to.be.an(_ol_geom_GeometryCollection_);
+        expect(geometry).to.be.an(GeometryCollection);
       });
 
       it('creates a Point and a MultiPolygon for Alaska', function() {
@@ -3195,7 +3195,7 @@ describe('ol.format.KML', function() {
         });
         expect(alaska).to.be.an(_ol_Feature_);
         var geometry = alaska.getGeometry();
-        expect(geometry).to.be.an(_ol_geom_GeometryCollection_);
+        expect(geometry).to.be.an(GeometryCollection);
         var components = geometry.getGeometries();
         expect(components).to.have.length(2);
         expect(components[0]).to.be.an(Point);
