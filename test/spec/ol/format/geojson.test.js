@@ -4,7 +4,7 @@ import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -399,9 +399,9 @@ describe('ol.format.GeoJSON', function() {
       expect(obj.getLayout()).to.eql('XY');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
-      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[0]).to.be.a(LinearRing);
+      expect(rings[1]).to.be.a(LinearRing);
+      expect(rings[2]).to.be.a(LinearRing);
     });
 
     it('parses geometry collection', function() {

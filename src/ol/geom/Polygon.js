@@ -6,7 +6,7 @@ import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
+import LinearRing from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
@@ -245,7 +245,7 @@ Polygon.prototype.getLinearRing = function(index) {
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
-  var linearRing = new _ol_geom_LinearRing_(null);
+  var linearRing = new LinearRing(null);
   linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
       index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
   return linearRing;
@@ -266,7 +266,7 @@ Polygon.prototype.getLinearRings = function() {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
-    var linearRing = new _ol_geom_LinearRing_(null);
+    var linearRing = new LinearRing(null);
     linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
     linearRings.push(linearRing);
     offset = end;

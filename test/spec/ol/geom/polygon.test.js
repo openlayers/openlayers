@@ -1,6 +1,6 @@
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
-import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 
 
@@ -41,11 +41,11 @@ describe('ol.geom.Polygon', function() {
 
     it('can append linear rings', function() {
       polygon.appendLinearRing(
-          new _ol_geom_LinearRing_([[1, 2], [3, 4], [5, 6]]));
+          new LinearRing([[1, 2], [3, 4], [5, 6]]));
       expect(polygon.getCoordinates()).to.eql(
           [[[1, 2], [3, 4], [5, 6]]]);
       polygon.appendLinearRing(
-          new _ol_geom_LinearRing_([[7, 8], [9, 10], [11, 12]]));
+          new LinearRing([[7, 8], [9, 10], [11, 12]]));
       expect(polygon.getCoordinates()).to.eql(
           [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]);
     });
@@ -95,9 +95,9 @@ describe('ol.geom.Polygon', function() {
       var linearRings = polygon.getLinearRings();
       expect(linearRings).to.be.an(Array);
       expect(linearRings).to.have.length(2);
-      expect(linearRings[0]).to.be.an(_ol_geom_LinearRing_);
+      expect(linearRings[0]).to.be.an(LinearRing);
       expect(linearRings[0].getCoordinates()).to.eql(outerRing);
-      expect(linearRings[1]).to.be.an(_ol_geom_LinearRing_);
+      expect(linearRings[1]).to.be.an(LinearRing);
       expect(linearRings[1].getCoordinates()).to.eql(innerRing);
     });
 

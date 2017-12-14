@@ -4,7 +4,7 @@ import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_format_KML_ from '../../../../src/ol/format/KML.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
@@ -559,7 +559,7 @@ describe('ol.format.KML', function() {
 
         it('can write XY LinearRing geometries', function() {
           var layout = 'XY';
-          var linearRing = new _ol_geom_LinearRing_(
+          var linearRing = new LinearRing(
               [[1, 2], [3, 4], [1, 2]], layout);
           var features = [new _ol_Feature_(linearRing)];
           var node = format.writeFeaturesNode(features);
@@ -580,7 +580,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZ LinearRing geometries', function() {
           var layout = 'XYZ';
-          var linearRing = new _ol_geom_LinearRing_(
+          var linearRing = new LinearRing(
               [[1, 2, 3], [4, 5, 6], [1, 2, 3]], layout);
           var features = [new _ol_Feature_(linearRing)];
           var node = format.writeFeaturesNode(features);
@@ -601,7 +601,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYM LinearRing geometries', function() {
           var layout = 'XYM';
-          var linearRing = new _ol_geom_LinearRing_(
+          var linearRing = new LinearRing(
               [[1, 2, 100], [3, 4, 200], [1, 2, 100]], layout);
           var features = [new _ol_Feature_(linearRing)];
           var node = format.writeFeaturesNode(features);
@@ -622,7 +622,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZM LinearRing geometries', function() {
           var layout = 'XYZM';
-          var linearRing = new _ol_geom_LinearRing_(
+          var linearRing = new LinearRing(
               [[1, 2, 3, 100], [4, 5, 6, 200], [1, 2, 3, 100]], layout);
           var features = [new _ol_Feature_(linearRing)];
           var node = format.writeFeaturesNode(features);

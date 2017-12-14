@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_EsriJSON_ from '../../../../src/ol/format/EsriJSON.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
@@ -563,9 +563,9 @@ describe('ol.format.EsriJSON', function() {
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(2);
-      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[0]).to.be.a(LinearRing);
+      expect(rings[1]).to.be.a(LinearRing);
+      expect(rings[2]).to.be.a(LinearRing);
     });
 
     it('parses XYZ polygon', function() {
@@ -582,9 +582,9 @@ describe('ol.format.EsriJSON', function() {
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(3);
-      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[0]).to.be.a(LinearRing);
+      expect(rings[1]).to.be.a(LinearRing);
+      expect(rings[2]).to.be.a(LinearRing);
     });
 
     it('parses XYM polygon', function() {
@@ -601,9 +601,9 @@ describe('ol.format.EsriJSON', function() {
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(3);
-      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[0]).to.be.a(LinearRing);
+      expect(rings[1]).to.be.a(LinearRing);
+      expect(rings[2]).to.be.a(LinearRing);
     });
 
     it('parses XYZM polygon', function() {
@@ -630,9 +630,9 @@ describe('ol.format.EsriJSON', function() {
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
       expect(rings[0].getCoordinates()[0].length).to.equal(4);
-      expect(rings[0]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[1]).to.be.a(_ol_geom_LinearRing_);
-      expect(rings[2]).to.be.a(_ol_geom_LinearRing_);
+      expect(rings[0]).to.be.a(LinearRing);
+      expect(rings[1]).to.be.a(LinearRing);
+      expect(rings[2]).to.be.a(LinearRing);
     });
 
     it('parses XY multipolygon', function() {

@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_GML_ from '../../../../src/ol/format/GML.js';
 import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
@@ -578,7 +578,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LinearRing_);
+        expect(g).to.be.an(LinearRing);
         expect(g.getCoordinates()).to.eql(
             [[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]);
         var serialized = format.writeGeometryNode(g);

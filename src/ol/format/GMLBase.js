@@ -11,7 +11,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
+import LinearRing from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -404,7 +404,7 @@ _ol_format_GMLBase_.prototype.readLinearRing = function(node, objectStack) {
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var ring = new _ol_geom_LinearRing_(null);
+    var ring = new LinearRing(null);
     ring.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return ring;
   } else {

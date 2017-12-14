@@ -10,7 +10,7 @@ import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
-import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
+import LinearRing from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -124,8 +124,8 @@ _ol_format_EsriJSON_.convertRings_ = function(rings, layout) {
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
       var containsHole = containsExtent(
-          new _ol_geom_LinearRing_(outerRing).getExtent(),
-          new _ol_geom_LinearRing_(hole).getExtent()
+          new LinearRing(outerRing).getExtent(),
+          new LinearRing(hole).getExtent()
       );
       if (containsHole) {
         // the hole is contained push it into our polygon
