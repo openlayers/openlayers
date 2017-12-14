@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -12,15 +12,15 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
 var rome = new _ol_Feature_({
-  geometry: new _ol_geom_Point_(fromLonLat([12.5, 41.9]))
+  geometry: new Point(fromLonLat([12.5, 41.9]))
 });
 
 var london = new _ol_Feature_({
-  geometry: new _ol_geom_Point_(fromLonLat([-0.12755, 51.507222]))
+  geometry: new Point(fromLonLat([-0.12755, 51.507222]))
 });
 
 var madrid = new _ol_Feature_({
-  geometry: new _ol_geom_Point_(fromLonLat([-3.683333, 40.4]))
+  geometry: new Point(fromLonLat([-3.683333, 40.4]))
 });
 
 rome.setStyle(new _ol_style_Style_({

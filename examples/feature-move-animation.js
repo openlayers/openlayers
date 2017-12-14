@@ -2,7 +2,7 @@ import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_Polyline_ from '../src/ol/format/Polyline.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -73,15 +73,15 @@ var routeFeature = new _ol_Feature_({
 });
 var geoMarker = new _ol_Feature_({
   type: 'geoMarker',
-  geometry: new _ol_geom_Point_(routeCoords[0])
+  geometry: new Point(routeCoords[0])
 });
 var startMarker = new _ol_Feature_({
   type: 'icon',
-  geometry: new _ol_geom_Point_(routeCoords[0])
+  geometry: new Point(routeCoords[0])
 });
 var endMarker = new _ol_Feature_({
   type: 'icon',
-  geometry: new _ol_geom_Point_(routeCoords[routeLength - 1])
+  geometry: new Point(routeCoords[routeLength - 1])
 });
 
 var styles = {
@@ -162,7 +162,7 @@ var moveFeature = function(event) {
       return;
     }
 
-    var currentPoint = new _ol_geom_Point_(routeCoords[index]);
+    var currentPoint = new Point(routeCoords[index]);
     var feature = new _ol_Feature_(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }

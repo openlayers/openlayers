@@ -1,11 +1,11 @@
-import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
-import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_VectorContext_ from '../../../../../src/ol/render/VectorContext.js';
 import _ol_render_canvas_Immediate_ from '../../../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
@@ -71,7 +71,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPoint');
 
-      var geometry = new _ol_geom_Point_([1, 2]);
+      var geometry = new Point([1, 2]);
       context.drawGeometry(geometry);
       expect(context.drawPoint.calledOnce).to.be(true);
       expect(context.drawPoint.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -81,7 +81,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawLineString');
 
-      var geometry = new _ol_geom_LineString_([[1, 2], [3, 4]]);
+      var geometry = new LineString([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
       expect(context.drawLineString.calledOnce).to.be(true);
       expect(context.drawLineString.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -91,7 +91,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPolygon');
 
-      var geometry = new _ol_geom_Polygon_([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+      var geometry = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
       context.drawGeometry(geometry);
       expect(context.drawPolygon.calledOnce).to.be(true);
       expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -101,7 +101,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPoint');
 
-      var geometry = new _ol_geom_MultiPoint_([[1, 2], [3, 4]]);
+      var geometry = new MultiPoint([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiPoint.calledOnce).to.be(true);
       expect(context.drawMultiPoint.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -111,7 +111,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiLineString');
 
-      var geometry = new _ol_geom_MultiLineString_([[[1, 2], [3, 4]]]);
+      var geometry = new MultiLineString([[[1, 2], [3, 4]]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiLineString.calledOnce).to.be(true);
       expect(context.drawMultiLineString.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -121,7 +121,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPolygon');
 
-      var geometry = new _ol_geom_MultiPolygon_([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
+      var geometry = new MultiPolygon([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
       context.drawGeometry(geometry);
       expect(context.drawMultiPolygon.calledOnce).to.be(true);
       expect(context.drawMultiPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -134,11 +134,11 @@ describe('ol.render.canvas.Immediate', function() {
       sinon.spy(context, 'drawLineString');
       sinon.spy(context, 'drawPolygon');
 
-      var point = new _ol_geom_Point_([1, 2]);
-      var linestring = new _ol_geom_LineString_([[1, 2], [3, 4]]);
-      var polygon = new _ol_geom_Polygon_([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+      var point = new Point([1, 2]);
+      var linestring = new LineString([[1, 2], [3, 4]]);
+      var polygon = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
 
-      var geometry = new _ol_geom_GeometryCollection_([point, linestring, polygon]);
+      var geometry = new GeometryCollection([point, linestring, polygon]);
       context.drawGeometry(geometry);
 
       expect(context.drawGeometryCollection.calledOnce).to.be(true);
@@ -154,7 +154,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawCircle');
 
-      var geometry = new _ol_geom_Circle_([0, 0]);
+      var geometry = new Circle([0, 0]);
       context.drawGeometry(geometry);
 
       expect(context.drawCircle.calledOnce).to.be(true);
@@ -234,7 +234,7 @@ describe('ol.render.canvas.Immediate', function() {
         strokeStyle: '#00FFFF'
       };
 
-      var multiPolygonGeometry = new _ol_geom_MultiPolygon_([[[
+      var multiPolygonGeometry = new MultiPolygon([[[
         // first polygon
         [-80.736061, 28.788576000000006, 0], // moveTo()
         [-80.763557, 28.821799999999996, 0], // lineTo()

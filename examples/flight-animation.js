@@ -2,7 +2,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
@@ -60,7 +60,7 @@ var animateFlights = function(event) {
       }
 
       var maxIndex = Math.min(elapsedPoints, coords.length);
-      var currentLine = new _ol_geom_LineString_(coords.slice(0, maxIndex));
+      var currentLine = new LineString(coords.slice(0, maxIndex));
 
       // directly draw the line with the vector context
       vectorContext.drawGeometry(currentLine);
@@ -92,7 +92,7 @@ flightsSource = new _ol_source_Vector_({
 
         var arcLine = arcGenerator.Arc(100, {offset: 10});
         if (arcLine.geometries.length === 1) {
-          var line = new _ol_geom_LineString_(arcLine.geometries[0].coords);
+          var line = new LineString(arcLine.geometries[0].coords);
           line.transform('EPSG:4326', 'EPSG:3857');
 
           var feature = new _ol_Feature_({

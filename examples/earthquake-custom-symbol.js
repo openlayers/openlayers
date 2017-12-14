@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_KML_ from '../src/ol/format/KML.js';
-import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_render_ from '../src/ol/render.js';
@@ -39,7 +39,7 @@ var styleFunction = function(feature) {
       fill: new _ol_style_Fill_({color: 'rgba(255, 153, 0, 0.4)'}),
       stroke: new _ol_style_Stroke_({color: 'rgba(255, 204, 0, 0.2)', width: 2})
     }));
-    vectorContext.drawGeometry(new _ol_geom_Polygon_([symbol.map(scaleFunction)]));
+    vectorContext.drawGeometry(new Polygon([symbol.map(scaleFunction)]));
     style = new _ol_style_Style_({
       image: new _ol_style_Icon_({
         img: canvas,

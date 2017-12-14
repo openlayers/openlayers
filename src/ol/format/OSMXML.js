@@ -7,10 +7,10 @@ import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import LineString from '../geom/LineString.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -56,7 +56,7 @@ _ol_format_OSMXML_.readNode_ = function(node, objectStack) {
     tags: {}
   }, _ol_format_OSMXML_.NODE_PARSERS_, node, objectStack);
   if (!_ol_obj_.isEmpty(values.tags)) {
-    var geometry = new _ol_geom_Point_(coordinates);
+    var geometry = new Point(coordinates);
     _ol_format_Feature_.transformWithOptions(geometry, false, options);
     var feature = new _ol_Feature_(geometry);
     feature.setId(id);
@@ -185,12 +185,12 @@ _ol_format_OSMXML_.prototype.readFeaturesFromNode = function(node, opt_options) 
       var geometry;
       if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
         // closed way
-        geometry = new _ol_geom_Polygon_(null);
-        geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates,
+        geometry = new Polygon(null);
+        geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates,
             [flatCoordinates.length]);
       } else {
-        geometry = new _ol_geom_LineString_(null);
-        geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates);
+        geometry = new LineString(null);
+        geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
       }
       _ol_format_Feature_.transformWithOptions(geometry, false, options);
       var feature = new _ol_Feature_(geometry);

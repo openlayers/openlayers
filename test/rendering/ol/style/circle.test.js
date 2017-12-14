@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -46,7 +46,7 @@ describe('ol.rendering.style.Circle', function() {
     function createFeatures(multi) {
       var feature;
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[-20, 18]]) : new _ol_geom_Point_([-20, 18])
+        geometry: multi ? new MultiPoint([[-20, 18]]) : new Point([-20, 18])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -59,7 +59,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[-10, 18]]) : new _ol_geom_Point_([-10, 18])
+        geometry: multi ? new MultiPoint([[-10, 18]]) : new Point([-10, 18])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -72,7 +72,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[4, 18]]) : new _ol_geom_Point_([4, 18])
+        geometry: multi ? new MultiPoint([[4, 18]]) : new Point([4, 18])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -85,7 +85,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[-20, 3]]) : new _ol_geom_Point_([-20, 3])
+        geometry: multi ? new MultiPoint([[-20, 3]]) : new Point([-20, 3])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -102,7 +102,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[-10, 3]]) : new _ol_geom_Point_([-10, 3])
+        geometry: multi ? new MultiPoint([[-10, 3]]) : new Point([-10, 3])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -119,7 +119,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[4, 3]]) : new _ol_geom_Point_([4, 3])
+        geometry: multi ? new MultiPoint([[4, 3]]) : new Point([4, 3])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -136,7 +136,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[-20, -15]]) : new _ol_geom_Point_([-20, -15])
+        geometry: multi ? new MultiPoint([[-20, -15]]) : new Point([-20, -15])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -150,7 +150,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[-10, -15]]) : new _ol_geom_Point_([-10, -15])
+        geometry: multi ? new MultiPoint([[-10, -15]]) : new Point([-10, -15])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
@@ -167,7 +167,7 @@ describe('ol.rendering.style.Circle', function() {
       vectorSource.addFeature(feature);
 
       feature = new _ol_Feature_({
-        geometry: multi ? new _ol_geom_MultiPoint_([[4, -15]]) : new _ol_geom_Point_([4, -15])
+        geometry: multi ? new MultiPoint([[4, -15]]) : new Point([4, -15])
       });
       feature.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({

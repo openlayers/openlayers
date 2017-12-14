@@ -14,8 +14,8 @@ import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import GeometryType from '../geom/GeometryType.js';
+import Point from '../geom/Point.js';
 import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -579,7 +579,7 @@ _ol_interaction_Modify_.prototype.writeGeometryCollectionGeometry_ = function(fe
 _ol_interaction_Modify_.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new _ol_geom_Point_(coordinates));
+    vertexFeature = new _ol_Feature_(new Point(coordinates));
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {
@@ -635,7 +635,7 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
       if (!componentSegments[uid]) {
         componentSegments[uid] = new Array(2);
       }
-      if (segmentDataMatch.geometry.getType() === _ol_geom_GeometryType_.CIRCLE &&
+      if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
       segmentDataMatch.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
         var closestVertex = _ol_interaction_Modify_.closestOnSegmentData_(pixelCoordinate, segmentDataMatch);
@@ -652,9 +652,9 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
 
         // prevent dragging closed linestrings by the connecting node
         if ((segmentDataMatch.geometry.getType() ===
-            _ol_geom_GeometryType_.LINE_STRING ||
+            GeometryType.LINE_STRING ||
             segmentDataMatch.geometry.getType() ===
-            _ol_geom_GeometryType_.MULTI_LINE_STRING) &&
+            GeometryType.MULTI_LINE_STRING) &&
             componentSegments[uid][0] &&
             componentSegments[uid][0].index === 0) {
           continue;
@@ -702,36 +702,36 @@ _ol_interaction_Modify_.handleDragEvent_ = function(evt) {
     }
 
     switch (geometry.getType()) {
-      case _ol_geom_GeometryType_.POINT:
+      case GeometryType.POINT:
         coordinates = vertex;
         segment[0] = segment[1] = vertex;
         break;
-      case _ol_geom_GeometryType_.MULTI_POINT:
+      case GeometryType.MULTI_POINT:
         coordinates = geometry.getCoordinates();
         coordinates[segmentData.index] = vertex;
         segment[0] = segment[1] = vertex;
         break;
-      case _ol_geom_GeometryType_.LINE_STRING:
+      case GeometryType.LINE_STRING:
         coordinates = geometry.getCoordinates();
         coordinates[segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+      case GeometryType.MULTI_LINE_STRING:
         coordinates = geometry.getCoordinates();
         coordinates[depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case _ol_geom_GeometryType_.POLYGON:
+      case GeometryType.POLYGON:
         coordinates = geometry.getCoordinates();
         coordinates[depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case _ol_geom_GeometryType_.MULTI_POLYGON:
+      case GeometryType.MULTI_POLYGON:
         coordinates = geometry.getCoordinates();
         coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
-      case _ol_geom_GeometryType_.CIRCLE:
+      case GeometryType.CIRCLE:
         segment[0] = segment[1] = vertex;
         if (segmentData.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX) {
           this.changingFeature_ = true;
@@ -767,7 +767,7 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
   for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
     segmentData = this.dragSegments_[i][0];
     geometry = segmentData.geometry;
-    if (geometry.getType() === _ol_geom_GeometryType_.CIRCLE) {
+    if (geometry.getType() === GeometryType.CIRCLE) {
       // Update a circle object in the R* bush:
       var coordinates = geometry.getCenter();
       var centerSegmentData = segmentData.featureSegments[0];
@@ -865,7 +865,7 @@ _ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
     if (dist <= this.pixelTolerance_) {
       var vertexSegments = {};
 
-      if (node.geometry.getType() === _ol_geom_GeometryType_.CIRCLE &&
+      if (node.geometry.getType() === GeometryType.CIRCLE &&
       node.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
         this.snappedToVertex_ = true;
@@ -920,7 +920,7 @@ _ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
 _ol_interaction_Modify_.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentData) {
   var geometry = segmentData.geometry;
 
-  if (geometry.getType() === _ol_geom_GeometryType_.CIRCLE) {
+  if (geometry.getType() === GeometryType.CIRCLE) {
     var circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
 
     if (segmentData.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
@@ -946,7 +946,7 @@ _ol_interaction_Modify_.pointDistanceToSegmentDataSquared_ = function(pointCoord
 _ol_interaction_Modify_.closestOnSegmentData_ = function(pointCoordinates, segmentData) {
   var geometry = segmentData.geometry;
 
-  if (geometry.getType() === _ol_geom_GeometryType_.CIRCLE &&
+  if (geometry.getType() === GeometryType.CIRCLE &&
   segmentData.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
@@ -972,19 +972,19 @@ _ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) 
   }
 
   switch (geometry.getType()) {
-    case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+    case GeometryType.MULTI_LINE_STRING:
       coordinates = geometry.getCoordinates();
       coordinates[depth[0]].splice(index + 1, 0, vertex);
       break;
-    case _ol_geom_GeometryType_.POLYGON:
+    case GeometryType.POLYGON:
       coordinates = geometry.getCoordinates();
       coordinates[depth[0]].splice(index + 1, 0, vertex);
       break;
-    case _ol_geom_GeometryType_.MULTI_POLYGON:
+    case GeometryType.MULTI_POLYGON:
       coordinates = geometry.getCoordinates();
       coordinates[depth[1]][depth[0]].splice(index + 1, 0, vertex);
       break;
-    case _ol_geom_GeometryType_.LINE_STRING:
+    case GeometryType.LINE_STRING:
       coordinates = geometry.getCoordinates();
       coordinates.splice(index + 1, 0, vertex);
       break;
@@ -1087,22 +1087,22 @@ _ol_interaction_Modify_.prototype.removeVertex_ = function() {
     component = coordinates;
     deleted = false;
     switch (geometry.getType()) {
-      case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+      case GeometryType.MULTI_LINE_STRING:
         if (coordinates[segmentData.depth[0]].length > 2) {
           coordinates[segmentData.depth[0]].splice(index, 1);
           deleted = true;
         }
         break;
-      case _ol_geom_GeometryType_.LINE_STRING:
+      case GeometryType.LINE_STRING:
         if (coordinates.length > 2) {
           coordinates.splice(index, 1);
           deleted = true;
         }
         break;
-      case _ol_geom_GeometryType_.MULTI_POLYGON:
+      case GeometryType.MULTI_POLYGON:
         component = component[segmentData.depth[1]];
         /* falls through */
-      case _ol_geom_GeometryType_.POLYGON:
+      case GeometryType.POLYGON:
         component = component[segmentData.depth[0]];
         if (component.length > 4) {
           if (index == component.length - 1) {
@@ -1195,7 +1195,7 @@ _ol_interaction_Modify_.prototype.updateSegmentIndices_ = function(
 _ol_interaction_Modify_.getDefaultStyleFunction = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
-    return style[_ol_geom_GeometryType_.POINT];
+    return style[GeometryType.POINT];
   };
 };
 

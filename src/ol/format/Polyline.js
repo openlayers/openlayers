@@ -6,9 +6,9 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import LineString from '../geom/LineString.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
@@ -46,7 +46,7 @@ var _ol_format_Polyline_ = function(opt_options) {
    * @type {ol.geom.GeometryLayout}
    */
   this.geometryLayout_ = options.geometryLayout ?
-    options.geometryLayout : _ol_geom_GeometryLayout_.XY;
+    options.geometryLayout : GeometryLayout.XY;
 };
 
 inherits(_ol_format_Polyline_, _ol_format_TextFeature_);
@@ -324,7 +324,7 @@ _ol_format_Polyline_.prototype.readGeometry;
  * @inheritDoc
  */
 _ol_format_Polyline_.prototype.readGeometryFromText = function(text, opt_options) {
-  var stride = _ol_geom_SimpleGeometry_.getStrideForLayout(this.geometryLayout_);
+  var stride = SimpleGeometry.getStrideForLayout(this.geometryLayout_);
   var flatCoordinates = _ol_format_Polyline_.decodeDeltas(
       text, stride, this.factor_);
   _ol_geom_flat_flip_.flipXY(
@@ -334,7 +334,7 @@ _ol_format_Polyline_.prototype.readGeometryFromText = function(text, opt_options
 
   return (
     /** @type {ol.geom.Geometry} */ _ol_format_Feature_.transformWithOptions(
-        new _ol_geom_LineString_(coordinates, this.geometryLayout_), false,
+        new LineString(coordinates, this.geometryLayout_), false,
         this.adaptOptions(opt_options))
   );
 };

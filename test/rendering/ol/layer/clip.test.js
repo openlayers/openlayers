@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -64,7 +64,7 @@ describe('layer clipping', function() {
         source: source
       });
 
-      var geometry = new _ol_geom_MultiPolygon_([
+      var geometry = new MultiPolygon([
         [[[-80, -40], [-40, 0], [-80, 40], [-120, 0], [-80, -40]]],
         [[[80, -40], [120, 0], [80, 40], [40, 0], [80, -40]]]
       ]).transform('EPSG:4326', 'EPSG:3857');

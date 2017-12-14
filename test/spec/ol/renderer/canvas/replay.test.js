@@ -1,12 +1,12 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
 import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canvas/PolygonReplay.js';
 import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Replay.js';
@@ -29,13 +29,13 @@ describe('ol.render.canvas.ReplayGroup', function() {
     beforeEach(function() {
       transform = _ol_transform_.create();
       replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, false);
-      feature0 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature0 = new _ol_Feature_(new Polygon(
           [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
-      feature1 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature1 = new _ol_Feature_(new Polygon(
           [[[-90, -45], [-90, 0], [0, 0], [0, -45], [-90, -45]]]));
-      feature2 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature2 = new _ol_Feature_(new Polygon(
           [[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]]));
-      feature3 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature3 = new _ol_Feature_(new Polygon(
           [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
       fill0 = new _ol_style_Style_({
         fill: new _ol_style_Fill_({color: 'black'})
@@ -229,17 +229,17 @@ describe('ol.render.canvas.ReplayGroup', function() {
           });
         }
       });
-      var point = new _ol_Feature_(new _ol_geom_Point_([45, 90]));
-      var multipoint = new _ol_Feature_(new _ol_geom_MultiPoint_(
+      var point = new _ol_Feature_(new Point([45, 90]));
+      var multipoint = new _ol_Feature_(new MultiPoint(
           [[45, 90], [90, 45]]));
-      var linestring = new _ol_Feature_(new _ol_geom_LineString_(
+      var linestring = new _ol_Feature_(new LineString(
           [[45, 90], [45, 45], [90, 45]]));
-      var multilinestring = new _ol_Feature_(new _ol_geom_MultiLineString_(
+      var multilinestring = new _ol_Feature_(new MultiLineString(
           [linestring.getGeometry().getCoordinates(), linestring.getGeometry().getCoordinates()]));
       var polygon = feature1;
-      var multipolygon = new _ol_Feature_(new _ol_geom_MultiPolygon_(
+      var multipolygon = new _ol_Feature_(new MultiPolygon(
           [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
-      var geometrycollection = new _ol_Feature_(new _ol_geom_GeometryCollection_(
+      var geometrycollection = new _ol_Feature_(new GeometryCollection(
           [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
       replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, true);
       _ol_renderer_vector_.renderFeature(replay, point, style, 1);

@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
+import LineString from '../src/ol/geom/LineString.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -42,7 +42,7 @@ map.addOverlay(marker);
 // LineString to store the different geolocation positions. This LineString
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
-var positions = new _ol_geom_LineString_([],
+var positions = new LineString([],
     /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
 
 // Geolocation Control

@@ -6,7 +6,7 @@ import _ol_colorlike_ from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
-import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
+import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
@@ -183,13 +183,13 @@ _ol_render_canvas_TextReplay_.prototype.drawText = function(geometry, feature) {
     var ends;
     flatCoordinates = geometry.getFlatCoordinates();
     stride = geometry.getStride();
-    if (geometryType == _ol_geom_GeometryType_.LINE_STRING) {
+    if (geometryType == GeometryType.LINE_STRING) {
       ends = [flatCoordinates.length];
-    } else if (geometryType == _ol_geom_GeometryType_.MULTI_LINE_STRING) {
+    } else if (geometryType == GeometryType.MULTI_LINE_STRING) {
       ends = geometry.getEnds();
-    } else if (geometryType == _ol_geom_GeometryType_.POLYGON) {
+    } else if (geometryType == GeometryType.POLYGON) {
       ends = geometry.getEnds().slice(0, 1);
-    } else if (geometryType == _ol_geom_GeometryType_.MULTI_POLYGON) {
+    } else if (geometryType == GeometryType.MULTI_POLYGON) {
       var endss = geometry.getEndss();
       ends = [];
       for (i = 0, ii = endss.length; i < ii; ++i) {
@@ -223,29 +223,29 @@ _ol_render_canvas_TextReplay_.prototype.drawText = function(geometry, feature) {
     var label = this.getImage(this.text_, this.textKey_, this.fillKey_, this.strokeKey_);
     var width = label.width / this.pixelRatio;
     switch (geometryType) {
-      case _ol_geom_GeometryType_.POINT:
-      case _ol_geom_GeometryType_.MULTI_POINT:
+      case GeometryType.POINT:
+      case GeometryType.MULTI_POINT:
         flatCoordinates = geometry.getFlatCoordinates();
         end = flatCoordinates.length;
         break;
-      case _ol_geom_GeometryType_.LINE_STRING:
+      case GeometryType.LINE_STRING:
         flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
         break;
-      case _ol_geom_GeometryType_.CIRCLE:
+      case GeometryType.CIRCLE:
         flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
         break;
-      case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+      case GeometryType.MULTI_LINE_STRING:
         flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
         end = flatCoordinates.length;
         break;
-      case _ol_geom_GeometryType_.POLYGON:
+      case GeometryType.POLYGON:
         flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
         if (!textState.overflow && flatCoordinates[2] / this.resolution < width) {
           return;
         }
         stride = 3;
         break;
-      case _ol_geom_GeometryType_.MULTI_POLYGON:
+      case GeometryType.MULTI_POLYGON:
         var interiorPoints = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
         flatCoordinates = [];
         for (i = 0, ii = interiorPoints.length; i < ii; i += 3) {

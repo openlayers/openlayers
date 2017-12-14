@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
@@ -284,7 +284,7 @@ describe('ol.rendering.layer.Tile', function() {
             fill: new _ol_style_Fill_({color: 'yellow'}),
             stroke: new _ol_style_Stroke_({color: 'red', width: 1})
           }));
-          e.vectorContext.drawPoint(new _ol_geom_Point_(
+          e.vectorContext.drawPoint(new Point(
               transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
         });
       };

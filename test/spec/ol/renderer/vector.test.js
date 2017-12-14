@@ -1,11 +1,11 @@
 import {nullFunction} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_render_canvas_ReplayGroup_ from '../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../src/ol/renderer/vector.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
@@ -73,7 +73,7 @@ describe('ol.renderer.vector', function() {
     describe('call renderFeature with a loading icon', function() {
 
       it('does not render the point', function() {
-        feature.setGeometry(new _ol_geom_Point_([0, 0]));
+        feature.setGeometry(new Point([0, 0]));
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
@@ -86,7 +86,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does not render the multipoint', function() {
-        feature.setGeometry(new _ol_geom_MultiPoint_([[0, 0], [1, 1]]));
+        feature.setGeometry(new MultiPoint([[0, 0], [1, 1]]));
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
@@ -99,7 +99,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the linestring', function() {
-        feature.setGeometry(new _ol_geom_LineString_([[0, 0], [1, 1]]));
+        feature.setGeometry(new LineString([[0, 0], [1, 1]]));
         var lineStringReplay = replayGroup.getReplay(
             style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
@@ -114,7 +114,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the multilinestring', function() {
-        feature.setGeometry(new _ol_geom_MultiLineString_([[[0, 0], [1, 1]]]));
+        feature.setGeometry(new MultiLineString([[[0, 0], [1, 1]]]));
         var lineStringReplay = replayGroup.getReplay(
             style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
@@ -129,7 +129,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the polygon', function() {
-        feature.setGeometry(new _ol_geom_Polygon_(
+        feature.setGeometry(new Polygon(
             [[[0, 0], [1, 1], [1, 0], [0, 0]]]));
         var polygonReplay = replayGroup.getReplay(
             style.getZIndex(), 'Polygon');
@@ -145,7 +145,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the multipolygon', function() {
-        feature.setGeometry(new _ol_geom_MultiPolygon_(
+        feature.setGeometry(new MultiPolygon(
             [[[[0, 0], [1, 1], [1, 0], [0, 0]]]]));
         var polygonReplay = replayGroup.getReplay(
             style.getZIndex(), 'Polygon');

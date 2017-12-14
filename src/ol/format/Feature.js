@@ -1,7 +1,7 @@
 /**
  * @module ol/format/Feature
  */
-import _ol_geom_Geometry_ from '../geom/Geometry.js';
+import Geometry from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
@@ -184,7 +184,7 @@ _ol_format_Feature_.transformWithOptions = function(
   var transformed;
   if (featureProjection && dataProjection &&
       !equivalentProjection(featureProjection, dataProjection)) {
-    if (geometry instanceof _ol_geom_Geometry_) {
+    if (geometry instanceof Geometry) {
       transformed = (write ? geometry.clone() : geometry).transform(
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);

@@ -1,12 +1,12 @@
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
-import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
+import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
@@ -26,13 +26,13 @@ describe('ol.render.webgl.Immediate', function() {
       fill: new _ol_style_Fill_(),
       stroke: new _ol_style_Stroke_()
     });
-    circle = new _ol_geom_Circle_([0, 0], 5);
-    line = new _ol_geom_LineString_([[0, 0], [5, 5]]);
-    multiLine = new _ol_geom_MultiLineString_([[[0, 0], [5, 5]]]);
-    point = new _ol_geom_Point_([0, 0]);
-    multiPoint = new _ol_geom_MultiPoint_([[0, 0]]);
-    polygon = new _ol_geom_Polygon_([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
-    multiPolygon = new _ol_geom_MultiPolygon_([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
+    circle = new Circle([0, 0], 5);
+    line = new LineString([[0, 0], [5, 5]]);
+    multiLine = new MultiLineString([[[0, 0], [5, 5]]]);
+    point = new Point([0, 0]);
+    multiPoint = new MultiPoint([[0, 0]]);
+    polygon = new Polygon([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
+    multiPolygon = new MultiPolygon([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
   });
 
   describe('#setStyle', function() {
@@ -75,7 +75,7 @@ describe('ol.render.webgl.Immediate', function() {
 
     it('does nothing if geometry is out of bounds', function() {
       feat = new _ol_Feature_({
-        geometry: new _ol_geom_Circle_([540, 540], 1)
+        geometry: new Circle([540, 540], 1)
       });
       context.drawFeature(feat, style);
       expect(context.setStyle.called).to.be(false);
@@ -86,7 +86,7 @@ describe('ol.render.webgl.Immediate', function() {
   describe('#drawGeometryCollection', function() {
     var geomColl;
     beforeEach(function() {
-      geomColl = new _ol_geom_GeometryCollection_([circle, point, multiPoint,
+      geomColl = new GeometryCollection([circle, point, multiPoint,
         line, multiLine, polygon, multiPolygon]);
     });
 

@@ -8,14 +8,14 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_ext_PBF_ from 'pbf';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import GeometryType from '../geom/GeometryType.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
 import _ol_proj_Units_ from '../proj/Units.js';
@@ -250,13 +250,13 @@ _ol_format_MVT_.getGeometryType_ = function(type, numEnds) {
   var geometryType;
   if (type === 1) {
     geometryType = numEnds === 1 ?
-      _ol_geom_GeometryType_.POINT : _ol_geom_GeometryType_.MULTI_POINT;
+      GeometryType.POINT : GeometryType.MULTI_POINT;
   } else if (type === 2) {
     geometryType = numEnds === 1 ?
-      _ol_geom_GeometryType_.LINE_STRING :
-      _ol_geom_GeometryType_.MULTI_LINE_STRING;
+      GeometryType.LINE_STRING :
+      GeometryType.MULTI_LINE_STRING;
   } else if (type === 3) {
-    geometryType = _ol_geom_GeometryType_.POLYGON;
+    geometryType = GeometryType.POLYGON;
     // MultiPolygon not relevant for rendering - winding order determines
     // outer rings of polygons.
   }
@@ -291,7 +291,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
     feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
   } else {
     var geom;
-    if (geometryType == _ol_geom_GeometryType_.POLYGON) {
+    if (geometryType == GeometryType.POLYGON) {
       var endss = [];
       var offset = 0;
       var prevEndIndex = 0;
@@ -305,19 +305,19 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
       }
       if (endss.length > 1) {
         ends = endss;
-        geom = new _ol_geom_MultiPolygon_(null);
+        geom = new MultiPolygon(null);
       } else {
-        geom = new _ol_geom_Polygon_(null);
+        geom = new Polygon(null);
       }
     } else {
-      geom = geometryType === _ol_geom_GeometryType_.POINT ? new _ol_geom_Point_(null) :
-        geometryType === _ol_geom_GeometryType_.LINE_STRING ? new _ol_geom_LineString_(null) :
-          geometryType === _ol_geom_GeometryType_.POLYGON ? new _ol_geom_Polygon_(null) :
-            geometryType === _ol_geom_GeometryType_.MULTI_POINT ? new _ol_geom_MultiPoint_ (null) :
-              geometryType === _ol_geom_GeometryType_.MULTI_LINE_STRING ? new _ol_geom_MultiLineString_(null) :
+      geom = geometryType === GeometryType.POINT ? new Point(null) :
+        geometryType === GeometryType.LINE_STRING ? new LineString(null) :
+          geometryType === GeometryType.POLYGON ? new Polygon(null) :
+            geometryType === GeometryType.MULTI_POINT ? new MultiPoint (null) :
+              geometryType === GeometryType.MULTI_LINE_STRING ? new MultiLineString(null) :
                 null;
     }
-    geom.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates, ends);
+    geom.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, ends);
     feature = new this.featureClass_();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);

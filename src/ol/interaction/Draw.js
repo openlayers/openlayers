@@ -11,14 +11,14 @@ import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import _ol_functions_ from '../functions.js';
-import _ol_geom_Circle_ from '../geom/Circle.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Circle from '../geom/Circle.js';
+import GeometryType from '../geom/GeometryType.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_interaction_DrawEventType_ from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
@@ -133,7 +133,7 @@ var _ol_interaction_Draw_ = function(options) {
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
-    if (this.type_ === _ol_geom_GeometryType_.CIRCLE) {
+    if (this.type_ === GeometryType.CIRCLE) {
       /**
        * @param {!Array.<ol.Coordinate>} coordinates
        *     The coordinates.
@@ -142,7 +142,7 @@ var _ol_interaction_Draw_ = function(options) {
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
-          new _ol_geom_Circle_([NaN, NaN]);
+          new Circle([NaN, NaN]);
         var squaredLength = _ol_coordinate_.squaredDistance(
             coordinates[0], coordinates[1]);
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
@@ -152,11 +152,11 @@ var _ol_interaction_Draw_ = function(options) {
       var Constructor;
       var mode = this.mode_;
       if (mode === _ol_interaction_Draw_.Mode_.POINT) {
-        Constructor = _ol_geom_Point_;
+        Constructor = Point;
       } else if (mode === _ol_interaction_Draw_.Mode_.LINE_STRING) {
-        Constructor = _ol_geom_LineString_;
+        Constructor = LineString;
       } else if (mode === _ol_interaction_Draw_.Mode_.POLYGON) {
-        Constructor = _ol_geom_Polygon_;
+        Constructor = Polygon;
       }
       /**
        * @param {!Array.<ol.Coordinate>} coordinates
@@ -481,7 +481,7 @@ _ol_interaction_Draw_.prototype.atFinish_ = function(event) {
 _ol_interaction_Draw_.prototype.createOrUpdateSketchPoint_ = function(event) {
   var coordinates = event.coordinate.slice();
   if (!this.sketchPoint_) {
-    this.sketchPoint_ = new _ol_Feature_(new _ol_geom_Point_(coordinates));
+    this.sketchPoint_ = new _ol_Feature_(new Point(coordinates));
     this.updateSketchFeatures_();
   } else {
     var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
@@ -511,7 +511,7 @@ _ol_interaction_Draw_.prototype.startDrawing_ = function(event) {
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new _ol_Feature_(
-        new _ol_geom_LineString_(this.sketchLineCoords_));
+        new LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
   this.sketchFeature_ = new _ol_Feature_();
@@ -555,10 +555,10 @@ _ol_interaction_Draw_.prototype.modifyDrawing_ = function(event) {
     sketchPointGeom.setCoordinates(coordinate);
   }
   var sketchLineGeom;
-  if (geometry instanceof _ol_geom_Polygon_ &&
+  if (geometry instanceof Polygon &&
       this.mode_ !== _ol_interaction_Draw_.Mode_.POLYGON) {
     if (!this.sketchLine_) {
-      this.sketchLine_ = new _ol_Feature_(new _ol_geom_LineString_(null));
+      this.sketchLine_ = new _ol_Feature_(new LineString(null));
     }
     var ring = geometry.getLinearRing(0);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
@@ -671,12 +671,12 @@ _ol_interaction_Draw_.prototype.finishDrawing = function() {
   }
 
   // cast multi-part geometries
-  if (this.type_ === _ol_geom_GeometryType_.MULTI_POINT) {
-    sketchFeature.setGeometry(new _ol_geom_MultiPoint_([coordinates]));
-  } else if (this.type_ === _ol_geom_GeometryType_.MULTI_LINE_STRING) {
-    sketchFeature.setGeometry(new _ol_geom_MultiLineString_([coordinates]));
-  } else if (this.type_ === _ol_geom_GeometryType_.MULTI_POLYGON) {
-    sketchFeature.setGeometry(new _ol_geom_MultiPolygon_([coordinates]));
+  if (this.type_ === GeometryType.MULTI_POINT) {
+    sketchFeature.setGeometry(new MultiPoint([coordinates]));
+  } else if (this.type_ === GeometryType.MULTI_LINE_STRING) {
+    sketchFeature.setGeometry(new MultiLineString([coordinates]));
+  } else if (this.type_ === GeometryType.MULTI_POLYGON) {
+    sketchFeature.setGeometry(new MultiPolygon([coordinates]));
   }
 
   // First dispatch event to allow full set up of feature
@@ -798,10 +798,10 @@ _ol_interaction_Draw_.createRegularPolygon = function(opt_sides, opt_angle) {
       var radius = Math.sqrt(
           _ol_coordinate_.squaredDistance(center, end));
       var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-        _ol_geom_Polygon_.fromCircle(new _ol_geom_Circle_(center), opt_sides);
+        Polygon.fromCircle(new Circle(center), opt_sides);
       var angle = opt_angle ? opt_angle :
         Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-      _ol_geom_Polygon_.makeRegular(geometry, center, radius, angle);
+      Polygon.makeRegular(geometry, center, radius, angle);
       return geometry;
     }
   );
@@ -824,7 +824,7 @@ _ol_interaction_Draw_.createBox = function() {
      */
     function(coordinates, opt_geometry) {
       var extent = boundingExtent(coordinates);
-      var geometry = opt_geometry || new _ol_geom_Polygon_(null);
+      var geometry = opt_geometry || new Polygon(null);
       geometry.setCoordinates([[
         getBottomLeft(extent),
         getBottomRight(extent),
@@ -847,16 +847,16 @@ _ol_interaction_Draw_.createBox = function() {
  */
 _ol_interaction_Draw_.getMode_ = function(type) {
   var mode;
-  if (type === _ol_geom_GeometryType_.POINT ||
-      type === _ol_geom_GeometryType_.MULTI_POINT) {
+  if (type === GeometryType.POINT ||
+      type === GeometryType.MULTI_POINT) {
     mode = _ol_interaction_Draw_.Mode_.POINT;
-  } else if (type === _ol_geom_GeometryType_.LINE_STRING ||
-      type === _ol_geom_GeometryType_.MULTI_LINE_STRING) {
+  } else if (type === GeometryType.LINE_STRING ||
+      type === GeometryType.MULTI_LINE_STRING) {
     mode = _ol_interaction_Draw_.Mode_.LINE_STRING;
-  } else if (type === _ol_geom_GeometryType_.POLYGON ||
-      type === _ol_geom_GeometryType_.MULTI_POLYGON) {
+  } else if (type === GeometryType.POLYGON ||
+      type === GeometryType.MULTI_POLYGON) {
     mode = _ol_interaction_Draw_.Mode_.POLYGON;
-  } else if (type === _ol_geom_GeometryType_.CIRCLE) {
+  } else if (type === GeometryType.CIRCLE) {
     mode = _ol_interaction_Draw_.Mode_.CIRCLE;
   }
   return /** @type {!ol.interaction.Draw.Mode_} */ (mode);

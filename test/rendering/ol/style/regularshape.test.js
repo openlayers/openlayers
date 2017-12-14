@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -43,7 +43,7 @@ describe('ol.rendering.style.RegularShape', function() {
   function createFeatures(stroke, fill) {
     var feature;
     feature = new _ol_Feature_({
-      geometry: new _ol_geom_Point_([-15, 15])
+      geometry: new Point([-15, 15])
     });
     // square
     feature.setStyle(new _ol_style_Style_({
@@ -58,7 +58,7 @@ describe('ol.rendering.style.RegularShape', function() {
     vectorSource.addFeature(feature);
 
     feature = new _ol_Feature_({
-      geometry: new _ol_geom_Point_([8, 15])
+      geometry: new Point([8, 15])
     });
     // triangle
     feature.setStyle(new _ol_style_Style_({
@@ -74,7 +74,7 @@ describe('ol.rendering.style.RegularShape', function() {
     vectorSource.addFeature(feature);
 
     feature = new _ol_Feature_({
-      geometry: new _ol_geom_Point_([-10, -8])
+      geometry: new Point([-10, -8])
     });
     // star
     feature.setStyle(new _ol_style_Style_({
@@ -90,7 +90,7 @@ describe('ol.rendering.style.RegularShape', function() {
     vectorSource.addFeature(feature);
 
     feature = new _ol_Feature_({
-      geometry: new _ol_geom_Point_([12, -8])
+      geometry: new Point([12, -8])
     });
     // cross
     feature.setStyle(new _ol_style_Style_({

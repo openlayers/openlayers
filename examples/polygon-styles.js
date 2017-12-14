@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
-import _ol_geom_MultiPoint_ from '../src/ol/geom/MultiPoint.js';
+import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -36,7 +36,7 @@ var styles = [
     geometry: function(feature) {
       // return the coordinates of the first ring of the polygon
       var coordinates = feature.getGeometry().getCoordinates()[0];
-      return new _ol_geom_MultiPoint_(coordinates);
+      return new MultiPoint(coordinates);
     }
   })
 ];

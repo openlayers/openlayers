@@ -2,7 +2,7 @@ import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Sphere_ from '../src/ol/Sphere.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
@@ -63,7 +63,7 @@ var radius = 800000;
 var x, y;
 for (x = -180; x < 180; x += 30) {
   for (y = -90; y < 90; y += 30) {
-    var circle4326 = _ol_geom_Polygon_.circular(wgs84Sphere, [x, y], radius, 64);
+    var circle4326 = Polygon.circular(wgs84Sphere, [x, y], radius, 64);
     var circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
     vectorLayer4326.getSource().addFeature(new _ol_Feature_(circle4326));
     vectorLayer3857.getSource().addFeature(new _ol_Feature_(circle3857));

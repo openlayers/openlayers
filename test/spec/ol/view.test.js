@@ -2,9 +2,9 @@ import _ol_Map_ from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import _ol_geom_Circle_ from '../../../src/ol/geom/Circle.js';
-import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import Circle from '../../../src/ol/geom/Circle.js';
+import LineString from '../../../src/ol/geom/LineString.js';
+import Point from '../../../src/ol/geom/Point.js';
 
 describe('ol.View', function() {
 
@@ -1252,35 +1252,35 @@ describe('ol.View', function() {
     });
     it('fits correctly to the geometry', function() {
       view.fit(
-          new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
 
       view.fit(
-          new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           {size: [200, 200], padding: [100, 0, 0, 100]});
       expect(view.getResolution()).to.be(20);
       expect(view.getCenter()[0]).to.be(5500);
       expect(view.getCenter()[1]).to.be(47550);
 
       view.fit(
-          new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           {size: [200, 200], padding: [100, 0, 0, 100], nearest: true});
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(47050);
 
       view.fit(
-          new _ol_geom_Point_([6000, 46000]),
+          new Point([6000, 46000]),
           {size: [200, 200], padding: [100, 0, 0, 100], minResolution: 2});
       expect(view.getResolution()).to.be(2);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
       view.fit(
-          new _ol_geom_Point_([6000, 46000]),
+          new Point([6000, 46000]),
           {size: [200, 200], padding: [100, 0, 0, 100], maxZoom: 6});
       expect(view.getResolution()).to.be(2);
       expect(view.getZoom()).to.be(6);
@@ -1288,7 +1288,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[1]).to.be(46100);
 
       view.fit(
-          new _ol_geom_Circle_([6000, 46000], 1000),
+          new Circle([6000, 46000], 1000),
           {size: [200, 200], constrainResolution: false});
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
@@ -1296,7 +1296,7 @@ describe('ol.View', function() {
 
       view.setRotation(Math.PI / 8);
       view.fit(
-          new _ol_geom_Circle_([6000, 46000], 1000),
+          new Circle([6000, 46000], 1000),
           {size: [200, 200], constrainResolution: false});
       expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
@@ -1304,7 +1304,7 @@ describe('ol.View', function() {
 
       view.setRotation(Math.PI / 4);
       view.fit(
-          new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
@@ -1328,7 +1328,7 @@ describe('ol.View', function() {
     });
     it('animates when duration is defined', function(done) {
       view.fit(
-          new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           {
             size: [200, 200],
             padding: [100, 0, 0, 100],
@@ -1348,7 +1348,7 @@ describe('ol.View', function() {
 
     });
     it('calls a callback when duration is not defined', function(done) {
-      view.fit(new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+      view.fit(new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
         callback: function(complete) {
           expect(complete).to.be(true);
           done();
@@ -1356,7 +1356,7 @@ describe('ol.View', function() {
       });
     });
     it('calls a callback when animation completes', function(done) {
-      view.fit(new _ol_geom_LineString_([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+      view.fit(new LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
         duration: 25,
         callback: function(complete) {
           expect(complete).to.be(true);

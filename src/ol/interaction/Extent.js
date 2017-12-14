@@ -8,9 +8,9 @@ import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_Event_ from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import GeometryType from '../geom/GeometryType.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -245,7 +245,7 @@ _ol_interaction_Extent_.handleUpEvent_ = function(mapBrowserEvent) {
 _ol_interaction_Extent_.getDefaultExtentStyleFunction_ = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
-    return style[_ol_geom_GeometryType_.POLYGON];
+    return style[GeometryType.POLYGON];
   };
 };
 
@@ -258,7 +258,7 @@ _ol_interaction_Extent_.getDefaultExtentStyleFunction_ = function() {
 _ol_interaction_Extent_.getDefaultPointerStyleFunction_ = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
-    return style[_ol_geom_GeometryType_.POINT];
+    return style[GeometryType.POINT];
   };
 };
 
@@ -376,7 +376,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
     if (!extent) {
       extentFeature = new _ol_Feature_({});
     } else {
-      extentFeature = new _ol_Feature_(_ol_geom_Polygon_.fromExtent(extent));
+      extentFeature = new _ol_Feature_(Polygon.fromExtent(extent));
     }
     this.extentFeature_ = extentFeature;
     this.extentOverlay_.getSource().addFeature(extentFeature);
@@ -384,7 +384,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
     if (!extent) {
       extentFeature.setGeometry(undefined);
     } else {
-      extentFeature.setGeometry(_ol_geom_Polygon_.fromExtent(extent));
+      extentFeature.setGeometry(Polygon.fromExtent(extent));
     }
   }
   return extentFeature;
@@ -399,7 +399,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
 _ol_interaction_Extent_.prototype.createOrUpdatePointerFeature_ = function(vertex) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new _ol_geom_Point_(vertex));
+    vertexFeature = new _ol_Feature_(new Point(vertex));
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {

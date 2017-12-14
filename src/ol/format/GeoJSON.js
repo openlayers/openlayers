@@ -9,13 +9,13 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
-import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
 
@@ -99,7 +99,7 @@ _ol_format_GeoJSON_.readGeometryCollectionGeometry_ = function(
       function(geometry) {
         return _ol_format_GeoJSON_.readGeometry_(geometry, opt_options);
       });
-  return new _ol_geom_GeometryCollection_(geometries);
+  return new GeometryCollection(geometries);
 };
 
 
@@ -109,7 +109,7 @@ _ol_format_GeoJSON_.readGeometryCollectionGeometry_ = function(
  * @return {ol.geom.Point} Point.
  */
 _ol_format_GeoJSON_.readPointGeometry_ = function(object) {
-  return new _ol_geom_Point_(object.coordinates);
+  return new Point(object.coordinates);
 };
 
 
@@ -119,7 +119,7 @@ _ol_format_GeoJSON_.readPointGeometry_ = function(object) {
  * @return {ol.geom.LineString} LineString.
  */
 _ol_format_GeoJSON_.readLineStringGeometry_ = function(object) {
-  return new _ol_geom_LineString_(object.coordinates);
+  return new LineString(object.coordinates);
 };
 
 
@@ -129,7 +129,7 @@ _ol_format_GeoJSON_.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiLineString} MultiLineString.
  */
 _ol_format_GeoJSON_.readMultiLineStringGeometry_ = function(object) {
-  return new _ol_geom_MultiLineString_(object.coordinates);
+  return new MultiLineString(object.coordinates);
 };
 
 
@@ -139,7 +139,7 @@ _ol_format_GeoJSON_.readMultiLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiPoint} MultiPoint.
  */
 _ol_format_GeoJSON_.readMultiPointGeometry_ = function(object) {
-  return new _ol_geom_MultiPoint_(object.coordinates);
+  return new MultiPoint(object.coordinates);
 };
 
 
@@ -149,7 +149,7 @@ _ol_format_GeoJSON_.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.MultiPolygon} MultiPolygon.
  */
 _ol_format_GeoJSON_.readMultiPolygonGeometry_ = function(object) {
-  return new _ol_geom_MultiPolygon_(object.coordinates);
+  return new MultiPolygon(object.coordinates);
 };
 
 
@@ -159,7 +159,7 @@ _ol_format_GeoJSON_.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Polygon} Polygon.
  */
 _ol_format_GeoJSON_.readPolygonGeometry_ = function(object) {
-  return new _ol_geom_Polygon_(object.coordinates);
+  return new Polygon(object.coordinates);
 };
 
 

@@ -3,8 +3,8 @@ import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../../../../src/ol/loadingstrategy.js';
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
@@ -16,7 +16,7 @@ describe('ol.source.Vector', function() {
   var pointFeature;
   var infiniteExtent;
   beforeEach(function() {
-    pointFeature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+    pointFeature = new _ol_Feature_(new Point([0, 0]));
     infiniteExtent = [-Infinity, -Infinity, Infinity, Infinity];
   });
 
@@ -92,9 +92,9 @@ describe('ol.source.Vector', function() {
     var features = [];
     var vectorSource;
     beforeEach(function() {
-      features.push(new _ol_Feature_(new _ol_geom_LineString_([[0, 0], [10, 10]])));
-      features.push(new _ol_Feature_(new _ol_geom_Point_([0, 10])));
-      features.push(new _ol_Feature_(new _ol_geom_Point_([10, 5])));
+      features.push(new _ol_Feature_(new LineString([[0, 0], [10, 10]])));
+      features.push(new _ol_Feature_(new Point([0, 10])));
+      features.push(new _ol_Feature_(new Point([10, 5])));
       vectorSource = new _ol_source_Vector_({
         features: features
       });
@@ -127,7 +127,7 @@ describe('ol.source.Vector', function() {
       var i;
       for (i = 0; i < 10; ++i) {
         features[i] =
-            new _ol_Feature_(new _ol_geom_Point_([Math.random(), Math.random()]));
+            new _ol_Feature_(new Point([Math.random(), Math.random()]));
       }
       features.push(new _ol_Feature_(null));
       vectorSource = new _ol_source_Vector_({
@@ -252,7 +252,7 @@ describe('ol.source.Vector', function() {
       it('keeps the R-Tree index up to date', function() {
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
             to.have.length(10);
-        features[0].setGeometry(new _ol_geom_Point_([100, 100]));
+        features[0].setGeometry(new Point([100, 100]));
         expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
             to.have.length(9);
       });
@@ -269,7 +269,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('keeps its index up-to-date', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Point_([1, 1]));
+      var feature = new _ol_Feature_(new Point([1, 1]));
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
           to.eql([feature]);
@@ -290,14 +290,14 @@ describe('ol.source.Vector', function() {
       var feature = new _ol_Feature_(null);
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
-      feature.setGeometry(new _ol_geom_Point_([1, 1]));
+      feature.setGeometry(new Point([1, 1]));
       expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
           to.eql([feature]);
       expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
     it('handles features with geometries changing to null', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Point_([1, 1]));
+      var feature = new _ol_Feature_(new Point([1, 1]));
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
       expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
@@ -308,7 +308,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('fires a change event when setting a feature\'s property', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Point_([1, 1]));
+      var feature = new _ol_Feature_(new Point([1, 1]));
       vectorSource.addFeature(feature);
       var listener = sinon.spy();
       _ol_events_.listen(vectorSource, 'change', listener);
@@ -317,7 +317,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('fires a changefeature event when updating a feature', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Point_([1, 1]));
+      var feature = new _ol_Feature_(new Point([1, 1]));
       vectorSource.addFeature(feature);
       var listener = sinon.spy(function(event) {
         expect(event.feature).to.be(feature);

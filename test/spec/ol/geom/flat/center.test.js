@@ -1,5 +1,5 @@
 import _ol_geom_flat_center_ from '../../../../../src/ol/geom/flat/center.js';
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 
 
 describe('ol.geom.flat.center', function() {
@@ -7,7 +7,7 @@ describe('ol.geom.flat.center', function() {
   describe('ol.geom.flat.center.linearRingss', function() {
 
     it('calculates the center of a square', function() {
-      var squareMultiPoly = new _ol_geom_MultiPolygon_([[
+      var squareMultiPoly = new MultiPolygon([[
         [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
       ]]);
       var got = _ol_geom_flat_center_.linearRingss(
@@ -20,7 +20,7 @@ describe('ol.geom.flat.center', function() {
     });
 
     it('calculates the centers of two squares', function() {
-      var squareMultiPoly = new _ol_geom_MultiPolygon_([
+      var squareMultiPoly = new MultiPolygon([
         [
           [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
         ],
@@ -38,7 +38,7 @@ describe('ol.geom.flat.center', function() {
     });
 
     it('does not care about holes', function() {
-      var polywithHole = new _ol_geom_MultiPolygon_([[
+      var polywithHole = new MultiPolygon([[
         [[0, 0], [0, 5], [5, 5], [5, 0], [0, 0]],
         [[1, 1], [1, 4], [4, 4], [4, 1], [1, 1]]
       ]]);

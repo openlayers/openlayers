@@ -3,7 +3,7 @@ import _ol_Map_ from '../../../src/ol/Map.js';
 import _ol_MapEvent_ from '../../../src/ol/MapEvent.js';
 import _ol_Overlay_ from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import Point from '../../../src/ol/geom/Point.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import _ol_interaction_ from '../../../src/ol/interaction.js';
 import _ol_interaction_DoubleClickZoom_ from '../../../src/ol/interaction/DoubleClickZoom.js';
@@ -197,7 +197,7 @@ describe('ol.Map', function() {
         target: target,
         layers: [new _ol_layer_Vector_({
           source: new _ol_source_Vector_({
-            features: [new _ol_Feature_(new _ol_geom_Point_([0, 0]))]
+            features: [new _ol_Feature_(new Point([0, 0]))]
           })
         })],
         view: new _ol_View_({

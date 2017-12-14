@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
@@ -44,7 +44,7 @@ describe('ol.style.Style', function() {
 
     it('copies all values', function() {
       var original = new _ol_style_Style_({
-        geometry: new _ol_geom_Point_([0, 0, 0]),
+        geometry: new Point([0, 0, 0]),
         fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
@@ -70,7 +70,7 @@ describe('ol.style.Style', function() {
 
     it('the clone does not reference the same objects as the original', function() {
       var original = new _ol_style_Style_({
-        geometry: new _ol_geom_Point_([0, 0, 0]),
+        geometry: new Point([0, 0, 0]),
         fill: new _ol_style_Fill_({
           color: '#319FD3'
         }),
@@ -195,21 +195,21 @@ describe('ol.style.Style', function() {
 
     it('creates a geometry function from a string', function() {
       var feature = new _ol_Feature_();
-      feature.set('myGeom', new _ol_geom_Point_([0, 0]));
+      feature.set('myGeom', new Point([0, 0]));
       style.setGeometry('myGeom');
       expect(style.getGeometryFunction()(feature))
           .to.eql(feature.get('myGeom'));
     });
 
     it('creates a geometry function from a geometry', function() {
-      var geom = new _ol_geom_Point_([0, 0]);
+      var geom = new Point([0, 0]);
       style.setGeometry(geom);
       expect(style.getGeometryFunction()())
           .to.eql(geom);
     });
 
     it('returns the configured geometry function', function() {
-      var geom = new _ol_geom_Point_([0, 0]);
+      var geom = new Point([0, 0]);
       style.setGeometry(function() {
         return geom;
       });
@@ -224,7 +224,7 @@ describe('ol.style.Style', function() {
       var style = new _ol_style_Style_();
       style.setGeometry('foo');
       expect(style.getGeometry()).to.eql('foo');
-      var geom = new _ol_geom_Point_([1, 2]);
+      var geom = new Point([1, 2]);
       style.setGeometry(geom);
       expect(style.getGeometry()).to.eql(geom);
       var fn = function() {

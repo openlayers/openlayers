@@ -14,9 +14,9 @@ import _ol_asserts_ from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
 import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
-import _ol_geom_GeometryType_ from './geom/GeometryType.js';
-import _ol_geom_Polygon_ from './geom/Polygon.js';
-import _ol_geom_SimpleGeometry_ from './geom/SimpleGeometry.js';
+import GeometryType from './geom/GeometryType.js';
+import Polygon from './geom/Polygon.js';
+import SimpleGeometry from './geom/SimpleGeometry.js';
 import _ol_math_ from './math.js';
 import _ol_obj_ from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
@@ -879,15 +879,15 @@ _ol_View_.prototype.fit = function(geometryOrExtent, opt_options) {
   }
   /** @type {ol.geom.SimpleGeometry} */
   var geometry;
-  if (!(geometryOrExtent instanceof _ol_geom_SimpleGeometry_)) {
+  if (!(geometryOrExtent instanceof SimpleGeometry)) {
     _ol_asserts_.assert(Array.isArray(geometryOrExtent),
         24); // Invalid extent or geometry provided as `geometry`
     _ol_asserts_.assert(!isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
-    geometry = _ol_geom_Polygon_.fromExtent(geometryOrExtent);
-  } else if (geometryOrExtent.getType() === _ol_geom_GeometryType_.CIRCLE) {
+    geometry = Polygon.fromExtent(geometryOrExtent);
+  } else if (geometryOrExtent.getType() === GeometryType.CIRCLE) {
     geometryOrExtent = geometryOrExtent.getExtent();
-    geometry = _ol_geom_Polygon_.fromExtent(geometryOrExtent);
+    geometry = Polygon.fromExtent(geometryOrExtent);
     geometry.rotate(this.getRotation(), getCenter(geometryOrExtent));
   } else {
     geometry = geometryOrExtent;

@@ -7,7 +7,7 @@ import _ol_colorlike_ from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
-import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
+import GeometryType from '../../geom/GeometryType.js';
 import _ol_geom_flat_inflate_ from '../../geom/flat/inflate.js';
 import _ol_geom_flat_length_ from '../../geom/flat/length.js';
 import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
@@ -395,7 +395,7 @@ _ol_render_canvas_Replay_.prototype.drawCustom = function(geometry, feature, ren
   var replayBegin = this.coordinates.length;
   var flatCoordinates, replayEnd, replayEnds, replayEndss;
   var offset;
-  if (type == _ol_geom_GeometryType_.MULTI_POLYGON) {
+  if (type == GeometryType.MULTI_POLYGON) {
     geometry = /** @type {ol.geom.MultiPolygon} */ (geometry);
     flatCoordinates = geometry.getOrientedFlatCoordinates();
     replayEndss = [];
@@ -408,9 +408,9 @@ _ol_render_canvas_Replay_.prototype.drawCustom = function(geometry, feature, ren
     }
     this.instructions.push([_ol_render_canvas_Instruction_.CUSTOM,
       replayBegin, replayEndss, geometry, renderer, _ol_geom_flat_inflate_.coordinatesss]);
-  } else if (type == _ol_geom_GeometryType_.POLYGON || type == _ol_geom_GeometryType_.MULTI_LINE_STRING) {
+  } else if (type == GeometryType.POLYGON || type == GeometryType.MULTI_LINE_STRING) {
     replayEnds = [];
-    flatCoordinates = (type == _ol_geom_GeometryType_.POLYGON) ?
+    flatCoordinates = (type == GeometryType.POLYGON) ?
       /** @type {ol.geom.Polygon} */ (geometry).getOrientedFlatCoordinates() :
       geometry.getFlatCoordinates();
     offset = this.drawCustomCoordinates_(flatCoordinates, 0,
@@ -418,13 +418,13 @@ _ol_render_canvas_Replay_.prototype.drawCustom = function(geometry, feature, ren
         stride, replayEnds);
     this.instructions.push([_ol_render_canvas_Instruction_.CUSTOM,
       replayBegin, replayEnds, geometry, renderer, _ol_geom_flat_inflate_.coordinatess]);
-  } else if (type == _ol_geom_GeometryType_.LINE_STRING || type == _ol_geom_GeometryType_.MULTI_POINT) {
+  } else if (type == GeometryType.LINE_STRING || type == GeometryType.MULTI_POINT) {
     flatCoordinates = geometry.getFlatCoordinates();
     replayEnd = this.appendFlatCoordinates(
         flatCoordinates, 0, flatCoordinates.length, stride, false, false);
     this.instructions.push([_ol_render_canvas_Instruction_.CUSTOM,
       replayBegin, replayEnd, geometry, renderer, _ol_geom_flat_inflate_.coordinates]);
-  } else if (type == _ol_geom_GeometryType_.POINT) {
+  } else if (type == GeometryType.POINT) {
     flatCoordinates = geometry.getFlatCoordinates();
     this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
     replayEnd = this.coordinates.length;

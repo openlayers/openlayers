@@ -1,5 +1,5 @@
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
-import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
+import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_render_webgl_TextReplay_ from '../../../../../src/ol/render/webgl/TextReplay.js';
 import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
@@ -126,19 +126,19 @@ describe('ol.render.webgl.TextReplay', function() {
       var point;
 
       point = [1000, 2000];
-      replay.drawText(new _ol_geom_Point_(point), null);
+      replay.drawText(new Point(point), null);
       expect(replay.vertices).to.have.length(256);
       expect(replay.indices).to.have.length(48);
 
       point = [2000, 3000];
-      replay.drawText(new _ol_geom_Point_(point), null);
+      replay.drawText(new Point(point), null);
       expect(replay.vertices).to.have.length(512);
       expect(replay.indices).to.have.length(96);
     });
 
     it('sets part of its state during drawing', function() {
       var point = [1000, 2000];
-      replay.drawText(new _ol_geom_Point_(point), null);
+      replay.drawText(new Point(point), null);
 
       var height = replay.currAtlas_.height;
       var widths = replay.currAtlas_.width;
@@ -162,7 +162,7 @@ describe('ol.render.webgl.TextReplay', function() {
       var point;
 
       point = [1000, 2000];
-      replay.drawText(new _ol_geom_Point_(point), null);
+      replay.drawText(new Point(point), null);
       expect(replay.vertices).to.have.length(0);
       expect(replay.indices).to.have.length(0);
     });

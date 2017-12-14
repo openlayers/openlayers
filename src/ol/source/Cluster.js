@@ -8,7 +8,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
-import _ol_geom_Point_ from '../geom/Point.js';
+import Point from '../geom/Point.js';
 import _ol_source_Vector_ from '../source/Vector.js';
 
 /**
@@ -56,7 +56,7 @@ var _ol_source_Cluster_ = function(options) {
    */
   this.geometryFunction = options.geometryFunction || function(feature) {
     var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
-    _ol_asserts_.assert(geometry instanceof _ol_geom_Point_,
+    _ol_asserts_.assert(geometry instanceof Point,
         10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
     return geometry;
   };
@@ -192,7 +192,7 @@ _ol_source_Cluster_.prototype.createCluster = function(features) {
   }
   _ol_coordinate_.scale(centroid, 1 / features.length);
 
-  var cluster = new _ol_Feature_(new _ol_geom_Point_(centroid));
+  var cluster = new _ol_Feature_(new Point(centroid));
   cluster.set('features', features);
   return cluster;
 };

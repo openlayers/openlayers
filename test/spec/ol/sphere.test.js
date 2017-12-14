@@ -4,11 +4,11 @@
 
 import _ol_Sphere_ from '../../../src/ol/Sphere.js';
 import _ol_format_WKT_ from '../../../src/ol/format/WKT.js';
-import _ol_geom_GeometryCollection_ from '../../../src/ol/geom/GeometryCollection.js';
-import _ol_geom_LineString_ from '../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_Point_ from '../../../src/ol/geom/Point.js';
+import GeometryCollection from '../../../src/ol/geom/GeometryCollection.js';
+import LineString from '../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../src/ol/geom/MultiPoint.js';
+import Point from '../../../src/ol/geom/Point.js';
 import _ol_proj_EPSG4326_ from '../../../src/ol/proj/EPSG4326.js';
 
 
@@ -115,13 +115,13 @@ describe('ol.Sphere', function() {
 
 describe('ol.Sphere.getLength()', function() {
   var cases = [{
-    geometry: new _ol_geom_Point_([0, 0]),
+    geometry: new Point([0, 0]),
     length: 0
   }, {
-    geometry: new _ol_geom_MultiPoint_([[0, 0], [1, 1]]),
+    geometry: new MultiPoint([[0, 0], [1, 1]]),
     length: 0
   }, {
-    geometry: new _ol_geom_LineString_([
+    geometry: new LineString([
       [12801741.441226462, -3763310.627144653],
       [14582853.293918837, -2511525.2348457114],
       [15918687.18343812, -2875744.624352243],
@@ -129,7 +129,7 @@ describe('ol.Sphere.getLength()', function() {
     ]),
     length: 4407939.124914191
   }, {
-    geometry: new _ol_geom_LineString_([
+    geometry: new LineString([
       [115, -32],
       [131, -22],
       [143, -25],
@@ -138,7 +138,7 @@ describe('ol.Sphere.getLength()', function() {
     options: {projection: 'EPSG:4326'},
     length: 4407939.124914191
   }, {
-    geometry: new _ol_geom_MultiLineString_([
+    geometry: new MultiLineString([
       [
         [115, -32],
         [131, -22],
@@ -154,14 +154,14 @@ describe('ol.Sphere.getLength()', function() {
     options: {projection: 'EPSG:4326'},
     length: 2 * 4407939.124914191
   }, {
-    geometry: new _ol_geom_GeometryCollection_([
-      new _ol_geom_LineString_([
+    geometry: new GeometryCollection([
+      new LineString([
         [115, -32],
         [131, -22],
         [143, -25],
         [150, -34]
       ]),
-      new _ol_geom_LineString_([
+      new LineString([
         [115, -32],
         [131, -22],
         [143, -25],

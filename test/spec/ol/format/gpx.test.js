@@ -1,9 +1,9 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_GPX_ from '../../../../src/ol/format/GPX.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
@@ -38,7 +38,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_LineString_);
+      expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([]);
       expect(g.getLayout()).to.be('XY');
     });
@@ -95,7 +95,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_LineString_);
+      expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
       expect(g.getLayout()).to.be('XY');
       var serialized = format.writeFeaturesNode(fs);
@@ -120,7 +120,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_LineString_);
+      expect(g).to.be.an(LineString);
       var p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       var p2 = transform([6, 5], 'EPSG:4326', 'EPSG:3857');
       expect(g.getCoordinates()).to.eql([p1, p2]);
@@ -162,7 +162,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_MultiLineString_);
+      expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([]);
       expect(g.getLayout()).to.be('XY');
     });
@@ -218,7 +218,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_MultiLineString_);
+      expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([[]]);
       expect(g.getLayout()).to.be('XY');
       var serialized = format.writeFeaturesNode(fs);
@@ -249,7 +249,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_MultiLineString_);
+      expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([
         [[2, 1, 3, 1263115752], [6, 5, 7, 1263115812]]
       ]);
@@ -284,7 +284,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_MultiLineString_);
+      expect(g).to.be.an(MultiLineString);
       var p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       p1.push(3, 1263115752);
       var p2 = transform([6, 5], 'EPSG:4326', 'EPSG:3857');
@@ -331,7 +331,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_MultiLineString_);
+      expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([
         [[2, 1, 3, 1263115752], [6, 5, 7, 1263115812]],
         [[9, 8, 10, 1263115872], [12, 11, 13, 1263115932]]
@@ -393,7 +393,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_Point_);
+      expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1]);
       expect(g.getLayout()).to.be('XY');
       var serialized = format.writeFeaturesNode(fs);
@@ -415,7 +415,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_Point_);
+      expect(g).to.be.an(Point);
       var expectedPoint = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       expect(g.getCoordinates()).to.eql(expectedPoint);
       expect(g.getLayout()).to.be('XY');
@@ -440,7 +440,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_Point_);
+      expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1, 3]);
       expect(g.getLayout()).to.be('XYZ');
       var serialized = format.writeFeaturesNode(fs);
@@ -462,7 +462,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_Point_);
+      expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1, 1263115752]);
       expect(g.getLayout()).to.be('XYM');
       var serialized = format.writeFeaturesNode(fs);
@@ -485,7 +485,7 @@ describe('ol.format.GPX', function() {
       var f = fs[0];
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
-      expect(g).to.be.an(_ol_geom_Point_);
+      expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1, 3, 1263115752]);
       expect(g.getLayout()).to.be('XYZM');
       var serialized = format.writeFeaturesNode(fs);
@@ -661,7 +661,7 @@ describe('ol.format.GPX', function() {
     });
 
     it('does not fail', function() {
-      var polygon = new _ol_geom_Polygon_(
+      var polygon = new Polygon(
           [[[0, 0], [2, 2], [4, 0], [0, 0]]]);
       var feature = new _ol_Feature_(polygon);
       var features = [feature];

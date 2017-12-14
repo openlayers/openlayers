@@ -9,14 +9,14 @@ import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import LineString from '../geom/LineString.js';
+import LinearRing from '../geom/LinearRing.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -264,8 +264,8 @@ _ol_format_GMLBase_.prototype.readPoint = function(node, objectStack) {
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var point = new _ol_geom_Point_(null);
-    point.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    var point = new Point(null);
+    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return point;
   }
 };
@@ -281,7 +281,7 @@ _ol_format_GMLBase_.prototype.readMultiPoint = function(node, objectStack) {
   var coordinates = _ol_xml_.pushParseAndPop([],
       this.MULTIPOINT_PARSERS_, node, objectStack, this);
   if (coordinates) {
-    return new _ol_geom_MultiPoint_(coordinates);
+    return new MultiPoint(coordinates);
   } else {
     return undefined;
   }
@@ -298,7 +298,7 @@ _ol_format_GMLBase_.prototype.readMultiLineString = function(node, objectStack) 
   var lineStrings = _ol_xml_.pushParseAndPop([],
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    var multiLineString = new _ol_geom_MultiLineString_(null);
+    var multiLineString = new MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
   } else {
@@ -317,7 +317,7 @@ _ol_format_GMLBase_.prototype.readMultiPolygon = function(node, objectStack) {
   var polygons = _ol_xml_.pushParseAndPop([],
       this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (polygons) {
-    var multiPolygon = new _ol_geom_MultiPolygon_(null);
+    var multiPolygon = new MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
   } else {
@@ -368,8 +368,8 @@ _ol_format_GMLBase_.prototype.readLineString = function(node, objectStack) {
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var lineString = new _ol_geom_LineString_(null);
-    lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    var lineString = new LineString(null);
+    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return lineString;
   } else {
     return undefined;
@@ -404,8 +404,8 @@ _ol_format_GMLBase_.prototype.readLinearRing = function(node, objectStack) {
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var ring = new _ol_geom_LinearRing_(null);
-    ring.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    var ring = new LinearRing(null);
+    ring.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return ring;
   } else {
     return undefined;
@@ -423,7 +423,7 @@ _ol_format_GMLBase_.prototype.readPolygon = function(node, objectStack) {
   var flatLinearRings = _ol_xml_.pushParseAndPop([null],
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
-    var polygon = new _ol_geom_Polygon_(null);
+    var polygon = new Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
     var i, ii;
@@ -432,7 +432,7 @@ _ol_format_GMLBase_.prototype.readPolygon = function(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
-        _ol_geom_GeometryLayout_.XYZ, flatCoordinates, ends);
+        GeometryLayout.XYZ, flatCoordinates, ends);
     return polygon;
   } else {
     return undefined;

@@ -7,12 +7,12 @@ import {createOrUpdate} from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
-import _ol_geom_Geometry_ from '../geom/Geometry.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Geometry from '../geom/Geometry.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -100,7 +100,7 @@ _ol_format_GML3_.prototype.readMultiCurve_ = function(node, objectStack) {
   var lineStrings = _ol_xml_.pushParseAndPop([],
       this.MULTICURVE_PARSERS_, node, objectStack, this);
   if (lineStrings) {
-    var multiLineString = new _ol_geom_MultiLineString_(null);
+    var multiLineString = new MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
   } else {
@@ -120,7 +120,7 @@ _ol_format_GML3_.prototype.readMultiSurface_ = function(node, objectStack) {
   var polygons = _ol_xml_.pushParseAndPop([],
       this.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (polygons) {
-    var multiPolygon = new _ol_geom_MultiPolygon_(null);
+    var multiPolygon = new MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
   } else {
@@ -244,7 +244,7 @@ _ol_format_GML3_.prototype.readSurface_ = function(node, objectStack) {
   var flatLinearRings = _ol_xml_.pushParseAndPop([null],
       this.SURFACE_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
-    var polygon = new _ol_geom_Polygon_(null);
+    var polygon = new Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
     var i, ii;
@@ -253,7 +253,7 @@ _ol_format_GML3_.prototype.readSurface_ = function(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
-        _ol_geom_GeometryLayout_.XYZ, flatCoordinates, ends);
+        GeometryLayout.XYZ, flatCoordinates, ends);
     return polygon;
   } else {
     return undefined;
@@ -272,8 +272,8 @@ _ol_format_GML3_.prototype.readCurve_ = function(node, objectStack) {
   var flatCoordinates = _ol_xml_.pushParseAndPop([null],
       this.CURVE_PARSERS_, node, objectStack, this);
   if (flatCoordinates) {
-    var lineString = new _ol_geom_LineString_(null);
-    lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    var lineString = new LineString(null);
+    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return lineString;
   } else {
     return undefined;
@@ -996,7 +996,7 @@ _ol_format_GML3_.prototype.writeFeatureElement = function(node, feature, objectS
     if (value !== null) {
       keys.push(key);
       values.push(value);
-      if (key == geometryName || value instanceof _ol_geom_Geometry_) {
+      if (key == geometryName || value instanceof Geometry) {
         if (!(key in context.serializers[featureNS])) {
           context.serializers[featureNS][key] = _ol_xml_.makeChildAppender(
               this.writeGeometryElement, this);

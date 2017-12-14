@@ -3,9 +3,9 @@
  */
 import {inherits} from '../index.js';
 import {createOrUpdateFromCoordinate, containsXY} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import GeometryType from '../geom/GeometryType.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_math_ from '../math.js';
 
@@ -19,12 +19,12 @@ import _ol_math_ from '../math.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var _ol_geom_Point_ = function(coordinates, opt_layout) {
-  _ol_geom_SimpleGeometry_.call(this);
+var Point = function(coordinates, opt_layout) {
+  SimpleGeometry.call(this);
   this.setCoordinates(coordinates, opt_layout);
 };
 
-inherits(_ol_geom_Point_, _ol_geom_SimpleGeometry_);
+inherits(Point, SimpleGeometry);
 
 
 /**
@@ -33,8 +33,8 @@ inherits(_ol_geom_Point_, _ol_geom_SimpleGeometry_);
  * @override
  * @api
  */
-_ol_geom_Point_.prototype.clone = function() {
-  var point = new _ol_geom_Point_(null);
+Point.prototype.clone = function() {
+  var point = new Point(null);
   point.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return point;
 };
@@ -43,7 +43,7 @@ _ol_geom_Point_.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_Point_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;
   var squaredDistance = _ol_math_.squaredDistance(
       x, y, flatCoordinates[0], flatCoordinates[1]);
@@ -67,7 +67,7 @@ _ol_geom_Point_.prototype.closestPointXY = function(x, y, closestPoint, minSquar
  * @override
  * @api
  */
-_ol_geom_Point_.prototype.getCoordinates = function() {
+Point.prototype.getCoordinates = function() {
   return !this.flatCoordinates ? [] : this.flatCoordinates.slice();
 };
 
@@ -75,7 +75,7 @@ _ol_geom_Point_.prototype.getCoordinates = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_Point_.prototype.computeExtent = function(extent) {
+Point.prototype.computeExtent = function(extent) {
   return createOrUpdateFromCoordinate(this.flatCoordinates, extent);
 };
 
@@ -84,8 +84,8 @@ _ol_geom_Point_.prototype.computeExtent = function(extent) {
  * @inheritDoc
  * @api
  */
-_ol_geom_Point_.prototype.getType = function() {
-  return _ol_geom_GeometryType_.POINT;
+Point.prototype.getType = function() {
+  return GeometryType.POINT;
 };
 
 
@@ -93,7 +93,7 @@ _ol_geom_Point_.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-_ol_geom_Point_.prototype.intersectsExtent = function(extent) {
+Point.prototype.intersectsExtent = function(extent) {
   return containsXY(extent, this.flatCoordinates[0], this.flatCoordinates[1]);
 };
 
@@ -102,9 +102,9 @@ _ol_geom_Point_.prototype.intersectsExtent = function(extent) {
  * @inheritDoc
  * @api
  */
-_ol_geom_Point_.prototype.setCoordinates = function(coordinates, opt_layout) {
+Point.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
+    this.setFlatCoordinates(GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 0);
     if (!this.flatCoordinates) {
@@ -121,8 +121,8 @@ _ol_geom_Point_.prototype.setCoordinates = function(coordinates, opt_layout) {
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-_ol_geom_Point_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
-export default _ol_geom_Point_;
+export default Point;

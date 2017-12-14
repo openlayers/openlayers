@@ -6,7 +6,7 @@ import _ol_events_ from './events.js';
 import _ol_events_EventType_ from './events/EventType.js';
 import {inherits} from './index.js';
 import _ol_Object_ from './Object.js';
-import _ol_geom_Geometry_ from './geom/Geometry.js';
+import Geometry from './geom/Geometry.js';
 import _ol_style_Style_ from './style/Style.js';
 
 /**
@@ -95,7 +95,7 @@ var _ol_Feature_ = function(opt_geometryOrProperties) {
       this.handleGeometryChanged_, this);
 
   if (opt_geometryOrProperties !== undefined) {
-    if (opt_geometryOrProperties instanceof _ol_geom_Geometry_ ||
+    if (opt_geometryOrProperties instanceof Geometry ||
         !opt_geometryOrProperties) {
       var geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);

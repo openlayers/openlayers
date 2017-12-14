@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -43,7 +43,7 @@ function addInteraction() {
       value = 'Circle';
       geometryFunction = function(coordinates, geometry) {
         if (!geometry) {
-          geometry = new _ol_geom_Polygon_(null);
+          geometry = new Polygon(null);
         }
         var center = coordinates[0];
         var last = coordinates[1];

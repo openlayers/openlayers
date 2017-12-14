@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_Polyline_ from '../../../../src/ol/format/Polyline.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 describe('ol.format.Polyline', function() {
@@ -267,7 +267,7 @@ describe('ol.format.Polyline', function() {
       var feature = format.readFeature(encodedFlatPoints);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
     });
 
@@ -277,7 +277,7 @@ describe('ol.format.Polyline', function() {
       });
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getCoordinates()).to.eql(points3857);
     });
 
@@ -292,7 +292,7 @@ describe('ol.format.Polyline', function() {
       var feature = features[0];
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
     });
 
@@ -305,7 +305,7 @@ describe('ol.format.Polyline', function() {
       var feature = features[0];
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getCoordinates()).to.eql(points3857);
     });
 
@@ -315,7 +315,7 @@ describe('ol.format.Polyline', function() {
 
     it('returns the expected geometry', function() {
       var geometry = format.readGeometry(encodedFlatPoints);
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getFlatCoordinates()).to.eql(flatPoints);
     });
 
@@ -342,7 +342,7 @@ describe('ol.format.Polyline', function() {
       var geometry = format.readGeometry(encodedFlatPoints, {
         featureProjection: 'EPSG:3857'
       });
-      expect(geometry).to.be.an(_ol_geom_LineString_);
+      expect(geometry).to.be.an(LineString);
       expect(geometry.getCoordinates()).to.eql(points3857);
     });
 
@@ -360,12 +360,12 @@ describe('ol.format.Polyline', function() {
   describe('#writeFeature', function() {
 
     it('returns the expected text', function() {
-      var feature = new _ol_Feature_(new _ol_geom_LineString_(points));
+      var feature = new _ol_Feature_(new LineString(points));
       expect(format.writeFeature(feature)).to.be(encodedFlatPoints);
     });
 
     it('transforms and returns the expected text', function() {
-      var feature = new _ol_Feature_(new _ol_geom_LineString_(points3857));
+      var feature = new _ol_Feature_(new LineString(points3857));
       expect(format.writeFeature(feature, {
         featureProjection: 'EPSG:3857'
       })).to.be(encodedFlatPoints);
@@ -376,12 +376,12 @@ describe('ol.format.Polyline', function() {
   describe('#writeFeature', function() {
 
     it('returns the expected text', function() {
-      var features = [new _ol_Feature_(new _ol_geom_LineString_(points))];
+      var features = [new _ol_Feature_(new LineString(points))];
       expect(format.writeFeatures(features)).to.be(encodedFlatPoints);
     });
 
     it('transforms and returns the expected text', function() {
-      var features = [new _ol_Feature_(new _ol_geom_LineString_(points3857))];
+      var features = [new _ol_Feature_(new LineString(points3857))];
       expect(format.writeFeatures(features, {
         featureProjection: 'EPSG:3857'
       })).to.be(encodedFlatPoints);
@@ -392,12 +392,12 @@ describe('ol.format.Polyline', function() {
   describe('#writeGeometry', function() {
 
     it('returns the expected text', function() {
-      var geometry = new _ol_geom_LineString_(points);
+      var geometry = new LineString(points);
       expect(format.writeGeometry(geometry)).to.be(encodedFlatPoints);
     });
 
     it('transforms and returns the expected text', function() {
-      var geometry = new _ol_geom_LineString_(points3857);
+      var geometry = new LineString(points3857);
       expect(format.writeGeometry(geometry, {
         featureProjection: 'EPSG:3857'
       })).to.be(encodedFlatPoints);

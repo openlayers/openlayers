@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -23,7 +23,7 @@ function createStyle(src, img) {
   });
 }
 
-var iconFeature = new _ol_Feature_(new _ol_geom_Point_([0, 0]));
+var iconFeature = new _ol_Feature_(new Point([0, 0]));
 iconFeature.set('style', createStyle('data/icon.png', undefined));
 
 var map = new _ol_Map_({

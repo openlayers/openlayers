@@ -3,8 +3,8 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import _ol_format_IGC_ from '../src/ol/format/IGC.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -123,7 +123,7 @@ var displaySnap = function(coordinate) {
     var geometry = closestFeature.getGeometry();
     var closestPoint = geometry.getClosestPoint(coordinate);
     if (point === null) {
-      point = new _ol_geom_Point_(closestPoint);
+      point = new Point(closestPoint);
     } else {
       point.setCoordinates(closestPoint);
     }
@@ -132,7 +132,7 @@ var displaySnap = function(coordinate) {
         closestFeature.get('PLT') + ' (' + date.toUTCString() + ')';
     var coordinates = [coordinate, [closestPoint[0], closestPoint[1]]];
     if (line === null) {
-      line = new _ol_geom_LineString_(coordinates);
+      line = new LineString(coordinates);
     } else {
       line.setCoordinates(coordinates);
     }
@@ -196,7 +196,7 @@ document.getElementById('time').addEventListener('input', function() {
     var coordinate = geometry.getCoordinateAtM(m, true);
     var highlight = feature.get('highlight');
     if (highlight === undefined) {
-      highlight = new _ol_Feature_(new _ol_geom_Point_(coordinate));
+      highlight = new _ol_Feature_(new Point(coordinate));
       feature.set('highlight', highlight);
       featureOverlay.getSource().addFeature(highlight);
     } else {

@@ -2,11 +2,11 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
 import _ol_format_WFS_ from '../../../../src/ol/format/WFS.js';
 import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
@@ -55,7 +55,7 @@ describe('ol.format.WFS', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_MultiPolygon_);
+      expect(feature.getGeometry()).to.be.an(MultiPolygon);
     });
 
     it('transforms and creates a polygon for Illinois', function() {
@@ -66,7 +66,7 @@ describe('ol.format.WFS', function() {
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       var geom = feature.getGeometry();
-      expect(geom).to.be.an(_ol_geom_MultiPolygon_);
+      expect(geom).to.be.an(MultiPolygon);
       var p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
       p.push(0);
       expect(geom.getFirstCoordinate()).to.eql(p);
@@ -106,7 +106,7 @@ describe('ol.format.WFS', function() {
       expect(feature.get('name')).to.equal('My Polygon with hole');
       expect(feature.get('boundedBy')).to.eql(
           [47.003018, -0.768746, 47.925567, 0.532597]);
-      expect(feature.getGeometry()).to.be.an(_ol_geom_MultiPolygon_);
+      expect(feature.getGeometry()).to.be.an(MultiPolygon);
       expect(feature.getGeometry().getFlatCoordinates()).
           to.have.length(60);
     });
@@ -551,7 +551,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['area'],
         filter: _ol_format_filter_.contains(
             'the_geom',
-            new _ol_geom_Polygon_([[
+            new Polygon([[
               [10, 20],
               [10, 25],
               [15, 25],
@@ -588,7 +588,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['area'],
         filter: _ol_format_filter_.intersects(
             'the_geom',
-            new _ol_geom_Polygon_([[
+            new Polygon([[
               [10, 20],
               [10, 25],
               [15, 25],
@@ -625,7 +625,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['area'],
         filter: _ol_format_filter_.within(
             'the_geom',
-            new _ol_geom_Polygon_([[
+            new Polygon([[
               [10, 20],
               [10, 25],
               [15, 25],
@@ -697,7 +697,7 @@ describe('ol.format.WFS', function() {
     it('creates the correct srsName', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiLineString_([[
+        the_geom: new MultiLineString([[
           [-5178372.1885436, 1992365.7775042],
           [-4434792.7774889, 1601008.1927386],
           [-4043435.1927233, 2148908.8114105]
@@ -729,7 +729,7 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -748,7 +748,7 @@ describe('ol.format.WFS', function() {
 
     it('creates the correct update if geometry name is alias', function() {
       var format = new _ol_format_WFS_();
-      var updateFeature = new _ol_Feature_(new _ol_geom_MultiLineString_([[
+      var updateFeature = new _ol_Feature_(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -774,7 +774,7 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -797,7 +797,7 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -830,14 +830,14 @@ describe('ol.format.WFS', function() {
       var format = new _ol_format_WFS_();
       var updateFeature = new _ol_Feature_();
       updateFeature.setGeometryName('the_geom');
-      updateFeature.setGeometry(new _ol_geom_MultiLineString_([[
+      updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
         [-12240318, 6507071],
         [-12416429, 6604910]
       ]]));
-      updateFeature.set('geom2', new _ol_geom_MultiLineString_([[
+      updateFeature.set('geom2', new MultiLineString([[
         [-12000000, 6700000],
         [-12000001, 6700001],
         [-12000002, 6700002]
@@ -864,14 +864,14 @@ describe('ol.format.WFS', function() {
     it('creates the correct transaction body', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -934,14 +934,14 @@ describe('ol.format.WFS', function() {
     it('handles the WFS version', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2], [3, 4.2]]),
+        the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2], [3, 4.2]]),
+        the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -978,14 +978,14 @@ describe('ol.format.WFS', function() {
     it('do not add feature prefix twice', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2]]),
+        the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -1021,14 +1021,14 @@ describe('ol.format.WFS', function() {
     it('handles 3D in WFS 1.0.0', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2, 4], [3, 4.2, 5]]),
+        the_geom: new LineString([[1.1, 2, 4], [3, 4.2, 5]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_LineString_([[1.1, 2, 6], [3, 4.2, 7]]),
+        the_geom: new LineString([[1.1, 2, 6], [3, 4.2, 7]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -1063,14 +1063,14 @@ describe('ol.format.WFS', function() {
     it('handles 3D in WFS 1.1.0', function() {
       var format = new _ol_format_WFS_();
       var insertFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2, 3]]),
+        the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
       var updateFeature = new _ol_Feature_({
-        the_geom: new _ol_geom_MultiPoint_([[1, 2, 3]]),
+        the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         // null value gets Property element with no Value
         nul: null,
@@ -1138,7 +1138,7 @@ describe('ol.format.WFS', function() {
       var fid = 'Historische_Messtischblaetter_WFS.71055885';
       expect(feature.getId()).to.equal(fid);
       expect(feature.get('titel')).to.equal('Arnstadt');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Polygon_);
+      expect(feature.getGeometry()).to.be.an(Polygon);
     });
 
   });

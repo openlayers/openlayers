@@ -3,9 +3,9 @@
  */
 import {inherits} from '../index.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import GeometryType from '../geom/GeometryType.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -23,9 +23,9 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var _ol_geom_LinearRing_ = function(coordinates, opt_layout) {
+var LinearRing = function(coordinates, opt_layout) {
 
-  _ol_geom_SimpleGeometry_.call(this);
+  SimpleGeometry.call(this);
 
   /**
    * @private
@@ -43,7 +43,7 @@ var _ol_geom_LinearRing_ = function(coordinates, opt_layout) {
 
 };
 
-inherits(_ol_geom_LinearRing_, _ol_geom_SimpleGeometry_);
+inherits(LinearRing, SimpleGeometry);
 
 
 /**
@@ -52,8 +52,8 @@ inherits(_ol_geom_LinearRing_, _ol_geom_SimpleGeometry_);
  * @override
  * @api
  */
-_ol_geom_LinearRing_.prototype.clone = function() {
-  var linearRing = new _ol_geom_LinearRing_(null);
+LinearRing.prototype.clone = function() {
+  var linearRing = new LinearRing(null);
   linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return linearRing;
 };
@@ -62,7 +62,7 @@ _ol_geom_LinearRing_.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_LinearRing_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
@@ -82,7 +82,7 @@ _ol_geom_LinearRing_.prototype.closestPointXY = function(x, y, closestPoint, min
  * @return {number} Area (on projected plane).
  * @api
  */
-_ol_geom_LinearRing_.prototype.getArea = function() {
+LinearRing.prototype.getArea = function() {
   return _ol_geom_flat_area_.linearRing(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
@@ -94,7 +94,7 @@ _ol_geom_LinearRing_.prototype.getArea = function() {
  * @override
  * @api
  */
-_ol_geom_LinearRing_.prototype.getCoordinates = function() {
+LinearRing.prototype.getCoordinates = function() {
   return _ol_geom_flat_inflate_.coordinates(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
@@ -103,14 +103,14 @@ _ol_geom_LinearRing_.prototype.getCoordinates = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_LinearRing_.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+LinearRing.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
       squaredTolerance, simplifiedFlatCoordinates, 0);
-  var simplifiedLinearRing = new _ol_geom_LinearRing_(null);
+  var simplifiedLinearRing = new LinearRing(null);
   simplifiedLinearRing.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates);
+      GeometryLayout.XY, simplifiedFlatCoordinates);
   return simplifiedLinearRing;
 };
 
@@ -119,15 +119,15 @@ _ol_geom_LinearRing_.prototype.getSimplifiedGeometryInternal = function(squaredT
  * @inheritDoc
  * @api
  */
-_ol_geom_LinearRing_.prototype.getType = function() {
-  return _ol_geom_GeometryType_.LINEAR_RING;
+LinearRing.prototype.getType = function() {
+  return GeometryType.LINEAR_RING;
 };
 
 
 /**
  * @inheritDoc
  */
-_ol_geom_LinearRing_.prototype.intersectsExtent = function(extent) {};
+LinearRing.prototype.intersectsExtent = function(extent) {};
 
 
 /**
@@ -137,9 +137,9 @@ _ol_geom_LinearRing_.prototype.intersectsExtent = function(extent) {};
  * @override
  * @api
  */
-_ol_geom_LinearRing_.prototype.setCoordinates = function(coordinates, opt_layout) {
+LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
+    this.setFlatCoordinates(GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
     if (!this.flatCoordinates) {
@@ -156,8 +156,8 @@ _ol_geom_LinearRing_.prototype.setCoordinates = function(coordinates, opt_layout
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-_ol_geom_LinearRing_.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+LinearRing.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };
-export default _ol_geom_LinearRing_;
+export default LinearRing;

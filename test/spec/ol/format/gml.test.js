@@ -1,13 +1,13 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_GML_ from '../../../../src/ol/format/GML.js';
 import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import LinearRing from '../../../../src/ol/geom/LinearRing.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Point from '../../../../src/ol/geom/Point.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
@@ -57,7 +57,7 @@ describe('ol.format.GML2', function() {
             '</gml:Point>';
 
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([-180, -90, 0]);
       });
 
@@ -68,7 +68,7 @@ describe('ol.format.GML2', function() {
             '</gml:Point>';
 
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([-180, -90, 42]);
       });
 
@@ -118,7 +118,7 @@ describe('ol.format.GML2', function() {
             '</gml:MultiPolygon>';
 
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [
             [
@@ -164,7 +164,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_LineString_([[1.1, 2], [3, 4.2]])
+        geometry: new LineString([[1.1, 2], [3, 4.2]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -195,7 +195,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_Polygon_([[[1.1, 2], [3, 4.2], [5.2, 6]]])
+        geometry: new Polygon([[[1.1, 2], [3, 4.2], [5.2, 6]]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -222,7 +222,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_Point_([1.1, 2])
+        geometry: new Point([1.1, 2])
       });
       feature.setId(1);
       var objectStack = [{
@@ -253,7 +253,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_MultiPoint_([[1.1, 2]])
+        geometry: new MultiPoint([[1.1, 2]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -284,7 +284,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_MultiLineString_([[[1.1, 2], [3, 4.2]]])
+        geometry: new MultiLineString([[[1.1, 2], [3, 4.2]]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -319,7 +319,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_MultiPolygon_([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
+        geometry: new MultiPolygon([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -355,7 +355,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos srsDimension="2">1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -368,7 +368,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1E7 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
         text =
             '<gml:Point xmlns:gml="http://www.opengis.net/gml" ' +
@@ -376,7 +376,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1e7 2</gml:pos>' +
             '</gml:Point>';
         g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([10000000, 2, 0]);
       });
 
@@ -390,7 +390,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(format, text, config);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
             transform([1, 2], 'CRS:84', 'EPSG:3857'));
@@ -412,7 +412,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos>1 2</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(formatNoSrs, text, config);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
             transform([1, 2], 'CRS:84', 'EPSG:3857'));
@@ -425,7 +425,7 @@ describe('ol.format.GML3', function() {
             '  <gml:pos srsDimension="2">2 1</gml:pos>' +
             '</gml:Point>';
         var g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(_ol_geom_Point_);
+        expect(g).to.be.an(Point);
         expect(g.getCoordinates()).to.eql([1, 2, 0]);
         var serialized = formatWGS84.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -442,7 +442,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList srsDimension="2">1 2 3 4</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -459,7 +459,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList>1 2 3 4</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text, config);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         var coordinates = g.getCoordinates();
         expect(coordinates[0].slice(0, 2)).to.eql(
             transform([1, 2], 'CRS:84', 'EPSG:3857'));
@@ -481,7 +481,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList srsDimension="2">2 1 4 3</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(formatWGS84, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         var serialized = formatWGS84.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -500,7 +500,7 @@ describe('ol.format.GML3', function() {
                 ' <gml:posList srsDimension="2">-90 -180 90 180</gml:posList>' +
                 '</gml:LineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
         var serialized = formatWGS84.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -514,7 +514,7 @@ describe('ol.format.GML3', function() {
                 '  <gml:pos srsDimension="2">-90 -180</gml:pos>' +
                 '</gml:Point>';
             var g = readGeometry(format, text);
-            expect(g).to.be.an(_ol_geom_Point_);
+            expect(g).to.be.an(Point);
             expect(g.getCoordinates()).to.eql([-180, -90, 0]);
             var serialized = formatWGS84.writeGeometryNode(g);
             expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -563,7 +563,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList>1 2 3 4 5 6</gml:posList>' +
             '</gml:LineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
       });
 
@@ -578,7 +578,7 @@ describe('ol.format.GML3', function() {
             '  <gml:posList srsDimension="2">1 2 3 4 5 6 1 2</gml:posList>' +
             '</gml:LinearRing>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LinearRing_);
+        expect(g).to.be.an(LinearRing);
         expect(g.getCoordinates()).to.eql(
             [[1, 2, 0], [3, 4, 0], [5, 6, 0], [1, 2, 0]]);
         var serialized = format.writeGeometryNode(g);
@@ -610,7 +610,7 @@ describe('ol.format.GML3', function() {
             '  </gml:interior>' +
             '</gml:Polygon>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Polygon_);
+        expect(g).to.be.an(Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
           [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
         [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
@@ -653,7 +653,7 @@ describe('ol.format.GML3', function() {
             '  </gml:patches>' +
             '</gml:Surface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Polygon_);
+        expect(g).to.be.an(Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
           [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
         [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
@@ -677,7 +677,7 @@ describe('ol.format.GML3', function() {
             '  </gml:segments>' +
             '</gml:Curve>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_LineString_);
+        expect(g).to.be.an(LineString);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [3, 4, 0]]);
         format = new _ol_format_GML_({srsName: 'CRS:84', curve: true});
         var serialized = format.writeGeometryNode(g);
@@ -724,7 +724,7 @@ describe('ol.format.GML3', function() {
             '  </gml:pointMember>' +
             '</gml:MultiPoint>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPoint_);
+        expect(g).to.be.an(MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
@@ -747,7 +747,7 @@ describe('ol.format.GML3', function() {
             '  </gml:pointMembers>' +
             '</gml:MultiPoint>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPoint_);
+        expect(g).to.be.an(MultiPoint);
         expect(g.getCoordinates()).to.eql([[1, 2, 0], [2, 3, 0], [3, 4, 0]]);
       });
 
@@ -771,7 +771,7 @@ describe('ol.format.GML3', function() {
             '  </gml:lineStringMember>' +
             '</gml:MultiLineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiLineString_);
+        expect(g).to.be.an(MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
         format = new _ol_format_GML_({srsName: 'CRS:84', multiCurve: false});
@@ -793,7 +793,7 @@ describe('ol.format.GML3', function() {
             '  </gml:lineStringMembers>' +
             '</gml:MultiLineString>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiLineString_);
+        expect(g).to.be.an(MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
       });
@@ -844,7 +844,7 @@ describe('ol.format.GML3', function() {
             '  </gml:polygonMember>' +
             '</gml:MultiPolygon>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -887,7 +887,7 @@ describe('ol.format.GML3', function() {
             '  </gml:polygonMembers>' +
             '</gml:MultiPolygon>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -916,7 +916,7 @@ describe('ol.format.GML3', function() {
                 '  </gml:curveMember>' +
                 '</gml:MultiCurve>';
             var g = readGeometry(format, text);
-            expect(g).to.be.an(_ol_geom_MultiLineString_);
+            expect(g).to.be.an(MultiLineString);
             expect(g.getCoordinates()).to.eql(
                 [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
             var serialized = format.writeGeometryNode(g);
@@ -947,7 +947,7 @@ describe('ol.format.GML3', function() {
             '  </gml:curveMember>' +
             '</gml:MultiCurve>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiLineString_);
+        expect(g).to.be.an(MultiLineString);
         expect(g.getCoordinates()).to.eql(
             [[[1, 2, 0], [2, 3, 0]], [[3, 4, 0], [4, 5, 0]]]);
         format = new _ol_format_GML_({srsName: 'CRS:84', curve: true});
@@ -1001,7 +1001,7 @@ describe('ol.format.GML3', function() {
             '  </gml:surfaceMember>' +
             '</gml:MultiSurface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1045,7 +1045,7 @@ describe('ol.format.GML3', function() {
             '  </gml:surfaceMembers>' +
             '</gml:MultiSurface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1103,7 +1103,7 @@ describe('ol.format.GML3', function() {
             '  </gml:surfaceMember>' +
             '</gml:MultiSurface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1308,7 +1308,7 @@ describe('ol.format.GML3', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_MultiPolygon_);
+      expect(feature.getGeometry()).to.be.an(MultiPolygon);
     });
 
   });
@@ -1333,8 +1333,8 @@ describe('ol.format.GML3', function() {
 
     it('creates 2 geometries', function() {
       var feature = features[0];
-      expect(feature.get('center')).to.be.a(_ol_geom_Point_);
-      expect(feature.get('the_geom')).to.be.a(_ol_geom_MultiPolygon_);
+      expect(feature.get('center')).to.be.a(Point);
+      expect(feature.get('the_geom')).to.be.a(MultiPolygon);
     });
 
   });
@@ -1522,19 +1522,19 @@ describe('ol.format.GML3', function() {
     it('creates a LineString', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('geoserver_layer.1');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_LineString_);
+      expect(feature.getGeometry()).to.be.an(LineString);
     });
 
     it('creates a Polygon', function() {
       feature = features[1];
       expect(feature.getId()).to.equal('geoserver_layer.2');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Polygon_);
+      expect(feature.getGeometry()).to.be.an(Polygon);
     });
 
     it('creates a Point', function() {
       feature = features[2];
       expect(feature.getId()).to.equal('geoserver_layer.3');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Point_);
+      expect(feature.getGeometry()).to.be.an(Point);
     });
 
 

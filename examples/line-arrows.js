@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -34,7 +34,7 @@ var styleFunction = function(feature) {
     var rotation = Math.atan2(dy, dx);
     // arrows
     styles.push(new _ol_style_Style_({
-      geometry: new _ol_geom_Point_(end),
+      geometry: new Point(end),
       image: new _ol_style_Icon_({
         src: 'data/arrow.png',
         anchor: [0.75, 0.5],

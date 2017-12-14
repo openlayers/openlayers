@@ -1,7 +1,7 @@
-import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import LineString from '../../../../src/ol/geom/LineString.js';
+import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
 
 
@@ -55,7 +55,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatInteriorPoint()', function() {
     it('returns correct point and caches it', function() {
-      var polygon = new _ol_geom_Polygon_([[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]]);
+      var polygon = new Polygon([[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]]);
       var feature = new _ol_render_Feature_('Polygon', polygon.getOrientedFlatCoordinates(),
           polygon.getEnds());
       expect(feature.getFlatInteriorPoint()).to.eql([5, 5, 10]);
@@ -65,7 +65,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatInteriorPoints()', function() {
     it('returns correct points and caches them', function() {
-      var polygon = new _ol_geom_MultiPolygon_([
+      var polygon = new MultiPolygon([
         [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]],
         [[[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]]
       ]);
@@ -78,7 +78,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatMidpoint()', function() {
     it('returns correct point', function() {
-      var line = new _ol_geom_LineString_([[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]);
+      var line = new LineString([[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]);
       var feature = new _ol_render_Feature_('LineString', line.getFlatCoordinates());
       expect(feature.getFlatMidpoint()).to.eql([10, 10]);
       expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);
@@ -87,7 +87,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatMidpoints()', function() {
     it('returns correct points and caches them', function() {
-      var line = new _ol_geom_MultiLineString_([
+      var line = new MultiLineString([
         [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
         [[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]
       ]);

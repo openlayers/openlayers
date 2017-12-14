@@ -3,7 +3,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
+import Point from '../../../../src/ol/geom/Point.js';
 import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -28,9 +28,9 @@ describe('ol.interaction.Translate', function() {
     document.body.appendChild(target);
     source = new _ol_source_Vector_();
     features = [new _ol_Feature_({
-      geometry: new _ol_geom_Point_([10, -20])
+      geometry: new Point([10, -20])
     }), new _ol_Feature_({
-      geometry: new _ol_geom_Point_([20, -30])
+      geometry: new Point([20, -30])
     })];
     source.addFeatures(features);
     var layer = new _ol_layer_Vector_({source: source});
@@ -172,7 +172,7 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_Point_);
+      expect(geometry).to.be.a(Point);
       expect(geometry.getCoordinates()).to.eql([50, 40]);
 
       validateEvents(events, [features[0]]);
@@ -186,7 +186,7 @@ describe('ol.interaction.Translate', function() {
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
       var geometry = features[1].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_Point_);
+      expect(geometry).to.be.a(Point);
       expect(geometry.getCoordinates()).to.eql([20, -30]);
 
       expect(events).to.be.empty();

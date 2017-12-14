@@ -3,8 +3,8 @@ import _ol_Observable_ from '../src/ol/Observable.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_Sphere_ from '../src/ol/Sphere.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_LineString_ from '../src/ol/geom/LineString.js';
-import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
+import LineString from '../src/ol/geom/LineString.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -104,9 +104,9 @@ var pointerMoveHandler = function(evt) {
 
   if (sketch) {
     var geom = (sketch.getGeometry());
-    if (geom instanceof _ol_geom_Polygon_) {
+    if (geom instanceof Polygon) {
       helpMsg = continuePolygonMsg;
-    } else if (geom instanceof _ol_geom_LineString_) {
+    } else if (geom instanceof LineString) {
       helpMsg = continueLineMsg;
     }
   }
@@ -217,10 +217,10 @@ function addInteraction() {
         listener = sketch.getGeometry().on('change', function(evt) {
           var geom = evt.target;
           var output;
-          if (geom instanceof _ol_geom_Polygon_) {
+          if (geom instanceof Polygon) {
             output = formatArea(geom);
             tooltipCoord = geom.getInteriorPoint().getCoordinates();
-          } else if (geom instanceof _ol_geom_LineString_) {
+          } else if (geom instanceof LineString) {
             output = formatLength(geom);
             tooltipCoord = geom.getLastCoordinate();
           }

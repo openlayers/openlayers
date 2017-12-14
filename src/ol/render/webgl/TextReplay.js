@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
-import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
+import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_render_webgl_ from '../webgl.js';
@@ -127,26 +127,26 @@ _ol_render_webgl_TextReplay_.prototype.drawText = function(geometry, feature) {
     var end = 2;
     var stride = 2;
     switch (geometry.getType()) {
-      case _ol_geom_GeometryType_.POINT:
-      case _ol_geom_GeometryType_.MULTI_POINT:
+      case GeometryType.POINT:
+      case GeometryType.MULTI_POINT:
         flatCoordinates = geometry.getFlatCoordinates();
         end = flatCoordinates.length;
         stride = geometry.getStride();
         break;
-      case _ol_geom_GeometryType_.CIRCLE:
+      case GeometryType.CIRCLE:
         flatCoordinates = /** @type {ol.geom.Circle} */ (geometry).getCenter();
         break;
-      case _ol_geom_GeometryType_.LINE_STRING:
+      case GeometryType.LINE_STRING:
         flatCoordinates = /** @type {ol.geom.LineString} */ (geometry).getFlatMidpoint();
         break;
-      case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+      case GeometryType.MULTI_LINE_STRING:
         flatCoordinates = /** @type {ol.geom.MultiLineString} */ (geometry).getFlatMidpoints();
         end = flatCoordinates.length;
         break;
-      case _ol_geom_GeometryType_.POLYGON:
+      case GeometryType.POLYGON:
         flatCoordinates = /** @type {ol.geom.Polygon} */ (geometry).getFlatInteriorPoint();
         break;
-      case _ol_geom_GeometryType_.MULTI_POLYGON:
+      case GeometryType.MULTI_POLYGON:
         flatCoordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getFlatInteriorPoints();
         end = flatCoordinates.length;
         break;

@@ -6,8 +6,8 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_IGCZ_ from '../format/IGCZ.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import LineString from '../geom/LineString.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -157,9 +157,9 @@ _ol_format_IGC_.prototype.readFeatureFromText = function(text, opt_options) {
   if (flatCoordinates.length === 0) {
     return null;
   }
-  var lineString = new _ol_geom_LineString_(null);
+  var lineString = new LineString(null);
   var layout = altitudeMode == _ol_format_IGCZ_.NONE ?
-    _ol_geom_GeometryLayout_.XYM : _ol_geom_GeometryLayout_.XYZM;
+    GeometryLayout.XYM : GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
   var feature = new _ol_Feature_(_ol_format_Feature_.transformWithOptions(
       lineString, false, opt_options));

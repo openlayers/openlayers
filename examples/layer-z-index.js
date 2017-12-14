@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_geom_Point_ from '../src/ol/geom/Point.js';
+import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -46,7 +46,7 @@ var styles = {
 
 
 function createLayer(coordinates, style, zIndex) {
-  var feature = new _ol_Feature_(new _ol_geom_Point_(coordinates));
+  var feature = new _ol_Feature_(new Point(coordinates));
   feature.setStyle(style);
 
   var source = new _ol_source_Vector_({

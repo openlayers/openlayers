@@ -5,16 +5,16 @@ import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
-import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
-import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
-import _ol_geom_MultiPoint_ from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
-import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
+import GeometryCollection from '../geom/GeometryCollection.js';
+import GeometryType from '../geom/GeometryType.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
+import LineString from '../geom/LineString.js';
+import MultiLineString from '../geom/MultiLineString.js';
+import MultiPoint from '../geom/MultiPoint.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
+import Point from '../geom/Point.js';
+import Polygon from '../geom/Polygon.js';
+import SimpleGeometry from '../geom/SimpleGeometry.js';
 
 /**
  * @classdesc
@@ -187,10 +187,10 @@ _ol_format_WKT_.encodeMultiPolygonGeometry_ = function(geom) {
 _ol_format_WKT_.encodeGeometryLayout_ = function(geom) {
   var layout = geom.getLayout();
   var dimInfo = '';
-  if (layout === _ol_geom_GeometryLayout_.XYZ || layout === _ol_geom_GeometryLayout_.XYZM) {
+  if (layout === GeometryLayout.XYZ || layout === GeometryLayout.XYZM) {
     dimInfo += _ol_format_WKT_.Z;
   }
-  if (layout === _ol_geom_GeometryLayout_.XYM || layout === _ol_geom_GeometryLayout_.XYZM) {
+  if (layout === GeometryLayout.XYM || layout === GeometryLayout.XYZM) {
     dimInfo += _ol_format_WKT_.M;
   }
   return dimInfo;
@@ -208,7 +208,7 @@ _ol_format_WKT_.encode_ = function(geom) {
   var geometryEncoder = _ol_format_WKT_.GeometryEncoder_[type];
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
-  if (geom instanceof _ol_geom_SimpleGeometry_) {
+  if (geom instanceof SimpleGeometry) {
     var dimInfo = _ol_format_WKT_.encodeGeometryLayout_(geom);
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
@@ -296,7 +296,7 @@ _ol_format_WKT_.prototype.readFeaturesFromText = function(text, opt_options) {
   var geometries = [];
   var geometry = this.readGeometryFromText(text, opt_options);
   if (this.splitCollection_ &&
-      geometry.getType() == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {
+      geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
     geometries = (/** @type {ol.geom.GeometryCollection} */ (geometry))
         .getGeometriesArray();
   } else {
@@ -386,7 +386,7 @@ _ol_format_WKT_.prototype.writeFeaturesText = function(features, opt_options) {
   for (var i = 0, ii = features.length; i < ii; ++i) {
     geometries.push(features[i].getGeometry());
   }
-  var collection = new _ol_geom_GeometryCollection_(geometries);
+  var collection = new GeometryCollection(geometries);
   return this.writeGeometryText(collection, opt_options);
 };
 
@@ -587,7 +587,7 @@ _ol_format_WKT_.Parser = function(lexer) {
    * @type {ol.geom.GeometryLayout}
    * @private
    */
-  this.layout_ = _ol_geom_GeometryLayout_.XY;
+  this.layout_ = GeometryLayout.XY;
 };
 
 
@@ -641,18 +641,18 @@ _ol_format_WKT_.Parser.prototype.parse = function() {
  * @private
  */
 _ol_format_WKT_.Parser.prototype.parseGeometryLayout_ = function() {
-  var layout = _ol_geom_GeometryLayout_.XY;
+  var layout = GeometryLayout.XY;
   var dimToken = this.token_;
   if (this.isTokenType(_ol_format_WKT_.TokenType_.TEXT)) {
     var dimInfo = dimToken.value;
     if (dimInfo === _ol_format_WKT_.Z) {
-      layout = _ol_geom_GeometryLayout_.XYZ;
+      layout = GeometryLayout.XYZ;
     } else if (dimInfo === _ol_format_WKT_.M) {
-      layout = _ol_geom_GeometryLayout_.XYM;
+      layout = GeometryLayout.XYM;
     } else if (dimInfo === _ol_format_WKT_.ZM) {
-      layout = _ol_geom_GeometryLayout_.XYZM;
+      layout = GeometryLayout.XYZM;
     }
-    if (layout !== _ol_geom_GeometryLayout_.XY) {
+    if (layout !== GeometryLayout.XY) {
       this.consume_();
     }
   }
@@ -669,9 +669,9 @@ _ol_format_WKT_.Parser.prototype.parseGeometry_ = function() {
   if (this.match(_ol_format_WKT_.TokenType_.TEXT)) {
     var geomType = token.value;
     this.layout_ = this.parseGeometryLayout_();
-    if (geomType == _ol_geom_GeometryType_.GEOMETRY_COLLECTION.toUpperCase()) {
+    if (geomType == GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
       var geometries = this.parseGeometryCollectionText_();
-      return new _ol_geom_GeometryCollection_(geometries);
+      return new GeometryCollection(geometries);
     } else {
       var parser = _ol_format_WKT_.Parser.GeometryParser_[geomType];
       var ctor = _ol_format_WKT_.Parser.GeometryConstructor_[geomType];
@@ -918,12 +918,12 @@ _ol_format_WKT_.Parser.prototype.formatErrorMessage_ = function() {
  * @private
  */
 _ol_format_WKT_.Parser.GeometryConstructor_ = {
-  'POINT': _ol_geom_Point_,
-  'LINESTRING': _ol_geom_LineString_,
-  'POLYGON': _ol_geom_Polygon_,
-  'MULTIPOINT': _ol_geom_MultiPoint_,
-  'MULTILINESTRING': _ol_geom_MultiLineString_,
-  'MULTIPOLYGON': _ol_geom_MultiPolygon_
+  'POINT': Point,
+  'LINESTRING': LineString,
+  'POLYGON': Polygon,
+  'MULTIPOINT': MultiPoint,
+  'MULTILINESTRING': MultiLineString,
+  'MULTIPOLYGON': MultiPolygon
 };
 
 

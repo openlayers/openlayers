@@ -9,8 +9,8 @@ import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
 import _ol_colorlike_ from '../../colorlike.js';
 import {intersects} from '../../extent.js';
-import _ol_geom_GeometryType_ from '../../geom/GeometryType.js';
-import _ol_geom_SimpleGeometry_ from '../../geom/SimpleGeometry.js';
+import GeometryType from '../../geom/GeometryType.js';
+import SimpleGeometry from '../../geom/SimpleGeometry.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
@@ -412,7 +412,7 @@ _ol_render_canvas_Immediate_.prototype.drawCircle = function(geometry) {
     if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    var pixelCoordinates = _ol_geom_SimpleGeometry_.transform2D(
+    var pixelCoordinates = SimpleGeometry.transform2D(
         geometry, this.transform_, this.pixelCoordinates_);
     var dx = pixelCoordinates[2] - pixelCoordinates[0];
     var dy = pixelCoordinates[3] - pixelCoordinates[1];
@@ -460,28 +460,28 @@ _ol_render_canvas_Immediate_.prototype.setStyle = function(style) {
 _ol_render_canvas_Immediate_.prototype.drawGeometry = function(geometry) {
   var type = geometry.getType();
   switch (type) {
-    case _ol_geom_GeometryType_.POINT:
+    case GeometryType.POINT:
       this.drawPoint(/** @type {ol.geom.Point} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.LINE_STRING:
+    case GeometryType.LINE_STRING:
       this.drawLineString(/** @type {ol.geom.LineString} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.POLYGON:
+    case GeometryType.POLYGON:
       this.drawPolygon(/** @type {ol.geom.Polygon} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.MULTI_POINT:
+    case GeometryType.MULTI_POINT:
       this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.MULTI_LINE_STRING:
+    case GeometryType.MULTI_LINE_STRING:
       this.drawMultiLineString(/** @type {ol.geom.MultiLineString} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.MULTI_POLYGON:
+    case GeometryType.MULTI_POLYGON:
       this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.GEOMETRY_COLLECTION:
+    case GeometryType.GEOMETRY_COLLECTION:
       this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry));
       break;
-    case _ol_geom_GeometryType_.CIRCLE:
+    case GeometryType.CIRCLE:
       this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
       break;
     default:

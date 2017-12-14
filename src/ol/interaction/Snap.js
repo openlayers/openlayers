@@ -9,8 +9,8 @@ import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {boundingExtent, createEmpty} from '../extent.js';
 import _ol_functions_ from '../functions.js';
-import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import GeometryType from '../geom/GeometryType.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Vector_ from '../source/Vector.js';
@@ -353,7 +353,7 @@ _ol_interaction_Snap_.prototype.snapTo = function(pixel, pixelCoordinate, map) {
   if (this.vertex_ && !this.edge_) {
     segments = segments.filter(function(segment) {
       return segment.feature.getGeometry().getType() !==
-          _ol_geom_GeometryType_.CIRCLE;
+          GeometryType.CIRCLE;
     });
   }
 
@@ -367,7 +367,7 @@ _ol_interaction_Snap_.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     segments.sort(this.sortByDistance_);
     var closestSegment = segments[0].segment;
     var isCircle = segments[0].feature.getGeometry().getType() ===
-        _ol_geom_GeometryType_.CIRCLE;
+        GeometryType.CIRCLE;
     if (this.vertex_ && !this.edge_) {
       pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
@@ -435,7 +435,7 @@ _ol_interaction_Snap_.prototype.updateFeature_ = function(feature) {
  * @private
  */
 _ol_interaction_Snap_.prototype.writeCircleGeometry_ = function(feature, geometry) {
-  var polygon = _ol_geom_Polygon_.fromCircle(geometry);
+  var polygon = Polygon.fromCircle(geometry);
   var coordinates = polygon.getCoordinates()[0];
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
