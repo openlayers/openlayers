@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
-import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
@@ -747,7 +747,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('encodes a circle as an empty geometry collection', function() {
-      var circle = new _ol_geom_Circle_([0, 0], 1);
+      var circle = new Circle([0, 0], 1);
       var geojson = format.writeGeometryObject(circle);
       expect(geojson).to.eql({
         'type': 'GeometryCollection',

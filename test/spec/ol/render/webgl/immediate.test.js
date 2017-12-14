@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
@@ -26,7 +26,7 @@ describe('ol.render.webgl.Immediate', function() {
       fill: new _ol_style_Fill_(),
       stroke: new _ol_style_Stroke_()
     });
-    circle = new _ol_geom_Circle_([0, 0], 5);
+    circle = new Circle([0, 0], 5);
     line = new LineString([[0, 0], [5, 5]]);
     multiLine = new MultiLineString([[[0, 0], [5, 5]]]);
     point = new Point([0, 0]);
@@ -75,7 +75,7 @@ describe('ol.render.webgl.Immediate', function() {
 
     it('does nothing if geometry is out of bounds', function() {
       feat = new _ol_Feature_({
-        geometry: new _ol_geom_Circle_([540, 540], 1)
+        geometry: new Circle([540, 540], 1)
       });
       context.drawFeature(feat, style);
       expect(context.setStyle.called).to.be(false);

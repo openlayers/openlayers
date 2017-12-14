@@ -1,5 +1,5 @@
 import _ol_coordinate_ from '../../../src/ol/coordinate.js';
-import _ol_geom_Circle_ from '../../../src/ol/geom/Circle.js';
+import Circle from '../../../src/ol/geom/Circle.js';
 
 
 describe('ol.coordinate', function() {
@@ -90,7 +90,7 @@ describe('ol.coordinate', function() {
 
   describe('#closestOnCircle', function() {
     var center = [5, 10];
-    var circle = new _ol_geom_Circle_(center, 10);
+    var circle = new Circle(center, 10);
     it('can find the closest point on circle', function() {
       expect(_ol_coordinate_.closestOnCircle([-20, 10], circle))
           .to.eql([-5, 10]);

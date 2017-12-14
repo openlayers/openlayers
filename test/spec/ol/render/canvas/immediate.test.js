@@ -1,4 +1,4 @@
-import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
@@ -154,7 +154,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawCircle');
 
-      var geometry = new _ol_geom_Circle_([0, 0]);
+      var geometry = new Circle([0, 0]);
       context.drawGeometry(geometry);
 
       expect(context.drawCircle.calledOnce).to.be(true);

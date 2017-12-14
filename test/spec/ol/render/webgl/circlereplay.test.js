@@ -1,6 +1,6 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_geom_Circle_ from '../../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../../src/ol/geom/Circle.js';
 import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/Locations.js';
@@ -48,7 +48,7 @@ describe('ol.render.webgl.CircleReplay', function() {
 
   describe('#drawCircle', function() {
     it('sets the buffer data', function() {
-      var circle = new _ol_geom_Circle_([0, 0], 5000);
+      var circle = new Circle([0, 0], 5000);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.drawCircle(circle, null);
@@ -61,7 +61,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('does not draw if radius is zero', function() {
-      var circle = new _ol_geom_Circle_([0, 0], 0);
+      var circle = new Circle([0, 0], 0);
 
       replay.drawCircle(circle, null);
       expect(replay.vertices).to.have.length(0);
@@ -71,7 +71,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('resets state and removes style if it belongs to a zero radius circle', function() {
-      var circle = new _ol_geom_Circle_([0, 0], 0);
+      var circle = new Circle([0, 0], 0);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.setFillStrokeStyle(null, strokeStyle);
@@ -174,13 +174,13 @@ describe('ol.render.webgl.CircleReplay', function() {
   describe('#drawReplay', function() {
     var gl, context;
     var feature1 = new _ol_Feature_({
-      geometry: new _ol_geom_Circle_([0, 0], 5000)
+      geometry: new Circle([0, 0], 5000)
     });
     var feature2 = new _ol_Feature_({
-      geometry: new _ol_geom_Circle_([10, 10], 5000)
+      geometry: new Circle([10, 10], 5000)
     });
     var feature3 = new _ol_Feature_({
-      geometry: new _ol_geom_Circle_([20, 20], 5000)
+      geometry: new Circle([20, 20], 5000)
     });
     beforeEach(function() {
       gl = {};

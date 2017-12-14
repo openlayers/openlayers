@@ -11,7 +11,7 @@ import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import _ol_functions_ from '../functions.js';
-import _ol_geom_Circle_ from '../geom/Circle.js';
+import Circle from '../geom/Circle.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -142,7 +142,7 @@ var _ol_interaction_Draw_ = function(options) {
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
-          new _ol_geom_Circle_([NaN, NaN]);
+          new Circle([NaN, NaN]);
         var squaredLength = _ol_coordinate_.squaredDistance(
             coordinates[0], coordinates[1]);
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
@@ -798,7 +798,7 @@ _ol_interaction_Draw_.createRegularPolygon = function(opt_sides, opt_angle) {
       var radius = Math.sqrt(
           _ol_coordinate_.squaredDistance(center, end));
       var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-        Polygon.fromCircle(new _ol_geom_Circle_(center), opt_sides);
+        Polygon.fromCircle(new Circle(center), opt_sides);
       var angle = opt_angle ? opt_angle :
         Math.atan((end[1] - center[1]) / (end[0] - center[0]));
       Polygon.makeRegular(geometry, center, radius, angle);

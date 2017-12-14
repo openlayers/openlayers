@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
-import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -42,7 +42,7 @@ describe('ol.rendering.layer.Vector', function() {
   var source;
 
   function addCircle(r) {
-    source.addFeature(new _ol_Feature_(new _ol_geom_Circle_(center, r)));
+    source.addFeature(new _ol_Feature_(new Circle(center, r)));
   }
 
   function addPolygon(r) {

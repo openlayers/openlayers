@@ -1,5 +1,5 @@
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 
@@ -577,7 +577,7 @@ describe('ol.geom.Polygon', function() {
   describe('ol.geom.Polygon.fromCircle', function() {
 
     it('creates a regular polygon', function() {
-      var circle = new _ol_geom_Circle_([0, 0, 0], 1, 'XYZ');
+      var circle = new Circle([0, 0, 0], 1, 'XYZ');
       var polygon = Polygon.fromCircle(circle);
       var coordinates = polygon.getLinearRing(0).getCoordinates();
       expect(coordinates[0].length).to.eql(3);
@@ -598,7 +598,7 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('creates a regular polygon with custom sides and angle', function() {
-      var circle = new _ol_geom_Circle_([0, 0], 1);
+      var circle = new Circle([0, 0], 1);
       var polygon = Polygon.fromCircle(circle, 4, Math.PI / 2);
       var coordinates = polygon.getLinearRing(0).getCoordinates();
       expect(coordinates[4]).to.eql(coordinates[0]);

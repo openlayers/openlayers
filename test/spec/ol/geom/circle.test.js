@@ -1,4 +1,4 @@
-import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 
 
 describe('ol.geom.Circle', function() {
@@ -7,14 +7,14 @@ describe('ol.geom.Circle', function() {
 
     var circle;
     beforeEach(function() {
-      circle = new _ol_geom_Circle_([0, 0], 1);
+      circle = new Circle([0, 0], 1);
     });
 
     describe('#clone', function() {
 
       it('returns a clone', function() {
         var clone = circle.clone();
-        expect(clone).to.be.an(_ol_geom_Circle_);
+        expect(clone).to.be.an(Circle);
         expect(clone.getCenter()).to.eql(circle.getCenter());
         expect(clone.getCenter()).not.to.be(circle.getCenter());
         expect(clone.getRadius()).to.be(circle.getRadius());
@@ -90,7 +90,7 @@ describe('ol.geom.Circle', function() {
       });
 
       it('maintains Z coordinates', function() {
-        var circle = new _ol_geom_Circle_([0, 0, 1], 1);
+        var circle = new Circle([0, 0, 1], 1);
         expect(circle.getLayout()).to.be('XYZ');
         var closestPoint = circle.getClosestPoint([2, 0]);
         expect(closestPoint).to.have.length(3);
@@ -100,7 +100,7 @@ describe('ol.geom.Circle', function() {
       });
 
       it('maintains M coordinates', function() {
-        var circle = new _ol_geom_Circle_([0, 0, 2], 1,
+        var circle = new Circle([0, 0, 2], 1,
             'XYM');
         var closestPoint = circle.getClosestPoint([2, 0]);
         expect(closestPoint).to.have.length(3);
@@ -110,7 +110,7 @@ describe('ol.geom.Circle', function() {
       });
 
       it('maintains Z and M coordinates', function() {
-        var circle = new _ol_geom_Circle_([0, 0, 1, 2], 1);
+        var circle = new Circle([0, 0, 1, 2], 1);
         expect(circle.getLayout()).to.be('XYZM');
         var closestPoint = circle.getClosestPoint([2, 0]);
         expect(closestPoint).to.have.length(4);

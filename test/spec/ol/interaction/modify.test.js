@@ -5,7 +5,7 @@ import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEve
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
-import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -382,7 +382,7 @@ describe('ol.interaction.Modify', function() {
 
   describe('circle modification', function() {
     it('changes the circle radius and center', function() {
-      var circleFeature = new _ol_Feature_(new _ol_geom_Circle_([10, 10], 20));
+      var circleFeature = new _ol_Feature_(new Circle([10, 10], 20));
       features.length = 0;
       features.push(circleFeature);
 
@@ -617,7 +617,7 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('updates circle segment data', function() {
-      var feature = new _ol_Feature_(new _ol_geom_Circle_([10, 10], 20));
+      var feature = new _ol_Feature_(new Circle([10, 10], 20));
       features.length = 0;
       features.push(feature);
 

@@ -2,7 +2,7 @@ import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
+import Circle from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_interaction_Snap_ from '../../../../src/ol/interaction/Snap.js';
@@ -109,7 +109,7 @@ describe('ol.interaction.Snap', function() {
     });
 
     it('snaps to circle', function() {
-      var circle = new _ol_Feature_(new _ol_geom_Circle_([0, 0], 10));
+      var circle = new _ol_Feature_(new Circle([0, 0], 10));
       var snapInteraction = new _ol_interaction_Snap_({
         features: new _ol_Collection_([circle]),
         pixelTolerance: 5

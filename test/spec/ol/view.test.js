@@ -2,7 +2,7 @@ import _ol_Map_ from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
-import _ol_geom_Circle_ from '../../../src/ol/geom/Circle.js';
+import Circle from '../../../src/ol/geom/Circle.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
 
@@ -1288,7 +1288,7 @@ describe('ol.View', function() {
       expect(view.getCenter()[1]).to.be(46100);
 
       view.fit(
-          new _ol_geom_Circle_([6000, 46000], 1000),
+          new Circle([6000, 46000], 1000),
           {size: [200, 200], constrainResolution: false});
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
@@ -1296,7 +1296,7 @@ describe('ol.View', function() {
 
       view.setRotation(Math.PI / 8);
       view.fit(
-          new _ol_geom_Circle_([6000, 46000], 1000),
+          new Circle([6000, 46000], 1000),
           {size: [200, 200], constrainResolution: false});
       expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
