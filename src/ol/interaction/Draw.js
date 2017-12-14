@@ -16,7 +16,7 @@ import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_interaction_DrawEventType_ from '../interaction/DrawEventType.js';
@@ -676,7 +676,7 @@ _ol_interaction_Draw_.prototype.finishDrawing = function() {
   } else if (this.type_ === _ol_geom_GeometryType_.MULTI_LINE_STRING) {
     sketchFeature.setGeometry(new MultiLineString([coordinates]));
   } else if (this.type_ === _ol_geom_GeometryType_.MULTI_POLYGON) {
-    sketchFeature.setGeometry(new _ol_geom_MultiPolygon_([coordinates]));
+    sketchFeature.setGeometry(new MultiPolygon([coordinates]));
   }
 
   // First dispatch event to allow full set up of feature

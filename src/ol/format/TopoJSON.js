@@ -8,7 +8,7 @@ import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
@@ -202,7 +202,7 @@ _ol_format_TopoJSON_.readMultiPolygonGeometry_ = function(object, arcs) {
     }
     coordinates[i] = ringCoords;
   }
-  return new _ol_geom_MultiPolygon_(coordinates);
+  return new MultiPolygon(coordinates);
 };
 
 

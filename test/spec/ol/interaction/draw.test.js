@@ -9,7 +9,7 @@ import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../../../../src/ol/interaction/Draw.js';
@@ -727,7 +727,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_MultiPolygon_);
+      expect(geometry).to.be.a(MultiPolygon);
       var coordinates = geometry.getCoordinates();
       expect(coordinates).to.have.length(1);
 
@@ -759,7 +759,7 @@ describe('ol.interaction.Draw', function() {
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.a(_ol_geom_MultiPolygon_);
+      expect(geometry).to.be.a(MultiPolygon);
       var coordinates = geometry.getCoordinates();
       expect(coordinates).to.have.length(1);
 

@@ -13,7 +13,7 @@ import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -225,7 +225,7 @@ _ol_format_EsriJSON_.readMultiPointGeometry_ = function(object) {
  */
 _ol_format_EsriJSON_.readMultiPolygonGeometry_ = function(object) {
   var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
-  return new _ol_geom_MultiPolygon_(
+  return new MultiPolygon(
       /** @type {Array.<Array.<Array.<Array.<number>>>>} */(object.rings),
       layout);
 };

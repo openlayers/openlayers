@@ -1,6 +1,6 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import _ol_render_webgl_polygonreplay_defaultshader_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader.js';
@@ -64,7 +64,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
     });
 
     it('sets the buffer data', function() {
-      var multiPolygon = new _ol_geom_MultiPolygon_([
+      var multiPolygon = new MultiPolygon([
         [[[1000, 2000], [1200, 2000], [1200, 3000]]],
         [[[4000, 2000], [4200, 2000], [4200, 3000]]]
       ]);

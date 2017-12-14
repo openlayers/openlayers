@@ -1,4 +1,4 @@
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 
 
@@ -6,7 +6,7 @@ describe('ol.geom.MultiPolygon', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      return new _ol_geom_MultiPolygon_(null);
+      return new MultiPolygon(null);
     }).not.to.throwException();
   });
 
@@ -14,7 +14,7 @@ describe('ol.geom.MultiPolygon', function() {
 
     var multiPolygon;
     beforeEach(function() {
-      multiPolygon = new _ol_geom_MultiPolygon_(null);
+      multiPolygon = new MultiPolygon(null);
     });
 
     it('can append polygons', function() {
@@ -37,7 +37,7 @@ describe('ol.geom.MultiPolygon', function() {
 
     var multiPolygon;
     beforeEach(function() {
-      multiPolygon = new _ol_geom_MultiPolygon_([]);
+      multiPolygon = new MultiPolygon([]);
     });
 
     it('can append polygons', function() {
@@ -59,7 +59,7 @@ describe('ol.geom.MultiPolygon', function() {
   describe('#scale()', function() {
 
     it('scales a multi-polygon', function() {
-      var geom = new _ol_geom_MultiPolygon_([[
+      var geom = new MultiPolygon([[
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]]);
       geom.scale(10);
@@ -68,7 +68,7 @@ describe('ol.geom.MultiPolygon', function() {
     });
 
     it('accepts sx and sy', function() {
-      var geom = new _ol_geom_MultiPolygon_([[
+      var geom = new MultiPolygon([[
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]]);
       geom.scale(2, 3);
@@ -77,7 +77,7 @@ describe('ol.geom.MultiPolygon', function() {
     });
 
     it('accepts an anchor', function() {
-      var geom = new _ol_geom_MultiPolygon_([[
+      var geom = new MultiPolygon([[
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]]);
       geom.scale(3, 2, [-1, -2]);
@@ -91,7 +91,7 @@ describe('ol.geom.MultiPolygon', function() {
 
     var multiPolygon;
     beforeEach(function() {
-      multiPolygon = new _ol_geom_MultiPolygon_([
+      multiPolygon = new MultiPolygon([
         [[[0, 0], [0, 2], [1, 1], [2, 0]]],
         [[[3, 0], [4, 1], [5, 2], [5, 0]]]
       ]);
@@ -135,8 +135,8 @@ describe('ol.geom.MultiPolygon', function() {
       var cw2 = [[-140, -60], [-140, 60], [140, 60], [140, -60], [-140, -60]];
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
       var ccw2 = [[-140, -60], [140, -60], [140, 60], [-140, 60], [-140, -60]];
-      var right = new _ol_geom_MultiPolygon_([[ccw, cw], [ccw2, cw2]]);
-      var left = new _ol_geom_MultiPolygon_([[cw, ccw], [cw2, ccw2]]);
+      var right = new MultiPolygon([[ccw, cw], [ccw2, cw2]]);
+      var left = new MultiPolygon([[cw, ccw], [cw2, ccw2]]);
 
       it('returns coordinates as they were constructed', function() {
         expect(right.getCoordinates()).to.eql([[ccw, cw], [ccw2, cw2]]);
@@ -167,7 +167,7 @@ describe('ol.geom.MultiPolygon', function() {
 
       it('returns the expected result', function() {
         var simplifiedGeometry = multiPolygon.getSimplifiedGeometry(1);
-        expect(simplifiedGeometry).to.be.an(_ol_geom_MultiPolygon_);
+        expect(simplifiedGeometry).to.be.an(MultiPolygon);
         expect(simplifiedGeometry.getCoordinates()).to.eql([
           [[[0, 0], [0, 2], [2, 0]]],
           [[[3, 0], [5, 2], [5, 0]]]
@@ -196,7 +196,7 @@ describe('ol.geom.MultiPolygon', function() {
   describe('#getInteriorPoints', function() {
 
     it('returns XYM multipoint with intersection width as M', function() {
-      var geom = new _ol_geom_MultiPolygon_([
+      var geom = new MultiPolygon([
         [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
         [[[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]]
       ]);

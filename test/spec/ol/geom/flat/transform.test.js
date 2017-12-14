@@ -1,4 +1,4 @@
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_SimpleGeometry_ from '../../../../../src/ol/geom/SimpleGeometry.js';
 import _ol_geom_flat_transform_ from '../../../../../src/ol/geom/flat/transform.js';
 
@@ -9,7 +9,7 @@ describe('ol.geom.flat.transform', function() {
 
     it('transforms a Simple Geometry to 2D', function() {
 
-      var multiPolygonGeometry = new _ol_geom_MultiPolygon_([
+      var multiPolygonGeometry = new MultiPolygon([
         [[[-80.736061, 28.788576000000006, 0],
           [-80.763557, 28.821799999999996, 0],
           [-80.817406, 28.895123999999996, 0],
@@ -69,7 +69,7 @@ describe('ol.geom.flat.transform', function() {
 
   describe('ol.geom.flat.transform.translate', function() {
     it('translates the coordinates array', function() {
-      var multiPolygon = new _ol_geom_MultiPolygon_([
+      var multiPolygon = new MultiPolygon([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
         [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
       var flatCoordinates = multiPolygon.getFlatCoordinates();
@@ -86,7 +86,7 @@ describe('ol.geom.flat.transform', function() {
 
   describe('ol.geom.flat.transform.rotate', function() {
     it('rotates the coordinates array', function() {
-      var multiPolygon = new _ol_geom_MultiPolygon_([
+      var multiPolygon = new MultiPolygon([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
         [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
       var flatCoordinates = multiPolygon.getFlatCoordinates();

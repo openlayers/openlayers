@@ -13,7 +13,7 @@ import _ol_geom_GeometryCollection_ from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
@@ -149,7 +149,7 @@ _ol_format_GeoJSON_.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.MultiPolygon} MultiPolygon.
  */
 _ol_format_GeoJSON_.readMultiPolygonGeometry_ = function(object) {
-  return new _ol_geom_MultiPolygon_(object.coordinates);
+  return new MultiPolygon(object.coordinates);
 };
 
 

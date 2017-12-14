@@ -7,7 +7,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
@@ -876,7 +876,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_MultiPolygon_);
+          expect(g).to.be.an(MultiPolygon);
           expect(g.getCoordinates()).to.eql(
               [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
                 [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]]);
@@ -892,7 +892,7 @@ describe('ol.format.KML', function() {
 
         it('can write MultiPolygon geometries', function() {
           var layout = 'XYZ';
-          var multiPolygon = new _ol_geom_MultiPolygon_(
+          var multiPolygon = new MultiPolygon(
               [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
                 [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]], layout);
           var features = [new _ol_Feature_(multiPolygon)];
@@ -1080,7 +1080,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_MultiPolygon_);
+          expect(g).to.be.an(MultiPolygon);
           expect(g.getCoordinates()).to.eql([
             [[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
             [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]
@@ -1097,7 +1097,7 @@ describe('ol.format.KML', function() {
 
         it('can write MultiPolygon geometries', function() {
           var layout = 'XYZ';
-          var multiPolygon = new _ol_geom_MultiPolygon_([
+          var multiPolygon = new MultiPolygon([
             [[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
             [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]
           ], layout);
@@ -3199,7 +3199,7 @@ describe('ol.format.KML', function() {
         var components = geometry.getGeometries();
         expect(components).to.have.length(2);
         expect(components[0]).to.be.an(Point);
-        expect(components[1]).to.be.an(_ol_geom_MultiPolygon_);
+        expect(components[1]).to.be.an(MultiPolygon);
       });
 
       it('reads style and icon', function() {

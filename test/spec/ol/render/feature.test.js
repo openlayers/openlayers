@@ -1,6 +1,6 @@
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
 
@@ -65,7 +65,7 @@ describe('ol.render.Feature', function() {
 
   describe('#getFlatInteriorPoints()', function() {
     it('returns correct points and caches them', function() {
-      var polygon = new _ol_geom_MultiPolygon_([
+      var polygon = new MultiPolygon([
         [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]],
         [[[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]]
       ]);

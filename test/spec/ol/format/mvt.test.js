@@ -3,7 +3,7 @@ import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
 
 where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
@@ -159,7 +159,7 @@ describe('ol.format.MVT', function() {
       var feature = format.createFeature_({}, rawFeature);
       _ol_format_MVT_.readRawGeometry_ = readRawGeometry_;
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.a(_ol_geom_MultiPolygon_);
+      expect(geometry).to.be.a(MultiPolygon);
     });
 
     it('creates ol.render.Feature instances', function() {

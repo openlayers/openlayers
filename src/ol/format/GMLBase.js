@@ -14,7 +14,7 @@ import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
@@ -317,7 +317,7 @@ _ol_format_GMLBase_.prototype.readMultiPolygon = function(node, objectStack) {
   var polygons = _ol_xml_.pushParseAndPop([],
       this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (polygons) {
-    var multiPolygon = new _ol_geom_MultiPolygon_(null);
+    var multiPolygon = new MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
   } else {

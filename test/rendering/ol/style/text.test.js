@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
@@ -307,7 +307,7 @@ describe('ol.rendering.style.Text', function() {
       createMap('canvas');
       var geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      var multiPolygon = new _ol_geom_MultiPolygon_(null);
+      var multiPolygon = new MultiPolygon(null);
       multiPolygon.appendPolygon(geom);
       geom = geom.clone();
       geom.translate(0, 30);

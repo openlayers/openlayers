@@ -11,7 +11,7 @@ import _ol_geom_Geometry_ from '../geom/Geometry.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
@@ -120,7 +120,7 @@ _ol_format_GML3_.prototype.readMultiSurface_ = function(node, objectStack) {
   var polygons = _ol_xml_.pushParseAndPop([],
       this.MULTISURFACE_PARSERS_, node, objectStack, this);
   if (polygons) {
-    var multiPolygon = new _ol_geom_MultiPolygon_(null);
+    var multiPolygon = new MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
   } else {

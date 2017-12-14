@@ -5,7 +5,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
@@ -217,7 +217,7 @@ describe('ol.format.EsriJSON', function() {
       var feature = format.readFeature(multiPolygonEsriJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_MultiPolygon_);
+      expect(geometry).to.be.an(MultiPolygon);
       expect(geometry.getCoordinates()).to.eql([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2], [3, 3], [2, 3]]],
         [[[10, 1], [11, 5], [14, 3], [13, 0]]]
@@ -644,7 +644,7 @@ describe('ol.format.EsriJSON', function() {
         ]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
+      expect(obj).to.be.a(MultiPolygon);
       expect(obj.getLayout()).to.eql('XY');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2],
@@ -663,7 +663,7 @@ describe('ol.format.EsriJSON', function() {
         hasZ: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
+      expect(obj).to.be.a(MultiPolygon);
       expect(obj.getLayout()).to.eql('XYZ');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
@@ -682,7 +682,7 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
+      expect(obj).to.be.a(MultiPolygon);
       expect(obj.getLayout()).to.eql('XYM');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
@@ -702,7 +702,7 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_MultiPolygon_);
+      expect(obj).to.be.a(MultiPolygon);
       expect(obj.getLayout()).to.eql('XYZM');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0, 1], [1, 4, 0, 1], [4, 3, 0, 1], [3, 0, 0, 1]],
@@ -945,7 +945,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes multipolygon', function() {
-      var multipolygon = new _ol_geom_MultiPolygon_([
+      var multipolygon = new MultiPolygon([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2], [3, 3], [2, 3]]],
         [[[10, 1], [11, 5], [14, 3], [13, 0]]]
       ]);
@@ -955,7 +955,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZ multipolygon', function() {
-      var multipolygon = new _ol_geom_MultiPolygon_([
+      var multipolygon = new MultiPolygon([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
           [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
@@ -966,7 +966,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM multipolygon', function() {
-      var multipolygon = new _ol_geom_MultiPolygon_([
+      var multipolygon = new MultiPolygon([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
           [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
@@ -977,7 +977,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM multipolygon', function() {
-      var multipolygon = new _ol_geom_MultiPolygon_([
+      var multipolygon = new MultiPolygon([
         [[[0, 1, 0, 1], [1, 4, 0, 1], [4, 3, 0, 3], [3, 0, 0, 3]],
           [[2, 2, 0, 3], [3, 2, 0, 4],
             [3, 3, 0, 1], [2, 3, 0, 1]]],

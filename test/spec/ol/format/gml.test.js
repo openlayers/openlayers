@@ -5,7 +5,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
@@ -118,7 +118,7 @@ describe('ol.format.GML2', function() {
             '</gml:MultiPolygon>';
 
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [
             [
@@ -319,7 +319,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_MultiPolygon_([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
+        geometry: new MultiPolygon([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -844,7 +844,7 @@ describe('ol.format.GML3', function() {
             '  </gml:polygonMember>' +
             '</gml:MultiPolygon>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -887,7 +887,7 @@ describe('ol.format.GML3', function() {
             '  </gml:polygonMembers>' +
             '</gml:MultiPolygon>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1001,7 +1001,7 @@ describe('ol.format.GML3', function() {
             '  </gml:surfaceMember>' +
             '</gml:MultiSurface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1045,7 +1045,7 @@ describe('ol.format.GML3', function() {
             '  </gml:surfaceMembers>' +
             '</gml:MultiSurface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1103,7 +1103,7 @@ describe('ol.format.GML3', function() {
             '  </gml:surfaceMember>' +
             '</gml:MultiSurface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_MultiPolygon_);
+        expect(g).to.be.an(MultiPolygon);
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
@@ -1308,7 +1308,7 @@ describe('ol.format.GML3', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_MultiPolygon_);
+      expect(feature.getGeometry()).to.be.an(MultiPolygon);
     });
 
   });
@@ -1334,7 +1334,7 @@ describe('ol.format.GML3', function() {
     it('creates 2 geometries', function() {
       var feature = features[0];
       expect(feature.get('center')).to.be.a(Point);
-      expect(feature.get('the_geom')).to.be.a(_ol_geom_MultiPolygon_);
+      expect(feature.get('the_geom')).to.be.a(MultiPolygon);
     });
 
   });

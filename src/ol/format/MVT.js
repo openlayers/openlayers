@@ -13,7 +13,7 @@ import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
@@ -305,7 +305,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
       }
       if (endss.length > 1) {
         ends = endss;
-        geom = new _ol_geom_MultiPolygon_(null);
+        geom = new MultiPolygon(null);
       } else {
         geom = new Polygon(null);
       }

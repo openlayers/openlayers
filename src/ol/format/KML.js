@@ -20,7 +20,7 @@ import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
+import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_math_ from '../math.js';
@@ -944,7 +944,7 @@ _ol_format_KML_.readMultiGeometry_ = function(node, objectStack) {
       multiGeometry.setLineStrings(geometries);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
     } else if (type == _ol_geom_GeometryType_.POLYGON) {
-      multiGeometry = new _ol_geom_MultiPolygon_(null);
+      multiGeometry = new MultiPolygon(null);
       multiGeometry.setPolygons(geometries);
       _ol_format_KML_.setCommonGeometryProperties_(multiGeometry, geometries);
     } else if (type == _ol_geom_GeometryType_.GEOMETRY_COLLECTION) {

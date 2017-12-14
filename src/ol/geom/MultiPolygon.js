@@ -30,7 +30,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var _ol_geom_MultiPolygon_ = function(coordinates, opt_layout) {
+var MultiPolygon = function(coordinates, opt_layout) {
 
   _ol_geom_SimpleGeometry_.call(this);
 
@@ -80,7 +80,7 @@ var _ol_geom_MultiPolygon_ = function(coordinates, opt_layout) {
 
 };
 
-inherits(_ol_geom_MultiPolygon_, _ol_geom_SimpleGeometry_);
+inherits(MultiPolygon, _ol_geom_SimpleGeometry_);
 
 
 /**
@@ -88,7 +88,7 @@ inherits(_ol_geom_MultiPolygon_, _ol_geom_SimpleGeometry_);
  * @param {ol.geom.Polygon} polygon Polygon.
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.appendPolygon = function(polygon) {
+MultiPolygon.prototype.appendPolygon = function(polygon) {
   /** @type {Array.<number>} */
   var ends;
   if (!this.flatCoordinates) {
@@ -115,8 +115,8 @@ _ol_geom_MultiPolygon_.prototype.appendPolygon = function(polygon) {
  * @override
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.clone = function() {
-  var multiPolygon = new _ol_geom_MultiPolygon_(null);
+MultiPolygon.prototype.clone = function() {
+  var multiPolygon = new MultiPolygon(null);
 
   var len = this.endss_.length;
   var newEndss = new Array(len);
@@ -133,7 +133,7 @@ _ol_geom_MultiPolygon_.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_MultiPolygon_.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
@@ -151,7 +151,7 @@ _ol_geom_MultiPolygon_.prototype.closestPointXY = function(x, y, closestPoint, m
 /**
  * @inheritDoc
  */
-_ol_geom_MultiPolygon_.prototype.containsXY = function(x, y) {
+MultiPolygon.prototype.containsXY = function(x, y) {
   return _ol_geom_flat_contains_.linearRingssContainsXY(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
@@ -162,7 +162,7 @@ _ol_geom_MultiPolygon_.prototype.containsXY = function(x, y) {
  * @return {number} Area (on projected plane).
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.getArea = function() {
+MultiPolygon.prototype.getArea = function() {
   return _ol_geom_flat_area_.linearRingss(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
@@ -182,7 +182,7 @@ _ol_geom_MultiPolygon_.prototype.getArea = function() {
  * @override
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.getCoordinates = function(opt_right) {
+MultiPolygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
@@ -200,7 +200,7 @@ _ol_geom_MultiPolygon_.prototype.getCoordinates = function(opt_right) {
 /**
  * @return {Array.<Array.<number>>} Endss.
  */
-_ol_geom_MultiPolygon_.prototype.getEndss = function() {
+MultiPolygon.prototype.getEndss = function() {
   return this.endss_;
 };
 
@@ -208,7 +208,7 @@ _ol_geom_MultiPolygon_.prototype.getEndss = function() {
 /**
  * @return {Array.<number>} Flat interior points.
  */
-_ol_geom_MultiPolygon_.prototype.getFlatInteriorPoints = function() {
+MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
     var flatCenters = _ol_geom_flat_center_.linearRingss(
         this.flatCoordinates, 0, this.endss_, this.stride);
@@ -227,7 +227,7 @@ _ol_geom_MultiPolygon_.prototype.getFlatInteriorPoints = function() {
  * the length of the horizontal intersection that the point belongs to.
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.getInteriorPoints = function() {
+MultiPolygon.prototype.getInteriorPoints = function() {
   var interiorPoints = new MultiPoint(null);
   interiorPoints.setFlatCoordinates(_ol_geom_GeometryLayout_.XYM,
       this.getFlatInteriorPoints().slice());
@@ -238,7 +238,7 @@ _ol_geom_MultiPolygon_.prototype.getInteriorPoints = function() {
 /**
  * @return {Array.<number>} Oriented flat coordinates.
  */
-_ol_geom_MultiPolygon_.prototype.getOrientedFlatCoordinates = function() {
+MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
     var flatCoordinates = this.flatCoordinates;
     if (_ol_geom_flat_orient_.linearRingssAreOriented(
@@ -259,14 +259,14 @@ _ol_geom_MultiPolygon_.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @inheritDoc
  */
-_ol_geom_MultiPolygon_.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizess(
       this.flatCoordinates, 0, this.endss_, this.stride,
       Math.sqrt(squaredTolerance),
       simplifiedFlatCoordinates, 0, simplifiedEndss);
-  var simplifiedMultiPolygon = new _ol_geom_MultiPolygon_(null);
+  var simplifiedMultiPolygon = new MultiPolygon(null);
   simplifiedMultiPolygon.setFlatCoordinates(
       _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates, simplifiedEndss);
   return simplifiedMultiPolygon;
@@ -279,7 +279,7 @@ _ol_geom_MultiPolygon_.prototype.getSimplifiedGeometryInternal = function(square
  * @return {ol.geom.Polygon} Polygon.
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.getPolygon = function(index) {
+MultiPolygon.prototype.getPolygon = function(index) {
   if (index < 0 || this.endss_.length <= index) {
     return null;
   }
@@ -310,7 +310,7 @@ _ol_geom_MultiPolygon_.prototype.getPolygon = function(index) {
  * @return {Array.<ol.geom.Polygon>} Polygons.
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.getPolygons = function() {
+MultiPolygon.prototype.getPolygons = function() {
   var layout = this.layout;
   var flatCoordinates = this.flatCoordinates;
   var endss = this.endss_;
@@ -339,7 +339,7 @@ _ol_geom_MultiPolygon_.prototype.getPolygons = function() {
  * @inheritDoc
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.getType = function() {
+MultiPolygon.prototype.getType = function() {
   return _ol_geom_GeometryType_.MULTI_POLYGON;
 };
 
@@ -348,7 +348,7 @@ _ol_geom_MultiPolygon_.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.intersectsExtent = function(extent) {
+MultiPolygon.prototype.intersectsExtent = function(extent) {
   return _ol_geom_flat_intersectsextent_.linearRingss(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, extent);
 };
@@ -361,7 +361,7 @@ _ol_geom_MultiPolygon_.prototype.intersectsExtent = function(extent) {
  * @override
  * @api
  */
-_ol_geom_MultiPolygon_.prototype.setCoordinates = function(coordinates, opt_layout) {
+MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
     this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null, this.endss_);
   } else {
@@ -388,7 +388,7 @@ _ol_geom_MultiPolygon_.prototype.setCoordinates = function(coordinates, opt_layo
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<Array.<number>>} endss Endss.
  */
-_ol_geom_MultiPolygon_.prototype.setFlatCoordinates = function(layout, flatCoordinates, endss) {
+MultiPolygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, endss) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.endss_ = endss;
   this.changed();
@@ -398,7 +398,7 @@ _ol_geom_MultiPolygon_.prototype.setFlatCoordinates = function(layout, flatCoord
 /**
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
  */
-_ol_geom_MultiPolygon_.prototype.setPolygons = function(polygons) {
+MultiPolygon.prototype.setPolygons = function(polygons) {
   var layout = this.getLayout();
   var flatCoordinates = [];
   var endss = [];
@@ -419,4 +419,4 @@ _ol_geom_MultiPolygon_.prototype.setPolygons = function(polygons) {
   }
   this.setFlatCoordinates(layout, flatCoordinates, endss);
 };
-export default _ol_geom_MultiPolygon_;
+export default MultiPolygon;

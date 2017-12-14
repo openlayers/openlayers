@@ -5,7 +5,7 @@ import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {fromLonLat, get as getProjection, toLonLat, transform} from '../../../../src/ol/proj.js';
@@ -634,9 +634,9 @@ describe('ol.format.GeoJSON', function() {
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
 
       var right = new Polygon([ccw, cw]);
-      var rightMulti = new _ol_geom_MultiPolygon_([[ccw, cw]]);
+      var rightMulti = new MultiPolygon([[ccw, cw]]);
       var left = new Polygon([cw, ccw]);
-      var leftMulti = new _ol_geom_MultiPolygon_([[cw, ccw]]);
+      var leftMulti = new MultiPolygon([[cw, ccw]]);
 
       var rightObj = {
         type: 'Polygon',
@@ -671,9 +671,9 @@ describe('ol.format.GeoJSON', function() {
       var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
       var right = new Polygon([ccw, cw]);
-      var rightMulti = new _ol_geom_MultiPolygon_([[ccw, cw]]);
+      var rightMulti = new MultiPolygon([[ccw, cw]]);
       var left = new Polygon([cw, ccw]);
-      var leftMulti = new _ol_geom_MultiPolygon_([[cw, ccw]]);
+      var leftMulti = new MultiPolygon([[cw, ccw]]);
 
       var rightObj = {
         type: 'Polygon',
@@ -702,9 +702,9 @@ describe('ol.format.GeoJSON', function() {
       var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
       var right = new Polygon([ccw, cw]);
-      var rightMulti = new _ol_geom_MultiPolygon_([[ccw, cw]]);
+      var rightMulti = new MultiPolygon([[ccw, cw]]);
       var left = new Polygon([cw, ccw]);
-      var leftMulti = new _ol_geom_MultiPolygon_([[cw, ccw]]);
+      var leftMulti = new MultiPolygon([[cw, ccw]]);
 
       var leftObj = {
         type: 'Polygon',

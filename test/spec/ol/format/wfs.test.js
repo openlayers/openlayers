@@ -5,7 +5,7 @@ import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
@@ -55,7 +55,7 @@ describe('ol.format.WFS', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_MultiPolygon_);
+      expect(feature.getGeometry()).to.be.an(MultiPolygon);
     });
 
     it('transforms and creates a polygon for Illinois', function() {
@@ -66,7 +66,7 @@ describe('ol.format.WFS', function() {
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
       var geom = feature.getGeometry();
-      expect(geom).to.be.an(_ol_geom_MultiPolygon_);
+      expect(geom).to.be.an(MultiPolygon);
       var p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
       p.push(0);
       expect(geom.getFirstCoordinate()).to.eql(p);
@@ -106,7 +106,7 @@ describe('ol.format.WFS', function() {
       expect(feature.get('name')).to.equal('My Polygon with hole');
       expect(feature.get('boundedBy')).to.eql(
           [47.003018, -0.768746, 47.925567, 0.532597]);
-      expect(feature.getGeometry()).to.be.an(_ol_geom_MultiPolygon_);
+      expect(feature.getGeometry()).to.be.an(MultiPolygon);
       expect(feature.getGeometry().getFlatCoordinates()).
           to.have.length(60);
     });

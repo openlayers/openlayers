@@ -4,7 +4,7 @@ import _ol_geom_GeometryCollection_ from '../../../../../src/ol/geom/GeometryCol
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
-import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
+import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
@@ -237,7 +237,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       var multilinestring = new _ol_Feature_(new MultiLineString(
           [linestring.getGeometry().getCoordinates(), linestring.getGeometry().getCoordinates()]));
       var polygon = feature1;
-      var multipolygon = new _ol_Feature_(new _ol_geom_MultiPolygon_(
+      var multipolygon = new _ol_Feature_(new MultiPolygon(
           [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
       var geometrycollection = new _ol_Feature_(new _ol_geom_GeometryCollection_(
           [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
