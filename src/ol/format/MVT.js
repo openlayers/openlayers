@@ -8,7 +8,7 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_ext_PBF_ from 'pbf';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -317,7 +317,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
               geometryType === _ol_geom_GeometryType_.MULTI_LINE_STRING ? new MultiLineString(null) :
                 null;
     }
-    geom.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates, ends);
+    geom.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, ends);
     feature = new this.featureClass_();
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);

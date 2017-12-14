@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
@@ -110,7 +110,7 @@ _ol_geom_LinearRing_.prototype.getSimplifiedGeometryInternal = function(squaredT
       squaredTolerance, simplifiedFlatCoordinates, 0);
   var simplifiedLinearRing = new _ol_geom_LinearRing_(null);
   simplifiedLinearRing.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates);
+      GeometryLayout.XY, simplifiedFlatCoordinates);
   return simplifiedLinearRing;
 };
 
@@ -139,7 +139,7 @@ _ol_geom_LinearRing_.prototype.intersectsExtent = function(extent) {};
  */
 _ol_geom_LinearRing_.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
+    this.setFlatCoordinates(GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
     if (!this.flatCoordinates) {

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import Polygon from '../geom/Polygon.js';
@@ -229,7 +229,7 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
  */
 MultiPolygon.prototype.getInteriorPoints = function() {
   var interiorPoints = new MultiPoint(null);
-  interiorPoints.setFlatCoordinates(_ol_geom_GeometryLayout_.XYM,
+  interiorPoints.setFlatCoordinates(GeometryLayout.XYM,
       this.getFlatInteriorPoints().slice());
   return interiorPoints;
 };
@@ -268,7 +268,7 @@ MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance
       simplifiedFlatCoordinates, 0, simplifiedEndss);
   var simplifiedMultiPolygon = new MultiPolygon(null);
   simplifiedMultiPolygon.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates, simplifiedEndss);
+      GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEndss);
   return simplifiedMultiPolygon;
 };
 
@@ -363,7 +363,7 @@ MultiPolygon.prototype.intersectsExtent = function(extent) {
  */
 MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null, this.endss_);
+    this.setFlatCoordinates(GeometryLayout.XY, null, this.endss_);
   } else {
     this.setLayout(opt_layout, coordinates, 3);
     if (!this.flatCoordinates) {

@@ -7,7 +7,7 @@ import _ol_array_ from '../array.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
@@ -105,16 +105,16 @@ _ol_format_GPX_.appendCoordinate_ = function(flatCoordinates, layoutOptions, nod
  * @return {ol.geom.GeometryLayout} Layout.
  */
 _ol_format_GPX_.applyLayoutOptions_ = function(layoutOptions, flatCoordinates, ends) {
-  var layout = _ol_geom_GeometryLayout_.XY;
+  var layout = GeometryLayout.XY;
   var stride = 2;
   if (layoutOptions.hasZ && layoutOptions.hasM) {
-    layout = _ol_geom_GeometryLayout_.XYZM;
+    layout = GeometryLayout.XYZM;
     stride = 4;
   } else if (layoutOptions.hasZ) {
-    layout = _ol_geom_GeometryLayout_.XYZ;
+    layout = GeometryLayout.XYZ;
     stride = 3;
   } else if (layoutOptions.hasM) {
-    layout = _ol_geom_GeometryLayout_.XYM;
+    layout = GeometryLayout.XYM;
     stride = 3;
   }
   if (stride !== 4) {
@@ -588,17 +588,17 @@ _ol_format_GPX_.writeWptType_ = function(node, coordinate, objectStack) {
   _ol_xml_.setAttributeNS(node, null, 'lon', coordinate[0]);
   var geometryLayout = context['geometryLayout'];
   switch (geometryLayout) {
-    case _ol_geom_GeometryLayout_.XYZM:
+    case GeometryLayout.XYZM:
       if (coordinate[3] !== 0) {
         properties['time'] = coordinate[3];
       }
       // fall through
-    case _ol_geom_GeometryLayout_.XYZ:
+    case GeometryLayout.XYZ:
       if (coordinate[2] !== 0) {
         properties['ele'] = coordinate[2];
       }
       break;
-    case _ol_geom_GeometryLayout_.XYM:
+    case GeometryLayout.XYM:
       if (coordinate[2] !== 0) {
         properties['time'] = coordinate[2];
       }

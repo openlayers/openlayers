@@ -15,7 +15,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -817,7 +817,7 @@ _ol_format_KML_.readGxTrack_ = function(node, objectStack) {
     flatCoordinates[4 * i + 3] = whens[i];
   }
   var lineString = new LineString(null);
-  lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZM, flatCoordinates);
+  lineString.setFlatCoordinates(GeometryLayout.XYZM, flatCoordinates);
   return lineString;
 };
 
@@ -865,7 +865,7 @@ _ol_format_KML_.readLineString_ = function(node, objectStack) {
       _ol_format_KML_.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var lineString = new LineString(null);
-    lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     lineString.setProperties(properties);
     return lineString;
   } else {
@@ -888,7 +888,7 @@ _ol_format_KML_.readLinearRing_ = function(node, objectStack) {
       _ol_format_KML_.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var polygon = new Polygon(null);
-    polygon.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates,
+    polygon.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates,
         [flatCoordinates.length]);
     polygon.setProperties(properties);
     return polygon;
@@ -973,7 +973,7 @@ _ol_format_KML_.readPoint_ = function(node, objectStack) {
       _ol_format_KML_.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var point = new Point(null);
-    point.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     point.setProperties(properties);
     return point;
   } else {
@@ -1004,7 +1004,7 @@ _ol_format_KML_.readPolygon_ = function(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
-        _ol_geom_GeometryLayout_.XYZ, flatCoordinates, ends);
+        GeometryLayout.XYZ, flatCoordinates, ends);
     polygon.setProperties(properties);
     return polygon;
   } else {
@@ -2122,11 +2122,11 @@ _ol_format_KML_.writeCoordinatesTextNode_ = function(node, coordinates, objectSt
   var stride = context['stride'];
 
   var dimension;
-  if (layout == _ol_geom_GeometryLayout_.XY ||
-      layout == _ol_geom_GeometryLayout_.XYM) {
+  if (layout == GeometryLayout.XY ||
+      layout == GeometryLayout.XYM) {
     dimension = 2;
-  } else if (layout == _ol_geom_GeometryLayout_.XYZ ||
-      layout == _ol_geom_GeometryLayout_.XYZM) {
+  } else if (layout == GeometryLayout.XYZ ||
+      layout == GeometryLayout.XYZM) {
     dimension = 3;
   } else {
     _ol_asserts_.assert(false, 34); // Invalid geometry layout

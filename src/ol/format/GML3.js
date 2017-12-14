@@ -8,7 +8,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
@@ -253,7 +253,7 @@ _ol_format_GML3_.prototype.readSurface_ = function(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
-        _ol_geom_GeometryLayout_.XYZ, flatCoordinates, ends);
+        GeometryLayout.XYZ, flatCoordinates, ends);
     return polygon;
   } else {
     return undefined;
@@ -273,7 +273,7 @@ _ol_format_GML3_.prototype.readCurve_ = function(node, objectStack) {
       this.CURVE_PARSERS_, node, objectStack, this);
   if (flatCoordinates) {
     var lineString = new LineString(null);
-    lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return lineString;
   } else {
     return undefined;

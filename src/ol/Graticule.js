@@ -3,7 +3,7 @@
  */
 import _ol_coordinate_ from './coordinate.js';
 import {intersects, getCenter} from './extent.js';
-import _ol_geom_GeometryLayout_ from './geom/GeometryLayout.js';
+import GeometryLayout from './geom/GeometryLayout.js';
 import LineString from './geom/LineString.js';
 import Point from './geom/Point.js';
 import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
@@ -492,7 +492,7 @@ _ol_Graticule_.prototype.getMeridian_ = function(lon, minLat, maxLat,
       minLat, maxLat, this.projection_, squaredTolerance);
   var lineString = this.meridians_[index] !== undefined ?
     this.meridians_[index] : new LineString(null);
-  lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates);
+  lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
 
@@ -522,7 +522,7 @@ _ol_Graticule_.prototype.getParallel_ = function(lat, minLon, maxLon,
       minLon, maxLon, this.projection_, squaredTolerance);
   var lineString = this.parallels_[index] !== undefined ?
     this.parallels_[index] : new LineString(null);
-  lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates);
+  lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
 

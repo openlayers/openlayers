@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {createOrUpdate, forEachCorner, intersects} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -186,7 +186,7 @@ Circle.prototype.setCenter = function(center) {
  */
 Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
   if (!center) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
+    this.setFlatCoordinates(GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, center, 0);
     if (!this.flatCoordinates) {

@@ -7,7 +7,7 @@ import _ol_asserts_ from '../asserts.js';
 import {containsExtent} from '../extent.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
@@ -153,13 +153,13 @@ _ol_format_EsriJSON_.readPointGeometry_ = function(object) {
   var point;
   if (object.m !== undefined && object.z !== undefined) {
     point = new Point([object.x, object.y, object.z, object.m],
-        _ol_geom_GeometryLayout_.XYZM);
+        GeometryLayout.XYZM);
   } else if (object.z !== undefined) {
     point = new Point([object.x, object.y, object.z],
-        _ol_geom_GeometryLayout_.XYZ);
+        GeometryLayout.XYZ);
   } else if (object.m !== undefined) {
     point = new Point([object.x, object.y, object.m],
-        _ol_geom_GeometryLayout_.XYM);
+        GeometryLayout.XYM);
   } else {
     point = new Point([object.x, object.y]);
   }
@@ -195,13 +195,13 @@ _ol_format_EsriJSON_.readMultiLineStringGeometry_ = function(object) {
  * @return {ol.geom.GeometryLayout} The geometry layout to use.
  */
 _ol_format_EsriJSON_.getGeometryLayout_ = function(object) {
-  var layout = _ol_geom_GeometryLayout_.XY;
+  var layout = GeometryLayout.XY;
   if (object.hasZ === true && object.hasM === true) {
-    layout = _ol_geom_GeometryLayout_.XYZM;
+    layout = GeometryLayout.XYZM;
   } else if (object.hasZ === true) {
-    layout = _ol_geom_GeometryLayout_.XYZ;
+    layout = GeometryLayout.XYZ;
   } else if (object.hasM === true) {
-    layout = _ol_geom_GeometryLayout_.XYM;
+    layout = GeometryLayout.XYM;
   }
   return layout;
 };
@@ -252,26 +252,26 @@ _ol_format_EsriJSON_.writePointGeometry_ = function(geometry, opt_options) {
   var coordinates = /** @type {ol.geom.Point} */ (geometry).getCoordinates();
   var esriJSON;
   var layout = /** @type {ol.geom.Point} */ (geometry).getLayout();
-  if (layout === _ol_geom_GeometryLayout_.XYZ) {
+  if (layout === GeometryLayout.XYZ) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2]
     });
-  } else if (layout === _ol_geom_GeometryLayout_.XYM) {
+  } else if (layout === GeometryLayout.XYM) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       m: coordinates[2]
     });
-  } else if (layout === _ol_geom_GeometryLayout_.XYZM) {
+  } else if (layout === GeometryLayout.XYZM) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
       m: coordinates[3]
     });
-  } else if (layout === _ol_geom_GeometryLayout_.XY) {
+  } else if (layout === GeometryLayout.XY) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1]
@@ -291,10 +291,10 @@ _ol_format_EsriJSON_.writePointGeometry_ = function(geometry, opt_options) {
 _ol_format_EsriJSON_.getHasZM_ = function(geometry) {
   var layout = geometry.getLayout();
   return {
-    hasZ: (layout === _ol_geom_GeometryLayout_.XYZ ||
-      layout === _ol_geom_GeometryLayout_.XYZM),
-    hasM: (layout === _ol_geom_GeometryLayout_.XYM ||
-      layout === _ol_geom_GeometryLayout_.XYZM)
+    hasZ: (layout === GeometryLayout.XYZ ||
+      layout === GeometryLayout.XYZM),
+    hasM: (layout === GeometryLayout.XYM ||
+      layout === GeometryLayout.XYZM)
   };
 };
 

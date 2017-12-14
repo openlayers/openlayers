@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
@@ -215,7 +215,7 @@ Polygon.prototype.getFlatInteriorPoint = function() {
  * @api
  */
 Polygon.prototype.getInteriorPoint = function() {
-  return new Point(this.getFlatInteriorPoint(), _ol_geom_GeometryLayout_.XYM);
+  return new Point(this.getFlatInteriorPoint(), GeometryLayout.XYM);
 };
 
 
@@ -308,7 +308,7 @@ Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
       simplifiedFlatCoordinates, 0, simplifiedEnds);
   var simplifiedPolygon = new Polygon(null);
   simplifiedPolygon.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates, simplifiedEnds);
+      GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
   return simplifiedPolygon;
 };
 
@@ -341,7 +341,7 @@ Polygon.prototype.intersectsExtent = function(extent) {
  */
 Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null, this.ends_);
+    this.setFlatCoordinates(GeometryLayout.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
     if (!this.flatCoordinates) {
@@ -390,7 +390,7 @@ Polygon.circular = function(sphere, center, radius, opt_n) {
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
   var polygon = new Polygon(null);
   polygon.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, flatCoordinates, [flatCoordinates.length]);
+      GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 };
 
@@ -410,7 +410,7 @@ Polygon.fromExtent = function(extent) {
       [minX, minY, minX, maxY, maxX, maxY, maxX, minY, minX, minY];
   var polygon = new Polygon(null);
   polygon.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, flatCoordinates, [flatCoordinates.length]);
+      GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 };
 

@@ -6,7 +6,7 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
@@ -46,7 +46,7 @@ var _ol_format_Polyline_ = function(opt_options) {
    * @type {ol.geom.GeometryLayout}
    */
   this.geometryLayout_ = options.geometryLayout ?
-    options.geometryLayout : _ol_geom_GeometryLayout_.XY;
+    options.geometryLayout : GeometryLayout.XY;
 };
 
 inherits(_ol_format_Polyline_, _ol_format_TextFeature_);

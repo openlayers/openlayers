@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
@@ -141,8 +141,8 @@ LineString.prototype.forEachSegment = function(callback, opt_this) {
  * @api
  */
 LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
-  if (this.layout != _ol_geom_GeometryLayout_.XYM &&
-      this.layout != _ol_geom_GeometryLayout_.XYZM) {
+  if (this.layout != GeometryLayout.XYM &&
+      this.layout != GeometryLayout.XYZM) {
     return null;
   }
   var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
@@ -213,7 +213,7 @@ LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) 
       squaredTolerance, simplifiedFlatCoordinates, 0);
   var simplifiedLineString = new LineString(null);
   simplifiedLineString.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates);
+      GeometryLayout.XY, simplifiedFlatCoordinates);
   return simplifiedLineString;
 };
 
@@ -247,7 +247,7 @@ LineString.prototype.intersectsExtent = function(extent) {
  */
 LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null);
+    this.setFlatCoordinates(GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
     if (!this.flatCoordinates) {

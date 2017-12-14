@@ -7,7 +7,7 @@ import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
@@ -187,10 +187,10 @@ _ol_format_WKT_.encodeMultiPolygonGeometry_ = function(geom) {
 _ol_format_WKT_.encodeGeometryLayout_ = function(geom) {
   var layout = geom.getLayout();
   var dimInfo = '';
-  if (layout === _ol_geom_GeometryLayout_.XYZ || layout === _ol_geom_GeometryLayout_.XYZM) {
+  if (layout === GeometryLayout.XYZ || layout === GeometryLayout.XYZM) {
     dimInfo += _ol_format_WKT_.Z;
   }
-  if (layout === _ol_geom_GeometryLayout_.XYM || layout === _ol_geom_GeometryLayout_.XYZM) {
+  if (layout === GeometryLayout.XYM || layout === GeometryLayout.XYZM) {
     dimInfo += _ol_format_WKT_.M;
   }
   return dimInfo;
@@ -587,7 +587,7 @@ _ol_format_WKT_.Parser = function(lexer) {
    * @type {ol.geom.GeometryLayout}
    * @private
    */
-  this.layout_ = _ol_geom_GeometryLayout_.XY;
+  this.layout_ = GeometryLayout.XY;
 };
 
 
@@ -641,18 +641,18 @@ _ol_format_WKT_.Parser.prototype.parse = function() {
  * @private
  */
 _ol_format_WKT_.Parser.prototype.parseGeometryLayout_ = function() {
-  var layout = _ol_geom_GeometryLayout_.XY;
+  var layout = GeometryLayout.XY;
   var dimToken = this.token_;
   if (this.isTokenType(_ol_format_WKT_.TokenType_.TEXT)) {
     var dimInfo = dimToken.value;
     if (dimInfo === _ol_format_WKT_.Z) {
-      layout = _ol_geom_GeometryLayout_.XYZ;
+      layout = GeometryLayout.XYZ;
     } else if (dimInfo === _ol_format_WKT_.M) {
-      layout = _ol_geom_GeometryLayout_.XYM;
+      layout = GeometryLayout.XYM;
     } else if (dimInfo === _ol_format_WKT_.ZM) {
-      layout = _ol_geom_GeometryLayout_.XYZM;
+      layout = GeometryLayout.XYZM;
     }
-    if (layout !== _ol_geom_GeometryLayout_.XY) {
+    if (layout !== GeometryLayout.XY) {
       this.consume_();
     }
   }

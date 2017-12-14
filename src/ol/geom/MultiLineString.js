@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
@@ -126,8 +126,8 @@ MultiLineString.prototype.closestPointXY = function(x, y, closestPoint, minSquar
  * @api
  */
 MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_interpolate) {
-  if ((this.layout != _ol_geom_GeometryLayout_.XYM &&
-       this.layout != _ol_geom_GeometryLayout_.XYZM) ||
+  if ((this.layout != GeometryLayout.XYM &&
+       this.layout != GeometryLayout.XYZM) ||
       this.flatCoordinates.length === 0) {
     return null;
   }
@@ -231,7 +231,7 @@ MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolera
       simplifiedFlatCoordinates, 0, simplifiedEnds);
   var simplifiedMultiLineString = new MultiLineString(null);
   simplifiedMultiLineString.setFlatCoordinates(
-      _ol_geom_GeometryLayout_.XY, simplifiedFlatCoordinates, simplifiedEnds);
+      GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
   return simplifiedMultiLineString;
 };
 
@@ -264,7 +264,7 @@ MultiLineString.prototype.intersectsExtent = function(extent) {
  */
 MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
-    this.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, null, this.ends_);
+    this.setFlatCoordinates(GeometryLayout.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
     if (!this.flatCoordinates) {

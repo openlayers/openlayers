@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_functions_ from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import _ol_obj_ from '../obj.js';
 
@@ -27,7 +27,7 @@ var _ol_geom_SimpleGeometry_ = function() {
    * @protected
    * @type {ol.geom.GeometryLayout}
    */
-  this.layout = _ol_geom_GeometryLayout_.XY;
+  this.layout = GeometryLayout.XY;
 
   /**
    * @protected
@@ -54,11 +54,11 @@ inherits(_ol_geom_SimpleGeometry_, Geometry);
 _ol_geom_SimpleGeometry_.getLayoutForStride_ = function(stride) {
   var layout;
   if (stride == 2) {
-    layout = _ol_geom_GeometryLayout_.XY;
+    layout = GeometryLayout.XY;
   } else if (stride == 3) {
-    layout = _ol_geom_GeometryLayout_.XYZ;
+    layout = GeometryLayout.XYZ;
   } else if (stride == 4) {
-    layout = _ol_geom_GeometryLayout_.XYZM;
+    layout = GeometryLayout.XYZM;
   }
   return /** @type {ol.geom.GeometryLayout} */ (layout);
 };
@@ -70,11 +70,11 @@ _ol_geom_SimpleGeometry_.getLayoutForStride_ = function(stride) {
  */
 _ol_geom_SimpleGeometry_.getStrideForLayout = function(layout) {
   var stride;
-  if (layout == _ol_geom_GeometryLayout_.XY) {
+  if (layout == GeometryLayout.XY) {
     stride = 2;
-  } else if (layout == _ol_geom_GeometryLayout_.XYZ || layout == _ol_geom_GeometryLayout_.XYM) {
+  } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYM) {
     stride = 3;
-  } else if (layout == _ol_geom_GeometryLayout_.XYZM) {
+  } else if (layout == GeometryLayout.XYZM) {
     stride = 4;
   }
   return /** @type {number} */ (stride);
@@ -234,7 +234,7 @@ _ol_geom_SimpleGeometry_.prototype.setLayout = function(layout, coordinates, nes
     var i;
     for (i = 0; i < nesting; ++i) {
       if (coordinates.length === 0) {
-        this.layout = _ol_geom_GeometryLayout_.XY;
+        this.layout = GeometryLayout.XY;
         this.stride = 2;
         return;
       } else {

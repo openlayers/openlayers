@@ -9,7 +9,7 @@ import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
-import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
+import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import _ol_geom_LinearRing_ from '../geom/LinearRing.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -265,7 +265,7 @@ _ol_format_GMLBase_.prototype.readPoint = function(node, objectStack) {
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var point = new Point(null);
-    point.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    point.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return point;
   }
 };
@@ -369,7 +369,7 @@ _ol_format_GMLBase_.prototype.readLineString = function(node, objectStack) {
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var lineString = new LineString(null);
-    lineString.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    lineString.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return lineString;
   } else {
     return undefined;
@@ -405,7 +405,7 @@ _ol_format_GMLBase_.prototype.readLinearRing = function(node, objectStack) {
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var ring = new _ol_geom_LinearRing_(null);
-    ring.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates);
+    ring.setFlatCoordinates(GeometryLayout.XYZ, flatCoordinates);
     return ring;
   } else {
     return undefined;
@@ -432,7 +432,7 @@ _ol_format_GMLBase_.prototype.readPolygon = function(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
-        _ol_geom_GeometryLayout_.XYZ, flatCoordinates, ends);
+        GeometryLayout.XYZ, flatCoordinates, ends);
     return polygon;
   } else {
     return undefined;

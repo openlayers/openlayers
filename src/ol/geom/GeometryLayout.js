@@ -7,11 +7,11 @@
  * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
  */
-var _ol_geom_GeometryLayout_ = {
+var GeometryLayout = {
   XY: 'XY',
   XYZ: 'XYZ',
   XYM: 'XYM',
   XYZM: 'XYZM'
 };
 
-export default _ol_geom_GeometryLayout_;
+export default GeometryLayout;
