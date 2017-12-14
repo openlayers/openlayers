@@ -2,7 +2,7 @@
  * @module ol/render/canvas
  */
 import _ol_css_ from '../css.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_obj_ from '../obj.js';
 import _ol_structs_LRUCache_ from '../structs/LRUCache.js';
 import _ol_transform_ from '../transform.js';
@@ -194,7 +194,7 @@ _ol_render_canvas_.checkFont = (function() {
 _ol_render_canvas_.getMeasureContext = function() {
   var context = _ol_render_canvas_.measureContext_;
   if (!context) {
-    context = _ol_render_canvas_.measureContext_ = _ol_dom_.createCanvasContext2D(1, 1);
+    context = _ol_render_canvas_.measureContext_ = createCanvasContext2D(1, 1);
   }
   return context;
 };

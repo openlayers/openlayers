@@ -6,7 +6,7 @@ import _ol_MapEventType_ from './MapEventType.js';
 import _ol_Object_ from './Object.js';
 import _ol_OverlayPositioning_ from './OverlayPositioning.js';
 import _ol_css_ from './css.js';
-import _ol_dom_ from './dom.js';
+import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
 import _ol_events_ from './events.js';
 import {containsExtent} from './extent.js';
 
@@ -231,7 +231,7 @@ _ol_Overlay_.prototype.getPositioning = function() {
  * @protected
  */
 _ol_Overlay_.prototype.handleElementChanged = function() {
-  _ol_dom_.removeChildren(this.element);
+  removeChildren(this.element);
   var element = this.getElement();
   if (element) {
     this.element.appendChild(element);
@@ -244,7 +244,7 @@ _ol_Overlay_.prototype.handleElementChanged = function() {
  */
 _ol_Overlay_.prototype.handleMapChanged = function() {
   if (this.mapPostrenderListenerKey) {
-    _ol_dom_.removeNode(this.element);
+    removeNode(this.element);
     _ol_events_.unlistenByKey(this.mapPostrenderListenerKey);
     this.mapPostrenderListenerKey = null;
   }
@@ -359,8 +359,7 @@ _ol_Overlay_.prototype.panIntoView = function() {
 
   var mapRect = this.getRect(map.getTargetElement(), map.getSize());
   var element = /** @type {!Element} */ (this.getElement());
-  var overlayRect = this.getRect(element,
-      [_ol_dom_.outerWidth(element), _ol_dom_.outerHeight(element)]);
+  var overlayRect = this.getRect(element, [outerWidth(element), outerHeight(element)]);
 
   var margin = this.autoPanMargin;
   if (!containsExtent(mapRect, overlayRect)) {

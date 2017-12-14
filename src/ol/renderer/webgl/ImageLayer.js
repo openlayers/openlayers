@@ -5,7 +5,7 @@ import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits, nullFunction} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import _ol_functions_ from '../../functions.js';
 import _ol_renderer_Type_ from '../Type.js';
@@ -280,7 +280,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.forEachLayerAtPixel = function(pixel, f
     }
 
     if (!this.hitCanvasContext_) {
-      this.hitCanvasContext_ = _ol_dom_.createCanvasContext2D(1, 1);
+      this.hitCanvasContext_ = createCanvasContext2D(1, 1);
     }
 
     this.hitCanvasContext_.clearRect(0, 0, 1, 1);

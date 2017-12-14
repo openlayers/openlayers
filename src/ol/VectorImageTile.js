@@ -4,7 +4,7 @@
 import {getUid, inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
-import _ol_dom_ from './dom.js';
+import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
 import _ol_events_EventType_ from './events/EventType.js';
@@ -160,7 +160,7 @@ _ol_VectorImageTile_.prototype.disposeInternal = function() {
 _ol_VectorImageTile_.prototype.getContext = function(layer) {
   var key = getUid(layer).toString();
   if (!(key in this.context_)) {
-    this.context_[key] = _ol_dom_.createCanvasContext2D();
+    this.context_[key] = createCanvasContext2D();
   }
   return this.context_[key];
 };

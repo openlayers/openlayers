@@ -4,7 +4,7 @@
 import _ol_events_ from '../events.js';
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_math_ from '../math.js';
 import _ol_obj_ from '../obj.js';
@@ -136,7 +136,7 @@ _ol_layer_Heatmap_.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 _ol_layer_Heatmap_.createGradient_ = function(colors) {
   var width = 1;
   var height = 256;
-  var context = _ol_dom_.createCanvasContext2D(width, height);
+  var context = createCanvasContext2D(width, height);
 
   var gradient = context.createLinearGradient(0, 0, width, height);
   var step = 1 / (colors.length - 1);
@@ -160,7 +160,7 @@ _ol_layer_Heatmap_.prototype.createCircle_ = function() {
   var blur = this.getBlur();
   var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
-  var context = _ol_dom_.createCanvasContext2D(size, size);
+  var context = createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
   context.shadowBlur = blur;
   context.shadowColor = '#000';

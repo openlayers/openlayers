@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_size_ from '../size.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -99,7 +99,7 @@ _ol_source_TileDebug_.Tile_.prototype.getImage = function() {
     return this.canvas_;
   } else {
     var tileSize = this.tileSize_;
-    var context = _ol_dom_.createCanvasContext2D(tileSize[0], tileSize[1]);
+    var context = createCanvasContext2D(tileSize[0], tileSize[1]);
 
     context.strokeStyle = 'black';
     context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);

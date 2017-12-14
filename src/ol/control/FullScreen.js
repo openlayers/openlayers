@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
-import _ol_dom_ from '../dom.js';
+import {replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 
@@ -143,10 +143,10 @@ _ol_control_FullScreen_.prototype.handleFullScreenChange_ = function() {
   var map = this.getMap();
   if (_ol_control_FullScreen_.isFullScreen()) {
     button.className = this.cssClassName_ + '-true';
-    _ol_dom_.replaceNode(this.labelActiveNode_, this.labelNode_);
+    replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
     button.className = this.cssClassName_ + '-false';
-    _ol_dom_.replaceNode(this.labelNode_, this.labelActiveNode_);
+    replaceNode(this.labelNode_, this.labelActiveNode_);
   }
   if (map) {
     map.updateSize();

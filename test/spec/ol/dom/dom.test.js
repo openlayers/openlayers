@@ -1,4 +1,4 @@
-import _ol_dom_ from '../../../../src/ol/dom.js';
+import {createCanvasContext2D, outerWidth, outerHeight} from '../../../../src/ol/dom.js';
 
 describe('ol.dom', function() {
 
@@ -9,7 +9,7 @@ describe('ol.dom', function() {
     var defaultHeight = 150;
 
     it('returns a CanvasRenderingContext2D', function() {
-      var ctx = _ol_dom_.createCanvasContext2D();
+      var ctx = createCanvasContext2D();
       expect(ctx).to.be.a(CanvasRenderingContext2D);
       expect(ctx.canvas).to.be.a(HTMLCanvasElement);
       expect(ctx.canvas.width).to.be(defaultWidth);
@@ -17,7 +17,7 @@ describe('ol.dom', function() {
     });
 
     it('has the desired width', function() {
-      var ctx = _ol_dom_.createCanvasContext2D(42);
+      var ctx = createCanvasContext2D(42);
       expect(ctx).to.be.a(CanvasRenderingContext2D);
       expect(ctx.canvas).to.be.a(HTMLCanvasElement);
       expect(ctx.canvas.width).to.be(42);
@@ -25,7 +25,7 @@ describe('ol.dom', function() {
     });
 
     it('has the desired height', function() {
-      var ctx = _ol_dom_.createCanvasContext2D(undefined, 42);
+      var ctx = createCanvasContext2D(undefined, 42);
       expect(ctx).to.be.a(CanvasRenderingContext2D);
       expect(ctx.canvas).to.be.a(HTMLCanvasElement);
       expect(ctx.canvas.width).to.be(defaultWidth);
@@ -33,7 +33,7 @@ describe('ol.dom', function() {
     });
 
     it('has the desired height and width', function() {
-      var ctx = _ol_dom_.createCanvasContext2D(42, 42);
+      var ctx = createCanvasContext2D(42, 42);
       expect(ctx).to.be.a(CanvasRenderingContext2D);
       expect(ctx.canvas).to.be.a(HTMLCanvasElement);
       expect(ctx.canvas.width).to.be(42);
@@ -61,7 +61,7 @@ describe('ol.dom', function() {
     describe('without padding, margin or border', function() {
 
       it('calculates correctly', function() {
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(10);
       });
 
@@ -70,13 +70,13 @@ describe('ol.dom', function() {
     describe('with padding', function() {
       it('calculates correctly (both sides)', function() {
         element.style.padding = '5px';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(20);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.paddingLeft = '5px';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(15);
       });
     });
@@ -85,13 +85,13 @@ describe('ol.dom', function() {
 
       it('calculates correctly (both sides)', function() {
         element.style.margin = '5px';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(20);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.marginLeft = '5px';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(15);
       });
 
@@ -101,14 +101,14 @@ describe('ol.dom', function() {
 
       it('calculates correctly (both sides)', function() {
         element.style.border = '5px solid chocolate';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(20);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(15);
       });
 
@@ -119,14 +119,14 @@ describe('ol.dom', function() {
       it('calculates correctly (both sides)', function() {
         element.style.padding = '5px';
         element.style.margin = '5px';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(30);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.paddingLeft = '5px';
         element.style.marginLeft = '5px';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(20);
       });
 
@@ -137,7 +137,7 @@ describe('ol.dom', function() {
       it('calculates correctly (both sides)', function() {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(30);
       });
 
@@ -145,7 +145,7 @@ describe('ol.dom', function() {
         element.style.paddingLeft = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(20);
       });
 
@@ -156,7 +156,7 @@ describe('ol.dom', function() {
       it('calculates correctly (both sides)', function() {
         element.style.margin = '5px';
         element.style.border = '5px solid chocolate';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(30);
       });
 
@@ -164,7 +164,7 @@ describe('ol.dom', function() {
         element.style.marginLeft = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(20);
       });
 
@@ -176,7 +176,7 @@ describe('ol.dom', function() {
         element.style.margin = '5px';
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(40);
       });
 
@@ -185,7 +185,7 @@ describe('ol.dom', function() {
         element.style.paddingLeft = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderRightWidth = '0';
-        var calcWidth = _ol_dom_.outerWidth(element);
+        var calcWidth = outerWidth(element);
         expect(calcWidth).to.be(25);
       });
 
@@ -212,7 +212,7 @@ describe('ol.dom', function() {
     describe('without padding, margin or border', function() {
 
       it('calculates correctly', function() {
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(10);
       });
 
@@ -221,13 +221,13 @@ describe('ol.dom', function() {
     describe('with padding', function() {
       it('calculates correctly (both sides)', function() {
         element.style.padding = '5px';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(20);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.paddingTop = '5px';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(15);
       });
     });
@@ -236,13 +236,13 @@ describe('ol.dom', function() {
 
       it('calculates correctly (both sides)', function() {
         element.style.margin = '5px';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(20);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.marginTop = '5px';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(15);
       });
 
@@ -252,14 +252,14 @@ describe('ol.dom', function() {
 
       it('calculates correctly (both sides)', function() {
         element.style.border = '5px solid chocolate';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(20);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(15);
       });
 
@@ -270,14 +270,14 @@ describe('ol.dom', function() {
       it('calculates correctly (both sides)', function() {
         element.style.padding = '5px';
         element.style.margin = '5px';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(30);
       });
 
       it('calculates correctly (one side)', function() {
         element.style.paddingTop = '5px';
         element.style.marginTop = '5px';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(20);
       });
 
@@ -288,7 +288,7 @@ describe('ol.dom', function() {
       it('calculates correctly (both sides)', function() {
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(30);
       });
 
@@ -296,7 +296,7 @@ describe('ol.dom', function() {
         element.style.paddingTop = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(20);
       });
 
@@ -307,7 +307,7 @@ describe('ol.dom', function() {
       it('calculates correctly (both sides)', function() {
         element.style.margin = '5px';
         element.style.border = '5px solid chocolate';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(30);
       });
 
@@ -315,7 +315,7 @@ describe('ol.dom', function() {
         element.style.marginTop = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(20);
       });
 
@@ -327,7 +327,7 @@ describe('ol.dom', function() {
         element.style.margin = '5px';
         element.style.padding = '5px';
         element.style.border = '5px solid chocolate';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(40);
       });
 
@@ -336,7 +336,7 @@ describe('ol.dom', function() {
         element.style.paddingTop = '5px';
         element.style.border = '5px solid chocolate';
         element.style.borderBottomWidth = '0';
-        var calcHeight = _ol_dom_.outerHeight(element);
+        var calcHeight = outerHeight(element);
         expect(calcHeight).to.be(25);
       });
 

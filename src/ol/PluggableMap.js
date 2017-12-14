@@ -16,7 +16,7 @@ import _ol_TileQueue_ from './TileQueue.js';
 import _ol_View_ from './View.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_asserts_ from './asserts.js';
-import _ol_dom_ from './dom.js';
+import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
 import _ol_events_Event_ from './events/Event.js';
 import _ol_events_EventType_ from './events/EventType.js';
@@ -949,7 +949,7 @@ _ol_PluggableMap_.prototype.handleTargetChanged_ = function() {
 
   if (!targetElement) {
     this.renderer_.removeLayerRenderers();
-    _ol_dom_.removeNode(this.viewport_);
+    removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
       window.removeEventListener(_ol_events_EventType_.RESIZE,
           this.handleResize_, false);

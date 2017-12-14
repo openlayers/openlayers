@@ -7,7 +7,7 @@ import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
@@ -200,7 +200,7 @@ _ol_source_Zoomify_.Tile_.prototype.getImage = function() {
       this.zoomifyImage_ = image;
       return image;
     } else {
-      var context = _ol_dom_.createCanvasContext2D(tileSize[0], tileSize[1]);
+      var context = createCanvasContext2D(tileSize[0], tileSize[1]);
       context.drawImage(image, 0, 0);
       this.zoomifyImage_ = context.canvas;
       return context.canvas;

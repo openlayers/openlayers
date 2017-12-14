@@ -6,7 +6,7 @@ import _ol_LayerType_ from '../../LayerType.js';
 import _ol_TileRange_ from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
@@ -26,7 +26,7 @@ var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
    * @protected
    * @type {CanvasRenderingContext2D}
    */
-  this.context = this.context === null ? null :  _ol_dom_.createCanvasContext2D();
+  this.context = this.context === null ? null : createCanvasContext2D();
 
   /**
    * @private

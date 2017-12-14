@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_colorlike_ from '../colorlike.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_has_ from '../has.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_render_canvas_ from '../render/canvas.js';
@@ -368,7 +368,7 @@ _ol_style_RegularShape_.prototype.render_ = function(atlasManager) {
 
   if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
-    var context = _ol_dom_.createCanvasContext2D(size, size);
+    var context = createCanvasContext2D(size, size);
     this.canvas_ = context.canvas;
 
     // canvas.width and height are rounded to the closest integer
@@ -489,7 +489,7 @@ _ol_style_RegularShape_.prototype.createHitDetectionCanvas_ = function(renderOpt
 
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
-  var context = _ol_dom_.createCanvasContext2D(renderOptions.size, renderOptions.size);
+  var context = createCanvasContext2D(renderOptions.size, renderOptions.size);
   this.hitDetectionCanvas_ = context.canvas;
 
   this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);

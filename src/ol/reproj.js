@@ -1,7 +1,7 @@
 /**
  * @module ol/reproj
  */
-import _ol_dom_ from './dom.js';
+import {createCanvasContext2D} from './dom.js';
 import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
 import _ol_math_ from './math.js';
 import {getPointResolution, transform} from './proj.js';
@@ -94,7 +94,7 @@ _ol_reproj_.render = function(width, height, pixelRatio,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
     triangulation, sources, gutter, opt_renderEdges) {
 
-  var context = _ol_dom_.createCanvasContext2D(Math.round(pixelRatio * width),
+  var context = createCanvasContext2D(Math.round(pixelRatio * width),
       Math.round(pixelRatio * height));
 
   if (sources.length === 0) {
@@ -110,7 +110,7 @@ _ol_reproj_.render = function(width, height, pixelRatio,
 
   var canvasWidthInUnits = getWidth(sourceDataExtent);
   var canvasHeightInUnits = getHeight(sourceDataExtent);
-  var stitchContext = _ol_dom_.createCanvasContext2D(
+  var stitchContext = createCanvasContext2D(
       Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
       Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
 

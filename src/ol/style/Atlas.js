@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Atlas
  */
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 
 /**
  * This class facilitates the creation of image atlases.
@@ -44,7 +44,7 @@ var _ol_style_Atlas_ = function(size, space) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = _ol_dom_.createCanvasContext2D(size, size);
+  this.context_ = createCanvasContext2D(size, size);
 
   /**
    * @private

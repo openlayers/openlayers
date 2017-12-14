@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_TileState_ from '../../TileState.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_events_EventType_ from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
@@ -134,7 +134,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.prepareFrame = function(frameStat
     this.renderedTiles.length = 0;
     var renderMode = layer.getRenderMode();
     if (!this.context && renderMode != _ol_layer_VectorTileRenderType_.VECTOR) {
-      this.context = _ol_dom_.createCanvasContext2D();
+      this.context = createCanvasContext2D();
     }
     if (this.context && renderMode == _ol_layer_VectorTileRenderType_.VECTOR) {
       this.context = null;

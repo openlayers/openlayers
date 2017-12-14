@@ -3,7 +3,7 @@
  */
 import {inherits, nullFunction} from '../../index.js';
 import _ol_coordinate_ from '../../coordinate.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
 import _ol_renderer_canvas_Layer_ from '../canvas/Layer.js';
 import _ol_transform_ from '../../transform.js';
@@ -132,7 +132,7 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = fun
     _ol_coordinate_.scale(pixel, frameState.viewState.resolution / this.renderedResolution);
 
     if (!this.hitCanvasContext_) {
-      this.hitCanvasContext_ = _ol_dom_.createCanvasContext2D(1, 1);
+      this.hitCanvasContext_ = createCanvasContext2D(1, 1);
     }
 
     this.hitCanvasContext_.clearRect(0, 0, 1, 1);

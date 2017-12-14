@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_events_EventType_ from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
@@ -78,7 +78,7 @@ var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
   /**
    * @type {CanvasRenderingContext2D}
    */
-  this.context = _ol_dom_.createCanvasContext2D();
+  this.context = createCanvasContext2D();
 
   _ol_events_.listen(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
 

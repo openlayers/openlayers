@@ -2,7 +2,7 @@
  * @module ol/style/IconImage
  */
 import {inherits} from '../index.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventTarget_ from '../events/EventTarget.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -118,7 +118,7 @@ _ol_style_IconImage_.get = function(image, src, size, crossOrigin, imageState,
  * @private
  */
 _ol_style_IconImage_.prototype.determineTainting_ = function() {
-  var context = _ol_dom_.createCanvasContext2D(1, 1);
+  var context = createCanvasContext2D(1, 1);
   try {
     context.drawImage(this.image_, 0, 0);
     context.getImageData(0, 0, 1, 1);
@@ -189,7 +189,7 @@ _ol_style_IconImage_.prototype.getHitDetectionImage = function(pixelRatio) {
     if (this.tainting_) {
       var width = this.size_[0];
       var height = this.size_[1];
-      var context = _ol_dom_.createCanvasContext2D(width, height);
+      var context = createCanvasContext2D(width, height);
       context.fillRect(0, 0, width, height);
       this.hitDetectionImage_ = context.canvas;
     } else {

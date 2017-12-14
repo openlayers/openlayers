@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_dom_ from '../../dom.js';
+import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_obj_ from '../../obj.js';
@@ -93,7 +93,7 @@ var _ol_render_canvas_ReplayGroup_ = function(
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.hitDetectionContext_ = _ol_dom_.createCanvasContext2D(1, 1);
+  this.hitDetectionContext_ = createCanvasContext2D(1, 1);
 
   /**
    * @private

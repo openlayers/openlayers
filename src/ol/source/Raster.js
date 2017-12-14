@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import _ol_ImageCanvas_ from '../ImageCanvas.js';
 import _ol_TileQueue_ from '../TileQueue.js';
-import _ol_dom_ from '../dom.js';
+import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -298,7 +298,7 @@ _ol_source_Raster_.prototype.onWorkerComplete_ = function(frameState, err, outpu
   } else {
     var width = Math.round(getWidth(extent) / resolution);
     var height = Math.round(getHeight(extent) / resolution);
-    context = _ol_dom_.createCanvasContext2D(width, height);
+    context = createCanvasContext2D(width, height);
     this.renderedImageCanvas_ = new _ol_ImageCanvas_(extent, resolution, 1, context.canvas);
   }
   context.putImageData(output, 0, 0);
@@ -326,11 +326,11 @@ _ol_source_Raster_.getImageData_ = function(renderer, frameState, layerState) {
   var width = frameState.size[0];
   var height = frameState.size[1];
   if (!_ol_source_Raster_.context_) {
-    _ol_source_Raster_.context_ = _ol_dom_.createCanvasContext2D(width, height);
+    _ol_source_Raster_.context_ = createCanvasContext2D(width, height);
   } else {
     var canvas = _ol_source_Raster_.context_.canvas;
     if (canvas.width !== width || canvas.height !== height) {
-      _ol_source_Raster_.context_ = _ol_dom_.createCanvasContext2D(width, height);
+      _ol_source_Raster_.context_ = createCanvasContext2D(width, height);
     } else {
       _ol_source_Raster_.context_.clearRect(0, 0, width, height);
     }
