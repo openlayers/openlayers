@@ -3,13 +3,13 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
 
 
-var projection = _ol_proj_.get('EPSG:3857');
+var projection = getProjection('EPSG:3857');
 var projectionExtent = projection.getExtent();
 var size = _ol_extent_.getWidth(projectionExtent) / 256;
 var resolutions = new Array(14);

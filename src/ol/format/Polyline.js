@@ -11,7 +11,7 @@ import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -33,7 +33,7 @@ var _ol_format_Polyline_ = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
+  this.defaultDataProjection = getProjection('EPSG:4326');
 
   /**
    * @private

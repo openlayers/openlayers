@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {transform, transformExtent} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
@@ -16,7 +16,7 @@ var map = new _ol_Map_({
       source: new _ol_source_OSM_()
     }),
     new _ol_layer_Tile_({
-      extent: _ol_proj_.transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),
+      extent: transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),
       source: new _ol_source_XYZ_({
         attributions: 'Tiles © USGS, rendered with ' +
             '<a href="http://www.maptiler.com/">MapTiler</a>',
@@ -29,7 +29,7 @@ var map = new _ol_Map_({
   ],
   view: new _ol_View_({
     projection: 'EPSG:3857',
-    center: _ol_proj_.transform([-112.18688965, 36.057944835],
+    center: transform([-112.18688965, 36.057944835],
         'EPSG:4326', 'EPSG:3857'),
     zoom: 12
   })

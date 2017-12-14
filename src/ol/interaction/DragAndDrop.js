@@ -9,7 +9,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -41,7 +41,7 @@ var _ol_interaction_DragAndDrop_ = function(opt_options) {
    * @type {ol.proj.Projection}
    */
   this.projection_ = options.projection ?
-    _ol_proj_.get(options.projection) : null;
+    getProjection(options.projection) : null;
 
   /**
    * @private

@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_MVT_ from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
@@ -39,7 +39,7 @@ var map = new _ol_Map_({
           'OpenStreetMap contributors</a>',
         format: new _ol_format_MVT_(),
         tileGrid: new _ol_tilegrid_TileGrid_({
-          extent: _ol_proj_.get('EPSG:3857').getExtent(),
+          extent: getProjection('EPSG:3857').getExtent(),
           resolutions: resolutions,
           tileSize: 512
         }),

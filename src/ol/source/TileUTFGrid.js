@@ -10,7 +10,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -27,7 +27,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  */
 var _ol_source_TileUTFGrid_ = function(options) {
   _ol_source_Tile_.call(this, {
-    projection: _ol_proj_.get('EPSG:3857'),
+    projection: getProjection('EPSG:3857'),
     state: _ol_source_State_.LOADING
   });
 
@@ -166,12 +166,12 @@ _ol_source_TileUTFGrid_.prototype.handleTileJSONError = function() {
  */
 _ol_source_TileUTFGrid_.prototype.handleTileJSONResponse = function(tileJSON) {
 
-  var epsg4326Projection = _ol_proj_.get('EPSG:4326');
+  var epsg4326Projection = getProjection('EPSG:4326');
 
   var sourceProjection = this.getProjection();
   var extent;
   if (tileJSON.bounds !== undefined) {
-    var transform = _ol_proj_.getTransformFromProjections(
+    var transform = getTransformFromProjections(
         epsg4326Projection, sourceProjection);
     extent = applyTransform(tileJSON.bounds, transform);
   }

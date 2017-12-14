@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
 
@@ -18,7 +18,7 @@ var map = new _ol_Map_({
     })
   ],
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([-121.1, 47.5]),
+    center: fromLonLat([-121.1, 47.5]),
     zoom: 7
   })
 });

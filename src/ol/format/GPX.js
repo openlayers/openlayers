@@ -11,7 +11,7 @@ import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_LineString_ from '../geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../geom/MultiLineString.js';
 import _ol_geom_Point_ from '../geom/Point.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -32,7 +32,7 @@ var _ol_format_GPX_ = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
+  this.defaultDataProjection = getProjection('EPSG:4326');
 
   /**
    * @type {function(ol.Feature, Node)|undefined}

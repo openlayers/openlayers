@@ -5,7 +5,7 @@ import _ol_format_OSMXML_ from '../src/ol/format/OSMXML.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -80,8 +80,7 @@ var styles = {
 var vectorSource = new _ol_source_Vector_({
   format: new _ol_format_OSMXML_(),
   loader: function(extent, resolution, projection) {
-    var epsg4326Extent =
-        _ol_proj_.transformExtent(extent, projection, 'EPSG:4326');
+    var epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');
     var client = new XMLHttpRequest();
     client.open('POST', 'https://overpass-api.de/api/interpreter');
     client.addEventListener('load', function() {

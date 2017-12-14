@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_control_ScaleLine_ from '../../../../src/ol/control/ScaleLine.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {fromLonLat} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 
 describe('ol.control.ScaleLine', function() {
@@ -249,7 +249,7 @@ describe('ol.control.ScaleLine', function() {
       var ctrl = new _ol_control_ScaleLine_();
       ctrl.setMap(map);
       map.setView(new _ol_View_({
-        center: _ol_proj_.fromLonLat([7, 52]),
+        center: fromLonLat([7, 52]),
         zoom: 2,
         projection: 'EPSG:3857'
       }));
@@ -306,7 +306,7 @@ describe('ol.control.ScaleLine', function() {
       var ctrl = new _ol_control_ScaleLine_();
       ctrl.setMap(map);
       map.setView(new _ol_View_({
-        center: _ol_proj_.fromLonLat([7, 0]),
+        center: fromLonLat([7, 0]),
         zoom: 2,
         projection: 'EPSG:4326'
       }));
@@ -324,7 +324,7 @@ describe('ol.control.ScaleLine', function() {
       });
       ctrl.setMap(map);
       map.setView(new _ol_View_({
-        center: _ol_proj_.fromLonLat([7, 0]),
+        center: fromLonLat([7, 0]),
         zoom: 2,
         projection: 'EPSG:4326'
       }));

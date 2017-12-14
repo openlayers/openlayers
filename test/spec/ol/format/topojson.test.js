@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
 import _ol_format_Feature_ from '../../../../src/ol/format/Feature.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {transform} from '../../../../src/ol/proj.js';
 import _ol_format_TopoJSON_ from '../../../../src/ol/format/TopoJSON.js';
 
 var aruba = {
@@ -123,25 +123,25 @@ describe('ol.format.TopoJSON', function() {
         var point = features[0].getGeometry();
         expect(point.getType()).to.be('Point');
         expect(features[0].getGeometry().getCoordinates()).to.eql(
-            _ol_proj_.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+            transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
 
         var line = features[1].getGeometry();
         expect(line.getType()).to.be('LineString');
         expect(line.getCoordinates()).to.eql([
-          _ol_proj_.transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
+          transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([103.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([104.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
         ]);
 
         var polygon = features[2].getGeometry();
         expect(polygon.getType()).to.be('Polygon');
         expect(polygon.getCoordinates()).to.eql([[
-          _ol_proj_.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
-          _ol_proj_.transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857')
+          transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([100.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([101.0, 1.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([101.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
+          transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857')
         ]]);
 
         done();

@@ -4,7 +4,7 @@ import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_MultiLineString_ from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
 describe('ol.format.GPX', function() {
@@ -17,12 +17,12 @@ describe('ol.format.GPX', function() {
   describe('#readProjection', function() {
     it('returns the default projection from document', function() {
       var projection = format.readProjectionFromDocument();
-      expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+      expect(projection).to.eql(getProjection('EPSG:4326'));
     });
 
     it('returns the default projection from node', function() {
       var projection = format.readProjectionFromNode();
-      expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+      expect(projection).to.eql(getProjection('EPSG:4326'));
     });
   });
 
@@ -121,8 +121,8 @@ describe('ol.format.GPX', function() {
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
       expect(g).to.be.an(_ol_geom_LineString_);
-      var p1 = _ol_proj_.transform([2, 1], 'EPSG:4326', 'EPSG:3857');
-      var p2 = _ol_proj_.transform([6, 5], 'EPSG:4326', 'EPSG:3857');
+      var p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
+      var p2 = transform([6, 5], 'EPSG:4326', 'EPSG:3857');
       expect(g.getCoordinates()).to.eql([p1, p2]);
       expect(g.getLayout()).to.be('XY');
       var serialized = format.writeFeaturesNode(fs, {
@@ -285,9 +285,9 @@ describe('ol.format.GPX', function() {
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
       expect(g).to.be.an(_ol_geom_MultiLineString_);
-      var p1 = _ol_proj_.transform([2, 1], 'EPSG:4326', 'EPSG:3857');
+      var p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       p1.push(3, 1263115752);
-      var p2 = _ol_proj_.transform([6, 5], 'EPSG:4326', 'EPSG:3857');
+      var p2 = transform([6, 5], 'EPSG:4326', 'EPSG:3857');
       p2.push(7, 1263115812);
       expect(g.getCoordinates()).to.eql([[p1, p2]]);
       expect(g.getLayout()).to.be('XYZM');
@@ -416,7 +416,7 @@ describe('ol.format.GPX', function() {
       expect(f).to.be.an(_ol_Feature_);
       var g = f.getGeometry();
       expect(g).to.be.an(_ol_geom_Point_);
-      var expectedPoint = _ol_proj_.transform([2, 1], 'EPSG:4326', 'EPSG:3857');
+      var expectedPoint = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
       expect(g.getCoordinates()).to.eql(expectedPoint);
       expect(g.getLayout()).to.be('XY');
       var serialized = format.writeFeaturesNode(fs, {

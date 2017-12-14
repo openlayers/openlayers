@@ -8,7 +8,7 @@ import _ol_asserts_ from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_math_ from '../math.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
@@ -110,7 +110,7 @@ inherits(_ol_source_TileWMS_, _ol_source_TileImage_);
  * @api
  */
 _ol_source_TileWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
-  var projectionObj = _ol_proj_.get(projection);
+  var projectionObj = getProjection(projection);
   var sourceProjectionObj = this.getProjection();
 
   var tileGrid = this.getTileGrid();
@@ -137,8 +137,8 @@ _ol_source_TileWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolu
 
   if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
     tileResolution = _ol_reproj_.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, tileResolution);
-    tileExtent = _ol_proj_.transformExtent(tileExtent, projectionObj, sourceProjectionObj);
-    coordinate = _ol_proj_.transform(coordinate, projectionObj, sourceProjectionObj);
+    tileExtent = transformExtent(tileExtent, projectionObj, sourceProjectionObj);
+    coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
   }
 
   var baseParams = {

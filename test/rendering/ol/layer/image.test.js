@@ -2,7 +2,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -17,7 +17,7 @@ describe('ol.rendering.layer.Image', function() {
       target: createMapDiv(50, 50),
       renderer: renderer,
       view: new _ol_View_({
-        center: _ol_proj_.transform(
+        center: transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5
       })
@@ -69,7 +69,7 @@ describe('ol.rendering.layer.Image', function() {
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent(
             [5, 5, -12 - 1]),
-        projection: _ol_proj_.get('EPSG:3857')
+        projection: getProjection('EPSG:3857')
       });
     });
 
@@ -97,7 +97,7 @@ describe('ol.rendering.layer.Image', function() {
     beforeEach(function() {
       source = new _ol_source_ImageStatic_({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
-        imageExtent: _ol_proj_.transformExtent(
+        imageExtent: transformExtent(
             [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
       });
     });

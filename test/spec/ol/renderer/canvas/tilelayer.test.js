@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import _ol_layer_Tile_ from '../../../../../src/ol/layer/Tile.js';
-import _ol_proj_ from '../../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
 import _ol_renderer_canvas_TileLayer_ from '../../../../../src/ol/renderer/canvas/TileLayer.js';
 import _ol_source_TileWMS_ from '../../../../../src/ol/source/TileWMS.js';
@@ -82,7 +82,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
         time: Date.now(),
         viewState: {
           center: [10, 5],
-          projection: _ol_proj_.get('EPSG:3857'),
+          projection: getProjection('EPSG:3857'),
           resolution: 1,
           rotation: Math.PI
         },

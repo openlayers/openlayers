@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 import _ol_source_Raster_ from '../src/ol/source/Raster.js';
 
@@ -98,7 +98,7 @@ var map = new _ol_Map_({
   layers: [imagery, rasterImage],
   target: 'map',
   view: new _ol_View_({
-    center: _ol_proj_.fromLonLat([-119.07, 47.65]),
+    center: fromLonLat([-119.07, 47.65]),
     zoom: 11
   })
 });

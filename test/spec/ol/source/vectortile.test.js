@@ -4,7 +4,7 @@ import _ol_VectorImageTile_ from '../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../src/ol/VectorTile.js';
 import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
@@ -37,28 +37,28 @@ describe('ol.source.VectorTile', function() {
 
   describe('#getTile()', function() {
     it('creates a tile with the correct tile class', function() {
-      tile = source.getTile(0, 0, 0, 1, _ol_proj_.get('EPSG:3857'));
+      tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
       expect(tile).to.be.a(_ol_VectorImageTile_);
     });
     it('sets the correct tileCoord on the created tile', function() {
       expect(tile.getTileCoord()).to.eql([0, 0, 0]);
     });
     it('fetches tile from cache when requested again', function() {
-      expect(source.getTile(0, 0, 0, 1, _ol_proj_.get('EPSG:3857')))
+      expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')))
           .to.equal(tile);
     });
   });
 
   describe('#getTileGridForProjection', function() {
     it('creates a tile grid with the source tile grid\'s tile size', function() {
-      var tileGrid = source.getTileGridForProjection(_ol_proj_.get('EPSG:3857'));
+      var tileGrid = source.getTileGridForProjection(getProjection('EPSG:3857'));
       expect(tileGrid.getTileSize(0)).to.be(512);
     });
   });
 
   describe('Tile load events', function() {
     it('triggers tileloadstart and tileloadend with ol.VectorTile', function(done) {
-      tile = source.getTile(14, 8938, -5681, 1, _ol_proj_.get('EPSG:3857'));
+      tile = source.getTile(14, 8938, -5681, 1, getProjection('EPSG:3857'));
       var started = false;
       source.on('tileloadstart', function() {
         started = true;

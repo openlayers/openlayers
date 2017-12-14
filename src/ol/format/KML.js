@@ -24,7 +24,7 @@ import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_math_ from '../math.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_style_Fill_ from '../style/Fill.js';
 import _ol_style_Icon_ from '../style/Icon.js';
 import _ol_style_IconAnchorUnits_ from '../style/IconAnchorUnits.js';
@@ -59,7 +59,7 @@ var _ol_format_KML_ = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
+  this.defaultDataProjection = getProjection('EPSG:4326');
 
   /**
    * @private

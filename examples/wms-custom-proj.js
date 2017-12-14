@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import _ol_control_ScaleLine_ from '../src/ol/control/ScaleLine.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {addProjection, addCoordinateTransforms, transform} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
@@ -20,13 +20,13 @@ var projection = new _ol_proj_Projection_({
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864],
   units: 'm'
 });
-_ol_proj_.addProjection(projection);
+addProjection(projection);
 
 // We also declare EPSG:21781/EPSG:4326 transform functions. These functions
 // are necessary for the ScaleLine control and when calling ol.proj.transform
 // for setting the view's initial center (see below).
 
-_ol_proj_.addCoordinateTransforms('EPSG:4326', projection,
+addCoordinateTransforms('EPSG:4326', projection,
     function(coordinate) {
       return [
         WGStoCHy(coordinate[1], coordinate[0]),
@@ -79,7 +79,7 @@ var map = new _ol_Map_({
   target: 'map',
   view: new _ol_View_({
     projection: projection,
-    center: _ol_proj_.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
+    center: transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
     extent: extent,
     zoom: 2
   })

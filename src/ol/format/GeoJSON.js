@@ -17,7 +17,7 @@ import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -37,13 +37,13 @@ var _ol_format_GeoJSON_ = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get(
+  this.defaultDataProjection = getProjection(
       options.defaultDataProjection ?
         options.defaultDataProjection : 'EPSG:4326');
 
 
   if (options.featureProjection) {
-    this.defaultFeatureProjection = _ol_proj_.get(options.featureProjection);
+    this.defaultFeatureProjection = getProjection(options.featureProjection);
   }
 
   /**
@@ -467,7 +467,7 @@ _ol_format_GeoJSON_.prototype.readProjectionFromObject = function(object) {
   var projection;
   if (crs) {
     if (crs.type == 'name') {
-      projection = _ol_proj_.get(crs.properties.name);
+      projection = getProjection(crs.properties.name);
     } else {
       _ol_asserts_.assert(false, 36); // Unknown SRS type
     }

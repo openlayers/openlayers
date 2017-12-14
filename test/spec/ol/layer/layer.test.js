@@ -1,7 +1,7 @@
 import {getUid} from '../../../../src/ol/index.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_render_Event_ from '../../../../src/ol/render/Event.js';
 import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
 
@@ -15,7 +15,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
         source: new _ol_source_Source_({
-          projection: _ol_proj_.get('EPSG:4326')
+          projection: getProjection('EPSG:4326')
         })
       });
     });
@@ -65,7 +65,7 @@ describe('ol.layer.Layer', function() {
     it('accepts options', function() {
       var layer = new _ol_layer_Layer_({
         source: new _ol_source_Source_({
-          projection: _ol_proj_.get('EPSG:4326')
+          projection: getProjection('EPSG:4326')
         }),
         opacity: 0.5,
         visible: false,
@@ -103,7 +103,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
         source: new _ol_source_Source_({
-          projection: _ol_proj_.get('EPSG:4326')
+          projection: getProjection('EPSG:4326')
         })
       });
     });
@@ -153,7 +153,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
         source: new _ol_source_Source_({
-          projection: _ol_proj_.get('EPSG:4326')
+          projection: getProjection('EPSG:4326')
         })
       });
     });
@@ -216,7 +216,7 @@ describe('ol.layer.Layer', function() {
   describe('#getSource', function() {
 
     it('gets the layer source', function() {
-      var source = new _ol_source_Source_({projection: _ol_proj_.get('EPSG:4326')});
+      var source = new _ol_source_Source_({projection: getProjection('EPSG:4326')});
       var layer = new _ol_layer_Layer_({source: source});
       expect(layer.getSource()).to.be(source);
     });
@@ -224,7 +224,7 @@ describe('ol.layer.Layer', function() {
   });
 
   describe('#set("source", source)', function() {
-    var projection = _ol_proj_.get('EPSG:4326');
+    var projection = getProjection('EPSG:4326');
 
     it('sets the layer source', function() {
       var layer = new _ol_layer_Layer_({
@@ -270,7 +270,7 @@ describe('ol.layer.Layer', function() {
   });
 
   describe('#setSource()', function() {
-    var projection = _ol_proj_.get('EPSG:4326');
+    var projection = getProjection('EPSG:4326');
 
     it('sets the layer source', function() {
       var layer = new _ol_layer_Layer_({
@@ -323,7 +323,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
         source: new _ol_source_Source_({
-          projection: _ol_proj_.get('EPSG:4326')
+          projection: getProjection('EPSG:4326')
         })
       });
     });
@@ -353,7 +353,7 @@ describe('ol.layer.Layer', function() {
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
         source: new _ol_source_Source_({
-          projection: _ol_proj_.get('EPSG:4326')
+          projection: getProjection('EPSG:4326')
         })
       });
     });

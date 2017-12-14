@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
 
 /**
@@ -94,8 +94,8 @@ _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet = function(matrixSet, opt_ext
   var tileHeightPropName = 'TileHeight';
 
   var code = matrixSet[supportedCRSPropName];
-  var projection = _ol_proj_.get(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
-      _ol_proj_.get(code);
+  var projection = getProjection(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+      getProjection(code);
   var metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
   var switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';

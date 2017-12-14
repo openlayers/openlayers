@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
 import _ol_reproj_Image_ from '../../../../src/ol/reproj/Image.js';
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
@@ -14,7 +14,7 @@ describe('ol.rendering.reproj.Image', function() {
 
     var imagesRequested = 0;
 
-    var image = new _ol_reproj_Image_(sourceProj, _ol_proj_.get(targetProj),
+    var image = new _ol_reproj_Image_(sourceProj, getProjection(targetProj),
         targetExtent, targetResolution, pixelRatio,
         function(extent, resolution, pixelRatio) {
           imagesRequested++;
@@ -38,7 +38,7 @@ describe('ol.rendering.reproj.Image', function() {
       source = new _ol_source_ImageStatic_({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent([5, 5, -13]),
-        projection: _ol_proj_.get('EPSG:3857')
+        projection: getProjection('EPSG:3857')
       });
     });
 

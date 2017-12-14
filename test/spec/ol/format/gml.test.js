@@ -8,7 +8,7 @@ import _ol_geom_MultiPoint_ from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
 var readGeometry = function(format, text, opt_options) {
@@ -393,7 +393,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(_ol_geom_Point_);
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
-            _ol_proj_.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+            transform([1, 2], 'CRS:84', 'EPSG:3857'));
         config.dataProjection = 'CRS:84';
         var serialized = format.writeGeometryNode(g, config);
         var pos = serialized.firstElementChild.firstElementChild.textContent;
@@ -415,7 +415,7 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(_ol_geom_Point_);
         var coordinates = g.getCoordinates();
         expect(coordinates.splice(0, 2)).to.eql(
-            _ol_proj_.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+            transform([1, 2], 'CRS:84', 'EPSG:3857'));
       });
 
       it('can read and write a point geometry in EPSG:4326', function() {
@@ -462,9 +462,9 @@ describe('ol.format.GML3', function() {
         expect(g).to.be.an(_ol_geom_LineString_);
         var coordinates = g.getCoordinates();
         expect(coordinates[0].slice(0, 2)).to.eql(
-            _ol_proj_.transform([1, 2], 'CRS:84', 'EPSG:3857'));
+            transform([1, 2], 'CRS:84', 'EPSG:3857'));
         expect(coordinates[1].slice(0, 2)).to.eql(
-            _ol_proj_.transform([3, 4], 'CRS:84', 'EPSG:3857'));
+            transform([3, 4], 'CRS:84', 'EPSG:3857'));
         var serialized = format.writeGeometryNode(g, config);
         var poss = serialized.firstElementChild.firstElementChild.textContent;
         var coordinate = poss.split(' ');

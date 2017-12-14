@@ -18,7 +18,7 @@ import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import _ol_geom_Point_ from '../geom/Point.js';
 import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -592,7 +592,7 @@ _ol_format_GMLBase_.prototype.readFeaturesFromNode = function(node, opt_options)
  * @inheritDoc
  */
 _ol_format_GMLBase_.prototype.readProjectionFromNode = function(node) {
-  return _ol_proj_.get(this.srsName ? this.srsName :
+  return getProjection(this.srsName ? this.srsName :
     node.firstElementChild.getAttribute('srsName'));
 };
 export default _ol_format_GMLBase_;

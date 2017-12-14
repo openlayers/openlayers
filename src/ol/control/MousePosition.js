@@ -7,7 +7,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_Object_ from '../Object.js';
 import _ol_control_Control_ from '../control/Control.js';
-import _ol_proj_ from '../proj.js';
+import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -200,7 +200,7 @@ _ol_control_MousePosition_.prototype.setCoordinateFormat = function(format) {
  * @api
  */
 _ol_control_MousePosition_.prototype.setProjection = function(projection) {
-  this.set(_ol_control_MousePosition_.Property_.PROJECTION, _ol_proj_.get(projection));
+  this.set(_ol_control_MousePosition_.Property_.PROJECTION, getProjection(projection));
 };
 
 
@@ -214,10 +214,10 @@ _ol_control_MousePosition_.prototype.updateHTML_ = function(pixel) {
     if (!this.transform_) {
       var projection = this.getProjection();
       if (projection) {
-        this.transform_ = _ol_proj_.getTransformFromProjections(
+        this.transform_ = getTransformFromProjections(
             this.mapProjection_, projection);
       } else {
-        this.transform_ = _ol_proj_.identityTransform;
+        this.transform_ = identityTransform;
       }
     }
     var map = this.getMap();

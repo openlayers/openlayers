@@ -6,7 +6,7 @@ import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import _ol_geom_Point_ from '../../../../../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
-import _ol_proj_ from '../../../../../src/ol/proj.js';
+import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import _ol_renderer_canvas_VectorLayer_ from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
@@ -226,7 +226,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         source: new _ol_source_Vector_({wrapX: true})
       });
       renderer = new _ol_renderer_canvas_VectorLayer_(layer);
-      var projection = _ol_proj_.get('EPSG:3857');
+      var projection = getProjection('EPSG:3857');
       projExtent = projection.getExtent();
       worldWidth = _ol_extent_.getWidth(projExtent);
       buffer = layer.getRenderBuffer();

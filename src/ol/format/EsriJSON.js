@@ -19,7 +19,7 @@ import _ol_geom_Polygon_ from '../geom/Polygon.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -547,7 +547,7 @@ _ol_format_EsriJSON_.prototype.readProjectionFromObject = function(object) {
   var esriJSONObject = /** @type {EsriJSONObject} */ (object);
   if (esriJSONObject.spatialReference && esriJSONObject.spatialReference.wkid) {
     var crs = esriJSONObject.spatialReference.wkid;
-    return _ol_proj_.get('EPSG:' + crs);
+    return getProjection('EPSG:' + crs);
   } else {
     return null;
   }
@@ -627,8 +627,7 @@ _ol_format_EsriJSON_.prototype.writeFeatureObject = function(
       _ol_format_EsriJSON_.writeGeometry_(geometry, opt_options);
     if (opt_options && opt_options.featureProjection) {
       object['geometry']['spatialReference'] = /** @type {EsriJSONCRS} */({
-        wkid: _ol_proj_.get(
-            opt_options.featureProjection).getCode().split(':').pop()
+        wkid: getProjection(opt_options.featureProjection).getCode().split(':').pop()
       });
     }
   }

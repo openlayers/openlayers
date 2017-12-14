@@ -8,7 +8,7 @@ import _ol_format_IGCZ_ from '../format/IGCZ.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_LineString_ from '../geom/LineString.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 
 /**
  * @classdesc
@@ -28,7 +28,7 @@ var _ol_format_IGC_ = function(opt_options) {
   /**
    * @inheritDoc
    */
-  this.defaultDataProjection = _ol_proj_.get('EPSG:4326');
+  this.defaultDataProjection = getProjection('EPSG:4326');
 
   /**
    * @private

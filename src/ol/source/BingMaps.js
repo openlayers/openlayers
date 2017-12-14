@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -32,7 +32,7 @@ var _ol_source_BingMaps_ = function(options) {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     opaque: true,
-    projection: _ol_proj_.get('EPSG:3857'),
+    projection: getProjection('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: _ol_source_State_.LOADING,
     tileLoadFunction: options.tileLoadFunction,
@@ -178,8 +178,8 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
       }));
 
   if (resource.imageryProviders) {
-    var transform = _ol_proj_.getTransformFromProjections(
-        _ol_proj_.get('EPSG:4326'), this.getProjection());
+    var transform = getTransformFromProjections(
+        getProjection('EPSG:4326'), this.getProjection());
 
     this.setAttributions(function(frameState) {
       var attributions = [];

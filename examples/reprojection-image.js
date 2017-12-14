@@ -1,9 +1,9 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import * as _ol_extent_ from '../src/ol/extent.js';
+import {getCenter} from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {transform} from '../src/ol/proj.js';
 import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
@@ -31,8 +31,7 @@ var map = new _ol_Map_({
   ],
   target: 'map',
   view: new _ol_View_({
-    center: _ol_proj_.transform(
-        _ol_extent_.getCenter(imageExtent), 'EPSG:27700', 'EPSG:3857'),
+    center: transform(getCenter(imageExtent), 'EPSG:27700', 'EPSG:3857'),
     zoom: 4
   })
 });

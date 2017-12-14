@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_OSMXML_ from '../../../../src/ol/format/OSMXML.js';
 import _ol_geom_Point_ from '../../../../src/ol/geom/Point.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
 describe('ol.format.OSMXML', function() {
@@ -15,12 +15,12 @@ describe('ol.format.OSMXML', function() {
   describe('#readProjection', function() {
     it('returns the default projection from document', function() {
       var projection = format.readProjectionFromDocument();
-      expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+      expect(projection).to.eql(getProjection('EPSG:4326'));
     });
 
     it('returns the default projection from node', function() {
       var projection = format.readProjectionFromNode();
-      expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+      expect(projection).to.eql(getProjection('EPSG:4326'));
     });
   });
 
@@ -132,7 +132,7 @@ describe('ol.format.OSMXML', function() {
       var g = f.getGeometry();
       expect(g).to.be.an(_ol_geom_Point_);
       expect(g.getCoordinates()).to.eql(
-          _ol_proj_.transform([2, 1], 'EPSG:4326', 'EPSG:3857'));
+          transform([2, 1], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });

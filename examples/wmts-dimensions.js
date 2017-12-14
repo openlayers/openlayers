@@ -2,14 +2,14 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
+import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
 
 
 // create the WMTS tile grid in the google projection
-var projection = _ol_proj_.get('EPSG:3857');
+var projection = getProjection('EPSG:3857');
 var tileSizePixels = 256;
 var tileSizeMtrs = _ol_extent_.getWidth(projection.getExtent()) / tileSizePixels;
 var matrixIds = [];

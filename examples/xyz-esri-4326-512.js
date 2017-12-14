@@ -1,10 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
-import _ol_proj_ from '../src/ol/proj.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
-
-var projection = _ol_proj_.get('EPSG:4326');
 
 // The tile size supported by the ArcGIS tile service.
 var tileSize = 512;
@@ -19,7 +16,7 @@ var map = new _ol_Map_({
       source: new _ol_source_XYZ_({
         attributions: 'Copyright:© 2013 ESRI, i-cubed, GeoEye',
         maxZoom: 16,
-        projection: projection,
+        projection: 'EPSG:4326',
         tileSize: tileSize,
         tileUrlFunction: function(tileCoord) {
           return urlTemplate.replace('{z}', (tileCoord[0] - 1).toString())
@@ -32,7 +29,7 @@ var map = new _ol_Map_({
   ],
   view: new _ol_View_({
     center: [0, 0],
-    projection: projection,
+    projection: 'EPSG:4326',
     zoom: 2,
     minZoom: 2
   })

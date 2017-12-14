@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_format_Polyline_ from '../../../../src/ol/format/Polyline.js';
 import _ol_geom_LineString_ from '../../../../src/ol/geom/LineString.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 describe('ol.format.Polyline', function() {
 
@@ -32,9 +32,9 @@ describe('ol.format.Polyline', function() {
     ];
     encodedFlatPoints = '_p~iF~ps|U_ulLnnqC_mqNvxq`@';
     points3857 = [
-      _ol_proj_.transform([-120.20000, 38.50000], 'EPSG:4326', 'EPSG:3857'),
-      _ol_proj_.transform([-120.95000, 40.70000], 'EPSG:4326', 'EPSG:3857'),
-      _ol_proj_.transform([-126.45300, 43.25200], 'EPSG:4326', 'EPSG:3857')
+      transform([-120.20000, 38.50000], 'EPSG:4326', 'EPSG:3857'),
+      transform([-120.95000, 40.70000], 'EPSG:4326', 'EPSG:3857'),
+      transform([-126.45300, 43.25200], 'EPSG:4326', 'EPSG:3857')
     ];
 
     floats = [0.00, 0.15, -0.01, -0.16, 0.16, 0.01];
@@ -54,7 +54,7 @@ describe('ol.format.Polyline', function() {
   describe('#readProjectionFromText', function() {
     it('returns the default projection', function() {
       var projection = format.readProjectionFromText(encodedFlatPoints);
-      expect(projection).to.eql(_ol_proj_.get('EPSG:4326'));
+      expect(projection).to.eql(getProjection('EPSG:4326'));
     });
   });
 
@@ -352,7 +352,7 @@ describe('ol.format.Polyline', function() {
 
     it('returns the expected projection', function() {
       var projection = format.readProjection(encodedFlatPoints);
-      expect(projection).to.be(_ol_proj_.get('EPSG:4326'));
+      expect(projection).to.be(getProjection('EPSG:4326'));
     });
 
   });

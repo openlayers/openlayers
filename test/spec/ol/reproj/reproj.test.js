@@ -1,15 +1,15 @@
 import _ol_reproj_ from '../../../../src/ol/reproj.js';
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
 describe('ol.reproj', function() {
 
   describe('#calculateSourceResolution', function() {
-    var proj3857 = _ol_proj_.get('EPSG:3857');
-    var proj4326 = _ol_proj_.get('EPSG:4326');
+    var proj3857 = getProjection('EPSG:3857');
+    var proj4326 = getProjection('EPSG:4326');
     var origin = [0, 0];
     var point3857 = [50, 40];
-    var point4326 = _ol_proj_.transform(point3857, proj3857, proj4326);
+    var point4326 = transform(point3857, proj3857, proj4326);
 
     it('is identity for identical projection', function() {
       var result;

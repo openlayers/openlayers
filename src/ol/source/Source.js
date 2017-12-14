@@ -3,7 +3,7 @@
  */
 import {inherits, nullFunction} from '../index.js';
 import _ol_Object_ from '../Object.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection} from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
 
 /**
@@ -28,7 +28,7 @@ var _ol_source_Source_ = function(options) {
    * @private
    * @type {ol.proj.Projection}
    */
-  this.projection_ = _ol_proj_.get(options.projection);
+  this.projection_ = getProjection(options.projection);
 
   /**
    * @private

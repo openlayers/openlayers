@@ -3,11 +3,8 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_format_KML_ from '../src/ol/format/KML.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_proj_ from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
-
-var projection = _ol_proj_.get('EPSG:3857');
 
 var raster = new _ol_layer_Tile_({
   source: new _ol_source_BingMaps_({
@@ -28,7 +25,7 @@ var map = new _ol_Map_({
   target: document.getElementById('map'),
   view: new _ol_View_({
     center: [876970.8463461736, 5859807.853963373],
-    projection: projection,
+    projection: 'EPSG:3857',
     zoom: 10
   })
 });

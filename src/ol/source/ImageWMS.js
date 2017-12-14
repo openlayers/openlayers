@@ -10,7 +10,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from '../extent.js';
 import _ol_obj_ from '../obj.js';
-import _ol_proj_ from '../proj.js';
+import {get as getProjection, transform} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_source_Image_ from '../source/Image.js';
 import _ol_source_WMSServerType_ from '../source/WMSServerType.js';
@@ -138,12 +138,12 @@ _ol_source_ImageWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resol
   if (this.url_ === undefined) {
     return undefined;
   }
-  var projectionObj = _ol_proj_.get(projection);
+  var projectionObj = getProjection(projection);
   var sourceProjectionObj = this.getProjection();
 
   if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
     resolution = _ol_reproj_.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
-    coordinate = _ol_proj_.transform(coordinate, projectionObj, sourceProjectionObj);
+    coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
   }
 
   var extent = getForViewAndSize(coordinate, resolution, 0,

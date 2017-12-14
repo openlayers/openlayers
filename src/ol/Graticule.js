@@ -8,7 +8,7 @@ import _ol_geom_LineString_ from './geom/LineString.js';
 import _ol_geom_Point_ from './geom/Point.js';
 import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
 import _ol_math_ from './math.js';
-import _ol_proj_ from './proj.js';
+import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
 import _ol_render_EventType_ from './render/EventType.js';
 import _ol_style_Fill_ from './style/Fill.js';
 import _ol_style_Stroke_ from './style/Stroke.js';
@@ -372,7 +372,7 @@ _ol_Graticule_.prototype.createGraticule_ = function(extent, center, resolution,
     Math.min(extent[3], this.maxLatP_)
   ];
 
-  validExtent = _ol_proj_.transformExtent(validExtent, this.projection_,
+  validExtent = transformExtent(validExtent, this.projection_,
       'EPSG:4326');
   var maxLat = validExtent[3];
   var maxLon = validExtent[2];
@@ -554,7 +554,7 @@ _ol_Graticule_.prototype.handlePostCompose_ = function(e) {
       resolution * resolution / (4 * pixelRatio * pixelRatio);
 
   var updateProjectionInfo = !this.projection_ ||
-      !_ol_proj_.equivalent(this.projection_, projection);
+      !equivalentProjection(this.projection_, projection);
 
   if (updateProjectionInfo) {
     this.updateProjectionInfo_(projection);
@@ -598,11 +598,11 @@ _ol_Graticule_.prototype.handlePostCompose_ = function(e) {
  * @private
  */
 _ol_Graticule_.prototype.updateProjectionInfo_ = function(projection) {
-  var epsg4326Projection = _ol_proj_.get('EPSG:4326');
+  var epsg4326Projection = getProjection('EPSG:4326');
 
   var extent = projection.getExtent();
   var worldExtent = projection.getWorldExtent();
-  var worldExtentP = _ol_proj_.transformExtent(worldExtent,
+  var worldExtentP = transformExtent(worldExtent,
       epsg4326Projection, projection);
 
   var maxLat = worldExtent[3];
@@ -626,11 +626,9 @@ _ol_Graticule_.prototype.updateProjectionInfo_ = function(projection) {
   this.minLonP_ = minLonP;
 
 
-  this.fromLonLatTransform_ = _ol_proj_.getTransform(
-      epsg4326Projection, projection);
+  this.fromLonLatTransform_ = getTransform(epsg4326Projection, projection);
 
-  this.toLonLatTransform_ = _ol_proj_.getTransform(
-      projection, epsg4326Projection);
+  this.toLonLatTransform_ = getTransform(projection, epsg4326Projection);
 
   this.projectionCenterLonLat_ = this.toLonLatTransform_(getCenter(extent));
 

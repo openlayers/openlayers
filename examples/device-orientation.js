@@ -4,14 +4,10 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_math_ from '../src/ol/math.js';
-import _ol_proj_ from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
-var projection = _ol_proj_.get('EPSG:3857');
 var view = new _ol_View_({
   center: [0, 0],
-  projection: projection,
-  extent: projection.getExtent(),
   zoom: 2
 });
 var map = new _ol_Map_({

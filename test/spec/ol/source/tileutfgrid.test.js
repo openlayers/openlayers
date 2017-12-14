@@ -1,4 +1,4 @@
-import _ol_proj_ from '../../../../src/ol/proj.js';
+import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
 import _ol_source_TileUTFGrid_ from '../../../../src/ol/source/TileUTFGrid.js';
 import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
@@ -113,10 +113,10 @@ describe('ol.source.TileUTFGrid', function() {
       var tileGrid = source.getTileGrid();
       var extent = tileGrid.getExtent();
 
-      var proj4326 = _ol_proj_.get('EPSG:4326');
-      var proj3857 = _ol_proj_.get('EPSG:3857');
+      var proj4326 = getProjection('EPSG:4326');
+      var proj3857 = getProjection('EPSG:3857');
       var expectedExtent4326 = tileJson.bounds;
-      var expectedExtent3857 = _ol_proj_.transformExtent(
+      var expectedExtent3857 = transformExtent(
           expectedExtent4326, proj4326, proj3857
       );
       expect(extent).to.eql(proj3857.getExtent());
@@ -189,7 +189,7 @@ describe('ol.source.TileUTFGrid', function() {
 
   describe('#forDataAtCoordinateAndResolution', function() {
     var source = null;
-    var bonn3857 = _ol_proj_.fromLonLat([7.099814, 50.733992]);
+    var bonn3857 = fromLonLat([7.099814, 50.733992]);
     var noState3857 = [0, 0];
     var resolutionZoom1 = 78271.51696402048;
 
