@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
-import _ol_easing_ from './easing.js';
+import {easeIn} from './easing.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
 import _ol_events_EventType_ from './events/EventType.js';
 
@@ -203,7 +203,7 @@ _ol_Tile_.prototype.getAlpha = function(id, time) {
   if (delta >= this.transition_) {
     return 1;
   }
-  return _ol_easing_.easeIn(delta / this.transition_);
+  return easeIn(delta / this.transition_);
 };
 
 /**

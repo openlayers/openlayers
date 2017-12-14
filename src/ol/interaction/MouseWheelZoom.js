@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut} from '../easing.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_has_ from '../has.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
@@ -204,7 +204,7 @@ _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
     if (rebound === 0 && this.constrainResolution_) {
       view.animate({
         resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
-        easing: _ol_easing_.easeOut,
+        easing: easeOut,
         anchor: this.lastAnchor_,
         duration: this.duration_
       });
@@ -213,14 +213,14 @@ _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
     if (rebound > 0) {
       view.animate({
         resolution: minResolution,
-        easing: _ol_easing_.easeOut,
+        easing: easeOut,
         anchor: this.lastAnchor_,
         duration: 500
       });
     } else if (rebound < 0) {
       view.animate({
         resolution: maxResolution,
-        easing: _ol_easing_.easeOut,
+        easing: easeOut,
         anchor: this.lastAnchor_,
         duration: 500
       });

@@ -2,7 +2,7 @@
  * @module ol/interaction/DragZoom
  */
 import {inherits} from '../index.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut} from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
 import _ol_interaction_DragBox_ from '../interaction/DragBox.js';
@@ -82,7 +82,7 @@ _ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
     resolution: resolution,
     center: center,
     duration: this.duration_,
-    easing: _ol_easing_.easeOut
+    easing: easeOut
   });
 
 };

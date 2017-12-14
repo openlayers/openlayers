@@ -4,7 +4,7 @@
 
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {inherits} from '../index.js';
@@ -127,7 +127,7 @@ _ol_control_Rotate_.prototype.resetNorth_ = function() {
       view.animate({
         rotation: 0,
         duration: this.duration_,
-        easing: _ol_easing_.easeOut
+        easing: easeOut
       });
     } else {
       view.setRotation(0);
