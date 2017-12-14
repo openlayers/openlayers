@@ -2,7 +2,7 @@ import _ol_geom_Geometry_ from '../../../../src/ol/geom/Geometry.js';
 import _ol_geom_GeometryCollection_ from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 
 describe('ol.geom.GeometryCollection', function() {
 
@@ -16,7 +16,7 @@ describe('ol.geom.GeometryCollection', function() {
     beforeEach(function() {
       point = new Point([10, 20]);
       line = new LineString([[10, 20], [30, 40]]);
-      poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      poly = new Polygon([outer, inner1, inner2]);
       multi = new _ol_geom_GeometryCollection_([point, line, poly]);
     });
 
@@ -58,7 +58,7 @@ describe('ol.geom.GeometryCollection', function() {
     it('returns a collection of geometries', function() {
       var point = new Point([10, 20]);
       var line = new LineString([[10, 20], [30, 40]]);
-      var poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      var poly = new Polygon([outer, inner1, inner2]);
       var multi = new _ol_geom_GeometryCollection_([point, line, poly]);
 
       var geometries = multi.getGeometries();
@@ -66,7 +66,7 @@ describe('ol.geom.GeometryCollection', function() {
       expect(geometries).to.have.length(3);
       expect(geometries[0]).to.be.a(Point);
       expect(geometries[1]).to.be.a(LineString);
-      expect(geometries[2]).to.be.a(_ol_geom_Polygon_);
+      expect(geometries[2]).to.be.a(Polygon);
     });
 
   });
@@ -76,7 +76,7 @@ describe('ol.geom.GeometryCollection', function() {
     it('has a working clone method', function() {
       var point = new Point([10, 20]);
       var line = new LineString([[10, 20], [30, 40]]);
-      var poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      var poly = new Polygon([outer, inner1, inner2]);
       var multi = new _ol_geom_GeometryCollection_([point, line, poly]);
       var clone = multi.clone();
       expect(clone).to.not.be(multi);
@@ -124,7 +124,7 @@ describe('ol.geom.GeometryCollection', function() {
     beforeEach(function() {
       point = new Point([5, 20]);
       line = new LineString([[10, 20], [30, 40]]);
-      poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      poly = new Polygon([outer, inner1, inner2]);
       multi = new _ol_geom_GeometryCollection_([point, line, poly]);
     });
 
@@ -153,7 +153,7 @@ describe('ol.geom.GeometryCollection', function() {
     beforeEach(function() {
       point = new Point([10, 20]);
       line = new LineString([[10, 20], [30, 40]]);
-      poly = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      poly = new Polygon([outer, inner1, inner2]);
       multi = new _ol_geom_GeometryCollection_([point, line, poly]);
     });
 

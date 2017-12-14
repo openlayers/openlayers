@@ -9,7 +9,7 @@ import _ol_Object_ from './Object.js';
 import _ol_Sphere_ from './Sphere.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventType_ from './events/EventType.js';
-import _ol_geom_Polygon_ from './geom/Polygon.js';
+import Polygon from './geom/Polygon.js';
 import _ol_has_ from './has.js';
 import _ol_math_ from './math.js';
 import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
@@ -161,7 +161,7 @@ _ol_Geolocation_.prototype.positionChange_ = function(position) {
   this.set(_ol_GeolocationProperty_.POSITION, projectedPosition);
   this.set(_ol_GeolocationProperty_.SPEED,
       coords.speed === null ? undefined : coords.speed);
-  var geometry = _ol_geom_Polygon_.circular(
+  var geometry = Polygon.circular(
       this.sphere_, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
   this.set(_ol_GeolocationProperty_.ACCURACY_GEOMETRY, geometry);

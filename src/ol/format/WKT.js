@@ -13,7 +13,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 
 /**
@@ -920,7 +920,7 @@ _ol_format_WKT_.Parser.prototype.formatErrorMessage_ = function() {
 _ol_format_WKT_.Parser.GeometryConstructor_ = {
   'POINT': Point,
   'LINESTRING': LineString,
-  'POLYGON': _ol_geom_Polygon_,
+  'POLYGON': Polygon,
   'MULTIPOINT': MultiPoint,
   'MULTILINESTRING': MultiLineString,
   'MULTIPOLYGON': _ol_geom_MultiPolygon_

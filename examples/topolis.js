@@ -6,7 +6,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import LineString from '../src/ol/geom/LineString.js';
-import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -149,7 +149,7 @@ function edgeToFeature(edge) {
 function faceToFeature(face) {
   var coordinates = topo.getFaceGeometry(face);
   var feature = new _ol_Feature_({
-    geometry: new _ol_geom_Polygon_(coordinates),
+    geometry: new Polygon(coordinates),
     face: face
   });
   feature.setId(face.id);

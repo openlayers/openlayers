@@ -6,7 +6,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
@@ -551,7 +551,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['area'],
         filter: _ol_format_filter_.contains(
             'the_geom',
-            new _ol_geom_Polygon_([[
+            new Polygon([[
               [10, 20],
               [10, 25],
               [15, 25],
@@ -588,7 +588,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['area'],
         filter: _ol_format_filter_.intersects(
             'the_geom',
-            new _ol_geom_Polygon_([[
+            new Polygon([[
               [10, 20],
               [10, 25],
               [15, 25],
@@ -625,7 +625,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['area'],
         filter: _ol_format_filter_.within(
             'the_geom',
-            new _ol_geom_Polygon_([[
+            new Polygon([[
               [10, 20],
               [10, 25],
               [15, 25],
@@ -1138,7 +1138,7 @@ describe('ol.format.WFS', function() {
       var fid = 'Historische_Messtischblaetter_WFS.71055885';
       expect(feature.getId()).to.equal(fid);
       expect(feature.get('titel')).to.equal('Arnstadt');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Polygon_);
+      expect(feature.getGeometry()).to.be.an(Polygon);
     });
 
   });

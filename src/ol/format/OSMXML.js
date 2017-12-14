@@ -10,7 +10,7 @@ import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -185,7 +185,7 @@ _ol_format_OSMXML_.prototype.readFeaturesFromNode = function(node, opt_options) 
       var geometry;
       if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
         // closed way
-        geometry = new _ol_geom_Polygon_(null);
+        geometry = new Polygon(null);
         geometry.setFlatCoordinates(_ol_geom_GeometryLayout_.XY, flatCoordinates,
             [flatCoordinates.length]);
       } else {

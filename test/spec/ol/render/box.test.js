@@ -1,7 +1,7 @@
 import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
 
 
@@ -67,7 +67,7 @@ describe('ol.render.Box', function() {
     it('creates a polygon geometry', function() {
       expect(box.getGeometry()).to.be(null);
       box.setPixels([1, 2], [3, 4]);
-      expect(box.getGeometry()).to.be.a(_ol_geom_Polygon_);
+      expect(box.getGeometry()).to.be.a(Polygon);
     });
   });
 

@@ -8,7 +8,7 @@ import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
@@ -35,7 +35,7 @@ describe('ol.interaction.Modify', function() {
 
     features = [
       new _ol_Feature_({
-        geometry: new _ol_geom_Polygon_([
+        geometry: new Polygon([
           [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         ])
       })

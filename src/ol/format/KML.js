@@ -22,7 +22,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_math_ from '../math.js';
 import {get as getProjection} from '../proj.js';
 import _ol_style_Fill_ from '../style/Fill.js';
@@ -887,7 +887,7 @@ _ol_format_KML_.readLinearRing_ = function(node, objectStack) {
   var flatCoordinates =
       _ol_format_KML_.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
-    var polygon = new _ol_geom_Polygon_(null);
+    var polygon = new Polygon(null);
     polygon.setFlatCoordinates(_ol_geom_GeometryLayout_.XYZ, flatCoordinates,
         [flatCoordinates.length]);
     polygon.setProperties(properties);
@@ -995,7 +995,7 @@ _ol_format_KML_.readPolygon_ = function(node, objectStack) {
   var flatLinearRings = _ol_xml_.pushParseAndPop([null],
       _ol_format_KML_.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
   if (flatLinearRings && flatLinearRings[0]) {
-    var polygon = new _ol_geom_Polygon_(null);
+    var polygon = new Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
     var i, ii;

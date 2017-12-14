@@ -4,7 +4,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_MapBrowserEventType_ from '../../../../src/ol/MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -29,7 +29,7 @@ describe('ol.interaction.Select', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
 
-    var geometry = new _ol_geom_Polygon_([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
+    var geometry = new Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
 
     // Four overlapping features, two features of type "foo" and two features
     // of type "bar". The rendering order is, from top to bottom, foo -> bar

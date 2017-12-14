@@ -3,7 +3,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -287,7 +287,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a Polygon', function(done) {
       createMap('canvas');
-      var geom = new _ol_geom_Polygon_(null);
+      var geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
       var feature = new _ol_Feature_(geom);
       feature.setStyle(new _ol_style_Style_({
@@ -305,7 +305,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiPolygon', function(done) {
       createMap('canvas');
-      var geom = new _ol_geom_Polygon_(null);
+      var geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
       var multiPolygon = new _ol_geom_MultiPolygon_(null);
       multiPolygon.appendPolygon(geom);

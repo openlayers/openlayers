@@ -7,7 +7,7 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
@@ -205,7 +205,7 @@ describe('ol.format.EsriJSON', function() {
       var feature = format.readFeature(polygonEsriJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_Polygon_);
+      expect(geometry).to.be.an(Polygon);
       expect(geometry.getCoordinates()).to.eql([[
         [100.0, 0.0], [100.0, 1.0], [101.0, 1.0], [101.0, 0.0]
       ]]);
@@ -229,7 +229,7 @@ describe('ol.format.EsriJSON', function() {
       expect(features).to.have.length(3);
       expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[1].getGeometry()).to.be.an(LineString);
-      expect(features[2].getGeometry()).to.be.an(_ol_geom_Polygon_);
+      expect(features[2].getGeometry()).to.be.an(Polygon);
     });
 
     it('can read and transform a point', function() {
@@ -304,7 +304,7 @@ describe('ol.format.EsriJSON', function() {
         expect(first.get('field_name')).to.be('EUDORA');
         expect(first.getId()).to.be(6406);
         var firstGeom = first.getGeometry();
-        expect(firstGeom).to.be.a(_ol_geom_Polygon_);
+        expect(firstGeom).to.be.a(Polygon);
         expect(_ol_extent_.equals(firstGeom.getExtent(), [
           -10585772.743554419, 4712365.161160459,
           -10579560.16462974, 4716567.373073828
@@ -315,7 +315,7 @@ describe('ol.format.EsriJSON', function() {
         expect(last.get('field_name')).to.be('FEAGINS');
         expect(last.getId()).to.be(6030);
         var lastGeom = last.getGeometry();
-        expect(lastGeom).to.be.a(_ol_geom_Polygon_);
+        expect(lastGeom).to.be.a(Polygon);
         expect(_ol_extent_.equals(lastGeom.getExtent(), [
           -10555714.026858449, 4576511.565880965,
           -10553671.199322715, 4578554.9934867555
@@ -558,7 +558,7 @@ describe('ol.format.EsriJSON', function() {
         rings: [outer, inner1, inner2]
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Polygon_);
+      expect(obj).to.be.a(Polygon);
       expect(obj.getLayout()).to.eql('XY');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
@@ -577,7 +577,7 @@ describe('ol.format.EsriJSON', function() {
         hasZ: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Polygon_);
+      expect(obj).to.be.a(Polygon);
       expect(obj.getLayout()).to.eql('XYZ');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
@@ -596,7 +596,7 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Polygon_);
+      expect(obj).to.be.a(Polygon);
       expect(obj.getLayout()).to.eql('XYM');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
@@ -625,7 +625,7 @@ describe('ol.format.EsriJSON', function() {
         hasM: true
       });
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Polygon_);
+      expect(obj).to.be.a(Polygon);
       expect(obj.getLayout()).to.eql('XYZM');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
@@ -826,7 +826,7 @@ describe('ol.format.EsriJSON', function() {
       var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
       var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
       var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
-      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      var polygon = new Polygon([outer, inner1, inner2]);
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
           format.readGeometry(esrijson).getCoordinates());
@@ -836,7 +836,7 @@ describe('ol.format.EsriJSON', function() {
       var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
       var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
       var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
-      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2],
+      var polygon = new Polygon([outer, inner1, inner2],
           'XYZ');
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -847,7 +847,7 @@ describe('ol.format.EsriJSON', function() {
       var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
       var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
       var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
-      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2],
+      var polygon = new Polygon([outer, inner1, inner2],
           'XYM');
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -864,7 +864,7 @@ describe('ol.format.EsriJSON', function() {
       var inner2 = [
         [8, 8, 2, 1], [9, 8, 2, 2], [9, 9, 2, 1], [8, 9, 2, 1], [8, 8, 2, 1]
       ];
-      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2],
+      var polygon = new Polygon([outer, inner1, inner2],
           'XYZM');
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(

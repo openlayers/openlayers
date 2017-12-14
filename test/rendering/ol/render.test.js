@@ -1,6 +1,6 @@
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../src/ol/geom/Polygon.js';
 import _ol_render_ from '../../../src/ol/render.js';
 import _ol_render_VectorContext_ from '../../../src/ol/render/VectorContext.js';
 import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/Immediate.js';
@@ -143,7 +143,7 @@ describe('ol.render', function() {
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new _ol_geom_Polygon_([
+      vectorContext.drawGeometry(new Polygon([
         [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
         [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
       ]));
@@ -168,7 +168,7 @@ describe('ol.render', function() {
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new _ol_geom_Polygon_([
+      vectorContext.drawGeometry(new Polygon([
         [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
         [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
       ]));
@@ -194,7 +194,7 @@ describe('ol.render', function() {
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new _ol_geom_Polygon_([
+      vectorContext.drawGeometry(new Polygon([
         [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
         [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
       ]));

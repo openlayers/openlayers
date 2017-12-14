@@ -3,7 +3,7 @@ import _ol_format_GPX_ from '../../../../src/ol/format/GPX.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
@@ -661,7 +661,7 @@ describe('ol.format.GPX', function() {
     });
 
     it('does not fail', function() {
-      var polygon = new _ol_geom_Polygon_(
+      var polygon = new Polygon(
           [[[0, 0], [2, 2], [4, 0], [0, 0]]]);
       var feature = new _ol_Feature_(polygon);
       var features = [feature];

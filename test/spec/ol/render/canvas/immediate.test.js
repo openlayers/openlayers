@@ -5,7 +5,7 @@ import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_VectorContext_ from '../../../../../src/ol/render/VectorContext.js';
 import _ol_render_canvas_Immediate_ from '../../../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
@@ -91,7 +91,7 @@ describe('ol.render.canvas.Immediate', function() {
       var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPolygon');
 
-      var geometry = new _ol_geom_Polygon_([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+      var geometry = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
       context.drawGeometry(geometry);
       expect(context.drawPolygon.calledOnce).to.be(true);
       expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
@@ -136,7 +136,7 @@ describe('ol.render.canvas.Immediate', function() {
 
       var point = new Point([1, 2]);
       var linestring = new LineString([[1, 2], [3, 4]]);
-      var polygon = new _ol_geom_Polygon_([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
+      var polygon = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
 
       var geometry = new _ol_geom_GeometryCollection_([point, linestring, polygon]);
       context.drawGeometry(geometry);

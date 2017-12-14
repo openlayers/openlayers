@@ -6,7 +6,7 @@ import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
@@ -31,7 +31,7 @@ describe('ol.render.webgl.Immediate', function() {
     multiLine = new MultiLineString([[[0, 0], [5, 5]]]);
     point = new Point([0, 0]);
     multiPoint = new MultiPoint([[0, 0]]);
-    polygon = new _ol_geom_Polygon_([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
+    polygon = new Polygon([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
     multiPolygon = new _ol_geom_MultiPolygon_([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
   });
 

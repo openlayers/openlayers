@@ -7,7 +7,7 @@ import {closestSquaredDistanceXY} from '../extent.js';
 import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import _ol_geom_GeometryType_ from '../geom/GeometryType.js';
 import MultiPoint from '../geom/MultiPoint.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_geom_SimpleGeometry_ from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
@@ -298,7 +298,7 @@ _ol_geom_MultiPolygon_.prototype.getPolygon = function(index) {
       ends[i] -= offset;
     }
   }
-  var polygon = new _ol_geom_Polygon_(null);
+  var polygon = new Polygon(null);
   polygon.setFlatCoordinates(
       this.layout, this.flatCoordinates.slice(offset, end), ends);
   return polygon;
@@ -325,7 +325,7 @@ _ol_geom_MultiPolygon_.prototype.getPolygons = function() {
         ends[j] -= offset;
       }
     }
-    var polygon = new _ol_geom_Polygon_(null);
+    var polygon = new Polygon(null);
     polygon.setFlatCoordinates(
         layout, flatCoordinates.slice(offset, end), ends);
     polygons.push(polygon);

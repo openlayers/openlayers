@@ -1,7 +1,7 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import _ol_render_webgl_polygonreplay_defaultshader_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader.js';
 import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader/Locations.js';
@@ -32,7 +32,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
     });
 
     it('sets the buffer data', function() {
-      var polygon1 = new _ol_geom_Polygon_(
+      var polygon1 = new Polygon(
           [[[1000, 2000], [1200, 2000], [1200, 3000]]]
       );
       replay.drawPolygon(polygon1, null);
@@ -43,7 +43,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
         1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000]);
       expect(replay.indices).to.eql([2, 0, 1]);
 
-      var polygon2 = new _ol_geom_Polygon_(
+      var polygon2 = new Polygon(
           [[[4000, 2000], [4200, 2000], [4200, 3000]]]
       );
       replay.drawPolygon(polygon2, null);
@@ -396,13 +396,13 @@ describe('ol.render.webgl.PolygonReplay', function() {
   describe('#drawReplay', function() {
     var gl, context;
     var feature1 = new _ol_Feature_({
-      geometry: new _ol_geom_Polygon_([[[0, 0], [500, 500], [500, 0], [0, 0]]])
+      geometry: new Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
     var feature2 = new _ol_Feature_({
-      geometry: new _ol_geom_Polygon_([[[0, 0], [500, 500], [500, 0], [0, 0]]])
+      geometry: new Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
     var feature3 = new _ol_Feature_({
-      geometry: new _ol_geom_Polygon_([[[0, 0], [500, 500], [500, 0], [0, 0]]])
+      geometry: new Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
     beforeEach(function() {
       gl = {

@@ -12,7 +12,7 @@ import _ol_geom_GeometryLayout_ from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import _ol_xml_ from '../xml.js';
@@ -244,7 +244,7 @@ _ol_format_GML3_.prototype.readSurface_ = function(node, objectStack) {
   var flatLinearRings = _ol_xml_.pushParseAndPop([null],
       this.SURFACE_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
-    var polygon = new _ol_geom_Polygon_(null);
+    var polygon = new Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
     var i, ii;

@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_Cluster_ from '../../../../src/ol/source/Cluster.js';
 import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
@@ -52,7 +52,7 @@ describe('ol.source.Cluster', function() {
           features: [
             new _ol_Feature_(new Point([0, 0])),
             new _ol_Feature_(new LineString([[0, 0], [1, 1]])),
-            new _ol_Feature_(new _ol_geom_Polygon_(
+            new _ol_Feature_(new Polygon(
                 [[[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]]))
           ]
         })

@@ -2,7 +2,7 @@ import {nullFunction} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
@@ -129,7 +129,7 @@ describe('ol.renderer.vector', function() {
       });
 
       it('does render the polygon', function() {
-        feature.setGeometry(new _ol_geom_Polygon_(
+        feature.setGeometry(new Polygon(
             [[[0, 0], [1, 1], [1, 0], [0, 0]]]));
         var polygonReplay = replayGroup.getReplay(
             style.getZIndex(), 'Polygon');

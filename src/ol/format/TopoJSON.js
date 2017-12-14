@@ -10,7 +10,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -176,7 +176,7 @@ _ol_format_TopoJSON_.readPolygonGeometry_ = function(object, arcs) {
   for (i = 0, ii = object.arcs.length; i < ii; ++i) {
     coordinates[i] = _ol_format_TopoJSON_.concatenateArcs_(object.arcs[i], arcs);
   }
-  return new _ol_geom_Polygon_(coordinates);
+  return new Polygon(coordinates);
 };
 
 

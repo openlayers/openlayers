@@ -15,7 +15,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
 
@@ -159,7 +159,7 @@ _ol_format_GeoJSON_.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Polygon} Polygon.
  */
 _ol_format_GeoJSON_.readPolygonGeometry_ = function(object) {
-  return new _ol_geom_Polygon_(object.coordinates);
+  return new Polygon(object.coordinates);
 };
 
 

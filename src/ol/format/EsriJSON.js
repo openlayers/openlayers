@@ -15,7 +15,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import _ol_obj_ from '../obj.js';
@@ -238,7 +238,7 @@ _ol_format_EsriJSON_.readMultiPolygonGeometry_ = function(object) {
  */
 _ol_format_EsriJSON_.readPolygonGeometry_ = function(object) {
   var layout = _ol_format_EsriJSON_.getGeometryLayout_(object);
-  return new _ol_geom_Polygon_(object.rings, layout);
+  return new Polygon(object.rings, layout);
 };
 
 

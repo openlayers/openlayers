@@ -7,7 +7,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_geom_LinearRing_ from '../../../../src/ol/geom/LinearRing.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {fromLonLat, get as getProjection, toLonLat, transform} from '../../../../src/ol/proj.js';
 
 
@@ -175,7 +175,7 @@ describe('ol.format.GeoJSON', function() {
       var feature = format.readFeature(polygonGeoJSON);
       expect(feature).to.be.an(_ol_Feature_);
       var geometry = feature.getGeometry();
-      expect(geometry).to.be.an(_ol_geom_Polygon_);
+      expect(geometry).to.be.an(Polygon);
       expect(geometry.getCoordinates()).to.eql([[
         [100.0, 0.0], [100.0, 1.0], [101.0, 1.0], [101.0, 0.0]
       ]]);
@@ -202,7 +202,7 @@ describe('ol.format.GeoJSON', function() {
       expect(features).to.have.length(3);
       expect(features[0].getGeometry()).to.be.an(Point);
       expect(features[1].getGeometry()).to.be.an(LineString);
-      expect(features[2].getGeometry()).to.be.an(_ol_geom_Polygon_);
+      expect(features[2].getGeometry()).to.be.an(Polygon);
     });
 
     it('can read and transform a point', function() {
@@ -288,7 +288,7 @@ describe('ol.format.GeoJSON', function() {
       expect(features).to.be.an(Array);
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
-      expect(geometry).to.be.an(_ol_geom_Polygon_);
+      expect(geometry).to.be.an(Polygon);
     });
 
     it('parses countries.geojson', function(done) {
@@ -301,7 +301,7 @@ describe('ol.format.GeoJSON', function() {
         expect(first.get('name')).to.be('Afghanistan');
         expect(first.getId()).to.be('AFG');
         var firstGeom = first.getGeometry();
-        expect(firstGeom).to.be.a(_ol_geom_Polygon_);
+        expect(firstGeom).to.be.a(Polygon);
         expect(_ol_extent_.equals(firstGeom.getExtent(),
             [60.52843, 29.318572, 75.158028, 38.486282]))
             .to.be(true);
@@ -311,7 +311,7 @@ describe('ol.format.GeoJSON', function() {
         expect(last.get('name')).to.be('Zimbabwe');
         expect(last.getId()).to.be('ZWE');
         var lastGeom = last.getGeometry();
-        expect(lastGeom).to.be.a(_ol_geom_Polygon_);
+        expect(lastGeom).to.be.a(Polygon);
         expect(_ol_extent_.equals(lastGeom.getExtent(),
             [25.264226, -22.271612, 32.849861, -15.507787]))
             .to.be(true);
@@ -395,7 +395,7 @@ describe('ol.format.GeoJSON', function() {
       });
 
       var obj = format.readGeometry(str);
-      expect(obj).to.be.a(_ol_geom_Polygon_);
+      expect(obj).to.be.a(Polygon);
       expect(obj.getLayout()).to.eql('XY');
       var rings = obj.getLinearRings();
       expect(rings.length).to.be(3);
@@ -622,7 +622,7 @@ describe('ol.format.GeoJSON', function() {
       var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
       var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
       var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
-      var polygon = new _ol_geom_Polygon_([outer, inner1, inner2]);
+      var polygon = new Polygon([outer, inner1, inner2]);
       var geojson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates()).to.eql(
           format.readGeometry(geojson).getCoordinates());
@@ -633,9 +633,9 @@ describe('ol.format.GeoJSON', function() {
       var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
 
-      var right = new _ol_geom_Polygon_([ccw, cw]);
+      var right = new Polygon([ccw, cw]);
       var rightMulti = new _ol_geom_MultiPolygon_([[ccw, cw]]);
-      var left = new _ol_geom_Polygon_([cw, ccw]);
+      var left = new Polygon([cw, ccw]);
       var leftMulti = new _ol_geom_MultiPolygon_([[cw, ccw]]);
 
       var rightObj = {
@@ -670,9 +670,9 @@ describe('ol.format.GeoJSON', function() {
 
       var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
-      var right = new _ol_geom_Polygon_([ccw, cw]);
+      var right = new Polygon([ccw, cw]);
       var rightMulti = new _ol_geom_MultiPolygon_([[ccw, cw]]);
-      var left = new _ol_geom_Polygon_([cw, ccw]);
+      var left = new Polygon([cw, ccw]);
       var leftMulti = new _ol_geom_MultiPolygon_([[cw, ccw]]);
 
       var rightObj = {
@@ -701,9 +701,9 @@ describe('ol.format.GeoJSON', function() {
 
       var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
       var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
-      var right = new _ol_geom_Polygon_([ccw, cw]);
+      var right = new Polygon([ccw, cw]);
       var rightMulti = new _ol_geom_MultiPolygon_([[ccw, cw]]);
-      var left = new _ol_geom_Polygon_([cw, ccw]);
+      var left = new Polygon([cw, ccw]);
       var leftMulti = new _ol_geom_MultiPolygon_([[cw, ccw]]);
 
       var leftObj = {

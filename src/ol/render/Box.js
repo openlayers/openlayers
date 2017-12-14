@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 
 /**
  * @constructor
@@ -118,7 +118,7 @@ _ol_render_Box_.prototype.createOrUpdateGeometry = function() {
   // close the polygon
   coordinates[4] = coordinates[0].slice();
   if (!this.geometry_) {
-    this.geometry_ = new _ol_geom_Polygon_([coordinates]);
+    this.geometry_ = new Polygon([coordinates]);
   } else {
     this.geometry_.setCoordinates([coordinates]);
   }

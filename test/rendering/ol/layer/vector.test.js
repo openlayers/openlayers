@@ -5,7 +5,7 @@ import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_geom_Circle_ from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
@@ -46,7 +46,7 @@ describe('ol.rendering.layer.Vector', function() {
   }
 
   function addPolygon(r) {
-    source.addFeature(new _ol_Feature_(new _ol_geom_Polygon_([
+    source.addFeature(new _ol_Feature_(new Polygon([
       [
         [center[0] - r, center[1] - r],
         [center[0] + r, center[1] - r],
@@ -494,14 +494,14 @@ describe('ol.rendering.layer.Vector', function() {
     beforeEach(function() {
       var src = new _ol_source_Vector_({
         features: [
-          new _ol_Feature_(new _ol_geom_Polygon_([[
+          new _ol_Feature_(new Polygon([[
             [-22, 58],
             [-22, 78],
             [-9, 78],
             [-9, 58],
             [-22, 58]
           ]])),
-          new _ol_Feature_(new _ol_geom_Polygon_([[
+          new _ol_Feature_(new Polygon([[
             [-9, 58],
             [-9, 78],
             [4, 78],

@@ -9,7 +9,7 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_proj_transforms_ from '../../../../src/ol/proj/transforms.js';
@@ -553,7 +553,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Polygon_);
+          expect(g).to.be.an(Polygon);
           expect(g.getCoordinates()).to.eql([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]);
         });
 
@@ -661,7 +661,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Polygon_);
+          expect(g).to.be.an(Polygon);
           expect(g.getCoordinates()).to.eql(
               [[[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]]]);
           expect(g.get('extrude')).to.be(false);
@@ -670,7 +670,7 @@ describe('ol.format.KML', function() {
 
         it('can write XY Polygon geometries', function() {
           var layout = 'XY';
-          var polygon = new _ol_geom_Polygon_(
+          var polygon = new Polygon(
               [[[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]]], layout);
           var features = [new _ol_Feature_(polygon)];
           var node = format.writeFeaturesNode(features);
@@ -695,7 +695,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZ Polygon geometries', function() {
           var layout = 'XYZ';
-          var polygon = new _ol_geom_Polygon_(
+          var polygon = new Polygon(
               [[[0, 0, 1], [0, 2, 2], [2, 2, 3], [2, 0, 4], [0, 0, 5]]], layout);
           var features = [new _ol_Feature_(polygon)];
           var node = format.writeFeaturesNode(features);
@@ -722,7 +722,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYM Polygon geometries', function() {
           var layout = 'XYM';
-          var polygon = new _ol_geom_Polygon_(
+          var polygon = new Polygon(
               [[[0, 0, 1], [0, 2, 1], [2, 2, 1], [2, 0, 1], [0, 0, 1]]], layout);
           var features = [new _ol_Feature_(polygon)];
           var node = format.writeFeaturesNode(features);
@@ -749,7 +749,7 @@ describe('ol.format.KML', function() {
 
         it('can write XYZM Polygon geometries', function() {
           var layout = 'XYZM';
-          var polygon = new _ol_geom_Polygon_([
+          var polygon = new Polygon([
             [[0, 0, 1, 1], [0, 2, 2, 1], [2, 2, 3, 1], [2, 0, 4, 1], [0, 0, 5, 1]]
           ], layout);
           var features = [new _ol_Feature_(polygon)];
@@ -801,7 +801,7 @@ describe('ol.format.KML', function() {
           var f = fs[0];
           expect(f).to.be.an(_ol_Feature_);
           var g = f.getGeometry();
-          expect(g).to.be.an(_ol_geom_Polygon_);
+          expect(g).to.be.an(Polygon);
           expect(g.getCoordinates()).to.eql([
             [[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]],
             [[1, 1, 0], [1, 2, 0], [2, 2, 0], [2, 1, 0]],
@@ -811,7 +811,7 @@ describe('ol.format.KML', function() {
 
         it('can write complex Polygon geometries', function() {
           var layout = 'XYZ';
-          var polygon = new _ol_geom_Polygon_([
+          var polygon = new Polygon([
             [[0, 0, 1], [0, 5, 1], [5, 5, 2], [5, 0, 3]],
             [[1, 1, 0], [1, 2, 0], [2, 2, 0], [2, 1, 0]],
             [[3, 3, 0], [3, 4, 0], [4, 4, 0], [4, 3, 0]]
@@ -1182,8 +1182,8 @@ describe('ol.format.KML', function() {
           expect(gs).to.have.length(4);
           expect(gs[0]).to.be.an(Point);
           expect(gs[1]).to.be.an(LineString);
-          expect(gs[2]).to.be.an(_ol_geom_Polygon_);
-          expect(gs[3]).to.be.an(_ol_geom_Polygon_);
+          expect(gs[2]).to.be.an(Polygon);
+          expect(gs[3]).to.be.an(Polygon);
         });
 
         it('can read nested GeometryCollection geometries', function() {
@@ -1211,7 +1211,7 @@ describe('ol.format.KML', function() {
           var collection = new _ol_geom_GeometryCollection_([
             new Point([1, 2]),
             new LineString([[1, 2], [3, 4]]),
-            new _ol_geom_Polygon_([[[1, 2], [3, 4], [3, 2], [1, 2]]])
+            new Polygon([[[1, 2], [3, 4], [3, 2], [1, 2]]])
           ]);
           var features = [new _ol_Feature_(collection)];
           var node = format.writeFeaturesNode(features);

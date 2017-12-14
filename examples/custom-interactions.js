@@ -4,7 +4,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../src/ol/geom/Polygon.js';
+import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -140,7 +140,7 @@ var lineFeature = new _ol_Feature_(
     new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
 
 var polygonFeature = new _ol_Feature_(
-    new _ol_geom_Polygon_([[[-3e6, -1e6], [-3e6, 1e6],
+    new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
       [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
 

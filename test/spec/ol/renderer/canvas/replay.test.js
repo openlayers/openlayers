@@ -6,7 +6,7 @@ import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
 import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canvas/PolygonReplay.js';
 import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Replay.js';
@@ -29,13 +29,13 @@ describe('ol.render.canvas.ReplayGroup', function() {
     beforeEach(function() {
       transform = _ol_transform_.create();
       replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, false);
-      feature0 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature0 = new _ol_Feature_(new Polygon(
           [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
-      feature1 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature1 = new _ol_Feature_(new Polygon(
           [[[-90, -45], [-90, 0], [0, 0], [0, -45], [-90, -45]]]));
-      feature2 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature2 = new _ol_Feature_(new Polygon(
           [[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]]));
-      feature3 = new _ol_Feature_(new _ol_geom_Polygon_(
+      feature3 = new _ol_Feature_(new Polygon(
           [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
       fill0 = new _ol_style_Style_({
         fill: new _ol_style_Fill_({color: 'black'})

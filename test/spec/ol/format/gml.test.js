@@ -7,7 +7,7 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_geom_Polygon_ from '../../../../src/ol/geom/Polygon.js';
+import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
@@ -195,7 +195,7 @@ describe('ol.format.GML2', function() {
         '  </layer>';
 
       var feature = new _ol_Feature_({
-        geometry: new _ol_geom_Polygon_([[[1.1, 2], [3, 4.2], [5.2, 6]]])
+        geometry: new Polygon([[[1.1, 2], [3, 4.2], [5.2, 6]]])
       });
       feature.setId(1);
       var objectStack = [{
@@ -610,7 +610,7 @@ describe('ol.format.GML3', function() {
             '  </gml:interior>' +
             '</gml:Polygon>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Polygon_);
+        expect(g).to.be.an(Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
           [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
         [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
@@ -653,7 +653,7 @@ describe('ol.format.GML3', function() {
             '  </gml:patches>' +
             '</gml:Surface>';
         var g = readGeometry(format, text);
-        expect(g).to.be.an(_ol_geom_Polygon_);
+        expect(g).to.be.an(Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
           [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
         [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
@@ -1528,7 +1528,7 @@ describe('ol.format.GML3', function() {
     it('creates a Polygon', function() {
       feature = features[1];
       expect(feature.getId()).to.equal('geoserver_layer.2');
-      expect(feature.getGeometry()).to.be.an(_ol_geom_Polygon_);
+      expect(feature.getGeometry()).to.be.an(Polygon);
     });
 
     it('creates a Point', function() {

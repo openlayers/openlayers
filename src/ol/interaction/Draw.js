@@ -18,7 +18,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import _ol_geom_MultiPolygon_ from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import _ol_geom_Polygon_ from '../geom/Polygon.js';
+import Polygon from '../geom/Polygon.js';
 import _ol_interaction_DrawEventType_ from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
@@ -156,7 +156,7 @@ var _ol_interaction_Draw_ = function(options) {
       } else if (mode === _ol_interaction_Draw_.Mode_.LINE_STRING) {
         Constructor = LineString;
       } else if (mode === _ol_interaction_Draw_.Mode_.POLYGON) {
-        Constructor = _ol_geom_Polygon_;
+        Constructor = Polygon;
       }
       /**
        * @param {!Array.<ol.Coordinate>} coordinates
@@ -555,7 +555,7 @@ _ol_interaction_Draw_.prototype.modifyDrawing_ = function(event) {
     sketchPointGeom.setCoordinates(coordinate);
   }
   var sketchLineGeom;
-  if (geometry instanceof _ol_geom_Polygon_ &&
+  if (geometry instanceof Polygon &&
       this.mode_ !== _ol_interaction_Draw_.Mode_.POLYGON) {
     if (!this.sketchLine_) {
       this.sketchLine_ = new _ol_Feature_(new LineString(null));
@@ -798,10 +798,10 @@ _ol_interaction_Draw_.createRegularPolygon = function(opt_sides, opt_angle) {
       var radius = Math.sqrt(
           _ol_coordinate_.squaredDistance(center, end));
       var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-        _ol_geom_Polygon_.fromCircle(new _ol_geom_Circle_(center), opt_sides);
+        Polygon.fromCircle(new _ol_geom_Circle_(center), opt_sides);
       var angle = opt_angle ? opt_angle :
         Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-      _ol_geom_Polygon_.makeRegular(geometry, center, radius, angle);
+      Polygon.makeRegular(geometry, center, radius, angle);
       return geometry;
     }
   );
@@ -824,7 +824,7 @@ _ol_interaction_Draw_.createBox = function() {
      */
     function(coordinates, opt_geometry) {
       var extent = boundingExtent(coordinates);
-      var geometry = opt_geometry || new _ol_geom_Polygon_(null);
+      var geometry = opt_geometry || new Polygon(null);
       geometry.setCoordinates([[
         getBottomLeft(extent),
         getBottomRight(extent),
