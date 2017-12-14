@@ -3,7 +3,7 @@
  */
 import _ol_Collection_ from './Collection.js';
 import Attribution from './control/Attribution.js';
-import _ol_control_Rotate_ from './control/Rotate.js';
+import Rotate from './control/Rotate.js';
 import _ol_control_Zoom_ from './control/Zoom.js';
 var _ol_control_ = {};
 
@@ -33,7 +33,7 @@ _ol_control_.defaults = function(opt_options) {
 
   var rotateControl = options.rotate !== undefined ? options.rotate : true;
   if (rotateControl) {
-    controls.push(new _ol_control_Rotate_(options.rotateOptions));
+    controls.push(new Rotate(options.rotateOptions));
   }
 
   var attributionControl = options.attribution !== undefined ?
