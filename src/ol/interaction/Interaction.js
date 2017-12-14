@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut, linear} from '../easing.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
 import _ol_math_ from '../math.js';
 
@@ -106,7 +106,7 @@ _ol_interaction_Interaction_.pan = function(view, delta, opt_duration) {
     if (opt_duration) {
       view.animate({
         duration: opt_duration,
-        easing: _ol_easing_.linear,
+        easing: linear,
         center: center
       });
     } else {
@@ -144,7 +144,7 @@ _ol_interaction_Interaction_.rotateWithoutConstraints = function(view, rotation,
         rotation: rotation,
         anchor: opt_anchor,
         duration: opt_duration,
-        easing: _ol_easing_.easeOut
+        easing: easeOut
       });
     } else {
       view.rotate(rotation, opt_anchor);
@@ -229,7 +229,7 @@ _ol_interaction_Interaction_.zoomWithoutConstraints = function(view, resolution,
         resolution: resolution,
         anchor: opt_anchor,
         duration: opt_duration,
-        easing: _ol_easing_.easeOut
+        easing: easeOut
       });
     } else {
       if (opt_anchor) {

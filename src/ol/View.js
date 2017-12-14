@@ -12,7 +12,7 @@ import _ol_ViewProperty_ from './ViewProperty.js';
 import _ol_array_ from './array.js';
 import _ol_asserts_ from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
-import _ol_easing_ from './easing.js';
+import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
 import _ol_geom_GeometryType_ from './geom/GeometryType.js';
 import _ol_geom_Polygon_ from './geom/Polygon.js';
@@ -306,7 +306,7 @@ _ol_View_.prototype.animate = function(var_args) {
       complete: false,
       anchor: options.anchor,
       duration: options.duration !== undefined ? options.duration : 1000,
-      easing: options.easing || _ol_easing_.inAndOut
+      easing: options.easing || inAndOut
     });
 
     if (options.center) {

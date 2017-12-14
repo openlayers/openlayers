@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_easing_ from '../src/ol/easing.js';
+import {easeIn, easeOut} from '../src/ol/easing.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_proj_ from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -79,11 +79,11 @@ onClick('rotate-around-rome', function() {
   view.animate({
     rotation: rotation + Math.PI,
     anchor: rome,
-    easing: _ol_easing_.easeIn
+    easing: easeIn
   }, {
     rotation: rotation + 2 * Math.PI,
     anchor: rome,
-    easing: _ol_easing_.easeOut
+    easing: easeOut
   });
 });
 
@@ -119,11 +119,11 @@ onClick('spin-to-rome', function() {
       center[1] + (rome[1] - center[1]) / 2
     ],
     rotation: Math.PI,
-    easing: _ol_easing_.easeIn
+    easing: easeIn
   }, {
     center: rome,
     rotation: 2 * Math.PI,
-    easing: _ol_easing_.easeOut
+    easing: easeOut
   });
 });
 

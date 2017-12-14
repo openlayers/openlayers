@@ -1,7 +1,6 @@
 /**
  * @module ol/easing
  */
-var _ol_easing_ = {};
 
 
 /**
@@ -10,9 +9,9 @@ var _ol_easing_ = {};
  * @return {number} Output between 0 and 1.
  * @api
  */
-_ol_easing_.easeIn = function(t) {
+export function easeIn(t) {
   return Math.pow(t, 3);
-};
+}
 
 
 /**
@@ -21,9 +20,9 @@ _ol_easing_.easeIn = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-_ol_easing_.easeOut = function(t) {
-  return 1 - _ol_easing_.easeIn(1 - t);
-};
+export function easeOut(t) {
+  return 1 - easeIn(1 - t);
+}
 
 
 /**
@@ -32,9 +31,9 @@ _ol_easing_.easeOut = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-_ol_easing_.inAndOut = function(t) {
+export function inAndOut(t) {
   return 3 * t * t - 2 * t * t * t;
-};
+}
 
 
 /**
@@ -43,9 +42,9 @@ _ol_easing_.inAndOut = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-_ol_easing_.linear = function(t) {
+export function linear(t) {
   return t;
-};
+}
 
 
 /**
@@ -56,11 +55,10 @@ _ol_easing_.linear = function(t) {
  * @return {number} Output between 0 and 1.
  * @api
  */
-_ol_easing_.upAndDown = function(t) {
+export function upAndDown(t) {
   if (t < 0.5) {
-    return _ol_easing_.inAndOut(2 * t);
+    return inAndOut(2 * t);
   } else {
-    return 1 - _ol_easing_.inAndOut(2 * (t - 0.5));
+    return 1 - inAndOut(2 * (t - 0.5));
   }
-};
-export default _ol_easing_;
+}

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut} from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_functions_ from '../functions.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -120,7 +120,7 @@ _ol_interaction_DragPan_.handleUpEvent_ = function(mapBrowserEvent) {
       view.animate({
         center: view.constrainCenter(dest),
         duration: 500,
-        easing: _ol_easing_.easeOut
+        easing: easeOut
       });
     }
     view.setHint(_ol_ViewHint_.INTERACTING, -1);

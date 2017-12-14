@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Observable_ from '../src/ol/Observable.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_easing_ from '../src/ol/easing.js';
+import {easeOut} from '../src/ol/easing.js';
 import _ol_geom_Point_ from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -64,8 +64,8 @@ function flash(feature) {
     var elapsed = frameState.time - start;
     var elapsedRatio = elapsed / duration;
     // radius will be 5 at start and 30 at end.
-    var radius = _ol_easing_.easeOut(elapsedRatio) * 25 + 5;
-    var opacity = _ol_easing_.easeOut(1 - elapsedRatio);
+    var radius = easeOut(elapsedRatio) * 25 + 5;
+    var opacity = easeOut(1 - elapsedRatio);
 
     var style = new _ol_style_Style_({
       image: new _ol_style_Circle_({

@@ -6,7 +6,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut} from '../easing.js';
 
 /**
  * @classdesc
@@ -113,7 +113,7 @@ _ol_control_Zoom_.prototype.zoomByDelta_ = function(delta) {
       view.animate({
         resolution: newResolution,
         duration: this.duration_,
-        easing: _ol_easing_.easeOut
+        easing: easeOut
       });
     } else {
       view.setResolution(newResolution);

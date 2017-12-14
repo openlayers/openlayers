@@ -7,7 +7,7 @@ import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_control_Control_ from '../control/Control.js';
 import _ol_css_ from '../css.js';
-import _ol_easing_ from '../easing.js';
+import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -239,7 +239,7 @@ _ol_control_ZoomSlider_.prototype.handleContainerClick_ = function(event) {
   view.animate({
     resolution: view.constrainResolution(resolution),
     duration: this.duration_,
-    easing: _ol_easing_.easeOut
+    easing: easeOut
   });
 };
 
@@ -293,7 +293,7 @@ _ol_control_ZoomSlider_.prototype.handleDraggerEnd_ = function(event) {
     view.animate({
       resolution: view.constrainResolution(this.currentResolution_),
       duration: this.duration_,
-      easing: _ol_easing_.easeOut
+      easing: easeOut
     });
 
     this.dragging_ = false;
