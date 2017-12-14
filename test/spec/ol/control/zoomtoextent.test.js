@@ -1,12 +1,12 @@
-import _ol_control_ZoomToExtent_ from '../../../../src/ol/control/ZoomToExtent.js';
+import ZoomToExtent from '../../../../src/ol/control/ZoomToExtent.js';
 
 describe('ol.control.ZoomToExtent', function() {
 
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_control_ZoomToExtent_();
-      expect(instance).to.be.an(_ol_control_ZoomToExtent_);
+      var instance = new ZoomToExtent();
+      expect(instance).to.be.an(ZoomToExtent);
     });
 
   });
