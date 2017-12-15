@@ -7,7 +7,7 @@ import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileCache_ from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import _ol_reproj_Tile_ from '../reproj/Tile.js';
 import _ol_source_UrlTile_ from '../source/UrlTile.js';
@@ -225,7 +225,7 @@ _ol_source_TileImage_.prototype.createTile_ = function(z, x, y, pixelRatio, proj
       this.tileLoadFunction,
       this.tileOptions);
   tile.key = key;
-  _ol_events_.listen(tile, _ol_events_EventType_.CHANGE,
+  _ol_events_.listen(tile, EventType.CHANGE,
       this.handleTileChange, this);
   return tile;
 };

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_events_KeyCode_ from '../events/KeyCode.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
@@ -78,7 +78,7 @@ inherits(_ol_interaction_KeyboardPan_, _ol_interaction_Interaction_);
  */
 _ol_interaction_KeyboardPan_.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == _ol_events_EventType_.KEYDOWN) {
+  if (mapBrowserEvent.type == EventType.KEYDOWN) {
     var keyEvent = mapBrowserEvent.originalEvent;
     var keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&

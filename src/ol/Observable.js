@@ -4,7 +4,7 @@
 import {inherits} from './index.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 
 /**
  * @classdesc
@@ -58,7 +58,7 @@ _ol_Observable_.unByKey = function(key) {
  */
 _ol_Observable_.prototype.changed = function() {
   ++this.revision_;
-  this.dispatchEvent(_ol_events_EventType_.CHANGE);
+  this.dispatchEvent(EventType.CHANGE);
 };
 
 

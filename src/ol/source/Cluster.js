@@ -6,7 +6,7 @@ import {getUid, inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
 import _ol_source_Vector_ from '../source/Vector.js';
@@ -67,7 +67,7 @@ var _ol_source_Cluster_ = function(options) {
    */
   this.source = options.source;
 
-  this.source.on(_ol_events_EventType_.CHANGE,
+  this.source.on(EventType.CHANGE,
       _ol_source_Cluster_.prototype.refresh, this);
 };
 

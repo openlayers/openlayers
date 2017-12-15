@@ -19,7 +19,7 @@ import _ol_asserts_ from './asserts.js';
 import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
 import Event from './events/Event.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
@@ -168,14 +168,14 @@ var _ol_PluggableMap_ = function(options) {
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
   var overlayEvents = [
-    _ol_events_EventType_.CLICK,
-    _ol_events_EventType_.DBLCLICK,
-    _ol_events_EventType_.MOUSEDOWN,
-    _ol_events_EventType_.TOUCHSTART,
-    _ol_events_EventType_.MSPOINTERDOWN,
+    EventType.CLICK,
+    EventType.DBLCLICK,
+    EventType.MOUSEDOWN,
+    EventType.TOUCHSTART,
+    EventType.MSPOINTERDOWN,
     MapBrowserEventType.POINTERDOWN,
-    _ol_events_EventType_.MOUSEWHEEL,
-    _ol_events_EventType_.WHEEL
+    EventType.MOUSEWHEEL,
+    EventType.WHEEL
   ];
   for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
     _ol_events_.listen(this.overlayContainerStopEvent_, overlayEvents[i],
@@ -205,9 +205,9 @@ var _ol_PluggableMap_ = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  _ol_events_.listen(this.viewport_, _ol_events_EventType_.WHEEL,
+  _ol_events_.listen(this.viewport_, EventType.WHEEL,
       this.handleBrowserEvent, this);
-  _ol_events_.listen(this.viewport_, _ol_events_EventType_.MOUSEWHEEL,
+  _ol_events_.listen(this.viewport_, EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
 
   /**
@@ -429,12 +429,12 @@ _ol_PluggableMap_.prototype.addOverlayInternal_ = function(overlay) {
  */
 _ol_PluggableMap_.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
-  _ol_events_.unlisten(this.viewport_, _ol_events_EventType_.WHEEL,
+  _ol_events_.unlisten(this.viewport_, EventType.WHEEL,
       this.handleBrowserEvent, this);
-  _ol_events_.unlisten(this.viewport_, _ol_events_EventType_.MOUSEWHEEL,
+  _ol_events_.unlisten(this.viewport_, EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    window.removeEventListener(_ol_events_EventType_.RESIZE,
+    window.removeEventListener(EventType.RESIZE,
         this.handleResize_, false);
     this.handleResize_ = undefined;
   }
@@ -949,7 +949,7 @@ _ol_PluggableMap_.prototype.handleTargetChanged_ = function() {
     this.renderer_.removeLayerRenderers();
     removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      window.removeEventListener(_ol_events_EventType_.RESIZE,
+      window.removeEventListener(EventType.RESIZE,
           this.handleResize_, false);
       this.handleResize_ = undefined;
     }
@@ -959,15 +959,15 @@ _ol_PluggableMap_.prototype.handleTargetChanged_ = function() {
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
-      _ol_events_.listen(keyboardEventTarget, _ol_events_EventType_.KEYDOWN,
+      _ol_events_.listen(keyboardEventTarget, EventType.KEYDOWN,
           this.handleBrowserEvent, this),
-      _ol_events_.listen(keyboardEventTarget, _ol_events_EventType_.KEYPRESS,
+      _ol_events_.listen(keyboardEventTarget, EventType.KEYPRESS,
           this.handleBrowserEvent, this)
     ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      window.addEventListener(_ol_events_EventType_.RESIZE,
+      window.addEventListener(EventType.RESIZE,
           this.handleResize_, false);
     }
   }
@@ -1013,7 +1013,7 @@ _ol_PluggableMap_.prototype.handleViewChanged_ = function() {
         view, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = _ol_events_.listen(
-        view, _ol_events_EventType_.CHANGE,
+        view, EventType.CHANGE,
         this.handleViewPropertyChanged_, this);
   }
   this.render();
@@ -1035,7 +1035,7 @@ _ol_PluggableMap_.prototype.handleLayerGroupChanged_ = function() {
           layerGroup, _ol_ObjectEventType_.PROPERTYCHANGE,
           this.render, this),
       _ol_events_.listen(
-          layerGroup, _ol_events_EventType_.CHANGE,
+          layerGroup, EventType.CHANGE,
           this.render, this)
     ];
   }

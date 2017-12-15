@@ -11,7 +11,7 @@ import _ol_array_ from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -256,7 +256,7 @@ _ol_interaction_Modify_.prototype.addFeature_ = function(feature) {
   if (map && map.isRendered() && this.getActive()) {
     this.handlePointerAtPixel_(this.lastPixel_, map);
   }
-  _ol_events_.listen(feature, _ol_events_EventType_.CHANGE,
+  _ol_events_.listen(feature, EventType.CHANGE,
       this.handleFeatureChange_, this);
 };
 
@@ -286,7 +286,7 @@ _ol_interaction_Modify_.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  _ol_events_.unlisten(feature, _ol_events_EventType_.CHANGE,
+  _ol_events_.unlisten(feature, EventType.CHANGE,
       this.handleFeatureChange_, this);
 };
 

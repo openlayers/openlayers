@@ -10,7 +10,7 @@ import _ol_array_ from '../array.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
 import _ol_featureloader_ from '../featureloader.js';
 import {TRUE} from '../functions.js';
@@ -204,7 +204,7 @@ _ol_source_Vector_.prototype.addFeatureInternal = function(feature) {
  */
 _ol_source_Vector_.prototype.setupChangeEvents_ = function(featureKey, feature) {
   this.featureChangeKeys_[featureKey] = [
-    _ol_events_.listen(feature, _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(feature, EventType.CHANGE,
         this.handleFeatureChange_, this),
     _ol_events_.listen(feature, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleFeatureChange_, this)

@@ -5,7 +5,7 @@ import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
 import {easeIn} from './easing.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 
 /**
  * @classdesc
@@ -73,7 +73,7 @@ inherits(_ol_Tile_, _ol_events_EventTarget_);
  * @protected
  */
 _ol_Tile_.prototype.changed = function() {
-  this.dispatchEvent(_ol_events_EventType_.CHANGE);
+  this.dispatchEvent(EventType.CHANGE);
 };
 
 

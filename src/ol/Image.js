@@ -5,7 +5,7 @@ import {inherits} from './index.js';
 import _ol_ImageBase_ from './ImageBase.js';
 import _ol_ImageState_ from './ImageState.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 import {getHeight} from './extent.js';
 
 /**
@@ -108,9 +108,9 @@ _ol_Image_.prototype.load = function() {
     this.state = _ol_ImageState_.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.ERROR,
+      _ol_events_.listenOnce(this.image_, EventType.ERROR,
           this.handleImageError_, this),
-      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.LOAD,
+      _ol_events_.listenOnce(this.image_, EventType.LOAD,
           this.handleImageLoad_, this)
     ];
     this.imageLoadFunction_(this, this.src_);

@@ -7,7 +7,7 @@ import _ol_TileQueue_ from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {Processor as _ol_ext_pixelworks_Processor_} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import _ol_layer_Image_ from '../layer/Image.js';
@@ -61,7 +61,7 @@ var _ol_source_Raster_ = function(options) {
   this.renderers_ = _ol_source_Raster_.createRenderers_(options.sources);
 
   for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
-    _ol_events_.listen(this.renderers_[r], _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(this.renderers_[r], EventType.CHANGE,
         this.changed, this);
   }
 

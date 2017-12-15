@@ -4,7 +4,7 @@
 
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_Object_ from '../Object.js';
 import Control from '../control/Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
@@ -171,9 +171,9 @@ MousePosition.prototype.setMap = function(map) {
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
-        _ol_events_.listen(viewport, _ol_events_EventType_.MOUSEMOVE,
+        _ol_events_.listen(viewport, EventType.MOUSEMOVE,
             this.handleMouseMove, this),
-        _ol_events_.listen(viewport, _ol_events_EventType_.MOUSEOUT,
+        _ol_events_.listen(viewport, EventType.MOUSEOUT,
             this.handleMouseOut, this)
     );
   }

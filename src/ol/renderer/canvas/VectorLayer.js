@@ -6,7 +6,7 @@ import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
-import _ol_events_EventType_ from '../../events/EventType.js';
+import EventType from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
@@ -80,7 +80,7 @@ var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
    */
   this.context = createCanvasContext2D();
 
-  _ol_events_.listen(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
+  _ol_events_.listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
 };
 
@@ -113,7 +113,7 @@ _ol_renderer_canvas_VectorLayer_['create'] = function(mapRenderer, layer) {
  * @inheritDoc
  */
 _ol_renderer_canvas_VectorLayer_.prototype.disposeInternal = function() {
-  _ol_events_.unlisten(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
+  _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   _ol_renderer_canvas_Layer_.prototype.disposeInternal.call(this);
 };
 

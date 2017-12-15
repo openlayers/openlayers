@@ -7,7 +7,7 @@ import _ol_TileState_ from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 import _ol_featureloader_ from './featureloader.js';
 
 /**
@@ -111,7 +111,7 @@ var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
               tileUrl == undefined ? '' : tileUrl,
               format, tileLoadFunction);
           this.sourceTileListenerKeys_.push(
-              _ol_events_.listen(sourceTile, _ol_events_EventType_.CHANGE, handleTileChange));
+              _ol_events_.listen(sourceTile, EventType.CHANGE, handleTileChange));
         }
         sourceTile.consumers++;
         this.tileKeys.push(sourceTileKey);
@@ -234,7 +234,7 @@ _ol_VectorImageTile_.prototype.load = function() {
         sourceTile.load();
       }
       if (sourceTile.state == _ol_TileState_.LOADING) {
-        var key = _ol_events_.listen(sourceTile, _ol_events_EventType_.CHANGE, function(e) {
+        var key = _ol_events_.listen(sourceTile, EventType.CHANGE, function(e) {
           var state = sourceTile.getState();
           if (state == _ol_TileState_.LOADED ||
               state == _ol_TileState_.ERROR) {

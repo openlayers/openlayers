@@ -16,7 +16,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import _ol_css_ from '../css.js';
 import {replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
 
 
@@ -101,7 +101,7 @@ var OverviewMap = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  _ol_events_.listen(button, _ol_events_EventType_.CLICK,
+  _ol_events_.listen(button, EventType.CLICK,
       this.handleClick_, this);
 
   /**

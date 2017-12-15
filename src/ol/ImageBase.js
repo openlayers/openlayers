@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 
 /**
  * @constructor
@@ -51,7 +51,7 @@ inherits(_ol_ImageBase_, _ol_events_EventTarget_);
  * @protected
  */
 _ol_ImageBase_.prototype.changed = function() {
-  this.dispatchEvent(_ol_events_EventType_.CHANGE);
+  this.dispatchEvent(EventType.CHANGE);
 };
 
 

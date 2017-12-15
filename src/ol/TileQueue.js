@@ -4,7 +4,7 @@
 import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 import _ol_structs_PriorityQueue_ from './structs/PriorityQueue.js';
 
 /**
@@ -65,7 +65,7 @@ _ol_TileQueue_.prototype.enqueue = function(element) {
   var added = _ol_structs_PriorityQueue_.prototype.enqueue.call(this, element);
   if (added) {
     var tile = element[0];
-    _ol_events_.listen(tile, _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(tile, EventType.CHANGE,
         this.handleTileChange, this);
   }
   return added;
@@ -89,7 +89,7 @@ _ol_TileQueue_.prototype.handleTileChange = function(event) {
   var state = tile.getState();
   if (state === _ol_TileState_.LOADED || state === _ol_TileState_.ERROR ||
       state === _ol_TileState_.EMPTY || state === _ol_TileState_.ABORT) {
-    _ol_events_.unlisten(tile, _ol_events_EventType_.CHANGE,
+    _ol_events_.unlisten(tile, EventType.CHANGE,
         this.handleTileChange, this);
     var tileKey = tile.getKey();
     if (tileKey in this.tilesLoadingKeys_) {

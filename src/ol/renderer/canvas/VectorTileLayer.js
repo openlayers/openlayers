@@ -6,7 +6,7 @@ import _ol_LayerType_ from '../../LayerType.js';
 import _ol_TileState_ from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
-import _ol_events_EventType_ from '../../events/EventType.js';
+import EventType from '../../events/EventType.js';
 import _ol_ext_rbush_ from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
@@ -64,7 +64,7 @@ var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
   this.zDirection =
       layer.getRenderMode() == _ol_layer_VectorTileRenderType_.VECTOR ? 1 : 0;
 
-  _ol_events_.listen(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
+  _ol_events_.listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
 };
 
@@ -119,7 +119,7 @@ _ol_renderer_canvas_VectorTileLayer_.VECTOR_REPLAYS = {
  * @inheritDoc
  */
 _ol_renderer_canvas_VectorTileLayer_.prototype.disposeInternal = function() {
-  _ol_events_.unlisten(_ol_render_canvas_.labelCache, _ol_events_EventType_.CLEAR, this.handleFontsChanged_, this);
+  _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   _ol_renderer_canvas_TileLayer_.prototype.disposeInternal.call(this);
 };
 
