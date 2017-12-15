@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_events_condition_ from '../src/ol/events/condition.js';
 import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
-import _ol_interaction_DragBox_ from '../src/ol/interaction/DragBox.js';
+import DragBox from '../src/ol/interaction/DragBox.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -39,7 +39,7 @@ map.addInteraction(select);
 var selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
-var dragBox = new _ol_interaction_DragBox_({
+var dragBox = new DragBox({
   condition: _ol_events_condition_.platformModifierKeyOnly
 });
 
