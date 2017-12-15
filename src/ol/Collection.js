@@ -10,7 +10,7 @@ import {inherits} from './index.js';
 import _ol_AssertionError_ from './AssertionError.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import _ol_Object_ from './Object.js';
-import _ol_events_Event_ from './events/Event.js';
+import Event from './events/Event.js';
 
 /**
  * @classdesc
@@ -292,7 +292,7 @@ _ol_Collection_.Property_ = {
  */
 _ol_Collection_.Event = function(type, opt_element) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The element that is added to or removed from the collection.
@@ -302,6 +302,6 @@ _ol_Collection_.Event = function(type, opt_element) {
   this.element = opt_element;
 
 };
-inherits(_ol_Collection_.Event, _ol_events_Event_);
+inherits(_ol_Collection_.Event, Event);
 
 export default _ol_Collection_;

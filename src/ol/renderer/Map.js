@@ -4,7 +4,7 @@
 import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
@@ -221,7 +221,7 @@ _ol_renderer_Map_.prototype.getLayerRenderer = function(layer) {
     if (renderer) {
       this.layerRenderers_[layerKey] = renderer;
       this.layerRendererListeners_[layerKey] = _ol_events_.listen(renderer,
-          _ol_events_EventType_.CHANGE, this.handleLayerRendererChange_, this);
+          EventType.CHANGE, this.handleLayerRendererChange_, this);
     } else {
       throw new Error('Unable to create renderer for layer: ' + layer.getType());
     }

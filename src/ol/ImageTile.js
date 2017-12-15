@@ -6,7 +6,7 @@ import _ol_Tile_ from './Tile.js';
 import _ol_TileState_ from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 
 /**
  * @constructor
@@ -142,9 +142,9 @@ _ol_ImageTile_.prototype.load = function() {
     this.state = _ol_TileState_.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.ERROR,
+      _ol_events_.listenOnce(this.image_, EventType.ERROR,
           this.handleImageError_, this),
-      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.LOAD,
+      _ol_events_.listenOnce(this.image_, EventType.LOAD,
           this.handleImageLoad_, this)
     ];
     this.tileLoadFunction_(this, this.src_);

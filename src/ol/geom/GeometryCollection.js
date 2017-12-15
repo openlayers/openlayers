@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -59,7 +59,7 @@ GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     _ol_events_.unlisten(
-        this.geometries_[i], _ol_events_EventType_.CHANGE,
+        this.geometries_[i], EventType.CHANGE,
         this.changed, this);
   }
 };
@@ -75,7 +75,7 @@ GeometryCollection.prototype.listenGeometriesChange_ = function() {
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     _ol_events_.listen(
-        this.geometries_[i], _ol_events_EventType_.CHANGE,
+        this.geometries_[i], EventType.CHANGE,
         this.changed, this);
   }
 };

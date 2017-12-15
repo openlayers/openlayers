@@ -7,7 +7,7 @@ import _ol_Observable_ from '../Observable.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {FALSE} from '../functions.js';
 import _ol_source_State_ from '../source/State.js';
 
@@ -117,7 +117,7 @@ _ol_renderer_Layer_.prototype.loadImage = function(image) {
   var imageState = image.getState();
   if (imageState != _ol_ImageState_.LOADED &&
       imageState != _ol_ImageState_.ERROR) {
-    _ol_events_.listen(image, _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(image, EventType.CHANGE,
         this.handleImageChange_, this);
   }
   if (imageState == _ol_ImageState_.IDLE) {

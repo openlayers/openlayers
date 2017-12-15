@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_array_ from '../../../../src/ol/array.js';
 import _ol_events_ from '../../../../src/ol/events.js';
@@ -73,7 +73,7 @@ describe('ol.interaction.Draw', function() {
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
     });
-    map.handleMapBrowserEvent(new _ol_MapBrowserPointerEvent_(type, map, event));
+    map.handleMapBrowserEvent(new MapBrowserPointerEvent(type, map, event));
   }
 
   describe('constructor', function() {

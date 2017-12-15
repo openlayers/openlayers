@@ -2,7 +2,7 @@
  * @module ol/format/filter/Bbox
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Filter_ from '../filter/Filter.js';
+import Filter from '../filter/Filter.js';
 
 /**
  * @classdesc
@@ -17,9 +17,9 @@ import _ol_format_filter_Filter_ from '../filter/Filter.js';
  * @extends {ol.format.filter.Filter}
  * @api
  */
-var _ol_format_filter_Bbox_ = function(geometryName, extent, opt_srsName) {
+var Bbox = function(geometryName, extent, opt_srsName) {
 
-  _ol_format_filter_Filter_.call(this, 'BBOX');
+  Filter.call(this, 'BBOX');
 
   /**
    * @public
@@ -40,6 +40,6 @@ var _ol_format_filter_Bbox_ = function(geometryName, extent, opt_srsName) {
   this.srsName = opt_srsName;
 };
 
-inherits(_ol_format_filter_Bbox_, _ol_format_filter_Filter_);
+inherits(Bbox, Filter);
 
-export default _ol_format_filter_Bbox_;
+export default Bbox;

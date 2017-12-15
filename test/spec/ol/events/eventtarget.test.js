@@ -1,7 +1,7 @@
 import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
-import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
+import Event from '../../../../src/ol/events/Event.js';
+import EventTarget from '../../../../src/ol/events/EventTarget.js';
 
 
 describe('ol.events.EventTarget', function() {
@@ -17,12 +17,12 @@ describe('ol.events.EventTarget', function() {
     spy1 = spy.bind({id: 1});
     spy2 = spy.bind({id: 2});
     spy3 = spy.bind({id: 3});
-    eventTarget = new _ol_events_EventTarget_();
+    eventTarget = new EventTarget();
   });
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      expect(eventTarget).to.be.a(_ol_events_EventTarget_);
+      expect(eventTarget).to.be.a(EventTarget);
       expect(eventTarget).to.be.a(_ol_Disposable_);
     });
     it('creates an empty listeners_ object', function() {
@@ -105,7 +105,7 @@ describe('ol.events.EventTarget', function() {
     it('passes a default ol.events.Event object to listeners', function() {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.dispatchEvent('foo');
-      expect(events[0]).to.be.a(_ol_events_Event_);
+      expect(events[0]).to.be.a(Event);
       expect(events[0].type).to.be('foo');
       expect(events[0].target).to.equal(eventTarget);
     });

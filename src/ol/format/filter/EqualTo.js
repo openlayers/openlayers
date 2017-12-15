@@ -2,7 +2,7 @@
  * @module ol/format/filter/EqualTo
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
+import ComparisonBinary from '../filter/ComparisonBinary.js';
 
 /**
  * @classdesc
@@ -15,9 +15,9 @@ import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-var _ol_format_filter_EqualTo_ = function(propertyName, expression, opt_matchCase) {
-  _ol_format_filter_ComparisonBinary_.call(this, 'PropertyIsEqualTo', propertyName, expression, opt_matchCase);
+var EqualTo = function(propertyName, expression, opt_matchCase) {
+  ComparisonBinary.call(this, 'PropertyIsEqualTo', propertyName, expression, opt_matchCase);
 };
 
-inherits(_ol_format_filter_EqualTo_, _ol_format_filter_ComparisonBinary_);
-export default _ol_format_filter_EqualTo_;
+inherits(EqualTo, ComparisonBinary);
+export default EqualTo;

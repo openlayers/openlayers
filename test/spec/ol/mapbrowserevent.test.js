@@ -1,5 +1,5 @@
 import _ol_Map_ from '../../../src/ol/Map.js';
-import _ol_MapBrowserEventHandler_ from '../../../src/ol/MapBrowserEventHandler.js';
+import MapBrowserEventHandler from '../../../src/ol/MapBrowserEventHandler.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import _ol_pointer_PointerEvent_ from '../../../src/ol/pointer/PointerEvent.js';
@@ -16,7 +16,7 @@ describe('ol.MapBrowserEventHandler', function() {
     beforeEach(function() {
       clock = sinon.useFakeTimers();
       target = document.createElement('DIV');
-      handler = new _ol_MapBrowserEventHandler_(new _ol_Map_({
+      handler = new MapBrowserEventHandler(new _ol_Map_({
         target: target
       }));
 
@@ -99,7 +99,7 @@ describe('ol.MapBrowserEventHandler', function() {
 
     var handler;
     beforeEach(function() {
-      handler = new _ol_MapBrowserEventHandler_(new _ol_Map_({}));
+      handler = new MapBrowserEventHandler(new _ol_Map_({}));
     });
 
     it('is null if no "down" type event has been handled', function() {
@@ -119,8 +119,8 @@ describe('ol.MapBrowserEventHandler', function() {
     var moveToleranceHandler;
     var pointerdownAt0;
     beforeEach(function() {
-      defaultHandler = new _ol_MapBrowserEventHandler_(new _ol_Map_({}));
-      moveToleranceHandler = new _ol_MapBrowserEventHandler_(new _ol_Map_({}), 8);
+      defaultHandler = new MapBrowserEventHandler(new _ol_Map_({}));
+      moveToleranceHandler = new MapBrowserEventHandler(new _ol_Map_({}), 8);
       pointerdownAt0 = new _ol_pointer_PointerEvent_('pointerdown', {}, {
         clientX: 0,
         clientY: 0

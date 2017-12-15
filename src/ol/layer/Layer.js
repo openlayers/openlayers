@@ -2,7 +2,7 @@
  * @module ol/layer/Layer
  */
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_layer_Base_ from '../layer/Base.js';
@@ -147,7 +147,7 @@ _ol_layer_Layer_.prototype.handleSourcePropertyChange_ = function() {
   var source = this.getSource();
   if (source) {
     this.sourceChangeKey_ = _ol_events_.listen(source,
-        _ol_events_EventType_.CHANGE, this.handleSourceChange_, this);
+        EventType.CHANGE, this.handleSourceChange_, this);
   }
   this.changed();
 };
@@ -187,7 +187,7 @@ _ol_layer_Layer_.prototype.setMap = function(map) {
           evt.frameState.layerStates[getUid(this)] = layerState;
         }, this);
     this.mapRenderKey_ = _ol_events_.listen(
-        this, _ol_events_EventType_.CHANGE, map.render, map);
+        this, EventType.CHANGE, map.render, map);
     this.changed();
   }
 };

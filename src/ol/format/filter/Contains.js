@@ -2,7 +2,7 @@
  * @module ol/format/filter/Contains
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Spatial_ from '../filter/Spatial.js';
+import Spatial from '../filter/Spatial.js';
 
 /**
  * @classdesc
@@ -17,11 +17,11 @@ import _ol_format_filter_Spatial_ from '../filter/Spatial.js';
  * @extends {ol.format.filter.Spatial}
  * @api
  */
-var _ol_format_filter_Contains_ = function(geometryName, geometry, opt_srsName) {
+var Contains = function(geometryName, geometry, opt_srsName) {
 
-  _ol_format_filter_Spatial_.call(this, 'Contains', geometryName, geometry, opt_srsName);
+  Spatial.call(this, 'Contains', geometryName, geometry, opt_srsName);
 
 };
 
-inherits(_ol_format_filter_Contains_, _ol_format_filter_Spatial_);
-export default _ol_format_filter_Contains_;
+inherits(Contains, Spatial);
+export default Contains;

@@ -5,13 +5,13 @@ import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
-import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import _ol_array_ from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -256,7 +256,7 @@ _ol_interaction_Modify_.prototype.addFeature_ = function(feature) {
   if (map && map.isRendered() && this.getActive()) {
     this.handlePointerAtPixel_(this.lastPixel_, map);
   }
-  _ol_events_.listen(feature, _ol_events_EventType_.CHANGE,
+  _ol_events_.listen(feature, EventType.CHANGE,
       this.handleFeatureChange_, this);
 };
 
@@ -286,7 +286,7 @@ _ol_interaction_Modify_.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  _ol_events_.unlisten(feature, _ol_events_EventType_.CHANGE,
+  _ol_events_.unlisten(feature, EventType.CHANGE,
       this.handleFeatureChange_, this);
 };
 
@@ -799,19 +799,19 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
  * @api
  */
 _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof _ol_MapBrowserPointerEvent_)) {
+  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
   this.lastPointerEvent_ = mapBrowserEvent;
 
   var handled;
   if (!mapBrowserEvent.map.getView().getInteracting() &&
-      mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERMOVE &&
+      mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
-    if (mapBrowserEvent.type != _ol_MapBrowserEventType_.SINGLECLICK ||
+    if (mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_) {
       handled = this.removePoint();
     } else {
@@ -819,7 +819,7 @@ _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
     }
   }
 
-  if (mapBrowserEvent.type == _ol_MapBrowserEventType_.SINGLECLICK) {
+  if (mapBrowserEvent.type == MapBrowserEventType.SINGLECLICK) {
     this.ignoreNextSingleClick_ = false;
   }
 
@@ -1026,7 +1026,7 @@ _ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) 
  * @api
  */
 _ol_interaction_Modify_.prototype.removePoint = function() {
-  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != _ol_MapBrowserEventType_.POINTERDRAG) {
+  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != MapBrowserEventType.POINTERDRAG) {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     this.removeVertex_();
@@ -1215,7 +1215,7 @@ _ol_interaction_Modify_.getDefaultStyleFunction = function() {
  */
 _ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The features being modified.
@@ -1231,5 +1231,5 @@ _ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent)
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
 };
-inherits(_ol_interaction_Modify_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Modify_.Event, Event);
 export default _ol_interaction_Modify_;

@@ -2,8 +2,8 @@
  * @module ol/ImageBase
  */
 import {inherits} from './index.js';
-import _ol_events_EventTarget_ from './events/EventTarget.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventTarget from './events/EventTarget.js';
+import EventType from './events/EventType.js';
 
 /**
  * @constructor
@@ -16,7 +16,7 @@ import _ol_events_EventType_ from './events/EventType.js';
  */
 var _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
 
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * @protected
@@ -44,14 +44,14 @@ var _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
 
 };
 
-inherits(_ol_ImageBase_, _ol_events_EventTarget_);
+inherits(_ol_ImageBase_, EventTarget);
 
 
 /**
  * @protected
  */
 _ol_ImageBase_.prototype.changed = function() {
-  this.dispatchEvent(_ol_events_EventType_.CHANGE);
+  this.dispatchEvent(EventType.CHANGE);
 };
 
 

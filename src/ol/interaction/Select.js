@@ -5,7 +5,7 @@ import {getUid, inherits} from '../index.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_array_ from '../array.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -391,7 +391,7 @@ _ol_interaction_Select_.prototype.removeFeatureLayerAssociation_ = function(feat
  * @constructor
  */
 _ol_interaction_Select_.Event = function(type, selected, deselected, mapBrowserEvent) {
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * Selected features array.
@@ -414,7 +414,7 @@ _ol_interaction_Select_.Event = function(type, selected, deselected, mapBrowserE
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
-inherits(_ol_interaction_Select_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Select_.Event, Event);
 
 
 /**

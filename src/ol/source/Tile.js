@@ -4,7 +4,7 @@
 import {inherits, nullFunction} from '../index.js';
 import _ol_TileCache_ from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
 import _ol_size_ from '../size.js';
 import _ol_source_Source_ from '../source/Source.js';
@@ -320,7 +320,7 @@ _ol_source_Tile_.prototype.useTile = nullFunction;
  */
 _ol_source_Tile_.Event = function(type, tile) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The tile related to the event.
@@ -330,5 +330,5 @@ _ol_source_Tile_.Event = function(type, tile) {
   this.tile = tile;
 
 };
-inherits(_ol_source_Tile_.Event, _ol_events_Event_);
+inherits(_ol_source_Tile_.Event, Event);
 export default _ol_source_Tile_;

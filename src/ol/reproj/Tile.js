@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_reproj_ from '../reproj.js';
@@ -265,7 +265,7 @@ _ol_reproj_Tile_.prototype.load = function() {
         leftToLoad++;
 
         var sourceListenKey;
-        sourceListenKey = _ol_events_.listen(tile, _ol_events_EventType_.CHANGE,
+        sourceListenKey = _ol_events_.listen(tile, EventType.CHANGE,
             function(e) {
               var state = tile.getState();
               if (state == _ol_TileState_.LOADED ||

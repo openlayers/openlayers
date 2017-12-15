@@ -1,7 +1,7 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
@@ -66,7 +66,7 @@ describe('ol.interaction.Translate', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new _ol_MapBrowserPointerEvent_(type, map,
+    var event = new MapBrowserPointerEvent(type, map,
         new _ol_pointer_PointerEvent_(type, {
           clientX: position.left + x + width / 2,
           clientY: position.top + y + height / 2,

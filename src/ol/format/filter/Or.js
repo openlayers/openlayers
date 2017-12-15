@@ -2,7 +2,7 @@
  * @module ol/format/filter/Or
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_LogicalNary_ from '../filter/LogicalNary.js';
+import LogicalNary from '../filter/LogicalNary.js';
 
 /**
  * @classdesc
@@ -13,10 +13,10 @@ import _ol_format_filter_LogicalNary_ from '../filter/LogicalNary.js';
  * @extends {ol.format.filter.LogicalNary}
  * @api
  */
-var _ol_format_filter_Or_ = function(conditions) {
+var Or = function(conditions) {
   var params = ['Or'].concat(Array.prototype.slice.call(arguments));
-  _ol_format_filter_LogicalNary_.apply(this, params);
+  LogicalNary.apply(this, params);
 };
 
-inherits(_ol_format_filter_Or_, _ol_format_filter_LogicalNary_);
-export default _ol_format_filter_Or_;
+inherits(Or, LogicalNary);
+export default Or;

@@ -2,7 +2,7 @@
  * @module ol/interaction/KeyboardZoom
  */
 import {inherits} from '../index.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
 
@@ -66,8 +66,8 @@ inherits(_ol_interaction_KeyboardZoom_, Interaction);
  */
 _ol_interaction_KeyboardZoom_.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == _ol_events_EventType_.KEYDOWN ||
-      mapBrowserEvent.type == _ol_events_EventType_.KEYPRESS) {
+  if (mapBrowserEvent.type == EventType.KEYDOWN ||
+      mapBrowserEvent.type == EventType.KEYPRESS) {
     var keyEvent = mapBrowserEvent.originalEvent;
     var charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&

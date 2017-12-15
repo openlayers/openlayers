@@ -8,7 +8,7 @@ import _ol_GeolocationProperty_ from './GeolocationProperty.js';
 import _ol_Object_ from './Object.js';
 import _ol_Sphere_ from './Sphere.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 import Polygon from './geom/Polygon.js';
 import _ol_has_ from './has.js';
 import _ol_math_ from './math.js';
@@ -179,7 +179,7 @@ _ol_Geolocation_.prototype.positionChange_ = function(position) {
  * @param {GeolocationPositionError} error error object.
  */
 _ol_Geolocation_.prototype.positionError_ = function(error) {
-  error.type = _ol_events_EventType_.ERROR;
+  error.type = EventType.ERROR;
   this.setTracking(false);
   this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
 };

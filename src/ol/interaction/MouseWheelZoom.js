@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import {easeOut} from '../easing.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_has_ from '../has.js';
 import Interaction from '../interaction/Interaction.js';
 import _ol_math_ from '../math.js';
@@ -128,7 +128,7 @@ inherits(_ol_interaction_MouseWheelZoom_, Interaction);
  */
 _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
-  if (type !== _ol_events_EventType_.WHEEL && type !== _ol_events_EventType_.MOUSEWHEEL) {
+  if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
     return true;
   }
 
@@ -144,7 +144,7 @@ _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
   // Delta normalisation inspired by
   // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
   var delta;
-  if (mapBrowserEvent.type == _ol_events_EventType_.WHEEL) {
+  if (mapBrowserEvent.type == EventType.WHEEL) {
     delta = wheelEvent.deltaY;
     if (_ol_has_.FIREFOX &&
         wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
@@ -153,7 +153,7 @@ _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
     if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
       delta *= 40;
     }
-  } else if (mapBrowserEvent.type == _ol_events_EventType_.MOUSEWHEEL) {
+  } else if (mapBrowserEvent.type == EventType.MOUSEWHEEL) {
     delta = -wheelEvent.wheelDeltaY;
     if (_ol_has_.SAFARI) {
       delta /= 3;

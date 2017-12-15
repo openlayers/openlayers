@@ -33,7 +33,7 @@
 
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventTarget_ from '../events/EventTarget.js';
+import EventTarget from '../events/EventTarget.js';
 import _ol_has_ from '../has.js';
 import _ol_pointer_EventType_ from '../pointer/EventType.js';
 import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
@@ -48,7 +48,7 @@ import _ol_pointer_TouchSource_ from '../pointer/TouchSource.js';
  * @param {Element|HTMLDocument} element Viewport element.
  */
 var _ol_pointer_PointerEventHandler_ = function(element) {
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * @const
@@ -78,7 +78,7 @@ var _ol_pointer_PointerEventHandler_ = function(element) {
   this.registerSources();
 };
 
-inherits(_ol_pointer_PointerEventHandler_, _ol_events_EventTarget_);
+inherits(_ol_pointer_PointerEventHandler_, EventTarget);
 
 
 /**
@@ -399,7 +399,7 @@ _ol_pointer_PointerEventHandler_.prototype.wrapMouseEvent = function(eventType, 
  */
 _ol_pointer_PointerEventHandler_.prototype.disposeInternal = function() {
   this.unregister_();
-  _ol_events_EventTarget_.prototype.disposeInternal.call(this);
+  EventTarget.prototype.disposeInternal.call(this);
 };
 
 

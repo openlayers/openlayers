@@ -2,7 +2,7 @@
  * @module ol/format/filter/LessThanOrEqualTo
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
+import ComparisonBinary from '../filter/ComparisonBinary.js';
 
 /**
  * @classdesc
@@ -14,9 +14,9 @@ import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-var _ol_format_filter_LessThanOrEqualTo_ = function(propertyName, expression) {
-  _ol_format_filter_ComparisonBinary_.call(this, 'PropertyIsLessThanOrEqualTo', propertyName, expression);
+var LessThanOrEqualTo = function(propertyName, expression) {
+  ComparisonBinary.call(this, 'PropertyIsLessThanOrEqualTo', propertyName, expression);
 };
 
-inherits(_ol_format_filter_LessThanOrEqualTo_, _ol_format_filter_ComparisonBinary_);
-export default _ol_format_filter_LessThanOrEqualTo_;
+inherits(LessThanOrEqualTo, ComparisonBinary);
+export default LessThanOrEqualTo;

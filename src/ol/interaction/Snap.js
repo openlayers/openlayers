@@ -6,7 +6,7 @@ import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {boundingExtent, createEmpty} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -174,7 +174,7 @@ _ol_interaction_Snap_.prototype.addFeature = function(feature, opt_listen) {
   if (listen) {
     this.featureChangeListenerKeys_[feature_uid] = _ol_events_.listen(
         feature,
-        _ol_events_EventType_.CHANGE,
+        EventType.CHANGE,
         this.handleFeatureChange_, this);
   }
 };

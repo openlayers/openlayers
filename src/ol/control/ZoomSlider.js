@@ -9,8 +9,8 @@ import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import _ol_math_ from '../math.js';
 import _ol_pointer_EventType_ from '../pointer/EventType.js';
 import _ol_pointer_PointerEventHandler_ from '../pointer/PointerEventHandler.js';
@@ -120,10 +120,10 @@ var ZoomSlider = function(opt_options) {
   _ol_events_.listen(this.dragger_, _ol_pointer_EventType_.POINTERUP,
       this.handleDraggerEnd_, this);
 
-  _ol_events_.listen(containerElement, _ol_events_EventType_.CLICK,
+  _ol_events_.listen(containerElement, EventType.CLICK,
       this.handleContainerClick_, this);
-  _ol_events_.listen(thumbElement, _ol_events_EventType_.CLICK,
-      _ol_events_Event_.stopPropagation);
+  _ol_events_.listen(thumbElement, EventType.CLICK,
+      Event.stopPropagation);
 
   var render = options.render ? options.render : ZoomSlider.render;
 

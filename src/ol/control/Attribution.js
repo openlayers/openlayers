@@ -9,7 +9,7 @@ import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {removeNode, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_obj_ from '../obj.js';
 
@@ -99,7 +99,7 @@ var Attribution = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  _ol_events_.listen(button, _ol_events_EventType_.CLICK, this.handleClick_, this);
+  _ol_events_.listen(button, EventType.CLICK, this.handleClick_, this);
 
   var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
       _ol_css_.CLASS_CONTROL +

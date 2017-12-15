@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import _ol_asserts_ from '../../asserts.js';
-import _ol_format_filter_Filter_ from '../filter/Filter.js';
+import Filter from '../filter/Filter.js';
 
 /**
  * @classdesc
@@ -16,9 +16,9 @@ import _ol_format_filter_Filter_ from '../filter/Filter.js';
  * @param {...ol.format.filter.Filter} conditions Conditions.
  * @extends {ol.format.filter.Filter}
  */
-var _ol_format_filter_LogicalNary_ = function(tagName, conditions) {
+var LogicalNary = function(tagName, conditions) {
 
-  _ol_format_filter_Filter_.call(this, tagName);
+  Filter.call(this, tagName);
 
   /**
    * @public
@@ -28,5 +28,5 @@ var _ol_format_filter_LogicalNary_ = function(tagName, conditions) {
   _ol_asserts_.assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
 };
 
-inherits(_ol_format_filter_LogicalNary_, _ol_format_filter_Filter_);
-export default _ol_format_filter_LogicalNary_;
+inherits(LogicalNary, Filter);
+export default LogicalNary;

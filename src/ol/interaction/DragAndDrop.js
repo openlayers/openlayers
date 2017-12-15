@@ -6,8 +6,8 @@
 import {inherits} from '../index.js';
 import {TRUE} from '../functions.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import Interaction from '../interaction/Interaction.js';
 import {get as getProjection} from '../proj.js';
 
@@ -77,7 +77,7 @@ DragAndDrop.handleDrop_ = function(event) {
   for (i = 0, ii = files.length; i < ii; ++i) {
     file = files.item(i);
     var reader = new FileReader();
-    reader.addEventListener(_ol_events_EventType_.LOAD,
+    reader.addEventListener(EventType.LOAD,
         this.handleResult_.bind(this, file));
     reader.readAsText(file);
   }
@@ -159,13 +159,13 @@ DragAndDrop.prototype.registerListeners_ = function() {
   if (map) {
     var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DROP,
+      _ol_events_.listen(dropArea, EventType.DROP,
           DragAndDrop.handleDrop_, this),
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DRAGENTER,
+      _ol_events_.listen(dropArea, EventType.DRAGENTER,
           DragAndDrop.handleStop_, this),
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DRAGOVER,
+      _ol_events_.listen(dropArea, EventType.DRAGOVER,
           DragAndDrop.handleStop_, this),
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DROP,
+      _ol_events_.listen(dropArea, EventType.DROP,
           DragAndDrop.handleStop_, this)
     ];
   }
@@ -253,7 +253,7 @@ DragAndDrop.EventType_ = {
  */
 DragAndDrop.Event = function(type, file, opt_features, opt_projection) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The features parsed from dropped data.
@@ -277,5 +277,6 @@ DragAndDrop.Event = function(type, file, opt_features, opt_projection) {
   this.projection = opt_projection;
 
 };
-inherits(DragAndDrop.Event, _ol_events_Event_);
+inherits(DragAndDrop.Event, Event);
+
 export default DragAndDrop;

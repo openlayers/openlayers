@@ -15,7 +15,7 @@
  * @implements {oli.events.Event}
  * @param {string} type Type.
  */
-var _ol_events_Event_ = function(type) {
+var Event = function(type) {
 
   /**
    * @type {boolean}
@@ -45,7 +45,7 @@ var _ol_events_Event_ = function(type) {
  * @override
  * @api
  */
-_ol_events_Event_.prototype.preventDefault =
+Event.prototype.preventDefault =
 
   /**
    * Stop event propagation.
@@ -53,7 +53,7 @@ _ol_events_Event_.prototype.preventDefault =
    * @override
    * @api
    */
-  _ol_events_Event_.prototype.stopPropagation = function() {
+  Event.prototype.stopPropagation = function() {
     this.propagationStopped = true;
   };
 
@@ -61,7 +61,7 @@ _ol_events_Event_.prototype.preventDefault =
 /**
  * @param {Event|ol.events.Event} evt Event
  */
-_ol_events_Event_.stopPropagation = function(evt) {
+Event.stopPropagation = function(evt) {
   evt.stopPropagation();
 };
 
@@ -69,7 +69,7 @@ _ol_events_Event_.stopPropagation = function(evt) {
 /**
  * @param {Event|ol.events.Event} evt Event
  */
-_ol_events_Event_.preventDefault = function(evt) {
+Event.preventDefault = function(evt) {
   evt.preventDefault();
 };
-export default _ol_events_Event_;
+export default Event;
