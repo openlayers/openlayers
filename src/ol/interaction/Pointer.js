@@ -4,7 +4,7 @@
 import {inherits, nullFunction} from '../index.js';
 import {FALSE} from '../functions.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 import _ol_obj_ from '../obj.js';
 
@@ -178,7 +178,7 @@ _ol_interaction_Pointer_.handleMoveEvent = nullFunction;
  * @api
  */
 _ol_interaction_Pointer_.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof _ol_MapBrowserPointerEvent_)) {
+  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
 

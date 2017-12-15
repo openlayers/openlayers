@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
 import Event from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
@@ -132,7 +132,7 @@ inherits(_ol_interaction_Extent_, _ol_interaction_Pointer_);
  * @private
  */
 _ol_interaction_Extent_.handleEvent_ = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof _ol_MapBrowserPointerEvent_)) {
+  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
   //display pointer (if not dragging)

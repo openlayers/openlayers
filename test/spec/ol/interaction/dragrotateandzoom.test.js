@@ -1,5 +1,5 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_interaction_DragRotateAndZoom_ from '../../../../src/ol/interaction/DragRotateAndZoom.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
@@ -58,7 +58,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
     });
 
     it('does not rotate when rotation is disabled on the view', function() {
-      var event = new _ol_MapBrowserPointerEvent_('pointermove', map,
+      var event = new MapBrowserPointerEvent('pointermove', map,
           new _ol_pointer_PointerEvent_('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
           true);
       interaction.lastAngle_ = Math.PI;
@@ -72,7 +72,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         resolution: 1,
         enableRotation: false
       }));
-      event = new _ol_MapBrowserPointerEvent_('pointermove', map,
+      event = new MapBrowserPointerEvent('pointermove', map,
           new _ol_pointer_PointerEvent_('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
           true);
       interaction.handleDragEvent_(event);

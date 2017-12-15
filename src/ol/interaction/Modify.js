@@ -6,7 +6,7 @@ import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_Feature_ from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import _ol_array_ from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
@@ -799,7 +799,7 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
  * @api
  */
 _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof _ol_MapBrowserPointerEvent_)) {
+  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
   this.lastPointerEvent_ = mapBrowserEvent;
