@@ -1,5 +1,5 @@
 /**
- * @module ol/vec/Mat4
+ * @module ol/vec/mat4
  */
 
 

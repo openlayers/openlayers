@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import {getCenter} from '../../extent.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
 import _ol_transform_ from '../../transform.js';
-import {create, fromTransform} from '../../vec/Mat4.js';
+import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
 
 /**

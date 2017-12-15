@@ -1,16 +1,16 @@
-import {create, fromTransform} from '../../../../src/ol/vec/Mat4.js';
+import {create, fromTransform} from '../../../../src/ol/vec/mat4.js';
 
 
-describe('ol.vec.Mat4', function() {
+describe('mat4', function() {
 
-  describe('ol.vec.Mat4.create()', function() {
+  describe('mat4.create()', function() {
     it('returns the expected matrix', function() {
       expect(create()).to.eql(
           [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]);
     });
   });
 
-  describe('ol.vec.Mat4.fromTransform()', function() {
+  describe('mat4.fromTransform()', function() {
     it('sets the expected transform on the matrix', function() {
       var transform = [1, 2, 3, 4, 5, 6];
       var result = create();
