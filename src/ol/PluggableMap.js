@@ -4,7 +4,7 @@
 import {getUid, inherits} from './index.js';
 import _ol_Collection_ from './Collection.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
-import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
+import MapBrowserEvent from './MapBrowserEvent.js';
 import _ol_MapBrowserEventHandler_ from './MapBrowserEventHandler.js';
 import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
@@ -837,7 +837,7 @@ _ol_PluggableMap_.prototype.getTilePriority = function(tile, tileSourceKey, tile
  */
 _ol_PluggableMap_.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
-  var mapBrowserEvent = new _ol_MapBrowserEvent_(type, this, browserEvent);
+  var mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
 };
 

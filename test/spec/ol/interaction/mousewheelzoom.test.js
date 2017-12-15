@@ -1,5 +1,5 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_MapBrowserEvent_ from '../../../../src/ol/MapBrowserEvent.js';
+import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 import _ol_has_ from '../../../../src/ol/has.js';
@@ -43,7 +43,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
     });
 
     it('works with the defaut value', function(done) {
-      var event = new _ol_MapBrowserEvent_('mousewheel', map, {
+      var event = new MapBrowserEvent('mousewheel', map, {
         type: 'mousewheel',
         target: map.getViewport(),
         preventDefault: Event.prototype.preventDefault
@@ -70,7 +70,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         _ol_has_.FIREFOX = origHasFirefox;
         done();
       });
-      var event = new _ol_MapBrowserEvent_('wheel', map, {
+      var event = new MapBrowserEvent('wheel', map, {
         type: 'wheel',
         deltaMode: WheelEvent.DOM_DELTA_PIXEL,
         deltaY: _ol_has_.DEVICE_PIXEL_RATIO,
@@ -89,7 +89,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         _ol_has_.FIREFOX = origHasFirefox;
         done();
       });
-      var event = new _ol_MapBrowserEvent_('wheel', map, {
+      var event = new MapBrowserEvent('wheel', map, {
         type: 'wheel',
         deltaMode: WheelEvent.DOM_DELTA_PIXEL,
         deltaY: 1,
@@ -115,7 +115,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
           expect(call.args[2]).to.eql([0, 0]);
           done();
         });
-        var event = new _ol_MapBrowserEvent_('wheel', map, {
+        var event = new MapBrowserEvent('wheel', map, {
           type: 'wheel',
           deltaMode: WheelEvent.DOM_DELTA_LINE,
           deltaY: 3.714599609375,
@@ -136,7 +136,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
           _ol_has_.SAFARI = origHasSafari;
           done();
         });
-        var event = new _ol_MapBrowserEvent_('mousewheel', map, {
+        var event = new MapBrowserEvent('mousewheel', map, {
           type: 'mousewheel',
           wheelDeltaY: -50,
           target: map.getViewport(),
@@ -156,7 +156,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
           _ol_has_.SAFARI = origHasSafari;
           done();
         });
-        var event = new _ol_MapBrowserEvent_('mousewheel', map, {
+        var event = new MapBrowserEvent('mousewheel', map, {
           type: 'mousewheel',
           wheelDeltaY: -120,
           target: map.getViewport(),

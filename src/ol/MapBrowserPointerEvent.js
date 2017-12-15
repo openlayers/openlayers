@@ -2,7 +2,7 @@
  * @module ol/MapBrowserPointerEvent
  */
 import {inherits} from './index.js';
-import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
+import MapBrowserEvent from './MapBrowserEvent.js';
 
 /**
  * @constructor
@@ -16,7 +16,7 @@ import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
 var _ol_MapBrowserPointerEvent_ = function(type, map, pointerEvent, opt_dragging,
     opt_frameState) {
 
-  _ol_MapBrowserEvent_.call(this, type, map, pointerEvent.originalEvent, opt_dragging,
+  MapBrowserEvent.call(this, type, map, pointerEvent.originalEvent, opt_dragging,
       opt_frameState);
 
   /**
@@ -27,5 +27,5 @@ var _ol_MapBrowserPointerEvent_ = function(type, map, pointerEvent, opt_dragging
 
 };
 
-inherits(_ol_MapBrowserPointerEvent_, _ol_MapBrowserEvent_);
+inherits(_ol_MapBrowserPointerEvent_, MapBrowserEvent);
 export default _ol_MapBrowserPointerEvent_;
