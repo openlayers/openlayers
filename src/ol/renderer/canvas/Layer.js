@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
-import _ol_functions_ from '../../functions.js';
+import {TRUE} from '../../functions.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
@@ -108,8 +108,7 @@ _ol_renderer_canvas_Layer_.prototype.dispatchComposeEvent_ = function(type, cont
  * @template S,T,U
  */
 _ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, _ol_functions_.TRUE, this);
+  var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);

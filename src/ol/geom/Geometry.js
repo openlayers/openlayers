@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
-import _ol_functions_ from '../functions.js';
+import {FALSE} from '../functions.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
 import _ol_proj_Units_ from '../proj/Units.js';
@@ -129,7 +129,7 @@ Geometry.prototype.computeExtent = function(extent) {};
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-Geometry.prototype.containsXY = _ol_functions_.FALSE;
+Geometry.prototype.containsXY = FALSE;
 
 
 /**

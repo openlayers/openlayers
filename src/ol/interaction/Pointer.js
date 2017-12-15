@@ -2,7 +2,7 @@
  * @module ol/interaction/Pointer
  */
 import {inherits, nullFunction} from '../index.js';
-import _ol_functions_ from '../functions.js';
+import {FALSE} from '../functions.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
@@ -150,7 +150,7 @@ _ol_interaction_Pointer_.handleDragEvent = nullFunction;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleUpEvent = _ol_functions_.FALSE;
+_ol_interaction_Pointer_.handleUpEvent = FALSE;
 
 
 /**
@@ -158,7 +158,7 @@ _ol_interaction_Pointer_.handleUpEvent = _ol_functions_.FALSE;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleDownEvent = _ol_functions_.FALSE;
+_ol_interaction_Pointer_.handleDownEvent = FALSE;
 
 
 /**

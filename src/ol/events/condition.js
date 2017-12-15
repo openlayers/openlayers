@@ -3,7 +3,7 @@
  */
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE, FALSE} from '../functions.js';
 import _ol_has_ from '../has.js';
 var _ol_events_condition_ = {};
 
@@ -50,7 +50,7 @@ _ol_events_condition_.altShiftKeysOnly = function(mapBrowserEvent) {
  * @function
  * @api
  */
-_ol_events_condition_.always = _ol_functions_.TRUE;
+_ol_events_condition_.always = TRUE;
 
 
 /**
@@ -89,7 +89,7 @@ _ol_events_condition_.mouseActionButton = function(mapBrowserEvent) {
  * @function
  * @api
  */
-_ol_events_condition_.never = _ol_functions_.FALSE;
+_ol_events_condition_.never = FALSE;
 
 
 /**

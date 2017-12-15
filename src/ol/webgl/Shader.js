@@ -1,7 +1,7 @@
 /**
  * @module ol/webgl/Shader
  */
-import _ol_functions_ from '../functions.js';
+import {FALSE} from '../functions.js';
 
 /**
  * @constructor
@@ -38,5 +38,5 @@ _ol_webgl_Shader_.prototype.getSource = function() {
 /**
  * @return {boolean} Is animated?
  */
-_ol_webgl_Shader_.prototype.isAnimated = _ol_functions_.FALSE;
+_ol_webgl_Shader_.prototype.isAnimated = FALSE;
 export default _ol_webgl_Shader_;

@@ -7,7 +7,7 @@ import _ol_array_ from '../array.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -79,8 +79,7 @@ var _ol_interaction_Select_ = function(opt_options) {
    * @private
    * @type {ol.SelectFilterFunction}
    */
-  this.filter_ = options.filter ? options.filter :
-    _ol_functions_.TRUE;
+  this.filter_ = options.filter ? options.filter : TRUE;
 
   /**
    * @private
@@ -118,7 +117,7 @@ var _ol_interaction_Select_ = function(opt_options) {
       };
     }
   } else {
-    layerFilter = _ol_functions_.TRUE;
+    layerFilter = TRUE;
   }
 
   /**

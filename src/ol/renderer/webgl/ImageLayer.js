@@ -7,7 +7,7 @@ import _ol_LayerType_ from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
-import _ol_functions_ from '../../functions.js';
+import {TRUE} from '../../functions.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
@@ -234,8 +234,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.updateProjectionMatrix_ = function(canv
  * @inheritDoc
  */
 _ol_renderer_webgl_ImageLayer_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
-  var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, _ol_functions_.TRUE, this);
+  var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
   return hasFeature !== undefined;
 };
 
@@ -253,8 +252,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.forEachLayerAtPixel = function(pixel, f
     // so that for example also transparent polygons are detected
     var coordinate = _ol_transform_.apply(
         frameState.pixelToCoordinateTransform, pixel.slice());
-    var hasFeature = this.forEachFeatureAtCoordinate(
-        coordinate, frameState, 0, _ol_functions_.TRUE, this);
+    var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
 
     if (hasFeature) {
       return callback.call(thisArg, this.getLayer(), null);

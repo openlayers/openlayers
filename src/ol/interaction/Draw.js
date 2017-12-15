@@ -10,7 +10,7 @@ import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE, FALSE} from '../functions.js';
 import Circle from '../geom/Circle.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -129,7 +129,7 @@ var _ol_interaction_Draw_ = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.finishCondition_ = options.finishCondition ? options.finishCondition : _ol_functions_.TRUE;
+  this.finishCondition_ = options.finishCondition ? options.finishCondition : TRUE;
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
@@ -735,7 +735,7 @@ _ol_interaction_Draw_.prototype.extend = function(feature) {
 /**
  * @inheritDoc
  */
-_ol_interaction_Draw_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+_ol_interaction_Draw_.prototype.shouldStopEvent = FALSE;
 
 
 /**

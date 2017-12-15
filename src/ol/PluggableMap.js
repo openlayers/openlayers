@@ -21,7 +21,7 @@ import _ol_events_ from './events.js';
 import _ol_events_Event_ from './events/Event.js';
 import _ol_events_EventType_ from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
-import _ol_functions_ from './functions.js';
+import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
 import _ol_layer_Group_ from './layer/Group.js';
 import _ol_obj_ from './obj.js';
@@ -475,7 +475,7 @@ _ol_PluggableMap_.prototype.forEachFeatureAtPixel = function(pixel, callback, op
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   var layerFilter = opt_options.layerFilter !== undefined ?
-    opt_options.layerFilter : _ol_functions_.TRUE;
+    opt_options.layerFilter : TRUE;
   return this.renderer_.forEachFeatureAtCoordinate(
       coordinate, this.frameState_, hitTolerance, callback, null,
       layerFilter, null);
@@ -530,8 +530,7 @@ _ol_PluggableMap_.prototype.forEachLayerAtPixel = function(pixel, callback, opt_
     return;
   }
   var thisArg = opt_this !== undefined ? opt_this : null;
-  var layerFilter = opt_layerFilter !== undefined ?
-    opt_layerFilter : _ol_functions_.TRUE;
+  var layerFilter = opt_layerFilter !== undefined ? opt_layerFilter : TRUE;
   var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
       pixel, this.frameState_, callback, thisArg,
@@ -554,8 +553,7 @@ _ol_PluggableMap_.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
-  var layerFilter = opt_options.layerFilter !== undefined ?
-    opt_options.layerFilter : _ol_functions_.TRUE;
+  var layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(

@@ -8,7 +8,7 @@ import _ol_TileState_ from '../TileState.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
-import _ol_functions_ from '../functions.js';
+import {FALSE} from '../functions.js';
 import _ol_source_State_ from '../source/State.js';
 
 /**
@@ -51,7 +51,7 @@ _ol_renderer_Layer_.prototype.forEachFeatureAtCoordinate = nullFunction;
  * @param {olx.FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
-_ol_renderer_Layer_.prototype.hasFeatureAtCoordinate = _ol_functions_.FALSE;
+_ol_renderer_Layer_.prototype.hasFeatureAtCoordinate = FALSE;
 
 
 /**

@@ -4,7 +4,7 @@
 // FIXME should handle all geo-referenced data, not just vector data
 
 import {inherits} from '../index.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE} from '../functions.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
@@ -148,7 +148,7 @@ _ol_interaction_DragAndDrop_.prototype.handleResult_ = function(file, event) {
  * @this {ol.interaction.DragAndDrop}
  * @api
  */
-_ol_interaction_DragAndDrop_.handleEvent = _ol_functions_.TRUE;
+_ol_interaction_DragAndDrop_.handleEvent = TRUE;
 
 
 /**
