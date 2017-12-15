@@ -81,15 +81,6 @@ _ol_has_.CANVAS = (
 
 
 /**
- * Indicates if DeviceOrientation is supported in the user's browser.
- * @const
- * @type {boolean}
- * @api
- */
-_ol_has_.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
-
-
-/**
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
