@@ -10,7 +10,7 @@ import Projection from './proj/Projection.js';
 import Units from './proj/Units.js';
 import _ol_proj_proj4_ from './proj/proj4.js';
 import _ol_proj_projections_ from './proj/projections.js';
-import _ol_proj_transforms_ from './proj/transforms.js';
+import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransformFunc} from './proj/transforms.js';
 
 
 /**
@@ -93,7 +93,7 @@ export function identityTransform(input, opt_output, opt_dimension) {
  */
 export function addProjection(projection) {
   _ol_proj_projections_.add(projection.getCode(), projection);
-  _ol_proj_transforms_.add(projection, projection, cloneTransform);
+  addTransformFunc(projection, projection, cloneTransform);
 }
 
 
@@ -204,7 +204,7 @@ export function addEquivalentProjections(projections) {
   projections.forEach(function(source) {
     projections.forEach(function(destination) {
       if (source !== destination) {
-        _ol_proj_transforms_.add(source, destination, cloneTransform);
+        addTransformFunc(source, destination, cloneTransform);
       }
     });
   });
@@ -227,8 +227,8 @@ export function addEquivalentProjections(projections) {
 export function addEquivalentTransforms(projections1, projections2, forwardTransform, inverseTransform) {
   projections1.forEach(function(projection1) {
     projections2.forEach(function(projection2) {
-      _ol_proj_transforms_.add(projection1, projection2, forwardTransform);
-      _ol_proj_transforms_.add(projection2, projection1, inverseTransform);
+      addTransformFunc(projection1, projection2, forwardTransform);
+      addTransformFunc(projection2, projection1, inverseTransform);
     });
   });
 }
@@ -239,7 +239,7 @@ export function addEquivalentTransforms(projections1, projections2, forwardTrans
  */
 export function clearAllProjections() {
   _ol_proj_projections_.clear();
-  _ol_proj_transforms_.clear();
+  clearTransformFuncs();
 }
 
 
@@ -314,10 +314,8 @@ export function createTransformFromCoordinateTransform(coordTransform) {
 export function addCoordinateTransforms(source, destination, forward, inverse) {
   var sourceProj = get(source);
   var destProj = get(destination);
-  _ol_proj_transforms_.add(sourceProj, destProj,
-      createTransformFromCoordinateTransform(forward));
-  _ol_proj_transforms_.add(destProj, sourceProj,
-      createTransformFromCoordinateTransform(inverse));
+  addTransformFunc(sourceProj, destProj, createTransformFromCoordinateTransform(forward));
+  addTransformFunc(destProj, sourceProj, createTransformFromCoordinateTransform(inverse));
 }
 
 
@@ -392,7 +390,6 @@ export function equivalent(projection1, projection2) {
 export function getTransformFromProjections(sourceProjection, destinationProjection) {
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
-  var transformFunc = _ol_proj_transforms_.get(sourceCode, destinationCode);
   if (!transformFunc) {
     var proj4js = _ol_proj_proj4_.get();
     if (typeof proj4js == 'function') {
@@ -411,6 +408,7 @@ export function getTransformFromProjections(sourceProjection, destinationProject
       }
     }
   }
+  var transformFunc = getTransformFunc(sourceCode, destinationCode);
   if (!transformFunc) {
     transformFunc = identityTransform;
   }
