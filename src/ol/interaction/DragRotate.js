@@ -22,14 +22,14 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragRotate_ = function(opt_options) {
+var DragRotate = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
   _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_DragRotate_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_DragRotate_.handleDragEvent_,
-    handleUpEvent: _ol_interaction_DragRotate_.handleUpEvent_
+    handleDownEvent: DragRotate.handleDownEvent_,
+    handleDragEvent: DragRotate.handleDragEvent_,
+    handleUpEvent: DragRotate.handleUpEvent_
   });
 
   /**
@@ -52,7 +52,7 @@ var _ol_interaction_DragRotate_ = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 };
 
-inherits(_ol_interaction_DragRotate_, _ol_interaction_Pointer_);
+inherits(DragRotate, _ol_interaction_Pointer_);
 
 
 /**
@@ -60,7 +60,7 @@ inherits(_ol_interaction_DragRotate_, _ol_interaction_Pointer_);
  * @this {ol.interaction.DragRotate}
  * @private
  */
-_ol_interaction_DragRotate_.handleDragEvent_ = function(mapBrowserEvent) {
+DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return;
   }
@@ -90,7 +90,7 @@ _ol_interaction_DragRotate_.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotate}
  * @private
  */
-_ol_interaction_DragRotate_.handleUpEvent_ = function(mapBrowserEvent) {
+DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -111,7 +111,7 @@ _ol_interaction_DragRotate_.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotate}
  * @private
  */
-_ol_interaction_DragRotate_.handleDownEvent_ = function(mapBrowserEvent) {
+DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -131,5 +131,5 @@ _ol_interaction_DragRotate_.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-_ol_interaction_DragRotate_.prototype.shouldStopEvent = FALSE;
-export default _ol_interaction_DragRotate_;
+DragRotate.prototype.shouldStopEvent = FALSE;
+export default DragRotate;
