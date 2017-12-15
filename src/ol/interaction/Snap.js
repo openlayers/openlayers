@@ -8,7 +8,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {boundingExtent, createEmpty} from '../extent.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -43,7 +43,7 @@ var _ol_interaction_Snap_ = function(opt_options) {
 
   _ol_interaction_Pointer_.call(this, {
     handleEvent: _ol_interaction_Snap_.handleEvent_,
-    handleDownEvent: _ol_functions_.TRUE,
+    handleDownEvent: TRUE,
     handleUpEvent: _ol_interaction_Snap_.handleUpEvent_
   });
 
@@ -330,7 +330,7 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
 /**
  * @inheritDoc
  */
-_ol_interaction_Snap_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+_ol_interaction_Snap_.prototype.shouldStopEvent = FALSE;
 
 
 /**

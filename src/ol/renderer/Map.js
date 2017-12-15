@@ -6,7 +6,7 @@ import _ol_Disposable_ from '../Disposable.js';
 import _ol_events_ from '../events.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {getWidth} from '../extent.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE} from '../functions.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_plugins_ from '../plugins.js';
 import _ol_style_ from '../style.js';
@@ -192,7 +192,7 @@ _ol_renderer_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
  */
 _ol_renderer_Map_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, hitTolerance, _ol_functions_.TRUE, this, layerFilter, thisArg);
+      coordinate, frameState, hitTolerance, TRUE, this, layerFilter, thisArg);
 
   return hasFeature !== undefined;
 };

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
-import _ol_functions_ from '../functions.js';
+import {FALSE} from '../functions.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_RotationConstraint_ from '../RotationConstraint.js';
@@ -170,5 +170,5 @@ _ol_interaction_PinchRotate_.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-_ol_interaction_PinchRotate_.prototype.shouldStopEvent = _ol_functions_.FALSE;
+_ol_interaction_PinchRotate_.prototype.shouldStopEvent = FALSE;
 export default _ol_interaction_PinchRotate_;

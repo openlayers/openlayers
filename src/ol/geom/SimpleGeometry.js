@@ -2,7 +2,7 @@
  * @module ol/geom/SimpleGeometry
  */
 import {inherits} from '../index.js';
-import _ol_functions_ from '../functions.js';
+import {FALSE} from '../functions.js';
 import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -84,7 +84,7 @@ SimpleGeometry.getStrideForLayout = function(layout) {
 /**
  * @inheritDoc
  */
-SimpleGeometry.prototype.containsXY = _ol_functions_.FALSE;
+SimpleGeometry.prototype.containsXY = FALSE;
 
 
 /**

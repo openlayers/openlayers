@@ -13,7 +13,7 @@ import _ol_events_Event_ from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
 import _ol_featureloader_ from '../featureloader.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE} from '../functions.js';
 import _ol_loadingstrategy_ from '../loadingstrategy.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Source_ from '../source/Source.js';
@@ -577,7 +577,7 @@ _ol_source_Vector_.prototype.getClosestFeatureToCoordinate = function(coordinate
   var closestPoint = [NaN, NaN];
   var minSquaredDistance = Infinity;
   var extent = [-Infinity, -Infinity, Infinity, Infinity];
-  var filter = opt_filter ? opt_filter : _ol_functions_.TRUE;
+  var filter = opt_filter ? opt_filter : TRUE;
   this.featuresRtree_.forEachInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.

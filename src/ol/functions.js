@@ -1,21 +1,19 @@
 /**
  * @module ol/functions
  */
-var _ol_functions_ = {};
 
 /**
  * Always returns true.
  * @returns {boolean} true.
  */
-_ol_functions_.TRUE = function() {
+export function TRUE() {
   return true;
-};
+}
 
 /**
  * Always returns false.
  * @returns {boolean} false.
  */
-_ol_functions_.FALSE = function() {
+export function FALSE() {
   return false;
-};
-export default _ol_functions_;
+}

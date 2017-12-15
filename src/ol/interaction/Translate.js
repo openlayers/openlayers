@@ -6,7 +6,7 @@ import _ol_Collection_ from '../Collection.js';
 import _ol_Object_ from '../Object.js';
 import _ol_events_ from '../events.js';
 import _ol_events_Event_ from '../events/Event.js';
-import _ol_functions_ from '../functions.js';
+import {TRUE} from '../functions.js';
 import _ol_array_ from '../array.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
@@ -58,7 +58,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
       };
     }
   } else {
-    layerFilter = _ol_functions_.TRUE;
+    layerFilter = TRUE;
   }
 
   /**
