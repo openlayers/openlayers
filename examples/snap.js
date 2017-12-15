@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
@@ -73,7 +73,7 @@ Modify.init();
 
 var optionsForm = document.getElementById('options-form');
 
-var Draw = {
+var ExampleDraw = {
   init: function() {
     map.addInteraction(this.Point);
     this.Point.setActive(false);
@@ -84,19 +84,19 @@ var Draw = {
     map.addInteraction(this.Circle);
     this.Circle.setActive(false);
   },
-  Point: new _ol_interaction_Draw_({
+  Point: new Draw({
     source: vector.getSource(),
     type: 'Point'
   }),
-  LineString: new _ol_interaction_Draw_({
+  LineString: new Draw({
     source: vector.getSource(),
     type: 'LineString'
   }),
-  Polygon: new _ol_interaction_Draw_({
+  Polygon: new Draw({
     source: vector.getSource(),
     type: 'Polygon'
   }),
-  Circle: new _ol_interaction_Draw_({
+  Circle: new Draw({
     source: vector.getSource(),
     type: 'Circle'
   }),
@@ -115,7 +115,7 @@ var Draw = {
     }
   }
 };
-Draw.init();
+ExampleDraw.init();
 
 
 /**

@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Polygon from '../src/ol/geom/Polygon.js';
-import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -35,10 +35,10 @@ function addInteraction() {
     var geometryFunction;
     if (value === 'Square') {
       value = 'Circle';
-      geometryFunction = _ol_interaction_Draw_.createRegularPolygon(4);
+      geometryFunction = Draw.createRegularPolygon(4);
     } else if (value === 'Box') {
       value = 'Circle';
-      geometryFunction = _ol_interaction_Draw_.createBox();
+      geometryFunction = Draw.createBox();
     } else if (value === 'Star') {
       value = 'Circle';
       geometryFunction = function(coordinates, geometry) {
@@ -65,7 +65,7 @@ function addInteraction() {
         return geometry;
       };
     }
-    draw = new _ol_interaction_Draw_({
+    draw = new Draw({
       source: source,
       type: value,
       geometryFunction: geometryFunction
