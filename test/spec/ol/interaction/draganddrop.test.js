@@ -3,7 +3,7 @@ import _ol_View_ from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
-import _ol_interaction_DragAndDrop_ from '../../../../src/ol/interaction/DragAndDrop.js';
+import DragAndDrop from '../../../../src/ol/interaction/DragAndDrop.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
 where('FileReader').describe('ol.interaction.DragAndDrop', function() {
@@ -19,7 +19,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         return new _ol_View_();
       }
     };
-    interaction = new _ol_interaction_DragAndDrop_({
+    interaction = new DragAndDrop({
       formatConstructors: [_ol_format_GeoJSON_]
     });
   });
@@ -27,8 +27,8 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var interaction = new _ol_interaction_DragAndDrop_();
-      expect(interaction).to.be.an(_ol_interaction_DragAndDrop_);
+      var interaction = new DragAndDrop();
+      expect(interaction).to.be.an(DragAndDrop);
     });
 
     it('sets formatConstructors on the instance', function() {
@@ -37,7 +37,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
 
     it('accepts a source option', function() {
       var source = new _ol_source_Vector_();
-      var drop = new _ol_interaction_DragAndDrop_({
+      var drop = new DragAndDrop({
         formatConstructors: [_ol_format_GeoJSON_],
         source: source
       });
@@ -73,7 +73,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
 
     it('registers and unregisters listeners on a custom target', function() {
       var customTarget = new EventTarget();
-      interaction = new _ol_interaction_DragAndDrop_({
+      interaction = new DragAndDrop({
         formatConstructors: [_ol_format_GeoJSON_],
         target: customTarget
       });
@@ -137,7 +137,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
 
     it('adds dropped features to a source', function(done) {
       var source = new _ol_source_Vector_();
-      var drop = new _ol_interaction_DragAndDrop_({
+      var drop = new DragAndDrop({
         formatConstructors: [_ol_format_GeoJSON_],
         source: source
       });

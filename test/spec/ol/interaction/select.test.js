@@ -5,7 +5,7 @@ import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
@@ -105,7 +105,7 @@ describe('ol.interaction.Select', function() {
     it('creates a new interaction', function() {
       var select = new _ol_interaction_Select_();
       expect(select).to.be.a(_ol_interaction_Select_);
-      expect(select).to.be.a(_ol_interaction_Interaction_);
+      expect(select).to.be.a(Interaction);
     });
 
     describe('user-provided collection', function() {

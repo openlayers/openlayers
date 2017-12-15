@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -31,7 +31,7 @@ var draw; // global so we can remove it later
 function addInteraction() {
   var value = typeSelect.value;
   if (value !== 'None') {
-    draw = new _ol_interaction_Draw_({
+    draw = new Draw({
       source: source,
       type: typeSelect.value,
       freehand: true

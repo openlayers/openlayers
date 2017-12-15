@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
 import OverviewMap from '../src/ol/control/OverviewMap.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
-import _ol_interaction_DragRotateAndZoom_ from '../src/ol/interaction/DragRotateAndZoom.js';
+import DragRotateAndZoom from '../src/ol/interaction/DragRotateAndZoom.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
@@ -29,7 +29,7 @@ var map = new _ol_Map_({
     overviewMapControl
   ]),
   interactions: _ol_interaction_.defaults().extend([
-    new _ol_interaction_DragRotateAndZoom_()
+    new DragRotateAndZoom()
   ]),
   layers: [
     new _ol_layer_Tile_({

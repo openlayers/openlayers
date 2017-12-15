@@ -2,8 +2,8 @@
  * @module ol/interaction/DoubleClickZoom
  */
 import {inherits} from '../index.js';
+import Interaction from '../interaction/Interaction.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -14,7 +14,7 @@ import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
  * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
+var DoubleClickZoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -24,8 +24,8 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
    */
   this.delta_ = options.delta ? options.delta : 1;
 
-  _ol_interaction_Interaction_.call(this, {
-    handleEvent: _ol_interaction_DoubleClickZoom_.handleEvent
+  Interaction.call(this, {
+    handleEvent: DoubleClickZoom.handleEvent
   });
 
   /**
@@ -36,7 +36,7 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DoubleClickZoom_, _ol_interaction_Interaction_);
+inherits(DoubleClickZoom, Interaction);
 
 
 /**
@@ -47,7 +47,7 @@ inherits(_ol_interaction_DoubleClickZoom_, _ol_interaction_Interaction_);
  * @this {ol.interaction.DoubleClickZoom}
  * @api
  */
-_ol_interaction_DoubleClickZoom_.handleEvent = function(mapBrowserEvent) {
+DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   var browserEvent = mapBrowserEvent.originalEvent;
   if (mapBrowserEvent.type == MapBrowserEventType.DBLCLICK) {
@@ -55,11 +55,11 @@ _ol_interaction_DoubleClickZoom_.handleEvent = function(mapBrowserEvent) {
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
-    _ol_interaction_Interaction_.zoomByDelta(
+    Interaction.zoomByDelta(
         view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }
   return !stopEvent;
 };
-export default _ol_interaction_DoubleClickZoom_;
+export default DoubleClickZoom;
