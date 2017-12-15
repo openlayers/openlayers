@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -25,7 +25,7 @@ import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
  */
 var _ol_interaction_KeyboardZoom_ = function(opt_options) {
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: _ol_interaction_KeyboardZoom_.handleEvent
   });
 
@@ -52,7 +52,7 @@ var _ol_interaction_KeyboardZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_KeyboardZoom_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_KeyboardZoom_, Interaction);
 
 
 /**
@@ -75,7 +75,7 @@ _ol_interaction_KeyboardZoom_.handleEvent = function(mapBrowserEvent) {
       var map = mapBrowserEvent.map;
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       var view = map.getView();
-      _ol_interaction_Interaction_.zoomByDelta(
+      Interaction.zoomByDelta(
           view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;

@@ -5,7 +5,7 @@ import {inherits, nullFunction} from '../index.js';
 import {FALSE} from '../functions.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_obj_ from '../obj.js';
 
 /**
@@ -30,7 +30,7 @@ var _ol_interaction_Pointer_ = function(opt_options) {
   var handleEvent = options.handleEvent ?
     options.handleEvent : _ol_interaction_Pointer_.handleEvent;
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: handleEvent
   });
 
@@ -82,7 +82,7 @@ var _ol_interaction_Pointer_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Pointer_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_Pointer_, Interaction);
 
 
 /**

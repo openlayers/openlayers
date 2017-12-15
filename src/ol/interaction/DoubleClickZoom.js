@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -24,7 +24,7 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
    */
   this.delta_ = options.delta ? options.delta : 1;
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: _ol_interaction_DoubleClickZoom_.handleEvent
   });
 
@@ -36,7 +36,7 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DoubleClickZoom_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_DoubleClickZoom_, Interaction);
 
 
 /**
@@ -55,7 +55,7 @@ _ol_interaction_DoubleClickZoom_.handleEvent = function(mapBrowserEvent) {
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
-    _ol_interaction_Interaction_.zoomByDelta(
+    Interaction.zoomByDelta(
         view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;

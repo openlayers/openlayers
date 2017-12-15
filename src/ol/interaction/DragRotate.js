@@ -6,7 +6,7 @@ import _ol_RotationConstraint_ from '../RotationConstraint.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 
 /**
@@ -77,7 +77,7 @@ _ol_interaction_DragRotate_.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.lastAngle_ !== undefined) {
     var delta = theta - this.lastAngle_;
     var rotation = view.getRotation();
-    _ol_interaction_Interaction_.rotateWithoutConstraints(
+    Interaction.rotateWithoutConstraints(
         view, rotation - delta);
   }
   this.lastAngle_ = theta;
@@ -99,7 +99,7 @@ _ol_interaction_DragRotate_.handleUpEvent_ = function(mapBrowserEvent) {
   var view = map.getView();
   view.setHint(_ol_ViewHint_.INTERACTING, -1);
   var rotation = view.getRotation();
-  _ol_interaction_Interaction_.rotate(view, rotation,
+  Interaction.rotate(view, rotation,
       undefined, this.duration_);
   return false;
 };

@@ -3,7 +3,7 @@ import _ol_MapBrowserEvent_ from '../../../../src/ol/MapBrowserEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
 import _ol_has_ from '../../../../src/ol/has.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_MouseWheelZoom_ from '../../../../src/ol/interaction/MouseWheelZoom.js';
 
 
@@ -33,13 +33,13 @@ describe('ol.interaction.MouseWheelZoom', function() {
   describe('timeout duration', function() {
     var clock;
     beforeEach(function() {
-      sinon.spy(_ol_interaction_Interaction_, 'zoomByDelta');
+      sinon.spy(Interaction, 'zoomByDelta');
       clock = sinon.useFakeTimers();
     });
 
     afterEach(function() {
       clock.restore();
-      _ol_interaction_Interaction_.zoomByDelta.restore();
+      Interaction.zoomByDelta.restore();
     });
 
     it('works with the defaut value', function(done) {
@@ -51,9 +51,9 @@ describe('ol.interaction.MouseWheelZoom', function() {
       map.handleMapBrowserEvent(event);
       clock.tick(50);
       // default timeout is 80 ms, not called yet
-      expect(_ol_interaction_Interaction_.zoomByDelta.called).to.be(false);
+      expect(Interaction.zoomByDelta.called).to.be(false);
       clock.tick(30);
-      expect(_ol_interaction_Interaction_.zoomByDelta.called).to.be(true);
+      expect(Interaction.zoomByDelta.called).to.be(true);
 
       done();
     });
@@ -102,15 +102,15 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
     describe('spying on ol.interaction.Interaction.zoomByDelta', function() {
       beforeEach(function() {
-        sinon.spy(_ol_interaction_Interaction_, 'zoomByDelta');
+        sinon.spy(Interaction, 'zoomByDelta');
       });
       afterEach(function() {
-        _ol_interaction_Interaction_.zoomByDelta.restore();
+        Interaction.zoomByDelta.restore();
       });
 
       it('works in DOM_DELTA_LINE mode (wheel)', function(done) {
         map.once('postrender', function() {
-          var call = _ol_interaction_Interaction_.zoomByDelta.getCall(0);
+          var call = Interaction.zoomByDelta.getCall(0);
           expect(call.args[1]).to.be(-1);
           expect(call.args[2]).to.eql([0, 0]);
           done();
@@ -130,7 +130,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         var origHasSafari = _ol_has_.SAFARI;
         _ol_has_.SAFARI = true;
         map.once('postrender', function() {
-          var call = _ol_interaction_Interaction_.zoomByDelta.getCall(0);
+          var call = Interaction.zoomByDelta.getCall(0);
           expect(call.args[1]).to.be(-1);
           expect(call.args[2]).to.eql([0, 0]);
           _ol_has_.SAFARI = origHasSafari;
@@ -150,7 +150,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         var origHasSafari = _ol_has_.SAFARI;
         _ol_has_.SAFARI = false;
         map.once('postrender', function() {
-          var call = _ol_interaction_Interaction_.zoomByDelta.getCall(0);
+          var call = Interaction.zoomByDelta.getCall(0);
           expect(call.args[1]).to.be(-1);
           expect(call.args[2]).to.eql([0, 0]);
           _ol_has_.SAFARI = origHasSafari;

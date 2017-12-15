@@ -2,7 +2,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_MapBrowserEvent_ from '../../../../src/ol/MapBrowserEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 describe('ol.interaction.KeyboardPan', function() {
   var map;
 
@@ -23,7 +23,7 @@ describe('ol.interaction.KeyboardPan', function() {
 
   describe('handleEvent()', function() {
     it('pans on arrow keys', function() {
-      var spy = sinon.spy(_ol_interaction_Interaction_, 'pan');
+      var spy = sinon.spy(Interaction, 'pan');
       var event = new _ol_MapBrowserEvent_('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
@@ -41,7 +41,7 @@ describe('ol.interaction.KeyboardPan', function() {
       expect(spy.getCall(1).args[1]).to.eql([0, 128]);
       expect(spy.getCall(2).args[1]).to.eql([-128, 0]);
       expect(spy.getCall(3).args[1]).to.eql([128, 0]);
-      _ol_interaction_Interaction_.pan.restore();
+      Interaction.pan.restore();
     });
   });
 

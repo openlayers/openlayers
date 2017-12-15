@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_RotationConstraint_ from '../RotationConstraint.js';
 
@@ -115,7 +115,7 @@ _ol_interaction_PinchRotate_.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.rotating_) {
     var rotation = view.getRotation();
     map.render();
-    _ol_interaction_Interaction_.rotateWithoutConstraints(view,
+    Interaction.rotateWithoutConstraints(view,
         rotation + rotationDelta, this.anchor_);
   }
 };
@@ -134,7 +134,7 @@ _ol_interaction_PinchRotate_.handleUpEvent_ = function(mapBrowserEvent) {
     view.setHint(_ol_ViewHint_.INTERACTING, -1);
     if (this.rotating_) {
       var rotation = view.getRotation();
-      _ol_interaction_Interaction_.rotate(
+      Interaction.rotate(
           view, rotation, this.anchor_, this.duration_);
     }
     return false;
