@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_EsriJSON_ from '../src/ol/format/EsriJSON.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
-import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -62,7 +62,7 @@ var raster = new _ol_layer_Tile_({
   })
 });
 
-var draw = new _ol_interaction_Draw_({
+var draw = new Draw({
   source: vectorSource,
   type: 'Polygon'
 });
