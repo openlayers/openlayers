@@ -1,11 +1,10 @@
 /**
  * @module ol/interaction/Property
  */
+
 /**
  * @enum {string}
  */
-var _ol_interaction_Property_ = {
+export default {
   ACTIVE: 'active'
 };
-
-export default _ol_interaction_Property_;

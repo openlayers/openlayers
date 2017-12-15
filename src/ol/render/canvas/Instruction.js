@@ -1,10 +1,11 @@
 /**
  * @module ol/render/canvas/Instruction
  */
+
 /**
  * @enum {number}
  */
-var _ol_render_canvas_Instruction_ = {
+export default {
   BEGIN_GEOMETRY: 0,
   BEGIN_PATH: 1,
   CIRCLE: 2,
@@ -19,5 +20,3 @@ var _ol_render_canvas_Instruction_ = {
   SET_STROKE_STYLE: 11,
   STROKE: 12
 };
-
-export default _ol_render_canvas_Instruction_;

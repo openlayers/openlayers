@@ -1,10 +1,11 @@
 /**
  * @module ol/GeolocationProperty
  */
+
 /**
  * @enum {string}
  */
-var _ol_GeolocationProperty_ = {
+export default {
   ACCURACY: 'accuracy',
   ACCURACY_GEOMETRY: 'accuracyGeometry',
   ALTITUDE: 'altitude',
@@ -16,5 +17,3 @@ var _ol_GeolocationProperty_ = {
   TRACKING: 'tracking',
   TRACKING_OPTIONS: 'trackingOptions'
 };
-
-export default _ol_GeolocationProperty_;

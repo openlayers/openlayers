@@ -1,13 +1,12 @@
 /**
  * @module ol/ViewProperty
  */
+
 /**
  * @enum {string}
  */
-var _ol_ViewProperty_ = {
+export default {
   CENTER: 'center',
   RESOLUTION: 'resolution',
   ROTATION: 'rotation'
 };
-
-export default _ol_ViewProperty_;

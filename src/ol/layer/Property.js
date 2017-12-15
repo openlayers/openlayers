@@ -1,10 +1,11 @@
 /**
  * @module ol/layer/Property
  */
+
 /**
  * @enum {string}
  */
-var _ol_layer_Property_ = {
+export default {
   OPACITY: 'opacity',
   VISIBLE: 'visible',
   EXTENT: 'extent',
@@ -13,5 +14,3 @@ var _ol_layer_Property_ = {
   MIN_RESOLUTION: 'minResolution',
   SOURCE: 'source'
 };
-
-export default _ol_layer_Property_;

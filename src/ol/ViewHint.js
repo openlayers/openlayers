@@ -1,12 +1,11 @@
 /**
  * @module ol/ViewHint
  */
+
 /**
  * @enum {number}
  */
-var _ol_ViewHint_ = {
+export default {
   ANIMATING: 0,
   INTERACTING: 1
 };
-
-export default _ol_ViewHint_;

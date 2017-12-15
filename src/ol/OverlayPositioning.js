@@ -1,13 +1,14 @@
 /**
  * @module ol/OverlayPositioning
  */
+
 /**
  * Overlay position: `'bottom-left'`, `'bottom-center'`,  `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
  * @enum {string}
  */
-var _ol_OverlayPositioning_ = {
+export default {
   BOTTOM_LEFT: 'bottom-left',
   BOTTOM_CENTER: 'bottom-center',
   BOTTOM_RIGHT: 'bottom-right',
@@ -18,5 +19,3 @@ var _ol_OverlayPositioning_ = {
   TOP_CENTER: 'top-center',
   TOP_RIGHT: 'top-right'
 };
-
-export default _ol_OverlayPositioning_;
