@@ -7,7 +7,7 @@
 
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_colorlike_ from '../../colorlike.js';
+import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import SimpleGeometry from '../../geom/SimpleGeometry.js';
@@ -829,7 +829,7 @@ _ol_render_canvas_Immediate_.prototype.setFillStrokeStyle = function(fillStyle, 
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
-      fillStyle: _ol_colorlike_.asColorLike(fillStyleColor ?
+      fillStyle: asColorLike(fillStyleColor ?
         fillStyleColor : _ol_render_canvas_.defaultFillStyle)
     };
   }
@@ -856,7 +856,7 @@ _ol_render_canvas_Immediate_.prototype.setFillStrokeStyle = function(fillStyle, 
         strokeStyleWidth : _ol_render_canvas_.defaultLineWidth),
       miterLimit: strokeStyleMiterLimit !== undefined ?
         strokeStyleMiterLimit : _ol_render_canvas_.defaultMiterLimit,
-      strokeStyle: _ol_colorlike_.asColorLike(strokeStyleColor ?
+      strokeStyle: asColorLike(strokeStyleColor ?
         strokeStyleColor : _ol_render_canvas_.defaultStrokeStyle)
     };
   }
@@ -912,7 +912,7 @@ _ol_render_canvas_Immediate_.prototype.setTextStyle = function(textStyle) {
     } else {
       var textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
-        fillStyle: _ol_colorlike_.asColorLike(textFillStyleColor ?
+        fillStyle: asColorLike(textFillStyleColor ?
           textFillStyleColor : _ol_render_canvas_.defaultFillStyle)
       };
     }
@@ -940,7 +940,7 @@ _ol_render_canvas_Immediate_.prototype.setTextStyle = function(textStyle) {
           textStrokeStyleWidth : _ol_render_canvas_.defaultLineWidth,
         miterLimit: textStrokeStyleMiterLimit !== undefined ?
           textStrokeStyleMiterLimit : _ol_render_canvas_.defaultMiterLimit,
-        strokeStyle: _ol_colorlike_.asColorLike(textStrokeStyleColor ?
+        strokeStyle: asColorLike(textStrokeStyleColor ?
           textStrokeStyleColor : _ol_render_canvas_.defaultStrokeStyle)
       };
     }

@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import {getCenter} from '../../extent.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
 import _ol_transform_ from '../../transform.js';
-import _ol_vec_Mat4_ from '../../vec/Mat4.js';
+import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
 
 /**
@@ -64,7 +64,7 @@ var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
    * @private
    * @type {Array.<number>}
    */
-  this.tmpMat4_ = _ol_vec_Mat4_.create();
+  this.tmpMat4_ = create();
 
   /**
    * @protected
@@ -308,11 +308,11 @@ _ol_render_webgl_Replay_.prototype.replay = function(context,
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-      _ol_vec_Mat4_.fromTransform(this.tmpMat4_, projectionMatrix));
+      fromTransform(this.tmpMat4_, projectionMatrix));
   gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-      _ol_vec_Mat4_.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+      fromTransform(this.tmpMat4_, offsetScaleMatrix));
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      _ol_vec_Mat4_.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+      fromTransform(this.tmpMat4_, offsetRotateMatrix));
   gl.uniform1f(locations.u_opacity, opacity);
 
   // draw!

@@ -2,7 +2,7 @@
  * @module ol/render/canvas/TextReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_colorlike_ from '../../colorlike.js';
+import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
@@ -478,7 +478,7 @@ _ol_render_canvas_TextReplay_.prototype.setTextStyle = function(textStyle, declu
       if (!fillState) {
         fillState = this.textFillState_ = /** @type {ol.CanvasFillState} */ ({});
       }
-      fillState.fillStyle = _ol_colorlike_.asColorLike(
+      fillState.fillStyle = asColorLike(
           textFillStyle.getColor() || _ol_render_canvas_.defaultFillStyle);
     }
 
@@ -503,7 +503,7 @@ _ol_render_canvas_TextReplay_.prototype.setTextStyle = function(textStyle, declu
           lineWidth === undefined ? _ol_render_canvas_.defaultLineWidth : lineWidth;
       strokeState.miterLimit =
           miterLimit === undefined ? _ol_render_canvas_.defaultMiterLimit : miterLimit;
-      strokeState.strokeStyle = _ol_colorlike_.asColorLike(
+      strokeState.strokeStyle = asColorLike(
           textStrokeStyle.getColor() || _ol_render_canvas_.defaultStrokeStyle);
     }
 
