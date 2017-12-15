@@ -1,6 +1,7 @@
 /**
  * @module ol/extent/Relationship
  */
+
 /**
  * Relationship to an extent.
  * @enum {number}

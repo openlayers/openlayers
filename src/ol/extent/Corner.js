@@ -1,6 +1,7 @@
 /**
  * @module ol/extent/Corner
  */
+
 /**
  * Extent corner.
  * @enum {string}

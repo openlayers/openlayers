@@ -1,6 +1,7 @@
 /**
  * @module ol/events/KeyCode
  */
+
 /**
  * @enum {number}
  * @const
