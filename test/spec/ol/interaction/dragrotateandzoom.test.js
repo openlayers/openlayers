@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_interaction_DragRotateAndZoom_ from '../../../../src/ol/interaction/DragRotateAndZoom.js';
+import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
@@ -12,8 +12,8 @@ describe('ol.interaction.DragRotateAndZoom', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_interaction_DragRotateAndZoom_();
-      expect(instance).to.be.an(_ol_interaction_DragRotateAndZoom_);
+      var instance = new DragRotateAndZoom();
+      expect(instance).to.be.an(DragRotateAndZoom);
     });
 
   });
@@ -36,7 +36,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       document.body.appendChild(target);
       var source = new _ol_source_Vector_();
       var layer = new _ol_layer_Vector_({source: source});
-      interaction = new _ol_interaction_DragRotateAndZoom_();
+      interaction = new DragRotateAndZoom();
       map = new _ol_Map_({
         target: target,
         layers: [layer],
