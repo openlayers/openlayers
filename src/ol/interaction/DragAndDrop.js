@@ -21,12 +21,12 @@ import {get as getProjection} from '../proj.js';
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragAndDrop_ = function(opt_options) {
+var DragAndDrop = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
   Interaction.call(this, {
-    handleEvent: _ol_interaction_DragAndDrop_.handleEvent
+    handleEvent: DragAndDrop.handleEvent
   });
 
   /**
@@ -63,7 +63,7 @@ var _ol_interaction_DragAndDrop_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DragAndDrop_, Interaction);
+inherits(DragAndDrop, Interaction);
 
 
 /**
@@ -71,7 +71,7 @@ inherits(_ol_interaction_DragAndDrop_, Interaction);
  * @this {ol.interaction.DragAndDrop}
  * @private
  */
-_ol_interaction_DragAndDrop_.handleDrop_ = function(event) {
+DragAndDrop.handleDrop_ = function(event) {
   var files = event.dataTransfer.files;
   var i, ii, file;
   for (i = 0, ii = files.length; i < ii; ++i) {
@@ -88,7 +88,7 @@ _ol_interaction_DragAndDrop_.handleDrop_ = function(event) {
  * @param {Event} event Event.
  * @private
  */
-_ol_interaction_DragAndDrop_.handleStop_ = function(event) {
+DragAndDrop.handleStop_ = function(event) {
   event.stopPropagation();
   event.preventDefault();
   event.dataTransfer.dropEffect = 'copy';
@@ -100,7 +100,7 @@ _ol_interaction_DragAndDrop_.handleStop_ = function(event) {
  * @param {Event} event Load event.
  * @private
  */
-_ol_interaction_DragAndDrop_.prototype.handleResult_ = function(file, event) {
+DragAndDrop.prototype.handleResult_ = function(file, event) {
   var result = event.target.result;
   var map = this.getMap();
   var projection = this.projection_;
@@ -134,8 +134,8 @@ _ol_interaction_DragAndDrop_.prototype.handleResult_ = function(file, event) {
     this.source_.addFeatures(features);
   }
   this.dispatchEvent(
-      new _ol_interaction_DragAndDrop_.Event(
-          _ol_interaction_DragAndDrop_.EventType_.ADD_FEATURES, file,
+      new DragAndDrop.Event(
+          DragAndDrop.EventType_.ADD_FEATURES, file,
           features, projection));
 };
 
@@ -148,25 +148,25 @@ _ol_interaction_DragAndDrop_.prototype.handleResult_ = function(file, event) {
  * @this {ol.interaction.DragAndDrop}
  * @api
  */
-_ol_interaction_DragAndDrop_.handleEvent = TRUE;
+DragAndDrop.handleEvent = TRUE;
 
 
 /**
  * @private
  */
-_ol_interaction_DragAndDrop_.prototype.registerListeners_ = function() {
+DragAndDrop.prototype.registerListeners_ = function() {
   var map = this.getMap();
   if (map) {
     var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
       _ol_events_.listen(dropArea, _ol_events_EventType_.DROP,
-          _ol_interaction_DragAndDrop_.handleDrop_, this),
+          DragAndDrop.handleDrop_, this),
       _ol_events_.listen(dropArea, _ol_events_EventType_.DRAGENTER,
-          _ol_interaction_DragAndDrop_.handleStop_, this),
+          DragAndDrop.handleStop_, this),
       _ol_events_.listen(dropArea, _ol_events_EventType_.DRAGOVER,
-          _ol_interaction_DragAndDrop_.handleStop_, this),
+          DragAndDrop.handleStop_, this),
       _ol_events_.listen(dropArea, _ol_events_EventType_.DROP,
-          _ol_interaction_DragAndDrop_.handleStop_, this)
+          DragAndDrop.handleStop_, this)
     ];
   }
 };
@@ -175,7 +175,7 @@ _ol_interaction_DragAndDrop_.prototype.registerListeners_ = function() {
 /**
  * @inheritDoc
  */
-_ol_interaction_DragAndDrop_.prototype.setActive = function(active) {
+DragAndDrop.prototype.setActive = function(active) {
   Interaction.prototype.setActive.call(this, active);
   if (active) {
     this.registerListeners_();
@@ -188,7 +188,7 @@ _ol_interaction_DragAndDrop_.prototype.setActive = function(active) {
 /**
  * @inheritDoc
  */
-_ol_interaction_DragAndDrop_.prototype.setMap = function(map) {
+DragAndDrop.prototype.setMap = function(map) {
   this.unregisterListeners_();
   Interaction.prototype.setMap.call(this, map);
   if (this.getActive()) {
@@ -204,7 +204,7 @@ _ol_interaction_DragAndDrop_.prototype.setMap = function(map) {
  * @private
  * @return {Array.<ol.Feature>} Features.
  */
-_ol_interaction_DragAndDrop_.prototype.tryReadFeatures_ = function(format, text, options) {
+DragAndDrop.prototype.tryReadFeatures_ = function(format, text, options) {
   try {
     return format.readFeatures(text, options);
   } catch (e) {
@@ -216,7 +216,7 @@ _ol_interaction_DragAndDrop_.prototype.tryReadFeatures_ = function(format, text,
 /**
  * @private
  */
-_ol_interaction_DragAndDrop_.prototype.unregisterListeners_ = function() {
+DragAndDrop.prototype.unregisterListeners_ = function() {
   if (this.dropListenKeys_) {
     this.dropListenKeys_.forEach(_ol_events_.unlistenByKey);
     this.dropListenKeys_ = null;
@@ -228,7 +228,7 @@ _ol_interaction_DragAndDrop_.prototype.unregisterListeners_ = function() {
  * @enum {string}
  * @private
  */
-_ol_interaction_DragAndDrop_.EventType_ = {
+DragAndDrop.EventType_ = {
   /**
    * Triggered when features are added
    * @event ol.interaction.DragAndDrop.Event#addfeatures
@@ -251,7 +251,7 @@ _ol_interaction_DragAndDrop_.EventType_ = {
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
-_ol_interaction_DragAndDrop_.Event = function(type, file, opt_features, opt_projection) {
+DragAndDrop.Event = function(type, file, opt_features, opt_projection) {
 
   _ol_events_Event_.call(this, type);
 
@@ -277,5 +277,5 @@ _ol_interaction_DragAndDrop_.Event = function(type, file, opt_features, opt_proj
   this.projection = opt_projection;
 
 };
-inherits(_ol_interaction_DragAndDrop_.Event, _ol_events_Event_);
-export default _ol_interaction_DragAndDrop_;
+inherits(DragAndDrop.Event, _ol_events_Event_);
+export default DragAndDrop;
