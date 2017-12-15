@@ -2,7 +2,7 @@
  * @module ol/format/filter/IsNull
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
+import Comparison from '../filter/Comparison.js';
 
 /**
  * @classdesc
@@ -13,9 +13,9 @@ import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var _ol_format_filter_IsNull_ = function(propertyName) {
-  _ol_format_filter_Comparison_.call(this, 'PropertyIsNull', propertyName);
+var IsNull = function(propertyName) {
+  Comparison.call(this, 'PropertyIsNull', propertyName);
 };
 
-inherits(_ol_format_filter_IsNull_, _ol_format_filter_Comparison_);
-export default _ol_format_filter_IsNull_;
+inherits(IsNull, Comparison);
+export default IsNull;

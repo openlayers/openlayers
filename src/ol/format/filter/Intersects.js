@@ -2,7 +2,7 @@
  * @module ol/format/filter/Intersects
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Spatial_ from '../filter/Spatial.js';
+import Spatial from '../filter/Spatial.js';
 
 /**
  * @classdesc
@@ -17,11 +17,11 @@ import _ol_format_filter_Spatial_ from '../filter/Spatial.js';
  * @extends {ol.format.filter.Spatial}
  * @api
  */
-var _ol_format_filter_Intersects_ = function(geometryName, geometry, opt_srsName) {
+var Intersects = function(geometryName, geometry, opt_srsName) {
 
-  _ol_format_filter_Spatial_.call(this, 'Intersects', geometryName, geometry, opt_srsName);
+  Spatial.call(this, 'Intersects', geometryName, geometry, opt_srsName);
 
 };
 
-inherits(_ol_format_filter_Intersects_, _ol_format_filter_Spatial_);
-export default _ol_format_filter_Intersects_;
+inherits(Intersects, Spatial);
+export default Intersects;

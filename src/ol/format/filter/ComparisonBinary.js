@@ -17,8 +17,7 @@ import Comparison from '../filter/Comparison.js';
  * @param {boolean=} opt_matchCase Case-sensitive?
  * @extends {ol.format.filter.Comparison}
  */
-var ComparisonBinary = function(
-    tagName, propertyName, expression, opt_matchCase) {
+var ComparisonBinary = function(tagName, propertyName, expression, opt_matchCase) {
 
   Comparison.call(this, tagName, propertyName);
 
