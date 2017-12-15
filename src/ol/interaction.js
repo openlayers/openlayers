@@ -6,7 +6,7 @@ import _ol_Kinetic_ from './Kinetic.js';
 import DoubleClickZoom from './interaction/DoubleClickZoom.js';
 import DragPan from './interaction/DragPan.js';
 import DragRotate from './interaction/DragRotate.js';
-import _ol_interaction_DragZoom_ from './interaction/DragZoom.js';
+import DragZoom from './interaction/DragZoom.js';
 import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
 import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
 import _ol_interaction_MouseWheelZoom_ from './interaction/MouseWheelZoom.js';
@@ -103,7 +103,7 @@ _ol_interaction_.defaults = function(opt_options) {
   var shiftDragZoom = options.shiftDragZoom !== undefined ?
     options.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new _ol_interaction_DragZoom_({
+    interactions.push(new DragZoom({
       duration: options.zoomDuration
     }));
   }
