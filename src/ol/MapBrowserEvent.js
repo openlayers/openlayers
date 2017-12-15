@@ -2,7 +2,7 @@
  * @module ol/MapBrowserEvent
  */
 import {inherits} from './index.js';
-import _ol_MapEvent_ from './MapEvent.js';
+import MapEvent from './MapEvent.js';
 
 /**
  * @classdesc
@@ -21,7 +21,7 @@ import _ol_MapEvent_ from './MapEvent.js';
 var _ol_MapBrowserEvent_ = function(type, map, browserEvent, opt_dragging,
     opt_frameState) {
 
-  _ol_MapEvent_.call(this, type, map, opt_frameState);
+  MapEvent.call(this, type, map, opt_frameState);
 
   /**
    * The original browser event.
@@ -56,7 +56,7 @@ var _ol_MapBrowserEvent_ = function(type, map, browserEvent, opt_dragging,
 
 };
 
-inherits(_ol_MapBrowserEvent_, _ol_MapEvent_);
+inherits(_ol_MapBrowserEvent_, MapEvent);
 
 
 /**
@@ -66,7 +66,7 @@ inherits(_ol_MapBrowserEvent_, _ol_MapEvent_);
  * @api
  */
 _ol_MapBrowserEvent_.prototype.preventDefault = function() {
-  _ol_MapEvent_.prototype.preventDefault.call(this);
+  MapEvent.prototype.preventDefault.call(this);
   this.originalEvent.preventDefault();
 };
 
@@ -78,7 +78,7 @@ _ol_MapBrowserEvent_.prototype.preventDefault = function() {
  * @api
  */
 _ol_MapBrowserEvent_.prototype.stopPropagation = function() {
-  _ol_MapEvent_.prototype.stopPropagation.call(this);
+  MapEvent.prototype.stopPropagation.call(this);
   this.originalEvent.stopPropagation();
 };
 export default _ol_MapBrowserEvent_;

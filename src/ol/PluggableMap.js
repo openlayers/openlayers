@@ -7,7 +7,7 @@ import _ol_CollectionEventType_ from './CollectionEventType.js';
 import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
 import _ol_MapBrowserEventHandler_ from './MapBrowserEventHandler.js';
 import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
-import _ol_MapEvent_ from './MapEvent.js';
+import MapEvent from './MapEvent.js';
 import _ol_MapEventType_ from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
@@ -1193,7 +1193,7 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
                   !equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
-            new _ol_MapEvent_(_ol_MapEventType_.MOVESTART, this, previousFrameState));
+            new MapEvent(_ol_MapEventType_.MOVESTART, this, previousFrameState));
         this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
       }
     }
@@ -1205,13 +1205,13 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
 
     if (idle) {
       this.dispatchEvent(
-          new _ol_MapEvent_(_ol_MapEventType_.MOVEEND, this, frameState));
+          new MapEvent(_ol_MapEventType_.MOVEEND, this, frameState));
       clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new _ol_MapEvent_(_ol_MapEventType_.POSTRENDER, this, frameState));
+      new MapEvent(_ol_MapEventType_.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 

@@ -16,7 +16,7 @@ import Event from './events/Event.js';
  * @param {ol.PluggableMap} map Map.
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
-var _ol_MapEvent_ = function(type, map, opt_frameState) {
+var MapEvent = function(type, map, opt_frameState) {
 
   Event.call(this, type);
 
@@ -36,5 +36,5 @@ var _ol_MapEvent_ = function(type, map, opt_frameState) {
 
 };
 
-inherits(_ol_MapEvent_, Event);
-export default _ol_MapEvent_;
+inherits(MapEvent, Event);
+export default MapEvent;
