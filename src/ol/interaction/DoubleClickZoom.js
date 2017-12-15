@@ -14,7 +14,7 @@ import Interaction from '../interaction/Interaction.js';
  * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
+var DoubleClickZoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -25,7 +25,7 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
   this.delta_ = options.delta ? options.delta : 1;
 
   Interaction.call(this, {
-    handleEvent: _ol_interaction_DoubleClickZoom_.handleEvent
+    handleEvent: DoubleClickZoom.handleEvent
   });
 
   /**
@@ -36,7 +36,7 @@ var _ol_interaction_DoubleClickZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DoubleClickZoom_, Interaction);
+inherits(DoubleClickZoom, Interaction);
 
 
 /**
@@ -47,7 +47,7 @@ inherits(_ol_interaction_DoubleClickZoom_, Interaction);
  * @this {ol.interaction.DoubleClickZoom}
  * @api
  */
-_ol_interaction_DoubleClickZoom_.handleEvent = function(mapBrowserEvent) {
+DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   var browserEvent = mapBrowserEvent.originalEvent;
   if (mapBrowserEvent.type == _ol_MapBrowserEventType_.DBLCLICK) {
@@ -62,4 +62,4 @@ _ol_interaction_DoubleClickZoom_.handleEvent = function(mapBrowserEvent) {
   }
   return !stopEvent;
 };
-export default _ol_interaction_DoubleClickZoom_;
+export default DoubleClickZoom;

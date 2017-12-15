@@ -3,7 +3,7 @@
  */
 import _ol_Collection_ from './Collection.js';
 import _ol_Kinetic_ from './Kinetic.js';
-import _ol_interaction_DoubleClickZoom_ from './interaction/DoubleClickZoom.js';
+import DoubleClickZoom from './interaction/DoubleClickZoom.js';
 import _ol_interaction_DragPan_ from './interaction/DragPan.js';
 import _ol_interaction_DragRotate_ from './interaction/DragRotate.js';
 import _ol_interaction_DragZoom_ from './interaction/DragZoom.js';
@@ -55,7 +55,7 @@ _ol_interaction_.defaults = function(opt_options) {
   var doubleClickZoom = options.doubleClickZoom !== undefined ?
     options.doubleClickZoom : true;
   if (doubleClickZoom) {
-    interactions.push(new _ol_interaction_DoubleClickZoom_({
+    interactions.push(new DoubleClickZoom({
       delta: options.zoomDelta,
       duration: options.zoomDuration
     }));
