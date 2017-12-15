@@ -2,7 +2,7 @@
  * @module ol/format/filter/IsLike
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
+import Comparison from '../filter/Comparison.js';
 
 /**
  * @classdesc
@@ -21,9 +21,8 @@ import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var _ol_format_filter_IsLike_ = function(propertyName, pattern,
-    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  _ol_format_filter_Comparison_.call(this, 'PropertyIsLike', propertyName);
+var IsLike = function(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
+  Comparison.call(this, 'PropertyIsLike', propertyName);
 
   /**
    * @public
@@ -56,5 +55,5 @@ var _ol_format_filter_IsLike_ = function(propertyName, pattern,
   this.matchCase = opt_matchCase;
 };
 
-inherits(_ol_format_filter_IsLike_, _ol_format_filter_Comparison_);
-export default _ol_format_filter_IsLike_;
+inherits(IsLike, Comparison);
+export default IsLike;

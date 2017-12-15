@@ -2,7 +2,7 @@
  * @module ol/format/filter/Within
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Spatial_ from '../filter/Spatial.js';
+import Spatial from '../filter/Spatial.js';
 
 /**
  * @classdesc
@@ -17,11 +17,11 @@ import _ol_format_filter_Spatial_ from '../filter/Spatial.js';
  * @extends {ol.format.filter.Spatial}
  * @api
  */
-var _ol_format_filter_Within_ = function(geometryName, geometry, opt_srsName) {
+var Within = function(geometryName, geometry, opt_srsName) {
 
-  _ol_format_filter_Spatial_.call(this, 'Within', geometryName, geometry, opt_srsName);
+  Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
 
 };
 
-inherits(_ol_format_filter_Within_, _ol_format_filter_Spatial_);
-export default _ol_format_filter_Within_;
+inherits(Within, Spatial);
+export default Within;

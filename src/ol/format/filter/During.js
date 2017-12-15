@@ -2,7 +2,7 @@
  * @module ol/format/filter/During
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
+import Comparison from '../filter/Comparison.js';
 
 /**
  * @classdesc
@@ -15,8 +15,8 @@ import _ol_format_filter_Comparison_ from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var _ol_format_filter_During_ = function(propertyName, begin, end) {
-  _ol_format_filter_Comparison_.call(this, 'During', propertyName);
+var During = function(propertyName, begin, end) {
+  Comparison.call(this, 'During', propertyName);
 
   /**
    * @public
@@ -31,5 +31,5 @@ var _ol_format_filter_During_ = function(propertyName, begin, end) {
   this.end = end;
 };
 
-inherits(_ol_format_filter_During_, _ol_format_filter_Comparison_);
-export default _ol_format_filter_During_;
+inherits(During, Comparison);
+export default During;

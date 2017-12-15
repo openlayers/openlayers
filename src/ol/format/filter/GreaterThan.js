@@ -2,7 +2,7 @@
  * @module ol/format/filter/GreaterThan
  */
 import {inherits} from '../../index.js';
-import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
+import ComparisonBinary from '../filter/ComparisonBinary.js';
 
 /**
  * @classdesc
@@ -14,9 +14,9 @@ import _ol_format_filter_ComparisonBinary_ from '../filter/ComparisonBinary.js';
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-var _ol_format_filter_GreaterThan_ = function(propertyName, expression) {
-  _ol_format_filter_ComparisonBinary_.call(this, 'PropertyIsGreaterThan', propertyName, expression);
+var GreaterThan = function(propertyName, expression) {
+  ComparisonBinary.call(this, 'PropertyIsGreaterThan', propertyName, expression);
 };
 
-inherits(_ol_format_filter_GreaterThan_, _ol_format_filter_ComparisonBinary_);
-export default _ol_format_filter_GreaterThan_;
+inherits(GreaterThan, ComparisonBinary);
+export default GreaterThan;
