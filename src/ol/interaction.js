@@ -4,7 +4,7 @@
 import _ol_Collection_ from './Collection.js';
 import _ol_Kinetic_ from './Kinetic.js';
 import DoubleClickZoom from './interaction/DoubleClickZoom.js';
-import _ol_interaction_DragPan_ from './interaction/DragPan.js';
+import DragPan from './interaction/DragPan.js';
 import _ol_interaction_DragRotate_ from './interaction/DragRotate.js';
 import _ol_interaction_DragZoom_ from './interaction/DragZoom.js';
 import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
@@ -63,7 +63,7 @@ _ol_interaction_.defaults = function(opt_options) {
 
   var dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
-    interactions.push(new _ol_interaction_DragPan_({
+    interactions.push(new DragPan({
       kinetic: kinetic
     }));
   }
