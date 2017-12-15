@@ -12,8 +12,8 @@ import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_interaction_Draw_ from '../../../../src/ol/interaction/Draw.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import Draw from '../../../../src/ol/interaction/Draw.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -79,16 +79,16 @@ describe('ol.interaction.Draw', function() {
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         type: 'Point'
       });
-      expect(draw).to.be.a(_ol_interaction_Draw_);
-      expect(draw).to.be.a(_ol_interaction_Interaction_);
+      expect(draw).to.be.a(Draw);
+      expect(draw).to.be.a(Interaction);
     });
 
     it('accepts a freehand option', function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         type: 'LineString',
         freehand: true
@@ -108,7 +108,7 @@ describe('ol.interaction.Draw', function() {
   describe('specifying a geometryName', function() {
 
     beforeEach(function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         geometryName: 'the_geom',
         type: 'Point'
@@ -129,7 +129,7 @@ describe('ol.interaction.Draw', function() {
 
   describe('specifying a clickTolerance', function() {
     beforeEach(function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         type: 'Point',
         clickTolerance: 6
@@ -158,7 +158,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new _ol_interaction_Draw_({
+      draw = new Draw({
         source: source,
         type: 'Point'
       });
@@ -236,7 +236,7 @@ describe('ol.interaction.Draw', function() {
   describe('drawing multipoints', function() {
 
     beforeEach(function() {
-      map.addInteraction(new _ol_interaction_Draw_({
+      map.addInteraction(new Draw({
         source: source,
         type: 'MultiPoint'
       }));
@@ -259,7 +259,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new _ol_interaction_Draw_({
+      draw = new Draw({
         source: source,
         type: 'LineString'
       });
@@ -427,7 +427,7 @@ describe('ol.interaction.Draw', function() {
 
   describe('drawing with a finishCondition', function() {
     beforeEach(function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         type: 'LineString',
         finishCondition: function(event) {
@@ -477,7 +477,7 @@ describe('ol.interaction.Draw', function() {
   describe('drawing multi-linestrings', function() {
 
     beforeEach(function() {
-      map.addInteraction(new _ol_interaction_Draw_({
+      map.addInteraction(new Draw({
         source: source,
         type: 'MultiLineString'
       }));
@@ -511,7 +511,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new _ol_interaction_Draw_({
+      draw = new Draw({
         source: source,
         type: 'Polygon'
       });
@@ -697,7 +697,7 @@ describe('ol.interaction.Draw', function() {
   describe('drawing multi-polygons', function() {
 
     beforeEach(function() {
-      map.addInteraction(new _ol_interaction_Draw_({
+      map.addInteraction(new Draw({
         source: source,
         type: 'MultiPolygon'
       }));
@@ -774,7 +774,7 @@ describe('ol.interaction.Draw', function() {
     var draw;
 
     beforeEach(function() {
-      draw = new _ol_interaction_Draw_({
+      draw = new Draw({
         source: source,
         type: 'Circle'
       });
@@ -846,7 +846,7 @@ describe('ol.interaction.Draw', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new _ol_interaction_Draw_({
+      interaction = new Draw({
         type: 'LineString'
       });
 
@@ -915,7 +915,7 @@ describe('ol.interaction.Draw', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new _ol_interaction_Draw_({
+      interaction = new Draw({
         type: 'LineString'
       });
       expect(interaction.getActive()).to.be(true);
@@ -968,11 +968,11 @@ describe('ol.interaction.Draw', function() {
 
   describe('ol.interaction.Draw.createRegularPolygon', function() {
     it('creates a regular polygon in Circle mode', function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         type: 'Circle',
         geometryFunction:
-            _ol_interaction_Draw_.createRegularPolygon(4, Math.PI / 4)
+            Draw.createRegularPolygon(4, Math.PI / 4)
       });
       map.addInteraction(draw);
 
@@ -998,10 +998,10 @@ describe('ol.interaction.Draw', function() {
 
   describe('ol.interaction.Draw.createBox', function() {
     it('creates a box-shaped polygon in Circle mode', function() {
-      var draw = new _ol_interaction_Draw_({
+      var draw = new Draw({
         source: source,
         type: 'Circle',
-        geometryFunction: _ol_interaction_Draw_.createBox()
+        geometryFunction: Draw.createBox()
       });
       map.addInteraction(draw);
 
@@ -1030,7 +1030,7 @@ describe('ol.interaction.Draw', function() {
     var feature;
 
     beforeEach(function() {
-      draw = new _ol_interaction_Draw_({
+      draw = new Draw({
         source: source,
         type: 'LineString'
       });

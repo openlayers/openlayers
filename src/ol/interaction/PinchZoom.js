@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import {FALSE} from '../functions.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 
 /**
@@ -111,7 +111,7 @@ _ol_interaction_PinchZoom_.handleDragEvent_ = function(mapBrowserEvent) {
 
   // scale, bypass the resolution constraint
   map.render();
-  _ol_interaction_Interaction_.zoomWithoutConstraints(view, newResolution, this.anchor_);
+  Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
 };
 
 
@@ -134,7 +134,7 @@ _ol_interaction_PinchZoom_.handleUpEvent_ = function(mapBrowserEvent) {
       // direction not to zoom out/in if user was pinching in/out.
       // Direction is > 0 if pinching out, and < 0 if pinching in.
       var direction = this.lastScaleDelta_ - 1;
-      _ol_interaction_Interaction_.zoom(view, resolution,
+      Interaction.zoom(view, resolution,
           this.anchor_, this.duration_, direction);
     }
     return false;

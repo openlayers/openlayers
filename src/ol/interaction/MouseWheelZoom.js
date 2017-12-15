@@ -6,7 +6,7 @@ import _ol_ViewHint_ from '../ViewHint.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import _ol_has_ from '../has.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_math_ from '../math.js';
 
 
@@ -27,7 +27,7 @@ var MAX_DELTA = 1;
  */
 var _ol_interaction_MouseWheelZoom_ = function(opt_options) {
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: _ol_interaction_MouseWheelZoom_.handleEvent
   });
 
@@ -115,7 +115,7 @@ var _ol_interaction_MouseWheelZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_MouseWheelZoom_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_MouseWheelZoom_, Interaction);
 
 
 /**
@@ -261,7 +261,7 @@ _ol_interaction_MouseWheelZoom_.prototype.handleWheelZoom_ = function(map) {
   }
   var maxDelta = MAX_DELTA;
   var delta = _ol_math_.clamp(this.delta_, -maxDelta, maxDelta);
-  _ol_interaction_Interaction_.zoomByDelta(view, -delta, this.lastAnchor_,
+  Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
       this.duration_);
   this.mode_ = undefined;
   this.delta_ = 0;

@@ -7,7 +7,7 @@ import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Polygon from '../src/ol/geom/Polygon.js';
-import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -204,7 +204,7 @@ function onDrawend(e) {
   }
 }
 
-var draw = new _ol_interaction_Draw_({
+var draw = new Draw({
   type: 'LineString'
 });
 draw.on('drawend', onDrawend);

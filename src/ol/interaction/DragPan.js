@@ -18,12 +18,12 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
  * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragPan_ = function(opt_options) {
+var DragPan = function(opt_options) {
 
   _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_DragPan_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_DragPan_.handleDragEvent_,
-    handleUpEvent: _ol_interaction_DragPan_.handleUpEvent_
+    handleDownEvent: DragPan.handleDownEvent_,
+    handleDragEvent: DragPan.handleDragEvent_,
+    handleUpEvent: DragPan.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -59,7 +59,7 @@ var _ol_interaction_DragPan_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DragPan_, _ol_interaction_Pointer_);
+inherits(DragPan, _ol_interaction_Pointer_);
 
 
 /**
@@ -67,7 +67,7 @@ inherits(_ol_interaction_DragPan_, _ol_interaction_Pointer_);
  * @this {ol.interaction.DragPan}
  * @private
  */
-_ol_interaction_DragPan_.handleDragEvent_ = function(mapBrowserEvent) {
+DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   var targetPointers = this.targetPointers;
   var centroid =
       _ol_interaction_Pointer_.centroid(targetPointers);
@@ -104,7 +104,7 @@ _ol_interaction_DragPan_.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragPan}
  * @private
  */
-_ol_interaction_DragPan_.handleUpEvent_ = function(mapBrowserEvent) {
+DragPan.handleUpEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -143,7 +143,7 @@ _ol_interaction_DragPan_.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragPan}
  * @private
  */
-_ol_interaction_DragPan_.handleDownEvent_ = function(mapBrowserEvent) {
+DragPan.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -171,5 +171,5 @@ _ol_interaction_DragPan_.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-_ol_interaction_DragPan_.prototype.shouldStopEvent = FALSE;
-export default _ol_interaction_DragPan_;
+DragPan.prototype.shouldStopEvent = FALSE;
+export default DragPan;

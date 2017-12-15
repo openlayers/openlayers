@@ -5,7 +5,7 @@ import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js
 import _ol_View_ from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -136,7 +136,7 @@ describe('ol.interaction.Translate', function() {
         features: features
       });
       expect(translate).to.be.a(_ol_interaction_Translate_);
-      expect(translate).to.be.a(_ol_interaction_Interaction_);
+      expect(translate).to.be.a(Interaction);
     });
 
   });

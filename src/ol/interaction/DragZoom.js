@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {easeOut} from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
-import _ol_interaction_DragBox_ from '../interaction/DragBox.js';
+import DragBox from '../interaction/DragBox.js';
 
 /**
  * @classdesc
@@ -21,7 +21,7 @@ import _ol_interaction_DragBox_ from '../interaction/DragBox.js';
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragZoom_ = function(opt_options) {
+var DragZoom = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var condition = options.condition ?
@@ -39,20 +39,20 @@ var _ol_interaction_DragZoom_ = function(opt_options) {
    */
   this.out_ = options.out !== undefined ? options.out : false;
 
-  _ol_interaction_DragBox_.call(this, {
+  DragBox.call(this, {
     condition: condition,
     className: options.className || 'ol-dragzoom'
   });
 
 };
 
-inherits(_ol_interaction_DragZoom_, _ol_interaction_DragBox_);
+inherits(DragZoom, DragBox);
 
 
 /**
  * @inheritDoc
  */
-_ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
+DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
 
   var view = /** @type {!ol.View} */ (map.getView());
@@ -86,4 +86,4 @@ _ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
   });
 
 };
-export default _ol_interaction_DragZoom_;
+export default DragZoom;

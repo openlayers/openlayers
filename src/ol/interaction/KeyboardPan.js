@@ -6,7 +6,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import _ol_events_KeyCode_ from '../events/KeyCode.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 
 /**
  * @classdesc
@@ -27,7 +27,7 @@ import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
  */
 var _ol_interaction_KeyboardPan_ = function(opt_options) {
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: _ol_interaction_KeyboardPan_.handleEvent
   });
 
@@ -65,7 +65,7 @@ var _ol_interaction_KeyboardPan_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_KeyboardPan_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_KeyboardPan_, Interaction);
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
@@ -101,7 +101,7 @@ _ol_interaction_KeyboardPan_.handleEvent = function(mapBrowserEvent) {
       }
       var delta = [deltaX, deltaY];
       _ol_coordinate_.rotate(delta, view.getRotation());
-      _ol_interaction_Interaction_.pan(view, delta, this.duration_);
+      Interaction.pan(view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

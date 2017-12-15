@@ -3,10 +3,10 @@
  */
 import _ol_Collection_ from './Collection.js';
 import _ol_Kinetic_ from './Kinetic.js';
-import _ol_interaction_DoubleClickZoom_ from './interaction/DoubleClickZoom.js';
-import _ol_interaction_DragPan_ from './interaction/DragPan.js';
-import _ol_interaction_DragRotate_ from './interaction/DragRotate.js';
-import _ol_interaction_DragZoom_ from './interaction/DragZoom.js';
+import DoubleClickZoom from './interaction/DoubleClickZoom.js';
+import DragPan from './interaction/DragPan.js';
+import DragRotate from './interaction/DragRotate.js';
+import DragZoom from './interaction/DragZoom.js';
 import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
 import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
 import _ol_interaction_MouseWheelZoom_ from './interaction/MouseWheelZoom.js';
@@ -49,13 +49,13 @@ _ol_interaction_.defaults = function(opt_options) {
   var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
     options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
-    interactions.push(new _ol_interaction_DragRotate_());
+    interactions.push(new DragRotate());
   }
 
   var doubleClickZoom = options.doubleClickZoom !== undefined ?
     options.doubleClickZoom : true;
   if (doubleClickZoom) {
-    interactions.push(new _ol_interaction_DoubleClickZoom_({
+    interactions.push(new DoubleClickZoom({
       delta: options.zoomDelta,
       duration: options.zoomDuration
     }));
@@ -63,7 +63,7 @@ _ol_interaction_.defaults = function(opt_options) {
 
   var dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
-    interactions.push(new _ol_interaction_DragPan_({
+    interactions.push(new DragPan({
       kinetic: kinetic
     }));
   }
@@ -103,7 +103,7 @@ _ol_interaction_.defaults = function(opt_options) {
   var shiftDragZoom = options.shiftDragZoom !== undefined ?
     options.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new _ol_interaction_DragZoom_({
+    interactions.push(new DragZoom({
       duration: options.zoomDuration
     }));
   }

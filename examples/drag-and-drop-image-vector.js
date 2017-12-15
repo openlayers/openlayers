@@ -6,7 +6,7 @@ import _ol_format_IGC_ from '../src/ol/format/IGC.js';
 import _ol_format_KML_ from '../src/ol/format/KML.js';
 import _ol_format_TopoJSON_ from '../src/ol/format/TopoJSON.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
-import _ol_interaction_DragAndDrop_ from '../src/ol/interaction/DragAndDrop.js';
+import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -83,7 +83,7 @@ var styleFunction = function(feature, resolution) {
   }
 };
 
-var dragAndDropInteraction = new _ol_interaction_DragAndDrop_({
+var dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [
     _ol_format_GPX_,
     _ol_format_GeoJSON_,

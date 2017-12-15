@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_interaction_Draw_ from '../src/ol/interaction/Draw.js';
+import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -52,7 +52,7 @@ var draw, snap; // global so we can remove them later
 var typeSelect = document.getElementById('type');
 
 function addInteractions() {
-  draw = new _ol_interaction_Draw_({
+  draw = new Draw({
     source: source,
     type: typeSelect.value
   });

@@ -1,8 +1,8 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_interaction_DragRotateAndZoom_ from '../../../../src/ol/interaction/DragRotateAndZoom.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -12,8 +12,8 @@ describe('ol.interaction.DragRotateAndZoom', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_interaction_DragRotateAndZoom_();
-      expect(instance).to.be.an(_ol_interaction_DragRotateAndZoom_);
+      var instance = new DragRotateAndZoom();
+      expect(instance).to.be.an(DragRotateAndZoom);
     });
 
   });
@@ -36,7 +36,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       document.body.appendChild(target);
       var source = new _ol_source_Vector_();
       var layer = new _ol_layer_Vector_({source: source});
-      interaction = new _ol_interaction_DragRotateAndZoom_();
+      interaction = new DragRotateAndZoom();
       map = new _ol_Map_({
         target: target,
         layers: [layer],
@@ -62,7 +62,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
           new _ol_pointer_PointerEvent_('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
           true);
       interaction.lastAngle_ = Math.PI;
-      var spy = sinon.spy(_ol_interaction_Interaction_, 'rotateWithoutConstraints');
+      var spy = sinon.spy(Interaction, 'rotateWithoutConstraints');
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       expect(interaction.lastAngle_).to.be(-0.8308214428190254);
@@ -77,7 +77,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
           true);
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
-      _ol_interaction_Interaction_.rotateWithoutConstraints.restore();
+      Interaction.rotateWithoutConstraints.restore();
     });
   });
 

@@ -6,8 +6,8 @@ import _ol_View_ from '../../../src/ol/View.js';
 import Point from '../../../src/ol/geom/Point.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import _ol_interaction_ from '../../../src/ol/interaction.js';
-import _ol_interaction_DoubleClickZoom_ from '../../../src/ol/interaction/DoubleClickZoom.js';
-import _ol_interaction_Interaction_ from '../../../src/ol/interaction/Interaction.js';
+import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
+import Interaction from '../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_MouseWheelZoom_ from '../../../src/ol/interaction/MouseWheelZoom.js';
 import _ol_interaction_PinchZoom_ from '../../../src/ol/interaction/PinchZoom.js';
 import _ol_layer_Tile_ from '../../../src/ol/layer/Tile.js';
@@ -77,7 +77,7 @@ describe('ol.Map', function() {
   describe('#addInteraction()', function() {
     it('adds an interaction to the map', function() {
       var map = new _ol_Map_({});
-      var interaction = new _ol_interaction_Interaction_({});
+      var interaction = new Interaction({});
 
       var before = map.getInteractions().getLength();
       map.addInteraction(interaction);
@@ -90,7 +90,7 @@ describe('ol.Map', function() {
   describe('#removeInteraction()', function() {
     it('removes an interaction from the map', function() {
       var map = new _ol_Map_({});
-      var interaction = new _ol_interaction_Interaction_({});
+      var interaction = new Interaction({});
 
       var before = map.getInteractions().getLength();
       map.addInteraction(interaction);
@@ -524,7 +524,7 @@ describe('ol.Map', function() {
         it('create double click interaction with default delta', function() {
           var interactions = _ol_interaction_.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(_ol_interaction_DoubleClickZoom_);
+          expect(interactions.item(0)).to.be.a(DoubleClickZoom);
           expect(interactions.item(0).delta_).to.eql(1);
         });
       });
@@ -534,7 +534,7 @@ describe('ol.Map', function() {
           options.zoomDelta = 7;
           var interactions = _ol_interaction_.defaults(options);
           expect(interactions.getLength()).to.eql(1);
-          expect(interactions.item(0)).to.be.a(_ol_interaction_DoubleClickZoom_);
+          expect(interactions.item(0)).to.be.a(DoubleClickZoom);
           expect(interactions.item(0).delta_).to.eql(7);
         });
       });

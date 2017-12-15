@@ -25,12 +25,12 @@ import _ol_render_Box_ from '../render/Box.js';
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragBox_ = function(opt_options) {
+var DragBox = function(opt_options) {
 
   _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_DragBox_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_DragBox_.handleDragEvent_,
-    handleUpEvent: _ol_interaction_DragBox_.handleUpEvent_
+    handleDownEvent: DragBox.handleDownEvent_,
+    handleDragEvent: DragBox.handleDragEvent_,
+    handleUpEvent: DragBox.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -65,10 +65,10 @@ var _ol_interaction_DragBox_ = function(opt_options) {
    * @type {ol.DragBoxEndConditionType}
    */
   this.boxEndCondition_ = options.boxEndCondition ?
-    options.boxEndCondition : _ol_interaction_DragBox_.defaultBoxEndCondition;
+    options.boxEndCondition : DragBox.defaultBoxEndCondition;
 };
 
-inherits(_ol_interaction_DragBox_, _ol_interaction_Pointer_);
+inherits(DragBox, _ol_interaction_Pointer_);
 
 
 /**
@@ -81,7 +81,7 @@ inherits(_ol_interaction_DragBox_, _ol_interaction_Pointer_);
  * @return {boolean} Whether or not the boxend condition should be fired.
  * @this {ol.interaction.DragBox}
  */
-_ol_interaction_DragBox_.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
+DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
   var width = endPixel[0] - startPixel[0];
   var height = endPixel[1] - startPixel[1];
   return width * width + height * height >= this.minArea_;
@@ -93,14 +93,14 @@ _ol_interaction_DragBox_.defaultBoxEndCondition = function(mapBrowserEvent, star
  * @this {ol.interaction.DragBox}
  * @private
  */
-_ol_interaction_DragBox_.handleDragEvent_ = function(mapBrowserEvent) {
+DragBox.handleDragEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return;
   }
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-  this.dispatchEvent(new _ol_interaction_DragBox_.Event(_ol_interaction_DragBox_.EventType_.BOXDRAG,
+  this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXDRAG,
       mapBrowserEvent.coordinate, mapBrowserEvent));
 };
 
@@ -110,7 +110,7 @@ _ol_interaction_DragBox_.handleDragEvent_ = function(mapBrowserEvent) {
  * @return {ol.geom.Polygon} Geometry.
  * @api
  */
-_ol_interaction_DragBox_.prototype.getGeometry = function() {
+DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();
 };
 
@@ -121,7 +121,7 @@ _ol_interaction_DragBox_.prototype.getGeometry = function() {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
-_ol_interaction_DragBox_.prototype.onBoxEnd = nullFunction;
+DragBox.prototype.onBoxEnd = nullFunction;
 
 
 /**
@@ -130,7 +130,7 @@ _ol_interaction_DragBox_.prototype.onBoxEnd = nullFunction;
  * @this {ol.interaction.DragBox}
  * @private
  */
-_ol_interaction_DragBox_.handleUpEvent_ = function(mapBrowserEvent) {
+DragBox.handleUpEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -140,7 +140,7 @@ _ol_interaction_DragBox_.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.boxEndCondition_(mapBrowserEvent,
       this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
-    this.dispatchEvent(new _ol_interaction_DragBox_.Event(_ol_interaction_DragBox_.EventType_.BOXEND,
+    this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXEND,
         mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
@@ -153,7 +153,7 @@ _ol_interaction_DragBox_.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragBox}
  * @private
  */
-_ol_interaction_DragBox_.handleDownEvent_ = function(mapBrowserEvent) {
+DragBox.handleDownEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -163,7 +163,7 @@ _ol_interaction_DragBox_.handleDownEvent_ = function(mapBrowserEvent) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new _ol_interaction_DragBox_.Event(_ol_interaction_DragBox_.EventType_.BOXSTART,
+    this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXSTART,
         mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
@@ -176,7 +176,7 @@ _ol_interaction_DragBox_.handleDownEvent_ = function(mapBrowserEvent) {
  * @enum {string}
  * @private
  */
-_ol_interaction_DragBox_.EventType_ = {
+DragBox.EventType_ = {
   /**
    * Triggered upon drag box start.
    * @event ol.interaction.DragBox.Event#boxstart
@@ -212,7 +212,7 @@ _ol_interaction_DragBox_.EventType_ = {
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
-_ol_interaction_DragBox_.Event = function(type, coordinate, mapBrowserEvent) {
+DragBox.Event = function(type, coordinate, mapBrowserEvent) {
   Event.call(this, type);
 
   /**
@@ -231,5 +231,6 @@ _ol_interaction_DragBox_.Event = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-inherits(_ol_interaction_DragBox_.Event, Event);
-export default _ol_interaction_DragBox_;
+inherits(DragBox.Event, Event);
+
+export default DragBox;
