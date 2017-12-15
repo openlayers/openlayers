@@ -13,7 +13,7 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Draw_ from '../../../../src/ol/interaction/Draw.js';
-import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
+import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -84,7 +84,7 @@ describe('ol.interaction.Draw', function() {
         type: 'Point'
       });
       expect(draw).to.be.a(_ol_interaction_Draw_);
-      expect(draw).to.be.a(_ol_interaction_Interaction_);
+      expect(draw).to.be.a(Interaction);
     });
 
     it('accepts a freehand option', function() {

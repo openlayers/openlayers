@@ -8,7 +8,7 @@ import {TRUE} from '../functions.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -25,7 +25,7 @@ var _ol_interaction_DragAndDrop_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: _ol_interaction_DragAndDrop_.handleEvent
   });
 
@@ -63,7 +63,7 @@ var _ol_interaction_DragAndDrop_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DragAndDrop_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_DragAndDrop_, Interaction);
 
 
 /**
@@ -176,7 +176,7 @@ _ol_interaction_DragAndDrop_.prototype.registerListeners_ = function() {
  * @inheritDoc
  */
 _ol_interaction_DragAndDrop_.prototype.setActive = function(active) {
-  _ol_interaction_Interaction_.prototype.setActive.call(this, active);
+  Interaction.prototype.setActive.call(this, active);
   if (active) {
     this.registerListeners_();
   } else {
@@ -190,7 +190,7 @@ _ol_interaction_DragAndDrop_.prototype.setActive = function(active) {
  */
 _ol_interaction_DragAndDrop_.prototype.setMap = function(map) {
   this.unregisterListeners_();
-  _ol_interaction_Interaction_.prototype.setMap.call(this, map);
+  Interaction.prototype.setMap.call(this, map);
   if (this.getActive()) {
     this.registerListeners_();
   }
@@ -278,4 +278,5 @@ _ol_interaction_DragAndDrop_.Event = function(type, file, opt_features, opt_proj
 
 };
 inherits(_ol_interaction_DragAndDrop_.Event, Event);
+
 export default _ol_interaction_DragAndDrop_;

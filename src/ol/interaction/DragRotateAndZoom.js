@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_RotationConstraint_ from '../RotationConstraint.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 
 /**
@@ -89,13 +89,13 @@ _ol_interaction_DragRotateAndZoom_.handleDragEvent_ = function(mapBrowserEvent) 
   var view = map.getView();
   if (view.getConstraints().rotation !== _ol_RotationConstraint_.disable && this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
-    _ol_interaction_Interaction_.rotateWithoutConstraints(
+    Interaction.rotateWithoutConstraints(
         view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
     var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
-    _ol_interaction_Interaction_.zoomWithoutConstraints(view, resolution);
+    Interaction.zoomWithoutConstraints(view, resolution);
   }
   if (this.lastMagnitude_ !== undefined) {
     this.lastScaleDelta_ = this.lastMagnitude_ / magnitude;
@@ -119,8 +119,8 @@ _ol_interaction_DragRotateAndZoom_.handleUpEvent_ = function(mapBrowserEvent) {
   var view = map.getView();
   view.setHint(_ol_ViewHint_.INTERACTING, -1);
   var direction = this.lastScaleDelta_ - 1;
-  _ol_interaction_Interaction_.rotate(view, view.getRotation());
-  _ol_interaction_Interaction_.zoom(view, view.getResolution(),
+  Interaction.rotate(view, view.getRotation());
+  Interaction.zoom(view, view.getResolution(),
       undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;

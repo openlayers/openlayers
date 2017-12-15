@@ -9,7 +9,7 @@ import Event from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
+import Interaction from '../interaction/Interaction.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Vector_ from '../source/Vector.js';
@@ -35,7 +35,7 @@ import _ol_style_Style_ from '../style/Style.js';
  */
 var _ol_interaction_Select_ = function(opt_options) {
 
-  _ol_interaction_Interaction_.call(this, {
+  Interaction.call(this, {
     handleEvent: _ol_interaction_Select_.handleEvent
   });
 
@@ -142,7 +142,7 @@ var _ol_interaction_Select_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Select_, _ol_interaction_Interaction_);
+inherits(_ol_interaction_Select_, Interaction);
 
 
 /**
@@ -315,7 +315,7 @@ _ol_interaction_Select_.prototype.setMap = function(map) {
   if (currentMap) {
     selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
   }
-  _ol_interaction_Interaction_.prototype.setMap.call(this, map);
+  Interaction.prototype.setMap.call(this, map);
   this.featureOverlay_.setMap(map);
   if (map) {
     selectedFeatures.forEach(map.skipFeature, map);
