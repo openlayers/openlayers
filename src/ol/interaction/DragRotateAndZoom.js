@@ -23,14 +23,14 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragRotateAndZoom_ = function(opt_options) {
+var DragRotateAndZoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
   _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_DragRotateAndZoom_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_DragRotateAndZoom_.handleDragEvent_,
-    handleUpEvent: _ol_interaction_DragRotateAndZoom_.handleUpEvent_
+    handleDownEvent: DragRotateAndZoom.handleDownEvent_,
+    handleDragEvent: DragRotateAndZoom.handleDragEvent_,
+    handleUpEvent: DragRotateAndZoom.handleUpEvent_
   });
 
   /**
@@ -66,7 +66,7 @@ var _ol_interaction_DragRotateAndZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DragRotateAndZoom_, _ol_interaction_Pointer_);
+inherits(DragRotateAndZoom, _ol_interaction_Pointer_);
 
 
 /**
@@ -74,7 +74,7 @@ inherits(_ol_interaction_DragRotateAndZoom_, _ol_interaction_Pointer_);
  * @this {ol.interaction.DragRotateAndZoom}
  * @private
  */
-_ol_interaction_DragRotateAndZoom_.handleDragEvent_ = function(mapBrowserEvent) {
+DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return;
   }
@@ -110,7 +110,7 @@ _ol_interaction_DragRotateAndZoom_.handleDragEvent_ = function(mapBrowserEvent) 
  * @this {ol.interaction.DragRotateAndZoom}
  * @private
  */
-_ol_interaction_DragRotateAndZoom_.handleUpEvent_ = function(mapBrowserEvent) {
+DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return true;
   }
@@ -133,7 +133,7 @@ _ol_interaction_DragRotateAndZoom_.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.DragRotateAndZoom}
  * @private
  */
-_ol_interaction_DragRotateAndZoom_.handleDownEvent_ = function(mapBrowserEvent) {
+DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
   if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
     return false;
   }
@@ -147,4 +147,4 @@ _ol_interaction_DragRotateAndZoom_.handleDownEvent_ = function(mapBrowserEvent) 
     return false;
   }
 };
-export default _ol_interaction_DragRotateAndZoom_;
+export default DragRotateAndZoom;
