@@ -3,7 +3,7 @@
  */
 import {getUid, inherits, nullFunction} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_colorlike_ from '../../colorlike.js';
+import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
 import Relationship from '../../extent/Relationship.js';
@@ -912,14 +912,14 @@ _ol_render_canvas_Replay_.prototype.setFillStrokeStyle = function(fillStyle, str
   var state = this.state;
   if (fillStyle) {
     var fillStyleColor = fillStyle.getColor();
-    state.fillStyle = _ol_colorlike_.asColorLike(fillStyleColor ?
+    state.fillStyle = asColorLike(fillStyleColor ?
       fillStyleColor : _ol_render_canvas_.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
   if (strokeStyle) {
     var strokeStyleColor = strokeStyle.getColor();
-    state.strokeStyle = _ol_colorlike_.asColorLike(strokeStyleColor ?
+    state.strokeStyle = asColorLike(strokeStyleColor ?
       strokeStyleColor : _ol_render_canvas_.defaultStrokeStyle);
     var strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?

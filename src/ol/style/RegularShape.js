@@ -2,7 +2,7 @@
  * @module ol/style/RegularShape
  */
 import {inherits} from '../index.js';
-import _ol_colorlike_ from '../colorlike.js';
+import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_has_ from '../has.js';
 import _ol_ImageState_ from '../ImageState.js';
@@ -327,7 +327,7 @@ _ol_style_RegularShape_.prototype.render_ = function(atlasManager) {
     if (strokeStyle === null) {
       strokeStyle = _ol_render_canvas_.defaultStrokeStyle;
     }
-    strokeStyle = _ol_colorlike_.asColorLike(strokeStyle);
+    strokeStyle = asColorLike(strokeStyle);
     strokeWidth = this.stroke_.getWidth();
     if (strokeWidth === undefined) {
       strokeWidth = _ol_render_canvas_.defaultLineWidth;
@@ -457,7 +457,7 @@ _ol_style_RegularShape_.prototype.draw_ = function(renderOptions, context, x, y)
     if (color === null) {
       color = _ol_render_canvas_.defaultFillStyle;
     }
-    context.fillStyle = _ol_colorlike_.asColorLike(color);
+    context.fillStyle = asColorLike(color);
     context.fill();
   }
   if (this.stroke_) {

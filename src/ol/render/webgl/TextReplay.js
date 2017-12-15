@@ -2,7 +2,7 @@
  * @module ol/render/webgl/TextReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_colorlike_ from '../../colorlike.js';
+import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
@@ -359,7 +359,7 @@ _ol_render_webgl_TextReplay_.prototype.setTextStyle = function(textStyle) {
       state.fillColor = null;
     } else {
       var textFillStyleColor = textFillStyle.getColor();
-      state.fillColor = _ol_colorlike_.asColorLike(textFillStyleColor ?
+      state.fillColor = asColorLike(textFillStyleColor ?
         textFillStyleColor : _ol_render_webgl_.defaultFillStyle);
     }
     if (!textStrokeStyle) {
@@ -367,7 +367,7 @@ _ol_render_webgl_TextReplay_.prototype.setTextStyle = function(textStyle) {
       state.lineWidth = 0;
     } else {
       var textStrokeStyleColor = textStrokeStyle.getColor();
-      state.strokeColor = _ol_colorlike_.asColorLike(textStrokeStyleColor ?
+      state.strokeColor = asColorLike(textStrokeStyleColor ?
         textStrokeStyleColor : _ol_render_webgl_.defaultStrokeStyle);
       state.lineWidth = textStrokeStyle.getWidth() || _ol_render_webgl_.defaultLineWidth;
       state.lineCap = textStrokeStyle.getLineCap() || _ol_render_webgl_.defaultLineCap;
