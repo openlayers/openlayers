@@ -1,5 +1,5 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_interaction_Extent_ from '../../../../src/ol/interaction/Extent.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
@@ -57,7 +57,7 @@ describe('ol.interaction.Extent', function() {
       clientY: position.top - y + height / 2,
       shiftKey: shiftKey
     });
-    var event = new _ol_MapBrowserPointerEvent_(type, map, pointerEvent);
+    var event = new MapBrowserPointerEvent(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }

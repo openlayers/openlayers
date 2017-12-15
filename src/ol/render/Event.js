@@ -2,7 +2,7 @@
  * @module ol/render/Event
  */
 import {inherits} from '../index.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 
 /**
  * @constructor
@@ -18,7 +18,7 @@ var _ol_render_Event_ = function(
     type, opt_vectorContext, opt_frameState, opt_context,
     opt_glContext) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
@@ -52,5 +52,5 @@ var _ol_render_Event_ = function(
 
 };
 
-inherits(_ol_render_Event_, _ol_events_Event_);
+inherits(_ol_render_Event_, Event);
 export default _ol_render_Event_;

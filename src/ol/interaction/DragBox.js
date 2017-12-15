@@ -2,7 +2,7 @@
  * @module ol/interaction/DragBox
  */
 // FIXME draw drag box
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import {inherits, nullFunction} from '../index.js';
 import _ol_events_condition_ from '../events/condition.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -213,7 +213,7 @@ _ol_interaction_DragBox_.EventType_ = {
  * @implements {oli.DragBoxEvent}
  */
 _ol_interaction_DragBox_.Event = function(type, coordinate, mapBrowserEvent) {
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The coordinate of the drag event.
@@ -231,5 +231,5 @@ _ol_interaction_DragBox_.Event = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-inherits(_ol_interaction_DragBox_.Event, _ol_events_Event_);
+inherits(_ol_interaction_DragBox_.Event, Event);
 export default _ol_interaction_DragBox_;

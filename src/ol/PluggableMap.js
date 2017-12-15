@@ -4,10 +4,10 @@
 import {getUid, inherits} from './index.js';
 import _ol_Collection_ from './Collection.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
-import _ol_MapBrowserEvent_ from './MapBrowserEvent.js';
-import _ol_MapBrowserEventHandler_ from './MapBrowserEventHandler.js';
-import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
-import _ol_MapEvent_ from './MapEvent.js';
+import MapBrowserEvent from './MapBrowserEvent.js';
+import MapBrowserEventHandler from './MapBrowserEventHandler.js';
+import MapBrowserEventType from './MapBrowserEventType.js';
+import MapEvent from './MapEvent.js';
 import _ol_MapEventType_ from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
@@ -18,8 +18,8 @@ import _ol_ViewHint_ from './ViewHint.js';
 import _ol_asserts_ from './asserts.js';
 import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
-import _ol_events_Event_ from './events/Event.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import Event from './events/Event.js';
+import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
@@ -168,18 +168,18 @@ var _ol_PluggableMap_ = function(options) {
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
   var overlayEvents = [
-    _ol_events_EventType_.CLICK,
-    _ol_events_EventType_.DBLCLICK,
-    _ol_events_EventType_.MOUSEDOWN,
-    _ol_events_EventType_.TOUCHSTART,
-    _ol_events_EventType_.MSPOINTERDOWN,
-    _ol_MapBrowserEventType_.POINTERDOWN,
-    _ol_events_EventType_.MOUSEWHEEL,
-    _ol_events_EventType_.WHEEL
+    EventType.CLICK,
+    EventType.DBLCLICK,
+    EventType.MOUSEDOWN,
+    EventType.TOUCHSTART,
+    EventType.MSPOINTERDOWN,
+    MapBrowserEventType.POINTERDOWN,
+    EventType.MOUSEWHEEL,
+    EventType.WHEEL
   ];
   for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
     _ol_events_.listen(this.overlayContainerStopEvent_, overlayEvents[i],
-        _ol_events_Event_.stopPropagation);
+        Event.stopPropagation);
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
@@ -187,9 +187,9 @@ var _ol_PluggableMap_ = function(options) {
    * @private
    * @type {ol.MapBrowserEventHandler}
    */
-  this.mapBrowserEventHandler_ = new _ol_MapBrowserEventHandler_(this, options.moveTolerance);
-  for (var key in _ol_MapBrowserEventType_) {
-    _ol_events_.listen(this.mapBrowserEventHandler_, _ol_MapBrowserEventType_[key],
+  this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
+  for (var key in MapBrowserEventType) {
+    _ol_events_.listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
         this.handleMapBrowserEvent, this);
   }
 
@@ -205,9 +205,9 @@ var _ol_PluggableMap_ = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  _ol_events_.listen(this.viewport_, _ol_events_EventType_.WHEEL,
+  _ol_events_.listen(this.viewport_, EventType.WHEEL,
       this.handleBrowserEvent, this);
-  _ol_events_.listen(this.viewport_, _ol_events_EventType_.MOUSEWHEEL,
+  _ol_events_.listen(this.viewport_, EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
 
   /**
@@ -429,12 +429,12 @@ _ol_PluggableMap_.prototype.addOverlayInternal_ = function(overlay) {
  */
 _ol_PluggableMap_.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
-  _ol_events_.unlisten(this.viewport_, _ol_events_EventType_.WHEEL,
+  _ol_events_.unlisten(this.viewport_, EventType.WHEEL,
       this.handleBrowserEvent, this);
-  _ol_events_.unlisten(this.viewport_, _ol_events_EventType_.MOUSEWHEEL,
+  _ol_events_.unlisten(this.viewport_, EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    window.removeEventListener(_ol_events_EventType_.RESIZE,
+    window.removeEventListener(EventType.RESIZE,
         this.handleResize_, false);
     this.handleResize_ = undefined;
   }
@@ -837,7 +837,7 @@ _ol_PluggableMap_.prototype.getTilePriority = function(tile, tileSourceKey, tile
  */
 _ol_PluggableMap_.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var type = opt_type || browserEvent.type;
-  var mapBrowserEvent = new _ol_MapBrowserEvent_(type, this, browserEvent);
+  var mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
 };
 
@@ -949,7 +949,7 @@ _ol_PluggableMap_.prototype.handleTargetChanged_ = function() {
     this.renderer_.removeLayerRenderers();
     removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      window.removeEventListener(_ol_events_EventType_.RESIZE,
+      window.removeEventListener(EventType.RESIZE,
           this.handleResize_, false);
       this.handleResize_ = undefined;
     }
@@ -959,15 +959,15 @@ _ol_PluggableMap_.prototype.handleTargetChanged_ = function() {
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
-      _ol_events_.listen(keyboardEventTarget, _ol_events_EventType_.KEYDOWN,
+      _ol_events_.listen(keyboardEventTarget, EventType.KEYDOWN,
           this.handleBrowserEvent, this),
-      _ol_events_.listen(keyboardEventTarget, _ol_events_EventType_.KEYPRESS,
+      _ol_events_.listen(keyboardEventTarget, EventType.KEYPRESS,
           this.handleBrowserEvent, this)
     ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      window.addEventListener(_ol_events_EventType_.RESIZE,
+      window.addEventListener(EventType.RESIZE,
           this.handleResize_, false);
     }
   }
@@ -1013,7 +1013,7 @@ _ol_PluggableMap_.prototype.handleViewChanged_ = function() {
         view, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = _ol_events_.listen(
-        view, _ol_events_EventType_.CHANGE,
+        view, EventType.CHANGE,
         this.handleViewPropertyChanged_, this);
   }
   this.render();
@@ -1035,7 +1035,7 @@ _ol_PluggableMap_.prototype.handleLayerGroupChanged_ = function() {
           layerGroup, _ol_ObjectEventType_.PROPERTYCHANGE,
           this.render, this),
       _ol_events_.listen(
-          layerGroup, _ol_events_EventType_.CHANGE,
+          layerGroup, EventType.CHANGE,
           this.render, this)
     ];
   }
@@ -1193,7 +1193,7 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
                   !equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
-            new _ol_MapEvent_(_ol_MapEventType_.MOVESTART, this, previousFrameState));
+            new MapEvent(_ol_MapEventType_.MOVESTART, this, previousFrameState));
         this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
       }
     }
@@ -1205,13 +1205,13 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
 
     if (idle) {
       this.dispatchEvent(
-          new _ol_MapEvent_(_ol_MapEventType_.MOVEEND, this, frameState));
+          new MapEvent(_ol_MapEventType_.MOVEEND, this, frameState));
       clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new _ol_MapEvent_(_ol_MapEventType_.POSTRENDER, this, frameState));
+      new MapEvent(_ol_MapEventType_.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 

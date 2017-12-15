@@ -3,7 +3,7 @@
  */
 import _ol_asserts_ from './asserts.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventType_ from './events/EventType.js';
+import EventType from './events/EventType.js';
 import {inherits} from './index.js';
 import _ol_Object_ from './Object.js';
 import Geometry from './geom/Geometry.js';
@@ -211,7 +211,7 @@ _ol_Feature_.prototype.handleGeometryChanged_ = function() {
   var geometry = this.getGeometry();
   if (geometry) {
     this.geometryChangeKey_ = _ol_events_.listen(geometry,
-        _ol_events_EventType_.CHANGE, this.handleGeometryChange_, this);
+        EventType.CHANGE, this.handleGeometryChange_, this);
   }
   this.changed();
 };

@@ -3,10 +3,10 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
-import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
@@ -132,11 +132,11 @@ inherits(_ol_interaction_Extent_, _ol_interaction_Pointer_);
  * @private
  */
 _ol_interaction_Extent_.handleEvent_ = function(mapBrowserEvent) {
-  if (!(mapBrowserEvent instanceof _ol_MapBrowserPointerEvent_)) {
+  if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
   //display pointer (if not dragging)
-  if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERMOVE && !this.handlingDownUpSequence) {
+  if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   //call pointer to determine up/down/drag
@@ -454,7 +454,7 @@ _ol_interaction_Extent_.prototype.setExtent = function(extent) {
  * @extends {ol.events.Event}
  */
 _ol_interaction_Extent_.Event = function(extent) {
-  _ol_events_Event_.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
+  Event.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
 
   /**
    * The current extent.
@@ -464,5 +464,5 @@ _ol_interaction_Extent_.Event = function(extent) {
   this.extent = extent;
 
 };
-inherits(_ol_interaction_Extent_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Extent_.Event, Event);
 export default _ol_interaction_Extent_;

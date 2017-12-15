@@ -1,8 +1,8 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
-import _ol_MapBrowserEventType_ from '../../../../src/ol/MapBrowserEventType.js';
-import _ol_MapBrowserPointerEvent_ from '../../../../src/ol/MapBrowserPointerEvent.js';
+import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
+import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
@@ -97,7 +97,7 @@ describe('ol.interaction.Select', function() {
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
     });
-    map.handleMapBrowserEvent(new _ol_MapBrowserPointerEvent_(type, map, event));
+    map.handleMapBrowserEvent(new MapBrowserPointerEvent(type, map, event));
   }
 
   describe('constructor', function() {
@@ -148,7 +148,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(_ol_MapBrowserEventType_.SINGLECLICK, -10, -10);
+      simulateEvent(MapBrowserEventType.SINGLECLICK, -10, -10);
 
       expect(listenerSpy.callCount).to.be(0);
 
@@ -162,8 +162,8 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(_ol_MapBrowserEventType_.SINGLECLICK, 10, -20);
-      simulateEvent(_ol_MapBrowserEventType_.SINGLECLICK, 9, -21);
+      simulateEvent(MapBrowserEventType.SINGLECLICK, 10, -20);
+      simulateEvent(MapBrowserEventType.SINGLECLICK, 9, -21);
 
       expect(listenerSpy.callCount).to.be(1);
 

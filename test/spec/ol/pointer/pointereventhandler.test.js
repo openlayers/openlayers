@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_pointer_MouseSource_ from '../../../../src/ol/pointer/MouseSource.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
@@ -12,7 +12,7 @@ describe('ol.pointer.PointerEventHandler', function() {
   var eventSpy;
 
   beforeEach(function() {
-    target = new _ol_events_EventTarget_();
+    target = new EventTarget();
 
     // make sure that a mouse event source is used
     _ol_has_.POINTER = false;

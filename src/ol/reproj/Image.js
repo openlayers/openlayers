@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_ImageBase_ from '../ImageBase.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
@@ -174,7 +174,7 @@ _ol_reproj_Image_.prototype.load = function() {
       this.reproject_();
     } else {
       this.sourceListenerKey_ = _ol_events_.listen(this.sourceImage_,
-          _ol_events_EventType_.CHANGE, function(e) {
+          EventType.CHANGE, function(e) {
             var sourceState = this.sourceImage_.getState();
             if (sourceState == _ol_ImageState_.LOADED ||
                 sourceState == _ol_ImageState_.ERROR) {

@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
 
 describe('ol.interaction.Interaction', function() {
@@ -14,7 +14,7 @@ describe('ol.interaction.Interaction', function() {
 
     it('creates a new interaction', function() {
       expect(interaction).to.be.a(_ol_interaction_Interaction_);
-      expect(interaction).to.be.a(_ol_events_EventTarget_);
+      expect(interaction).to.be.a(EventTarget);
     });
 
     it('creates an active interaction', function() {

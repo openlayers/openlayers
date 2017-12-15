@@ -2,7 +2,7 @@
  * @module ol/interaction/DoubleClickZoom
  */
 import {inherits} from '../index.js';
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 
 /**
@@ -50,7 +50,7 @@ inherits(_ol_interaction_DoubleClickZoom_, _ol_interaction_Interaction_);
 _ol_interaction_DoubleClickZoom_.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   var browserEvent = mapBrowserEvent.originalEvent;
-  if (mapBrowserEvent.type == _ol_MapBrowserEventType_.DBLCLICK) {
+  if (mapBrowserEvent.type == MapBrowserEventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;

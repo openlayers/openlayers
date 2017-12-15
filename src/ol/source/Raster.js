@@ -6,8 +6,8 @@ import _ol_ImageCanvas_ from '../ImageCanvas.js';
 import _ol_TileQueue_ from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import {Processor as _ol_ext_pixelworks_Processor_} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import _ol_layer_Image_ from '../layer/Image.js';
@@ -61,7 +61,7 @@ var _ol_source_Raster_ = function(options) {
   this.renderers_ = _ol_source_Raster_.createRenderers_(options.sources);
 
   for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
-    _ol_events_.listen(this.renderers_[r], _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(this.renderers_[r], EventType.CHANGE,
         this.changed, this);
   }
 
@@ -431,7 +431,7 @@ _ol_source_Raster_.createTileRenderer_ = function(source) {
  * @param {Object} data An object made available to operations.
  */
 _ol_source_Raster_.Event = function(type, frameState, data) {
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The raster extent.
@@ -456,7 +456,7 @@ _ol_source_Raster_.Event = function(type, frameState, data) {
   this.data = data;
 
 };
-inherits(_ol_source_Raster_.Event, _ol_events_Event_);
+inherits(_ol_source_Raster_.Event, Event);
 
 
 /**

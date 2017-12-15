@@ -6,7 +6,7 @@ import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 
 /**
  * @classdesc
@@ -61,7 +61,7 @@ var FullScreen = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(this.labelNode_);
 
-  _ol_events_.listen(button, _ol_events_EventType_.CLICK,
+  _ol_events_.listen(button, EventType.CLICK,
       this.handleClick_, this);
 
   var cssClasses = this.cssClassName_ + ' ' + _ol_css_.CLASS_UNSELECTABLE +

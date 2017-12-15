@@ -6,7 +6,7 @@ import _ol_ImageState_ from '../ImageState.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_color_ from '../color.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import _ol_style_IconAnchorUnits_ from '../style/IconAnchorUnits.js';
 import _ol_style_IconImage_ from '../style/IconImage.js';
 import _ol_style_IconOrigin_ from '../style/IconOrigin.js';
@@ -355,7 +355,7 @@ _ol_style_Icon_.prototype.getSize = function() {
  * @override
  */
 _ol_style_Icon_.prototype.listenImageChange = function(listener, thisArg) {
-  return _ol_events_.listen(this.iconImage_, _ol_events_EventType_.CHANGE,
+  return _ol_events_.listen(this.iconImage_, EventType.CHANGE,
       listener, thisArg);
 };
 
@@ -377,7 +377,7 @@ _ol_style_Icon_.prototype.load = function() {
  * @override
  */
 _ol_style_Icon_.prototype.unlistenImageChange = function(listener, thisArg) {
-  _ol_events_.unlisten(this.iconImage_, _ol_events_EventType_.CHANGE,
+  _ol_events_.unlisten(this.iconImage_, EventType.CHANGE,
       listener, thisArg);
 };
 export default _ol_style_Icon_;

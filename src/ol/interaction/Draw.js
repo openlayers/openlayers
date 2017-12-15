@@ -3,11 +3,11 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
 import _ol_Object_ from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
@@ -325,16 +325,16 @@ _ol_interaction_Draw_.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== _ol_interaction_Draw_.Mode_.POINT && this.freehandCondition_(event);
   var pass = true;
   if (this.freehand_ &&
-      event.type === _ol_MapBrowserEventType_.POINTERDRAG &&
+      event.type === MapBrowserEventType.POINTERDRAG &&
       this.sketchFeature_ !== null) {
     this.addToDrawing_(event);
     pass = false;
   } else if (this.freehand_ &&
-      event.type === _ol_MapBrowserEventType_.POINTERDOWN) {
+      event.type === MapBrowserEventType.POINTERDOWN) {
     pass = false;
-  } else if (event.type === _ol_MapBrowserEventType_.POINTERMOVE) {
+  } else if (event.type === MapBrowserEventType.POINTERMOVE) {
     pass = this.handlePointerMove_(event);
-  } else if (event.type === _ol_MapBrowserEventType_.DBLCLICK) {
+  } else if (event.type === MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
   return _ol_interaction_Pointer_.handleEvent.call(this, event) && pass;
@@ -889,7 +889,7 @@ _ol_interaction_Draw_.Mode_ = {
  */
 _ol_interaction_Draw_.Event = function(type, feature) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The feature being drawn.
@@ -899,5 +899,5 @@ _ol_interaction_Draw_.Event = function(type, feature) {
   this.feature = feature;
 
 };
-inherits(_ol_interaction_Draw_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Draw_.Event, Event);
 export default _ol_interaction_Draw_;

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
 import {easeOut} from '../easing.js';
@@ -43,7 +43,7 @@ var Zoom = function(opt_options) {
       typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
   );
 
-  _ol_events_.listen(inElement, _ol_events_EventType_.CLICK,
+  _ol_events_.listen(inElement, EventType.CLICK,
       Zoom.prototype.handleClick_.bind(this, delta));
 
   var outElement = document.createElement('button');
@@ -54,7 +54,7 @@ var Zoom = function(opt_options) {
       typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
   );
 
-  _ol_events_.listen(outElement, _ol_events_EventType_.CLICK,
+  _ol_events_.listen(outElement, EventType.CLICK,
       Zoom.prototype.handleClick_.bind(this, -delta));
 
   var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +

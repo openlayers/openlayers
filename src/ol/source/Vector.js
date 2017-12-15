@@ -9,8 +9,8 @@ import _ol_ObjectEventType_ from '../ObjectEventType.js';
 import _ol_array_ from '../array.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
 import _ol_featureloader_ from '../featureloader.js';
 import {TRUE} from '../functions.js';
@@ -204,7 +204,7 @@ _ol_source_Vector_.prototype.addFeatureInternal = function(feature) {
  */
 _ol_source_Vector_.prototype.setupChangeEvents_ = function(featureKey, feature) {
   this.featureChangeKeys_[featureKey] = [
-    _ol_events_.listen(feature, _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(feature, EventType.CHANGE,
         this.handleFeatureChange_, this),
     _ol_events_.listen(feature, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleFeatureChange_, this)
@@ -866,7 +866,7 @@ _ol_source_Vector_.prototype.setLoader = function(loader) {
  */
 _ol_source_Vector_.Event = function(type, opt_feature) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The feature being added or removed.
@@ -876,5 +876,5 @@ _ol_source_Vector_.Event = function(type, opt_feature) {
   this.feature = opt_feature;
 
 };
-inherits(_ol_source_Vector_.Event, _ol_events_Event_);
+inherits(_ol_source_Vector_.Event, Event);
 export default _ol_source_Vector_;

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Image_ from '../source/Image.js';
@@ -144,7 +144,7 @@ _ol_source_ImageMapGuide_.prototype.getImageInternal = function(extent, resoluti
     image = new _ol_Image_(extent, resolution, pixelRatio,
         imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
-    _ol_events_.listen(image, _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(image, EventType.CHANGE,
         this.handleImageChange, this);
   } else {
     image = null;

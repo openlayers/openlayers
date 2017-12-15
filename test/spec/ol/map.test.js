@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../src/ol/Map.js';
-import _ol_MapEvent_ from '../../../src/ol/MapEvent.js';
+import MapEvent from '../../../src/ol/MapEvent.js';
 import _ol_Overlay_ from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import Point from '../../../src/ol/geom/Point.js';
@@ -349,7 +349,7 @@ describe('ol.Map', function() {
       var spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(_ol_MapEvent_);
+        expect(event).to.be.a(MapEvent);
         expect(typeof spy.firstCall.args[0]).to.be('number');
         spy.restore();
         var frameState = event.frameState;
@@ -389,7 +389,7 @@ describe('ol.Map', function() {
 
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(_ol_MapEvent_);
+        expect(event).to.be.a(MapEvent);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
         done();
@@ -403,7 +403,7 @@ describe('ol.Map', function() {
 
       map.render();
       map.once('postrender', function(event) {
-        expect(event).to.be.a(_ol_MapEvent_);
+        expect(event).to.be.a(MapEvent);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
         done();

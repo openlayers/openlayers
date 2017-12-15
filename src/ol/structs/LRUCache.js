@@ -3,8 +3,8 @@
  */
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_events_EventTarget_ from '../events/EventTarget.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventTarget from '../events/EventTarget.js';
+import EventType from '../events/EventType.js';
 
 /**
  * Implements a Least-Recently-Used cache where the keys do not conflict with
@@ -19,7 +19,7 @@ import _ol_events_EventType_ from '../events/EventType.js';
  */
 var _ol_structs_LRUCache_ = function(opt_highWaterMark) {
 
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * @type {number}
@@ -52,7 +52,7 @@ var _ol_structs_LRUCache_ = function(opt_highWaterMark) {
 
 };
 
-inherits(_ol_structs_LRUCache_, _ol_events_EventTarget_);
+inherits(_ol_structs_LRUCache_, EventTarget);
 
 
 /**
@@ -71,7 +71,7 @@ _ol_structs_LRUCache_.prototype.clear = function() {
   this.entries_ = {};
   this.oldest_ = null;
   this.newest_ = null;
-  this.dispatchEvent(_ol_events_EventType_.CLEAR);
+  this.dispatchEvent(EventType.CLEAR);
 };
 
 

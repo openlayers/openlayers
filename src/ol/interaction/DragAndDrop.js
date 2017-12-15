@@ -6,8 +6,8 @@
 import {inherits} from '../index.js';
 import {TRUE} from '../functions.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import Event from '../events/Event.js';
+import EventType from '../events/EventType.js';
 import _ol_interaction_Interaction_ from '../interaction/Interaction.js';
 import {get as getProjection} from '../proj.js';
 
@@ -77,7 +77,7 @@ _ol_interaction_DragAndDrop_.handleDrop_ = function(event) {
   for (i = 0, ii = files.length; i < ii; ++i) {
     file = files.item(i);
     var reader = new FileReader();
-    reader.addEventListener(_ol_events_EventType_.LOAD,
+    reader.addEventListener(EventType.LOAD,
         this.handleResult_.bind(this, file));
     reader.readAsText(file);
   }
@@ -159,13 +159,13 @@ _ol_interaction_DragAndDrop_.prototype.registerListeners_ = function() {
   if (map) {
     var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DROP,
+      _ol_events_.listen(dropArea, EventType.DROP,
           _ol_interaction_DragAndDrop_.handleDrop_, this),
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DRAGENTER,
+      _ol_events_.listen(dropArea, EventType.DRAGENTER,
           _ol_interaction_DragAndDrop_.handleStop_, this),
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DRAGOVER,
+      _ol_events_.listen(dropArea, EventType.DRAGOVER,
           _ol_interaction_DragAndDrop_.handleStop_, this),
-      _ol_events_.listen(dropArea, _ol_events_EventType_.DROP,
+      _ol_events_.listen(dropArea, EventType.DROP,
           _ol_interaction_DragAndDrop_.handleStop_, this)
     ];
   }
@@ -253,7 +253,7 @@ _ol_interaction_DragAndDrop_.EventType_ = {
  */
 _ol_interaction_DragAndDrop_.Event = function(type, file, opt_features, opt_projection) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The features parsed from dropped data.
@@ -277,5 +277,5 @@ _ol_interaction_DragAndDrop_.Event = function(type, file, opt_features, opt_proj
   this.projection = opt_projection;
 
 };
-inherits(_ol_interaction_DragAndDrop_.Event, _ol_events_Event_);
+inherits(_ol_interaction_DragAndDrop_.Event, Event);
 export default _ol_interaction_DragAndDrop_;

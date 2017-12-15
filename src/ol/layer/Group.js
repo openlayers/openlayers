@@ -8,7 +8,7 @@ import _ol_Object_ from '../Object.js';
 import _ol_ObjectEventType_ from '../ObjectEventType.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
 import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_obj_ from '../obj.js';
@@ -106,7 +106,7 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
     this.listenerKeys_[getUid(layer).toString()] = [
       _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
           this.handleLayerChange_, this),
-      _ol_events_.listen(layer, _ol_events_EventType_.CHANGE,
+      _ol_events_.listen(layer, EventType.CHANGE,
           this.handleLayerChange_, this)
     ];
   }
@@ -125,7 +125,7 @@ _ol_layer_Group_.prototype.handleLayersAdd_ = function(collectionEvent) {
   this.listenerKeys_[key] = [
     _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
         this.handleLayerChange_, this),
-    _ol_events_.listen(layer, _ol_events_EventType_.CHANGE,
+    _ol_events_.listen(layer, EventType.CHANGE,
         this.handleLayerChange_, this)
   ];
   this.changed();

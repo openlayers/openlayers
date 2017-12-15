@@ -4,8 +4,8 @@
 import {inherits} from '../index.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventTarget_ from '../events/EventTarget.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventTarget from '../events/EventTarget.js';
+import EventType from '../events/EventType.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_style_ from '../style.js';
 
@@ -22,7 +22,7 @@ import _ol_style_ from '../style.js';
 var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
     color) {
 
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * @private
@@ -89,7 +89,7 @@ var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
 
 };
 
-inherits(_ol_style_IconImage_, _ol_events_EventTarget_);
+inherits(_ol_style_IconImage_, EventTarget);
 
 
 /**
@@ -132,7 +132,7 @@ _ol_style_IconImage_.prototype.determineTainting_ = function() {
  * @private
  */
 _ol_style_IconImage_.prototype.dispatchChangeEvent_ = function() {
-  this.dispatchEvent(_ol_events_EventType_.CHANGE);
+  this.dispatchEvent(EventType.CHANGE);
 };
 
 
@@ -223,9 +223,9 @@ _ol_style_IconImage_.prototype.load = function() {
   if (this.imageState_ == _ol_ImageState_.IDLE) {
     this.imageState_ = _ol_ImageState_.LOADING;
     this.imageListenerKeys_ = [
-      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.ERROR,
+      _ol_events_.listenOnce(this.image_, EventType.ERROR,
           this.handleImageError_, this),
-      _ol_events_.listenOnce(this.image_, _ol_events_EventType_.LOAD,
+      _ol_events_.listenOnce(this.image_, EventType.LOAD,
           this.handleImageLoad_, this)
     ];
     try {

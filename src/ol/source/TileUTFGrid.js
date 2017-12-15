@@ -7,7 +7,7 @@ import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventType_ from '../events/EventType.js';
+import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
@@ -374,7 +374,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.getData = function(coordinate) {
  */
 _ol_source_TileUTFGrid_.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == _ol_TileState_.IDLE && opt_request === true) {
-    _ol_events_.listenOnce(this, _ol_events_EventType_.CHANGE, function(e) {
+    _ol_events_.listenOnce(this, EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, this);
     this.loadInternal_();
