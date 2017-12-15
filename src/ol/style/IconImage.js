@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
-import _ol_events_EventTarget_ from '../events/EventTarget.js';
+import EventTarget from '../events/EventTarget.js';
 import EventType from '../events/EventType.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_style_ from '../style.js';
@@ -22,7 +22,7 @@ import _ol_style_ from '../style.js';
 var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
     color) {
 
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * @private
@@ -89,7 +89,7 @@ var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
 
 };
 
-inherits(_ol_style_IconImage_, _ol_events_EventTarget_);
+inherits(_ol_style_IconImage_, EventTarget);
 
 
 /**

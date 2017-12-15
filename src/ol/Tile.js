@@ -4,7 +4,7 @@
 import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
 import {easeIn} from './easing.js';
-import _ol_events_EventTarget_ from './events/EventTarget.js';
+import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 
 /**
@@ -19,7 +19,7 @@ import EventType from './events/EventType.js';
  * @param {olx.TileOptions=} opt_options Tile options.
  */
 var _ol_Tile_ = function(tileCoord, state, opt_options) {
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   var options = opt_options ? opt_options : {};
 
@@ -66,7 +66,7 @@ var _ol_Tile_ = function(tileCoord, state, opt_options) {
 
 };
 
-inherits(_ol_Tile_, _ol_events_EventTarget_);
+inherits(_ol_Tile_, EventTarget);
 
 
 /**

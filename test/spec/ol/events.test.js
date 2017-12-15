@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../src/ol/events.js';
-import _ol_events_EventTarget_ from '../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../src/ol/events/EventTarget.js';
 
 describe('ol.events', function() {
   var add, remove, target;
@@ -199,7 +199,7 @@ describe('ol.events', function() {
 
   describe('Compatibility with ol.events.EventTarget', function() {
     it('does not register duplicated listeners', function() {
-      var target = new _ol_events_EventTarget_();
+      var target = new EventTarget();
       var listener = function() {};
       var key1 = _ol_events_.listen(target, 'foo', listener);
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
@@ -208,7 +208,7 @@ describe('ol.events', function() {
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
     });
     it('registers multiple listeners if this object is different', function() {
-      var target = new _ol_events_EventTarget_();
+      var target = new EventTarget();
       var listener = function() {};
       var key1 = _ol_events_.listen(target, 'foo', listener, {});
       var key2 = _ol_events_.listen(target, 'foo', listener, {});

@@ -6,7 +6,7 @@ import _ol_has_ from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventTarget_ from './events/EventTarget.js';
+import EventTarget from './events/EventTarget.js';
 import _ol_pointer_EventType_ from './pointer/EventType.js';
 import _ol_pointer_PointerEventHandler_ from './pointer/PointerEventHandler.js';
 
@@ -18,7 +18,7 @@ import _ol_pointer_PointerEventHandler_ from './pointer/PointerEventHandler.js';
  */
 var MapBrowserEventHandler = function(map, moveTolerance) {
 
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * This is the element that we will listen to the real events on.
@@ -110,7 +110,7 @@ var MapBrowserEventHandler = function(map, moveTolerance) {
 
 };
 
-inherits(MapBrowserEventHandler, _ol_events_EventTarget_);
+inherits(MapBrowserEventHandler, EventTarget);
 
 
 /**
@@ -320,6 +320,6 @@ MapBrowserEventHandler.prototype.disposeInternal = function() {
     this.pointerEventHandler_.dispose();
     this.pointerEventHandler_ = null;
   }
-  _ol_events_EventTarget_.prototype.disposeInternal.call(this);
+  EventTarget.prototype.disposeInternal.call(this);
 };
 export default MapBrowserEventHandler;

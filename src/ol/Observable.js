@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_events_ from './events.js';
-import _ol_events_EventTarget_ from './events/EventTarget.js';
+import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 
 /**
@@ -22,7 +22,7 @@ import EventType from './events/EventType.js';
  */
 var _ol_Observable_ = function() {
 
-  _ol_events_EventTarget_.call(this);
+  EventTarget.call(this);
 
   /**
    * @private
@@ -32,7 +32,7 @@ var _ol_Observable_ = function() {
 
 };
 
-inherits(_ol_Observable_, _ol_events_EventTarget_);
+inherits(_ol_Observable_, EventTarget);
 
 
 /**

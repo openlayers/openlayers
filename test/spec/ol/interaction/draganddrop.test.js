@@ -1,7 +1,7 @@
 import {inherits} from '../../../../src/ol/index.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
-import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_interaction_DragAndDrop_ from '../../../../src/ol/interaction/DragAndDrop.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -10,7 +10,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
 
   beforeEach(function() {
-    viewport = new _ol_events_EventTarget_();
+    viewport = new EventTarget();
     map = {
       getViewport: function() {
         return viewport;
@@ -72,7 +72,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
 
     it('registers and unregisters listeners on a custom target', function() {
-      var customTarget = new _ol_events_EventTarget_();
+      var customTarget = new EventTarget();
       interaction = new _ol_interaction_DragAndDrop_({
         formatConstructors: [_ol_format_GeoJSON_],
         target: customTarget
@@ -95,13 +95,13 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
       OrigFileReader = FileReader;
 
       FileReader = function() {
-        _ol_events_EventTarget_.apply(this, arguments);
+        EventTarget.apply(this, arguments);
         this.readAsText = function(file) {
           this.result = file;
           this.dispatchEvent('load');
         };
       };
-      inherits(FileReader, _ol_events_EventTarget_);
+      inherits(FileReader, EventTarget);
     });
 
     afterEach(function() {

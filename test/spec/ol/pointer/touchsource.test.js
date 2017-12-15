@@ -1,6 +1,6 @@
 import _ol_events_ from '../../../../src/ol/events.js';
 import Event from '../../../../src/ol/events/Event.js';
-import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import _ol_pointer_PointerEventHandler_ from '../../../../src/ol/pointer/PointerEventHandler.js';
@@ -10,7 +10,7 @@ describe('ol.pointer.TouchSource', function() {
   var eventSpy;
 
   beforeEach(function() {
-    target = new _ol_events_EventTarget_();
+    target = new EventTarget();
 
     // make sure that a mouse and touch event source is used
     _ol_has_.POINTER = false;

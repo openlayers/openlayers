@@ -1,4 +1,4 @@
-import _ol_events_EventTarget_ from '../../../src/ol/events/EventTarget.js';
+import EventTarget from '../../../src/ol/events/EventTarget.js';
 import _ol_Observable_ from '../../../src/ol/Observable.js';
 
 
@@ -9,7 +9,7 @@ describe('ol.Observable', function() {
     it('creates a new observable', function() {
       var observable = new _ol_Observable_();
       expect(observable).to.be.a(_ol_Observable_);
-      expect(observable).to.be.a(_ol_events_EventTarget_);
+      expect(observable).to.be.a(EventTarget);
     });
 
   });
