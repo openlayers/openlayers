@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
 import Event from '../events/Event.js';
@@ -136,7 +136,7 @@ _ol_interaction_Extent_.handleEvent_ = function(mapBrowserEvent) {
     return true;
   }
   //display pointer (if not dragging)
-  if (mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERMOVE && !this.handlingDownUpSequence) {
+  if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   //call pointer to determine up/down/drag

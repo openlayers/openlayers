@@ -5,7 +5,7 @@ import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_array_ from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -806,12 +806,12 @@ _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
 
   var handled;
   if (!mapBrowserEvent.map.getView().getInteracting() &&
-      mapBrowserEvent.type == _ol_MapBrowserEventType_.POINTERMOVE &&
+      mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
-    if (mapBrowserEvent.type != _ol_MapBrowserEventType_.SINGLECLICK ||
+    if (mapBrowserEvent.type != MapBrowserEventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_) {
       handled = this.removePoint();
     } else {
@@ -819,7 +819,7 @@ _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
     }
   }
 
-  if (mapBrowserEvent.type == _ol_MapBrowserEventType_.SINGLECLICK) {
+  if (mapBrowserEvent.type == MapBrowserEventType.SINGLECLICK) {
     this.ignoreNextSingleClick_ = false;
   }
 
@@ -1026,7 +1026,7 @@ _ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) 
  * @api
  */
 _ol_interaction_Modify_.prototype.removePoint = function() {
-  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != _ol_MapBrowserEventType_.POINTERDRAG) {
+  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != MapBrowserEventType.POINTERDRAG) {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     this.removeVertex_();

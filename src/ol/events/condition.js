@@ -1,7 +1,7 @@
 /**
  * @module ol/events/condition
  */
-import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
+import MapBrowserEventType from '../MapBrowserEventType.js';
 import _ol_asserts_ from '../asserts.js';
 import {TRUE, FALSE} from '../functions.js';
 import _ol_has_ from '../has.js';
@@ -61,7 +61,7 @@ _ol_events_condition_.always = TRUE;
  * @api
  */
 _ol_events_condition_.click = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == _ol_MapBrowserEventType_.CLICK;
+  return mapBrowserEvent.type == MapBrowserEventType.CLICK;
 };
 
 
@@ -113,7 +113,7 @@ _ol_events_condition_.pointerMove = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.singleClick = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == _ol_MapBrowserEventType_.SINGLECLICK;
+  return mapBrowserEvent.type == MapBrowserEventType.SINGLECLICK;
 };
 
 
@@ -125,7 +125,7 @@ _ol_events_condition_.singleClick = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.doubleClick = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == _ol_MapBrowserEventType_.DBLCLICK;
+  return mapBrowserEvent.type == MapBrowserEventType.DBLCLICK;
 };
 
 

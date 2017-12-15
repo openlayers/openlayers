@@ -6,7 +6,7 @@ import _ol_Collection_ from './Collection.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import _ol_MapBrowserEventHandler_ from './MapBrowserEventHandler.js';
-import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
+import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import _ol_MapEventType_ from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
@@ -173,7 +173,7 @@ var _ol_PluggableMap_ = function(options) {
     _ol_events_EventType_.MOUSEDOWN,
     _ol_events_EventType_.TOUCHSTART,
     _ol_events_EventType_.MSPOINTERDOWN,
-    _ol_MapBrowserEventType_.POINTERDOWN,
+    MapBrowserEventType.POINTERDOWN,
     _ol_events_EventType_.MOUSEWHEEL,
     _ol_events_EventType_.WHEEL
   ];
@@ -188,8 +188,8 @@ var _ol_PluggableMap_ = function(options) {
    * @type {ol.MapBrowserEventHandler}
    */
   this.mapBrowserEventHandler_ = new _ol_MapBrowserEventHandler_(this, options.moveTolerance);
-  for (var key in _ol_MapBrowserEventType_) {
-    _ol_events_.listen(this.mapBrowserEventHandler_, _ol_MapBrowserEventType_[key],
+  for (var key in MapBrowserEventType) {
+    _ol_events_.listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
         this.handleMapBrowserEvent, this);
   }
 

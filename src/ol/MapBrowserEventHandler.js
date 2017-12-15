@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_has_ from './has.js';
-import _ol_MapBrowserEventType_ from './MapBrowserEventType.js';
+import MapBrowserEventType from './MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from './MapBrowserPointerEvent.js';
 import _ol_events_ from './events.js';
 import _ol_events_EventTarget_ from './events/EventTarget.js';
@@ -119,21 +119,21 @@ inherits(_ol_MapBrowserEventHandler_, _ol_events_EventTarget_);
  */
 _ol_MapBrowserEventHandler_.prototype.emulateClick_ = function(pointerEvent) {
   var newEvent = new _ol_MapBrowserPointerEvent_(
-      _ol_MapBrowserEventType_.CLICK, this.map_, pointerEvent);
+      MapBrowserEventType.CLICK, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
   if (this.clickTimeoutId_ !== 0) {
     // double-click
     clearTimeout(this.clickTimeoutId_);
     this.clickTimeoutId_ = 0;
     newEvent = new _ol_MapBrowserPointerEvent_(
-        _ol_MapBrowserEventType_.DBLCLICK, this.map_, pointerEvent);
+        MapBrowserEventType.DBLCLICK, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   } else {
     // click
     this.clickTimeoutId_ = setTimeout(function() {
       this.clickTimeoutId_ = 0;
       var newEvent = new _ol_MapBrowserPointerEvent_(
-          _ol_MapBrowserEventType_.SINGLECLICK, this.map_, pointerEvent);
+          MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
       this.dispatchEvent(newEvent);
     }.bind(this), 250);
   }
@@ -149,10 +149,10 @@ _ol_MapBrowserEventHandler_.prototype.emulateClick_ = function(pointerEvent) {
 _ol_MapBrowserEventHandler_.prototype.updateActivePointers_ = function(pointerEvent) {
   var event = pointerEvent;
 
-  if (event.type == _ol_MapBrowserEventType_.POINTERUP ||
-      event.type == _ol_MapBrowserEventType_.POINTERCANCEL) {
+  if (event.type == MapBrowserEventType.POINTERUP ||
+      event.type == MapBrowserEventType.POINTERCANCEL) {
     delete this.trackedTouches_[event.pointerId];
-  } else if (event.type == _ol_MapBrowserEventType_.POINTERDOWN) {
+  } else if (event.type == MapBrowserEventType.POINTERDOWN) {
     this.trackedTouches_[event.pointerId] = true;
   }
   this.activePointers_ = Object.keys(this.trackedTouches_).length;
@@ -166,7 +166,7 @@ _ol_MapBrowserEventHandler_.prototype.updateActivePointers_ = function(pointerEv
 _ol_MapBrowserEventHandler_.prototype.handlePointerUp_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new _ol_MapBrowserPointerEvent_(
-      _ol_MapBrowserEventType_.POINTERUP, this.map_, pointerEvent);
+      MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
   // We emulate click events on left mouse button click, touch contact, and pen
@@ -207,7 +207,7 @@ _ol_MapBrowserEventHandler_.prototype.isMouseActionButton_ = function(pointerEve
 _ol_MapBrowserEventHandler_.prototype.handlePointerDown_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new _ol_MapBrowserPointerEvent_(
-      _ol_MapBrowserEventType_.POINTERDOWN, this.map_, pointerEvent);
+      MapBrowserEventType.POINTERDOWN, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
   this.down_ = pointerEvent;
@@ -222,10 +222,10 @@ _ol_MapBrowserEventHandler_.prototype.handlePointerDown_ = function(pointerEvent
 
     this.dragListenerKeys_.push(
         _ol_events_.listen(this.documentPointerEventHandler_,
-            _ol_MapBrowserEventType_.POINTERMOVE,
+            MapBrowserEventType.POINTERMOVE,
             this.handlePointerMove_, this),
         _ol_events_.listen(this.documentPointerEventHandler_,
-            _ol_MapBrowserEventType_.POINTERUP,
+            MapBrowserEventType.POINTERUP,
             this.handlePointerUp_, this),
         /* Note that the listener for `pointercancel is set up on
        * `pointerEventHandler_` and not `documentPointerEventHandler_` like
@@ -241,7 +241,7 @@ _ol_MapBrowserEventHandler_.prototype.handlePointerDown_ = function(pointerEvent
        * only registered there.
        */
         _ol_events_.listen(this.pointerEventHandler_,
-            _ol_MapBrowserEventType_.POINTERCANCEL,
+            MapBrowserEventType.POINTERCANCEL,
             this.handlePointerUp_, this)
     );
   }
@@ -259,7 +259,7 @@ _ol_MapBrowserEventHandler_.prototype.handlePointerMove_ = function(pointerEvent
   if (this.isMoving_(pointerEvent)) {
     this.dragging_ = true;
     var newEvent = new _ol_MapBrowserPointerEvent_(
-        _ol_MapBrowserEventType_.POINTERDRAG, this.map_, pointerEvent,
+        MapBrowserEventType.POINTERDRAG, this.map_, pointerEvent,
         this.dragging_);
     this.dispatchEvent(newEvent);
   }
