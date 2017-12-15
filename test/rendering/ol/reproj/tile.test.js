@@ -4,6 +4,7 @@ import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 
 
 describe('ol.rendering.reproj.Tile', function() {
@@ -58,6 +59,7 @@ describe('ol.rendering.reproj.Tile', function() {
       proj4.defs('EPSG:5070',
           '+proj=aea +lat_1=29.5 +lat_2=45.5 +lat_0=23 +lon_0=-96 +x_0=0 ' +
           '+y_0=0 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
+      register(proj4);
       var proj5070 = getProjection('EPSG:5070');
       proj5070.setExtent([-6e6, 0, 4e6, 6e6]);
 
@@ -69,6 +71,7 @@ describe('ol.rendering.reproj.Tile', function() {
     it('to ESRI:54009', function(done) {
       proj4.defs('ESRI:54009',
           '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
+      register(proj4);
       var proj54009 = getProjection('ESRI:54009');
       proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
@@ -96,6 +99,7 @@ describe('ol.rendering.reproj.Tile', function() {
       proj4.defs('EPSG:3740',
           '+proj=utm +zone=10 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 ' +
           '+units=m +no_defs');
+      register(proj4);
       var proj3740 = getProjection('EPSG:3740');
       proj3740.setExtent([318499.05, 2700792.39, 4359164.89, 7149336.98]);
 
@@ -158,6 +162,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
     it('wraps X when prime meridian is shifted', function(done) {
       proj4.defs('merc_180', '+proj=merc +lon_0=180 +units=m +no_defs');
+      register(proj4);
       var proj_ = getProjection('merc_180');
       proj_.setExtent([-20026376.39, -20048966.10, 20026376.39, 20048966.10]);
 
@@ -169,6 +174,7 @@ describe('ol.rendering.reproj.Tile', function() {
     it('displays north pole correctly (EPSG:3413)', function(done) {
       proj4.defs('EPSG:3413', '+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 ' +
           '+k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
+      register(proj4);
       var proj3413 = getProjection('EPSG:3413');
       proj3413.setExtent([-4194304, -4194304, 4194304, 4194304]);
 

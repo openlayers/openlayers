@@ -2,7 +2,8 @@ import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
 import _ol_TileState_ from '../../../../src/ol/TileState.js';
 import _ol_TileUrlFunction_ from '../../../../src/ol/TileUrlFunction.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
+import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
@@ -131,10 +132,13 @@ describe('ol.source.TileImage', function() {
 
     beforeEach(function() {
       proj4.defs('4326_noextentnounits', '+proj=longlat +datum=WGS84 +no_defs');
+      register(proj4);
     });
 
     afterEach(function() {
       delete proj4.defs['4326_noextentnounits'];
+      clearAllProjections();
+      addCommon();
     });
 
     it('can handle source projection without extent and units', function(done) {

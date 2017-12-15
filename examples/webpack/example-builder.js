@@ -141,7 +141,15 @@ ExampleBuilder.prototype.render = async function(dir, chunk) {
 
   // add in script tag
   const jsName = `${name}.js`;
-  let jsSource = chunk.modules[0].source;
+  const jsPath = path.join(dir, jsName);
+  let jsSource;
+  for (let i = 0, ii = chunk.modules.length; i < ii; ++i) {
+    const module = chunk.modules[i];
+    if (module.identifier == jsPath) {
+      jsSource = module.source;
+      break;
+    }
+  }
   if (data.cloak) {
     for (const key in data.cloak) {
       jsSource = jsSource.replace(new RegExp(key, 'g'), data.cloak[key]);

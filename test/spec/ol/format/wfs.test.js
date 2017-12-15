@@ -7,7 +7,8 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import {transform} from '../../../../src/ol/proj.js';
+import {addCommon, clearAllProjections, transform} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
 describe('ol.format.WFS', function() {
@@ -36,6 +37,7 @@ describe('ol.format.WFS', function() {
 
     before(function(done) {
       proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+      register(proj4);
       afterLoadText('spec/ol/format/wfs/topp-states-wfs.xml', function(data) {
         try {
           xml = data;
@@ -45,6 +47,12 @@ describe('ol.format.WFS', function() {
         }
         done();
       });
+    });
+
+    after(function() {
+      delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
+      clearAllProjections();
+      addCommon();
     });
 
     it('creates 3 features', function() {
@@ -85,6 +93,7 @@ describe('ol.format.WFS', function() {
 
     before(function(done) {
       proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+      register(proj4);
       afterLoadText('spec/ol/format/wfs/polygonv2.xml', function(data) {
         try {
           xml = data;
@@ -94,6 +103,12 @@ describe('ol.format.WFS', function() {
         }
         done();
       });
+    });
+
+    after(function() {
+      delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
+      clearAllProjections();
+      addCommon();
     });
 
     it('creates 3 features', function() {
@@ -153,6 +168,7 @@ describe('ol.format.WFS', function() {
           '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
           '+ellps=bessel +towgs84=565.417,50.3319,465.552,-0.398957,0.343988,' +
           '-1.8774,4.0725 +units=m +no_defs');
+      register(proj4);
       afterLoadText('spec/ol/format/wfs/boundedBy.xml',
           function(xml) {
             try {

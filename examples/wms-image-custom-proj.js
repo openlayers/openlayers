@@ -6,6 +6,7 @@ import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
+import {register} from '../src/ol/proj/proj4.js';
 
 
 // Transparent Proj4js support:
@@ -22,6 +23,8 @@ import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
 // If you use Proj4js only to transform coordinates, you don't even need to
 // create an ol.proj.Projection instance. ol.proj.get() will take care of it
 // internally.
+
+register(proj4);
 
 var projection = new _ol_proj_Projection_({
   code: 'EPSG:21781',
