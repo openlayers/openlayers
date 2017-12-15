@@ -21,7 +21,7 @@ import DragBox from '../interaction/DragBox.js';
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_DragZoom_ = function(opt_options) {
+var DragZoom = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var condition = options.condition ?
@@ -46,13 +46,13 @@ var _ol_interaction_DragZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_DragZoom_, DragBox);
+inherits(DragZoom, DragBox);
 
 
 /**
  * @inheritDoc
  */
-_ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
+DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
 
   var view = /** @type {!ol.View} */ (map.getView());
@@ -86,4 +86,4 @@ _ol_interaction_DragZoom_.prototype.onBoxEnd = function() {
   });
 
 };
-export default _ol_interaction_DragZoom_;
+export default DragZoom;

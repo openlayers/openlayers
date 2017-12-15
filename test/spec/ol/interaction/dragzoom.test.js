@@ -2,7 +2,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_interaction_DragZoom_ from '../../../../src/ol/interaction/DragZoom.js';
+import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -48,15 +48,15 @@ describe('ol.interaction.DragZoom', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_interaction_DragZoom_();
-      expect(instance).to.be.an(_ol_interaction_DragZoom_);
+      var instance = new DragZoom();
+      expect(instance).to.be.an(DragZoom);
     });
     it('sets "ol-dragzoom" as box className', function() {
-      var instance = new _ol_interaction_DragZoom_();
+      var instance = new DragZoom();
       expect(instance.box_.element_.className).to.be('ol-box ol-dragzoom');
     });
     it('sets a custom box className', function() {
-      var instance = new _ol_interaction_DragZoom_({className: 'test-dragzoom'});
+      var instance = new DragZoom({className: 'test-dragzoom'});
       expect(instance.box_.element_.className).to.be('ol-box test-dragzoom');
     });
 
@@ -65,7 +65,7 @@ describe('ol.interaction.DragZoom', function() {
   describe('#onBoxEnd()', function() {
 
     it('centers the view on the box geometry', function(done) {
-      var interaction = new _ol_interaction_DragZoom_({
+      var interaction = new DragZoom({
         duration: 10
       });
       map.addInteraction(interaction);
@@ -86,7 +86,7 @@ describe('ol.interaction.DragZoom', function() {
     });
 
     it('sets new resolution while zooming out', function(done) {
-      var interaction = new _ol_interaction_DragZoom_({
+      var interaction = new DragZoom({
         duration: 10,
         out: true
       });
