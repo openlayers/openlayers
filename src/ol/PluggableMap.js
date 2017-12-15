@@ -5,7 +5,7 @@ import {getUid, inherits} from './index.js';
 import _ol_Collection_ from './Collection.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
-import _ol_MapBrowserEventHandler_ from './MapBrowserEventHandler.js';
+import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import _ol_MapEventType_ from './MapEventType.js';
@@ -187,7 +187,7 @@ var _ol_PluggableMap_ = function(options) {
    * @private
    * @type {ol.MapBrowserEventHandler}
    */
-  this.mapBrowserEventHandler_ = new _ol_MapBrowserEventHandler_(this, options.moveTolerance);
+  this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
   for (var key in MapBrowserEventType) {
     _ol_events_.listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
         this.handleMapBrowserEvent, this);

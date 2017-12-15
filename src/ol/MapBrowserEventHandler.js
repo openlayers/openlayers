@@ -16,7 +16,7 @@ import _ol_pointer_PointerEventHandler_ from './pointer/PointerEventHandler.js';
  * @constructor
  * @extends {ol.events.EventTarget}
  */
-var _ol_MapBrowserEventHandler_ = function(map, moveTolerance) {
+var MapBrowserEventHandler = function(map, moveTolerance) {
 
   _ol_events_EventTarget_.call(this);
 
@@ -110,14 +110,14 @@ var _ol_MapBrowserEventHandler_ = function(map, moveTolerance) {
 
 };
 
-inherits(_ol_MapBrowserEventHandler_, _ol_events_EventTarget_);
+inherits(MapBrowserEventHandler, _ol_events_EventTarget_);
 
 
 /**
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.emulateClick_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
   var newEvent = new MapBrowserPointerEvent(
       MapBrowserEventType.CLICK, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
@@ -146,7 +146,7 @@ _ol_MapBrowserEventHandler_.prototype.emulateClick_ = function(pointerEvent) {
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.updateActivePointers_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) {
   var event = pointerEvent;
 
   if (event.type == MapBrowserEventType.POINTERUP ||
@@ -163,7 +163,7 @@ _ol_MapBrowserEventHandler_.prototype.updateActivePointers_ = function(pointerEv
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.handlePointerUp_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new MapBrowserPointerEvent(
       MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
@@ -195,7 +195,7 @@ _ol_MapBrowserEventHandler_.prototype.handlePointerUp_ = function(pointerEvent) 
  * @return {boolean} If the left mouse button was pressed.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.isMouseActionButton_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.isMouseActionButton_ = function(pointerEvent) {
   return pointerEvent.button === 0;
 };
 
@@ -204,7 +204,7 @@ _ol_MapBrowserEventHandler_.prototype.isMouseActionButton_ = function(pointerEve
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.handlePointerDown_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new MapBrowserPointerEvent(
       MapBrowserEventType.POINTERDOWN, this.map_, pointerEvent);
@@ -252,7 +252,7 @@ _ol_MapBrowserEventHandler_.prototype.handlePointerDown_ = function(pointerEvent
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.handlePointerMove_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
   // Between pointerdown and pointerup, pointermove events are triggered.
   // To avoid a 'false' touchmove event to be dispatched, we test if the pointer
   // moved a significant distance.
@@ -278,7 +278,7 @@ _ol_MapBrowserEventHandler_.prototype.handlePointerMove_ = function(pointerEvent
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.relayEvent_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
   var dragging = !!(this.down_ && this.isMoving_(pointerEvent));
   this.dispatchEvent(new MapBrowserPointerEvent(
       pointerEvent.type, this.map_, pointerEvent, dragging));
@@ -290,7 +290,7 @@ _ol_MapBrowserEventHandler_.prototype.relayEvent_ = function(pointerEvent) {
  * @return {boolean} Is moving.
  * @private
  */
-_ol_MapBrowserEventHandler_.prototype.isMoving_ = function(pointerEvent) {
+MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
   return Math.abs(pointerEvent.clientX - this.down_.clientX) > this.moveTolerance_ ||
       Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_;
 };
@@ -299,7 +299,7 @@ _ol_MapBrowserEventHandler_.prototype.isMoving_ = function(pointerEvent) {
 /**
  * @inheritDoc
  */
-_ol_MapBrowserEventHandler_.prototype.disposeInternal = function() {
+MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (this.relayedListenerKey_) {
     _ol_events_.unlistenByKey(this.relayedListenerKey_);
     this.relayedListenerKey_ = null;
@@ -322,4 +322,4 @@ _ol_MapBrowserEventHandler_.prototype.disposeInternal = function() {
   }
   _ol_events_EventTarget_.prototype.disposeInternal.call(this);
 };
-export default _ol_MapBrowserEventHandler_;
+export default MapBrowserEventHandler;
