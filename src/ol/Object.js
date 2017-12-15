@@ -4,7 +4,7 @@
 import {getUid, inherits} from './index.js';
 import _ol_ObjectEventType_ from './ObjectEventType.js';
 import _ol_Observable_ from './Observable.js';
-import _ol_events_Event_ from './events/Event.js';
+import Event from './events/Event.js';
 import _ol_obj_ from './obj.js';
 
 /**
@@ -205,7 +205,7 @@ _ol_Object_.prototype.unset = function(key, opt_silent) {
  * @constructor
  */
 _ol_Object_.Event = function(type, key, oldValue) {
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The name of the property whose value is changing.
@@ -223,5 +223,5 @@ _ol_Object_.Event = function(type, key, oldValue) {
   this.oldValue = oldValue;
 
 };
-inherits(_ol_Object_.Event, _ol_events_Event_);
+inherits(_ol_Object_.Event, Event);
 export default _ol_Object_;

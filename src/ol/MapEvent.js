@@ -2,7 +2,7 @@
  * @module ol/MapEvent
  */
 import {inherits} from './index.js';
-import _ol_events_Event_ from './events/Event.js';
+import Event from './events/Event.js';
 
 /**
  * @classdesc
@@ -18,7 +18,7 @@ import _ol_events_Event_ from './events/Event.js';
  */
 var _ol_MapEvent_ = function(type, map, opt_frameState) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The map where the event occurred.
@@ -36,5 +36,5 @@ var _ol_MapEvent_ = function(type, map, opt_frameState) {
 
 };
 
-inherits(_ol_MapEvent_, _ol_events_Event_);
+inherits(_ol_MapEvent_, Event);
 export default _ol_MapEvent_;

@@ -4,7 +4,7 @@
 import {inherits, nullFunction} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 
 /**
  * @classdesc
@@ -74,7 +74,7 @@ _ol_events_EventTarget_.prototype.addEventListener = function(type, listener) {
  *     event object or if any of the listeners returned false.
  */
 _ol_events_EventTarget_.prototype.dispatchEvent = function(event) {
-  var evt = typeof event === 'string' ? new _ol_events_Event_(event) : event;
+  var evt = typeof event === 'string' ? new Event(event) : event;
   var type = evt.type;
   evt.target = this;
   var listeners = this.listeners_[type];

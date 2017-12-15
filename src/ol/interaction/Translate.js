@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_Object_ from '../Object.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import _ol_array_ from '../array.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -276,7 +276,7 @@ _ol_interaction_Translate_.prototype.updateState_ = function(oldMap) {
  */
 _ol_interaction_Translate_.Event = function(type, features, coordinate) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The features being translated.
@@ -293,5 +293,5 @@ _ol_interaction_Translate_.Event = function(type, features, coordinate) {
    */
   this.coordinate = coordinate;
 };
-inherits(_ol_interaction_Translate_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Translate_.Event, Event);
 export default _ol_interaction_Translate_;

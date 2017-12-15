@@ -1,6 +1,6 @@
 import {inherits} from '../../../../src/ol/index.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
+import Event from '../../../../src/ol/events/Event.js';
 import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
 import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
 import _ol_interaction_DragAndDrop_ from '../../../../src/ol/interaction/DragAndDrop.js';
@@ -114,7 +114,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         done();
       });
       interaction.setMap(map);
-      var event = new _ol_events_Event_();
+      var event = new Event();
       event.dataTransfer = {};
       event.type = 'dragenter';
       viewport.dispatchEvent(event);
@@ -149,7 +149,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         done();
       });
 
-      var event = new _ol_events_Event_();
+      var event = new Event();
       event.dataTransfer = {};
       event.type = 'dragenter';
       viewport.dispatchEvent(event);

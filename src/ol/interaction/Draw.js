@@ -7,7 +7,7 @@ import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_Object_ from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
@@ -889,7 +889,7 @@ _ol_interaction_Draw_.Mode_ = {
  */
 _ol_interaction_Draw_.Event = function(type, feature) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The feature being drawn.
@@ -899,5 +899,5 @@ _ol_interaction_Draw_.Event = function(type, feature) {
   this.feature = feature;
 
 };
-inherits(_ol_interaction_Draw_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Draw_.Event, Event);
 export default _ol_interaction_Draw_;

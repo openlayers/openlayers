@@ -5,7 +5,7 @@ import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {inherits} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_array_ from '../array.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
 import _ol_reproj_Image_ from '../reproj/Image.js';
@@ -188,7 +188,7 @@ _ol_source_Image_.defaultImageLoadFunction = function(image, src) {
  */
 _ol_source_Image_.Event = function(type, image) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The image related to the event.
@@ -198,7 +198,7 @@ _ol_source_Image_.Event = function(type, image) {
   this.image = image;
 
 };
-inherits(_ol_source_Image_.Event, _ol_events_Event_);
+inherits(_ol_source_Image_.Event, Event);
 
 
 /**

@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
+import Event from '../../../../src/ol/events/Event.js';
 import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
@@ -122,7 +122,7 @@ describe('ol.pointer.TouchSource', function() {
   function simulateTouchEvent(type, changedTouches, touches) {
     touches = touches !== undefined ? touches : changedTouches;
 
-    var event = new _ol_events_Event_(type);
+    var event = new Event(type);
     _ol_obj_.assign(event, {
       touches: touches,
       changedTouches: changedTouches

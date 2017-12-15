@@ -18,7 +18,7 @@ import _ol_ViewHint_ from './ViewHint.js';
 import _ol_asserts_ from './asserts.js';
 import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
-import _ol_events_Event_ from './events/Event.js';
+import Event from './events/Event.js';
 import _ol_events_EventType_ from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
@@ -179,7 +179,7 @@ var _ol_PluggableMap_ = function(options) {
   ];
   for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
     _ol_events_.listen(this.overlayContainerStopEvent_, overlayEvents[i],
-        _ol_events_Event_.stopPropagation);
+        Event.stopPropagation);
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 

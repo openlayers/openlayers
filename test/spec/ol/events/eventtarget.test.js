@@ -1,6 +1,6 @@
 import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
+import Event from '../../../../src/ol/events/Event.js';
 import _ol_events_EventTarget_ from '../../../../src/ol/events/EventTarget.js';
 
 
@@ -105,7 +105,7 @@ describe('ol.events.EventTarget', function() {
     it('passes a default ol.events.Event object to listeners', function() {
       eventTarget.addEventListener('foo', spy1);
       eventTarget.dispatchEvent('foo');
-      expect(events[0]).to.be.a(_ol_events_Event_);
+      expect(events[0]).to.be.a(Event);
       expect(events[0].type).to.be('foo');
       expect(events[0].target).to.equal(eventTarget);
     });

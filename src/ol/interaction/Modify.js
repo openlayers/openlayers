@@ -10,7 +10,7 @@ import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_array_ from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import _ol_events_EventType_ from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
@@ -1215,7 +1215,7 @@ _ol_interaction_Modify_.getDefaultStyleFunction = function() {
  */
 _ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent) {
 
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * The features being modified.
@@ -1231,5 +1231,5 @@ _ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent)
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
 };
-inherits(_ol_interaction_Modify_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Modify_.Event, Event);
 export default _ol_interaction_Modify_;

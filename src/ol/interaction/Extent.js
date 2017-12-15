@@ -6,7 +6,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_MapBrowserEventType_ from '../MapBrowserEventType.js';
 import _ol_MapBrowserPointerEvent_ from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
@@ -454,7 +454,7 @@ _ol_interaction_Extent_.prototype.setExtent = function(extent) {
  * @extends {ol.events.Event}
  */
 _ol_interaction_Extent_.Event = function(extent) {
-  _ol_events_Event_.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
+  Event.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
 
   /**
    * The current extent.
@@ -464,5 +464,5 @@ _ol_interaction_Extent_.Event = function(extent) {
   this.extent = extent;
 
 };
-inherits(_ol_interaction_Extent_.Event, _ol_events_Event_);
+inherits(_ol_interaction_Extent_.Event, Event);
 export default _ol_interaction_Extent_;

@@ -32,7 +32,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {inherits} from '../index.js';
-import _ol_events_Event_ from '../events/Event.js';
+import Event from '../events/Event.js';
 
 /**
  * A class for pointer events.
@@ -48,7 +48,7 @@ import _ol_events_Event_ from '../events/Event.js';
  *    initial event properties.
  */
 var _ol_pointer_PointerEvent_ = function(type, originalEvent, opt_eventDict) {
-  _ol_events_Event_.call(this, type);
+  Event.call(this, type);
 
   /**
    * @const
@@ -192,7 +192,7 @@ var _ol_pointer_PointerEvent_ = function(type, originalEvent, opt_eventDict) {
   }
 };
 
-inherits(_ol_pointer_PointerEvent_, _ol_events_Event_);
+inherits(_ol_pointer_PointerEvent_, Event);
 
 
 /**

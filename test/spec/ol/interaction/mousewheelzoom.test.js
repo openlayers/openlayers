@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_MapBrowserEvent_ from '../../../../src/ol/MapBrowserEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
+import Event from '../../../../src/ol/events/Event.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_MouseWheelZoom_ from '../../../../src/ol/interaction/MouseWheelZoom.js';
@@ -46,7 +46,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
       var event = new _ol_MapBrowserEvent_('mousewheel', map, {
         type: 'mousewheel',
         target: map.getViewport(),
-        preventDefault: _ol_events_Event_.prototype.preventDefault
+        preventDefault: Event.prototype.preventDefault
       });
       map.handleMapBrowserEvent(event);
       clock.tick(50);
@@ -75,7 +75,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         deltaMode: WheelEvent.DOM_DELTA_PIXEL,
         deltaY: _ol_has_.DEVICE_PIXEL_RATIO,
         target: map.getViewport(),
-        preventDefault: _ol_events_Event_.prototype.preventDefault
+        preventDefault: Event.prototype.preventDefault
       });
       event.coordinate = [0, 0];
       map.handleMapBrowserEvent(event);
@@ -94,7 +94,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
         deltaMode: WheelEvent.DOM_DELTA_PIXEL,
         deltaY: 1,
         target: map.getViewport(),
-        preventDefault: _ol_events_Event_.prototype.preventDefault
+        preventDefault: Event.prototype.preventDefault
       });
       event.coordinate = [0, 0];
       map.handleMapBrowserEvent(event);
@@ -120,7 +120,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
           deltaMode: WheelEvent.DOM_DELTA_LINE,
           deltaY: 3.714599609375,
           target: map.getViewport(),
-          preventDefault: _ol_events_Event_.prototype.preventDefault
+          preventDefault: Event.prototype.preventDefault
         });
         event.coordinate = [0, 0];
         map.handleMapBrowserEvent(event);
@@ -140,7 +140,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
           type: 'mousewheel',
           wheelDeltaY: -50,
           target: map.getViewport(),
-          preventDefault: _ol_events_Event_.prototype.preventDefault
+          preventDefault: Event.prototype.preventDefault
         });
         event.coordinate = [0, 0];
         map.handleMapBrowserEvent(event);
@@ -160,7 +160,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
           type: 'mousewheel',
           wheelDeltaY: -120,
           target: map.getViewport(),
-          preventDefault: _ol_events_Event_.prototype.preventDefault
+          preventDefault: Event.prototype.preventDefault
         });
         event.coordinate = [0, 0];
         map.handleMapBrowserEvent(event);

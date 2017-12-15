@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_MapBrowserEvent_ from '../../../../src/ol/MapBrowserEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_events_Event_ from '../../../../src/ol/events/Event.js';
+import Event from '../../../../src/ol/events/Event.js';
 import _ol_interaction_Interaction_ from '../../../../src/ol/interaction/Interaction.js';
 describe('ol.interaction.KeyboardZoom', function() {
   var map;
@@ -27,7 +27,7 @@ describe('ol.interaction.KeyboardZoom', function() {
       var event = new _ol_MapBrowserEvent_('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
-        preventDefault: _ol_events_Event_.prototype.preventDefault
+        preventDefault: Event.prototype.preventDefault
       });
       event.originalEvent.charCode = '+'.charCodeAt(0);
       map.handleMapBrowserEvent(event);
