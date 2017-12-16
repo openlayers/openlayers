@@ -390,7 +390,7 @@ _ol_source_Vector_.prototype.forEachFeature = function(callback, opt_this) {
   if (this.featuresRtree_) {
     return this.featuresRtree_.forEach(callback, opt_this);
   } else if (this.featuresCollection_) {
-    return this.featuresCollection_.forEach(callback, opt_this);
+    return this.featuresCollection_.forEach(callback.bind(opt_this));
   }
 };
 
@@ -446,7 +446,7 @@ _ol_source_Vector_.prototype.forEachFeatureInExtent = function(extent, callback,
   if (this.featuresRtree_) {
     return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
   } else if (this.featuresCollection_) {
-    return this.featuresCollection_.forEach(callback, opt_this);
+    return this.featuresCollection_.forEach(callback.bind(opt_this));
   }
 };
 

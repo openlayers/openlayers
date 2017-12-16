@@ -129,7 +129,7 @@ var OverviewMap = function(opt_options) {
        */
         function(layer) {
           ovmap.addLayer(layer);
-        }, this);
+        }.bind(this));
   }
 
   var box = document.createElement('DIV');

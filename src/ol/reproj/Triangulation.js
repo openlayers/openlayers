@@ -172,7 +172,7 @@ var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
           triangle.source = newTriangle;
         }
       }
-    }, this);
+    }.bind(this));
   }
 
   transformInvCache = {};

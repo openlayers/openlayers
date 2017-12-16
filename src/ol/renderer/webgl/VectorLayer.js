@@ -292,7 +292,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.prepareFrame = function(frameState, la
           features.push(feature);
         }, this);
     features.sort(vectorLayerRenderOrder);
-    features.forEach(renderFeature, this);
+    features.forEach(renderFeature.bind(this));
   } else {
     vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
   }

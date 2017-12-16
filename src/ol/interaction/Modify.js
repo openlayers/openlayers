@@ -213,7 +213,7 @@ var _ol_interaction_Modify_ = function(options) {
    */
   this.features_ = features;
 
-  this.features_.forEach(this.addFeature_, this);
+  this.features_.forEach(this.addFeature_.bind(this));
   _ol_events_.listen(this.features_, CollectionEventType.ADD,
       this.handleFeatureAdd_, this);
   _ol_events_.listen(this.features_, CollectionEventType.REMOVE,

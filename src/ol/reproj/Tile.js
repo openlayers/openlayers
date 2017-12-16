@@ -222,7 +222,7 @@ _ol_reproj_Tile_.prototype.reproject_ = function() {
         image: tile.getImage()
       });
     }
-  }, this);
+  }.bind(this));
   this.sourceTiles_.length = 0;
 
   if (sources.length === 0) {
@@ -281,7 +281,7 @@ _ol_reproj_Tile_.prototype.load = function() {
             }, this);
         this.sourcesListenerKeys_.push(sourceListenKey);
       }
-    }, this);
+    }.bind(this));
 
     this.sourceTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();

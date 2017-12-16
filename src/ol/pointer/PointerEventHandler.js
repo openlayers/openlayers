@@ -122,7 +122,7 @@ _ol_pointer_PointerEventHandler_.prototype.registerSource = function(name, sourc
       if (handler) {
         this.eventMap_[e] = handler.bind(s);
       }
-    }, this);
+    }.bind(this));
     this.eventSourceList_.push(s);
   }
 };
@@ -178,7 +178,7 @@ _ol_pointer_PointerEventHandler_.prototype.eventHandler_ = function(inEvent) {
 _ol_pointer_PointerEventHandler_.prototype.addEvents_ = function(events) {
   events.forEach(function(eventName) {
     _ol_events_.listen(this.element_, eventName, this.eventHandler_, this);
-  }, this);
+  }.bind(this));
 };
 
 
@@ -190,7 +190,7 @@ _ol_pointer_PointerEventHandler_.prototype.addEvents_ = function(events) {
 _ol_pointer_PointerEventHandler_.prototype.removeEvents_ = function(events) {
   events.forEach(function(e) {
     _ol_events_.unlisten(this.element_, e, this.eventHandler_, this);
-  }, this);
+  }.bind(this));
 };
 
 
