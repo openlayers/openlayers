@@ -5,6 +5,7 @@ import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import {fromLonLat, transformExtent} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import proj4 from 'proj4';
 
 proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
     'SPHEROID["GRS1980",6378137.000,298.25722210]],PRIMEM["Greenwich",0],' +

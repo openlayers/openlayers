@@ -11,6 +11,7 @@ import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 import _ol_tilegrid_TileGrid_ from '../src/ol/tilegrid/TileGrid.js';
+import proj4 from 'proj4';
 
 
 proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +

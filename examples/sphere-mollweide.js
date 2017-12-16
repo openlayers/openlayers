@@ -6,6 +6,7 @@ import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import {register} from '../src/ol/proj/proj4.js';
+import proj4 from 'proj4';
 
 
 proj4.defs('ESRI:53009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +a=6371000 ' +

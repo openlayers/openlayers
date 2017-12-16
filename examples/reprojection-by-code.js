@@ -6,6 +6,7 @@ import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
+import proj4 from 'proj4';
 
 
 var map = new _ol_Map_({
