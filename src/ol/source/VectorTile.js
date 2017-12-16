@@ -42,7 +42,6 @@ var _ol_source_VectorTile_ = function(options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
     extent: extent,
-    logo: options.logo,
     opaque: false,
     projection: projection,
     state: options.state,

@@ -6,29 +6,6 @@ var olx;
 
 
 /**
- * Object literal with config options for the map logo.
- * @typedef {{href: (string), src: (string)}}
- */
-olx.LogoOptions;
-
-
-/**
- * Link url for the logo. Will be followed when the logo is clicked.
- * @type {string}
- * @api
- */
-olx.LogoOptions.prototype.href;
-
-
-/**
- * Image src for the logo.
- * @type {string}
- * @api
- */
-olx.LogoOptions.prototype.src;
-
-
-/**
  * Options for tile constructors.
  * @typedef {{transition: (number|undefined)}}
  */
@@ -4177,7 +4154,6 @@ olx.source.BingMapsOptions.prototype.transition;
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),
  *     geometryFunction: (undefined|function(ol.Feature):ol.geom.Point),
- *     logo: (string|undefined),
  *     projection: ol.ProjectionLike,
  *     source: ol.source.Vector,
  *     wrapX: (boolean|undefined)}}
@@ -4234,14 +4210,6 @@ olx.source.ClusterOptions.prototype.geometryFunction;
  * @api
  */
 olx.source.ClusterOptions.prototype.format;
-
-
-/**
- * Logo.
- * @type {string|undefined}
- * @api
- */
-olx.source.ClusterOptions.prototype.logo;
 
 
 /**
@@ -4321,7 +4289,6 @@ olx.source.TileUTFGridOptions.prototype.url;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            crossOrigin: (null|string|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            reprojectionErrorThreshold: (number|undefined),
@@ -4367,14 +4334,6 @@ olx.source.TileImageOptions.prototype.cacheSize;
  * @api
  */
 olx.source.TileImageOptions.prototype.crossOrigin;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.TileImageOptions.prototype.logo;
 
 
 /**
@@ -4502,7 +4461,6 @@ olx.source.TileImageOptions.prototype.transition;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            format: (ol.format.Feature|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
  *            overlaps: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
@@ -4543,14 +4501,6 @@ olx.source.VectorTileOptions.prototype.cacheSize;
  * @api
  */
 olx.source.VectorTileOptions.prototype.format;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.VectorTileOptions.prototype.logo;
 
 
 /**
@@ -4953,7 +4903,6 @@ olx.source.OSMOptions.prototype.wrapX;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     crossOrigin: (null|string|undefined),
  *     hidpi: (boolean|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
  *     projection: ol.ProjectionLike,
@@ -4991,14 +4940,6 @@ olx.source.ImageArcGISRestOptions.prototype.crossOrigin;
  * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.hidpi;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ImageArcGISRestOptions.prototype.logo;
 
 
 /**
@@ -5060,7 +5001,6 @@ olx.source.ImageArcGISRestOptions.prototype.url;
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     canvasFunction: ol.CanvasFunctionType,
- *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
@@ -5090,14 +5030,6 @@ olx.source.ImageCanvasOptions.prototype.attributions;
  * @api
  */
 olx.source.ImageCanvasOptions.prototype.canvasFunction;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ImageCanvasOptions.prototype.logo;
 
 
 /**
@@ -5199,7 +5131,6 @@ olx.source.RasterOptions.prototype.operationType;
  *     crossOrigin: (null|string|undefined),
  *     hidpi: (boolean|undefined),
  *     serverType: (ol.source.WMSServerType|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
  *     projection: ol.ProjectionLike,
@@ -5254,14 +5185,6 @@ olx.source.ImageWMSOptions.prototype.serverType;
  * @api
  */
 olx.source.ImageWMSOptions.prototype.imageLoadFunction;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ImageWMSOptions.prototype.logo;
 
 
 /**
@@ -5407,7 +5330,6 @@ olx.source.StamenOptions.prototype.wrapX;
  *     imageExtent: (ol.Extent),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     imageSize: (ol.Size|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.ProjectionLike,
  *     url: string}}
  */
@@ -5452,14 +5374,6 @@ olx.source.ImageStaticOptions.prototype.imageLoadFunction;
 
 
 /**
- * Optional logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ImageStaticOptions.prototype.logo;
-
-
-/**
  * Projection.
  * @type {ol.ProjectionLike}
  * @api
@@ -5489,7 +5403,6 @@ olx.source.ImageStaticOptions.prototype.url;
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     params: (Object.<string, *>|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
@@ -5542,14 +5455,6 @@ olx.source.TileArcGISRestOptions.prototype.crossOrigin;
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.params;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.TileArcGISRestOptions.prototype.logo;
 
 
 /**
@@ -5746,7 +5651,6 @@ olx.source.TileJSONOptions.prototype.transition;
  *     crossOrigin: (null|string|undefined),
  *     gutter: (number|undefined),
  *     hidpi: (boolean|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                          ol.TileState, string, ?string,
  *                          ol.TileLoadFunctionType)|undefined),
@@ -5823,14 +5727,6 @@ olx.source.TileWMSOptions.prototype.gutter;
  * @api
  */
 olx.source.TileWMSOptions.prototype.hidpi;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.TileWMSOptions.prototype.logo;
 
 
 /**
@@ -5936,7 +5832,6 @@ olx.source.TileWMSOptions.prototype.transition;
  *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
  *     format: (ol.format.Feature|undefined),
  *     loader: (ol.FeatureLoader|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     overlaps: (boolean|undefined),
  *     strategy: (ol.LoadingStrategy|undefined),
  *     url: (string|ol.FeatureUrlFunction|undefined),
@@ -6011,14 +5906,6 @@ olx.source.VectorOptions.prototype.format;
  * @api
  */
 olx.source.VectorOptions.prototype.loader;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.VectorOptions.prototype.logo;
 
 
 /**
@@ -6099,7 +5986,6 @@ olx.source.VectorOptions.prototype.wrapX;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (string|null|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
@@ -6149,14 +6035,6 @@ olx.source.WMTSOptions.prototype.cacheSize;
  * @api
  */
 olx.source.WMTSOptions.prototype.crossOrigin;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.WMTSOptions.prototype.logo;
 
 
 /**
@@ -6315,7 +6193,6 @@ olx.source.WMTSOptions.prototype.transition;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     opaque: (boolean|undefined),
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
@@ -6360,14 +6237,6 @@ olx.source.XYZOptions.prototype.cacheSize;
  * @api
  */
 olx.source.XYZOptions.prototype.crossOrigin;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.XYZOptions.prototype.logo;
 
 
 /**
@@ -6499,7 +6368,6 @@ olx.source.XYZOptions.prototype.transition;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.ProjectionLike,
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
@@ -6537,14 +6405,6 @@ olx.source.CartoDBOptions.prototype.cacheSize;
  * @api
  */
 olx.source.CartoDBOptions.prototype.crossOrigin;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.CartoDBOptions.prototype.logo;
 
 
 /**
@@ -6614,7 +6474,6 @@ olx.source.CartoDBOptions.prototype.account;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
  *     projection: (ol.ProjectionLike|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     url: !string,
@@ -6653,14 +6512,6 @@ olx.source.ZoomifyOptions.prototype.cacheSize;
  * @api
  */
 olx.source.ZoomifyOptions.prototype.crossOrigin;
-
-
-/**
- * Logo.
- * @type {string|olx.LogoOptions|undefined}
- * @api
- */
-olx.source.ZoomifyOptions.prototype.logo;
 
 
 /**
@@ -7798,7 +7649,6 @@ olx.view.FitOptions.prototype.callback;
  *     index: number,
  *     layerStates: Object.<number, ol.LayerState>,
  *     layerStatesArray: Array.<ol.LayerState>,
- *     logos: Object.<string, (string|Element)>,
  *     pixelRatio: number,
  *     pixelToCoordinateTransform: ol.Transform,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,

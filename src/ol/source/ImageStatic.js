@@ -32,7 +32,6 @@ var _ol_source_ImageStatic_ = function(options) {
 
   _ol_source_Image_.call(this, {
     attributions: options.attributions,
-    logo: options.logo,
     projection: getProjection(options.projection)
   });
 

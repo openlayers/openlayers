@@ -38,7 +38,6 @@ var _ol_source_TileWMS_ = function(opt_options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    logo: options.logo,
     opaque: !transparent,
     projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,

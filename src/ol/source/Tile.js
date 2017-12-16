@@ -28,7 +28,6 @@ var _ol_source_Tile_ = function(options) {
   _ol_source_Source_.call(this, {
     attributions: options.attributions,
     extent: options.extent,
-    logo: options.logo,
     projection: options.projection,
     state: options.state,
     wrapX: options.wrapX

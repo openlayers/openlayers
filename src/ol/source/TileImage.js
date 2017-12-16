@@ -30,7 +30,6 @@ var _ol_source_TileImage_ = function(options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
-    logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
     state: options.state,

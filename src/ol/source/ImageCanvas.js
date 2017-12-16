@@ -19,7 +19,6 @@ var _ol_source_ImageCanvas_ = function(options) {
 
   _ol_source_Image_.call(this, {
     attributions: options.attributions,
-    logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions,
     state: options.state

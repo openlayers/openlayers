@@ -5,7 +5,6 @@ import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
 import _ol_Observable_ from '../Observable.js';
 import _ol_TileState_ from '../TileState.js';
-import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {FALSE} from '../functions.js';
@@ -162,25 +161,6 @@ _ol_renderer_Layer_.prototype.scheduleExpireCache = function(frameState, tileSou
     frameState.postRenderFunctions.push(
         /** @type {ol.PostRenderFunction} */ (postRenderFunction)
     );
-  }
-};
-
-
-/**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.source.Source} source Source.
- * @protected
- */
-_ol_renderer_Layer_.prototype.updateLogos = function(frameState, source) {
-  var logo = source.getLogo();
-  if (logo !== undefined) {
-    if (typeof logo === 'string') {
-      frameState.logos[logo] = '';
-    } else if (logo) {
-      _ol_asserts_.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      _ol_asserts_.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
-      frameState.logos[logo.src] = logo.href;
-    }
   }
 };
 

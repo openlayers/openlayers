@@ -3,7 +3,6 @@
  */
 
 
-
 /**
  * @constructor
  */
@@ -28,7 +27,6 @@ BingMapsCoverageArea.prototype.zoomMax;
 BingMapsCoverageArea.prototype.zoomMin;
 
 
-
 /**
  * @constructor
  */
@@ -47,7 +45,6 @@ BingMapsImageryProvider.prototype.attribution;
 BingMapsImageryProvider.prototype.coverageAreas;
 
 
-
 /**
  * @constructor
  */
@@ -58,12 +55,6 @@ var BingMapsImageryMetadataResponse = function() {};
  * @type {string}
  */
 BingMapsImageryMetadataResponse.prototype.authenticationResultCode;
-
-
-/**
- * @type {string}
- */
-BingMapsImageryMetadataResponse.prototype.brandLogoUri;
 
 
 /**
@@ -94,7 +85,6 @@ BingMapsImageryMetadataResponse.prototype.statusDescription;
  * @type {string}
  */
 BingMapsImageryMetadataResponse.prototype.traceId;
-
 
 
 /**
@@ -155,7 +145,6 @@ BingMapsResource.prototype.zoomMax;
  * @type {number}
  */
 BingMapsResource.prototype.zoomMin;
-
 
 
 /**

@@ -165,14 +165,6 @@ Expected an `ol.style.Style` or an array of `ol.style.Style`.
 
 Expected `layers` to be an array or an `ol.Collection`.
 
-### 44
-
-`logo.href` should be a string.
-
-### 45
-
-`logo.src` should be a string.
-
 ### 46
 
 Incorrect format for `renderer` option.

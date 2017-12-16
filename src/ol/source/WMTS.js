@@ -159,7 +159,6 @@ var _ol_source_WMTS_ = function(options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    logo: options.logo,
     projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: options.tileClass,

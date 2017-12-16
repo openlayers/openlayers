@@ -8,13 +8,6 @@ import _ol_source_State_ from '../source/State.js';
 
 
 /**
- * Object literal with config options for the map logo.
- * @typedef {{href: (string), src: (string)}}
- */
-export var LogoOptions;
-
-
-/**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
  * instantiated in apps.
@@ -43,12 +36,6 @@ var _ol_source_Source_ = function(options) {
    * @type {?ol.Attribution}
    */
   this.attributions_ = this.adaptAttributions_(options.attributions);
-
-  /**
-   * @private
-   * @type {string|LogoOptions|undefined}
-   */
-  this.logo_ = options.logo;
 
   /**
    * @private
@@ -115,16 +102,6 @@ _ol_source_Source_.prototype.getAttributions = function() {
 
 
 /**
- * Get the logo of the source.
- * @return {string|LogoOptions|undefined} Logo.
- * @api
- */
-_ol_source_Source_.prototype.getLogo = function() {
-  return this.logo_;
-};
-
-
-/**
  * Get the projection of the source.
  * @return {ol.proj.Projection} Projection.
  * @api
@@ -178,15 +155,6 @@ _ol_source_Source_.prototype.refresh = function() {
 _ol_source_Source_.prototype.setAttributions = function(attributions) {
   this.attributions_ = this.adaptAttributions_(attributions);
   this.changed();
-};
-
-
-/**
- * Set the logo of the source.
- * @param {string|LogoOptions|undefined} logo Logo.
- */
-_ol_source_Source_.prototype.setLogo = function(logo) {
-  this.logo_ = logo;
 };
 
 

@@ -26,7 +26,6 @@ var _ol_source_Cluster_ = function(options) {
   _ol_source_Vector_.call(this, {
     attributions: options.attributions,
     extent: options.extent,
-    logo: options.logo,
     projection: options.projection,
     wrapX: options.wrapX
   });

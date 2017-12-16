@@ -44,7 +44,6 @@ var _ol_source_XYZ_ = function(opt_options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    logo: options.logo,
     opaque: options.opaque,
     projection: projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
