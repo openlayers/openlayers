@@ -217,7 +217,7 @@ _ol_Sphere_.getDistance_ = function(c1, c2, radius) {
  * Get the spherical area of a geometry.  This is the area (in meters) assuming
  * that polygon edges are segments of great circles on a sphere.
  * @param {ol.geom.Geometry} geometry A geometry.
- * @param {olx.SphereMetricOptions=} opt_options Options for the area
+ * @param {SphereMetricOptions=} opt_options Options for the area
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
  * @return {number} The spherical area (in square meters).
