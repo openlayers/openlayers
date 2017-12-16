@@ -124,28 +124,26 @@ _ol_source_TileUTFGrid_.prototype.getTemplate = function() {
  * in case of an error).
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {function(this: T, *)} callback Callback.
- * @param {T=} opt_this The object to use as `this` in the callback.
+ * @param {function(*)} callback Callback.
  * @param {boolean=} opt_request If `true` the callback is always async.
  *                               The tile data is requested if not yet loaded.
- * @template T
  * @api
  */
 _ol_source_TileUTFGrid_.prototype.forDataAtCoordinateAndResolution = function(
-    coordinate, resolution, callback, opt_this, opt_request) {
+    coordinate, resolution, callback, opt_request) {
   if (this.tileGrid) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
         coordinate, resolution);
     var tile = /** @type {!ol.source.TileUTFGrid.Tile_} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
-    tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_request);
+    tile.forDataAtCoordinate(coordinate, callback, null, opt_request);
   } else {
     if (opt_request === true) {
       setTimeout(function() {
-        callback.call(opt_this, null);
+        callback(null);
       }, 0);
     } else {
-      callback.call(opt_this, null);
+      callback(null);
     }
   }
 };
