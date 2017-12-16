@@ -1,4 +1,4 @@
-import _ol_Geolocation_ from '../src/ol/Geolocation.js';
+import Geolocation from '../src/ol/Geolocation.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -23,7 +23,7 @@ var map = new _ol_Map_({
   view: view
 });
 
-var geolocation = new _ol_Geolocation_({
+var geolocation = new Geolocation({
   projection: view.getProjection(),
   tracking: true
 });

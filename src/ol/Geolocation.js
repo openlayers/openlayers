@@ -55,7 +55,7 @@ export var GeolocationOptions;
  *     is reported in.
  * @api
  */
-var _ol_Geolocation_ = function(opt_options) {
+var Geolocation = function(opt_options) {
 
   _ol_Object_.call(this);
 
@@ -104,13 +104,13 @@ var _ol_Geolocation_ = function(opt_options) {
 
 };
 
-inherits(_ol_Geolocation_, _ol_Object_);
+inherits(Geolocation, _ol_Object_);
 
 
 /**
  * @inheritDoc
  */
-_ol_Geolocation_.prototype.disposeInternal = function() {
+Geolocation.prototype.disposeInternal = function() {
   this.setTracking(false);
   _ol_Object_.prototype.disposeInternal.call(this);
 };
@@ -119,7 +119,7 @@ _ol_Geolocation_.prototype.disposeInternal = function() {
 /**
  * @private
  */
-_ol_Geolocation_.prototype.handleProjectionChanged_ = function() {
+Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (projection) {
     this.transform_ = getTransformFromProjections(
@@ -135,7 +135,7 @@ _ol_Geolocation_.prototype.handleProjectionChanged_ = function() {
 /**
  * @private
  */
-_ol_Geolocation_.prototype.handleTrackingChanged_ = function() {
+Geolocation.prototype.handleTrackingChanged_ = function() {
   if (_ol_has_.GEOLOCATION) {
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
@@ -155,7 +155,7 @@ _ol_Geolocation_.prototype.handleTrackingChanged_ = function() {
  * @private
  * @param {GeolocationPosition} position position event.
  */
-_ol_Geolocation_.prototype.positionChange_ = function(position) {
+Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
   this.set(_ol_GeolocationProperty_.ACCURACY, coords.accuracy);
   this.set(_ol_GeolocationProperty_.ALTITUDE,
@@ -192,7 +192,7 @@ _ol_Geolocation_.prototype.positionChange_ = function(position) {
  * @private
  * @param {GeolocationPositionError} error error object.
  */
-_ol_Geolocation_.prototype.positionError_ = function(error) {
+Geolocation.prototype.positionError_ = function(error) {
   error.type = EventType.ERROR;
   this.setTracking(false);
   this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
@@ -206,7 +206,7 @@ _ol_Geolocation_.prototype.positionError_ = function(error) {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getAccuracy = function() {
+Geolocation.prototype.getAccuracy = function() {
   return (
     /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.ACCURACY)
   );
@@ -219,7 +219,7 @@ _ol_Geolocation_.prototype.getAccuracy = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getAccuracyGeometry = function() {
+Geolocation.prototype.getAccuracyGeometry = function() {
   return (
     /** @type {?ol.geom.Polygon} */ this.get(_ol_GeolocationProperty_.ACCURACY_GEOMETRY) || null
   );
@@ -233,7 +233,7 @@ _ol_Geolocation_.prototype.getAccuracyGeometry = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getAltitude = function() {
+Geolocation.prototype.getAltitude = function() {
   return (
     /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.ALTITUDE)
   );
@@ -247,7 +247,7 @@ _ol_Geolocation_.prototype.getAltitude = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getAltitudeAccuracy = function() {
+Geolocation.prototype.getAltitudeAccuracy = function() {
   return (
     /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.ALTITUDE_ACCURACY)
   );
@@ -260,7 +260,7 @@ _ol_Geolocation_.prototype.getAltitudeAccuracy = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getHeading = function() {
+Geolocation.prototype.getHeading = function() {
   return (
     /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.HEADING)
   );
@@ -274,7 +274,7 @@ _ol_Geolocation_.prototype.getHeading = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getPosition = function() {
+Geolocation.prototype.getPosition = function() {
   return (
     /** @type {ol.Coordinate|undefined} */ this.get(_ol_GeolocationProperty_.POSITION)
   );
@@ -288,7 +288,7 @@ _ol_Geolocation_.prototype.getPosition = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getProjection = function() {
+Geolocation.prototype.getProjection = function() {
   return (
     /** @type {ol.proj.Projection|undefined} */ this.get(_ol_GeolocationProperty_.PROJECTION)
   );
@@ -302,7 +302,7 @@ _ol_Geolocation_.prototype.getProjection = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getSpeed = function() {
+Geolocation.prototype.getSpeed = function() {
   return (
     /** @type {number|undefined} */ this.get(_ol_GeolocationProperty_.SPEED)
   );
@@ -315,7 +315,7 @@ _ol_Geolocation_.prototype.getSpeed = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getTracking = function() {
+Geolocation.prototype.getTracking = function() {
   return (
     /** @type {boolean} */ this.get(_ol_GeolocationProperty_.TRACKING)
   );
@@ -331,7 +331,7 @@ _ol_Geolocation_.prototype.getTracking = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.getTrackingOptions = function() {
+Geolocation.prototype.getTrackingOptions = function() {
   return (
     /** @type {GeolocationPositionOptions|undefined} */ this.get(_ol_GeolocationProperty_.TRACKING_OPTIONS)
   );
@@ -345,7 +345,7 @@ _ol_Geolocation_.prototype.getTrackingOptions = function() {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.setProjection = function(projection) {
+Geolocation.prototype.setProjection = function(projection) {
   this.set(_ol_GeolocationProperty_.PROJECTION, getProjection(projection));
 };
 
@@ -356,7 +356,7 @@ _ol_Geolocation_.prototype.setProjection = function(projection) {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.setTracking = function(tracking) {
+Geolocation.prototype.setTracking = function(tracking) {
   this.set(_ol_GeolocationProperty_.TRACKING, tracking);
 };
 
@@ -370,7 +370,7 @@ _ol_Geolocation_.prototype.setTracking = function(tracking) {
  * @observable
  * @api
  */
-_ol_Geolocation_.prototype.setTrackingOptions = function(options) {
+Geolocation.prototype.setTrackingOptions = function(options) {
   this.set(_ol_GeolocationProperty_.TRACKING_OPTIONS, options);
 };
-export default _ol_Geolocation_;
+export default Geolocation;

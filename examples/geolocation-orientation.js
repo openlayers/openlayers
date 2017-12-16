@@ -1,4 +1,4 @@
-import _ol_Geolocation_ from '../src/ol/Geolocation.js';
+import Geolocation from '../src/ol/Geolocation.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
@@ -46,7 +46,7 @@ var positions = new LineString([],
     /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
 
 // Geolocation Control
-var geolocation = new _ol_Geolocation_({
+var geolocation = new Geolocation({
   projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
