@@ -1,4 +1,4 @@
-import _ol_Graticule_ from '../src/ol/Graticule.js';
+import Graticule from '../src/ol/Graticule.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -23,7 +23,7 @@ var map = new _ol_Map_({
 });
 
 // Create the graticule component
-var graticule = new _ol_Graticule_({
+var graticule = new Graticule({
   // the style to use for the lines, optional.
   strokeStyle: new _ol_style_Stroke_({
     color: 'rgba(255,120,0,0.9)',
