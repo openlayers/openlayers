@@ -91,23 +91,22 @@ _ol_Observable_.prototype.getRevision = function() {
  * Listen for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @return {ol.EventsKey|Array.<ol.EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
  * @api
  */
-_ol_Observable_.prototype.on = function(type, listener, opt_this) {
+_ol_Observable_.prototype.on = function(type, listener) {
   if (Array.isArray(type)) {
     var len = type.length;
     var keys = new Array(len);
     for (var i = 0; i < len; ++i) {
-      keys[i] = _ol_events_.listen(this, type[i], listener, opt_this);
+      keys[i] = _ol_events_.listen(this, type[i], listener);
     }
     return keys;
   } else {
     return _ol_events_.listen(
-        this, /** @type {string} */ (type), listener, opt_this);
+        this, /** @type {string} */ (type), listener);
   }
 };
 
@@ -116,23 +115,22 @@ _ol_Observable_.prototype.on = function(type, listener, opt_this) {
  * Listen once for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_this The object to use as `this` in `listener`.
  * @return {ol.EventsKey|Array.<ol.EventsKey>} Unique key for the listener. If
  *     called with an array of event types as the first argument, the return
  *     will be an array of keys.
  * @api
  */
-_ol_Observable_.prototype.once = function(type, listener, opt_this) {
+_ol_Observable_.prototype.once = function(type, listener) {
   if (Array.isArray(type)) {
     var len = type.length;
     var keys = new Array(len);
     for (var i = 0; i < len; ++i) {
-      keys[i] = _ol_events_.listenOnce(this, type[i], listener, opt_this);
+      keys[i] = _ol_events_.listenOnce(this, type[i], listener);
     }
     return keys;
   } else {
     return _ol_events_.listenOnce(
-        this, /** @type {string} */ (type), listener, opt_this);
+        this, /** @type {string} */ (type), listener);
   }
 };
 
@@ -141,18 +139,16 @@ _ol_Observable_.prototype.once = function(type, listener, opt_this) {
  * Unlisten for a certain type of event.
  * @param {string|Array.<string>} type The event type or array of event types.
  * @param {function(?): ?} listener The listener function.
- * @param {Object=} opt_this The object which was used as `this` by the
- * `listener`.
  * @api
  */
-_ol_Observable_.prototype.un = function(type, listener, opt_this) {
+_ol_Observable_.prototype.un = function(type, listener) {
   if (Array.isArray(type)) {
     for (var i = 0, ii = type.length; i < ii; ++i) {
-      _ol_events_.unlisten(this, type[i], listener, opt_this);
+      _ol_events_.unlisten(this, type[i], listener);
     }
     return;
   } else {
-    _ol_events_.unlisten(this, /** @type {string} */ (type), listener, opt_this);
+    _ol_events_.unlisten(this, /** @type {string} */ (type), listener);
   }
 };
 export default _ol_Observable_;

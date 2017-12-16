@@ -41,6 +41,7 @@ The following methods did get the optional this (i.e. opt_this) arguments remove
 
 * Collection#forEach
 * geom/LineString#forEachSegment
+* Observable#on, #once, #un
 
 ### v4.6.0
 
