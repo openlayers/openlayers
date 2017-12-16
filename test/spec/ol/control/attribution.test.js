@@ -70,7 +70,7 @@ describe('ol.control.Attribution', function() {
   it('does not add duplicate attributions', function() {
     map.renderSync();
     var attribution = map.getTarget().querySelectorAll('.ol-attribution li');
-    expect(attribution.length).to.be(3); // first <li> is the logo
+    expect(attribution.length).to.be(2);
   });
 
 });

@@ -24,7 +24,6 @@ import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEm
 import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
 import _ol_layer_Group_ from './layer/Group.js';
-import _ol_obj_ from './obj.js';
 import _ol_plugins_ from './plugins.js';
 import _ol_renderer_Type_ from './renderer/Type.js';
 import _ol_size_ from './size.js';
@@ -41,7 +40,6 @@ import _ol_transform_ from './transform.js';
  *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
  *     loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined),
- *     logo: (boolean|string|olx.LogoOptions|Element|undefined),
  *     moveTolerance: (number|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.renderer.Type|Array.<ol.renderer.Type>|undefined),
@@ -86,13 +84,6 @@ export var MapOptions;
  *     true, tiles will be loaded while interacting with the map. This may
  *     improve the user experience, but can also make map panning and zooming
  *     choppy on devices with slow memory. Default is `false`.
- * @param {boolean|string|olx.LogoOptions|Element|undefined} options.logo The
- *     map logo. A logo to be displayed on the map at all times. If a string is
- *     provided, it will be set as the image source of the logo. If an object is
- *     provided, the `src` property should be the URL for an image and the
- *     `href` property should be a URL for creating a link. If an element is
- *     provided, the element will be used. To disable the map logo, set the
- *     option to `false`. By default, the OpenLayers logo is shown.
  * @param {number|undefined} options.moveTolerance The minimum distance in
  *     pixels the cursor must move to be detected as a map move event instead
  *     of a click. Increasing this value can make it easier to click on the map.
@@ -146,12 +137,6 @@ var _ol_PluggableMap_ = function(options) {
    */
   this.pixelRatio_ = options.pixelRatio !== undefined ?
     options.pixelRatio : _ol_has_.DEVICE_PIXEL_RATIO;
-
-  /**
-   * @private
-   * @type {Object.<string, string>}
-   */
-  this.logos_ = optionsInternal.logos;
 
   /**
    * @private
@@ -1234,7 +1219,6 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
-      logos: _ol_obj_.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],
@@ -1400,34 +1384,6 @@ _ol_PluggableMap_.DEFAULT_RENDERER_TYPES = [
 
 
 /**
- * @const
- * @type {string}
- */
-_ol_PluggableMap_.LOGO_URL = 'data:image/png;base64,' +
-    'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBI' +
-    'WXMAAAHGAAABxgEXwfpGAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAA' +
-    'AhNQTFRF////AP//AICAgP//AFVVQECA////K1VVSbbbYL/fJ05idsTYJFtbbcjbJllmZszW' +
-    'WMTOIFhoHlNiZszTa9DdUcHNHlNlV8XRIVdiasrUHlZjIVZjaMnVH1RlIFRkH1RkH1ZlasvY' +
-    'asvXVsPQH1VkacnVa8vWIVZjIFRjVMPQa8rXIVVkXsXRsNveIFVkIFZlIVVj3eDeh6GmbMvX' +
-    'H1ZkIFRka8rWbMvXIFVkIFVjIFVkbMvWH1VjbMvWIFVlbcvWIFVla8vVIFVkbMvWbMvVH1Vk' +
-    'bMvWIFVlbcvWIFVkbcvVbMvWjNPbIFVkU8LPwMzNIFVkbczWIFVkbsvWbMvXIFVkRnB8bcvW' +
-    '2+TkW8XRIFVkIlZlJVloJlpoKlxrLl9tMmJwOWd0Omh1RXF8TneCT3iDUHiDU8LPVMLPVcLP' +
-    'VcPQVsPPVsPQV8PQWMTQWsTQW8TQXMXSXsXRX4SNX8bSYMfTYcfTYsfTY8jUZcfSZsnUaIqT' +
-    'acrVasrVa8jTa8rWbI2VbMvWbcvWdJObdcvUdszUd8vVeJaee87Yfc3WgJyjhqGnitDYjaar' +
-    'ldPZnrK2oNbborW5o9bbo9fbpLa6q9ndrL3ArtndscDDutzfu8fJwN7gwt7gxc/QyuHhy+Hi' +
-    'zeHi0NfX0+Pj19zb1+Tj2uXk29/e3uLg3+Lh3+bl4uXj4ufl4+fl5Ofl5ufl5ujm5+jmySDn' +
-    'BAAAAFp0Uk5TAAECAgMEBAYHCA0NDg4UGRogIiMmKSssLzU7PkJJT1JTVFliY2hrdHZ3foSF' +
-    'hYeJjY2QkpugqbG1tre5w8zQ09XY3uXn6+zx8vT09vf4+Pj5+fr6/P39/f3+gz7SsAAAAVVJ' +
-    'REFUOMtjYKA7EBDnwCPLrObS1BRiLoJLnte6CQy8FLHLCzs2QUG4FjZ5GbcmBDDjxJBXDWxC' +
-    'Brb8aM4zbkIDzpLYnAcE9VXlJSWlZRU13koIeW57mGx5XjoMZEUqwxWYQaQbSzLSkYGfKFSe' +
-    '0QMsX5WbjgY0YS4MBplemI4BdGBW+DQ11eZiymfqQuXZIjqwyadPNoSZ4L+0FVM6e+oGI6g8' +
-    'a9iKNT3o8kVzNkzRg5lgl7p4wyRUL9Yt2jAxVh6mQCogae6GmflI8p0r13VFWTHBQ0rWPW7a' +
-    'hgWVcPm+9cuLoyy4kCJDzCm6d8PSFoh0zvQNC5OjDJhQopPPJqph1doJBUD5tnkbZiUEqaCn' +
-    'B3bTqLTFG1bPn71kw4b+GFdpLElKIzRxxgYgWNYc5SCENVHKeUaltHdXx0dZ8uBI1hJ2UUDg' +
-    'q82CM2MwKeibqAvSO7MCABq0wXEPiqWEAAAAAElFTkSuQmCC';
-
-
-/**
  * @param {MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
@@ -1447,23 +1403,6 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
    * @type {Object.<string, *>}
    */
   var values = {};
-
-  var logos = {};
-  if (options.logo === undefined ||
-      (typeof options.logo === 'boolean' && options.logo)) {
-    logos[_ol_PluggableMap_.LOGO_URL] = 'https://openlayers.org/';
-  } else {
-    var logo = options.logo;
-    if (typeof logo === 'string') {
-      logos[logo] = '';
-    } else if (logo instanceof HTMLElement) {
-      logos[getUid(logo).toString()] = logo;
-    } else if (logo) {
-      _ol_asserts_.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      _ol_asserts_.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
-      logos[logo.src] = logo.href;
-    }
-  }
 
   var layerGroup = (options.layers instanceof _ol_layer_Group_) ?
     options.layers : new _ol_layer_Group_({layers: options.layers});
@@ -1554,7 +1493,6 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     controls: controls,
     interactions: interactions,
     keyboardEventTarget: keyboardEventTarget,
-    logos: logos,
     overlays: overlays,
     mapRendererPlugin: mapRendererPlugin,
     values: values

@@ -45,7 +45,6 @@ var _ol_source_CartoDB_ = function(options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    logo: options.logo,
     maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
     minZoom: options.minZoom,
     projection: options.projection,

@@ -95,7 +95,6 @@ source.on('imageloaderror', function() {
 });
 
 var map = new _ol_Map_({
-  logo: false,
   layers: [
     new _ol_layer_Image_({source: source})
   ],

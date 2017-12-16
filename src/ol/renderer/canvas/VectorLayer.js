@@ -299,11 +299,8 @@ _ol_renderer_canvas_VectorLayer_.prototype.handleStyleImageChange_ = function(ev
  * @inheritDoc
  */
 _ol_renderer_canvas_VectorLayer_.prototype.prepareFrame = function(frameState, layerState) {
-
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
-
-  this.updateLogos(frameState, vectorSource);
 
   var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
   var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];

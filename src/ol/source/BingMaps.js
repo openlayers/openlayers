@@ -125,11 +125,6 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
     return;
   }
 
-  var brandLogoUri = response.brandLogoUri;
-  if (brandLogoUri.indexOf('https') == -1) {
-    brandLogoUri = brandLogoUri.replace('http', 'https');
-  }
-  //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
   var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
@@ -208,8 +203,6 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
       return attributions;
     });
   }
-
-  this.setLogo(brandLogoUri);
 
   this.setState(_ol_source_State_.READY);
 };

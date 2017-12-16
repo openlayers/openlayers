@@ -94,7 +94,6 @@ source.on('tileloaderror', function() {
 });
 
 var map = new _ol_Map_({
-  logo: false,
   layers: [
     new _ol_layer_Tile_({source: source})
   ],

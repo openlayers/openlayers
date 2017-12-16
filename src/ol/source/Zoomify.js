@@ -141,7 +141,6 @@ var _ol_source_Zoomify_ = function(opt_options) {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
-    logo: options.logo,
     projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: ZoomifyTileClass,

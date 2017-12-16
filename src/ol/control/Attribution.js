@@ -1,17 +1,14 @@
 /**
  * @module ol/control/Attribution
  */
-// FIXME handle date line wrap
-
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import Control from '../control/Control.js';
 import _ol_css_ from '../css.js';
-import {removeNode, replaceNode} from '../dom.js';
+import {removeChildren, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
-import _ol_obj_ from '../obj.js';
 
 /**
  * @classdesc
@@ -34,15 +31,6 @@ var Attribution = function(opt_options) {
    * @type {Element}
    */
   this.ulElement_ = document.createElement('UL');
-
-  /**
-   * @private
-   * @type {Element}
-   */
-  this.logoLi_ = document.createElement('LI');
-
-  this.ulElement_.appendChild(this.logoLi_);
-  this.logoLi_.style.display = 'none';
 
   /**
    * @private
@@ -130,12 +118,6 @@ var Attribution = function(opt_options) {
    * @type {boolean}
    */
   this.renderedVisible_ = true;
-
-  /**
-   * @private
-   * @type {Object.<string, Element>}
-   */
-  this.logoElements_ = {};
 
 };
 
@@ -231,10 +213,7 @@ Attribution.prototype.updateElement_ = function(frameState) {
     return;
   }
 
-  // remove everything but the logo
-  while (this.ulElement_.lastChild !== this.logoLi_) {
-    this.ulElement_.removeChild(this.ulElement_.lastChild);
-  }
+  removeChildren(this.ulElement_);
 
   // append the attributions
   for (var i = 0, ii = attributions.length; i < ii; ++i) {
@@ -244,64 +223,13 @@ Attribution.prototype.updateElement_ = function(frameState) {
   }
 
 
-  if (attributions.length === 0 && this.renderedAttributions_.length > 0) {
-    this.element.classList.add('ol-logo-only');
-  } else if (this.renderedAttributions_.length === 0 && attributions.length > 0) {
-    this.element.classList.remove('ol-logo-only');
-  }
-
-  var visible = attributions.length > 0 || !_ol_obj_.isEmpty(frameState.logos);
+  var visible = attributions.length > 0;
   if (this.renderedVisible_ != visible) {
     this.element.style.display = visible ? '' : 'none';
     this.renderedVisible_ = visible;
   }
 
   this.renderedAttributions_ = attributions;
-  this.insertLogos_(frameState);
-};
-
-
-/**
- * @param {?olx.FrameState} frameState Frame state.
- * @private
- */
-Attribution.prototype.insertLogos_ = function(frameState) {
-
-  var logo;
-  var logos = frameState.logos;
-  var logoElements = this.logoElements_;
-
-  for (logo in logoElements) {
-    if (!(logo in logos)) {
-      removeNode(logoElements[logo]);
-      delete logoElements[logo];
-    }
-  }
-
-  var image, logoElement, logoKey;
-  for (logoKey in logos) {
-    var logoValue = logos[logoKey];
-    if (logoValue instanceof HTMLElement) {
-      this.logoLi_.appendChild(logoValue);
-      logoElements[logoKey] = logoValue;
-    }
-    if (!(logoKey in logoElements)) {
-      image = new Image();
-      image.src = logoKey;
-      if (logoValue === '') {
-        logoElement = image;
-      } else {
-        logoElement = document.createElement('a');
-        logoElement.href = logoValue;
-        logoElement.appendChild(image);
-      }
-      this.logoLi_.appendChild(logoElement);
-      logoElements[logoKey] = logoElement;
-    }
-  }
-
-  this.logoLi_.style.display = !_ol_obj_.isEmpty(logos) ? '' : 'none';
-
 };
 
 

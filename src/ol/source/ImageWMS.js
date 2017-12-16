@@ -33,7 +33,6 @@ var _ol_source_ImageWMS_ = function(opt_options) {
 
   _ol_source_Image_.call(this, {
     attributions: options.attributions,
-    logo: options.logo,
     projection: options.projection,
     resolutions: options.resolutions
   });

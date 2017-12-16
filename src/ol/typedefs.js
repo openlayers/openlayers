@@ -440,7 +440,6 @@ ol.LRUCacheEntry;
  * @typedef {{controls: (ol.Collection.<ol.control.Control>|undefined),
  *            interactions: (ol.Collection.<ol.interaction.Interaction>|undefined),
  *            keyboardEventTarget: (Element|Document),
- *            logos: (Object.<string, (string|Element)>),
  *            overlays: ol.Collection.<ol.Overlay>,
  *            mapRendererPlugin: olx.MapRendererPlugin,
  *            values: Object.<string, *>}}
@@ -616,7 +615,6 @@ ol.SnapSegmentDataType;
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            extent: (null|ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            state: (ol.source.State|undefined)}}
@@ -634,7 +632,6 @@ ol.SourceRasterRenderedState;
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            wrapX: (boolean|undefined)}}
@@ -646,7 +643,6 @@ ol.SourceSourceOptions;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            tilePixelRatio: (number|undefined),
  *            projection: ol.ProjectionLike,
@@ -662,7 +658,6 @@ ol.SourceTileOptions;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),

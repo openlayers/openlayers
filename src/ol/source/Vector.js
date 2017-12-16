@@ -39,7 +39,6 @@ var _ol_source_Vector_ = function(opt_options) {
 
   _ol_source_Source_.call(this, {
     attributions: options.attributions,
-    logo: options.logo,
     projection: undefined,
     state: _ol_source_State_.READY,
     wrapX: options.wrapX !== undefined ? options.wrapX : true

@@ -31,6 +31,10 @@ and calling it before using projections, and any time the proj4 registry was cha
 register(proj4);
 ```
 
+#### Removal of logos
+
+The map and sources no longer accept a `logo` option.  Instead, if you wish to append a logo to your map, add the desired markup directly in your HTML.  In addition, you can use the `attributions` property of a source to display arbitrary markup per-source with the attribution control.
+
 ### v4.6.0
 
 #### Renamed `exceedLength` option of `ol.style.Text` to `overflow`
