@@ -8,7 +8,7 @@ import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import {Processor as _ol_ext_pixelworks_Processor_} from 'pixelworks';
+import {Processor} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import _ol_layer_Image_ from '../layer/Image.js';
 import _ol_layer_Tile_ from '../layer/Tile.js';
@@ -148,7 +148,7 @@ inherits(_ol_source_Raster_, _ol_source_Image_);
  * @api
  */
 _ol_source_Raster_.prototype.setOperation = function(operation, opt_lib) {
-  this.worker_ = new _ol_ext_pixelworks_Processor_({
+  this.worker_ = new Processor({
     operation: operation,
     imageOps: this.operationType_ === _ol_source_RasterOperationType_.IMAGE,
     queue: 1,
