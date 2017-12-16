@@ -39,7 +39,8 @@ The map and sources no longer accept a `logo` option.  Instead, if you wish to a
 
 The following methods did get the optional this (i.e. opt_this) arguments removed. Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
 
-* ol.Collection#forEach
+* Collection#forEach
+* geom/LineString#forEachSegment
 
 ### v4.6.0
 
