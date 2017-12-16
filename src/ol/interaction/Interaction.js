@@ -1,13 +1,19 @@
 /**
  * @module ol/interaction/Interaction
  */
-// FIXME factor out key precondition (shift et. al)
-
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
 import _ol_math_ from '../math.js';
+
+
+/**
+ * Object literal with config options for interactions.
+ * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ */
+export var InteractionOptions;
+
 
 /**
  * @classdesc
@@ -22,7 +28,13 @@ import _ol_math_ from '../math.js';
  * vectors and so are visible on the screen.
  *
  * @constructor
- * @param {olx.interaction.InteractionOptions} options Options.
+ * @param {InteractionOptions} options Options.
+ * @param {function(ol.MapBrowserEvent):boolean} options.handleEvent Method
+ *     called by the map to notify the interaction that a browser event was
+ *     dispatched to the map. If the function returns a falsy value,
+ *     propagation of the event to other interactions in the map's interactions
+ *     chain will be prevented (this includes functions with no explicit
+ *     return).
  * @extends {ol.Object}
  * @api
  */

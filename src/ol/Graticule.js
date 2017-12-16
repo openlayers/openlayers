@@ -14,10 +14,90 @@ import _ol_style_Fill_ from './style/Fill.js';
 import _ol_style_Stroke_ from './style/Stroke.js';
 import _ol_style_Text_ from './style/Text.js';
 
+
+/**
+ * @typedef {{map: (ol.PluggableMap|undefined),
+ *     maxLines: (number|undefined),
+ *     strokeStyle: (ol.style.Stroke|undefined),
+ *     targetSize: (number|undefined),
+ *     showLabels: (boolean|undefined),
+ *     lonLabelFormatter: (undefined|function(number):string),
+ *     latLabelFormatter: (undefined|function(number):string),
+ *     lonLabelPosition: (number|undefined),
+ *     latLabelPosition: (number|undefined),
+ *     lonLabelStyle: (ol.style.Text|undefined),
+ *     latLabelStyle: (ol.style.Text|undefined)}}
+ */
+export var GraticuleOptions;
+
+
 /**
  * Render a grid for a coordinate system on a map.
  * @constructor
- * @param {olx.GraticuleOptions=} opt_options Options.
+ * @param {GraticuleOptions=} opt_options Options.
+ * @param {ol.PluggableMap|undefined} opt_options.map Reference to an `ol.Map`
+ *     object.
+ * @param {number|undefined} opt_options.maxLines The maximum number of
+ *     meridians and parallels from the center of the
+ *     map. The default value is 100, which means that at most 200 meridians
+ *     and 200 parallels will be displayed. The default value is appropriate
+ *     for conformal projections like Spherical Mercator. If you increase
+ *     the value more lines will be drawn and the drawing performance will
+ *     decrease.
+ * @param {ol.style.Stroke|undefined} opt_options.strokeStyle The stroke style
+ *     to use for drawing the graticule. If not provided, the
+ *     lines will be drawn with `rgba(0,0,0,0.2)`, a not fully opaque black.
+ * @param {number|undefined} opt_options.targetSize The target size of the
+ *     graticule cells, in pixels. Default value is 100 pixels.
+ * @param {boolean|undefined} opt_options.showLabels Render a label with the
+ *     respective latitude/longitude for each graticule line. Default is false.
+ * @param {undefined|function(number):string} opt_options.lonLabelFormatter
+ *     Label formatter for longitudes. This function is called with the
+ *     longitude as argument, and should return a formatted string representing
+ *     the longitude. By default, labels are formatted as degrees, minutes,
+ *     seconds and hemisphere.
+ * @param {number|undefined} opt_options.lonLabelPosition Longitude label
+ *     position in fractions (0..1) of view extent. 0 means at the bottom of the
+ *     viewport, 1 means at the top. Default is 0.
+ * @param {number|undefined} opt_options.latLabelPosition Latitude label
+ *     position in fractions (0..1) of view extent. 0 means at the left of the
+ *     viewport, 1 means at the right. Default is 1.
+ * @param {ol.style.Text|undefined} options.lonLabelStyle Longitude label text
+ *     style. The default is
+ *     ```js
+ *     new ol.style.Text({
+ *       font: '12px Calibri,sans-serif',
+ *       textBaseline: 'bottom',
+ *       fill: new ol.style.Fill({
+ *         color: 'rgba(0,0,0,1)'
+ *       }),
+ *       stroke: new ol.style.Stroke({
+ *         color: 'rgba(255,255,255,1)',
+ *         width: 3
+ *       })
+ *     });
+ *     ```
+ *     Note that the default's `textBaseline` configuration will not work well
+ *     for `lonLabelPosition` configurations that position labels close to the
+ *     top of the viewport.
+ * @param {ol.style.Text|undefined} opt_options.latLabelStyle Latitude label
+ *     text style. The default is
+ *     ```js
+ *     new ol.style.Text({
+ *       font: '12px Calibri,sans-serif',
+ *       textAlign: 'end',
+ *       fill: new ol.style.Fill({
+ *         color: 'rgba(0,0,0,1)'
+ *       }),
+ *       stroke: new ol.style.Stroke({
+ *         color: 'rgba(255,255,255,1)',
+ *         width: 3
+ *       })
+ *     });
+ *     ```
+ *     Note that the default's `textAlign` configuration will not work well for
+ *     `latLabelPosition` configurations that position labels close to the left
+ *     of the viewport.
  * @api
  */
 var _ol_Graticule_ = function(opt_options) {

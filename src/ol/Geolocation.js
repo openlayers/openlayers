@@ -1,8 +1,6 @@
 /**
  * @module ol/Geolocation
  */
-// FIXME handle geolocation not supported
-
 import {inherits} from './index.js';
 import _ol_GeolocationProperty_ from './GeolocationProperty.js';
 import _ol_Object_ from './Object.js';
@@ -14,6 +12,15 @@ import _ol_has_ from './has.js';
 import _ol_math_ from './math.js';
 import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
 import _ol_proj_EPSG4326_ from './proj/EPSG4326.js';
+
+
+/**
+ * @typedef {{tracking: (boolean|undefined),
+ *     trackingOptions: (GeolocationPositionOptions|undefined),
+ *     projection: ol.ProjectionLike}}
+ */
+export var GeolocationOptions;
+
 
 /**
  * @classdesc
@@ -38,7 +45,14 @@ import _ol_proj_EPSG4326_ from './proj/EPSG4326.js';
  * @fires error
  * @constructor
  * @extends {ol.Object}
- * @param {olx.GeolocationOptions=} opt_options Options.
+ * @param {GeolocationOptions=} opt_options Options.
+ * @param {boolean|undefined} opt_options.tracking Start Tracking. Default is
+ *     `false`.
+ * @param {GeolocationPositionOptions|undefined} opt_options.trackingOptions
+ *     Tracking options. See
+ *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}.
+ * @param {ol.ProjectionLike} opt_options.projection The projection the position
+ *     is reported in.
  * @api
  */
 var _ol_Geolocation_ = function(opt_options) {

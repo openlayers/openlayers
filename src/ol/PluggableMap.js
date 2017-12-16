@@ -31,10 +31,87 @@ import _ol_size_ from './size.js';
 import _ol_structs_PriorityQueue_ from './structs/PriorityQueue.js';
 import _ol_transform_ from './transform.js';
 
+
+/**
+ * Object literal with config options for the map.
+ * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
+ *     pixelRatio: (number|undefined),
+ *     interactions: (ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined),
+ *     keyboardEventTarget: (Element|Document|string|undefined),
+ *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
+ *     loadTilesWhileAnimating: (boolean|undefined),
+ *     loadTilesWhileInteracting: (boolean|undefined),
+ *     logo: (boolean|string|olx.LogoOptions|Element|undefined),
+ *     moveTolerance: (number|undefined),
+ *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
+ *     renderer: (ol.renderer.Type|Array.<ol.renderer.Type>|undefined),
+ *     target: (Element|string|undefined),
+ *     view: (ol.View|undefined)}}
+ */
+export var MapOptions;
+
+
 /**
  * @constructor
  * @extends {ol.Object}
- * @param {olx.MapOptions} options Map options.
+ * @param {MapOptions} options Map options.
+ * @param {ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined} options.controls
+ *     Controls initially added to the map. If not specified,
+ *     {@link ol.control.defaults ol.control.defaults()} is used.
+ * @param {number|undefined} options.pixelRatio The ratio between physical
+ *     pixels and device-independent pixels (dips) on the device. If
+ *     `undefined` then it gets set by using `window.devicePixelRatio`.
+ * @param {ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined} options.interactions
+ *     Interactions that are initially added to the map. If not specified,
+ *     {@link ol.interaction.defaults ol.interaction.defaults()} is used.
+ * @param {Element|Document|string|undefined} options.keyboardEventTarget The
+ *     element to listen to keyboard events on. This determines when the
+ *     `KeyboardPan` and `KeyboardZoom` interactions trigger. For example, if
+ *     this option is set to `document` the keyboard interactions will always
+ *     trigger. If this option is not specified, the element the library listens
+ *     to keyboard events on is the map target (i.e. the user-provided div for
+ *     the map). If this is not `document` the target element needs to be
+ *     focused for key events to be emitted, requiring that the target element
+ *     has a `tabindex` attribute.
+ * @param {Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined} options.layers
+ *     Layers. If this is not defined, a map with no layers will be rendered.
+ *     Note that layers are rendered in the order supplied, so if you want, for
+ *     example, a vector layer to appear on top of a tile layer, it must come
+ *     after the tile layer.
+ * @param {boolean|undefined} options.loadTilesWhileAnimating When set to true,
+ *     tiles will be loaded during animations. This may improve the user
+ *     experience, but can also make animations stutter on devices with slow
+ *     memory. Default is `false`.
+ * @param {boolean|undefined} options.loadTilesWhileInteracting When set to
+ *     true, tiles will be loaded while interacting with the map. This may
+ *     improve the user experience, but can also make map panning and zooming
+ *     choppy on devices with slow memory. Default is `false`.
+ * @param {boolean|string|olx.LogoOptions|Element|undefined} options.logo The
+ *     map logo. A logo to be displayed on the map at all times. If a string is
+ *     provided, it will be set as the image source of the logo. If an object is
+ *     provided, the `src` property should be the URL for an image and the
+ *     `href` property should be a URL for creating a link. If an element is
+ *     provided, the element will be used. To disable the map logo, set the
+ *     option to `false`. By default, the OpenLayers logo is shown.
+ * @param {number|undefined} options.moveTolerance The minimum distance in
+ *     pixels the cursor must move to be detected as a map move event instead
+ *     of a click. Increasing this value can make it easier to click on the map.
+ *     Default is `1`.
+ * @param {ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined} options.overlays
+ *     Overlays initially added to the map. By default, no overlays are added.
+ * @param {ol.renderer.Type|Array.<ol.renderer.Type>|undefined} options.renderer
+ *     Renderer. By default, Canvas and WebGL renderers are tested for support
+ *     in that order, and the first supported used. Specify a
+ *     {@link ol.renderer.Type} here to use a specific renderer. Note that the
+ *     Canvas renderer fully supports vector data, but WebGL can only render
+ *     Point geometries.
+ * @param {Element|string|undefined} options.target The container for the map,
+ *     either the element itself or the `id` of the element. If not specified at
+ *     construction time, {@link ol.Map#setTarget} must be called for the map to
+ *     be rendered.
+ * @param {ol.View|undefined} options.view The map's view.  No layer sources
+ *     will be fetched unless this is specified at construction time or through
+ *     {@link ol.Map#setView}.
  * @fires ol.MapBrowserEvent
  * @fires ol.MapEvent
  * @fires ol.render.Event#postcompose
@@ -1351,7 +1428,7 @@ _ol_PluggableMap_.LOGO_URL = 'data:image/png;base64,' +
 
 
 /**
- * @param {olx.MapOptions} options Map options.
+ * @param {MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
 _ol_PluggableMap_.createOptionsInternal = function(options) {
