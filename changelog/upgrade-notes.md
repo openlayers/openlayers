@@ -43,6 +43,7 @@ The following methods did get the optional this (i.e. opt_this) arguments remove
 * geom/LineString#forEachSegment
 * Observable#on, #once, #un
 * source/TileUTFGrid#forDataAtCoordinateAndResolution
+* source/Vector#forEachFeature, #forEachFeatureInExtent, #forEachFeatureIntersectingExtent
 
 ### v4.6.0
 

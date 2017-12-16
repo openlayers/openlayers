@@ -379,18 +379,17 @@ _ol_source_Vector_.prototype.clear = function(opt_fast) {
  * with each one.  If the callback returns any "truthy" value, iteration will
  * stop and the function will return the same value.
  *
- * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ * @param {function(ol.Feature): T} callback Called with each feature
  *     on the source.  Return a truthy value to stop iteration.
- * @param {T=} opt_this The object to use as `this` in the callback.
- * @return {S|undefined} The return value from the last call to the callback.
- * @template T,S
+ * @return {T|undefined} The return value from the last call to the callback.
+ * @template T
  * @api
  */
-_ol_source_Vector_.prototype.forEachFeature = function(callback, opt_this) {
+_ol_source_Vector_.prototype.forEachFeature = function(callback) {
   if (this.featuresRtree_) {
-    return this.featuresRtree_.forEach(callback, opt_this);
+    return this.featuresRtree_.forEach(callback);
   } else if (this.featuresCollection_) {
-    return this.featuresCollection_.forEach(callback.bind(opt_this));
+    return this.featuresCollection_.forEach(callback);
   }
 };
 
@@ -402,18 +401,17 @@ _ol_source_Vector_.prototype.forEachFeature = function(callback, opt_this) {
  * value.
  *
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ * @param {function(ol.Feature): T} callback Called with each feature
  *     whose goemetry contains the provided coordinate.
- * @param {T=} opt_this The object to use as `this` in the callback.
- * @return {S|undefined} The return value from the last call to the callback.
- * @template T,S
+ * @return {T|undefined} The return value from the last call to the callback.
+ * @template T
  */
-_ol_source_Vector_.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, callback, opt_this) {
+_ol_source_Vector_.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, callback) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
     if (geometry.intersectsCoordinate(coordinate)) {
-      return callback.call(opt_this, feature);
+      return callback(feature);
     } else {
       return undefined;
     }
@@ -435,18 +433,17 @@ _ol_source_Vector_.prototype.forEachFeatureAtCoordinateDirect = function(coordin
  * features, equivalent to {@link ol.source.Vector#forEachFeature}.
  *
  * @param {ol.Extent} extent Extent.
- * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ * @param {function(ol.Feature): T} callback Called with each feature
  *     whose bounding box intersects the provided extent.
- * @param {T=} opt_this The object to use as `this` in the callback.
- * @return {S|undefined} The return value from the last call to the callback.
- * @template T,S
+ * @return {T|undefined} The return value from the last call to the callback.
+ * @template T
  * @api
  */
-_ol_source_Vector_.prototype.forEachFeatureInExtent = function(extent, callback, opt_this) {
+_ol_source_Vector_.prototype.forEachFeatureInExtent = function(extent, callback) {
   if (this.featuresRtree_) {
-    return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
+    return this.featuresRtree_.forEachInExtent(extent, callback);
   } else if (this.featuresCollection_) {
-    return this.featuresCollection_.forEach(callback.bind(opt_this));
+    return this.featuresCollection_.forEach(callback);
   }
 };
 
@@ -461,24 +458,23 @@ _ol_source_Vector_.prototype.forEachFeatureInExtent = function(extent, callback,
  * source.forEachFeatureInExtent()} method instead.
  *
  * @param {ol.Extent} extent Extent.
- * @param {function(this: T, ol.Feature): S} callback Called with each feature
+ * @param {function(ol.Feature): T} callback Called with each feature
  *     whose geometry intersects the provided extent.
- * @param {T=} opt_this The object to use as `this` in the callback.
- * @return {S|undefined} The return value from the last call to the callback.
- * @template T,S
+ * @return {T|undefined} The return value from the last call to the callback.
+ * @template T
  * @api
  */
-_ol_source_Vector_.prototype.forEachFeatureIntersectingExtent = function(extent, callback, opt_this) {
+_ol_source_Vector_.prototype.forEachFeatureIntersectingExtent = function(extent, callback) {
   return this.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
-       * @return {S|undefined} The return value from the last call to the callback.
-       * @template S
+       * @return {T|undefined} The return value from the last call to the callback.
+       * @template T
        */
       function(feature) {
         var geometry = feature.getGeometry();
         if (geometry.intersectsExtent(extent)) {
-          var result = callback.call(opt_this, feature);
+          var result = callback(feature);
           if (result) {
             return result;
           }
