@@ -1,4 +1,4 @@
-import _ol_Graticule_ from '../src/ol/Graticule.js';
+import Graticule from '../src/ol/Graticule.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
@@ -41,6 +41,6 @@ var map = new _ol_Map_({
   })
 });
 
-new _ol_Graticule_({
+new Graticule({
   map: map
 });

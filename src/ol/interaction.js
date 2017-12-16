@@ -2,7 +2,7 @@
  * @module ol/interaction
  */
 import _ol_Collection_ from './Collection.js';
-import _ol_Kinetic_ from './Kinetic.js';
+import Kinetic from './Kinetic.js';
 import DoubleClickZoom from './interaction/DoubleClickZoom.js';
 import DragPan from './interaction/DragPan.js';
 import DragRotate from './interaction/DragRotate.js';
@@ -44,7 +44,7 @@ _ol_interaction_.defaults = function(opt_options) {
 
   var interactions = new _ol_Collection_();
 
-  var kinetic = new _ol_Kinetic_(-0.005, 0.05, 100);
+  var kinetic = new Kinetic(-0.005, 0.05, 100);
 
   var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
     options.altShiftDragRotate : true;

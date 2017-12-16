@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Geolocation_ from '../src/ol/Geolocation.js';
+import Geolocation from '../src/ol/Geolocation.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
@@ -33,7 +33,7 @@ var map = new _ol_Map_({
   view: view
 });
 
-var geolocation = new _ol_Geolocation_({
+var geolocation = new Geolocation({
   projection: view.getProjection()
 });
 

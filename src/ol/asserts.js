@@ -1,7 +1,7 @@
 /**
  * @module ol/asserts
  */
-import _ol_AssertionError_ from './AssertionError.js';
+import AssertionError from './AssertionError.js';
 var _ol_asserts_ = {};
 
 
@@ -11,7 +11,7 @@ var _ol_asserts_ = {};
  */
 _ol_asserts_.assert = function(assertion, errorCode) {
   if (!assertion) {
-    throw new _ol_AssertionError_(errorCode);
+    throw new AssertionError(errorCode);
   }
 };
 export default _ol_asserts_;

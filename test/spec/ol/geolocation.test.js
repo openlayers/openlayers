@@ -1,4 +1,4 @@
-import _ol_Geolocation_ from '../../../src/ol/Geolocation.js';
+import Geolocation from '../../../src/ol/Geolocation.js';
 
 
 describe('ol.Geolocation', function() {
@@ -6,8 +6,8 @@ describe('ol.Geolocation', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_Geolocation_();
-      expect(instance).to.be.an(_ol_Geolocation_);
+      var instance = new Geolocation();
+      expect(instance).to.be.an(Geolocation);
     });
 
   });

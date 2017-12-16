@@ -12,7 +12,7 @@ import {VERSION, inherits} from './index.js';
  * @implements {oli.AssertionError}
  * @param {number} code Error code.
  */
-var _ol_AssertionError_ = function(code) {
+var AssertionError = function(code) {
 
   var path = VERSION ? VERSION.split('-')[0] : 'latest';
 
@@ -36,6 +36,6 @@ var _ol_AssertionError_ = function(code) {
 
 };
 
-inherits(_ol_AssertionError_, Error);
+inherits(AssertionError, Error);
 
-export default _ol_AssertionError_;
+export default AssertionError;
