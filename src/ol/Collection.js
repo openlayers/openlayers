@@ -2,7 +2,7 @@
  * @module ol/Collection
  */
 import {inherits} from './index.js';
-import _ol_AssertionError_ from './AssertionError.js';
+import AssertionError from './AssertionError.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import _ol_Object_ from './Object.js';
 import Event from './events/Event.js';
@@ -268,7 +268,7 @@ _ol_Collection_.prototype.updateLength_ = function() {
 _ol_Collection_.prototype.assertUnique_ = function(elem, opt_except) {
   for (var i = 0, ii = this.array_.length; i < ii; ++i) {
     if (this.array_[i] === elem && i !== opt_except) {
-      throw new _ol_AssertionError_(58);
+      throw new AssertionError(58);
     }
   }
 };
