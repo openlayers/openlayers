@@ -6,12 +6,15 @@ import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import {transform} from '../src/ol/proj.js';
 import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-
+import {register} from '../src/ol/proj/proj4.js';
+import proj4 from 'proj4';
 
 proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
     '+units=m +no_defs');
+register(proj4);
+
 var imageExtent = [0, 0, 700000, 1300000];
 
 var map = new _ol_Map_({

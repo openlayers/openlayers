@@ -1,5 +1,36 @@
 ## Upgrade notes
 
+### Next release
+
+#### Changes in proj4 integration
+
+Because relying on a globally available proj4 is not practical with ES modules, we have made a change to the way we integrate proj4:
+
+ * The `setProj4()` function from the `ol/proj` module was removed.
+ * A new `ol/proj/proj4` module with a `register()` function was added. Regardless of whether the application imports `proj4` or uses a global `proj4`, this function needs to be called with the proj4 instance as argument whenever projection definitions were added to proj4's registry with (`proj4.defs`).
+
+It is also recommended to no longer use a global `proj4`. Instead,
+
+    npm install proj4
+
+and import it:
+
+```js
+import proj4 from 'proj4';
+```
+
+Applications can be updated by importing the `register` function from the `ol/proj/proj4` module
+
+```js
+import {register} from 'ol/proj/proj4'
+```
+
+and calling it before using projections, and any time the proj4 registry was changed by `proj4.defs()` calls:
+
+```js
+register(proj4);
+```
+
 ### v4.6.0
 
 #### Renamed `exceedLength` option of `ol.style.Text` to `overflow`

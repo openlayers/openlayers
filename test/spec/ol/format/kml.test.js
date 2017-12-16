@@ -12,7 +12,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
-import _ol_proj_transforms_ from '../../../../src/ol/proj/transforms.js';
+import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
@@ -386,10 +386,8 @@ describe('ol.format.KML', function() {
               '</kml>';
           expect(node).to.xmleql(_ol_xml_.parse(text));
 
-          _ol_proj_transforms_.remove(
-              getProjection('EPSG:4326'), getProjection('double'));
-          _ol_proj_transforms_.remove(
-              getProjection('double'), getProjection('EPSG:4326'));
+          removeTransform(getProjection('EPSG:4326'), getProjection('double'));
+          removeTransform(getProjection('double'), getProjection('EPSG:4326'));
         });
 
         it('can write XYM Point geometries', function() {

@@ -1,6 +1,7 @@
 import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import {get as getProjection} from '../../../../src/ol/proj.js';
+import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -11,12 +12,15 @@ describe('ol.reproj.Tile', function() {
         '+k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy ' +
         '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
         '+units=m +no_defs');
+    register(proj4);
     var proj27700 = getProjection('EPSG:27700');
     proj27700.setExtent([0, 0, 700000, 1300000]);
   });
 
   afterEach(function() {
     delete proj4.defs['EPSG:27700'];
+    clearAllProjections();
+    addCommon();
   });
 
 

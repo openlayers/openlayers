@@ -8,9 +8,8 @@ import EPSG3857 from './proj/EPSG3857.js';
 import EPSG4326 from './proj/EPSG4326.js';
 import Projection from './proj/Projection.js';
 import Units from './proj/Units.js';
-import _ol_proj_proj4_ from './proj/proj4.js';
 import _ol_proj_projections_ from './proj/projections.js';
-import _ol_proj_transforms_ from './proj/transforms.js';
+import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransformFunc} from './proj/transforms.js';
 
 
 /**
@@ -27,23 +26,6 @@ export var METERS_PER_UNIT = Units.METERS_PER_UNIT;
  * @type {ol.Sphere}
  */
 var SPHERE = new Sphere(Sphere.DEFAULT_RADIUS);
-
-
-/**
- * Register proj4. If not explicitly registered, it will be assumed that
- * proj4js will be loaded in the global namespace. For example in a
- * browserify ES6 environment you could use:
- *
- *     import ol from 'openlayers';
- *     import proj4 from 'proj4';
- *     ol.proj.setProj4(proj4);
- *
- * @param {Proj4} proj4 Proj4.
- * @api
- */
-export function setProj4(proj4) {
-  _ol_proj_proj4_.set(proj4);
-}
 
 
 /**
@@ -93,7 +75,7 @@ export function identityTransform(input, opt_output, opt_dimension) {
  */
 export function addProjection(projection) {
   _ol_proj_projections_.add(projection.getCode(), projection);
-  _ol_proj_transforms_.add(projection, projection, cloneTransform);
+  addTransformFunc(projection, projection, cloneTransform);
 }
 
 
@@ -121,13 +103,6 @@ export function get(projectionLike) {
   } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
     projection = _ol_proj_projections_.get(code);
-    if (!projection) {
-      var proj4js = _ol_proj_proj4_.get();
-      if (typeof proj4js == 'function' && proj4js.defs(code) !== undefined) {
-        projection = new Projection({code: code});
-        addProjection(projection);
-      }
-    }
   }
   return projection;
 }
@@ -204,7 +179,7 @@ export function addEquivalentProjections(projections) {
   projections.forEach(function(source) {
     projections.forEach(function(destination) {
       if (source !== destination) {
-        _ol_proj_transforms_.add(source, destination, cloneTransform);
+        addTransformFunc(source, destination, cloneTransform);
       }
     });
   });
@@ -227,8 +202,8 @@ export function addEquivalentProjections(projections) {
 export function addEquivalentTransforms(projections1, projections2, forwardTransform, inverseTransform) {
   projections1.forEach(function(projection1) {
     projections2.forEach(function(projection2) {
-      _ol_proj_transforms_.add(projection1, projection2, forwardTransform);
-      _ol_proj_transforms_.add(projection2, projection1, inverseTransform);
+      addTransformFunc(projection1, projection2, forwardTransform);
+      addTransformFunc(projection2, projection1, inverseTransform);
     });
   });
 }
@@ -239,7 +214,7 @@ export function addEquivalentTransforms(projections1, projections2, forwardTrans
  */
 export function clearAllProjections() {
   _ol_proj_projections_.clear();
-  _ol_proj_transforms_.clear();
+  clearTransformFuncs();
 }
 
 
@@ -314,10 +289,8 @@ export function createTransformFromCoordinateTransform(coordTransform) {
 export function addCoordinateTransforms(source, destination, forward, inverse) {
   var sourceProj = get(source);
   var destProj = get(destination);
-  _ol_proj_transforms_.add(sourceProj, destProj,
-      createTransformFromCoordinateTransform(forward));
-  _ol_proj_transforms_.add(destProj, sourceProj,
-      createTransformFromCoordinateTransform(inverse));
+  addTransformFunc(sourceProj, destProj, createTransformFromCoordinateTransform(forward));
+  addTransformFunc(destProj, sourceProj, createTransformFromCoordinateTransform(inverse));
 }
 
 
@@ -392,25 +365,7 @@ export function equivalent(projection1, projection2) {
 export function getTransformFromProjections(sourceProjection, destinationProjection) {
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
-  var transformFunc = _ol_proj_transforms_.get(sourceCode, destinationCode);
-  if (!transformFunc) {
-    var proj4js = _ol_proj_proj4_.get();
-    if (typeof proj4js == 'function') {
-      var sourceDef = proj4js.defs(sourceCode);
-      var destinationDef = proj4js.defs(destinationCode);
-
-      if (sourceDef !== undefined && destinationDef !== undefined) {
-        if (sourceDef === destinationDef) {
-          addEquivalentProjections([destinationProjection, sourceProjection]);
-        } else {
-          var proj4Transform = proj4js(destinationCode, sourceCode);
-          addCoordinateTransforms(destinationProjection, sourceProjection,
-              proj4Transform.forward, proj4Transform.inverse);
-        }
-        transformFunc = _ol_proj_transforms_.get(sourceCode, destinationCode);
-      }
-    }
-  }
+  var transformFunc = getTransformFunc(sourceCode, destinationCode);
   if (!transformFunc) {
     transformFunc = identityTransform;
   }

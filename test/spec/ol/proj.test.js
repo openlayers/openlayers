@@ -1,6 +1,5 @@
 import {
   addCommon,
-  setProj4,
   clearAllProjections,
   equivalent,
   get as getProjection,
@@ -12,6 +11,7 @@ import {
   getPointResolution,
   getTransformFromProjections
 } from '../../../src/ol/proj.js';
+import {register} from '../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../src/ol/proj/EPSG3857.js';
 import _ol_proj_EPSG4326_ from '../../../src/ol/proj/EPSG4326.js';
 import _ol_proj_Projection_ from '../../../src/ol/proj/Projection.js';
@@ -277,12 +277,10 @@ describe('ol.proj', function() {
 
   describe('Proj4js integration', function() {
 
-    var proj4 = window.proj4;
-
     afterEach(function() {
       delete proj4.defs['EPSG:21781'];
-      window.proj4 = proj4;
-      setProj4(window.proj4);
+      clearAllProjections();
+      addCommon();
     });
 
     it('creates ol.proj.Projection instance from EPSG:21781', function() {
@@ -290,21 +288,7 @@ describe('ol.proj', function() {
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
-      var proj = getProjection('EPSG:21781');
-      expect(proj.getCode()).to.eql('EPSG:21781');
-      expect(proj.getUnits()).to.eql('m');
-      expect(proj.getMetersPerUnit()).to.eql(1);
-    });
-
-    it('can use an alternative namespace for proj4', function() {
-      var proj4 = window.proj4;
-      var proj4new = proj4;
-      delete window.proj4;
-      setProj4(proj4new);
-      proj4new.defs('EPSG:21781',
-          '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
-          '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
-          '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+      register(proj4);
       var proj = getProjection('EPSG:21781');
       expect(proj.getCode()).to.eql('EPSG:21781');
       expect(proj.getUnits()).to.eql('m');
@@ -316,6 +300,7 @@ describe('ol.proj', function() {
           '+proj=tmerc +lat_0=40.5 +lon_0=-110.0833333333333 +k=0.9999375 ' +
           '+x_0=800000.0000101599 +y_0=99999.99998983997 +ellps=GRS80 ' +
           '+towgs84=0,0,0,0,0,0,0 +units=us-ft +no_defs');
+      register(proj4);
       var proj = getProjection('EPSG:3739');
       expect(proj.getCode()).to.eql('EPSG:3739');
       expect(proj.getUnits()).to.eql('us-ft');
@@ -325,6 +310,7 @@ describe('ol.proj', function() {
     });
 
     it('allows Proj4js projections to be used transparently', function() {
+      register(proj4);
       var point = transform(
           [-626172.13571216376, 6887893.4928337997], 'GOOGLE', 'WGS84');
       expect(point[0]).to.roughlyEqual(-5.625, 1e-9);
@@ -336,6 +322,7 @@ describe('ol.proj', function() {
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+      register(proj4);
       var point = transform([7.439583333333333, 46.95240555555556],
           'EPSG:4326', 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(600072.300, 1);
@@ -347,6 +334,7 @@ describe('ol.proj', function() {
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+      register(proj4);
       var lonLat = [7.439583333333333, 46.95240555555556];
       var point = fromLonLat(lonLat, 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(600072.300, 1);
@@ -364,6 +352,7 @@ describe('ol.proj', function() {
       var code = 'urn:ogc:def:crs:EPSG:21781';
       var srsCode = 'EPSG:21781';
       proj4.defs(code, proj4.defs(srsCode));
+      register(proj4);
       var proj = getProjection(code);
       var proj2 = getProjection(srsCode);
       expect(equivalent(proj2, proj)).to.be(true);
@@ -371,12 +360,14 @@ describe('ol.proj', function() {
     });
 
     it('numerically estimates point scale at the equator', function() {
+      register(proj4);
       var googleProjection = getProjection('GOOGLE');
       expect(getPointResolution(googleProjection, 1, [0, 0])).
           to.roughlyEqual(1, 1e-1);
     });
 
     it('numerically estimates point scale at various latitudes', function() {
+      register(proj4);
       var epsg3857Projection = getProjection('EPSG:3857');
       var googleProjection = getProjection('GOOGLE');
       var point, y;
@@ -388,6 +379,7 @@ describe('ol.proj', function() {
     });
 
     it('numerically estimates point scale at various points', function() {
+      register(proj4);
       var epsg3857Projection = getProjection('EPSG:3857');
       var googleProjection = getProjection('GOOGLE');
       var point, x, y;
@@ -401,6 +393,7 @@ describe('ol.proj', function() {
     });
 
     it('does not overwrite existing projections in the registry', function() {
+      register(proj4);
       var epsg4326 = getProjection('EPSG:4326');
       new _ol_proj_Projection_({
         code: 'EPSG:4326',
@@ -413,6 +406,10 @@ describe('ol.proj', function() {
   });
 
   describe('ol.proj.getTransformFromProjections()', function() {
+
+    beforeEach(function() {
+      register(proj4);
+    });
 
     it('returns a transform function', function() {
       var transform = getTransformFromProjections(getProjection('GOOGLE'),
@@ -441,6 +438,10 @@ describe('ol.proj', function() {
   });
 
   describe('ol.proj.getTransform()', function() {
+
+    beforeEach(function() {
+      register(proj4);
+    });
 
     it('returns a function', function() {
       var transform = getTransform('GOOGLE', 'EPSG:4326');
@@ -544,6 +545,7 @@ describe('ol.proj', function() {
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
           '+k_0=1 +x_0=600000 +y_0=200000 +ellps=bessel ' +
           '+towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs');
+      register(proj4);
 
       var got = transform([-111, 45.5, 123], 'EPSG:4326', 'custom');
       expect(got).to.have.length(3);
@@ -552,6 +554,8 @@ describe('ol.proj', function() {
       expect(got[2]).to.be(123);
 
       delete proj4.defs.custom;
+      clearAllProjections();
+      addCommon();
     });
 
   });
@@ -582,6 +586,7 @@ describe('ol.proj', function() {
           'PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],' +
           'UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],' +
           'AUTHORITY["EPSG","4279"]]');
+      register(proj4);
     });
 
     afterEach(function() {
@@ -589,6 +594,8 @@ describe('ol.proj', function() {
       delete proj4.defs['EPSG:3739'];
       delete proj4.defs['EPSG:4269'];
       delete proj4.defs['EPSG:4279'];
+      clearAllProjections();
+      addCommon();
     });
 
     it('returns value in meters', function() {

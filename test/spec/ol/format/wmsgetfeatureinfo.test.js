@@ -1,4 +1,6 @@
 import _ol_format_WMSGetFeatureInfo_ from '../../../../src/ol/format/WMSGetFeatureInfo.js';
+import {addCommon, clearAllProjections} from '../../../../src/ol/proj.js';
+import {register} from '../../../../src/ol/proj/proj4.js';
 
 
 describe('ol.format.WMSGetFeatureInfo', function() {
@@ -27,6 +29,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
 
       before(function(done) {
         proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
+        register(proj4);
         afterLoadText('spec/ol/format/wms/getfeatureinfo.xml', function(data) {
           try {
             features = new _ol_format_WMSGetFeatureInfo_().readFeatures(data);
@@ -38,7 +41,9 @@ describe('ol.format.WMSGetFeatureInfo', function() {
       });
 
       after(function() {
-        proj4.defs('urn:x-ogc:def:crs:EPSG:4326', undefined);
+        delete proj4.defs['urn:x-ogc:def:crs:EPSG:4326'];
+        clearAllProjections();
+        addCommon();
       });
 
       it('creates 3 features', function() {
