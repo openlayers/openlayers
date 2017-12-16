@@ -1,15 +1,25 @@
 /**
  * @module ol/Sphere
  */
+
 /**
  * @license
  * Latitude/longitude spherical geodesy formulae taken from
  * http://www.movable-type.co.uk/scripts/latlong.html
  * Licensed under CC-BY-3.0.
  */
-
 import _ol_math_ from './math.js';
 import GeometryType from './geom/GeometryType.js';
+
+
+/**
+ * Object literal with options for the {@link ol.Sphere.getLength} or
+ * {@link ol.Sphere.getArea} functions.
+ * @typedef {{projection: (ol.ProjectionLike|undefined),
+ *    radius: (number|undefined)}}
+ */
+export var SphereMetricOptions;
+
 
 /**
  * @classdesc
@@ -106,9 +116,14 @@ _ol_Sphere_.DEFAULT_RADIUS = 6371008.8;
  * the sum of all rings.  For points, the length is zero.  For multi-part
  * geometries, the length is the sum of the length of each part.
  * @param {ol.geom.Geometry} geometry A geometry.
- * @param {olx.SphereMetricOptions=} opt_options Options for the length
+ * @param {SphereMetricOptions=} opt_options Options for the length
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
+ * @param {(ol.ProjectionLike|undefined)} opt_options.projection Projection of
+ *     the geometry.  By default, the geometry is assumed to be in EPSG:3857
+ *     (Web Mercator).
+ * @param {(number|undefined)} opt_options.radius Sphere radius.  By default,
+ *     the radius of the earth is used (Clarke 1866 Authalic Sphere).
  * @return {number} The spherical length (in meters).
  * @api
  */

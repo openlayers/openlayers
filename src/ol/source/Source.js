@@ -6,6 +6,14 @@ import _ol_Object_ from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import _ol_source_State_ from '../source/State.js';
 
+
+/**
+ * Object literal with config options for the map logo.
+ * @typedef {{href: (string), src: (string)}}
+ */
+export var LogoOptions;
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -38,7 +46,7 @@ var _ol_source_Source_ = function(options) {
 
   /**
    * @private
-   * @type {string|olx.LogoOptions|undefined}
+   * @type {string|LogoOptions|undefined}
    */
   this.logo_ = options.logo;
 
@@ -108,7 +116,7 @@ _ol_source_Source_.prototype.getAttributions = function() {
 
 /**
  * Get the logo of the source.
- * @return {string|olx.LogoOptions|undefined} Logo.
+ * @return {string|LogoOptions|undefined} Logo.
  * @api
  */
 _ol_source_Source_.prototype.getLogo = function() {
@@ -175,7 +183,7 @@ _ol_source_Source_.prototype.setAttributions = function(attributions) {
 
 /**
  * Set the logo of the source.
- * @param {string|olx.LogoOptions|undefined} logo Logo.
+ * @param {string|LogoOptions|undefined} logo Logo.
  */
 _ol_source_Source_.prototype.setLogo = function(logo) {
   this.logo_ = logo;

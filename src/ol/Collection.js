@@ -1,16 +1,18 @@
 /**
  * @module ol/Collection
  */
-/**
- * An implementation of Google Maps' MVCArray.
- * @see https://developers.google.com/maps/documentation/javascript/reference
- */
-
 import {inherits} from './index.js';
 import _ol_AssertionError_ from './AssertionError.js';
 import _ol_CollectionEventType_ from './CollectionEventType.js';
 import _ol_Object_ from './Object.js';
 import Event from './events/Event.js';
+
+
+/**
+ * @typedef {{unique: (boolean|undefined)}}
+ */
+export var CollectionOptions;
+
 
 /**
  * @classdesc
@@ -24,7 +26,9 @@ import Event from './events/Event.js';
  * @extends {ol.Object}
  * @fires ol.Collection.Event
  * @param {Array.<T>=} opt_array Array.
- * @param {olx.CollectionOptions=} opt_options Collection options.
+ * @param {CollectionOptions=} opt_options Collection options.
+ * @param {boolean|undefined} opt_options.unique Disallow the same item from
+ *     being added to the collection twice.  Default is false.
  * @template T
  * @api
  */
