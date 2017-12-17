@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_TextFeature_ from '../format/TextFeature.js';
+import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
@@ -28,7 +28,7 @@ var Polyline = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_format_TextFeature_.call(this);
+  TextFeature.call(this);
 
   /**
    * @inheritDoc
@@ -49,7 +49,7 @@ var Polyline = function(opt_options) {
     options.geometryLayout : GeometryLayout.XY;
 };
 
-inherits(Polyline, _ol_format_TextFeature_);
+inherits(Polyline, TextFeature);
 
 
 /**

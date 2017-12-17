@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../src/ol/Feature.js';
 import _ol_VectorImageTile_ from '../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
-import _ol_format_TextFeature_ from '../../../src/ol/format/TextFeature.js';
+import TextFeature from '../../../src/ol/format/TextFeature.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../src/ol/proj/Projection.js';
 
@@ -11,7 +11,7 @@ describe('ol.VectorTile', function() {
 
   it('loader sets features on the tile and updates proj units', function(done) {
     // mock format that return a tile-pixels feature
-    var format = new _ol_format_TextFeature_();
+    var format = new TextFeature();
     format.readProjection = function(source) {
       return new _ol_proj_Projection_({
         code: '',

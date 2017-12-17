@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_TextFeature_ from '../format/TextFeature.js';
+import TextFeature from '../format/TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryType from '../geom/GeometryType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -30,7 +30,7 @@ var _ol_format_WKT_ = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_format_TextFeature_.call(this);
+  TextFeature.call(this);
 
   /**
    * Split GeometryCollection into multiple features.
@@ -42,7 +42,7 @@ var _ol_format_WKT_ = function(opt_options) {
 
 };
 
-inherits(_ol_format_WKT_, _ol_format_TextFeature_);
+inherits(_ol_format_WKT_, TextFeature);
 
 
 /**
