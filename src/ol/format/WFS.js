@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_format_GML2_ from '../format/GML2.js';
+import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_filter_ from '../format/filter.js';
@@ -401,7 +401,7 @@ _ol_format_WFS_.writeFeature_ = function(node, feature, objectStack) {
   var child = _ol_xml_.createElementNS(featureNS, featureType);
   node.appendChild(child);
   if (gmlVersion === 2) {
-    _ol_format_GML2_.prototype.writeFeatureElement(child, feature, objectStack);
+    GML2.prototype.writeFeatureElement(child, feature, objectStack);
   } else {
     GML3.prototype.writeFeatureElement(child, feature, objectStack);
   }
@@ -524,7 +524,7 @@ _ol_format_WFS_.writeProperty_ = function(node, pair, objectStack) {
     node.appendChild(value);
     if (pair.value instanceof Geometry) {
       if (gmlVersion === 2) {
-        _ol_format_GML2_.prototype.writeGeometryElement(value,
+        GML2.prototype.writeGeometryElement(value,
             pair.value, objectStack);
       } else {
         GML3.prototype.writeGeometryElement(value,

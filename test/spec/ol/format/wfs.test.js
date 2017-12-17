@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_format_GML2_ from '../../../../src/ol/format/GML2.js';
+import GML2 from '../../../../src/ol/format/GML2.js';
 import _ol_format_WFS_ from '../../../../src/ol/format/WFS.js';
 import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -88,7 +88,7 @@ describe('ol.format.WFS', function() {
     var config = {
       'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
       'featureType': 'polygon',
-      'gmlFormat': new _ol_format_GML2_()
+      'gmlFormat': new GML2()
     };
 
     before(function(done) {

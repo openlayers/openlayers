@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_format_GML2_ from '../format/GML2.js';
+import GML2 from '../format/GML2.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_obj_ from '../obj.js';
 import _ol_xml_ from '../xml.js';
@@ -33,7 +33,7 @@ var _ol_format_WMSGetFeatureInfo_ = function(opt_options) {
    * @private
    * @type {ol.format.GML2}
    */
-  this.gmlFormat_ = new _ol_format_GML2_();
+  this.gmlFormat_ = new GML2();
 
 
   /**
