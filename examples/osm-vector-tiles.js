@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_TopoJSON_ from '../src/ol/format/TopoJSON.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
@@ -64,7 +64,7 @@ var map = new _ol_Map_({
       source: new _ol_source_VectorTile_({
         attributions: '&copy; OpenStreetMap contributors, Who’s On First, ' +
             'Natural Earth, and openstreetmapdata.com',
-        format: new _ol_format_TopoJSON_({
+        format: new TopoJSON({
           layerName: 'layer',
           layers: ['water', 'roads', 'buildings']
         }),

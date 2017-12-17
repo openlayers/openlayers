@@ -4,7 +4,7 @@ import GPX from '../src/ol/format/GPX.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import IGC from '../src/ol/format/IGC.js';
 import KML from '../src/ol/format/KML.js';
-import _ol_format_TopoJSON_ from '../src/ol/format/TopoJSON.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -89,7 +89,7 @@ var dragAndDropInteraction = new DragAndDrop({
     GeoJSON,
     IGC,
     KML,
-    _ol_format_TopoJSON_
+    TopoJSON
   ]
 });
 

@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_TopoJSON_ from '../src/ol/format/TopoJSON.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
@@ -29,7 +29,7 @@ var style = new _ol_style_Style_({
 var vector = new _ol_layer_Vector_({
   source: new _ol_source_Vector_({
     url: 'data/topojson/world-110m.json',
-    format: new _ol_format_TopoJSON_({
+    format: new TopoJSON({
       // don't want to render the full world polygon (stored as 'land' layer),
       // which repeats all countries
       layers: ['countries']
