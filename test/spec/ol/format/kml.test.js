@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_array_ from '../../../../src/ol/array.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
-import _ol_format_KML_ from '../../../../src/ol/format/KML.js';
+import KML from '../../../../src/ol/format/KML.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
@@ -33,13 +33,13 @@ describe('ol.format.KML', function() {
     var dfltStyle = new _ol_style_Style_();
 
     beforeEach(function() {
-      format = new _ol_format_KML_({
+      format = new KML({
         defaultStyle: [dfltStyle]
       });
     });
 
     it('set constant variables', function() {
-      expect(_ol_format_KML_.DEFAULT_STYLE_ARRAY_).to.be.an(Array);
+      expect(KML.DEFAULT_STYLE_ARRAY_).to.be.an(Array);
     });
 
     describe('#readFeatures', function() {
@@ -70,11 +70,11 @@ describe('ol.format.KML', function() {
   describe('without parameters', function() {
 
     beforeEach(function() {
-      format = new _ol_format_KML_();
+      format = new KML();
     });
 
     it('set constant variables', function() {
-      expect(_ol_format_KML_.DEFAULT_STYLE_ARRAY_).to.be.an(Array);
+      expect(KML.DEFAULT_STYLE_ARRAY_).to.be.an(Array);
     });
 
     describe('#readProjection', function() {
@@ -1720,11 +1720,11 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var style = styleArray[0];
           expect(style).to.be.an(_ol_style_Style_);
-          expect(style.getFill()).to.be(_ol_format_KML_.DEFAULT_FILL_STYLE_);
+          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
           expect(style.getFill().getColor()).to.eql([255, 255, 255, 1]);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           // FIXME check image style
-          expect(style.getStroke()).to.be(_ol_format_KML_.DEFAULT_STROKE_STYLE_);
+          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
           expect(style.getStroke().getColor()).to.eql([255, 255, 255, 1]);
           expect(style.getStroke().getWidth()).to.be(1);
         });
@@ -1753,8 +1753,8 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var style = styleArray[0];
           expect(style).to.be.an(_ol_style_Style_);
-          expect(style.getFill()).to.be(_ol_format_KML_.DEFAULT_FILL_STYLE_);
-          expect(style.getStroke()).to.be(_ol_format_KML_.DEFAULT_STROKE_STYLE_);
+          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
+          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
           var imageStyle = style.getImage();
           expect(imageStyle).to.be.an(_ol_style_Icon_);
           expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
@@ -1763,7 +1763,7 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getRotation()).to.eql(0);
           expect(imageStyle.getSize()).to.be(null);
           expect(imageStyle.getScale()).to.be(1);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -1833,8 +1833,8 @@ describe('ol.format.KML', function() {
             expect(styleArray).to.have.length(1);
             var style = styleArray[0];
             expect(style).to.be.an(_ol_style_Style_);
-            expect(style.getFill()).to.be(_ol_format_KML_.DEFAULT_FILL_STYLE_);
-            expect(style.getStroke()).to.be(_ol_format_KML_.DEFAULT_STROKE_STYLE_);
+            expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
+            expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
             var imageStyle = style.getImage();
             expect(imageStyle).to.be.an(_ol_style_Icon_);
             expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
@@ -1867,7 +1867,7 @@ describe('ol.format.KML', function() {
             expect(imageStyle.getRotation()).to.eql(0);
             expect(imageStyle.getSize()).to.be(null);
             expect(imageStyle.getScale()).to.be(1);
-            expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+            expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
             expect(style.getZIndex()).to.be(undefined);
           });
         });
@@ -1904,8 +1904,8 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var style = styleArray[0];
           expect(style).to.be.an(_ol_style_Style_);
-          expect(style.getFill()).to.be(_ol_format_KML_.DEFAULT_FILL_STYLE_);
-          expect(style.getStroke()).to.be(_ol_format_KML_.DEFAULT_STROKE_STYLE_);
+          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
+          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
           var imageStyle = style.getImage();
           imageStyle.iconImage_.size_ = [144, 192];
           expect(imageStyle.getSize()).to.eql([48, 48]);
@@ -1913,7 +1913,7 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getOrigin()).to.eql([24, 108]);
           expect(imageStyle.getRotation()).to.eql(0);
           expect(imageStyle.getScale()).to.eql(3.0);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -1940,9 +1940,9 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var style = styleArray[0];
           expect(style).to.be.an(_ol_style_Style_);
-          expect(style.getFill()).to.be(_ol_format_KML_.DEFAULT_FILL_STYLE_);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
-          expect(style.getStroke()).to.be(_ol_format_KML_.DEFAULT_STROKE_STYLE_);
+          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
           var textStyle = style.getText();
           expect(textStyle).to.be.an(_ol_style_Text_);
           expect(textStyle.getScale()).to.be(0.25);
@@ -1975,13 +1975,13 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var style = styleArray[0];
           expect(style).to.be.an(_ol_style_Style_);
-          expect(style.getFill()).to.be(_ol_format_KML_.DEFAULT_FILL_STYLE_);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
+          expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
           expect(strokeStyle).to.be.an(_ol_style_Stroke_);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2010,9 +2010,9 @@ describe('ol.format.KML', function() {
           var fillStyle = style.getFill();
           expect(fillStyle).to.be.an(_ol_style_Fill_);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
-          expect(style.getStroke()).to.be(_ol_format_KML_.DEFAULT_STROKE_STYLE_);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
+          expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2047,12 +2047,12 @@ describe('ol.format.KML', function() {
           var fillStyle = style.getFill();
           expect(fillStyle).to.be.an(_ol_style_Fill_);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
           expect(strokeStyle).to.be.an(_ol_style_Stroke_);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2084,12 +2084,12 @@ describe('ol.format.KML', function() {
           var style = styleArray[0];
           expect(style).to.be.an(_ol_style_Style_);
           expect(style.getFill()).to.be(null);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
           expect(strokeStyle).to.be.an(_ol_style_Stroke_);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2123,9 +2123,9 @@ describe('ol.format.KML', function() {
           var fillStyle = style.getFill();
           expect(fillStyle).to.be.an(_ol_style_Fill_);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
-          expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
+          expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           expect(style.getStroke()).to.be(null);
-          expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+          expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
 
@@ -2159,9 +2159,9 @@ describe('ol.format.KML', function() {
               var style = styleArray[0];
               expect(style).to.be.an(_ol_style_Style_);
               expect(style.getFill()).to.be(null);
-              expect(style.getImage()).to.be(_ol_format_KML_.DEFAULT_IMAGE_STYLE_);
+              expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
               expect(style.getStroke()).to.be(null);
-              expect(style.getText()).to.be(_ol_format_KML_.DEFAULT_TEXT_STYLE_);
+              expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
               expect(style.getZIndex()).to.be(undefined);
             });
 
@@ -2312,7 +2312,7 @@ describe('ol.format.KML', function() {
         });
 
         it('does not write styles when writeStyles option is false', function() {
-          format = new _ol_format_KML_({writeStyles: false});
+          format = new KML({writeStyles: false});
           var style = new _ol_style_Style_({
             image: new _ol_style_Icon_({
               src: 'http://foo.png'
@@ -2547,7 +2547,7 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var s = styleArray[0];
           expect(s).to.be.an(_ol_style_Style_);
-          expect(s).to.be(_ol_format_KML_.DEFAULT_STYLE_);
+          expect(s).to.be(KML.DEFAULT_STYLE_);
 
         });
 
@@ -2656,7 +2656,7 @@ describe('ol.format.KML', function() {
           expect(styleArray).to.have.length(1);
           var s = styleArray[0];
           expect(s).to.be.an(_ol_style_Style_);
-          expect(s).to.be(_ol_format_KML_.DEFAULT_STYLE_);
+          expect(s).to.be(KML.DEFAULT_STYLE_);
         });
 
         it('can use Styles in StyleMaps before they are defined', function() {
@@ -3018,7 +3018,7 @@ describe('ol.format.KML', function() {
         it('should ignore invalid coordinates', function() {
           var doc = new DOMParser().parseFromString('<coordinates>INVALID</coordinates>', 'application/xml');
           var node = doc.firstChild;
-          expect(_ol_format_KML_.readFlatCoordinates_(node)).to.be(undefined);
+          expect(KML.readFlatCoordinates_(node)).to.be(undefined);
         });
 
         it('should ignore Points with invalid coordinates', function() {
