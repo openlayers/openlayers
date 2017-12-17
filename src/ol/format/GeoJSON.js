@@ -8,7 +8,7 @@ import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
+import JSONFeature from '../format/JSONFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -32,7 +32,7 @@ var GeoJSON = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_format_JSONFeature_.call(this);
+  JSONFeature.call(this);
 
   /**
    * @inheritDoc
@@ -62,7 +62,7 @@ var GeoJSON = function(opt_options) {
 
 };
 
-inherits(GeoJSON, _ol_format_JSONFeature_);
+inherits(GeoJSON, JSONFeature);
 
 
 /**

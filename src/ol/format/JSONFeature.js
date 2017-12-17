@@ -15,11 +15,11 @@ import _ol_format_FormatType_ from '../format/FormatType.js';
  * @abstract
  * @extends {ol.format.Feature}
  */
-var _ol_format_JSONFeature_ = function() {
+var JSONFeature = function() {
   FeatureFormat.call(this);
 };
 
-inherits(_ol_format_JSONFeature_, FeatureFormat);
+inherits(JSONFeature, FeatureFormat);
 
 
 /**
@@ -27,7 +27,7 @@ inherits(_ol_format_JSONFeature_, FeatureFormat);
  * @private
  * @return {Object} Object.
  */
-_ol_format_JSONFeature_.prototype.getObject_ = function(source) {
+JSONFeature.prototype.getObject_ = function(source) {
   if (typeof source === 'string') {
     var object = JSON.parse(source);
     return object ? /** @type {Object} */ (object) : null;
@@ -42,7 +42,7 @@ _ol_format_JSONFeature_.prototype.getObject_ = function(source) {
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.getType = function() {
+JSONFeature.prototype.getType = function() {
   return _ol_format_FormatType_.JSON;
 };
 
@@ -50,7 +50,7 @@ _ol_format_JSONFeature_.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.readFeature = function(source, opt_options) {
+JSONFeature.prototype.readFeature = function(source, opt_options) {
   return this.readFeatureFromObject(
       this.getObject_(source), this.getReadOptions(source, opt_options));
 };
@@ -59,7 +59,7 @@ _ol_format_JSONFeature_.prototype.readFeature = function(source, opt_options) {
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.readFeatures = function(source, opt_options) {
+JSONFeature.prototype.readFeatures = function(source, opt_options) {
   return this.readFeaturesFromObject(
       this.getObject_(source), this.getReadOptions(source, opt_options));
 };
@@ -72,7 +72,7 @@ _ol_format_JSONFeature_.prototype.readFeatures = function(source, opt_options) {
  * @protected
  * @return {ol.Feature} Feature.
  */
-_ol_format_JSONFeature_.prototype.readFeatureFromObject = function(object, opt_options) {};
+JSONFeature.prototype.readFeatureFromObject = function(object, opt_options) {};
 
 
 /**
@@ -82,13 +82,13 @@ _ol_format_JSONFeature_.prototype.readFeatureFromObject = function(object, opt_o
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-_ol_format_JSONFeature_.prototype.readFeaturesFromObject = function(object, opt_options) {};
+JSONFeature.prototype.readFeaturesFromObject = function(object, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.readGeometry = function(source, opt_options) {
+JSONFeature.prototype.readGeometry = function(source, opt_options) {
   return this.readGeometryFromObject(
       this.getObject_(source), this.getReadOptions(source, opt_options));
 };
@@ -101,13 +101,13 @@ _ol_format_JSONFeature_.prototype.readGeometry = function(source, opt_options) {
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-_ol_format_JSONFeature_.prototype.readGeometryFromObject = function(object, opt_options) {};
+JSONFeature.prototype.readGeometryFromObject = function(object, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.readProjection = function(source) {
+JSONFeature.prototype.readProjection = function(source) {
   return this.readProjectionFromObject(this.getObject_(source));
 };
 
@@ -118,13 +118,13 @@ _ol_format_JSONFeature_.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-_ol_format_JSONFeature_.prototype.readProjectionFromObject = function(object) {};
+JSONFeature.prototype.readProjectionFromObject = function(object) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.writeFeature = function(feature, opt_options) {
+JSONFeature.prototype.writeFeature = function(feature, opt_options) {
   return JSON.stringify(this.writeFeatureObject(feature, opt_options));
 };
 
@@ -135,13 +135,13 @@ _ol_format_JSONFeature_.prototype.writeFeature = function(feature, opt_options) 
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
-_ol_format_JSONFeature_.prototype.writeFeatureObject = function(feature, opt_options) {};
+JSONFeature.prototype.writeFeatureObject = function(feature, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.writeFeatures = function(features, opt_options) {
+JSONFeature.prototype.writeFeatures = function(features, opt_options) {
   return JSON.stringify(this.writeFeaturesObject(features, opt_options));
 };
 
@@ -152,13 +152,13 @@ _ol_format_JSONFeature_.prototype.writeFeatures = function(features, opt_options
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
-_ol_format_JSONFeature_.prototype.writeFeaturesObject = function(features, opt_options) {};
+JSONFeature.prototype.writeFeaturesObject = function(features, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_JSONFeature_.prototype.writeGeometry = function(geometry, opt_options) {
+JSONFeature.prototype.writeGeometry = function(geometry, opt_options) {
   return JSON.stringify(this.writeGeometryObject(geometry, opt_options));
 };
 
@@ -169,5 +169,5 @@ _ol_format_JSONFeature_.prototype.writeGeometry = function(geometry, opt_options
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
-_ol_format_JSONFeature_.prototype.writeGeometryObject = function(geometry, opt_options) {};
-export default _ol_format_JSONFeature_;
+JSONFeature.prototype.writeGeometryObject = function(geometry, opt_options) {};
+export default JSONFeature;

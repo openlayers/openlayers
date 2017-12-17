@@ -6,7 +6,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_asserts_ from '../asserts.js';
 import {containsExtent} from '../extent.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
+import JSONFeature from '../format/JSONFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -34,7 +34,7 @@ var EsriJSON = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_format_JSONFeature_.call(this);
+  JSONFeature.call(this);
 
   /**
    * Name of the geometry attribute for features.
@@ -45,7 +45,7 @@ var EsriJSON = function(opt_options) {
 
 };
 
-inherits(EsriJSON, _ol_format_JSONFeature_);
+inherits(EsriJSON, JSONFeature);
 
 
 /**
