@@ -2,7 +2,7 @@
  * @module ol/format/OWS
  */
 import {inherits} from '../index.js';
-import _ol_format_XLink_ from '../format/XLink.js';
+import XLink from '../format/XLink.js';
 import _ol_format_XML_ from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
@@ -113,7 +113,7 @@ OWS.readDcp_ = function(node, objectStack) {
  * @return {Object|undefined} The GET object.
  */
 OWS.readGet_ = function(node, objectStack) {
-  var href = _ol_format_XLink_.readHref(node);
+  var href = XLink.readHref(node);
   if (!href) {
     return undefined;
   }
@@ -423,7 +423,7 @@ OWS.SERVICE_PROVIDER_PARSERS_ =
     _ol_xml_.makeStructureNS(
         OWS.NAMESPACE_URIS_, {
           'ProviderName': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-          'ProviderSite': _ol_xml_.makeObjectPropertySetter(_ol_format_XLink_.readHref),
+          'ProviderSite': _ol_xml_.makeObjectPropertySetter(XLink.readHref),
           'ServiceContact': _ol_xml_.makeObjectPropertySetter(
               OWS.readServiceContact_)
         });

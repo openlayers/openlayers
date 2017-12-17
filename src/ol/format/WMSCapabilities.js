@@ -2,7 +2,7 @@
  * @module ol/format/WMSCapabilities
  */
 import {inherits} from '../index.js';
-import _ol_format_XLink_ from '../format/XLink.js';
+import XLink from '../format/XLink.js';
 import _ol_format_XML_ from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
@@ -519,7 +519,7 @@ WMSCapabilities.SERVICE_PARSERS_ = _ol_xml_.makeStructureNS(
       'KeywordList': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readKeywordList_),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XLink_.readHref),
+          XLink.readHref),
       'ContactInformation': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readContactInformation_),
       'Fees': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
@@ -648,7 +648,7 @@ WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
       'Title': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XLink_.readHref),
+          XLink.readHref),
       'LogoURL': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readSizedFormatOnlineresource_)
     });
@@ -755,7 +755,7 @@ WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
     _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
       'Format': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XLink_.readHref)
+          XLink.readHref)
     });
 
 

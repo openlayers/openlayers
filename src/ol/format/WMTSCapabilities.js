@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
-import _ol_format_XLink_ from '../format/XLink.js';
+import XLink from '../format/XLink.js';
 import _ol_format_XML_ from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
@@ -199,7 +199,7 @@ _ol_format_WMTSCapabilities_.readWgs84BoundingBox_ = function(node, objectStack)
 _ol_format_WMTSCapabilities_.readLegendUrl_ = function(node, objectStack) {
   var legend = {};
   legend['format'] = node.getAttribute('format');
-  legend['href'] = _ol_format_XLink_.readHref(node);
+  legend['href'] = XLink.readHref(node);
   return legend;
 };
 
