@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_ImageState_ from '../ImageState.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_color_ from '../color.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -80,15 +80,15 @@ var _ol_style_Icon_ = function(opt_options) {
    */
   var src = options.src;
 
-  _ol_asserts_.assert(!(src !== undefined && image),
+  assert(!(src !== undefined && image),
       4); // `image` and `src` cannot be provided at the same time
-  _ol_asserts_.assert(!image || (image && imgSize),
+  assert(!image || (image && imgSize),
       5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
     src = image.src || getUid(image).toString();
   }
-  _ol_asserts_.assert(src !== undefined && src.length > 0,
+  assert(src !== undefined && src.length > 0,
       6); // A defined and non-empty `src` or `image` must be provided
 
   /**

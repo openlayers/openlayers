@@ -1,7 +1,7 @@
 /**
  * @module ol/structs/PriorityQueue
  */
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_obj_ from '../obj.js';
 
 /**
@@ -99,7 +99,7 @@ PriorityQueue.prototype.dequeue = function() {
  * @return {boolean} The element was added to the queue.
  */
 PriorityQueue.prototype.enqueue = function(element) {
-  _ol_asserts_.assert(!(this.keyFunction_(element) in this.queuedElements_),
+  assert(!(this.keyFunction_(element) in this.queuedElements_),
       31); // Tried to enqueue an `element` that was already added to the queue
   var priority = this.priorityFunction_(element);
   if (priority != PriorityQueue.DROP) {

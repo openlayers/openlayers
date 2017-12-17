@@ -1,7 +1,7 @@
 /**
  * @module ol/TileUrlFunction
  */
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 import _ol_math_ from './math.js';
 import _ol_tilecoord_ from './tilecoord.js';
 var _ol_TileUrlFunction_ = {};
@@ -37,7 +37,7 @@ _ol_TileUrlFunction_.createFromTemplate = function(template, tileGrid) {
             .replace(dashYRegEx, function() {
               var z = tileCoord[0];
               var range = tileGrid.getFullTileRange(z);
-              _ol_asserts_.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+              assert(range, 55); // The {-y} placeholder requires a tile grid with extent
               var y = range.getHeight() + tileCoord[2];
               return y.toString();
             });

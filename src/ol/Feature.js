@@ -1,7 +1,7 @@
 /**
  * @module ol/Feature
  */
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
 import {inherits} from './index.js';
@@ -307,7 +307,7 @@ _ol_Feature_.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      _ol_asserts_.assert(obj instanceof _ol_style_Style_,
+      assert(obj instanceof _ol_style_Style_,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }

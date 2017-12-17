@@ -2,7 +2,7 @@
  * @module ol/tilegrid/TileGrid
  */
 import {DEFAULT_TILE_SIZE} from './common.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_TileRange_ from '../TileRange.js';
 import _ol_array_ from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
@@ -33,7 +33,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
    * @type {!Array.<number>}
    */
   this.resolutions_ = options.resolutions;
-  _ol_asserts_.assert(_ol_array_.isSorted(this.resolutions_, function(a, b) {
+  assert(_ol_array_.isSorted(this.resolutions_, function(a, b) {
     return b - a;
   }, true), 17); // `resolutions` must be sorted in descending order
 
@@ -80,7 +80,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
   this.origins_ = null;
   if (options.origins !== undefined) {
     this.origins_ = options.origins;
-    _ol_asserts_.assert(this.origins_.length == this.resolutions_.length,
+    assert(this.origins_.length == this.resolutions_.length,
         20); // Number of `origins` and `resolutions` must be equal
   }
 
@@ -91,7 +91,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
     this.origin_ = getTopLeft(extent);
   }
 
-  _ol_asserts_.assert(
+  assert(
       (!this.origin_ && this.origins_) || (this.origin_ && !this.origins_),
       18); // Either `origin` or `origins` must be configured, never both
 
@@ -102,7 +102,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
   this.tileSizes_ = null;
   if (options.tileSizes !== undefined) {
     this.tileSizes_ = options.tileSizes;
-    _ol_asserts_.assert(this.tileSizes_.length == this.resolutions_.length,
+    assert(this.tileSizes_.length == this.resolutions_.length,
         19); // Number of `tileSizes` and `resolutions` must be equal
   }
 
@@ -113,7 +113,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
   this.tileSize_ = options.tileSize !== undefined ?
     options.tileSize :
     !this.tileSizes_ ? DEFAULT_TILE_SIZE : null;
-  _ol_asserts_.assert(
+  assert(
       (!this.tileSize_ && this.tileSizes_) ||
       (this.tileSize_ && !this.tileSizes_),
       22); // Either `tileSize` or `tileSizes` must be configured, never both

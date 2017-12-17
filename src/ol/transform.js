@@ -1,7 +1,7 @@
 /**
  * @module ol/transform
  */
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 var _ol_transform_ = {};
 
 
@@ -204,7 +204,7 @@ _ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) 
  */
 _ol_transform_.invert = function(transform) {
   var det = _ol_transform_.determinant(transform);
-  _ol_asserts_.assert(det !== 0, 32); // Transformation matrix cannot be inverted
+  assert(det !== 0, 32); // Transformation matrix cannot be inverted
 
   var a = transform[0];
   var b = transform[1];

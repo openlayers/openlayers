@@ -1,7 +1,7 @@
 /**
  * @module ol/color
  */
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 import _ol_math_ from './math.js';
 var _ol_color_ = {};
 
@@ -173,7 +173,7 @@ _ol_color_.fromStringInternal_ = function(s) {
     parts.push(1);
     color = _ol_color_.normalize(parts);
   } else {
-    _ol_asserts_.assert(false, 14); // Invalid color
+    assert(false, 14); // Invalid color
   }
   return /** @type {ol.Color} */ (color);
 };

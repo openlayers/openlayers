@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import Control from '../control/Control.js';
 import ScaleLineUnits from '../control/ScaleLineUnits.js';
 import _ol_css_ from '../css.js';
@@ -237,7 +237,7 @@ ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    _ol_asserts_.assert(false, 33); // Invalid units
+    assert(false, 33); // Invalid units
   }
 
   var i = 3 * Math.floor(
