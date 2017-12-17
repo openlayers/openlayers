@@ -11,19 +11,19 @@ import _ol_tilecoord_ from './tilecoord.js';
  * @param {number=} opt_highWaterMark High water mark.
  * @struct
  */
-var _ol_TileCache_ = function(opt_highWaterMark) {
+var TileCache = function(opt_highWaterMark) {
 
   LRUCache.call(this, opt_highWaterMark);
 
 };
 
-inherits(_ol_TileCache_, LRUCache);
+inherits(TileCache, LRUCache);
 
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-_ol_TileCache_.prototype.expireCache = function(usedTiles) {
+TileCache.prototype.expireCache = function(usedTiles) {
   var tile, zKey;
   while (this.canExpireCache()) {
     tile = this.peekLast();
@@ -40,7 +40,7 @@ _ol_TileCache_.prototype.expireCache = function(usedTiles) {
 /**
  * Prune all tiles from the cache that don't have the same z as the newest tile.
  */
-_ol_TileCache_.prototype.pruneExceptNewestZ = function() {
+TileCache.prototype.pruneExceptNewestZ = function() {
   if (this.getCount() === 0) {
     return;
   }
@@ -54,4 +54,4 @@ _ol_TileCache_.prototype.pruneExceptNewestZ = function() {
     }
   }, this);
 };
-export default _ol_TileCache_;
+export default TileCache;

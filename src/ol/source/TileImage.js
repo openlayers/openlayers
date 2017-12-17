@@ -4,7 +4,7 @@
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {getUid, inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
-import _ol_TileCache_ from '../TileCache.js';
+import TileCache from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -193,7 +193,7 @@ _ol_source_TileImage_.prototype.getTileCacheForProjection = function(projection)
   } else {
     var projKey = getUid(projection).toString();
     if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new _ol_TileCache_(this.tileCache.highWaterMark);
+      this.tileCacheForProjection[projKey] = new TileCache(this.tileCache.highWaterMark);
     }
     return this.tileCacheForProjection[projKey];
   }

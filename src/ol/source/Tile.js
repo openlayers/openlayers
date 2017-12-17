@@ -2,7 +2,7 @@
  * @module ol/source/Tile
  */
 import {inherits, nullFunction} from '../index.js';
-import _ol_TileCache_ from '../TileCache.js';
+import TileCache from '../TileCache.js';
 import _ol_TileState_ from '../TileState.js';
 import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
@@ -56,7 +56,7 @@ var _ol_source_Tile_ = function(options) {
    * @protected
    * @type {ol.TileCache}
    */
-  this.tileCache = new _ol_TileCache_(options.cacheSize);
+  this.tileCache = new TileCache(options.cacheSize);
 
   /**
    * @protected
