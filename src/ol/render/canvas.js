@@ -4,7 +4,7 @@
 import _ol_css_ from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_obj_ from '../obj.js';
-import _ol_structs_LRUCache_ from '../structs/LRUCache.js';
+import LRUCache from '../structs/LRUCache.js';
 import _ol_transform_ from '../transform.js';
 var _ol_render_canvas_ = {};
 
@@ -96,7 +96,7 @@ _ol_render_canvas_.defaultLineWidth = 1;
 /**
  * @type {ol.structs.LRUCache.<HTMLCanvasElement>}
  */
-_ol_render_canvas_.labelCache = new _ol_structs_LRUCache_();
+_ol_render_canvas_.labelCache = new LRUCache();
 
 
 /**

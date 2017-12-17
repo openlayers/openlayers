@@ -1,4 +1,4 @@
-import _ol_structs_PriorityQueue_ from '../../../../src/ol/structs/PriorityQueue.js';
+import PriorityQueue from '../../../../src/ol/structs/PriorityQueue.js';
 
 
 describe('ol.structs.PriorityQueue', function() {
@@ -11,7 +11,7 @@ describe('ol.structs.PriorityQueue', function() {
 
     var pq;
     beforeEach(function() {
-      pq = new _ol_structs_PriorityQueue_(identity, identity);
+      pq = new PriorityQueue(identity, identity);
     });
 
     it('is empty', function() {
@@ -39,8 +39,7 @@ describe('ol.structs.PriorityQueue', function() {
     var elements, pq;
     beforeEach(function() {
       elements = [];
-      pq = new _ol_structs_PriorityQueue_(
-          identity, identity);
+      pq = new PriorityQueue(identity, identity);
       var element, i;
       for (i = 0; i < 32; ++i) {
         element = Math.random();
@@ -65,7 +64,7 @@ describe('ol.structs.PriorityQueue', function() {
     var pq, target;
     beforeEach(function() {
       target = 0.5;
-      pq = new _ol_structs_PriorityQueue_(function(element) {
+      pq = new PriorityQueue(function(element) {
         return Math.abs(element - target);
       }, identity);
       var i;
@@ -103,7 +102,7 @@ describe('ol.structs.PriorityQueue', function() {
         if (i++ % 2 === 0) {
           return Math.abs(element - target);
         } else {
-          return _ol_structs_PriorityQueue_.DROP;
+          return PriorityQueue.DROP;
         }
       };
       pq.reprioritize();
@@ -123,8 +122,7 @@ describe('ol.structs.PriorityQueue', function() {
 
     var pq;
     beforeEach(function() {
-      pq = new _ol_structs_PriorityQueue_(
-          identity, identity);
+      pq = new PriorityQueue(identity, identity);
       pq.enqueue('a');
       pq.enqueue('b');
       pq.enqueue('c');

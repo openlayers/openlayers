@@ -1,9 +1,9 @@
 import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
-import _ol_TileQueue_ from '../../../src/ol/TileQueue.js';
+import TileQueue from '../../../src/ol/TileQueue.js';
 import _ol_TileState_ from '../../../src/ol/TileState.js';
 import _ol_source_Image_ from '../../../src/ol/source/Image.js';
-import _ol_structs_PriorityQueue_ from '../../../src/ol/structs/PriorityQueue.js';
+import PriorityQueue from '../../../src/ol/structs/PriorityQueue.js';
 
 
 describe('ol.TileQueue', function() {
@@ -40,8 +40,8 @@ describe('ol.TileQueue', function() {
     var noop = function() {};
 
     it('works when tile queues share tiles', function(done) {
-      var q1 = new _ol_TileQueue_(noop, noop);
-      var q2 = new _ol_TileQueue_(noop, noop);
+      var q1 = new TileQueue(noop, noop);
+      var q2 = new TileQueue(noop, noop);
 
       var numTiles = 20;
       for (var i = 0; i < numTiles; ++i) {
@@ -91,7 +91,7 @@ describe('ol.TileQueue', function() {
 
     it('calls #tileChangeCallback_ when all wanted tiles are aborted', function() {
       var tileChangeCallback = sinon.spy();
-      var queue = new _ol_TileQueue_(noop, tileChangeCallback);
+      var queue = new TileQueue(noop, tileChangeCallback);
       var numTiles = 20;
       for (var i = 0; i < numTiles; ++i) {
         var tile = createImageTile();
@@ -108,7 +108,7 @@ describe('ol.TileQueue', function() {
   describe('heapify', function() {
     it('does convert an arbitrary array into a heap', function() {
 
-      var tq = new _ol_TileQueue_(function() {});
+      var tq = new TileQueue(function() {});
       addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
@@ -118,7 +118,7 @@ describe('ol.TileQueue', function() {
   describe('reprioritize', function() {
     it('does reprioritize the array', function() {
 
-      var tq = new _ol_TileQueue_(function() {});
+      var tq = new TileQueue(function() {});
       addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
@@ -129,7 +129,7 @@ describe('ol.TileQueue', function() {
       var i = 0;
       tq.priorityFunction_ = function() {
         if ((i++) % 2 === 0) {
-          return _ol_structs_PriorityQueue_.DROP;
+          return PriorityQueue.DROP;
         }
         return Math.floor(Math.random() * 100);
       };
@@ -145,7 +145,7 @@ describe('ol.TileQueue', function() {
     var noop = function() {};
 
     it('abort queued tiles', function() {
-      var tq = new _ol_TileQueue_(noop, noop);
+      var tq = new TileQueue(noop, noop);
       var tile = createImageTile();
       expect(tile.hasListener('change')).to.be(false);
 
@@ -158,7 +158,7 @@ describe('ol.TileQueue', function() {
     });
 
     it('abort loading tiles', function() {
-      var tq = new _ol_TileQueue_(noop, noop);
+      var tq = new TileQueue(noop, noop);
       var tile = createImageTile(noop);
 
       tq.enqueue([tile]);

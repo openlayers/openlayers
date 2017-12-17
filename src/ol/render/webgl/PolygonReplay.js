@@ -15,8 +15,8 @@ import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
 import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import _ol_style_Stroke_ from '../../style/Stroke.js';
-import _ol_structs_LinkedList_ from '../../structs/LinkedList.js';
-import _ol_structs_RBush_ from '../../structs/RBush.js';
+import LinkedList from '../../structs/LinkedList.js';
+import RBush from '../../structs/RBush.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
@@ -76,8 +76,8 @@ inherits(_ol_render_webgl_PolygonReplay_, _ol_render_webgl_Replay_);
 _ol_render_webgl_PolygonReplay_.prototype.drawCoordinates_ = function(
     flatCoordinates, holeFlatCoordinates, stride) {
   // Triangulate the polygon
-  var outerRing = new _ol_structs_LinkedList_();
-  var rtree = new _ol_structs_RBush_();
+  var outerRing = new LinkedList();
+  var rtree = new RBush();
   // Initialize the outer ring
   this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
   var maxCoords = this.getMaxCoords_(outerRing);
@@ -88,9 +88,9 @@ _ol_render_webgl_PolygonReplay_.prototype.drawCoordinates_ = function(
     var holeLists = [];
     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
       var holeList = {
-        list: new _ol_structs_LinkedList_(),
+        list: new LinkedList(),
         maxCoords: undefined,
-        rtree: new _ol_structs_RBush_()
+        rtree: new RBush()
       };
       holeLists.push(holeList);
       this.processFlatCoordinates_(holeFlatCoordinates[i],
@@ -553,8 +553,8 @@ _ol_render_webgl_PolygonReplay_.prototype.splitPolygon_ = function(list, rtree) 
       var intersection = this.calculateIntersection_(s0.p0,
           s0.p1, s1.p0, s1.p1);
       var p = this.createPoint_(intersection[0], intersection[1], n);
-      var newPolygon = new _ol_structs_LinkedList_();
-      var newRtree = new _ol_structs_RBush_();
+      var newPolygon = new LinkedList();
+      var newRtree = new RBush();
       this.insertItem_(p, s0.p1, newPolygon, newRtree);
       s0.p1 = p;
       rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y),

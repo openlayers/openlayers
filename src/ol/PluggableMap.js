@@ -12,7 +12,7 @@ import _ol_MapEventType_ from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
 import _ol_ObjectEventType_ from './ObjectEventType.js';
-import _ol_TileQueue_ from './TileQueue.js';
+import TileQueue from './TileQueue.js';
 import _ol_View_ from './View.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_asserts_ from './asserts.js';
@@ -27,7 +27,7 @@ import _ol_layer_Group_ from './layer/Group.js';
 import _ol_plugins_ from './plugins.js';
 import _ol_renderer_Type_ from './renderer/Type.js';
 import _ol_size_ from './size.js';
-import _ol_structs_PriorityQueue_ from './structs/PriorityQueue.js';
+import PriorityQueue from './structs/PriorityQueue.js';
 import _ol_transform_ from './transform.js';
 
 
@@ -325,7 +325,7 @@ var _ol_PluggableMap_ = function(options) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new _ol_TileQueue_(
+  this.tileQueue_ = new TileQueue(
       this.getTilePriority.bind(this),
       this.handleTileChange_.bind(this));
 
@@ -875,10 +875,10 @@ _ol_PluggableMap_.prototype.getTilePriority = function(tile, tileSourceKey, tile
   // are outside the visible extent.
   var frameState = this.frameState_;
   if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
-    return _ol_structs_PriorityQueue_.DROP;
+    return PriorityQueue.DROP;
   }
   if (!frameState.wantedTiles[tileSourceKey][tile.getKey()]) {
-    return _ol_structs_PriorityQueue_.DROP;
+    return PriorityQueue.DROP;
   }
   // Prioritize the highest zoom level tiles closest to the focus.
   // Tiles at higher zoom levels are prioritized using Math.log(tileResolution).

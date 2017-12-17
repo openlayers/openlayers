@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_ImageCanvas_ from '../ImageCanvas.js';
-import _ol_TileQueue_ from '../TileQueue.js';
+import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -69,7 +69,7 @@ var _ol_source_Raster_ = function(options) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new _ol_TileQueue_(
+  this.tileQueue_ = new TileQueue(
       function() {
         return 1;
       },

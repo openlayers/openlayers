@@ -15,7 +15,7 @@ import _ol_obj_ from '../obj.js';
  * @struct
  * @template T
  */
-var _ol_structs_RBush_ = function(opt_maxEntries) {
+var RBush = function(opt_maxEntries) {
 
   /**
    * @private
@@ -38,7 +38,7 @@ var _ol_structs_RBush_ = function(opt_maxEntries) {
  * @param {ol.Extent} extent Extent.
  * @param {T} value Value.
  */
-_ol_structs_RBush_.prototype.insert = function(extent, value) {
+RBush.prototype.insert = function(extent, value) {
   /** @type {ol.RBushEntry} */
   var item = {
     minX: extent[0],
@@ -58,7 +58,7 @@ _ol_structs_RBush_.prototype.insert = function(extent, value) {
  * @param {Array.<ol.Extent>} extents Extents.
  * @param {Array.<T>} values Values.
  */
-_ol_structs_RBush_.prototype.load = function(extents, values) {
+RBush.prototype.load = function(extents, values) {
   var items = new Array(values.length);
   for (var i = 0, l = values.length; i < l; i++) {
     var extent = extents[i];
@@ -84,7 +84,7 @@ _ol_structs_RBush_.prototype.load = function(extents, values) {
  * @param {T} value Value.
  * @return {boolean} Removed.
  */
-_ol_structs_RBush_.prototype.remove = function(value) {
+RBush.prototype.remove = function(value) {
   var uid = getUid(value);
 
   // get the object in which the value was wrapped when adding to the
@@ -100,7 +100,7 @@ _ol_structs_RBush_.prototype.remove = function(value) {
  * @param {ol.Extent} extent Extent.
  * @param {T} value Value.
  */
-_ol_structs_RBush_.prototype.update = function(extent, value) {
+RBush.prototype.update = function(extent, value) {
   var item = this.items_[getUid(value)];
   var bbox = [item.minX, item.minY, item.maxX, item.maxY];
   if (!equals(bbox, extent)) {
@@ -114,7 +114,7 @@ _ol_structs_RBush_.prototype.update = function(extent, value) {
  * Return all values in the RBush.
  * @return {Array.<T>} All.
  */
-_ol_structs_RBush_.prototype.getAll = function() {
+RBush.prototype.getAll = function() {
   var items = this.rbush_.all();
   return items.map(function(item) {
     return item.value;
@@ -127,7 +127,7 @@ _ol_structs_RBush_.prototype.getAll = function() {
  * @param {ol.Extent} extent Extent.
  * @return {Array.<T>} All in extent.
  */
-_ol_structs_RBush_.prototype.getInExtent = function(extent) {
+RBush.prototype.getInExtent = function(extent) {
   /** @type {ol.RBushEntry} */
   var bbox = {
     minX: extent[0],
@@ -151,7 +151,7 @@ _ol_structs_RBush_.prototype.getInExtent = function(extent) {
  * @return {*} Callback return value.
  * @template S
  */
-_ol_structs_RBush_.prototype.forEach = function(callback, opt_this) {
+RBush.prototype.forEach = function(callback, opt_this) {
   return this.forEach_(this.getAll(), callback, opt_this);
 };
 
@@ -164,7 +164,7 @@ _ol_structs_RBush_.prototype.forEach = function(callback, opt_this) {
  * @return {*} Callback return value.
  * @template S
  */
-_ol_structs_RBush_.prototype.forEachInExtent = function(extent, callback, opt_this) {
+RBush.prototype.forEachInExtent = function(extent, callback, opt_this) {
   return this.forEach_(this.getInExtent(extent), callback, opt_this);
 };
 
@@ -177,7 +177,7 @@ _ol_structs_RBush_.prototype.forEachInExtent = function(extent, callback, opt_th
  * @return {*} Callback return value.
  * @template S
  */
-_ol_structs_RBush_.prototype.forEach_ = function(values, callback, opt_this) {
+RBush.prototype.forEach_ = function(values, callback, opt_this) {
   var result;
   for (var i = 0, l = values.length; i < l; i++) {
     result = callback.call(opt_this, values[i]);
@@ -192,7 +192,7 @@ _ol_structs_RBush_.prototype.forEach_ = function(values, callback, opt_this) {
 /**
  * @return {boolean} Is empty.
  */
-_ol_structs_RBush_.prototype.isEmpty = function() {
+RBush.prototype.isEmpty = function() {
   return _ol_obj_.isEmpty(this.items_);
 };
 
@@ -200,7 +200,7 @@ _ol_structs_RBush_.prototype.isEmpty = function() {
 /**
  * Remove all values from the RBush.
  */
-_ol_structs_RBush_.prototype.clear = function() {
+RBush.prototype.clear = function() {
   this.rbush_.clear();
   this.items_ = {};
 };
@@ -210,7 +210,7 @@ _ol_structs_RBush_.prototype.clear = function() {
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  */
-_ol_structs_RBush_.prototype.getExtent = function(opt_extent) {
+RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
   var data = this.rbush_.data;
   return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
@@ -220,10 +220,10 @@ _ol_structs_RBush_.prototype.getExtent = function(opt_extent) {
 /**
  * @param {ol.structs.RBush} rbush R-Tree.
  */
-_ol_structs_RBush_.prototype.concat = function(rbush) {
+RBush.prototype.concat = function(rbush) {
   this.rbush_.load(rbush.rbush_.all());
   for (var i in rbush.items_) {
     this.items_[i | 0] = rbush.items_[i | 0];
   }
 };
-export default _ol_structs_RBush_;
+export default RBush;

@@ -1,5 +1,5 @@
 import _ol_Tile_ from '../../../src/ol/Tile.js';
-import _ol_TileCache_ from '../../../src/ol/TileCache.js';
+import TileCache from '../../../src/ol/TileCache.js';
 import _ol_tilecoord_ from '../../../src/ol/tilecoord.js';
 
 
@@ -16,7 +16,7 @@ describe('ol.TileCache', function() {
         new _ol_Tile_([2, 2, 0]),
         new _ol_Tile_([2, 3, 0]) // newest tile at z: 2
       ];
-      var cache = new _ol_TileCache_();
+      var cache = new TileCache();
 
       sinon.spy(tiles[0], 'dispose');
 
