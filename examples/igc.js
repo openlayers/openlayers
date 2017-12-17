@@ -2,7 +2,7 @@ import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_format_IGC_ from '../src/ol/format/IGC.js';
+import IGC from '../src/ol/format/IGC.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -58,7 +58,7 @@ function get(url, callback) {
   client.send();
 }
 
-var igcFormat = new _ol_format_IGC_();
+var igcFormat = new IGC();
 for (var i = 0; i < igcUrls.length; ++i) {
   get(igcUrls[i], function(data) {
     var features = igcFormat.readFeatures(data,

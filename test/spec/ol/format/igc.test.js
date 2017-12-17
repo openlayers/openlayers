@@ -1,4 +1,4 @@
-import _ol_format_IGC_ from '../../../../src/ol/format/IGC.js';
+import IGC from '../../../../src/ol/format/IGC.js';
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
@@ -29,7 +29,7 @@ describe('ol.format.IGC', function() {
       'G60189641B00B00800019000000000000';
 
   beforeEach(function() {
-    format = new _ol_format_IGC_();
+    format = new IGC();
   });
 
   describe('#readProjectionFromText', function() {
