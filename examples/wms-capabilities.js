@@ -1,6 +1,6 @@
-import _ol_format_WMSCapabilities_ from '../src/ol/format/WMSCapabilities.js';
+import WMSCapabilities from '../src/ol/format/WMSCapabilities.js';
 
-var parser = new _ol_format_WMSCapabilities_();
+var parser = new WMSCapabilities();
 
 fetch('data/ogcsample.xml').then(function(response) {
   return response.text();
