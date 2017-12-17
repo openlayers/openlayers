@@ -2,7 +2,7 @@
  * @module ol/TileCache
  */
 import {inherits} from './index.js';
-import _ol_structs_LRUCache_ from './structs/LRUCache.js';
+import LRUCache from './structs/LRUCache.js';
 import _ol_tilecoord_ from './tilecoord.js';
 
 /**
@@ -13,11 +13,11 @@ import _ol_tilecoord_ from './tilecoord.js';
  */
 var _ol_TileCache_ = function(opt_highWaterMark) {
 
-  _ol_structs_LRUCache_.call(this, opt_highWaterMark);
+  LRUCache.call(this, opt_highWaterMark);
 
 };
 
-inherits(_ol_TileCache_, _ol_structs_LRUCache_);
+inherits(_ol_TileCache_, LRUCache);
 
 
 /**

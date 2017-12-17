@@ -15,7 +15,7 @@ import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_source_State_ from '../../source/State.js';
-import _ol_structs_LRUCache_ from '../../structs/LRUCache.js';
+import LRUCache from '../../structs/LRUCache.js';
 import _ol_structs_PriorityQueue_ from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
@@ -101,7 +101,7 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
    * @private
    * @type {ol.structs.LRUCache.<ol.WebglTextureCacheEntry|null>}
    */
-  this.textureCache_ = new _ol_structs_LRUCache_();
+  this.textureCache_ = new LRUCache();
 
   /**
    * @private
