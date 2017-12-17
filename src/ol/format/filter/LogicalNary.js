@@ -2,7 +2,7 @@
  * @module ol/format/filter/LogicalNary
  */
 import {inherits} from '../../index.js';
-import _ol_asserts_ from '../../asserts.js';
+import {assert} from '../../asserts.js';
 import Filter from '../filter/Filter.js';
 
 /**
@@ -25,7 +25,7 @@ var LogicalNary = function(tagName, conditions) {
    * @type {Array.<ol.format.filter.Filter>}
    */
   this.conditions = Array.prototype.slice.call(arguments, 1);
-  _ol_asserts_.assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
+  assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
 };
 
 inherits(LogicalNary, Filter);

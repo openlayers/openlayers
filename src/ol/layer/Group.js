@@ -6,7 +6,7 @@ import _ol_Collection_ from '../Collection.js';
 import _ol_CollectionEventType_ from '../CollectionEventType.js';
 import _ol_Object_ from '../Object.js';
 import _ol_ObjectEventType_ from '../ObjectEventType.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
@@ -56,7 +56,7 @@ var _ol_layer_Group_ = function(opt_options) {
     if (Array.isArray(layers)) {
       layers = new _ol_Collection_(layers.slice(), {unique: true});
     } else {
-      _ol_asserts_.assert(layers instanceof _ol_Collection_,
+      assert(layers instanceof _ol_Collection_,
           43); // Expected `layers` to be an array or an `ol.Collection`
       layers = layers;
     }

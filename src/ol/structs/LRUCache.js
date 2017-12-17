@@ -2,7 +2,7 @@
  * @module ol/structs/LRUCache
  */
 import {inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import EventTarget from '../events/EventTarget.js';
 import EventType from '../events/EventType.js';
 
@@ -107,7 +107,7 @@ LRUCache.prototype.forEach = function(f, opt_this) {
  */
 LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
-  _ol_asserts_.assert(entry !== undefined,
+  assert(entry !== undefined,
       15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     return entry.value_;
@@ -133,7 +133,7 @@ LRUCache.prototype.get = function(key) {
  */
 LRUCache.prototype.remove = function(key) {
   var entry = this.entries_[key];
-  _ol_asserts_.assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
+  assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     this.newest_ = /** @type {ol.LRUCacheEntry} */ (entry.older);
     if (this.newest_) {
@@ -248,7 +248,7 @@ LRUCache.prototype.replace = function(key, value) {
  * @param {T} value Value.
  */
 LRUCache.prototype.set = function(key, value) {
-  _ol_asserts_.assert(!(key in this.entries_),
+  assert(!(key in this.entries_),
       16); // Tried to set a value for a key that is used already
   var entry = /** @type {ol.LRUCacheEntry} */ ({
     key_: key,

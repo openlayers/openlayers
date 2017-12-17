@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Style
  */
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
 import _ol_style_Circle_ from '../style/Circle.js';
 import _ol_style_Fill_ from '../style/Fill.js';
@@ -291,7 +291,7 @@ _ol_style_Style_.createFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      _ol_asserts_.assert(obj instanceof _ol_style_Style_,
+      assert(obj instanceof _ol_style_Style_,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }

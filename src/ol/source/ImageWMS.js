@@ -5,7 +5,7 @@
 import {DEFAULT_WMS_VERSION} from './common.js';
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from '../extent.js';
@@ -265,7 +265,7 @@ _ol_source_ImageWMS_.prototype.getImageLoadFunction = function() {
  */
 _ol_source_ImageWMS_.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  _ol_asserts_.assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
+  assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -291,7 +291,7 @@ _ol_source_ImageWMS_.prototype.getRequestUrl_ = function(extent, size, pixelRati
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        _ol_asserts_.assert(false, 8); // Unknown `serverType` configured
+        assert(false, 8); // Unknown `serverType` configured
         break;
     }
   }

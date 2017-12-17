@@ -9,7 +9,7 @@
 
 import {inherits} from '../index.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
@@ -60,7 +60,7 @@ var _ol_source_TileJSON_ = function(options) {
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
-    _ol_asserts_.assert(false, 51); // Either `url` or `tileJSON` options must be provided
+    assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 
 };

@@ -3,7 +3,7 @@
  */
 
 import {getUid, inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
@@ -55,7 +55,7 @@ var _ol_source_Cluster_ = function(options) {
    */
   this.geometryFunction = options.geometryFunction || function(feature) {
     var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
-    _ol_asserts_.assert(geometry instanceof Point,
+    assert(geometry instanceof Point,
         10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
     return geometry;
   };

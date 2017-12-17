@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import _ol_size_ from '../size.js';
@@ -62,7 +62,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
       }
       break;
     default:
-      _ol_asserts_.assert(false, 53); // Unknown `tierSizeCalculation` configured
+      assert(false, 53); // Unknown `tierSizeCalculation` configured
       break;
   }
 

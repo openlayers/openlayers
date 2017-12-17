@@ -1,12 +1,11 @@
-import _ol_asserts_ from '../../../src/ol/asserts.js';
+import {assert} from '../../../src/ol/asserts.js';
 
+describe('ol/asserts', function() {
 
-describe('ol.asserts', function() {
-
-  describe('ol.asserts.assert', function() {
+  describe('assert', function() {
     it('throws an exception', function() {
       expect(function() {
-        _ol_asserts_.assert(false, 42);
+        assert(false, 42);
       }).to.throwException();
     });
   });

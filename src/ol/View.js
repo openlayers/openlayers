@@ -10,7 +10,7 @@ import _ol_RotationConstraint_ from './RotationConstraint.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_ViewProperty_ from './ViewProperty.js';
 import _ol_array_ from './array.js';
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
 import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
@@ -608,11 +608,11 @@ _ol_View_.prototype.getHints = function(opt_hints) {
 _ol_View_.prototype.calculateExtent = function(opt_size) {
   var size = opt_size || this.getSizeFromViewport_();
   var center = /** @type {!ol.Coordinate} */ (this.getCenter());
-  _ol_asserts_.assert(center, 1); // The view center is not defined
+  assert(center, 1); // The view center is not defined
   var resolution = /** @type {!number} */ (this.getResolution());
-  _ol_asserts_.assert(resolution !== undefined, 2); // The view resolution is not defined
+  assert(resolution !== undefined, 2); // The view resolution is not defined
   var rotation = /** @type {!number} */ (this.getRotation());
-  _ol_asserts_.assert(rotation !== undefined, 3); // The view rotation is not defined
+  assert(rotation !== undefined, 3); // The view rotation is not defined
 
   return getForViewAndSize(center, resolution, rotation, size);
 };
@@ -880,9 +880,9 @@ _ol_View_.prototype.fit = function(geometryOrExtent, opt_options) {
   /** @type {ol.geom.SimpleGeometry} */
   var geometry;
   if (!(geometryOrExtent instanceof SimpleGeometry)) {
-    _ol_asserts_.assert(Array.isArray(geometryOrExtent),
+    assert(Array.isArray(geometryOrExtent),
         24); // Invalid extent or geometry provided as `geometry`
-    _ol_asserts_.assert(!isEmpty(geometryOrExtent),
+    assert(!isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
     geometry = Polygon.fromExtent(geometryOrExtent);
   } else if (geometryOrExtent.getType() === GeometryType.CIRCLE) {
