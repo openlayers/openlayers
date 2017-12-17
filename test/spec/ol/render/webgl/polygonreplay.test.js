@@ -5,7 +5,7 @@ import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import _ol_render_webgl_polygonreplay_defaultshader_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader.js';
 import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader/Locations.js';
-import _ol_structs_LinkedList_ from '../../../../../src/ol/structs/LinkedList.js';
+import LinkedList from '../../../../../src/ol/structs/LinkedList.js';
 import RBush from '../../../../../src/ol/structs/RBush.js';
 import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
@@ -83,7 +83,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
   describe('triangulating functions', function() {
     var list, rtree;
     beforeEach(function() {
-      list = new _ol_structs_LinkedList_();
+      list = new LinkedList();
       rtree = new RBush();
     });
 
