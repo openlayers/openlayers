@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_EsriJSON_ from '../src/ol/format/EsriJSON.js';
+import EsriJSON from '../src/ol/format/EsriJSON.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
@@ -18,7 +18,7 @@ var serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
     'services/PDX_Pedestrian_Districts/FeatureServer/';
 var layer = '0';
 
-var esrijsonFormat = new _ol_format_EsriJSON_();
+var esrijsonFormat = new EsriJSON();
 
 var vectorSource = new _ol_source_Vector_({
   loader: function(extent, resolution, projection) {
