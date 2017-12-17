@@ -1,6 +1,6 @@
 import {inherits} from '../../../../src/ol/index.js';
 import _ol_Tile_ from '../../../../src/ol/Tile.js';
-import _ol_TileRange_ from '../../../../src/ol/TileRange.js';
+import TileRange from '../../../../src/ol/TileRange.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
@@ -154,7 +154,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new _ol_TileRange_(0, 1, 0, 1);
+      var range = new TileRange(0, 1, 0, 1);
 
       source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(callback.callCount).to.be(3);
@@ -170,7 +170,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new _ol_TileRange_(0, 1, 0, 1);
+      var range = new TileRange(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
           source.getProjection(), zoom, range,
@@ -190,7 +190,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new _ol_TileRange_(0, 1, 0, 1);
+      var range = new TileRange(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
           source.getProjection(), zoom,
@@ -210,7 +210,7 @@ describe('ol.source.Tile', function() {
       });
 
       var zoom = 1;
-      var range = new _ol_TileRange_(0, 1, 0, 1);
+      var range = new TileRange(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
           source.getProjection(), zoom, range,

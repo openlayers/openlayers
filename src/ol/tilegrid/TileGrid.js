@@ -3,7 +3,7 @@
  */
 import {DEFAULT_TILE_SIZE} from './common.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_TileRange_ from '../TileRange.js';
+import TileRange from '../TileRange.js';
 import _ol_array_ from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import _ol_math_ from '../math.js';
@@ -139,7 +139,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
 
   if (options.sizes !== undefined) {
     this.fullTileRanges_ = options.sizes.map(function(size, z) {
-      var tileRange = new _ol_TileRange_(
+      var tileRange = new TileRange(
           Math.min(0, size[0]), Math.max(size[0] - 1, -1),
           Math.min(0, size[1]), Math.max(size[1] - 1, -1));
       return tileRange;
@@ -199,7 +199,7 @@ _ol_tilegrid_TileGrid_.prototype.forEachTileCoordParentTileRange = function(tile
     if (this.zoomFactor_ === 2) {
       x = Math.floor(x / 2);
       y = Math.floor(y / 2);
-      tileRange = _ol_TileRange_.createOrUpdate(x, x, y, y, opt_tileRange);
+      tileRange = TileRange.createOrUpdate(x, x, y, y, opt_tileRange);
     } else {
       tileRange = this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange);
     }
@@ -288,7 +288,7 @@ _ol_tilegrid_TileGrid_.prototype.getTileCoordChildTileRange = function(tileCoord
     if (this.zoomFactor_ === 2) {
       var minX = tileCoord[1] * 2;
       var minY = tileCoord[2] * 2;
-      return _ol_TileRange_.createOrUpdate(minX, minX + 1, minY, minY + 1, opt_tileRange);
+      return TileRange.createOrUpdate(minX, minX + 1, minY, minY + 1, opt_tileRange);
     }
     var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
     return this.getTileRangeForExtentAndZ(
@@ -330,7 +330,7 @@ _ol_tilegrid_TileGrid_.prototype.getTileRangeForExtentAndZ = function(extent, z,
   var minX = tileCoord[1];
   var minY = tileCoord[2];
   this.getTileCoordForXYAndZ_(extent[2], extent[3], z, true, tileCoord);
-  return _ol_TileRange_.createOrUpdate(
+  return TileRange.createOrUpdate(
       minX, tileCoord[1], minY, tileCoord[2], opt_tileRange);
 };
 

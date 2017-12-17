@@ -6,7 +6,7 @@
 
 import {inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
-import _ol_TileRange_ from '../../TileRange.js';
+import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_array_ from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
@@ -247,7 +247,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
     var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     var allTilesLoaded = true;
     var tmpExtent = createEmpty();
-    var tmpTileRange = new _ol_TileRange_(0, 0, 0, 0);
+    var tmpTileRange = new TileRange(0, 0, 0, 0);
     var childTileRange, drawable, fullyLoaded, tile, tileState;
     var x, y, tileExtent;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
