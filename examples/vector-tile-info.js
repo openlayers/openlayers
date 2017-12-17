@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_MVT_ from '../src/ol/format/MVT.js';
+import MVT from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 
@@ -12,7 +12,7 @@ var map = new _ol_Map_({
   }),
   layers: [new _ol_layer_VectorTile_({
     source: new _ol_source_VectorTile_({
-      format: new _ol_format_MVT_(),
+      format: new MVT(),
       url: 'https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap/VectorTileServer/tile/{z}/{y}/{x}.pbf'
     })
   })]

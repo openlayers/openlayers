@@ -7,7 +7,7 @@ import _ol_VectorImageTile_ from '../../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../../src/ol/VectorTile.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
-import _ol_format_MVT_ from '../../../../../src/ol/format/MVT.js';
+import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_layer_VectorTile_ from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
@@ -68,7 +68,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       };
       inherits(TileClass, _ol_VectorTile_);
       source = new _ol_source_VectorTile_({
-        format: new _ol_format_MVT_(),
+        format: new MVT(),
         tileClass: TileClass,
         tileGrid: _ol_tilegrid_.createXYZ()
       });
@@ -350,7 +350,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       document.body.appendChild(target);
       var extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
       var source = new _ol_source_VectorTile_({
-        format: new _ol_format_MVT_(),
+        format: new MVT(),
         url: 'spec/ol/data/14-8938-5680.vector.pbf',
         minZoom: 14,
         maxZoom: 14

@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_MVT_ from '../src/ol/format/MVT.js';
+import MVT from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
@@ -37,7 +37,7 @@ var map = new _ol_Map_({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
           '© <a href="https://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
-        format: new _ol_format_MVT_(),
+        format: new MVT(),
         tileGrid: new _ol_tilegrid_TileGrid_({
           extent: getProjection('EPSG:3857').getExtent(),
           resolutions: resolutions,
