@@ -2,7 +2,7 @@
  * @module ol/source/WMTS
  */
 import {inherits} from '../index.js';
-import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import {expandUrl, createFromTileUrlFunctions, nullTileUrlFunction} from '../tileurlfunction.js';
 import _ol_array_ from '../array.js';
 import {containsExtent} from '../extent.js';
 import _ol_obj_ from '../obj.js';
@@ -63,7 +63,7 @@ var _ol_source_WMTS_ = function(options) {
 
   var urls = options.urls;
   if (urls === undefined && options.url !== undefined) {
-    urls = _ol_TileUrlFunction_.expandUrl(options.url);
+    urls = expandUrl(options.url);
   }
 
   // FIXME: should we guess this requestEncoding from options.url(s)
@@ -151,9 +151,7 @@ var _ol_source_WMTS_ = function(options) {
   };
 
   var tileUrlFunction = (urls && urls.length > 0) ?
-    _ol_TileUrlFunction_.createFromTileUrlFunctions(
-        urls.map(this.createFromWMTSTemplate_)) :
-    _ol_TileUrlFunction_.nullTileUrlFunction;
+    createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_)) : nullTileUrlFunction;
 
   _ol_source_TileImage_.call(this, {
     attributions: options.attributions,
@@ -187,7 +185,7 @@ _ol_source_WMTS_.prototype.setUrls = function(urls) {
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    _ol_TileUrlFunction_.createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_.bind(this))), key);
+    createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_.bind(this))), key);
 };
 
 /**

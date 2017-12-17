@@ -5,7 +5,7 @@ import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
 import _ol_TileState_ from '../TileState.js';
-import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import {expandUrl, createFromTileUrlFunctions} from '../tileurlfunction.js';
 import _ol_asserts_ from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
@@ -92,7 +92,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
   if (url && url.indexOf('{TileGroup}') == -1 && url.indexOf('{tileIndex}') == -1) {
     url += '{TileGroup}/{z}-{x}-{y}.jpg';
   }
-  var urls = _ol_TileUrlFunction_.expandUrl(url);
+  var urls = expandUrl(url);
 
   /**
    * @param {string} template Template.
@@ -133,7 +133,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
       });
   }
 
-  var tileUrlFunction = _ol_TileUrlFunction_.createFromTileUrlFunctions(urls.map(createFromTemplate));
+  var tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));
 
   var ZoomifyTileClass = _ol_source_Zoomify_.Tile_.bind(null, tileGrid);
 

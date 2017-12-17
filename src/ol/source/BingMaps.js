@@ -2,7 +2,7 @@
  * @module ol/source/BingMaps
  */
 import {inherits} from '../index.js';
-import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
@@ -142,7 +142,7 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
 
   var culture = this.culture_;
   var hidpi = this.hidpi_;
-  this.tileUrlFunction = _ol_TileUrlFunction_.createFromTileUrlFunctions(
+  this.tileUrlFunction = createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function(subdomain) {
         var quadKeyTileCoord = [0, 0, 0];
         var imageUrl = resource.imageUrl

@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_TileState_ from '../TileState.js';
-import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_source_TileEventType_ from '../source/TileEventType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -44,8 +44,7 @@ var _ol_source_UrlTile_ = function(options) {
    * @type {ol.TileUrlFunctionType}
    */
   this.tileUrlFunction = this.fixedTileUrlFunction ?
-    this.fixedTileUrlFunction.bind(this) :
-    _ol_TileUrlFunction_.nullTileUrlFunction;
+    this.fixedTileUrlFunction.bind(this) : nullTileUrlFunction;
 
   /**
    * @protected
@@ -171,10 +170,10 @@ _ol_source_UrlTile_.prototype.setTileUrlFunction = function(tileUrlFunction, opt
  * @api
  */
 _ol_source_UrlTile_.prototype.setUrl = function(url) {
-  var urls = this.urls = _ol_TileUrlFunction_.expandUrl(url);
+  var urls = this.urls = expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    _ol_TileUrlFunction_.createFromTemplates(urls, this.tileGrid), url);
+    createFromTemplates(urls, this.tileGrid), url);
 };
 
 
@@ -188,7 +187,7 @@ _ol_source_UrlTile_.prototype.setUrls = function(urls) {
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
-    _ol_TileUrlFunction_.createFromTemplates(urls, this.tileGrid), key);
+    createFromTemplates(urls, this.tileGrid), key);
 };
 
 

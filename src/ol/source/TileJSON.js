@@ -8,7 +8,7 @@
  */
 
 import {inherits} from '../index.js';
-import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import {createFromTemplates} from '../tileurlfunction.js';
 import _ol_asserts_ from '../asserts.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
@@ -133,8 +133,7 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
   });
   this.tileGrid = tileGrid;
 
-  this.tileUrlFunction =
-      _ol_TileUrlFunction_.createFromTemplates(tileJSON.tiles, tileGrid);
+  this.tileUrlFunction = createFromTemplates(tileJSON.tiles, tileGrid);
 
   if (tileJSON.attribution !== undefined && !this.getAttributions()) {
     var attributionExtent = extent !== undefined ?
