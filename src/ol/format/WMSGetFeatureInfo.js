@@ -3,8 +3,8 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_format_GML2_ from '../format/GML2.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import GML2 from '../format/GML2.js';
+import XMLFeature from '../format/XMLFeature.js';
 import _ol_obj_ from '../obj.js';
 import _ol_xml_ from '../xml.js';
 
@@ -18,7 +18,7 @@ import _ol_xml_ from '../xml.js';
  * @param {olx.format.WMSGetFeatureInfoOptions=} opt_options Options.
  * @api
  */
-var _ol_format_WMSGetFeatureInfo_ = function(opt_options) {
+var WMSGetFeatureInfo = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -33,7 +33,7 @@ var _ol_format_WMSGetFeatureInfo_ = function(opt_options) {
    * @private
    * @type {ol.format.GML2}
    */
-  this.gmlFormat_ = new _ol_format_GML2_();
+  this.gmlFormat_ = new GML2();
 
 
   /**
@@ -42,10 +42,10 @@ var _ol_format_WMSGetFeatureInfo_ = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 };
 
-inherits(_ol_format_WMSGetFeatureInfo_, _ol_format_XMLFeature_);
+inherits(WMSGetFeatureInfo, XMLFeature);
 
 
 /**
@@ -53,7 +53,7 @@ inherits(_ol_format_WMSGetFeatureInfo_, _ol_format_XMLFeature_);
  * @type {string}
  * @private
  */
-_ol_format_WMSGetFeatureInfo_.featureIdentifier_ = '_feature';
+WMSGetFeatureInfo.featureIdentifier_ = '_feature';
 
 
 /**
@@ -61,13 +61,13 @@ _ol_format_WMSGetFeatureInfo_.featureIdentifier_ = '_feature';
  * @type {string}
  * @private
  */
-_ol_format_WMSGetFeatureInfo_.layerIdentifier_ = '_layer';
+WMSGetFeatureInfo.layerIdentifier_ = '_layer';
 
 
 /**
  * @return {Array.<string>} layers
  */
-_ol_format_WMSGetFeatureInfo_.prototype.getLayers = function() {
+WMSGetFeatureInfo.prototype.getLayers = function() {
   return this.layers_;
 };
 
@@ -75,7 +75,7 @@ _ol_format_WMSGetFeatureInfo_.prototype.getLayers = function() {
 /**
  * @param {Array.<string>} layers Layers to parse.
  */
-_ol_format_WMSGetFeatureInfo_.prototype.setLayers = function(layers) {
+WMSGetFeatureInfo.prototype.setLayers = function(layers) {
   this.layers_ = layers;
 };
 
@@ -86,7 +86,7 @@ _ol_format_WMSGetFeatureInfo_.prototype.setLayers = function(layers) {
  * @return {Array.<ol.Feature>} Features.
  * @private
  */
-_ol_format_WMSGetFeatureInfo_.prototype.readFeatures_ = function(node, objectStack) {
+WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
   node.setAttribute('namespaceURI', this.featureNS_);
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
@@ -102,7 +102,7 @@ _ol_format_WMSGetFeatureInfo_.prototype.readFeatures_ = function(node, objectSta
       }
       var context = objectStack[0];
 
-      var toRemove = _ol_format_WMSGetFeatureInfo_.layerIdentifier_;
+      var toRemove = WMSGetFeatureInfo.layerIdentifier_;
       var layerName = layer.localName.replace(toRemove, '');
 
       if (this.layers_ && !_ol_array_.includes(this.layers_, layerName)) {
@@ -110,7 +110,7 @@ _ol_format_WMSGetFeatureInfo_.prototype.readFeatures_ = function(node, objectSta
       }
 
       var featureType = layerName +
-          _ol_format_WMSGetFeatureInfo_.featureIdentifier_;
+          WMSGetFeatureInfo.featureIdentifier_;
 
       context['featureType'] = featureType;
       context['featureNS'] = this.featureNS_;
@@ -149,13 +149,13 @@ _ol_format_WMSGetFeatureInfo_.prototype.readFeatures_ = function(node, objectSta
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-_ol_format_WMSGetFeatureInfo_.prototype.readFeatures;
+WMSGetFeatureInfo.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WMSGetFeatureInfo_.prototype.readFeaturesFromNode = function(node, opt_options) {
+WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = {};
   if (opt_options) {
     _ol_obj_.assign(options, this.getReadOptions(node, opt_options));
@@ -168,19 +168,19 @@ _ol_format_WMSGetFeatureInfo_.prototype.readFeaturesFromNode = function(node, op
  * Not implemented.
  * @inheritDoc
  */
-_ol_format_WMSGetFeatureInfo_.prototype.writeFeatureNode = function(feature, opt_options) {};
+WMSGetFeatureInfo.prototype.writeFeatureNode = function(feature, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-_ol_format_WMSGetFeatureInfo_.prototype.writeFeaturesNode = function(features, opt_options) {};
+WMSGetFeatureInfo.prototype.writeFeaturesNode = function(features, opt_options) {};
 
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-_ol_format_WMSGetFeatureInfo_.prototype.writeGeometryNode = function(geometry, opt_options) {};
-export default _ol_format_WMSGetFeatureInfo_;
+WMSGetFeatureInfo.prototype.writeGeometryNode = function(geometry, opt_options) {};
+export default WMSGetFeatureInfo;

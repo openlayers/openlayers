@@ -2,7 +2,7 @@ import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_VectorImageTile_ from '../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../src/ol/VectorTile.js';
-import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
+import MVT from '../../../../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
@@ -11,7 +11,7 @@ import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.source.VectorTile', function() {
 
-  var format = new _ol_format_MVT_();
+  var format = new MVT();
   var source = new _ol_source_VectorTile_({
     format: format,
     tilePixelRatio: 8,

@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_events_condition_ from '../src/ol/events/condition.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_interaction_Extent_ from '../src/ol/interaction/Extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -10,7 +10,7 @@ import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 
 var vectorSource = new _ol_source_Vector_({
   url: 'data/geojson/countries.geojson',
-  format: new _ol_format_GeoJSON_()
+  format: new GeoJSON()
 });
 
 var map = new _ol_Map_({

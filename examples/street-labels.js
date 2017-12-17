@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -30,7 +30,7 @@ var map = new _ol_Map_({
   }), new _ol_layer_Vector_({
     declutter: true,
     source: new _ol_source_Vector_({
-      format: new _ol_format_GeoJSON_(),
+      format: new GeoJSON(),
       url: 'data/geojson/vienna-streets.geojson'
     }),
     style: function(feature) {

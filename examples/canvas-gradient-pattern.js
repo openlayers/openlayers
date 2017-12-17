@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_has_ from '../src/ol/has.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -84,7 +84,7 @@ var getStackedStyle = function(feature, resolution) {
 var vectorLayer = new _ol_layer_Vector_({
   source: new _ol_source_Vector_({
     url: 'data/geojson/countries.geojson',
-    format: new _ol_format_GeoJSON_()
+    format: new GeoJSON()
   }),
   style: getStackedStyle
 });

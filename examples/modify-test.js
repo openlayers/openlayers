@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
@@ -145,7 +145,7 @@ var geojsonObject = {
 };
 
 var source = new _ol_source_Vector_({
-  features: (new _ol_format_GeoJSON_()).readFeatures(geojsonObject)
+  features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
 var layer = new _ol_layer_Vector_({

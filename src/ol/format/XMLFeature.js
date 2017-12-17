@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 import _ol_xml_ from '../xml.js';
 
@@ -17,7 +17,7 @@ import _ol_xml_ from '../xml.js';
  * @abstract
  * @extends {ol.format.Feature}
  */
-var _ol_format_XMLFeature_ = function() {
+var XMLFeature = function() {
 
   /**
    * @type {XMLSerializer}
@@ -25,16 +25,16 @@ var _ol_format_XMLFeature_ = function() {
    */
   this.xmlSerializer_ = new XMLSerializer();
 
-  _ol_format_Feature_.call(this);
+  FeatureFormat.call(this);
 };
 
-inherits(_ol_format_XMLFeature_, _ol_format_Feature_);
+inherits(XMLFeature, FeatureFormat);
 
 
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.getType = function() {
+XMLFeature.prototype.getType = function() {
   return _ol_format_FormatType_.XML;
 };
 
@@ -42,7 +42,7 @@ _ol_format_XMLFeature_.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.readFeature = function(source, opt_options) {
+XMLFeature.prototype.readFeature = function(source, opt_options) {
   if (_ol_xml_.isDocument(source)) {
     return this.readFeatureFromDocument(
         /** @type {Document} */ (source), opt_options);
@@ -62,7 +62,7 @@ _ol_format_XMLFeature_.prototype.readFeature = function(source, opt_options) {
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
-_ol_format_XMLFeature_.prototype.readFeatureFromDocument = function(
+XMLFeature.prototype.readFeatureFromDocument = function(
     doc, opt_options) {
   var features = this.readFeaturesFromDocument(doc, opt_options);
   if (features.length > 0) {
@@ -78,7 +78,7 @@ _ol_format_XMLFeature_.prototype.readFeatureFromDocument = function(
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
-_ol_format_XMLFeature_.prototype.readFeatureFromNode = function(node, opt_options) {
+XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
   return null; // not implemented
 };
 
@@ -86,7 +86,7 @@ _ol_format_XMLFeature_.prototype.readFeatureFromNode = function(node, opt_option
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.readFeatures = function(source, opt_options) {
+XMLFeature.prototype.readFeatures = function(source, opt_options) {
   if (_ol_xml_.isDocument(source)) {
     return this.readFeaturesFromDocument(
         /** @type {Document} */ (source), opt_options);
@@ -107,7 +107,7 @@ _ol_format_XMLFeature_.prototype.readFeatures = function(source, opt_options) {
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-_ol_format_XMLFeature_.prototype.readFeaturesFromDocument = function(
+XMLFeature.prototype.readFeaturesFromDocument = function(
     doc, opt_options) {
   /** @type {Array.<ol.Feature>} */
   var features = [];
@@ -128,13 +128,13 @@ _ol_format_XMLFeature_.prototype.readFeaturesFromDocument = function(
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-_ol_format_XMLFeature_.prototype.readFeaturesFromNode = function(node, opt_options) {};
+XMLFeature.prototype.readFeaturesFromNode = function(node, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.readGeometry = function(source, opt_options) {
+XMLFeature.prototype.readGeometry = function(source, opt_options) {
   if (_ol_xml_.isDocument(source)) {
     return this.readGeometryFromDocument(
         /** @type {Document} */ (source), opt_options);
@@ -155,7 +155,7 @@ _ol_format_XMLFeature_.prototype.readGeometry = function(source, opt_options) {
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-_ol_format_XMLFeature_.prototype.readGeometryFromDocument = function(doc, opt_options) {
+XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
   return null; // not implemented
 };
 
@@ -166,7 +166,7 @@ _ol_format_XMLFeature_.prototype.readGeometryFromDocument = function(doc, opt_op
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-_ol_format_XMLFeature_.prototype.readGeometryFromNode = function(node, opt_options) {
+XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {
   return null; // not implemented
 };
 
@@ -174,7 +174,7 @@ _ol_format_XMLFeature_.prototype.readGeometryFromNode = function(node, opt_optio
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.readProjection = function(source) {
+XMLFeature.prototype.readProjection = function(source) {
   if (_ol_xml_.isDocument(source)) {
     return this.readProjectionFromDocument(/** @type {Document} */ (source));
   } else if (_ol_xml_.isNode(source)) {
@@ -193,7 +193,7 @@ _ol_format_XMLFeature_.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-_ol_format_XMLFeature_.prototype.readProjectionFromDocument = function(doc) {
+XMLFeature.prototype.readProjectionFromDocument = function(doc) {
   return this.defaultDataProjection;
 };
 
@@ -203,7 +203,7 @@ _ol_format_XMLFeature_.prototype.readProjectionFromDocument = function(doc) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-_ol_format_XMLFeature_.prototype.readProjectionFromNode = function(node) {
+XMLFeature.prototype.readProjectionFromNode = function(node) {
   return this.defaultDataProjection;
 };
 
@@ -211,7 +211,7 @@ _ol_format_XMLFeature_.prototype.readProjectionFromNode = function(node) {
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.writeFeature = function(feature, opt_options) {
+XMLFeature.prototype.writeFeature = function(feature, opt_options) {
   var node = this.writeFeatureNode(feature, opt_options);
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -223,7 +223,7 @@ _ol_format_XMLFeature_.prototype.writeFeature = function(feature, opt_options) {
  * @protected
  * @return {Node} Node.
  */
-_ol_format_XMLFeature_.prototype.writeFeatureNode = function(feature, opt_options) {
+XMLFeature.prototype.writeFeatureNode = function(feature, opt_options) {
   return null; // not implemented
 };
 
@@ -231,7 +231,7 @@ _ol_format_XMLFeature_.prototype.writeFeatureNode = function(feature, opt_option
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.writeFeatures = function(features, opt_options) {
+XMLFeature.prototype.writeFeatures = function(features, opt_options) {
   var node = this.writeFeaturesNode(features, opt_options);
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -242,7 +242,7 @@ _ol_format_XMLFeature_.prototype.writeFeatures = function(features, opt_options)
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
-_ol_format_XMLFeature_.prototype.writeFeaturesNode = function(features, opt_options) {
+XMLFeature.prototype.writeFeaturesNode = function(features, opt_options) {
   return null; // not implemented
 };
 
@@ -250,7 +250,7 @@ _ol_format_XMLFeature_.prototype.writeFeaturesNode = function(features, opt_opti
 /**
  * @inheritDoc
  */
-_ol_format_XMLFeature_.prototype.writeGeometry = function(geometry, opt_options) {
+XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
   var node = this.writeGeometryNode(geometry, opt_options);
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -261,7 +261,7 @@ _ol_format_XMLFeature_.prototype.writeGeometry = function(geometry, opt_options)
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
-_ol_format_XMLFeature_.prototype.writeGeometryNode = function(geometry, opt_options) {
+XMLFeature.prototype.writeGeometryNode = function(geometry, opt_options) {
   return null; // not implemented
 };
-export default _ol_format_XMLFeature_;
+export default XMLFeature;

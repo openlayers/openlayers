@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -15,7 +15,7 @@ describe('ol.format.GeoJSON', function() {
 
   var format;
   beforeEach(function() {
-    format = new _ol_format_GeoJSON_();
+    format = new GeoJSON();
   });
 
   var pointGeoJSON = {
@@ -215,7 +215,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('uses featureProjection passed to the constructor', function() {
-      var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:3857'});
+      var format = new GeoJSON({featureProjection: 'EPSG:3857'});
       var feature = format.readFeatures(pointGeoJSON);
       expect(feature[0].getGeometry()).to.be.an(Point);
       expect(feature[0].getGeometry().getCoordinates()).to.eql(
@@ -223,7 +223,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('gives precedence to options passed to the read method', function() {
-      var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:1234'});
+      var format = new GeoJSON({featureProjection: 'EPSG:1234'});
       var feature = format.readFeatures(pointGeoJSON, {
         featureProjection: 'EPSG:3857'
       });
@@ -254,7 +254,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('can create a feature with a specific geometryName', function() {
-      var feature = new _ol_format_GeoJSON_({geometryName: 'the_geom'}).
+      var feature = new GeoJSON({geometryName: 'the_geom'}).
           readFeature(pointGeoJSON);
       expect(feature.getGeometryName()).to.be('the_geom');
       expect(feature.getGeometry()).to.be.an(Point);
@@ -322,7 +322,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('generates an array of features for Feature', function() {
 
-      var format = new _ol_format_GeoJSON_();
+      var format = new GeoJSON();
       var json = {
         type: 'Feature',
         properties: {
@@ -604,7 +604,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('respects featureProjection passed to constructor', function() {
-      var format = new _ol_format_GeoJSON_({featureProjection: 'EPSG:3857'});
+      var format = new GeoJSON({featureProjection: 'EPSG:3857'});
       var point = new Point(fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point);
       var obj = JSON.parse(geojson);

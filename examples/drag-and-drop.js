@@ -1,10 +1,10 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_GPX_ from '../src/ol/format/GPX.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
-import _ol_format_IGC_ from '../src/ol/format/IGC.js';
-import _ol_format_KML_ from '../src/ol/format/KML.js';
-import _ol_format_TopoJSON_ from '../src/ol/format/TopoJSON.js';
+import GPX from '../src/ol/format/GPX.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
+import IGC from '../src/ol/format/IGC.js';
+import KML from '../src/ol/format/KML.js';
+import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -85,11 +85,11 @@ var styleFunction = function(feature, resolution) {
 
 var dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [
-    _ol_format_GPX_,
-    _ol_format_GeoJSON_,
-    _ol_format_IGC_,
-    _ol_format_KML_,
-    _ol_format_TopoJSON_
+    GPX,
+    GeoJSON,
+    IGC,
+    KML,
+    TopoJSON
   ]
 });
 

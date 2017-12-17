@@ -3,10 +3,10 @@
  */
 import {inherits} from '../index.js';
 import {boundingExtent} from '../extent.js';
-import _ol_format_OWS_ from '../format/OWS.js';
-import _ol_format_XLink_ from '../format/XLink.js';
-import _ol_format_XML_ from '../format/XML.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import OWS from '../format/OWS.js';
+import XLink from '../format/XLink.js';
+import XML from '../format/XML.js';
+import XSD from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -18,16 +18,16 @@ import _ol_xml_ from '../xml.js';
  * @api
  */
 var _ol_format_WMTSCapabilities_ = function() {
-  _ol_format_XML_.call(this);
+  XML.call(this);
 
   /**
    * @type {ol.format.OWS}
    * @private
    */
-  this.owsParser_ = new _ol_format_OWS_();
+  this.owsParser_ = new OWS();
 };
 
-inherits(_ol_format_WMTSCapabilities_, _ol_format_XML_);
+inherits(_ol_format_WMTSCapabilities_, XML);
 
 
 /**
@@ -199,7 +199,7 @@ _ol_format_WMTSCapabilities_.readWgs84BoundingBox_ = function(node, objectStack)
 _ol_format_WMTSCapabilities_.readLegendUrl_ = function(node, objectStack) {
   var legend = {};
   legend['format'] = node.getAttribute('format');
-  legend['href'] = _ol_format_XLink_.readHref(node);
+  legend['href'] = XLink.readHref(node);
   return legend;
 };
 
@@ -211,7 +211,7 @@ _ol_format_WMTSCapabilities_.readLegendUrl_ = function(node, objectStack) {
  * @return {Object|undefined} Coordinates object.
  */
 _ol_format_WMTSCapabilities_.readCoordinates_ = function(node, objectStack) {
-  var coordinates = _ol_format_XSD_.readString(node).split(' ');
+  var coordinates = XSD.readString(node).split(' ');
   if (!coordinates || coordinates.length != 2) {
     return undefined;
   }
@@ -320,7 +320,7 @@ _ol_format_WMTSCapabilities_.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
       'Style': _ol_xml_.makeObjectPropertyPusher(
           _ol_format_WMTSCapabilities_.readStyle_),
       'Format': _ol_xml_.makeObjectPropertyPusher(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'TileMatrixSetLink': _ol_xml_.makeObjectPropertyPusher(
           _ol_format_WMTSCapabilities_.readTileMatrixSetLink_),
       'Dimension': _ol_xml_.makeObjectPropertyPusher(
@@ -329,13 +329,13 @@ _ol_format_WMTSCapabilities_.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
           _ol_format_WMTSCapabilities_.readResourceUrl_)
     }, _ol_xml_.makeStructureNS(_ol_format_WMTSCapabilities_.OWS_NAMESPACE_URIS_, {
       'Title': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'Abstract': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'WGS84BoundingBox': _ol_xml_.makeObjectPropertySetter(
           _ol_format_WMTSCapabilities_.readWgs84BoundingBox_),
       'Identifier': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     }));
 
 
@@ -350,9 +350,9 @@ _ol_format_WMTSCapabilities_.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
           _ol_format_WMTSCapabilities_.readLegendUrl_)
     }, _ol_xml_.makeStructureNS(_ol_format_WMTSCapabilities_.OWS_NAMESPACE_URIS_, {
       'Title': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'Identifier': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     }));
 
 
@@ -364,7 +364,7 @@ _ol_format_WMTSCapabilities_.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
 _ol_format_WMTSCapabilities_.TMS_LINKS_PARSERS_ = _ol_xml_.makeStructureNS(
     _ol_format_WMTSCapabilities_.NAMESPACE_URIS_, {
       'TileMatrixSet': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'TileMatrixSetLimits': _ol_xml_.makeObjectPropertySetter(
           _ol_format_WMTSCapabilities_.readTileMatrixLimitsList_)
     });
@@ -389,15 +389,15 @@ _ol_format_WMTSCapabilities_.TMS_LIMITS_LIST_PARSERS_ = _ol_xml_.makeStructureNS
 _ol_format_WMTSCapabilities_.TMS_LIMITS_PARSERS_ = _ol_xml_.makeStructureNS(
     _ol_format_WMTSCapabilities_.NAMESPACE_URIS_, {
       'TileMatrix': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'MinTileRow': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MaxTileRow': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MinTileCol': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MaxTileCol': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger)
+          XSD.readNonNegativeInteger)
     });
 
 
@@ -409,12 +409,12 @@ _ol_format_WMTSCapabilities_.TMS_LIMITS_PARSERS_ = _ol_xml_.makeStructureNS(
 _ol_format_WMTSCapabilities_.DIMENSION_PARSERS_ = _ol_xml_.makeStructureNS(
     _ol_format_WMTSCapabilities_.NAMESPACE_URIS_, {
       'Default': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'Value': _ol_xml_.makeObjectPropertyPusher(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     }, _ol_xml_.makeStructureNS(_ol_format_WMTSCapabilities_.OWS_NAMESPACE_URIS_, {
       'Identifier': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     }));
 
 
@@ -440,14 +440,14 @@ _ol_format_WMTSCapabilities_.WGS84_BBOX_READERS_ = _ol_xml_.makeStructureNS(
 _ol_format_WMTSCapabilities_.TMS_PARSERS_ = _ol_xml_.makeStructureNS(
     _ol_format_WMTSCapabilities_.NAMESPACE_URIS_, {
       'WellKnownScaleSet': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'TileMatrix': _ol_xml_.makeObjectPropertyPusher(
           _ol_format_WMTSCapabilities_.readTileMatrix_)
     }, _ol_xml_.makeStructureNS(_ol_format_WMTSCapabilities_.OWS_NAMESPACE_URIS_, {
       'SupportedCRS': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'Identifier': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     }));
 
 
@@ -461,17 +461,17 @@ _ol_format_WMTSCapabilities_.TM_PARSERS_ = _ol_xml_.makeStructureNS(
       'TopLeftCorner': _ol_xml_.makeObjectPropertySetter(
           _ol_format_WMTSCapabilities_.readCoordinates_),
       'ScaleDenominator': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal),
+          XSD.readDecimal),
       'TileWidth': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'TileHeight': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MatrixWidth': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MatrixHeight': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger)
+          XSD.readNonNegativeInteger)
     }, _ol_xml_.makeStructureNS(_ol_format_WMTSCapabilities_.OWS_NAMESPACE_URIS_, {
       'Identifier': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     }));
 export default _ol_format_WMTSCapabilities_;

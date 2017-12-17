@@ -2,7 +2,7 @@ import _ol_TileState_ from '../../../src/ol/TileState.js';
 import _ol_VectorImageTile_ from '../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
-import _ol_format_GeoJSON_ from '../../../src/ol/format/GeoJSON.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
 import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
@@ -11,7 +11,7 @@ import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
 describe('ol.VectorImageTile', function() {
 
   it('configures loader that sets features on the source tile', function(done) {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
@@ -31,7 +31,7 @@ describe('ol.VectorImageTile', function() {
   });
 
   it('sets LOADED state when previously failed source tiles are loaded', function(done) {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var sourceTile;
     var tile = new _ol_VectorImageTile_([0, 0, 0] /* one world away */, 0, url, format,
@@ -59,7 +59,7 @@ describe('ol.VectorImageTile', function() {
   });
 
   it('sets ERROR state when source tiles fail to load', function(done) {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
@@ -76,7 +76,7 @@ describe('ol.VectorImageTile', function() {
   });
 
   it('sets EMPTY state when tile has only empty source tiles', function(done) {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = '';
     var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {},
@@ -92,7 +92,7 @@ describe('ol.VectorImageTile', function() {
   });
 
   it('only loads tiles within the source tileGrid\'s extent', function() {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tileGrid = new _ol_tilegrid_TileGrid_({
       resolutions: [0.02197265625, 0.010986328125, 0.0054931640625],
@@ -112,7 +112,7 @@ describe('ol.VectorImageTile', function() {
   });
 
   it('#dispose() while loading', function() {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tile = new _ol_VectorImageTile_([0, 0, 0] /* one world away */, 0, url, format,
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
@@ -132,7 +132,7 @@ describe('ol.VectorImageTile', function() {
   });
 
   it('#dispose() when loaded', function(done) {
-    var format = new _ol_format_GeoJSON_();
+    var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
         _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {

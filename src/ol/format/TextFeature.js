@@ -2,7 +2,7 @@
  * @module ol/format/TextFeature
  */
 import {inherits} from '../index.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 
 /**
@@ -15,11 +15,11 @@ import _ol_format_FormatType_ from '../format/FormatType.js';
  * @abstract
  * @extends {ol.format.Feature}
  */
-var _ol_format_TextFeature_ = function() {
-  _ol_format_Feature_.call(this);
+var TextFeature = function() {
+  FeatureFormat.call(this);
 };
 
-inherits(_ol_format_TextFeature_, _ol_format_Feature_);
+inherits(TextFeature, FeatureFormat);
 
 
 /**
@@ -27,7 +27,7 @@ inherits(_ol_format_TextFeature_, _ol_format_Feature_);
  * @private
  * @return {string} Text.
  */
-_ol_format_TextFeature_.prototype.getText_ = function(source) {
+TextFeature.prototype.getText_ = function(source) {
   if (typeof source === 'string') {
     return source;
   } else {
@@ -39,7 +39,7 @@ _ol_format_TextFeature_.prototype.getText_ = function(source) {
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.getType = function() {
+TextFeature.prototype.getType = function() {
   return _ol_format_FormatType_.TEXT;
 };
 
@@ -47,7 +47,7 @@ _ol_format_TextFeature_.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.readFeature = function(source, opt_options) {
+TextFeature.prototype.readFeature = function(source, opt_options) {
   return this.readFeatureFromText(
       this.getText_(source), this.adaptOptions(opt_options));
 };
@@ -60,13 +60,13 @@ _ol_format_TextFeature_.prototype.readFeature = function(source, opt_options) {
  * @protected
  * @return {ol.Feature} Feature.
  */
-_ol_format_TextFeature_.prototype.readFeatureFromText = function(text, opt_options) {};
+TextFeature.prototype.readFeatureFromText = function(text, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.readFeatures = function(source, opt_options) {
+TextFeature.prototype.readFeatures = function(source, opt_options) {
   return this.readFeaturesFromText(
       this.getText_(source), this.adaptOptions(opt_options));
 };
@@ -79,13 +79,13 @@ _ol_format_TextFeature_.prototype.readFeatures = function(source, opt_options) {
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-_ol_format_TextFeature_.prototype.readFeaturesFromText = function(text, opt_options) {};
+TextFeature.prototype.readFeaturesFromText = function(text, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.readGeometry = function(source, opt_options) {
+TextFeature.prototype.readGeometry = function(source, opt_options) {
   return this.readGeometryFromText(
       this.getText_(source), this.adaptOptions(opt_options));
 };
@@ -98,13 +98,13 @@ _ol_format_TextFeature_.prototype.readGeometry = function(source, opt_options) {
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-_ol_format_TextFeature_.prototype.readGeometryFromText = function(text, opt_options) {};
+TextFeature.prototype.readGeometryFromText = function(text, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.readProjection = function(source) {
+TextFeature.prototype.readProjection = function(source) {
   return this.readProjectionFromText(this.getText_(source));
 };
 
@@ -114,7 +114,7 @@ _ol_format_TextFeature_.prototype.readProjection = function(source) {
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-_ol_format_TextFeature_.prototype.readProjectionFromText = function(text) {
+TextFeature.prototype.readProjectionFromText = function(text) {
   return this.defaultDataProjection;
 };
 
@@ -122,7 +122,7 @@ _ol_format_TextFeature_.prototype.readProjectionFromText = function(text) {
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.writeFeature = function(feature, opt_options) {
+TextFeature.prototype.writeFeature = function(feature, opt_options) {
   return this.writeFeatureText(feature, this.adaptOptions(opt_options));
 };
 
@@ -134,13 +134,13 @@ _ol_format_TextFeature_.prototype.writeFeature = function(feature, opt_options) 
  * @protected
  * @return {string} Text.
  */
-_ol_format_TextFeature_.prototype.writeFeatureText = function(feature, opt_options) {};
+TextFeature.prototype.writeFeatureText = function(feature, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.writeFeatures = function(
+TextFeature.prototype.writeFeatures = function(
     features, opt_options) {
   return this.writeFeaturesText(features, this.adaptOptions(opt_options));
 };
@@ -153,13 +153,13 @@ _ol_format_TextFeature_.prototype.writeFeatures = function(
  * @protected
  * @return {string} Text.
  */
-_ol_format_TextFeature_.prototype.writeFeaturesText = function(features, opt_options) {};
+TextFeature.prototype.writeFeaturesText = function(features, opt_options) {};
 
 
 /**
  * @inheritDoc
  */
-_ol_format_TextFeature_.prototype.writeGeometry = function(
+TextFeature.prototype.writeGeometry = function(
     geometry, opt_options) {
   return this.writeGeometryText(geometry, this.adaptOptions(opt_options));
 };
@@ -172,5 +172,5 @@ _ol_format_TextFeature_.prototype.writeGeometry = function(
  * @protected
  * @return {string} Text.
  */
-_ol_format_TextFeature_.prototype.writeGeometryText = function(geometry, opt_options) {};
-export default _ol_format_TextFeature_;
+TextFeature.prototype.writeGeometryText = function(geometry, opt_options) {};
+export default TextFeature;

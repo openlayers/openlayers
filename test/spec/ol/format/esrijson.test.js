@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_format_EsriJSON_ from '../../../../src/ol/format/EsriJSON.js';
+import EsriJSON from '../../../../src/ol/format/EsriJSON.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
@@ -15,7 +15,7 @@ describe('ol.format.EsriJSON', function() {
 
   var format;
   beforeEach(function() {
-    format = new _ol_format_EsriJSON_();
+    format = new EsriJSON();
   });
 
   var pointEsriJSON = {
@@ -265,7 +265,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('can create a feature with a specific geometryName', function() {
-      var feature = new _ol_format_EsriJSON_({geometryName: 'the_geom'}).
+      var feature = new EsriJSON({geometryName: 'the_geom'}).
           readFeature(pointEsriJSON);
       expect(feature.getGeometryName()).to.be('the_geom');
       expect(feature.getGeometry()).to.be.an(Point);

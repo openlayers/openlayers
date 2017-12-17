@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_format_GPX_ from '../../../../src/ol/format/GPX.js';
+import GPX from '../../../../src/ol/format/GPX.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -11,7 +11,7 @@ describe('ol.format.GPX', function() {
 
   var format;
   beforeEach(function() {
-    format = new _ol_format_GPX_();
+    format = new GPX();
   });
 
   describe('#readProjection', function() {
@@ -550,7 +550,7 @@ describe('ol.format.GPX', function() {
   describe('XML namespace support', function() {
 
     beforeEach(function() {
-      format = new _ol_format_GPX_();
+      format = new GPX();
     });
 
     it('can read features with a version 1.0 namespace', function() {
@@ -591,7 +591,7 @@ describe('ol.format.GPX', function() {
   describe('extensions support', function() {
 
     beforeEach(function() {
-      format = new _ol_format_GPX_({
+      format = new GPX({
         readExtensions: function(feature, extensionsNode) {
           var nodes = extensionsNode.getElementsByTagName('id');
           var id = nodes.item(0).textContent;
@@ -657,7 +657,7 @@ describe('ol.format.GPX', function() {
 
   describe('write unsupported geometries', function() {
     beforeEach(function() {
-      format = new _ol_format_GPX_();
+      format = new GPX();
     });
 
     it('does not fail', function() {

@@ -6,7 +6,7 @@
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import PBF from 'pbf';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -30,9 +30,9 @@ import _ol_render_Feature_ from '../render/Feature.js';
  * @param {olx.format.MVTOptions=} opt_options Options.
  * @api
  */
-var _ol_format_MVT_ = function(opt_options) {
+var MVT = function(opt_options) {
 
-  _ol_format_Feature_.call(this);
+  FeatureFormat.call(this);
 
   var options = opt_options ? opt_options : {};
 
@@ -79,14 +79,14 @@ var _ol_format_MVT_ = function(opt_options) {
 
 };
 
-inherits(_ol_format_MVT_, _ol_format_Feature_);
+inherits(MVT, FeatureFormat);
 
 
 /**
  * Reader callbacks for parsing the PBF.
  * @type {Object.<string, function(number, Object, ol.ext.PBF)>}
  */
-_ol_format_MVT_.pbfReaders_ = {
+MVT.pbfReaders_ = {
   layers: function(tag, layers, pbf) {
     if (tag === 3) {
       var layer = {
@@ -95,7 +95,7 @@ _ol_format_MVT_.pbfReaders_ = {
         features: []
       };
       var end = pbf.readVarint() + pbf.pos;
-      pbf.readFields(_ol_format_MVT_.pbfReaders_.layer, layer, end);
+      pbf.readFields(MVT.pbfReaders_.layer, layer, end);
       layer.length = layer.features.length;
       if (layer.length) {
         layers[layer.name] = layer;
@@ -157,7 +157,7 @@ _ol_format_MVT_.pbfReaders_ = {
  * @param {number} i Index of the feature in the raw layer's `features` array.
  * @return {Object} Raw feature.
  */
-_ol_format_MVT_.readRawFeature_ = function(pbf, layer, i) {
+MVT.readRawFeature_ = function(pbf, layer, i) {
   pbf.pos = layer.features[i];
   var end = pbf.readVarint() + pbf.pos;
 
@@ -166,7 +166,7 @@ _ol_format_MVT_.readRawFeature_ = function(pbf, layer, i) {
     type: 0,
     properties: {}
   };
-  pbf.readFields(_ol_format_MVT_.pbfReaders_.feature, feature, end);
+  pbf.readFields(MVT.pbfReaders_.feature, feature, end);
   return feature;
 };
 
@@ -181,7 +181,7 @@ _ol_format_MVT_.readRawFeature_ = function(pbf, layer, i) {
  * @param {Array.<number>} flatCoordinates Array to store flat coordinates in.
  * @param {Array.<number>} ends Array to store ends in.
  */
-_ol_format_MVT_.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
+MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
   pbf.pos = feature.geometry;
 
   var end = pbf.readVarint() + pbf.pos;
@@ -245,7 +245,7 @@ _ol_format_MVT_.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends)
  * geometry.
  * @return {ol.geom.GeometryType} The geometry type.
  */
-_ol_format_MVT_.getGeometryType_ = function(type, numEnds) {
+MVT.getGeometryType_ = function(type, numEnds) {
   /** @type {ol.geom.GeometryType} */
   var geometryType;
   if (type === 1) {
@@ -270,7 +270,7 @@ _ol_format_MVT_.getGeometryType_ = function(type, numEnds) {
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature|ol.render.Feature} Feature.
  */
-_ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
+MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
   var type = rawFeature.type;
   if (type === 0) {
     return null;
@@ -283,9 +283,9 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
 
   var flatCoordinates = [];
   var ends = [];
-  _ol_format_MVT_.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
+  MVT.readRawGeometry_(pbf, rawFeature, flatCoordinates, ends);
 
-  var geometryType = _ol_format_MVT_.getGeometryType_(type, ends.length);
+  var geometryType = MVT.getGeometryType_(type, ends.length);
 
   if (this.featureClass_ === _ol_render_Feature_) {
     feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
@@ -322,7 +322,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
     }
-    var geometry = _ol_format_Feature_.transformWithOptions(geom, false, this.adaptOptions(opt_options));
+    var geometry = FeatureFormat.transformWithOptions(geom, false, this.adaptOptions(opt_options));
     feature.setGeometry(geometry);
     feature.setId(id);
     feature.setProperties(values);
@@ -336,7 +336,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
  * @inheritDoc
  * @api
  */
-_ol_format_MVT_.prototype.getLastExtent = function() {
+MVT.prototype.getLastExtent = function() {
   return this.extent_;
 };
 
@@ -344,7 +344,7 @@ _ol_format_MVT_.prototype.getLastExtent = function() {
 /**
  * @inheritDoc
  */
-_ol_format_MVT_.prototype.getType = function() {
+MVT.prototype.getType = function() {
   return _ol_format_FormatType_.ARRAY_BUFFER;
 };
 
@@ -353,11 +353,11 @@ _ol_format_MVT_.prototype.getType = function() {
  * @inheritDoc
  * @api
  */
-_ol_format_MVT_.prototype.readFeatures = function(source, opt_options) {
+MVT.prototype.readFeatures = function(source, opt_options) {
   var layers = this.layers_;
 
   var pbf = new PBF(/** @type {ArrayBuffer} */ (source));
-  var pbfLayers = pbf.readFields(_ol_format_MVT_.pbfReaders_.layers, {});
+  var pbfLayers = pbf.readFields(MVT.pbfReaders_.layers, {});
   /** @type {Array.<ol.Feature|ol.render.Feature>} */
   var features = [];
   var pbfLayer;
@@ -369,7 +369,7 @@ _ol_format_MVT_.prototype.readFeatures = function(source, opt_options) {
 
     var rawFeature;
     for (var i = 0, ii = pbfLayer.length; i < ii; ++i) {
-      rawFeature = _ol_format_MVT_.readRawFeature_(pbf, pbfLayer, i);
+      rawFeature = MVT.readRawFeature_(pbf, pbfLayer, i);
       features.push(this.createFeature_(pbf, rawFeature));
     }
     this.extent_ = pbfLayer ? [0, 0, pbfLayer.extent, pbfLayer.extent] : null;
@@ -383,7 +383,7 @@ _ol_format_MVT_.prototype.readFeatures = function(source, opt_options) {
  * @inheritDoc
  * @api
  */
-_ol_format_MVT_.prototype.readProjection = function(source) {
+MVT.prototype.readProjection = function(source) {
   return this.defaultDataProjection;
 };
 
@@ -393,7 +393,7 @@ _ol_format_MVT_.prototype.readProjection = function(source) {
  * @param {Array.<string>} layers Layers.
  * @api
  */
-_ol_format_MVT_.prototype.setLayers = function(layers) {
+MVT.prototype.setLayers = function(layers) {
   this.layers_ = layers;
 };
 
@@ -402,33 +402,33 @@ _ol_format_MVT_.prototype.setLayers = function(layers) {
  * Not implemented.
  * @override
  */
-_ol_format_MVT_.prototype.readFeature = function() {};
+MVT.prototype.readFeature = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-_ol_format_MVT_.prototype.readGeometry = function() {};
+MVT.prototype.readGeometry = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-_ol_format_MVT_.prototype.writeFeature = function() {};
+MVT.prototype.writeFeature = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-_ol_format_MVT_.prototype.writeGeometry = function() {};
+MVT.prototype.writeGeometry = function() {};
 
 
 /**
  * Not implemented.
  * @override
  */
-_ol_format_MVT_.prototype.writeFeatures = function() {};
-export default _ol_format_MVT_;
+MVT.prototype.writeFeatures = function() {};
+export default MVT;

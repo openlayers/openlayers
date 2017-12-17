@@ -1,9 +1,9 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_format_Feature_ from '../../../../src/ol/format/Feature.js';
+import FeatureFormat from '../../../../src/ol/format/Feature.js';
 import {transform} from '../../../../src/ol/proj.js';
-import _ol_format_TopoJSON_ from '../../../../src/ol/format/TopoJSON.js';
+import TopoJSON from '../../../../src/ol/format/TopoJSON.js';
 
 var aruba = {
   type: 'Topology',
@@ -42,13 +42,13 @@ describe('ol.format.TopoJSON', function() {
 
   var format;
   before(function() {
-    format = new _ol_format_TopoJSON_();
+    format = new TopoJSON();
   });
 
   describe('constructor', function() {
     it('creates a new format', function() {
-      expect(format).to.be.a(_ol_format_Feature_);
-      expect(format).to.be.a(_ol_format_TopoJSON_);
+      expect(format).to.be.a(FeatureFormat);
+      expect(format).to.be.a(TopoJSON);
     });
   });
 
@@ -176,7 +176,7 @@ describe('ol.format.TopoJSON', function() {
 
     it('sets the topology\'s child names as feature property', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
-        var format = new _ol_format_TopoJSON_({
+        var format = new TopoJSON({
           layerName: 'layer'
         });
         var features = format.readFeatures(text);
@@ -188,7 +188,7 @@ describe('ol.format.TopoJSON', function() {
 
     it('only parses features from specified topology\'s children', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
-        var format = new _ol_format_TopoJSON_({
+        var format = new TopoJSON({
           layers: ['land']
         });
         var features = format.readFeatures(text);

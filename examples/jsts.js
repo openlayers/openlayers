@@ -2,7 +2,7 @@
 // this example uses JSTS for which we don't have an externs file.
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -14,7 +14,7 @@ var source = new _ol_source_Vector_();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   return response.json();
 }).then(function(json) {
-  var format = new _ol_format_GeoJSON_();
+  var format = new GeoJSON();
   var features = format.readFeatures(json, {featureProjection: 'EPSG:3857'});
 
   var parser = new jsts.io.OL3Parser();

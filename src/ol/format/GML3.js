@@ -4,9 +4,9 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {createOrUpdate} from '../extent.js';
-import _ol_format_Feature_ from '../format/Feature.js';
-import _ol_format_GMLBase_ from '../format/GMLBase.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import FeatureFormat from '../format/Feature.js';
+import GMLBase from '../format/GMLBase.js';
+import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -29,11 +29,11 @@ import _ol_xml_ from '../xml.js';
  * @extends {ol.format.GMLBase}
  * @api
  */
-var _ol_format_GML3_ = function(opt_options) {
+var GML3 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (opt_options ? opt_options : {});
 
-  _ol_format_GMLBase_.call(this, options);
+  GMLBase.call(this, options);
 
   /**
    * @private
@@ -65,7 +65,7 @@ var _ol_format_GML3_ = function(opt_options) {
    * @inheritDoc
    */
   this.schemaLocation = options.schemaLocation ?
-    options.schemaLocation : _ol_format_GML3_.schemaLocation_;
+    options.schemaLocation : GML3.schemaLocation_;
 
   /**
    * @private
@@ -76,7 +76,7 @@ var _ol_format_GML3_ = function(opt_options) {
 
 };
 
-inherits(_ol_format_GML3_, _ol_format_GMLBase_);
+inherits(GML3, GMLBase);
 
 
 /**
@@ -84,7 +84,7 @@ inherits(_ol_format_GML3_, _ol_format_GMLBase_);
  * @type {string}
  * @private
  */
-_ol_format_GML3_.schemaLocation_ = _ol_format_GMLBase_.GMLNS +
+GML3.schemaLocation_ = GMLBase.GMLNS +
     ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 
@@ -95,7 +95,7 @@ _ol_format_GML3_.schemaLocation_ = _ol_format_GMLBase_.GMLNS +
  * @private
  * @return {ol.geom.MultiLineString|undefined} MultiLineString.
  */
-_ol_format_GML3_.prototype.readMultiCurve_ = function(node, objectStack) {
+GML3.prototype.readMultiCurve_ = function(node, objectStack) {
   /** @type {Array.<ol.geom.LineString>} */
   var lineStrings = _ol_xml_.pushParseAndPop([],
       this.MULTICURVE_PARSERS_, node, objectStack, this);
@@ -115,7 +115,7 @@ _ol_format_GML3_.prototype.readMultiCurve_ = function(node, objectStack) {
  * @private
  * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
  */
-_ol_format_GML3_.prototype.readMultiSurface_ = function(node, objectStack) {
+GML3.prototype.readMultiSurface_ = function(node, objectStack) {
   /** @type {Array.<ol.geom.Polygon>} */
   var polygons = _ol_xml_.pushParseAndPop([],
       this.MULTISURFACE_PARSERS_, node, objectStack, this);
@@ -134,7 +134,7 @@ _ol_format_GML3_.prototype.readMultiSurface_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-_ol_format_GML3_.prototype.curveMemberParser_ = function(node, objectStack) {
+GML3.prototype.curveMemberParser_ = function(node, objectStack) {
   _ol_xml_.parseNode(this.CURVEMEMBER_PARSERS_, node, objectStack, this);
 };
 
@@ -144,7 +144,7 @@ _ol_format_GML3_.prototype.curveMemberParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-_ol_format_GML3_.prototype.surfaceMemberParser_ = function(node, objectStack) {
+GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
   _ol_xml_.parseNode(this.SURFACEMEMBER_PARSERS_,
       node, objectStack, this);
 };
@@ -156,7 +156,7 @@ _ol_format_GML3_.prototype.surfaceMemberParser_ = function(node, objectStack) {
  * @private
  * @return {Array.<(Array.<number>)>|undefined} flat coordinates.
  */
-_ol_format_GML3_.prototype.readPatch_ = function(node, objectStack) {
+GML3.prototype.readPatch_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop([null],
       this.PATCHES_PARSERS_, node, objectStack, this);
 };
@@ -168,7 +168,7 @@ _ol_format_GML3_.prototype.readPatch_ = function(node, objectStack) {
  * @private
  * @return {Array.<number>|undefined} flat coordinates.
  */
-_ol_format_GML3_.prototype.readSegment_ = function(node, objectStack) {
+GML3.prototype.readSegment_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop([null],
       this.SEGMENTS_PARSERS_, node, objectStack, this);
 };
@@ -180,7 +180,7 @@ _ol_format_GML3_.prototype.readSegment_ = function(node, objectStack) {
  * @private
  * @return {Array.<(Array.<number>)>|undefined} flat coordinates.
  */
-_ol_format_GML3_.prototype.readPolygonPatch_ = function(node, objectStack) {
+GML3.prototype.readPolygonPatch_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop([null],
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
 };
@@ -192,7 +192,7 @@ _ol_format_GML3_.prototype.readPolygonPatch_ = function(node, objectStack) {
  * @private
  * @return {Array.<number>|undefined} flat coordinates.
  */
-_ol_format_GML3_.prototype.readLineStringSegment_ = function(node, objectStack) {
+GML3.prototype.readLineStringSegment_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop([null],
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
       node, objectStack, this);
@@ -204,7 +204,7 @@ _ol_format_GML3_.prototype.readLineStringSegment_ = function(node, objectStack) 
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-_ol_format_GML3_.prototype.interiorParser_ = function(node, objectStack) {
+GML3.prototype.interiorParser_ = function(node, objectStack) {
   /** @type {Array.<number>|undefined} */
   var flatLinearRing = _ol_xml_.pushParseAndPop(undefined,
       this.RING_PARSERS, node, objectStack, this);
@@ -221,7 +221,7 @@ _ol_format_GML3_.prototype.interiorParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-_ol_format_GML3_.prototype.exteriorParser_ = function(node, objectStack) {
+GML3.prototype.exteriorParser_ = function(node, objectStack) {
   /** @type {Array.<number>|undefined} */
   var flatLinearRing = _ol_xml_.pushParseAndPop(undefined,
       this.RING_PARSERS, node, objectStack, this);
@@ -239,7 +239,7 @@ _ol_format_GML3_.prototype.exteriorParser_ = function(node, objectStack) {
  * @private
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
-_ol_format_GML3_.prototype.readSurface_ = function(node, objectStack) {
+GML3.prototype.readSurface_ = function(node, objectStack) {
   /** @type {Array.<Array.<number>>} */
   var flatLinearRings = _ol_xml_.pushParseAndPop([null],
       this.SURFACE_PARSERS_, node, objectStack, this);
@@ -267,7 +267,7 @@ _ol_format_GML3_.prototype.readSurface_ = function(node, objectStack) {
  * @private
  * @return {ol.geom.LineString|undefined} LineString.
  */
-_ol_format_GML3_.prototype.readCurve_ = function(node, objectStack) {
+GML3.prototype.readCurve_ = function(node, objectStack) {
   /** @type {Array.<number>} */
   var flatCoordinates = _ol_xml_.pushParseAndPop([null],
       this.CURVE_PARSERS_, node, objectStack, this);
@@ -287,7 +287,7 @@ _ol_format_GML3_.prototype.readCurve_ = function(node, objectStack) {
  * @private
  * @return {ol.Extent|undefined} Envelope.
  */
-_ol_format_GML3_.prototype.readEnvelope_ = function(node, objectStack) {
+GML3.prototype.readEnvelope_ = function(node, objectStack) {
   /** @type {Array.<number>} */
   var flatCoordinates = _ol_xml_.pushParseAndPop([null],
       this.ENVELOPE_PARSERS_, node, objectStack, this);
@@ -303,7 +303,7 @@ _ol_format_GML3_.prototype.readEnvelope_ = function(node, objectStack) {
  * @private
  * @return {Array.<number>|undefined} Flat coordinates.
  */
-_ol_format_GML3_.prototype.readFlatPos_ = function(node, objectStack) {
+GML3.prototype.readFlatPos_ = function(node, objectStack) {
   var s = _ol_xml_.getAllTextContent(node, false);
   var re = /^\s*([+\-]?\d*\.?\d+(?:[eE][+\-]?\d+)?)\s*/;
   /** @type {Array.<number>} */
@@ -349,7 +349,7 @@ _ol_format_GML3_.prototype.readFlatPos_ = function(node, objectStack) {
  * @private
  * @return {Array.<number>|undefined} Flat coordinates.
  */
-_ol_format_GML3_.prototype.readFlatPosList_ = function(node, objectStack) {
+GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   var s = _ol_xml_.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var context = objectStack[0];
   var containerSrs = context['srsName'];
@@ -363,16 +363,16 @@ _ol_format_GML3_.prototype.readFlatPosList_ = function(node, objectStack) {
   // The "dimension" attribute is from the GML 3.0.1 spec.
   var dim = 2;
   if (node.getAttribute('srsDimension')) {
-    dim = _ol_format_XSD_.readNonNegativeIntegerString(
+    dim = XSD.readNonNegativeIntegerString(
         node.getAttribute('srsDimension'));
   } else if (node.getAttribute('dimension')) {
-    dim = _ol_format_XSD_.readNonNegativeIntegerString(
+    dim = XSD.readNonNegativeIntegerString(
         node.getAttribute('dimension'));
   } else if (node.parentNode.getAttribute('srsDimension')) {
-    dim = _ol_format_XSD_.readNonNegativeIntegerString(
+    dim = XSD.readNonNegativeIntegerString(
         node.parentNode.getAttribute('srsDimension'));
   } else if (contextDimension) {
-    dim = _ol_format_XSD_.readNonNegativeIntegerString(contextDimension);
+    dim = XSD.readNonNegativeIntegerString(contextDimension);
   }
   var x, y, z;
   var flatCoordinates = [];
@@ -395,10 +395,10 @@ _ol_format_GML3_.prototype.readFlatPosList_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'pos': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readFlatPos_),
-    'posList': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readFlatPosList_)
+    'pos': _ol_xml_.makeReplacer(GML3.prototype.readFlatPos_),
+    'posList': _ol_xml_.makeReplacer(GML3.prototype.readFlatPosList_)
   }
 };
 
@@ -408,10 +408,10 @@ _ol_format_GML3_.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'interior': _ol_format_GML3_.prototype.interiorParser_,
-    'exterior': _ol_format_GML3_.prototype.exteriorParser_
+    'interior': GML3.prototype.interiorParser_,
+    'exterior': GML3.prototype.exteriorParser_
   }
 };
 
@@ -421,27 +421,27 @@ _ol_format_GML3_.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.GEOMETRY_PARSERS_ = {
+GML3.prototype.GEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': _ol_xml_.makeReplacer(_ol_format_GMLBase_.prototype.readPoint),
+    'Point': _ol_xml_.makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiPoint),
+        GMLBase.prototype.readMultiPoint),
     'LineString': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readLineString),
+        GMLBase.prototype.readLineString),
     'MultiLineString': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiLineString),
+        GMLBase.prototype.readMultiLineString),
     'LinearRing': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readLinearRing),
-    'Polygon': _ol_xml_.makeReplacer(_ol_format_GMLBase_.prototype.readPolygon),
+        GMLBase.prototype.readLinearRing),
+    'Polygon': _ol_xml_.makeReplacer(GMLBase.prototype.readPolygon),
     'MultiPolygon': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiPolygon),
-    'Surface': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readSurface_),
+        GMLBase.prototype.readMultiPolygon),
+    'Surface': _ol_xml_.makeReplacer(GML3.prototype.readSurface_),
     'MultiSurface': _ol_xml_.makeReplacer(
-        _ol_format_GML3_.prototype.readMultiSurface_),
-    'Curve': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readCurve_),
+        GML3.prototype.readMultiSurface_),
+    'Curve': _ol_xml_.makeReplacer(GML3.prototype.readCurve_),
     'MultiCurve': _ol_xml_.makeReplacer(
-        _ol_format_GML3_.prototype.readMultiCurve_),
-    'Envelope': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readEnvelope_)
+        GML3.prototype.readMultiCurve_),
+    'Envelope': _ol_xml_.makeReplacer(GML3.prototype.readEnvelope_)
   }
 };
 
@@ -451,12 +451,12 @@ _ol_format_GML3_.prototype.GEOMETRY_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.MULTICURVE_PARSERS_ = {
+GML3.prototype.MULTICURVE_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'curveMember': _ol_xml_.makeArrayPusher(
-        _ol_format_GML3_.prototype.curveMemberParser_),
+        GML3.prototype.curveMemberParser_),
     'curveMembers': _ol_xml_.makeArrayPusher(
-        _ol_format_GML3_.prototype.curveMemberParser_)
+        GML3.prototype.curveMemberParser_)
   }
 };
 
@@ -466,12 +466,12 @@ _ol_format_GML3_.prototype.MULTICURVE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.MULTISURFACE_PARSERS_ = {
+GML3.prototype.MULTISURFACE_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': _ol_xml_.makeArrayPusher(
-        _ol_format_GML3_.prototype.surfaceMemberParser_),
+        GML3.prototype.surfaceMemberParser_),
     'surfaceMembers': _ol_xml_.makeArrayPusher(
-        _ol_format_GML3_.prototype.surfaceMemberParser_)
+        GML3.prototype.surfaceMemberParser_)
   }
 };
 
@@ -481,11 +481,11 @@ _ol_format_GML3_.prototype.MULTISURFACE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.CURVEMEMBER_PARSERS_ = {
+GML3.prototype.CURVEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'LineString': _ol_xml_.makeArrayPusher(
-        _ol_format_GMLBase_.prototype.readLineString),
-    'Curve': _ol_xml_.makeArrayPusher(_ol_format_GML3_.prototype.readCurve_)
+        GMLBase.prototype.readLineString),
+    'Curve': _ol_xml_.makeArrayPusher(GML3.prototype.readCurve_)
   }
 };
 
@@ -495,10 +495,10 @@ _ol_format_GML3_.prototype.CURVEMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.SURFACEMEMBER_PARSERS_ = {
+GML3.prototype.SURFACEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Polygon': _ol_xml_.makeArrayPusher(_ol_format_GMLBase_.prototype.readPolygon),
-    'Surface': _ol_xml_.makeArrayPusher(_ol_format_GML3_.prototype.readSurface_)
+    'Polygon': _ol_xml_.makeArrayPusher(GMLBase.prototype.readPolygon),
+    'Surface': _ol_xml_.makeArrayPusher(GML3.prototype.readSurface_)
   }
 };
 
@@ -508,9 +508,9 @@ _ol_format_GML3_.prototype.SURFACEMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.SURFACE_PARSERS_ = {
+GML3.prototype.SURFACE_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'patches': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readPatch_)
+    'patches': _ol_xml_.makeReplacer(GML3.prototype.readPatch_)
   }
 };
 
@@ -520,9 +520,9 @@ _ol_format_GML3_.prototype.SURFACE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.CURVE_PARSERS_ = {
+GML3.prototype.CURVE_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'segments': _ol_xml_.makeReplacer(_ol_format_GML3_.prototype.readSegment_)
+    'segments': _ol_xml_.makeReplacer(GML3.prototype.readSegment_)
   }
 };
 
@@ -532,12 +532,12 @@ _ol_format_GML3_.prototype.CURVE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.ENVELOPE_PARSERS_ = {
+GML3.prototype.ENVELOPE_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'lowerCorner': _ol_xml_.makeArrayPusher(
-        _ol_format_GML3_.prototype.readFlatPosList_),
+        GML3.prototype.readFlatPosList_),
     'upperCorner': _ol_xml_.makeArrayPusher(
-        _ol_format_GML3_.prototype.readFlatPosList_)
+        GML3.prototype.readFlatPosList_)
   }
 };
 
@@ -547,10 +547,10 @@ _ol_format_GML3_.prototype.ENVELOPE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.PATCHES_PARSERS_ = {
+GML3.prototype.PATCHES_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'PolygonPatch': _ol_xml_.makeReplacer(
-        _ol_format_GML3_.prototype.readPolygonPatch_)
+        GML3.prototype.readPolygonPatch_)
   }
 };
 
@@ -560,10 +560,10 @@ _ol_format_GML3_.prototype.PATCHES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-_ol_format_GML3_.prototype.SEGMENTS_PARSERS_ = {
+GML3.prototype.SEGMENTS_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'LineStringSegment': _ol_xml_.makeReplacer(
-        _ol_format_GML3_.prototype.readLineStringSegment_)
+        GML3.prototype.readLineStringSegment_)
   }
 };
 
@@ -574,7 +574,7 @@ _ol_format_GML3_.prototype.SEGMENTS_PARSERS_ = {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writePos_ = function(node, value, objectStack) {
+GML3.prototype.writePos_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
   var srsDimension = hasZ ? 3 : 2;
@@ -597,7 +597,7 @@ _ol_format_GML3_.prototype.writePos_ = function(node, value, objectStack) {
     var z = point[2] || 0;
     coords += ' ' + z;
   }
-  _ol_format_XSD_.writeStringTextNode(node, coords);
+  XSD.writeStringTextNode(node, coords);
 };
 
 
@@ -608,7 +608,7 @@ _ol_format_GML3_.prototype.writePos_ = function(node, value, objectStack) {
  * @return {string} The coords string.
  * @private
  */
-_ol_format_GML3_.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
+GML3.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
   var axisOrientation = 'enu';
   if (opt_srsName) {
     axisOrientation = getProjection(opt_srsName).getAxisOrientation();
@@ -632,7 +632,7 @@ _ol_format_GML3_.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writePosList_ = function(node, value, objectStack) {
+GML3.prototype.writePosList_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
   var srsDimension = hasZ ? 3 : 2;
@@ -647,7 +647,7 @@ _ol_format_GML3_.prototype.writePosList_ = function(node, value, objectStack) {
     point = points[i];
     parts[i] = this.getCoords_(point, srsName, hasZ);
   }
-  _ol_format_XSD_.writeStringTextNode(node, parts.join(' '));
+  XSD.writeStringTextNode(node, parts.join(' '));
 };
 
 
@@ -657,7 +657,7 @@ _ol_format_GML3_.prototype.writePosList_ = function(node, value, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writePoint_ = function(node, geometry, objectStack) {
+GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var srsName = context['srsName'];
   if (srsName) {
@@ -673,10 +673,10 @@ _ol_format_GML3_.prototype.writePoint_ = function(node, geometry, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-_ol_format_GML3_.ENVELOPE_SERIALIZERS_ = {
+GML3.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'lowerCorner': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-    'upperCorner': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode)
+    'lowerCorner': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+    'upperCorner': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
   }
 };
 
@@ -686,7 +686,7 @@ _ol_format_GML3_.ENVELOPE_SERIALIZERS_ = {
  * @param {ol.Extent} extent Extent.
  * @param {Array.<*>} objectStack Node stack.
  */
-_ol_format_GML3_.prototype.writeEnvelope = function(node, extent, objectStack) {
+GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var srsName = context['srsName'];
   if (srsName) {
@@ -695,7 +695,7 @@ _ol_format_GML3_.prototype.writeEnvelope = function(node, extent, objectStack) {
   var keys = ['lowerCorner', 'upperCorner'];
   var values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-      ({node: node}), _ol_format_GML3_.ENVELOPE_SERIALIZERS_,
+      ({node: node}), GML3.ENVELOPE_SERIALIZERS_,
       _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
       values,
       objectStack, keys, this);
@@ -708,7 +708,7 @@ _ol_format_GML3_.prototype.writeEnvelope = function(node, extent, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeLinearRing_ = function(node, geometry, objectStack) {
+GML3.prototype.writeLinearRing_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var srsName = context['srsName'];
   if (srsName) {
@@ -727,7 +727,7 @@ _ol_format_GML3_.prototype.writeLinearRing_ = function(node, geometry, objectSta
  * @return {Node} Node.
  * @private
  */
-_ol_format_GML3_.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+GML3.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var context = objectStack[objectStack.length - 1];
   var parentNode = context.node;
   var exteriorWritten = context['exteriorWritten'];
@@ -745,7 +745,7 @@ _ol_format_GML3_.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
+GML3.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
   var srsName = context['srsName'];
@@ -756,7 +756,7 @@ _ol_format_GML3_.prototype.writeSurfaceOrPolygon_ = function(node, geometry, obj
     var rings = geometry.getLinearRings();
     _ol_xml_.pushSerializeAndPop(
         {node: node, hasZ: hasZ, srsName: srsName},
-        _ol_format_GML3_.RING_SERIALIZERS_,
+        GML3.RING_SERIALIZERS_,
         this.RING_NODE_FACTORY_,
         rings, objectStack, undefined, this);
   } else if (node.nodeName === 'Surface') {
@@ -774,7 +774,7 @@ _ol_format_GML3_.prototype.writeSurfaceOrPolygon_ = function(node, geometry, obj
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
+GML3.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var srsName = context['srsName'];
   if (node.nodeName !== 'LineStringSegment' && srsName) {
@@ -800,7 +800,7 @@ _ol_format_GML3_.prototype.writeCurveOrLineString_ = function(node, geometry, ob
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStack) {
+GML3.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
   var srsName = context['srsName'];
@@ -810,7 +810,7 @@ _ol_format_GML3_.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry
   }
   var polygons = geometry.getPolygons();
   _ol_xml_.pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, surface: surface},
-      _ol_format_GML3_.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
+      GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
       this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
       objectStack, undefined, this);
 };
@@ -822,7 +822,7 @@ _ol_format_GML3_.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeMultiPoint_ = function(node, geometry,
+GML3.prototype.writeMultiPoint_ = function(node, geometry,
     objectStack) {
   var context = objectStack[objectStack.length - 1];
   var srsName = context['srsName'];
@@ -832,7 +832,7 @@ _ol_format_GML3_.prototype.writeMultiPoint_ = function(node, geometry,
   }
   var points = geometry.getPoints();
   _ol_xml_.pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName},
-      _ol_format_GML3_.POINTMEMBER_SERIALIZERS_,
+      GML3.POINTMEMBER_SERIALIZERS_,
       _ol_xml_.makeSimpleNodeFactory('pointMember'), points,
       objectStack, undefined, this);
 };
@@ -844,7 +844,7 @@ _ol_format_GML3_.prototype.writeMultiPoint_ = function(node, geometry,
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectStack) {
+GML3.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
   var srsName = context['srsName'];
@@ -854,7 +854,7 @@ _ol_format_GML3_.prototype.writeMultiCurveOrLineString_ = function(node, geometr
   }
   var lines = geometry.getLineStrings();
   _ol_xml_.pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, curve: curve},
-      _ol_format_GML3_.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
+      GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
       this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
       objectStack, undefined, this);
 };
@@ -866,7 +866,7 @@ _ol_format_GML3_.prototype.writeMultiCurveOrLineString_ = function(node, geometr
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeRing_ = function(node, ring, objectStack) {
+GML3.prototype.writeRing_ = function(node, ring, objectStack) {
   var linearRing = _ol_xml_.createElementNS(node.namespaceURI, 'LinearRing');
   node.appendChild(linearRing);
   this.writeLinearRing_(linearRing, ring, objectStack);
@@ -879,7 +879,7 @@ _ol_format_GML3_.prototype.writeRing_ = function(node, ring, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStack) {
+GML3.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStack) {
   var child = this.GEOMETRY_NODE_FACTORY_(
       polygon, objectStack);
   if (child) {
@@ -895,7 +895,7 @@ _ol_format_GML3_.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writePointMember_ = function(node, point, objectStack) {
+GML3.prototype.writePointMember_ = function(node, point, objectStack) {
   var child = _ol_xml_.createElementNS(node.namespaceURI, 'Point');
   node.appendChild(child);
   this.writePoint_(child, point, objectStack);
@@ -908,7 +908,7 @@ _ol_format_GML3_.prototype.writePointMember_ = function(node, point, objectStack
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
+GML3.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
   var child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
   if (child) {
     node.appendChild(child);
@@ -923,7 +923,7 @@ _ol_format_GML3_.prototype.writeLineStringOrCurveMember_ = function(node, line, 
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeSurfacePatches_ = function(node, polygon, objectStack) {
+GML3.prototype.writeSurfacePatches_ = function(node, polygon, objectStack) {
   var child = _ol_xml_.createElementNS(node.namespaceURI, 'PolygonPatch');
   node.appendChild(child);
   this.writeSurfaceOrPolygon_(child, polygon, objectStack);
@@ -936,7 +936,7 @@ _ol_format_GML3_.prototype.writeSurfacePatches_ = function(node, polygon, object
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeCurveSegments_ = function(node, line, objectStack) {
+GML3.prototype.writeCurveSegments_ = function(node, line, objectStack) {
   var child = _ol_xml_.createElementNS(node.namespaceURI,
       'LineStringSegment');
   node.appendChild(child);
@@ -949,7 +949,7 @@ _ol_format_GML3_.prototype.writeCurveSegments_ = function(node, line, objectStac
  * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
  * @param {Array.<*>} objectStack Node stack.
  */
-_ol_format_GML3_.prototype.writeGeometryElement = function(node, geometry, objectStack) {
+GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
   var context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
   var item = _ol_obj_.assign({}, context);
   item.node = node;
@@ -963,10 +963,10 @@ _ol_format_GML3_.prototype.writeGeometryElement = function(node, geometry, objec
     }
   } else {
     value =
-        _ol_format_Feature_.transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
+        FeatureFormat.transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
   }
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-      (item), _ol_format_GML3_.GEOMETRY_SERIALIZERS_,
+      (item), GML3.GEOMETRY_SERIALIZERS_,
       this.GEOMETRY_NODE_FACTORY_, [value],
       objectStack, undefined, this);
 };
@@ -977,7 +977,7 @@ _ol_format_GML3_.prototype.writeGeometryElement = function(node, geometry, objec
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
-_ol_format_GML3_.prototype.writeFeatureElement = function(node, feature, objectStack) {
+GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
   var fid = feature.getId();
   if (fid) {
     node.setAttribute('fid', fid);
@@ -1004,7 +1004,7 @@ _ol_format_GML3_.prototype.writeFeatureElement = function(node, feature, objectS
       } else {
         if (!(key in context.serializers[featureNS])) {
           context.serializers[featureNS][key] = _ol_xml_.makeChildAppender(
-              _ol_format_XSD_.writeStringTextNode);
+              XSD.writeStringTextNode);
         }
       }
     }
@@ -1025,7 +1025,7 @@ _ol_format_GML3_.prototype.writeFeatureElement = function(node, feature, objectS
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-_ol_format_GML3_.prototype.writeFeatureMembers_ = function(node, features, objectStack) {
+GML3.prototype.writeFeatureMembers_ = function(node, features, objectStack) {
   var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var featureType = context['featureType'];
   var featureNS = context['featureNS'];
@@ -1047,12 +1047,12 @@ _ol_format_GML3_.prototype.writeFeatureMembers_ = function(node, features, objec
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-_ol_format_GML3_.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeSurfaceOrPolygonMember_),
+        GML3.prototype.writeSurfaceOrPolygonMember_),
     'polygonMember': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeSurfaceOrPolygonMember_)
+        GML3.prototype.writeSurfaceOrPolygonMember_)
   }
 };
 
@@ -1061,10 +1061,10 @@ _ol_format_GML3_.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-_ol_format_GML3_.POINTMEMBER_SERIALIZERS_ = {
+GML3.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'pointMember': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writePointMember_)
+        GML3.prototype.writePointMember_)
   }
 };
 
@@ -1073,12 +1073,12 @@ _ol_format_GML3_.POINTMEMBER_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-_ol_format_GML3_.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lineStringMember': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeLineStringOrCurveMember_),
+        GML3.prototype.writeLineStringOrCurveMember_),
     'curveMember': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeLineStringOrCurveMember_)
+        GML3.prototype.writeLineStringOrCurveMember_)
   }
 };
 
@@ -1087,10 +1087,10 @@ _ol_format_GML3_.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-_ol_format_GML3_.RING_SERIALIZERS_ = {
+GML3.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'exterior': _ol_xml_.makeChildAppender(_ol_format_GML3_.prototype.writeRing_),
-    'interior': _ol_xml_.makeChildAppender(_ol_format_GML3_.prototype.writeRing_)
+    'exterior': _ol_xml_.makeChildAppender(GML3.prototype.writeRing_),
+    'interior': _ol_xml_.makeChildAppender(GML3.prototype.writeRing_)
   }
 };
 
@@ -1099,31 +1099,31 @@ _ol_format_GML3_.RING_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-_ol_format_GML3_.GEOMETRY_SERIALIZERS_ = {
+GML3.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Curve': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeCurveOrLineString_),
+        GML3.prototype.writeCurveOrLineString_),
     'MultiCurve': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeMultiCurveOrLineString_),
-    'Point': _ol_xml_.makeChildAppender(_ol_format_GML3_.prototype.writePoint_),
+        GML3.prototype.writeMultiCurveOrLineString_),
+    'Point': _ol_xml_.makeChildAppender(GML3.prototype.writePoint_),
     'MultiPoint': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeMultiPoint_),
+        GML3.prototype.writeMultiPoint_),
     'LineString': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeCurveOrLineString_),
+        GML3.prototype.writeCurveOrLineString_),
     'MultiLineString': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeMultiCurveOrLineString_),
+        GML3.prototype.writeMultiCurveOrLineString_),
     'LinearRing': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeLinearRing_),
+        GML3.prototype.writeLinearRing_),
     'Polygon': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeSurfaceOrPolygon_),
+        GML3.prototype.writeSurfaceOrPolygon_),
     'MultiPolygon': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeMultiSurfaceOrPolygon_),
+        GML3.prototype.writeMultiSurfaceOrPolygon_),
     'Surface': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeSurfaceOrPolygon_),
+        GML3.prototype.writeSurfaceOrPolygon_),
     'MultiSurface': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeMultiSurfaceOrPolygon_),
+        GML3.prototype.writeMultiSurfaceOrPolygon_),
     'Envelope': _ol_xml_.makeChildAppender(
-        _ol_format_GML3_.prototype.writeEnvelope)
+        GML3.prototype.writeEnvelope)
   }
 };
 
@@ -1133,7 +1133,7 @@ _ol_format_GML3_.GEOMETRY_SERIALIZERS_ = {
  * @type {Object.<string, string>}
  * @private
  */
-_ol_format_GML3_.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
+GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
   'MultiLineString': 'lineStringMember',
   'MultiCurve': 'curveMember',
   'MultiPolygon': 'polygonMember',
@@ -1149,10 +1149,10 @@ _ol_format_GML3_.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
  * @return {Node|undefined} Node.
  * @private
  */
-_ol_format_GML3_.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var parentNode = objectStack[objectStack.length - 1].node;
   return _ol_xml_.createElementNS('http://www.opengis.net/gml',
-      _ol_format_GML3_.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
+      GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
 };
 
 
@@ -1164,7 +1164,7 @@ _ol_format_GML3_.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, 
  * @return {Node|undefined} Node.
  * @private
  */
-_ol_format_GML3_.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var context = objectStack[objectStack.length - 1];
   var multiSurface = context['multiSurface'];
   var surface = context['surface'];
@@ -1199,7 +1199,7 @@ _ol_format_GML3_.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
  * @override
  * @api
  */
-_ol_format_GML3_.prototype.writeGeometryNode = function(geometry, opt_options) {
+GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   var geom = _ol_xml_.createElementNS('http://www.opengis.net/gml', 'geom');
   var context = {node: geom, hasZ: this.hasZ, srsName: this.srsName,
@@ -1222,7 +1222,7 @@ _ol_format_GML3_.prototype.writeGeometryNode = function(geometry, opt_options) {
  * @return {string} Result.
  * @api
  */
-_ol_format_GML3_.prototype.writeFeatures;
+GML3.prototype.writeFeatures;
 
 
 /**
@@ -1234,7 +1234,7 @@ _ol_format_GML3_.prototype.writeFeatures;
  * @override
  * @api
  */
-_ol_format_GML3_.prototype.writeFeaturesNode = function(features, opt_options) {
+GML3.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   var node = _ol_xml_.createElementNS('http://www.opengis.net/gml',
       'featureMembers');
@@ -1256,4 +1256,4 @@ _ol_format_GML3_.prototype.writeFeaturesNode = function(features, opt_options) {
   this.writeFeatureMembers_(node, features, [context]);
   return node;
 };
-export default _ol_format_GML3_;
+export default GML3;

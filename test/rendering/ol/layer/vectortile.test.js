@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_format_MVT_ from '../../../../src/ol/format/MVT.js';
+import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
@@ -70,7 +70,7 @@ describe('ol.rendering.layer.VectorTile', function() {
 
     beforeEach(function() {
       source = new _ol_source_VectorTile_({
-        format: new _ol_format_MVT_(),
+        format: new MVT(),
         tileGrid: _ol_tilegrid_.createXYZ(),
         url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf',
         transition: 0

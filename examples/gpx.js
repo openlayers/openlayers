@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_GPX_ from '../src/ol/format/GPX.js';
+import GPX from '../src/ol/format/GPX.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -47,7 +47,7 @@ var style = {
 var vector = new _ol_layer_Vector_({
   source: new _ol_source_Vector_({
     url: 'data/gpx/fells_loop.gpx',
-    format: new _ol_format_GPX_()
+    format: new GPX()
   }),
   style: function(feature) {
     return style[feature.getGeometry().getType()];

@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_EsriJSON_ from '../src/ol/format/EsriJSON.js';
+import EsriJSON from '../src/ol/format/EsriJSON.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
@@ -17,7 +17,7 @@ var serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' 
     'Petroleum/KSFields/FeatureServer/';
 var layer = '0';
 
-var esrijsonFormat = new _ol_format_EsriJSON_();
+var esrijsonFormat = new EsriJSON();
 
 var styleCache = {
   'ABANDONED': new _ol_style_Style_({

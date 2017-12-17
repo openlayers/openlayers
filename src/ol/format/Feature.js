@@ -18,7 +18,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * @abstract
  * @api
  */
-var _ol_format_Feature_ = function() {
+var FeatureFormat = function() {
 
   /**
    * @protected
@@ -42,7 +42,7 @@ var _ol_format_Feature_ = function() {
  * @return {olx.format.ReadOptions|undefined} Options.
  * @protected
  */
-_ol_format_Feature_.prototype.getReadOptions = function(source, opt_options) {
+FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
   var options;
   if (opt_options) {
     options = {
@@ -64,7 +64,7 @@ _ol_format_Feature_.prototype.getReadOptions = function(source, opt_options) {
  * @return {olx.format.WriteOptions|olx.format.ReadOptions|undefined}
  *     Updated options.
  */
-_ol_format_Feature_.prototype.adaptOptions = function(options) {
+FeatureFormat.prototype.adaptOptions = function(options) {
   return _ol_obj_.assign({
     dataProjection: this.defaultDataProjection,
     featureProjection: this.defaultFeatureProjection
@@ -76,7 +76,7 @@ _ol_format_Feature_.prototype.adaptOptions = function(options) {
  * Get the extent from the source of the last {@link readFeatures} call.
  * @return {ol.Extent} Tile extent.
  */
-_ol_format_Feature_.prototype.getLastExtent = function() {
+FeatureFormat.prototype.getLastExtent = function() {
   return null;
 };
 
@@ -85,7 +85,7 @@ _ol_format_Feature_.prototype.getLastExtent = function() {
  * @abstract
  * @return {ol.format.FormatType} Format.
  */
-_ol_format_Feature_.prototype.getType = function() {};
+FeatureFormat.prototype.getType = function() {};
 
 
 /**
@@ -96,7 +96,7 @@ _ol_format_Feature_.prototype.getType = function() {};
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
-_ol_format_Feature_.prototype.readFeature = function(source, opt_options) {};
+FeatureFormat.prototype.readFeature = function(source, opt_options) {};
 
 
 /**
@@ -107,7 +107,7 @@ _ol_format_Feature_.prototype.readFeature = function(source, opt_options) {};
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
-_ol_format_Feature_.prototype.readFeatures = function(source, opt_options) {};
+FeatureFormat.prototype.readFeatures = function(source, opt_options) {};
 
 
 /**
@@ -118,7 +118,7 @@ _ol_format_Feature_.prototype.readFeatures = function(source, opt_options) {};
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
-_ol_format_Feature_.prototype.readGeometry = function(source, opt_options) {};
+FeatureFormat.prototype.readGeometry = function(source, opt_options) {};
 
 
 /**
@@ -128,7 +128,7 @@ _ol_format_Feature_.prototype.readGeometry = function(source, opt_options) {};
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  */
-_ol_format_Feature_.prototype.readProjection = function(source) {};
+FeatureFormat.prototype.readProjection = function(source) {};
 
 
 /**
@@ -139,7 +139,7 @@ _ol_format_Feature_.prototype.readProjection = function(source) {};
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-_ol_format_Feature_.prototype.writeFeature = function(feature, opt_options) {};
+FeatureFormat.prototype.writeFeature = function(feature, opt_options) {};
 
 
 /**
@@ -150,7 +150,7 @@ _ol_format_Feature_.prototype.writeFeature = function(feature, opt_options) {};
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-_ol_format_Feature_.prototype.writeFeatures = function(features, opt_options) {};
+FeatureFormat.prototype.writeFeatures = function(features, opt_options) {};
 
 
 /**
@@ -161,7 +161,7 @@ _ol_format_Feature_.prototype.writeFeatures = function(features, opt_options) {}
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-_ol_format_Feature_.prototype.writeGeometry = function(geometry, opt_options) {};
+FeatureFormat.prototype.writeGeometry = function(geometry, opt_options) {};
 
 
 /**
@@ -172,7 +172,7 @@ _ol_format_Feature_.prototype.writeGeometry = function(geometry, opt_options) {}
  * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
  * @protected
  */
-_ol_format_Feature_.transformWithOptions = function(
+FeatureFormat.transformWithOptions = function(
     geometry, write, opt_options) {
   var featureProjection = opt_options ?
     getProjection(opt_options.featureProjection) : null;
@@ -219,4 +219,4 @@ _ol_format_Feature_.transformWithOptions = function(
   }
   return transformed;
 };
-export default _ol_format_Feature_;
+export default FeatureFormat;

@@ -2,7 +2,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_format_WKT_ from '../src/ol/format/WKT.js';
+import WKT from '../src/ol/format/WKT.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -12,7 +12,7 @@ var raster = new _ol_layer_Tile_({
   source: new _ol_source_OSM_()
 });
 
-var format = new _ol_format_WKT_();
+var format = new WKT();
 var feature = format.readFeature(
     'POLYGON((10.689697265625 -25.0927734375, 34.595947265625 ' +
         '-20.1708984375, 38.814697265625 -35.6396484375, 13.502197265625 ' +

@@ -1,4 +1,4 @@
-import _ol_format_WMSGetFeatureInfo_ from '../../../../src/ol/format/WMSGetFeatureInfo.js';
+import WMSGetFeatureInfo from '../../../../src/ol/format/WMSGetFeatureInfo.js';
 import {addCommon, clearAllProjections} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 
@@ -8,12 +8,12 @@ describe('ol.format.WMSGetFeatureInfo', function() {
   describe('#getLayers', function() {
 
     it('returns null if layers is undefined', function() {
-      var format = new _ol_format_WMSGetFeatureInfo_();
+      var format = new WMSGetFeatureInfo();
       expect(format.getLayers()).to.be(null);
     });
 
     it('returns the value provided in the layers option', function() {
-      var format = new _ol_format_WMSGetFeatureInfo_({
+      var format = new WMSGetFeatureInfo({
         layers: ['a', 'z']
       });
       expect(format.getLayers()).to.eql(['a', 'z']);
@@ -32,7 +32,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
         register(proj4);
         afterLoadText('spec/ol/format/wms/getfeatureinfo.xml', function(data) {
           try {
-            features = new _ol_format_WMSGetFeatureInfo_().readFeatures(data);
+            features = new WMSGetFeatureInfo().readFeatures(data);
           } catch (e) {
             done(e);
           }
@@ -73,7 +73,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '  <AAA64_layer>' +
             '  </AAA64_layer>' +
             '</msGMLOutput>';
-        var features = new _ol_format_WMSGetFeatureInfo_().readFeatures(text);
+        var features = new WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(0);
       });
 
@@ -98,7 +98,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '    </AAA64_feature>' +
             '  </AAA64_layer>' +
             '</msGMLOutput>';
-        var features = new _ol_format_WMSGetFeatureInfo_().readFeatures(text);
+        var features = new WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(1);
         expect(features[0].get('FOO')).to.be('bar');
         // FIXME is that really wanted ?
@@ -158,7 +158,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '   </AAA62_feature>' +
             '  </AAA62_layer>' +
             '</msGMLOutput>';
-        var format = new _ol_format_WMSGetFeatureInfo_();
+        var format = new WMSGetFeatureInfo();
         var features = format.readFeatures(text);
         expect(features.length).to.be(2);
         expect(features[0].get('OBJECTID')).to.be('287');
@@ -224,7 +224,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '    </opengeo:roads>' +
             '  </gml:featureMember>' +
             '</wfs:FeatureCollection>';
-        var features = new _ol_format_WMSGetFeatureInfo_().readFeatures(text);
+        var features = new WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(1);
         expect(features[0].get('cat')).to.be('3');
         expect(features[0].getGeometry().getType()).to.be('MultiLineString');

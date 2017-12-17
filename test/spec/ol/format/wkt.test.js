@@ -1,12 +1,12 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_format_WKT_ from '../../../../src/ol/format/WKT.js';
+import WKT from '../../../../src/ol/format/WKT.js';
 import {transform} from '../../../../src/ol/proj.js';
 
 
 describe('ol.format.WKT', function() {
 
-  var format = new _ol_format_WKT_();
+  var format = new WKT();
 
   describe('#readProjectionFromText', function() {
     it('returns the default projection', function() {
@@ -779,7 +779,7 @@ describe('ol.format.WKT', function() {
   });
 
   it('GeometryCollection split / merged correctly', function() {
-    format = new _ol_format_WKT_({splitCollection: true});
+    format = new WKT({splitCollection: true});
     var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
     var features = format.readFeatures(wkt);
     expect(features.length).to.eql(2);

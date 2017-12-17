@@ -1,7 +1,7 @@
 /**
  * @module ol/format/GML
  */
-import _ol_format_GML3_ from '../format/GML3.js';
+import GML3 from '../format/GML3.js';
 
 /**
  * @classdesc
@@ -15,7 +15,7 @@ import _ol_format_GML3_ from '../format/GML3.js';
  * @extends {ol.format.GMLBase}
  * @api
  */
-var _ol_format_GML_ = _ol_format_GML3_;
+var _ol_format_GML_ = GML3;
 
 
 /**
