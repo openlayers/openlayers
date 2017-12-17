@@ -5,7 +5,6 @@ import _ol_Collection_ from './Collection.js';
 import Attribution from './control/Attribution.js';
 import Rotate from './control/Rotate.js';
 import Zoom from './control/Zoom.js';
-var _ol_control_ = {};
 
 
 /**
@@ -20,7 +19,7 @@ var _ol_control_ = {};
  * @return {ol.Collection.<ol.control.Control>} Controls.
  * @api
  */
-_ol_control_.defaults = function(opt_options) {
+export function defaults(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -44,5 +43,4 @@ _ol_control_.defaults = function(opt_options) {
 
   return controls;
 
-};
-export default _ol_control_;
+}

@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_control_ from '../src/ol/control.js';
+import {defaults as defaultControls} from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import {fromLonLat, get as getProjection} from '../src/ol/proj.js';
@@ -10,7 +10,7 @@ import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
 
 var map = new _ol_Map_({
   target: 'map',
-  controls: _ol_control_.defaults({
+  controls: defaultControls({
     attributionOptions: {
       collapsible: false
     }

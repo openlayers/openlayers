@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_control_ from '../src/ol/control.js';
+import {defaults as defaultControls} from '../src/ol/control.js';
 import OverviewMap from '../src/ol/control/OverviewMap.js';
 import _ol_interaction_ from '../src/ol/interaction.js';
 import DragRotateAndZoom from '../src/ol/interaction/DragRotateAndZoom.js';
@@ -25,7 +25,7 @@ var overviewMapControl = new OverviewMap({
 });
 
 var map = new _ol_Map_({
-  controls: _ol_control_.defaults().extend([
+  controls: defaultControls().extend([
     overviewMapControl
   ]),
   interactions: _ol_interaction_.defaults().extend([

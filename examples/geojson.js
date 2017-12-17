@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_control_ from '../src/ol/control.js';
+import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Circle from '../src/ol/geom/Circle.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -179,7 +179,7 @@ var map = new _ol_Map_({
     vectorLayer
   ],
   target: 'map',
-  controls: _ol_control_.defaults({
+  controls: defaultControls({
     attributionOptions: {
       collapsible: false
     }
