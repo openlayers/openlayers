@@ -2,7 +2,7 @@
  * @module ol/events/condition
  */
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import {TRUE, FALSE} from '../functions.js';
 import _ol_has_ from '../has.js';
 var _ol_events_condition_ = {};
@@ -206,7 +206,7 @@ _ol_events_condition_.targetNotEditable = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.mouseOnly = function(mapBrowserEvent) {
-  _ol_asserts_.assert(mapBrowserEvent.pointerEvent, 56); // mapBrowserEvent must originate from a pointer event
+  assert(mapBrowserEvent.pointerEvent, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
   return /** @type {ol.MapBrowserEvent} */ (mapBrowserEvent).pointerEvent.pointerType == 'mouse';
 };

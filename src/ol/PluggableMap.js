@@ -15,7 +15,7 @@ import _ol_ObjectEventType_ from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
 import _ol_View_ from './View.js';
 import _ol_ViewHint_ from './ViewHint.js';
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
 import Event from './events/Event.js';
@@ -1424,7 +1424,7 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     } else if (typeof options.renderer === 'string') {
       rendererTypes = [options.renderer];
     } else {
-      _ol_asserts_.assert(false, 46); // Incorrect format for `renderer` option
+      assert(false, 46); // Incorrect format for `renderer` option
     }
     if (rendererTypes.indexOf(/** @type {ol.renderer.Type} */ ('dom')) >= 0) {
       rendererTypes = rendererTypes.concat(_ol_PluggableMap_.DEFAULT_RENDERER_TYPES);
@@ -1459,7 +1459,7 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     if (Array.isArray(options.controls)) {
       controls = new _ol_Collection_(options.controls.slice());
     } else {
-      _ol_asserts_.assert(options.controls instanceof _ol_Collection_,
+      assert(options.controls instanceof _ol_Collection_,
           47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
@@ -1470,7 +1470,7 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     if (Array.isArray(options.interactions)) {
       interactions = new _ol_Collection_(options.interactions.slice());
     } else {
-      _ol_asserts_.assert(options.interactions instanceof _ol_Collection_,
+      assert(options.interactions instanceof _ol_Collection_,
           48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
@@ -1481,7 +1481,7 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     if (Array.isArray(options.overlays)) {
       overlays = new _ol_Collection_(options.overlays.slice());
     } else {
-      _ol_asserts_.assert(options.overlays instanceof _ol_Collection_,
+      assert(options.overlays instanceof _ol_Collection_,
           49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }

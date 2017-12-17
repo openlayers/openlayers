@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
@@ -70,7 +70,7 @@ var _ol_source_TileUTFGrid_ = function(options) {
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
-    _ol_asserts_.assert(false, 51); // Either `url` or `tileJSON` options must be provided
+    assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 };
 

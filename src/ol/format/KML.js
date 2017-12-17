@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_color_ from '../color.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
@@ -945,7 +945,7 @@ KML.readMultiGeometry_ = function(node, objectStack) {
     } else if (type == GeometryType.GEOMETRY_COLLECTION) {
       multiGeometry = new GeometryCollection(geometries);
     } else {
-      _ol_asserts_.assert(false, 37); // Unknown geometry type found
+      assert(false, 37); // Unknown geometry type found
     }
   } else {
     multiGeometry = new GeometryCollection(geometries);
@@ -1171,7 +1171,7 @@ KML.PlacemarkStyleMapParser_ = function(node, objectStack) {
   } else if (typeof styleMapValue === 'string') {
     placemarkObject['styleUrl'] = styleMapValue;
   } else {
-    _ol_asserts_.assert(false, 38); // `styleMapValue` has an unknown type
+    assert(false, 38); // `styleMapValue` has an unknown type
   }
 };
 
@@ -2124,7 +2124,7 @@ KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStack) {
       layout == GeometryLayout.XYZM) {
     dimension = 3;
   } else {
-    _ol_asserts_.assert(false, 34); // Invalid geometry layout
+    assert(false, 34); // Invalid geometry layout
   }
 
   var d, i;
@@ -2382,7 +2382,7 @@ KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
         (/** @type {ol.geom.MultiPolygon} */ (geometry)).getPolygons();
     factory = KML.POLYGON_NODE_FACTORY_;
   } else {
-    _ol_asserts_.assert(false, 39); // Unknown geometry type
+    assert(false, 39); // Unknown geometry type
   }
   _ol_xml_.pushSerializeAndPop(context,
       KML.MULTI_GEOMETRY_SERIALIZERS_, factory,

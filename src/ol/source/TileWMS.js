@@ -4,7 +4,7 @@
 
 import {DEFAULT_WMS_VERSION} from './common.js';
 import {inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import _ol_math_ from '../math.js';
@@ -225,7 +225,7 @@ _ol_source_TileWMS_.prototype.getRequestUrl_ = function(tileCoord, tileSize, til
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        _ol_asserts_.assert(false, 52); // Unknown `serverType` configured
+        assert(false, 52); // Unknown `serverType` configured
         break;
     }
   }

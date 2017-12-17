@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_LayerType_ from '../LayerType.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_layer_VectorTileRenderType_ from '../layer/VectorTileRenderType.js';
@@ -25,7 +25,7 @@ var _ol_layer_VectorTile_ = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
-  _ol_asserts_.assert(renderMode == undefined ||
+  assert(renderMode == undefined ||
       renderMode == _ol_layer_VectorTileRenderType_.IMAGE ||
       renderMode == _ol_layer_VectorTileRenderType_.HYBRID ||
       renderMode == _ol_layer_VectorTileRenderType_.VECTOR,
