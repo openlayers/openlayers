@@ -7,7 +7,7 @@ import _ol_array_ from '../array.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_color_ from '../color.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import XMLFeature from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -45,7 +45,7 @@ var KML = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 
   if (!KML.DEFAULT_STYLE_ARRAY_) {
     KML.createStyleDefaults_();
@@ -92,7 +92,7 @@ var KML = function(opt_options) {
 
 };
 
-inherits(KML, _ol_format_XMLFeature_);
+inherits(KML, XMLFeature);
 
 
 /**

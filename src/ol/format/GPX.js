@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import XMLFeature from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -27,7 +27,7 @@ var GPX = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 
   /**
    * @inheritDoc
@@ -41,7 +41,7 @@ var GPX = function(opt_options) {
   this.readExtensions_ = options.readExtensions;
 };
 
-inherits(GPX, _ol_format_XMLFeature_);
+inherits(GPX, XMLFeature);
 
 
 /**

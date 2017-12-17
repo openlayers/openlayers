@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import XMLFeature from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
@@ -25,7 +25,7 @@ import _ol_xml_ from '../xml.js';
  * @api
  */
 var OSMXML = function() {
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 
   /**
    * @inheritDoc
@@ -33,7 +33,7 @@ var OSMXML = function() {
   this.defaultDataProjection = getProjection('EPSG:4326');
 };
 
-inherits(OSMXML, _ol_format_XMLFeature_);
+inherits(OSMXML, XMLFeature);
 
 
 /**

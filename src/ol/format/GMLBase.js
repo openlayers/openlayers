@@ -8,7 +8,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import XMLFeature from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import LinearRing from '../geom/LinearRing.js';
@@ -75,10 +75,10 @@ var GMLBase = function(opt_options) {
         GMLBase.prototype.readFeaturesInternal)
   };
 
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 };
 
-inherits(GMLBase, _ol_format_XMLFeature_);
+inherits(GMLBase, XMLFeature);
 
 
 /**

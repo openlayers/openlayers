@@ -7,7 +7,7 @@ import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
 import GMLBase from '../format/GMLBase.js';
 import _ol_format_filter_ from '../format/filter.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import XMLFeature from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
@@ -57,10 +57,10 @@ var WFS = function(opt_options) {
     options.schemaLocation :
     WFS.SCHEMA_LOCATIONS[WFS.DEFAULT_VERSION];
 
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 };
 
-inherits(WFS, _ol_format_XMLFeature_);
+inherits(WFS, XMLFeature);
 
 
 /**

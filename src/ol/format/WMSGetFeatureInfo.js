@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import GML2 from '../format/GML2.js';
-import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
+import XMLFeature from '../format/XMLFeature.js';
 import _ol_obj_ from '../obj.js';
 import _ol_xml_ from '../xml.js';
 
@@ -42,10 +42,10 @@ var WMSGetFeatureInfo = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
-  _ol_format_XMLFeature_.call(this);
+  XMLFeature.call(this);
 };
 
-inherits(WMSGetFeatureInfo, _ol_format_XMLFeature_);
+inherits(WMSGetFeatureInfo, XMLFeature);
 
 
 /**
