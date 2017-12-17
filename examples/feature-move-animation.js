@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_Polyline_ from '../src/ol/format/Polyline.js';
+import Polyline from '../src/ol/format/Polyline.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -57,7 +57,7 @@ var polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-var route = /** @type {ol.geom.LineString} */ (new _ol_format_Polyline_({
+var route = /** @type {ol.geom.LineString} */ (new Polyline({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
