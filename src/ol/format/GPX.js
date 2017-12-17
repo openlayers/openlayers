@@ -6,7 +6,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import XSD from '../format/XSD.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -339,9 +339,9 @@ GPX.GPX_PARSERS_ = _ol_xml_.makeStructureNS(
 GPX.LINK_PARSERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
       'text':
-          _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString, 'linkText'),
+          _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkText'),
       'type':
-          _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString, 'linkType')
+          _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkType')
     });
 
 
@@ -352,15 +352,15 @@ GPX.LINK_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 GPX.RTE_PARSERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'cmt': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'desc': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'src': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'link': GPX.parseLink_,
       'number':
-          _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readNonNegativeInteger),
+          _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
       'extensions': GPX.parseExtensions_,
-      'type': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'rtept': GPX.parseRtePt_
     });
 
@@ -372,8 +372,8 @@ GPX.RTE_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 GPX.RTEPT_PARSERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'time': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDateTime)
+      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
     });
 
 
@@ -384,14 +384,14 @@ GPX.RTEPT_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 GPX.TRK_PARSERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'cmt': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'desc': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'src': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'link': GPX.parseLink_,
       'number':
-          _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readNonNegativeInteger),
-      'type': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+          _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'extensions': GPX.parseExtensions_,
       'trkseg': GPX.parseTrkSeg_
     });
@@ -415,8 +415,8 @@ GPX.TRKSEG_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 GPX.TRKPT_PARSERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'time': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDateTime)
+      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
     });
 
 
@@ -427,27 +427,27 @@ GPX.TRKPT_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 GPX.WPT_PARSERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'time': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDateTime),
-      'magvar': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'geoidheight': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'cmt': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'desc': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'src': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime),
+      'magvar': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'geoidheight': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'link': GPX.parseLink_,
-      'sym': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'type': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'fix': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'sym': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'fix': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'sat': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
-      'hdop': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'vdop': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'pdop': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
+          XSD.readNonNegativeInteger),
+      'hdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'vdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'pdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
       'ageofdgpsdata':
-          _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
+          _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
       'dgpsid':
-          _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readNonNegativeInteger),
+          _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
       'extensions': GPX.parseExtensions_
     });
 
@@ -719,8 +719,8 @@ GPX.LINK_SEQUENCE_ = ['text', 'type'];
  */
 GPX.LINK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'text': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'type': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode)
+      'text': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
     });
 
 
@@ -742,14 +742,14 @@ GPX.RTE_SEQUENCE_ = _ol_xml_.makeStructureNS(
  */
 GPX.RTE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'cmt': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'desc': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'src': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'link': _ol_xml_.makeChildAppender(GPX.writeLink_),
       'number': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeNonNegativeIntegerTextNode),
-      'type': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+          XSD.writeNonNegativeIntegerTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'rtept': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(
           GPX.writeWptType_))
     });
@@ -784,14 +784,14 @@ GPX.TRK_SEQUENCE_ = _ol_xml_.makeStructureNS(
  */
 GPX.TRK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'cmt': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'desc': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'src': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'link': _ol_xml_.makeChildAppender(GPX.writeLink_),
       'number': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeNonNegativeIntegerTextNode),
-      'type': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+          XSD.writeNonNegativeIntegerTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'trkseg': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(
           GPX.writeTrkSeg_))
     });
@@ -835,28 +835,28 @@ GPX.WPT_TYPE_SEQUENCE_ = _ol_xml_.makeStructureNS(
  */
 GPX.WPT_TYPE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
-      'time': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDateTimeTextNode),
-      'magvar': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
+      'ele': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'time': _ol_xml_.makeChildAppender(XSD.writeDateTimeTextNode),
+      'magvar': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
       'geoidheight': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeDecimalTextNode),
-      'name': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'cmt': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'desc': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'src': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+          XSD.writeDecimalTextNode),
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'link': _ol_xml_.makeChildAppender(GPX.writeLink_),
-      'sym': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'type': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'fix': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+      'sym': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'fix': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'sat': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeNonNegativeIntegerTextNode),
-      'hdop': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
-      'vdop': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
-      'pdop': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
+          XSD.writeNonNegativeIntegerTextNode),
+      'hdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'vdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'pdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
       'ageofdgpsdata': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeDecimalTextNode),
+          XSD.writeDecimalTextNode),
       'dgpsid': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeNonNegativeIntegerTextNode)
+          XSD.writeNonNegativeIntegerTextNode)
     });
 
 

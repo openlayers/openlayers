@@ -8,7 +8,7 @@ import GML3 from '../format/GML3.js';
 import GMLBase from '../format/GMLBase.js';
 import _ol_format_filter_ from '../format/filter.js';
 import XMLFeature from '../format/XMLFeature.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection} from '../proj.js';
@@ -250,7 +250,7 @@ WFS.FEATURE_COLLECTION_PARSERS_ = {
  */
 WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
   var result = {};
-  var value = _ol_format_XSD_.readNonNegativeIntegerString(
+  var value = XSD.readNonNegativeIntegerString(
       node.getAttribute('numberOfFeatures'));
   result['numberOfFeatures'] = value;
   return _ol_xml_.pushParseAndPop(
@@ -267,11 +267,11 @@ WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
 WFS.TRANSACTION_SUMMARY_PARSERS_ = {
   'http://www.opengis.net/wfs': {
     'totalInserted': _ol_xml_.makeObjectPropertySetter(
-        _ol_format_XSD_.readNonNegativeInteger),
+        XSD.readNonNegativeInteger),
     'totalUpdated': _ol_xml_.makeObjectPropertySetter(
-        _ol_format_XSD_.readNonNegativeInteger),
+        XSD.readNonNegativeInteger),
     'totalDeleted': _ol_xml_.makeObjectPropertySetter(
-        _ol_format_XSD_.readNonNegativeInteger)
+        XSD.readNonNegativeInteger)
   }
 };
 
@@ -382,7 +382,7 @@ WFS.prototype.readTransactionResponseFromNode = function(node) {
  */
 WFS.QUERY_SERIALIZERS_ = {
   'http://www.opengis.net/wfs': {
-    'PropertyName': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode)
+    'PropertyName': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
   }
 };
 
@@ -518,7 +518,7 @@ WFS.writeProperty_ = function(node, pair, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var gmlVersion = context['gmlVersion'];
   node.appendChild(name);
-  _ol_format_XSD_.writeStringTextNode(name, pair.name);
+  XSD.writeStringTextNode(name, pair.name);
   if (pair.value !== undefined && pair.value !== null) {
     var value = _ol_xml_.createElementNS(WFS.WFSNS, 'Value');
     node.appendChild(value);
@@ -531,7 +531,7 @@ WFS.writeProperty_ = function(node, pair, objectStack) {
             pair.value, objectStack);
       }
     } else {
-      _ol_format_XSD_.writeStringTextNode(value, pair.value);
+      XSD.writeStringTextNode(value, pair.value);
     }
   }
 };
@@ -552,7 +552,7 @@ WFS.writeNative_ = function(node, nativeElement, objectStack) {
     node.setAttribute('safeToIgnore', nativeElement.safeToIgnore);
   }
   if (nativeElement.value !== undefined) {
-    _ol_format_XSD_.writeStringTextNode(node, nativeElement.value);
+    XSD.writeStringTextNode(node, nativeElement.value);
   }
 };
 
@@ -699,7 +699,7 @@ WFS.writeWithinFilter_ = function(node, filter, objectStack) {
 WFS.writeDuringFilter_ = function(node, filter, objectStack) {
 
   var valueReference = _ol_xml_.createElementNS(WFS.FESNS, 'ValueReference');
-  _ol_format_XSD_.writeStringTextNode(valueReference, filter.propertyName);
+  XSD.writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
   var timePeriod = _ol_xml_.createElementNS(GMLBase.GMLNS, 'TimePeriod');
@@ -824,7 +824,7 @@ WFS.writeIsLikeFilter_ = function(node, filter, objectStack) {
  */
 WFS.writeOgcExpression_ = function(tagName, node, value) {
   var property = _ol_xml_.createElementNS(WFS.OGCNS, tagName);
-  _ol_format_XSD_.writeStringTextNode(property, value);
+  XSD.writeStringTextNode(property, value);
   node.appendChild(property);
 };
 
@@ -860,7 +860,7 @@ WFS.writeTimeInstant_ = function(node, time) {
 
   var timePosition = _ol_xml_.createElementNS(GMLBase.GMLNS, 'timePosition');
   timeInstant.appendChild(timePosition);
-  _ol_format_XSD_.writeStringTextNode(timePosition, time);
+  XSD.writeStringTextNode(timePosition, time);
 };
 
 

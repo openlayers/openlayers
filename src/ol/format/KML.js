@@ -8,7 +8,7 @@ import _ol_asserts_ from '../asserts.js';
 import _ol_color_ from '../color.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import XSD from '../format/XSD.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -536,7 +536,7 @@ KML.readVec2_ = function(node) {
  * @return {number|undefined} Scale.
  */
 KML.readScale_ = function(node) {
-  return _ol_format_XSD_.readDecimal(node);
+  return XSD.readDecimal(node);
 };
 
 
@@ -1194,7 +1194,7 @@ KML.SchemaDataParser_ = function(node, objectStack) {
 KML.SimpleDataParser_ = function(node, objectStack) {
   var name = node.getAttribute('name');
   if (name !== null) {
-    var data = _ol_format_XSD_.readString(node);
+    var data = XSD.readString(node);
     var featureObject =
         /** @type {Object} */ (objectStack[objectStack.length - 1]);
     featureObject[name] = data;
@@ -1310,8 +1310,8 @@ KML.whenParser_ = function(node, objectStack) {
  */
 KML.DATA_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'displayName': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'value': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString)
+      'displayName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'value': _ol_xml_.makeObjectPropertySetter(XSD.readString)
     });
 
 
@@ -1346,13 +1346,13 @@ KML.REGION_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 KML.LAT_LON_ALT_BOX_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'altitudeMode': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'minAltitude': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'maxAltitude': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'north': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'south': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'east': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'west': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal)
+      'altitudeMode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'minAltitude': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'maxAltitude': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'north': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'south': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'east': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'west': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
     });
 
 
@@ -1363,10 +1363,10 @@ KML.LAT_LON_ALT_BOX_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 KML.LOD_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'minLodPixels': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'maxLodPixels': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'minFadeExtent': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-      'maxFadeExtent': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal)
+      'minLodPixels': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'maxLodPixels': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'minFadeExtent': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'maxFadeExtent': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
     });
 
 
@@ -1377,9 +1377,9 @@ KML.LOD_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'extrude': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean),
-      'tessellate': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean),
-      'altitudeMode': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString)
+      'extrude': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
+      'tessellate': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
+      'altitudeMode': _ol_xml_.makeObjectPropertySetter(XSD.readString)
     });
 
 
@@ -1441,10 +1441,10 @@ KML.ICON_PARSERS_ = _ol_xml_.makeStructureNS(
       'href': _ol_xml_.makeObjectPropertySetter(KML.readURI_)
     }, _ol_xml_.makeStructureNS(
         KML.GX_NAMESPACE_URIS_, {
-          'x': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-          'y': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-          'w': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
-          'h': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal)
+          'x': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+          'y': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+          'w': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+          'h': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
         }));
 
 
@@ -1456,7 +1456,7 @@ KML.ICON_PARSERS_ = _ol_xml_.makeStructureNS(
 KML.ICON_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
       'Icon': _ol_xml_.makeObjectPropertySetter(KML.readIcon_),
-      'heading': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal),
+      'heading': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
       'hotSpot': _ol_xml_.makeObjectPropertySetter(KML.readVec2_),
       'scale': _ol_xml_.makeObjectPropertySetter(KML.readScale_)
     });
@@ -1493,7 +1493,7 @@ KML.LABEL_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
 KML.LINE_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
       'color': _ol_xml_.makeObjectPropertySetter(KML.readColor_),
-      'width': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readDecimal)
+      'width': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
     });
 
 
@@ -1533,12 +1533,12 @@ KML.NETWORK_LINK_PARSERS_ = _ol_xml_.makeStructureNS(
       'ExtendedData': KML.ExtendedDataParser_,
       'Region': KML.RegionParser_,
       'Link': KML.LinkParser_,
-      'address': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'description': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'open': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean),
-      'phoneNumber': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'visibility': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean)
+      'address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'description': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'open': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
+      'phoneNumber': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'visibility': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean)
     });
 
 
@@ -1572,7 +1572,7 @@ KML.OUTER_BOUNDARY_IS_PARSERS_ = _ol_xml_.makeStructureNS(
 KML.PAIR_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
       'Style': _ol_xml_.makeObjectPropertySetter(KML.readStyle_),
-      'key': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'key': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'styleUrl': _ol_xml_.makeObjectPropertySetter(KML.readURI_)
     });
 
@@ -1598,13 +1598,13 @@ KML.PLACEMARK_PARSERS_ = _ol_xml_.makeStructureNS(
           KML.readPolygon_, 'geometry'),
       'Style': _ol_xml_.makeObjectPropertySetter(KML.readStyle_),
       'StyleMap': KML.PlacemarkStyleMapParser_,
-      'address': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'description': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'open': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean),
-      'phoneNumber': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'description': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'open': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
+      'phoneNumber': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'styleUrl': _ol_xml_.makeObjectPropertySetter(KML.readURI_),
-      'visibility': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean)
+      'visibility': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean)
     }, _ol_xml_.makeStructureNS(
         KML.GX_NAMESPACE_URIS_, {
           'MultiTrack': _ol_xml_.makeObjectPropertySetter(
@@ -1623,8 +1623,8 @@ KML.PLACEMARK_PARSERS_ = _ol_xml_.makeStructureNS(
 KML.POLY_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
       'color': _ol_xml_.makeObjectPropertySetter(KML.readColor_),
-      'fill': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean),
-      'outline': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readBoolean)
+      'fill': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
+      'outline': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean)
     });
 
 
@@ -1924,7 +1924,7 @@ KML.prototype.readNameFromNode = function(node) {
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'name') {
-      return _ol_format_XSD_.readString(n);
+      return XSD.readString(n);
     }
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
@@ -2100,7 +2100,7 @@ KML.writeColorTextNode_ = function(node, color) {
     var hex = parseInt(abgr[i], 10).toString(16);
     abgr[i] = (hex.length == 1) ? '0' + hex : hex;
   }
-  _ol_format_XSD_.writeStringTextNode(node, abgr.join(''));
+  XSD.writeStringTextNode(node, abgr.join(''));
 };
 
 
@@ -2142,7 +2142,7 @@ KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStack) {
       }
     }
   }
-  _ol_format_XSD_.writeStringTextNode(node, text);
+  XSD.writeStringTextNode(node, text);
 };
 
 
@@ -2180,7 +2180,7 @@ KML.writeDataNode_ = function(node, pair, objectStack) {
  * @private
  */
 KML.writeDataNodeName_ = function(node, name) {
-  _ol_format_XSD_.writeCDATASection(node, name);
+  XSD.writeCDATASection(node, name);
 };
 
 
@@ -2190,7 +2190,7 @@ KML.writeDataNodeName_ = function(node, name) {
  * @private
  */
 KML.writeDataNodeValue_ = function(node, value) {
-  _ol_format_XSD_.writeStringTextNode(node, value);
+  XSD.writeStringTextNode(node, value);
 };
 
 
@@ -2540,7 +2540,7 @@ KML.writePolyStyle_ = function(node, style, objectStack) {
  */
 KML.writeScaleTextNode_ = function(node, scale) {
   // the Math is to remove any excess decimals created by float arithmetic
-  _ol_format_XSD_.writeDecimalTextNode(node,
+  XSD.writeDecimalTextNode(node,
       Math.round(scale * 1e6) / 1e6);
 };
 
@@ -2675,13 +2675,13 @@ KML.ICON_SEQUENCE_ = _ol_xml_.makeStructureNS(
  */
 KML.ICON_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'href': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode)
+      'href': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
     }, _ol_xml_.makeStructureNS(
         KML.GX_NAMESPACE_URIS_, {
-          'x': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
-          'y': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
-          'w': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
-          'h': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode)
+          'x': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+          'y': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+          'w': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+          'h': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode)
         }));
 
 
@@ -2704,7 +2704,7 @@ KML.ICON_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
 KML.ICON_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
       'Icon': _ol_xml_.makeChildAppender(KML.writeIcon_),
-      'heading': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode),
+      'heading': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
       'hotSpot': _ol_xml_.makeChildAppender(KML.writeVec2_),
       'scale': _ol_xml_.makeChildAppender(KML.writeScaleTextNode_)
     });
@@ -2752,7 +2752,7 @@ KML.LINE_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
 KML.LINE_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
       'color': _ol_xml_.makeChildAppender(KML.writeColorTextNode_),
-      'width': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeDecimalTextNode)
+      'width': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode)
     });
 
 
@@ -2816,16 +2816,16 @@ KML.PLACEMARK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
           KML.writePrimitiveGeometry_),
       'Polygon': _ol_xml_.makeChildAppender(KML.writePolygon_),
       'Style': _ol_xml_.makeChildAppender(KML.writeStyle_),
-      'address': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+      'address': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'description': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeStringTextNode),
-      'name': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-      'open': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeBooleanTextNode),
+          XSD.writeStringTextNode),
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'open': _ol_xml_.makeChildAppender(XSD.writeBooleanTextNode),
       'phoneNumber': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeStringTextNode),
-      'styleUrl': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+          XSD.writeStringTextNode),
+      'styleUrl': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'visibility': _ol_xml_.makeChildAppender(
-          _ol_format_XSD_.writeBooleanTextNode)
+          XSD.writeBooleanTextNode)
     });
 
 
@@ -2847,9 +2847,9 @@ KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = _ol_xml_.makeStructureNS(
  */
 KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = _ol_xml_.makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'extrude': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeBooleanTextNode),
-      'tessellate': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeBooleanTextNode),
-      'altitudeMode': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
+      'extrude': _ol_xml_.makeChildAppender(XSD.writeBooleanTextNode),
+      'tessellate': _ol_xml_.makeChildAppender(XSD.writeBooleanTextNode),
+      'altitudeMode': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
       'coordinates': _ol_xml_.makeChildAppender(
           KML.writeCoordinatesTextNode_)
     });

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import XLink from '../format/XLink.js';
 import XML from '../format/XML.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import XSD from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -226,7 +226,7 @@ OWS.readServiceProvider_ = function(node, objectStack) {
  * @return {string|undefined} The value.
  */
 OWS.readValue_ = function(node, objectStack) {
-  return _ol_format_XSD_.readString(node);
+  return XSD.readString(node);
 };
 
 
@@ -265,14 +265,14 @@ OWS.PARSERS_ = _ol_xml_.makeStructureNS(
 OWS.ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
     OWS.NAMESPACE_URIS_, {
       'DeliveryPoint': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
-      'City': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+          XSD.readString),
+      'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'AdministrativeArea': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
-      'PostalCode': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Country': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+          XSD.readString),
+      'PostalCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'ElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     });
 
 
@@ -363,8 +363,8 @@ OWS.OPERATIONS_METADATA_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 OWS.PHONE_PARSERS_ = _ol_xml_.makeStructureNS(
     OWS.NAMESPACE_URIS_, {
-      'Voice': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Facsimile': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString)
+      'Voice': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Facsimile': _ol_xml_.makeObjectPropertySetter(XSD.readString)
     });
 
 
@@ -389,8 +389,8 @@ OWS.SERVICE_CONTACT_PARSERS_ =
     _ol_xml_.makeStructureNS(
         OWS.NAMESPACE_URIS_, {
           'IndividualName': _ol_xml_.makeObjectPropertySetter(
-              _ol_format_XSD_.readString),
-          'PositionName': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+              XSD.readString),
+          'PositionName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
           'ContactInfo': _ol_xml_.makeObjectPropertySetter(
               OWS.readContactInfo_)
         });
@@ -404,13 +404,13 @@ OWS.SERVICE_CONTACT_PARSERS_ =
 OWS.SERVICE_IDENTIFICATION_PARSERS_ =
     _ol_xml_.makeStructureNS(
         OWS.NAMESPACE_URIS_, {
-          'Abstract': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-          'AccessConstraints': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-          'Fees': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-          'Title': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+          'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+          'AccessConstraints': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+          'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+          'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
           'ServiceTypeVersion': _ol_xml_.makeObjectPropertySetter(
-              _ol_format_XSD_.readString),
-          'ServiceType': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString)
+              XSD.readString),
+          'ServiceType': _ol_xml_.makeObjectPropertySetter(XSD.readString)
         });
 
 
@@ -422,7 +422,7 @@ OWS.SERVICE_IDENTIFICATION_PARSERS_ =
 OWS.SERVICE_PROVIDER_PARSERS_ =
     _ol_xml_.makeStructureNS(
         OWS.NAMESPACE_URIS_, {
-          'ProviderName': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+          'ProviderName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
           'ProviderSite': _ol_xml_.makeObjectPropertySetter(XLink.readHref),
           'ServiceContact': _ol_xml_.makeObjectPropertySetter(
               OWS.readServiceContact_)

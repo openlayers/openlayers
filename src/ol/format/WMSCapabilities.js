@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import XLink from '../format/XLink.js';
 import XML from '../format/XML.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import XSD from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -84,15 +84,15 @@ WMSCapabilities.readAttribution_ = function(node, objectStack) {
  */
 WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
   var extent = [
-    _ol_format_XSD_.readDecimalString(node.getAttribute('minx')),
-    _ol_format_XSD_.readDecimalString(node.getAttribute('miny')),
-    _ol_format_XSD_.readDecimalString(node.getAttribute('maxx')),
-    _ol_format_XSD_.readDecimalString(node.getAttribute('maxy'))
+    XSD.readDecimalString(node.getAttribute('minx')),
+    XSD.readDecimalString(node.getAttribute('miny')),
+    XSD.readDecimalString(node.getAttribute('maxx')),
+    XSD.readDecimalString(node.getAttribute('maxy'))
   ];
 
   var resolutions = [
-    _ol_format_XSD_.readDecimalString(node.getAttribute('resx')),
-    _ol_format_XSD_.readDecimalString(node.getAttribute('resy'))
+    XSD.readDecimalString(node.getAttribute('resx')),
+    XSD.readDecimalString(node.getAttribute('resy'))
   ];
 
   return {
@@ -240,41 +240,41 @@ WMSCapabilities.readLayer_ = function(node, objectStack) {
     return undefined;
   }
   var queryable =
-        _ol_format_XSD_.readBooleanString(node.getAttribute('queryable'));
+        XSD.readBooleanString(node.getAttribute('queryable'));
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
   layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
-  var cascaded = _ol_format_XSD_.readNonNegativeIntegerString(
+  var cascaded = XSD.readNonNegativeIntegerString(
       node.getAttribute('cascaded'));
   if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
-  var opaque = _ol_format_XSD_.readBooleanString(node.getAttribute('opaque'));
+  var opaque = XSD.readBooleanString(node.getAttribute('opaque'));
   if (opaque === undefined) {
     opaque = parentLayerObject['opaque'];
   }
   layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
   var noSubsets =
-        _ol_format_XSD_.readBooleanString(node.getAttribute('noSubsets'));
+        XSD.readBooleanString(node.getAttribute('noSubsets'));
   if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
   var fixedWidth =
-        _ol_format_XSD_.readDecimalString(node.getAttribute('fixedWidth'));
+        XSD.readDecimalString(node.getAttribute('fixedWidth'));
   if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
   var fixedHeight =
-        _ol_format_XSD_.readDecimalString(node.getAttribute('fixedHeight'));
+        XSD.readDecimalString(node.getAttribute('fixedHeight'));
   if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
   }
@@ -314,12 +314,12 @@ WMSCapabilities.readDimension_ = function(node, objectStack) {
     'units': node.getAttribute('units'),
     'unitSymbol': node.getAttribute('unitSymbol'),
     'default': node.getAttribute('default'),
-    'multipleValues': _ol_format_XSD_.readBooleanString(
+    'multipleValues': XSD.readBooleanString(
         node.getAttribute('multipleValues')),
-    'nearestValue': _ol_format_XSD_.readBooleanString(
+    'nearestValue': XSD.readBooleanString(
         node.getAttribute('nearestValue')),
-    'current': _ol_format_XSD_.readBooleanString(node.getAttribute('current')),
-    'values': _ol_format_XSD_.readString(node)
+    'current': XSD.readBooleanString(node.getAttribute('current')),
+    'values': XSD.readString(node)
   };
   return dimensionObject;
 };
@@ -397,8 +397,8 @@ WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
         WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (formatOnlineresource) {
     var size = [
-      _ol_format_XSD_.readNonNegativeIntegerString(node.getAttribute('width')),
-      _ol_format_XSD_.readNonNegativeIntegerString(node.getAttribute('height'))
+      XSD.readNonNegativeIntegerString(node.getAttribute('width')),
+      XSD.readNonNegativeIntegerString(node.getAttribute('height'))
     ];
     formatOnlineresource['size'] = size;
     return formatOnlineresource;
@@ -513,24 +513,24 @@ WMSCapabilities.CAPABILITY_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.SERVICE_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Title': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Abstract': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'KeywordList': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readKeywordList_),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
           XLink.readHref),
       'ContactInformation': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readContactInformation_),
-      'Fees': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'AccessConstraints': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'LayerLimit': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MaxWidth': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger),
+          XSD.readNonNegativeInteger),
       'MaxHeight': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readNonNegativeInteger)
+          XSD.readNonNegativeInteger)
     });
 
 
@@ -544,15 +544,15 @@ WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = _ol_xml_.makeStructureNS(
       'ContactPersonPrimary': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readContactPersonPrimary_),
       'ContactPosition': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'ContactAddress': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readContactAddress_),
       'ContactVoiceTelephone': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'ContactFacsimileTelephone': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'ContactElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     });
 
 
@@ -564,9 +564,9 @@ WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = _ol_xml_.makeStructureNS(
 WMSCapabilities.CONTACT_PERSON_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
       'ContactPerson': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
+          XSD.readString),
       'ContactOrganization': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString)
+          XSD.readString)
     });
 
 
@@ -577,13 +577,13 @@ WMSCapabilities.CONTACT_PERSON_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'AddressType': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Address': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'City': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'AddressType': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'StateOrProvince': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readString),
-      'PostCode': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Country': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString)
+          XSD.readString),
+      'PostCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString)
     });
 
 
@@ -594,7 +594,7 @@ WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.EXCEPTION_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': _ol_xml_.makeArrayPusher(_ol_format_XSD_.readString)
+      'Format': _ol_xml_.makeArrayPusher(XSD.readString)
     });
 
 
@@ -605,12 +605,12 @@ WMSCapabilities.EXCEPTION_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Title': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Abstract': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'KeywordList': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readKeywordList_),
-      'CRS': _ol_xml_.makeObjectPropertyPusher(_ol_format_XSD_.readString),
+      'CRS': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
       'EX_GeographicBoundingBox': _ol_xml_.makeObjectPropertySetter(
           WMSCapabilities.readEXGeographicBoundingBox_),
       'BoundingBox': _ol_xml_.makeObjectPropertyPusher(
@@ -621,7 +621,7 @@ WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
           WMSCapabilities.readAttribution_),
       'AuthorityURL': _ol_xml_.makeObjectPropertyPusher(
           WMSCapabilities.readAuthorityURL_),
-      'Identifier': _ol_xml_.makeObjectPropertyPusher(_ol_format_XSD_.readString),
+      'Identifier': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
       'MetadataURL': _ol_xml_.makeObjectPropertyPusher(
           WMSCapabilities.readMetadataURL_),
       'DataURL': _ol_xml_.makeObjectPropertyPusher(
@@ -631,9 +631,9 @@ WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
       'Style': _ol_xml_.makeObjectPropertyPusher(
           WMSCapabilities.readStyle_),
       'MinScaleDenominator': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal),
+          XSD.readDecimal),
       'MaxScaleDenominator': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal),
+          XSD.readDecimal),
       'Layer': _ol_xml_.makeObjectPropertyPusher(
           WMSCapabilities.readLayer_)
     });
@@ -646,7 +646,7 @@ WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Title': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
           XLink.readHref),
       'LogoURL': _ol_xml_.makeObjectPropertySetter(
@@ -662,13 +662,13 @@ WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
 WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
     _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
       'westBoundLongitude': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal),
+          XSD.readDecimal),
       'eastBoundLongitude': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal),
+          XSD.readDecimal),
       'southBoundLatitude': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal),
+          XSD.readDecimal),
       'northBoundLatitude': _ol_xml_.makeObjectPropertySetter(
-          _ol_format_XSD_.readDecimal)
+          XSD.readDecimal)
     });
 
 
@@ -695,7 +695,7 @@ WMSCapabilities.REQUEST_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.OPERATIONTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': _ol_xml_.makeObjectPropertyPusher(_ol_format_XSD_.readString),
+      'Format': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
       'DCPType': _ol_xml_.makeObjectPropertyPusher(
           WMSCapabilities.readDCPType_)
     });
@@ -734,9 +734,9 @@ WMSCapabilities.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Title': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
-      'Abstract': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'LegendURL': _ol_xml_.makeObjectPropertyPusher(
           WMSCapabilities.readSizedFormatOnlineresource_),
       'StyleSheetURL': _ol_xml_.makeObjectPropertySetter(
@@ -753,7 +753,7 @@ WMSCapabilities.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
     _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': _ol_xml_.makeObjectPropertySetter(_ol_format_XSD_.readString),
+      'Format': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
           XLink.readHref)
     });
@@ -766,6 +766,6 @@ WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
  */
 WMSCapabilities.KEYWORDLIST_PARSERS_ = _ol_xml_.makeStructureNS(
     WMSCapabilities.NAMESPACE_URIS_, {
-      'Keyword': _ol_xml_.makeArrayPusher(_ol_format_XSD_.readString)
+      'Keyword': _ol_xml_.makeArrayPusher(XSD.readString)
     });
 export default WMSCapabilities;

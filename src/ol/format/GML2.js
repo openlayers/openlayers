@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {createOrUpdate} from '../extent.js';
 import FeatureFormat from '../format/Feature.js';
 import GMLBase from '../format/GMLBase.js';
-import _ol_format_XSD_ from '../format/XSD.js';
+import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
@@ -262,7 +262,7 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
       } else {
         if (!(key in context.serializers[featureNS])) {
           context.serializers[featureNS][key] = _ol_xml_.makeChildAppender(
-              _ol_format_XSD_.writeStringTextNode);
+              XSD.writeStringTextNode);
         }
       }
     }
@@ -365,7 +365,7 @@ GML2.prototype.writeCoordinates_ = function(node, value, objectStack) {
     point = points[i];
     parts[i] = this.getCoords_(point, srsName, hasZ);
   }
-  _ol_format_XSD_.writeStringTextNode(node, parts.join(' '));
+  XSD.writeStringTextNode(node, parts.join(' '));
 };
 
 
@@ -521,7 +521,7 @@ GML2.prototype.writePoint_ = function(node, geometry, objectStack) {
   node.appendChild(coordinates);
   var point = geometry.getCoordinates();
   var coord = this.getCoords_(point, srsName, hasZ);
-  _ol_format_XSD_.writeStringTextNode(coordinates, coord);
+  XSD.writeStringTextNode(coordinates, coord);
 };
 
 
@@ -773,8 +773,8 @@ GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  */
 GML2.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
-    'lowerCorner': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode),
-    'upperCorner': _ol_xml_.makeChildAppender(_ol_format_XSD_.writeStringTextNode)
+    'lowerCorner': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+    'upperCorner': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
   }
 };
 export default GML2;
