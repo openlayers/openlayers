@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -13,7 +13,7 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 var source = new _ol_source_Vector_({
   url: 'data/geojson/switzerland.geojson',
-  format: new _ol_format_GeoJSON_()
+  format: new GeoJSON()
 });
 var style = new _ol_style_Style_({
   fill: new _ol_style_Fill_({

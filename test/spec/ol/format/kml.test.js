@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_array_ from '../../../../src/ol/array.js';
-import _ol_format_GeoJSON_ from '../../../../src/ol/format/GeoJSON.js';
+import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import _ol_format_KML_ from '../../../../src/ol/format/KML.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -3230,7 +3230,7 @@ describe('ol.format.KML', function() {
       });
 
       it('feature must not have a properties property', function() {
-        var geojsonFormat = new _ol_format_GeoJSON_();
+        var geojsonFormat = new GeoJSON();
         features.forEach(function(feature) {
           var geojsonFeature = geojsonFormat.writeFeatureObject(feature);
           expect(geojsonFeature.properties).to.be(null);

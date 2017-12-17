@@ -1,5 +1,5 @@
 import _ol_featureloader_ from '../../../src/ol/featureloader.js';
-import _ol_format_GeoJSON_ from '../../../src/ol/format/GeoJSON.js';
+import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
 
 
@@ -13,7 +13,7 @@ describe('ol.featureloader', function() {
 
     beforeEach(function() {
       url = 'spec/ol/data/point.json';
-      format = new _ol_format_GeoJSON_();
+      format = new GeoJSON();
 
       source = new _ol_source_Vector_();
     });

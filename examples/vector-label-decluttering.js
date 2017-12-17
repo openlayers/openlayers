@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -61,7 +61,7 @@ var style = [countryStyle, labelStyle];
 var vectorLayer = new _ol_layer_Vector_({
   source: new _ol_source_Vector_({
     url: 'data/geojson/countries.geojson',
-    format: new _ol_format_GeoJSON_()
+    format: new GeoJSON()
   }),
   style: function(feature) {
     labelStyle.getText().setText(feature.get('name'));

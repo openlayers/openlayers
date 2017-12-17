@@ -1,7 +1,7 @@
 // NOCOMPILE
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_format_GeoJSON_ from '../src/ol/format/GeoJSON.js';
+import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -75,7 +75,7 @@ fetch(url).then(function(response) {
     debug: 1
   });
   var vectorSource = new _ol_source_VectorTile_({
-    format: new _ol_format_GeoJSON_(),
+    format: new GeoJSON(),
     tileLoadFunction: function(tile) {
       var format = tile.getFormat();
       var tileCoord = tile.getTileCoord();
