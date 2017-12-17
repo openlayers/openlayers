@@ -42,7 +42,6 @@
     "coveralls": "3.0.0",
     "eslint": "4.13.1",
     "eslint-config-openlayers": "7.0.0",
-    "eslint-plugin-openlayers-internal": "^3.1.0",
     "expect.js": "0.3.1",
     "front-matter": "^2.1.2",
     "fs-extra": "5.0.0",
@@ -90,19 +89,8 @@
       "goog": false,
       "proj4": false
     },
-    "plugins": [
-      "openlayers-internal"
-    ],
     "rules": {
       "no-constant-condition": 0,
-      "openlayers-internal/enum": 2,
-      "openlayers-internal/no-duplicate-requires": 2,
-      "openlayers-internal/no-missing-requires": 2,
-      "openlayers-internal/no-unused-requires": 2,
-      "openlayers-internal/one-provide": 2,
-      "openlayers-internal/requires-first": 2,
-      "openlayers-internal/valid-provide": 2,
-      "openlayers-internal/valid-requires": 2,
       "indent": [
         2,
         2,
