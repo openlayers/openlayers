@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_format_GML2_ from '../format/GML2.js';
-import _ol_format_GML3_ from '../format/GML3.js';
+import GML3 from '../format/GML3.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_filter_ from '../format/filter.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
@@ -47,7 +47,7 @@ var _ol_format_WFS_ = function(opt_options) {
    * @type {ol.format.GMLBase}
    */
   this.gmlFormat_ = options.gmlFormat ?
-    options.gmlFormat : new _ol_format_GML3_();
+    options.gmlFormat : new GML3();
 
   /**
    * @private
@@ -403,7 +403,7 @@ _ol_format_WFS_.writeFeature_ = function(node, feature, objectStack) {
   if (gmlVersion === 2) {
     _ol_format_GML2_.prototype.writeFeatureElement(child, feature, objectStack);
   } else {
-    _ol_format_GML3_.prototype.writeFeatureElement(child, feature, objectStack);
+    GML3.prototype.writeFeatureElement(child, feature, objectStack);
   }
 };
 
@@ -527,7 +527,7 @@ _ol_format_WFS_.writeProperty_ = function(node, pair, objectStack) {
         _ol_format_GML2_.prototype.writeGeometryElement(value,
             pair.value, objectStack);
       } else {
-        _ol_format_GML3_.prototype.writeGeometryElement(value,
+        GML3.prototype.writeGeometryElement(value,
             pair.value, objectStack);
       }
     } else {
@@ -641,7 +641,7 @@ _ol_format_WFS_.writeBboxFilter_ = function(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
-  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.extent, objectStack);
+  GML3.prototype.writeGeometryElement(node, filter.extent, objectStack);
 };
 
 
@@ -656,7 +656,7 @@ _ol_format_WFS_.writeContainsFilter_ = function(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
-  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 };
 
 
@@ -671,7 +671,7 @@ _ol_format_WFS_.writeIntersectsFilter_ = function(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
-  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 };
 
 
@@ -686,7 +686,7 @@ _ol_format_WFS_.writeWithinFilter_ = function(node, filter, objectStack) {
   context['srsName'] = filter.srsName;
 
   _ol_format_WFS_.writeOgcPropertyName_(node, filter.geometryName);
-  _ol_format_GML3_.prototype.writeGeometryElement(node, filter.geometry, objectStack);
+  GML3.prototype.writeGeometryElement(node, filter.geometry, objectStack);
 };
 
 
