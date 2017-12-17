@@ -5,7 +5,7 @@
 
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
-import _ol_ext_PBF_ from 'pbf';
+import PBF from 'pbf';
 import _ol_format_Feature_ from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -356,7 +356,7 @@ _ol_format_MVT_.prototype.getType = function() {
 _ol_format_MVT_.prototype.readFeatures = function(source, opt_options) {
   var layers = this.layers_;
 
-  var pbf = new _ol_ext_PBF_(/** @type {ArrayBuffer} */ (source));
+  var pbf = new PBF(/** @type {ArrayBuffer} */ (source));
   var pbfLayers = pbf.readFields(_ol_format_MVT_.pbfReaders_.layers, {});
   /** @type {Array.<ol.Feature|ol.render.Feature>} */
   var features = [];

@@ -7,7 +7,7 @@ import _ol_TileState_ from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import EventType from '../../events/EventType.js';
-import _ol_ext_rbush_ from 'rbush';
+import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
 import {equivalent as equivalentProjection} from '../../proj.js';
@@ -40,7 +40,7 @@ var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
    * Declutter tree.
    * @private
      */
-  this.declutterTree_ = layer.getDeclutter() ? _ol_ext_rbush_(9) : null;
+  this.declutterTree_ = layer.getDeclutter() ? rbush(9) : null;
 
   /**
    * @private

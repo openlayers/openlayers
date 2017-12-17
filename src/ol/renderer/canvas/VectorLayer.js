@@ -7,7 +7,7 @@ import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import EventType from '../../events/EventType.js';
-import _ol_ext_rbush_ from 'rbush';
+import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
@@ -30,8 +30,7 @@ var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
    * Declutter tree.
    * @private
    */
-  this.declutterTree_ = vectorLayer.getDeclutter() ?
-    _ol_ext_rbush_(9) : null;
+  this.declutterTree_ = vectorLayer.getDeclutter() ? rbush(9) : null;
 
   /**
    * @private
