@@ -5,7 +5,7 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import IGC from '../src/ol/format/IGC.js';
 import KML from '../src/ol/format/KML.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
-import _ol_interaction_ from '../src/ol/interaction.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -94,7 +94,7 @@ var dragAndDropInteraction = new DragAndDrop({
 });
 
 var map = new _ol_Map_({
-  interactions: _ol_interaction_.defaults().extend([dragAndDropInteraction]),
+  interactions: defaultInteractions().extend([dragAndDropInteraction]),
   layers: [
     new _ol_layer_Tile_({
       source: new _ol_source_BingMaps_({

@@ -5,7 +5,7 @@ import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import Polygon from '../src/ol/geom/Polygon.js';
-import _ol_interaction_ from '../src/ol/interaction.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -145,7 +145,7 @@ var polygonFeature = new _ol_Feature_(
 
 
 var map = new _ol_Map_({
-  interactions: _ol_interaction_.defaults().extend([new app.Drag()]),
+  interactions: defaultInteractions().extend([new app.Drag()]),
   layers: [
     new _ol_layer_Tile_({
       source: new _ol_source_TileJSON_({

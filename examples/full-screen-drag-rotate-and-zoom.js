@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import FullScreen from '../src/ol/control/FullScreen.js';
-import _ol_interaction_ from '../src/ol/interaction.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragRotateAndZoom from '../src/ol/interaction/DragRotateAndZoom.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -12,7 +12,7 @@ var map = new _ol_Map_({
   controls: defaultControls().extend([
     new FullScreen()
   ]),
-  interactions: _ol_interaction_.defaults().extend([
+  interactions: defaultInteractions().extend([
     new DragRotateAndZoom()
   ]),
   layers: [
