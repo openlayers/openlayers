@@ -16,7 +16,7 @@ import PriorityQueue from './structs/PriorityQueue.js';
  *     Function called on each tile change event.
  * @struct
  */
-var _ol_TileQueue_ = function(tilePriorityFunction, tileChangeCallback) {
+var TileQueue = function(tilePriorityFunction, tileChangeCallback) {
 
   PriorityQueue.call(
       this,
@@ -55,13 +55,13 @@ var _ol_TileQueue_ = function(tilePriorityFunction, tileChangeCallback) {
 
 };
 
-inherits(_ol_TileQueue_, PriorityQueue);
+inherits(TileQueue, PriorityQueue);
 
 
 /**
  * @inheritDoc
  */
-_ol_TileQueue_.prototype.enqueue = function(element) {
+TileQueue.prototype.enqueue = function(element) {
   var added = PriorityQueue.prototype.enqueue.call(this, element);
   if (added) {
     var tile = element[0];
@@ -75,7 +75,7 @@ _ol_TileQueue_.prototype.enqueue = function(element) {
 /**
  * @return {number} Number of tiles loading.
  */
-_ol_TileQueue_.prototype.getTilesLoading = function() {
+TileQueue.prototype.getTilesLoading = function() {
   return this.tilesLoading_;
 };
 
@@ -84,7 +84,7 @@ _ol_TileQueue_.prototype.getTilesLoading = function() {
  * @param {ol.events.Event} event Event.
  * @protected
  */
-_ol_TileQueue_.prototype.handleTileChange = function(event) {
+TileQueue.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   var state = tile.getState();
   if (state === _ol_TileState_.LOADED || state === _ol_TileState_.ERROR ||
@@ -105,7 +105,7 @@ _ol_TileQueue_.prototype.handleTileChange = function(event) {
  * @param {number} maxTotalLoading Maximum number tiles to load simultaneously.
  * @param {number} maxNewLoads Maximum number of new tiles to load.
  */
-_ol_TileQueue_.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
+TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var newLoads = 0;
   var abortedTiles = false;
   var state, tile, tileKey;
@@ -129,4 +129,4 @@ _ol_TileQueue_.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) 
     this.tileChangeCallback_();
   }
 };
-export default _ol_TileQueue_;
+export default TileQueue;

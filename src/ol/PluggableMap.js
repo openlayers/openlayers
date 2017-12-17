@@ -12,7 +12,7 @@ import _ol_MapEventType_ from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
 import _ol_ObjectEventType_ from './ObjectEventType.js';
-import _ol_TileQueue_ from './TileQueue.js';
+import TileQueue from './TileQueue.js';
 import _ol_View_ from './View.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_asserts_ from './asserts.js';
@@ -325,7 +325,7 @@ var _ol_PluggableMap_ = function(options) {
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new _ol_TileQueue_(
+  this.tileQueue_ = new TileQueue(
       this.getTilePriority.bind(this),
       this.handleTileChange_.bind(this));
 
