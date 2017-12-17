@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {boundingExtent} from '../extent.js';
-import _ol_format_OWS_ from '../format/OWS.js';
+import OWS from '../format/OWS.js';
 import _ol_format_XLink_ from '../format/XLink.js';
 import _ol_format_XML_ from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
@@ -24,7 +24,7 @@ var _ol_format_WMTSCapabilities_ = function() {
    * @type {ol.format.OWS}
    * @private
    */
-  this.owsParser_ = new _ol_format_OWS_();
+  this.owsParser_ = new OWS();
 };
 
 inherits(_ol_format_WMTSCapabilities_, _ol_format_XML_);

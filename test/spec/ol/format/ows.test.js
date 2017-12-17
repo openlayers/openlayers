@@ -1,10 +1,10 @@
-import _ol_format_OWS_ from '../../../../src/ol/format/OWS.js';
+import OWS from '../../../../src/ol/format/OWS.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
 
 describe('ol.format.OWS 1.1', function() {
 
-  var parser = new _ol_format_OWS_();
+  var parser = new OWS();
 
   it('should read ServiceProvider tag properly', function() {
     var doc = _ol_xml_.parse(
