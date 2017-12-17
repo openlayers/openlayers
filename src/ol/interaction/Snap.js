@@ -15,7 +15,7 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Vector_ from '../source/Vector.js';
 import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
-import _ol_structs_RBush_ from '../structs/RBush.js';
+import RBush from '../structs/RBush.js';
 
 /**
  * @classdesc
@@ -128,7 +128,7 @@ var _ol_interaction_Snap_ = function(opt_options) {
   * @type {ol.structs.RBush.<ol.SnapSegmentDataType>}
   * @private
   */
-  this.rBush_ = new _ol_structs_RBush_();
+  this.rBush_ = new RBush();
 
 
   /**

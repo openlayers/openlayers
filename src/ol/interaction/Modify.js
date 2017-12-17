@@ -21,7 +21,7 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_source_Vector_ from '../source/Vector.js';
 import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
-import _ol_structs_RBush_ from '../structs/RBush.js';
+import RBush from '../structs/RBush.js';
 import _ol_style_Style_ from '../style/Style.js';
 
 /**
@@ -123,7 +123,7 @@ var _ol_interaction_Modify_ = function(options) {
    * @type {ol.structs.RBush.<ol.ModifySegmentDataType>}
    * @private
    */
-  this.rBush_ = new _ol_structs_RBush_();
+  this.rBush_ = new RBush();
 
   /**
    * @type {number}

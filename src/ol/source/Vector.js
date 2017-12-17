@@ -19,7 +19,7 @@ import _ol_obj_ from '../obj.js';
 import _ol_source_Source_ from '../source/Source.js';
 import _ol_source_State_ from '../source/State.js';
 import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
-import _ol_structs_RBush_ from '../structs/RBush.js';
+import RBush from '../structs/RBush.js';
 
 /**
  * @classdesc
@@ -90,13 +90,13 @@ var _ol_source_Vector_ = function(opt_options) {
    * @private
    * @type {ol.structs.RBush.<ol.Feature>}
    */
-  this.featuresRtree_ = useSpatialIndex ? new _ol_structs_RBush_() : null;
+  this.featuresRtree_ = useSpatialIndex ? new RBush() : null;
 
   /**
    * @private
    * @type {ol.structs.RBush.<{extent: ol.Extent}>}
    */
-  this.loadedExtentsRtree_ = new _ol_structs_RBush_();
+  this.loadedExtentsRtree_ = new RBush();
 
   /**
    * @private
