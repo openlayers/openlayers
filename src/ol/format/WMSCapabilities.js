@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import XLink from '../format/XLink.js';
-import _ol_format_XML_ from '../format/XML.js';
+import XML from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
 
@@ -17,7 +17,7 @@ import _ol_xml_ from '../xml.js';
  */
 var WMSCapabilities = function() {
 
-  _ol_format_XML_.call(this);
+  XML.call(this);
 
   /**
    * @type {string|undefined}
@@ -25,7 +25,7 @@ var WMSCapabilities = function() {
   this.version = undefined;
 };
 
-inherits(WMSCapabilities, _ol_format_XML_);
+inherits(WMSCapabilities, XML);
 
 
 /**

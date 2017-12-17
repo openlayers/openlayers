@@ -11,7 +11,7 @@ import _ol_xml_ from '../xml.js';
  * @abstract
  * @struct
  */
-var _ol_format_XML_ = function() {
+var XML = function() {
 };
 
 
@@ -19,7 +19,7 @@ var _ol_format_XML_ = function() {
  * @param {Document|Node|string} source Source.
  * @return {Object} The parsed result.
  */
-_ol_format_XML_.prototype.read = function(source) {
+XML.prototype.read = function(source) {
   if (_ol_xml_.isDocument(source)) {
     return this.readFromDocument(/** @type {Document} */ (source));
   } else if (_ol_xml_.isNode(source)) {
@@ -38,7 +38,7 @@ _ol_format_XML_.prototype.read = function(source) {
  * @param {Document} doc Document.
  * @return {Object} Object
  */
-_ol_format_XML_.prototype.readFromDocument = function(doc) {};
+XML.prototype.readFromDocument = function(doc) {};
 
 
 /**
@@ -46,5 +46,5 @@ _ol_format_XML_.prototype.readFromDocument = function(doc) {};
  * @param {Node} node Node.
  * @return {Object} Object
  */
-_ol_format_XML_.prototype.readFromNode = function(node) {};
-export default _ol_format_XML_;
+XML.prototype.readFromNode = function(node) {};
+export default XML;

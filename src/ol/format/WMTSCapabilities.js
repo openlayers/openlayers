@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {boundingExtent} from '../extent.js';
 import OWS from '../format/OWS.js';
 import XLink from '../format/XLink.js';
-import _ol_format_XML_ from '../format/XML.js';
+import XML from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
 
@@ -18,7 +18,7 @@ import _ol_xml_ from '../xml.js';
  * @api
  */
 var _ol_format_WMTSCapabilities_ = function() {
-  _ol_format_XML_.call(this);
+  XML.call(this);
 
   /**
    * @type {ol.format.OWS}
@@ -27,7 +27,7 @@ var _ol_format_WMTSCapabilities_ = function() {
   this.owsParser_ = new OWS();
 };
 
-inherits(_ol_format_WMTSCapabilities_, _ol_format_XML_);
+inherits(_ol_format_WMTSCapabilities_, XML);
 
 
 /**

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import XLink from '../format/XLink.js';
-import _ol_format_XML_ from '../format/XML.js';
+import XML from '../format/XML.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import _ol_xml_ from '../xml.js';
 
@@ -12,10 +12,10 @@ import _ol_xml_ from '../xml.js';
  * @extends {ol.format.XML}
  */
 var OWS = function() {
-  _ol_format_XML_.call(this);
+  XML.call(this);
 };
 
-inherits(OWS, _ol_format_XML_);
+inherits(OWS, XML);
 
 
 /**
