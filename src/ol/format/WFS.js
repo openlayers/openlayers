@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
-import _ol_format_GMLBase_ from '../format/GMLBase.js';
+import GMLBase from '../format/GMLBase.js';
 import _ol_format_filter_ from '../format/filter.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
@@ -156,9 +156,9 @@ _ol_format_WFS_.prototype.readFeaturesFromNode = function(node, opt_options) {
   _ol_obj_.assign(context, this.getReadOptions(node,
       opt_options ? opt_options : {}));
   var objectStack = [context];
-  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[_ol_format_GMLBase_.GMLNS][
+  this.gmlFormat_.FEATURE_COLLECTION_PARSERS[GMLBase.GMLNS][
       'featureMember'] =
-      _ol_xml_.makeArrayPusher(_ol_format_GMLBase_.prototype.readFeaturesInternal);
+      _ol_xml_.makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
   var features = _ol_xml_.pushParseAndPop([],
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       objectStack, this.gmlFormat_);
@@ -238,7 +238,7 @@ _ol_format_WFS_.prototype.readFeatureCollectionMetadataFromDocument = function(d
 _ol_format_WFS_.FEATURE_COLLECTION_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'boundedBy': _ol_xml_.makeObjectPropertySetter(
-        _ol_format_GMLBase_.prototype.readGeometryElement, 'bounds')
+        GMLBase.prototype.readGeometryElement, 'bounds')
   }
 };
 
@@ -702,15 +702,15 @@ _ol_format_WFS_.writeDuringFilter_ = function(node, filter, objectStack) {
   _ol_format_XSD_.writeStringTextNode(valueReference, filter.propertyName);
   node.appendChild(valueReference);
 
-  var timePeriod = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'TimePeriod');
+  var timePeriod = _ol_xml_.createElementNS(GMLBase.GMLNS, 'TimePeriod');
 
   node.appendChild(timePeriod);
 
-  var begin = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'begin');
+  var begin = _ol_xml_.createElementNS(GMLBase.GMLNS, 'begin');
   timePeriod.appendChild(begin);
   _ol_format_WFS_.writeTimeInstant_(begin, filter.begin);
 
-  var end = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'end');
+  var end = _ol_xml_.createElementNS(GMLBase.GMLNS, 'end');
   timePeriod.appendChild(end);
   _ol_format_WFS_.writeTimeInstant_(end, filter.end);
 };
@@ -855,10 +855,10 @@ _ol_format_WFS_.writeOgcLiteral_ = function(node, value) {
  * @private
  */
 _ol_format_WFS_.writeTimeInstant_ = function(node, time) {
-  var timeInstant = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'TimeInstant');
+  var timeInstant = _ol_xml_.createElementNS(GMLBase.GMLNS, 'TimeInstant');
   node.appendChild(timeInstant);
 
-  var timePosition = _ol_xml_.createElementNS(_ol_format_GMLBase_.GMLNS, 'timePosition');
+  var timePosition = _ol_xml_.createElementNS(GMLBase.GMLNS, 'timePosition');
   timeInstant.appendChild(timePosition);
   _ol_format_XSD_.writeStringTextNode(timePosition, time);
 };

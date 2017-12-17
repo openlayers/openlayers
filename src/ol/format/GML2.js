@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {createOrUpdate} from '../extent.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_GMLBase_ from '../format/GMLBase.js';
+import GMLBase from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import _ol_obj_ from '../obj.js';
@@ -25,11 +25,11 @@ var GML2 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (opt_options ? opt_options : {});
 
-  _ol_format_GMLBase_.call(this, options);
+  GMLBase.call(this, options);
 
-  this.FEATURE_COLLECTION_PARSERS[_ol_format_GMLBase_.GMLNS][
+  this.FEATURE_COLLECTION_PARSERS[GMLBase.GMLNS][
       'featureMember'] =
-      _ol_xml_.makeArrayPusher(_ol_format_GMLBase_.prototype.readFeaturesInternal);
+      _ol_xml_.makeArrayPusher(GMLBase.prototype.readFeaturesInternal);
 
   /**
    * @inheritDoc
@@ -39,7 +39,7 @@ var GML2 = function(opt_options) {
 
 };
 
-inherits(GML2, _ol_format_GMLBase_);
+inherits(GML2, GMLBase);
 
 
 /**
@@ -47,7 +47,7 @@ inherits(GML2, _ol_format_GMLBase_);
  * @type {string}
  * @private
  */
-GML2.schemaLocation_ = _ol_format_GMLBase_.GMLNS +
+GML2.schemaLocation_ = GMLBase.GMLNS +
     ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 
@@ -182,18 +182,18 @@ GML2.prototype.BOX_PARSERS_ = {
  */
 GML2.prototype.GEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': _ol_xml_.makeReplacer(_ol_format_GMLBase_.prototype.readPoint),
+    'Point': _ol_xml_.makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiPoint),
+        GMLBase.prototype.readMultiPoint),
     'LineString': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readLineString),
+        GMLBase.prototype.readLineString),
     'MultiLineString': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiLineString),
+        GMLBase.prototype.readMultiLineString),
     'LinearRing': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readLinearRing),
-    'Polygon': _ol_xml_.makeReplacer(_ol_format_GMLBase_.prototype.readPolygon),
+        GMLBase.prototype.readLinearRing),
+    'Polygon': _ol_xml_.makeReplacer(GMLBase.prototype.readPolygon),
     'MultiPolygon': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiPolygon),
+        GMLBase.prototype.readMultiPolygon),
     'Box': _ol_xml_.makeReplacer(GML2.prototype.readBox_)
   }
 };

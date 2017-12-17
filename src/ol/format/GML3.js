@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import {createOrUpdate} from '../extent.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_GMLBase_ from '../format/GMLBase.js';
+import GMLBase from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -33,7 +33,7 @@ var GML3 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (opt_options ? opt_options : {});
 
-  _ol_format_GMLBase_.call(this, options);
+  GMLBase.call(this, options);
 
   /**
    * @private
@@ -76,7 +76,7 @@ var GML3 = function(opt_options) {
 
 };
 
-inherits(GML3, _ol_format_GMLBase_);
+inherits(GML3, GMLBase);
 
 
 /**
@@ -84,7 +84,7 @@ inherits(GML3, _ol_format_GMLBase_);
  * @type {string}
  * @private
  */
-GML3.schemaLocation_ = _ol_format_GMLBase_.GMLNS +
+GML3.schemaLocation_ = GMLBase.GMLNS +
     ' http://schemas.opengis.net/gml/3.1.1/profiles/gmlsfProfile/' +
     '1.0.0/gmlsf.xsd';
 
@@ -423,18 +423,18 @@ GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
  */
 GML3.prototype.GEOMETRY_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': _ol_xml_.makeReplacer(_ol_format_GMLBase_.prototype.readPoint),
+    'Point': _ol_xml_.makeReplacer(GMLBase.prototype.readPoint),
     'MultiPoint': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiPoint),
+        GMLBase.prototype.readMultiPoint),
     'LineString': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readLineString),
+        GMLBase.prototype.readLineString),
     'MultiLineString': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiLineString),
+        GMLBase.prototype.readMultiLineString),
     'LinearRing': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readLinearRing),
-    'Polygon': _ol_xml_.makeReplacer(_ol_format_GMLBase_.prototype.readPolygon),
+        GMLBase.prototype.readLinearRing),
+    'Polygon': _ol_xml_.makeReplacer(GMLBase.prototype.readPolygon),
     'MultiPolygon': _ol_xml_.makeReplacer(
-        _ol_format_GMLBase_.prototype.readMultiPolygon),
+        GMLBase.prototype.readMultiPolygon),
     'Surface': _ol_xml_.makeReplacer(GML3.prototype.readSurface_),
     'MultiSurface': _ol_xml_.makeReplacer(
         GML3.prototype.readMultiSurface_),
@@ -484,7 +484,7 @@ GML3.prototype.MULTISURFACE_PARSERS_ = {
 GML3.prototype.CURVEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
     'LineString': _ol_xml_.makeArrayPusher(
-        _ol_format_GMLBase_.prototype.readLineString),
+        GMLBase.prototype.readLineString),
     'Curve': _ol_xml_.makeArrayPusher(GML3.prototype.readCurve_)
   }
 };
@@ -497,7 +497,7 @@ GML3.prototype.CURVEMEMBER_PARSERS_ = {
  */
 GML3.prototype.SURFACEMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Polygon': _ol_xml_.makeArrayPusher(_ol_format_GMLBase_.prototype.readPolygon),
+    'Polygon': _ol_xml_.makeArrayPusher(GMLBase.prototype.readPolygon),
     'Surface': _ol_xml_.makeArrayPusher(GML3.prototype.readSurface_)
   }
 };
