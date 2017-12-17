@@ -26,7 +26,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
  * @param {olx.format.WKTOptions=} opt_options Options.
  * @api
  */
-var _ol_format_WKT_ = function(opt_options) {
+var WKT = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -42,35 +42,35 @@ var _ol_format_WKT_ = function(opt_options) {
 
 };
 
-inherits(_ol_format_WKT_, TextFeature);
+inherits(WKT, TextFeature);
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_format_WKT_.EMPTY = 'EMPTY';
+WKT.EMPTY = 'EMPTY';
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_format_WKT_.Z = 'Z';
+WKT.Z = 'Z';
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_format_WKT_.M = 'M';
+WKT.M = 'M';
 
 
 /**
  * @const
  * @type {string}
  */
-_ol_format_WKT_.ZM = 'ZM';
+WKT.ZM = 'ZM';
 
 
 /**
@@ -78,7 +78,7 @@ _ol_format_WKT_.ZM = 'ZM';
  * @return {string} Coordinates part of Point as WKT.
  * @private
  */
-_ol_format_WKT_.encodePointGeometry_ = function(geom) {
+WKT.encodePointGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   if (coordinates.length === 0) {
     return '';
@@ -92,11 +92,11 @@ _ol_format_WKT_.encodePointGeometry_ = function(geom) {
  * @return {string} Coordinates part of MultiPoint as WKT.
  * @private
  */
-_ol_format_WKT_.encodeMultiPointGeometry_ = function(geom) {
+WKT.encodeMultiPointGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPoints();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + _ol_format_WKT_.encodePointGeometry_(components[i]) + ')');
+    array.push('(' + WKT.encodePointGeometry_(components[i]) + ')');
   }
   return array.join(',');
 };
@@ -107,11 +107,11 @@ _ol_format_WKT_.encodeMultiPointGeometry_ = function(geom) {
  * @return {string} Coordinates part of GeometryCollection as WKT.
  * @private
  */
-_ol_format_WKT_.encodeGeometryCollectionGeometry_ = function(geom) {
+WKT.encodeGeometryCollectionGeometry_ = function(geom) {
   var array = [];
   var geoms = geom.getGeometries();
   for (var i = 0, ii = geoms.length; i < ii; ++i) {
-    array.push(_ol_format_WKT_.encode_(geoms[i]));
+    array.push(WKT.encode_(geoms[i]));
   }
   return array.join(',');
 };
@@ -122,7 +122,7 @@ _ol_format_WKT_.encodeGeometryCollectionGeometry_ = function(geom) {
  * @return {string} Coordinates part of LineString as WKT.
  * @private
  */
-_ol_format_WKT_.encodeLineStringGeometry_ = function(geom) {
+WKT.encodeLineStringGeometry_ = function(geom) {
   var coordinates = geom.getCoordinates();
   var array = [];
   for (var i = 0, ii = coordinates.length; i < ii; ++i) {
@@ -137,11 +137,11 @@ _ol_format_WKT_.encodeLineStringGeometry_ = function(geom) {
  * @return {string} Coordinates part of MultiLineString as WKT.
  * @private
  */
-_ol_format_WKT_.encodeMultiLineStringGeometry_ = function(geom) {
+WKT.encodeMultiLineStringGeometry_ = function(geom) {
   var array = [];
   var components = geom.getLineStrings();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + _ol_format_WKT_.encodeLineStringGeometry_(
+    array.push('(' + WKT.encodeLineStringGeometry_(
         components[i]) + ')');
   }
   return array.join(',');
@@ -153,11 +153,11 @@ _ol_format_WKT_.encodeMultiLineStringGeometry_ = function(geom) {
  * @return {string} Coordinates part of Polygon as WKT.
  * @private
  */
-_ol_format_WKT_.encodePolygonGeometry_ = function(geom) {
+WKT.encodePolygonGeometry_ = function(geom) {
   var array = [];
   var rings = geom.getLinearRings();
   for (var i = 0, ii = rings.length; i < ii; ++i) {
-    array.push('(' + _ol_format_WKT_.encodeLineStringGeometry_(
+    array.push('(' + WKT.encodeLineStringGeometry_(
         rings[i]) + ')');
   }
   return array.join(',');
@@ -169,11 +169,11 @@ _ol_format_WKT_.encodePolygonGeometry_ = function(geom) {
  * @return {string} Coordinates part of MultiPolygon as WKT.
  * @private
  */
-_ol_format_WKT_.encodeMultiPolygonGeometry_ = function(geom) {
+WKT.encodeMultiPolygonGeometry_ = function(geom) {
   var array = [];
   var components = geom.getPolygons();
   for (var i = 0, ii = components.length; i < ii; ++i) {
-    array.push('(' + _ol_format_WKT_.encodePolygonGeometry_(
+    array.push('(' + WKT.encodePolygonGeometry_(
         components[i]) + ')');
   }
   return array.join(',');
@@ -184,14 +184,14 @@ _ol_format_WKT_.encodeMultiPolygonGeometry_ = function(geom) {
  * @return {string} Potential dimensional information for WKT type.
  * @private
  */
-_ol_format_WKT_.encodeGeometryLayout_ = function(geom) {
+WKT.encodeGeometryLayout_ = function(geom) {
   var layout = geom.getLayout();
   var dimInfo = '';
   if (layout === GeometryLayout.XYZ || layout === GeometryLayout.XYZM) {
-    dimInfo += _ol_format_WKT_.Z;
+    dimInfo += WKT.Z;
   }
   if (layout === GeometryLayout.XYM || layout === GeometryLayout.XYZM) {
-    dimInfo += _ol_format_WKT_.M;
+    dimInfo += WKT.M;
   }
   return dimInfo;
 };
@@ -203,19 +203,19 @@ _ol_format_WKT_.encodeGeometryLayout_ = function(geom) {
  * @return {string} WKT string for the geometry.
  * @private
  */
-_ol_format_WKT_.encode_ = function(geom) {
+WKT.encode_ = function(geom) {
   var type = geom.getType();
-  var geometryEncoder = _ol_format_WKT_.GeometryEncoder_[type];
+  var geometryEncoder = WKT.GeometryEncoder_[type];
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
   if (geom instanceof SimpleGeometry) {
-    var dimInfo = _ol_format_WKT_.encodeGeometryLayout_(geom);
+    var dimInfo = WKT.encodeGeometryLayout_(geom);
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
     }
   }
   if (enc.length === 0) {
-    return type + ' ' + _ol_format_WKT_.EMPTY;
+    return type + ' ' + WKT.EMPTY;
   }
   return type + '(' + enc + ')';
 };
@@ -226,14 +226,14 @@ _ol_format_WKT_.encode_ = function(geom) {
  * @type {Object.<string, function(ol.geom.Geometry): string>}
  * @private
  */
-_ol_format_WKT_.GeometryEncoder_ = {
-  'Point': _ol_format_WKT_.encodePointGeometry_,
-  'LineString': _ol_format_WKT_.encodeLineStringGeometry_,
-  'Polygon': _ol_format_WKT_.encodePolygonGeometry_,
-  'MultiPoint': _ol_format_WKT_.encodeMultiPointGeometry_,
-  'MultiLineString': _ol_format_WKT_.encodeMultiLineStringGeometry_,
-  'MultiPolygon': _ol_format_WKT_.encodeMultiPolygonGeometry_,
-  'GeometryCollection': _ol_format_WKT_.encodeGeometryCollectionGeometry_
+WKT.GeometryEncoder_ = {
+  'Point': WKT.encodePointGeometry_,
+  'LineString': WKT.encodeLineStringGeometry_,
+  'Polygon': WKT.encodePolygonGeometry_,
+  'MultiPoint': WKT.encodeMultiPointGeometry_,
+  'MultiLineString': WKT.encodeMultiLineStringGeometry_,
+  'MultiPolygon': WKT.encodeMultiPolygonGeometry_,
+  'GeometryCollection': WKT.encodeGeometryCollectionGeometry_
 };
 
 
@@ -244,9 +244,9 @@ _ol_format_WKT_.GeometryEncoder_ = {
  *     The geometry created.
  * @private
  */
-_ol_format_WKT_.prototype.parse_ = function(wkt) {
-  var lexer = new _ol_format_WKT_.Lexer(wkt);
-  var parser = new _ol_format_WKT_.Parser(lexer);
+WKT.prototype.parse_ = function(wkt) {
+  var lexer = new WKT.Lexer(wkt);
+  var parser = new WKT.Parser(lexer);
   return parser.parse();
 };
 
@@ -260,13 +260,13 @@ _ol_format_WKT_.prototype.parse_ = function(wkt) {
  * @return {ol.Feature} Feature.
  * @api
  */
-_ol_format_WKT_.prototype.readFeature;
+WKT.prototype.readFeature;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WKT_.prototype.readFeatureFromText = function(text, opt_options) {
+WKT.prototype.readFeatureFromText = function(text, opt_options) {
   var geom = this.readGeometryFromText(text, opt_options);
   if (geom) {
     var feature = new _ol_Feature_();
@@ -286,13 +286,13 @@ _ol_format_WKT_.prototype.readFeatureFromText = function(text, opt_options) {
  * @return {Array.<ol.Feature>} Features.
  * @api
  */
-_ol_format_WKT_.prototype.readFeatures;
+WKT.prototype.readFeatures;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WKT_.prototype.readFeaturesFromText = function(text, opt_options) {
+WKT.prototype.readFeaturesFromText = function(text, opt_options) {
   var geometries = [];
   var geometry = this.readGeometryFromText(text, opt_options);
   if (this.splitCollection_ &&
@@ -321,13 +321,13 @@ _ol_format_WKT_.prototype.readFeaturesFromText = function(text, opt_options) {
  * @return {ol.geom.Geometry} Geometry.
  * @api
  */
-_ol_format_WKT_.prototype.readGeometry;
+WKT.prototype.readGeometry;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WKT_.prototype.readGeometryFromText = function(text, opt_options) {
+WKT.prototype.readGeometryFromText = function(text, opt_options) {
   var geometry = this.parse_(text);
   if (geometry) {
     return (
@@ -348,13 +348,13 @@ _ol_format_WKT_.prototype.readGeometryFromText = function(text, opt_options) {
  * @return {string} WKT string.
  * @api
  */
-_ol_format_WKT_.prototype.writeFeature;
+WKT.prototype.writeFeature;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WKT_.prototype.writeFeatureText = function(feature, opt_options) {
+WKT.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
   if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
@@ -372,13 +372,13 @@ _ol_format_WKT_.prototype.writeFeatureText = function(feature, opt_options) {
  * @return {string} WKT string.
  * @api
  */
-_ol_format_WKT_.prototype.writeFeatures;
+WKT.prototype.writeFeatures;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WKT_.prototype.writeFeaturesText = function(features, opt_options) {
+WKT.prototype.writeFeaturesText = function(features, opt_options) {
   if (features.length == 1) {
     return this.writeFeatureText(features[0], opt_options);
   }
@@ -400,14 +400,14 @@ _ol_format_WKT_.prototype.writeFeaturesText = function(features, opt_options) {
  * @return {string} WKT string.
  * @api
  */
-_ol_format_WKT_.prototype.writeGeometry;
+WKT.prototype.writeGeometry;
 
 
 /**
  * @inheritDoc
  */
-_ol_format_WKT_.prototype.writeGeometryText = function(geometry, opt_options) {
-  return _ol_format_WKT_.encode_(/** @type {ol.geom.Geometry} */ (
+WKT.prototype.writeGeometryText = function(geometry, opt_options) {
+  return WKT.encode_(/** @type {ol.geom.Geometry} */ (
     FeatureFormat.transformWithOptions(geometry, true, opt_options)));
 };
 
@@ -417,7 +417,7 @@ _ol_format_WKT_.prototype.writeGeometryText = function(geometry, opt_options) {
  * @enum {number}
  * @private
  */
-_ol_format_WKT_.TokenType_ = {
+WKT.TokenType_ = {
   TEXT: 1,
   LEFT_PAREN: 2,
   RIGHT_PAREN: 3,
@@ -433,7 +433,7 @@ _ol_format_WKT_.TokenType_ = {
  * @constructor
  * @protected
  */
-_ol_format_WKT_.Lexer = function(wkt) {
+WKT.Lexer = function(wkt) {
 
   /**
    * @type {string}
@@ -453,7 +453,7 @@ _ol_format_WKT_.Lexer = function(wkt) {
  * @return {boolean} Whether the character is alphabetic.
  * @private
  */
-_ol_format_WKT_.Lexer.prototype.isAlpha_ = function(c) {
+WKT.Lexer.prototype.isAlpha_ = function(c) {
   return c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z';
 };
 
@@ -465,7 +465,7 @@ _ol_format_WKT_.Lexer.prototype.isAlpha_ = function(c) {
  * @return {boolean} Whether the character is numeric.
  * @private
  */
-_ol_format_WKT_.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
+WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
   var decimal = opt_decimal !== undefined ? opt_decimal : false;
   return c >= '0' && c <= '9' || c == '.' && !decimal;
 };
@@ -476,7 +476,7 @@ _ol_format_WKT_.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
  * @return {boolean} Whether the character is whitespace.
  * @private
  */
-_ol_format_WKT_.Lexer.prototype.isWhiteSpace_ = function(c) {
+WKT.Lexer.prototype.isWhiteSpace_ = function(c) {
   return c == ' ' || c == '\t' || c == '\r' || c == '\n';
 };
 
@@ -485,7 +485,7 @@ _ol_format_WKT_.Lexer.prototype.isWhiteSpace_ = function(c) {
  * @return {string} Next string character.
  * @private
  */
-_ol_format_WKT_.Lexer.prototype.nextChar_ = function() {
+WKT.Lexer.prototype.nextChar_ = function() {
   return this.wkt.charAt(++this.index_);
 };
 
@@ -494,26 +494,26 @@ _ol_format_WKT_.Lexer.prototype.nextChar_ = function() {
  * Fetch and return the next token.
  * @return {!ol.WKTToken} Next string token.
  */
-_ol_format_WKT_.Lexer.prototype.nextToken = function() {
+WKT.Lexer.prototype.nextToken = function() {
   var c = this.nextChar_();
   var token = {position: this.index_, value: c};
 
   if (c == '(') {
-    token.type = _ol_format_WKT_.TokenType_.LEFT_PAREN;
+    token.type = WKT.TokenType_.LEFT_PAREN;
   } else if (c == ',') {
-    token.type = _ol_format_WKT_.TokenType_.COMMA;
+    token.type = WKT.TokenType_.COMMA;
   } else if (c == ')') {
-    token.type = _ol_format_WKT_.TokenType_.RIGHT_PAREN;
+    token.type = WKT.TokenType_.RIGHT_PAREN;
   } else if (this.isNumeric_(c) || c == '-') {
-    token.type = _ol_format_WKT_.TokenType_.NUMBER;
+    token.type = WKT.TokenType_.NUMBER;
     token.value = this.readNumber_();
   } else if (this.isAlpha_(c)) {
-    token.type = _ol_format_WKT_.TokenType_.TEXT;
+    token.type = WKT.TokenType_.TEXT;
     token.value = this.readText_();
   } else if (this.isWhiteSpace_(c)) {
     return this.nextToken();
   } else if (c === '') {
-    token.type = _ol_format_WKT_.TokenType_.EOF;
+    token.type = WKT.TokenType_.EOF;
   } else {
     throw new Error('Unexpected character: ' + c);
   }
@@ -526,7 +526,7 @@ _ol_format_WKT_.Lexer.prototype.nextToken = function() {
  * @return {number} Numeric token value.
  * @private
  */
-_ol_format_WKT_.Lexer.prototype.readNumber_ = function() {
+WKT.Lexer.prototype.readNumber_ = function() {
   var c, index = this.index_;
   var decimal = false;
   var scientificNotation = false;
@@ -554,7 +554,7 @@ _ol_format_WKT_.Lexer.prototype.readNumber_ = function() {
  * @return {string} String token value.
  * @private
  */
-_ol_format_WKT_.Lexer.prototype.readText_ = function() {
+WKT.Lexer.prototype.readText_ = function() {
   var c, index = this.index_;
   do {
     c = this.nextChar_();
@@ -569,7 +569,7 @@ _ol_format_WKT_.Lexer.prototype.readText_ = function() {
  * @constructor
  * @protected
  */
-_ol_format_WKT_.Parser = function(lexer) {
+WKT.Parser = function(lexer) {
 
   /**
    * @type {ol.format.WKT.Lexer}
@@ -595,7 +595,7 @@ _ol_format_WKT_.Parser = function(lexer) {
  * Fetch the next token form the lexer and replace the active token.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.consume_ = function() {
+WKT.Parser.prototype.consume_ = function() {
   this.token_ = this.lexer_.nextToken();
 };
 
@@ -604,7 +604,7 @@ _ol_format_WKT_.Parser.prototype.consume_ = function() {
  * @param {ol.format.WKT.TokenType_} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
-_ol_format_WKT_.Parser.prototype.isTokenType = function(type) {
+WKT.Parser.prototype.isTokenType = function(type) {
   var isMatch = this.token_.type == type;
   return isMatch;
 };
@@ -615,7 +615,7 @@ _ol_format_WKT_.Parser.prototype.isTokenType = function(type) {
  * @param {ol.format.WKT.TokenType_} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
-_ol_format_WKT_.Parser.prototype.match = function(type) {
+WKT.Parser.prototype.match = function(type) {
   var isMatch = this.isTokenType(type);
   if (isMatch) {
     this.consume_();
@@ -628,7 +628,7 @@ _ol_format_WKT_.Parser.prototype.match = function(type) {
  * Try to parse the tokens provided by the lexer.
  * @return {ol.geom.Geometry} The geometry.
  */
-_ol_format_WKT_.Parser.prototype.parse = function() {
+WKT.Parser.prototype.parse = function() {
   this.consume_();
   var geometry = this.parseGeometry_();
   return geometry;
@@ -640,16 +640,16 @@ _ol_format_WKT_.Parser.prototype.parse = function() {
  * @return {ol.geom.GeometryLayout} The layout.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseGeometryLayout_ = function() {
+WKT.Parser.prototype.parseGeometryLayout_ = function() {
   var layout = GeometryLayout.XY;
   var dimToken = this.token_;
-  if (this.isTokenType(_ol_format_WKT_.TokenType_.TEXT)) {
+  if (this.isTokenType(WKT.TokenType_.TEXT)) {
     var dimInfo = dimToken.value;
-    if (dimInfo === _ol_format_WKT_.Z) {
+    if (dimInfo === WKT.Z) {
       layout = GeometryLayout.XYZ;
-    } else if (dimInfo === _ol_format_WKT_.M) {
+    } else if (dimInfo === WKT.M) {
       layout = GeometryLayout.XYM;
-    } else if (dimInfo === _ol_format_WKT_.ZM) {
+    } else if (dimInfo === WKT.ZM) {
       layout = GeometryLayout.XYZM;
     }
     if (layout !== GeometryLayout.XY) {
@@ -664,17 +664,17 @@ _ol_format_WKT_.Parser.prototype.parseGeometryLayout_ = function() {
  * @return {!ol.geom.Geometry} The geometry.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseGeometry_ = function() {
+WKT.Parser.prototype.parseGeometry_ = function() {
   var token = this.token_;
-  if (this.match(_ol_format_WKT_.TokenType_.TEXT)) {
+  if (this.match(WKT.TokenType_.TEXT)) {
     var geomType = token.value;
     this.layout_ = this.parseGeometryLayout_();
     if (geomType == GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
       var geometries = this.parseGeometryCollectionText_();
       return new GeometryCollection(geometries);
     } else {
-      var parser = _ol_format_WKT_.Parser.GeometryParser_[geomType];
-      var ctor = _ol_format_WKT_.Parser.GeometryConstructor_[geomType];
+      var parser = WKT.Parser.GeometryParser_[geomType];
+      var ctor = WKT.Parser.GeometryConstructor_[geomType];
       if (!parser || !ctor) {
         throw new Error('Invalid geometry type: ' + geomType);
       }
@@ -690,13 +690,13 @@ _ol_format_WKT_.Parser.prototype.parseGeometry_ = function() {
  * @return {!Array.<ol.geom.Geometry>} A collection of geometries.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseGeometryCollectionText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var geometries = [];
     do {
       geometries.push(this.parseGeometry_());
-    } while (this.match(_ol_format_WKT_.TokenType_.COMMA));
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    } while (this.match(WKT.TokenType_.COMMA));
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return geometries;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -710,10 +710,10 @@ _ol_format_WKT_.Parser.prototype.parseGeometryCollectionText_ = function() {
  * @return {Array.<number>} All values in a point.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parsePointText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parsePointText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parsePoint_();
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -727,10 +727,10 @@ _ol_format_WKT_.Parser.prototype.parsePointText_ = function() {
  * @return {!Array.<!Array.<number>>} All points in a linestring.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseLineStringText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parseLineStringText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parsePointList_();
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -744,10 +744,10 @@ _ol_format_WKT_.Parser.prototype.parseLineStringText_ = function() {
  * @return {!Array.<!Array.<number>>} All points in a polygon.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parsePolygonText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parsePolygonText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parseLineStringTextList_();
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -761,15 +761,15 @@ _ol_format_WKT_.Parser.prototype.parsePolygonText_ = function() {
  * @return {!Array.<!Array.<number>>} All points in a multipoint.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseMultiPointText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parseMultiPointText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var coordinates;
-    if (this.token_.type == _ol_format_WKT_.TokenType_.LEFT_PAREN) {
+    if (this.token_.type == WKT.TokenType_.LEFT_PAREN) {
       coordinates = this.parsePointTextList_();
     } else {
       coordinates = this.parsePointList_();
     }
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -784,10 +784,10 @@ _ol_format_WKT_.Parser.prototype.parseMultiPointText_ = function() {
  *                                        in a multilinestring.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseMultiLineStringText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parseMultiLineStringText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parseLineStringTextList_();
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -801,10 +801,10 @@ _ol_format_WKT_.Parser.prototype.parseMultiLineStringText_ = function() {
  * @return {!Array.<!Array.<number>>} All polygon points in a multipolygon.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseMultiPolygonText_ = function() {
-  if (this.match(_ol_format_WKT_.TokenType_.LEFT_PAREN)) {
+WKT.Parser.prototype.parseMultiPolygonText_ = function() {
+  if (this.match(WKT.TokenType_.LEFT_PAREN)) {
     var coordinates = this.parsePolygonTextList_();
-    if (this.match(_ol_format_WKT_.TokenType_.RIGHT_PAREN)) {
+    if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
   } else if (this.isEmptyGeometry_()) {
@@ -818,12 +818,12 @@ _ol_format_WKT_.Parser.prototype.parseMultiPolygonText_ = function() {
  * @return {!Array.<number>} A point.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parsePoint_ = function() {
+WKT.Parser.prototype.parsePoint_ = function() {
   var coordinates = [];
   var dimensions = this.layout_.length;
   for (var i = 0; i < dimensions; ++i) {
     var token = this.token_;
-    if (this.match(_ol_format_WKT_.TokenType_.NUMBER)) {
+    if (this.match(WKT.TokenType_.NUMBER)) {
       coordinates.push(token.value);
     } else {
       break;
@@ -840,9 +840,9 @@ _ol_format_WKT_.Parser.prototype.parsePoint_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parsePointList_ = function() {
+WKT.Parser.prototype.parsePointList_ = function() {
   var coordinates = [this.parsePoint_()];
-  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
+  while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parsePoint_());
   }
   return coordinates;
@@ -853,9 +853,9 @@ _ol_format_WKT_.Parser.prototype.parsePointList_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parsePointTextList_ = function() {
+WKT.Parser.prototype.parsePointTextList_ = function() {
   var coordinates = [this.parsePointText_()];
-  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
+  while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parsePointText_());
   }
   return coordinates;
@@ -866,9 +866,9 @@ _ol_format_WKT_.Parser.prototype.parsePointTextList_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parseLineStringTextList_ = function() {
+WKT.Parser.prototype.parseLineStringTextList_ = function() {
   var coordinates = [this.parseLineStringText_()];
-  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
+  while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parseLineStringText_());
   }
   return coordinates;
@@ -879,9 +879,9 @@ _ol_format_WKT_.Parser.prototype.parseLineStringTextList_ = function() {
  * @return {!Array.<!Array.<number>>} An array of points.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.parsePolygonTextList_ = function() {
+WKT.Parser.prototype.parsePolygonTextList_ = function() {
   var coordinates = [this.parsePolygonText_()];
-  while (this.match(_ol_format_WKT_.TokenType_.COMMA)) {
+  while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parsePolygonText_());
   }
   return coordinates;
@@ -892,9 +892,9 @@ _ol_format_WKT_.Parser.prototype.parsePolygonTextList_ = function() {
  * @return {boolean} Whether the token implies an empty geometry.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.isEmptyGeometry_ = function() {
-  var isEmpty = this.isTokenType(_ol_format_WKT_.TokenType_.TEXT) &&
-      this.token_.value == _ol_format_WKT_.EMPTY;
+WKT.Parser.prototype.isEmptyGeometry_ = function() {
+  var isEmpty = this.isTokenType(WKT.TokenType_.TEXT) &&
+      this.token_.value == WKT.EMPTY;
   if (isEmpty) {
     this.consume_();
   }
@@ -907,7 +907,7 @@ _ol_format_WKT_.Parser.prototype.isEmptyGeometry_ = function() {
  * @return {string} Error message.
  * @private
  */
-_ol_format_WKT_.Parser.prototype.formatErrorMessage_ = function() {
+WKT.Parser.prototype.formatErrorMessage_ = function() {
   return 'Unexpected `' + this.token_.value + '` at position ' +
       this.token_.position + ' in `' + this.lexer_.wkt + '`';
 };
@@ -917,7 +917,7 @@ _ol_format_WKT_.Parser.prototype.formatErrorMessage_ = function() {
  * @enum {function (new:ol.geom.Geometry, Array, ol.geom.GeometryLayout)}
  * @private
  */
-_ol_format_WKT_.Parser.GeometryConstructor_ = {
+WKT.Parser.GeometryConstructor_ = {
   'POINT': Point,
   'LINESTRING': LineString,
   'POLYGON': Polygon,
@@ -931,12 +931,12 @@ _ol_format_WKT_.Parser.GeometryConstructor_ = {
  * @enum {(function(): Array)}
  * @private
  */
-_ol_format_WKT_.Parser.GeometryParser_ = {
-  'POINT': _ol_format_WKT_.Parser.prototype.parsePointText_,
-  'LINESTRING': _ol_format_WKT_.Parser.prototype.parseLineStringText_,
-  'POLYGON': _ol_format_WKT_.Parser.prototype.parsePolygonText_,
-  'MULTIPOINT': _ol_format_WKT_.Parser.prototype.parseMultiPointText_,
-  'MULTILINESTRING': _ol_format_WKT_.Parser.prototype.parseMultiLineStringText_,
-  'MULTIPOLYGON': _ol_format_WKT_.Parser.prototype.parseMultiPolygonText_
+WKT.Parser.GeometryParser_ = {
+  'POINT': WKT.Parser.prototype.parsePointText_,
+  'LINESTRING': WKT.Parser.prototype.parseLineStringText_,
+  'POLYGON': WKT.Parser.prototype.parsePolygonText_,
+  'MULTIPOINT': WKT.Parser.prototype.parseMultiPointText_,
+  'MULTILINESTRING': WKT.Parser.prototype.parseMultiLineStringText_,
+  'MULTIPOLYGON': WKT.Parser.prototype.parseMultiPolygonText_
 };
-export default _ol_format_WKT_;
+export default WKT;
