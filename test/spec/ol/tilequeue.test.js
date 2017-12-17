@@ -3,7 +3,7 @@ import _ol_Tile_ from '../../../src/ol/Tile.js';
 import _ol_TileQueue_ from '../../../src/ol/TileQueue.js';
 import _ol_TileState_ from '../../../src/ol/TileState.js';
 import _ol_source_Image_ from '../../../src/ol/source/Image.js';
-import _ol_structs_PriorityQueue_ from '../../../src/ol/structs/PriorityQueue.js';
+import PriorityQueue from '../../../src/ol/structs/PriorityQueue.js';
 
 
 describe('ol.TileQueue', function() {
@@ -129,7 +129,7 @@ describe('ol.TileQueue', function() {
       var i = 0;
       tq.priorityFunction_ = function() {
         if ((i++) % 2 === 0) {
-          return _ol_structs_PriorityQueue_.DROP;
+          return PriorityQueue.DROP;
         }
         return Math.floor(Math.random() * 100);
       };

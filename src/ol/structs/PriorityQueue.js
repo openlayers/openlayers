@@ -19,7 +19,7 @@ import _ol_obj_ from '../obj.js';
  * @struct
  * @template T
  */
-var _ol_structs_PriorityQueue_ = function(priorityFunction, keyFunction) {
+var PriorityQueue = function(priorityFunction, keyFunction) {
 
   /**
    * @type {function(T): number}
@@ -58,13 +58,13 @@ var _ol_structs_PriorityQueue_ = function(priorityFunction, keyFunction) {
  * @const
  * @type {number}
  */
-_ol_structs_PriorityQueue_.DROP = Infinity;
+PriorityQueue.DROP = Infinity;
 
 
 /**
  * FIXME empty description for jsdoc
  */
-_ol_structs_PriorityQueue_.prototype.clear = function() {
+PriorityQueue.prototype.clear = function() {
   this.elements_.length = 0;
   this.priorities_.length = 0;
   _ol_obj_.clear(this.queuedElements_);
@@ -75,7 +75,7 @@ _ol_structs_PriorityQueue_.prototype.clear = function() {
  * Remove and return the highest-priority element. O(log N).
  * @return {T} Element.
  */
-_ol_structs_PriorityQueue_.prototype.dequeue = function() {
+PriorityQueue.prototype.dequeue = function() {
   var elements = this.elements_;
   var priorities = this.priorities_;
   var element = elements[0];
@@ -98,11 +98,11 @@ _ol_structs_PriorityQueue_.prototype.dequeue = function() {
  * @param {T} element Element.
  * @return {boolean} The element was added to the queue.
  */
-_ol_structs_PriorityQueue_.prototype.enqueue = function(element) {
+PriorityQueue.prototype.enqueue = function(element) {
   _ol_asserts_.assert(!(this.keyFunction_(element) in this.queuedElements_),
       31); // Tried to enqueue an `element` that was already added to the queue
   var priority = this.priorityFunction_(element);
-  if (priority != _ol_structs_PriorityQueue_.DROP) {
+  if (priority != PriorityQueue.DROP) {
     this.elements_.push(element);
     this.priorities_.push(priority);
     this.queuedElements_[this.keyFunction_(element)] = true;
@@ -116,7 +116,7 @@ _ol_structs_PriorityQueue_.prototype.enqueue = function(element) {
 /**
  * @return {number} Count.
  */
-_ol_structs_PriorityQueue_.prototype.getCount = function() {
+PriorityQueue.prototype.getCount = function() {
   return this.elements_.length;
 };
 
@@ -127,7 +127,7 @@ _ol_structs_PriorityQueue_.prototype.getCount = function() {
  * @return {number} The index of the left child.
  * @private
  */
-_ol_structs_PriorityQueue_.prototype.getLeftChildIndex_ = function(index) {
+PriorityQueue.prototype.getLeftChildIndex_ = function(index) {
   return index * 2 + 1;
 };
 
@@ -138,7 +138,7 @@ _ol_structs_PriorityQueue_.prototype.getLeftChildIndex_ = function(index) {
  * @return {number} The index of the right child.
  * @private
  */
-_ol_structs_PriorityQueue_.prototype.getRightChildIndex_ = function(index) {
+PriorityQueue.prototype.getRightChildIndex_ = function(index) {
   return index * 2 + 2;
 };
 
@@ -149,7 +149,7 @@ _ol_structs_PriorityQueue_.prototype.getRightChildIndex_ = function(index) {
  * @return {number} The index of the parent.
  * @private
  */
-_ol_structs_PriorityQueue_.prototype.getParentIndex_ = function(index) {
+PriorityQueue.prototype.getParentIndex_ = function(index) {
   return (index - 1) >> 1;
 };
 
@@ -158,7 +158,7 @@ _ol_structs_PriorityQueue_.prototype.getParentIndex_ = function(index) {
  * Make this a heap. O(N).
  * @private
  */
-_ol_structs_PriorityQueue_.prototype.heapify_ = function() {
+PriorityQueue.prototype.heapify_ = function() {
   var i;
   for (i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
     this.siftUp_(i);
@@ -169,7 +169,7 @@ _ol_structs_PriorityQueue_.prototype.heapify_ = function() {
 /**
  * @return {boolean} Is empty.
  */
-_ol_structs_PriorityQueue_.prototype.isEmpty = function() {
+PriorityQueue.prototype.isEmpty = function() {
   return this.elements_.length === 0;
 };
 
@@ -178,7 +178,7 @@ _ol_structs_PriorityQueue_.prototype.isEmpty = function() {
  * @param {string} key Key.
  * @return {boolean} Is key queued.
  */
-_ol_structs_PriorityQueue_.prototype.isKeyQueued = function(key) {
+PriorityQueue.prototype.isKeyQueued = function(key) {
   return key in this.queuedElements_;
 };
 
@@ -187,7 +187,7 @@ _ol_structs_PriorityQueue_.prototype.isKeyQueued = function(key) {
  * @param {T} element Element.
  * @return {boolean} Is queued.
  */
-_ol_structs_PriorityQueue_.prototype.isQueued = function(element) {
+PriorityQueue.prototype.isQueued = function(element) {
   return this.isKeyQueued(this.keyFunction_(element));
 };
 
@@ -196,7 +196,7 @@ _ol_structs_PriorityQueue_.prototype.isQueued = function(element) {
  * @param {number} index The index of the node to move down.
  * @private
  */
-_ol_structs_PriorityQueue_.prototype.siftUp_ = function(index) {
+PriorityQueue.prototype.siftUp_ = function(index) {
   var elements = this.elements_;
   var priorities = this.priorities_;
   var count = elements.length;
@@ -228,7 +228,7 @@ _ol_structs_PriorityQueue_.prototype.siftUp_ = function(index) {
  * @param {number} index The index of the node to move up.
  * @private
  */
-_ol_structs_PriorityQueue_.prototype.siftDown_ = function(startIndex, index) {
+PriorityQueue.prototype.siftDown_ = function(startIndex, index) {
   var elements = this.elements_;
   var priorities = this.priorities_;
   var element = elements[index];
@@ -252,7 +252,7 @@ _ol_structs_PriorityQueue_.prototype.siftDown_ = function(startIndex, index) {
 /**
  * FIXME empty description for jsdoc
  */
-_ol_structs_PriorityQueue_.prototype.reprioritize = function() {
+PriorityQueue.prototype.reprioritize = function() {
   var priorityFunction = this.priorityFunction_;
   var elements = this.elements_;
   var priorities = this.priorities_;
@@ -262,7 +262,7 @@ _ol_structs_PriorityQueue_.prototype.reprioritize = function() {
   for (i = 0; i < n; ++i) {
     element = elements[i];
     priority = priorityFunction(element);
-    if (priority == _ol_structs_PriorityQueue_.DROP) {
+    if (priority == PriorityQueue.DROP) {
       delete this.queuedElements_[this.keyFunction_(element)];
     } else {
       priorities[index] = priority;
@@ -273,4 +273,4 @@ _ol_structs_PriorityQueue_.prototype.reprioritize = function() {
   priorities.length = index;
   this.heapify_();
 };
-export default _ol_structs_PriorityQueue_;
+export default PriorityQueue;

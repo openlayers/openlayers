@@ -5,7 +5,7 @@ import {inherits} from './index.js';
 import _ol_TileState_ from './TileState.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
-import _ol_structs_PriorityQueue_ from './structs/PriorityQueue.js';
+import PriorityQueue from './structs/PriorityQueue.js';
 
 /**
  * @constructor
@@ -18,7 +18,7 @@ import _ol_structs_PriorityQueue_ from './structs/PriorityQueue.js';
  */
 var _ol_TileQueue_ = function(tilePriorityFunction, tileChangeCallback) {
 
-  _ol_structs_PriorityQueue_.call(
+  PriorityQueue.call(
       this,
       /**
        * @param {Array} element Element.
@@ -55,14 +55,14 @@ var _ol_TileQueue_ = function(tilePriorityFunction, tileChangeCallback) {
 
 };
 
-inherits(_ol_TileQueue_, _ol_structs_PriorityQueue_);
+inherits(_ol_TileQueue_, PriorityQueue);
 
 
 /**
  * @inheritDoc
  */
 _ol_TileQueue_.prototype.enqueue = function(element) {
-  var added = _ol_structs_PriorityQueue_.prototype.enqueue.call(this, element);
+  var added = PriorityQueue.prototype.enqueue.call(this, element);
   if (added) {
     var tile = element[0];
     _ol_events_.listen(tile, EventType.CHANGE,

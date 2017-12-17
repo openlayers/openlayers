@@ -16,7 +16,7 @@ import _ol_renderer_Map_ from '../Map.js';
 import _ol_renderer_Type_ from '../Type.js';
 import _ol_source_State_ from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
-import _ol_structs_PriorityQueue_ from '../../structs/PriorityQueue.js';
+import PriorityQueue from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
 import _ol_webgl_ContextEventType_ from '../../webgl/ContextEventType.js';
@@ -113,7 +113,7 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
    * @private
    * @type {ol.structs.PriorityQueue.<Array>}
    */
-  this.tileTextureQueue_ = new _ol_structs_PriorityQueue_(
+  this.tileTextureQueue_ = new PriorityQueue(
       /**
        * @param {Array.<*>} element Element.
        * @return {number} Priority.
