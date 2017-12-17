@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_control_ from '../src/ol/control.js';
-import _ol_format_OSMXML_ from '../src/ol/format/OSMXML.js';
+import OSMXML from '../src/ol/format/OSMXML.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
@@ -78,13 +78,13 @@ var styles = {
 };
 
 var vectorSource = new _ol_source_Vector_({
-  format: new _ol_format_OSMXML_(),
+  format: new OSMXML(),
   loader: function(extent, resolution, projection) {
     var epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');
     var client = new XMLHttpRequest();
     client.open('POST', 'https://overpass-api.de/api/interpreter');
     client.addEventListener('load', function() {
-      var features = new _ol_format_OSMXML_().readFeatures(client.responseText, {
+      var features = new OSMXML().readFeatures(client.responseText, {
         featureProjection: map.getView().getProjection()
       });
       vectorSource.addFeatures(features);

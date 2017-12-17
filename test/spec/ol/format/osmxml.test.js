@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_format_OSMXML_ from '../../../../src/ol/format/OSMXML.js';
+import OSMXML from '../../../../src/ol/format/OSMXML.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
@@ -9,7 +9,7 @@ describe('ol.format.OSMXML', function() {
 
   var format;
   beforeEach(function() {
-    format = new _ol_format_OSMXML_();
+    format = new OSMXML();
   });
 
   describe('#readProjection', function() {
