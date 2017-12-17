@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_format_Feature_ from '../../../../src/ol/format/Feature.js';
+import FeatureFormat from '../../../../src/ol/format/Feature.js';
 import {transform} from '../../../../src/ol/proj.js';
 import _ol_format_TopoJSON_ from '../../../../src/ol/format/TopoJSON.js';
 
@@ -47,7 +47,7 @@ describe('ol.format.TopoJSON', function() {
 
   describe('constructor', function() {
     it('creates a new format', function() {
-      expect(format).to.be.a(_ol_format_Feature_);
+      expect(format).to.be.a(FeatureFormat);
       expect(format).to.be.a(_ol_format_TopoJSON_);
     });
   });

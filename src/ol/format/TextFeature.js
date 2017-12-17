@@ -2,7 +2,7 @@
  * @module ol/format/TextFeature
  */
 import {inherits} from '../index.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 
 /**
@@ -16,10 +16,10 @@ import _ol_format_FormatType_ from '../format/FormatType.js';
  * @extends {ol.format.Feature}
  */
 var _ol_format_TextFeature_ = function() {
-  _ol_format_Feature_.call(this);
+  FeatureFormat.call(this);
 };
 
-inherits(_ol_format_TextFeature_, _ol_format_Feature_);
+inherits(_ol_format_TextFeature_, FeatureFormat);
 
 
 /**

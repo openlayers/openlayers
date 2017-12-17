@@ -7,7 +7,7 @@
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
@@ -77,7 +77,7 @@ _ol_format_GeoJSON_.readGeometry_ = function(object, opt_options) {
   }
   var geometryReader = _ol_format_GeoJSON_.GEOMETRY_READERS_[object.type];
   return (
-    /** @type {ol.geom.Geometry} */ _ol_format_Feature_.transformWithOptions(
+    /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(
         geometryReader(object), false, opt_options)
   );
 };
@@ -172,7 +172,7 @@ _ol_format_GeoJSON_.readPolygonGeometry_ = function(object) {
 _ol_format_GeoJSON_.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = _ol_format_GeoJSON_.GEOMETRY_WRITERS_[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
-    _ol_format_Feature_.transformWithOptions(geometry, true, opt_options)),
+    FeatureFormat.transformWithOptions(geometry, true, opt_options)),
   opt_options);
 };
 

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -331,7 +331,7 @@ _ol_format_WKT_.prototype.readGeometryFromText = function(text, opt_options) {
   var geometry = this.parse_(text);
   if (geometry) {
     return (
-      /** @type {ol.geom.Geometry} */ _ol_format_Feature_.transformWithOptions(geometry, false, opt_options)
+      /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(geometry, false, opt_options)
     );
   } else {
     return null;
@@ -408,7 +408,7 @@ _ol_format_WKT_.prototype.writeGeometry;
  */
 _ol_format_WKT_.prototype.writeGeometryText = function(geometry, opt_options) {
   return _ol_format_WKT_.encode_(/** @type {ol.geom.Geometry} */ (
-    _ol_format_Feature_.transformWithOptions(geometry, true, opt_options)));
+    FeatureFormat.transformWithOptions(geometry, true, opt_options)));
 };
 
 

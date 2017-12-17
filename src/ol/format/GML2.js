@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {createOrUpdate} from '../extent.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_GMLBase_ from '../format/GMLBase.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
@@ -296,7 +296,7 @@ _ol_format_GML2_.prototype.writeGeometryElement = function(node, geometry, objec
     }
   } else {
     value =
-        _ol_format_Feature_.transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
+        FeatureFormat.transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
   }
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       (item), _ol_format_GML2_.GEOMETRY_SERIALIZERS_,

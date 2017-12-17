@@ -11,7 +11,7 @@ import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_color_ from '../color.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
@@ -1716,7 +1716,7 @@ _ol_format_KML_.prototype.readPlacemark_ = function(node, objectStack) {
 
   var geometry = object['geometry'];
   if (geometry) {
-    _ol_format_Feature_.transformWithOptions(geometry, false, options);
+    FeatureFormat.transformWithOptions(geometry, false, options);
   }
   feature.setGeometry(geometry);
   delete object['geometry'];
@@ -2471,7 +2471,7 @@ _ol_format_KML_.writePlacemark_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry =
-        _ol_format_Feature_.transformWithOptions(geometry, true, options);
+        FeatureFormat.transformWithOptions(geometry, true, options);
   }
   _ol_xml_.pushSerializeAndPop(context, _ol_format_KML_.PLACEMARK_SERIALIZERS_,
       _ol_format_KML_.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);

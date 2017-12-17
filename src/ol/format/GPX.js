@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import _ol_format_XSD_ from '../format/XSD.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -242,7 +242,7 @@ _ol_format_GPX_.readRte_ = function(node, objectStack) {
   var layout = _ol_format_GPX_.applyLayoutOptions_(layoutOptions, flatCoordinates);
   var geometry = new LineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates);
-  _ol_format_Feature_.transformWithOptions(geometry, false, options);
+  FeatureFormat.transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
@@ -275,7 +275,7 @@ _ol_format_GPX_.readTrk_ = function(node, objectStack) {
   var layout = _ol_format_GPX_.applyLayoutOptions_(layoutOptions, flatCoordinates, ends);
   var geometry = new MultiLineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates, ends);
-  _ol_format_Feature_.transformWithOptions(geometry, false, options);
+  FeatureFormat.transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
@@ -299,7 +299,7 @@ _ol_format_GPX_.readWpt_ = function(node, objectStack) {
   var coordinates = _ol_format_GPX_.appendCoordinate_([], layoutOptions, node, values);
   var layout = _ol_format_GPX_.applyLayoutOptions_(layoutOptions, coordinates);
   var geometry = new Point(coordinates, layout);
-  _ol_format_Feature_.transformWithOptions(geometry, false, options);
+  FeatureFormat.transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
@@ -630,7 +630,7 @@ _ol_format_GPX_.writeRte_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.LineString} */
-      (_ol_format_Feature_.transformWithOptions(geometry, true, options));
+      (FeatureFormat.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     properties['rtept'] = geometry.getCoordinates();
   }
@@ -657,7 +657,7 @@ _ol_format_GPX_.writeTrk_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.MultiLineString} */
-      (_ol_format_Feature_.transformWithOptions(geometry, true, options));
+      (FeatureFormat.transformWithOptions(geometry, true, options));
     properties['trkseg'] = geometry.getLineStrings();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
@@ -698,7 +698,7 @@ _ol_format_GPX_.writeWpt_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.Point} */
-      (_ol_format_Feature_.transformWithOptions(geometry, true, options));
+      (FeatureFormat.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     _ol_format_GPX_.writeWptType_(node, geometry.getCoordinates(), objectStack);
   }

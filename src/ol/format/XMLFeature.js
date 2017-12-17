@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 import _ol_xml_ from '../xml.js';
 
@@ -25,10 +25,10 @@ var _ol_format_XMLFeature_ = function() {
    */
   this.xmlSerializer_ = new XMLSerializer();
 
-  _ol_format_Feature_.call(this);
+  FeatureFormat.call(this);
 };
 
-inherits(_ol_format_XMLFeature_, _ol_format_Feature_);
+inherits(_ol_format_XMLFeature_, FeatureFormat);
 
 
 /**

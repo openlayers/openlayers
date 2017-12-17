@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_IGCZ_ from '../format/IGCZ.js';
 import _ol_format_TextFeature_ from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -161,7 +161,7 @@ _ol_format_IGC_.prototype.readFeatureFromText = function(text, opt_options) {
   var layout = altitudeMode == _ol_format_IGCZ_.NONE ?
     GeometryLayout.XYM : GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
-  var feature = new _ol_Feature_(_ol_format_Feature_.transformWithOptions(
+  var feature = new _ol_Feature_(FeatureFormat.transformWithOptions(
       lineString, false, opt_options));
   feature.setProperties(properties);
   return feature;

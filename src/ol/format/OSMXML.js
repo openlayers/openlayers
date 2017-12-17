@@ -5,7 +5,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_XMLFeature_ from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -57,7 +57,7 @@ _ol_format_OSMXML_.readNode_ = function(node, objectStack) {
   }, _ol_format_OSMXML_.NODE_PARSERS_, node, objectStack);
   if (!_ol_obj_.isEmpty(values.tags)) {
     var geometry = new Point(coordinates);
-    _ol_format_Feature_.transformWithOptions(geometry, false, options);
+    FeatureFormat.transformWithOptions(geometry, false, options);
     var feature = new _ol_Feature_(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
@@ -192,7 +192,7 @@ _ol_format_OSMXML_.prototype.readFeaturesFromNode = function(node, opt_options) 
         geometry = new LineString(null);
         geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
       }
-      _ol_format_Feature_.transformWithOptions(geometry, false, options);
+      FeatureFormat.transformWithOptions(geometry, false, options);
       var feature = new _ol_Feature_(geometry);
       feature.setId(values.id);
       feature.setProperties(values.tags);

@@ -6,7 +6,7 @@
 import {inherits} from '../index.js';
 import _ol_asserts_ from '../asserts.js';
 import PBF from 'pbf';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -32,7 +32,7 @@ import _ol_render_Feature_ from '../render/Feature.js';
  */
 var _ol_format_MVT_ = function(opt_options) {
 
-  _ol_format_Feature_.call(this);
+  FeatureFormat.call(this);
 
   var options = opt_options ? opt_options : {};
 
@@ -79,7 +79,7 @@ var _ol_format_MVT_ = function(opt_options) {
 
 };
 
-inherits(_ol_format_MVT_, _ol_format_Feature_);
+inherits(_ol_format_MVT_, FeatureFormat);
 
 
 /**
@@ -322,7 +322,7 @@ _ol_format_MVT_.prototype.createFeature_ = function(pbf, rawFeature, opt_options
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
     }
-    var geometry = _ol_format_Feature_.transformWithOptions(geom, false, this.adaptOptions(opt_options));
+    var geometry = FeatureFormat.transformWithOptions(geom, false, this.adaptOptions(opt_options));
     feature.setGeometry(geometry);
     feature.setId(id);
     feature.setProperties(values);

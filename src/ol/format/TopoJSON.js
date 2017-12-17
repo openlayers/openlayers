@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_format_Feature_ from '../format/Feature.js';
+import FeatureFormat from '../format/Feature.js';
 import _ol_format_JSONFeature_ from '../format/JSONFeature.js';
 import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
@@ -260,7 +260,7 @@ _ol_format_TopoJSON_.readFeatureFromGeometry_ = function(object, arcs,
   }
   var feature = new _ol_Feature_();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
-    _ol_format_Feature_.transformWithOptions(geometry, false, opt_options)));
+    FeatureFormat.transformWithOptions(geometry, false, opt_options)));
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
