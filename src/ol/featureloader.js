@@ -4,7 +4,6 @@
 import {nullFunction} from './index.js';
 import _ol_format_FormatType_ from './format/FormatType.js';
 import _ol_xml_ from './xml.js';
-var _ol_featureloader_ = {};
 
 
 /**
@@ -18,7 +17,7 @@ var _ol_featureloader_ = {};
  *     source as `this`.
  * @return {ol.FeatureLoader} The feature loader.
  */
-_ol_featureloader_.loadFeaturesXhr = function(url, format, success, failure) {
+export function loadFeaturesXhr(url, format, success, failure) {
   return (
     /**
      * @param {ol.Extent} extent Extent.
@@ -75,7 +74,7 @@ _ol_featureloader_.loadFeaturesXhr = function(url, format, success, failure) {
       xhr.send();
     }
   );
-};
+}
 
 
 /**
@@ -87,8 +86,8 @@ _ol_featureloader_.loadFeaturesXhr = function(url, format, success, failure) {
  * @return {ol.FeatureLoader} The feature loader.
  * @api
  */
-_ol_featureloader_.xhr = function(url, format) {
-  return _ol_featureloader_.loadFeaturesXhr(url, format,
+export function xhr(url, format) {
+  return loadFeaturesXhr(url, format,
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
        * @param {ol.proj.Projection} dataProjection Data projection.
@@ -97,5 +96,4 @@ _ol_featureloader_.xhr = function(url, format) {
       function(features, dataProjection) {
         this.addFeatures(features);
       }, /* FIXME handle error */ nullFunction);
-};
-export default _ol_featureloader_;
+}

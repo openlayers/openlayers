@@ -12,7 +12,7 @@ import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
-import _ol_featureloader_ from '../featureloader.js';
+import {xhr} from '../featureloader.js';
 import {TRUE} from '../functions.js';
 import _ol_loadingstrategy_ from '../loadingstrategy.js';
 import _ol_obj_ from '../obj.js';
@@ -73,7 +73,7 @@ var _ol_source_Vector_ = function(opt_options) {
   } else if (this.url_ !== undefined) {
     _ol_asserts_.assert(this.format_, 7); // `format` must be set when `url` is set
     // create a XHR feature loader for "url" and "format"
-    this.loader_ = _ol_featureloader_.xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_));
+    this.loader_ = xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_));
   }
 
   /**
