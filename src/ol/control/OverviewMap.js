@@ -8,7 +8,7 @@ import MapEventType from '../MapEventType.js';
 import _ol_MapProperty_ from '../MapProperty.js';
 import _ol_Object_ from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
-import _ol_Overlay_ from '../Overlay.js';
+import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
 import _ol_ViewProperty_ from '../ViewProperty.js';
 import Control from '../control/Control.js';
@@ -140,7 +140,7 @@ var OverviewMap = function(opt_options) {
    * @type {ol.Overlay}
    * @private
    */
-  this.boxOverlay_ = new _ol_Overlay_({
+  this.boxOverlay_ = new Overlay({
     position: [0, 0],
     positioning: OverlayPositioning.BOTTOM_LEFT,
     element: box

@@ -1,7 +1,7 @@
 import _ol_Feature_ from '../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
-import _ol_Overlay_ from '../../../src/ol/Overlay.js';
+import Overlay from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import Point from '../../../src/ol/geom/Point.js';
 import _ol_has_ from '../../../src/ol/has.js';
@@ -610,7 +610,7 @@ describe('ol.Map', function() {
       });
 
       it('returns an overlay by id', function() {
-        overlay = new _ol_Overlay_({
+        overlay = new Overlay({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
@@ -620,7 +620,7 @@ describe('ol.Map', function() {
       });
 
       it('returns null when no overlay is found', function() {
-        overlay = new _ol_Overlay_({
+        overlay = new Overlay({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
@@ -630,7 +630,7 @@ describe('ol.Map', function() {
       });
 
       it('returns null after removing overlay', function() {
-        overlay = new _ol_Overlay_({
+        overlay = new Overlay({
           id: 'foo',
           element: overlay_target,
           position: [0, 0]
