@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/VectorTileLayer
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import _ol_TileState_ from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
@@ -78,7 +78,7 @@ inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_VectorTileLayer_['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && layer.getType() === _ol_LayerType_.VECTOR_TILE;
+  return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR_TILE;
 };
 
 

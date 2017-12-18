@@ -5,7 +5,7 @@
 // FIXME animated shaders! check in redraw
 
 import {inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_array_ from '../../array.js';
@@ -96,7 +96,7 @@ inherits(_ol_renderer_webgl_TileLayer_, _ol_renderer_webgl_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_TileLayer_['handles'] = function(type, layer) {
-  return type === RendererType.WEBGL && layer.getType() === _ol_LayerType_.TILE;
+  return type === RendererType.WEBGL && layer.getType() === LayerType.TILE;
 };
 
 

@@ -4,7 +4,7 @@
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits} from '../../index.js';
 import _ol_ImageCanvas_ from '../../ImageCanvas.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import _ol_array_ from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
@@ -60,8 +60,8 @@ inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && (layer.getType() === _ol_LayerType_.IMAGE ||
-      layer.getType() === _ol_LayerType_.VECTOR &&
+  return type === RendererType.CANVAS && (layer.getType() === LayerType.IMAGE ||
+      layer.getType() === LayerType.VECTOR &&
       /** @type {ol.layer.Vector} */ (layer).getRenderMode() === _ol_layer_VectorRenderType_.IMAGE);
 };
 
@@ -74,7 +74,7 @@ _ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
  */
 _ol_renderer_canvas_ImageLayer_['create'] = function(mapRenderer, layer) {
   var renderer = new _ol_renderer_canvas_ImageLayer_(/** @type {ol.layer.Image} */ (layer));
-  if (layer.getType() === _ol_LayerType_.VECTOR) {
+  if (layer.getType() === LayerType.VECTOR) {
     var candidates = _ol_plugins_.getLayerRendererPlugins();
     for (var i = 0, ii = candidates.length; i < ii; ++i) {
       var candidate = /** @type {Object.<string, Function>} */ (candidates[i]);

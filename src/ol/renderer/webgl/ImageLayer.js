@@ -3,7 +3,7 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits, nullFunction} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
@@ -56,7 +56,7 @@ inherits(_ol_renderer_webgl_ImageLayer_, _ol_renderer_webgl_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_ImageLayer_['handles'] = function(type, layer) {
-  return type === RendererType.WEBGL && layer.getType() === _ol_LayerType_.IMAGE;
+  return type === RendererType.WEBGL && layer.getType() === LayerType.IMAGE;
 };
 
 

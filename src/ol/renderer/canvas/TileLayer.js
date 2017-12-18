@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/TileLayer
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
@@ -88,7 +88,7 @@ inherits(_ol_renderer_canvas_TileLayer_, _ol_renderer_canvas_IntermediateCanvas_
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_TileLayer_['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && layer.getType() === _ol_LayerType_.TILE;
+  return type === RendererType.CANVAS && layer.getType() === LayerType.TILE;
 };
 
 

@@ -2,7 +2,7 @@
  * @module ol/layer/Vector
  */
 import {inherits} from '../index.js';
-import _ol_LayerType_ from '../LayerType.js';
+import LayerType from '../LayerType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_layer_VectorRenderType_ from '../layer/VectorRenderType.js';
 import _ol_obj_ from '../obj.js';
@@ -97,7 +97,7 @@ var _ol_layer_Vector_ = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = _ol_LayerType_.VECTOR;
+  this.type = LayerType.VECTOR;
 
 };
 

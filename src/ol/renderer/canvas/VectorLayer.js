@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/VectorLayer
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
@@ -93,7 +93,7 @@ inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_VectorLayer_['handles'] = function(type, layer) {
-  return type === RendererType.CANVAS && layer.getType() === _ol_LayerType_.VECTOR;
+  return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR;
 };
 
 
