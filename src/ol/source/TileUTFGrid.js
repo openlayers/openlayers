@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
 import _ol_TileState_ from '../TileState.js';
-import _ol_TileUrlFunction_ from '../TileUrlFunction.js';
+import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import _ol_asserts_ from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -42,7 +42,7 @@ var _ol_source_TileUTFGrid_ = function(options) {
    * @private
    * @type {!ol.TileUrlFunctionType}
    */
-  this.tileUrlFunction_ = _ol_TileUrlFunction_.nullTileUrlFunction;
+  this.tileUrlFunction_ = nullTileUrlFunction;
 
   /**
    * @private
@@ -193,8 +193,7 @@ _ol_source_TileUTFGrid_.prototype.handleTileJSONResponse = function(tileJSON) {
     return;
   }
 
-  this.tileUrlFunction_ =
-      _ol_TileUrlFunction_.createFromTemplates(grids, tileGrid);
+  this.tileUrlFunction_ = createFromTemplates(grids, tileGrid);
 
   if (tileJSON.attribution !== undefined) {
     var attributionExtent = extent !== undefined ?

@@ -1,10 +1,9 @@
 /**
- * @module ol/TileUrlFunction
+ * @module ol/tileurlfunction
  */
 import _ol_asserts_ from './asserts.js';
 import _ol_math_ from './math.js';
 import _ol_tilecoord_ from './tilecoord.js';
-var _ol_TileUrlFunction_ = {};
 
 
 /**
@@ -12,7 +11,7 @@ var _ol_TileUrlFunction_ = {};
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-_ol_TileUrlFunction_.createFromTemplate = function(template, tileGrid) {
+export function createFromTemplate(template, tileGrid) {
   var zRegEx = /\{z\}/g;
   var xRegEx = /\{x\}/g;
   var yRegEx = /\{y\}/g;
@@ -44,7 +43,7 @@ _ol_TileUrlFunction_.createFromTemplate = function(template, tileGrid) {
       }
     }
   );
-};
+}
 
 
 /**
@@ -52,22 +51,21 @@ _ol_TileUrlFunction_.createFromTemplate = function(template, tileGrid) {
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-_ol_TileUrlFunction_.createFromTemplates = function(templates, tileGrid) {
+export function createFromTemplates(templates, tileGrid) {
   var len = templates.length;
   var tileUrlFunctions = new Array(len);
   for (var i = 0; i < len; ++i) {
-    tileUrlFunctions[i] = _ol_TileUrlFunction_.createFromTemplate(
-        templates[i], tileGrid);
+    tileUrlFunctions[i] = createFromTemplate(templates[i], tileGrid);
   }
-  return _ol_TileUrlFunction_.createFromTileUrlFunctions(tileUrlFunctions);
-};
+  return createFromTileUrlFunctions(tileUrlFunctions);
+}
 
 
 /**
  * @param {Array.<ol.TileUrlFunctionType>} tileUrlFunctions Tile URL Functions.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-_ol_TileUrlFunction_.createFromTileUrlFunctions = function(tileUrlFunctions) {
+export function createFromTileUrlFunctions(tileUrlFunctions) {
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];
   }
@@ -88,7 +86,7 @@ _ol_TileUrlFunction_.createFromTileUrlFunctions = function(tileUrlFunctions) {
       }
     }
   );
-};
+}
 
 
 /**
@@ -97,16 +95,16 @@ _ol_TileUrlFunction_.createFromTileUrlFunctions = function(tileUrlFunctions) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
-_ol_TileUrlFunction_.nullTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+export function nullTileUrlFunction(tileCoord, pixelRatio, projection) {
   return undefined;
-};
+}
 
 
 /**
  * @param {string} url URL.
  * @return {Array.<string>} Array of urls.
  */
-_ol_TileUrlFunction_.expandUrl = function(url) {
+export function expandUrl(url) {
   var urls = [];
   var match = /\{([a-z])-([a-z])\}/.exec(url);
   if (match) {
@@ -130,5 +128,4 @@ _ol_TileUrlFunction_.expandUrl = function(url) {
   }
   urls.push(url);
   return urls;
-};
-export default _ol_TileUrlFunction_;
+}

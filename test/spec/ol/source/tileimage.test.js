@@ -1,6 +1,6 @@
 import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
 import _ol_TileState_ from '../../../../src/ol/TileState.js';
-import _ol_TileUrlFunction_ from '../../../../src/ol/TileUrlFunction.js';
+import {createFromTemplate} from '../../../../src/ol/tileurlfunction.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
@@ -20,8 +20,7 @@ describe('ol.source.TileImage', function() {
       projection: proj,
       tileGrid: opt_tileGrid ||
           _ol_tilegrid_.createForProjection(proj, undefined, [2, 2]),
-      tileUrlFunction: _ol_TileUrlFunction_.createFromTemplate(
-          'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
+      tileUrlFunction: createFromTemplate('data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
     });
   }
 
