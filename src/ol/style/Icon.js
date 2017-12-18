@@ -9,7 +9,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import _ol_style_IconAnchorUnits_ from '../style/IconAnchorUnits.js';
 import _ol_style_IconImage_ from '../style/IconImage.js';
-import _ol_style_IconOrigin_ from '../style/IconOrigin.js';
+import IconOrigin from '../style/IconOrigin.js';
 import _ol_style_Image_ from '../style/Image.js';
 
 /**
@@ -42,7 +42,7 @@ var _ol_style_Icon_ = function(opt_options) {
    * @type {ol.style.IconOrigin}
    */
   this.anchorOrigin_ = options.anchorOrigin !== undefined ?
-    options.anchorOrigin : _ol_style_IconOrigin_.TOP_LEFT;
+    options.anchorOrigin : IconOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -122,7 +122,7 @@ var _ol_style_Icon_ = function(opt_options) {
    * @type {ol.style.IconOrigin}
    */
   this.offsetOrigin_ = options.offsetOrigin !== undefined ?
-    options.offsetOrigin : _ol_style_IconOrigin_.TOP_LEFT;
+    options.offsetOrigin : IconOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -226,19 +226,19 @@ _ol_style_Icon_.prototype.getAnchor = function() {
     }
   }
 
-  if (this.anchorOrigin_ != _ol_style_IconOrigin_.TOP_LEFT) {
+  if (this.anchorOrigin_ != IconOrigin.TOP_LEFT) {
     if (!size) {
       return null;
     }
     if (anchor === this.anchor_) {
       anchor = this.anchor_.slice();
     }
-    if (this.anchorOrigin_ == _ol_style_IconOrigin_.TOP_RIGHT ||
-        this.anchorOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
+    if (this.anchorOrigin_ == IconOrigin.TOP_RIGHT ||
+        this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT) {
       anchor[0] = -anchor[0] + size[0];
     }
-    if (this.anchorOrigin_ == _ol_style_IconOrigin_.BOTTOM_LEFT ||
-        this.anchorOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
+    if (this.anchorOrigin_ == IconOrigin.BOTTOM_LEFT ||
+        this.anchorOrigin_ == IconOrigin.BOTTOM_RIGHT) {
       anchor[1] = -anchor[1] + size[1];
     }
   }
@@ -311,19 +311,19 @@ _ol_style_Icon_.prototype.getOrigin = function() {
   }
   var offset = this.offset_;
 
-  if (this.offsetOrigin_ != _ol_style_IconOrigin_.TOP_LEFT) {
+  if (this.offsetOrigin_ != IconOrigin.TOP_LEFT) {
     var size = this.getSize();
     var iconImageSize = this.iconImage_.getSize();
     if (!size || !iconImageSize) {
       return null;
     }
     offset = offset.slice();
-    if (this.offsetOrigin_ == _ol_style_IconOrigin_.TOP_RIGHT ||
-        this.offsetOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
+    if (this.offsetOrigin_ == IconOrigin.TOP_RIGHT ||
+        this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT) {
       offset[0] = iconImageSize[0] - size[0] - offset[0];
     }
-    if (this.offsetOrigin_ == _ol_style_IconOrigin_.BOTTOM_LEFT ||
-        this.offsetOrigin_ == _ol_style_IconOrigin_.BOTTOM_RIGHT) {
+    if (this.offsetOrigin_ == IconOrigin.BOTTOM_LEFT ||
+        this.offsetOrigin_ == IconOrigin.BOTTOM_RIGHT) {
       offset[1] = iconImageSize[1] - size[1] - offset[1];
     }
   }
