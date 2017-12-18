@@ -1,7 +1,7 @@
 /**
  * @module ol/plugins
  */
-import _ol_PluginType_ from './PluginType.js';
+import PluginType from './PluginType.js';
 var _ol_plugins_ = {};
 
 /**
@@ -46,12 +46,12 @@ _ol_plugins_.getLayerRendererPlugins = function() {
 _ol_plugins_.register = function(type, plugin) {
   var plugins;
   switch (type) {
-    case _ol_PluginType_.MAP_RENDERER: {
+    case PluginType.MAP_RENDERER: {
       plugins = _ol_plugins_.mapRendererPlugins_;
       plugins.push(/** @type {olx.MapRendererPlugin} */ (plugin));
       break;
     }
-    case _ol_PluginType_.LAYER_RENDERER: {
+    case PluginType.LAYER_RENDERER: {
       plugins = _ol_plugins_.layerRendererPlugins_;
       plugins.push(/** @type {olx.LayerRendererPlugin} */ (plugin));
       break;

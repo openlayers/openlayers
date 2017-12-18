@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_PluggableMap_ from './PluggableMap.js';
-import _ol_PluginType_ from './PluginType.js';
+import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import _ol_obj_ from './obj.js';
@@ -15,8 +15,8 @@ import _ol_renderer_canvas_VectorLayer_ from './renderer/canvas/VectorLayer.js';
 import _ol_renderer_canvas_VectorTileLayer_ from './renderer/canvas/VectorTileLayer.js';
 
 
-_ol_plugins_.register(_ol_PluginType_.MAP_RENDERER, _ol_renderer_canvas_Map_);
-_ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
+_ol_plugins_.register(PluginType.MAP_RENDERER, _ol_renderer_canvas_Map_);
+_ol_plugins_.registerMultiple(PluginType.LAYER_RENDERER, [
   _ol_renderer_canvas_ImageLayer_,
   _ol_renderer_canvas_TileLayer_,
   _ol_renderer_canvas_VectorLayer_,
