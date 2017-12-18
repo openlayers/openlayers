@@ -4,7 +4,7 @@
 import {ERROR_THRESHOLD} from './common.js';
 import {inherits} from '../index.js';
 import _ol_ImageBase_ from '../ImageBase.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
@@ -100,10 +100,10 @@ var _ol_reproj_Image_ = function(sourceProj, targetProj,
   this.sourceListenerKey_ = null;
 
 
-  var state = _ol_ImageState_.LOADED;
+  var state = ImageState.LOADED;
 
   if (this.sourceImage_) {
-    state = _ol_ImageState_.IDLE;
+    state = ImageState.IDLE;
   }
 
   _ol_ImageBase_.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
@@ -116,7 +116,7 @@ inherits(_ol_reproj_Image_, _ol_ImageBase_);
  * @inheritDoc
  */
 _ol_reproj_Image_.prototype.disposeInternal = function() {
-  if (this.state == _ol_ImageState_.LOADING) {
+  if (this.state == ImageState.LOADING) {
     this.unlistenSource_();
   }
   _ol_ImageBase_.prototype.disposeInternal.call(this);
@@ -144,7 +144,7 @@ _ol_reproj_Image_.prototype.getProjection = function() {
  */
 _ol_reproj_Image_.prototype.reproject_ = function() {
   var sourceState = this.sourceImage_.getState();
-  if (sourceState == _ol_ImageState_.LOADED) {
+  if (sourceState == ImageState.LOADED) {
     var width = getWidth(this.targetExtent_) / this.targetResolution_;
     var height = getHeight(this.targetExtent_) / this.targetResolution_;
 
@@ -164,20 +164,18 @@ _ol_reproj_Image_.prototype.reproject_ = function() {
  * @inheritDoc
  */
 _ol_reproj_Image_.prototype.load = function() {
-  if (this.state == _ol_ImageState_.IDLE) {
-    this.state = _ol_ImageState_.LOADING;
+  if (this.state == ImageState.IDLE) {
+    this.state = ImageState.LOADING;
     this.changed();
 
     var sourceState = this.sourceImage_.getState();
-    if (sourceState == _ol_ImageState_.LOADED ||
-        sourceState == _ol_ImageState_.ERROR) {
+    if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
       this.reproject_();
     } else {
       this.sourceListenerKey_ = _ol_events_.listen(this.sourceImage_,
           EventType.CHANGE, function(e) {
             var sourceState = this.sourceImage_.getState();
-            if (sourceState == _ol_ImageState_.LOADED ||
-                sourceState == _ol_ImageState_.ERROR) {
+            if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
               this.unlistenSource_();
               this.reproject_();
             }

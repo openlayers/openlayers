@@ -3,9 +3,9 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_CollectionEventType_ from '../CollectionEventType.js';
+import CollectionEventType from '../CollectionEventType.js';
 import _ol_Object_ from '../Object.js';
-import _ol_ObjectEventType_ from '../ObjectEventType.js';
+import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -13,6 +13,16 @@ import {getIntersection} from '../extent.js';
 import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_State_ from '../source/State.js';
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+var Property = {
+  LAYERS: 'layers'
+};
+
 
 /**
  * @classdesc
@@ -49,7 +59,7 @@ var _ol_layer_Group_ = function(opt_options) {
   this.listenerKeys_ = {};
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_layer_Group_.Property_.LAYERS),
+      _ol_Object_.getChangeEventType(Property.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {
@@ -89,9 +99,9 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
 
   var layers = this.getLayers();
   this.layersListenerKeys_.push(
-      _ol_events_.listen(layers, _ol_CollectionEventType_.ADD,
+      _ol_events_.listen(layers, CollectionEventType.ADD,
           this.handleLayersAdd_, this),
-      _ol_events_.listen(layers, _ol_CollectionEventType_.REMOVE,
+      _ol_events_.listen(layers, CollectionEventType.REMOVE,
           this.handleLayersRemove_, this));
 
   for (var id in this.listenerKeys_) {
@@ -104,7 +114,7 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
   for (i = 0, ii = layersArray.length; i < ii; i++) {
     layer = layersArray[i];
     this.listenerKeys_[getUid(layer).toString()] = [
-      _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
+      _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
           this.handleLayerChange_, this),
       _ol_events_.listen(layer, EventType.CHANGE,
           this.handleLayerChange_, this)
@@ -123,7 +133,7 @@ _ol_layer_Group_.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = getUid(layer).toString();
   this.listenerKeys_[key] = [
-    _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
+    _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
     _ol_events_.listen(layer, EventType.CHANGE,
         this.handleLayerChange_, this)
@@ -154,10 +164,7 @@ _ol_layer_Group_.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @api
  */
 _ol_layer_Group_.prototype.getLayers = function() {
-  return (
-    /** @type {!ol.Collection.<ol.layer.Base>} */ this.get(
-        _ol_layer_Group_.Property_.LAYERS)
-  );
+  return (/** @type {!ol.Collection.<ol.layer.Base>} */ this.get(Property.LAYERS));
 };
 
 
@@ -170,7 +177,7 @@ _ol_layer_Group_.prototype.getLayers = function() {
  * @api
  */
 _ol_layer_Group_.prototype.setLayers = function(layers) {
-  this.set(_ol_layer_Group_.Property_.LAYERS, layers);
+  this.set(Property.LAYERS, layers);
 };
 
 
@@ -228,11 +235,4 @@ _ol_layer_Group_.prototype.getSourceState = function() {
   return _ol_source_State_.READY;
 };
 
-/**
- * @enum {string}
- * @private
- */
-_ol_layer_Group_.Property_ = {
-  LAYERS: 'layers'
-};
 export default _ol_layer_Group_;

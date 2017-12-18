@@ -2,7 +2,7 @@
  * @module ol/Object
  */
 import {getUid, inherits} from './index.js';
-import _ol_ObjectEventType_ from './ObjectEventType.js';
+import ObjectEventType from './ObjectEventType.js';
 import _ol_Observable_ from './Observable.js';
 import Event from './events/Event.js';
 import _ol_obj_ from './obj.js';
@@ -136,7 +136,7 @@ _ol_Object_.prototype.notify = function(key, oldValue) {
   var eventType;
   eventType = _ol_Object_.getChangeEventType(key);
   this.dispatchEvent(new _ol_Object_.Event(eventType, key, oldValue));
-  eventType = _ol_ObjectEventType_.PROPERTYCHANGE;
+  eventType = ObjectEventType.PROPERTYCHANGE;
   this.dispatchEvent(new _ol_Object_.Event(eventType, key, oldValue));
 };
 

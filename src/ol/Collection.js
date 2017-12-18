@@ -3,9 +3,18 @@
  */
 import {inherits} from './index.js';
 import AssertionError from './AssertionError.js';
-import _ol_CollectionEventType_ from './CollectionEventType.js';
+import CollectionEventType from './CollectionEventType.js';
 import _ol_Object_ from './Object.js';
 import Event from './events/Event.js';
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+var Property = {
+  LENGTH: 'length'
+};
 
 
 /**
@@ -139,9 +148,7 @@ _ol_Collection_.prototype.item = function(index) {
  * @api
  */
 _ol_Collection_.prototype.getLength = function() {
-  return (
-    /** @type {number} */ this.get(_ol_Collection_.Property_.LENGTH)
-  );
+  return (/** @type {number} */ this.get(Property.LENGTH));
 };
 
 
@@ -158,7 +165,7 @@ _ol_Collection_.prototype.insertAt = function(index, elem) {
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
-      new _ol_Collection_.Event(_ol_CollectionEventType_.ADD, elem));
+      new _ol_Collection_.Event(CollectionEventType.ADD, elem));
 };
 
 
@@ -219,7 +226,7 @@ _ol_Collection_.prototype.removeAt = function(index) {
   this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
-      new _ol_Collection_.Event(_ol_CollectionEventType_.REMOVE, prev));
+      new _ol_Collection_.Event(CollectionEventType.REMOVE, prev));
   return prev;
 };
 
@@ -239,9 +246,9 @@ _ol_Collection_.prototype.setAt = function(index, elem) {
     var prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-        new _ol_Collection_.Event(_ol_CollectionEventType_.REMOVE, prev));
+        new _ol_Collection_.Event(CollectionEventType.REMOVE, prev));
     this.dispatchEvent(
-        new _ol_Collection_.Event(_ol_CollectionEventType_.ADD, elem));
+        new _ol_Collection_.Event(CollectionEventType.ADD, elem));
   } else {
     var j;
     for (j = n; j < index; ++j) {
@@ -256,7 +263,7 @@ _ol_Collection_.prototype.setAt = function(index, elem) {
  * @private
  */
 _ol_Collection_.prototype.updateLength_ = function() {
-  this.set(_ol_Collection_.Property_.LENGTH, this.array_.length);
+  this.set(Property.LENGTH, this.array_.length);
 };
 
 
@@ -272,16 +279,6 @@ _ol_Collection_.prototype.assertUnique_ = function(elem, opt_except) {
     }
   }
 };
-
-
-/**
- * @enum {string}
- * @private
- */
-_ol_Collection_.Property_ = {
-  LENGTH: 'length'
-};
-
 
 /**
  * @classdesc

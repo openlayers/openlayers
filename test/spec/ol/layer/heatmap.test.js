@@ -1,4 +1,4 @@
-import _ol_layer_Heatmap_ from '../../../../src/ol/layer/Heatmap.js';
+import HeatmapLayer from '../../../../src/ol/layer/Heatmap.js';
 
 
 describe('ol.layer.Heatmap', function() {
@@ -6,8 +6,8 @@ describe('ol.layer.Heatmap', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_layer_Heatmap_();
-      expect(instance).to.be.an(_ol_layer_Heatmap_);
+      var instance = new HeatmapLayer();
+      expect(instance).to.be.an(HeatmapLayer);
     });
 
   });

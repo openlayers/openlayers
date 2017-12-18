@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
-import _ol_layer_Heatmap_ from '../src/ol/layer/Heatmap.js';
+import HeatmapLayer from '../src/ol/layer/Heatmap.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -9,7 +9,7 @@ import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 var blur = document.getElementById('blur');
 var radius = document.getElementById('radius');
 
-var vector = new _ol_layer_Heatmap_({
+var vector = new HeatmapLayer({
   source: new _ol_source_Vector_({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({

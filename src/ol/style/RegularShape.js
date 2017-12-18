@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_has_ from '../has.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import _ol_render_canvas_ from '../render/canvas.js';
 import _ol_style_Image_ from '../style/Image.js';
 
@@ -228,7 +228,7 @@ _ol_style_RegularShape_.prototype.getHitDetectionImageSize = function() {
  * @inheritDoc
  */
 _ol_style_RegularShape_.prototype.getImageState = function() {
-  return _ol_ImageState_.LOADED;
+  return ImageState.LOADED;
 };
 
 

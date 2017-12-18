@@ -2,13 +2,27 @@
  * @module ol/Overlay
  */
 import {inherits} from './index.js';
-import _ol_MapEventType_ from './MapEventType.js';
+import MapEventType from './MapEventType.js';
 import _ol_Object_ from './Object.js';
-import _ol_OverlayPositioning_ from './OverlayPositioning.js';
+import OverlayPositioning from './OverlayPositioning.js';
 import _ol_css_ from './css.js';
 import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
 import _ol_events_ from './events.js';
 import {containsExtent} from './extent.js';
+
+
+/**
+ * @enum {string}
+ * @protected
+ */
+var Property = {
+  ELEMENT: 'element',
+  MAP: 'map',
+  OFFSET: 'offset',
+  POSITION: 'position',
+  POSITIONING: 'positioning'
+};
+
 
 /**
  * @classdesc
@@ -31,7 +45,7 @@ import {containsExtent} from './extent.js';
  * @param {olx.OverlayOptions} options Overlay options.
  * @api
  */
-var _ol_Overlay_ = function(options) {
+var Overlay = function(options) {
 
   _ol_Object_.call(this);
 
@@ -112,23 +126,23 @@ var _ol_Overlay_ = function(options) {
   this.mapPostrenderListenerKey = null;
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_Overlay_.Property.ELEMENT),
+      this, _ol_Object_.getChangeEventType(Property.ELEMENT),
       this.handleElementChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_Overlay_.Property.MAP),
+      this, _ol_Object_.getChangeEventType(Property.MAP),
       this.handleMapChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_Overlay_.Property.OFFSET),
+      this, _ol_Object_.getChangeEventType(Property.OFFSET),
       this.handleOffsetChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_Overlay_.Property.POSITION),
+      this, _ol_Object_.getChangeEventType(Property.POSITION),
       this.handlePositionChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_Overlay_.Property.POSITIONING),
+      this, _ol_Object_.getChangeEventType(Property.POSITIONING),
       this.handlePositioningChanged, this);
 
   if (options.element !== undefined) {
@@ -139,7 +153,7 @@ var _ol_Overlay_ = function(options) {
 
   this.setPositioning(options.positioning !== undefined ?
     /** @type {ol.OverlayPositioning} */ (options.positioning) :
-    _ol_OverlayPositioning_.TOP_LEFT);
+    OverlayPositioning.TOP_LEFT);
 
   if (options.position !== undefined) {
     this.setPosition(options.position);
@@ -147,7 +161,7 @@ var _ol_Overlay_ = function(options) {
 
 };
 
-inherits(_ol_Overlay_, _ol_Object_);
+inherits(Overlay, _ol_Object_);
 
 
 /**
@@ -156,10 +170,8 @@ inherits(_ol_Overlay_, _ol_Object_);
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.getElement = function() {
-  return (
-    /** @type {Element|undefined} */ this.get(_ol_Overlay_.Property.ELEMENT)
-  );
+Overlay.prototype.getElement = function() {
+  return (/** @type {Element|undefined} */ this.get(Property.ELEMENT));
 };
 
 
@@ -168,7 +180,7 @@ _ol_Overlay_.prototype.getElement = function() {
  * @return {number|string|undefined} Id.
  * @api
  */
-_ol_Overlay_.prototype.getId = function() {
+Overlay.prototype.getId = function() {
   return this.id;
 };
 
@@ -179,10 +191,8 @@ _ol_Overlay_.prototype.getId = function() {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.getMap = function() {
-  return (
-    /** @type {ol.PluggableMap|undefined} */ this.get(_ol_Overlay_.Property.MAP)
-  );
+Overlay.prototype.getMap = function() {
+  return (/** @type {ol.PluggableMap|undefined} */ this.get(Property.MAP));
 };
 
 
@@ -192,10 +202,8 @@ _ol_Overlay_.prototype.getMap = function() {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.getOffset = function() {
-  return (
-    /** @type {Array.<number>} */ this.get(_ol_Overlay_.Property.OFFSET)
-  );
+Overlay.prototype.getOffset = function() {
+  return (/** @type {Array.<number>} */ this.get(Property.OFFSET));
 };
 
 
@@ -206,10 +214,8 @@ _ol_Overlay_.prototype.getOffset = function() {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.getPosition = function() {
-  return (
-    /** @type {ol.Coordinate|undefined} */ this.get(_ol_Overlay_.Property.POSITION)
-  );
+Overlay.prototype.getPosition = function() {
+  return (/** @type {ol.Coordinate|undefined} */ this.get(Property.POSITION));
 };
 
 
@@ -220,17 +226,15 @@ _ol_Overlay_.prototype.getPosition = function() {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.getPositioning = function() {
-  return (
-    /** @type {ol.OverlayPositioning} */ this.get(_ol_Overlay_.Property.POSITIONING)
-  );
+Overlay.prototype.getPositioning = function() {
+  return (/** @type {ol.OverlayPositioning} */ this.get(Property.POSITIONING));
 };
 
 
 /**
  * @protected
  */
-_ol_Overlay_.prototype.handleElementChanged = function() {
+Overlay.prototype.handleElementChanged = function() {
   removeChildren(this.element);
   var element = this.getElement();
   if (element) {
@@ -242,7 +246,7 @@ _ol_Overlay_.prototype.handleElementChanged = function() {
 /**
  * @protected
  */
-_ol_Overlay_.prototype.handleMapChanged = function() {
+Overlay.prototype.handleMapChanged = function() {
   if (this.mapPostrenderListenerKey) {
     removeNode(this.element);
     _ol_events_.unlistenByKey(this.mapPostrenderListenerKey);
@@ -251,7 +255,7 @@ _ol_Overlay_.prototype.handleMapChanged = function() {
   var map = this.getMap();
   if (map) {
     this.mapPostrenderListenerKey = _ol_events_.listen(map,
-        _ol_MapEventType_.POSTRENDER, this.render, this);
+        MapEventType.POSTRENDER, this.render, this);
     this.updatePixelPosition();
     var container = this.stopEvent ?
       map.getOverlayContainerStopEvent() : map.getOverlayContainer();
@@ -267,7 +271,7 @@ _ol_Overlay_.prototype.handleMapChanged = function() {
 /**
  * @protected
  */
-_ol_Overlay_.prototype.render = function() {
+Overlay.prototype.render = function() {
   this.updatePixelPosition();
 };
 
@@ -275,7 +279,7 @@ _ol_Overlay_.prototype.render = function() {
 /**
  * @protected
  */
-_ol_Overlay_.prototype.handleOffsetChanged = function() {
+Overlay.prototype.handleOffsetChanged = function() {
   this.updatePixelPosition();
 };
 
@@ -283,9 +287,9 @@ _ol_Overlay_.prototype.handleOffsetChanged = function() {
 /**
  * @protected
  */
-_ol_Overlay_.prototype.handlePositionChanged = function() {
+Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition();
-  if (this.get(_ol_Overlay_.Property.POSITION) && this.autoPan) {
+  if (this.get(Property.POSITION) && this.autoPan) {
     this.panIntoView();
   }
 };
@@ -294,7 +298,7 @@ _ol_Overlay_.prototype.handlePositionChanged = function() {
 /**
  * @protected
  */
-_ol_Overlay_.prototype.handlePositioningChanged = function() {
+Overlay.prototype.handlePositioningChanged = function() {
   this.updatePixelPosition();
 };
 
@@ -305,8 +309,8 @@ _ol_Overlay_.prototype.handlePositioningChanged = function() {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.setElement = function(element) {
-  this.set(_ol_Overlay_.Property.ELEMENT, element);
+Overlay.prototype.setElement = function(element) {
+  this.set(Property.ELEMENT, element);
 };
 
 
@@ -316,8 +320,8 @@ _ol_Overlay_.prototype.setElement = function(element) {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.setMap = function(map) {
-  this.set(_ol_Overlay_.Property.MAP, map);
+Overlay.prototype.setMap = function(map) {
+  this.set(Property.MAP, map);
 };
 
 
@@ -327,8 +331,8 @@ _ol_Overlay_.prototype.setMap = function(map) {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.setOffset = function(offset) {
-  this.set(_ol_Overlay_.Property.OFFSET, offset);
+Overlay.prototype.setOffset = function(offset) {
+  this.set(Property.OFFSET, offset);
 };
 
 
@@ -340,8 +344,8 @@ _ol_Overlay_.prototype.setOffset = function(offset) {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.setPosition = function(position) {
-  this.set(_ol_Overlay_.Property.POSITION, position);
+Overlay.prototype.setPosition = function(position) {
+  this.set(Property.POSITION, position);
 };
 
 
@@ -350,7 +354,7 @@ _ol_Overlay_.prototype.setPosition = function(position) {
  * (if necessary).
  * @protected
  */
-_ol_Overlay_.prototype.panIntoView = function() {
+Overlay.prototype.panIntoView = function() {
   var map = this.getMap();
 
   if (!map || !map.getTargetElement()) {
@@ -410,7 +414,7 @@ _ol_Overlay_.prototype.panIntoView = function() {
  * @return {ol.Extent} The extent.
  * @protected
  */
-_ol_Overlay_.prototype.getRect = function(element, size) {
+Overlay.prototype.getRect = function(element, size) {
   var box = element.getBoundingClientRect();
   var offsetX = box.left + window.pageXOffset;
   var offsetY = box.top + window.pageYOffset;
@@ -430,8 +434,8 @@ _ol_Overlay_.prototype.getRect = function(element, size) {
  * @observable
  * @api
  */
-_ol_Overlay_.prototype.setPositioning = function(positioning) {
-  this.set(_ol_Overlay_.Property.POSITIONING, positioning);
+Overlay.prototype.setPositioning = function(positioning) {
+  this.set(Property.POSITIONING, positioning);
 };
 
 
@@ -440,7 +444,7 @@ _ol_Overlay_.prototype.setPositioning = function(positioning) {
  * @param {boolean} visible Element visibility.
  * @protected
  */
-_ol_Overlay_.prototype.setVisible = function(visible) {
+Overlay.prototype.setVisible = function(visible) {
   if (this.rendered.visible !== visible) {
     this.element.style.display = visible ? '' : 'none';
     this.rendered.visible = visible;
@@ -452,7 +456,7 @@ _ol_Overlay_.prototype.setVisible = function(visible) {
  * Update pixel position.
  * @protected
  */
-_ol_Overlay_.prototype.updatePixelPosition = function() {
+Overlay.prototype.updatePixelPosition = function() {
   var map = this.getMap();
   var position = this.getPosition();
   if (!map || !map.isRendered() || !position) {
@@ -471,7 +475,7 @@ _ol_Overlay_.prototype.updatePixelPosition = function() {
  * @param {ol.Size|undefined} mapSize The map size.
  * @protected
  */
-_ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
+Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   var style = this.element.style;
   var offset = this.getOffset();
 
@@ -481,9 +485,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
 
   var offsetX = offset[0];
   var offsetY = offset[1];
-  if (positioning == _ol_OverlayPositioning_.BOTTOM_RIGHT ||
-      positioning == _ol_OverlayPositioning_.CENTER_RIGHT ||
-      positioning == _ol_OverlayPositioning_.TOP_RIGHT) {
+  if (positioning == OverlayPositioning.BOTTOM_RIGHT ||
+      positioning == OverlayPositioning.CENTER_RIGHT ||
+      positioning == OverlayPositioning.TOP_RIGHT) {
     if (this.rendered.left_ !== '') {
       this.rendered.left_ = style.left = '';
     }
@@ -495,9 +499,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered.right_ !== '') {
       this.rendered.right_ = style.right = '';
     }
-    if (positioning == _ol_OverlayPositioning_.BOTTOM_CENTER ||
-        positioning == _ol_OverlayPositioning_.CENTER_CENTER ||
-        positioning == _ol_OverlayPositioning_.TOP_CENTER) {
+    if (positioning == OverlayPositioning.BOTTOM_CENTER ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.TOP_CENTER) {
       offsetX -= this.element.offsetWidth / 2;
     }
     var left = Math.round(pixel[0] + offsetX) + 'px';
@@ -505,9 +509,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
       this.rendered.left_ = style.left = left;
     }
   }
-  if (positioning == _ol_OverlayPositioning_.BOTTOM_LEFT ||
-      positioning == _ol_OverlayPositioning_.BOTTOM_CENTER ||
-      positioning == _ol_OverlayPositioning_.BOTTOM_RIGHT) {
+  if (positioning == OverlayPositioning.BOTTOM_LEFT ||
+      positioning == OverlayPositioning.BOTTOM_CENTER ||
+      positioning == OverlayPositioning.BOTTOM_RIGHT) {
     if (this.rendered.top_ !== '') {
       this.rendered.top_ = style.top = '';
     }
@@ -519,9 +523,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered.bottom_ !== '') {
       this.rendered.bottom_ = style.bottom = '';
     }
-    if (positioning == _ol_OverlayPositioning_.CENTER_LEFT ||
-        positioning == _ol_OverlayPositioning_.CENTER_CENTER ||
-        positioning == _ol_OverlayPositioning_.CENTER_RIGHT) {
+    if (positioning == OverlayPositioning.CENTER_LEFT ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.CENTER_RIGHT) {
       offsetY -= this.element.offsetHeight / 2;
     }
     var top = Math.round(pixel[1] + offsetY) + 'px';
@@ -537,20 +541,8 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
  * @public
  * @return {olx.OverlayOptions} overlay options
  */
-_ol_Overlay_.prototype.getOptions = function() {
+Overlay.prototype.getOptions = function() {
   return this.options;
 };
 
-
-/**
- * @enum {string}
- * @protected
- */
-_ol_Overlay_.Property = {
-  ELEMENT: 'element',
-  MAP: 'map',
-  OFFSET: 'offset',
-  POSITION: 'position',
-  POSITIONING: 'positioning'
-};
-export default _ol_Overlay_;
+export default Overlay;

@@ -3,15 +3,15 @@
  */
 import {getUid, inherits} from './index.js';
 import _ol_Collection_ from './Collection.js';
-import _ol_CollectionEventType_ from './CollectionEventType.js';
+import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
-import _ol_MapEventType_ from './MapEventType.js';
+import MapEventType from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
-import _ol_ObjectEventType_ from './ObjectEventType.js';
+import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
 import _ol_View_ from './View.js';
 import _ol_ViewHint_ from './ViewHint.js';
@@ -359,7 +359,7 @@ var _ol_PluggableMap_ = function(options) {
         control.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.controls, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.controls, CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -367,7 +367,7 @@ var _ol_PluggableMap_ = function(options) {
         event.element.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.controls, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.controls, CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -384,7 +384,7 @@ var _ol_PluggableMap_ = function(options) {
         interaction.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.interactions, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.interactions, CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -392,7 +392,7 @@ var _ol_PluggableMap_ = function(options) {
         event.element.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.interactions, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.interactions, CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -402,7 +402,7 @@ var _ol_PluggableMap_ = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  _ol_events_.listen(this.overlays_, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.overlays_, CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -410,7 +410,7 @@ var _ol_PluggableMap_ = function(options) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  _ol_events_.listen(this.overlays_, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.overlays_, CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -1072,7 +1072,7 @@ _ol_PluggableMap_.prototype.handleViewChanged_ = function() {
   if (view) {
     this.viewport_.setAttribute('data-view', getUid(view));
     this.viewPropertyListenerKey_ = _ol_events_.listen(
-        view, _ol_ObjectEventType_.PROPERTYCHANGE,
+        view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = _ol_events_.listen(
         view, EventType.CHANGE,
@@ -1094,7 +1094,7 @@ _ol_PluggableMap_.prototype.handleLayerGroupChanged_ = function() {
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       _ol_events_.listen(
-          layerGroup, _ol_ObjectEventType_.PROPERTYCHANGE,
+          layerGroup, ObjectEventType.PROPERTYCHANGE,
           this.render, this),
       _ol_events_.listen(
           layerGroup, EventType.CHANGE,
@@ -1254,7 +1254,7 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
                   !equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
-            new MapEvent(_ol_MapEventType_.MOVESTART, this, previousFrameState));
+            new MapEvent(MapEventType.MOVESTART, this, previousFrameState));
         this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
       }
     }
@@ -1266,13 +1266,13 @@ _ol_PluggableMap_.prototype.renderFrame_ = function(time) {
 
     if (idle) {
       this.dispatchEvent(
-          new MapEvent(_ol_MapEventType_.MOVEEND, this, frameState));
+          new MapEvent(MapEventType.MOVEEND, this, frameState));
       clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new MapEvent(_ol_MapEventType_.POSTRENDER, this, frameState));
+      new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 

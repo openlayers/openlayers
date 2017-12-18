@@ -1,5 +1,5 @@
 import _ol_Map_ from '../../../src/ol/Map.js';
-import _ol_Overlay_ from '../../../src/ol/Overlay.js';
+import Overlay from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
 
 
@@ -38,13 +38,13 @@ describe('ol.Overlay', function() {
   describe('constructor', function() {
 
     it('can be constructed with minimal arguments', function() {
-      var instance = new _ol_Overlay_({});
-      expect(instance).to.be.an(_ol_Overlay_);
+      var instance = new Overlay({});
+      expect(instance).to.be.an(Overlay);
     });
 
     it('can be constructed with className', function() {
-      var instance = new _ol_Overlay_({className: 'my-class'});
-      expect(instance).to.be.an(_ol_Overlay_);
+      var instance = new Overlay({className: 'my-class'});
+      expect(instance).to.be.an(Overlay);
       expect(instance.element.className).to.be('my-class');
     });
 
@@ -61,14 +61,14 @@ describe('ol.Overlay', function() {
     });
 
     it('returns the overlay identifier', function() {
-      overlay = new _ol_Overlay_({
+      overlay = new Overlay({
         element: target,
         position: [0, 0]
       });
       map.addOverlay(overlay);
       expect(overlay.getId()).to.be(undefined);
       map.removeOverlay(overlay);
-      overlay = new _ol_Overlay_({
+      overlay = new Overlay({
         id: 'foo',
         element: target,
         position: [0, 0]
@@ -90,7 +90,7 @@ describe('ol.Overlay', function() {
     });
 
     it('changes the CSS display value', function() {
-      overlay = new _ol_Overlay_({
+      overlay = new Overlay({
         element: target,
         position: [0, 0]
       });

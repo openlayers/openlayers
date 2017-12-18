@@ -22,8 +22,8 @@ import _ol_math_ from '../math.js';
 import {get as getProjection} from '../proj.js';
 import _ol_style_Fill_ from '../style/Fill.js';
 import _ol_style_Icon_ from '../style/Icon.js';
-import _ol_style_IconAnchorUnits_ from '../style/IconAnchorUnits.js';
-import _ol_style_IconOrigin_ from '../style/IconOrigin.js';
+import IconAnchorUnits from '../style/IconAnchorUnits.js';
+import IconOrigin from '../style/IconOrigin.js';
 import _ol_style_Stroke_ from '../style/Stroke.js';
 import _ol_style_Style_ from '../style/Style.js';
 import _ol_style_Text_ from '../style/Text.js';
@@ -161,16 +161,14 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.IconAnchorUnits}
    * @private
    */
-  KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
-      _ol_style_IconAnchorUnits_.PIXELS;
+  KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ = IconAnchorUnits.PIXELS;
 
   /**
    * @const
    * @type {ol.style.IconAnchorUnits}
    * @private
    */
-  KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
-      _ol_style_IconAnchorUnits_.PIXELS;
+  KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ = IconAnchorUnits.PIXELS;
 
   /**
    * @const
@@ -201,7 +199,7 @@ KML.createStyleDefaults_ = function() {
    */
   KML.DEFAULT_IMAGE_STYLE_ = new _ol_style_Icon_({
     anchor: KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
-    anchorOrigin: _ol_style_IconOrigin_.BOTTOM_LEFT,
+    anchorOrigin: IconOrigin.BOTTOM_LEFT,
     anchorXUnits: KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
     anchorYUnits: KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
     crossOrigin: 'anonymous',
@@ -280,9 +278,9 @@ KML.createStyleDefaults_ = function() {
  * @private
  */
 KML.ICON_ANCHOR_UNITS_MAP_ = {
-  'fraction': _ol_style_IconAnchorUnits_.FRACTION,
-  'pixels': _ol_style_IconAnchorUnits_.PIXELS,
-  'insetPixels': _ol_style_IconAnchorUnits_.PIXELS
+  'fraction': IconAnchorUnits.FRACTION,
+  'pixels': IconAnchorUnits.PIXELS,
+  'insetPixels': IconAnchorUnits.PIXELS
 };
 
 
@@ -509,15 +507,15 @@ KML.readVec2_ = function(node) {
   var origin;
   if (xunits !== 'insetPixels') {
     if (yunits !== 'insetPixels') {
-      origin = _ol_style_IconOrigin_.BOTTOM_LEFT;
+      origin = IconOrigin.BOTTOM_LEFT;
     } else {
-      origin = _ol_style_IconOrigin_.TOP_LEFT;
+      origin = IconOrigin.TOP_LEFT;
     }
   } else {
     if (yunits !== 'insetPixels') {
-      origin = _ol_style_IconOrigin_.BOTTOM_RIGHT;
+      origin = IconOrigin.BOTTOM_RIGHT;
     } else {
-      origin = _ol_style_IconOrigin_.TOP_RIGHT;
+      origin = IconOrigin.TOP_RIGHT;
     }
   }
   return {
@@ -579,7 +577,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
     src = KML.DEFAULT_IMAGE_STYLE_SRC_;
   }
   var anchor, anchorXUnits, anchorYUnits;
-  var anchorOrigin = _ol_style_IconOrigin_.BOTTOM_LEFT;
+  var anchorOrigin = IconOrigin.BOTTOM_LEFT;
   var hotSpot = /** @type {ol.KMLVec2_|undefined} */
       (object['hotSpot']);
   if (hotSpot) {
@@ -593,8 +591,8 @@ KML.IconStyleParser_ = function(node, objectStack) {
     anchorYUnits = KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
     anchor = [0.5, 0];
-    anchorXUnits = _ol_style_IconAnchorUnits_.FRACTION;
-    anchorYUnits = _ol_style_IconAnchorUnits_.FRACTION;
+    anchorXUnits = IconAnchorUnits.FRACTION;
+    anchorYUnits = IconAnchorUnits.FRACTION;
   }
 
   var offset;
@@ -640,7 +638,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
       anchorYUnits: anchorYUnits,
       crossOrigin: 'anonymous', // FIXME should this be configurable?
       offset: offset,
-      offsetOrigin: _ol_style_IconOrigin_.BOTTOM_LEFT,
+      offsetOrigin: IconOrigin.BOTTOM_LEFT,
       rotation: rotation,
       scale: scale,
       size: size,
@@ -2279,9 +2277,9 @@ KML.writeIconStyle_ = function(node, style, objectStack) {
     if (anchor && (anchor[0] !== size[0] / 2 || anchor[1] !== size[1] / 2)) {
       var /** @type {ol.KMLVec2_} */ hotSpot = {
         x: anchor[0],
-        xunits: _ol_style_IconAnchorUnits_.PIXELS,
+        xunits: IconAnchorUnits.PIXELS,
         y: size[1] - anchor[1],
-        yunits: _ol_style_IconAnchorUnits_.PIXELS
+        yunits: IconAnchorUnits.PIXELS
       };
       properties['hotSpot'] = hotSpot;
     }

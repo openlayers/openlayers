@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -70,7 +70,7 @@ _ol_source_ImageStatic_.prototype.getImageInternal = function(extent, resolution
  * @inheritDoc
  */
 _ol_source_ImageStatic_.prototype.handleImageChange = function(evt) {
-  if (this.image_.getState() == _ol_ImageState_.LOADED) {
+  if (this.image_.getState() == ImageState.LOADED) {
     var imageExtent = this.image_.getExtent();
     var image = this.image_.getImage();
     var imageWidth, imageHeight;

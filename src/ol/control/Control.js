@@ -2,7 +2,7 @@
  * @module ol/control/Control
  */
 import {inherits, nullFunction} from '../index.js';
-import _ol_MapEventType_ from '../MapEventType.js';
+import MapEventType from '../MapEventType.js';
 import _ol_Object_ from '../Object.js';
 import {removeNode} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -120,7 +120,7 @@ Control.prototype.setMap = function(map) {
     target.appendChild(this.element);
     if (this.render !== nullFunction) {
       this.listenerKeys.push(_ol_events_.listen(map,
-          _ol_MapEventType_.POSTRENDER, this.render, this));
+          MapEventType.POSTRENDER, this.render, this));
     }
     map.render();
   }

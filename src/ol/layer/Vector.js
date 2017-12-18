@@ -8,6 +8,16 @@ import _ol_layer_VectorRenderType_ from '../layer/VectorRenderType.js';
 import _ol_obj_ from '../obj.js';
 import _ol_style_Style_ from '../style/Style.js';
 
+
+/**
+ * @enum {string}
+ * @private
+ */
+var Property = {
+  RENDER_ORDER: 'renderOrder'
+};
+
+
 /**
  * @classdesc
  * Vector data that is rendered client-side.
@@ -123,9 +133,7 @@ _ol_layer_Vector_.prototype.getRenderBuffer = function() {
  *     order.
  */
 _ol_layer_Vector_.prototype.getRenderOrder = function() {
-  return (
-  /** @type {ol.RenderOrderFunction|null|undefined} */ this.get(_ol_layer_Vector_.Property_.RENDER_ORDER)
-  );
+  return (/** @type {ol.RenderOrderFunction|null|undefined} */ this.get(Property.RENDER_ORDER));
 };
 
 
@@ -183,7 +191,7 @@ _ol_layer_Vector_.prototype.getUpdateWhileInteracting = function() {
  *     Render order.
  */
 _ol_layer_Vector_.prototype.setRenderOrder = function(renderOrder) {
-  this.set(_ol_layer_Vector_.Property_.RENDER_ORDER, renderOrder);
+  this.set(Property.RENDER_ORDER, renderOrder);
 };
 
 
@@ -214,11 +222,4 @@ _ol_layer_Vector_.prototype.getRenderMode = function() {
 };
 
 
-/**
- * @enum {string}
- * @private
- */
-_ol_layer_Vector_.Property_ = {
-  RENDER_ORDER: 'renderOrder'
-};
 export default _ol_layer_Vector_;

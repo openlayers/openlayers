@@ -4,12 +4,12 @@
 import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_PluggableMap_ from '../PluggableMap.js';
-import _ol_MapEventType_ from '../MapEventType.js';
+import MapEventType from '../MapEventType.js';
 import _ol_MapProperty_ from '../MapProperty.js';
 import _ol_Object_ from '../Object.js';
-import _ol_ObjectEventType_ from '../ObjectEventType.js';
-import _ol_Overlay_ from '../Overlay.js';
-import _ol_OverlayPositioning_ from '../OverlayPositioning.js';
+import ObjectEventType from '../ObjectEventType.js';
+import Overlay from '../Overlay.js';
+import OverlayPositioning from '../OverlayPositioning.js';
 import _ol_ViewProperty_ from '../ViewProperty.js';
 import Control from '../control/Control.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -140,9 +140,9 @@ var OverviewMap = function(opt_options) {
    * @type {ol.Overlay}
    * @private
    */
-  this.boxOverlay_ = new _ol_Overlay_({
+  this.boxOverlay_ = new Overlay({
     position: [0, 0],
-    positioning: _ol_OverlayPositioning_.BOTTOM_LEFT,
+    positioning: OverlayPositioning.BOTTOM_LEFT,
     element: box
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
@@ -227,7 +227,7 @@ OverviewMap.prototype.setMap = function(map) {
   if (map) {
     this.ovmap_.setTarget(this.ovmapDiv_);
     this.listenerKeys.push(_ol_events_.listen(
-        map, _ol_ObjectEventType_.PROPERTYCHANGE,
+        map, ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked
@@ -504,7 +504,7 @@ OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    _ol_events_.listenOnce(ovmap, _ol_MapEventType_.POSTRENDER,
+    _ol_events_.listenOnce(ovmap, MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
         },

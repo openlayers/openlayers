@@ -3,7 +3,7 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {inherits} from '../index.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import _ol_array_ from '../array.js';
 import Event from '../events/Event.js';
 import {equals} from '../extent.js';
@@ -142,17 +142,17 @@ _ol_source_Image_.prototype.getImageInternal = function(extent, resolution, pixe
 _ol_source_Image_.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   switch (image.getState()) {
-    case _ol_ImageState_.LOADING:
+    case ImageState.LOADING:
       this.dispatchEvent(
           new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADSTART,
               image));
       break;
-    case _ol_ImageState_.LOADED:
+    case ImageState.LOADED:
       this.dispatchEvent(
           new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADEND,
               image));
       break;
-    case _ol_ImageState_.ERROR:
+    case ImageState.ERROR:
       this.dispatchEvent(
           new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADERROR,
               image));
