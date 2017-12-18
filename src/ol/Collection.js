@@ -8,7 +8,6 @@ import _ol_Object_ from './Object.js';
 import Event from './events/Event.js';
 
 
-
 /**
  * @enum {string}
  * @private

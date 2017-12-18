@@ -14,6 +14,16 @@ import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_State_ from '../source/State.js';
 
+
+/**
+ * @enum {string}
+ * @private
+ */
+var Property = {
+  LAYERS: 'layers'
+};
+
+
 /**
  * @classdesc
  * A {@link ol.Collection} of layers that are handled together.
@@ -49,7 +59,7 @@ var _ol_layer_Group_ = function(opt_options) {
   this.listenerKeys_ = {};
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_layer_Group_.Property_.LAYERS),
+      _ol_Object_.getChangeEventType(Property.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {
@@ -154,10 +164,7 @@ _ol_layer_Group_.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @api
  */
 _ol_layer_Group_.prototype.getLayers = function() {
-  return (
-    /** @type {!ol.Collection.<ol.layer.Base>} */ this.get(
-        _ol_layer_Group_.Property_.LAYERS)
-  );
+  return (/** @type {!ol.Collection.<ol.layer.Base>} */ this.get(Property.LAYERS));
 };
 
 
@@ -170,7 +177,7 @@ _ol_layer_Group_.prototype.getLayers = function() {
  * @api
  */
 _ol_layer_Group_.prototype.setLayers = function(layers) {
-  this.set(_ol_layer_Group_.Property_.LAYERS, layers);
+  this.set(Property.LAYERS, layers);
 };
 
 
@@ -228,11 +235,4 @@ _ol_layer_Group_.prototype.getSourceState = function() {
   return _ol_source_State_.READY;
 };
 
-/**
- * @enum {string}
- * @private
- */
-_ol_layer_Group_.Property_ = {
-  LAYERS: 'layers'
-};
 export default _ol_layer_Group_;
