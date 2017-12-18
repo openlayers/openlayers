@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_interaction_ from '../src/ol/interaction.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_interaction_Translate_ from '../src/ol/interaction/Translate.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
@@ -28,7 +28,7 @@ var translate = new _ol_interaction_Translate_({
 });
 
 var map = new _ol_Map_({
-  interactions: _ol_interaction_.defaults().extend([select, translate]),
+  interactions: defaultInteractions().extend([select, translate]),
   layers: [raster, vector],
   target: 'map',
   view: new _ol_View_({

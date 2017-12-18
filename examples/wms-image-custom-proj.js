@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_control_ from '../src/ol/control.js';
+import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -64,7 +64,7 @@ var layers = [
 ];
 
 var map = new _ol_Map_({
-  controls: _ol_control_.defaults().extend([
+  controls: defaultControls().extend([
     new ScaleLine()
   ]),
   layers: layers,

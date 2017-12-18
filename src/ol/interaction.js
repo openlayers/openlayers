@@ -12,7 +12,6 @@ import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
 import _ol_interaction_MouseWheelZoom_ from './interaction/MouseWheelZoom.js';
 import _ol_interaction_PinchRotate_ from './interaction/PinchRotate.js';
 import _ol_interaction_PinchZoom_ from './interaction/PinchZoom.js';
-var _ol_interaction_ = {};
 
 
 /**
@@ -38,7 +37,7 @@ var _ol_interaction_ = {};
  * interactions to be used with the ol.Map constructor's interactions option.
  * @api
  */
-_ol_interaction_.defaults = function(opt_options) {
+export function defaults(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
@@ -110,5 +109,4 @@ _ol_interaction_.defaults = function(opt_options) {
 
   return interactions;
 
-};
-export default _ol_interaction_;
+}

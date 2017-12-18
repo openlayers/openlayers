@@ -4,8 +4,8 @@
 import {inherits} from './index.js';
 import _ol_PluggableMap_ from './PluggableMap.js';
 import _ol_PluginType_ from './PluginType.js';
-import _ol_control_ from './control.js';
-import _ol_interaction_ from './interaction.js';
+import {defaults as defaultControls} from './control.js';
+import {defaults as defaultInteractions} from './interaction.js';
 import _ol_obj_ from './obj.js';
 import _ol_plugins_ from './plugins.js';
 import _ol_renderer_canvas_ImageLayer_ from './renderer/canvas/ImageLayer.js';
@@ -87,10 +87,10 @@ _ol_plugins_.registerMultiple(_ol_PluginType_.LAYER_RENDERER, [
 var _ol_Map_ = function(options) {
   options = _ol_obj_.assign({}, options);
   if (!options.controls) {
-    options.controls = _ol_control_.defaults();
+    options.controls = defaultControls();
   }
   if (!options.interactions) {
-    options.interactions = _ol_interaction_.defaults();
+    options.interactions = defaultInteractions();
   }
 
   _ol_PluggableMap_.call(this, options);

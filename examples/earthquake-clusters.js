@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import KML from '../src/ol/format/KML.js';
-import _ol_interaction_ from '../src/ol/interaction.js';
+import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -142,7 +142,7 @@ var raster = new _ol_layer_Tile_({
 
 var map = new _ol_Map_({
   layers: [raster, vector],
-  interactions: _ol_interaction_.defaults().extend([new _ol_interaction_Select_({
+  interactions: defaultInteractions().extend([new _ol_interaction_Select_({
     condition: function(evt) {
       return  evt.type == 'pointermove' ||
           evt.type == 'singleclick';
