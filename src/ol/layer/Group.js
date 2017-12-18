@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_CollectionEventType_ from '../CollectionEventType.js';
+import CollectionEventType from '../CollectionEventType.js';
 import _ol_Object_ from '../Object.js';
 import _ol_ObjectEventType_ from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
@@ -89,9 +89,9 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
 
   var layers = this.getLayers();
   this.layersListenerKeys_.push(
-      _ol_events_.listen(layers, _ol_CollectionEventType_.ADD,
+      _ol_events_.listen(layers, CollectionEventType.ADD,
           this.handleLayersAdd_, this),
-      _ol_events_.listen(layers, _ol_CollectionEventType_.REMOVE,
+      _ol_events_.listen(layers, CollectionEventType.REMOVE,
           this.handleLayersRemove_, this));
 
   for (var id in this.listenerKeys_) {

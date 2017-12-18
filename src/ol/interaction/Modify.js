@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_CollectionEventType_ from '../CollectionEventType.js';
+import CollectionEventType from '../CollectionEventType.js';
 import _ol_Feature_ from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
@@ -214,9 +214,9 @@ var _ol_interaction_Modify_ = function(options) {
   this.features_ = features;
 
   this.features_.forEach(this.addFeature_, this);
-  _ol_events_.listen(this.features_, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.features_, CollectionEventType.ADD,
       this.handleFeatureAdd_, this);
-  _ol_events_.listen(this.features_, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.features_, CollectionEventType.REMOVE,
       this.handleFeatureRemove_, this);
 
   /**

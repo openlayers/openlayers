@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_CollectionEventType_ from '../CollectionEventType.js';
+import CollectionEventType from '../CollectionEventType.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -309,9 +309,9 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
   if (map) {
     if (this.features_) {
       keys.push(
-          _ol_events_.listen(this.features_, _ol_CollectionEventType_.ADD,
+          _ol_events_.listen(this.features_, CollectionEventType.ADD,
               this.handleFeatureAdd_, this),
-          _ol_events_.listen(this.features_, _ol_CollectionEventType_.REMOVE,
+          _ol_events_.listen(this.features_, CollectionEventType.REMOVE,
               this.handleFeatureRemove_, this)
       );
     } else if (this.source_) {

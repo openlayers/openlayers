@@ -2,7 +2,7 @@
  * @module ol/interaction/Select
  */
 import {getUid, inherits} from '../index.js';
-import _ol_CollectionEventType_ from '../CollectionEventType.js';
+import CollectionEventType from '../CollectionEventType.js';
 import _ol_array_ from '../array.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -135,9 +135,9 @@ var _ol_interaction_Select_ = function(opt_options) {
   this.featureLayerAssociation_ = {};
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
-  _ol_events_.listen(features, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(features, CollectionEventType.ADD,
       this.addFeature_, this);
-  _ol_events_.listen(features, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(features, CollectionEventType.REMOVE,
       this.removeFeature_, this);
 
 };

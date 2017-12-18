@@ -1,6 +1,6 @@
 import _ol_events_ from '../../../src/ol/events.js';
 import _ol_Collection_ from '../../../src/ol/Collection.js';
-import _ol_CollectionEventType_ from '../../../src/ol/CollectionEventType.js';
+import CollectionEventType from '../../../src/ol/CollectionEventType.js';
 
 
 describe('ol.collection', function() {
@@ -129,7 +129,7 @@ describe('ol.collection', function() {
     it('fires a remove event', function() {
       var collection = new _ol_Collection_([0, 1, 2]);
       var cb = sinon.spy();
-      _ol_events_.listen(collection, _ol_CollectionEventType_.REMOVE, cb);
+      _ol_events_.listen(collection, CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb).to.be.called();
       expect(cb.lastCall.args[0].element).to.eql(1);
@@ -152,11 +152,11 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new _ol_Collection_(['a', 'b']);
       var added, removed;
-      _ol_events_.listen(collection, _ol_CollectionEventType_.ADD, function(e) {
+      _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
         added = e.element;
       });
       _ol_events_.listen(
-          collection, _ol_CollectionEventType_.REMOVE, function(e) {
+          collection, CollectionEventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.setAt(1, 1);
@@ -170,7 +170,7 @@ describe('ol.collection', function() {
       var collection = new _ol_Collection_(['a']);
       var removed;
       _ol_events_.listen(
-          collection, _ol_CollectionEventType_.REMOVE, function(e) {
+          collection, CollectionEventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.pop();
@@ -183,7 +183,7 @@ describe('ol.collection', function() {
       var collection = new _ol_Collection_([0, 2]);
       var added;
       _ol_events_.listen(
-          collection, _ol_CollectionEventType_.ADD, function(e) {
+          collection, CollectionEventType.ADD, function(e) {
             added = e.element;
           });
       collection.insertAt(1, 1);
@@ -195,7 +195,7 @@ describe('ol.collection', function() {
     it('triggers events properly', function() {
       var added = [];
       _ol_events_.listen(
-          collection, _ol_CollectionEventType_.ADD, function(e) {
+          collection, CollectionEventType.ADD, function(e) {
             added.push(e.element);
           });
       collection.setAt(2, 0);
@@ -244,7 +244,7 @@ describe('ol.collection', function() {
     it('triggers add when pushing', function() {
       var collection = new _ol_Collection_();
       var elem;
-      _ol_events_.listen(collection, _ol_CollectionEventType_.ADD, function(e) {
+      _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
         elem = e.element;
       });
       var length = collection.push(1);
@@ -261,8 +261,8 @@ describe('ol.collection', function() {
     });
     describe('setAt', function() {
       it('triggers remove', function() {
-        _ol_events_.listen(collection, _ol_CollectionEventType_.ADD, cb1);
-        _ol_events_.listen(collection, _ol_CollectionEventType_.REMOVE, cb2);
+        _ol_events_.listen(collection, CollectionEventType.ADD, cb1);
+        _ol_events_.listen(collection, CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
         expect(cb2.lastCall.args[0].element).to.eql(1);
         expect(cb1.lastCall.args[0].element).to.eql(2);
@@ -270,7 +270,7 @@ describe('ol.collection', function() {
     });
     describe('pop', function() {
       it('triggers remove', function() {
-        _ol_events_.listen(collection, _ol_CollectionEventType_.REMOVE, cb1);
+        _ol_events_.listen(collection, CollectionEventType.REMOVE, cb1);
         collection.pop();
         expect(cb1.lastCall.args[0].element).to.eql(1);
       });
@@ -288,7 +288,7 @@ describe('ol.collection', function() {
     it('fires events', function() {
       var collection = new _ol_Collection_();
       var elems = [];
-      _ol_events_.listen(collection, _ol_CollectionEventType_.ADD, function(e) {
+      _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
         elems.push(e.element);
       });
       collection.extend([1, 2]);

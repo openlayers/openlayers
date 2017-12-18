@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from './index.js';
 import _ol_Collection_ from './Collection.js';
-import _ol_CollectionEventType_ from './CollectionEventType.js';
+import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
@@ -359,7 +359,7 @@ var _ol_PluggableMap_ = function(options) {
         control.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.controls, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.controls, CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -367,7 +367,7 @@ var _ol_PluggableMap_ = function(options) {
         event.element.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.controls, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.controls, CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -384,7 +384,7 @@ var _ol_PluggableMap_ = function(options) {
         interaction.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.interactions, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.interactions, CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -392,7 +392,7 @@ var _ol_PluggableMap_ = function(options) {
         event.element.setMap(this);
       }, this);
 
-  _ol_events_.listen(this.interactions, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.interactions, CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -402,7 +402,7 @@ var _ol_PluggableMap_ = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  _ol_events_.listen(this.overlays_, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(this.overlays_, CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -410,7 +410,7 @@ var _ol_PluggableMap_ = function(options) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  _ol_events_.listen(this.overlays_, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(this.overlays_, CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */

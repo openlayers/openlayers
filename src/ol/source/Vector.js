@@ -4,7 +4,7 @@
 
 import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_CollectionEventType_ from '../CollectionEventType.js';
+import CollectionEventType from '../CollectionEventType.js';
 import _ol_ObjectEventType_ from '../ObjectEventType.js';
 import _ol_array_ from '../array.js';
 import {assert} from '../asserts.js';
@@ -314,7 +314,7 @@ _ol_source_Vector_.prototype.bindFeaturesCollection_ = function(collection) {
           modifyingCollection = false;
         }
       });
-  _ol_events_.listen(collection, _ol_CollectionEventType_.ADD,
+  _ol_events_.listen(collection, CollectionEventType.ADD,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -322,7 +322,7 @@ _ol_source_Vector_.prototype.bindFeaturesCollection_ = function(collection) {
           modifyingCollection = false;
         }
       }, this);
-  _ol_events_.listen(collection, _ol_CollectionEventType_.REMOVE,
+  _ol_events_.listen(collection, CollectionEventType.REMOVE,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
