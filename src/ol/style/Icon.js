@@ -2,7 +2,7 @@
  * @module ol/style/Icon
  */
 import {getUid, inherits} from '../index.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import {assert} from '../asserts.js';
 import _ol_color_ from '../color.js';
 import _ol_events_ from '../events.js';
@@ -95,7 +95,7 @@ var _ol_style_Icon_ = function(opt_options) {
    * @type {ol.ImageState}
    */
   var imageState = options.src !== undefined ?
-    _ol_ImageState_.IDLE : _ol_ImageState_.LOADED;
+    ImageState.IDLE : ImageState.LOADED;
 
   /**
    * @private

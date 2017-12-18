@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_ImageBase_ from './ImageBase.js';
-import _ol_ImageState_ from './ImageState.js';
+import ImageState from './ImageState.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
 import {getHeight} from './extent.js';
@@ -20,7 +20,7 @@ import {getHeight} from './extent.js';
  */
 var _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
-  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, _ol_ImageState_.IDLE);
+  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
   /**
    * @private
@@ -47,7 +47,7 @@ var _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imag
    * @protected
    * @type {ol.ImageState}
    */
-  this.state = _ol_ImageState_.IDLE;
+  this.state = ImageState.IDLE;
 
   /**
    * @private
@@ -75,7 +75,7 @@ _ol_Image_.prototype.getImage = function() {
  * @private
  */
 _ol_Image_.prototype.handleImageError_ = function() {
-  this.state = _ol_ImageState_.ERROR;
+  this.state = ImageState.ERROR;
   this.unlistenImage_();
   this.changed();
 };
@@ -90,7 +90,7 @@ _ol_Image_.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
     this.resolution = getHeight(this.extent) / this.image_.height;
   }
-  this.state = _ol_ImageState_.LOADED;
+  this.state = ImageState.LOADED;
   this.unlistenImage_();
   this.changed();
 };
@@ -104,8 +104,8 @@ _ol_Image_.prototype.handleImageLoad_ = function() {
  * @api
  */
 _ol_Image_.prototype.load = function() {
-  if (this.state == _ol_ImageState_.IDLE || this.state == _ol_ImageState_.ERROR) {
-    this.state = _ol_ImageState_.LOADING;
+  if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
+    this.state = ImageState.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
       _ol_events_.listenOnce(this.image_, EventType.ERROR,

@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_ImageBase_ from './ImageBase.js';
-import _ol_ImageState_ from './ImageState.js';
+import ImageState from './ImageState.js';
 
 /**
  * @constructor
@@ -24,8 +24,7 @@ var _ol_ImageCanvas_ = function(extent, resolution, pixelRatio, canvas, opt_load
    */
   this.loader_ = opt_loader !== undefined ? opt_loader : null;
 
-  var state = opt_loader !== undefined ?
-    _ol_ImageState_.IDLE : _ol_ImageState_.LOADED;
+  var state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
   _ol_ImageBase_.call(this, extent, resolution, pixelRatio, state);
 
@@ -63,9 +62,9 @@ _ol_ImageCanvas_.prototype.getError = function() {
 _ol_ImageCanvas_.prototype.handleLoad_ = function(err) {
   if (err) {
     this.error_ = err;
-    this.state = _ol_ImageState_.ERROR;
+    this.state = ImageState.ERROR;
   } else {
-    this.state = _ol_ImageState_.LOADED;
+    this.state = ImageState.LOADED;
   }
   this.changed();
 };
@@ -75,8 +74,8 @@ _ol_ImageCanvas_.prototype.handleLoad_ = function(err) {
  * @inheritDoc
  */
 _ol_ImageCanvas_.prototype.load = function() {
-  if (this.state == _ol_ImageState_.IDLE) {
-    this.state = _ol_ImageState_.LOADING;
+  if (this.state == ImageState.IDLE) {
+    this.state = ImageState.LOADING;
     this.changed();
     this.loader_(this.handleLoad_.bind(this));
   }

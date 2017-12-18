@@ -6,7 +6,7 @@ import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import EventType from '../events/EventType.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import _ol_style_ from '../style.js';
 
 /**
@@ -83,7 +83,7 @@ var _ol_style_IconImage_ = function(image, src, size, crossOrigin, imageState,
    * @type {boolean}
    */
   this.tainting_ = false;
-  if (this.imageState_ == _ol_ImageState_.LOADED) {
+  if (this.imageState_ == ImageState.LOADED) {
     this.determineTainting_();
   }
 
@@ -140,7 +140,7 @@ _ol_style_IconImage_.prototype.dispatchChangeEvent_ = function() {
  * @private
  */
 _ol_style_IconImage_.prototype.handleImageError_ = function() {
-  this.imageState_ = _ol_ImageState_.ERROR;
+  this.imageState_ = ImageState.ERROR;
   this.unlistenImage_();
   this.dispatchChangeEvent_();
 };
@@ -150,7 +150,7 @@ _ol_style_IconImage_.prototype.handleImageError_ = function() {
  * @private
  */
 _ol_style_IconImage_.prototype.handleImageLoad_ = function() {
-  this.imageState_ = _ol_ImageState_.LOADED;
+  this.imageState_ = ImageState.LOADED;
   if (this.size_) {
     this.image_.width = this.size_[0];
     this.image_.height = this.size_[1];
@@ -220,8 +220,8 @@ _ol_style_IconImage_.prototype.getSrc = function() {
  * Load not yet loaded URI.
  */
 _ol_style_IconImage_.prototype.load = function() {
-  if (this.imageState_ == _ol_ImageState_.IDLE) {
-    this.imageState_ = _ol_ImageState_.LOADING;
+  if (this.imageState_ == ImageState.IDLE) {
+    this.imageState_ = ImageState.LOADING;
     this.imageListenerKeys_ = [
       _ol_events_.listenOnce(this.image_, EventType.ERROR,
           this.handleImageError_, this),

@@ -2,7 +2,7 @@
  * @module ol/renderer/Layer
  */
 import {getUid, inherits, nullFunction} from '../index.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import _ol_Observable_ from '../Observable.js';
 import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
@@ -98,7 +98,7 @@ _ol_renderer_Layer_.prototype.getLayer = function() {
  */
 _ol_renderer_Layer_.prototype.handleImageChange_ = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
-  if (image.getState() === _ol_ImageState_.LOADED) {
+  if (image.getState() === ImageState.LOADED) {
     this.renderIfReadyAndVisible();
   }
 };
@@ -114,16 +114,14 @@ _ol_renderer_Layer_.prototype.handleImageChange_ = function(event) {
  */
 _ol_renderer_Layer_.prototype.loadImage = function(image) {
   var imageState = image.getState();
-  if (imageState != _ol_ImageState_.LOADED &&
-      imageState != _ol_ImageState_.ERROR) {
-    _ol_events_.listen(image, EventType.CHANGE,
-        this.handleImageChange_, this);
+  if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
+    _ol_events_.listen(image, EventType.CHANGE, this.handleImageChange_, this);
   }
-  if (imageState == _ol_ImageState_.IDLE) {
+  if (imageState == ImageState.IDLE) {
     image.load();
     imageState = image.getState();
   }
-  return imageState == _ol_ImageState_.LOADED;
+  return imageState == ImageState.LOADED;
 };
 
 

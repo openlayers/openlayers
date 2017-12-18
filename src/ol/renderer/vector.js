@@ -2,7 +2,7 @@
  * @module ol/renderer/vector
  */
 import {getUid} from '../index.js';
-import _ol_ImageState_ from '../ImageState.js';
+import ImageState from '../ImageState.js';
 import GeometryType from '../geom/GeometryType.js';
 import _ol_render_ReplayType_ from '../render/ReplayType.js';
 var _ol_renderer_vector_ = {};
@@ -88,11 +88,10 @@ _ol_renderer_vector_.renderFeature = function(
   imageStyle = style.getImage();
   if (imageStyle) {
     imageState = imageStyle.getImageState();
-    if (imageState == _ol_ImageState_.LOADED ||
-        imageState == _ol_ImageState_.ERROR) {
+    if (imageState == ImageState.LOADED || imageState == ImageState.ERROR) {
       imageStyle.unlistenImageChange(listener, thisArg);
     } else {
-      if (imageState == _ol_ImageState_.IDLE) {
+      if (imageState == ImageState.IDLE) {
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
@@ -256,7 +255,7 @@ _ol_renderer_vector_.renderMultiPolygonGeometry_ = function(replayGroup, geometr
 _ol_renderer_vector_.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
-    if (imageStyle.getImageState() != _ol_ImageState_.LOADED) {
+    if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
     var imageReplay = replayGroup.getReplay(
@@ -284,7 +283,7 @@ _ol_renderer_vector_.renderPointGeometry_ = function(replayGroup, geometry, styl
 _ol_renderer_vector_.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
-    if (imageStyle.getImageState() != _ol_ImageState_.LOADED) {
+    if (imageStyle.getImageState() != ImageState.LOADED) {
       return;
     }
     var imageReplay = replayGroup.getReplay(
