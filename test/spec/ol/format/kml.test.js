@@ -16,7 +16,7 @@ import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
-import _ol_style_IconAnchorUnits_ from '../../../../src/ol/style/IconAnchorUnits.js';
+import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
@@ -1844,13 +1844,13 @@ describe('ol.format.KML', function() {
               expect(imageStyle.anchor_[0]).to.be(0.5);
               expect(imageStyle.anchor_[1]).to.be(0.5);
               expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
-              expect(imageStyle.anchorXUnits_).to.be(_ol_style_IconAnchorUnits_.FRACTION);
-              expect(imageStyle.anchorYUnits_).to.be(_ol_style_IconAnchorUnits_.FRACTION);
+              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.FRACTION);
+              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.FRACTION);
             } else {
               expect(imageStyle.anchor_[0]).to.be(5);
               expect(imageStyle.anchor_[1]).to.be(5);
-              expect(imageStyle.anchorXUnits_).to.be(_ol_style_IconAnchorUnits_.PIXELS);
-              expect(imageStyle.anchorYUnits_).to.be(_ol_style_IconAnchorUnits_.PIXELS);
+              expect(imageStyle.anchorXUnits_).to.be(IconAnchorUnits.PIXELS);
+              expect(imageStyle.anchorYUnits_).to.be(IconAnchorUnits.PIXELS);
               if (f.getId() == 2) {
                 expect(imageStyle.anchorOrigin_).to.be(IconOrigin.BOTTOM_LEFT);
               }

@@ -7,7 +7,7 @@ import {assert} from '../asserts.js';
 import _ol_color_ from '../color.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
-import _ol_style_IconAnchorUnits_ from '../style/IconAnchorUnits.js';
+import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import _ol_style_IconImage_ from '../style/IconImage.js';
 import IconOrigin from '../style/IconOrigin.js';
 import _ol_style_Image_ from '../style/Image.js';
@@ -49,14 +49,14 @@ var _ol_style_Icon_ = function(opt_options) {
    * @type {ol.style.IconAnchorUnits}
    */
   this.anchorXUnits_ = options.anchorXUnits !== undefined ?
-    options.anchorXUnits : _ol_style_IconAnchorUnits_.FRACTION;
+    options.anchorXUnits : IconAnchorUnits.FRACTION;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
   this.anchorYUnits_ = options.anchorYUnits !== undefined ?
-    options.anchorYUnits : _ol_style_IconAnchorUnits_.FRACTION;
+    options.anchorYUnits : IconAnchorUnits.FRACTION;
 
   /**
    * @private
@@ -212,16 +212,16 @@ _ol_style_Icon_.prototype.getAnchor = function() {
   }
   var anchor = this.anchor_;
   var size = this.getSize();
-  if (this.anchorXUnits_ == _ol_style_IconAnchorUnits_.FRACTION ||
-      this.anchorYUnits_ == _ol_style_IconAnchorUnits_.FRACTION) {
+  if (this.anchorXUnits_ == IconAnchorUnits.FRACTION ||
+      this.anchorYUnits_ == IconAnchorUnits.FRACTION) {
     if (!size) {
       return null;
     }
     anchor = this.anchor_.slice();
-    if (this.anchorXUnits_ == _ol_style_IconAnchorUnits_.FRACTION) {
+    if (this.anchorXUnits_ == IconAnchorUnits.FRACTION) {
       anchor[0] *= size[0];
     }
-    if (this.anchorYUnits_ == _ol_style_IconAnchorUnits_.FRACTION) {
+    if (this.anchorYUnits_ == IconAnchorUnits.FRACTION) {
       anchor[1] *= size[1];
     }
   }
