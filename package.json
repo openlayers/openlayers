@@ -86,7 +86,6 @@
       "Uint8Array": false,
       "Uint8ClampedArray": false,
       "ol": false,
-      "goog": false,
       "proj4": false
     },
     "rules": {
