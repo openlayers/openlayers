@@ -19,7 +19,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_interaction_DrawEventType_ from '../interaction/DrawEventType.js';
+import DrawEventType from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -520,8 +520,7 @@ Draw.prototype.startDrawing_ = function(event) {
   }
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
-  this.dispatchEvent(new Draw.Event(
-      _ol_interaction_DrawEventType_.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(new Draw.Event(DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -680,8 +679,7 @@ Draw.prototype.finishDrawing = function() {
   }
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new Draw.Event(
-      _ol_interaction_DrawEventType_.DRAWEND, sketchFeature));
+  this.dispatchEvent(new Draw.Event(DrawEventType.DRAWEND, sketchFeature));
 
   // Then insert feature
   if (this.features_) {
@@ -727,8 +725,7 @@ Draw.prototype.extend = function(feature) {
   this.finishCoordinate_ = last.slice();
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
-  this.dispatchEvent(new Draw.Event(
-      _ol_interaction_DrawEventType_.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(new Draw.Event(DrawEventType.DRAWSTART, this.sketchFeature_));
 };
 
 
