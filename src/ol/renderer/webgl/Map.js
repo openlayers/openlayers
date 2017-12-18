@@ -19,7 +19,7 @@ import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
-import _ol_webgl_ContextEventType_ from '../../webgl/ContextEventType.js';
+import ContextEventType from '../../webgl/ContextEventType.js';
 
 
 /**
@@ -92,9 +92,9 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
    */
   this.context_ = new _ol_webgl_Context_(this.canvas_, this.gl_);
 
-  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.LOST,
+  _ol_events_.listen(this.canvas_, ContextEventType.LOST,
       this.handleWebGLContextLost, this);
-  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.RESTORED,
+  _ol_events_.listen(this.canvas_, ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
   /**

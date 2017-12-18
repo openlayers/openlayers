@@ -7,7 +7,7 @@ import _ol_array_ from '../array.js';
 import _ol_events_ from '../events.js';
 import _ol_obj_ from '../obj.js';
 import _ol_webgl_ from '../webgl.js';
-import _ol_webgl_ContextEventType_ from '../webgl/ContextEventType.js';
+import ContextEventType from '../webgl/ContextEventType.js';
 
 /**
  * @classdesc
@@ -85,9 +85,9 @@ var _ol_webgl_Context_ = function(canvas, gl) {
     gl.getExtension('OES_element_index_uint');
   }
 
-  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.LOST,
+  _ol_events_.listen(this.canvas_, ContextEventType.LOST,
       this.handleWebGLContextLost, this);
-  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.RESTORED,
+  _ol_events_.listen(this.canvas_, ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
 };
