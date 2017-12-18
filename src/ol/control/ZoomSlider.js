@@ -12,7 +12,7 @@ import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import _ol_math_ from '../math.js';
-import _ol_pointer_EventType_ from '../pointer/EventType.js';
+import PointerEventType from '../pointer/EventType.js';
 import _ol_pointer_PointerEventHandler_ from '../pointer/PointerEventHandler.js';
 
 /**
@@ -113,11 +113,11 @@ var ZoomSlider = function(opt_options) {
    */
   this.dragger_ = new _ol_pointer_PointerEventHandler_(containerElement);
 
-  _ol_events_.listen(this.dragger_, _ol_pointer_EventType_.POINTERDOWN,
+  _ol_events_.listen(this.dragger_, PointerEventType.POINTERDOWN,
       this.handleDraggerStart_, this);
-  _ol_events_.listen(this.dragger_, _ol_pointer_EventType_.POINTERMOVE,
+  _ol_events_.listen(this.dragger_, PointerEventType.POINTERMOVE,
       this.handleDraggerDrag_, this);
-  _ol_events_.listen(this.dragger_, _ol_pointer_EventType_.POINTERUP,
+  _ol_events_.listen(this.dragger_, PointerEventType.POINTERUP,
       this.handleDraggerEnd_, this);
 
   _ol_events_.listen(containerElement, EventType.CLICK,

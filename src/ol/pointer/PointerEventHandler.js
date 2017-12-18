@@ -35,7 +35,7 @@ import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import _ol_has_ from '../has.js';
-import _ol_pointer_EventType_ from '../pointer/EventType.js';
+import PointerEventType from '../pointer/EventType.js';
 import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
 import _ol_pointer_MsSource_ from '../pointer/MsSource.js';
 import _ol_pointer_NativeSource_ from '../pointer/NativeSource.js';
@@ -223,7 +223,7 @@ _ol_pointer_PointerEventHandler_.prototype.cloneEvent = function(event, inEvent)
  * @param {Event} event The event.
  */
 _ol_pointer_PointerEventHandler_.prototype.down = function(data, event) {
-  this.fireEvent(_ol_pointer_EventType_.POINTERDOWN, data, event);
+  this.fireEvent(PointerEventType.POINTERDOWN, data, event);
 };
 
 
@@ -233,7 +233,7 @@ _ol_pointer_PointerEventHandler_.prototype.down = function(data, event) {
  * @param {Event} event The event.
  */
 _ol_pointer_PointerEventHandler_.prototype.move = function(data, event) {
-  this.fireEvent(_ol_pointer_EventType_.POINTERMOVE, data, event);
+  this.fireEvent(PointerEventType.POINTERMOVE, data, event);
 };
 
 
@@ -243,7 +243,7 @@ _ol_pointer_PointerEventHandler_.prototype.move = function(data, event) {
  * @param {Event} event The event.
  */
 _ol_pointer_PointerEventHandler_.prototype.up = function(data, event) {
-  this.fireEvent(_ol_pointer_EventType_.POINTERUP, data, event);
+  this.fireEvent(PointerEventType.POINTERUP, data, event);
 };
 
 
@@ -254,7 +254,7 @@ _ol_pointer_PointerEventHandler_.prototype.up = function(data, event) {
  */
 _ol_pointer_PointerEventHandler_.prototype.enter = function(data, event) {
   data.bubbles = false;
-  this.fireEvent(_ol_pointer_EventType_.POINTERENTER, data, event);
+  this.fireEvent(PointerEventType.POINTERENTER, data, event);
 };
 
 
@@ -265,7 +265,7 @@ _ol_pointer_PointerEventHandler_.prototype.enter = function(data, event) {
  */
 _ol_pointer_PointerEventHandler_.prototype.leave = function(data, event) {
   data.bubbles = false;
-  this.fireEvent(_ol_pointer_EventType_.POINTERLEAVE, data, event);
+  this.fireEvent(PointerEventType.POINTERLEAVE, data, event);
 };
 
 
@@ -276,7 +276,7 @@ _ol_pointer_PointerEventHandler_.prototype.leave = function(data, event) {
  */
 _ol_pointer_PointerEventHandler_.prototype.over = function(data, event) {
   data.bubbles = true;
-  this.fireEvent(_ol_pointer_EventType_.POINTEROVER, data, event);
+  this.fireEvent(PointerEventType.POINTEROVER, data, event);
 };
 
 
@@ -287,7 +287,7 @@ _ol_pointer_PointerEventHandler_.prototype.over = function(data, event) {
  */
 _ol_pointer_PointerEventHandler_.prototype.out = function(data, event) {
   data.bubbles = true;
-  this.fireEvent(_ol_pointer_EventType_.POINTEROUT, data, event);
+  this.fireEvent(PointerEventType.POINTEROUT, data, event);
 };
 
 
@@ -297,7 +297,7 @@ _ol_pointer_PointerEventHandler_.prototype.out = function(data, event) {
  * @param {Event} event The event.
  */
 _ol_pointer_PointerEventHandler_.prototype.cancel = function(data, event) {
-  this.fireEvent(_ol_pointer_EventType_.POINTERCANCEL, data, event);
+  this.fireEvent(PointerEventType.POINTERCANCEL, data, event);
 };
 
 
