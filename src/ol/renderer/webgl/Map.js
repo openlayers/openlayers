@@ -10,7 +10,7 @@ import _ol_events_ from '../../events.js';
 import _ol_has_ from '../../has.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
 import _ol_render_Event_ from '../../render/Event.js';
-import _ol_render_EventType_ from '../../render/EventType.js';
+import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
 import RendererType from '../Type.js';
@@ -438,7 +438,7 @@ _ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  this.dispatchComposeEvent_(_ol_render_EventType_.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
   /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
@@ -497,7 +497,7 @@ _ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
     frameState.animate = true;
   }
 
-  this.dispatchComposeEvent_(_ol_render_EventType_.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, frameState);
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
   this.scheduleExpireIconCache(frameState);

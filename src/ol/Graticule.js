@@ -9,7 +9,7 @@ import Point from './geom/Point.js';
 import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
 import _ol_math_ from './math.js';
 import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
-import _ol_render_EventType_ from './render/EventType.js';
+import RenderEventType from './render/EventType.js';
 import _ol_style_Fill_ from './style/Fill.js';
 import _ol_style_Stroke_ from './style/Stroke.js';
 import _ol_style_Text_ from './style/Text.js';
@@ -723,13 +723,11 @@ Graticule.prototype.updateProjectionInfo_ = function(projection) {
  */
 Graticule.prototype.setMap = function(map) {
   if (this.map_) {
-    this.map_.un(_ol_render_EventType_.POSTCOMPOSE,
-        this.handlePostCompose_, this);
+    this.map_.un(RenderEventType.POSTCOMPOSE, this.handlePostCompose_, this);
     this.map_.render();
   }
   if (map) {
-    map.on(_ol_render_EventType_.POSTCOMPOSE,
-        this.handlePostCompose_, this);
+    map.on(RenderEventType.POSTCOMPOSE, this.handlePostCompose_, this);
     map.render();
   }
   this.map_ = map;

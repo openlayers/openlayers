@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import _ol_render_Event_ from '../../render/Event.js';
-import _ol_render_EventType_ from '../../render/EventType.js';
+import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
 import _ol_renderer_Layer_ from '../Layer.js';
@@ -126,8 +126,7 @@ _ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate = function(coordin
  * @protected
  */
 _ol_renderer_canvas_Layer_.prototype.postCompose = function(context, frameState, layerState, opt_transform) {
-  this.dispatchComposeEvent_(_ol_render_EventType_.POSTCOMPOSE, context,
-      frameState, opt_transform);
+  this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState, opt_transform);
 };
 
 
@@ -138,8 +137,7 @@ _ol_renderer_canvas_Layer_.prototype.postCompose = function(context, frameState,
  * @protected
  */
 _ol_renderer_canvas_Layer_.prototype.preCompose = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(_ol_render_EventType_.PRECOMPOSE, context,
-      frameState, opt_transform);
+  this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, context, frameState, opt_transform);
 };
 
 
@@ -150,8 +148,7 @@ _ol_renderer_canvas_Layer_.prototype.preCompose = function(context, frameState, 
  * @protected
  */
 _ol_renderer_canvas_Layer_.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(_ol_render_EventType_.RENDER, context,
-      frameState, opt_transform);
+  this.dispatchComposeEvent_(RenderEventType.RENDER, context, frameState, opt_transform);
 };
 
 

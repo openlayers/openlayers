@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import _ol_render_Event_ from '../../render/Event.js';
-import _ol_render_EventType_ from '../../render/EventType.js';
+import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import _ol_renderer_Layer_ from '../Layer.js';
 import _ol_renderer_webgl_defaultmapshader_ from '../webgl/defaultmapshader.js';
@@ -142,8 +142,7 @@ _ol_renderer_webgl_Layer_.prototype.bindFramebuffer = function(frameState, frame
  */
 _ol_renderer_webgl_Layer_.prototype.composeFrame = function(frameState, layerState, context) {
 
-  this.dispatchComposeEvent_(
-      _ol_render_EventType_.PRECOMPOSE, context, frameState);
+  this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, context, frameState);
 
   context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.arrayBuffer_);
 
@@ -180,9 +179,7 @@ _ol_renderer_webgl_Layer_.prototype.composeFrame = function(frameState, layerSta
   gl.bindTexture(_ol_webgl_.TEXTURE_2D, this.getTexture());
   gl.drawArrays(_ol_webgl_.TRIANGLE_STRIP, 0, 4);
 
-  this.dispatchComposeEvent_(
-      _ol_render_EventType_.POSTCOMPOSE, context, frameState);
-
+  this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, context, frameState);
 };
 
 

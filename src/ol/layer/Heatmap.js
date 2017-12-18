@@ -8,7 +8,7 @@ import {createCanvasContext2D} from '../dom.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_math_ from '../math.js';
 import _ol_obj_ from '../obj.js';
-import _ol_render_EventType_ from '../render/EventType.js';
+import RenderEventType from '../render/EventType.js';
 import _ol_style_Icon_ from '../style/Icon.js';
 import _ol_style_Style_ from '../style/Style.js';
 
@@ -133,7 +133,7 @@ var Heatmap = function(opt_options) {
   // The render order is not relevant for a heatmap representation.
   this.setRenderOrder(null);
 
-  _ol_events_.listen(this, _ol_render_EventType_.RENDER, this.handleRender_, this);
+  _ol_events_.listen(this, RenderEventType.RENDER, this.handleRender_, this);
 };
 
 inherits(Heatmap, _ol_layer_Vector_);
