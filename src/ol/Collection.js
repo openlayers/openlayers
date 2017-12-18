@@ -8,6 +8,16 @@ import _ol_Object_ from './Object.js';
 import Event from './events/Event.js';
 
 
+
+/**
+ * @enum {string}
+ * @private
+ */
+var Property = {
+  LENGTH: 'length'
+};
+
+
 /**
  * @typedef {{unique: (boolean|undefined)}}
  */
@@ -139,9 +149,7 @@ _ol_Collection_.prototype.item = function(index) {
  * @api
  */
 _ol_Collection_.prototype.getLength = function() {
-  return (
-    /** @type {number} */ this.get(_ol_Collection_.Property_.LENGTH)
-  );
+  return (/** @type {number} */ this.get(Property.LENGTH));
 };
 
 
@@ -256,7 +264,7 @@ _ol_Collection_.prototype.setAt = function(index, elem) {
  * @private
  */
 _ol_Collection_.prototype.updateLength_ = function() {
-  this.set(_ol_Collection_.Property_.LENGTH, this.array_.length);
+  this.set(Property.LENGTH, this.array_.length);
 };
 
 
@@ -272,16 +280,6 @@ _ol_Collection_.prototype.assertUnique_ = function(elem, opt_except) {
     }
   }
 };
-
-
-/**
- * @enum {string}
- * @private
- */
-_ol_Collection_.Property_ = {
-  LENGTH: 'length'
-};
-
 
 /**
  * @classdesc
