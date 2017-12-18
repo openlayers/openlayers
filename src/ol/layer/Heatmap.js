@@ -12,6 +12,18 @@ import _ol_render_EventType_ from '../render/EventType.js';
 import _ol_style_Icon_ from '../style/Icon.js';
 import _ol_style_Style_ from '../style/Style.js';
 
+
+/**
+ * @enum {string}
+ * @private
+ */
+var Property = {
+  BLUR: 'blur',
+  GRADIENT: 'gradient',
+  RADIUS: 'radius'
+};
+
+
 /**
  * @classdesc
  * Layer for rendering vector data as a heatmap.
@@ -62,7 +74,7 @@ var _ol_layer_Heatmap_ = function(opt_options) {
   this.styleCache_ = null;
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_layer_Heatmap_.Property_.GRADIENT),
+      _ol_Object_.getChangeEventType(Property.GRADIENT),
       this.handleGradientChanged_, this);
 
   this.setGradient(options.gradient ?
@@ -73,10 +85,10 @@ var _ol_layer_Heatmap_ = function(opt_options) {
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_layer_Heatmap_.Property_.BLUR),
+      _ol_Object_.getChangeEventType(Property.BLUR),
       this.handleStyleChanged_, this);
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_layer_Heatmap_.Property_.RADIUS),
+      _ol_Object_.getChangeEventType(Property.RADIUS),
       this.handleStyleChanged_, this);
 
   this.handleStyleChanged_();
@@ -179,9 +191,7 @@ _ol_layer_Heatmap_.prototype.createCircle_ = function() {
  * @observable
  */
 _ol_layer_Heatmap_.prototype.getBlur = function() {
-  return (
-    /** @type {number} */ this.get(_ol_layer_Heatmap_.Property_.BLUR)
-  );
+  return (/** @type {number} */ this.get(Property.BLUR));
 };
 
 
@@ -192,9 +202,7 @@ _ol_layer_Heatmap_.prototype.getBlur = function() {
  * @observable
  */
 _ol_layer_Heatmap_.prototype.getGradient = function() {
-  return (
-    /** @type {Array.<string>} */ this.get(_ol_layer_Heatmap_.Property_.GRADIENT)
-  );
+  return (/** @type {Array.<string>} */ this.get(Property.GRADIENT));
 };
 
 
@@ -205,9 +213,7 @@ _ol_layer_Heatmap_.prototype.getGradient = function() {
  * @observable
  */
 _ol_layer_Heatmap_.prototype.getRadius = function() {
-  return (
-    /** @type {number} */ this.get(_ol_layer_Heatmap_.Property_.RADIUS)
-  );
+  return (/** @type {number} */ this.get(Property.RADIUS));
 };
 
 
@@ -258,7 +264,7 @@ _ol_layer_Heatmap_.prototype.handleRender_ = function(event) {
  * @observable
  */
 _ol_layer_Heatmap_.prototype.setBlur = function(blur) {
-  this.set(_ol_layer_Heatmap_.Property_.BLUR, blur);
+  this.set(Property.BLUR, blur);
 };
 
 
@@ -269,7 +275,7 @@ _ol_layer_Heatmap_.prototype.setBlur = function(blur) {
  * @observable
  */
 _ol_layer_Heatmap_.prototype.setGradient = function(colors) {
-  this.set(_ol_layer_Heatmap_.Property_.GRADIENT, colors);
+  this.set(Property.GRADIENT, colors);
 };
 
 
@@ -280,17 +286,7 @@ _ol_layer_Heatmap_.prototype.setGradient = function(colors) {
  * @observable
  */
 _ol_layer_Heatmap_.prototype.setRadius = function(radius) {
-  this.set(_ol_layer_Heatmap_.Property_.RADIUS, radius);
+  this.set(Property.RADIUS, radius);
 };
 
-
-/**
- * @enum {string}
- * @private
- */
-_ol_layer_Heatmap_.Property_ = {
-  BLUR: 'blur',
-  GRADIENT: 'gradient',
-  RADIUS: 'radius'
-};
 export default _ol_layer_Heatmap_;
