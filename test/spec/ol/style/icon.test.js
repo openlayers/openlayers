@@ -1,5 +1,5 @@
 import {getUid} from '../../../../src/ol/index.js';
-import _ol_style_ from '../../../../src/ol/style.js';
+import {iconImageCache} from '../../../../src/ol/style.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_IconImage_ from '../../../../src/ol/style/IconImage.js';
 
@@ -226,10 +226,9 @@ describe('ol.style.Icon', function() {
     it('takes the real image size', function() {
       // pretend that the image is already in the cache,
       // this image will be used for the icon.
-      var cache = _ol_style_.iconImageCache;
       var src = 'test.png';
       var iconImage = new _ol_style_IconImage_(null, 'test.png', imgSize);
-      cache.set(src, null, null, iconImage);
+      iconImageCache.set(src, null, null, iconImage);
 
       var iconStyle = new _ol_style_Icon_({
         src: 'test.png'

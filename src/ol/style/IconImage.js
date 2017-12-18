@@ -7,7 +7,7 @@ import _ol_events_ from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import EventType from '../events/EventType.js';
 import ImageState from '../ImageState.js';
-import _ol_style_ from '../style.js';
+import {iconImageCache} from '../style.js';
 
 /**
  * @constructor
@@ -103,7 +103,6 @@ inherits(_ol_style_IconImage_, EventTarget);
  */
 _ol_style_IconImage_.get = function(image, src, size, crossOrigin, imageState,
     color) {
-  var iconImageCache = _ol_style_.iconImageCache;
   var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
     iconImage = new _ol_style_IconImage_(
