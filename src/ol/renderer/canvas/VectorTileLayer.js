@@ -12,7 +12,7 @@ import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, interse
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
 import {equivalent as equivalentProjection} from '../../proj.js';
 import _ol_proj_Units_ from '../../proj/Units.js';
-import _ol_render_ReplayType_ from '../../render/ReplayType.js';
+import ReplayType from '../../render/ReplayType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
@@ -98,9 +98,9 @@ _ol_renderer_canvas_VectorTileLayer_['create'] = function(mapRenderer, layer) {
  * @type {!Object.<string, Array.<ol.render.ReplayType>>}
  */
 _ol_renderer_canvas_VectorTileLayer_.IMAGE_REPLAYS = {
-  'image': [_ol_render_ReplayType_.POLYGON, _ol_render_ReplayType_.CIRCLE,
-    _ol_render_ReplayType_.LINE_STRING, _ol_render_ReplayType_.IMAGE, _ol_render_ReplayType_.TEXT],
-  'hybrid': [_ol_render_ReplayType_.POLYGON, _ol_render_ReplayType_.LINE_STRING]
+  'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
+    ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
+  'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
 };
 
 
@@ -109,8 +109,8 @@ _ol_renderer_canvas_VectorTileLayer_.IMAGE_REPLAYS = {
  * @type {!Object.<string, Array.<ol.render.ReplayType>>}
  */
 _ol_renderer_canvas_VectorTileLayer_.VECTOR_REPLAYS = {
-  'image': [_ol_render_ReplayType_.DEFAULT],
-  'hybrid': [_ol_render_ReplayType_.IMAGE, _ol_render_ReplayType_.TEXT, _ol_render_ReplayType_.DEFAULT],
+  'image': [ReplayType.DEFAULT],
+  'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
   'vector': _ol_render_replay_.ORDER
 };
 
