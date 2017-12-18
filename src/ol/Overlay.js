@@ -4,7 +4,7 @@
 import {inherits} from './index.js';
 import MapEventType from './MapEventType.js';
 import _ol_Object_ from './Object.js';
-import _ol_OverlayPositioning_ from './OverlayPositioning.js';
+import OverlayPositioning from './OverlayPositioning.js';
 import _ol_css_ from './css.js';
 import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
 import _ol_events_ from './events.js';
@@ -139,7 +139,7 @@ var _ol_Overlay_ = function(options) {
 
   this.setPositioning(options.positioning !== undefined ?
     /** @type {ol.OverlayPositioning} */ (options.positioning) :
-    _ol_OverlayPositioning_.TOP_LEFT);
+    OverlayPositioning.TOP_LEFT);
 
   if (options.position !== undefined) {
     this.setPosition(options.position);
@@ -481,9 +481,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
 
   var offsetX = offset[0];
   var offsetY = offset[1];
-  if (positioning == _ol_OverlayPositioning_.BOTTOM_RIGHT ||
-      positioning == _ol_OverlayPositioning_.CENTER_RIGHT ||
-      positioning == _ol_OverlayPositioning_.TOP_RIGHT) {
+  if (positioning == OverlayPositioning.BOTTOM_RIGHT ||
+      positioning == OverlayPositioning.CENTER_RIGHT ||
+      positioning == OverlayPositioning.TOP_RIGHT) {
     if (this.rendered.left_ !== '') {
       this.rendered.left_ = style.left = '';
     }
@@ -495,9 +495,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered.right_ !== '') {
       this.rendered.right_ = style.right = '';
     }
-    if (positioning == _ol_OverlayPositioning_.BOTTOM_CENTER ||
-        positioning == _ol_OverlayPositioning_.CENTER_CENTER ||
-        positioning == _ol_OverlayPositioning_.TOP_CENTER) {
+    if (positioning == OverlayPositioning.BOTTOM_CENTER ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.TOP_CENTER) {
       offsetX -= this.element.offsetWidth / 2;
     }
     var left = Math.round(pixel[0] + offsetX) + 'px';
@@ -505,9 +505,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
       this.rendered.left_ = style.left = left;
     }
   }
-  if (positioning == _ol_OverlayPositioning_.BOTTOM_LEFT ||
-      positioning == _ol_OverlayPositioning_.BOTTOM_CENTER ||
-      positioning == _ol_OverlayPositioning_.BOTTOM_RIGHT) {
+  if (positioning == OverlayPositioning.BOTTOM_LEFT ||
+      positioning == OverlayPositioning.BOTTOM_CENTER ||
+      positioning == OverlayPositioning.BOTTOM_RIGHT) {
     if (this.rendered.top_ !== '') {
       this.rendered.top_ = style.top = '';
     }
@@ -519,9 +519,9 @@ _ol_Overlay_.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered.bottom_ !== '') {
       this.rendered.bottom_ = style.bottom = '';
     }
-    if (positioning == _ol_OverlayPositioning_.CENTER_LEFT ||
-        positioning == _ol_OverlayPositioning_.CENTER_CENTER ||
-        positioning == _ol_OverlayPositioning_.CENTER_RIGHT) {
+    if (positioning == OverlayPositioning.CENTER_LEFT ||
+        positioning == OverlayPositioning.CENTER_CENTER ||
+        positioning == OverlayPositioning.CENTER_RIGHT) {
       offsetY -= this.element.offsetHeight / 2;
     }
     var top = Math.round(pixel[1] + offsetY) + 'px';

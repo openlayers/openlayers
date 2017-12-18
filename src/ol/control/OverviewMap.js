@@ -9,7 +9,7 @@ import _ol_MapProperty_ from '../MapProperty.js';
 import _ol_Object_ from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import _ol_Overlay_ from '../Overlay.js';
-import _ol_OverlayPositioning_ from '../OverlayPositioning.js';
+import OverlayPositioning from '../OverlayPositioning.js';
 import _ol_ViewProperty_ from '../ViewProperty.js';
 import Control from '../control/Control.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -142,7 +142,7 @@ var OverviewMap = function(opt_options) {
    */
   this.boxOverlay_ = new _ol_Overlay_({
     position: [0, 0],
-    positioning: _ol_OverlayPositioning_.BOTTOM_LEFT,
+    positioning: OverlayPositioning.BOTTOM_LEFT,
     element: box
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
