@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import _ol_LayerType_ from '../../LayerType.js';
-import _ol_TileRange_ from '../../TileRange.js';
+import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
@@ -62,7 +62,7 @@ var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
    * @private
    * @type {ol.TileRange}
    */
-  this.tmpTileRange_ = new _ol_TileRange_(0, 0, 0, 0);
+  this.tmpTileRange_ = new TileRange(0, 0, 0, 0);
 
   /**
    * @private

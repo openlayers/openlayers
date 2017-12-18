@@ -4,7 +4,7 @@
 //FIXME Implement projection handling
 
 import {inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import PBF from 'pbf';
 import FeatureFormat from '../format/Feature.js';
 import _ol_format_FormatType_ from '../format/FormatType.js';
@@ -225,7 +225,7 @@ MVT.readRawGeometry_ = function(pbf, feature, flatCoordinates, ends) {
       }
 
     } else {
-      _ol_asserts_.assert(false, 59); // Invalid command found in the PBF
+      assert(false, 59); // Invalid command found in the PBF
     }
   }
 

@@ -5,7 +5,7 @@
 // see https://github.com/openlayers/openlayers/issues/2078
 
 import {inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
@@ -469,7 +469,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
     if (crs.type == 'name') {
       projection = getProjection(crs.properties.name);
     } else {
-      _ol_asserts_.assert(false, 36); // Unknown SRS type
+      assert(false, 36); // Unknown SRS type
     }
   } else {
     projection = this.defaultDataProjection;

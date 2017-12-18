@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
 import FeatureFormat from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
@@ -277,7 +277,7 @@ EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
       y: coordinates[1]
     });
   } else {
-    _ol_asserts_.assert(false, 34); // Invalid geometry layout
+    assert(false, 34); // Invalid geometry layout
   }
   return /** @type {EsriJSONGeometry} */ (esriJSON);
 };

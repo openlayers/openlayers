@@ -2,7 +2,7 @@
  * @module ol/format/WFS
  */
 import {inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
 import GMLBase from '../format/GMLBase.js';
@@ -450,7 +450,7 @@ WFS.getTypeName_ = function(featurePrefix, featureType) {
  */
 WFS.writeDelete_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  _ol_asserts_.assert(feature.getId() !== undefined, 26); // Features must have an id set
+  assert(feature.getId() !== undefined, 26); // Features must have an id set
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   var featureNS = context['featureNS'];
@@ -473,7 +473,7 @@ WFS.writeDelete_ = function(node, feature, objectStack) {
  */
 WFS.writeUpdate_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  _ol_asserts_.assert(feature.getId() !== undefined, 27); // Features must have an id set
+  assert(feature.getId() !== undefined, 27); // Features must have an id set
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   var featureNS = context['featureNS'];
@@ -958,7 +958,7 @@ WFS.prototype.writeGetFeature = function(options) {
     }
     filter = options.filter;
     if (options.bbox) {
-      _ol_asserts_.assert(options.geometryName,
+      assert(options.geometryName,
           12); // `options.geometryName` must also be provided when `options.bbox` is set
       var bbox = _ol_format_filter_.bbox(
           /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
@@ -982,7 +982,7 @@ WFS.prototype.writeGetFeature = function(options) {
     'filter': filter,
     'propertyNames': options.propertyNames ? options.propertyNames : []
   };
-  _ol_asserts_.assert(Array.isArray(options.featureTypes),
+  assert(Array.isArray(options.featureTypes),
       11); // `options.featureTypes` should be an Array
   WFS.writeGetFeature_(node, /** @type {!Array.<string>} */ (options.featureTypes), [context]);
   return node;

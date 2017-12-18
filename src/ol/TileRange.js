@@ -12,7 +12,7 @@
  * @param {number} maxY Maximum Y.
  * @struct
  */
-var _ol_TileRange_ = function(minX, maxX, minY, maxY) {
+var TileRange = function(minX, maxX, minY, maxY) {
 
   /**
    * @type {number}
@@ -45,7 +45,7 @@ var _ol_TileRange_ = function(minX, maxX, minY, maxY) {
  * @param {ol.TileRange|undefined} tileRange TileRange.
  * @return {ol.TileRange} Tile range.
  */
-_ol_TileRange_.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
+TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
   if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
@@ -53,7 +53,7 @@ _ol_TileRange_.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
     tileRange.maxY = maxY;
     return tileRange;
   } else {
-    return new _ol_TileRange_(minX, maxX, minY, maxY);
+    return new TileRange(minX, maxX, minY, maxY);
   }
 };
 
@@ -62,7 +62,7 @@ _ol_TileRange_.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {boolean} Contains tile coordinate.
  */
-_ol_TileRange_.prototype.contains = function(tileCoord) {
+TileRange.prototype.contains = function(tileCoord) {
   return this.containsXY(tileCoord[1], tileCoord[2]);
 };
 
@@ -71,7 +71,7 @@ _ol_TileRange_.prototype.contains = function(tileCoord) {
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Contains.
  */
-_ol_TileRange_.prototype.containsTileRange = function(tileRange) {
+TileRange.prototype.containsTileRange = function(tileRange) {
   return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
       this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
 };
@@ -82,7 +82,7 @@ _ol_TileRange_.prototype.containsTileRange = function(tileRange) {
  * @param {number} y Tile coordinate y.
  * @return {boolean} Contains coordinate.
  */
-_ol_TileRange_.prototype.containsXY = function(x, y) {
+TileRange.prototype.containsXY = function(x, y) {
   return this.minX <= x && x <= this.maxX && this.minY <= y && y <= this.maxY;
 };
 
@@ -91,7 +91,7 @@ _ol_TileRange_.prototype.containsXY = function(x, y) {
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Equals.
  */
-_ol_TileRange_.prototype.equals = function(tileRange) {
+TileRange.prototype.equals = function(tileRange) {
   return this.minX == tileRange.minX && this.minY == tileRange.minY &&
       this.maxX == tileRange.maxX && this.maxY == tileRange.maxY;
 };
@@ -100,7 +100,7 @@ _ol_TileRange_.prototype.equals = function(tileRange) {
 /**
  * @param {ol.TileRange} tileRange Tile range.
  */
-_ol_TileRange_.prototype.extend = function(tileRange) {
+TileRange.prototype.extend = function(tileRange) {
   if (tileRange.minX < this.minX) {
     this.minX = tileRange.minX;
   }
@@ -119,7 +119,7 @@ _ol_TileRange_.prototype.extend = function(tileRange) {
 /**
  * @return {number} Height.
  */
-_ol_TileRange_.prototype.getHeight = function() {
+TileRange.prototype.getHeight = function() {
   return this.maxY - this.minY + 1;
 };
 
@@ -127,7 +127,7 @@ _ol_TileRange_.prototype.getHeight = function() {
 /**
  * @return {ol.Size} Size.
  */
-_ol_TileRange_.prototype.getSize = function() {
+TileRange.prototype.getSize = function() {
   return [this.getWidth(), this.getHeight()];
 };
 
@@ -135,7 +135,7 @@ _ol_TileRange_.prototype.getSize = function() {
 /**
  * @return {number} Width.
  */
-_ol_TileRange_.prototype.getWidth = function() {
+TileRange.prototype.getWidth = function() {
   return this.maxX - this.minX + 1;
 };
 
@@ -144,10 +144,10 @@ _ol_TileRange_.prototype.getWidth = function() {
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Intersects.
  */
-_ol_TileRange_.prototype.intersects = function(tileRange) {
+TileRange.prototype.intersects = function(tileRange) {
   return this.minX <= tileRange.maxX &&
       this.maxX >= tileRange.minX &&
       this.minY <= tileRange.maxY &&
       this.maxY >= tileRange.minY;
 };
-export default _ol_TileRange_;
+export default TileRange;

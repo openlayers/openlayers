@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
@@ -216,7 +216,7 @@ _ol_source_ImageArcGISRest_.prototype.getRequestUrl_ = function(extent, size, pi
       .replace(/MapServer\/?$/, 'MapServer/export')
       .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
-    _ol_asserts_.assert(false, 50); // `options.featureTypes` should be an Array
+    assert(false, 50); // `options.featureTypes` should be an Array
   }
   return _ol_uri_.appendParams(modifiedUrl, params);
 };

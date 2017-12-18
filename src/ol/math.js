@@ -1,7 +1,7 @@
 /**
  * @module ol/math
  */
-import _ol_asserts_ from './asserts.js';
+import {assert} from './asserts.js';
 var _ol_math_ = {};
 
 
@@ -50,7 +50,7 @@ _ol_math_.cosh = (function() {
  * @return {number} The smallest power of two greater than or equal to x.
  */
 _ol_math_.roundUpToPowerOfTwo = function(x) {
-  _ol_asserts_.assert(0 < x, 29); // `x` must be greater than `0`
+  assert(0 < x, 29); // `x` must be greater than `0`
   return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
 };
 

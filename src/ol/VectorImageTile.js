@@ -8,7 +8,7 @@ import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
-import _ol_featureloader_ from './featureloader.js';
+import {loadFeaturesXhr} from './featureloader.js';
 
 /**
  * @constructor
@@ -292,9 +292,7 @@ _ol_VectorImageTile_.prototype.finishLoading_ = function() {
  * @param {string} url URL.
  */
 _ol_VectorImageTile_.defaultLoadFunction = function(tile, url) {
-  var loader = _ol_featureloader_.loadFeaturesXhr(
-      url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
-
+  var loader = loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
   tile.setLoader(loader);
 };
 export default _ol_VectorImageTile_;

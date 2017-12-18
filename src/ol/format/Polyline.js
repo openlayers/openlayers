@@ -2,7 +2,7 @@
  * @module ol/format/Polyline
  */
 import {inherits} from '../index.js';
-import _ol_asserts_ from '../asserts.js';
+import {assert} from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
@@ -359,7 +359,7 @@ Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
   } else {
-    _ol_asserts_.assert(false, 40); // Expected `feature` to have a geometry
+    assert(false, 40); // Expected `feature` to have a geometry
     return '';
   }
 };
