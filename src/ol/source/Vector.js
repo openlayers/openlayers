@@ -5,7 +5,7 @@
 import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import _ol_ObjectEventType_ from '../ObjectEventType.js';
+import ObjectEventType from '../ObjectEventType.js';
 import _ol_array_ from '../array.js';
 import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
@@ -205,7 +205,7 @@ _ol_source_Vector_.prototype.setupChangeEvents_ = function(featureKey, feature) 
   this.featureChangeKeys_[featureKey] = [
     _ol_events_.listen(feature, EventType.CHANGE,
         this.handleFeatureChange_, this),
-    _ol_events_.listen(feature, _ol_ObjectEventType_.PROPERTYCHANGE,
+    _ol_events_.listen(feature, ObjectEventType.PROPERTYCHANGE,
         this.handleFeatureChange_, this)
   ];
 };

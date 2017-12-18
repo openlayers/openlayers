@@ -11,7 +11,7 @@ import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
-import _ol_ObjectEventType_ from './ObjectEventType.js';
+import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
 import _ol_View_ from './View.js';
 import _ol_ViewHint_ from './ViewHint.js';
@@ -1072,7 +1072,7 @@ _ol_PluggableMap_.prototype.handleViewChanged_ = function() {
   if (view) {
     this.viewport_.setAttribute('data-view', getUid(view));
     this.viewPropertyListenerKey_ = _ol_events_.listen(
-        view, _ol_ObjectEventType_.PROPERTYCHANGE,
+        view, ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = _ol_events_.listen(
         view, EventType.CHANGE,
@@ -1094,7 +1094,7 @@ _ol_PluggableMap_.prototype.handleLayerGroupChanged_ = function() {
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       _ol_events_.listen(
-          layerGroup, _ol_ObjectEventType_.PROPERTYCHANGE,
+          layerGroup, ObjectEventType.PROPERTYCHANGE,
           this.render, this),
       _ol_events_.listen(
           layerGroup, EventType.CHANGE,

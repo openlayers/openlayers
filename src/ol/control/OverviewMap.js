@@ -7,7 +7,7 @@ import _ol_PluggableMap_ from '../PluggableMap.js';
 import MapEventType from '../MapEventType.js';
 import _ol_MapProperty_ from '../MapProperty.js';
 import _ol_Object_ from '../Object.js';
-import _ol_ObjectEventType_ from '../ObjectEventType.js';
+import ObjectEventType from '../ObjectEventType.js';
 import _ol_Overlay_ from '../Overlay.js';
 import _ol_OverlayPositioning_ from '../OverlayPositioning.js';
 import _ol_ViewProperty_ from '../ViewProperty.js';
@@ -227,7 +227,7 @@ OverviewMap.prototype.setMap = function(map) {
   if (map) {
     this.ovmap_.setTarget(this.ovmapDiv_);
     this.listenerKeys.push(_ol_events_.listen(
-        map, _ol_ObjectEventType_.PROPERTYCHANGE,
+        map, ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked

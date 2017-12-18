@@ -5,7 +5,7 @@ import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import _ol_Object_ from '../Object.js';
-import _ol_ObjectEventType_ from '../ObjectEventType.js';
+import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -104,7 +104,7 @@ _ol_layer_Group_.prototype.handleLayersChanged_ = function(event) {
   for (i = 0, ii = layersArray.length; i < ii; i++) {
     layer = layersArray[i];
     this.listenerKeys_[getUid(layer).toString()] = [
-      _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
+      _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
           this.handleLayerChange_, this),
       _ol_events_.listen(layer, EventType.CHANGE,
           this.handleLayerChange_, this)
@@ -123,7 +123,7 @@ _ol_layer_Group_.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = getUid(layer).toString();
   this.listenerKeys_[key] = [
-    _ol_events_.listen(layer, _ol_ObjectEventType_.PROPERTYCHANGE,
+    _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
     _ol_events_.listen(layer, EventType.CHANGE,
         this.handleLayerChange_, this)
