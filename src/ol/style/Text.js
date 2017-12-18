@@ -2,7 +2,7 @@
  * @module ol/style/Text
  */
 import _ol_style_Fill_ from '../style/Fill.js';
-import _ol_style_TextPlacement_ from '../style/TextPlacement.js';
+import TextPlacement from '../style/TextPlacement.js';
 
 /**
  * @classdesc
@@ -75,7 +75,7 @@ var _ol_style_Text_ = function(opt_options) {
    * @private
    * @type {ol.style.TextPlacement|string}
    */
-  this.placement_ = options.placement !== undefined ? options.placement : _ol_style_TextPlacement_.POINT;
+  this.placement_ = options.placement !== undefined ? options.placement : TextPlacement.POINT;
 
   /**
    * @private

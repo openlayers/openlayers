@@ -12,7 +12,7 @@ import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
 import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
 import _ol_render_replay_ from '../replay.js';
-import _ol_style_TextPlacement_ from '../../style/TextPlacement.js';
+import TextPlacement from '../../style/TextPlacement.js';
 
 /**
  * @constructor
@@ -176,7 +176,7 @@ _ol_render_canvas_TextReplay_.prototype.drawText = function(geometry, feature) {
   var stride = 2;
   var i, ii;
 
-  if (textState.placement === _ol_style_TextPlacement_.LINE) {
+  if (textState.placement === TextPlacement.LINE) {
     if (!intersects(this.getBufferedMaxExtent(), geometry.getExtent())) {
       return;
     }
