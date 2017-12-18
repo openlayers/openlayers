@@ -10,7 +10,7 @@ import _ol_array_ from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
 import _ol_obj_ from '../../obj.js';
-import _ol_plugins_ from '../../plugins.js';
+import {getLayerRendererPlugins} from '../../plugins.js';
 import RendererType from '../Type.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
 import _ol_transform_ from '../../transform.js';
@@ -75,7 +75,7 @@ _ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
 _ol_renderer_canvas_ImageLayer_['create'] = function(mapRenderer, layer) {
   var renderer = new _ol_renderer_canvas_ImageLayer_(/** @type {ol.layer.Image} */ (layer));
   if (layer.getType() === LayerType.VECTOR) {
-    var candidates = _ol_plugins_.getLayerRendererPlugins();
+    var candidates = getLayerRendererPlugins();
     for (var i = 0, ii = candidates.length; i < ii; ++i) {
       var candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
       if (candidate !== _ol_renderer_canvas_ImageLayer_ && candidate['handles'](RendererType.CANVAS, layer)) {

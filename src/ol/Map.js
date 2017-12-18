@@ -7,7 +7,7 @@ import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import _ol_obj_ from './obj.js';
-import _ol_plugins_ from './plugins.js';
+import {register, registerMultiple} from './plugins.js';
 import _ol_renderer_canvas_ImageLayer_ from './renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_Map_ from './renderer/canvas/Map.js';
 import _ol_renderer_canvas_TileLayer_ from './renderer/canvas/TileLayer.js';
@@ -19,8 +19,8 @@ import _ol_renderer_webgl_TileLayer_ from './renderer/webgl/TileLayer.js';
 import _ol_renderer_webgl_VectorLayer_ from './renderer/webgl/VectorLayer.js';
 
 
-_ol_plugins_.register(PluginType.MAP_RENDERER, _ol_renderer_canvas_Map_);
-_ol_plugins_.registerMultiple(PluginType.LAYER_RENDERER, [
+register(PluginType.MAP_RENDERER, _ol_renderer_canvas_Map_);
+registerMultiple(PluginType.LAYER_RENDERER, [
   _ol_renderer_canvas_ImageLayer_,
   _ol_renderer_canvas_TileLayer_,
   _ol_renderer_canvas_VectorLayer_,
@@ -28,8 +28,8 @@ _ol_plugins_.registerMultiple(PluginType.LAYER_RENDERER, [
 ]);
 
 // TODO: move these to new ol-webgl package
-_ol_plugins_.register(PluginType.MAP_RENDERER, _ol_renderer_webgl_Map_);
-_ol_plugins_.registerMultiple(PluginType.LAYER_RENDERER, [
+register(PluginType.MAP_RENDERER, _ol_renderer_webgl_Map_);
+registerMultiple(PluginType.LAYER_RENDERER, [
   _ol_renderer_webgl_ImageLayer_,
   _ol_renderer_webgl_TileLayer_,
   _ol_renderer_webgl_VectorLayer_

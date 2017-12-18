@@ -24,7 +24,7 @@ import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEm
 import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
 import _ol_layer_Group_ from './layer/Group.js';
-import _ol_plugins_ from './plugins.js';
+import {getMapRendererPlugins} from './plugins.js';
 import RendererType from './renderer/Type.js';
 import _ol_size_ from './size.js';
 import PriorityQueue from './structs/PriorityQueue.js';
@@ -1438,7 +1438,7 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
    */
   var mapRendererPlugin;
 
-  var mapRendererPlugins = _ol_plugins_.getMapRendererPlugins();
+  var mapRendererPlugins = getMapRendererPlugins();
   outer: for (var i = 0, ii = rendererTypes.length; i < ii; ++i) {
     var rendererType = rendererTypes[i];
     for (var j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
