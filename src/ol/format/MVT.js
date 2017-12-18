@@ -7,7 +7,7 @@ import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_FormatType_ from '../format/FormatType.js';
+import FormatType from '../format/FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import LineString from '../geom/LineString.js';
@@ -345,7 +345,7 @@ MVT.prototype.getLastExtent = function() {
  * @inheritDoc
  */
 MVT.prototype.getType = function() {
-  return _ol_format_FormatType_.ARRAY_BUFFER;
+  return FormatType.ARRAY_BUFFER;
 };
 
 

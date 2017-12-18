@@ -2,7 +2,7 @@
  * @module ol/featureloader
  */
 import {nullFunction} from './index.js';
-import _ol_format_FormatType_ from './format/FormatType.js';
+import FormatType from './format/FormatType.js';
 import _ol_xml_ from './xml.js';
 
 
@@ -30,7 +30,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
       xhr.open('GET',
           typeof url === 'function' ? url(extent, resolution, projection) : url,
           true);
-      if (format.getType() == _ol_format_FormatType_.ARRAY_BUFFER) {
+      if (format.getType() == FormatType.ARRAY_BUFFER) {
         xhr.responseType = 'arraybuffer';
       }
       /**
@@ -43,15 +43,14 @@ export function loadFeaturesXhr(url, format, success, failure) {
           var type = format.getType();
           /** @type {Document|Node|Object|string|undefined} */
           var source;
-          if (type == _ol_format_FormatType_.JSON ||
-                type == _ol_format_FormatType_.TEXT) {
+          if (type == FormatType.JSON || type == FormatType.TEXT) {
             source = xhr.responseText;
-          } else if (type == _ol_format_FormatType_.XML) {
+          } else if (type == FormatType.XML) {
             source = xhr.responseXML;
             if (!source) {
               source = _ol_xml_.parse(xhr.responseText);
             }
-          } else if (type == _ol_format_FormatType_.ARRAY_BUFFER) {
+          } else if (type == FormatType.ARRAY_BUFFER) {
             source = /** @type {ArrayBuffer} */ (xhr.response);
           }
           if (source) {
