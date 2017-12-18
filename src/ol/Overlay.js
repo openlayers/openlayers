@@ -2,7 +2,7 @@
  * @module ol/Overlay
  */
 import {inherits} from './index.js';
-import _ol_MapEventType_ from './MapEventType.js';
+import MapEventType from './MapEventType.js';
 import _ol_Object_ from './Object.js';
 import _ol_OverlayPositioning_ from './OverlayPositioning.js';
 import _ol_css_ from './css.js';
@@ -251,7 +251,7 @@ _ol_Overlay_.prototype.handleMapChanged = function() {
   var map = this.getMap();
   if (map) {
     this.mapPostrenderListenerKey = _ol_events_.listen(map,
-        _ol_MapEventType_.POSTRENDER, this.render, this);
+        MapEventType.POSTRENDER, this.render, this);
     this.updatePixelPosition();
     var container = this.stopEvent ?
       map.getOverlayContainerStopEvent() : map.getOverlayContainer();

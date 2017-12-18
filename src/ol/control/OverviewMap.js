@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import _ol_PluggableMap_ from '../PluggableMap.js';
-import _ol_MapEventType_ from '../MapEventType.js';
+import MapEventType from '../MapEventType.js';
 import _ol_MapProperty_ from '../MapProperty.js';
 import _ol_Object_ from '../Object.js';
 import _ol_ObjectEventType_ from '../ObjectEventType.js';
@@ -504,7 +504,7 @@ OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    _ol_events_.listenOnce(ovmap, _ol_MapEventType_.POSTRENDER,
+    _ol_events_.listenOnce(ovmap, MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
         },
