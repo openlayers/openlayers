@@ -14,7 +14,7 @@ import _ol_render_EventType_ from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_source_State_ from '../../source/State.js';
 
 /**
@@ -69,7 +69,7 @@ inherits(_ol_renderer_canvas_Map_, _ol_renderer_Map_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_Map_['handles'] = function(type) {
-  return type === _ol_renderer_Type_.CANVAS;
+  return type === RendererType.CANVAS;
 };
 
 
@@ -131,7 +131,7 @@ _ol_renderer_canvas_Map_.prototype.getTransform = function(frameState) {
  * @inheritDoc
  */
 _ol_renderer_canvas_Map_.prototype.getType = function() {
-  return _ol_renderer_Type_.CANVAS;
+  return RendererType.CANVAS;
 };
 
 

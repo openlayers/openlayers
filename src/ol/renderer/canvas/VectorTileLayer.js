@@ -16,7 +16,7 @@ import ReplayType from '../../render/ReplayType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_renderer_canvas_TileLayer_ from '../canvas/TileLayer.js';
 import _ol_renderer_vector_ from '../vector.js';
 import _ol_transform_ from '../../transform.js';
@@ -78,7 +78,7 @@ inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_VectorTileLayer_['handles'] = function(type, layer) {
-  return type === _ol_renderer_Type_.CANVAS && layer.getType() === _ol_LayerType_.VECTOR_TILE;
+  return type === RendererType.CANVAS && layer.getType() === _ol_LayerType_.VECTOR_TILE;
 };
 
 

@@ -11,7 +11,7 @@ import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_plugins_ from '../../plugins.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -60,7 +60,7 @@ inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
-  return type === _ol_renderer_Type_.CANVAS && (layer.getType() === _ol_LayerType_.IMAGE ||
+  return type === RendererType.CANVAS && (layer.getType() === _ol_LayerType_.IMAGE ||
       layer.getType() === _ol_LayerType_.VECTOR &&
       /** @type {ol.layer.Vector} */ (layer).getRenderMode() === _ol_layer_VectorRenderType_.IMAGE);
 };
@@ -78,7 +78,7 @@ _ol_renderer_canvas_ImageLayer_['create'] = function(mapRenderer, layer) {
     var candidates = _ol_plugins_.getLayerRendererPlugins();
     for (var i = 0, ii = candidates.length; i < ii; ++i) {
       var candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
-      if (candidate !== _ol_renderer_canvas_ImageLayer_ && candidate['handles'](_ol_renderer_Type_.CANVAS, layer)) {
+      if (candidate !== _ol_renderer_canvas_ImageLayer_ && candidate['handles'](RendererType.CANVAS, layer)) {
         renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
       }
     }

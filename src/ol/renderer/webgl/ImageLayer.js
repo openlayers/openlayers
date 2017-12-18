@@ -8,7 +8,7 @@ import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import {TRUE} from '../../functions.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
@@ -56,7 +56,7 @@ inherits(_ol_renderer_webgl_ImageLayer_, _ol_renderer_webgl_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_ImageLayer_['handles'] = function(type, layer) {
-  return type === _ol_renderer_Type_.WEBGL && layer.getType() === _ol_LayerType_.IMAGE;
+  return type === RendererType.WEBGL && layer.getType() === _ol_LayerType_.IMAGE;
 };
 
 

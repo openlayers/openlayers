@@ -13,7 +13,7 @@ import _ol_render_Event_ from '../../render/Event.js';
 import _ol_render_EventType_ from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_source_State_ from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
@@ -175,7 +175,7 @@ inherits(_ol_renderer_webgl_Map_, _ol_renderer_Map_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_Map_['handles'] = function(type) {
-  return _ol_has_.WEBGL && type === _ol_renderer_Type_.WEBGL;
+  return _ol_has_.WEBGL && type === RendererType.WEBGL;
 };
 
 
@@ -358,7 +358,7 @@ _ol_renderer_webgl_Map_.prototype.getTileTextureQueue = function() {
  * @inheritDoc
  */
 _ol_renderer_webgl_Map_.prototype.getType = function() {
-  return _ol_renderer_Type_.WEBGL;
+  return RendererType.WEBGL;
 };
 
 

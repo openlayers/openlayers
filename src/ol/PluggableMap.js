@@ -25,7 +25,7 @@ import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
 import _ol_layer_Group_ from './layer/Group.js';
 import _ol_plugins_ from './plugins.js';
-import _ol_renderer_Type_ from './renderer/Type.js';
+import RendererType from './renderer/Type.js';
 import _ol_size_ from './size.js';
 import PriorityQueue from './structs/PriorityQueue.js';
 import _ol_transform_ from './transform.js';
@@ -1378,8 +1378,8 @@ _ol_PluggableMap_.prototype.unskipFeature = function(feature) {
  * @const
  */
 _ol_PluggableMap_.DEFAULT_RENDERER_TYPES = [
-  _ol_renderer_Type_.CANVAS,
-  _ol_renderer_Type_.WEBGL
+  RendererType.CANVAS,
+  RendererType.WEBGL
 ];
 
 
