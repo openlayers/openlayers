@@ -2,7 +2,7 @@
  * @module ol/render/Feature
  */
 import {nullFunction} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
@@ -171,7 +171,7 @@ _ol_render_Feature_.prototype.getFlatMidpoints = function() {
       var end = ends[i];
       var midpoint = _ol_geom_flat_interpolate_.lineString(
           flatCoordinates, offset, end, 2, 0.5);
-      _ol_array_.extend(this.flatMidpoints_, midpoint);
+      extend(this.flatMidpoints_, midpoint);
       offset = end;
     }
   }

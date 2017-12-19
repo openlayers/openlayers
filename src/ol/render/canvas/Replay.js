@@ -2,7 +2,7 @@
  * @module ol/render/canvas/Replay
  */
 import {getUid, inherits, nullFunction} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {equals, reverseSubArray} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {buffer, clone, coordinateRelationship, createEmpty, createOrUpdate,
   createOrUpdateEmpty, extend, extendCoordinate, intersects} from '../../extent.js';
@@ -542,7 +542,7 @@ _ol_render_canvas_Replay_.prototype.replay_ = function(
     instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
-  if (this.pixelCoordinates_ && _ol_array_.equals(transform, this.renderedTransform_)) {
+  if (this.pixelCoordinates_ && equals(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     if (!this.pixelCoordinates_) {
@@ -898,7 +898,7 @@ _ol_render_canvas_Replay_.prototype.reverseHitDetectionInstructions = function()
       begin = i;
     } else if (type == _ol_render_canvas_Instruction_.BEGIN_GEOMETRY) {
       instruction[2] = i;
-      _ol_array_.reverseSubArray(this.hitDetectionInstructions, begin, i);
+      reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
     }
   }
@@ -1013,7 +1013,7 @@ _ol_render_canvas_Replay_.prototype.updateStrokeStyle = function(state, applyStr
   var miterLimit = state.miterLimit;
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
-      (lineDash != state.currentLineDash && !_ol_array_.equals(state.currentLineDash, lineDash)) ||
+      (lineDash != state.currentLineDash && !equals(state.currentLineDash, lineDash)) ||
       state.currentLineDashOffset != lineDashOffset ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||

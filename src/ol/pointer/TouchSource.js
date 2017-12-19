@@ -32,7 +32,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {remove} from '../array.js';
 import _ol_pointer_EventSource_ from '../pointer/EventSource.js';
 import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
 
@@ -443,7 +443,7 @@ _ol_pointer_TouchSource_.prototype.dedupSynthMouse_ = function(inEvent) {
 
     setTimeout(function() {
       // remove touch after timeout
-      _ol_array_.remove(lts, lt);
+      remove(lts, lt);
     }, _ol_pointer_TouchSource_.DEDUP_TIMEOUT);
   }
 };

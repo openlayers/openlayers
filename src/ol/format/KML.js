@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_array_ from '../array.js';
+import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
 import FeatureFormat from '../format/Feature.js';
@@ -927,7 +927,7 @@ KML.readMultiGeometry_ = function(node, objectStack) {
       flatCoordinates = point.getFlatCoordinates();
       for (i = 1, ii = geometries.length; i < ii; ++i) {
         geometry = geometries[i];
-        _ol_array_.extend(flatCoordinates, geometry.getFlatCoordinates());
+        extend(flatCoordinates, geometry.getFlatCoordinates());
       }
       multiGeometry = new MultiPoint(null);
       multiGeometry.setFlatCoordinates(layout, flatCoordinates);
@@ -993,7 +993,7 @@ KML.readPolygon_ = function(node, objectStack) {
     var ends = [flatCoordinates.length];
     var i, ii;
     for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      _ol_array_.extend(flatCoordinates, flatLinearRings[i]);
+      extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
@@ -1806,7 +1806,7 @@ KML.prototype.readFeature;
  * @inheritDoc
  */
 KML.prototype.readFeatureFromNode = function(node, opt_options) {
-  if (!_ol_array_.includes(KML.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   var feature = this.readPlacemark_(
@@ -1837,7 +1837,7 @@ KML.prototype.readFeatures;
  * @inheritDoc
  */
 KML.prototype.readFeaturesFromNode = function(node, opt_options) {
-  if (!_ol_array_.includes(KML.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(KML.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
   var features;
@@ -1864,7 +1864,7 @@ KML.prototype.readFeaturesFromNode = function(node, opt_options) {
     for (n = node.firstElementChild; n; n = n.nextElementSibling) {
       var fs = this.readFeaturesFromNode(n, opt_options);
       if (fs) {
-        _ol_array_.extend(features, fs);
+        extend(features, fs);
       }
     }
     return features;
@@ -1920,14 +1920,14 @@ KML.prototype.readNameFromDocument = function(doc) {
 KML.prototype.readNameFromNode = function(node) {
   var n;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'name') {
       return XSD.readString(n);
     }
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var localName = n.localName;
-    if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'Placemark' ||
@@ -1952,14 +1952,14 @@ KML.prototype.readNameFromNode = function(node) {
 KML.prototype.readNetworkLinks = function(source) {
   var networkLinks = [];
   if (_ol_xml_.isDocument(source)) {
-    _ol_array_.extend(networkLinks, this.readNetworkLinksFromDocument(
+    extend(networkLinks, this.readNetworkLinksFromDocument(
         /** @type {Document} */ (source)));
   } else if (_ol_xml_.isNode(source)) {
-    _ol_array_.extend(networkLinks, this.readNetworkLinksFromNode(
+    extend(networkLinks, this.readNetworkLinksFromNode(
         /** @type {Node} */ (source)));
   } else if (typeof source === 'string') {
     var doc = _ol_xml_.parse(source);
-    _ol_array_.extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+    extend(networkLinks, this.readNetworkLinksFromDocument(doc));
   }
   return networkLinks;
 };
@@ -1973,7 +1973,7 @@ KML.prototype.readNetworkLinksFromDocument = function(doc) {
   var n, networkLinks = [];
   for (n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
-      _ol_array_.extend(networkLinks, this.readNetworkLinksFromNode(n));
+      extend(networkLinks, this.readNetworkLinksFromNode(n));
     }
   }
   return networkLinks;
@@ -1987,7 +1987,7 @@ KML.prototype.readNetworkLinksFromDocument = function(doc) {
 KML.prototype.readNetworkLinksFromNode = function(node) {
   var n, networkLinks = [];
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'NetworkLink') {
       var obj = _ol_xml_.pushParseAndPop({}, KML.NETWORK_LINK_PARSERS_,
           n, []);
@@ -1996,11 +1996,11 @@ KML.prototype.readNetworkLinksFromNode = function(node) {
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var localName = n.localName;
-    if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'kml')) {
-      _ol_array_.extend(networkLinks, this.readNetworkLinksFromNode(n));
+      extend(networkLinks, this.readNetworkLinksFromNode(n));
     }
   }
   return networkLinks;
@@ -2017,14 +2017,14 @@ KML.prototype.readNetworkLinksFromNode = function(node) {
 KML.prototype.readRegion = function(source) {
   var regions = [];
   if (_ol_xml_.isDocument(source)) {
-    _ol_array_.extend(regions, this.readRegionFromDocument(
+    extend(regions, this.readRegionFromDocument(
         /** @type {Document} */ (source)));
   } else if (_ol_xml_.isNode(source)) {
-    _ol_array_.extend(regions, this.readRegionFromNode(
+    extend(regions, this.readRegionFromNode(
         /** @type {Node} */ (source)));
   } else if (typeof source === 'string') {
     var doc = _ol_xml_.parse(source);
-    _ol_array_.extend(regions, this.readRegionFromDocument(doc));
+    extend(regions, this.readRegionFromDocument(doc));
   }
   return regions;
 };
@@ -2038,7 +2038,7 @@ KML.prototype.readRegionFromDocument = function(doc) {
   var n, regions = [];
   for (n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
-      _ol_array_.extend(regions, this.readRegionFromNode(n));
+      extend(regions, this.readRegionFromNode(n));
     }
   }
   return regions;
@@ -2053,7 +2053,7 @@ KML.prototype.readRegionFromDocument = function(doc) {
 KML.prototype.readRegionFromNode = function(node) {
   var n, regions = [];
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'Region') {
       var obj = _ol_xml_.pushParseAndPop({}, KML.REGION_PARSERS_,
           n, []);
@@ -2062,11 +2062,11 @@ KML.prototype.readRegionFromNode = function(node) {
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var localName = n.localName;
-    if (_ol_array_.includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
+    if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'kml')) {
-      _ol_array_.extend(regions, this.readRegionFromNode(n));
+      extend(regions, this.readRegionFromNode(n));
     }
   }
   return regions;

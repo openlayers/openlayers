@@ -2,7 +2,7 @@
  * @module ol/control/Attribution
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {equals} from '../array.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
@@ -208,7 +208,7 @@ Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var attributions = this.getSourceAttributions_(frameState);
-  if (_ol_array_.equals(attributions, this.renderedAttributions_)) {
+  if (equals(attributions, this.renderedAttributions_)) {
     return;
   }
 

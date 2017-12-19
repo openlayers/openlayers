@@ -2,7 +2,7 @@
  * @module ol/geom/MultiPoint
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import {closestSquaredDistanceXY, containsXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -39,7 +39,7 @@ MultiPoint.prototype.appendPoint = function(point) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = point.getFlatCoordinates().slice();
   } else {
-    _ol_array_.extend(this.flatCoordinates, point.getFlatCoordinates());
+    extend(this.flatCoordinates, point.getFlatCoordinates());
   }
   this.changed();
 };

@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/interpolate
  */
-import _ol_array_ from '../../array.js';
+import {binarySearch} from '../../array.js';
 import _ol_math_ from '../../math.js';
 var _ol_geom_flat_interpolate_ = {};
 
@@ -42,7 +42,7 @@ _ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, s
       y1 = y2;
     }
     var target = fraction * length;
-    var index = _ol_array_.binarySearch(cumulativeLengths, target);
+    var index = binarySearch(cumulativeLengths, target);
     if (index < 0) {
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);

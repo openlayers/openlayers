@@ -1,7 +1,7 @@
 /**
  * @module ol/xml
  */
-import _ol_array_ from './array.js';
+import {extend} from './array.js';
 var _ol_xml_ = {};
 
 
@@ -136,7 +136,7 @@ _ol_xml_.makeArrayExtender = function(valueReader, opt_this) {
       if (value !== undefined) {
         var array = /** @type {Array.<*>} */
               (objectStack[objectStack.length - 1]);
-        _ol_array_.extend(array, value);
+        extend(array, value);
       }
     }
   );

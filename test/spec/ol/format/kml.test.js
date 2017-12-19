@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_array_ from '../../../../src/ol/array.js';
+import {find} from '../../../../src/ol/array.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import KML from '../../../../src/ol/format/KML.js';
 import GeometryCollection from '../../../../src/ol/geom/GeometryCollection.js';
@@ -3188,7 +3188,7 @@ describe('ol.format.KML', function() {
       });
 
       it('creates a Point and a MultiPolygon for Alaska', function() {
-        var alaska = _ol_array_.find(features, function(feature) {
+        var alaska = find(features, function(feature) {
           return feature.get('name') === 'Alaska';
         });
         expect(alaska).to.be.an(_ol_Feature_);

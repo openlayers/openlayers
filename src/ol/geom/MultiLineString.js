@@ -2,7 +2,7 @@
  * @module ol/geom/MultiLineString
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -63,8 +63,7 @@ MultiLineString.prototype.appendLineString = function(lineString) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = lineString.getFlatCoordinates().slice();
   } else {
-    _ol_array_.extend(
-        this.flatCoordinates, lineString.getFlatCoordinates().slice());
+    extend(this.flatCoordinates, lineString.getFlatCoordinates().slice());
   }
   this.ends_.push(this.flatCoordinates.length);
   this.changed();
@@ -213,7 +212,7 @@ MultiLineString.prototype.getFlatMidpoints = function() {
     var end = ends[i];
     var midpoint = _ol_geom_flat_interpolate_.lineString(
         flatCoordinates, offset, end, stride, 0.5);
-    _ol_array_.extend(midpoints, midpoint);
+    extend(midpoints, midpoint);
     offset = end;
   }
   return midpoints;
@@ -303,7 +302,7 @@ MultiLineString.prototype.setLineStrings = function(lineStrings) {
     if (i === 0) {
       layout = lineString.getLayout();
     }
-    _ol_array_.extend(flatCoordinates, lineString.getFlatCoordinates());
+    extend(flatCoordinates, lineString.getFlatCoordinates());
     ends.push(flatCoordinates.length);
   }
   this.setFlatCoordinates(layout, flatCoordinates, ends);

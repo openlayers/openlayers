@@ -4,7 +4,7 @@
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {inherits} from '../index.js';
 import ImageState from '../ImageState.js';
-import _ol_array_ from '../array.js';
+import {linearFindNearest} from '../array.js';
 import Event from '../events/Event.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
@@ -72,7 +72,7 @@ _ol_source_Image_.prototype.getResolutions = function() {
  */
 _ol_source_Image_.prototype.findNearestResolution = function(resolution) {
   if (this.resolutions_) {
-    var idx = _ol_array_.linearFindNearest(this.resolutions_, resolution, 0);
+    var idx = linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
   }
   return resolution;

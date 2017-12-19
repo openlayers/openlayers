@@ -3,7 +3,7 @@
  */
 // FIXME add typedef for stack state objects
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
@@ -180,7 +180,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
       var flatCoordinates = [];
       for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
         var point = state.nodes[values.ndrefs[i]];
-        _ol_array_.extend(flatCoordinates, point);
+        extend(flatCoordinates, point);
       }
       var geometry;
       if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {

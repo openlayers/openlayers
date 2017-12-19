@@ -8,7 +8,7 @@ import {inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
-import _ol_array_ from '../../array.js';
+import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import _ol_math_ from '../../math.js';
 import RendererType from '../Type.js';
@@ -297,7 +297,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
 
     /** @type {Array.<number>} */
     var zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort(_ol_array_.numberSafeCompareFunction);
+    zs.sort(numberSafeCompareFunction);
     var u_tileOffset = new Float32Array(4);
     var i, ii, tileKey, tilesToDraw;
     for (i = 0, ii = zs.length; i < ii; ++i) {

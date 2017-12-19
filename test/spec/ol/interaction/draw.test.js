@@ -2,7 +2,7 @@ import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_array_ from '../../../../src/ol/array.js';
+import {equals} from '../../../../src/ol/array.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
@@ -431,7 +431,7 @@ describe('ol.interaction.Draw', function() {
         source: source,
         type: 'LineString',
         finishCondition: function(event) {
-          if (_ol_array_.equals(event.coordinate, [30, -20])) {
+          if (equals(event.coordinate, [30, -20])) {
             return true;
           }
           return false;

@@ -3,7 +3,7 @@
  */
 import {WEBGL_EXTENSIONS, getUid, inherits} from '../index.js';
 import _ol_Disposable_ from '../Disposable.js';
-import _ol_array_ from '../array.js';
+import {includes} from '../array.js';
 import _ol_events_ from '../events.js';
 import _ol_obj_ from '../obj.js';
 import _ol_webgl_ from '../webgl.js';
@@ -77,8 +77,7 @@ var _ol_webgl_Context_ = function(canvas, gl) {
   /**
    * @type {boolean}
    */
-  this.hasOESElementIndexUint = _ol_array_.includes(
-      WEBGL_EXTENSIONS, 'OES_element_index_uint');
+  this.hasOESElementIndexUint = includes(WEBGL_EXTENSIONS, 'OES_element_index_uint');
 
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {

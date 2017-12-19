@@ -1,4 +1,4 @@
-import _ol_array_ from '../src/ol/array.js';
+import {equals} from '../src/ol/array.js';
 import _ol_has_ from '../src/ol/has.js';
 // avoid importing anything that results in an instanceof check
 // since these extensions are global, instanceof checks fail with modules
@@ -317,7 +317,7 @@ import _ol_has_ from '../src/ol/has.js';
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
-        _ol_array_.equals(this.obj, obj),
+        equals(this.obj, obj),
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);

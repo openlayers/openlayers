@@ -4,7 +4,7 @@
 import {DEFAULT_TILE_SIZE} from './common.js';
 import {assert} from '../asserts.js';
 import TileRange from '../TileRange.js';
-import _ol_array_ from '../array.js';
+import {isSorted, linearFindNearest} from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import _ol_math_ from '../math.js';
 import _ol_size_ from '../size.js';
@@ -33,7 +33,7 @@ var _ol_tilegrid_TileGrid_ = function(options) {
    * @type {!Array.<number>}
    */
   this.resolutions_ = options.resolutions;
-  assert(_ol_array_.isSorted(this.resolutions_, function(a, b) {
+  assert(isSorted(this.resolutions_, function(a, b) {
     return b - a;
   }, true), 17); // `resolutions` must be sorted in descending order
 
@@ -528,8 +528,7 @@ _ol_tilegrid_TileGrid_.prototype.getFullTileRange = function(z) {
  */
 _ol_tilegrid_TileGrid_.prototype.getZForResolution = function(
     resolution, opt_direction) {
-  var z = _ol_array_.linearFindNearest(this.resolutions_, resolution,
-      opt_direction || 0);
+  var z = linearFindNearest(this.resolutions_, resolution, opt_direction || 0);
   return _ol_math_.clamp(z, this.minZoom, this.maxZoom);
 };
 

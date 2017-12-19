@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../index.js';
 import CollectionEventType from '../CollectionEventType.js';
-import _ol_array_ from '../array.js';
+import {extend, includes} from '../array.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import _ol_events_condition_ from '../events/condition.js';
@@ -113,7 +113,7 @@ var _ol_interaction_Select_ = function(opt_options) {
     } else {
       var layers = options.layers;
       layerFilter = function(layer) {
-        return _ol_array_.includes(layers, layer);
+        return includes(layers, layer);
       };
     }
   } else {
@@ -259,12 +259,10 @@ _ol_interaction_Select_.handleEvent = function(mapBrowserEvent) {
            */
           function(feature, layer) {
             if (this.filter_(feature, layer)) {
-              if ((add || toggle) &&
-                !_ol_array_.includes(features.getArray(), feature)) {
+              if ((add || toggle) && !includes(features.getArray(), feature)) {
                 selected.push(feature);
                 this.addFeatureLayerAssociation_(feature, layer);
-              } else if ((remove || toggle) &&
-                _ol_array_.includes(features.getArray(), feature)) {
+              } else if ((remove || toggle) && includes(features.getArray(), feature)) {
                 deselected.push(feature);
                 this.removeFeatureLayerAssociation_(feature);
               }
@@ -328,10 +326,8 @@ _ol_interaction_Select_.prototype.setMap = function(map) {
  */
 _ol_interaction_Select_.getDefaultStyleFunction = function() {
   var styles = _ol_style_Style_.createDefaultEditing();
-  _ol_array_.extend(styles[GeometryType.POLYGON],
-      styles[GeometryType.LINE_STRING]);
-  _ol_array_.extend(styles[GeometryType.GEOMETRY_COLLECTION],
-      styles[GeometryType.LINE_STRING]);
+  extend(styles[GeometryType.POLYGON], styles[GeometryType.LINE_STRING]);
+  extend(styles[GeometryType.GEOMETRY_COLLECTION], styles[GeometryType.LINE_STRING]);
 
   return function(feature, resolution) {
     if (!feature.getGeometry()) {

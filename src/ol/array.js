@@ -1,7 +1,6 @@
 /**
  * @module ol/array
  */
-var _ol_array_ = {};
 
 
 /**
@@ -13,9 +12,9 @@ var _ol_array_ = {};
  * @param {Function=} opt_comparator Comparator function.
  * @return {number} The index of the item if found, -1 if not.
  */
-_ol_array_.binarySearch = function(haystack, needle, opt_comparator) {
+export function binarySearch(haystack, needle, opt_comparator) {
   var mid, cmp;
-  var comparator = opt_comparator || _ol_array_.numberSafeCompareFunction;
+  var comparator = opt_comparator || numberSafeCompareFunction;
   var low = 0;
   var high = haystack.length;
   var found = false;
@@ -37,7 +36,7 @@ _ol_array_.binarySearch = function(haystack, needle, opt_comparator) {
 
   /* Key not found. */
   return found ? low : ~low;
-};
+}
 
 
 /**
@@ -47,9 +46,9 @@ _ol_array_.binarySearch = function(haystack, needle, opt_comparator) {
  * @return {number} A negative number, zero, or a positive number as the first
  *     argument is less than, equal to, or greater than the second.
  */
-_ol_array_.numberSafeCompareFunction = function(a, b) {
+export function numberSafeCompareFunction(a, b) {
   return a > b ? 1 : a < b ? -1 : 0;
-};
+}
 
 
 /**
@@ -58,9 +57,9 @@ _ol_array_.numberSafeCompareFunction = function(a, b) {
  * @param {*} obj The object for which to test.
  * @return {boolean} The object is in the array.
  */
-_ol_array_.includes = function(arr, obj) {
+export function includes(arr, obj) {
   return arr.indexOf(obj) >= 0;
-};
+}
 
 
 /**
@@ -71,7 +70,7 @@ _ol_array_.includes = function(arr, obj) {
  *    smallest nearest.
  * @return {number} Index.
  */
-_ol_array_.linearFindNearest = function(arr, target, direction) {
+export function linearFindNearest(arr, target, direction) {
   var n = arr.length;
   if (arr[0] <= target) {
     return 0;
@@ -106,7 +105,7 @@ _ol_array_.linearFindNearest = function(arr, target, direction) {
     }
     return n - 1;
   }
-};
+}
 
 
 /**
@@ -114,7 +113,7 @@ _ol_array_.linearFindNearest = function(arr, target, direction) {
  * @param {number} begin Begin index.
  * @param {number} end End index.
  */
-_ol_array_.reverseSubArray = function(arr, begin, end) {
+export function reverseSubArray(arr, begin, end) {
   while (begin < end) {
     var tmp = arr[begin];
     arr[begin] = arr[end];
@@ -122,7 +121,7 @@ _ol_array_.reverseSubArray = function(arr, begin, end) {
     ++begin;
     --end;
   }
-};
+}
 
 
 /**
@@ -131,14 +130,14 @@ _ol_array_.reverseSubArray = function(arr, begin, end) {
  *     to add to arr.
  * @template VALUE
  */
-_ol_array_.extend = function(arr, data) {
+export function extend(arr, data) {
   var i;
   var extension = Array.isArray(data) ? data : [data];
   var length = extension.length;
   for (i = 0; i < length; i++) {
     arr[arr.length] = extension[i];
   }
-};
+}
 
 
 /**
@@ -147,14 +146,14 @@ _ol_array_.extend = function(arr, data) {
  * @template VALUE
  * @return {boolean} If the element was removed.
  */
-_ol_array_.remove = function(arr, obj) {
+export function remove(arr, obj) {
   var i = arr.indexOf(obj);
   var found = i > -1;
   if (found) {
     arr.splice(i, 1);
   }
   return found;
-};
+}
 
 
 /**
@@ -163,7 +162,7 @@ _ol_array_.remove = function(arr, obj) {
  * @template VALUE
  * @return {VALUE} The element found.
  */
-_ol_array_.find = function(arr, func) {
+export function find(arr, func) {
   var length = arr.length >>> 0;
   var value;
 
@@ -174,7 +173,7 @@ _ol_array_.find = function(arr, func) {
     }
   }
   return null;
-};
+}
 
 
 /**
@@ -182,7 +181,7 @@ _ol_array_.find = function(arr, func) {
  * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
  * @return {boolean} Whether the two arrays are equal.
  */
-_ol_array_.equals = function(arr1, arr2) {
+export function equals(arr1, arr2) {
   var len1 = arr1.length;
   if (len1 !== arr2.length) {
     return false;
@@ -193,14 +192,14 @@ _ol_array_.equals = function(arr1, arr2) {
     }
   }
   return true;
-};
+}
 
 
 /**
  * @param {Array.<*>} arr The array to sort (modifies original).
  * @param {Function} compareFnc Comparison function.
  */
-_ol_array_.stableSort = function(arr, compareFnc) {
+export function stableSort(arr, compareFnc) {
   var length = arr.length;
   var tmp = Array(arr.length);
   var i;
@@ -213,7 +212,7 @@ _ol_array_.stableSort = function(arr, compareFnc) {
   for (i = 0; i < arr.length; i++) {
     arr[i] = tmp[i].value;
   }
-};
+}
 
 
 /**
@@ -221,14 +220,14 @@ _ol_array_.stableSort = function(arr, compareFnc) {
  * @param {Function} func Comparison function.
  * @return {number} Return index.
  */
-_ol_array_.findIndex = function(arr, func) {
+export function findIndex(arr, func) {
   var index;
   var found = !arr.every(function(el, idx) {
     index = idx;
     return !func(el, idx, arr);
   });
   return found ? index : -1;
-};
+}
 
 
 /**
@@ -237,8 +236,8 @@ _ol_array_.findIndex = function(arr, func) {
  * @param {boolean=} opt_strict Strictly sorted (default false).
  * @return {boolean} Return index.
  */
-_ol_array_.isSorted = function(arr, opt_func, opt_strict) {
-  var compare = opt_func || _ol_array_.numberSafeCompareFunction;
+export function isSorted(arr, opt_func, opt_strict) {
+  var compare = opt_func || numberSafeCompareFunction;
   return arr.every(function(currentVal, index) {
     if (index === 0) {
       return true;
@@ -246,5 +245,4 @@ _ol_array_.isSorted = function(arr, opt_func, opt_strict) {
     var res = compare(arr[index - 1], currentVal);
     return !(res > 0 || opt_strict && res === 0);
   });
-};
-export default _ol_array_;
+}

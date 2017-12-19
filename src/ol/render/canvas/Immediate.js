@@ -6,7 +6,7 @@
 // FIXME add offset and end to ol.geom.flat.transform.transform2D?
 
 import {inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {equals} from '../../array.js';
 import {asColorLike} from '../../colorlike.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
@@ -755,8 +755,7 @@ _ol_render_canvas_Immediate_.prototype.setContextStrokeState_ = function(strokeS
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
     if (_ol_has_.CANVAS_LINE_DASH) {
-      if (!_ol_array_.equals(
-          contextStrokeState.lineDash, strokeState.lineDash)) {
+      if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
         context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
       }
       if (contextStrokeState.lineDashOffset != strokeState.lineDashOffset) {

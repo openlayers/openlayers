@@ -5,7 +5,7 @@
 
 import _ol_transform_ from '../../transform.js';
 import {inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
@@ -166,7 +166,7 @@ _ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
-  _ol_array_.stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
+  stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
 
   if (rotation) {
     context.save();

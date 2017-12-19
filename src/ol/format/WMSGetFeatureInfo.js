@@ -2,7 +2,7 @@
  * @module ol/format/WMSGetFeatureInfo
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend, includes} from '../array.js';
 import GML2 from '../format/GML2.js';
 import XMLFeature from '../format/XMLFeature.js';
 import _ol_obj_ from '../obj.js';
@@ -105,7 +105,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       var toRemove = WMSGetFeatureInfo.layerIdentifier_;
       var layerName = layer.localName.replace(toRemove, '');
 
-      if (this.layers_ && !_ol_array_.includes(this.layers_, layerName)) {
+      if (this.layers_ && !includes(this.layers_, layerName)) {
         continue;
       }
 
@@ -124,7 +124,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       var layerFeatures = _ol_xml_.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (layerFeatures) {
-        _ol_array_.extend(features, layerFeatures);
+        extend(features, layerFeatures);
       }
     }
   }

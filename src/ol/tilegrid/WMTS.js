@@ -2,7 +2,7 @@
  * @module ol/tilegrid/WMTS
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
 import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
 
@@ -110,7 +110,7 @@ _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet = function(matrixSet, opt_ext
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
-      matrixAvailable = _ol_array_.find(matrixLimits,
+      matrixAvailable = find(matrixLimits,
           function(elt_ml, index_ml, array_ml) {
             return elt[identifierPropName] == elt_ml[matrixIdsPropName];
           });
