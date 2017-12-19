@@ -1,7 +1,7 @@
 /**
  * @module ol/extent
  */
-import asserts from './asserts.js';
+import {assert} from './asserts.js';
 import Corner from './extent/Corner.js';
 import Relationship from './extent/Relationship.js';
 
@@ -488,7 +488,7 @@ export function getCorner(extent, corner) {
   } else if (corner === Corner.TOP_RIGHT) {
     coordinate = getTopRight(extent);
   } else {
-    asserts.assert(false, 13); // Invalid corner
+    assert(false, 13); // Invalid corner
   }
   return /** @type {!ol.Coordinate} */ (coordinate);
 }
