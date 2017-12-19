@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_color_ from '../../color.js';
+import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
@@ -387,7 +387,7 @@ _ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle = function(fillStyle
     strokeStyleColor = strokeStyle.getColor();
     if (!(strokeStyleColor instanceof CanvasGradient) &&
         !(strokeStyleColor instanceof CanvasPattern)) {
-      strokeStyleColor = _ol_color_.asArray(strokeStyleColor).map(function(c, i) {
+      strokeStyleColor = asArray(strokeStyleColor).map(function(c, i) {
         return i != 3 ? c / 255 : c;
       }) || _ol_render_webgl_.defaultStrokeStyle;
     } else {
@@ -403,7 +403,7 @@ _ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle = function(fillStyle
   var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
   if (!(fillStyleColor instanceof CanvasGradient) &&
       !(fillStyleColor instanceof CanvasPattern)) {
-    fillStyleColor = _ol_color_.asArray(fillStyleColor).map(function(c, i) {
+    fillStyleColor = asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
     }) || _ol_render_webgl_.defaultFillStyle;
   } else {

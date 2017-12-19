@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import _ol_array_ from '../array.js';
 import {assert} from '../asserts.js';
-import _ol_color_ from '../color.js';
+import {asArray} from '../color.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import XSD from '../format/XSD.js';
@@ -2090,7 +2090,7 @@ KML.prototype.readProjection;
  * @private
  */
 KML.writeColorTextNode_ = function(node, color) {
-  var rgba = _ol_color_.asArray(color);
+  var rgba = asArray(color);
   var opacity = (rgba.length == 4) ? rgba[3] : 1;
   var abgr = [opacity * 255, rgba[2], rgba[1], rgba[0]];
   var i;

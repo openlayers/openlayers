@@ -1,7 +1,7 @@
 /**
  * @module ol/style/IconImageCache
  */
-import _ol_color_ from '../color.js';
+import {asString} from '../color.js';
 
 /**
  * Singleton class. Available through {@link ol.style.iconImageCache}.
@@ -36,7 +36,7 @@ var IconImageCache = function() {
  * @return {string} Cache key.
  */
 function getKey(src, crossOrigin, color) {
-  var colorString = color ? _ol_color_.asString(color) : 'null';
+  var colorString = color ? asString(color) : 'null';
   return crossOrigin + ':' + src + ':' + colorString;
 }
 

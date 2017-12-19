@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import ImageState from '../ImageState.js';
 import {assert} from '../asserts.js';
-import _ol_color_ from '../color.js';
+import {asArray} from '../color.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
@@ -101,8 +101,7 @@ var _ol_style_Icon_ = function(opt_options) {
    * @private
    * @type {ol.Color}
    */
-  this.color_ = options.color !== undefined ? _ol_color_.asArray(options.color) :
-    null;
+  this.color_ = options.color !== undefined ? asArray(options.color) : null;
 
   /**
    * @private
