@@ -120,10 +120,6 @@ describe('ol.color', function() {
           [0, 0, 255, 0.4711]);
     });
 
-    it.skip('caches parsed values', function() {
-      // TODO is this untestable with named exports?
-    });
-
     it('throws an error on invalid colors', function() {
       var invalidColors = ['tuesday', '#12345', '#1234567', 'rgb(255.0,0,0)'];
       var i, ii;
