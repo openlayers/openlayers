@@ -13,7 +13,7 @@ import _ol_obj_ from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_source_Image_ from '../source/Image.js';
-import _ol_source_WMSServerType_ from '../source/WMSServerType.js';
+import WMSServerType from '../source/WMSServerType.js';
 import _ol_string_ from '../string.js';
 import _ol_uri_ from '../uri.js';
 
@@ -275,7 +275,7 @@ _ol_source_ImageWMS_.prototype.getRequestUrl_ = function(extent, size, pixelRati
 
   if (pixelRatio != 1) {
     switch (this.serverType_) {
-      case _ol_source_WMSServerType_.GEOSERVER:
+      case WMSServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
         if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
@@ -283,11 +283,11 @@ _ol_source_ImageWMS_.prototype.getRequestUrl_ = function(extent, size, pixelRati
           params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
         }
         break;
-      case _ol_source_WMSServerType_.MAPSERVER:
+      case WMSServerType.MAPSERVER:
         params['MAP_RESOLUTION'] = 90 * pixelRatio;
         break;
-      case _ol_source_WMSServerType_.CARMENTA_SERVER:
-      case _ol_source_WMSServerType_.QGIS:
+      case WMSServerType.CARMENTA_SERVER:
+      case WMSServerType.QGIS:
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
