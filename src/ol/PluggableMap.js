@@ -357,7 +357,7 @@ var _ol_PluggableMap_ = function(options) {
        */
       function(control) {
         control.setMap(this);
-      }, this);
+      }.bind(this));
 
   _ol_events_.listen(this.controls, CollectionEventType.ADD,
       /**
@@ -382,7 +382,7 @@ var _ol_PluggableMap_ = function(options) {
        */
       function(interaction) {
         interaction.setMap(this);
-      }, this);
+      }.bind(this));
 
   _ol_events_.listen(this.interactions, CollectionEventType.ADD,
       /**
@@ -400,7 +400,7 @@ var _ol_PluggableMap_ = function(options) {
         event.element.setMap(null);
       }, this);
 
-  this.overlays_.forEach(this.addOverlayInternal_, this);
+  this.overlays_.forEach(this.addOverlayInternal_.bind(this));
 
   _ol_events_.listen(this.overlays_, CollectionEventType.ADD,
       /**

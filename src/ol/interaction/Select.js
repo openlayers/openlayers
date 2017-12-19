@@ -313,12 +313,12 @@ _ol_interaction_Select_.prototype.setMap = function(map) {
   var selectedFeatures =
       this.featureOverlay_.getSource().getFeaturesCollection();
   if (currentMap) {
-    selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
+    selectedFeatures.forEach(currentMap.unskipFeature.bind(currentMap));
   }
   Interaction.prototype.setMap.call(this, map);
   this.featureOverlay_.setMap(map);
   if (map) {
-    selectedFeatures.forEach(map.skipFeature, map);
+    selectedFeatures.forEach(map.skipFeature.bind(map));
   }
 };
 

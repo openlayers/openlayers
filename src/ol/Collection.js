@@ -101,18 +101,15 @@ _ol_Collection_.prototype.extend = function(arr) {
 
 /**
  * Iterate over each element, calling the provided callback.
- * @param {function(this: S, T, number, Array.<T>): *} f The function to call
+ * @param {function(T, number, Array.<T>): *} f The function to call
  *     for every element. This function takes 3 arguments (the element, the
  *     index and the array). The return value is ignored.
- * @param {S=} opt_this The object to use as `this` in `f`.
- * @template S
  * @api
  */
-_ol_Collection_.prototype.forEach = function(f, opt_this) {
-  var fn = (opt_this) ? f.bind(opt_this) : f;
+_ol_Collection_.prototype.forEach = function(f) {
   var array = this.array_;
   for (var i = 0, ii = array.length; i < ii; ++i) {
-    fn(array[i], i, array);
+    f(array[i], i, array);
   }
 };
 

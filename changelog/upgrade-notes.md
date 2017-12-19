@@ -35,6 +35,16 @@ register(proj4);
 
 The map and sources no longer accept a `logo` option.  Instead, if you wish to append a logo to your map, add the desired markup directly in your HTML.  In addition, you can use the `attributions` property of a source to display arbitrary markup per-source with the attribution control.
 
+#### Removal of optional this arguments.
+
+The following methods did get the optional this (i.e. opt_this) arguments removed. Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+* Collection#forEach
+* geom/LineString#forEachSegment
+* Observable#on, #once, #un
+* source/TileUTFGrid#forDataAtCoordinateAndResolution
+* source/Vector#forEachFeature, #forEachFeatureInExtent, #forEachFeatureIntersectingExtent
+
 ### v4.6.0
 
 #### Renamed `exceedLength` option of `ol.style.Text` to `overflow`

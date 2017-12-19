@@ -302,7 +302,7 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
   if (currentMap) {
     keys.forEach(_ol_events_.unlistenByKey);
     keys.length = 0;
-    features.forEach(this.forEachFeatureRemove_, this);
+    features.forEach(this.forEachFeatureRemove_.bind(this));
   }
   _ol_interaction_Pointer_.prototype.setMap.call(this, map);
 
@@ -322,7 +322,7 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
               this.handleFeatureRemove_, this)
       );
     }
-    features.forEach(this.forEachFeatureAdd_, this);
+    features.forEach(this.forEachFeatureAdd_.bind(this));
   }
 };
 
@@ -613,7 +613,7 @@ _ol_interaction_Snap_.handleEvent_ = function(evt) {
 _ol_interaction_Snap_.handleUpEvent_ = function(evt) {
   var featuresToUpdate = _ol_obj_.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
-    featuresToUpdate.forEach(this.updateFeature_, this);
+    featuresToUpdate.forEach(this.updateFeature_.bind(this));
     this.pendingFeatures_ = {};
   }
   return false;

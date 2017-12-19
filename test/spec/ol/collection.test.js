@@ -106,17 +106,6 @@ describe('ol.collection', function() {
         expect(cb.callCount).to.eql(2);
       });
     });
-    describe('scope', function() {
-      it('callbacks get the correct scope', function() {
-        var collection = new _ol_Collection_([0]);
-        var that;
-        var uniqueObj = {};
-        collection.forEach(function(elem) {
-          that = this;
-        }, uniqueObj);
-        expect(that).to.be(uniqueObj);
-      });
-    });
   });
 
   describe('remove', function() {

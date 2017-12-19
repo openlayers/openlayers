@@ -253,18 +253,7 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-          bonn3857, resolutionZoom1, callback, null, true
-      );
-    });
-
-    it('calls callback with correct `this` bound', function(done) {
-      var scope = {foo: 'bar'};
-      var callback = function(data) {
-        expect(this).to.be(scope);
-        done();
-      };
-      source.forDataAtCoordinateAndResolution(
-          bonn3857, resolutionZoom1, callback, scope, true
+          bonn3857, resolutionZoom1, callback, true
       );
     });
 
@@ -275,7 +264,7 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-          noState3857, resolutionZoom1, callback, null, true
+          noState3857, resolutionZoom1, callback, true
       );
     });
 

@@ -114,15 +114,13 @@ LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  *
  * @param {function(this: S, ol.Coordinate, ol.Coordinate): T} callback Function
  *     called for each segment.
- * @param {S=} opt_this The object to be used as the value of 'this'
- *     within callback.
  * @return {T|boolean} Value.
  * @template T,S
  * @api
  */
-LineString.prototype.forEachSegment = function(callback, opt_this) {
+LineString.prototype.forEachSegment = function(callback) {
   return _ol_geom_flat_segments_.forEach(this.flatCoordinates, 0,
-      this.flatCoordinates.length, this.stride, callback, opt_this);
+      this.flatCoordinates.length, this.stride, callback);
 };
 
 
