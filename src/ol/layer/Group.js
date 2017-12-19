@@ -12,7 +12,7 @@ import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
 import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 
 
 /**
@@ -232,7 +232,7 @@ _ol_layer_Group_.prototype.getLayerStatesArray = function(opt_states) {
  * @inheritDoc
  */
 _ol_layer_Group_.prototype.getSourceState = function() {
-  return _ol_source_State_.READY;
+  return SourceState.READY;
 };
 
 export default _ol_layer_Group_;

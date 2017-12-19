@@ -4,7 +4,7 @@
 import {inherits, nullFunction} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import {get as getProjection} from '../proj.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 
 
 /**
@@ -42,7 +42,7 @@ var _ol_source_Source_ = function(options) {
    * @type {ol.source.State}
    */
   this.state_ = options.state !== undefined ?
-    options.state : _ol_source_State_.READY;
+    options.state : SourceState.READY;
 
   /**
    * @private

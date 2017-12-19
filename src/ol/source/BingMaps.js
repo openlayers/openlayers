@@ -6,7 +6,7 @@ import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
@@ -34,7 +34,7 @@ var _ol_source_BingMaps_ = function(options) {
     opaque: true,
     projection: getProjection('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    state: _ol_source_State_.LOADING,
+    state: SourceState.LOADING,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: this.hidpi_ ? 2 : 1,
     wrapX: options.wrapX !== undefined ? options.wrapX : true,
@@ -121,7 +121,7 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
       response.authenticationResultCode != 'ValidCredentials' ||
       response.resourceSets.length != 1 ||
       response.resourceSets[0].resources.length != 1) {
-    this.setState(_ol_source_State_.ERROR);
+    this.setState(SourceState.ERROR);
     return;
   }
 
@@ -204,6 +204,6 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
     });
   }
 
-  this.setState(_ol_source_State_.READY);
+  this.setState(SourceState.READY);
 };
 export default _ol_source_BingMaps_;

@@ -17,7 +17,7 @@ import _ol_renderer_canvas_ImageLayer_ from '../renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_TileLayer_ from '../renderer/canvas/TileLayer.js';
 import _ol_source_Image_ from '../source/Image.js';
 import _ol_source_RasterOperationType_ from '../source/RasterOperationType.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_transform_ from '../transform.js';
 
@@ -201,7 +201,7 @@ _ol_source_Raster_.prototype.allSourcesReady_ = function() {
   var source;
   for (var i = 0, ii = this.renderers_.length; i < ii; ++i) {
     source = this.renderers_[i].getLayer().getSource();
-    if (source.getState() !== _ol_source_State_.READY) {
+    if (source.getState() !== SourceState.READY) {
       ready = false;
       break;
     }

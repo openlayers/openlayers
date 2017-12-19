@@ -17,7 +17,7 @@ import {TRUE} from '../functions.js';
 import _ol_loadingstrategy_ from '../loadingstrategy.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Source_ from '../source/Source.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
@@ -40,7 +40,7 @@ var _ol_source_Vector_ = function(opt_options) {
   _ol_source_Source_.call(this, {
     attributions: options.attributions,
     projection: undefined,
-    state: _ol_source_State_.READY,
+    state: SourceState.READY,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 

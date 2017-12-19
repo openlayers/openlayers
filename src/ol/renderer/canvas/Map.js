@@ -15,7 +15,7 @@ import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
 import RendererType from '../Type.js';
-import _ol_source_State_ from '../../source/State.js';
+import SourceState from '../../source/State.js';
 
 /**
  * @constructor
@@ -180,7 +180,7 @@ _ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
     if (!_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) ||
-        layerState.sourceState != _ol_source_State_.READY) {
+        layerState.sourceState != SourceState.READY) {
       continue;
     }
     if (layerRenderer.prepareFrame(frameState, layerState)) {

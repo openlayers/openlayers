@@ -13,7 +13,7 @@ import {assert} from '../asserts.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -40,7 +40,7 @@ var _ol_source_TileJSON_ = function(options) {
     crossOrigin: options.crossOrigin,
     projection: getProjection('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
-    state: _ol_source_State_.LOADING,
+    state: SourceState.LOADING,
     tileLoadFunction: options.tileLoadFunction,
     wrapX: options.wrapX !== undefined ? options.wrapX : true,
     transition: options.transition
@@ -148,7 +148,7 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
 
   }
   this.tileJSON_ = tileJSON;
-  this.setState(_ol_source_State_.READY);
+  this.setState(SourceState.READY);
 
 };
 
@@ -157,6 +157,6 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
  * @protected
  */
 _ol_source_TileJSON_.prototype.handleTileJSONError = function() {
-  this.setState(_ol_source_State_.ERROR);
+  this.setState(SourceState.ERROR);
 };
 export default _ol_source_TileJSON_;
