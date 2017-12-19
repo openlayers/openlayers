@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {easeIn, easeOut} from '../src/ol/easing.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
@@ -19,7 +19,7 @@ var view = new _ol_View_({
 var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       preload: 4,
       source: new _ol_source_OSM_()
     })

@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import KML from '../src/ol/format/KML.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
@@ -134,7 +134,7 @@ vector = new _ol_layer_Vector_({
   style: styleFunction
 });
 
-var raster = new _ol_layer_Tile_({
+var raster = new TileLayer({
   source: new _ol_source_Stamen_({
     layer: 'toner'
   })

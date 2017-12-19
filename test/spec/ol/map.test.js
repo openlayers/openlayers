@@ -10,7 +10,7 @@ import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_MouseWheelZoom_ from '../../../src/ol/interaction/MouseWheelZoom.js';
 import _ol_interaction_PinchZoom_ from '../../../src/ol/interaction/PinchZoom.js';
-import _ol_layer_Tile_ from '../../../src/ol/layer/Tile.js';
+import TileLayer from '../../../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
 import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
@@ -56,7 +56,7 @@ describe('ol.Map', function() {
   describe('#addLayer()', function() {
     it('adds a layer to the map', function() {
       var map = new _ol_Map_({});
-      var layer = new _ol_layer_Tile_();
+      var layer = new TileLayer();
       map.addLayer(layer);
 
       expect(map.getLayers().item(0)).to.be(layer);
@@ -64,7 +64,7 @@ describe('ol.Map', function() {
 
     it('throws if a layer is added twice', function() {
       var map = new _ol_Map_({});
-      var layer = new _ol_layer_Tile_();
+      var layer = new TileLayer();
       map.addLayer(layer);
 
       var call = function() {
@@ -124,7 +124,7 @@ describe('ol.Map', function() {
         target: target,
         view: view,
         layers: [
-          new _ol_layer_Tile_({
+          new TileLayer({
             source: new _ol_source_XYZ_({
               url: '#{x}/{y}/{z}'
             })
@@ -264,13 +264,13 @@ describe('ol.Map', function() {
           zoom: 1
         }),
         layers: [
-          new _ol_layer_Tile_({
+          new TileLayer({
             source: new _ol_source_XYZ_()
           }),
-          new _ol_layer_Tile_({
+          new TileLayer({
             source: new _ol_source_XYZ_()
           }),
-          new _ol_layer_Tile_({
+          new TileLayer({
             source: new _ol_source_XYZ_()
           })
         ]

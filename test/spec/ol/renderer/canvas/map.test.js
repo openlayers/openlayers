@@ -3,7 +3,7 @@ import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import _ol_Map_ from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_layer_Tile_ from '../../../../../src/ol/layer/Tile.js';
+import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_Layer_ from '../../../../../src/ol/renderer/canvas/Layer.js';
 import _ol_renderer_canvas_Map_ from '../../../../../src/ol/renderer/canvas/Map.js';
@@ -120,7 +120,7 @@ describe('ol.renderer.canvas.Map', function() {
     });
 
     it('doesn\'t fail with layer with no source', function() {
-      map.addLayer(new _ol_layer_Tile_());
+      map.addLayer(new TileLayer());
       map.renderSync();
       expect(function() {
         map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]),

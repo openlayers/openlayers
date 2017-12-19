@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 
@@ -15,14 +15,14 @@ var extents = {
   Sweden: transform([11.02737, 55.36174, 23.90338, 69.10625])
 };
 
-var base = new _ol_layer_Tile_({
+var base = new TileLayer({
   source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
     crossOrigin: 'anonymous'
   })
 });
 
-var overlay = new _ol_layer_Tile_({
+var overlay = new TileLayer({
   extent: extents.India,
   source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',

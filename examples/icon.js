@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -37,7 +37,7 @@ var vectorLayer = new _ol_layer_Vector_({
   source: vectorSource
 });
 
-var rasterLayer = new _ol_layer_Tile_({
+var rasterLayer = new TileLayer({
   source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
     crossOrigin: ''

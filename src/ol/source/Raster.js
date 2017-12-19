@@ -11,7 +11,7 @@ import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import _ol_layer_Image_ from '../layer/Image.js';
-import _ol_layer_Tile_ from '../layer/Tile.js';
+import TileLayer from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
 import _ol_renderer_canvas_ImageLayer_ from '../renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_TileLayer_ from '../renderer/canvas/TileLayer.js';
@@ -412,7 +412,7 @@ _ol_source_Raster_.createImageRenderer_ = function(source) {
  * @private
  */
 _ol_source_Raster_.createTileRenderer_ = function(source) {
-  var layer = new _ol_layer_Tile_({source: source});
+  var layer = new TileLayer({source: source});
   return new _ol_renderer_canvas_TileLayer_(layer);
 };
 

@@ -4,7 +4,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import OverviewMap from '../src/ol/control/OverviewMap.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragRotateAndZoom from '../src/ol/interaction/DragRotateAndZoom.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 
@@ -12,7 +12,7 @@ var overviewMapControl = new OverviewMap({
   // see in overviewmap-custom.html to see the custom CSS used
   className: 'ol-overviewmap ol-custom-overviewmap',
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_({
         'url': 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
@@ -32,7 +32,7 @@ var map = new _ol_Map_({
     new DragRotateAndZoom()
   ]),
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_()
     })
   ],

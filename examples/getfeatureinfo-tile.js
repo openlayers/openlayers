@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
 
@@ -11,7 +11,7 @@ var wmsSource = new _ol_source_TileWMS_({
   crossOrigin: 'anonymous'
 });
 
-var wmsLayer = new _ol_layer_Tile_({
+var wmsLayer = new TileLayer({
   source: wmsSource
 });
 

@@ -1,7 +1,7 @@
 import Geolocation from '../src/ol/Geolocation.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 
 
@@ -12,7 +12,7 @@ var view = new _ol_View_({
 
 var map = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_BingMaps_({
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
         imagerySet: 'Road'

@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {transform} from '../src/ol/proj.js';
 import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -19,7 +19,7 @@ var imageExtent = [0, 0, 700000, 1300000];
 
 var map = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_()
     }),
     new _ol_layer_Image_({

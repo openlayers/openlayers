@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
@@ -51,10 +51,10 @@ var map = new _ol_Map_({
     zoom: 6
   }),
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_()
     }),
-    new _ol_layer_Tile_({
+    new TileLayer({
       opacity: 0.5,
       source: wmtsSource
     })

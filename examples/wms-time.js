@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
@@ -16,12 +16,12 @@ var frameRate = 0.5; // frames per second
 var animationId = null;
 
 var layers = [
-  new _ol_layer_Tile_({
+  new TileLayer({
     source: new _ol_source_Stamen_({
       layer: 'terrain'
     })
   }),
-  new _ol_layer_Tile_({
+  new TileLayer({
     extent: extent,
     source: new _ol_source_TileWMS_({
       attributions: ['Iowa State University'],

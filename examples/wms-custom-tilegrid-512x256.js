@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
@@ -21,10 +21,10 @@ var tileGrid = new _ol_tilegrid_TileGrid_({
 });
 
 var layers = [
-  new _ol_layer_Tile_({
+  new TileLayer({
     source: new _ol_source_OSM_()
   }),
-  new _ol_layer_Tile_({
+  new TileLayer({
     source: new _ol_source_TileWMS_({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},

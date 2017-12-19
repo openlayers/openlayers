@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -58,7 +58,7 @@ proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
 var layers = {};
 
-layers['bng'] = new _ol_layer_Tile_({
+layers['bng'] = new TileLayer({
   source: new _ol_source_XYZ_({
     projection: 'EPSG:27700',
     url: 'https://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
@@ -67,11 +67,11 @@ layers['bng'] = new _ol_layer_Tile_({
   })
 });
 
-layers['osm'] = new _ol_layer_Tile_({
+layers['osm'] = new TileLayer({
   source: new _ol_source_OSM_()
 });
 
-layers['wms4326'] = new _ol_layer_Tile_({
+layers['wms4326'] = new TileLayer({
   source: new _ol_source_TileWMS_({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
@@ -83,7 +83,7 @@ layers['wms4326'] = new _ol_layer_Tile_({
   })
 });
 
-layers['wms21781'] = new _ol_layer_Tile_({
+layers['wms21781'] = new TileLayer({
   source: new _ol_source_TileWMS_({
     attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
       'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
@@ -111,12 +111,12 @@ fetch(url).then(function(response) {
   options.crossOrigin = '';
   options.projection = 'EPSG:3413';
   options.wrapX = false;
-  layers['wmts3413'] = new _ol_layer_Tile_({
+  layers['wmts3413'] = new TileLayer({
     source: new _ol_source_WMTS_(/** @type {!olx.source.WMTSOptions} */ (options))
   });
 });
 
-layers['grandcanyon'] = new _ol_layer_Tile_({
+layers['grandcanyon'] = new TileLayer({
   source: new _ol_source_XYZ_({
     url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
     crossOrigin: '',
@@ -134,7 +134,7 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);
 }
 
-layers['states'] = new _ol_layer_Tile_({
+layers['states'] = new TileLayer({
   source: new _ol_source_TileWMS_({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
@@ -200,7 +200,7 @@ viewProjSelect.onchange = function() {
 updateViewProjection();
 
 var updateRenderEdgesOnLayer = function(layer) {
-  if (layer instanceof _ol_layer_Tile_) {
+  if (layer instanceof TileLayer) {
     var source = layer.getSource();
     if (source instanceof _ol_source_TileImage_) {
       source.setRenderReprojectionEdges(renderEdges);

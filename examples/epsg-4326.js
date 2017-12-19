@@ -2,12 +2,12 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
 
 var layers = [
-  new _ol_layer_Tile_({
+  new TileLayer({
     source: new _ol_source_TileWMS_({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {

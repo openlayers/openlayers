@@ -1,13 +1,13 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 import _ol_source_TileUTFGrid_ from '../src/ol/source/TileUTFGrid.js';
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
-var mapLayer = new _ol_layer_Tile_({
+var mapLayer = new TileLayer({
   source: new _ol_source_TileJSON_({
     url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
   })
@@ -18,7 +18,7 @@ var gridSource = new _ol_source_TileUTFGrid_({
   url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
 });
 
-var gridLayer = new _ol_layer_Tile_({source: gridSource});
+var gridLayer = new TileLayer({source: gridSource});
 
 var view = new _ol_View_({
   center: [0, 0],

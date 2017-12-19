@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
 // The tile size supported by the ArcGIS tile service.
@@ -12,7 +12,7 @@ var urlTemplate = 'https://services.arcgisonline.com/arcgis/rest/services/' +
 var map = new _ol_Map_({
   target: 'map',
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_XYZ_({
         attributions: 'Copyright:© 2013 ESRI, i-cubed, GeoEye',
         maxZoom: 16,

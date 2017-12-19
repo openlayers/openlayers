@@ -1,4 +1,4 @@
-import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../../../../src/ol/source/OSM.js';
 
 
@@ -9,7 +9,7 @@ describe('ol.layer.Tile', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Tile_({
+      layer = new TileLayer({
         source: new _ol_source_OSM_()
       });
     });
@@ -19,7 +19,7 @@ describe('ol.layer.Tile', function() {
     });
 
     it('creates an instance', function() {
-      expect(layer).to.be.a(_ol_layer_Tile_);
+      expect(layer).to.be.a(TileLayer);
     });
 
     it('provides default preload', function() {

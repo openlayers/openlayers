@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {getWidth, getCenter} from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import _ol_source_ImageCanvas_ from '../src/ol/source/ImageCanvas.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
@@ -11,7 +11,7 @@ import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 
 var map = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_Stamen_({
         layer: 'watercolor'
       })
