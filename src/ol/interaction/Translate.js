@@ -7,7 +7,7 @@ import _ol_Object_ from '../Object.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
-import _ol_array_ from '../array.js';
+import {includes} from '../array.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
 import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventType.js';
@@ -54,7 +54,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
     } else {
       var layers = options.layers;
       layerFilter = function(layer) {
-        return _ol_array_.includes(layers, layer);
+        return includes(layers, layer);
       };
     }
   } else {
@@ -194,8 +194,7 @@ _ol_interaction_Translate_.handleMoveEvent_ = function(event) {
 _ol_interaction_Translate_.prototype.featuresAtPixel_ = function(pixel, map) {
   return map.forEachFeatureAtPixel(pixel,
       function(feature) {
-        if (!this.features_ ||
-            _ol_array_.includes(this.features_.getArray(), feature)) {
+        if (!this.features_ || includes(this.features_.getArray(), feature)) {
           return feature;
         }
       }.bind(this), {

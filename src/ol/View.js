@@ -9,7 +9,7 @@ import _ol_ResolutionConstraint_ from './ResolutionConstraint.js';
 import _ol_RotationConstraint_ from './RotationConstraint.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_ViewProperty_ from './ViewProperty.js';
-import _ol_array_ from './array.js';
+import {linearFindNearest} from './array.js';
 import {assert} from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
 import {inAndOut} from './easing.js';
@@ -833,7 +833,7 @@ _ol_View_.prototype.getZoomForResolution = function(resolution) {
   var offset = this.minZoom_ || 0;
   var max, zoomFactor;
   if (this.resolutions_) {
-    var nearest = _ol_array_.linearFindNearest(this.resolutions_, resolution, 1);
+    var nearest = linearFindNearest(this.resolutions_, resolution, 1);
     offset = nearest;
     max = this.resolutions_[nearest];
     if (nearest == this.resolutions_.length - 1) {

@@ -2,7 +2,7 @@
  * @module ol/geom/MultiPolygon
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -97,7 +97,7 @@ MultiPolygon.prototype.appendPolygon = function(polygon) {
     this.endss_.push();
   } else {
     var offset = this.flatCoordinates.length;
-    _ol_array_.extend(this.flatCoordinates, polygon.getFlatCoordinates());
+    extend(this.flatCoordinates, polygon.getFlatCoordinates());
     ends = polygon.getEnds().slice();
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -414,7 +414,7 @@ MultiPolygon.prototype.setPolygons = function(polygons) {
     for (j = 0, jj = ends.length; j < jj; ++j) {
       ends[j] += offset;
     }
-    _ol_array_.extend(flatCoordinates, polygon.getFlatCoordinates());
+    extend(flatCoordinates, polygon.getFlatCoordinates());
     endss.push(ends);
   }
   this.setFlatCoordinates(layout, flatCoordinates, endss);

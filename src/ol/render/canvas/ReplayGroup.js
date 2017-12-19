@@ -2,7 +2,7 @@
  * @module ol/render/canvas/ReplayGroup
  */
 import {inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {numberSafeCompareFunction} from '../../array.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
@@ -192,7 +192,7 @@ _ol_render_canvas_ReplayGroup_.getCircleArray_ = function(radius) {
  * @param {number} rotation Rotation.
  */
 _ol_render_canvas_ReplayGroup_.replayDeclutter = function(declutterReplays, context, rotation) {
-  var zs = Object.keys(declutterReplays).map(Number).sort(_ol_array_.numberSafeCompareFunction);
+  var zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
   var skippedFeatureUids = {};
   for (var z = 0, zz = zs.length; z < zz; ++z) {
     var replayData = declutterReplays[zs[z].toString()];
@@ -423,7 +423,7 @@ _ol_render_canvas_ReplayGroup_.prototype.replay = function(context,
 
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(_ol_array_.numberSafeCompareFunction);
+  zs.sort(numberSafeCompareFunction);
 
   // setup clipping so that the parts of over-simplified geometries are not
   // visible outside the current extent when panning
@@ -479,7 +479,7 @@ _ol_render_canvas_ReplayGroup_.prototype.replayHitDetection_ = function(
     featureCallback, opt_hitExtent, opt_declutterReplays) {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(_ol_array_.numberSafeCompareFunction);
+  zs.sort(numberSafeCompareFunction);
 
   var i, j, replays, replay, result;
   for (i = zs.length - 1; i >= 0; --i) {

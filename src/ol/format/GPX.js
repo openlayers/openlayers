@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
-import _ol_array_ from '../array.js';
+import {includes} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import XSD from '../format/XSD.js';
@@ -489,7 +489,7 @@ GPX.prototype.readFeature;
  * @inheritDoc
  */
 GPX.prototype.readFeatureFromNode = function(node, opt_options) {
-  if (!_ol_array_.includes(GPX.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
   var featureReader = GPX.FEATURE_READER_[node.localName];
@@ -523,7 +523,7 @@ GPX.prototype.readFeatures;
  * @inheritDoc
  */
 GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
-  if (!_ol_array_.includes(GPX.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
   if (node.localName == 'gpx') {

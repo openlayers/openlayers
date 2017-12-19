@@ -2,7 +2,7 @@
  * @module ol/render/webgl/PolygonReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
@@ -1054,7 +1054,7 @@ _ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle = function(fillStyl
   } else {
     fillStyleColor = _ol_render_webgl_.defaultFillStyle;
   }
-  if (!this.state_.fillColor || !_ol_array_.equals(fillStyleColor, this.state_.fillColor)) {
+  if (!this.state_.fillColor || !equals(fillStyleColor, this.state_.fillColor)) {
     this.state_.fillColor = fillStyleColor;
     this.state_.changed = true;
     this.styles_.push(fillStyleColor);

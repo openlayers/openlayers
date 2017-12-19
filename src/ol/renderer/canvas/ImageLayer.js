@@ -6,7 +6,7 @@ import {inherits} from '../../index.js';
 import _ol_ImageCanvas_ from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
-import _ol_array_ from '../../array.js';
+import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
 import _ol_obj_ from '../../obj.js';
@@ -149,7 +149,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
       var skippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
       if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
           (vectorRenderer.replayGroupChanged ||
-          !_ol_array_.equals(skippedFeatures, this.skippedFeatures_))) {
+          !equals(skippedFeatures, this.skippedFeatures_))) {
         context.canvas.width = imageFrameState.size[0] * pixelRatio;
         context.canvas.height = imageFrameState.size[1] * pixelRatio;
         vectorRenderer.composeFrame(imageFrameState, layerState, context);

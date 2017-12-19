@@ -5,7 +5,7 @@
 // of GEOMETRY_PARSERS_ and methods using GEOMETRY_PARSERS_ do not expect
 // envelopes/extents, only geometries!
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import _ol_Feature_ from '../Feature.js';
 import FeatureFormat from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
@@ -428,7 +428,7 @@ GMLBase.prototype.readPolygon = function(node, objectStack) {
     var ends = [flatCoordinates.length];
     var i, ii;
     for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      _ol_array_.extend(flatCoordinates, flatLinearRings[i]);
+      extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(

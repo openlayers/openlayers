@@ -1,5 +1,5 @@
 import {getUid} from '../../../../src/ol/index.js';
-import _ol_array_ from '../../../../src/ol/array.js';
+import {stableSort} from '../../../../src/ol/array.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import _ol_layer_Group_ from '../../../../src/ol/layer/Group.js';
@@ -452,7 +452,7 @@ describe('ol.layer.Group', function() {
 
       var layerStatesArray = layerGroup.getLayerStatesArray();
       var initialArray = layerStatesArray.slice();
-      _ol_array_.stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
+      stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
       expect(layerStatesArray[0]).to.eql(initialArray[0]);
       expect(layerStatesArray[1]).to.eql(initialArray[1]);
 
@@ -480,7 +480,7 @@ describe('ol.layer.Group', function() {
 
       var layerStatesArray = layerGroup.getLayerStatesArray();
       var initialArray = layerStatesArray.slice();
-      _ol_array_.stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
+      stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
       expect(layerStatesArray[0]).to.eql(initialArray[3]);
       expect(layerStatesArray[1]).to.eql(initialArray[0]);
       expect(layerStatesArray[2]).to.eql(initialArray[2]);

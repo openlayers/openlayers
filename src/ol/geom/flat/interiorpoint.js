@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/interiorpoint
  */
-import _ol_array_ from '../../array.js';
+import {numberSafeCompareFunction} from '../../array.js';
 import _ol_geom_flat_contains_ from '../flat/contains.js';
 var _ol_geom_flat_interiorpoint_ = {};
 
@@ -45,7 +45,7 @@ _ol_geom_flat_interiorpoint_.linearRings = function(flatCoordinates, offset,
   // inside the linear ring.
   var pointX = NaN;
   var maxSegmentLength = -Infinity;
-  intersections.sort(_ol_array_.numberSafeCompareFunction);
+  intersections.sort(numberSafeCompareFunction);
   x1 = intersections[0];
   for (i = 1, ii = intersections.length; i < ii; ++i) {
     x2 = intersections[i];

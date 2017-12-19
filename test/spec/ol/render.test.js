@@ -1,4 +1,4 @@
-import _ol_array_ from '../../../src/ol/array.js';
+import {equals} from '../../../src/ol/array.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import _ol_render_ from '../../../src/ol/render.js';
 import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/Immediate.js';
@@ -29,7 +29,7 @@ describe('ol.render', function() {
       expect(canvas.style.height).to.be(size[1] + 'px');
       var transform = _ol_transform_.scale(_ol_transform_.create(),
           pixelRatio, pixelRatio);
-      expect(_ol_array_.equals(render.transform_, transform)).to.be.ok();
+      expect(equals(render.transform_, transform)).to.be.ok();
     });
   });
 

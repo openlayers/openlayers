@@ -2,7 +2,7 @@
  * @module ol/render/webgl/ReplayGroup
  */
 import {inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_replay_ from '../replay.js';
@@ -149,7 +149,7 @@ _ol_render_webgl_ReplayGroup_.prototype.replay = function(context,
     opacity, skippedFeaturesHash) {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(_ol_array_.numberSafeCompareFunction);
+  zs.sort(numberSafeCompareFunction);
 
   var i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {

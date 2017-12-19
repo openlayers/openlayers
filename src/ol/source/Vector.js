@@ -6,7 +6,7 @@ import {getUid, inherits, nullFunction} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import ObjectEventType from '../ObjectEventType.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -507,8 +507,7 @@ _ol_source_Vector_.prototype.getFeatures = function() {
   } else if (this.featuresRtree_) {
     features = this.featuresRtree_.getAll();
     if (!_ol_obj_.isEmpty(this.nullGeometryFeatures_)) {
-      _ol_array_.extend(
-          features, _ol_obj_.getValues(this.nullGeometryFeatures_));
+      extend(features, _ol_obj_.getValues(this.nullGeometryFeatures_));
     }
   }
   return /** @type {Array.<ol.Feature>} */ (features);

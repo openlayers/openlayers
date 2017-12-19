@@ -7,7 +7,7 @@ import CollectionEventType from '../CollectionEventType.js';
 import _ol_Feature_ from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
-import _ol_array_ from '../array.js';
+import {equals} from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -1181,7 +1181,7 @@ _ol_interaction_Modify_.prototype.updateSegmentIndices_ = function(
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
         (depth === undefined || segmentDataMatch.depth === undefined ||
-        _ol_array_.equals(segmentDataMatch.depth, depth)) &&
+        equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;
     }

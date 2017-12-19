@@ -2,7 +2,7 @@
  * @module ol/geom/Polygon
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import {closestSquaredDistanceXY, getCenter} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -97,7 +97,7 @@ Polygon.prototype.appendLinearRing = function(linearRing) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
-    _ol_array_.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+    extend(this.flatCoordinates, linearRing.getFlatCoordinates());
   }
   this.ends_.push(this.flatCoordinates.length);
   this.changed();
@@ -384,8 +384,7 @@ Polygon.circular = function(sphere, center, radius, opt_n) {
   var flatCoordinates = [];
   var i;
   for (i = 0; i < n; ++i) {
-    _ol_array_.extend(
-        flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
+    extend(flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
   var polygon = new Polygon(null);

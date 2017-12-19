@@ -2,7 +2,7 @@
  * @module ol/format/XMLFeature
  */
 import {inherits} from '../index.js';
-import _ol_array_ from '../array.js';
+import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
 import _ol_xml_ from '../xml.js';
@@ -114,7 +114,7 @@ XMLFeature.prototype.readFeaturesFromDocument = function(
   var n;
   for (n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
-      _ol_array_.extend(features, this.readFeaturesFromNode(n, opt_options));
+      extend(features, this.readFeaturesFromNode(n, opt_options));
     }
   }
   return features;

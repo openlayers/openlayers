@@ -2,7 +2,7 @@
  * @module ol/render/webgl/LineStringReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
@@ -107,7 +107,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
     //First vertex.
     if (i === offset) {
       p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
-      if (end - offset === stride * 2 && _ol_array_.equals(p1, p2)) {
+      if (end - offset === stride * 2 && equals(p1, p2)) {
         break;
       }
       if (closed) {
@@ -291,7 +291,7 @@ _ol_render_webgl_LineStringReplay_.prototype.isValid_ = function(flatCoordinates
   } else if (range === stride * 2) {
     var firstP = [flatCoordinates[offset], flatCoordinates[offset + 1]];
     var lastP = [flatCoordinates[offset + stride], flatCoordinates[offset + stride + 1]];
-    return !_ol_array_.equals(firstP, lastP);
+    return !equals(firstP, lastP);
   }
 
   return true;
@@ -659,7 +659,7 @@ _ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle = function(fillS
   var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
   strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
     strokeStyleMiterLimit : _ol_render_webgl_.defaultMiterLimit;
-  if (!this.state_.strokeColor || !_ol_array_.equals(this.state_.strokeColor, strokeStyleColor) ||
+  if (!this.state_.strokeColor || !equals(this.state_.strokeColor, strokeStyleColor) ||
       this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
     this.state_.changed = true;
     this.state_.strokeColor = strokeStyleColor;

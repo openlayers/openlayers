@@ -2,7 +2,7 @@
  * @module ol/render/webgl/CircleReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_array_ from '../../array.js';
+import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
@@ -409,8 +409,8 @@ _ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle = function(fillStyle
   } else {
     fillStyleColor = _ol_render_webgl_.defaultFillStyle;
   }
-  if (!this.state_.strokeColor || !_ol_array_.equals(this.state_.strokeColor, strokeStyleColor) ||
-      !this.state_.fillColor || !_ol_array_.equals(this.state_.fillColor, fillStyleColor) ||
+  if (!this.state_.strokeColor || !equals(this.state_.strokeColor, strokeStyleColor) ||
+      !this.state_.fillColor || !equals(this.state_.fillColor, fillStyleColor) ||
       this.state_.lineWidth !== strokeStyleWidth) {
     this.state_.changed = true;
     this.state_.fillColor = fillStyleColor;
