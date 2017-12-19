@@ -1,6 +1,6 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_Zoomify_ from '../src/ol/source/Zoomify.js';
 
 var imgWidth = 9911;
@@ -10,7 +10,7 @@ var zoomifyUrl = 'http://vips.vtech.fr/cgi-bin/iipsrv.fcgi?zoomify=' +
     '/mnt/MD1/AD00/plan_CHU-4HD-01/FOND.TIF/';
 var iipUrl = 'http://vips.vtech.fr/cgi-bin/iipsrv.fcgi?FIF=' + '/mnt/MD1/AD00/plan_CHU-4HD-01/FOND.TIF' +  '&JTL={z},{tileIndex}';
 
-var layer = new _ol_layer_Tile_({
+var layer = new TileLayer({
   source: new _ol_source_Zoomify_({
     url: zoomifyUrl,
     size: [imgWidth, imgHeight],

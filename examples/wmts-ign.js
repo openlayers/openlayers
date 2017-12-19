@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, get as getProjection} from '../src/ol/proj.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
@@ -54,7 +54,7 @@ var ign_source = new _ol_source_WMTS_({
         'theme/geoportal/img/logo_gp.gif"></a>'
 });
 
-var ign = new _ol_layer_Tile_({
+var ign = new TileLayer({
   source: ign_source
 });
 

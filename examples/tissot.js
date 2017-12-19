@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Sphere_ from '../src/ol/Sphere.js';
 import _ol_View_ from '../src/ol/View.js';
 import Polygon from '../src/ol/geom/Polygon.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -18,7 +18,7 @@ var vectorLayer3857 = new _ol_layer_Vector_({
 
 var map4326 = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_TileWMS_({
         url: 'https://ahocevar.com/geoserver/wms',
         params: {
@@ -39,7 +39,7 @@ var map4326 = new _ol_Map_({
 
 var map3857 = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_TileWMS_({
         url: 'https://ahocevar.com/geoserver/wms',
         params: {

@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -11,7 +11,7 @@ import proj4 from 'proj4';
 
 var map = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_()
     })
   ],
@@ -100,7 +100,7 @@ searchButton.onclick = function(event) {
  */
 renderEdgesCheckbox.onchange = function() {
   map.getLayers().forEach(function(layer) {
-    if (layer instanceof _ol_layer_Tile_) {
+    if (layer instanceof TileLayer) {
       var source = layer.getSource();
       if (source instanceof _ol_source_TileImage_) {
         source.setRenderReprojectionEdges(renderEdgesCheckbox.checked);

@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 var mousePositionControl = new MousePosition({
@@ -23,7 +23,7 @@ var map = new _ol_Map_({
     }
   }).extend([mousePositionControl]),
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_()
     })
   ],

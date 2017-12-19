@@ -4,13 +4,13 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 
 
-var raster = new _ol_layer_Tile_({
+var raster = new TileLayer({
   source: new _ol_source_OSM_()
 });
 

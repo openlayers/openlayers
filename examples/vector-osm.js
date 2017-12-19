@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import OSMXML from '../src/ol/format/OSMXML.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
@@ -115,7 +115,7 @@ var vector = new _ol_layer_Vector_({
   }
 });
 
-var raster = new _ol_layer_Tile_({
+var raster = new TileLayer({
   source: new _ol_source_BingMaps_({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'

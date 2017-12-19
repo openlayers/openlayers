@@ -2,7 +2,7 @@ import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -63,7 +63,7 @@ var clusters = new _ol_layer_Vector_({
   }
 });
 
-var raster = new _ol_layer_Tile_({
+var raster = new TileLayer({
   source: new _ol_source_OSM_()
 });
 

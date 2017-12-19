@@ -1,11 +1,11 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 
-var openCycleMapLayer = new _ol_layer_Tile_({
+var openCycleMapLayer = new TileLayer({
   source: new _ol_source_OSM_({
     attributions: [
       'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
@@ -16,7 +16,7 @@ var openCycleMapLayer = new _ol_layer_Tile_({
   })
 });
 
-var openSeaMapLayer = new _ol_layer_Tile_({
+var openSeaMapLayer = new TileLayer({
   source: new _ol_source_OSM_({
     attributions: [
       'All maps © <a href="http://www.openseamap.org/">OpenSeaMap</a>',

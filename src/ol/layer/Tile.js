@@ -21,7 +21,7 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.layer.TileOptions=} opt_options Tile layer options.
  * @api
  */
-var _ol_layer_Tile_ = function(opt_options) {
+var TileLayer = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var baseOptions = _ol_obj_.assign({}, options);
@@ -43,7 +43,7 @@ var _ol_layer_Tile_ = function(opt_options) {
 
 };
 
-inherits(_ol_layer_Tile_, _ol_layer_Layer_);
+inherits(TileLayer, _ol_layer_Layer_);
 
 
 /**
@@ -52,7 +52,7 @@ inherits(_ol_layer_Tile_, _ol_layer_Layer_);
  * @observable
  * @api
  */
-_ol_layer_Tile_.prototype.getPreload = function() {
+TileLayer.prototype.getPreload = function() {
   return (
   /** @type {number} */ this.get(_ol_layer_TileProperty_.PRELOAD)
   );
@@ -65,7 +65,7 @@ _ol_layer_Tile_.prototype.getPreload = function() {
  * @return {ol.source.Tile} Source.
  * @api
  */
-_ol_layer_Tile_.prototype.getSource;
+TileLayer.prototype.getSource;
 
 
 /**
@@ -74,7 +74,7 @@ _ol_layer_Tile_.prototype.getSource;
  * @observable
  * @api
  */
-_ol_layer_Tile_.prototype.setPreload = function(preload) {
+TileLayer.prototype.setPreload = function(preload) {
   this.set(_ol_layer_TileProperty_.PRELOAD, preload);
 };
 
@@ -85,7 +85,7 @@ _ol_layer_Tile_.prototype.setPreload = function(preload) {
  * @observable
  * @api
  */
-_ol_layer_Tile_.prototype.getUseInterimTilesOnError = function() {
+TileLayer.prototype.getUseInterimTilesOnError = function() {
   return (
   /** @type {boolean} */ this.get(_ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR)
   );
@@ -98,8 +98,8 @@ _ol_layer_Tile_.prototype.getUseInterimTilesOnError = function() {
  * @observable
  * @api
  */
-_ol_layer_Tile_.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
+TileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
       _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
-export default _ol_layer_Tile_;
+export default TileLayer;

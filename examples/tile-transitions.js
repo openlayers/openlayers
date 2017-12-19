@@ -1,15 +1,15 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
 var url = 'https://{a-c}.tiles.mapbox.com/v3/mapbox.world-bright/{z}/{x}/{y}.png';
 
-var withTransition = new _ol_layer_Tile_({
+var withTransition = new TileLayer({
   source: new _ol_source_XYZ_({url: url})
 });
 
-var withoutTransition = new _ol_layer_Tile_({
+var withoutTransition = new TileLayer({
   source: new _ol_source_XYZ_({url: url, transition: 0}),
   visible: false
 });

@@ -3,7 +3,7 @@ import _ol_View_ from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -12,7 +12,7 @@ import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
-var raster = new _ol_layer_Tile_({
+var raster = new TileLayer({
   source: new _ol_source_OSM_()
 });
 

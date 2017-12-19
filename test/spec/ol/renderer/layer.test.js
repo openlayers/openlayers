@@ -2,7 +2,7 @@ import _ol_Image_ from '../../../../src/ol/Image.js';
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
-import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import _ol_renderer_Layer_ from '../../../../src/ol/renderer/Layer.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
@@ -111,7 +111,7 @@ describe('ol.renderer.Layer', function() {
         target: target,
         view: view,
         layers: [
-          new _ol_layer_Tile_({
+          new TileLayer({
             source: source
           })
         ]

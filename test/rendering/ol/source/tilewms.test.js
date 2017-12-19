@@ -1,6 +1,6 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import _ol_source_TileWMS_ from '../../../../src/ol/source/TileWMS.js';
 
 describe('ol.rendering.source.TileWMS', function() {
@@ -62,7 +62,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_1.canvas.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -74,7 +74,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_1.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -87,7 +87,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_2.canvas.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -99,7 +99,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_2.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -113,7 +113,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_1.canvas.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -125,7 +125,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_1.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -138,7 +138,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_2.canvas.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });
@@ -150,7 +150,7 @@ describe('ol.rendering.source.TileWMS', function() {
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_2.webgl.png', IMAGE_TOLERANCE, done);
       });
-      map.addLayer(new _ol_layer_Tile_({
+      map.addLayer(new TileLayer({
         source: source
       }));
     });

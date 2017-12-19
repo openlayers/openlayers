@@ -5,7 +5,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import IGC from '../src/ol/format/IGC.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -82,7 +82,7 @@ vectorSource.on('addfeature', function(event) {
 
 var map = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_OSM_({
         attributions: [
           'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',

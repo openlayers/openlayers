@@ -2,7 +2,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import {addProjection, addCoordinateTransforms, transform} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
@@ -42,7 +42,7 @@ addCoordinateTransforms('EPSG:4326', projection,
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
-  new _ol_layer_Tile_({
+  new TileLayer({
     extent: extent,
     source: new _ol_source_TileWMS_({
       url: 'https://wms.geo.admin.ch/',
@@ -56,7 +56,7 @@ var layers = [
       serverType: 'mapserver'
     })
   }),
-  new _ol_layer_Tile_({
+  new TileLayer({
     extent: extent,
     source: new _ol_source_TileWMS_({
       url: 'https://wms.geo.admin.ch/',

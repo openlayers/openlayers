@@ -3,7 +3,7 @@ import _ol_Feature_ from '../src/ol/Feature.js';
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
-import _ol_layer_Tile_ from '../src/ol/layer/Tile.js';
+import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -12,7 +12,7 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 var map = new _ol_Map_({
   layers: [
-    new _ol_layer_Tile_({
+    new TileLayer({
       source: new _ol_source_Stamen_({
         layer: 'toner'
       })

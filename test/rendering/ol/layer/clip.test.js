@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_layer_Tile_ from '../../../../src/ol/layer/Tile.js';
+import TileLayer from '../../../../src/ol/layer/Tile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
@@ -60,7 +60,7 @@ describe('layer clipping', function() {
         transition: 0
       });
 
-      var layer = new _ol_layer_Tile_({
+      var layer = new TileLayer({
         source: source
       });
 
