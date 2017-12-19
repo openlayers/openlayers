@@ -5,7 +5,7 @@ import {inherits} from './index.js';
 import MapEventType from './MapEventType.js';
 import _ol_Object_ from './Object.js';
 import OverlayPositioning from './OverlayPositioning.js';
-import _ol_css_ from './css.js';
+import {CLASS_SELECTABLE} from './css.js';
 import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
 import _ol_events_ from './events.js';
 import {containsExtent} from './extent.js';
@@ -80,7 +80,7 @@ var Overlay = function(options) {
    */
   this.element = document.createElement('DIV');
   this.element.className = options.className !== undefined ?
-    options.className : 'ol-overlay-container ' + _ol_css_.CLASS_SELECTABLE;
+    options.className : 'ol-overlay-container ' + CLASS_SELECTABLE;
   this.element.style.position = 'absolute';
 
   /**

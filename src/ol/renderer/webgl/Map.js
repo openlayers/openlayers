@@ -4,7 +4,7 @@
 
 import {inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_css_ from '../../css.js';
+import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_has_ from '../../has.js';
@@ -47,7 +47,7 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.style.display = 'block';
-  this.canvas_.className = _ol_css_.CLASS_UNSELECTABLE;
+  this.canvas_.className = CLASS_UNSELECTABLE;
   container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
   /**

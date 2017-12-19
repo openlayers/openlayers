@@ -6,7 +6,7 @@ import _ol_Object_ from '../Object.js';
 import {assert} from '../asserts.js';
 import Control from '../control/Control.js';
 import ScaleLineUnits from '../control/ScaleLineUnits.js';
-import _ol_css_ from '../css.js';
+import {CLASS_UNSELECTABLE} from '../css.js';
 import _ol_events_ from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
 import _ol_proj_Units_ from '../proj/Units.js';
@@ -44,7 +44,7 @@ var ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.element_ = document.createElement('DIV');
-  this.element_.className = className + ' ' + _ol_css_.CLASS_UNSELECTABLE;
+  this.element_.className = className + ' ' + CLASS_UNSELECTABLE;
   this.element_.appendChild(this.innerElement_);
 
   /**

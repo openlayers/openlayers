@@ -1,7 +1,6 @@
 /**
  * @module ol/css
  */
-var _ol_css_ = {};
 
 
 /**
@@ -10,7 +9,7 @@ var _ol_css_ = {};
  * @const
  * @type {string}
  */
-_ol_css_.CLASS_HIDDEN = 'ol-hidden';
+export var CLASS_HIDDEN = 'ol-hidden';
 
 
 /**
@@ -19,7 +18,8 @@ _ol_css_.CLASS_HIDDEN = 'ol-hidden';
  * @const
  * @type {string}
  */
-_ol_css_.CLASS_SELECTABLE = 'ol-selectable';
+export var CLASS_SELECTABLE = 'ol-selectable';
+
 
 /**
  * The CSS class that we'll give the DOM elements to have them unselectable.
@@ -27,7 +27,7 @@ _ol_css_.CLASS_SELECTABLE = 'ol-selectable';
  * @const
  * @type {string}
  */
-_ol_css_.CLASS_UNSELECTABLE = 'ol-unselectable';
+export var CLASS_UNSELECTABLE = 'ol-unselectable';
 
 
 /**
@@ -36,7 +36,7 @@ _ol_css_.CLASS_UNSELECTABLE = 'ol-unselectable';
  * @const
  * @type {string}
  */
-_ol_css_.CLASS_UNSUPPORTED = 'ol-unsupported';
+export var CLASS_UNSUPPORTED = 'ol-unsupported';
 
 
 /**
@@ -45,7 +45,7 @@ _ol_css_.CLASS_UNSUPPORTED = 'ol-unsupported';
  * @const
  * @type {string}
  */
-_ol_css_.CLASS_CONTROL = 'ol-control';
+export var CLASS_CONTROL = 'ol-control';
 
 
 /**
@@ -54,7 +54,7 @@ _ol_css_.CLASS_CONTROL = 'ol-control';
  * @param {string} The CSS font property.
  * @return {Object.<string>} The font families (or null if the input spec is invalid).
  */
-_ol_css_.getFontFamilies = (function() {
+export var getFontFamilies = (function() {
   var style;
   var cache = {};
   return function(font) {
@@ -73,4 +73,3 @@ _ol_css_.getFontFamilies = (function() {
     return cache[font];
   };
 })();
-export default _ol_css_;
