@@ -2,7 +2,7 @@
  * @module ol/style/Fill
  */
 import {getUid} from '../index.js';
-import _ol_color_ from '../color.js';
+import {asString} from '../color.js';
 
 /**
  * @classdesc
@@ -76,8 +76,7 @@ _ol_style_Fill_.prototype.getChecksum = function() {
     ) {
       this.checksum_ = getUid(this.color_).toString();
     } else {
-      this.checksum_ = 'f' + (this.color_ ?
-        _ol_color_.asString(this.color_) : '-');
+      this.checksum_ = 'f' + (this.color_ ? asString(this.color_) : '-');
     }
   }
 

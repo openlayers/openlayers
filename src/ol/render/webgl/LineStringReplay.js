@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_color_ from '../../color.js';
+import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
@@ -647,7 +647,7 @@ _ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle = function(fillS
   var strokeStyleColor = strokeStyle.getColor();
   if (!(strokeStyleColor instanceof CanvasGradient) &&
       !(strokeStyleColor instanceof CanvasPattern)) {
-    strokeStyleColor = _ol_color_.asArray(strokeStyleColor).map(function(c, i) {
+    strokeStyleColor = asArray(strokeStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
     }) || _ol_render_webgl_.defaultStrokeStyle;
   } else {

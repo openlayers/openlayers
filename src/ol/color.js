@@ -3,7 +3,6 @@
  */
 import {assert} from './asserts.js';
 import _ol_math_ from './math.js';
-var _ol_color_ = {};
 
 
 /**
@@ -12,7 +11,7 @@ var _ol_color_ = {};
  * @type {RegExp}
  * @private
  */
-_ol_color_.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
+var HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
 
 
 /**
@@ -21,23 +20,7 @@ _ol_color_.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
  * @type {RegExp}
  * @private
  */
-_ol_color_.NAMED_COLOR_RE_ = /^([a-z]*)$/i;
-
-
-/**
- * Return the color as an array. This function maintains a cache of calculated
- * arrays which means the result should not be modified.
- * @param {ol.Color|string} color Color.
- * @return {ol.Color} Color.
- * @api
- */
-_ol_color_.asArray = function(color) {
-  if (Array.isArray(color)) {
-    return color;
-  } else {
-    return _ol_color_.fromString(/** @type {string} */ (color));
-  }
-};
+var NAMED_COLOR_RE_ = /^([a-z]*)$/i;
 
 
 /**
@@ -46,34 +29,34 @@ _ol_color_.asArray = function(color) {
  * @return {string} Rgba string.
  * @api
  */
-_ol_color_.asString = function(color) {
+export function asString(color) {
   if (typeof color === 'string') {
     return color;
   } else {
-    return _ol_color_.toString(color);
+    return toString(color);
   }
-};
+}
 
 /**
  * Return named color as an rgba string.
  * @param {string} color Named color.
  * @return {string} Rgb string.
  */
-_ol_color_.fromNamed = function(color) {
+function fromNamed(color) {
   var el = document.createElement('div');
   el.style.color = color;
   document.body.appendChild(el);
   var rgb = getComputedStyle(el).color;
   document.body.removeChild(el);
   return rgb;
-};
+}
 
 
 /**
  * @param {string} s String.
  * @return {ol.Color} Color.
  */
-_ol_color_.fromString = (
+export var fromString = (
   function() {
 
     // We maintain a small cache of parsed strings.  To provide cheap LRU-like
@@ -116,7 +99,7 @@ _ol_color_.fromString = (
               }
             }
           }
-          color = _ol_color_.fromStringInternal_(s);
+          color = fromStringInternal_(s);
           cache[s] = color;
           ++cacheSize;
         }
@@ -126,20 +109,34 @@ _ol_color_.fromString = (
 
   })();
 
+/**
+ * Return the color as an array. This function maintains a cache of calculated
+ * arrays which means the result should not be modified.
+ * @param {ol.Color|string} color Color.
+ * @return {ol.Color} Color.
+ * @api
+ */
+export function asArray(color) {
+  if (Array.isArray(color)) {
+    return color;
+  } else {
+    return fromString(/** @type {string} */ (color));
+  }
+}
 
 /**
  * @param {string} s String.
  * @private
  * @return {ol.Color} Color.
  */
-_ol_color_.fromStringInternal_ = function(s) {
+function fromStringInternal_(s) {
   var r, g, b, a, color, parts;
 
-  if (_ol_color_.NAMED_COLOR_RE_.exec(s)) {
-    s = _ol_color_.fromNamed(s);
+  if (NAMED_COLOR_RE_.exec(s)) {
+    s = fromNamed(s);
   }
 
-  if (_ol_color_.HEX_COLOR_RE_.exec(s)) { // hex
+  if (HEX_COLOR_RE_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
     var d; // number of digits per channel
     if (n <= 4) {
@@ -167,38 +164,39 @@ _ol_color_.fromStringInternal_ = function(s) {
     color = [r, g, b, a / 255];
   } else if (s.indexOf('rgba(') == 0) { // rgba()
     parts = s.slice(5, -1).split(',').map(Number);
-    color = _ol_color_.normalize(parts);
+    color = normalize(parts);
   } else if (s.indexOf('rgb(') == 0) { // rgb()
     parts = s.slice(4, -1).split(',').map(Number);
     parts.push(1);
-    color = _ol_color_.normalize(parts);
+    color = normalize(parts);
   } else {
     assert(false, 14); // Invalid color
   }
   return /** @type {ol.Color} */ (color);
-};
+}
 
 
 /**
+ * TODO this function is only used in the test, we probably shouldn't export it
  * @param {ol.Color} color Color.
  * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Clamped color.
  */
-_ol_color_.normalize = function(color, opt_color) {
+export function normalize(color, opt_color) {
   var result = opt_color || [];
   result[0] = _ol_math_.clamp((color[0] + 0.5) | 0, 0, 255);
   result[1] = _ol_math_.clamp((color[1] + 0.5) | 0, 0, 255);
   result[2] = _ol_math_.clamp((color[2] + 0.5) | 0, 0, 255);
   result[3] = _ol_math_.clamp(color[3], 0, 1);
   return result;
-};
+}
 
 
 /**
  * @param {ol.Color} color Color.
  * @return {string} String.
  */
-_ol_color_.toString = function(color) {
+export function toString(color) {
   var r = color[0];
   if (r != (r | 0)) {
     r = (r + 0.5) | 0;
@@ -213,5 +211,4 @@ _ol_color_.toString = function(color) {
   }
   var a = color[3] === undefined ? 1 : color[3];
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-};
-export default _ol_color_;
+}

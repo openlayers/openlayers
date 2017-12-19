@@ -2,7 +2,7 @@
  * @module ol/render/canvas/PolygonReplay
  */
 import {inherits} from '../../index.js';
-import _ol_color_ from '../../color.js';
+import {asString} from '../../color.js';
 import _ol_geom_flat_simplify_ from '../../geom/flat/simplify.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
@@ -91,7 +91,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawCircle = function(circleGeometry,
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push([
     _ol_render_canvas_Instruction_.SET_FILL_STYLE,
-    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)
+    asString(_ol_render_canvas_.defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
@@ -133,7 +133,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawPolygon = function(polygonGeometr
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push([
     _ol_render_canvas_Instruction_.SET_FILL_STYLE,
-    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)]
+    asString(_ol_render_canvas_.defaultFillStyle)]
   );
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
@@ -165,7 +165,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawMultiPolygon = function(multiPoly
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push([
     _ol_render_canvas_Instruction_.SET_FILL_STYLE,
-    _ol_color_.asString(_ol_render_canvas_.defaultFillStyle)
+    asString(_ol_render_canvas_.defaultFillStyle)
   ]);
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([

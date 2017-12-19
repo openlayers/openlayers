@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import _ol_array_ from '../../array.js';
-import _ol_color_ from '../../color.js';
+import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_geom_flat_contains_ from '../../geom/flat/contains.js';
@@ -1048,7 +1048,7 @@ _ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle = function(fillStyl
   var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
   if (!(fillStyleColor instanceof CanvasGradient) &&
       !(fillStyleColor instanceof CanvasPattern)) {
-    fillStyleColor = _ol_color_.asArray(fillStyleColor).map(function(c, i) {
+    fillStyleColor = asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
     }) || _ol_render_webgl_.defaultFillStyle;
   } else {
