@@ -18,7 +18,7 @@ import _ol_loadingstrategy_ from '../loadingstrategy.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Source_ from '../source/Source.js';
 import SourceState from '../source/State.js';
-import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
+import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
 /**
@@ -192,7 +192,7 @@ _ol_source_Vector_.prototype.addFeatureInternal = function(feature) {
   }
 
   this.dispatchEvent(
-      new _ol_source_Vector_.Event(_ol_source_VectorEventType_.ADDFEATURE, feature));
+      new _ol_source_Vector_.Event(VectorEventType.ADDFEATURE, feature));
 };
 
 
@@ -287,7 +287,7 @@ _ol_source_Vector_.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
     this.dispatchEvent(new _ol_source_Vector_.Event(
-        _ol_source_VectorEventType_.ADDFEATURE, newFeatures[i]));
+        VectorEventType.ADDFEATURE, newFeatures[i]));
   }
 };
 
@@ -298,7 +298,7 @@ _ol_source_Vector_.prototype.addFeaturesInternal = function(features) {
  */
 _ol_source_Vector_.prototype.bindFeaturesCollection_ = function(collection) {
   var modifyingCollection = false;
-  _ol_events_.listen(this, _ol_source_VectorEventType_.ADDFEATURE,
+  _ol_events_.listen(this, VectorEventType.ADDFEATURE,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -306,7 +306,7 @@ _ol_source_Vector_.prototype.bindFeaturesCollection_ = function(collection) {
           modifyingCollection = false;
         }
       });
-  _ol_events_.listen(this, _ol_source_VectorEventType_.REMOVEFEATURE,
+  _ol_events_.listen(this, VectorEventType.REMOVEFEATURE,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -368,7 +368,7 @@ _ol_source_Vector_.prototype.clear = function(opt_fast) {
   this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
-  var clearEvent = new _ol_source_Vector_.Event(_ol_source_VectorEventType_.CLEAR);
+  var clearEvent = new _ol_source_Vector_.Event(VectorEventType.CLEAR);
   this.dispatchEvent(clearEvent);
   this.changed();
 };
@@ -719,7 +719,7 @@ _ol_source_Vector_.prototype.handleFeatureChange_ = function(event) {
   }
   this.changed();
   this.dispatchEvent(new _ol_source_Vector_.Event(
-      _ol_source_VectorEventType_.CHANGEFEATURE, feature));
+      VectorEventType.CHANGEFEATURE, feature));
 };
 
 
@@ -817,7 +817,7 @@ _ol_source_Vector_.prototype.removeFeatureInternal = function(feature) {
     delete this.undefIdIndex_[featureKey];
   }
   this.dispatchEvent(new _ol_source_Vector_.Event(
-      _ol_source_VectorEventType_.REMOVEFEATURE, feature));
+      VectorEventType.REMOVEFEATURE, feature));
 };
 
 
