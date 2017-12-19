@@ -12,7 +12,7 @@ import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
-import _ol_source_WMSServerType_ from '../source/WMSServerType.js';
+import WMSServerType from '../source/WMSServerType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_string_ from '../string.js';
 import _ol_uri_ from '../uri.js';
@@ -209,7 +209,7 @@ _ol_source_TileWMS_.prototype.getRequestUrl_ = function(tileCoord, tileSize, til
 
   if (pixelRatio != 1) {
     switch (this.serverType_) {
-      case _ol_source_WMSServerType_.GEOSERVER:
+      case WMSServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
         if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
@@ -217,11 +217,11 @@ _ol_source_TileWMS_.prototype.getRequestUrl_ = function(tileCoord, tileSize, til
           params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
         }
         break;
-      case _ol_source_WMSServerType_.MAPSERVER:
+      case WMSServerType.MAPSERVER:
         params['MAP_RESOLUTION'] = 90 * pixelRatio;
         break;
-      case _ol_source_WMSServerType_.CARMENTA_SERVER:
-      case _ol_source_WMSServerType_.QGIS:
+      case WMSServerType.CARMENTA_SERVER:
+      case WMSServerType.QGIS:
         params['DPI'] = 90 * pixelRatio;
         break;
       default:

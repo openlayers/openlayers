@@ -11,7 +11,7 @@ import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
@@ -28,7 +28,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
 var _ol_source_TileUTFGrid_ = function(options) {
   _ol_source_Tile_.call(this, {
     projection: getProjection('EPSG:3857'),
-    state: _ol_source_State_.LOADING
+    state: SourceState.LOADING
   });
 
   /**
@@ -155,7 +155,7 @@ _ol_source_TileUTFGrid_.prototype.forDataAtCoordinateAndResolution = function(
  * @protected
  */
 _ol_source_TileUTFGrid_.prototype.handleTileJSONError = function() {
-  this.setState(_ol_source_State_.ERROR);
+  this.setState(SourceState.ERROR);
 };
 
 
@@ -189,7 +189,7 @@ _ol_source_TileUTFGrid_.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var grids = tileJSON.grids;
   if (!grids) {
-    this.setState(_ol_source_State_.ERROR);
+    this.setState(SourceState.ERROR);
     return;
   }
 
@@ -207,7 +207,7 @@ _ol_source_TileUTFGrid_.prototype.handleTileJSONResponse = function(tileJSON) {
     });
   }
 
-  this.setState(_ol_source_State_.READY);
+  this.setState(SourceState.READY);
 
 };
 

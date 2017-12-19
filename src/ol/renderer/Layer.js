@@ -8,7 +8,7 @@ import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {FALSE} from '../functions.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 
 /**
  * @constructor
@@ -130,7 +130,7 @@ _ol_renderer_Layer_.prototype.loadImage = function(image) {
  */
 _ol_renderer_Layer_.prototype.renderIfReadyAndVisible = function() {
   var layer = this.getLayer();
-  if (layer.getVisible() && layer.getSourceState() == _ol_source_State_.READY) {
+  if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
     this.changed();
   }
 };

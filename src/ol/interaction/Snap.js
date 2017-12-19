@@ -14,7 +14,7 @@ import Polygon from '../geom/Polygon.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_obj_ from '../obj.js';
 import _ol_source_Vector_ from '../source/Vector.js';
-import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
+import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
 /**
@@ -316,9 +316,9 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
       );
     } else if (this.source_) {
       keys.push(
-          _ol_events_.listen(this.source_, _ol_source_VectorEventType_.ADDFEATURE,
+          _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
               this.handleFeatureAdd_, this),
-          _ol_events_.listen(this.source_, _ol_source_VectorEventType_.REMOVEFEATURE,
+          _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,
               this.handleFeatureRemove_, this)
       );
     }

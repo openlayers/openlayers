@@ -20,7 +20,7 @@ import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js'
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
 import _ol_source_Vector_ from '../source/Vector.js';
-import _ol_source_VectorEventType_ from '../source/VectorEventType.js';
+import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import _ol_style_Style_ from '../style/Style.js';
 
@@ -196,9 +196,9 @@ var _ol_interaction_Modify_ = function(options) {
   if (options.source) {
     this.source_ = options.source;
     features = new _ol_Collection_(this.source_.getFeatures());
-    _ol_events_.listen(this.source_, _ol_source_VectorEventType_.ADDFEATURE,
+    _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
         this.handleSourceAdd_, this);
-    _ol_events_.listen(this.source_, _ol_source_VectorEventType_.REMOVEFEATURE,
+    _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,
         this.handleSourceRemove_, this);
   } else {
     features = options.features;

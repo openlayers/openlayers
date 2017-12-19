@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 import _ol_source_XYZ_ from '../source/XYZ.js';
 
 /**
@@ -48,7 +48,7 @@ var _ol_source_CartoDB_ = function(options) {
     maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
     minZoom: options.minZoom,
     projection: options.projection,
-    state: _ol_source_State_.LOADING,
+    state: SourceState.LOADING,
     wrapX: options.wrapX
   });
   this.initializeMap_();
@@ -132,14 +132,14 @@ _ol_source_CartoDB_.prototype.handleInitResponse_ = function(paramHash, event) {
     try {
       response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));
     } catch (err) {
-      this.setState(_ol_source_State_.ERROR);
+      this.setState(SourceState.ERROR);
       return;
     }
     this.applyTemplate_(response);
     this.templateCache_[paramHash] = response;
-    this.setState(_ol_source_State_.READY);
+    this.setState(SourceState.READY);
   } else {
-    this.setState(_ol_source_State_.ERROR);
+    this.setState(SourceState.ERROR);
   }
 };
 
@@ -149,7 +149,7 @@ _ol_source_CartoDB_.prototype.handleInitResponse_ = function(paramHash, event) {
  * @param {Event} event Event.
  */
 _ol_source_CartoDB_.prototype.handleInitError_ = function(event) {
-  this.setState(_ol_source_State_.ERROR);
+  this.setState(SourceState.ERROR);
 };
 
 

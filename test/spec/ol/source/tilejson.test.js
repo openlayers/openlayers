@@ -1,4 +1,4 @@
-import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
+import Source from '../../../../src/ol/source/Source.js';
 import _ol_source_TileJSON_ from '../../../../src/ol/source/TileJSON.js';
 import _ol_Observable_ from '../../../../src/ol/Observable.js';
 
@@ -11,7 +11,7 @@ describe('ol.source.TileJSON', function() {
       var source = new _ol_source_TileJSON_({
         url: 'spec/ol/data/tilejson.json'
       });
-      expect(source).to.be.a(_ol_source_Source_);
+      expect(source).to.be.a(Source);
       expect(source).to.be.a(_ol_source_TileJSON_);
     });
   });

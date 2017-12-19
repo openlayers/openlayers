@@ -3,7 +3,7 @@ import _ol_Tile_ from '../../../../src/ol/Tile.js';
 import TileRange from '../../../../src/ol/TileRange.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
-import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
+import Source from '../../../../src/ol/source/Source.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
@@ -59,7 +59,7 @@ describe('ol.source.Tile', function() {
       var source = new _ol_source_Tile_({
         projection: getProjection('EPSG:4326')
       });
-      expect(source).to.be.a(_ol_source_Source_);
+      expect(source).to.be.a(Source);
       expect(source).to.be.a(_ol_source_Tile_);
     });
     it('sets a custom cache size', function() {

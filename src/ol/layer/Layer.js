@@ -9,7 +9,7 @@ import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_layer_Property_ from '../layer/Property.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
-import _ol_source_State_ from '../source/State.js';
+import SourceState from '../source/State.js';
 
 /**
  * @classdesc
@@ -124,7 +124,7 @@ _ol_layer_Layer_.prototype.getSource = function() {
   */
 _ol_layer_Layer_.prototype.getSourceState = function() {
   var source = this.getSource();
-  return !source ? _ol_source_State_.UNDEFINED : source.getState();
+  return !source ? SourceState.UNDEFINED : source.getState();
 };
 
 

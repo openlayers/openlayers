@@ -14,7 +14,7 @@ import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
 import RendererType from '../Type.js';
-import _ol_source_State_ from '../../source/State.js';
+import SourceState from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
@@ -450,7 +450,7 @@ _ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     if (_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) &&
-        layerState.sourceState == _ol_source_State_.READY) {
+        layerState.sourceState == SourceState.READY) {
       layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
       if (layerRenderer.prepareFrame(frameState, layerState, context)) {
         layerStatesToDraw.push(layerState);

@@ -4,7 +4,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_Cluster_ from '../../../../src/ol/source/Cluster.js';
-import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
+import Source from '../../../../src/ol/source/Source.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
 describe('ol.source.Cluster', function() {
@@ -15,7 +15,7 @@ describe('ol.source.Cluster', function() {
         projection: getProjection('EPSG:4326'),
         source: new _ol_source_Vector_()
       });
-      expect(source).to.be.a(_ol_source_Source_);
+      expect(source).to.be.a(Source);
       expect(source).to.be.a(_ol_source_Cluster_);
       expect(source.getDistance()).to.be(20);
     });
