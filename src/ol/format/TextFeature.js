@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_FormatType_ from '../format/FormatType.js';
+import FormatType from '../format/FormatType.js';
 
 /**
  * @classdesc
@@ -40,7 +40,7 @@ TextFeature.prototype.getText_ = function(source) {
  * @inheritDoc
  */
 TextFeature.prototype.getType = function() {
-  return _ol_format_FormatType_.TEXT;
+  return FormatType.TEXT;
 };
 
 

@@ -7,7 +7,7 @@ import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import _ol_events_ from './events.js';
 import EventTarget from './events/EventTarget.js';
-import _ol_pointer_EventType_ from './pointer/EventType.js';
+import PointerEventType from './pointer/EventType.js';
 import _ol_pointer_PointerEventHandler_ from './pointer/PointerEventHandler.js';
 
 /**
@@ -97,7 +97,7 @@ var MapBrowserEventHandler = function(map, moveTolerance) {
    * @private
    */
   this.pointerdownListenerKey_ = _ol_events_.listen(this.pointerEventHandler_,
-      _ol_pointer_EventType_.POINTERDOWN,
+      PointerEventType.POINTERDOWN,
       this.handlePointerDown_, this);
 
   /**
@@ -105,7 +105,7 @@ var MapBrowserEventHandler = function(map, moveTolerance) {
    * @private
    */
   this.relayedListenerKey_ = _ol_events_.listen(this.pointerEventHandler_,
-      _ol_pointer_EventType_.POINTERMOVE,
+      PointerEventType.POINTERMOVE,
       this.relayEvent_, this);
 
 };

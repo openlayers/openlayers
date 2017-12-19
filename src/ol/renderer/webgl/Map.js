@@ -10,16 +10,16 @@ import _ol_events_ from '../../events.js';
 import _ol_has_ from '../../has.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
 import _ol_render_Event_ from '../../render/Event.js';
-import _ol_render_EventType_ from '../../render/EventType.js';
+import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_source_State_ from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
-import _ol_webgl_ContextEventType_ from '../../webgl/ContextEventType.js';
+import ContextEventType from '../../webgl/ContextEventType.js';
 
 
 /**
@@ -92,9 +92,9 @@ var _ol_renderer_webgl_Map_ = function(container, map) {
    */
   this.context_ = new _ol_webgl_Context_(this.canvas_, this.gl_);
 
-  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.LOST,
+  _ol_events_.listen(this.canvas_, ContextEventType.LOST,
       this.handleWebGLContextLost, this);
-  _ol_events_.listen(this.canvas_, _ol_webgl_ContextEventType_.RESTORED,
+  _ol_events_.listen(this.canvas_, ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
   /**
@@ -175,7 +175,7 @@ inherits(_ol_renderer_webgl_Map_, _ol_renderer_Map_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_Map_['handles'] = function(type) {
-  return _ol_has_.WEBGL && type === _ol_renderer_Type_.WEBGL;
+  return _ol_has_.WEBGL && type === RendererType.WEBGL;
 };
 
 
@@ -358,7 +358,7 @@ _ol_renderer_webgl_Map_.prototype.getTileTextureQueue = function() {
  * @inheritDoc
  */
 _ol_renderer_webgl_Map_.prototype.getType = function() {
-  return _ol_renderer_Type_.WEBGL;
+  return RendererType.WEBGL;
 };
 
 
@@ -438,7 +438,7 @@ _ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  this.dispatchComposeEvent_(_ol_render_EventType_.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
   /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
@@ -497,7 +497,7 @@ _ol_renderer_webgl_Map_.prototype.renderFrame = function(frameState) {
     frameState.animate = true;
   }
 
-  this.dispatchComposeEvent_(_ol_render_EventType_.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, frameState);
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
   this.scheduleExpireIconCache(frameState);

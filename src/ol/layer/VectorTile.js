@@ -2,7 +2,7 @@
  * @module ol/layer/VectorTile
  */
 import {inherits} from '../index.js';
-import _ol_LayerType_ from '../LayerType.js';
+import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -50,7 +50,7 @@ var _ol_layer_VectorTile_ = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = _ol_LayerType_.VECTOR_TILE;
+  this.type = LayerType.VECTOR_TILE;
 
 };
 

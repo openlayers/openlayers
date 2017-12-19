@@ -10,11 +10,11 @@ import _ol_css_ from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
 import _ol_render_Event_ from '../../render/Event.js';
-import _ol_render_EventType_ from '../../render/EventType.js';
+import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
 import _ol_renderer_Map_ from '../Map.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_source_State_ from '../../source/State.js';
 
 /**
@@ -69,7 +69,7 @@ inherits(_ol_renderer_canvas_Map_, _ol_renderer_Map_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_Map_['handles'] = function(type) {
-  return type === _ol_renderer_Type_.CANVAS;
+  return type === RendererType.CANVAS;
 };
 
 
@@ -131,7 +131,7 @@ _ol_renderer_canvas_Map_.prototype.getTransform = function(frameState) {
  * @inheritDoc
  */
 _ol_renderer_canvas_Map_.prototype.getType = function() {
-  return _ol_renderer_Type_.CANVAS;
+  return RendererType.CANVAS;
 };
 
 
@@ -163,7 +163,7 @@ _ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
 
   this.calculateMatrices2D(frameState);
 
-  this.dispatchComposeEvent_(_ol_render_EventType_.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
   _ol_array_.stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
@@ -192,8 +192,7 @@ _ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
     context.restore();
   }
 
-  this.dispatchComposeEvent_(
-      _ol_render_EventType_.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(RenderEventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
     this.canvas_.style.display = '';

@@ -8,7 +8,7 @@ import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_ReplayGroup_ from '../ReplayGroup.js';
-import _ol_render_ReplayType_ from '../ReplayType.js';
+import ReplayType from '../ReplayType.js';
 import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
 import _ol_render_canvas_ImageReplay_ from '../canvas/ImageReplay.js';
 import _ol_render_canvas_LineStringReplay_ from '../canvas/LineStringReplay.js';
@@ -440,7 +440,7 @@ _ol_render_canvas_ReplayGroup_.prototype.replay = function(context,
       replay = replays[replayType];
       if (replay !== undefined) {
         if (opt_declutterReplays &&
-            (replayType == _ol_render_ReplayType_.IMAGE || replayType == _ol_render_ReplayType_.TEXT)) {
+            (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
           var declutter = opt_declutterReplays[zIndexKey];
           if (!declutter) {
             opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
@@ -490,7 +490,7 @@ _ol_render_canvas_ReplayGroup_.prototype.replayHitDetection_ = function(
       replay = replays[replayType];
       if (replay !== undefined) {
         if (opt_declutterReplays &&
-            (replayType == _ol_render_ReplayType_.IMAGE || replayType == _ol_render_ReplayType_.TEXT)) {
+            (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
           var declutter = opt_declutterReplays[zIndexKey];
           if (!declutter) {
             opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];

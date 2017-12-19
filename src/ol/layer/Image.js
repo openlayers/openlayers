@@ -2,7 +2,7 @@
  * @module ol/layer/Image
  */
 import {inherits} from '../index.js';
-import _ol_LayerType_ from '../LayerType.js';
+import LayerType from '../LayerType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 
 /**
@@ -28,7 +28,7 @@ var _ol_layer_Image_ = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = _ol_LayerType_.IMAGE;
+  this.type = LayerType.IMAGE;
 
 };
 

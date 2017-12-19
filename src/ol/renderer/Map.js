@@ -8,8 +8,8 @@ import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
-import _ol_plugins_ from '../plugins.js';
-import _ol_style_ from '../style.js';
+import {getLayerRendererPlugins} from '../plugins.js';
+import {iconImageCache} from '../style.js';
 import _ol_transform_ from '../transform.js';
 
 /**
@@ -84,8 +84,7 @@ _ol_renderer_Map_.prototype.removeLayerRenderers = function() {
  * @private
  */
 _ol_renderer_Map_.expireIconCache_ = function(map, frameState) {
-  var cache = _ol_style_.iconImageCache;
-  cache.expire();
+  iconImageCache.expire();
 };
 
 
@@ -208,7 +207,7 @@ _ol_renderer_Map_.prototype.getLayerRenderer = function(layer) {
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {
-    var layerRendererPlugins = _ol_plugins_.getLayerRendererPlugins();
+    var layerRendererPlugins = getLayerRendererPlugins();
     var renderer;
     var type = this.getType();
     for (var i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {

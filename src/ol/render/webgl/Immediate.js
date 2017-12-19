@@ -4,7 +4,7 @@
 import {inherits} from '../../index.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
-import _ol_render_ReplayType_ from '../ReplayType.js';
+import ReplayType from '../ReplayType.js';
 import _ol_render_VectorContext_ from '../VectorContext.js';
 import _ol_render_webgl_ReplayGroup_ from '../webgl/ReplayGroup.js';
 
@@ -95,7 +95,7 @@ inherits(_ol_render_webgl_Immediate_, _ol_render_VectorContext_);
 _ol_render_webgl_Immediate_.prototype.drawText_ = function(replayGroup, geometry) {
   var context = this.context_;
   var replay = /** @type {ol.render.webgl.TextReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.TEXT));
+    replayGroup.getReplay(0, ReplayType.TEXT));
   replay.setTextStyle(this.textStyle_);
   replay.drawText(geometry, null);
   replay.finish(context);
@@ -200,7 +200,7 @@ _ol_render_webgl_Immediate_.prototype.drawPoint = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.IMAGE));
+    replayGroup.getReplay(0, ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
   replay.drawPoint(geometry, data);
   replay.finish(context);
@@ -227,7 +227,7 @@ _ol_render_webgl_Immediate_.prototype.drawMultiPoint = function(geometry, data) 
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.IMAGE));
+    replayGroup.getReplay(0, ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
   replay.drawMultiPoint(geometry, data);
   replay.finish(context);
@@ -253,7 +253,7 @@ _ol_render_webgl_Immediate_.prototype.drawLineString = function(geometry, data) 
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.LineStringReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.LINE_STRING));
+    replayGroup.getReplay(0, ReplayType.LINE_STRING));
   replay.setFillStrokeStyle(null, this.strokeStyle_);
   replay.drawLineString(geometry, data);
   replay.finish(context);
@@ -279,7 +279,7 @@ _ol_render_webgl_Immediate_.prototype.drawMultiLineString = function(geometry, d
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.LineStringReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.LINE_STRING));
+    replayGroup.getReplay(0, ReplayType.LINE_STRING));
   replay.setFillStrokeStyle(null, this.strokeStyle_);
   replay.drawMultiLineString(geometry, data);
   replay.finish(context);
@@ -305,7 +305,7 @@ _ol_render_webgl_Immediate_.prototype.drawPolygon = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.PolygonReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.POLYGON));
+    replayGroup.getReplay(0, ReplayType.POLYGON));
   replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
   replay.drawPolygon(geometry, data);
   replay.finish(context);
@@ -331,7 +331,7 @@ _ol_render_webgl_Immediate_.prototype.drawMultiPolygon = function(geometry, data
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.PolygonReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.POLYGON));
+    replayGroup.getReplay(0, ReplayType.POLYGON));
   replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
   replay.drawMultiPolygon(geometry, data);
   replay.finish(context);
@@ -357,7 +357,7 @@ _ol_render_webgl_Immediate_.prototype.drawCircle = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
   var replay = /** @type {ol.render.webgl.CircleReplay} */ (
-    replayGroup.getReplay(0, _ol_render_ReplayType_.CIRCLE));
+    replayGroup.getReplay(0, ReplayType.CIRCLE));
   replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
   replay.drawCircle(geometry, data);
   replay.finish(context);

@@ -2,17 +2,17 @@
  * @module ol/renderer/canvas/VectorLayer
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
-import _ol_render_EventType_ from '../../render/EventType.js';
+import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_renderer_canvas_Layer_ from '../canvas/Layer.js';
 import _ol_renderer_vector_ from '../vector.js';
 
@@ -93,7 +93,7 @@ inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_canvas_VectorLayer_['handles'] = function(type, layer) {
-  return type === _ol_renderer_Type_.CANVAS && layer.getType() === _ol_LayerType_.VECTOR;
+  return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR;
 };
 
 
@@ -152,7 +152,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.composeFrame = function(frameState, l
     var drawOffsetY = 0;
     var replayContext;
     var transparentLayer = layerState.opacity !== 1;
-    var hasRenderListeners = layer.hasListener(_ol_render_EventType_.RENDER);
+    var hasRenderListeners = layer.hasListener(RenderEventType.RENDER);
     if (transparentLayer || hasRenderListeners) {
       var drawWidth = context.canvas.width;
       var drawHeight = context.canvas.height;

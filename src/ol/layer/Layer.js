@@ -8,7 +8,7 @@ import _ol_Object_ from '../Object.js';
 import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_layer_Property_ from '../layer/Property.js';
 import _ol_obj_ from '../obj.js';
-import _ol_render_EventType_ from '../render/EventType.js';
+import RenderEventType from '../render/EventType.js';
 import _ol_source_State_ from '../source/State.js';
 
 /**
@@ -179,7 +179,7 @@ _ol_layer_Layer_.prototype.setMap = function(map) {
   }
   if (map) {
     this.mapPrecomposeKey_ = _ol_events_.listen(
-        map, _ol_render_EventType_.PRECOMPOSE, function(evt) {
+        map, RenderEventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
           layerState.zIndex = Infinity;

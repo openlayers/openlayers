@@ -2,7 +2,7 @@
  * @module ol/layer/Tile
  */
 import {inherits} from '../index.js';
-import _ol_LayerType_ from '../LayerType.js';
+import LayerType from '../LayerType.js';
 import _ol_layer_Layer_ from '../layer/Layer.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
 import _ol_obj_ from '../obj.js';
@@ -39,7 +39,7 @@ var _ol_layer_Tile_ = function(opt_options) {
    * @protected
    * @type {ol.LayerType}
    */
-  this.type = _ol_LayerType_.TILE;
+  this.type = LayerType.TILE;
 
 };
 

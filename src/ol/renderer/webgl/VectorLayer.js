@@ -2,11 +2,11 @@
  * @module ol/renderer/webgl/VectorLayer
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/ReplayGroup.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_renderer_vector_ from '../vector.js';
 import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
@@ -77,7 +77,7 @@ inherits(_ol_renderer_webgl_VectorLayer_, _ol_renderer_webgl_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_VectorLayer_['handles'] = function(type, layer) {
-  return type === _ol_renderer_Type_.WEBGL && layer.getType() === _ol_LayerType_.VECTOR;
+  return type === RendererType.WEBGL && layer.getType() === LayerType.VECTOR;
 };
 
 

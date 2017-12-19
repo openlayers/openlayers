@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_FormatType_ from '../format/FormatType.js';
+import FormatType from '../format/FormatType.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -35,7 +35,7 @@ inherits(XMLFeature, FeatureFormat);
  * @inheritDoc
  */
 XMLFeature.prototype.getType = function() {
-  return _ol_format_FormatType_.XML;
+  return FormatType.XML;
 };
 
 

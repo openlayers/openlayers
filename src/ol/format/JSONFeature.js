@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import FeatureFormat from '../format/Feature.js';
-import _ol_format_FormatType_ from '../format/FormatType.js';
+import FormatType from '../format/FormatType.js';
 
 /**
  * @classdesc
@@ -43,7 +43,7 @@ JSONFeature.prototype.getObject_ = function(source) {
  * @inheritDoc
  */
 JSONFeature.prototype.getType = function() {
-  return _ol_format_FormatType_.JSON;
+  return FormatType.JSON;
 };
 
 

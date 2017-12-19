@@ -5,13 +5,13 @@
 // FIXME animated shaders! check in redraw
 
 import {inherits} from '../../index.js';
-import _ol_LayerType_ from '../../LayerType.js';
+import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import _ol_array_ from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import _ol_math_ from '../../math.js';
-import _ol_renderer_Type_ from '../Type.js';
+import RendererType from '../Type.js';
 import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
 import _ol_renderer_webgl_tilelayershader_ from '../webgl/tilelayershader.js';
 import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayershader/Locations.js';
@@ -96,7 +96,7 @@ inherits(_ol_renderer_webgl_TileLayer_, _ol_renderer_webgl_Layer_);
  * @return {boolean} The renderer can render the layer.
  */
 _ol_renderer_webgl_TileLayer_['handles'] = function(type, layer) {
-  return type === _ol_renderer_Type_.WEBGL && layer.getType() === _ol_LayerType_.TILE;
+  return type === RendererType.WEBGL && layer.getType() === LayerType.TILE;
 };
 
 
