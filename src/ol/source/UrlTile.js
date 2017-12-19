@@ -5,7 +5,7 @@ import {getUid, inherits} from '../index.js';
 import _ol_TileState_ from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import _ol_source_Tile_ from '../source/Tile.js';
-import _ol_source_TileEventType_ from '../source/TileEventType.js';
+import TileEventType from '../source/TileEventType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 
 /**
@@ -122,12 +122,12 @@ _ol_source_UrlTile_.prototype.handleTileChange = function(event) {
   var type;
   if (tileState == _ol_TileState_.LOADING) {
     this.tileLoadingKeys_[uid] = true;
-    type = _ol_source_TileEventType_.TILELOADSTART;
+    type = TileEventType.TILELOADSTART;
   } else if (uid in this.tileLoadingKeys_) {
     delete this.tileLoadingKeys_[uid];
-    type = tileState == _ol_TileState_.ERROR ? _ol_source_TileEventType_.TILELOADERROR :
+    type = tileState == _ol_TileState_.ERROR ? TileEventType.TILELOADERROR :
       (tileState == _ol_TileState_.LOADED || tileState == _ol_TileState_.ABORT) ?
-        _ol_source_TileEventType_.TILELOADEND : undefined;
+        TileEventType.TILELOADEND : undefined;
   }
   if (type != undefined) {
     this.dispatchEvent(new _ol_source_Tile_.Event(type, tile));
