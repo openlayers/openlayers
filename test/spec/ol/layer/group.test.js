@@ -6,7 +6,7 @@ import _ol_layer_Group_ from '../../../../src/ol/layer/Group.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import _ol_renderer_Map_ from '../../../../src/ol/renderer/Map.js';
-import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
+import Source from '../../../../src/ol/source/Source.js';
 
 
 describe('ol.layer.Group', function() {
@@ -61,7 +61,7 @@ describe('ol.layer.Group', function() {
     var layer, group, listener;
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });
@@ -100,7 +100,7 @@ describe('ol.layer.Group', function() {
     var layer, group, listener;
     beforeEach(function() {
       layer = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });
@@ -138,7 +138,7 @@ describe('ol.layer.Group', function() {
 
     it('accepts options', function() {
       var layer = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });
@@ -176,7 +176,7 @@ describe('ol.layer.Group', function() {
 
     it('accepts an extent option', function() {
       var layer = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });
@@ -311,7 +311,7 @@ describe('ol.layer.Group', function() {
 
     it('sets layers property', function() {
       var layer = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });
@@ -342,12 +342,12 @@ describe('ol.layer.Group', function() {
     });
 
     var layer1 = new _ol_layer_Layer_({
-      source: new _ol_source_Source_({
+      source: new Source({
         projection: 'EPSG:4326'
       })
     });
     var layer2 = new _ol_layer_Layer_({
-      source: new _ol_source_Source_({
+      source: new Source({
         projection: 'EPSG:4326'
       }),
       opacity: 0.5,
@@ -356,7 +356,7 @@ describe('ol.layer.Group', function() {
       minResolution: 0.25
     });
     var layer3 = new _ol_layer_Layer_({
-      source: new _ol_source_Source_({
+      source: new Source({
         projection: 'EPSG:4326'
       }),
       extent: [-5, -2, 5, 2]
@@ -461,14 +461,14 @@ describe('ol.layer.Group', function() {
 
     it('orders layer with higher Z-index on top', function() {
       var layer10 = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });
       layer10.setZIndex(10);
 
       var layerM1 = new _ol_layer_Layer_({
-        source: new _ol_source_Source_({
+        source: new Source({
           projection: 'EPSG:4326'
         })
       });

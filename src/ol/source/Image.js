@@ -9,7 +9,7 @@ import Event from '../events/Event.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
 import _ol_reproj_Image_ from '../reproj/Image.js';
-import _ol_source_Source_ from '../source/Source.js';
+import Source from '../source/Source.js';
 
 /**
  * @classdesc
@@ -24,7 +24,7 @@ import _ol_source_Source_ from '../source/Source.js';
  * @api
  */
 var _ol_source_Image_ = function(options) {
-  _ol_source_Source_.call(this, {
+  Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     projection: options.projection,
@@ -53,7 +53,7 @@ var _ol_source_Image_ = function(options) {
   this.reprojectedRevision_ = 0;
 };
 
-inherits(_ol_source_Image_, _ol_source_Source_);
+inherits(_ol_source_Image_, Source);
 
 
 /**

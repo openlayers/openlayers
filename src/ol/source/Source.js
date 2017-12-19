@@ -21,7 +21,7 @@ import SourceState from '../source/State.js';
  * @param {ol.SourceSourceOptions} options Source options.
  * @api
  */
-var _ol_source_Source_ = function(options) {
+var Source = function(options) {
 
   _ol_Object_.call(this);
 
@@ -52,14 +52,14 @@ var _ol_source_Source_ = function(options) {
 
 };
 
-inherits(_ol_source_Source_, _ol_Object_);
+inherits(Source, _ol_Object_);
 
 /**
  * Turns the attributions option into an attributions function.
  * @param {ol.AttributionLike|undefined} attributionLike The attribution option.
  * @return {?ol.Attribution} An attribution function (or null).
  */
-_ol_source_Source_.prototype.adaptAttributions_ = function(attributionLike) {
+Source.prototype.adaptAttributions_ = function(attributionLike) {
   if (!attributionLike) {
     return null;
   }
@@ -89,14 +89,14 @@ _ol_source_Source_.prototype.adaptAttributions_ = function(attributionLike) {
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_source_Source_.prototype.forEachFeatureAtCoordinate = nullFunction;
+Source.prototype.forEachFeatureAtCoordinate = nullFunction;
 
 
 /**
  * Get the attribution function for the source.
  * @return {?ol.Attribution} Attribution function.
  */
-_ol_source_Source_.prototype.getAttributions = function() {
+Source.prototype.getAttributions = function() {
   return this.attributions_;
 };
 
@@ -106,7 +106,7 @@ _ol_source_Source_.prototype.getAttributions = function() {
  * @return {ol.proj.Projection} Projection.
  * @api
  */
-_ol_source_Source_.prototype.getProjection = function() {
+Source.prototype.getProjection = function() {
   return this.projection_;
 };
 
@@ -115,7 +115,7 @@ _ol_source_Source_.prototype.getProjection = function() {
  * @abstract
  * @return {Array.<number>|undefined} Resolutions.
  */
-_ol_source_Source_.prototype.getResolutions = function() {};
+Source.prototype.getResolutions = function() {};
 
 
 /**
@@ -123,7 +123,7 @@ _ol_source_Source_.prototype.getResolutions = function() {};
  * @return {ol.source.State} State.
  * @api
  */
-_ol_source_Source_.prototype.getState = function() {
+Source.prototype.getState = function() {
   return this.state_;
 };
 
@@ -131,7 +131,7 @@ _ol_source_Source_.prototype.getState = function() {
 /**
  * @return {boolean|undefined} Wrap X.
  */
-_ol_source_Source_.prototype.getWrapX = function() {
+Source.prototype.getWrapX = function() {
   return this.wrapX_;
 };
 
@@ -140,7 +140,7 @@ _ol_source_Source_.prototype.getWrapX = function() {
  * Refreshes the source and finally dispatches a 'change' event.
  * @api
  */
-_ol_source_Source_.prototype.refresh = function() {
+Source.prototype.refresh = function() {
   this.changed();
 };
 
@@ -152,7 +152,7 @@ _ol_source_Source_.prototype.refresh = function() {
  *     or `undefined`.
  * @api
  */
-_ol_source_Source_.prototype.setAttributions = function(attributions) {
+Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = this.adaptAttributions_(attributions);
   this.changed();
 };
@@ -163,8 +163,8 @@ _ol_source_Source_.prototype.setAttributions = function(attributions) {
  * @param {ol.source.State} state State.
  * @protected
  */
-_ol_source_Source_.prototype.setState = function(state) {
+Source.prototype.setState = function(state) {
   this.state_ = state;
   this.changed();
 };
-export default _ol_source_Source_;
+export default Source;

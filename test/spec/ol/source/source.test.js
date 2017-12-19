@@ -1,27 +1,27 @@
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_source_Source_ from '../../../../src/ol/source/Source.js';
+import Source from '../../../../src/ol/source/Source.js';
 
 
 describe('ol.source.Source', function() {
 
   describe('constructor', function() {
     it('returns a source', function() {
-      var source = new _ol_source_Source_({
+      var source = new Source({
         projection: getProjection('EPSG:4326')
       });
-      expect(source).to.be.a(_ol_source_Source_);
+      expect(source).to.be.a(Source);
     });
   });
 
   describe('config option `attributions`', function() {
     it('accepts undefined', function() {
-      var source = new _ol_source_Source_({});
+      var source = new Source({});
       var attributions = source.getAttributions();
       expect(attributions).to.be(null);
     });
 
     it('accepts a single string', function() {
-      var source = new _ol_source_Source_({
+      var source = new Source({
         attributions: 'Humpty'
       });
       var attributions = source.getAttributions();
@@ -31,7 +31,7 @@ describe('ol.source.Source', function() {
     });
 
     it('accepts an array of strings', function() {
-      var source = new _ol_source_Source_({
+      var source = new Source({
         attributions: ['Humpty', 'Dumpty']
       });
       var attributions = source.getAttributions();
@@ -41,7 +41,7 @@ describe('ol.source.Source', function() {
     });
 
     it('accepts a function that returns a string', function() {
-      var source = new _ol_source_Source_({
+      var source = new Source({
         attributions: function() {
           return 'Humpty';
         }
@@ -53,7 +53,7 @@ describe('ol.source.Source', function() {
     });
 
     it('accepts a function that returns an array of strings', function() {
-      var source = new _ol_source_Source_({
+      var source = new Source({
         attributions: function() {
           return ['Humpty', 'Dumpty'];
         }
@@ -67,7 +67,7 @@ describe('ol.source.Source', function() {
 
   describe('#refresh()', function() {
     it('dispatches the change event', function() {
-      var source = new _ol_source_Source_({
+      var source = new Source({
         projection: getProjection('EPSG:4326')
       });
       var changedSpy = sinon.spy();
@@ -81,7 +81,7 @@ describe('ol.source.Source', function() {
     var source = null;
 
     beforeEach(function() {
-      source = new _ol_source_Source_({
+      source = new Source({
         attributions: 'before'
       });
     });

@@ -16,7 +16,7 @@ import {xhr} from '../featureloader.js';
 import {TRUE} from '../functions.js';
 import _ol_loadingstrategy_ from '../loadingstrategy.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_Source_ from '../source/Source.js';
+import Source from '../source/Source.js';
 import SourceState from '../source/State.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
@@ -37,7 +37,7 @@ var _ol_source_Vector_ = function(opt_options) {
 
   var options = opt_options || {};
 
-  _ol_source_Source_.call(this, {
+  Source.call(this, {
     attributions: options.attributions,
     projection: undefined,
     state: SourceState.READY,
@@ -149,7 +149,7 @@ var _ol_source_Vector_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_Vector_, _ol_source_Source_);
+inherits(_ol_source_Vector_, Source);
 
 
 /**

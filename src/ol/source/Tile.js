@@ -7,7 +7,7 @@ import _ol_TileState_ from '../TileState.js';
 import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
 import _ol_size_ from '../size.js';
-import _ol_source_Source_ from '../source/Source.js';
+import Source from '../source/Source.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -25,7 +25,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  */
 var _ol_source_Tile_ = function(options) {
 
-  _ol_source_Source_.call(this, {
+  Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     projection: options.projection,
@@ -78,7 +78,7 @@ var _ol_source_Tile_ = function(options) {
 
 };
 
-inherits(_ol_source_Tile_, _ol_source_Source_);
+inherits(_ol_source_Tile_, Source);
 
 
 /**
