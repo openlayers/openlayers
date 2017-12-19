@@ -1,7 +1,7 @@
 /**
  * @module ol/render/canvas
  */
-import _ol_css_ from '../css.js';
+import {getFontFamilies} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_obj_ from '../obj.js';
 import LRUCache from '../structs/LRUCache.js';
@@ -168,7 +168,7 @@ _ol_render_canvas_.checkFont = (function() {
   }
 
   return function(fontSpec) {
-    var fontFamilies = _ol_css_.getFontFamilies(fontSpec);
+    var fontFamilies = getFontFamilies(fontSpec);
     if (!fontFamilies) {
       return;
     }

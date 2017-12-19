@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';
-import _ol_css_ from '../css.js';
+import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 
 /**
  * @classdesc
@@ -42,8 +42,7 @@ var ZoomToExtent = function(opt_options) {
   _ol_events_.listen(button, EventType.CLICK,
       this.handleClick_, this);
 
-  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
-      _ol_css_.CLASS_CONTROL;
+  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);

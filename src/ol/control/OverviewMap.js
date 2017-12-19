@@ -13,7 +13,7 @@ import OverlayPositioning from '../OverlayPositioning.js';
 import _ol_ViewProperty_ from '../ViewProperty.js';
 import Control from '../control/Control.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_css_ from '../css.js';
+import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -147,8 +147,7 @@ var OverviewMap = function(opt_options) {
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
 
-  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
-      _ol_css_.CLASS_CONTROL +
+  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');

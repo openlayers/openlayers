@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_array_ from '../array.js';
 import Control from '../control/Control.js';
-import _ol_css_ from '../css.js';
+import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -89,8 +89,7 @@ var Attribution = function(opt_options) {
 
   _ol_events_.listen(button, EventType.CLICK, this.handleClick_, this);
 
-  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
-      _ol_css_.CLASS_CONTROL +
+  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');

@@ -6,7 +6,7 @@
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import Control from '../control/Control.js';
-import _ol_css_ from '../css.js';
+import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -103,9 +103,9 @@ var ZoomSlider = function(opt_options) {
   var className = options.className !== undefined ? options.className : 'ol-zoomslider';
   var thumbElement = document.createElement('button');
   thumbElement.setAttribute('type', 'button');
-  thumbElement.className = className + '-thumb ' + _ol_css_.CLASS_UNSELECTABLE;
+  thumbElement.className = className + '-thumb ' + CLASS_UNSELECTABLE;
   var containerElement = document.createElement('div');
-  containerElement.className = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' + _ol_css_.CLASS_CONTROL;
+  containerElement.className = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
   containerElement.appendChild(thumbElement);
   /**
    * @type {ol.pointer.PointerEventHandler}

@@ -3,7 +3,7 @@
  */
 
 import Control from '../control/Control.js';
-import _ol_css_ from '../css.js';
+import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -54,8 +54,7 @@ var Rotate = function(opt_options) {
   _ol_events_.listen(button, EventType.CLICK,
       Rotate.prototype.handleClick_, this);
 
-  var cssClasses = className + ' ' + _ol_css_.CLASS_UNSELECTABLE + ' ' +
-      _ol_css_.CLASS_CONTROL;
+  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
@@ -89,7 +88,7 @@ var Rotate = function(opt_options) {
   this.rotation_ = undefined;
 
   if (this.autoHide_) {
-    this.element.classList.add(_ol_css_.CLASS_HIDDEN);
+    this.element.classList.add(CLASS_HIDDEN);
   }
 
 };
@@ -151,11 +150,11 @@ Rotate.render = function(mapEvent) {
   if (rotation != this.rotation_) {
     var transform = 'rotate(' + rotation + 'rad)';
     if (this.autoHide_) {
-      var contains = this.element.classList.contains(_ol_css_.CLASS_HIDDEN);
+      var contains = this.element.classList.contains(CLASS_HIDDEN);
       if (!contains && rotation === 0) {
-        this.element.classList.add(_ol_css_.CLASS_HIDDEN);
+        this.element.classList.add(CLASS_HIDDEN);
       } else if (contains && rotation !== 0) {
-        this.element.classList.remove(_ol_css_.CLASS_HIDDEN);
+        this.element.classList.remove(CLASS_HIDDEN);
       }
     }
     this.label_.style.msTransform = transform;
