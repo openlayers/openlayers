@@ -16,7 +16,7 @@ import _ol_obj_ from '../obj.js';
 import _ol_renderer_canvas_ImageLayer_ from '../renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_TileLayer_ from '../renderer/canvas/TileLayer.js';
 import _ol_source_Image_ from '../source/Image.js';
-import _ol_source_RasterOperationType_ from '../source/RasterOperationType.js';
+import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_transform_ from '../transform.js';
@@ -46,7 +46,7 @@ var _ol_source_Raster_ = function(options) {
    * @type {ol.source.RasterOperationType}
    */
   this.operationType_ = options.operationType !== undefined ?
-    options.operationType : _ol_source_RasterOperationType_.PIXEL;
+    options.operationType : RasterOperationType.PIXEL;
 
   /**
    * @private
@@ -149,7 +149,7 @@ inherits(_ol_source_Raster_, _ol_source_Image_);
 _ol_source_Raster_.prototype.setOperation = function(operation, opt_lib) {
   this.worker_ = new Processor({
     operation: operation,
-    imageOps: this.operationType_ === _ol_source_RasterOperationType_.IMAGE,
+    imageOps: this.operationType_ === RasterOperationType.IMAGE,
     queue: 1,
     lib: opt_lib,
     threads: this.threads_
