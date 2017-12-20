@@ -46,10 +46,9 @@ inherits(GPX, XMLFeature);
 
 /**
  * @const
- * @private
  * @type {Array.<string>}
  */
-GPX.NAMESPACE_URIS_ = [
+var NAMESPACE_URIS = [
   null,
   'http://www.topografix.com/GPX/1/0',
   'http://www.topografix.com/GPX/1/1'
@@ -59,10 +58,318 @@ GPX.NAMESPACE_URIS_ = [
 /**
  * @const
  * @type {string}
- * @private
  */
-GPX.SCHEMA_LOCATION_ = 'http://www.topografix.com/GPX/1/1 ' +
+var SCHEMA_LOCATION = 'http://www.topografix.com/GPX/1/1 ' +
     'http://www.topografix.com/GPX/1/1/gpx.xsd';
+
+
+/**
+ * @const
+ * @type {Object.<string, function(Node, Array.<*>): (ol.Feature|undefined)>}
+ */
+var FEATURE_READER = {
+  'rte': readRte,
+  'trk': readTrk,
+  'wpt': readWpt
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var GPX_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'rte': _ol_xml_.makeArrayPusher(readRte),
+      'trk': _ol_xml_.makeArrayPusher(readTrk),
+      'wpt': _ol_xml_.makeArrayPusher(readWpt)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var LINK_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'text': _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkText'),
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkType')
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var RTE_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'link': parseLink,
+      'number': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+      'extensions': parseExtensions,
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'rtept': parseRtePt
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var RTEPT_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var TRK_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'link': parseLink,
+      'number': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'extensions': parseExtensions,
+      'trkseg': parseTrkSeg
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var TRKSEG_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'trkpt': parseTrkPt
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var TRKPT_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ */
+var WPT_PARSERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime),
+      'magvar': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'geoidheight': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'link': parseLink,
+      'sym': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'fix': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+      'sat': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+      'hdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'vdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'pdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'ageofdgpsdata': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
+      'dgpsid': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+      'extensions': parseExtensions
+    });
+
+
+/**
+ * @const
+ * @type {Array.<string>}
+ */
+var LINK_SEQUENCE = ['text', 'type'];
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+var LINK_SERIALIZERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'text': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+var RTE_SEQUENCE = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, [
+      'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
+    ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+var RTE_SERIALIZERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'link': _ol_xml_.makeChildAppender(writeLink),
+      'number': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'rtept': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(writeWptType))
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+var RTEPT_TYPE_SEQUENCE = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, [
+      'ele', 'time'
+    ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+var TRK_SEQUENCE = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, [
+      'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
+    ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+var TRK_SERIALIZERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'link': _ol_xml_.makeChildAppender(writeLink),
+      'number': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'trkseg': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(writeTrkSeg))
+    });
+
+
+/**
+ * @const
+ * @type {function(*, Array.<*>, string=): (Node|undefined)}
+ */
+var TRKSEG_NODE_FACTORY = _ol_xml_.makeSimpleNodeFactory('trkpt');
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+var TRKSEG_SERIALIZERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'trkpt': _ol_xml_.makeChildAppender(writeWptType)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ */
+var WPT_TYPE_SEQUENCE = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, [
+      'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
+      'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
+      'ageofdgpsdata', 'dgpsid'
+    ]);
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+var WPT_TYPE_SERIALIZERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'ele': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'time': _ol_xml_.makeChildAppender(XSD.writeDateTimeTextNode),
+      'magvar': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'geoidheight': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'link': _ol_xml_.makeChildAppender(writeLink),
+      'sym': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'fix': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
+      'sat': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
+      'hdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'vdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'pdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'ageofdgpsdata': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
+      'dgpsid': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, string>}
+ */
+var GEOMETRY_TYPE_TO_NODENAME = {
+  'Point': 'wpt',
+  'LineString': 'rte',
+  'MultiLineString': 'trk'
+};
+
+
+/**
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ */
+function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
+  var geometry = /** @type {ol.Feature} */ (value).getGeometry();
+  if (geometry) {
+    var nodeName = GEOMETRY_TYPE_TO_NODENAME[geometry.getType()];
+    if (nodeName) {
+      var parentNode = objectStack[objectStack.length - 1].node;
+      return _ol_xml_.createElementNS(parentNode.namespaceURI, nodeName);
+    }
+  }
+}
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ */
+var GPX_SERIALIZERS = _ol_xml_.makeStructureNS(
+    NAMESPACE_URIS, {
+      'rte': _ol_xml_.makeChildAppender(writeRte),
+      'trk': _ol_xml_.makeChildAppender(writeTrk),
+      'wpt': _ol_xml_.makeChildAppender(writeWpt)
+    });
 
 
 /**
@@ -70,10 +377,9 @@ GPX.SCHEMA_LOCATION_ = 'http://www.topografix.com/GPX/1/1 ' +
  * @param {ol.LayoutOptions} layoutOptions Layout options.
  * @param {Node} node Node.
  * @param {Object} values Values.
- * @private
  * @return {Array.<number>} Flat coordinates.
  */
-GPX.appendCoordinate_ = function(flatCoordinates, layoutOptions, node, values) {
+function appendCoordinate(flatCoordinates, layoutOptions, node, values) {
   flatCoordinates.push(
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
@@ -92,7 +398,7 @@ GPX.appendCoordinate_ = function(flatCoordinates, layoutOptions, node, values) {
     flatCoordinates.push(0);
   }
   return flatCoordinates;
-};
+}
 
 
 /**
@@ -143,94 +449,87 @@ GPX.applyLayoutOptions_ = function(layoutOptions, flatCoordinates, ends) {
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.parseLink_ = function(node, objectStack) {
+function parseLink(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var href = node.getAttribute('href');
   if (href !== null) {
     values['link'] = href;
   }
-  _ol_xml_.parseNode(GPX.LINK_PARSERS_, node, objectStack);
-};
+  _ol_xml_.parseNode(LINK_PARSERS, node, objectStack);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.parseExtensions_ = function(node, objectStack) {
+function parseExtensions(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values['extensionsNode_'] = node;
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.parseRtePt_ = function(node, objectStack) {
+function parseRtePt(node, objectStack) {
   var values = _ol_xml_.pushParseAndPop(
-      {}, GPX.RTEPT_PARSERS_, node, objectStack);
+      {}, RTEPT_PARSERS, node, objectStack);
   if (values) {
     var rteValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     var flatCoordinates = /** @type {Array.<number>} */
         (rteValues['flatCoordinates']);
     var layoutOptions = /** @type {ol.LayoutOptions} */
         (rteValues['layoutOptions']);
-    GPX.appendCoordinate_(flatCoordinates, layoutOptions, node, values);
+    appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.parseTrkPt_ = function(node, objectStack) {
-  var values = _ol_xml_.pushParseAndPop(
-      {}, GPX.TRKPT_PARSERS_, node, objectStack);
+function parseTrkPt(node, objectStack) {
+  var values = _ol_xml_.pushParseAndPop({}, TRKPT_PARSERS, node, objectStack);
   if (values) {
     var trkValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     var flatCoordinates = /** @type {Array.<number>} */
         (trkValues['flatCoordinates']);
     var layoutOptions = /** @type {ol.LayoutOptions} */
         (trkValues['layoutOptions']);
-    GPX.appendCoordinate_(flatCoordinates, layoutOptions, node, values);
+    appendCoordinate(flatCoordinates, layoutOptions, node, values);
   }
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.parseTrkSeg_ = function(node, objectStack) {
+function parseTrkSeg(node, objectStack) {
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  _ol_xml_.parseNode(GPX.TRKSEG_PARSERS_, node, objectStack);
+  _ol_xml_.parseNode(TRKSEG_PARSERS, node, objectStack);
   var flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
   var ends = /** @type {Array.<number>} */ (values['ends']);
   ends.push(flatCoordinates.length);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.Feature|undefined} Track.
  */
-GPX.readRte_ = function(node, objectStack) {
+function readRte(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = _ol_xml_.pushParseAndPop({
     'flatCoordinates': [],
     'layoutOptions': {}
-  }, GPX.RTE_PARSERS_, node, objectStack);
+  }, RTE_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
   }
@@ -246,22 +545,21 @@ GPX.readRte_ = function(node, objectStack) {
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.Feature|undefined} Track.
  */
-GPX.readTrk_ = function(node, objectStack) {
+function readTrk(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = _ol_xml_.pushParseAndPop({
     'flatCoordinates': [],
     'ends': [],
     'layoutOptions': {}
-  }, GPX.TRK_PARSERS_, node, objectStack);
+  }, TRK_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
   }
@@ -279,177 +577,29 @@ GPX.readTrk_ = function(node, objectStack) {
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  * @return {ol.Feature|undefined} Waypoint.
  */
-GPX.readWpt_ = function(node, objectStack) {
+function readWpt(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
-  var values = _ol_xml_.pushParseAndPop(
-      {}, GPX.WPT_PARSERS_, node, objectStack);
+  var values = _ol_xml_.pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
   }
   var layoutOptions = /** @type {ol.LayoutOptions} */ ({});
-  var coordinates = GPX.appendCoordinate_([], layoutOptions, node, values);
+  var coordinates = appendCoordinate([], layoutOptions, node, values);
   var layout = GPX.applyLayoutOptions_(layoutOptions, coordinates);
   var geometry = new Point(coordinates, layout);
   FeatureFormat.transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
-};
-
-
-/**
- * @const
- * @type {Object.<string, function(Node, Array.<*>): (ol.Feature|undefined)>}
- * @private
- */
-GPX.FEATURE_READER_ = {
-  'rte': GPX.readRte_,
-  'trk': GPX.readTrk_,
-  'wpt': GPX.readWpt_
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.GPX_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'rte': _ol_xml_.makeArrayPusher(GPX.readRte_),
-      'trk': _ol_xml_.makeArrayPusher(GPX.readTrk_),
-      'wpt': _ol_xml_.makeArrayPusher(GPX.readWpt_)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.LINK_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'text':
-          _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkText'),
-      'type':
-          _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkType')
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.RTE_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'link': GPX.parseLink_,
-      'number':
-          _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
-      'extensions': GPX.parseExtensions_,
-      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'rtept': GPX.parseRtePt_
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.RTEPT_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.TRK_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'link': GPX.parseLink_,
-      'number':
-          _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
-      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'extensions': GPX.parseExtensions_,
-      'trkseg': GPX.parseTrkSeg_
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.TRKSEG_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'trkpt': GPX.parseTrkPt_
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.TRKPT_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GPX.WPT_PARSERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime),
-      'magvar': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'geoidheight': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'link': GPX.parseLink_,
-      'sym': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'fix': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'sat': _ol_xml_.makeObjectPropertySetter(
-          XSD.readNonNegativeInteger),
-      'hdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'vdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'pdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'ageofdgpsdata':
-          _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'dgpsid':
-          _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
-      'extensions': GPX.parseExtensions_
-    });
+}
 
 
 /**
@@ -489,10 +639,10 @@ GPX.prototype.readFeature;
  * @inheritDoc
  */
 GPX.prototype.readFeatureFromNode = function(node, opt_options) {
-  if (!includes(GPX.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
     return null;
   }
-  var featureReader = GPX.FEATURE_READER_[node.localName];
+  var featureReader = FEATURE_READER[node.localName];
   if (!featureReader) {
     return null;
   }
@@ -523,12 +673,12 @@ GPX.prototype.readFeatures;
  * @inheritDoc
  */
 GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
-  if (!includes(GPX.NAMESPACE_URIS_, node.namespaceURI)) {
+  if (!includes(NAMESPACE_URIS, node.namespaceURI)) {
     return [];
   }
   if (node.localName == 'gpx') {
     /** @type {Array.<ol.Feature>} */
-    var features = _ol_xml_.pushParseAndPop([], GPX.GPX_PARSERS_,
+    var features = _ol_xml_.pushParseAndPop([], GPX_PARSERS,
         node, [this.getReadOptions(node, opt_options)]);
     if (features) {
       this.handleReadExtensions_(features);
@@ -556,9 +706,8 @@ GPX.prototype.readProjection;
  * @param {Node} node Node.
  * @param {string} value Value for the link's `href` attribute.
  * @param {Array.<*>} objectStack Node stack.
- * @private
  */
-GPX.writeLink_ = function(node, value, objectStack) {
+function writeLink(node, value, objectStack) {
   node.setAttribute('href', value);
   var context = objectStack[objectStack.length - 1];
   var properties = context['properties'];
@@ -567,18 +716,17 @@ GPX.writeLink_ = function(node, value, objectStack) {
     properties['linkType']
   ];
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ ({node: node}),
-      GPX.LINK_SERIALIZERS_, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
-      link, objectStack, GPX.LINK_SEQUENCE_);
-};
+      LINK_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+      link, objectStack, LINK_SEQUENCE);
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.writeWptType_ = function(node, coordinate, objectStack) {
+function writeWptType(node, coordinate, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var parentNode = context.node;
   var namespaceURI = parentNode.namespaceURI;
@@ -607,23 +755,22 @@ GPX.writeWptType_ = function(node, coordinate, objectStack) {
       // pass
   }
   var orderedKeys = (node.nodeName == 'rtept') ?
-    GPX.RTEPT_TYPE_SEQUENCE_[namespaceURI] :
-    GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
+    RTEPT_TYPE_SEQUENCE[namespaceURI] :
+    WPT_TYPE_SEQUENCE[namespaceURI];
   var values = _ol_xml_.makeSequence(properties, orderedKeys);
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       ({node: node, 'properties': properties}),
-      GPX.WPT_TYPE_SERIALIZERS_, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+      WPT_TYPE_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
       values, objectStack, orderedKeys);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.writeRte_ = function(node, feature, objectStack) {
+function writeRte(node, feature, objectStack) {
   var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var properties = feature.getProperties();
   var context = {node: node, 'properties': properties};
@@ -635,21 +782,20 @@ GPX.writeRte_ = function(node, feature, objectStack) {
     properties['rtept'] = geometry.getCoordinates();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
-  var orderedKeys = GPX.RTE_SEQUENCE_[parentNode.namespaceURI];
+  var orderedKeys = RTE_SEQUENCE[parentNode.namespaceURI];
   var values = _ol_xml_.makeSequence(properties, orderedKeys);
   _ol_xml_.pushSerializeAndPop(context,
-      GPX.RTE_SERIALIZERS_, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+      RTE_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
       values, objectStack, orderedKeys);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.writeTrk_ = function(node, feature, objectStack) {
+function writeTrk(node, feature, objectStack) {
   var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var properties = feature.getProperties();
   /** @type {ol.XmlNodeStackItem} */
@@ -661,37 +807,35 @@ GPX.writeTrk_ = function(node, feature, objectStack) {
     properties['trkseg'] = geometry.getLineStrings();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
-  var orderedKeys = GPX.TRK_SEQUENCE_[parentNode.namespaceURI];
+  var orderedKeys = TRK_SEQUENCE[parentNode.namespaceURI];
   var values = _ol_xml_.makeSequence(properties, orderedKeys);
   _ol_xml_.pushSerializeAndPop(context,
-      GPX.TRK_SERIALIZERS_, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+      TRK_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
       values, objectStack, orderedKeys);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.geom.LineString} lineString LineString.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.writeTrkSeg_ = function(node, lineString, objectStack) {
+function writeTrkSeg(node, lineString, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   var context = {node: node, 'geometryLayout': lineString.getLayout(),
     'properties': {}};
   _ol_xml_.pushSerializeAndPop(context,
-      GPX.TRKSEG_SERIALIZERS_, GPX.TRKSEG_NODE_FACTORY_,
+      TRKSEG_SERIALIZERS, TRKSEG_NODE_FACTORY,
       lineString.getCoordinates(), objectStack);
-};
+}
 
 
 /**
  * @param {Node} node Node.
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
- * @private
  */
-GPX.writeWpt_ = function(node, feature, objectStack) {
+function writeWpt(node, feature, objectStack) {
   var options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
   var context = objectStack[objectStack.length - 1];
   context['properties'] = feature.getProperties();
@@ -700,209 +844,9 @@ GPX.writeWpt_ = function(node, feature, objectStack) {
     geometry = /** @type {ol.geom.Point} */
       (FeatureFormat.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
-    GPX.writeWptType_(node, geometry.getCoordinates(), objectStack);
+    writeWptType(node, geometry.getCoordinates(), objectStack);
   }
-};
-
-
-/**
- * @const
- * @type {Array.<string>}
- * @private
- */
-GPX.LINK_SEQUENCE_ = ['text', 'type'];
-
-
-/**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GPX.LINK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'text': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-GPX.RTE_SEQUENCE_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, [
-      'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
-    ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GPX.RTE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'link': _ol_xml_.makeChildAppender(GPX.writeLink_),
-      'number': _ol_xml_.makeChildAppender(
-          XSD.writeNonNegativeIntegerTextNode),
-      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'rtept': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(
-          GPX.writeWptType_))
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-GPX.RTEPT_TYPE_SEQUENCE_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, [
-      'ele', 'time'
-    ]);
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-GPX.TRK_SEQUENCE_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, [
-      'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
-    ]);
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GPX.TRK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'link': _ol_xml_.makeChildAppender(GPX.writeLink_),
-      'number': _ol_xml_.makeChildAppender(
-          XSD.writeNonNegativeIntegerTextNode),
-      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'trkseg': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(
-          GPX.writeTrkSeg_))
-    });
-
-
-/**
- * @const
- * @type {function(*, Array.<*>, string=): (Node|undefined)}
- * @private
- */
-GPX.TRKSEG_NODE_FACTORY_ = _ol_xml_.makeSimpleNodeFactory('trkpt');
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GPX.TRKSEG_SERIALIZERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'trkpt': _ol_xml_.makeChildAppender(GPX.writeWptType_)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, Array.<string>>}
- * @private
- */
-GPX.WPT_TYPE_SEQUENCE_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, [
-      'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
-      'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
-      'ageofdgpsdata', 'dgpsid'
-    ]);
-
-
-/**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GPX.WPT_TYPE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'ele': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'time': _ol_xml_.makeChildAppender(XSD.writeDateTimeTextNode),
-      'magvar': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'geoidheight': _ol_xml_.makeChildAppender(
-          XSD.writeDecimalTextNode),
-      'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'link': _ol_xml_.makeChildAppender(GPX.writeLink_),
-      'sym': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'fix': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-      'sat': _ol_xml_.makeChildAppender(
-          XSD.writeNonNegativeIntegerTextNode),
-      'hdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'vdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'pdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'ageofdgpsdata': _ol_xml_.makeChildAppender(
-          XSD.writeDecimalTextNode),
-      'dgpsid': _ol_xml_.makeChildAppender(
-          XSD.writeNonNegativeIntegerTextNode)
-    });
-
-
-/**
- * @const
- * @type {Object.<string, string>}
- * @private
- */
-GPX.GEOMETRY_TYPE_TO_NODENAME_ = {
-  'Point': 'wpt',
-  'LineString': 'rte',
-  'MultiLineString': 'trk'
-};
-
-
-/**
- * @const
- * @param {*} value Value.
- * @param {Array.<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
- * @return {Node|undefined} Node.
- * @private
- */
-GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
-  var geometry = /** @type {ol.Feature} */ (value).getGeometry();
-  if (geometry) {
-    var nodeName = GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()];
-    if (nodeName) {
-      var parentNode = objectStack[objectStack.length - 1].node;
-      return _ol_xml_.createElementNS(parentNode.namespaceURI, nodeName);
-    }
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GPX.GPX_SERIALIZERS_ = _ol_xml_.makeStructureNS(
-    GPX.NAMESPACE_URIS_, {
-      'rte': _ol_xml_.makeChildAppender(GPX.writeRte_),
-      'trk': _ol_xml_.makeChildAppender(GPX.writeTrk_),
-      'wpt': _ol_xml_.makeChildAppender(GPX.writeWpt_)
-    });
+}
 
 
 /**
@@ -938,13 +882,12 @@ GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   var xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
   _ol_xml_.setAttributeNS(gpx, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
   _ol_xml_.setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation',
-      GPX.SCHEMA_LOCATION_);
+      SCHEMA_LOCATION);
   gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', 'OpenLayers');
 
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-      ({node: gpx}), GPX.GPX_SERIALIZERS_,
-      GPX.GPX_NODE_FACTORY_, features, [opt_options]);
+      ({node: gpx}), GPX_SERIALIZERS, GPX_NODE_FACTORY, features, [opt_options]);
   return gpx;
 };
 export default GPX;
