@@ -7,13 +7,6 @@ var XSD = {};
 
 
 /**
- * @const
- * @type {string}
- */
-XSD.NAMESPACE_URI = 'http://www.w3.org/2001/XMLSchema';
-
-
-/**
  * @param {Node} node Node.
  * @return {boolean|undefined} Boolean.
  */
