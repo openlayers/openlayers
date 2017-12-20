@@ -443,7 +443,7 @@ GeoJSON.prototype.readProjectionFromObject = function(object) {
   var crs = geoJSONObject.crs;
   var projection;
   if (crs) {
-    if (crs.type == 'name') {
+    if (crs.type == 'name' || crs.type == 'EPSG') {
       projection = getProjection(crs.properties.name);
     } else {
       assert(false, 36); // Unknown SRS type
