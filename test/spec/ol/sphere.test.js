@@ -96,6 +96,22 @@ describe('ol/sphere', function() {
       ]),
       length: 4407939.124914191
     }, {
+      geometry: new GeometryCollection([
+        new LineString([
+          [12801741.441226462, -3763310.627144653],
+          [14582853.293918837, -2511525.2348457114],
+          [15918687.18343812, -2875744.624352243],
+          [16697923.618991036, -4028802.0261344076]
+        ]),
+        new LineString([
+          [12801741.441226462, -3763310.627144653],
+          [14582853.293918837, -2511525.2348457114],
+          [15918687.18343812, -2875744.624352243],
+          [16697923.618991036, -4028802.0261344076]
+        ])
+      ]),
+      length: 2 * 4407939.124914191
+    }, {
       geometry: new LineString([
         [115, -32],
         [131, -22],
@@ -151,6 +167,7 @@ describe('ol/sphere', function() {
 
   describe('getArea()', function() {
     var geometry;
+    var expectedArea = 145652224192.4434;
     before(function(done) {
       afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
         try {
@@ -165,8 +182,22 @@ describe('ol/sphere', function() {
 
     it('calculates the area of Ilinois', function() {
       var area = getArea(geometry, {projection: 'EPSG:4326'});
-      expect(area).to.equal(145652224192.4434);
+      expect(area).to.equal(expectedArea);
     });
+
+    it('calculates the area of a projected geometry', function() {
+      var projected = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+      var area = getArea(projected);
+      expect(area).to.roughlyEqual(expectedArea, 1e-3);
+    });
+
+    it('calculates the area of a projected geometry collection', function() {
+      var part = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+      var collection = new GeometryCollection([part, part.clone()]);
+      var area = getArea(collection);
+      expect(area).to.roughlyEqual(2 * expectedArea, 1e-3);
+    });
+
   });
 
 });
