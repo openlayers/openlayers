@@ -18,7 +18,7 @@ import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
-import Polygon from '../geom/Polygon.js';
+import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import DrawEventType from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
@@ -795,10 +795,10 @@ Draw.createRegularPolygon = function(opt_sides, opt_angle) {
       var radius = Math.sqrt(
           _ol_coordinate_.squaredDistance(center, end));
       var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-        Polygon.fromCircle(new Circle(center), opt_sides);
+        fromCircle(new Circle(center), opt_sides);
       var angle = opt_angle ? opt_angle :
         Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-      Polygon.makeRegular(geometry, center, radius, angle);
+      makeRegular(geometry, center, radius, angle);
       return geometry;
     }
   );

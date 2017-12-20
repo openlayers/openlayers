@@ -37,12 +37,12 @@ The map and sources no longer accept a `logo` option.  Instead, if you wish to a
 
 #### Replacement of `ol/Sphere` constructor with `ol/sphere` functions
 
-The `ol/Sphere` constructor has been removed.  If you were using the `getGeodesicArea` method, use the `getArea` function instead.  If you were using the `haversineDistance` method, use the `getDistance` function instead.  The `circular` method in `ol/Polygon` no longer takes a sphere as the first argument.
+The `ol/Sphere` constructor has been removed.  If you were using the `getGeodesicArea` method, use the `getArea` function instead.  If you were using the `haversineDistance` method, use the `getDistance` function instead.  The `circular` method in `ol/geom/Polygon` no longer takes a sphere as the first argument.
 
 Examples before:
 ```js
 // using ol@4
-import Polygon from 'ol/Polygon';
+import Polygon from 'ol/geom/Polygon';
 import Sphere from 'ol/Sphere';
 
 var sphere = new Sphere(Sphere.DEFAULT_RADIUS);
@@ -54,7 +54,7 @@ var circle = Polygon.circular(sphere, center, radius);
 Examples after:
 ```js
 // using ol@5
-import {circular as circularPolygon} from 'ol/Polygon';
+import {circular as circularPolygon} from 'ol/geom/Polygon';
 import {getArea, getDistance} from 'ol/sphere'; // note the lowercase
 
 var area = getArea(polygon);
