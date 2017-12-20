@@ -3,7 +3,7 @@ layout: example.html
 title: Measure
 shortdesc: Using a draw interaction to measure lengths and areas.
 docs: >
-  <p>The <code>ol.Sphere.getLength()</code> and <code>ol.Sphere.getArea()</code>
+  <p>The <code>getLength()</code> and <code>getArea()</code>
   functions calculate spherical lengths and areas for geometries.  Lengths are
   calculated by assuming great circle segments between geometry coordinates.
   Areas are calculated as if edges of polygons were great circle segments.</p>
@@ -11,7 +11,7 @@ docs: >
   methods return measures of projected (planar) geometries.  These can be very
   different than on-the-ground measures in certain situations — in northern
   and southern latitudes using Web Mercator for example.  For better results,
-  use the functions on <code>ol.Sphere</code>.</p>
+  use the functions in the <code>ol/sphere</code> module.</p>
 tags: "draw, edit, measure, vector"
 ---
 <div id="map" class="map"></div>

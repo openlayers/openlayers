@@ -9,6 +9,7 @@ import GeometryType from '../geom/GeometryType.js';
 import LinearRing from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
+import {offset as sphereOffset} from '../sphere.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_contains_ from '../geom/flat/contains.js';
@@ -369,22 +370,23 @@ Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
 
 /**
  * Create an approximation of a circle on the surface of a sphere.
- * @param {ol.Sphere} sphere The sphere.
  * @param {ol.Coordinate} center Center (`[lon, lat]` in degrees).
  * @param {number} radius The great-circle distance from the center to
  *     the polygon vertices.
  * @param {number=} opt_n Optional number of vertices for the resulting
  *     polygon. Default is `32`.
+ * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
+ *     the Earth's mean radius using the WGS84 ellipsoid).
  * @return {ol.geom.Polygon} The "circular" polygon.
  * @api
  */
-Polygon.circular = function(sphere, center, radius, opt_n) {
+Polygon.circular = function(center, radius, opt_n, opt_sphereRadius) {
   var n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var i;
   for (i = 0; i < n; ++i) {
-    extend(flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
+    extend(flatCoordinates, sphereOffset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
   var polygon = new Polygon(null);

@@ -1,7 +1,7 @@
 import _ol_Map_ from '../src/ol/Map.js';
 import _ol_Observable_ from '../src/ol/Observable.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
-import _ol_Sphere_ from '../src/ol/Sphere.js';
+import {getArea, getLength} from '../src/ol/sphere.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Polygon from '../src/ol/geom/Polygon.js';
@@ -144,7 +144,7 @@ var draw; // global so we can remove it later
  * @return {string} The formatted length.
  */
 var formatLength = function(line) {
-  var length = _ol_Sphere_.getLength(line);
+  var length = getLength(line);
   var output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) +
@@ -163,7 +163,7 @@ var formatLength = function(line) {
  * @return {string} Formatted area.
  */
 var formatArea = function(polygon) {
-  var area = _ol_Sphere_.getArea(polygon);
+  var area = getArea(polygon);
   var output;
   if (area > 10000) {
     output = (Math.round(area / 1000000 * 100) / 100) +

@@ -1,7 +1,7 @@
 /**
  * @module ol/proj
  */
-import Sphere from './Sphere.js';
+import {getDistance} from './sphere.js';
 import {applyTransform} from './extent.js';
 import {modulo} from './math.js';
 import EPSG3857 from './proj/EPSG3857.js';
@@ -19,13 +19,6 @@ import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransfo
  * @api
  */
 export var METERS_PER_UNIT = Units.METERS_PER_UNIT;
-
-
-/**
- * A place to store the mean radius of the Earth.
- * @type {ol.Sphere}
- */
-var SPHERE = new Sphere(Sphere.DEFAULT_RADIUS);
 
 
 /**
@@ -150,10 +143,8 @@ export function getPointResolution(projection, resolution, point, opt_units) {
         point[0], point[1] + resolution / 2
       ];
       vertices = toEPSG4326(vertices, vertices, 2);
-      var width = SPHERE.haversineDistance(
-          vertices.slice(0, 2), vertices.slice(2, 4));
-      var height = SPHERE.haversineDistance(
-          vertices.slice(4, 6), vertices.slice(6, 8));
+      var width = getDistance(vertices.slice(0, 2), vertices.slice(2, 4));
+      var height = getDistance(vertices.slice(4, 6), vertices.slice(6, 8));
       pointResolution = (width + height) / 2;
       var metersPerUnit = opt_units ?
         Units.METERS_PER_UNIT[opt_units] :
