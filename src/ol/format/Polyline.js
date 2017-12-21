@@ -8,7 +8,7 @@ import FeatureFormat from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
-import SimpleGeometry from '../geom/SimpleGeometry.js';
+import {getStrideForLayout} from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
@@ -65,7 +65,7 @@ inherits(Polyline, TextFeature);
  * @return {string} The encoded string.
  * @api
  */
-Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
+export function encodeDeltas(numbers, stride, opt_factor) {
   var factor = opt_factor ? opt_factor : 1e5;
   var d;
 
@@ -85,8 +85,8 @@ Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
     }
   }
 
-  return Polyline.encodeFloats(numbers, factor);
-};
+  return encodeFloats(numbers, factor);
+}
 
 
 /**
@@ -100,7 +100,7 @@ Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
  * @return {Array.<number>} A list of n-dimensional points.
  * @api
  */
-Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
+export function decodeDeltas(encoded, stride, opt_factor) {
   var factor = opt_factor ? opt_factor : 1e5;
   var d;
 
@@ -110,7 +110,7 @@ Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
     lastNumbers[d] = 0;
   }
 
-  var numbers = Polyline.decodeFloats(encoded, factor);
+  var numbers = decodeFloats(encoded, factor);
 
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii;) {
@@ -122,7 +122,7 @@ Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
   }
 
   return numbers;
-};
+}
 
 
 /**
@@ -137,15 +137,15 @@ Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
  * @return {string} The encoded string.
  * @api
  */
-Polyline.encodeFloats = function(numbers, opt_factor) {
+export function encodeFloats(numbers, opt_factor) {
   var factor = opt_factor ? opt_factor : 1e5;
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     numbers[i] = Math.round(numbers[i] * factor);
   }
 
-  return Polyline.encodeSignedIntegers(numbers);
-};
+  return encodeSignedIntegers(numbers);
+}
 
 
 /**
@@ -157,15 +157,15 @@ Polyline.encodeFloats = function(numbers, opt_factor) {
  * @return {Array.<number>} A list of floating point numbers.
  * @api
  */
-Polyline.decodeFloats = function(encoded, opt_factor) {
+export function decodeFloats(encoded, opt_factor) {
   var factor = opt_factor ? opt_factor : 1e5;
-  var numbers = Polyline.decodeSignedIntegers(encoded);
+  var numbers = decodeSignedIntegers(encoded);
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     numbers[i] /= factor;
   }
   return numbers;
-};
+}
 
 
 /**
@@ -176,14 +176,14 @@ Polyline.decodeFloats = function(encoded, opt_factor) {
  * @param {Array.<number>} numbers A list of signed integers.
  * @return {string} The encoded string.
  */
-Polyline.encodeSignedIntegers = function(numbers) {
+export function encodeSignedIntegers(numbers) {
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     var num = numbers[i];
     numbers[i] = (num < 0) ? ~(num << 1) : (num << 1);
   }
-  return Polyline.encodeUnsignedIntegers(numbers);
-};
+  return encodeUnsignedIntegers(numbers);
+}
 
 
 /**
@@ -192,15 +192,15 @@ Polyline.encodeSignedIntegers = function(numbers) {
  * @param {string} encoded An encoded string.
  * @return {Array.<number>} A list of signed integers.
  */
-Polyline.decodeSignedIntegers = function(encoded) {
-  var numbers = Polyline.decodeUnsignedIntegers(encoded);
+export function decodeSignedIntegers(encoded) {
+  var numbers = decodeUnsignedIntegers(encoded);
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     var num = numbers[i];
     numbers[i] = (num & 1) ? ~(num >> 1) : (num >> 1);
   }
   return numbers;
-};
+}
 
 
 /**
@@ -209,14 +209,14 @@ Polyline.decodeSignedIntegers = function(encoded) {
  * @param {Array.<number>} numbers A list of unsigned integers.
  * @return {string} The encoded string.
  */
-Polyline.encodeUnsignedIntegers = function(numbers) {
+export function encodeUnsignedIntegers(numbers) {
   var encoded = '';
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
-    encoded += Polyline.encodeUnsignedInteger(numbers[i]);
+    encoded += encodeUnsignedInteger(numbers[i]);
   }
   return encoded;
-};
+}
 
 
 /**
@@ -225,7 +225,7 @@ Polyline.encodeUnsignedIntegers = function(numbers) {
  * @param {string} encoded An encoded string.
  * @return {Array.<number>} A list of unsigned integers.
  */
-Polyline.decodeUnsignedIntegers = function(encoded) {
+export function decodeUnsignedIntegers(encoded) {
   var numbers = [];
   var current = 0;
   var shift = 0;
@@ -242,7 +242,7 @@ Polyline.decodeUnsignedIntegers = function(encoded) {
     }
   }
   return numbers;
-};
+}
 
 
 /**
@@ -251,7 +251,7 @@ Polyline.decodeUnsignedIntegers = function(encoded) {
  * @param {number} num Unsigned integer that should be encoded.
  * @return {string} The encoded string.
  */
-Polyline.encodeUnsignedInteger = function(num) {
+export function encodeUnsignedInteger(num) {
   var value, encoded = '';
   while (num >= 0x20) {
     value = (0x20 | (num & 0x1f)) + 63;
@@ -261,7 +261,7 @@ Polyline.encodeUnsignedInteger = function(num) {
   value = num + 63;
   encoded += String.fromCharCode(value);
   return encoded;
-};
+}
 
 
 /**
@@ -324,9 +324,8 @@ Polyline.prototype.readGeometry;
  * @inheritDoc
  */
 Polyline.prototype.readGeometryFromText = function(text, opt_options) {
-  var stride = SimpleGeometry.getStrideForLayout(this.geometryLayout_);
-  var flatCoordinates = Polyline.decodeDeltas(
-      text, stride, this.factor_);
+  var stride = getStrideForLayout(this.geometryLayout_);
+  var flatCoordinates = decodeDeltas(text, stride, this.factor_);
   _ol_geom_flat_flip_.flipXY(
       flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   var coordinates = _ol_geom_flat_inflate_.coordinates(
@@ -396,6 +395,6 @@ Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
   var stride = geometry.getStride();
   _ol_geom_flat_flip_.flipXY(
       flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
-  return Polyline.encodeDeltas(flatCoordinates, stride, this.factor_);
+  return encodeDeltas(flatCoordinates, stride, this.factor_);
 };
 export default Polyline;

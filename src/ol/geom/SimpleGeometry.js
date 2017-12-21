@@ -48,10 +48,9 @@ inherits(SimpleGeometry, Geometry);
 
 /**
  * @param {number} stride Stride.
- * @private
  * @return {ol.geom.GeometryLayout} layout Layout.
  */
-SimpleGeometry.getLayoutForStride_ = function(stride) {
+function getLayoutForStride(stride) {
   var layout;
   if (stride == 2) {
     layout = GeometryLayout.XY;
@@ -61,14 +60,14 @@ SimpleGeometry.getLayoutForStride_ = function(stride) {
     layout = GeometryLayout.XYZM;
   }
   return /** @type {ol.geom.GeometryLayout} */ (layout);
-};
+}
 
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @return {number} Stride.
  */
-SimpleGeometry.getStrideForLayout = function(layout) {
+export function getStrideForLayout(layout) {
   var stride;
   if (layout == GeometryLayout.XY) {
     stride = 2;
@@ -78,7 +77,7 @@ SimpleGeometry.getStrideForLayout = function(layout) {
     stride = 4;
   }
   return /** @type {number} */ (stride);
-};
+}
 
 
 /**
@@ -205,7 +204,7 @@ SimpleGeometry.prototype.getStride = function() {
  * @protected
  */
 SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoordinates) {
-  this.stride = SimpleGeometry.getStrideForLayout(layout);
+  this.stride = getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
 };
@@ -229,7 +228,7 @@ SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
   /** @type {number} */
   var stride;
   if (layout) {
-    stride = SimpleGeometry.getStrideForLayout(layout);
+    stride = getStrideForLayout(layout);
   } else {
     var i;
     for (i = 0; i < nesting; ++i) {
@@ -242,7 +241,7 @@ SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
       }
     }
     stride = coordinates.length;
-    layout = SimpleGeometry.getLayoutForStride_(stride);
+    layout = getLayoutForStride(stride);
   }
   this.layout = layout;
   this.stride = stride;

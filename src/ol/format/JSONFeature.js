@@ -24,10 +24,9 @@ inherits(JSONFeature, FeatureFormat);
 
 /**
  * @param {Document|Node|Object|string} source Source.
- * @private
  * @return {Object} Object.
  */
-JSONFeature.prototype.getObject_ = function(source) {
+function getObject(source) {
   if (typeof source === 'string') {
     var object = JSON.parse(source);
     return object ? /** @type {Object} */ (object) : null;
@@ -36,7 +35,7 @@ JSONFeature.prototype.getObject_ = function(source) {
   } else {
     return null;
   }
-};
+}
 
 
 /**
@@ -52,7 +51,7 @@ JSONFeature.prototype.getType = function() {
  */
 JSONFeature.prototype.readFeature = function(source, opt_options) {
   return this.readFeatureFromObject(
-      this.getObject_(source), this.getReadOptions(source, opt_options));
+      getObject(source), this.getReadOptions(source, opt_options));
 };
 
 
@@ -61,7 +60,7 @@ JSONFeature.prototype.readFeature = function(source, opt_options) {
  */
 JSONFeature.prototype.readFeatures = function(source, opt_options) {
   return this.readFeaturesFromObject(
-      this.getObject_(source), this.getReadOptions(source, opt_options));
+      getObject(source), this.getReadOptions(source, opt_options));
 };
 
 
@@ -90,7 +89,7 @@ JSONFeature.prototype.readFeaturesFromObject = function(object, opt_options) {};
  */
 JSONFeature.prototype.readGeometry = function(source, opt_options) {
   return this.readGeometryFromObject(
-      this.getObject_(source), this.getReadOptions(source, opt_options));
+      getObject(source), this.getReadOptions(source, opt_options));
 };
 
 
@@ -108,7 +107,7 @@ JSONFeature.prototype.readGeometryFromObject = function(object, opt_options) {};
  * @inheritDoc
  */
 JSONFeature.prototype.readProjection = function(source) {
-  return this.readProjectionFromObject(this.getObject_(source));
+  return this.readProjectionFromObject(getObject(source));
 };
 
 
