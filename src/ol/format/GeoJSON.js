@@ -66,6 +66,37 @@ inherits(GeoJSON, JSONFeature);
 
 
 /**
+ * @const
+ * @type {Object.<string, function(GeoJSONObject): ol.geom.Geometry>}
+ */
+var GEOMETRY_READERS = {
+  'Point': readPointGeometry,
+  'LineString': readLineStringGeometry,
+  'Polygon': readPolygonGeometry,
+  'MultiPoint': readMultiPointGeometry,
+  'MultiLineString': readMultiLineStringGeometry,
+  'MultiPolygon': readMultiPolygonGeometry,
+  'GeometryCollection': readGeometryCollectionGeometry
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
+ */
+var GEOMETRY_WRITERS = {
+  'Point': writePointGeometry,
+  'LineString': writeLineStringGeometry,
+  'Polygon': writePolygonGeometry,
+  'MultiPoint': writeMultiPointGeometry,
+  'MultiLineString': writeMultiLineStringGeometry,
+  'MultiPolygon': writeMultiPolygonGeometry,
+  'GeometryCollection': writeGeometryCollectionGeometry,
+  'Circle': writeEmptyGeometryCollectionGeometry
+};
+
+
+/**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
@@ -74,7 +105,7 @@ function readGeometry(object, opt_options) {
   if (!object) {
     return null;
   }
-  var geometryReader = GeoJSON.GEOMETRY_READERS_[object.type];
+  var geometryReader = GEOMETRY_READERS[object.type];
   return (
     /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(
         geometryReader(object), false, opt_options)
@@ -160,7 +191,7 @@ function readPolygonGeometry(object) {
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} GeoJSON geometry.
  */
 function writeGeometry(geometry, opt_options) {
-  var geometryWriter = GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
+  var geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
     FeatureFormat.transformWithOptions(geometry, true, opt_options)),
   opt_options);
@@ -281,39 +312,6 @@ function writePolygonGeometry(geometry, opt_options) {
     coordinates: geometry.getCoordinates(right)
   });
 }
-
-
-/**
- * @const
- * @private
- * @type {Object.<string, function(GeoJSONObject): ol.geom.Geometry>}
- */
-GeoJSON.GEOMETRY_READERS_ = {
-  'Point': readPointGeometry,
-  'LineString': readLineStringGeometry,
-  'Polygon': readPolygonGeometry,
-  'MultiPoint': readMultiPointGeometry,
-  'MultiLineString': readMultiLineStringGeometry,
-  'MultiPolygon': readMultiPolygonGeometry,
-  'GeometryCollection': readGeometryCollectionGeometry
-};
-
-
-/**
- * @const
- * @private
- * @type {Object.<string, function(ol.geom.Geometry, olx.format.WriteOptions=): (GeoJSONGeometry|GeoJSONGeometryCollection)>}
- */
-GeoJSON.GEOMETRY_WRITERS_ = {
-  'Point': writePointGeometry,
-  'LineString': writeLineStringGeometry,
-  'Polygon': writePolygonGeometry,
-  'MultiPoint': writeMultiPointGeometry,
-  'MultiLineString': writeMultiLineStringGeometry,
-  'MultiPolygon': writeMultiPolygonGeometry,
-  'GeometryCollection': writeGeometryCollectionGeometry,
-  'Circle': writeEmptyGeometryCollectionGeometry
-};
 
 
 /**

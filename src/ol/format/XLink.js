@@ -8,7 +8,7 @@ var XLink = {};
  * @const
  * @type {string}
  */
-XLink.NAMESPACE_URI = 'http://www.w3.org/1999/xlink';
+var NAMESPACE_URI = 'http://www.w3.org/1999/xlink';
 
 
 /**
@@ -16,6 +16,6 @@ XLink.NAMESPACE_URI = 'http://www.w3.org/1999/xlink';
  * @return {boolean|undefined} Boolean.
  */
 XLink.readHref = function(node) {
-  return node.getAttributeNS(XLink.NAMESPACE_URI, 'href');
+  return node.getAttributeNS(NAMESPACE_URI, 'href');
 };
 export default XLink;
