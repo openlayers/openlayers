@@ -43,7 +43,7 @@ if (ol.ENABLE_COVERAGE) {
       attributions: options.attributions,
       logo: options.logo,
       projection: options.projection,
-      state: ol.source.State.READY,
+      state: ol.source.State.UNDEFINED,
       url: options.url,
       wcsParams: options.wcsParams,
       wrapX: options.wrapX
