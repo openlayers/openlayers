@@ -1,11 +1,11 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import Control from '../../../../src/ol/control/Control.js';
 
 describe('ol.control.Control', function() {
   var map, control;
 
   beforeEach(function() {
-    map = new _ol_Map_({
+    map = new Map({
       target: document.createElement('div')
     });
     var element = document.createElement('DIV');

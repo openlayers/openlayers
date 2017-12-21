@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../src/ol/Map.js';
+import Map from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
 import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
@@ -1208,7 +1208,7 @@ describe('ol.View', function() {
       target = document.createElement('div');
       target.style.width = '200px';
       target.style.height = '150px';
-      map = new _ol_Map_({
+      map = new Map({
         target: target
       });
       document.body.appendChild(target);

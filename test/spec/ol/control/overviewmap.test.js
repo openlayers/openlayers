@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Control from '../../../../src/ol/control/Control.js';
 import OverviewMap from '../../../../src/ol/control/OverviewMap.js';
@@ -9,7 +9,7 @@ describe('ol.control.OverviewMap', function() {
   beforeEach(function() {
     target = document.createElement('div');
     document.body.appendChild(target);
-    map = new _ol_Map_({
+    map = new Map({
       target: target
     });
   });

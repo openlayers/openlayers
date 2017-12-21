@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
@@ -37,7 +37,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       var source = new _ol_source_Vector_();
       var layer = new _ol_layer_Vector_({source: source});
       interaction = new DragRotateAndZoom();
-      map = new _ol_Map_({
+      map = new Map({
         target: target,
         layers: [layer],
         interactions: [interaction],

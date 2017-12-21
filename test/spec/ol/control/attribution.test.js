@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_Tile_ from '../../../../src/ol/Tile.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Attribution from '../../../../src/ol/control/Attribution.js';
@@ -13,7 +13,7 @@ describe('ol.control.Attribution', function() {
     var target = document.createElement('div');
     target.style.width = target.style.height = '100px';
     document.body.appendChild(target);
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       controls: [new Attribution({
         collapsed: false,

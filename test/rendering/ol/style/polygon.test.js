@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -21,7 +21,7 @@ describe('ol.rendering.style.Polygon', function() {
       source: vectorSource
     });
 
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: 1,
       target: createMapDiv(size, size),
       renderer: renderer,

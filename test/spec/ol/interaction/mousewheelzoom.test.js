@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
@@ -12,7 +12,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
   beforeEach(function() {
     interaction = new _ol_interaction_MouseWheelZoom_();
-    map = new _ol_Map_({
+    map = new Map({
       target: createMapDiv(100, 100),
       interactions: [interaction],
       view: new _ol_View_({

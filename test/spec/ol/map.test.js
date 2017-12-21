@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../src/ol/Map.js';
+import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
@@ -20,12 +20,12 @@ describe('ol.Map', function() {
 
   describe('constructor', function() {
     it('creates a new map', function() {
-      var map = new _ol_Map_({});
-      expect(map).to.be.a(_ol_Map_);
+      var map = new Map({});
+      expect(map).to.be.a(Map);
     });
 
     it('creates a set of default interactions', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var interactions = map.getInteractions();
       var length = interactions.getLength();
       expect(length).to.be.greaterThan(0);
@@ -36,14 +36,14 @@ describe('ol.Map', function() {
     });
 
     it('creates the viewport', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var viewport = map.getViewport();
       var className = 'ol-viewport' + (_ol_has_.TOUCH ? ' ol-touch' : '');
       expect(viewport.className).to.be(className);
     });
 
     it('creates the overlay containers', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var container = map.getOverlayContainer();
       expect(container.className).to.be('ol-overlaycontainer');
 
@@ -55,7 +55,7 @@ describe('ol.Map', function() {
 
   describe('#addLayer()', function() {
     it('adds a layer to the map', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var layer = new TileLayer();
       map.addLayer(layer);
 
@@ -63,7 +63,7 @@ describe('ol.Map', function() {
     });
 
     it('throws if a layer is added twice', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var layer = new TileLayer();
       map.addLayer(layer);
 
@@ -76,7 +76,7 @@ describe('ol.Map', function() {
 
   describe('#addInteraction()', function() {
     it('adds an interaction to the map', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var interaction = new Interaction({});
 
       var before = map.getInteractions().getLength();
@@ -89,7 +89,7 @@ describe('ol.Map', function() {
 
   describe('#removeInteraction()', function() {
     it('removes an interaction from the map', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var interaction = new Interaction({});
 
       var before = map.getInteractions().getLength();
@@ -120,7 +120,7 @@ describe('ol.Map', function() {
       view = new _ol_View_({
         projection: 'EPSG:4326'
       });
-      map = new _ol_Map_({
+      map = new Map({
         target: target,
         view: view,
         layers: [
@@ -193,7 +193,7 @@ describe('ol.Map', function() {
       target = document.createElement('div');
       target.style.width = target.style.height = '100px';
       document.body.appendChild(target);
-      map = new _ol_Map_({
+      map = new Map({
         target: target,
         layers: [new _ol_layer_Vector_({
           source: new _ol_source_Vector_({
@@ -257,7 +257,7 @@ describe('ol.Map', function() {
       style.height = '180px';
       document.body.appendChild(target);
 
-      map = new _ol_Map_({
+      map = new Map({
         target: target,
         view: new _ol_View_({
           center: [0, 0],
@@ -312,7 +312,7 @@ describe('ol.Map', function() {
       style.width = '360px';
       style.height = '180px';
       document.body.appendChild(target);
-      map = new _ol_Map_({
+      map = new Map({
         target: target,
         view: new _ol_View_({
           projection: 'EPSG:4326',
@@ -417,7 +417,7 @@ describe('ol.Map', function() {
     var map;
 
     beforeEach(function() {
-      map = new _ol_Map_({
+      map = new Map({
         target: document.createElement('div')
       });
     });
@@ -437,7 +437,7 @@ describe('ol.Map', function() {
     var map;
 
     beforeEach(function() {
-      map = new _ol_Map_({
+      map = new Map({
         target: document.createElement('div')
       });
       expect(map.handleResize_).to.be.ok();
@@ -560,7 +560,7 @@ describe('ol.Map', function() {
 
       it('works with touchend events', function() {
 
-        var map = new _ol_Map_({
+        var map = new Map({
           target: target
         });
 
@@ -592,7 +592,7 @@ describe('ol.Map', function() {
         style.width = '360px';
         style.height = '180px';
         document.body.appendChild(target);
-        map = new _ol_Map_({
+        map = new Map({
           target: target,
           view: new _ol_View_({
             projection: 'EPSG:4326',

@@ -1,5 +1,5 @@
 import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
@@ -15,7 +15,7 @@ describe('ol.render.Box', function() {
     target = document.createElement('div');
     document.body.appendChild(target);
 
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       view: new _ol_View_({
         center: [0, 0],

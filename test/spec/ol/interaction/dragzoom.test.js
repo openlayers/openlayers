@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.js';
@@ -26,7 +26,7 @@ describe('ol.interaction.DragZoom', function() {
     document.body.appendChild(target);
     source = new _ol_source_Vector_();
     var layer = new _ol_layer_Vector_({source: source});
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       layers: [layer],
       view: new _ol_View_({

@@ -1,5 +1,5 @@
 import _ol_transform_ from '../../../../../src/ol/transform.js';
-import _ol_Map_ from '../../../../../src/ol/Map.js';
+import Map from '../../../../../src/ol/Map.js';
 import _ol_layer_Image_ from '../../../../../src/ol/layer/Image.js';
 import _ol_source_Image_ from '../../../../../src/ol/source/Image.js';
 import _ol_renderer_webgl_ImageLayer_ from '../../../../../src/ol/renderer/webgl/ImageLayer.js';
@@ -18,7 +18,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     var imageExtent;
 
     beforeEach(function() {
-      map = new _ol_Map_({
+      map = new Map({
         target: document.createElement('div')
       });
       var layer = new _ol_layer_Image_({
