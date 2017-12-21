@@ -2,7 +2,7 @@
 // this example uses topolis and toastr for which we don't have an externs file.
 
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -95,7 +95,7 @@ var facesLayer = new _ol_layer_Vector_({
   }
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [raster, facesLayer, edgesLayer, nodesLayer],
   target: 'map',
   view: new _ol_View_({

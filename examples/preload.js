@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -9,7 +9,7 @@ var view = new _ol_View_({
   zoom: 8
 });
 
-var map1 = new _ol_Map_({
+var map1 = new Map({
   layers: [
     new TileLayer({
       preload: Infinity,
@@ -23,7 +23,7 @@ var map1 = new _ol_Map_({
   view: view
 });
 
-var map2 = new _ol_Map_({
+var map2 = new Map({
   layers: [
     new TileLayer({
       preload: 0, // default value

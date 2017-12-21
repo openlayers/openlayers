@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_events_condition_ from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
@@ -19,7 +19,7 @@ var vector = new _ol_layer_Vector_({
   })
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new _ol_View_({

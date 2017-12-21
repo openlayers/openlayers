@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
@@ -17,7 +17,7 @@ register(proj4);
 
 var imageExtent = [0, 0, 700000, 1300000];
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new TileLayer({
       source: new _ol_source_OSM_()

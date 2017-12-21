@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
@@ -16,7 +16,7 @@ var projection = new _ol_proj_Projection_({
   extent: extent
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new _ol_layer_Image_({
       source: new _ol_source_ImageStatic_({

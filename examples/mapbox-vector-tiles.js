@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
@@ -12,7 +12,7 @@ import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new _ol_layer_VectorTile_({
       declutter: true,

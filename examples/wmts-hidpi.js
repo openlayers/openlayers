@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import _ol_has_ from '../src/ol/has.js';
@@ -15,7 +15,7 @@ var hiDPI = _ol_has_.DEVICE_PIXEL_RATIO > 1;
 var layer = hiDPI ? 'bmaphidpi' : 'geolandbasemap';
 var tilePixelRatio = hiDPI ? 2 : 1;
 
-var map = new _ol_Map_({
+var map = new Map({
   target: 'map',
   view: new _ol_View_({
     center: [1823849, 6143760],

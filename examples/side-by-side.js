@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_has_ from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -13,14 +13,14 @@ var view = new _ol_View_({
   zoom: 1
 });
 
-var map1 = new _ol_Map_({
+var map1 = new Map({
   target: 'canvasMap',
   layers: [layer],
   view: view
 });
 
 if (_ol_has_.WEBGL) {
-  var map2 = new _ol_Map_({
+  var map2 = new Map({
     target: 'webglMap',
     renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
     layers: [layer],

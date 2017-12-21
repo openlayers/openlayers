@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
@@ -67,7 +67,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   }));
 }
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: layers,
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.

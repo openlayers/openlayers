@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
@@ -16,7 +16,7 @@ var mousePositionControl = new MousePosition({
   undefinedHTML: '&nbsp;'
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   controls: defaultControls({
     attributionOptions: {
       collapsible: false

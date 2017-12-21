@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
@@ -11,7 +11,7 @@ var layer = new TileLayer({
   source: new _ol_source_OSM_()
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [layer],
   target: 'map',
   view: new _ol_View_({

@@ -1,5 +1,5 @@
 // NOCOMPILE
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_source_Raster_ from '../src/ol/source/Raster.js';
@@ -148,7 +148,7 @@ raster.on('beforeoperations', function(event) {
   }
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new _ol_layer_Image_({
       source: raster

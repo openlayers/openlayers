@@ -1,6 +1,6 @@
 import {inherits} from '../src/ol/index.js';
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
@@ -144,7 +144,7 @@ var polygonFeature = new _ol_Feature_(
       [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
 
-var map = new _ol_Map_({
+var map = new Map({
   interactions: defaultInteractions().extend([new app.Drag()]),
   layers: [
     new TileLayer({

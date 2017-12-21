@@ -1,5 +1,5 @@
 // NOCOMPILE
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import WKT from '../src/ol/format/WKT.js';
@@ -26,7 +26,7 @@ var vector = new _ol_layer_Vector_({
 });
 
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [raster, vector],
   target: 'map',
   controls: defaultControls({

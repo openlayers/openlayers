@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import ZoomSlider from '../src/ol/control/ZoomSlider.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -18,7 +18,7 @@ var createMap = function(divId) {
   layer = new TileLayer({
     source: source
   });
-  map = new _ol_Map_({
+  map = new Map({
     layers: [layer],
     target: divId,
     view: new _ol_View_({

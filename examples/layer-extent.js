@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
@@ -30,7 +30,7 @@ var overlay = new TileLayer({
   })
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [base, overlay],
   target: 'map',
   view: new _ol_View_({

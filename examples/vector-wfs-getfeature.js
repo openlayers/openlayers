@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_filter_ from '../src/ol/format/filter.js';
 import WFS from '../src/ol/format/WFS.js';
@@ -29,7 +29,7 @@ var raster = new TileLayer({
   })
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new _ol_View_({

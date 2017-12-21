@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_Observable_ from '../src/ol/Observable.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import {getArea, getLength} from '../src/ol/sphere.js';
@@ -118,7 +118,7 @@ var pointerMoveHandler = function(evt) {
 };
 
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new _ol_View_({

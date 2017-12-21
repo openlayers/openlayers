@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
@@ -171,7 +171,7 @@ var vectorLayer = new _ol_layer_Vector_({
   style: styleFunction
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new TileLayer({
       source: new _ol_source_OSM_()

@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
@@ -94,7 +94,7 @@ source.on('imageloaderror', function() {
   progress.addLoaded();
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new _ol_layer_Image_({source: source})
   ],
