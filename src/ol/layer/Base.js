@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import _ol_layer_Property_ from '../layer/Property.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 import _ol_obj_ from '../obj.js';
 
 /**
@@ -76,7 +76,7 @@ _ol_layer_Base_.prototype.getType = function() {
  * @return {ol.LayerState} Layer state.
  */
 _ol_layer_Base_.prototype.getLayerState = function() {
-  this.state_.opacity = _ol_math_.clamp(this.getOpacity(), 0, 1);
+  this.state_.opacity = clamp(this.getOpacity(), 0, 1);
   this.state_.sourceState = this.getSourceState();
   this.state_.visible = this.getVisible();
   this.state_.extent = this.getExtent();

@@ -27,7 +27,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-import _ol_math_ from '../../math.js';
+import {squaredSegmentDistance, squaredDistance} from '../../math.js';
 var _ol_geom_flat_simplify_ = {};
 
 
@@ -103,7 +103,7 @@ _ol_geom_flat_simplify_.douglasPeucker = function(flatCoordinates, offset, end,
     for (i = first + stride; i < last; i += stride) {
       var x = flatCoordinates[i];
       var y = flatCoordinates[i + 1];
-      var squaredDistance = _ol_math_.squaredSegmentDistance(
+      var squaredDistance = squaredSegmentDistance(
           x, y, x1, y1, x2, y2);
       if (squaredDistance > maxSquaredDistance) {
         index = i;
@@ -221,7 +221,7 @@ _ol_geom_flat_simplify_.radialDistance = function(flatCoordinates, offset, end,
   for (offset += stride; offset < end; offset += stride) {
     x2 = flatCoordinates[offset];
     y2 = flatCoordinates[offset + 1];
-    if (_ol_math_.squaredDistance(x1, y1, x2, y2) > squaredTolerance) {
+    if (squaredDistance(x1, y1, x2, y2) > squaredTolerance) {
       // copy point at offset
       simplifiedFlatCoordinates[simplifiedOffset++] = x2;
       simplifiedFlatCoordinates[simplifiedOffset++] = y2;

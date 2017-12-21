@@ -11,7 +11,7 @@ import {easeOut} from '../easing.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
 import _ol_pointer_PointerEventHandler_ from '../pointer/PointerEventHandler.js';
 
@@ -338,7 +338,7 @@ ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   } else {
     amount = y / this.heightLimit_;
   }
-  return _ol_math_.clamp(amount, 0, 1);
+  return clamp(amount, 0, 1);
 };
 
 

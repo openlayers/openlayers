@@ -2,7 +2,7 @@
  * @module ol/ResolutionConstraint
  */
 import {linearFindNearest} from './array.js';
-import _ol_math_ from './math.js';
+import {clamp} from './math.js';
 var _ol_ResolutionConstraint_ = {};
 
 
@@ -21,7 +21,7 @@ _ol_ResolutionConstraint_.createSnapToResolutions = function(resolutions) {
     function(resolution, delta, direction) {
       if (resolution !== undefined) {
         var z = linearFindNearest(resolutions, resolution, direction);
-        z = _ol_math_.clamp(z + delta, 0, resolutions.length - 1);
+        z = clamp(z + delta, 0, resolutions.length - 1);
         var index = Math.floor(z);
         if (z != index && index < resolutions.length - 1) {
           var power = resolutions[index] / resolutions[index + 1];

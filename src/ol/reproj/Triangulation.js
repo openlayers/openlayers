@@ -3,7 +3,7 @@
  */
 import {boundingExtent, createEmpty, extendCoordinate, getBottomLeft, getBottomRight,
   getTopLeft, getTopRight, getWidth, intersects} from '../extent.js';
-import _ol_math_ from '../math.js';
+import {modulo} from '../math.js';
 import {getTransform} from '../proj.js';
 
 
@@ -270,10 +270,10 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
       var dx;
       if (wrapsX) {
         var centerSrcEstimX =
-            (_ol_math_.modulo(aSrc[0], sourceWorldWidth) +
-             _ol_math_.modulo(cSrc[0], sourceWorldWidth)) / 2;
+            (modulo(aSrc[0], sourceWorldWidth) +
+             modulo(cSrc[0], sourceWorldWidth)) / 2;
         dx = centerSrcEstimX -
-            _ol_math_.modulo(centerSrc[0], sourceWorldWidth);
+            modulo(centerSrc[0], sourceWorldWidth);
       } else {
         dx = (aSrc[0] + cSrc[0]) / 2 - centerSrc[0];
       }

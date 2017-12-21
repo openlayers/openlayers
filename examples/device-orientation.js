@@ -3,7 +3,7 @@ import _ol_Map_ from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_math_ from '../src/ol/math.js';
+import {toRadians} from '../src/ol/math.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 var view = new _ol_View_({
@@ -36,9 +36,9 @@ gn.init().then(function() {
   gn.start(function(event) {
     var center = view.getCenter();
     var resolution = view.getResolution();
-    var alpha = _ol_math_.toRadians(event.do.beta);
-    var beta = _ol_math_.toRadians(event.do.beta);
-    var gamma = _ol_math_.toRadians(event.do.gamma);
+    var alpha = toRadians(event.do.beta);
+    var beta = toRadians(event.do.beta);
+    var gamma = toRadians(event.do.gamma);
 
     el('alpha').innerText = alpha + ' [rad]';
     el('beta').innerText = beta + ' [rad]';

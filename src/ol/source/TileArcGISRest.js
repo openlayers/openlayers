@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {createEmpty} from '../extent.js';
-import _ol_math_ from '../math.js';
+import {modulo} from '../math.js';
 import _ol_obj_ from '../obj.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
@@ -118,7 +118,7 @@ _ol_source_TileArcGISRest_.prototype.getRequestUrl_ = function(tileCoord, tileSi
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = _ol_math_.modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
+    var index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
     url = urls[index];
   }
 

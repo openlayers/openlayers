@@ -7,7 +7,7 @@ import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
-import _ol_math_ from '../math.js';
+import {squaredDistance as squaredDx} from '../math.js';
 
 /**
  * @classdesc
@@ -45,7 +45,7 @@ Point.prototype.clone = function() {
  */
 Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;
-  var squaredDistance = _ol_math_.squaredDistance(
+  var squaredDistance = squaredDx(
       x, y, flatCoordinates[0], flatCoordinates[1]);
   if (squaredDistance < minSquaredDistance) {
     var stride = this.stride;

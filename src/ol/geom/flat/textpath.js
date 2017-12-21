@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/textpath
  */
-import _ol_math_ from '../../math.js';
+import {lerp} from '../../math.js';
 var _ol_geom_flat_textpath_ = {};
 
 
@@ -67,8 +67,8 @@ _ol_geom_flat_textpath_.lineString = function(
       }
     }
     var interpolate = segmentPos / segmentLength;
-    var x = _ol_math_.lerp(x1, x2, interpolate);
-    var y = _ol_math_.lerp(y1, y2, interpolate);
+    var x = lerp(x1, x2, interpolate);
+    var y = lerp(y1, y2, interpolate);
     if (previousAngle == angle) {
       if (reverse) {
         data[0] = x;

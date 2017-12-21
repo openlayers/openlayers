@@ -17,7 +17,7 @@ import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './exte
 import GeometryType from './geom/GeometryType.js';
 import Polygon from './geom/Polygon.js';
 import SimpleGeometry from './geom/SimpleGeometry.js';
-import _ol_math_ from './math.js';
+import {clamp, modulo} from './math.js';
 import _ol_obj_ from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
 import _ol_proj_Units_ from './proj/Units.js';
@@ -191,7 +191,7 @@ _ol_View_.prototype.applyOptions_ = function(options) {
         this.maxResolution_, options.zoom - this.minZoom_);
 
     if (this.resolutions_) { // in case map zoom is out of min/max zoom range
-      properties[_ol_ViewProperty_.RESOLUTION] = _ol_math_.clamp(
+      properties[_ol_ViewProperty_.RESOLUTION] = clamp(
           Number(this.getResolution() || properties[_ol_ViewProperty_.RESOLUTION]),
           this.minResolution_, this.maxResolution_);
     }
@@ -328,7 +328,7 @@ _ol_View_.prototype.animate = function(var_args) {
 
     if (options.rotation !== undefined) {
       animation.sourceRotation = rotation;
-      var delta = _ol_math_.modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
+      var delta = modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
       animation.targetRotation = rotation + delta;
       rotation = animation.targetRotation;
     }
@@ -436,7 +436,7 @@ _ol_View_.prototype.updateAnimations_ = function() {
       }
       if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
         var rotation = progress === 1 ?
-          _ol_math_.modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
+          modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
           animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
         if (animation.anchor) {
           this.set(_ol_ViewProperty_.CENTER,

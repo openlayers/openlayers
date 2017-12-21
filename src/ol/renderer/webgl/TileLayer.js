@@ -10,7 +10,7 @@ import TileRange from '../../TileRange.js';
 import _ol_TileState_ from '../../TileState.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
-import _ol_math_ from '../../math.js';
+import {roundUpToPowerOfTwo} from '../../math.js';
 import RendererType from '../Type.js';
 import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
 import _ol_renderer_webgl_tilelayershader_ from '../webgl/tilelayershader.js';
@@ -201,7 +201,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
     var maxDimension = Math.max(
         tileRangeSize[0] * tilePixelSize[0],
         tileRangeSize[1] * tilePixelSize[1]);
-    var framebufferDimension = _ol_math_.roundUpToPowerOfTwo(maxDimension);
+    var framebufferDimension = roundUpToPowerOfTwo(maxDimension);
     var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
     var origin = tileGrid.getOrigin(z);
     var minX = origin[0] +

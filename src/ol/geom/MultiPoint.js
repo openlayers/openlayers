@@ -10,7 +10,7 @@ import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
-import _ol_math_ from '../math.js';
+import {squaredDistance as squaredDx} from '../math.js';
 
 /**
  * @classdesc
@@ -69,7 +69,7 @@ MultiPoint.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
   var stride = this.stride;
   var i, ii, j;
   for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    var squaredDistance = _ol_math_.squaredDistance(
+    var squaredDistance = squaredDx(
         x, y, flatCoordinates[i], flatCoordinates[i + 1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;

@@ -2,7 +2,7 @@
  * @module ol/tileurlfunction
  */
 import {assert} from './asserts.js';
-import _ol_math_ from './math.js';
+import {modulo} from './math.js';
 import _ol_tilecoord_ from './tilecoord.js';
 
 
@@ -81,7 +81,7 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
         return undefined;
       } else {
         var h = _ol_tilecoord_.hash(tileCoord);
-        var index = _ol_math_.modulo(h, tileUrlFunctions.length);
+        var index = modulo(h, tileUrlFunctions.length);
         return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
       }
     }

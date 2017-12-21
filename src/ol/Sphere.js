@@ -8,7 +8,7 @@
  * http://www.movable-type.co.uk/scripts/latlong.html
  * Licensed under CC-BY-3.0.
  */
-import _ol_math_ from './math.js';
+import {toRadians, toDegrees} from './math.js';
 import GeometryType from './geom/GeometryType.js';
 
 
@@ -89,8 +89,8 @@ _ol_Sphere_.prototype.haversineDistance = function(c1, c2) {
  * @return {ol.Coordinate} The target point.
  */
 _ol_Sphere_.prototype.offset = function(c1, distance, bearing) {
-  var lat1 = _ol_math_.toRadians(c1[1]);
-  var lon1 = _ol_math_.toRadians(c1[0]);
+  var lat1 = toRadians(c1[1]);
+  var lon1 = toRadians(c1[0]);
   var dByR = distance / this.radius;
   var lat = Math.asin(
       Math.sin(lat1) * Math.cos(dByR) +
@@ -98,7 +98,7 @@ _ol_Sphere_.prototype.offset = function(c1, distance, bearing) {
   var lon = lon1 + Math.atan2(
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
       Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
-  return [_ol_math_.toDegrees(lon), _ol_math_.toDegrees(lat)];
+  return [toDegrees(lon), toDegrees(lat)];
 };
 
 
@@ -202,10 +202,10 @@ _ol_Sphere_.getLength_ = function(coordinates, radius) {
  * @return {number} The great circle distance between the points (in meters).
  */
 _ol_Sphere_.getDistance_ = function(c1, c2, radius) {
-  var lat1 = _ol_math_.toRadians(c1[1]);
-  var lat2 = _ol_math_.toRadians(c2[1]);
+  var lat1 = toRadians(c1[1]);
+  var lat2 = toRadians(c2[1]);
   var deltaLatBy2 = (lat2 - lat1) / 2;
-  var deltaLonBy2 = _ol_math_.toRadians(c2[0] - c1[0]) / 2;
+  var deltaLonBy2 = toRadians(c2[0] - c1[0]) / 2;
   var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
       Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
       Math.cos(lat1) * Math.cos(lat2);
@@ -293,9 +293,9 @@ _ol_Sphere_.getArea_ = function(coordinates, radius) {
   var y1 = coordinates[len - 1][1];
   for (var i = 0; i < len; i++) {
     var x2 = coordinates[i][0], y2 = coordinates[i][1];
-    area += _ol_math_.toRadians(x2 - x1) *
-        (2 + Math.sin(_ol_math_.toRadians(y1)) +
-        Math.sin(_ol_math_.toRadians(y2)));
+    area += toRadians(x2 - x1) *
+        (2 + Math.sin(toRadians(y1)) +
+        Math.sin(toRadians(y2)));
     x1 = x2;
     y1 = y2;
   }

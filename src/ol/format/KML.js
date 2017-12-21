@@ -18,7 +18,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_math_ from '../math.js';
+import {toRadians} from '../math.js';
 import {get as getProjection} from '../proj.js';
 import _ol_style_Fill_ from '../style/Fill.js';
 import _ol_style_Icon_ from '../style/Icon.js';
@@ -617,7 +617,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
   var heading = /** @type {number} */
       (object['heading']);
   if (heading !== undefined) {
-    rotation = _ol_math_.toRadians(heading);
+    rotation = toRadians(heading);
   }
 
   var scale = /** @type {number|undefined} */

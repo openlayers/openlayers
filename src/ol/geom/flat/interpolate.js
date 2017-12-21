@@ -2,7 +2,7 @@
  * @module ol/geom/flat/interpolate
  */
 import {binarySearch} from '../../array.js';
-import _ol_math_ from '../../math.js';
+import {lerp} from '../../math.js';
 var _ol_geom_flat_interpolate_ = {};
 
 
@@ -47,9 +47,9 @@ _ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, s
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       var o = offset + (-index - 2) * stride;
-      pointX = _ol_math_.lerp(
+      pointX = lerp(
           flatCoordinates[o], flatCoordinates[o + stride], t);
-      pointY = _ol_math_.lerp(
+      pointY = lerp(
           flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
     } else {
       pointX = flatCoordinates[offset + index * stride];
@@ -120,7 +120,7 @@ _ol_geom_flat_interpolate_.lineStringCoordinateAtM = function(flatCoordinates, o
   coordinate = [];
   var i;
   for (i = 0; i < stride - 1; ++i) {
-    coordinate.push(_ol_math_.lerp(flatCoordinates[(lo - 1) * stride + i],
+    coordinate.push(lerp(flatCoordinates[(lo - 1) * stride + i],
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);

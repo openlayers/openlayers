@@ -7,7 +7,7 @@ import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import _ol_has_ from '../has.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 
 
 /**
@@ -260,7 +260,7 @@ _ol_interaction_MouseWheelZoom_.prototype.handleWheelZoom_ = function(map) {
     view.cancelAnimations();
   }
   var maxDelta = MAX_DELTA;
-  var delta = _ol_math_.clamp(this.delta_, -maxDelta, maxDelta);
+  var delta = clamp(this.delta_, -maxDelta, maxDelta);
   Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
       this.duration_);
   this.mode_ = undefined;

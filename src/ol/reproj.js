@@ -3,7 +3,7 @@
  */
 import {createCanvasContext2D} from './dom.js';
 import {containsCoordinate, createEmpty, extend, getHeight, getTopLeft, getWidth} from './extent.js';
-import _ol_math_ from './math.js';
+import {solveLinearSystem} from './math.js';
 import {getPointResolution, transform} from './proj.js';
 var _ol_reproj_ = {};
 
@@ -181,7 +181,7 @@ _ol_reproj_.render = function(width, height, pixelRatio,
       [0, 0, x1, y1, v1 - v0],
       [0, 0, x2, y2, v2 - v0]
     ];
-    var affineCoefs = _ol_math_.solveLinearSystem(augmentedMatrix);
+    var affineCoefs = solveLinearSystem(augmentedMatrix);
     if (!affineCoefs) {
       return;
     }

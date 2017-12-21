@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/closest
  */
-import _ol_math_ from '../../math.js';
+import {lerp, squaredDistance as squaredDx} from '../../math.js';
 var _ol_geom_flat_closest_ = {};
 
 
@@ -31,7 +31,7 @@ _ol_geom_flat_closest_.point = function(flatCoordinates, offset1, offset2, strid
       offset = offset2;
     } else if (t > 0) {
       for (i = 0; i < stride; ++i) {
-        closestPoint[i] = _ol_math_.lerp(flatCoordinates[offset1 + i],
+        closestPoint[i] = lerp(flatCoordinates[offset1 + i],
             flatCoordinates[offset2 + i], t);
       }
       closestPoint.length = stride;
@@ -63,7 +63,7 @@ _ol_geom_flat_closest_.getMaxSquaredDelta = function(flatCoordinates, offset, en
   for (offset += stride; offset < end; offset += stride) {
     var x2 = flatCoordinates[offset];
     var y2 = flatCoordinates[offset + 1];
-    var squaredDelta = _ol_math_.squaredDistance(x1, y1, x2, y2);
+    var squaredDelta = squaredDx(x1, y1, x2, y2);
     if (squaredDelta > maxSquaredDelta) {
       maxSquaredDelta = squaredDelta;
     }
@@ -137,7 +137,7 @@ _ol_geom_flat_closest_.getClosestPoint = function(flatCoordinates, offset, end,
   var i, squaredDistance;
   if (maxDelta === 0) {
     // All points are identical, so just test the first point.
-    squaredDistance = _ol_math_.squaredDistance(
+    squaredDistance = squaredDx(
         x, y, flatCoordinates[offset], flatCoordinates[offset + 1]);
     if (squaredDistance < minSquaredDistance) {
       for (i = 0; i < stride; ++i) {
@@ -154,7 +154,7 @@ _ol_geom_flat_closest_.getClosestPoint = function(flatCoordinates, offset, end,
   while (index < end) {
     _ol_geom_flat_closest_.point(
         flatCoordinates, index - stride, index, stride, x, y, tmpPoint);
-    squaredDistance = _ol_math_.squaredDistance(x, y, tmpPoint[0], tmpPoint[1]);
+    squaredDistance = squaredDx(x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
       for (i = 0; i < stride; ++i) {
@@ -182,7 +182,7 @@ _ol_geom_flat_closest_.getClosestPoint = function(flatCoordinates, offset, end,
     // Check the closing segment.
     _ol_geom_flat_closest_.point(
         flatCoordinates, end - stride, offset, stride, x, y, tmpPoint);
-    squaredDistance = _ol_math_.squaredDistance(x, y, tmpPoint[0], tmpPoint[1]);
+    squaredDistance = squaredDx(x, y, tmpPoint[0], tmpPoint[1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
       for (i = 0; i < stride; ++i) {

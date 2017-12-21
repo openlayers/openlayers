@@ -9,7 +9,7 @@ import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
 import Polygon from './geom/Polygon.js';
 import _ol_has_ from './has.js';
-import _ol_math_ from './math.js';
+import {toRadians} from './math.js';
 import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
 import _ol_proj_EPSG4326_ from './proj/EPSG4326.js';
 
@@ -164,7 +164,7 @@ Geolocation.prototype.positionChange_ = function(position) {
       coords.altitudeAccuracy === null ?
         undefined : coords.altitudeAccuracy);
   this.set(_ol_GeolocationProperty_.HEADING, coords.heading === null ?
-    undefined : _ol_math_.toRadians(coords.heading));
+    undefined : toRadians(coords.heading));
   if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {

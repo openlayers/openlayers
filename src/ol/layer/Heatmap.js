@@ -6,7 +6,7 @@ import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import _ol_style_Icon_ from '../style/Icon.js';
@@ -111,7 +111,7 @@ var Heatmap = function(opt_options) {
 
   this.setStyle(function(feature, resolution) {
     var weight = weightFunction(feature);
-    var opacity = weight !== undefined ? _ol_math_.clamp(weight, 0, 1) : 1;
+    var opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = this.styleCache_[index];

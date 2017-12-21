@@ -18,7 +18,7 @@ import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
-import _ol_math_ from '../math.js';
+import {modulo} from '../math.js';
 
 /**
  * @classdesc
@@ -459,7 +459,7 @@ Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   var angle, offset;
   for (var i = 0; i <= sides; ++i) {
     offset = i * stride;
-    angle = startAngle + (_ol_math_.modulo(i, sides) * 2 * Math.PI / sides);
+    angle = startAngle + (modulo(i, sides) * 2 * Math.PI / sides);
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
   }
