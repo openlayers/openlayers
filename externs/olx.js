@@ -2168,7 +2168,8 @@ olx.layer.ImageOptions.prototype.zIndex;
 
 
 /**
- * @typedef {{minResolution: (number|undefined),
+ * @typedef {{coverageDrawFunction: (ol.CoverageDrawFunctionType|undefined),
+ *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     source: (ol.source.Coverage|undefined),
@@ -2178,6 +2179,17 @@ olx.layer.ImageOptions.prototype.zIndex;
  *     zIndex: (number|undefined)}}
  */
 olx.layer.RasterOptions;
+
+
+/**
+ * A custom function for drawing the styled cells on a canvas. It gets styled
+ * raster data in an interleaved array (RGBA for each cell), the number of
+ * columns as a number, the X and Y resolutions of each cell as an array, and the
+ * pixel ratio. The function must return a HTML5 Canvas element.
+ * @type {ol.CoverageDrawFunctionType|undefined}
+ * @api
+ */
+olx.layer.RasterOptions.coverageDrawFunction;
 
 
 /**

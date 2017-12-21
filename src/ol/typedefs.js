@@ -152,6 +152,16 @@ ol.CoverageBandOptions;
 
 
 /**
+ * A function that takes a matrix of interleaved RGBA values, the number of columns,
+ * the resolution of each cell in an array, and the pixel ratio. The function
+ * must return a HTML5 Canvas element with the coverage image.
+ *
+ * @typedef {function(Array.<number>, number, Array.<number>, number): HTMLCanvasElement}
+ */
+ol.CoverageDrawFunctionType;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            bands: (Array.<ol.coverage.Band>|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
