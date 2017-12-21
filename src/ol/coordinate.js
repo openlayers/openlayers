@@ -1,7 +1,7 @@
 /**
  * @module ol/coordinate
  */
-import _ol_math_ from './math.js';
+import {modulo} from './math.js';
 import _ol_string_ from './string.js';
 var _ol_coordinate_ = {};
 
@@ -142,7 +142,7 @@ _ol_coordinate_.createStringXY = function(opt_fractionDigits) {
  * @return {string} String.
  */
 _ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionDigits) {
-  var normalizedDegrees = _ol_math_.modulo(degrees + 180, 360) - 180;
+  var normalizedDegrees = modulo(degrees + 180, 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   var dflPrecision = opt_fractionDigits || 0;
   var precision = Math.pow(10, dflPrecision);

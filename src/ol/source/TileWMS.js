@@ -7,7 +7,7 @@ import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
 import _ol_obj_ from '../obj.js';
-import _ol_math_ from '../math.js';
+import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_size_ from '../size.js';
@@ -247,7 +247,7 @@ _ol_source_TileWMS_.prototype.getRequestUrl_ = function(tileCoord, tileSize, til
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = _ol_math_.modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
+    var index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
     url = urls[index];
   }
   return _ol_uri_.appendParams(url, params);

@@ -2,7 +2,7 @@
  * @module ol/color
  */
 import {assert} from './asserts.js';
-import _ol_math_ from './math.js';
+import {clamp} from './math.js';
 
 
 /**
@@ -184,10 +184,10 @@ function fromStringInternal_(s) {
  */
 export function normalize(color, opt_color) {
   var result = opt_color || [];
-  result[0] = _ol_math_.clamp((color[0] + 0.5) | 0, 0, 255);
-  result[1] = _ol_math_.clamp((color[1] + 0.5) | 0, 0, 255);
-  result[2] = _ol_math_.clamp((color[2] + 0.5) | 0, 0, 255);
-  result[3] = _ol_math_.clamp(color[3], 0, 1);
+  result[0] = clamp((color[0] + 0.5) | 0, 0, 255);
+  result[1] = clamp((color[1] + 0.5) | 0, 0, 255);
+  result[2] = clamp((color[2] + 0.5) | 0, 0, 255);
+  result[3] = clamp(color[3], 0, 1);
   return result;
 }
 

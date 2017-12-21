@@ -1,7 +1,7 @@
 /**
  * @module ol/RotationConstraint
  */
-import _ol_math_ from './math.js';
+import {toRadians} from './math.js';
 var _ol_RotationConstraint_ = {};
 
 
@@ -61,7 +61,7 @@ _ol_RotationConstraint_.createSnapToN = function(n) {
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
 _ol_RotationConstraint_.createSnapToZero = function(opt_tolerance) {
-  var tolerance = opt_tolerance || _ol_math_.toRadians(5);
+  var tolerance = opt_tolerance || toRadians(5);
   return (
     /**
      * @param {number|undefined} rotation Rotation.

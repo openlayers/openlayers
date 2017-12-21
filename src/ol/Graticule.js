@@ -7,7 +7,7 @@ import GeometryLayout from './geom/GeometryLayout.js';
 import LineString from './geom/LineString.js';
 import Point from './geom/Point.js';
 import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
-import _ol_math_ from './math.js';
+import {clamp} from './math.js';
 import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
 import RenderEventType from './render/EventType.js';
 import _ol_style_Fill_ from './style/Fill.js';
@@ -357,7 +357,7 @@ Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
   var flatCoordinates = lineString.getFlatCoordinates();
   var clampedBottom = Math.max(extent[1], flatCoordinates[1]);
   var clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
-  var lat = _ol_math_.clamp(
+  var lat = clamp(
       extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
       clampedBottom, clampedTop);
   var coordinate = [flatCoordinates[0], lat];
@@ -406,7 +406,7 @@ Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
   var flatCoordinates = lineString.getFlatCoordinates();
   var clampedLeft = Math.max(extent[0], flatCoordinates[0]);
   var clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
-  var lon = _ol_math_.clamp(
+  var lon = clamp(
       extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
       clampedLeft, clampedRight);
   var coordinate = [lon, flatCoordinates[1]];
@@ -461,7 +461,7 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
   // Create meridians
 
   centerLon = Math.floor(centerLon / interval) * interval;
-  lon = _ol_math_.clamp(centerLon, this.minLon_, this.maxLon_);
+  lon = clamp(centerLon, this.minLon_, this.maxLon_);
 
   idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, 0);
 
@@ -471,7 +471,7 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
   }
 
-  lon = _ol_math_.clamp(centerLon, this.minLon_, this.maxLon_);
+  lon = clamp(centerLon, this.minLon_, this.maxLon_);
 
   cnt = 0;
   while (lon != this.maxLon_ && cnt++ < maxLines) {
@@ -487,7 +487,7 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
   // Create parallels
 
   centerLat = Math.floor(centerLat / interval) * interval;
-  lat = _ol_math_.clamp(centerLat, this.minLat_, this.maxLat_);
+  lat = clamp(centerLat, this.minLat_, this.maxLat_);
 
   idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, 0);
 
@@ -497,7 +497,7 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
     idx = this.addParallel_(lat, minLon, maxLon, squaredTolerance, extent, idx);
   }
 
-  lat = _ol_math_.clamp(centerLat, this.minLat_, this.maxLat_);
+  lat = clamp(centerLat, this.minLat_, this.maxLat_);
 
   cnt = 0;
   while (lat != this.maxLat_ && cnt++ < maxLines) {

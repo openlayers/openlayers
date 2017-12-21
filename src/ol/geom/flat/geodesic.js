@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/geodesic
  */
-import _ol_math_ from '../../math.js';
+import {squaredSegmentDistance, toRadians, toDegrees} from '../../math.js';
 import {get as getProjection, getTransform} from '../../proj.js';
 var _ol_geom_flat_geodesic_ = {};
 
@@ -59,7 +59,7 @@ _ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredToleranc
     fracM = (fracA + fracB) / 2;
     geoM = interpolate(fracM);
     m = transform(geoM);
-    if (_ol_math_.squaredSegmentDistance(m[0], m[1], a[0], a[1],
+    if (squaredSegmentDistance(m[0], m[1], a[0], a[1],
         b[0], b[1]) < squaredTolerance) {
       // If the m point is sufficiently close to the straight line, then we
       // discard it.  Just use the b coordinate and move on to the next line
@@ -95,12 +95,12 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
 
   var geoProjection = getProjection('EPSG:4326');
 
-  var cosLat1 = Math.cos(_ol_math_.toRadians(lat1));
-  var sinLat1 = Math.sin(_ol_math_.toRadians(lat1));
-  var cosLat2 = Math.cos(_ol_math_.toRadians(lat2));
-  var sinLat2 = Math.sin(_ol_math_.toRadians(lat2));
-  var cosDeltaLon = Math.cos(_ol_math_.toRadians(lon2 - lon1));
-  var sinDeltaLon = Math.sin(_ol_math_.toRadians(lon2 - lon1));
+  var cosLat1 = Math.cos(toRadians(lat1));
+  var sinLat1 = Math.sin(toRadians(lat1));
+  var cosLat2 = Math.cos(toRadians(lat2));
+  var sinLat2 = Math.sin(toRadians(lat2));
+  var cosDeltaLon = Math.cos(toRadians(lon2 - lon1));
+  var sinDeltaLon = Math.sin(toRadians(lon2 - lon1));
   var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
 
   return _ol_geom_flat_geodesic_.line_(
@@ -119,10 +119,10 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
         var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
         var theta = Math.atan2(y, x);
         var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-        var lon = _ol_math_.toRadians(lon1) +
+        var lon = toRadians(lon1) +
             Math.atan2(Math.sin(theta) * sinD * cosLat1,
                 cosD - sinLat1 * Math.sin(lat));
-        return [_ol_math_.toDegrees(lon), _ol_math_.toDegrees(lat)];
+        return [toDegrees(lon), toDegrees(lat)];
       }, getTransform(geoProjection, projection), squaredTolerance);
 };
 

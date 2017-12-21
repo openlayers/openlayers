@@ -3,7 +3,7 @@
  */
 import Sphere from './Sphere.js';
 import {applyTransform} from './extent.js';
-import math from './math.js';
+import {modulo} from './math.js';
 import EPSG3857 from './proj/EPSG3857.js';
 import EPSG4326 from './proj/EPSG4326.js';
 import Projection from './proj/Projection.js';
@@ -323,7 +323,7 @@ export function toLonLat(coordinate, opt_projection) {
       opt_projection !== undefined ? opt_projection : 'EPSG:3857', 'EPSG:4326');
   var lon = lonLat[0];
   if (lon < -180 || lon > 180) {
-    lonLat[0] = math.modulo(lon + 180, 360) - 180;
+    lonLat[0] = modulo(lon + 180, 360) - 180;
   }
   return lonLat;
 }

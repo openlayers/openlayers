@@ -2,7 +2,7 @@
  * @module ol/proj/EPSG3857
  */
 import {inherits} from '../index.js';
-import _ol_math_ from '../math.js';
+import {cosh} from '../math.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
 import _ol_proj_Units_ from '../proj/Units.js';
 var _ol_proj_EPSG3857_ = {};
@@ -25,7 +25,7 @@ _ol_proj_EPSG3857_.Projection_ = function(code) {
     global: true,
     worldExtent: _ol_proj_EPSG3857_.WORLD_EXTENT,
     getPointResolution: function(resolution, point) {
-      return resolution / _ol_math_.cosh(point[1] / _ol_proj_EPSG3857_.RADIUS);
+      return resolution / cosh(point[1] / _ol_proj_EPSG3857_.RADIUS);
     }
   });
 };

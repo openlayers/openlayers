@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Object_ from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 
 
 /**
@@ -198,7 +198,7 @@ Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
 
   if (resolution !== undefined) {
     var resolutions = view.getResolutions();
-    resolution = _ol_math_.clamp(
+    resolution = clamp(
         resolution,
         view.getMinResolution() || resolutions[resolutions.length - 1],
         view.getMaxResolution() || resolutions[0]);

@@ -1,7 +1,7 @@
 /**
  * @module ol/CenterConstraint
  */
-import _ol_math_ from './math.js';
+import {clamp} from './math.js';
 var _ol_CenterConstraint_ = {};
 
 
@@ -18,8 +18,8 @@ _ol_CenterConstraint_.createExtent = function(extent) {
     function(center) {
       if (center) {
         return [
-          _ol_math_.clamp(center[0], extent[0], extent[2]),
-          _ol_math_.clamp(center[1], extent[1], extent[3])
+          clamp(center[0], extent[0], extent[2]),
+          clamp(center[1], extent[1], extent[3])
         ];
       } else {
         return undefined;

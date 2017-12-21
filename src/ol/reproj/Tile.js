@@ -8,7 +8,7 @@ import _ol_TileState_ from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
 
@@ -157,9 +157,9 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
 
   if (maxSourceExtent) {
     if (sourceProj.canWrapX()) {
-      sourceExtent[1] = _ol_math_.clamp(
+      sourceExtent[1] = clamp(
           sourceExtent[1], maxSourceExtent[1], maxSourceExtent[3]);
-      sourceExtent[3] = _ol_math_.clamp(
+      sourceExtent[3] = clamp(
           sourceExtent[3], maxSourceExtent[1], maxSourceExtent[3]);
     } else {
       sourceExtent = getIntersection(sourceExtent, maxSourceExtent);

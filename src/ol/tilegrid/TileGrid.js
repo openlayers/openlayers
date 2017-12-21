@@ -6,7 +6,7 @@ import {assert} from '../asserts.js';
 import TileRange from '../TileRange.js';
 import {isSorted, linearFindNearest} from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
-import _ol_math_ from '../math.js';
+import {clamp} from '../math.js';
 import _ol_size_ from '../size.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 
@@ -529,7 +529,7 @@ _ol_tilegrid_TileGrid_.prototype.getFullTileRange = function(z) {
 _ol_tilegrid_TileGrid_.prototype.getZForResolution = function(
     resolution, opt_direction) {
   var z = linearFindNearest(this.resolutions_, resolution, opt_direction || 0);
-  return _ol_math_.clamp(z, this.minZoom, this.maxZoom);
+  return clamp(z, this.minZoom, this.maxZoom);
 };
 
 
