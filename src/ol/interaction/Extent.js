@@ -10,7 +10,7 @@ import Event from '../events/Event.js';
 import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
-import Polygon from '../geom/Polygon.js';
+import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_layer_Vector_ from '../layer/Vector.js';
@@ -376,7 +376,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
     if (!extent) {
       extentFeature = new _ol_Feature_({});
     } else {
-      extentFeature = new _ol_Feature_(Polygon.fromExtent(extent));
+      extentFeature = new _ol_Feature_(polygonFromExtent(extent));
     }
     this.extentFeature_ = extentFeature;
     this.extentOverlay_.getSource().addFeature(extentFeature);
@@ -384,7 +384,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
     if (!extent) {
       extentFeature.setGeometry(undefined);
     } else {
-      extentFeature.setGeometry(Polygon.fromExtent(extent));
+      extentFeature.setGeometry(polygonFromExtent(extent));
     }
   }
   return extentFeature;

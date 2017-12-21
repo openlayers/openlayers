@@ -9,6 +9,7 @@ import GeometryType from '../geom/GeometryType.js';
 import LinearRing from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
+import {offset as sphereOffset} from '../sphere.js';
 import _ol_geom_flat_area_ from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_contains_ from '../geom/flat/contains.js';
@@ -366,32 +367,35 @@ Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
   this.changed();
 };
 
+export default Polygon;
+
 
 /**
  * Create an approximation of a circle on the surface of a sphere.
- * @param {ol.Sphere} sphere The sphere.
  * @param {ol.Coordinate} center Center (`[lon, lat]` in degrees).
  * @param {number} radius The great-circle distance from the center to
  *     the polygon vertices.
  * @param {number=} opt_n Optional number of vertices for the resulting
  *     polygon. Default is `32`.
+ * @param {number=} opt_sphereRadius Optional radius for the sphere (defaults to
+ *     the Earth's mean radius using the WGS84 ellipsoid).
  * @return {ol.geom.Polygon} The "circular" polygon.
  * @api
  */
-Polygon.circular = function(sphere, center, radius, opt_n) {
+export function circular(center, radius, opt_n, opt_sphereRadius) {
   var n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var i;
   for (i = 0; i < n; ++i) {
-    extend(flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
+    extend(flatCoordinates, sphereOffset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
   var polygon = new Polygon(null);
   polygon.setFlatCoordinates(
       GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
-};
+}
 
 
 /**
@@ -400,7 +404,7 @@ Polygon.circular = function(sphere, center, radius, opt_n) {
  * @return {ol.geom.Polygon} The polygon.
  * @api
  */
-Polygon.fromExtent = function(extent) {
+export function fromExtent(extent) {
   var minX = extent[0];
   var minY = extent[1];
   var maxX = extent[2];
@@ -411,7 +415,7 @@ Polygon.fromExtent = function(extent) {
   polygon.setFlatCoordinates(
       GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
-};
+}
 
 
 /**
@@ -423,7 +427,7 @@ Polygon.fromExtent = function(extent) {
  * @return {ol.geom.Polygon} Polygon geometry.
  * @api
  */
-Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
+export function fromCircle(circle, opt_sides, opt_angle) {
   var sides = opt_sides ? opt_sides : 32;
   var stride = circle.getStride();
   var layout = circle.getLayout();
@@ -435,10 +439,9 @@ Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
   }
   var ends = [flatCoordinates.length];
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
-  Polygon.makeRegular(
-      polygon, circle.getCenter(), circle.getRadius(), opt_angle);
+  makeRegular(polygon, circle.getCenter(), circle.getRadius(), opt_angle);
   return polygon;
-};
+}
 
 
 /**
@@ -449,7 +452,7 @@ Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
  * @param {number=} opt_angle Start angle for the first vertex of the polygon in
  *     radians. Default is 0.
  */
-Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
+export function makeRegular(polygon, center, radius, opt_angle) {
   var flatCoordinates = polygon.getFlatCoordinates();
   var layout = polygon.getLayout();
   var stride = polygon.getStride();
@@ -464,5 +467,4 @@ Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
   }
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
-};
-export default Polygon;
+}

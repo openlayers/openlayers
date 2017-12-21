@@ -1,10 +1,10 @@
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LinearRing from '../../../../src/ol/geom/LinearRing.js';
-import Polygon from '../../../../src/ol/geom/Polygon.js';
+import Polygon, {fromCircle, fromExtent} from '../../../../src/ol/geom/Polygon.js';
 
 
-describe('ol.geom.Polygon', function() {
+describe('ol/geom/Polygon', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
@@ -561,10 +561,10 @@ describe('ol.geom.Polygon', function() {
     });
   });
 
-  describe('ol.geom.Polygon.fromExtent', function() {
+  describe('fromExtent()', function() {
     it('creates the correct polygon', function() {
       var extent = [1, 2, 3, 5];
-      var polygon = Polygon.fromExtent(extent);
+      var polygon = fromExtent(extent);
       var flatCoordinates = polygon.getFlatCoordinates();
       expect(flatCoordinates).to.eql(
           [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
@@ -574,11 +574,11 @@ describe('ol.geom.Polygon', function() {
     });
   });
 
-  describe('ol.geom.Polygon.fromCircle', function() {
+  describe('fromCircle()', function() {
 
     it('creates a regular polygon', function() {
       var circle = new Circle([0, 0, 0], 1, 'XYZ');
-      var polygon = Polygon.fromCircle(circle);
+      var polygon = fromCircle(circle);
       var coordinates = polygon.getLinearRing(0).getCoordinates();
       expect(coordinates[0].length).to.eql(3);
       expect(coordinates[0][2]).to.eql(0);
@@ -599,7 +599,7 @@ describe('ol.geom.Polygon', function() {
 
     it('creates a regular polygon with custom sides and angle', function() {
       var circle = new Circle([0, 0], 1);
-      var polygon = Polygon.fromCircle(circle, 4, Math.PI / 2);
+      var polygon = fromCircle(circle, 4, Math.PI / 2);
       var coordinates = polygon.getLinearRing(0).getCoordinates();
       expect(coordinates[4]).to.eql(coordinates[0]);
       expect(coordinates[0][0]).to.roughlyEqual(0, 1e-9);

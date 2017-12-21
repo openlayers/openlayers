@@ -1,7 +1,7 @@
 import _ol_Map_ from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import Polygon from '../../../../src/ol/geom/Polygon.js';
+import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.js';
 import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
@@ -72,7 +72,7 @@ describe('ol.interaction.DragZoom', function() {
 
       var box = new _ol_render_Box_();
       var extent = [-110, 40, -90, 60];
-      box.geometry_ = Polygon.fromExtent(extent);
+      box.geometry_ = polygonFromExtent(extent);
       interaction.box_ = box;
 
       interaction.onBoxEnd();
@@ -94,7 +94,7 @@ describe('ol.interaction.DragZoom', function() {
 
       var box = new _ol_render_Box_();
       var extent = [-11.25, -11.25, 11.25, 11.25];
-      box.geometry_ = Polygon.fromExtent(extent);
+      box.geometry_ = polygonFromExtent(extent);
       interaction.box_ = box;
 
       map.getView().setResolution(0.25);

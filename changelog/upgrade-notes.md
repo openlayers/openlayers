@@ -35,6 +35,52 @@ register(proj4);
 
 The map and sources no longer accept a `logo` option.  Instead, if you wish to append a logo to your map, add the desired markup directly in your HTML.  In addition, you can use the `attributions` property of a source to display arbitrary markup per-source with the attribution control.
 
+#### Replacement of `ol/Sphere` constructor with `ol/sphere` functions
+
+The `ol/Sphere` constructor has been removed.  If you were using the `getGeodesicArea` method, use the `getArea` function instead.  If you were using the `haversineDistance` method, use the `getDistance` function instead.
+
+Examples before:
+```js
+// using ol@4
+import Sphere from 'ol/sphere';
+
+var sphere = new Sphere(Sphere.DEFAULT_RADIUS);
+var area = sphere.getGeodesicArea(polygon);
+var distance = sphere.haversineDistance(g1, g2);
+```
+
+Examples after:
+```js
+// using ol@5
+import {circular as circularPolygon} from 'ol/geom/Polygon';
+import {getArea, getDistance} from 'ol/sphere';
+
+var area = getArea(polygon);
+var distance = getDistance(g1, g2);
+var circle = circularPolygon(center, radius);
+```
+
+#### New signature for the `circular` function for creating polygons
+
+The `circular` function exported from `ol/geom/Polygon` no longer requires a `Sphere` as the first argument.
+
+Example before:
+```js
+// using ol@4
+import Polygon from 'ol/geom/polygon';
+import Sphere from 'ol/sphere';
+
+var poly = Polygon.circular(new Sphere(Sphere.DEFAULT_RADIUS), center, radius);
+```
+
+Example after:
+```js
+// using ol@5
+import {circular as circularPolygon} from 'ol/geom/Polygon';
+
+var poly = circularPolygon(center, radius);
+```
+
 #### Removal of optional this arguments.
 
 The following methods did get the optional this (i.e. opt_this) arguments removed. Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
