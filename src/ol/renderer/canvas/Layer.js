@@ -101,14 +101,15 @@ _ol_renderer_canvas_Layer_.prototype.dispatchComposeEvent_ = function(type, cont
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-_ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
+_ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, TRUE, this);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);

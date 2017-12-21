@@ -207,7 +207,7 @@ _ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+_ol_renderer_canvas_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, hitTolerance, callback, thisArg,
     layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -227,7 +227,7 @@ _ol_renderer_canvas_Map_.prototype.forEachLayerAtPixel = function(pixel, frameSt
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(
-          coordinate, frameState, callback, thisArg);
+          coordinate, frameState, hitTolerance, callback, thisArg);
       if (result) {
         return result;
       }
