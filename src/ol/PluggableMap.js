@@ -113,7 +113,7 @@ var _ol_PluggableMap_ = function(options) {
 
   _ol_Object_.call(this);
 
-  var optionsInternal = _ol_PluggableMap_.createOptionsInternal(options);
+  var optionsInternal = createOptionsInternal(options);
 
   /**
    * @type {boolean}
@@ -1377,7 +1377,7 @@ _ol_PluggableMap_.prototype.unskipFeature = function(feature) {
  * @type {Array.<ol.renderer.Type>}
  * @const
  */
-_ol_PluggableMap_.DEFAULT_RENDERER_TYPES = [
+var DEFAULT_RENDERER_TYPES = [
   RendererType.CANVAS,
   RendererType.WEBGL
 ];
@@ -1387,7 +1387,7 @@ _ol_PluggableMap_.DEFAULT_RENDERER_TYPES = [
  * @param {MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
-_ol_PluggableMap_.createOptionsInternal = function(options) {
+function createOptionsInternal(options) {
 
   /**
    * @type {Element|Document}
@@ -1427,10 +1427,10 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
       assert(false, 46); // Incorrect format for `renderer` option
     }
     if (rendererTypes.indexOf(/** @type {ol.renderer.Type} */ ('dom')) >= 0) {
-      rendererTypes = rendererTypes.concat(_ol_PluggableMap_.DEFAULT_RENDERER_TYPES);
+      rendererTypes = rendererTypes.concat(DEFAULT_RENDERER_TYPES);
     }
   } else {
-    rendererTypes = _ol_PluggableMap_.DEFAULT_RENDERER_TYPES;
+    rendererTypes = DEFAULT_RENDERER_TYPES;
   }
 
   /**
@@ -1498,5 +1498,5 @@ _ol_PluggableMap_.createOptionsInternal = function(options) {
     values: values
   };
 
-};
+}
 export default _ol_PluggableMap_;
