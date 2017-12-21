@@ -48,10 +48,9 @@ inherits(SimpleGeometry, Geometry);
 
 /**
  * @param {number} stride Stride.
- * @private
  * @return {ol.geom.GeometryLayout} layout Layout.
  */
-SimpleGeometry.getLayoutForStride_ = function(stride) {
+function getLayoutForStride(stride) {
   var layout;
   if (stride == 2) {
     layout = GeometryLayout.XY;
@@ -61,7 +60,7 @@ SimpleGeometry.getLayoutForStride_ = function(stride) {
     layout = GeometryLayout.XYZM;
   }
   return /** @type {ol.geom.GeometryLayout} */ (layout);
-};
+}
 
 
 /**
@@ -242,7 +241,7 @@ SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
       }
     }
     stride = coordinates.length;
-    layout = SimpleGeometry.getLayoutForStride_(stride);
+    layout = getLayoutForStride(stride);
   }
   this.layout = layout;
   this.stride = stride;
