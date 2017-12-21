@@ -1,6 +1,7 @@
 goog.provide('ol.style.Monochrome');
 
 goog.require('ol');
+goog.require('ol.math');
 
 if (ol.ENABLE_COVERAGE) {
 
@@ -36,6 +37,12 @@ if (ol.ENABLE_COVERAGE) {
      * @type {number|undefined}
      */
     this.band_ = options.band;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.checksum_ = undefined;
   };
 
 
@@ -43,7 +50,7 @@ if (ol.ENABLE_COVERAGE) {
    * @return {ol.style.Monochrome} Default raster style.
    */
   ol.style.Monochrome.defaultStyle = function() {
-    return new ol.style.Monochrome();
+    return new ol.style.Monochrome({band: 0});
   };
 
 
@@ -98,6 +105,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Monochrome.prototype.setMin = function(min) {
     this.min_ = min;
+    this.checksum_ = undefined;
   };
 
 
@@ -108,6 +116,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Monochrome.prototype.setMax = function(max) {
     this.max_ = max;
+    this.checksum_ = undefined;
   };
 
 
@@ -118,6 +127,77 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Monochrome.prototype.setBandIndex = function(band) {
     this.band_ = band;
+    this.checksum_ = undefined;
+  };
+
+
+  /**
+   * Fill missing values from band statistics.
+   * @param {Array.<ol.coverage.Band>} bands Coverage bands.
+   */
+  ol.style.Monochrome.prototype.fillMissingValues = function(bands) {
+    var bandIndex = this.getBandIndex();
+    if (bandIndex !== undefined && bands[bandIndex]) {
+      var bandStat = bands[bandIndex].getStatistics();
+      if (!this.getMin() && bandStat.min) {
+        this.setMin(bandStat.min);
+      }
+      if (!this.getMax() && bandStat.max) {
+        this.setMax(bandStat.max);
+      }
+    }
+  };
+
+
+  /**
+   * Apply this style to the specified matrix.
+   * @param {Array.<number>|ol.TypedArray} matrix Input matrix.
+   * @param {number} nodata NoData value.
+   * @return {Array.<number>} Styled interleaved matrix.
+   */
+  ol.style.Monochrome.prototype.apply = function(matrix, nodata) {
+    var interleaved = [];
+    var k = 0;
+    var i, ii;
+    var min = this.getMin();
+    if (typeof min !== 'number') {
+      min = Math.min.apply(matrix);
+    }
+    var max = this.getMax();
+    if (typeof max !== 'number') {
+      max = Math.max.apply(matrix);
+    }
+    var range = max - min;
+
+    for (i = 0, ii = matrix.length; i < ii; ++i) {
+      var lerp = (matrix[i] - min) / range;
+      var value = ol.math.clamp(Math.round(255 * lerp), 0, 255);
+
+      interleaved[k++] = value;
+      interleaved[k++] = value;
+      interleaved[k++] = value;
+      interleaved[k++] = matrix[i] === nodata ? 0 : 255;
+    }
+    return interleaved;
+  };
+
+
+  /**
+   * @return {string} The checksum.
+   */
+  ol.style.Monochrome.prototype.getChecksum = function() {
+    if (this.checksum_ === undefined) {
+      this.checksum_ = 'm';
+      if (this.getBandIndex() !== undefined) {
+        this.checksum_ += this.getBandIndex().toString() + ',' +
+        (this.getMin() !== undefined ? this.getMin().toString() : '-') + ',' +
+        (this.getMax() !== undefined ? this.getMax().toString() : '-');
+      } else {
+        this.checksum_ += '-';
+      }
+    }
+
+    return this.checksum_;
   };
 
 }

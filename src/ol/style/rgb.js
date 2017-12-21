@@ -1,6 +1,7 @@
 goog.provide('ol.style.RGB');
 
 goog.require('ol');
+goog.require('ol.math');
 goog.require('ol.style.Monochrome');
 
 if (ol.ENABLE_COVERAGE) {
@@ -36,6 +37,7 @@ if (ol.ENABLE_COVERAGE) {
      * @type {ol.style.Monochrome}
      */
     this.blue_ = options.blue ? options.blue : ol.style.Monochrome.defaultStyle();
+
   };
 
 
@@ -50,6 +52,17 @@ if (ol.ENABLE_COVERAGE) {
       green: this.green_,
       blue: this.blue_
     });
+  };
+
+
+  /**
+   * Returns the component band indices in RGB order.
+   * @return {Array.<number>} Band indices.
+   * @api
+   */
+  ol.style.RGB.prototype.getBandIndex = function() {
+    return [this.getRed().getBandIndex(), this.getGreen().getBandIndex(),
+      this.getBlue().getBandIndex()];
   };
 
 
@@ -110,6 +123,73 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.RGB.prototype.setBlue = function(blue) {
     this.blue_ = blue;
+  };
+
+
+  /**
+   * Fill missing values from band statistics.
+   * @param {Array.<ol.coverage.Band>} bands Coverage bands.
+   */
+  ol.style.RGB.prototype.fillMissingValues = function(bands) {
+    this.getRed().fillMissingValues(bands);
+    this.getGreen().fillMissingValues(bands);
+    this.getBlue().fillMissingValues(bands);
+  };
+
+
+  /**
+   * Apply this style to the specified matrices.
+   * @param {Array.<Array.<number>|ol.TypedArray>} matrices Aligned matrices in
+   * RGB order. If a channel is missing, the order still needs to be kept (e.g. RB).
+   * @param {Array.<number>} nodata NoData values.
+   * @return {Array.<number>} Styled interleaved matrix.
+   */
+  ol.style.RGB.prototype.apply = function(matrices, nodata) {
+    var bandIndices = this.getBandIndex();
+    var i, ii;
+    for (i = 0; i < 3; ++i) {
+      if (bandIndices[i] === undefined) {
+        matrices.splice(i, 0, undefined);
+        nodata.splice(i, 0, undefined);
+      }
+    }
+
+    var refMatrix = matrices[0] ? matrices[0] : matrices[1] ? matrices[1] : matrices[2]
+      ? matrices[2] : [];
+
+    var interleaved = [];
+    var k = 0;
+    var redMin = this.getRed().getMin();
+    var redMax = this.getRed().getMax();
+    var greenMin = this.getGreen().getMin();
+    var greenMax = this.getGreen().getMax();
+    var blueMin = this.getBlue().getMin();
+    var blueMax = this.getBlue().getMax();
+
+    for (i = 0, ii = refMatrix.length; i < ii; ++i) {
+      var redLerp = matrices[0] ? (matrices[0][i] - redMin) / (redMax - redMin) : 0;
+      var greenLerp = matrices[1] ? (matrices[1][i] - greenMin) / (greenMax - greenMin) : 0;
+      var blueLerp = matrices[2] ? (matrices[2][i] - blueMin) / (blueMax - blueMin) : 0;
+
+      var redNodata = matrices[0] ? matrices[0][i] === nodata[0] : true;
+      var greenNodata = matrices[1] ? matrices[1][i] === nodata[1] : true;
+      var blueNodata = matrices[2] ? matrices[2][i] === nodata[2] : true;
+
+      interleaved[k++] = ol.math.clamp(Math.round(255 * redLerp), 0, 255);
+      interleaved[k++] = ol.math.clamp(Math.round(255 * greenLerp), 0, 255);
+      interleaved[k++] = ol.math.clamp(Math.round(255 * blueLerp), 0, 255);
+      interleaved[k++] = redNodata && greenNodata && blueNodata ? 1 : 0;
+    }
+    return interleaved;
+  };
+
+
+  /**
+   * @return {string} The checksum.
+   */
+  ol.style.RGB.prototype.getChecksum = function() {
+    return 'r' + this.getRed().getChecksum() + 'g' +
+      this.getGreen().getChecksum() + 'b' + this.getBlue().getChecksum();
   };
 
 }

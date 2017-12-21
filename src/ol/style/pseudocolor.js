@@ -1,8 +1,10 @@
+//FIXME: Implement breakpoint logic with better breakpoint management.
 goog.provide('ol.style.Pseudocolor');
 
 goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.color');
+goog.require('ol.math');
 goog.require('ol.obj');
 goog.require('ol.style.PseudocolorMode');
 
@@ -67,6 +69,12 @@ if (ol.ENABLE_COVERAGE) {
      */
     this.breakpoints_ = options.breakpoints !== undefined ? options.breakpoints :
       null;
+
+    /**
+     * @private
+     * @type {string|undefined}
+     */
+    this.checksum_ = undefined;
   };
 
 
@@ -109,7 +117,7 @@ if (ol.ENABLE_COVERAGE) {
       startColor: startCol,
       endColor: endCol,
       mode: this.getMode(),
-      breakpoints: breakpoints || newBreakpoints
+      breakpoints: breakpoints ? newBreakpoints : breakpoints
     });
   };
 
@@ -191,6 +199,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Pseudocolor.prototype.setMin = function(min) {
     this.min_ = min;
+    this.checksum_ = undefined;
   };
 
 
@@ -201,6 +210,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Pseudocolor.prototype.setMax = function(max) {
     this.max_ = max;
+    this.checksum_ = undefined;
   };
 
 
@@ -211,6 +221,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Pseudocolor.prototype.setBandIndex = function(band) {
     this.band_ = band;
+    this.checksum_ = undefined;
   };
 
 
@@ -221,6 +232,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Pseudocolor.prototype.setStartColor = function(color) {
     this.startColor_ = color;
+    this.checksum_ = undefined;
   };
 
 
@@ -231,6 +243,7 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Pseudocolor.prototype.setEndColor = function(color) {
     this.endColor_ = color;
+    this.checksum_ = undefined;
   };
 
 
@@ -243,6 +256,7 @@ if (ol.ENABLE_COVERAGE) {
     var valid = ol.obj.getValues(ol.style.PseudocolorMode);
     ol.asserts.assert(valid.indexOf(mode) !== -1, 62);
     this.mode_ = mode;
+    this.checksum_ = undefined;
   };
 
 
@@ -253,6 +267,94 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.style.Pseudocolor.prototype.setBreakpoints = function(breakpoints) {
     this.breakpoints_ = breakpoints;
+    this.checksum_ = undefined;
+  };
+
+
+  /**
+   * Fill missing values from band statistics.
+   * @param {Array.<ol.coverage.Band>} bands Coverage bands.
+   */
+  ol.style.Pseudocolor.prototype.fillMissingValues = function(bands) {
+    var bandIndex = this.getBandIndex();
+    if (bandIndex !== undefined && bands[bandIndex]) {
+      var bandStat = bands[bandIndex].getStatistics();
+      if (!this.getMin() && bandStat.min) {
+        this.setMin(bandStat.min);
+      }
+      if (!this.getMax() && bandStat.max) {
+        this.setMax(bandStat.max);
+      }
+    }
+  };
+
+
+  /**
+   * Apply this style to the specified matrix.
+   * @param {Array.<number>|ol.TypedArray} matrix Input matrix.
+   * @param {number} nodata NoData value.
+   * @return {Array.<number>} Styled interleaved matrix.
+   */
+  ol.style.Pseudocolor.prototype.apply = function(matrix, nodata) {
+    var interleaved = [];
+    var k = 0;
+    var i, ii;
+    var min = this.getMin();
+    if (typeof min !== 'number') {
+      min = Math.min.apply(matrix);
+    }
+    var max = this.getMax();
+    if (typeof max !== 'number') {
+      max = Math.max.apply(matrix);
+    }
+    var range = max - min;
+    var sColor = ol.color.asArray(this.getStartColor());
+    var eColor = ol.color.asArray(this.getEndColor());
+
+    for (i = 0, ii = matrix.length; i < ii; ++i) {
+      var lerp = (matrix[i] - min) / (range);
+
+      interleaved[k++] = ol.math.lerp(sColor[0], eColor[0], lerp);
+      interleaved[k++] = ol.math.lerp(sColor[1], eColor[1], lerp);
+      interleaved[k++] = ol.math.lerp(sColor[2], eColor[2], lerp);
+      interleaved[k++] = matrix[i] === nodata ? 0 : 255;
+    }
+    return interleaved;
+  };
+
+
+  /**
+   * @return {string} The checksum.
+   */
+  ol.style.Pseudocolor.prototype.getChecksum = function() {
+    if (this.checksum_ === undefined) {
+      this.checksum_ = 'p';
+      if (this.getBandIndex() !== undefined) {
+        this.checksum_ += this.getBandIndex().toString() + ',' +
+        this.getMode() + ',' +
+        this.getMin() !== undefined ? this.getMin().toString() : '-' + ',' +
+        this.getStartColor() ? ol.color.asString(this.getStartColor()) : '-' + ',' +
+        this.getMax() !== undefined ? this.getMax().toString() : '-' +
+        this.getEndColor() ? ol.color.asString(this.getEndColor()) : '-' + ',';
+        if (this.getBreakpoints()) {
+          var i, ii;
+          var breakpoints = this.getBreakpoints();
+          this.checksum_ += '(';
+          for (i = 0, ii = breakpoints.length; i < ii; ++i) {
+            this.checksum_ += breakpoints[i].value.toString() + ',' +
+            ol.color.asString(breakpoints[i].color) + ',';
+          }
+          this.checksum_ = this.checksum_.slice(0, -1);
+          this.checksum_ += ')';
+        } else {
+          this.checksum_ += '-';
+        }
+      } else {
+        this.checksum_ += '-';
+      }
+    }
+
+    return this.checksum_;
   };
 
 }
