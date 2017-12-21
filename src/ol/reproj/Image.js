@@ -25,9 +25,10 @@ import Triangulation from '../reproj/Triangulation.js';
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ReprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
+ * @param {boolean=} opt_smooth Smooth the reprojected image.
  */
 const ReprojImage = function(sourceProj, targetProj,
-  targetExtent, targetResolution, pixelRatio, getImageFunction) {
+  targetExtent, targetResolution, pixelRatio, getImageFunction, opt_smooth) {
 
   /**
    * @private
@@ -99,6 +100,12 @@ const ReprojImage = function(sourceProj, targetProj,
    */
   this.sourceListenerKey_ = null;
 
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.smooth_ = opt_smooth;
+
 
   let state = ImageState.LOADED;
 
@@ -153,7 +160,7 @@ ReprojImage.prototype.reproject_ = function() {
       this.targetResolution_, this.targetExtent_, this.triangulation_, [{
         extent: this.sourceImage_.getExtent(),
         image: this.sourceImage_.getImage()
-      }], 0);
+      }], 0, undefined, this.smooth_);
   }
   this.state = sourceState;
   this.changed();

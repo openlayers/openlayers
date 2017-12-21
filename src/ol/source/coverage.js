@@ -269,7 +269,7 @@ if (ol.ENABLE_COVERAGE) {
           sourceProjection, projection, extent, resolution, pixelRatio,
           function(extent, resolution, pixelRatio) {
             return this.getImageInternal(extent, resolution, pixelRatio);
-          }.bind(this));
+          }.bind(this), false);
       this.reprojectedRevision_ = this.getRevision();
 
       return this.reprojectedImage_;

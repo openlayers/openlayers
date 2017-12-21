@@ -88,14 +88,23 @@ function enlargeClipPoint(centroidX, centroidY, x, y) {
  * Array of sources.
  * @param {number} gutter Gutter of the sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.
+ * @param {boolean=} opt_smooth Smooth the reprojected image.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 export function render(width, height, pixelRatio,
   sourceResolution, sourceExtent, targetResolution, targetExtent,
-  triangulation, sources, gutter, opt_renderEdges) {
+  triangulation, sources, gutter, opt_renderEdges, opt_smooth) {
 
   const context = createCanvasContext2D(Math.round(pixelRatio * width),
     Math.round(pixelRatio * height));
+
+  // Only change browser defaults, if explicitly stated.
+  if (typeof opt_smooth === 'boolean') {
+    context.mozImageSmoothingEnabled = opt_smooth;
+    context.webkitImageSmoothingEnabled = opt_smooth;
+    context.msImageSmoothingEnabled = opt_smooth;
+    context.imageSmoothingEnabled = opt_smooth;
+  }
 
   if (sources.length === 0) {
     return context.canvas;
