@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_PluggableMap_ from '../PluggableMap.js';
+import PluggableMap from '../PluggableMap.js';
 import MapEventType from '../MapEventType.js';
 import _ol_MapProperty_ from '../MapProperty.js';
 import _ol_Object_ from '../Object.js';
@@ -115,7 +115,7 @@ var OverviewMap = function(opt_options) {
    * @type {ol.PluggableMap}
    * @private
    */
-  this.ovmap_ = new _ol_PluggableMap_({
+  this.ovmap_ = new PluggableMap({
     controls: new _ol_Collection_(),
     interactions: new _ol_Collection_(),
     view: options.view
