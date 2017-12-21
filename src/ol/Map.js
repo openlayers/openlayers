@@ -41,7 +41,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * The map is the core component of OpenLayers. For a map to render, a view,
  * one or more layers, and a target container are needed:
  *
- *     var map = new ol.Map({
+ *     var map = new Map({
  *       view: new ol.View({
  *         center: [0, 0],
  *         zoom: 1
@@ -84,7 +84,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * @fires ol.render.Event#precompose
  * @api
  */
-var _ol_Map_ = function(options) {
+var Map = function(options) {
   options = _ol_obj_.assign({}, options);
   if (!options.controls) {
     options.controls = defaultControls();
@@ -96,6 +96,6 @@ var _ol_Map_ = function(options) {
   PluggableMap.call(this, options);
 };
 
-inherits(_ol_Map_, PluggableMap);
+inherits(Map, PluggableMap);
 
-export default _ol_Map_;
+export default Map;
