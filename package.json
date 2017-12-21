@@ -32,7 +32,7 @@
   "dependencies": {
     "pbf": "3.1.0",
     "pixelworks": "1.1.0",
-    "rbush": "2.0.1"
+    "rbush": "2.0.2"
   },
   "devDependencies": {
     "async": "2.6.0",
