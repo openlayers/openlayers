@@ -240,3 +240,7 @@ Either raw coverage content, or a valid URL must be supplied.
 ### 64
 
 GeoTIFF.js must be loaded in order to parse GeoTIFF coverages.
+
+### 65
+
+Invalid Pseudocolor breakpoint. A breakpoint must be an array with two elements. The first element must be a value, and the second one a valid color representation.

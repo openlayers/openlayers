@@ -1,8 +1,9 @@
-//FIXME: Implement breakpoint logic with better breakpoint management.
 goog.provide('ol.style.Pseudocolor');
 
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.asserts');
+goog.require('ol.Collection');
 goog.require('ol.color');
 goog.require('ol.math');
 goog.require('ol.obj');
@@ -65,10 +66,16 @@ if (ol.ENABLE_COVERAGE) {
 
     /**
      * @private
-     * @type {Array.<ol.PseudocolorMap>}
+     * @type {ol.Collection}
      */
-    this.breakpoints_ = options.breakpoints !== undefined ? options.breakpoints :
-      null;
+    this.breakpoints_ = new ol.Collection();
+
+    if (Array.isArray(options.breakpoints)) {
+      var i, ii;
+      for (i = 0, ii = options.breakpoints.length; i < ii; ++i) {
+        this.addBreakpoint(options.breakpoints[i]);
+      }
+    }
 
     /**
      * @private
@@ -79,16 +86,41 @@ if (ol.ENABLE_COVERAGE) {
 
 
   /**
-   * Converts a breakpoint value and a color to a color map.
-   * @param {number} value Breakpoint value.
-   * @param {ol.Color|string} color Breakpoint color.
-   * @return {ol.PseudocolorMap} Color map.
+   * Adds a breakpoint to the breakpoint list.
+   * @param {ol.PseudocolorMap} breakpoint Breakpoint.
+   * @api
    */
-  ol.style.Pseudocolor.createColorMap = function(value, color) {
-    return {
-      value: value,
-      color: color
-    };
+  ol.style.Pseudocolor.prototype.addBreakpoint = function(breakpoint) {
+    ol.asserts.assert(Array.isArray(breakpoint) && breakpoint.length === 2 &&
+        typeof breakpoint[0] === 'number', 65);
+    this.breakpoints_.push([breakpoint[0], ol.color.asArray(breakpoint[1])]);
+    this.checksum_ = undefined;
+  };
+
+
+  /**
+   * Removes a provided breakpoint or the breakpoint at the provided index.
+   * @param {ol.PseudocolorMap|number} breakpoint Breakpoint element or index.
+   * @api
+   */
+  ol.style.Pseudocolor.prototype.removeBreakpoint = function(breakpoint) {
+    if (Array.isArray(breakpoint)) {
+      this.breakpoints_.remove(breakpoint);
+      this.checksum_ = undefined;
+    } else if (breakpoint) {
+      this.breakpoints_.removeAt(breakpoint);
+      this.checksum_ = undefined;
+    }
+  };
+
+
+  /**
+   * Clears the breakpoint list associated with this style.
+   * @api
+   */
+  ol.style.Pseudocolor.prototype.clearBreakpoints = function() {
+    this.breakpoints_.clear();
+    this.checksum_ = undefined;
   };
 
 
@@ -100,12 +132,11 @@ if (ol.ENABLE_COVERAGE) {
   ol.style.Pseudocolor.prototype.clone = function() {
     var breakpoints = this.getBreakpoints();
     var newBreakpoints = [];
-    if (breakpoints && breakpoints.length) {
+    if (breakpoints.length) {
       for (var i = 0; i < breakpoints.length; ++i) {
         var breakpoint = breakpoints[i];
-        var colorArr = ol.color.asArray(breakpoint.color).slice(0);
-        newBreakpoints.push(ol.style.Pseudocolor.createColorMap(breakpoint.value,
-            colorArr));
+        var colorArr = breakpoint.color.slice();
+        newBreakpoints.push([breakpoint[0], colorArr]);
       }
     }
     var startCol = ol.color.asArray(this.startColor_).slice(0);
@@ -117,7 +148,7 @@ if (ol.ENABLE_COVERAGE) {
       startColor: startCol,
       endColor: endCol,
       mode: this.getMode(),
-      breakpoints: breakpoints ? newBreakpoints : breakpoints
+      breakpoints: newBreakpoints
     });
   };
 
@@ -188,7 +219,7 @@ if (ol.ENABLE_COVERAGE) {
    * @api
    */
   ol.style.Pseudocolor.prototype.getBreakpoints = function() {
-    return this.breakpoints_;
+    return this.breakpoints_.getArray().slice();
   };
 
 
@@ -261,17 +292,6 @@ if (ol.ENABLE_COVERAGE) {
 
 
   /**
-   * Set the additional breakpoints.
-   * @param {Array.<ol.PseudocolorMap>} breakpoints Breakpoints.
-   * @api
-   */
-  ol.style.Pseudocolor.prototype.setBreakpoints = function(breakpoints) {
-    this.breakpoints_ = breakpoints;
-    this.checksum_ = undefined;
-  };
-
-
-  /**
    * Fill missing values from band statistics.
    * @param {Array.<ol.coverage.Band>} bands Coverage bands.
    */
@@ -298,7 +318,7 @@ if (ol.ENABLE_COVERAGE) {
   ol.style.Pseudocolor.prototype.apply = function(matrix, nodata) {
     var interleaved = [];
     var k = 0;
-    var i, ii;
+    var i, ii, j, jj;
     var min = this.getMin();
     if (typeof min !== 'number') {
       min = Math.min.apply(matrix);
@@ -307,17 +327,37 @@ if (ol.ENABLE_COVERAGE) {
     if (typeof max !== 'number') {
       max = Math.max.apply(matrix);
     }
-    var range = max - min;
-    var sColor = ol.color.asArray(this.getStartColor());
-    var eColor = ol.color.asArray(this.getEndColor());
+    var intervals = this.createIntervals_(min, max);
+    jj = intervals.length;
+    var categorized = this.getMode() === ol.style.PseudocolorMode.CATEGORIZED;
 
     for (i = 0, ii = matrix.length; i < ii; ++i) {
-      var lerp = (matrix[i] - min) / (range);
-
-      interleaved[k++] = ol.math.lerp(sColor[0], eColor[0], lerp);
-      interleaved[k++] = ol.math.lerp(sColor[1], eColor[1], lerp);
-      interleaved[k++] = ol.math.lerp(sColor[2], eColor[2], lerp);
-      interleaved[k++] = matrix[i] === nodata ? 0 : 255;
+      if (matrix[i] < min || matrix[i] > max) {
+        interleaved[k++] = 0;
+        interleaved[k++] = 0;
+        interleaved[k++] = 0;
+        interleaved[k++] = 0;
+      } else {
+        for (j = 0; j < jj; ++j) {
+          if (matrix[i] <= intervals[j].higher[0]) {
+            if (categorized) {
+              interleaved[k++] = intervals[j].lower[1][0];
+              interleaved[k++] = intervals[j].lower[1][1];
+              interleaved[k++] = intervals[j].lower[1][2];
+            } else {
+              var lerp = (matrix[i] - intervals[j].lower[0]) / intervals[j].range;
+              interleaved[k++] = ol.math.lerp(intervals[j].lower[1][0],
+                  intervals[j].higher[1][0], lerp);
+              interleaved[k++] = ol.math.lerp(intervals[j].lower[1][1],
+                  intervals[j].higher[1][1], lerp);
+              interleaved[k++] = ol.math.lerp(intervals[j].lower[1][2],
+                  intervals[j].higher[1][2], lerp);
+            }
+            interleaved[k++] = matrix[i] === nodata ? 0 : 255;
+            break;
+          }
+        }
+      }
     }
     return interleaved;
   };
@@ -336,13 +376,13 @@ if (ol.ENABLE_COVERAGE) {
         this.getStartColor() ? ol.color.asString(this.getStartColor()) : '-' + ',' +
         this.getMax() !== undefined ? this.getMax().toString() : '-' +
         this.getEndColor() ? ol.color.asString(this.getEndColor()) : '-' + ',';
-        if (this.getBreakpoints()) {
+        if (this.getBreakpoints().length) {
           var i, ii;
           var breakpoints = this.getBreakpoints();
           this.checksum_ += '(';
           for (i = 0, ii = breakpoints.length; i < ii; ++i) {
-            this.checksum_ += breakpoints[i].value.toString() + ',' +
-            ol.color.asString(breakpoints[i].color) + ',';
+            this.checksum_ += breakpoints[i][0].toString() + ',' +
+            ol.color.asString(breakpoints[i][1]) + ',';
           }
           this.checksum_ = this.checksum_.slice(0, -1);
           this.checksum_ += ')';
@@ -355,6 +395,45 @@ if (ol.ENABLE_COVERAGE) {
     }
 
     return this.checksum_;
+  };
+
+
+  /**
+   * @private
+   * @param {number} min Min.
+   * @param {number} max Max.
+   * @return {Array.<ol.PseudocolorInterval>} Intervals.
+   */
+  ol.style.Pseudocolor.prototype.createIntervals_ = function(min, max) {
+    var intervals = [];
+    var sColor = ol.color.asArray(this.getStartColor());
+    var eColor = ol.color.asArray(this.getEndColor());
+    var prev = [min, sColor];
+    var i, ii;
+    var breakpoints = this.getBreakpoints();
+    if (breakpoints.length) {
+      ol.array.stableSort(breakpoints, function(a, b) {
+        return a[0] - b[0];
+      });
+      for (i = 0, ii = breakpoints.length; i < ii; ++i) {
+        var p = breakpoints[i];
+        // Start and end colors take precedence.
+        if (p[0] > min && p[0] < max) {
+          intervals.push({
+            lower: prev,
+            higher: p,
+            range: p[0] - prev[0]
+          });
+          prev = p;
+        }
+      }
+    }
+    intervals.push({
+      lower: prev,
+      higher: [max, eColor],
+      range: max - prev[0]
+    });
+    return intervals;
   };
 
 }

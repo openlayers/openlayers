@@ -303,9 +303,16 @@ ol.PreRenderFunction;
 
 
 /**
+ * @typedef {{lower: ol.PseudocolorMap,
+ *            higher: ol.PseudocolorMap,
+ *            range: number}}
+ */
+ol.PseudocolorInterval;
+
+
+/**
  * A color map representing a single break.
- * @typedef {{value: number,
- *            color: (ol.Color|string)}}
+ * @typedef {Array.<ol.Color,number>}
  */
 ol.PseudocolorMap;
 
