@@ -18,7 +18,7 @@ import EventType from './events/EventType.js';
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var _ol_ImageTile_ = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+var ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
   _ol_Tile_.call(this, tileCoord, state, opt_options);
 
@@ -59,16 +59,16 @@ var _ol_ImageTile_ = function(tileCoord, state, src, crossOrigin, tileLoadFuncti
 
 };
 
-inherits(_ol_ImageTile_, _ol_Tile_);
+inherits(ImageTile, _ol_Tile_);
 
 
 /**
  * @inheritDoc
  */
-_ol_ImageTile_.prototype.disposeInternal = function() {
+ImageTile.prototype.disposeInternal = function() {
   if (this.state == TileState.LOADING) {
     this.unlistenImage_();
-    this.image_ = _ol_ImageTile_.getBlankImage();
+    this.image_ = ImageTile.getBlankImage();
   }
   if (this.interimTile) {
     this.interimTile.dispose();
@@ -84,7 +84,7 @@ _ol_ImageTile_.prototype.disposeInternal = function() {
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  * @api
  */
-_ol_ImageTile_.prototype.getImage = function() {
+ImageTile.prototype.getImage = function() {
   return this.image_;
 };
 
@@ -92,7 +92,7 @@ _ol_ImageTile_.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-_ol_ImageTile_.prototype.getKey = function() {
+ImageTile.prototype.getKey = function() {
   return this.src_;
 };
 
@@ -102,10 +102,10 @@ _ol_ImageTile_.prototype.getKey = function() {
  *
  * @private
  */
-_ol_ImageTile_.prototype.handleImageError_ = function() {
+ImageTile.prototype.handleImageError_ = function() {
   this.state = TileState.ERROR;
   this.unlistenImage_();
-  this.image_ = _ol_ImageTile_.getBlankImage();
+  this.image_ = ImageTile.getBlankImage();
   this.changed();
 };
 
@@ -115,7 +115,7 @@ _ol_ImageTile_.prototype.handleImageError_ = function() {
  *
  * @private
  */
-_ol_ImageTile_.prototype.handleImageLoad_ = function() {
+ImageTile.prototype.handleImageLoad_ = function() {
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
     this.state = TileState.LOADED;
   } else {
@@ -130,7 +130,7 @@ _ol_ImageTile_.prototype.handleImageLoad_ = function() {
  * @inheritDoc
  * @api
  */
-_ol_ImageTile_.prototype.load = function() {
+ImageTile.prototype.load = function() {
   if (this.state == TileState.ERROR) {
     this.state = TileState.IDLE;
     this.image_ = new Image();
@@ -157,7 +157,7 @@ _ol_ImageTile_.prototype.load = function() {
  *
  * @private
  */
-_ol_ImageTile_.prototype.unlistenImage_ = function() {
+ImageTile.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
@@ -167,10 +167,10 @@ _ol_ImageTile_.prototype.unlistenImage_ = function() {
  * Get a 1-pixel blank image.
  * @return {HTMLCanvasElement} Blank image.
  */
-_ol_ImageTile_.getBlankImage = function() {
+ImageTile.getBlankImage = function() {
   var ctx = createCanvasContext2D(1, 1);
   ctx.fillStyle = 'rgba(0,0,0,0)';
   ctx.fillRect(0, 0, 1, 1);
   return ctx.canvas;
 };
-export default _ol_ImageTile_;
+export default ImageTile;

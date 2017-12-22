@@ -1,4 +1,4 @@
-import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
+import ImageTile from '../../../../src/ol/ImageTile.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
@@ -31,7 +31,7 @@ describe('ol.reproj.Tile', function() {
         proj3857, _ol_tilegrid_.createForProjection(proj3857), proj4326,
         _ol_tilegrid_.createForProjection(proj4326, 3, opt_tileSize),
         [3, 2, -2], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
-          return new _ol_ImageTile_([z, x, y], 0, // IDLE
+          return new ImageTile([z, x, y], 0, // IDLE
               'data:image/gif;base64,' +
               'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,
               function(tile, src) {

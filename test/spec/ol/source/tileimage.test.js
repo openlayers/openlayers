@@ -1,4 +1,4 @@
-import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
+import ImageTile from '../../../../src/ol/ImageTile.js';
 import TileState from '../../../../src/ol/TileState.js';
 import {createFromTemplate} from '../../../../src/ol/tileurlfunction.js';
 import _ol_events_ from '../../../../src/ol/events.js';
@@ -116,7 +116,7 @@ describe('ol.source.TileImage', function() {
     it('does not do reprojection for identity', function() {
       var source3857 = createSource('EPSG:3857');
       var tile3857 = source3857.getTile(0, 0, -1, 1, getProjection('EPSG:3857'));
-      expect(tile3857).to.be.a(_ol_ImageTile_);
+      expect(tile3857).to.be.a(ImageTile);
       expect(tile3857).not.to.be.a(_ol_reproj_Tile_);
 
       var projXXX = new _ol_proj_Projection_({
@@ -125,7 +125,7 @@ describe('ol.source.TileImage', function() {
       });
       var sourceXXX = createSource(projXXX);
       var tileXXX = sourceXXX.getTile(0, 0, -1, 1, projXXX);
-      expect(tileXXX).to.be.a(_ol_ImageTile_);
+      expect(tileXXX).to.be.a(ImageTile);
       expect(tileXXX).not.to.be.a(_ol_reproj_Tile_);
     });
 

@@ -1,5 +1,5 @@
 import {getUid} from '../../../src/ol/index.js';
-import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
+import ImageTile from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
 import TileState from '../../../src/ol/TileState.js';
 
@@ -58,11 +58,11 @@ describe('ol.Tile', function() {
     var head, renderTile;
     beforeEach(function() {
       var tileCoord = [0, 0, 0];
-      head = new _ol_ImageTile_(tileCoord, TileState.IDLE);
+      head = new ImageTile(tileCoord, TileState.IDLE);
       getUid(head);
 
       var addToChain = function(tile, state) {
-        var next = new _ol_ImageTile_(tileCoord, state);
+        var next = new ImageTile(tileCoord, state);
         getUid(next);
         tile.interimTile = next;
         return next;

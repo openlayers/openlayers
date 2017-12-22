@@ -1,4 +1,4 @@
-import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
+import ImageTile from '../../../src/ol/ImageTile.js';
 import TileState from '../../../src/ol/TileState.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import EventType from '../../../src/ol/events/EventType.js';
@@ -14,7 +14,7 @@ describe('ol.ImageTile', function() {
       var state = TileState.IDLE;
       var src = 'spec/ol/data/osm-0-0-0.png';
       var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
-      var tile = new _ol_ImageTile_(tileCoord, state, src, null, tileLoadFunction);
+      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       var previousState = tile.getState();
 
@@ -39,7 +39,7 @@ describe('ol.ImageTile', function() {
       var state = TileState.ERROR;
       var src = 'spec/ol/data/osm-0-0-0.png';
       var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
-      var tile = new _ol_ImageTile_(tileCoord, state, src, null, tileLoadFunction);
+      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       var previousState = tile.getState();
 
@@ -64,7 +64,7 @@ describe('ol.ImageTile', function() {
       var state = TileState.IDLE;
       var src = 'spec/ol/data/osm-0-0-99.png';
       var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
-      var tile = new _ol_ImageTile_(tileCoord, state, src, null, tileLoadFunction);
+      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       var key = _ol_events_.listen(tile, EventType.CHANGE, function(event) {
         var state = tile.getState();
@@ -90,12 +90,12 @@ describe('ol.ImageTile', function() {
       var state = TileState.IDLE;
       var src = 'spec/ol/data/osm-0-0-0.png';
       var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
-      var tile = new _ol_ImageTile_(tileCoord, state, src, null, tileLoadFunction);
+      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
       tile.load();
       expect(tile.getState()).to.be(TileState.LOADING);
       tile.dispose();
       expect(tile.getState()).to.be(TileState.ABORT);
-      expect(tile.getImage().src).to.be(_ol_ImageTile_.blankImageUrl);
+      expect(tile.getImage().src).to.be(ImageTile.blankImageUrl);
     });
 
   });

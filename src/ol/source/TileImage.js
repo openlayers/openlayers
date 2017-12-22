@@ -3,7 +3,7 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {getUid, inherits} from '../index.js';
-import _ol_ImageTile_ from '../ImageTile.js';
+import ImageTile from '../ImageTile.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
@@ -57,7 +57,7 @@ var _ol_source_TileImage_ = function(options) {
    *        ?string, ol.TileLoadFunctionType, olx.TileOptions=)}
    */
   this.tileClass = options.tileClass !== undefined ?
-    options.tileClass : _ol_ImageTile_;
+    options.tileClass : ImageTile;
 
   /**
    * @protected

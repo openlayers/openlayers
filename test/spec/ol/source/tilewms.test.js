@@ -1,4 +1,4 @@
-import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
+import ImageTile from '../../../../src/ol/ImageTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_TileWMS_ from '../../../../src/ol/source/TileWMS.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -39,7 +39,7 @@ describe('ol.source.TileWMS', function() {
     it('returns a tile with the expected URL', function() {
       var source = new _ol_source_TileWMS_(options);
       var tile = source.getTile(3, 2, -7, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(_ol_ImageTile_);
+      expect(tile).to.be.an(ImageTile);
       var uri = new URL(tile.src_);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.be('example.com');
@@ -68,7 +68,7 @@ describe('ol.source.TileWMS', function() {
       options.gutter = 16;
       var source = new _ol_source_TileWMS_(options);
       var tile = source.getTile(3, 2, -7, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.an(_ol_ImageTile_);
+      expect(tile).to.be.an(ImageTile);
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       var bbox = queryData.get('BBOX').split(',');
