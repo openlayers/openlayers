@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
-import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
+import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
 var projection = getProjection('EPSG:3857');
@@ -37,7 +37,7 @@ var map = new Map({
         matrixSet: 'EPSG:3857',
         format: 'image/png',
         projection: projection,
-        tileGrid: new _ol_tilegrid_WMTS_({
+        tileGrid: new WMTSTileGrid({
           origin: _ol_extent_.getTopLeft(projectionExtent),
           resolutions: resolutions,
           matrixIds: matrixIds

@@ -5,7 +5,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, get as getProjection} from '../src/ol/proj.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
-import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
+import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
 var map = new Map({
@@ -31,7 +31,7 @@ for (var i = 0; i < 18; i++) {
   resolutions[i] = maxResolution / Math.pow(2, i);
 }
 
-var tileGrid = new _ol_tilegrid_WMTS_({
+var tileGrid = new WMTSTileGrid({
   origin: [-20037508, 20037508],
   resolutions: resolutions,
   matrixIds: matrixIds

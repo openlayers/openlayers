@@ -8,8 +8,8 @@ import {containsExtent} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
-import _ol_source_WMTSRequestEncoding_ from '../source/WMTSRequestEncoding.js';
-import _ol_tilegrid_WMTS_ from '../tilegrid/WMTS.js';
+import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
+import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import _ol_uri_ from '../uri.js';
 
 /**
@@ -75,7 +75,7 @@ var _ol_source_WMTS_ = function(options) {
    */
   this.requestEncoding_ = options.requestEncoding !== undefined ?
     /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
-    _ol_source_WMTSRequestEncoding_.KVP;
+    WMTSRequestEncoding.KVP;
 
   var requestEncoding = this.requestEncoding_;
 
@@ -91,7 +91,7 @@ var _ol_source_WMTS_ = function(options) {
     'tilematrixset': this.matrixSet_
   };
 
-  if (requestEncoding == _ol_source_WMTSRequestEncoding_.KVP) {
+  if (requestEncoding == WMTSRequestEncoding.KVP) {
     _ol_obj_.assign(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
@@ -113,7 +113,7 @@ var _ol_source_WMTS_ = function(options) {
     // order conforms to wmts spec guidance, and so that we can avoid to escape
     // special template params
 
-    template = (requestEncoding == _ol_source_WMTSRequestEncoding_.KVP) ?
+    template = (requestEncoding == WMTSRequestEncoding.KVP) ?
       _ol_uri_.appendParams(template, context) :
       template.replace(/\{(\w+?)\}/g, function(m, p) {
         return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
@@ -137,7 +137,7 @@ var _ol_source_WMTS_ = function(options) {
           };
           _ol_obj_.assign(localContext, dimensions);
           var url = template;
-          if (requestEncoding == _ol_source_WMTSRequestEncoding_.KVP) {
+          if (requestEncoding == WMTSRequestEncoding.KVP) {
             url = _ol_uri_.appendParams(url, localContext);
           } else {
             url = url.replace(/\{(\w+?)\}/g, function(m, p) {
@@ -419,8 +419,7 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
     }
   }
 
-  var tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
-      matrixSetObj, extent, matrixLimits);
+  var tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj, extent, matrixLimits);
 
   /** @type {!Array.<string>} */
   var urls = [];
@@ -441,21 +440,21 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
           // requestEncoding not provided, use the first encoding from the list
           requestEncoding = encodings[0];
         }
-        if (requestEncoding === _ol_source_WMTSRequestEncoding_.KVP) {
-          if (includes(encodings, _ol_source_WMTSRequestEncoding_.KVP)) {
+        if (requestEncoding === WMTSRequestEncoding.KVP) {
+          if (includes(encodings, WMTSRequestEncoding.KVP)) {
             urls.push(/** @type {string} */ (gets[i]['href']));
           }
         } else {
           break;
         }
       } else if (gets[i]['href']) {
-        requestEncoding = _ol_source_WMTSRequestEncoding_.KVP;
+        requestEncoding = WMTSRequestEncoding.KVP;
         urls.push(/** @type {string} */ (gets[i]['href']));
       }
     }
   }
   if (urls.length === 0) {
-    requestEncoding = _ol_source_WMTSRequestEncoding_.REST;
+    requestEncoding = WMTSRequestEncoding.REST;
     l['ResourceURL'].forEach(function(element) {
       if (element['resourceType'] === 'tile') {
         format = element['format'];
