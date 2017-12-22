@@ -7,7 +7,7 @@
 import {inherits} from '../index.js';
 import {extend} from '../array.js';
 import _ol_Feature_ from '../Feature.js';
-import FeatureFormat from '../format/Feature.js';
+import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -205,7 +205,7 @@ GMLBase.prototype.readGeometryElement = function(node, objectStack) {
       this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (geometry) {
     return (
-      /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(geometry, false, context)
+      /** @type {ol.geom.Geometry} */ transformWithOptions(geometry, false, context)
     );
   } else {
     return undefined;

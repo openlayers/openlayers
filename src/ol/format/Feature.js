@@ -163,6 +163,7 @@ FeatureFormat.prototype.writeFeatures = function(features, opt_options) {};
  */
 FeatureFormat.prototype.writeGeometry = function(geometry, opt_options) {};
 
+export default FeatureFormat;
 
 /**
  * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
@@ -170,10 +171,8 @@ FeatureFormat.prototype.writeGeometry = function(geometry, opt_options) {};
  * @param {(olx.format.WriteOptions|olx.format.ReadOptions)=} opt_options
  *     Options.
  * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
- * @protected
  */
-FeatureFormat.transformWithOptions = function(
-    geometry, write, opt_options) {
+export function transformWithOptions(geometry, write, opt_options) {
   var featureProjection = opt_options ?
     getProjection(opt_options.featureProjection) : null;
   var dataProjection = opt_options ?
@@ -218,5 +217,4 @@ FeatureFormat.transformWithOptions = function(
     transformed.applyTransform(transform);
   }
   return transformed;
-};
-export default FeatureFormat;
+}

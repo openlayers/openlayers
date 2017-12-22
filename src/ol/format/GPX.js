@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import {includes} from '../array.js';
-import FeatureFormat from '../format/Feature.js';
+import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import XSD from '../format/XSD.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -541,7 +541,7 @@ function readRte(node, objectStack) {
   var layout = GPX.applyLayoutOptions_(layoutOptions, flatCoordinates);
   var geometry = new LineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates);
-  FeatureFormat.transformWithOptions(geometry, false, options);
+  transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
@@ -573,7 +573,7 @@ function readTrk(node, objectStack) {
   var layout = GPX.applyLayoutOptions_(layoutOptions, flatCoordinates, ends);
   var geometry = new MultiLineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates, ends);
-  FeatureFormat.transformWithOptions(geometry, false, options);
+  transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
@@ -595,7 +595,7 @@ function readWpt(node, objectStack) {
   var coordinates = appendCoordinate([], layoutOptions, node, values);
   var layout = GPX.applyLayoutOptions_(layoutOptions, coordinates);
   var geometry = new Point(coordinates, layout);
-  FeatureFormat.transformWithOptions(geometry, false, options);
+  transformWithOptions(geometry, false, options);
   var feature = new _ol_Feature_(geometry);
   feature.setProperties(values);
   return feature;
@@ -776,8 +776,7 @@ function writeRte(node, feature, objectStack) {
   var context = {node: node, 'properties': properties};
   var geometry = feature.getGeometry();
   if (geometry) {
-    geometry = /** @type {ol.geom.LineString} */
-      (FeatureFormat.transformWithOptions(geometry, true, options));
+    geometry = /** @type {ol.geom.LineString} */ (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     properties['rtept'] = geometry.getCoordinates();
   }
@@ -803,7 +802,7 @@ function writeTrk(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.MultiLineString} */
-      (FeatureFormat.transformWithOptions(geometry, true, options));
+      (transformWithOptions(geometry, true, options));
     properties['trkseg'] = geometry.getLineStrings();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
@@ -842,7 +841,7 @@ function writeWpt(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.Point} */
-      (FeatureFormat.transformWithOptions(geometry, true, options));
+      (transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     writeWptType(node, geometry.getCoordinates(), objectStack);
   }

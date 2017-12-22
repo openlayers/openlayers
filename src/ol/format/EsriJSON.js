@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
-import FeatureFormat from '../format/Feature.js';
+import {transformWithOptions} from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -84,7 +84,7 @@ EsriJSON.readGeometry_ = function(object, opt_options) {
   }
   var geometryReader = EsriJSON.GEOMETRY_READERS_[type];
   return (
-    /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(
+    /** @type {ol.geom.Geometry} */ transformWithOptions(
         geometryReader(object), false, opt_options)
   );
 };
@@ -563,8 +563,7 @@ EsriJSON.prototype.readProjectionFromObject = function(object) {
 EsriJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */(
-    FeatureFormat.transformWithOptions(geometry, true, opt_options)),
-  opt_options);
+    transformWithOptions(geometry, true, opt_options)), opt_options);
 };
 
 

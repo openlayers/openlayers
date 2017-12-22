@@ -7,7 +7,7 @@
 import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
-import FeatureFormat from '../format/Feature.js';
+import {transformWithOptions} from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
 import LineString from '../geom/LineString.js';
@@ -107,7 +107,7 @@ function readGeometry(object, opt_options) {
   }
   var geometryReader = GEOMETRY_READERS[object.type];
   return (
-    /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(
+    /** @type {ol.geom.Geometry} */ transformWithOptions(
         geometryReader(object), false, opt_options)
   );
 }
@@ -193,8 +193,7 @@ function readPolygonGeometry(object) {
 function writeGeometry(geometry, opt_options) {
   var geometryWriter = GEOMETRY_WRITERS[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
-    FeatureFormat.transformWithOptions(geometry, true, opt_options)),
-  opt_options);
+    transformWithOptions(geometry, true, opt_options)), opt_options);
 }
 
 
