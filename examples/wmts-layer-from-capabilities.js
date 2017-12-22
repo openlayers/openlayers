@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -17,7 +17,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
     matrixSet: 'EPSG:3857'
   });
 
-  map = new _ol_Map_({
+  map = new Map({
     layers: [
       new TileLayer({
         source: new _ol_source_OSM_(),

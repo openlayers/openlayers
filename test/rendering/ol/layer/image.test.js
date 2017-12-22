@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
@@ -12,7 +12,7 @@ describe('ol.rendering.layer.Image', function() {
   var map;
 
   function createMap(renderer) {
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,

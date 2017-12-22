@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -20,7 +20,7 @@ describe('ol.rendering.layer.Tile', function() {
   function createMap(renderer, opt_center, opt_size, opt_pixelRatio, opt_resolutions) {
     var size = opt_size !== undefined ? opt_size : [50, 50];
 
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size[0], size[1]),
       renderer: renderer,

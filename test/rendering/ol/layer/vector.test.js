@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
@@ -21,7 +21,7 @@ describe('ol.rendering.layer.Vector', function() {
 
   var map;
   function createMap(renderer) {
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: 1,
       target: createMapDiv(80, 80),
       renderer: renderer,
@@ -431,7 +431,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     var map2;
     beforeEach(function() {
-      map2 = new _ol_Map_({
+      map2 = new Map({
         pixelRatio: 1,
         target: createMapDiv(128, 128),
         view: new _ol_View_({
@@ -520,7 +520,7 @@ describe('ol.rendering.layer.Vector', function() {
         projection: 'EPSG:4326'
       });
 
-      map3 = new _ol_Map_({
+      map3 = new Map({
         pixelRatio: 1,
         layers: [layer],
         target: createMapDiv(100, 100),

@@ -1,7 +1,7 @@
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -438,7 +438,7 @@ describe('ol.source.Vector', function() {
         var div = document.createElement('div');
         div.style.width = div.style.height = '100px';
         document.body.appendChild(div);
-        var map = new _ol_Map_({
+        var map = new Map({
           target: div,
           layers: [
             new _ol_layer_Vector_({

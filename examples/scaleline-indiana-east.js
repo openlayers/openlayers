@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -18,7 +18,7 @@ proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
     'UNIT["Foot_US",0.30480060960122]]');
 register(proj4);
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new TileLayer({
       source: new _ol_source_OSM_()

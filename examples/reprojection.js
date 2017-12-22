@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
@@ -150,7 +150,7 @@ layers['states'] = new TileLayer({
 });
 
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     layers['osm'],
     layers['bng']

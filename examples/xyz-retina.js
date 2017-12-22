@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transform, transformExtent} from '../src/ol/proj.js';
@@ -9,7 +9,7 @@ var mapMinZoom = 1;
 var mapMaxZoom = 15;
 var mapExtent = [-112.261791, 35.983744, -112.113981, 36.132062];
 
-var map = new _ol_Map_({
+var map = new Map({
   target: 'map',
   layers: [
     new TileLayer({

@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
@@ -26,7 +26,7 @@ describe('ol.interaction.Interaction', function() {
   describe('#getMap()', function() {
 
     it('retrieves the associated map', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var interaction = new Interaction({});
       interaction.setMap(map);
       expect(interaction.getMap()).to.be(map);
@@ -42,7 +42,7 @@ describe('ol.interaction.Interaction', function() {
   describe('#setMap()', function() {
 
     it('allows a map to be set', function() {
-      var map = new _ol_Map_({});
+      var map = new Map({});
       var interaction = new Interaction({});
       interaction.setMap(map);
       expect(interaction.getMap()).to.be(map);

@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
@@ -58,7 +58,7 @@ var roadStyle = function(feature) {
   return style;
 };
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new _ol_layer_VectorTile_({
       source: new _ol_source_VectorTile_({

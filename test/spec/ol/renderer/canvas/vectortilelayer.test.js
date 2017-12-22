@@ -1,7 +1,7 @@
 import {getUid, inherits} from '../../../../../src/ol/index.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../../../src/ol/Map.js';
+import Map from '../../../../../src/ol/Map.js';
 import _ol_TileState_ from '../../../../../src/ol/TileState.js';
 import _ol_VectorImageTile_ from '../../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../../src/ol/VectorTile.js';
@@ -38,7 +38,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
-      map = new _ol_Map_({
+      map = new Map({
         view: new _ol_View_({
           center: [0, 0],
           zoom: 0
@@ -355,7 +355,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         minZoom: 14,
         maxZoom: 14
       });
-      var map = new _ol_Map_({
+      var map = new Map({
         target: target,
         layers: [
           new _ol_layer_VectorTile_({

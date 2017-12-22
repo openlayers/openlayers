@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -12,7 +12,7 @@ var imagery = new TileLayer({
 
 var container = document.getElementById('map');
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [imagery],
   target: container,
   view: new _ol_View_({

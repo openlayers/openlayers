@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -61,7 +61,7 @@ var raster = new TileLayer({
   })
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new _ol_View_({

@@ -1,5 +1,5 @@
 import {getUid} from '../../../../src/ol/index.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_render_Event_ from '../../../../src/ol/render/Event.js';
@@ -387,7 +387,7 @@ describe('ol.layer.Layer', function() {
     var map;
 
     beforeEach(function() {
-      map = new _ol_Map_({});
+      map = new Map({});
     });
 
     describe('with map in constructor options', function() {

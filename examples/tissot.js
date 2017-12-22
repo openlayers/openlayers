@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -15,7 +15,7 @@ var vectorLayer3857 = new _ol_layer_Vector_({
   source: new _ol_source_Vector_()
 });
 
-var map4326 = new _ol_Map_({
+var map4326 = new Map({
   layers: [
     new TileLayer({
       source: new _ol_source_TileWMS_({
@@ -36,7 +36,7 @@ var map4326 = new _ol_Map_({
   })
 });
 
-var map3857 = new _ol_Map_({
+var map3857 = new Map({
   layers: [
     new TileLayer({
       source: new _ol_source_TileWMS_({

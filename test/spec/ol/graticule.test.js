@@ -1,5 +1,5 @@
 import Graticule from '../../../src/ol/Graticule.js';
-import _ol_Map_ from '../../../src/ol/Map.js';
+import Map from '../../../src/ol/Map.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../src/ol/style/Text.js';
@@ -9,7 +9,7 @@ describe('ol.Graticule', function() {
 
   function createGraticule() {
     graticule = new Graticule({
-      map: new _ol_Map_({})
+      map: new Map({})
     });
   }
 
@@ -31,7 +31,7 @@ describe('ol.Graticule', function() {
 
     it('creates a graticule with labels', function() {
       graticule = new Graticule({
-        map: new _ol_Map_({}),
+        map: new Map({}),
         showLabels: true
       });
       var extent = [-25614353.926475704, -7827151.696402049,
@@ -63,7 +63,7 @@ describe('ol.Graticule', function() {
         color: 'rebeccapurple'
       });
       var styledGraticule = new Graticule({
-        map: new _ol_Map_({}),
+        map: new Map({}),
         strokeStyle: customStrokeStyle
       });
       var actualStyle = styledGraticule.strokeStyle_;
@@ -76,7 +76,7 @@ describe('ol.Graticule', function() {
       var latLabelStyle = new _ol_style_Text_();
       var lonLabelStyle = new _ol_style_Text_();
       graticule = new Graticule({
-        map: new _ol_Map_({}),
+        map: new Map({}),
         showLabels: true,
         lonLabelFormatter: function(lon) {
           return 'lon: ' + lon.toString();

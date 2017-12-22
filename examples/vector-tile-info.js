@@ -1,10 +1,10 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 
-var map = new _ol_Map_({
+var map = new Map({
   target: 'map',
   view: new _ol_View_({
     center: [0, 0],

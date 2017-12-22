@@ -1,5 +1,5 @@
 // NOCOMPILE
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -94,7 +94,7 @@ var rasterImage = new _ol_layer_Image_({
   source: raster
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [imagery, rasterImage],
   target: 'map',
   view: new _ol_View_({

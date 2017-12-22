@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../src/ol/Map.js';
+import Map from '../../../src/ol/Map.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
 
@@ -20,7 +20,7 @@ describe('ol.Overlay', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
 
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       view: new _ol_View_({
         projection: 'EPSG:4326',

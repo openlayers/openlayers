@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_Observable_ from '../src/ol/Observable.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
@@ -15,7 +15,7 @@ import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new TileLayer({
       source: new _ol_source_OSM_({

@@ -1,6 +1,6 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../../../src/ol/Map.js';
+import Map from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
@@ -16,7 +16,7 @@ describe('ol.renderer.canvas.Map', function() {
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var map = new _ol_Map_({
+      var map = new Map({
         target: document.createElement('div')
       });
       var renderer = new _ol_renderer_canvas_Map_(map.viewport_, map);
@@ -34,7 +34,7 @@ describe('ol.renderer.canvas.Map', function() {
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      map = new _ol_Map_({
+      map = new Map({
         pixelRatio: 1,
         target: target,
         view: new _ol_View_({
@@ -167,7 +167,7 @@ describe('ol.renderer.canvas.Map', function() {
     var layer, map, renderer;
 
     beforeEach(function() {
-      map = new _ol_Map_({});
+      map = new Map({});
       map.on('postcompose', function() {});
       layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({wrapX: true})

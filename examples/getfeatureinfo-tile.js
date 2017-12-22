@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
@@ -20,7 +20,7 @@ var view = new _ol_View_({
   zoom: 1
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [wmsLayer],
   target: 'map',
   view: view

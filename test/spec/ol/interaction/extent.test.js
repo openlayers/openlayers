@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_interaction_Extent_ from '../../../../src/ol/interaction/Extent.js';
@@ -13,7 +13,7 @@ describe('ol.interaction.Extent', function() {
   beforeEach(function() {
     var target = createMapDiv(width, height);
 
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       layers: [],
       view: new _ol_View_({

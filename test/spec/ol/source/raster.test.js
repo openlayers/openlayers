@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_TileState_ from '../../../../src/ol/TileState.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
@@ -58,7 +58,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       }
     });
 
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       view: new _ol_View_({
         resolutions: [1],
@@ -323,7 +323,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         }
       });
 
-      map2 = new _ol_Map_({
+      map2 = new Map({
         target: target,
         view: new _ol_View_({
           center: [0, 0],

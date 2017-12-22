@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -21,7 +21,7 @@ describe('ol.rendering.layer.VectorTile', function() {
 
   function createMap(renderer, opt_pixelRatio, opt_size) {
     var size = opt_size || 50;
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size, size),
       renderer: renderer,

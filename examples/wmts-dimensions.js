@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -43,7 +43,7 @@ var wmtsSource = new _ol_source_WMTS_({
   }
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   target: 'map',
   view: new _ol_View_({
     projection: projection,

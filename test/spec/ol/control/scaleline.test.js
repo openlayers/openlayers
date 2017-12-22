@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import ScaleLine from '../../../../src/ol/control/ScaleLine.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
@@ -9,7 +9,7 @@ describe('ol.control.ScaleLine', function() {
   beforeEach(function() {
     var target = document.createElement('div');
     document.body.appendChild(target);
-    map = new _ol_Map_({
+    map = new Map({
       target: target
     });
   });

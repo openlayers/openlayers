@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -18,7 +18,7 @@ describe('ol.rendering.style.LineString', function() {
       source: vectorSource
     });
 
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(50, 50),
       renderer: renderer,

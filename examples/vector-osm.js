@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import OSMXML from '../src/ol/format/OSMXML.js';
@@ -122,7 +122,7 @@ var raster = new TileLayer({
   })
 });
 
-map = new _ol_Map_({
+map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   controls: defaultControls({

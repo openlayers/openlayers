@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import ZoomSlider from '../../../../src/ol/control/ZoomSlider.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
@@ -10,7 +10,7 @@ describe('ol.control.ZoomSlider', function() {
     target = document.createElement('div');
     document.body.appendChild(target);
     zoomslider = new ZoomSlider();
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       controls: [zoomslider]
     });
@@ -89,7 +89,7 @@ describe('ol.control.ZoomSlider', function() {
     var map;
 
     beforeEach(function() {
-      map = new _ol_Map_({
+      map = new Map({
         target: createMapDiv(500, 100),
         view: new _ol_View_({
           center: [0, 0],

@@ -1,4 +1,4 @@
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -20,7 +20,7 @@ var style = new _ol_style_Style_({
   text: new _ol_style_Text_()
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new _ol_layer_Vector_({
       renderMode: 'image',

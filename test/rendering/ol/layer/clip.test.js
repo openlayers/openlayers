@@ -1,4 +1,4 @@
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
@@ -38,7 +38,7 @@ describe('layer clipping', function() {
 
     var map = null;
     beforeEach(function() {
-      map = new _ol_Map_({
+      map = new Map({
         pixelRatio: 1,
         target: createMapDiv(256, 256),
         view: new _ol_View_({

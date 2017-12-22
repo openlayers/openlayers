@@ -4,7 +4,7 @@ import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -24,7 +24,7 @@ describe('ol.rendering.style.Text', function() {
       source: vectorSource
     });
 
-    map = new _ol_Map_({
+    map = new Map({
       pixelRatio: pixelRatio,
       target: createMapDiv(200 / pixelRatio, 200 / pixelRatio),
       renderer: renderer,

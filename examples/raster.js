@@ -1,6 +1,6 @@
 // NOCOMPILE
 // this example uses d3 for which we don't have an externs file.
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -110,7 +110,7 @@ raster.on('afteroperations', function(event) {
   schedulePlot(event.resolution, event.data.counts, event.data.threshold);
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [
     new TileLayer({
       source: bing

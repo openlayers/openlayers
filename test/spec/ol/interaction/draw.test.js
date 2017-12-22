@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../../../../src/ol/Feature.js';
-import _ol_Map_ from '../../../../src/ol/Map.js';
+import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import {equals} from '../../../../src/ol/array.js';
@@ -36,7 +36,7 @@ describe('ol.interaction.Draw', function() {
     document.body.appendChild(target);
     source = new _ol_source_Vector_();
     var layer = new _ol_layer_Vector_({source: source});
-    map = new _ol_Map_({
+    map = new Map({
       target: target,
       layers: [layer],
       view: new _ol_View_({

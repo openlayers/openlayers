@@ -1,5 +1,5 @@
 import _ol_Feature_ from '../src/ol/Feature.js';
-import _ol_Map_ from '../src/ol/Map.js';
+import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
@@ -51,7 +51,7 @@ var vector = new _ol_layer_Vector_({
   }
 });
 
-var map = new _ol_Map_({
+var map = new Map({
   layers: [vector],
   target: document.getElementById('map'),
   view: new _ol_View_({
