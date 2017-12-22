@@ -3,7 +3,7 @@ import _ol_obj_ from '../../../../../src/ol/obj.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
-import _ol_VectorImageTile_ from '../../../../../src/ol/VectorImageTile.js';
+import VectorImageTile from '../../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../../src/ol/VectorTile.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
@@ -251,7 +251,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       sourceTile.getImage = function() {
         return document.createElement('canvas');
       };
-      var tile = new _ol_VectorImageTile_([0, 0, 0]);
+      var tile = new VectorImageTile([0, 0, 0]);
       tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
       tile.setState(TileState.LOADED);
@@ -291,7 +291,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   describe('#forEachFeatureAtCoordinate', function() {
     var layer, renderer, replayGroup;
     var TileClass = function() {
-      _ol_VectorImageTile_.apply(this, arguments);
+      VectorImageTile.apply(this, arguments);
       this.setState('loaded');
       var sourceTile = new _ol_VectorTile_([0, 0, 0]);
       sourceTile.setProjection(getProjection('EPSG:3857'));
@@ -304,7 +304,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       this.sourceTiles_[key] = sourceTile;
       this.wrappedTileCoord = arguments[0];
     };
-    inherits(TileClass, _ol_VectorImageTile_);
+    inherits(TileClass, VectorImageTile);
 
     beforeEach(function() {
       replayGroup = {};

@@ -32,7 +32,7 @@ import {loadFeaturesXhr} from './featureloader.js';
  *     Function to call when a source tile's state changes.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
+var VectorImageTile = function(tileCoord, state, sourceRevision, format,
     tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
     sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
 
@@ -121,13 +121,13 @@ var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
 
 };
 
-inherits(_ol_VectorImageTile_, _ol_Tile_);
+inherits(VectorImageTile, _ol_Tile_);
 
 
 /**
  * @inheritDoc
  */
-_ol_VectorImageTile_.prototype.disposeInternal = function() {
+VectorImageTile.prototype.disposeInternal = function() {
   this.state = TileState.ABORT;
   this.changed();
   if (this.interimTile) {
@@ -157,7 +157,7 @@ _ol_VectorImageTile_.prototype.disposeInternal = function() {
  * @param {ol.layer.Layer} layer Layer.
  * @return {CanvasRenderingContext2D} The rendering context.
  */
-_ol_VectorImageTile_.prototype.getContext = function(layer) {
+VectorImageTile.prototype.getContext = function(layer) {
   var key = getUid(layer).toString();
   if (!(key in this.context_)) {
     this.context_[key] = createCanvasContext2D();
@@ -171,7 +171,7 @@ _ol_VectorImageTile_.prototype.getContext = function(layer) {
  * @param {ol.layer.Layer} layer Layer.
  * @return {HTMLCanvasElement} Canvas.
  */
-_ol_VectorImageTile_.prototype.getImage = function(layer) {
+VectorImageTile.prototype.getImage = function(layer) {
   return this.getReplayState(layer).renderedTileRevision == -1 ?
     null : this.getContext(layer).canvas;
 };
@@ -181,7 +181,7 @@ _ol_VectorImageTile_.prototype.getImage = function(layer) {
  * @param {ol.layer.Layer} layer Layer.
  * @return {ol.TileReplayState} The replay state.
  */
-_ol_VectorImageTile_.prototype.getReplayState = function(layer) {
+VectorImageTile.prototype.getReplayState = function(layer) {
   var key = getUid(layer).toString();
   if (!(key in this.replayState_)) {
     this.replayState_[key] = {
@@ -198,7 +198,7 @@ _ol_VectorImageTile_.prototype.getReplayState = function(layer) {
 /**
  * @inheritDoc
  */
-_ol_VectorImageTile_.prototype.getKey = function() {
+VectorImageTile.prototype.getKey = function() {
   return this.tileKeys.join('/') + '-' + this.sourceRevision_;
 };
 
@@ -207,7 +207,7 @@ _ol_VectorImageTile_.prototype.getKey = function() {
  * @param {string} tileKey Key (tileCoord) of the source tile.
  * @return {ol.VectorTile} Source tile.
  */
-_ol_VectorImageTile_.prototype.getTile = function(tileKey) {
+VectorImageTile.prototype.getTile = function(tileKey) {
   return this.sourceTiles_[tileKey];
 };
 
@@ -215,7 +215,7 @@ _ol_VectorImageTile_.prototype.getTile = function(tileKey) {
 /**
  * @inheritDoc
  */
-_ol_VectorImageTile_.prototype.load = function() {
+VectorImageTile.prototype.load = function() {
   // Source tiles with LOADED state - we just count them because once they are
   // loaded, we're no longer listening to state changes.
   var leftToLoad = 0;
@@ -264,7 +264,7 @@ _ol_VectorImageTile_.prototype.load = function() {
 /**
  * @private
  */
-_ol_VectorImageTile_.prototype.finishLoading_ = function() {
+VectorImageTile.prototype.finishLoading_ = function() {
   var loaded = this.tileKeys.length;
   var empty = 0;
   for (var i = loaded - 1; i >= 0; --i) {
@@ -291,8 +291,8 @@ _ol_VectorImageTile_.prototype.finishLoading_ = function() {
  * @param {ol.VectorTile} tile Vector tile.
  * @param {string} url URL.
  */
-_ol_VectorImageTile_.defaultLoadFunction = function(tile, url) {
+VectorImageTile.defaultLoadFunction = function(tile, url) {
   var loader = loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
   tile.setLoader(loader);
 };
-export default _ol_VectorImageTile_;
+export default VectorImageTile;

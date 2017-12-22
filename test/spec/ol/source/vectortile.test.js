@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_VectorImageTile_ from '../../../../src/ol/VectorImageTile.js';
+import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../src/ol/VectorTile.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
@@ -38,7 +38,7 @@ describe('ol.source.VectorTile', function() {
   describe('#getTile()', function() {
     it('creates a tile with the correct tile class', function() {
       tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(_ol_VectorImageTile_);
+      expect(tile).to.be.a(VectorImageTile);
     });
     it('sets the correct tileCoord on the created tile', function() {
       expect(tile.getTileCoord()).to.eql([0, 0, 0]);
