@@ -285,14 +285,14 @@ VectorImageTile.prototype.finishLoading_ = function() {
   }
 };
 
+export default VectorImageTile;
 
 /**
  * Sets the loader for a tile.
  * @param {ol.VectorTile} tile Vector tile.
  * @param {string} url URL.
  */
-VectorImageTile.defaultLoadFunction = function(tile, url) {
+export function defaultLoadFunction(tile, url) {
   var loader = loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
   tile.setLoader(loader);
-};
-export default VectorImageTile;
+}

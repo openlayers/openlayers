@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import TileState from '../TileState.js';
-import VectorImageTile from '../VectorImageTile.js';
+import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
 import VectorTile from '../VectorTile.js';
 import _ol_size_ from '../size.js';
 import _ol_source_UrlTile_ from '../source/UrlTile.js';
@@ -46,8 +46,7 @@ var _ol_source_VectorTile_ = function(options) {
     projection: projection,
     state: options.state,
     tileGrid: tileGrid,
-    tileLoadFunction: options.tileLoadFunction ?
-      options.tileLoadFunction : VectorImageTile.defaultLoadFunction,
+    tileLoadFunction: options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
     urls: options.urls,

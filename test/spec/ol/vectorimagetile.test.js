@@ -1,5 +1,5 @@
 import TileState from '../../../src/ol/TileState.js';
-import VectorImageTile from '../../../src/ol/VectorImageTile.js';
+import VectorImageTile, {defaultLoadFunction} from '../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
@@ -14,7 +14,7 @@ describe('ol.VectorImageTile', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tile = new VectorImageTile([0, 0, -1], 0, url, format,
-        VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
         1, getProjection('EPSG:3857'), VectorTile, function() {});
@@ -37,7 +37,7 @@ describe('ol.VectorImageTile', function() {
     var tile = new VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
         function(tile, url) {
           sourceTile = tile;
-          VectorImageTile.defaultLoadFunction(tile, url);
+          defaultLoadFunction(tile, url);
         }, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
@@ -62,7 +62,7 @@ describe('ol.VectorImageTile', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var tile = new VectorImageTile([0, 0, -1], 0, url, format,
-        VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
         1, getProjection('EPSG:3857'), VectorTile, function() {});
@@ -79,7 +79,7 @@ describe('ol.VectorImageTile', function() {
     var format = new GeoJSON();
     var url = '';
     var tile = new VectorImageTile([0, 0, -1], 0, url, format,
-        VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {},
+        defaultLoadFunction, [0, 0, -1], function() {},
         _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
         1, getProjection('EPSG:3857'), VectorTile, function() {});
 
@@ -101,7 +101,7 @@ describe('ol.VectorImageTile', function() {
     });
     var sourceTiles = {};
     var tile = new VectorImageTile([1, 0, -1], 0, url, format,
-        VectorImageTile.defaultLoadFunction, [1, 0, -1], function(zxy) {
+        defaultLoadFunction, [1, 0, -1], function(zxy) {
           return url;
         }, tileGrid,
         _ol_tilegrid_.createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
@@ -115,7 +115,7 @@ describe('ol.VectorImageTile', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tile = new VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
-        VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
         1, getProjection('EPSG:3857'), VectorTile, function() {});
@@ -135,7 +135,7 @@ describe('ol.VectorImageTile', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
     var tile = new VectorImageTile([0, 0, -1], 0, url, format,
-        VectorImageTile.defaultLoadFunction, [0, 0, -1], function() {
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
         1, getProjection('EPSG:3857'), VectorTile, function() {});
