@@ -7,19 +7,19 @@ import {nullFunction} from './index.js';
  * Objects that need to clean up after themselves.
  * @constructor
  */
-var _ol_Disposable_ = function() {};
+var Disposable = function() {};
 
 /**
  * The object has already been disposed.
  * @type {boolean}
  * @private
  */
-_ol_Disposable_.prototype.disposed_ = false;
+Disposable.prototype.disposed_ = false;
 
 /**
  * Clean up.
  */
-_ol_Disposable_.prototype.dispose = function() {
+Disposable.prototype.dispose = function() {
   if (!this.disposed_) {
     this.disposed_ = true;
     this.disposeInternal();
@@ -30,5 +30,5 @@ _ol_Disposable_.prototype.dispose = function() {
  * Extension point for disposable objects.
  * @protected
  */
-_ol_Disposable_.prototype.disposeInternal = nullFunction;
-export default _ol_Disposable_;
+Disposable.prototype.disposeInternal = nullFunction;
+export default Disposable;

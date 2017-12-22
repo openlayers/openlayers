@@ -1,4 +1,4 @@
-import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
+import Disposable from '../../../../src/ol/Disposable.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -35,7 +35,7 @@ describe('ol.render.Box', function() {
     it('creates an instance', function() {
       var obj = new _ol_render_Box_('test-box');
       expect(obj).to.be.a(_ol_render_Box_);
-      expect(obj).to.be.a(_ol_Disposable_);
+      expect(obj).to.be.a(Disposable);
       obj.dispose();
     });
     it('creates an absolutely positioned DIV with a className', function() {

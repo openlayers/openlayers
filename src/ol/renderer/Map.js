@@ -2,7 +2,7 @@
  * @module ol/renderer/Map
  */
 import {getUid, inherits, nullFunction} from '../index.js';
-import _ol_Disposable_ from '../Disposable.js';
+import Disposable from '../Disposable.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
@@ -22,7 +22,7 @@ import _ol_transform_ from '../transform.js';
  */
 var _ol_renderer_Map_ = function(container, map) {
 
-  _ol_Disposable_.call(this);
+  Disposable.call(this);
 
 
   /**
@@ -45,7 +45,7 @@ var _ol_renderer_Map_ = function(container, map) {
 
 };
 
-inherits(_ol_renderer_Map_, _ol_Disposable_);
+inherits(_ol_renderer_Map_, Disposable);
 
 
 /**

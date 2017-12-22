@@ -2,7 +2,7 @@
  * @module ol/events/EventTarget
  */
 import {inherits, nullFunction} from '../index.js';
-import _ol_Disposable_ from '../Disposable.js';
+import Disposable from '../Disposable.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 
@@ -26,7 +26,7 @@ import Event from '../events/Event.js';
  */
 var EventTarget = function() {
 
-  _ol_Disposable_.call(this);
+  Disposable.call(this);
 
   /**
    * @private
@@ -48,7 +48,7 @@ var EventTarget = function() {
 
 };
 
-inherits(EventTarget, _ol_Disposable_);
+inherits(EventTarget, Disposable);
 
 
 /**
