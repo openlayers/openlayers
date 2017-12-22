@@ -2,7 +2,7 @@
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
-import _ol_source_Raster_ from '../src/ol/source/Raster.js';
+import RasterSource from '../src/ol/source/Raster.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 
 
@@ -100,7 +100,7 @@ function xyz2rgb(x) {
     12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055);
 }
 
-var raster = new _ol_source_Raster_({
+var raster = new RasterSource({
   sources: [new _ol_source_Stamen_({
     layer: 'watercolor',
     transition: 0

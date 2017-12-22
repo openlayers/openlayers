@@ -5,7 +5,7 @@ import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Raster_ from '../src/ol/source/Raster.js';
+import RasterSource from '../src/ol/source/Raster.js';
 
 function growRegion(inputs, data) {
   var image = inputs[0];
@@ -78,7 +78,7 @@ var imagery = new TileLayer({
   source: new _ol_source_BingMaps_({key: key, imagerySet: 'Aerial'})
 });
 
-var raster = new _ol_source_Raster_({
+var raster = new RasterSource({
   sources: [imagery.getSource()],
   operationType: 'image',
   operation: growRegion,

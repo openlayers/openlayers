@@ -21,6 +21,27 @@ import SourceState from '../source/State.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import _ol_transform_ from '../transform.js';
 
+
+/**
+ * @enum {string}
+ */
+var RasterEventType = {
+  /**
+   * Triggered before operations are run.
+   * @event ol.source.Raster.Event#beforeoperations
+   * @api
+   */
+  BEFOREOPERATIONS: 'beforeoperations',
+
+  /**
+   * Triggered after operations are run.
+   * @event ol.source.Raster.Event#afteroperations
+   * @api
+   */
+  AFTEROPERATIONS: 'afteroperations'
+};
+
+
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an
@@ -33,7 +54,7 @@ import _ol_transform_ from '../transform.js';
  * @param {olx.source.RasterOptions} options Options.
  * @api
  */
-var _ol_source_Raster_ = function(options) {
+var RasterSource = function(options) {
 
   /**
    * @private
@@ -58,7 +79,7 @@ var _ol_source_Raster_ = function(options) {
    * @private
    * @type {Array.<ol.renderer.canvas.Layer>}
    */
-  this.renderers_ = _ol_source_Raster_.createRenderers_(options.sources);
+  this.renderers_ = createRenderers(options.sources);
 
   for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
     _ol_events_.listen(this.renderers_[r], EventType.CHANGE,
@@ -75,7 +96,7 @@ var _ol_source_Raster_ = function(options) {
       },
       this.changed.bind(this));
 
-  var layerStatesArray = _ol_source_Raster_.getLayerStatesArray_(this.renderers_);
+  var layerStatesArray = getLayerStatesArray(this.renderers_);
   var layerStates = {};
   for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
@@ -136,7 +157,7 @@ var _ol_source_Raster_ = function(options) {
 
 };
 
-inherits(_ol_source_Raster_, _ol_source_Image_);
+inherits(RasterSource, _ol_source_Image_);
 
 
 /**
@@ -146,7 +167,7 @@ inherits(_ol_source_Raster_, _ol_source_Image_);
  *     in a worker.
  * @api
  */
-_ol_source_Raster_.prototype.setOperation = function(operation, opt_lib) {
+RasterSource.prototype.setOperation = function(operation, opt_lib) {
   this.worker_ = new Processor({
     operation: operation,
     imageOps: this.operationType_ === RasterOperationType.IMAGE,
@@ -166,7 +187,7 @@ _ol_source_Raster_.prototype.setOperation = function(operation, opt_lib) {
  * @return {olx.FrameState} The updated frame state.
  * @private
  */
-_ol_source_Raster_.prototype.updateFrameState_ = function(extent, resolution, projection) {
+RasterSource.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
   var frameState = /** @type {olx.FrameState} */ (
     _ol_obj_.assign({}, this.frameState_));
@@ -196,7 +217,7 @@ _ol_source_Raster_.prototype.updateFrameState_ = function(extent, resolution, pr
  * @return {boolean} All sources are ready.
  * @private
  */
-_ol_source_Raster_.prototype.allSourcesReady_ = function() {
+RasterSource.prototype.allSourcesReady_ = function() {
   var ready = true;
   var source;
   for (var i = 0, ii = this.renderers_.length; i < ii; ++i) {
@@ -213,7 +234,7 @@ _ol_source_Raster_.prototype.allSourcesReady_ = function() {
 /**
  * @inheritDoc
  */
-_ol_source_Raster_.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+RasterSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   if (!this.allSourcesReady_()) {
     return null;
   }
@@ -248,12 +269,12 @@ _ol_source_Raster_.prototype.getImage = function(extent, resolution, pixelRatio,
  * Start processing source data.
  * @private
  */
-_ol_source_Raster_.prototype.processSources_ = function() {
+RasterSource.prototype.processSources_ = function() {
   var frameState = this.requestedFrameState_;
   var len = this.renderers_.length;
   var imageDatas = new Array(len);
   for (var i = 0; i < len; ++i) {
-    var imageData = _ol_source_Raster_.getImageData_(
+    var imageData = getImageData(
         this.renderers_[i], frameState, frameState.layerStatesArray[i]);
     if (imageData) {
       imageDatas[i] = imageData;
@@ -263,10 +284,8 @@ _ol_source_Raster_.prototype.processSources_ = function() {
   }
 
   var data = {};
-  this.dispatchEvent(new _ol_source_Raster_.Event(
-      _ol_source_Raster_.EventType_.BEFOREOPERATIONS, frameState, data));
-  this.worker_.process(imageDatas, data,
-      this.onWorkerComplete_.bind(this, frameState));
+  this.dispatchEvent(new RasterSource.Event(RasterEventType.BEFOREOPERATIONS, frameState, data));
+  this.worker_.process(imageDatas, data, this.onWorkerComplete_.bind(this, frameState));
 };
 
 
@@ -278,7 +297,7 @@ _ol_source_Raster_.prototype.processSources_ = function() {
  * @param {Object} data The user data.
  * @private
  */
-_ol_source_Raster_.prototype.onWorkerComplete_ = function(frameState, err, output, data) {
+RasterSource.prototype.onWorkerComplete_ = function(frameState, err, output, data) {
   if (err || !output) {
     return;
   }
@@ -305,8 +324,7 @@ _ol_source_Raster_.prototype.onWorkerComplete_ = function(frameState, err, outpu
   this.changed();
   this.renderedRevision_ = this.getRevision();
 
-  this.dispatchEvent(new _ol_source_Raster_.Event(
-      _ol_source_Raster_.EventType_.AFTEROPERATIONS, frameState, data));
+  this.dispatchEvent(new RasterSource.Event(RasterEventType.AFTEROPERATIONS, frameState, data));
 };
 
 
@@ -316,27 +334,26 @@ _ol_source_Raster_.prototype.onWorkerComplete_ = function(frameState, err, outpu
  * @param {olx.FrameState} frameState The frame state.
  * @param {ol.LayerState} layerState The layer state.
  * @return {ImageData} The image data.
- * @private
  */
-_ol_source_Raster_.getImageData_ = function(renderer, frameState, layerState) {
+function getImageData(renderer, frameState, layerState) {
   if (!renderer.prepareFrame(frameState, layerState)) {
     return null;
   }
   var width = frameState.size[0];
   var height = frameState.size[1];
-  if (!_ol_source_Raster_.context_) {
-    _ol_source_Raster_.context_ = createCanvasContext2D(width, height);
+  if (!RasterSource.context_) {
+    RasterSource.context_ = createCanvasContext2D(width, height);
   } else {
-    var canvas = _ol_source_Raster_.context_.canvas;
+    var canvas = RasterSource.context_.canvas;
     if (canvas.width !== width || canvas.height !== height) {
-      _ol_source_Raster_.context_ = createCanvasContext2D(width, height);
+      RasterSource.context_ = createCanvasContext2D(width, height);
     } else {
-      _ol_source_Raster_.context_.clearRect(0, 0, width, height);
+      RasterSource.context_.clearRect(0, 0, width, height);
     }
   }
-  renderer.composeFrame(frameState, layerState, _ol_source_Raster_.context_);
-  return _ol_source_Raster_.context_.getImageData(0, 0, width, height);
-};
+  renderer.composeFrame(frameState, layerState, RasterSource.context_);
+  return RasterSource.context_.getImageData(0, 0, width, height);
+}
 
 
 /**
@@ -344,77 +361,72 @@ _ol_source_Raster_.getImageData_ = function(renderer, frameState, layerState) {
  * @type {CanvasRenderingContext2D}
  * @private
  */
-_ol_source_Raster_.context_ = null;
+RasterSource.context_ = null;
 
 
 /**
  * Get a list of layer states from a list of renderers.
  * @param {Array.<ol.renderer.canvas.Layer>} renderers Layer renderers.
  * @return {Array.<ol.LayerState>} The layer states.
- * @private
  */
-_ol_source_Raster_.getLayerStatesArray_ = function(renderers) {
+function getLayerStatesArray(renderers) {
   return renderers.map(function(renderer) {
     return renderer.getLayer().getLayerState();
   });
-};
+}
 
 
 /**
  * Create renderers for all sources.
  * @param {Array.<ol.source.Source>} sources The sources.
  * @return {Array.<ol.renderer.canvas.Layer>} Array of layer renderers.
- * @private
  */
-_ol_source_Raster_.createRenderers_ = function(sources) {
+function createRenderers(sources) {
   var len = sources.length;
   var renderers = new Array(len);
   for (var i = 0; i < len; ++i) {
-    renderers[i] = _ol_source_Raster_.createRenderer_(sources[i]);
+    renderers[i] = createRenderer(sources[i]);
   }
   return renderers;
-};
+}
 
 
 /**
  * Create a renderer for the provided source.
  * @param {ol.source.Source} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
- * @private
  */
-_ol_source_Raster_.createRenderer_ = function(source) {
+function createRenderer(source) {
   var renderer = null;
   if (source instanceof _ol_source_Tile_) {
-    renderer = _ol_source_Raster_.createTileRenderer_(source);
+    renderer = createTileRenderer(source);
   } else if (source instanceof _ol_source_Image_) {
-    renderer = _ol_source_Raster_.createImageRenderer_(source);
+    renderer = createImageRenderer(source);
   }
   return renderer;
-};
+}
 
 
 /**
  * Create an image renderer for the provided source.
  * @param {ol.source.Image} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
- * @private
  */
-_ol_source_Raster_.createImageRenderer_ = function(source) {
+function createImageRenderer(source) {
   var layer = new _ol_layer_Image_({source: source});
   return new _ol_renderer_canvas_ImageLayer_(layer);
-};
+}
 
 
 /**
  * Create a tile renderer for the provided source.
  * @param {ol.source.Tile} source The source.
  * @return {ol.renderer.canvas.Layer} The renderer.
- * @private
  */
-_ol_source_Raster_.createTileRenderer_ = function(source) {
+function createTileRenderer(source) {
   var layer = new TileLayer({source: source});
   return new _ol_renderer_canvas_TileLayer_(layer);
-};
+}
 
 
 /**
@@ -429,7 +441,7 @@ _ol_source_Raster_.createTileRenderer_ = function(source) {
  * @param {olx.FrameState} frameState The frame state.
  * @param {Object} data An object made available to operations.
  */
-_ol_source_Raster_.Event = function(type, frameState, data) {
+RasterSource.Event = function(type, frameState, data) {
   Event.call(this, type);
 
   /**
@@ -455,34 +467,15 @@ _ol_source_Raster_.Event = function(type, frameState, data) {
   this.data = data;
 
 };
-inherits(_ol_source_Raster_.Event, Event);
+inherits(RasterSource.Event, Event);
 
 
 /**
  * @override
  */
-_ol_source_Raster_.prototype.getImageInternal = function() {
+RasterSource.prototype.getImageInternal = function() {
   return null; // not implemented
 };
 
 
-/**
- * @enum {string}
- * @private
- */
-_ol_source_Raster_.EventType_ = {
-  /**
-   * Triggered before operations are run.
-   * @event ol.source.Raster.Event#beforeoperations
-   * @api
-   */
-  BEFOREOPERATIONS: 'beforeoperations',
-
-  /**
-   * Triggered after operations are run.
-   * @event ol.source.Raster.Event#afteroperations
-   * @api
-   */
-  AFTEROPERATIONS: 'afteroperations'
-};
-export default _ol_source_Raster_;
+export default RasterSource;

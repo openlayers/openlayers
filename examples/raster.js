@@ -5,7 +5,7 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Raster_ from '../src/ol/source/Raster.js';
+import RasterSource from '../src/ol/source/Raster.js';
 
 var minVgi = 0;
 var maxVgi = 0.25;
@@ -59,7 +59,7 @@ var bing = new _ol_source_BingMaps_({
  * Create a raster source where pixels with VGI values above a threshold will
  * be colored green.
  */
-var raster = new _ol_source_Raster_({
+var raster = new RasterSource({
   sources: [bing],
   /**
    * Run calculations on pixel data.

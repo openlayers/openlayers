@@ -4,7 +4,7 @@ import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
-import _ol_source_Raster_ from '../../../../src/ol/source/Raster.js';
+import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
@@ -50,7 +50,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       imageExtent: extent
     });
 
-    raster = new _ol_source_Raster_({
+    raster = new RasterSource({
       threads: 0,
       sources: [redSource, greenSource, blueSource],
       operation: function(inputs) {
@@ -90,19 +90,19 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   describe('constructor', function() {
 
     it('returns a tile source', function() {
-      var source = new _ol_source_Raster_({
+      var source = new RasterSource({
         threads: 0,
         sources: [new _ol_source_Tile_({})]
       });
       expect(source).to.be.a(Source);
-      expect(source).to.be.a(_ol_source_Raster_);
+      expect(source).to.be.a(RasterSource);
     });
 
     it('defaults to "pixel" operation', function(done) {
 
       var log = [];
 
-      var source = new _ol_source_Raster_({
+      var source = new RasterSource({
         threads: 0,
         sources: [redSource, greenSource, blueSource],
         operation: function(inputs) {
@@ -129,7 +129,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     it('allows operation type to be set to "image"', function(done) {
       var log = [];
 
-      var source = new _ol_source_Raster_({
+      var source = new RasterSource({
         operationType: 'image',
         threads: 0,
         sources: [redSource, greenSource, blueSource],
@@ -315,7 +315,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
       });
 
-      raster = new _ol_source_Raster_({
+      raster = new RasterSource({
         threads: 0,
         sources: [source],
         operation: function(inputs) {

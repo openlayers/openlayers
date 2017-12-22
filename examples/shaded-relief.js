@@ -4,7 +4,7 @@ import _ol_View_ from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Raster_ from '../src/ol/source/Raster.js';
+import RasterSource from '../src/ol/source/Raster.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
 
@@ -108,7 +108,7 @@ var elevation = new _ol_source_XYZ_({
   transition: 0
 });
 
-var raster = new _ol_source_Raster_({
+var raster = new RasterSource({
   sources: [elevation],
   operationType: 'image',
   operation: shade

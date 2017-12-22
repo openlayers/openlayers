@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
-import _ol_source_Raster_ from '../../../../src/ol/source/Raster.js';
+import RasterSource from '../../../../src/ol/source/Raster.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 
 where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
@@ -55,7 +55,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
         transition: 0
       });
 
-      var raster = new _ol_source_Raster_({
+      var raster = new RasterSource({
         sources: [source],
         operation: function(pixels) {
           var pixel = pixels[0];
