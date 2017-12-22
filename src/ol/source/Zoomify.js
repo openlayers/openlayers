@@ -4,7 +4,7 @@
 import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {inherits} from '../index.js';
 import _ol_ImageTile_ from '../ImageTile.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import {expandUrl, createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -193,7 +193,7 @@ _ol_source_Zoomify_.Tile_.prototype.getImage = function() {
     return this.zoomifyImage_;
   }
   var image = _ol_ImageTile_.prototype.getImage.call(this);
-  if (this.state == _ol_TileState_.LOADED) {
+  if (this.state == TileState.LOADED) {
     var tileSize = this.tileSize_;
     if (image.width == tileSize[0] && image.height == tileSize[1]) {
       this.zoomifyImage_ = image;

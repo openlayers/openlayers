@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
-import _ol_TileState_ from './TileState.js';
+import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
@@ -66,14 +66,14 @@ inherits(_ol_ImageTile_, _ol_Tile_);
  * @inheritDoc
  */
 _ol_ImageTile_.prototype.disposeInternal = function() {
-  if (this.state == _ol_TileState_.LOADING) {
+  if (this.state == TileState.LOADING) {
     this.unlistenImage_();
     this.image_ = _ol_ImageTile_.getBlankImage();
   }
   if (this.interimTile) {
     this.interimTile.dispose();
   }
-  this.state = _ol_TileState_.ABORT;
+  this.state = TileState.ABORT;
   this.changed();
   _ol_Tile_.prototype.disposeInternal.call(this);
 };
@@ -103,7 +103,7 @@ _ol_ImageTile_.prototype.getKey = function() {
  * @private
  */
 _ol_ImageTile_.prototype.handleImageError_ = function() {
-  this.state = _ol_TileState_.ERROR;
+  this.state = TileState.ERROR;
   this.unlistenImage_();
   this.image_ = _ol_ImageTile_.getBlankImage();
   this.changed();
@@ -117,9 +117,9 @@ _ol_ImageTile_.prototype.handleImageError_ = function() {
  */
 _ol_ImageTile_.prototype.handleImageLoad_ = function() {
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
-    this.state = _ol_TileState_.LOADED;
+    this.state = TileState.LOADED;
   } else {
-    this.state = _ol_TileState_.EMPTY;
+    this.state = TileState.EMPTY;
   }
   this.unlistenImage_();
   this.changed();
@@ -131,15 +131,15 @@ _ol_ImageTile_.prototype.handleImageLoad_ = function() {
  * @api
  */
 _ol_ImageTile_.prototype.load = function() {
-  if (this.state == _ol_TileState_.ERROR) {
-    this.state = _ol_TileState_.IDLE;
+  if (this.state == TileState.ERROR) {
+    this.state = TileState.IDLE;
     this.image_ = new Image();
     if (this.crossOrigin_ !== null) {
       this.image_.crossOrigin = this.crossOrigin_;
     }
   }
-  if (this.state == _ol_TileState_.IDLE) {
-    this.state = _ol_TileState_.LOADING;
+  if (this.state == TileState.IDLE) {
+    this.state = TileState.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
       _ol_events_.listenOnce(this.image_, EventType.ERROR,

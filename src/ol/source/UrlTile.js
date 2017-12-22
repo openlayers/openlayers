@@ -2,7 +2,7 @@
  * @module ol/source/UrlTile
  */
 import {getUid, inherits} from '../index.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import _ol_source_Tile_ from '../source/Tile.js';
 import TileEventType from '../source/TileEventType.js';
@@ -120,13 +120,13 @@ _ol_source_UrlTile_.prototype.handleTileChange = function(event) {
   var uid = getUid(tile);
   var tileState = tile.getState();
   var type;
-  if (tileState == _ol_TileState_.LOADING) {
+  if (tileState == TileState.LOADING) {
     this.tileLoadingKeys_[uid] = true;
     type = TileEventType.TILELOADSTART;
   } else if (uid in this.tileLoadingKeys_) {
     delete this.tileLoadingKeys_[uid];
-    type = tileState == _ol_TileState_.ERROR ? TileEventType.TILELOADERROR :
-      (tileState == _ol_TileState_.LOADED || tileState == _ol_TileState_.ABORT) ?
+    type = tileState == TileState.ERROR ? TileEventType.TILELOADERROR :
+      (tileState == TileState.LOADED || tileState == TileState.ABORT) ?
         TileEventType.TILELOADEND : undefined;
   }
   if (type != undefined) {

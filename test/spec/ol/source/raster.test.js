@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_TileState_ from '../../../../src/ol/TileState.js';
+import TileState from '../../../../src/ol/TileState.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
@@ -343,7 +343,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       map2.once('moveend', function() {
         expect(tileCache.getCount()).to.equal(1);
         var state = tileCache.peekLast().getState();
-        expect(state === _ol_TileState_.LOADED || state === _ol_TileState_.LOADED).to.be(true);
+        expect(state === TileState.LOADED || state === TileState.LOADED).to.be(true);
         done();
       });
 

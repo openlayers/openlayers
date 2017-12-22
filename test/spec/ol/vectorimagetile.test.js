@@ -1,4 +1,4 @@
-import _ol_TileState_ from '../../../src/ol/TileState.js';
+import TileState from '../../../src/ol/TileState.js';
 import _ol_VectorImageTile_ from '../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
@@ -47,12 +47,12 @@ describe('ol.VectorImageTile', function() {
     var calls = 0;
     _ol_events_.listen(tile, 'change', function(e) {
       ++calls;
-      expect(tile.getState()).to.be(calls == 2 ? _ol_TileState_.LOADED : _ol_TileState_.ERROR);
+      expect(tile.getState()).to.be(calls == 2 ? TileState.LOADED : TileState.ERROR);
       if (calls == 2) {
         done();
       } else {
         setTimeout(function() {
-          sourceTile.setState(_ol_TileState_.LOADED);
+          sourceTile.setState(TileState.LOADED);
         }, 0);
       }
     });
@@ -70,7 +70,7 @@ describe('ol.VectorImageTile', function() {
     tile.load();
 
     _ol_events_.listen(tile, 'change', function(e) {
-      expect(tile.getState()).to.be(_ol_TileState_.ERROR);
+      expect(tile.getState()).to.be(TileState.ERROR);
       done();
     });
   });
@@ -86,7 +86,7 @@ describe('ol.VectorImageTile', function() {
     tile.load();
 
     _ol_events_.listen(tile, 'change', function() {
-      expect(tile.getState()).to.be(_ol_TileState_.EMPTY);
+      expect(tile.getState()).to.be(TileState.EMPTY);
       done();
     });
   });
@@ -123,12 +123,12 @@ describe('ol.VectorImageTile', function() {
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
     expect(tile.tileKeys.length).to.be(4);
-    expect(tile.getState()).to.be(_ol_TileState_.LOADING);
+    expect(tile.getState()).to.be(TileState.LOADING);
     tile.dispose();
     expect(tile.loadListenerKeys_.length).to.be(0);
     expect(tile.tileKeys.length).to.be(0);
     expect(tile.sourceTiles_).to.be(null);
-    expect(tile.getState()).to.be(_ol_TileState_.ABORT);
+    expect(tile.getState()).to.be(TileState.ABORT);
   });
 
   it('#dispose() when loaded', function(done) {
@@ -142,13 +142,13 @@ describe('ol.VectorImageTile', function() {
 
     tile.load();
     _ol_events_.listenOnce(tile, 'change', function() {
-      expect(tile.getState()).to.be(_ol_TileState_.LOADED);
+      expect(tile.getState()).to.be(TileState.LOADED);
       expect(tile.loadListenerKeys_.length).to.be(0);
       expect(tile.tileKeys.length).to.be(4);
       tile.dispose();
       expect(tile.tileKeys.length).to.be(0);
       expect(tile.sourceTiles_).to.be(null);
-      expect(tile.getState()).to.be(_ol_TileState_.ABORT);
+      expect(tile.getState()).to.be(TileState.ABORT);
       done();
     });
   });

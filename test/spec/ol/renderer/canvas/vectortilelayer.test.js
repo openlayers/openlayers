@@ -2,7 +2,7 @@ import {getUid, inherits} from '../../../../../src/ol/index.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import _ol_Feature_ from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
-import _ol_TileState_ from '../../../../../src/ol/TileState.js';
+import TileState from '../../../../../src/ol/TileState.js';
 import _ol_VectorImageTile_ from '../../../../../src/ol/VectorImageTile.js';
 import _ol_VectorTile_ from '../../../../../src/ol/VectorTile.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
@@ -74,7 +74,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       });
       source.getTile = function() {
         var tile = _ol_source_VectorTile_.prototype.getTile.apply(source, arguments);
-        tile.setState(_ol_TileState_.LOADED);
+        tile.setState(TileState.LOADED);
         return tile;
       };
       layer = new _ol_layer_VectorTile_({
@@ -254,7 +254,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var tile = new _ol_VectorImageTile_([0, 0, 0]);
       tile.transition_ = 0;
       tile.wrappedTileCoord = [0, 0, 0];
-      tile.setState(_ol_TileState_.LOADED);
+      tile.setState(TileState.LOADED);
       tile.getSourceTile = function() {
         return sourceTile;
       };

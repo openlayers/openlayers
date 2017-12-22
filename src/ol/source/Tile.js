@@ -3,7 +3,7 @@
  */
 import {inherits, nullFunction} from '../index.js';
 import TileCache from '../TileCache.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
 import _ol_size_ from '../size.js';
@@ -124,7 +124,7 @@ _ol_source_Tile_.prototype.forEachLoadedTile = function(projection, z, tileRange
       loaded = false;
       if (tileCache.containsKey(tileCoordKey)) {
         tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
-        loaded = tile.getState() === _ol_TileState_.LOADED;
+        loaded = tile.getState() === TileState.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
         }

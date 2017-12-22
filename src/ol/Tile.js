@@ -2,7 +2,7 @@
  * @module ol/Tile
  */
 import {inherits} from './index.js';
-import _ol_TileState_ from './TileState.js';
+import TileState from './TileState.js';
 import {easeIn} from './easing.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
@@ -102,7 +102,7 @@ _ol_Tile_.prototype.getInterimTile = function() {
   // of the list (all those tiles correspond to older requests and will be
   // cleaned up by refreshInterimChain)
   do {
-    if (tile.getState() == _ol_TileState_.LOADED) {
+    if (tile.getState() == TileState.LOADED) {
       return tile;
     }
     tile = tile.interimTile;
@@ -125,17 +125,17 @@ _ol_Tile_.prototype.refreshInterimChain = function() {
   var prev = this;
 
   do {
-    if (tile.getState() == _ol_TileState_.LOADED) {
+    if (tile.getState() == TileState.LOADED) {
       //we have a loaded tile, we can discard the rest of the list
       //we would could abort any LOADING tile request
       //older than this tile (i.e. any LOADING tile following this entry in the chain)
       tile.interimTile = null;
       break;
-    } else if (tile.getState() == _ol_TileState_.LOADING) {
+    } else if (tile.getState() == TileState.LOADING) {
       //keep this LOADING tile any loaded tiles later in the chain are
       //older than this tile, so we're still interested in the request
       prev = tile;
-    } else if (tile.getState() == _ol_TileState_.IDLE) {
+    } else if (tile.getState() == TileState.IDLE) {
       //the head of the list is the most current tile, we don't need
       //to start any other requests for this chain
       prev.interimTile = tile.interimTile;

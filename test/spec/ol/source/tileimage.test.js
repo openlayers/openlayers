@@ -1,5 +1,5 @@
 import _ol_ImageTile_ from '../../../../src/ol/ImageTile.js';
-import _ol_TileState_ from '../../../../src/ol/TileState.js';
+import TileState from '../../../../src/ol/TileState.js';
 import {createFromTemplate} from '../../../../src/ol/tileurlfunction.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
@@ -188,7 +188,7 @@ describe('ol.source.TileImage', function() {
 
     it('dispatches tileloadstart and tileloadend events', function() {
       source.setTileLoadFunction(function(tile) {
-        tile.setState(_ol_TileState_.LOADED);
+        tile.setState(TileState.LOADED);
       });
       var startSpy = sinon.spy();
       source.on('tileloadstart', startSpy);
@@ -203,15 +203,15 @@ describe('ol.source.TileImage', function() {
     it('works for loading-error-loading-loaded sequences', function(done) {
       source.setTileLoadFunction(function(tile) {
         tile.setState(
-            tile.state == _ol_TileState_.ERROR ? _ol_TileState_.LOADED : _ol_TileState_.ERROR);
+            tile.state == TileState.ERROR ? TileState.LOADED : TileState.ERROR);
       });
       var startSpy = sinon.spy();
       source.on('tileloadstart', startSpy);
       var errorSpy = sinon.spy();
       source.on('tileloaderror', function(e) {
         setTimeout(function() {
-          e.tile.setState(_ol_TileState_.LOADING);
-          e.tile.setState(_ol_TileState_.LOADED);
+          e.tile.setState(TileState.LOADING);
+          e.tile.setState(TileState.LOADED);
         }, 0);
         errorSpy();
       });

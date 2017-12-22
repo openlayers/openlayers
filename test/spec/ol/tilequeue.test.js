@@ -1,7 +1,7 @@
 import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
 import TileQueue from '../../../src/ol/TileQueue.js';
-import _ol_TileState_ from '../../../src/ol/TileState.js';
+import TileState from '../../../src/ol/TileState.js';
 import _ol_source_Image_ from '../../../src/ol/source/Image.js';
 import PriorityQueue from '../../../src/ol/structs/PriorityQueue.js';
 
@@ -95,7 +95,7 @@ describe('ol.TileQueue', function() {
       var numTiles = 20;
       for (var i = 0; i < numTiles; ++i) {
         var tile = createImageTile();
-        tile.state = _ol_TileState_.ABORT;
+        tile.state = TileState.ABORT;
         queue.enqueue([tile]);
       }
       var maxLoading = numTiles / 2;

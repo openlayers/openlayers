@@ -1,21 +1,21 @@
 import {getUid} from '../../../src/ol/index.js';
 import _ol_ImageTile_ from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
-import _ol_TileState_ from '../../../src/ol/TileState.js';
+import TileState from '../../../src/ol/TileState.js';
 
 
 describe('ol.Tile', function() {
   describe('constructor', function()  {
     it('sets a default transition', function() {
       var coord = [0, 0, 0];
-      var tile = new _ol_Tile_(coord, _ol_TileState_.IDLE);
+      var tile = new _ol_Tile_(coord, TileState.IDLE);
       expect(tile.transition_).to.equal(250);
     });
 
     it('allows the transition to be set', function() {
       var coord = [0, 0, 0];
       var transition = 500;
-      var tile = new _ol_Tile_(coord, _ol_TileState_.IDLE, {transition: transition});
+      var tile = new _ol_Tile_(coord, TileState.IDLE, {transition: transition});
       expect(tile.transition_).to.equal(transition);
     });
   });
@@ -23,7 +23,7 @@ describe('ol.Tile', function() {
   describe('#getAlpha()', function() {
     it('returns the alpha value for a tile in transition', function() {
       var coord = [0, 0, 0];
-      var tile = new _ol_Tile_(coord, _ol_TileState_.IDLE);
+      var tile = new _ol_Tile_(coord, TileState.IDLE);
       var id = 'test';
       var time = Date.now();
 
@@ -45,7 +45,7 @@ describe('ol.Tile', function() {
   describe('#inTransition()', function() {
     it('determines if the tile is in transition', function() {
       var coord = [0, 0, 0];
-      var tile = new _ol_Tile_(coord, _ol_TileState_.IDLE);
+      var tile = new _ol_Tile_(coord, TileState.IDLE);
       var id = 'test';
 
       expect(tile.inTransition(id)).to.be(true);
@@ -58,7 +58,7 @@ describe('ol.Tile', function() {
     var head, renderTile;
     beforeEach(function() {
       var tileCoord = [0, 0, 0];
-      head = new _ol_ImageTile_(tileCoord, _ol_TileState_.IDLE);
+      head = new _ol_ImageTile_(tileCoord, TileState.IDLE);
       getUid(head);
 
       var addToChain = function(tile, state) {
@@ -67,15 +67,15 @@ describe('ol.Tile', function() {
         tile.interimTile = next;
         return next;
       };
-      var tail = addToChain(head, _ol_TileState_.IDLE); //discard, deprecated by head
-      tail = addToChain(tail, _ol_TileState_.LOADING); //keep, request already going
-      tail = addToChain(tail, _ol_TileState_.IDLE); //discard, deprecated by head
-      tail = addToChain(tail, _ol_TileState_.LOADED); //keep, use for rendering
+      var tail = addToChain(head, TileState.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, TileState.LOADING); //keep, request already going
+      tail = addToChain(tail, TileState.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, TileState.LOADED); //keep, use for rendering
       renderTile = tail; //store this tile for later tests
-      tail = addToChain(tail, _ol_TileState_.IDLE);  //rest of list outdated by tile above
-      tail = addToChain(tail, _ol_TileState_.LOADED);
-      tail = addToChain(tail, _ol_TileState_.LOADING);
-      tail = addToChain(tail, _ol_TileState_.LOADED);
+      tail = addToChain(tail, TileState.IDLE);  //rest of list outdated by tile above
+      tail = addToChain(tail, TileState.LOADED);
+      tail = addToChain(tail, TileState.LOADING);
+      tail = addToChain(tail, TileState.LOADED);
 
     });
 

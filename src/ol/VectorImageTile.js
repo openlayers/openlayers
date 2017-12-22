@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from './index.js';
 import _ol_Tile_ from './Tile.js';
-import _ol_TileState_ from './TileState.js';
+import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
@@ -107,7 +107,7 @@ var _ol_VectorImageTile_ = function(tileCoord, state, sourceRevision, format,
         if (!sourceTile) {
           var tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
-              tileUrl == undefined ? _ol_TileState_.EMPTY : _ol_TileState_.IDLE,
+              tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
               tileUrl == undefined ? '' : tileUrl,
               format, tileLoadFunction);
           this.sourceTileListenerKeys_.push(
@@ -128,7 +128,7 @@ inherits(_ol_VectorImageTile_, _ol_Tile_);
  * @inheritDoc
  */
 _ol_VectorImageTile_.prototype.disposeInternal = function() {
-  this.state = _ol_TileState_.ABORT;
+  this.state = TileState.ABORT;
   this.changed();
   if (this.interimTile) {
     this.interimTile.dispose();
@@ -223,23 +223,23 @@ _ol_VectorImageTile_.prototype.load = function() {
   // an ERROR state after another load attempt.
   var errorSourceTiles = {};
 
-  if (this.state == _ol_TileState_.IDLE) {
-    this.setState(_ol_TileState_.LOADING);
+  if (this.state == TileState.IDLE) {
+    this.setState(TileState.LOADING);
   }
-  if (this.state == _ol_TileState_.LOADING) {
+  if (this.state == TileState.LOADING) {
     this.tileKeys.forEach(function(sourceTileKey) {
       var sourceTile = this.getTile(sourceTileKey);
-      if (sourceTile.state == _ol_TileState_.IDLE) {
+      if (sourceTile.state == TileState.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
       }
-      if (sourceTile.state == _ol_TileState_.LOADING) {
+      if (sourceTile.state == TileState.LOADING) {
         var key = _ol_events_.listen(sourceTile, EventType.CHANGE, function(e) {
           var state = sourceTile.getState();
-          if (state == _ol_TileState_.LOADED ||
-              state == _ol_TileState_.ERROR) {
+          if (state == TileState.LOADED ||
+              state == TileState.ERROR) {
             var uid = getUid(sourceTile);
-            if (state == _ol_TileState_.ERROR) {
+            if (state == TileState.ERROR) {
               errorSourceTiles[uid] = true;
             } else {
               --leftToLoad;
@@ -269,19 +269,19 @@ _ol_VectorImageTile_.prototype.finishLoading_ = function() {
   var empty = 0;
   for (var i = loaded - 1; i >= 0; --i) {
     var state = this.getTile(this.tileKeys[i]).getState();
-    if (state != _ol_TileState_.LOADED) {
+    if (state != TileState.LOADED) {
       --loaded;
     }
-    if (state == _ol_TileState_.EMPTY) {
+    if (state == TileState.EMPTY) {
       ++empty;
     }
   }
   if (loaded == this.tileKeys.length) {
     this.loadListenerKeys_.forEach(_ol_events_.unlistenByKey);
     this.loadListenerKeys_.length = 0;
-    this.setState(_ol_TileState_.LOADED);
+    this.setState(TileState.LOADED);
   } else {
-    this.setState(empty == this.tileKeys.length ? _ol_TileState_.EMPTY : _ol_TileState_.ERROR);
+    this.setState(empty == this.tileKeys.length ? TileState.EMPTY : TileState.ERROR);
   }
 };
 

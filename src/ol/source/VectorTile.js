@@ -2,7 +2,7 @@
  * @module ol/source/VectorTile
  */
 import {inherits} from '../index.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import _ol_VectorImageTile_ from '../VectorImageTile.js';
 import _ol_VectorTile_ from '../VectorTile.js';
 import _ol_size_ from '../size.js';
@@ -120,7 +120,7 @@ _ol_source_VectorTile_.prototype.getTile = function(z, x, y, pixelRatio, project
         tileCoord, projection);
     var tile = new _ol_VectorImageTile_(
         tileCoord,
-        urlTileCoord !== null ? _ol_TileState_.IDLE : _ol_TileState_.EMPTY,
+        urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
         this.getRevision(),
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),

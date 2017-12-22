@@ -2,7 +2,7 @@
  * @module ol/TileQueue
  */
 import {inherits} from './index.js';
-import _ol_TileState_ from './TileState.js';
+import TileState from './TileState.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
 import PriorityQueue from './structs/PriorityQueue.js';
@@ -87,8 +87,8 @@ TileQueue.prototype.getTilesLoading = function() {
 TileQueue.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   var state = tile.getState();
-  if (state === _ol_TileState_.LOADED || state === _ol_TileState_.ERROR ||
-      state === _ol_TileState_.EMPTY || state === _ol_TileState_.ABORT) {
+  if (state === TileState.LOADED || state === TileState.ERROR ||
+      state === TileState.EMPTY || state === TileState.ABORT) {
     _ol_events_.unlisten(tile, EventType.CHANGE,
         this.handleTileChange, this);
     var tileKey = tile.getKey();
@@ -114,9 +114,9 @@ TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     tileKey = tile.getKey();
     state = tile.getState();
-    if (state === _ol_TileState_.ABORT) {
+    if (state === TileState.ABORT) {
       abortedTiles = true;
-    } else if (state === _ol_TileState_.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+    } else if (state === TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
       this.tilesLoadingKeys_[tileKey] = true;
       ++this.tilesLoading_;
       ++newLoads;
