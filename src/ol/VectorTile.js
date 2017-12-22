@@ -77,6 +77,12 @@ var VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt_o
 
 inherits(VectorTile, _ol_Tile_);
 
+/**
+ * @const
+ * @type {ol.Extent}
+ */
+var DEFAULT_EXTENT = [0, 0, 4096, 4096];
+
 
 /**
  * @inheritDoc
@@ -96,7 +102,7 @@ VectorTile.prototype.disposeInternal = function() {
  * @api
  */
 VectorTile.prototype.getExtent = function() {
-  return this.extent_ || VectorTile.DEFAULT_EXTENT;
+  return this.extent_ || DEFAULT_EXTENT;
 };
 
 
@@ -243,10 +249,4 @@ VectorTile.prototype.setLoader = function(loader) {
   this.loader_ = loader;
 };
 
-
-/**
- * @const
- * @type {ol.Extent}
- */
-VectorTile.DEFAULT_EXTENT = [0, 0, 4096, 4096];
 export default VectorTile;
