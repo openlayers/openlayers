@@ -1,6 +1,6 @@
 import _ol_Feature_ from '../../../src/ol/Feature.js';
 import VectorImageTile from '../../../src/ol/VectorImageTile.js';
-import _ol_VectorTile_ from '../../../src/ol/VectorTile.js';
+import VectorTile from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import TextFeature from '../../../src/ol/format/TextFeature.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
@@ -22,7 +22,7 @@ describe('ol.VectorTile', function() {
       return [new _ol_Feature_()];
     };
 
-    var tile = new _ol_VectorTile_([0, 0, 0], null, null, format);
+    var tile = new VectorTile([0, 0, 0], null, null, format);
     var url = 'spec/ol/data/point.json';
 
     VectorImageTile.defaultLoadFunction(tile, url);

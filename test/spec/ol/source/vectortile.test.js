@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
-import _ol_VectorTile_ from '../../../../src/ol/VectorTile.js';
+import VectorTile from '../../../../src/ol/VectorTile.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
@@ -25,7 +25,7 @@ describe('ol.source.VectorTile', function() {
     });
 
     it('uses ol.VectorTile as default tileClass', function() {
-      expect(source.tileClass).to.equal(_ol_VectorTile_);
+      expect(source.tileClass).to.equal(VectorTile);
     });
 
     it('creates a 512 XYZ tilegrid by default', function() {
@@ -65,7 +65,7 @@ describe('ol.source.VectorTile', function() {
       });
       source.on('tileloadend', function(e) {
         expect(started).to.be(true);
-        expect(e.tile).to.be.a(_ol_VectorTile_);
+        expect(e.tile).to.be.a(VectorTile);
         expect(e.tile.getFeatures().length).to.be(1327);
         done();
       });

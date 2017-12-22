@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import TileState from '../TileState.js';
 import VectorImageTile from '../VectorImageTile.js';
-import _ol_VectorTile_ from '../VectorTile.js';
+import VectorTile from '../VectorTile.js';
 import _ol_size_ from '../size.js';
 import _ol_source_UrlTile_ from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -78,7 +78,7 @@ var _ol_source_VectorTile_ = function(options) {
    * @type {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
    *        ol.format.Feature, ol.TileLoadFunctionType)}
    */
-  this.tileClass = options.tileClass ? options.tileClass : _ol_VectorTile_;
+  this.tileClass = options.tileClass ? options.tileClass : VectorTile;
 
   /**
    * @private
