@@ -2,7 +2,7 @@ import ImageTile from '../../../../src/ol/ImageTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_TileWMS_ from '../../../../src/ol/source/TileWMS.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
 describe('ol.source.TileWMS', function() {
@@ -182,7 +182,7 @@ describe('ol.source.TileWMS', function() {
     });
 
     it('works with non-square tiles', function() {
-      options.tileGrid = new _ol_tilegrid_TileGrid_({
+      options.tileGrid = new TileGrid({
         tileSize: [640, 320],
         resolutions: [1.40625, 0.703125, 0.3515625, 0.17578125],
         origin: [-180, -90]

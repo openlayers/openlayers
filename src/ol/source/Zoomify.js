@@ -11,7 +11,7 @@ import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
-import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
  * @classdesc
@@ -81,7 +81,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
   }
   resolutions.reverse();
 
-  var tileGrid = new _ol_tilegrid_TileGrid_({
+  var tileGrid = new TileGrid({
     tileSize: tileSize,
     extent: extent,
     origin: getTopLeft(extent),

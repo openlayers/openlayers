@@ -6,7 +6,7 @@ import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import Source from '../../../../src/ol/source/Source.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
-import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
 /**
@@ -19,7 +19,7 @@ import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
  *     tile state.
  */
 var MockTile = function(tileStates) {
-  var tileGrid = new _ol_tilegrid_TileGrid_({
+  var tileGrid = new TileGrid({
     resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
     origin: [-180, -180],
     tileSize: 256

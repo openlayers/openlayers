@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
-import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
  * @classdesc
@@ -24,7 +24,7 @@ var WMTSTileGrid = function(options) {
   this.matrixIds_ = options.matrixIds;
   // FIXME: should the matrixIds become optional?
 
-  _ol_tilegrid_TileGrid_.call(this, {
+  TileGrid.call(this, {
     extent: options.extent,
     origin: options.origin,
     origins: options.origins,
@@ -35,7 +35,7 @@ var WMTSTileGrid = function(options) {
   });
 };
 
-inherits(WMTSTileGrid, _ol_tilegrid_TileGrid_);
+inherits(WMTSTileGrid, TileGrid);
 
 
 /**

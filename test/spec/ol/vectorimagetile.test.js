@@ -5,7 +5,7 @@ import _ol_events_ from '../../../src/ol/events.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
 
 describe('ol.VectorImageTile', function() {
@@ -94,7 +94,7 @@ describe('ol.VectorImageTile', function() {
   it('only loads tiles within the source tileGrid\'s extent', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tileGrid = new _ol_tilegrid_TileGrid_({
+    var tileGrid = new TileGrid({
       resolutions: [0.02197265625, 0.010986328125, 0.0054931640625],
       origin: [-180, 90],
       extent: [-88, 35, -87, 36]

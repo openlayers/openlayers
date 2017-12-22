@@ -7,7 +7,7 @@ import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.source.VectorTile', function() {
 
@@ -97,7 +97,7 @@ describe('ol.source.VectorTile', function() {
       var extent = [665584.2026596286, 7033250.839875697, 667162.0221431496, 7035280.378636755];
 
       source = new _ol_source_VectorTile_({
-        tileGrid: new _ol_tilegrid_TileGrid_({
+        tileGrid: new TileGrid({
           origin: [218128, 6126002],
           resolutions: [4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5]
         }),

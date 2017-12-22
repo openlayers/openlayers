@@ -10,7 +10,7 @@ import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
-import _ol_tilegrid_TileGrid_ from '../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import proj4 from 'proj4';
 
 
@@ -140,7 +140,7 @@ layers['states'] = new TileLayer({
     crossOrigin: '',
     params: {'LAYERS': 'topp:states'},
     serverType: 'geoserver',
-    tileGrid: new _ol_tilegrid_TileGrid_({
+    tileGrid: new TileGrid({
       extent: [-13884991, 2870341, -7455066, 6338219],
       resolutions: resolutions,
       tileSize: [512, 256]
