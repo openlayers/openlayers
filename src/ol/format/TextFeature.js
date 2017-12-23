@@ -24,16 +24,15 @@ inherits(TextFeature, FeatureFormat);
 
 /**
  * @param {Document|Node|Object|string} source Source.
- * @private
  * @return {string} Text.
  */
-TextFeature.prototype.getText_ = function(source) {
+function getText(source) {
   if (typeof source === 'string') {
     return source;
   } else {
     return '';
   }
-};
+}
 
 
 /**
@@ -48,8 +47,7 @@ TextFeature.prototype.getType = function() {
  * @inheritDoc
  */
 TextFeature.prototype.readFeature = function(source, opt_options) {
-  return this.readFeatureFromText(
-      this.getText_(source), this.adaptOptions(opt_options));
+  return this.readFeatureFromText(getText(source), this.adaptOptions(opt_options));
 };
 
 
@@ -67,8 +65,7 @@ TextFeature.prototype.readFeatureFromText = function(text, opt_options) {};
  * @inheritDoc
  */
 TextFeature.prototype.readFeatures = function(source, opt_options) {
-  return this.readFeaturesFromText(
-      this.getText_(source), this.adaptOptions(opt_options));
+  return this.readFeaturesFromText(getText(source), this.adaptOptions(opt_options));
 };
 
 
@@ -86,8 +83,7 @@ TextFeature.prototype.readFeaturesFromText = function(text, opt_options) {};
  * @inheritDoc
  */
 TextFeature.prototype.readGeometry = function(source, opt_options) {
-  return this.readGeometryFromText(
-      this.getText_(source), this.adaptOptions(opt_options));
+  return this.readGeometryFromText(getText(source), this.adaptOptions(opt_options));
 };
 
 
@@ -105,7 +101,7 @@ TextFeature.prototype.readGeometryFromText = function(text, opt_options) {};
  * @inheritDoc
  */
 TextFeature.prototype.readProjection = function(source) {
-  return this.readProjectionFromText(this.getText_(source));
+  return this.readProjectionFromText(getText(source));
 };
 
 
@@ -140,8 +136,7 @@ TextFeature.prototype.writeFeatureText = function(feature, opt_options) {};
 /**
  * @inheritDoc
  */
-TextFeature.prototype.writeFeatures = function(
-    features, opt_options) {
+TextFeature.prototype.writeFeatures = function(features, opt_options) {
   return this.writeFeaturesText(features, this.adaptOptions(opt_options));
 };
 
@@ -159,8 +154,7 @@ TextFeature.prototype.writeFeaturesText = function(features, opt_options) {};
 /**
  * @inheritDoc
  */
-TextFeature.prototype.writeGeometry = function(
-    geometry, opt_options) {
+TextFeature.prototype.writeGeometry = function(geometry, opt_options) {
   return this.writeGeometryText(geometry, this.adaptOptions(opt_options));
 };
 

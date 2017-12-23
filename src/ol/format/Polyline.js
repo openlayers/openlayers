@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import _ol_Feature_ from '../Feature.js';
-import FeatureFormat from '../format/Feature.js';
+import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
@@ -332,7 +332,7 @@ Polyline.prototype.readGeometryFromText = function(text, opt_options) {
       flatCoordinates, 0, flatCoordinates.length, stride);
 
   return (
-    /** @type {ol.geom.Geometry} */ FeatureFormat.transformWithOptions(
+    /** @type {ol.geom.Geometry} */ transformWithOptions(
         new LineString(coordinates, this.geometryLayout_), false,
         this.adaptOptions(opt_options))
   );
@@ -389,8 +389,7 @@ Polyline.prototype.writeGeometry;
  */
 Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
   geometry = /** @type {ol.geom.LineString} */
-    (FeatureFormat.transformWithOptions(
-        geometry, true, this.adaptOptions(opt_options)));
+    (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   _ol_geom_flat_flip_.flipXY(

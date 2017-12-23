@@ -6,7 +6,7 @@
 import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import PBF from 'pbf';
-import FeatureFormat from '../format/Feature.js';
+import FeatureFormat, {transformWithOptions} from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
@@ -322,7 +322,7 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
     if (this.geometryName_) {
       feature.setGeometryName(this.geometryName_);
     }
-    var geometry = FeatureFormat.transformWithOptions(geom, false, this.adaptOptions(opt_options));
+    var geometry = transformWithOptions(geom, false, this.adaptOptions(opt_options));
     feature.setGeometry(geometry);
     feature.setId(id);
     feature.setProperties(values);

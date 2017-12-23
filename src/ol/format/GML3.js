@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {extend} from '../array.js';
 import {createOrUpdate} from '../extent.js';
-import FeatureFormat from '../format/Feature.js';
+import {transformWithOptions} from '../format/Feature.js';
 import GMLBase from '../format/GMLBase.js';
 import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
@@ -962,8 +962,7 @@ GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
       value = geometry;
     }
   } else {
-    value =
-        FeatureFormat.transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
+    value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
   }
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       (item), GML3.GEOMETRY_SERIALIZERS_,
