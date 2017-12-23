@@ -1,5 +1,5 @@
 import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
-import _ol_tilegrid_WMTS_ from '../../../../src/ol/tilegrid/WMTS.js';
+import {createFromCapabilitiesMatrixSet} from '../../../../src/ol/tilegrid/WMTS.js';
 
 
 describe('ol.tilegrid.WMTS', function() {
@@ -21,9 +21,7 @@ describe('ol.tilegrid.WMTS', function() {
     it('can create tileGrid for EPSG:3857',
         function() {
           var matrixSetObj = capabilities.Contents.TileMatrixSet[0];
-          var tileGrid;
-          tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
-              matrixSetObj);
+          var tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj);
           expect(tileGrid.matrixIds_).to.be.an('array');
           expect(tileGrid.matrixIds_).to.have.length(20);
           expect(tileGrid.matrixIds_).to.eql([
@@ -76,9 +74,7 @@ describe('ol.tilegrid.WMTS', function() {
         it('can create tileGrid for EPSG:3857 without matrixLimits',
             function() {
               var matrixSetObj = capabilities.Contents.TileMatrixSet[0];
-              var tileGrid;
-              tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
-                  matrixSetObj);
+              var tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj);
               expect(tileGrid.matrixIds_).to.be.an('array');
               expect(tileGrid.matrixIds_).to.have.length(22);
               expect(tileGrid.matrixIds_).to.eql([
@@ -117,9 +113,7 @@ describe('ol.tilegrid.WMTS', function() {
               var matrixSetObj = capabilities.Contents.TileMatrixSet[0];
               var matrixLimitArray = capabilities.Contents.Layer[0]
                   .TileMatrixSetLink[0].TileMatrixSetLimits;
-              var tileGrid;
-              tileGrid = _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet(
-                  matrixSetObj, undefined, matrixLimitArray);
+              var tileGrid = createFromCapabilitiesMatrixSet(matrixSetObj, undefined, matrixLimitArray);
               expect(tileGrid.matrixIds_).to.be.an('array');
               expect(tileGrid.matrixIds_).to.have.length(20);
               expect(tileGrid.matrixIds_).to.eql([

@@ -53,15 +53,28 @@ inherits(TopoJSON, JSONFeature);
 
 
 /**
+ * @const
+ * @type {Object.<string, function(TopoJSONGeometry, Array, ...Array): ol.geom.Geometry>}
+ */
+var GEOMETRY_READERS = {
+  'Point': readPointGeometry,
+  'LineString': readLineStringGeometry,
+  'Polygon': readPolygonGeometry,
+  'MultiPoint': readMultiPointGeometry,
+  'MultiLineString': readMultiLineStringGeometry,
+  'MultiPolygon': readMultiPolygonGeometry
+};
+
+
+/**
  * Concatenate arcs into a coordinate array.
  * @param {Array.<number>} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs (already
  *     transformed).
  * @return {Array.<ol.Coordinate>} Coordinates array.
- * @private
  */
-TopoJSON.concatenateArcs_ = function(indices, arcs) {
+function concatenateArcs(indices, arcs) {
   /** @type {Array.<ol.Coordinate>} */
   var coordinates = [];
   var index, arc;
@@ -87,7 +100,7 @@ TopoJSON.concatenateArcs_ = function(indices, arcs) {
     coordinates[j] = coordinates[j].slice();
   }
   return coordinates;
-};
+}
 
 
 /**
@@ -97,15 +110,14 @@ TopoJSON.concatenateArcs_ = function(indices, arcs) {
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @return {ol.geom.Point} Geometry.
- * @private
  */
-TopoJSON.readPointGeometry_ = function(object, scale, translate) {
+function readPointGeometry(object, scale, translate) {
   var coordinates = object.coordinates;
   if (scale && translate) {
-    TopoJSON.transformVertex_(coordinates, scale, translate);
+    transformVertex(coordinates, scale, translate);
   }
   return new Point(coordinates);
-};
+}
 
 
 /**
@@ -115,19 +127,17 @@ TopoJSON.readPointGeometry_ = function(object, scale, translate) {
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
  * @return {ol.geom.MultiPoint} Geometry.
- * @private
  */
-TopoJSON.readMultiPointGeometry_ = function(object, scale,
-    translate) {
+function readMultiPointGeometry(object, scale, translate) {
   var coordinates = object.coordinates;
   var i, ii;
   if (scale && translate) {
     for (i = 0, ii = coordinates.length; i < ii; ++i) {
-      TopoJSON.transformVertex_(coordinates[i], scale, translate);
+      transformVertex(coordinates[i], scale, translate);
     }
   }
   return new MultiPoint(coordinates);
-};
+}
 
 
 /**
@@ -136,12 +146,11 @@ TopoJSON.readMultiPointGeometry_ = function(object, scale,
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.LineString} Geometry.
- * @private
  */
-TopoJSON.readLineStringGeometry_ = function(object, arcs) {
-  var coordinates = TopoJSON.concatenateArcs_(object.arcs, arcs);
+function readLineStringGeometry(object, arcs) {
+  var coordinates = concatenateArcs(object.arcs, arcs);
   return new LineString(coordinates);
-};
+}
 
 
 /**
@@ -150,16 +159,15 @@ TopoJSON.readLineStringGeometry_ = function(object, arcs) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.MultiLineString} Geometry.
- * @private
  */
-TopoJSON.readMultiLineStringGeometry_ = function(object, arcs) {
+function readMultiLineStringGeometry(object, arcs) {
   var coordinates = [];
   var i, ii;
   for (i = 0, ii = object.arcs.length; i < ii; ++i) {
-    coordinates[i] = TopoJSON.concatenateArcs_(object.arcs[i], arcs);
+    coordinates[i] = concatenateArcs(object.arcs[i], arcs);
   }
   return new MultiLineString(coordinates);
-};
+}
 
 
 /**
@@ -168,16 +176,15 @@ TopoJSON.readMultiLineStringGeometry_ = function(object, arcs) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.Polygon} Geometry.
- * @private
  */
-TopoJSON.readPolygonGeometry_ = function(object, arcs) {
+function readPolygonGeometry(object, arcs) {
   var coordinates = [];
   var i, ii;
   for (i = 0, ii = object.arcs.length; i < ii; ++i) {
-    coordinates[i] = TopoJSON.concatenateArcs_(object.arcs[i], arcs);
+    coordinates[i] = concatenateArcs(object.arcs[i], arcs);
   }
   return new Polygon(coordinates);
-};
+}
 
 
 /**
@@ -186,9 +193,8 @@ TopoJSON.readPolygonGeometry_ = function(object, arcs) {
  * @param {TopoJSONGeometry} object TopoJSON object.
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @return {ol.geom.MultiPolygon} Geometry.
- * @private
  */
-TopoJSON.readMultiPolygonGeometry_ = function(object, arcs) {
+function readMultiPolygonGeometry(object, arcs) {
   var coordinates = [];
   var polyArray, ringCoords, j, jj;
   var i, ii;
@@ -198,12 +204,12 @@ TopoJSON.readMultiPolygonGeometry_ = function(object, arcs) {
     ringCoords = [];
     for (j = 0, jj = polyArray.length; j < jj; ++j) {
       // for each ring
-      ringCoords[j] = TopoJSON.concatenateArcs_(polyArray[j], arcs);
+      ringCoords[j] = concatenateArcs(polyArray[j], arcs);
     }
     coordinates[i] = ringCoords;
   }
   return new MultiPolygon(coordinates);
-};
+}
 
 
 /**
@@ -219,19 +225,17 @@ TopoJSON.readMultiPolygonGeometry_ = function(object, arcs) {
  * @param {string} name Name of the `Topology`'s child object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Array of features.
- * @private
  */
-TopoJSON.readFeaturesFromGeometryCollection_ = function(
-    collection, arcs, scale, translate, property, name, opt_options) {
+function readFeaturesFromGeometryCollection(collection, arcs, scale, translate, property, name, opt_options) {
   var geometries = collection.geometries;
   var features = [];
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    features[i] = TopoJSON.readFeatureFromGeometry_(
+    features[i] = readFeatureFromGeometry(
         geometries[i], arcs, scale, translate, property, name, opt_options);
   }
   return features;
-};
+}
 
 
 /**
@@ -246,13 +250,11 @@ TopoJSON.readFeaturesFromGeometryCollection_ = function(
  * @param {string} name Name of the `Topology`'s child object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @private
  */
-TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
-    scale, translate, property, name, opt_options) {
+function readFeatureFromGeometry(object, arcs, scale, translate, property, name, opt_options) {
   var geometry;
   var type = object.type;
-  var geometryReader = TopoJSON.GEOMETRY_READERS_[type];
+  var geometryReader = GEOMETRY_READERS[type];
   if ((type === 'Point') || (type === 'MultiPoint')) {
     geometry = geometryReader(object, scale, translate);
   } else {
@@ -275,7 +277,7 @@ TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
     feature.setProperties(properties);
   }
   return feature;
-};
+}
 
 
 /**
@@ -304,7 +306,7 @@ TopoJSON.prototype.readFeaturesFromObject = function(
     }
     var arcs = topoJSONTopology.arcs;
     if (transform) {
-      TopoJSON.transformArcs_(arcs, scale, translate);
+      transformArcs(arcs, scale, translate);
     }
     /** @type {Array.<ol.Feature>} */
     var features = [];
@@ -316,15 +318,12 @@ TopoJSON.prototype.readFeaturesFromObject = function(
         continue;
       }
       if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
-        feature = /** @type {TopoJSONGeometryCollection} */
-          (topoJSONFeatures[objectName]);
-        features.push.apply(features,
-            TopoJSON.readFeaturesFromGeometryCollection_(
-                feature, arcs, scale, translate, property, objectName, opt_options));
+        feature = /** @type {TopoJSONGeometryCollection} */ (topoJSONFeatures[objectName]);
+        features.push.apply(features, readFeaturesFromGeometryCollection(
+            feature, arcs, scale, translate, property, objectName, opt_options));
       } else {
-        feature = /** @type {TopoJSONGeometry} */
-          (topoJSONFeatures[objectName]);
-        features.push(TopoJSON.readFeatureFromGeometry_(
+        feature = /** @type {TopoJSONGeometry} */ (topoJSONFeatures[objectName]);
+        features.push(readFeatureFromGeometry(
             feature, arcs, scale, translate, property, objectName, opt_options));
       }
     }
@@ -342,14 +341,13 @@ TopoJSON.prototype.readFeaturesFromObject = function(
  * @param {Array.<Array.<ol.Coordinate>>} arcs Array of arcs.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @private
  */
-TopoJSON.transformArcs_ = function(arcs, scale, translate) {
+function transformArcs(arcs, scale, translate) {
   var i, ii;
   for (i = 0, ii = arcs.length; i < ii; ++i) {
-    TopoJSON.transformArc_(arcs[i], scale, translate);
+    transformArc(arcs[i], scale, translate);
   }
-};
+}
 
 
 /**
@@ -358,9 +356,8 @@ TopoJSON.transformArcs_ = function(arcs, scale, translate) {
  * @param {Array.<ol.Coordinate>} arc Arc.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @private
  */
-TopoJSON.transformArc_ = function(arc, scale, translate) {
+function transformArc(arc, scale, translate) {
   var x = 0;
   var y = 0;
   var vertex;
@@ -371,9 +368,9 @@ TopoJSON.transformArc_ = function(arc, scale, translate) {
     y += vertex[1];
     vertex[0] = x;
     vertex[1] = y;
-    TopoJSON.transformVertex_(vertex, scale, translate);
+    transformVertex(vertex, scale, translate);
   }
-};
+}
 
 
 /**
@@ -383,12 +380,11 @@ TopoJSON.transformArc_ = function(arc, scale, translate) {
  * @param {ol.Coordinate} vertex Vertex.
  * @param {Array.<number>} scale Scale for each dimension.
  * @param {Array.<number>} translate Translation for each dimension.
- * @private
  */
-TopoJSON.transformVertex_ = function(vertex, scale, translate) {
+function transformVertex(vertex, scale, translate) {
   vertex[0] = vertex[0] * scale[0] + translate[0];
   vertex[1] = vertex[1] * scale[1] + translate[1];
-};
+}
 
 
 /**
@@ -407,21 +403,6 @@ TopoJSON.prototype.readProjection;
  */
 TopoJSON.prototype.readProjectionFromObject = function(object) {
   return this.defaultDataProjection;
-};
-
-
-/**
- * @const
- * @private
- * @type {Object.<string, function(TopoJSONGeometry, Array, ...Array): ol.geom.Geometry>}
- */
-TopoJSON.GEOMETRY_READERS_ = {
-  'Point': TopoJSON.readPointGeometry_,
-  'LineString': TopoJSON.readLineStringGeometry_,
-  'Polygon': TopoJSON.readPolygonGeometry_,
-  'MultiPoint': TopoJSON.readMultiPointGeometry_,
-  'MultiLineString': TopoJSON.readMultiLineStringGeometry_,
-  'MultiPolygon': TopoJSON.readMultiPolygonGeometry_
 };
 
 

@@ -3,9 +3,9 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../reproj/common.js';
 import {getUid, inherits} from '../index.js';
-import _ol_ImageTile_ from '../ImageTile.js';
+import ImageTile from '../ImageTile.js';
 import TileCache from '../TileCache.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
@@ -57,7 +57,7 @@ var _ol_source_TileImage_ = function(options) {
    *        ?string, ol.TileLoadFunctionType, olx.TileOptions=)}
    */
   this.tileClass = options.tileClass !== undefined ?
-    options.tileClass : _ol_ImageTile_;
+    options.tileClass : ImageTile;
 
   /**
    * @protected
@@ -218,7 +218,7 @@ _ol_source_TileImage_.prototype.createTile_ = function(z, x, y, pixelRatio, proj
     this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
   var tile = new this.tileClass(
       tileCoord,
-      tileUrl !== undefined ? _ol_TileState_.IDLE : _ol_TileState_.EMPTY,
+      tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction,
@@ -304,7 +304,7 @@ _ol_source_TileImage_.prototype.getTileInternal = function(z, x, y, pixelRatio, 
       tile = this.createTile_(z, x, y, pixelRatio, projection, key);
 
       //make the new tile the head of the list,
-      if (interimTile.getState() == _ol_TileState_.IDLE) {
+      if (interimTile.getState() == TileState.IDLE) {
         //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
         tile.interimTile = interimTile.interimTile;
       } else {

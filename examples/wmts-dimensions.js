@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
-import _ol_tilegrid_WMTS_ from '../src/ol/tilegrid/WMTS.js';
+import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
 // create the WMTS tile grid in the google projection
@@ -18,7 +18,7 @@ for (var i = 0; i <= 14; i++) {
   matrixIds[i] = i;
   resolutions[i] = tileSizeMtrs / Math.pow(2, i);
 }
-var tileGrid = new _ol_tilegrid_WMTS_({
+var tileGrid = new WMTSTileGrid({
   origin: _ol_extent_.getTopLeft(projection.getExtent()),
   resolutions: resolutions,
   matrixIds: matrixIds

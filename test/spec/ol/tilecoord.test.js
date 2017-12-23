@@ -1,5 +1,5 @@
 import _ol_tilecoord_ from '../../../src/ol/tilecoord.js';
-import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
 
 describe('ol.TileCoord', function() {
@@ -50,7 +50,7 @@ describe('ol.TileCoord', function() {
   describe('withinExtentAndZ', function() {
 
     it('restricts by z', function() {
-      var tileGrid = new _ol_tilegrid_TileGrid_({
+      var tileGrid = new TileGrid({
         extent: [10, 20, 30, 40],
         tileSize: 10,
         resolutions: [2, 1],
@@ -62,7 +62,7 @@ describe('ol.TileCoord', function() {
     });
 
     it('restricts by extent when extent defines tile ranges', function() {
-      var tileGrid = new _ol_tilegrid_TileGrid_({
+      var tileGrid = new TileGrid({
         extent: [10, 20, 30, 40],
         sizes: [[3, -3]],
         tileSize: 10,
@@ -74,7 +74,7 @@ describe('ol.TileCoord', function() {
     });
 
     it('restricts by extent when sizes define tile ranges', function() {
-      var tileGrid = new _ol_tilegrid_TileGrid_({
+      var tileGrid = new TileGrid({
         origin: [10, 20],
         sizes: [[3, 3]],
         tileSize: 10,
@@ -89,7 +89,7 @@ describe('ol.TileCoord', function() {
     });
 
     it('restricts by extent when sizes (neg y) define tile ranges', function() {
-      var tileGrid = new _ol_tilegrid_TileGrid_({
+      var tileGrid = new TileGrid({
         origin: [10, 40],
         sizes: [[3, -3]],
         tileSize: 10,
@@ -104,7 +104,7 @@ describe('ol.TileCoord', function() {
     });
 
     it('does not restrict by extent with no extent or sizes', function() {
-      var tileGrid = new _ol_tilegrid_TileGrid_({
+      var tileGrid = new TileGrid({
         origin: [10, 20],
         tileSize: 10,
         resolutions: [1]

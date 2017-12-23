@@ -1,7 +1,7 @@
 import {expandUrl, createFromTemplate, createFromTemplates, createFromTileUrlFunctions} from '../../../src/ol/tileurlfunction.js';
 import _ol_tilecoord_ from '../../../src/ol/tilecoord.js';
 import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.TileUrlFunction', function() {
 
@@ -60,7 +60,7 @@ describe('ol.TileUrlFunction', function() {
       expect(tileUrl([3, 2, -3])).to.eql('3/2/5');
     });
     it('returns correct value for {-y} with custom tile grids', function() {
-      var customTileGrid = new _ol_tilegrid_TileGrid_({
+      var customTileGrid = new TileGrid({
         extent: [-180, -90, 180, 90],
         origin: [-180, -90],
         resolutions: [360 / 256, 360 / 512, 360 / 1024, 360 / 2048]

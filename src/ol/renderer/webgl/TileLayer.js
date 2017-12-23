@@ -7,7 +7,7 @@
 import {inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
-import _ol_TileState_ from '../../TileState.js';
+import TileState from '../../TileState.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import {roundUpToPowerOfTwo} from '../../math.js';
@@ -262,20 +262,20 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
           }
         }
         tileState = tile.getState();
-        drawable = tileState == _ol_TileState_.LOADED ||
-            tileState == _ol_TileState_.EMPTY ||
-            tileState == _ol_TileState_.ERROR && !useInterimTilesOnError;
+        drawable = tileState == TileState.LOADED ||
+            tileState == TileState.EMPTY ||
+            tileState == TileState.ERROR && !useInterimTilesOnError;
         if (!drawable) {
           tile = tile.getInterimTile();
         }
         tileState = tile.getState();
-        if (tileState == _ol_TileState_.LOADED) {
+        if (tileState == TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
           }
-        } else if (tileState == _ol_TileState_.EMPTY ||
-                   (tileState == _ol_TileState_.ERROR &&
+        } else if (tileState == TileState.EMPTY ||
+                   (tileState == TileState.ERROR &&
                     !useInterimTilesOnError)) {
           continue;
         }
@@ -342,7 +342,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
        * @param {ol.Tile} tile Tile.
        */
       function(tile) {
-        if (tile.getState() == _ol_TileState_.LOADED &&
+        if (tile.getState() == TileState.LOADED &&
             !mapRenderer.isTileTextureLoaded(tile) &&
             !tileTextureQueue.isKeyQueued(tile.getKey())) {
           tileTextureQueue.enqueue([

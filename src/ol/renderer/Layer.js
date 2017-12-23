@@ -4,7 +4,7 @@
 import {getUid, inherits, nullFunction} from '../index.js';
 import ImageState from '../ImageState.js';
 import _ol_Observable_ from '../Observable.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {FALSE} from '../functions.js';
@@ -225,7 +225,7 @@ _ol_renderer_Layer_.prototype.manageTilePyramid = function(
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-          if (tile.getState() == _ol_TileState_.IDLE) {
+          if (tile.getState() == TileState.IDLE) {
             wantedTiles[tile.getKey()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {
               tileQueue.enqueue([tile, tileSourceKey,

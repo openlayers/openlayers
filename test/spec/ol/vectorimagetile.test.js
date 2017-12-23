@@ -1,11 +1,11 @@
-import _ol_TileState_ from '../../../src/ol/TileState.js';
-import _ol_VectorImageTile_ from '../../../src/ol/VectorImageTile.js';
-import _ol_VectorTile_ from '../../../src/ol/VectorTile.js';
+import TileState from '../../../src/ol/TileState.js';
+import VectorImageTile, {defaultLoadFunction} from '../../../src/ol/VectorImageTile.js';
+import VectorTile from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
 
 describe('ol.VectorImageTile', function() {
@@ -13,11 +13,11 @@ describe('ol.VectorImageTile', function() {
   it('configures loader that sets features on the source tile', function(done) {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
-        _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
+    var tile = new VectorImageTile([0, 0, -1], 0, url, format,
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     var sourceTile = tile.getTile(tile.tileKeys[0]);
@@ -34,25 +34,25 @@ describe('ol.VectorImageTile', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
     var sourceTile;
-    var tile = new _ol_VectorImageTile_([0, 0, 0] /* one world away */, 0, url, format,
+    var tile = new VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
         function(tile, url) {
           sourceTile = tile;
-          _ol_VectorImageTile_.defaultLoadFunction(tile, url);
+          defaultLoadFunction(tile, url);
         }, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     var calls = 0;
     _ol_events_.listen(tile, 'change', function(e) {
       ++calls;
-      expect(tile.getState()).to.be(calls == 2 ? _ol_TileState_.LOADED : _ol_TileState_.ERROR);
+      expect(tile.getState()).to.be(calls == 2 ? TileState.LOADED : TileState.ERROR);
       if (calls == 2) {
         done();
       } else {
         setTimeout(function() {
-          sourceTile.setState(_ol_TileState_.LOADED);
+          sourceTile.setState(TileState.LOADED);
         }, 0);
       }
     });
@@ -61,16 +61,16 @@ describe('ol.VectorImageTile', function() {
   it('sets ERROR state when source tiles fail to load', function(done) {
     var format = new GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
-    var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
-        _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
+    var tile = new VectorImageTile([0, 0, -1], 0, url, format,
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
 
     _ol_events_.listen(tile, 'change', function(e) {
-      expect(tile.getState()).to.be(_ol_TileState_.ERROR);
+      expect(tile.getState()).to.be(TileState.ERROR);
       done();
     });
   });
@@ -78,15 +78,15 @@ describe('ol.VectorImageTile', function() {
   it('sets EMPTY state when tile has only empty source tiles', function(done) {
     var format = new GeoJSON();
     var url = '';
-    var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
-        _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {},
+    var tile = new VectorImageTile([0, 0, -1], 0, url, format,
+        defaultLoadFunction, [0, 0, -1], function() {},
         _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
-        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
 
     _ol_events_.listen(tile, 'change', function() {
-      expect(tile.getState()).to.be(_ol_TileState_.EMPTY);
+      expect(tile.getState()).to.be(TileState.EMPTY);
       done();
     });
   });
@@ -94,18 +94,18 @@ describe('ol.VectorImageTile', function() {
   it('only loads tiles within the source tileGrid\'s extent', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tileGrid = new _ol_tilegrid_TileGrid_({
+    var tileGrid = new TileGrid({
       resolutions: [0.02197265625, 0.010986328125, 0.0054931640625],
       origin: [-180, 90],
       extent: [-88, 35, -87, 36]
     });
     var sourceTiles = {};
-    var tile = new _ol_VectorImageTile_([1, 0, -1], 0, url, format,
-        _ol_VectorImageTile_.defaultLoadFunction, [1, 0, -1], function(zxy) {
+    var tile = new VectorImageTile([1, 0, -1], 0, url, format,
+        defaultLoadFunction, [1, 0, -1], function(zxy) {
           return url;
         }, tileGrid,
         _ol_tilegrid_.createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
-        sourceTiles, 1, getProjection('EPSG:4326'), _ol_VectorTile_, function() {});
+        sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {});
     tile.load();
     expect(tile.tileKeys.length).to.be(1);
     expect(tile.getTile(tile.tileKeys[0]).tileCoord).to.eql([0, 16, -10]);
@@ -114,41 +114,41 @@ describe('ol.VectorImageTile', function() {
   it('#dispose() while loading', function() {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new _ol_VectorImageTile_([0, 0, 0] /* one world away */, 0, url, format,
-        _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
+    var tile = new VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
-        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
     expect(tile.tileKeys.length).to.be(4);
-    expect(tile.getState()).to.be(_ol_TileState_.LOADING);
+    expect(tile.getState()).to.be(TileState.LOADING);
     tile.dispose();
     expect(tile.loadListenerKeys_.length).to.be(0);
     expect(tile.tileKeys.length).to.be(0);
     expect(tile.sourceTiles_).to.be(null);
-    expect(tile.getState()).to.be(_ol_TileState_.ABORT);
+    expect(tile.getState()).to.be(TileState.ABORT);
   });
 
   it('#dispose() when loaded', function(done) {
     var format = new GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new _ol_VectorImageTile_([0, 0, -1], 0, url, format,
-        _ol_VectorImageTile_.defaultLoadFunction, [0, 0, -1], function() {
+    var tile = new VectorImageTile([0, 0, -1], 0, url, format,
+        defaultLoadFunction, [0, 0, -1], function() {
           return url;
         }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
-        1, getProjection('EPSG:3857'), _ol_VectorTile_, function() {});
+        1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
     _ol_events_.listenOnce(tile, 'change', function() {
-      expect(tile.getState()).to.be(_ol_TileState_.LOADED);
+      expect(tile.getState()).to.be(TileState.LOADED);
       expect(tile.loadListenerKeys_.length).to.be(0);
       expect(tile.tileKeys.length).to.be(4);
       tile.dispose();
       expect(tile.tileKeys.length).to.be(0);
       expect(tile.sourceTiles_).to.be(null);
-      expect(tile.getState()).to.be(_ol_TileState_.ABORT);
+      expect(tile.getState()).to.be(TileState.ABORT);
       done();
     });
   });

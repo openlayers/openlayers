@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {find} from '../array.js';
 import {get as getProjection} from '../proj.js';
-import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
  * @classdesc
@@ -16,7 +16,7 @@ import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
  * @struct
  * @api
  */
-var _ol_tilegrid_WMTS_ = function(options) {
+var WMTSTileGrid = function(options) {
   /**
    * @private
    * @type {!Array.<string>}
@@ -24,7 +24,7 @@ var _ol_tilegrid_WMTS_ = function(options) {
   this.matrixIds_ = options.matrixIds;
   // FIXME: should the matrixIds become optional?
 
-  _ol_tilegrid_TileGrid_.call(this, {
+  TileGrid.call(this, {
     extent: options.extent,
     origin: options.origin,
     origins: options.origins,
@@ -35,14 +35,14 @@ var _ol_tilegrid_WMTS_ = function(options) {
   });
 };
 
-inherits(_ol_tilegrid_WMTS_, _ol_tilegrid_TileGrid_);
+inherits(WMTSTileGrid, TileGrid);
 
 
 /**
  * @param {number} z Z.
  * @return {string} MatrixId..
  */
-_ol_tilegrid_WMTS_.prototype.getMatrixId = function(z) {
+WMTSTileGrid.prototype.getMatrixId = function(z) {
   return this.matrixIds_[z];
 };
 
@@ -52,10 +52,11 @@ _ol_tilegrid_WMTS_.prototype.getMatrixId = function(z) {
  * @return {Array.<string>} MatrixIds.
  * @api
  */
-_ol_tilegrid_WMTS_.prototype.getMatrixIds = function() {
+WMTSTileGrid.prototype.getMatrixIds = function() {
   return this.matrixIds_;
 };
 
+export default WMTSTileGrid;
 
 /**
  * Create a tile grid from a WMTS capabilities matrix set and an
@@ -69,8 +70,7 @@ _ol_tilegrid_WMTS_.prototype.getMatrixIds = function() {
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
  * @api
  */
-_ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent,
-    opt_matrixLimits) {
+export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {
 
   /** @type {!Array.<number>} */
   var resolutions = [];
@@ -137,7 +137,7 @@ _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet = function(matrixSet, opt_ext
     }
   });
 
-  return new _ol_tilegrid_WMTS_({
+  return new WMTSTileGrid({
     extent: opt_extent,
     origins: origins,
     resolutions: resolutions,
@@ -145,5 +145,4 @@ _ol_tilegrid_WMTS_.createFromCapabilitiesMatrixSet = function(matrixSet, opt_ext
     tileSizes: tileSizes,
     sizes: sizes
   });
-};
-export default _ol_tilegrid_WMTS_;
+}

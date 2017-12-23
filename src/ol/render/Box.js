@@ -4,7 +4,7 @@
 // FIXME add rotation
 
 import {inherits} from '../index.js';
-import _ol_Disposable_ from '../Disposable.js';
+import Disposable from '../Disposable.js';
 import Polygon from '../geom/Polygon.js';
 
 /**
@@ -48,7 +48,7 @@ var _ol_render_Box_ = function(className) {
 
 };
 
-inherits(_ol_render_Box_, _ol_Disposable_);
+inherits(_ol_render_Box_, Disposable);
 
 
 /**

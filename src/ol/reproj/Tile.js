@@ -4,7 +4,7 @@
 import {ERROR_THRESHOLD} from './common.js';
 import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
@@ -36,7 +36,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
     pixelRatio, gutter, getTileFunction,
     opt_errorThreshold, opt_renderEdges) {
-  _ol_Tile_.call(this, tileCoord, _ol_TileState_.IDLE);
+  _ol_Tile_.call(this, tileCoord, TileState.IDLE);
 
   /**
    * @private
@@ -108,7 +108,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   if (getArea(limitedTargetExtent) === 0) {
     // Tile is completely outside range -> EMPTY
     // TODO: is it actually correct that the source even creates the tile ?
-    this.state = _ol_TileState_.EMPTY;
+    this.state = TileState.EMPTY;
     return;
   }
 
@@ -131,7 +131,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   if (!isFinite(sourceResolution) || sourceResolution <= 0) {
     // invalid sourceResolution -> EMPTY
     // probably edges of the projections when no extent is defined
-    this.state = _ol_TileState_.EMPTY;
+    this.state = TileState.EMPTY;
     return;
   }
 
@@ -148,7 +148,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
 
   if (this.triangulation_.getTriangles().length === 0) {
     // no valid triangles -> EMPTY
-    this.state = _ol_TileState_.EMPTY;
+    this.state = TileState.EMPTY;
     return;
   }
 
@@ -167,7 +167,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   }
 
   if (!getArea(sourceExtent)) {
-    this.state = _ol_TileState_.EMPTY;
+    this.state = TileState.EMPTY;
   } else {
     var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
         sourceExtent, this.sourceZ_);
@@ -182,7 +182,7 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
     }
 
     if (this.sourceTiles_.length === 0) {
-      this.state = _ol_TileState_.EMPTY;
+      this.state = TileState.EMPTY;
     }
   }
 };
@@ -194,7 +194,7 @@ inherits(_ol_reproj_Tile_, _ol_Tile_);
  * @inheritDoc
  */
 _ol_reproj_Tile_.prototype.disposeInternal = function() {
-  if (this.state == _ol_TileState_.LOADING) {
+  if (this.state == TileState.LOADING) {
     this.unlistenSources_();
   }
   _ol_Tile_.prototype.disposeInternal.call(this);
@@ -216,7 +216,7 @@ _ol_reproj_Tile_.prototype.getImage = function() {
 _ol_reproj_Tile_.prototype.reproject_ = function() {
   var sources = [];
   this.sourceTiles_.forEach(function(tile, i, arr) {
-    if (tile && tile.getState() == _ol_TileState_.LOADED) {
+    if (tile && tile.getState() == TileState.LOADED) {
       sources.push({
         extent: this.sourceTileGrid_.getTileCoordExtent(tile.tileCoord),
         image: tile.getImage()
@@ -226,7 +226,7 @@ _ol_reproj_Tile_.prototype.reproject_ = function() {
   this.sourceTiles_.length = 0;
 
   if (sources.length === 0) {
-    this.state = _ol_TileState_.ERROR;
+    this.state = TileState.ERROR;
   } else {
     var z = this.wrappedTileCoord_[0];
     var size = this.targetTileGrid_.getTileSize(z);
@@ -242,7 +242,7 @@ _ol_reproj_Tile_.prototype.reproject_ = function() {
         targetResolution, targetExtent, this.triangulation_, sources,
         this.gutter_, this.renderEdges_);
 
-    this.state = _ol_TileState_.LOADED;
+    this.state = TileState.LOADED;
   }
   this.changed();
 };
@@ -252,8 +252,8 @@ _ol_reproj_Tile_.prototype.reproject_ = function() {
  * @inheritDoc
  */
 _ol_reproj_Tile_.prototype.load = function() {
-  if (this.state == _ol_TileState_.IDLE) {
-    this.state = _ol_TileState_.LOADING;
+  if (this.state == TileState.IDLE) {
+    this.state = TileState.LOADING;
     this.changed();
 
     var leftToLoad = 0;
@@ -261,16 +261,16 @@ _ol_reproj_Tile_.prototype.load = function() {
     this.sourcesListenerKeys_ = [];
     this.sourceTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();
-      if (state == _ol_TileState_.IDLE || state == _ol_TileState_.LOADING) {
+      if (state == TileState.IDLE || state == TileState.LOADING) {
         leftToLoad++;
 
         var sourceListenKey;
         sourceListenKey = _ol_events_.listen(tile, EventType.CHANGE,
             function(e) {
               var state = tile.getState();
-              if (state == _ol_TileState_.LOADED ||
-                  state == _ol_TileState_.ERROR ||
-                  state == _ol_TileState_.EMPTY) {
+              if (state == TileState.LOADED ||
+                  state == TileState.ERROR ||
+                  state == TileState.EMPTY) {
                 _ol_events_.unlistenByKey(sourceListenKey);
                 leftToLoad--;
                 if (leftToLoad === 0) {
@@ -285,7 +285,7 @@ _ol_reproj_Tile_.prototype.load = function() {
 
     this.sourceTiles_.forEach(function(tile, i, arr) {
       var state = tile.getState();
-      if (state == _ol_TileState_.IDLE) {
+      if (state == TileState.IDLE) {
         tile.load();
       }
     });

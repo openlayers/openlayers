@@ -1,7 +1,7 @@
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
 import _ol_source_TileUTFGrid_ from '../../../../src/ol/source/TileUTFGrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
 describe('ol.source.TileUTFGrid', function() {
@@ -66,7 +66,7 @@ describe('ol.source.TileUTFGrid', function() {
 
       source.on('change', function(event) {
         if (source.getState() === 'ready') {
-          expect(source.tileGrid).to.be.an(_ol_tilegrid_TileGrid_);
+          expect(source.tileGrid).to.be.an(TileGrid);
           done();
         }
       });
@@ -101,7 +101,7 @@ describe('ol.source.TileUTFGrid', function() {
 
       var tileGrid = source.getTileGrid();
       expect(tileGrid).to.not.be(null);
-      expect(tileGrid).to.be.an(_ol_tilegrid_TileGrid_);
+      expect(tileGrid).to.be.an(TileGrid);
     });
 
     it('sets up a tilegrid with expected extent', function() {

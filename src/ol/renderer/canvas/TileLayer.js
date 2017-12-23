@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
-import _ol_TileState_ from '../../TileState.js';
+import TileState from '../../TileState.js';
 import _ol_ViewHint_ from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
@@ -111,9 +111,9 @@ _ol_renderer_canvas_TileLayer_['create'] = function(mapRenderer, layer) {
 _ol_renderer_canvas_TileLayer_.prototype.isDrawableTile_ = function(tile) {
   var tileState = tile.getState();
   var useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
-  return tileState == _ol_TileState_.LOADED ||
-      tileState == _ol_TileState_.EMPTY ||
-      tileState == _ol_TileState_.ERROR && !useInterimTilesOnError;
+  return tileState == TileState.LOADED ||
+      tileState == TileState.EMPTY ||
+      tileState == TileState.ERROR && !useInterimTilesOnError;
 };
 
 /**
@@ -166,10 +166,10 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      if (tile.getState() == _ol_TileState_.ERROR) {
+      if (tile.getState() == TileState.ERROR) {
         if (!tileLayer.getUseInterimTilesOnError()) {
           // When useInterimTilesOnError is false, we consider the error tile as loaded.
-          tile.setState(_ol_TileState_.LOADED);
+          tile.setState(TileState.LOADED);
         } else if (tileLayer.getPreload() > 0) {
           // Preloaded tiles for lower resolutions might have finished loading.
           newTiles = true;
@@ -180,7 +180,7 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
       }
       if (this.isDrawableTile_(tile)) {
         var uid = getUid(this);
-        if (tile.getState() == _ol_TileState_.LOADED) {
+        if (tile.getState() == TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
           var inTransition = tile.inTransition(uid);
           if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {

@@ -9,7 +9,7 @@ import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
-import _ol_tilegrid_TileGrid_ from '../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
@@ -38,7 +38,7 @@ var map = new Map({
           '© <a href="https://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
         format: new MVT(),
-        tileGrid: new _ol_tilegrid_TileGrid_({
+        tileGrid: new TileGrid({
           extent: getProjection('EPSG:3857').getExtent(),
           resolutions: resolutions,
           tileSize: 512

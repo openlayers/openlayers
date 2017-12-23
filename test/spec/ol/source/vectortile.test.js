@@ -1,13 +1,13 @@
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_VectorImageTile_ from '../../../../src/ol/VectorImageTile.js';
-import _ol_VectorTile_ from '../../../../src/ol/VectorTile.js';
+import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
+import VectorTile from '../../../../src/ol/VectorTile.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
-import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.source.VectorTile', function() {
 
@@ -25,7 +25,7 @@ describe('ol.source.VectorTile', function() {
     });
 
     it('uses ol.VectorTile as default tileClass', function() {
-      expect(source.tileClass).to.equal(_ol_VectorTile_);
+      expect(source.tileClass).to.equal(VectorTile);
     });
 
     it('creates a 512 XYZ tilegrid by default', function() {
@@ -38,7 +38,7 @@ describe('ol.source.VectorTile', function() {
   describe('#getTile()', function() {
     it('creates a tile with the correct tile class', function() {
       tile = source.getTile(0, 0, 0, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(_ol_VectorImageTile_);
+      expect(tile).to.be.a(VectorImageTile);
     });
     it('sets the correct tileCoord on the created tile', function() {
       expect(tile.getTileCoord()).to.eql([0, 0, 0]);
@@ -65,7 +65,7 @@ describe('ol.source.VectorTile', function() {
       });
       source.on('tileloadend', function(e) {
         expect(started).to.be(true);
-        expect(e.tile).to.be.a(_ol_VectorTile_);
+        expect(e.tile).to.be.a(VectorTile);
         expect(e.tile.getFeatures().length).to.be(1327);
         done();
       });
@@ -97,7 +97,7 @@ describe('ol.source.VectorTile', function() {
       var extent = [665584.2026596286, 7033250.839875697, 667162.0221431496, 7035280.378636755];
 
       source = new _ol_source_VectorTile_({
-        tileGrid: new _ol_tilegrid_TileGrid_({
+        tileGrid: new TileGrid({
           origin: [218128, 6126002],
           resolutions: [4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5]
         }),

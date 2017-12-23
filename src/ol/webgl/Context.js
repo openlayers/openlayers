@@ -2,7 +2,7 @@
  * @module ol/webgl/Context
  */
 import {WEBGL_EXTENSIONS, getUid, inherits} from '../index.js';
-import _ol_Disposable_ from '../Disposable.js';
+import Disposable from '../Disposable.js';
 import {includes} from '../array.js';
 import _ol_events_ from '../events.js';
 import _ol_obj_ from '../obj.js';
@@ -91,7 +91,7 @@ var _ol_webgl_Context_ = function(canvas, gl) {
 
 };
 
-inherits(_ol_webgl_Context_, _ol_Disposable_);
+inherits(_ol_webgl_Context_, Disposable);
 
 
 /**

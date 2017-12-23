@@ -1,7 +1,7 @@
 import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
-import _ol_tilegrid_WMTS_ from '../../../../src/ol/tilegrid/WMTS.js';
+import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
 import _ol_source_WMTS_ from '../../../../src/ol/source/WMTS.js';
 
 
@@ -62,7 +62,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.requestEncoding).to.be.eql('KVP');
 
-          expect(options.tileGrid).to.be.a(_ol_tilegrid_WMTS_);
+          expect(options.tileGrid).to.be.a(WMTSTileGrid);
 
           expect(options.style).to.be.eql('DarkBlue');
 
@@ -96,7 +96,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.requestEncoding).to.be.eql('REST');
 
-          expect(options.tileGrid).to.be.a(_ol_tilegrid_WMTS_);
+          expect(options.tileGrid).to.be.a(WMTSTileGrid);
 
           expect(options.style).to.be.eql('DarkBlue');
 
@@ -187,7 +187,7 @@ describe('ol.source.WMTS', function() {
              '{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
             matrixSet: 'EPSG:3857',
             requestEncoding: 'REST',
-            tileGrid: new _ol_tilegrid_WMTS_({
+            tileGrid: new WMTSTileGrid({
               origin: [-20037508.342789244, 20037508.342789244],
               resolutions: [559082264.029 * 0.28E-3,
                 279541132.015 * 0.28E-3,
@@ -213,7 +213,7 @@ describe('ol.source.WMTS', function() {
              '{tilematrixset}/{TileMatrix}/{TileCol}/{TileRow}.jpg'],
             matrixSet: 'EPSG:3857',
             requestEncoding: 'REST',
-            tileGrid: new _ol_tilegrid_WMTS_({
+            tileGrid: new WMTSTileGrid({
               origin: [-20037508.342789244, 20037508.342789244],
               resolutions: [559082264.029 * 0.28E-3,
                 279541132.015 * 0.28E-3,
@@ -315,7 +315,7 @@ describe('ol.source.WMTS', function() {
           'http://1.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg',
           'http://2.example.com/{TileMatrix}/{TileRow}/{TileCol}.jpeg'
         ],
-        tileGrid: new _ol_tilegrid_WMTS_({
+        tileGrid: new WMTSTileGrid({
           matrixIds: [0, 1, 2, 3, 4, 5, 6, 7],
           origin: [2690000, 1285000],
           resolutions: [4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250]
@@ -354,7 +354,7 @@ describe('ol.source.WMTS', function() {
         style: 'default',
         matrixSet: 'foo',
         requestEncoding: 'REST',
-        tileGrid: new _ol_tilegrid_WMTS_({
+        tileGrid: new WMTSTileGrid({
           origin: [0, 0],
           resolutions: [],
           matrixIds: []
@@ -400,7 +400,7 @@ describe('ol.source.WMTS', function() {
         style: 'default',
         matrixSet: 'foo',
         requestEncoding: 'REST',
-        tileGrid: new _ol_tilegrid_WMTS_({
+        tileGrid: new WMTSTileGrid({
           origin: [0, 0],
           resolutions: [],
           matrixIds: []

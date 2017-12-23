@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Tile_ from '../Tile.js';
-import _ol_TileState_ from '../TileState.js';
+import TileState from '../TileState.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
@@ -224,7 +224,7 @@ _ol_source_TileUTFGrid_.prototype.getTile = function(z, x, y, pixelRatio, projec
     var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     var tile = new _ol_source_TileUTFGrid_.Tile_(
         tileCoord,
-        tileUrl !== undefined ? _ol_TileState_.IDLE : _ol_TileState_.EMPTY,
+        tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_,
@@ -370,7 +370,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.getData = function(coordinate) {
  * @template T
  */
 _ol_source_TileUTFGrid_.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
-  if (this.state == _ol_TileState_.IDLE && opt_request === true) {
+  if (this.state == TileState.IDLE && opt_request === true) {
     _ol_events_.listenOnce(this, EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, this);
@@ -399,7 +399,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.getKey = function() {
  * @private
  */
 _ol_source_TileUTFGrid_.Tile_.prototype.handleError_ = function() {
-  this.state = _ol_TileState_.ERROR;
+  this.state = TileState.ERROR;
   this.changed();
 };
 
@@ -413,7 +413,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.handleLoad_ = function(json) {
   this.keys_ = json.keys;
   this.data_ = json.data;
 
-  this.state = _ol_TileState_.EMPTY;
+  this.state = TileState.EMPTY;
   this.changed();
 };
 
@@ -422,8 +422,8 @@ _ol_source_TileUTFGrid_.Tile_.prototype.handleLoad_ = function(json) {
  * @private
  */
 _ol_source_TileUTFGrid_.Tile_.prototype.loadInternal_ = function() {
-  if (this.state == _ol_TileState_.IDLE) {
-    this.state = _ol_TileState_.LOADING;
+  if (this.state == TileState.IDLE) {
+    this.state = TileState.LOADING;
     if (this.jsonp_) {
       _ol_net_.jsonp(this.src_, this.handleLoad_.bind(this),
           this.handleError_.bind(this));

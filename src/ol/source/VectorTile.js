@@ -2,9 +2,9 @@
  * @module ol/source/VectorTile
  */
 import {inherits} from '../index.js';
-import _ol_TileState_ from '../TileState.js';
-import _ol_VectorImageTile_ from '../VectorImageTile.js';
-import _ol_VectorTile_ from '../VectorTile.js';
+import TileState from '../TileState.js';
+import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
+import VectorTile from '../VectorTile.js';
 import _ol_size_ from '../size.js';
 import _ol_source_UrlTile_ from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -46,8 +46,7 @@ var _ol_source_VectorTile_ = function(options) {
     projection: projection,
     state: options.state,
     tileGrid: tileGrid,
-    tileLoadFunction: options.tileLoadFunction ?
-      options.tileLoadFunction : _ol_VectorImageTile_.defaultLoadFunction,
+    tileLoadFunction: options.tileLoadFunction ? options.tileLoadFunction : defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
     urls: options.urls,
@@ -78,7 +77,7 @@ var _ol_source_VectorTile_ = function(options) {
    * @type {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
    *        ol.format.Feature, ol.TileLoadFunctionType)}
    */
-  this.tileClass = options.tileClass ? options.tileClass : _ol_VectorTile_;
+  this.tileClass = options.tileClass ? options.tileClass : VectorTile;
 
   /**
    * @private
@@ -118,9 +117,9 @@ _ol_source_VectorTile_.prototype.getTile = function(z, x, y, pixelRatio, project
     var tileCoord = [z, x, y];
     var urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
-    var tile = new _ol_VectorImageTile_(
+    var tile = new VectorImageTile(
         tileCoord,
-        urlTileCoord !== null ? _ol_TileState_.IDLE : _ol_TileState_.EMPTY,
+        urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
         this.getRevision(),
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),

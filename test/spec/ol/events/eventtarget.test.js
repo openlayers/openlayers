@@ -1,4 +1,4 @@
-import _ol_Disposable_ from '../../../../src/ol/Disposable.js';
+import Disposable from '../../../../src/ol/Disposable.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
@@ -23,7 +23,7 @@ describe('ol.events.EventTarget', function() {
   describe('constructor', function() {
     it('creates an instance', function() {
       expect(eventTarget).to.be.a(EventTarget);
-      expect(eventTarget).to.be.a(_ol_Disposable_);
+      expect(eventTarget).to.be.a(Disposable);
     });
     it('creates an empty listeners_ object', function() {
       expect(Object.keys(eventTarget.listeners_)).to.have.length(0);

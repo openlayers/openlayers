@@ -3,15 +3,15 @@
  */
 import {DEFAULT_TILE_SIZE} from '../tilegrid/common.js';
 import {inherits} from '../index.js';
-import _ol_ImageTile_ from '../ImageTile.js';
-import _ol_TileState_ from '../TileState.js';
+import ImageTile from '../ImageTile.js';
+import TileState from '../TileState.js';
 import {expandUrl, createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import _ol_size_ from '../size.js';
 import _ol_source_TileImage_ from '../source/TileImage.js';
-import _ol_tilegrid_TileGrid_ from '../tilegrid/TileGrid.js';
+import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
  * @classdesc
@@ -81,7 +81,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
   }
   resolutions.reverse();
 
-  var tileGrid = new _ol_tilegrid_TileGrid_({
+  var tileGrid = new TileGrid({
     tileSize: tileSize,
     extent: extent,
     origin: getTopLeft(extent),
@@ -168,7 +168,7 @@ inherits(_ol_source_Zoomify_, _ol_source_TileImage_);
 _ol_source_Zoomify_.Tile_ = function(
     tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-  _ol_ImageTile_.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
+  ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
 
   /**
    * @private
@@ -182,7 +182,7 @@ _ol_source_Zoomify_.Tile_ = function(
    */
   this.tileSize_ = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]));
 };
-inherits(_ol_source_Zoomify_.Tile_, _ol_ImageTile_);
+inherits(_ol_source_Zoomify_.Tile_, ImageTile);
 
 
 /**
@@ -192,8 +192,8 @@ _ol_source_Zoomify_.Tile_.prototype.getImage = function() {
   if (this.zoomifyImage_) {
     return this.zoomifyImage_;
   }
-  var image = _ol_ImageTile_.prototype.getImage.call(this);
-  if (this.state == _ol_TileState_.LOADED) {
+  var image = ImageTile.prototype.getImage.call(this);
+  if (this.state == TileState.LOADED) {
     var tileSize = this.tileSize_;
     if (image.width == tileSize[0] && image.height == tileSize[1]) {
       this.zoomifyImage_ = image;

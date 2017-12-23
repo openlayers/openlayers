@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
-import _ol_TileState_ from '../../TileState.js';
+import TileState from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import EventType from '../../events/EventType.js';
@@ -174,7 +174,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
   var zIndexKeys = {};
   for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
     var sourceTile = tile.getTile(tile.tileKeys[t]);
-    if (sourceTile.getState() == _ol_TileState_.ERROR) {
+    if (sourceTile.getState() == TileState.ERROR) {
       continue;
     }
 
@@ -292,7 +292,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.forEachFeatureAtCoordinate = func
     }
     for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       var sourceTile = tile.getTile(tile.tileKeys[t]);
-      if (sourceTile.getState() == _ol_TileState_.ERROR) {
+      if (sourceTile.getState() == TileState.ERROR) {
         continue;
       }
       replayGroup = sourceTile.getReplayGroup(layer, tile.tileCoord.toString());
@@ -393,7 +393,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.postCompose = function(context, f
   var zs = [];
   for (var i = tiles.length - 1; i >= 0; --i) {
     var tile = /** @type {ol.VectorImageTile} */ (tiles[i]);
-    if (tile.getState() == _ol_TileState_.ABORT) {
+    if (tile.getState() == TileState.ABORT) {
       continue;
     }
     var tileCoord = tile.tileCoord;
@@ -402,7 +402,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.postCompose = function(context, f
     var transform = undefined;
     for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       var sourceTile = tile.getTile(tile.tileKeys[t]);
-      if (sourceTile.getState() == _ol_TileState_.ERROR) {
+      if (sourceTile.getState() == TileState.ERROR) {
         continue;
       }
       var replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
@@ -507,7 +507,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.renderTileImage_ = function(
     var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
     for (var i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
       var sourceTile = tile.getTile(tile.tileKeys[i]);
-      if (sourceTile.getState() == _ol_TileState_.ERROR) {
+      if (sourceTile.getState() == TileState.ERROR) {
         continue;
       }
       var pixelScale = pixelRatio / resolution;

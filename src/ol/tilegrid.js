@@ -8,7 +8,7 @@ import Corner from './extent/Corner.js';
 import _ol_obj_ from './obj.js';
 import {get as getProjection, METERS_PER_UNIT} from './proj.js';
 import _ol_proj_Units_ from './proj/Units.js';
-import _ol_tilegrid_TileGrid_ from './tilegrid/TileGrid.js';
+import TileGrid from './tilegrid/TileGrid.js';
 var _ol_tilegrid_ = {};
 
 
@@ -63,7 +63,7 @@ _ol_tilegrid_.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_
   var resolutions = _ol_tilegrid_.resolutionsFromExtent(
       extent, opt_maxZoom, opt_tileSize);
 
-  return new _ol_tilegrid_TileGrid_({
+  return new TileGrid({
     extent: extent,
     origin: getCorner(extent, corner),
     resolutions: resolutions,
@@ -89,7 +89,7 @@ _ol_tilegrid_.createXYZ = function(opt_options) {
       options.extent, options.maxZoom, options.tileSize);
   delete options.maxZoom;
 
-  return new _ol_tilegrid_TileGrid_(options);
+  return new TileGrid(options);
 };
 
 

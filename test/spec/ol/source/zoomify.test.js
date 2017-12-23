@@ -2,7 +2,7 @@ import {DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_Zoomify_ from '../../../../src/ol/source/Zoomify.js';
-import _ol_tilegrid_TileGrid_ from '../../../../src/ol/tilegrid/TileGrid.js';
+import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
 describe('ol.source.Zoomify', function() {
@@ -125,7 +125,7 @@ describe('ol.source.Zoomify', function() {
       var sources = [getZoomifySource(), getIIPSource()];
       for (var i = 0; i < sources.length; i++) {
         var tileGrid = sources[i].getTileGrid();
-        expect(tileGrid).to.be.a(_ol_tilegrid_TileGrid_);
+        expect(tileGrid).to.be.a(TileGrid);
       }
     });
 
