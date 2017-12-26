@@ -54,6 +54,12 @@ describe('ol.style.Text', function() {
         }),
         stroke: new ol.style.Stroke({
           color: '#319FD3'
+        }),
+        backgroundFill: new _ol_style_Fill_({
+          color: 'white'
+        }),
+        backgroundStroke: new _ol_style_Stroke_({
+          color: 'black'
         })
       });
       var clone = original.clone();
@@ -68,6 +74,8 @@ describe('ol.style.Text', function() {
       expect(original.getTextBaseline()).to.eql(clone.getTextBaseline());
       expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
+      expect(original.getBackgroundStroke().getColor()).to.eql(clone.getBackgroundStroke().getColor());
+      expect(original.getBackgroundFill().getColor()).to.eql(clone.getBackgroundFill().getColor());
     });
 
     it('the clone does not reference the same objects as the original', function() {
