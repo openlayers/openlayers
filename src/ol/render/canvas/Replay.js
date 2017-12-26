@@ -993,7 +993,9 @@ _ol_render_canvas_Replay_.prototype.applyStroke = function(state) {
 _ol_render_canvas_Replay_.prototype.updateFillStyle = function(state, applyFill, geometry) {
   var fillStyle = state.fillStyle;
   if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
-    applyFill.call(this, state, geometry);
+    if (fillStyle !== undefined) {
+      applyFill.call(this, state, geometry);
+    }
     state.currentFillStyle = fillStyle;
   }
 };
@@ -1018,7 +1020,9 @@ _ol_render_canvas_Replay_.prototype.updateStrokeStyle = function(state, applyStr
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
-    applyStroke.call(this, state);
+    if (strokeStyle !== undefined) {
+      applyStroke.call(this, state);
+    }
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
