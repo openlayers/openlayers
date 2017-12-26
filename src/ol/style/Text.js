@@ -151,7 +151,9 @@ _ol_style_Text_.prototype.clone = function() {
     fill: this.getFill() ? this.getFill().clone() : undefined,
     stroke: this.getStroke() ? this.getStroke().clone() : undefined,
     offsetX: this.getOffsetX(),
-    offsetY: this.getOffsetY()
+    offsetY: this.getOffsetY(),
+    backgroundFill: this.getBackgroundFill() ? this.getBackgroundFill().clone() : undefined,
+    backgroundStroke: this.getBackgroundStroke() ? this.getBackgroundStroke().clone() : undefined
   });
 };
 
