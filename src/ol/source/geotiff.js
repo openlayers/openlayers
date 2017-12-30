@@ -143,22 +143,21 @@ if (ol.ENABLE_COVERAGE) {
     ol.asserts.assert(GeoTIFF, 64);
 
     var tiff = GeoTIFF.parse(/** @type {ArrayBuffer} */ (this.data_));
-    var numBands = tiff.getImageCount();
-    var band, buffer, height, width, resolution, extent, matrix, type, nodata, i;
+    var numImages = tiff.getImageCount();
+    var image, bands, height, width, resolution, extent, matrix, type,
+        nodata, i, j;
 
-    for (i = 0; i < numBands; ++i) {
-      band = tiff.getImage(i);
-      height = band.getHeight();
-      width = band.getWidth();
-      matrix = band.readRasters()[0];
-      buffer = matrix.buffer;
-      nodata =  band.getFileDirectory() ? parseFloat(
-          /** @type {string} */ (band.getFileDirectory()['GDAL_NODATA'])) : undefined;
-      type = this.getType_(matrix);
+    for (i = 0; i < numImages; ++i) {
+      image = tiff.getImage(i);
+      height = image.getHeight();
+      width = image.getWidth();
+      bands = image.readRasters();
+      nodata =  image.getFileDirectory() ? parseFloat(
+          /** @type {string} */ (image.getFileDirectory()['GDAL_NODATA'])) : undefined;
 
       try {
-        resolution = band.getResolution().slice(0, 2);
-        extent = band.getBoundingBox();
+        resolution = image.getResolution().slice(0, 2);
+        extent = image.getBoundingBox();
 
       } catch (err) {
         if (this.extent_) {
@@ -175,17 +174,21 @@ if (ol.ENABLE_COVERAGE) {
           continue;
         }
       }
-      this.addBand(new ol.coverage.Band({
-        extent: extent,
-        nodata: nodata,
-        matrix: buffer,
-        resolution: resolution,
-        stride: width,
-        type: type
-      }));
+      for (j = 0; j < bands.length; ++j) {
+        matrix = bands[j];
+        type = this.getType_(matrix);
+        this.addBand(new ol.coverage.Band({
+          extent: extent,
+          nodata: nodata,
+          matrix: matrix.buffer,
+          resolution: resolution,
+          stride: width,
+          type: type
+        }));
+      }
 
-      this.data_ = undefined;
     }
+    this.data_ = undefined;
 
     if (this.getState() === ol.source.State.LOADING) {
       this.setState(ol.source.State.READY);
