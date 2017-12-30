@@ -28,7 +28,7 @@ if (ol.ENABLE_COVERAGE) {
      * @type {number|null}
      * @private
      */
-    this.null_ = options.nodata || null;
+    this.null_ = options.nodata !== undefined ? options.nodata : null;
 
     /**
      * @type {ol.Extent}
@@ -208,8 +208,8 @@ if (ol.ENABLE_COVERAGE) {
    */
   ol.coverage.Band.prototype.setNullValue = function(nullValue) {
     var oldNull = this.null_;
-    this.null_ = nullValue;
-    if (oldNull !== nullValue) {
+    this.null_ = nullValue !== undefined ? nullValue : null;
+    if (oldNull !== this.null_) {
       this.calculateStatistics();
     }
     this.changed();
