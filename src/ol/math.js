@@ -173,6 +173,35 @@ export function toRadians(angleInDegrees) {
   return angleInDegrees * Math.PI / 180;
 }
 
+
+/**
+ * Calculates the mode(s) of a numeric sample.
+ * @param {Array.<number>} numbers Sample.
+ * @return {Array.<number>} Modes.
+ */
+ol.math.mode = function(numbers) {
+  var i, ii;
+  var modeFreq = 0;
+  var occurences = {};
+
+  for (i = 0, ii = numbers.length; i < ii; ++i) {
+    var num = numbers[i];
+    occurences[num] = occurences[num] ? occurences[num] + 1 : 1;
+    if (occurences[num] > modeFreq) {
+      modeFreq = occurences[num];
+    }
+  }
+
+  var modes = [];
+  for (i in occurences) {
+    if (occurences[i] === modeFreq) {
+      modes.push(i);
+    }
+  }
+  return modes;
+};
+
+
 /**
  * Returns the modulo of a / b, depending on the sign of b.
  *
