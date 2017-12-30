@@ -178,7 +178,7 @@ if (ol.ENABLE_COVERAGE) {
       interleaved[k++] = ol.math.clamp(Math.round(255 * redLerp), 0, 255);
       interleaved[k++] = ol.math.clamp(Math.round(255 * greenLerp), 0, 255);
       interleaved[k++] = ol.math.clamp(Math.round(255 * blueLerp), 0, 255);
-      interleaved[k++] = redNodata && greenNodata && blueNodata ? 1 : 0;
+      interleaved[k++] = redNodata && greenNodata && blueNodata ? 0 : 255;
     }
     return interleaved;
   };
