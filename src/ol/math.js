@@ -195,7 +195,7 @@ ol.math.mode = function(numbers) {
   var modes = [];
   for (i in occurences) {
     if (occurences[i] === modeFreq) {
-      modes.push(i);
+      modes.push(parseFloat(i));
     }
   }
   return modes;
