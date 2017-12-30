@@ -144,7 +144,7 @@ if (ol.ENABLE_COVERAGE) {
 
     var tiff = GeoTIFF.parse(/** @type {ArrayBuffer} */ (this.data_));
     var numImages = tiff.getImageCount();
-    var image, bands, height, width, resolution, extent, matrix, type,
+    var image, bands, height, width, resolution, extent, matrix, type, origin,
         nodata, i, j;
 
     for (i = 0; i < numImages; ++i) {
@@ -157,7 +157,9 @@ if (ol.ENABLE_COVERAGE) {
 
       try {
         resolution = image.getResolution().slice(0, 2);
-        extent = image.getBoundingBox();
+        origin = image.getOrigin();
+        extent = [origin[0], origin[1] - resolution[1] * height,
+          origin[0] + resolution[0] * width, origin[1]];
 
       } catch (err) {
         if (this.extent_) {
