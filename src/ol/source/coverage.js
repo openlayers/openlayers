@@ -320,7 +320,7 @@ if (ol.ENABLE_COVERAGE) {
       var nulls = [];
       var i, ii;
       for (i = 0, ii = bandIndex.length; i < ii; ++i) {
-        if (bandIndex[i]) {
+        if (bandIndex[i] !== undefined) {
           toAlign.push(bands[bandIndex[i]]);
           nulls.push(bands[bandIndex[i]].getNullValue());
         }
@@ -329,10 +329,10 @@ if (ol.ENABLE_COVERAGE) {
       styledMatrix = this.style_.apply(aligned.matrices, nulls);
       return new ol.coverage.Band({
         binary: false,
-        extent: aligned.extent,
+        extent: aligned.properties.extent,
         matrix: styledMatrix,
-        stride: aligned.stride,
-        resolution: aligned.resolution,
+        stride: aligned.properties.stride,
+        resolution: aligned.properties.resolution,
         type: ol.coverage.MatrixType.UINT8
       });
     } else if (bandIndex !== undefined) {

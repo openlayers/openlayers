@@ -152,6 +152,12 @@ ol.CoverageBandOptions;
 
 
 /**
+ * @typedef {ol.TypedArray|Array.<number|null>}
+ */
+ol.CoverageData;
+
+
+/**
  * A function that takes a matrix of interleaved RGBA values, the number of columns,
  * the resolution of each cell in an array, and the pixel ratio. The function
  * must return a HTML5 Canvas element with the coverage image.
@@ -159,6 +165,17 @@ ol.CoverageBandOptions;
  * @typedef {function(Array.<number>, number, Array.<number>, number): HTMLCanvasElement}
  */
 ol.CoverageDrawFunctionType;
+
+
+/**
+ * Convenience type for passing around common coverage properties internally.
+ * @typedef {{extent: ol.Extent,
+ *            nodata: (number|null),
+ *            resolution: ol.Size,
+ *            stride: number,
+ *            type: ol.coverage.CoverageType}}
+ */
+ol.CoverageProperties;
 
 
 /**
