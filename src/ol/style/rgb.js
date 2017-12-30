@@ -24,19 +24,19 @@ if (ol.ENABLE_COVERAGE) {
      * @private
      * @type {ol.style.Monochrome}
      */
-    this.red_ = options.red ? options.red : ol.style.Monochrome.defaultStyle();
+    this.red_ = options.red ? options.red : ol.style.Monochrome.defaultStyle(0);
 
     /**
      * @private
      * @type {ol.style.Monochrome}
      */
-    this.green_ = options.green ? options.green : ol.style.Monochrome.defaultStyle();
+    this.green_ = options.green ? options.green : ol.style.Monochrome.defaultStyle(1);
 
     /**
      * @private
      * @type {ol.style.Monochrome}
      */
-    this.blue_ = options.blue ? options.blue : ol.style.Monochrome.defaultStyle();
+    this.blue_ = options.blue ? options.blue : ol.style.Monochrome.defaultStyle(2);
 
   };
 

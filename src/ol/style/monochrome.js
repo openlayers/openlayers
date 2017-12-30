@@ -47,10 +47,11 @@ if (ol.ENABLE_COVERAGE) {
 
 
   /**
+   * @param {number=} opt_index Band index.
    * @return {ol.style.Monochrome} Default raster style.
    */
-  ol.style.Monochrome.defaultStyle = function() {
-    return new ol.style.Monochrome({band: 0});
+  ol.style.Monochrome.defaultStyle = function(opt_index) {
+    return new ol.style.Monochrome({band: opt_index ? opt_index : 0});
   };
 
 
