@@ -263,8 +263,10 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
     this.beginGeometry(geometry, feature);
     if (textState.backgroundFill || textState.backgroundStroke) {
       this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
-      this.updateFillStyle(this.state, this.applyFill, geometry);
+      this.updateFillStyle(this.state, this.createFill, geometry);
+      this.hitDetectionInstructions.push(this.createFill(this.state, geometry));
       this.updateStrokeStyle(this.state, this.applyStroke);
+      this.hitDetectionInstructions.push(this.createStroke(this.state));
     }
     this.drawTextImage_(label, begin, end);
     this.endGeometry(geometry, feature);

@@ -215,7 +215,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   var state = this.state;
   var fillStyle = state.fillStyle;
   if (fillStyle !== undefined) {
-    this.updateFillStyle(state, this.applyFill, geometry);
+    this.updateFillStyle(state, this.createFill, geometry);
   }
   if (state.strokeStyle !== undefined) {
     this.updateStrokeStyle(state, this.applyStroke);

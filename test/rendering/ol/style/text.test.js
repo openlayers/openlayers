@@ -352,6 +352,9 @@ describe('ol.rendering.style.Text', function() {
       }));
       features[2].getStyle().getText().setPadding([5, 10, 15, 0]);
       map.getView().fit(vectorSource.getExtent());
+      map.once('postrender', function() {
+        expect(map.getFeaturesAtPixel([178, 120])).to.have.length(1);
+      });
       expectResemble(map, 'rendering/ol/style/expected/text-background.png', IMAGE_TOLERANCE, done);
     });
 

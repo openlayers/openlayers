@@ -270,7 +270,16 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
     ol.extent.createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
   }
   var canvas = context.canvas;
-  var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+  var strokePadding = strokeInstruction ? (strokeInstruction[2] * scale / 2) : 0;
+  var intersects =
+      box[0] - strokePadding <= canvas.width && box[2] + strokePadding >= 0 &&
+      box[1] - strokePadding <= canvas.height && box[3] + strokePadding >= 0;
+
+  if (snapToPixel) {
+    x = Math.round(x);
+    y = Math.round(y);
+  }
+
   if (declutterGroup) {
     if (!intersects && declutterGroup[4] == 1) {
       return;
@@ -956,15 +965,16 @@ ol.render.canvas.Replay.prototype.setFillStrokeStyle = function(fillStyle, strok
 /**
  * @param {ol.CanvasFillStrokeState} state State.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @return {Array.<*>} Fill instruction.
  */
-ol.render.canvas.Replay.prototype.applyFill = function(state, geometry) {
+ol.render.canvas.Replay.prototype.createFill = function(state, geometry) {
   var fillStyle = state.fillStyle;
   var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
   if (typeof fillStyle !== 'string') {
     var fillExtent = geometry.getExtent();
     fillInstruction.push([fillExtent[0], fillExtent[3]]);
   }
-  this.instructions.push(fillInstruction);
+  return fillInstruction;
 };
 
 
@@ -972,25 +982,34 @@ ol.render.canvas.Replay.prototype.applyFill = function(state, geometry) {
  * @param {ol.CanvasFillStrokeState} state State.
  */
 ol.render.canvas.Replay.prototype.applyStroke = function(state) {
-  this.instructions.push([
-    ol.render.canvas.Instruction.SET_STROKE_STYLE,
-    state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
-    state.lineJoin, state.miterLimit,
-    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
-  ]);
+  this.instructions.push(this.createStroke(state));
 };
 
 
 /**
  * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature))} applyFill Apply fill.
+ * @return {Array.<*>} Stroke instruction.
+ */
+ol.render.canvas.Replay.prototype.createStroke = function(state) {
+  return [
+    _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
+    state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
+    state.lineJoin, state.miterLimit,
+    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
+  ];
+};
+
+
+/**
+ * @param {ol.CanvasFillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.Replay.prototype.updateFillStyle = function(state, applyFill, geometry) {
+_ol_render_canvas_Replay_.prototype.updateFillStyle = function(state, createFill, geometry) {
   var fillStyle = state.fillStyle;
   if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
     if (fillStyle !== undefined) {
-      applyFill.call(this, state, geometry);
+      this.instructions.push(createFill.call(this, state, geometry));
     }
     state.currentFillStyle = fillStyle;
   }
