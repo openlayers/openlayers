@@ -960,15 +960,16 @@ _ol_render_canvas_Replay_.prototype.setFillStrokeStyle = function(fillStyle, str
 /**
  * @param {ol.CanvasFillStrokeState} state State.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @return {Array.<*>} Fill instruction.
  */
-_ol_render_canvas_Replay_.prototype.applyFill = function(state, geometry) {
+_ol_render_canvas_Replay_.prototype.createFill = function(state, geometry) {
   var fillStyle = state.fillStyle;
   var fillInstruction = [_ol_render_canvas_Instruction_.SET_FILL_STYLE, fillStyle];
   if (typeof fillStyle !== 'string') {
     var fillExtent = geometry.getExtent();
     fillInstruction.push([fillExtent[0], fillExtent[3]]);
   }
-  this.instructions.push(fillInstruction);
+  return fillInstruction;
 };
 
 
@@ -976,25 +977,34 @@ _ol_render_canvas_Replay_.prototype.applyFill = function(state, geometry) {
  * @param {ol.CanvasFillStrokeState} state State.
  */
 _ol_render_canvas_Replay_.prototype.applyStroke = function(state) {
-  this.instructions.push([
-    _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
-    state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
-    state.lineJoin, state.miterLimit,
-    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
-  ]);
+  this.instructions.push(this.createStroke(state));
 };
 
 
 /**
  * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature))} applyFill Apply fill.
+ * @return {Array.<*>} Stroke instruction.
+ */
+_ol_render_canvas_Replay_.prototype.createStroke = function(state) {
+  return [
+    _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
+    state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
+    state.lineJoin, state.miterLimit,
+    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
+  ];
+};
+
+
+/**
+ * @param {ol.CanvasFillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-_ol_render_canvas_Replay_.prototype.updateFillStyle = function(state, applyFill, geometry) {
+_ol_render_canvas_Replay_.prototype.updateFillStyle = function(state, createFill, geometry) {
   var fillStyle = state.fillStyle;
   if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
     if (fillStyle !== undefined) {
-      applyFill.call(this, state, geometry);
+      this.instructions.push(createFill.call(this, state, geometry));
     }
     state.currentFillStyle = fillStyle;
   }
