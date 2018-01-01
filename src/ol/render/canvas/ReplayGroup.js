@@ -35,6 +35,11 @@ var _ol_render_canvas_ReplayGroup_ = function(
   _ol_render_ReplayGroup_.call(this);
 
   /**
+   * @type {ol.render.ReplayType}
+   */
+  this.currentReplayType_;
+
+  /**
    * Declutter tree.
    * @private
    */
@@ -325,15 +330,18 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
   /**
    * @param {ol.Feature|ol.render.Feature} feature Feature.
    * @return {?} Callback result.
+   * @this {ol.render.canvas.ReplayGroup}
    */
-  function hitDetectionCallback(feature) {
+  var hitDetectionCallback = (function(feature) {
     var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
     for (var i = 0; i < contextSize; i++) {
       for (var j = 0; j < contextSize; j++) {
         if (mask[i][j]) {
           if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
+            var replayType = this.currentReplayType_;
             var result;
-            if (!declutteredFeatures || declutteredFeatures.indexOf(feature) !== -1) {
+            if (!(declutteredFeatures && (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) ||
+                declutteredFeatures.indexOf(feature) !== -1) {
               result = callback(feature);
             }
             if (result) {
@@ -346,7 +354,7 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
         }
       }
     }
-  }
+  }).bind(this);
 
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
@@ -498,6 +506,7 @@ _ol_render_canvas_ReplayGroup_.prototype.replayHitDetection_ = function(
             declutter.push(replay, transform.slice(0));
           }
         } else {
+          this.currentReplayType_ = replayType;
           result = replay.replayHitDetection(context, transform, viewRotation,
               skippedFeaturesHash, featureCallback, opt_hitExtent);
           if (result) {
