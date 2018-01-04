@@ -12,7 +12,7 @@ var GeoTIFF = function() {};
 
 /**
  * @param {ArrayBuffer} tiff
- * @return {GeoTIFFCoverage}
+ * @return {GeoTIFFFile}
  */
 GeoTIFF.prototype.parse = function(tiff) {};
 
@@ -26,59 +26,59 @@ var geotiff;
 /**
  * @constructor
  */
+var GeoTIFFFile = function() {};
+
+
+/**
+ * @return {number}
+ */
+GeoTIFFFile.prototype.getImageCount = function() {};
+
+
+/**
+ * @param {number} index
+ * @return {GeoTIFFCoverage}
+ */
+GeoTIFFFile.prototype.getImage = function(index) {};
+
+
+/**
+ * @constructor
+ */
 var GeoTIFFCoverage = function() {};
 
 
 /**
  * @return {number}
  */
-GeoTIFFCoverage.prototype.getImageCount = function() {};
-
-
-/**
- * @param {number} index
- * @return {GeoTIFFBand}
- */
-GeoTIFFCoverage.prototype.getImage = function(index) {};
-
-
-/**
- * @constructor
- */
-var GeoTIFFBand = function() {};
+GeoTIFFCoverage.prototype.getHeight = function() {};
 
 
 /**
  * @return {number}
  */
-GeoTIFFBand.prototype.getHeight = function() {};
-
-
-/**
- * @return {number}
- */
-GeoTIFFBand.prototype.getWidth = function() {};
+GeoTIFFCoverage.prototype.getWidth = function() {};
 
 
 /**
  * @return {Array.<ol.TypedArray>}
  */
-GeoTIFFBand.prototype.readRasters = function() {};
+GeoTIFFCoverage.prototype.readRasters = function() {};
 
 
 /**
  * @return {Object|undefined}
  */
-GeoTIFFBand.prototype.getFileDirectory = function() {};
+GeoTIFFCoverage.prototype.getFileDirectory = function() {};
 
 
 /**
  * @return {Array.<number>}
  */
-GeoTIFFBand.prototype.getResolution = function() {};
+GeoTIFFCoverage.prototype.getResolution = function() {};
 
 
 /**
- * @return {ol.Extent}
+ * @return {ol.Coordinate}
  */
-GeoTIFFBand.prototype.getBoundingBox = function() {};
+GeoTIFFCoverage.prototype.getOrigin = function() {};
