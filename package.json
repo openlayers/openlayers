@@ -70,7 +70,7 @@
     "url-polyfill": "^1.0.7",
     "walk": "^2.3.9",
     "webpack": "3.10.0",
-    "webpack-dev-server": "2.9.7",
+    "webpack-dev-server": "2.10.0",
     "webpack-merge": "4.1.1"
   },
   "eslintConfig": {
