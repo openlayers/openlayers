@@ -8,7 +8,7 @@ import _ol_Object_ from './Object.js';
 import ResolutionConstraint from './ResolutionConstraint.js';
 import RotationConstraint from './RotationConstraint.js';
 import ViewHint from './ViewHint.js';
-import _ol_ViewProperty_ from './ViewProperty.js';
+import ViewProperty from './ViewProperty.js';
 import {linearFindNearest} from './array.js';
 import {assert} from './asserts.js';
 import _ol_coordinate_ from './coordinate.js';
@@ -134,7 +134,7 @@ _ol_View_.prototype.applyOptions_ = function(options) {
    * @type {Object.<string, *>}
    */
   var properties = {};
-  properties[_ol_ViewProperty_.CENTER] = options.center !== undefined ?
+  properties[ViewProperty.CENTER] = options.center !== undefined ?
     options.center : null;
 
   var resolutionConstraintInfo = _ol_View_.createResolutionConstraint_(
@@ -185,18 +185,18 @@ _ol_View_.prototype.applyOptions_ = function(options) {
   };
 
   if (options.resolution !== undefined) {
-    properties[_ol_ViewProperty_.RESOLUTION] = options.resolution;
+    properties[ViewProperty.RESOLUTION] = options.resolution;
   } else if (options.zoom !== undefined) {
-    properties[_ol_ViewProperty_.RESOLUTION] = this.constrainResolution(
+    properties[ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
 
     if (this.resolutions_) { // in case map zoom is out of min/max zoom range
-      properties[_ol_ViewProperty_.RESOLUTION] = clamp(
-          Number(this.getResolution() || properties[_ol_ViewProperty_.RESOLUTION]),
+      properties[ViewProperty.RESOLUTION] = clamp(
+          Number(this.getResolution() || properties[ViewProperty.RESOLUTION]),
           this.minResolution_, this.maxResolution_);
     }
   }
-  properties[_ol_ViewProperty_.ROTATION] =
+  properties[ViewProperty.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
 
@@ -422,27 +422,27 @@ _ol_View_.prototype.updateAnimations_ = function() {
         var y1 = animation.targetCenter[1];
         var x = x0 + progress * (x1 - x0);
         var y = y0 + progress * (y1 - y0);
-        this.set(_ol_ViewProperty_.CENTER, [x, y]);
+        this.set(ViewProperty.CENTER, [x, y]);
       }
       if (animation.sourceResolution && animation.targetResolution) {
         var resolution = progress === 1 ?
           animation.targetResolution :
           animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
         if (animation.anchor) {
-          this.set(_ol_ViewProperty_.CENTER,
+          this.set(ViewProperty.CENTER,
               this.calculateCenterZoom(resolution, animation.anchor));
         }
-        this.set(_ol_ViewProperty_.RESOLUTION, resolution);
+        this.set(ViewProperty.RESOLUTION, resolution);
       }
       if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
         var rotation = progress === 1 ?
           modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
           animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
         if (animation.anchor) {
-          this.set(_ol_ViewProperty_.CENTER,
+          this.set(ViewProperty.CENTER,
               this.calculateCenterRotate(rotation, animation.anchor));
         }
-        this.set(_ol_ViewProperty_.ROTATION, rotation);
+        this.set(ViewProperty.ROTATION, rotation);
       }
       more = true;
       if (!animation.complete) {
@@ -567,7 +567,7 @@ _ol_View_.prototype.constrainRotation = function(rotation, opt_delta) {
  */
 _ol_View_.prototype.getCenter = function() {
   return (
-    /** @type {ol.Coordinate|undefined} */ this.get(_ol_ViewProperty_.CENTER)
+    /** @type {ol.Coordinate|undefined} */ this.get(ViewProperty.CENTER)
   );
 };
 
@@ -696,7 +696,7 @@ _ol_View_.prototype.getProjection = function() {
  */
 _ol_View_.prototype.getResolution = function() {
   return (
-    /** @type {number|undefined} */ this.get(_ol_ViewProperty_.RESOLUTION)
+    /** @type {number|undefined} */ this.get(ViewProperty.RESOLUTION)
   );
 };
 
@@ -759,7 +759,7 @@ _ol_View_.prototype.getResolutionForValueFunction = function(opt_power) {
  */
 _ol_View_.prototype.getRotation = function() {
   return (
-    /** @type {number} */ this.get(_ol_ViewProperty_.ROTATION)
+    /** @type {number} */ this.get(ViewProperty.ROTATION)
   );
 };
 
@@ -1024,7 +1024,7 @@ _ol_View_.prototype.rotate = function(rotation, opt_anchor) {
  * @api
  */
 _ol_View_.prototype.setCenter = function(center) {
-  this.set(_ol_ViewProperty_.CENTER, center);
+  this.set(ViewProperty.CENTER, center);
   if (this.getAnimating()) {
     this.cancelAnimations();
   }
@@ -1050,7 +1050,7 @@ _ol_View_.prototype.setHint = function(hint, delta) {
  * @api
  */
 _ol_View_.prototype.setResolution = function(resolution) {
-  this.set(_ol_ViewProperty_.RESOLUTION, resolution);
+  this.set(ViewProperty.RESOLUTION, resolution);
   if (this.getAnimating()) {
     this.cancelAnimations();
   }
@@ -1064,7 +1064,7 @@ _ol_View_.prototype.setResolution = function(resolution) {
  * @api
  */
 _ol_View_.prototype.setRotation = function(rotation) {
-  this.set(_ol_ViewProperty_.ROTATION, rotation);
+  this.set(ViewProperty.ROTATION, rotation);
   if (this.getAnimating()) {
     this.cancelAnimations();
   }
