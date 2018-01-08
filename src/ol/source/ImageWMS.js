@@ -27,7 +27,7 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
  * @api
  */
-var _ol_source_ImageWMS_ = function(opt_options) {
+var ImageWMS = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -108,7 +108,7 @@ var _ol_source_ImageWMS_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_ImageWMS_, ImageSource);
+inherits(ImageWMS, ImageSource);
 
 
 /**
@@ -116,7 +116,7 @@ inherits(_ol_source_ImageWMS_, ImageSource);
  * @type {ol.Size}
  * @private
  */
-_ol_source_ImageWMS_.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
+ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
 
 
 /**
@@ -133,7 +133,7 @@ _ol_source_ImageWMS_.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
  * @return {string|undefined} GetFeatureInfo URL.
  * @api
  */
-_ol_source_ImageWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
+ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
   if (this.url_ === undefined) {
     return undefined;
   }
@@ -146,7 +146,7 @@ _ol_source_ImageWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resol
   }
 
   var extent = getForViewAndSize(coordinate, resolution, 0,
-      _ol_source_ImageWMS_.GETFEATUREINFO_IMAGE_SIZE_);
+      ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
 
   var baseParams = {
     'SERVICE': 'WMS',
@@ -164,7 +164,7 @@ _ol_source_ImageWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resol
   baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(
-      extent, _ol_source_ImageWMS_.GETFEATUREINFO_IMAGE_SIZE_,
+      extent, ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
       1, sourceProjectionObj || projectionObj, baseParams);
 };
 
@@ -175,7 +175,7 @@ _ol_source_ImageWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resol
  * @return {Object} Params.
  * @api
  */
-_ol_source_ImageWMS_.prototype.getParams = function() {
+ImageWMS.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -183,7 +183,7 @@ _ol_source_ImageWMS_.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-_ol_source_ImageWMS_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
 
   if (this.url_ === undefined) {
     return null;
@@ -249,7 +249,7 @@ _ol_source_ImageWMS_.prototype.getImageInternal = function(extent, resolution, p
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
-_ol_source_ImageWMS_.prototype.getImageLoadFunction = function() {
+ImageWMS.prototype.getImageLoadFunction = function() {
   return this.imageLoadFunction_;
 };
 
@@ -263,7 +263,7 @@ _ol_source_ImageWMS_.prototype.getImageLoadFunction = function() {
  * @return {string} Request URL.
  * @private
  */
-_ol_source_ImageWMS_.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
+ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
   assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
 
@@ -317,7 +317,7 @@ _ol_source_ImageWMS_.prototype.getRequestUrl_ = function(extent, size, pixelRati
  * @return {string|undefined} URL.
  * @api
  */
-_ol_source_ImageWMS_.prototype.getUrl = function() {
+ImageWMS.prototype.getUrl = function() {
   return this.url_;
 };
 
@@ -327,7 +327,7 @@ _ol_source_ImageWMS_.prototype.getUrl = function() {
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-_ol_source_ImageWMS_.prototype.setImageLoadFunction = function(
+ImageWMS.prototype.setImageLoadFunction = function(
     imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
@@ -340,7 +340,7 @@ _ol_source_ImageWMS_.prototype.setImageLoadFunction = function(
  * @param {string|undefined} url URL.
  * @api
  */
-_ol_source_ImageWMS_.prototype.setUrl = function(url) {
+ImageWMS.prototype.setUrl = function(url) {
   if (url != this.url_) {
     this.url_ = url;
     this.image_ = null;
@@ -354,7 +354,7 @@ _ol_source_ImageWMS_.prototype.setUrl = function(url) {
  * @param {Object} params Params.
  * @api
  */
-_ol_source_ImageWMS_.prototype.updateParams = function(params) {
+ImageWMS.prototype.updateParams = function(params) {
   _ol_obj_.assign(this.params_, params);
   this.updateV13_();
   this.image_ = null;
@@ -365,8 +365,8 @@ _ol_source_ImageWMS_.prototype.updateParams = function(params) {
 /**
  * @private
  */
-_ol_source_ImageWMS_.prototype.updateV13_ = function() {
+ImageWMS.prototype.updateV13_ = function() {
   var version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
   this.v13_ = _ol_string_.compareVersions(version, '1.3') >= 0;
 };
-export default _ol_source_ImageWMS_;
+export default ImageWMS;

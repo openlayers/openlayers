@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
-import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 
 
-var wmsSource = new _ol_source_ImageWMS_({
+var wmsSource = new ImageWMS({
   url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'ne:ne'},
   serverType: 'geoserver',

@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
-import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 
 
 /**
@@ -77,7 +77,7 @@ Progress.prototype.hide = function() {
 
 var progress = new Progress(document.getElementById('progress'));
 
-var source = new _ol_source_ImageWMS_({
+var source = new ImageWMS({
   url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'topp:states'},
   serverType: 'geoserver'

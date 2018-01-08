@@ -5,7 +5,7 @@ import ScaleLine from '../src/ol/control/ScaleLine.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 import {register} from '../src/ol/proj/proj4.js';
 import proj4 from 'proj4';
 
@@ -38,7 +38,7 @@ var extent = [420000, 30000, 900000, 350000];
 var layers = [
   new ImageLayer({
     extent: extent,
-    source: new _ol_source_ImageWMS_({
+    source: new ImageWMS({
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
@@ -52,7 +52,7 @@ var layers = [
   }),
   new ImageLayer({
     extent: extent,
-    source: new _ol_source_ImageWMS_({
+    source: new ImageWMS({
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +

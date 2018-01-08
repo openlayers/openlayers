@@ -1,4 +1,4 @@
-import _ol_source_ImageWMS_ from '../../../../src/ol/source/ImageWMS.js';
+import ImageWMS from '../../../../src/ol/source/ImageWMS.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 
 
@@ -31,7 +31,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('returns the expected image URL', function() {
       options.ratio = 1.5;
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage([10, 20, 30.1, 39.9], resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -44,7 +44,7 @@ describe('ol.source.ImageWMS', function() {
     it('uses correct WIDTH and HEIGHT for HiDPI devices', function() {
       pixelRatio = 2;
       options.serverType = 'geoserver';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -56,7 +56,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('requests integer WIDTH and HEIGHT', function() {
       options.ratio = 1.5;
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage([10, 20, 30.1, 39.9], resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -67,7 +67,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', function() {
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       expect(uri.protocol).to.be('http:');
@@ -91,7 +91,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('sets the SRS query value instead of CRS if version < 1.3', function() {
       options.params.VERSION = '1.2';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -102,7 +102,7 @@ describe('ol.source.ImageWMS', function() {
     it('allows various parameters to be overridden', function() {
       options.params.FORMAT = 'image/jpeg';
       options.params.TRANSPARENT = false;
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -112,7 +112,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('does not add a STYLES= option if one is specified', function() {
       options.params.STYLES = 'foo';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
@@ -120,7 +120,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('changes the BBOX order for EN axis orientations', function() {
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       projection = getProjection('CRS:84');
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
@@ -130,7 +130,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('uses EN BBOX order if version < 1.3', function() {
       options.params.VERSION = '1.1.0';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image =
           source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
@@ -140,7 +140,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('sets MAP_RESOLUTION when the server is MapServer', function() {
       options.serverType = 'mapserver';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
@@ -150,7 +150,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
       options.serverType = 'geoserver';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
@@ -160,7 +160,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('extends FORMAT_OPTIONS if it is already present', function() {
       options.serverType = 'geoserver';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
@@ -172,7 +172,7 @@ describe('ol.source.ImageWMS', function() {
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
         function() {
           options.serverType = 'geoserver';
-          var source = new _ol_source_ImageWMS_(options);
+          var source = new ImageWMS(options);
           pixelRatio = 1.325;
           var image =
              source.getImage(extent, resolution, pixelRatio, projection);
@@ -183,7 +183,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('sets DPI when the server is QGIS', function() {
       options.serverType = 'qgis';
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
@@ -194,7 +194,7 @@ describe('ol.source.ImageWMS', function() {
     it('creates an image with a custom imageLoadFunction', function() {
       var imageLoadFunction = sinon.spy();
       options.imageLoadFunction = imageLoadFunction;
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
       expect(imageLoadFunction).to.be.called();
@@ -203,7 +203,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('returns same image for consecutive calls with same args', function() {
       var extent = [10.01, 20, 30.01, 40];
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var image1 = source.getImage(extent, resolution, pixelRatio, projection);
       var image2 = source.getImage(extent, resolution, pixelRatio, projection);
       expect(image1).to.equal(image2);
@@ -211,7 +211,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('returns same image for calls with similar extents', function() {
       options.ratio = 1.5;
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var extent = [10.01, 20, 30.01, 40];
       var image1 = source.getImage(extent, resolution, pixelRatio, projection);
       extent = [10.01, 20.1, 30.01, 40.1];
@@ -221,7 +221,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('calculates correct image size with ratio', function() {
       options.ratio = 1.5;
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var extent = [10, 5, 30, 45];
       source.getImage(extent, resolution, pixelRatio, projection);
       expect(source.imageSize_).to.eql([300, 600]);
@@ -232,7 +232,7 @@ describe('ol.source.ImageWMS', function() {
   describe('#getGetFeatureInfoUrl', function() {
 
     it('returns the expected GetFeatureInfo URL', function() {
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain'});
@@ -260,7 +260,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('returns the expected GetFeatureInfo URL when source\'s projection is different from the parameter', function() {
-      var source = new _ol_source_ImageWMS_(optionsReproj);
+      var source = new ImageWMS(optionsReproj);
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain'});
@@ -288,7 +288,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('sets the QUERY_LAYERS param as expected', function() {
-      var source = new _ol_source_ImageWMS_(options);
+      var source = new ImageWMS(options);
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'});

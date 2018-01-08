@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
 
@@ -21,7 +21,7 @@ var layers = [
     })
   }),
   new ImageLayer({
-    source: new _ol_source_ImageWMS_({
+    source: new ImageWMS({
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
