@@ -6,7 +6,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_Layer_ from '../../../../../src/ol/renderer/canvas/Layer.js';
-import _ol_renderer_canvas_Map_ from '../../../../../src/ol/renderer/canvas/Map.js';
+import CanvasMapRenderer from '../../../../../src/ol/renderer/canvas/Map.js';
 import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../../../../../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
@@ -19,8 +19,8 @@ describe('ol.renderer.canvas.Map', function() {
       var map = new Map({
         target: document.createElement('div')
       });
-      var renderer = new _ol_renderer_canvas_Map_(map.viewport_, map);
-      expect(renderer).to.be.a(_ol_renderer_canvas_Map_);
+      var renderer = new CanvasMapRenderer(map.viewport_, map);
+      expect(renderer).to.be.a(CanvasMapRenderer);
     });
 
   });

@@ -24,7 +24,7 @@ import SourceState from '../../source/State.js';
  * @param {ol.PluggableMap} map Map.
  * @api
  */
-var _ol_renderer_canvas_Map_ = function(container, map) {
+var CanvasMapRenderer = function(container, map) {
 
   _ol_renderer_Map_.call(this, container, map);
 
@@ -60,7 +60,7 @@ var _ol_renderer_canvas_Map_ = function(container, map) {
 
 };
 
-inherits(_ol_renderer_canvas_Map_, _ol_renderer_Map_);
+inherits(CanvasMapRenderer, _ol_renderer_Map_);
 
 
 /**
@@ -68,7 +68,7 @@ inherits(_ol_renderer_canvas_Map_, _ol_renderer_Map_);
  * @param {ol.renderer.Type} type The renderer type.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_canvas_Map_['handles'] = function(type) {
+CanvasMapRenderer['handles'] = function(type) {
   return type === RendererType.CANVAS;
 };
 
@@ -79,8 +79,8 @@ _ol_renderer_canvas_Map_['handles'] = function(type) {
  * @param {ol.PluggableMap} map Map.
  * @return {ol.renderer.canvas.Map} The map renderer.
  */
-_ol_renderer_canvas_Map_['create'] = function(container, map) {
-  return new _ol_renderer_canvas_Map_(container, map);
+CanvasMapRenderer['create'] = function(container, map) {
+  return new CanvasMapRenderer(container, map);
 };
 
 
@@ -89,7 +89,7 @@ _ol_renderer_canvas_Map_['create'] = function(container, map) {
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-_ol_renderer_canvas_Map_.prototype.dispatchComposeEvent_ = function(type, frameState) {
+CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {
@@ -114,7 +114,7 @@ _ol_renderer_canvas_Map_.prototype.dispatchComposeEvent_ = function(type, frameS
  * @protected
  * @return {!ol.Transform} Transform.
  */
-_ol_renderer_canvas_Map_.prototype.getTransform = function(frameState) {
+CanvasMapRenderer.prototype.getTransform = function(frameState) {
   var viewState = frameState.viewState;
   var dx1 = this.canvas_.width / 2;
   var dy1 = this.canvas_.height / 2;
@@ -130,7 +130,7 @@ _ol_renderer_canvas_Map_.prototype.getTransform = function(frameState) {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_Map_.prototype.getType = function() {
+CanvasMapRenderer.prototype.getType = function() {
   return RendererType.CANVAS;
 };
 
@@ -138,7 +138,7 @@ _ol_renderer_canvas_Map_.prototype.getType = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
+CanvasMapRenderer.prototype.renderFrame = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
@@ -207,7 +207,7 @@ _ol_renderer_canvas_Map_.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
     layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -235,4 +235,4 @@ _ol_renderer_canvas_Map_.prototype.forEachLayerAtPixel = function(pixel, frameSt
   }
   return undefined;
 };
-export default _ol_renderer_canvas_Map_;
+export default CanvasMapRenderer;
