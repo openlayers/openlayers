@@ -5,7 +5,7 @@ import {getWidth, getCenter} from '../src/ol/extent.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import _ol_source_ImageCanvas_ from '../src/ol/source/ImageCanvas.js';
+import ImageCanvasSource from '../src/ol/source/ImageCanvas.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 
 
@@ -81,7 +81,7 @@ d3.json('data/topojson/us.json', function(error, us) {
   };
 
   var layer = new ImageLayer({
-    source: new _ol_source_ImageCanvas_({
+    source: new ImageCanvasSource({
       canvasFunction: canvasFunction,
       projection: 'EPSG:3857'
     })
