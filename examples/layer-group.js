@@ -4,7 +4,7 @@ import _ol_layer_Group_ from '../src/ol/layer/Group.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
 
 var map = new Map({
   layers: [
@@ -13,13 +13,13 @@ var map = new Map({
     }), new _ol_layer_Group_({
       layers: [
         new TileLayer({
-          source: new _ol_source_TileJSON_({
+          source: new TileJSON({
             url: 'https://api.tiles.mapbox.com/v3/mapbox.20110804-hoa-foodinsecurity-3month.json?secure',
             crossOrigin: 'anonymous'
           })
         }),
         new TileLayer({
-          source: new _ol_source_TileJSON_({
+          source: new TileJSON({
             url: 'https://api.tiles.mapbox.com/v3/mapbox.world-borders-light.json?secure',
             crossOrigin: 'anonymous'
           })

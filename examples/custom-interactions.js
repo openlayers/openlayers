@@ -9,7 +9,7 @@ import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
@@ -148,7 +148,7 @@ var map = new Map({
   interactions: defaultInteractions().extend([new app.Drag()]),
   layers: [
     new TileLayer({
-      source: new _ol_source_TileJSON_({
+      source: new TileJSON({
         url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure'
       })
     }),

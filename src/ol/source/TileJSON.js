@@ -26,7 +26,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.TileJSONOptions} options TileJSON options.
  * @api
  */
-var _ol_source_TileJSON_ = function(options) {
+var TileJSON = function(options) {
 
   /**
    * @type {TileJSON}
@@ -65,14 +65,14 @@ var _ol_source_TileJSON_ = function(options) {
 
 };
 
-inherits(_ol_source_TileJSON_, TileImage);
+inherits(TileJSON, TileImage);
 
 
 /**
  * @private
  * @param {Event} event The load event.
  */
-_ol_source_TileJSON_.prototype.onXHRLoad_ = function(event) {
+TileJSON.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
@@ -94,7 +94,7 @@ _ol_source_TileJSON_.prototype.onXHRLoad_ = function(event) {
  * @private
  * @param {Event} event The error event.
  */
-_ol_source_TileJSON_.prototype.onXHRError_ = function(event) {
+TileJSON.prototype.onXHRError_ = function(event) {
   this.handleTileJSONError();
 };
 
@@ -103,7 +103,7 @@ _ol_source_TileJSON_.prototype.onXHRError_ = function(event) {
  * @return {TileJSON} The tilejson object.
  * @api
  */
-_ol_source_TileJSON_.prototype.getTileJSON = function() {
+TileJSON.prototype.getTileJSON = function() {
   return this.tileJSON_;
 };
 
@@ -112,7 +112,7 @@ _ol_source_TileJSON_.prototype.getTileJSON = function() {
  * @protected
  * @param {TileJSON} tileJSON Tile JSON.
  */
-_ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
+TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var epsg4326Projection = getProjection('EPSG:4326');
 
@@ -156,7 +156,7 @@ _ol_source_TileJSON_.prototype.handleTileJSONResponse = function(tileJSON) {
 /**
  * @protected
  */
-_ol_source_TileJSON_.prototype.handleTileJSONError = function() {
+TileJSON.prototype.handleTileJSONError = function() {
   this.setState(SourceState.ERROR);
 };
-export default _ol_source_TileJSON_;
+export default TileJSON;

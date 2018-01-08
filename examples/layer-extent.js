@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
 
 function transform(extent) {
   return transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
@@ -16,7 +16,7 @@ var extents = {
 };
 
 var base = new TileLayer({
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-light.json?secure',
     crossOrigin: 'anonymous'
   })
@@ -24,7 +24,7 @@ var base = new TileLayer({
 
 var overlay = new TileLayer({
   extent: extents.India,
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-black.json?secure',
     crossOrigin: 'anonymous'
   })

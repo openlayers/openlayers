@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -11,7 +11,7 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
 var raster = new TileLayer({
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure'
   })
 });

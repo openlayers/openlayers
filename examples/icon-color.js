@@ -5,7 +5,7 @@ import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -57,7 +57,7 @@ var vectorLayer = new VectorLayer({
 });
 
 var rasterLayer = new TileLayer({
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
     crossOrigin: ''
   })
