@@ -4,11 +4,20 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
-import _ol_format_IGCZ_ from '../format/IGCZ.js';
 import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {get as getProjection} from '../proj.js';
+
+/**
+ * IGC altitude/z. One of 'barometric', 'gps', 'none'.
+ * @enum {string}
+ */
+var IGCZ = {
+  BAROMETRIC: 'barometric',
+  GPS: 'gps',
+  NONE: 'none'
+};
 
 /**
  * @classdesc
@@ -34,9 +43,7 @@ var IGC = function(opt_options) {
    * @private
    * @type {ol.format.IGCZ}
    */
-  this.altitudeMode_ = options.altitudeMode ?
-    options.altitudeMode : _ol_format_IGCZ_.NONE;
-
+  this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : IGCZ.NONE;
 };
 
 inherits(IGC, TextFeature);
@@ -121,11 +128,11 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
           x = -x;
         }
         flatCoordinates.push(x, y);
-        if (altitudeMode != _ol_format_IGCZ_.NONE) {
+        if (altitudeMode != IGCZ.NONE) {
           var z;
-          if (altitudeMode == _ol_format_IGCZ_.GPS) {
+          if (altitudeMode == IGCZ.GPS) {
             z = parseInt(m[11], 10);
-          } else if (altitudeMode == _ol_format_IGCZ_.BAROMETRIC) {
+          } else if (altitudeMode == IGCZ.BAROMETRIC) {
             z = parseInt(m[12], 10);
           } else {
             z = 0;
@@ -158,8 +165,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
     return null;
   }
   var lineString = new LineString(null);
-  var layout = altitudeMode == _ol_format_IGCZ_.NONE ?
-    GeometryLayout.XYM : GeometryLayout.XYZM;
+  var layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
   var feature = new _ol_Feature_(transformWithOptions(lineString, false, opt_options));
   feature.setProperties(properties);
