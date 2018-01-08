@@ -21,7 +21,7 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  * @param {ol.layer.Image} imageLayer Tile layer.
  * @api
  */
-var _ol_renderer_webgl_ImageLayer_ = function(mapRenderer, imageLayer) {
+var WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
 
   _ol_renderer_webgl_Layer_.call(this, mapRenderer, imageLayer);
 
@@ -46,7 +46,7 @@ var _ol_renderer_webgl_ImageLayer_ = function(mapRenderer, imageLayer) {
 
 };
 
-inherits(_ol_renderer_webgl_ImageLayer_, _ol_renderer_webgl_Layer_);
+inherits(WebGLImageLayerRenderer, _ol_renderer_webgl_Layer_);
 
 
 /**
@@ -55,7 +55,7 @@ inherits(_ol_renderer_webgl_ImageLayer_, _ol_renderer_webgl_Layer_);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_webgl_ImageLayer_['handles'] = function(type, layer) {
+WebGLImageLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.WEBGL && layer.getType() === LayerType.IMAGE;
 };
 
@@ -66,8 +66,8 @@ _ol_renderer_webgl_ImageLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.ImageLayer} The layer renderer.
  */
-_ol_renderer_webgl_ImageLayer_['create'] = function(mapRenderer, layer) {
-  return new _ol_renderer_webgl_ImageLayer_(
+WebGLImageLayerRenderer['create'] = function(mapRenderer, layer) {
+  return new WebGLImageLayerRenderer(
       /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
       /** @type {ol.layer.Image} */ (layer)
   );
@@ -79,7 +79,7 @@ _ol_renderer_webgl_ImageLayer_['create'] = function(mapRenderer, layer) {
  * @private
  * @return {WebGLTexture} Texture.
  */
-_ol_renderer_webgl_ImageLayer_.prototype.createTexture_ = function(image) {
+WebGLImageLayerRenderer.prototype.createTexture_ = function(image) {
 
   // We meet the conditions to work with non-power of two textures.
   // http://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Non-Power_of_Two_Texture_Support
@@ -96,7 +96,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_ImageLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+WebGLImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -118,7 +118,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.forEachFeatureAtCoordinate = function(c
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_ImageLayer_.prototype.prepareFrame = function(frameState, layerState, context) {
+WebGLImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var gl = this.mapRenderer.getGL();
 
@@ -205,7 +205,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.prepareFrame = function(frameState, lay
  * @param {ol.Extent} imageExtent Image extent.
  * @private
  */
-_ol_renderer_webgl_ImageLayer_.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio,
+WebGLImageLayerRenderer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio,
     viewCenter, viewResolution, viewRotation, imageExtent) {
 
   var canvasExtentWidth = canvasWidth * viewResolution;
@@ -231,7 +231,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.updateProjectionMatrix_ = function(canv
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_ImageLayer_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+WebGLImageLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
   return hasFeature !== undefined;
 };
@@ -240,7 +240,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.hasFeatureAtCoordinate = function(coord
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_ImageLayer_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+WebGLImageLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.image_ || !this.image_.getImage()) {
     return undefined;
   }
@@ -301,7 +301,7 @@ _ol_renderer_webgl_ImageLayer_.prototype.forEachLayerAtPixel = function(pixel, f
  * @return {ol.Transform} The transformation matrix.
  * @private
  */
-_ol_renderer_webgl_ImageLayer_.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
+WebGLImageLayerRenderer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
   // the first matrix takes a map pixel, flips the y-axis and scales to
   // a range between -1 ... 1
   var mapCoordTransform = _ol_transform_.create();
@@ -326,4 +326,4 @@ _ol_renderer_webgl_ImageLayer_.prototype.getHitTransformationMatrix_ = function(
 
   return transform;
 };
-export default _ol_renderer_webgl_ImageLayer_;
+export default WebGLImageLayerRenderer;
