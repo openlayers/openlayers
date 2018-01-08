@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
 function threeHoursAgo() {
@@ -17,7 +17,7 @@ var animationId = null;
 
 var layers = [
   new TileLayer({
-    source: new _ol_source_Stamen_({
+    source: new Stamen({
       layer: 'terrain'
     })
   }),

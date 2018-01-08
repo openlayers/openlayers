@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import HeatmapLayer from '../src/ol/layer/Heatmap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 var blur = document.getElementById('blur');
@@ -30,7 +30,7 @@ vector.getSource().on('addfeature', function(event) {
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_Stamen_({
+  source: new Stamen({
     layer: 'toner'
   })
 });

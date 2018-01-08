@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -49,7 +49,7 @@ var vector = new VectorLayer({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_Stamen_({
+  source: new Stamen({
     layer: 'toner'
   })
 });

@@ -5,7 +5,7 @@ import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -13,7 +13,7 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({
+      source: new Stamen({
         layer: 'toner'
       })
     })

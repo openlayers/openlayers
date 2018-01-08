@@ -2,18 +2,18 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({
+      source: new Stamen({
         layer: 'watercolor'
       })
     }),
     new TileLayer({
-      source: new _ol_source_Stamen_({
+      source: new Stamen({
         layer: 'terrain-labels'
       })
     })

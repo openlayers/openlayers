@@ -5,7 +5,7 @@ import Point from '../src/ol/geom/Point.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -29,7 +29,7 @@ iconFeature.set('style', createStyle('data/icon.png', undefined));
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({layer: 'watercolor'})
+      source: new Stamen({layer: 'watercolor'})
     }),
     new VectorLayer({
       style: function(feature) {

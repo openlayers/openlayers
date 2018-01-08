@@ -6,13 +6,13 @@ import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import ImageCanvasSource from '../src/ol/source/ImageCanvas.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({
+      source: new Stamen({
         layer: 'watercolor'
       })
     })
