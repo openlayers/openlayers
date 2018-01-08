@@ -125,22 +125,26 @@ _ol_render_canvas_.checkFont = (function() {
   var retries = 60;
   var checked = _ol_render_canvas_.checkedFonts_;
   var labelCache = _ol_render_canvas_.labelCache;
-  var font = '32px monospace';
+  var size = '32px ';
+  var referenceFonts = ['monospace', 'serif'];
+  var len = referenceFonts.length;
   var text = 'wmytzilWMYTZIL@#/&?$%10';
   var interval, referenceWidth;
 
-  function isAvailable(fontFamily) {
+  function isAvailable(font) {
     var context = _ol_render_canvas_.getMeasureContext();
-    context.font = font;
-    referenceWidth = context.measureText(text).width;
     var available = true;
-    if (fontFamily != 'monospace') {
-      context.font = '32px ' + fontFamily + ',monospace';
-      var width = context.measureText(text).width;
-      // If width and referenceWidth are the same, then the 'monospace'
-      // fallback was used instead of the font we wanted, so the font is not
-      // available.
-      available = width != referenceWidth;
+    for (var i = 0; i < len; ++i) {
+      var referenceFont = referenceFonts[i];
+      context.font = size + referenceFont;
+      referenceWidth = context.measureText(text).width;
+      if (font != referenceFont) {
+        context.font = size + font + ',' + referenceFont;
+        var width = context.measureText(text).width;
+        // If width and referenceWidth are the same, then the fallback was used
+        // instead of the font we wanted, so the font is not available.
+        available = available && width != referenceWidth;
+      }
     }
     return available;
   }
