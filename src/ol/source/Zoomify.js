@@ -23,14 +23,14 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * @param {olx.source.ZoomifyOptions=} opt_options Options.
  * @api
  */
-var _ol_source_Zoomify_ = function(opt_options) {
+var Zoomify = function(opt_options) {
 
   var options = opt_options || {};
 
   var size = options.size;
   var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
     options.tierSizeCalculation :
-    _ol_source_Zoomify_.TierSizeCalculation_.DEFAULT;
+    Zoomify.TierSizeCalculation_.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];
@@ -40,7 +40,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
   var tileSizeForTierSizeCalculation = tileSize;
 
   switch (tierSizeCalculation) {
-    case _ol_source_Zoomify_.TierSizeCalculation_.DEFAULT:
+    case Zoomify.TierSizeCalculation_.DEFAULT:
       while (imageWidth > tileSizeForTierSizeCalculation || imageHeight > tileSizeForTierSizeCalculation) {
         tierSizeInTiles.push([
           Math.ceil(imageWidth / tileSizeForTierSizeCalculation),
@@ -49,7 +49,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
         tileSizeForTierSizeCalculation += tileSizeForTierSizeCalculation;
       }
       break;
-    case _ol_source_Zoomify_.TierSizeCalculation_.TRUNCATED:
+    case Zoomify.TierSizeCalculation_.TRUNCATED:
       var width = imageWidth;
       var height = imageHeight;
       while (width > tileSizeForTierSizeCalculation || height > tileSizeForTierSizeCalculation) {
@@ -135,7 +135,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
 
   var tileUrlFunction = createFromTileUrlFunctions(urls.map(createFromTemplate));
 
-  var ZoomifyTileClass = _ol_source_Zoomify_.Tile_.bind(null, tileGrid);
+  var ZoomifyTileClass = Zoomify.Tile_.bind(null, tileGrid);
 
   TileImage.call(this, {
     attributions: options.attributions,
@@ -151,7 +151,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_Zoomify_, TileImage);
+inherits(Zoomify, TileImage);
 
 /**
  * @constructor
@@ -165,7 +165,7 @@ inherits(_ol_source_Zoomify_, TileImage);
  * @param {olx.TileOptions=} opt_options Tile options.
  * @private
  */
-_ol_source_Zoomify_.Tile_ = function(
+Zoomify.Tile_ = function(
     tileGrid, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
   ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options);
@@ -182,13 +182,13 @@ _ol_source_Zoomify_.Tile_ = function(
    */
   this.tileSize_ = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]));
 };
-inherits(_ol_source_Zoomify_.Tile_, ImageTile);
+inherits(Zoomify.Tile_, ImageTile);
 
 
 /**
  * @inheritDoc
  */
-_ol_source_Zoomify_.Tile_.prototype.getImage = function() {
+Zoomify.Tile_.prototype.getImage = function() {
   if (this.zoomifyImage_) {
     return this.zoomifyImage_;
   }
@@ -213,8 +213,8 @@ _ol_source_Zoomify_.Tile_.prototype.getImage = function() {
  * @enum {string}
  * @private
  */
-_ol_source_Zoomify_.TierSizeCalculation_ = {
+Zoomify.TierSizeCalculation_ = {
   DEFAULT: 'default',
   TRUNCATED: 'truncated'
 };
-export default _ol_source_Zoomify_;
+export default Zoomify;
