@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
-import _ol_source_ImageMapGuide_ from '../src/ol/source/ImageMapGuide.js';
+import ImageMapGuide from '../src/ol/source/ImageMapGuide.js';
 
 var mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
 var agentUrl =
@@ -16,7 +16,7 @@ var map = new Map({
   layers: [
     new ImageLayer({
       extent: bounds,
-      source: new _ol_source_ImageMapGuide_({
+      source: new ImageMapGuide({
         projection: 'EPSG:4326',
         url: agentUrl,
         useOverlay: false,

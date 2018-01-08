@@ -20,7 +20,7 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api
  */
-var _ol_source_ImageMapGuide_ = function(options) {
+var ImageMapGuide = function(options) {
 
   ImageSource.call(this, {
     projection: options.projection,
@@ -100,7 +100,7 @@ var _ol_source_ImageMapGuide_ = function(options) {
 
 };
 
-inherits(_ol_source_ImageMapGuide_, ImageSource);
+inherits(ImageMapGuide, ImageSource);
 
 
 /**
@@ -109,7 +109,7 @@ inherits(_ol_source_ImageMapGuide_, ImageSource);
  * @return {Object} Params.
  * @api
  */
-_ol_source_ImageMapGuide_.prototype.getParams = function() {
+ImageMapGuide.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -117,7 +117,7 @@ _ol_source_ImageMapGuide_.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-_ol_source_ImageMapGuide_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
@@ -161,7 +161,7 @@ _ol_source_ImageMapGuide_.prototype.getImageInternal = function(extent, resoluti
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
-_ol_source_ImageMapGuide_.prototype.getImageLoadFunction = function() {
+ImageMapGuide.prototype.getImageLoadFunction = function() {
   return this.imageLoadFunction_;
 };
 
@@ -173,7 +173,7 @@ _ol_source_ImageMapGuide_.prototype.getImageLoadFunction = function() {
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
  */
-_ol_source_ImageMapGuide_.getScale = function(extent, size, metersPerUnit, dpi) {
+ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
   var mcsW = getWidth(extent);
   var mcsH = getHeight(extent);
   var devW = size[0];
@@ -192,7 +192,7 @@ _ol_source_ImageMapGuide_.getScale = function(extent, size, metersPerUnit, dpi) 
  * @param {Object} params Params.
  * @api
  */
-_ol_source_ImageMapGuide_.prototype.updateParams = function(params) {
+ImageMapGuide.prototype.updateParams = function(params) {
   _ol_obj_.assign(this.params_, params);
   this.changed();
 };
@@ -206,8 +206,8 @@ _ol_source_ImageMapGuide_.prototype.updateParams = function(params) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
-_ol_source_ImageMapGuide_.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
-  var scale = _ol_source_ImageMapGuide_.getScale(extent, size,
+ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
+  var scale = ImageMapGuide.getScale(extent, size,
       this.metersPerUnit_, this.displayDpi_);
   var center = getCenter(extent);
   var baseParams = {
@@ -233,10 +233,10 @@ _ol_source_ImageMapGuide_.prototype.getUrl = function(baseUrl, params, extent, s
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-_ol_source_ImageMapGuide_.prototype.setImageLoadFunction = function(
+ImageMapGuide.prototype.setImageLoadFunction = function(
     imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();
 };
-export default _ol_source_ImageMapGuide_;
+export default ImageMapGuide;
