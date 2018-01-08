@@ -4,14 +4,14 @@ import _ol_View_ from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import _ol_interaction_MouseWheelZoom_ from '../../../../src/ol/interaction/MouseWheelZoom.js';
+import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
 
 
 describe('ol.interaction.MouseWheelZoom', function() {
   var map, interaction;
 
   beforeEach(function() {
-    interaction = new _ol_interaction_MouseWheelZoom_();
+    interaction = new MouseWheelZoom();
     map = new Map({
       target: createMapDiv(100, 100),
       interactions: [interaction],
@@ -66,7 +66,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
       var origHasFirefox = _ol_has_.FIREFOX;
       _ol_has_.FIREFOX = true;
       map.once('postrender', function() {
-        expect(interaction.mode_).to.be(_ol_interaction_MouseWheelZoom_.Mode_.TRACKPAD);
+        expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
         _ol_has_.FIREFOX = origHasFirefox;
         done();
       });
@@ -85,7 +85,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
       var origHasFirefox = _ol_has_.FIREFOX;
       _ol_has_.FIREFOX = false;
       map.once('postrender', function() {
-        expect(interaction.mode_).to.be(_ol_interaction_MouseWheelZoom_.Mode_.TRACKPAD);
+        expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
         _ol_has_.FIREFOX = origHasFirefox;
         done();
       });

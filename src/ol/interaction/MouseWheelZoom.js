@@ -3,6 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
+import condition from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import _ol_has_ from '../has.js';
@@ -25,10 +26,10 @@ var MAX_DELTA = 1;
  * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_MouseWheelZoom_ = function(opt_options) {
+var MouseWheelZoom = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: _ol_interaction_MouseWheelZoom_.handleEvent
+    handleEvent: MouseWheelZoom.handleEvent
   });
 
   var options = opt_options || {};
@@ -62,6 +63,12 @@ var _ol_interaction_MouseWheelZoom_ = function(opt_options) {
    * @type {boolean}
    */
   this.constrainResolution_ = options.constrainResolution || false;
+
+  /**
+   * @private
+   * @type {ol.EventsConditionType}
+   */
+  this.condition_ = options.condition ? options.condition : condition.always;
 
   /**
    * @private
@@ -115,7 +122,7 @@ var _ol_interaction_MouseWheelZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_MouseWheelZoom_, Interaction);
+inherits(MouseWheelZoom, Interaction);
 
 
 /**
@@ -126,7 +133,10 @@ inherits(_ol_interaction_MouseWheelZoom_, Interaction);
  * @this {ol.interaction.MouseWheelZoom}
  * @api
  */
-_ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
+MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
+  if (!this.condition_(mapBrowserEvent)) {
+    return true;
+  }
   var type = mapBrowserEvent.type;
   if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
     return true;
@@ -172,11 +182,11 @@ _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
 
   if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
     this.mode_ = Math.abs(delta) < 4 ?
-      _ol_interaction_MouseWheelZoom_.Mode_.TRACKPAD :
-      _ol_interaction_MouseWheelZoom_.Mode_.WHEEL;
+      MouseWheelZoom.Mode_.TRACKPAD :
+      MouseWheelZoom.Mode_.WHEEL;
   }
 
-  if (this.mode_ === _ol_interaction_MouseWheelZoom_.Mode_.TRACKPAD) {
+  if (this.mode_ === MouseWheelZoom.Mode_.TRACKPAD) {
     var view = map.getView();
     if (this.trackpadTimeoutId_) {
       clearTimeout(this.trackpadTimeoutId_);
@@ -243,7 +253,7 @@ _ol_interaction_MouseWheelZoom_.handleEvent = function(mapBrowserEvent) {
 /**
  * @private
  */
-_ol_interaction_MouseWheelZoom_.prototype.decrementInteractingHint_ = function() {
+MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
   this.trackpadTimeoutId_ = undefined;
   var view = this.getMap().getView();
   view.setHint(_ol_ViewHint_.INTERACTING, -1);
@@ -254,7 +264,7 @@ _ol_interaction_MouseWheelZoom_.prototype.decrementInteractingHint_ = function()
  * @private
  * @param {ol.PluggableMap} map Map.
  */
-_ol_interaction_MouseWheelZoom_.prototype.handleWheelZoom_ = function(map) {
+MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   var view = map.getView();
   if (view.getAnimating()) {
     view.cancelAnimations();
@@ -277,7 +287,7 @@ _ol_interaction_MouseWheelZoom_.prototype.handleWheelZoom_ = function(map) {
  * to zoom to the center of the map
  * @api
  */
-_ol_interaction_MouseWheelZoom_.prototype.setMouseAnchor = function(useAnchor) {
+MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
   this.useAnchor_ = useAnchor;
   if (!useAnchor) {
     this.lastAnchor_ = null;
@@ -289,8 +299,8 @@ _ol_interaction_MouseWheelZoom_.prototype.setMouseAnchor = function(useAnchor) {
  * @enum {string}
  * @private
  */
-_ol_interaction_MouseWheelZoom_.Mode_ = {
+MouseWheelZoom.Mode_ = {
   TRACKPAD: 'trackpad',
   WHEEL: 'wheel'
 };
-export default _ol_interaction_MouseWheelZoom_;
+export default MouseWheelZoom;
