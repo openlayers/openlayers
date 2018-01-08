@@ -52,26 +52,23 @@ inherits(IGC, TextFeature);
 /**
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.B_RECORD_RE_ =
+var B_RECORD_RE =
     /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
 
 /**
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
+var H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
 
 
 /**
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
+var HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 
 
 /**
@@ -79,9 +76,8 @@ IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
  *
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
+var NEWLINE_RE = /\r\n|\r|\n/;
 
 
 /**
@@ -101,7 +97,7 @@ IGC.prototype.readFeature;
  */
 IGC.prototype.readFeatureFromText = function(text, opt_options) {
   var altitudeMode = this.altitudeMode_;
-  var lines = text.split(IGC.NEWLINE_RE_);
+  var lines = text.split(NEWLINE_RE);
   /** @type {Object.<string, string>} */
   var properties = {};
   var flatCoordinates = [];
@@ -114,7 +110,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
     var line = lines[i];
     var m;
     if (line.charAt(0) == 'B') {
-      m = IGC.B_RECORD_RE_.exec(line);
+      m = B_RECORD_RE.exec(line);
       if (m) {
         var hour = parseInt(m[1], 10);
         var minute = parseInt(m[2], 10);
@@ -148,13 +144,13 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
         lastDateTime = dateTime;
       }
     } else if (line.charAt(0) == 'H') {
-      m = IGC.HFDTE_RECORD_RE_.exec(line);
+      m = HFDTE_RECORD_RE.exec(line);
       if (m) {
         day = parseInt(m[1], 10);
         month = parseInt(m[2], 10) - 1;
         year = 2000 + parseInt(m[3], 10);
       } else {
-        m = IGC.H_RECORD_RE_.exec(line);
+        m = H_RECORD_RE.exec(line);
         if (m) {
           properties[m[1]] = m[2].trim();
         }
