@@ -9,7 +9,7 @@ import ScaleLineUnits from '../control/ScaleLineUnits.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
 import _ol_events_ from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 
 /**
  * @classdesc
@@ -172,8 +172,8 @@ ScaleLine.prototype.updateElement_ = function() {
   var projection = viewState.projection;
   var units = this.getUnits();
   var pointResolutionUnits = units == ScaleLineUnits.DEGREES ?
-    _ol_proj_Units_.DEGREES :
-    _ol_proj_Units_.METERS;
+    Units.DEGREES :
+    Units.METERS;
   var pointResolution =
       getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
   if (units != ScaleLineUnits.DEGREES) {
@@ -183,8 +183,8 @@ ScaleLine.prototype.updateElement_ = function() {
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
   if (units == ScaleLineUnits.DEGREES) {
-    var metersPerDegree = METERS_PER_UNIT[_ol_proj_Units_.DEGREES];
-    if (projection.getUnits() == _ol_proj_Units_.DEGREES) {
+    var metersPerDegree = METERS_PER_UNIT[Units.DEGREES];
+    if (projection.getUnits() == Units.DEGREES) {
       nominalCount *= metersPerDegree;
     } else {
       pointResolution /= metersPerDegree;

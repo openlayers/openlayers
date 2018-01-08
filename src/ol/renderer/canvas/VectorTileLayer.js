@@ -11,7 +11,7 @@ import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
 import {equivalent as equivalentProjection} from '../../proj.js';
-import _ol_proj_Units_ from '../../proj/Units.js';
+import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
@@ -226,7 +226,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
     for (var i = 0, ii = features.length; i < ii; ++i) {
       feature = features[i];
       if (reproject) {
-        if (tileProjection.getUnits() == _ol_proj_Units_.TILE_PIXELS) {
+        if (tileProjection.getUnits() == Units.TILE_PIXELS) {
           // projected tile extent
           tileProjection.setWorldExtent(sourceTileExtent);
           // tile extent in tile pixel space

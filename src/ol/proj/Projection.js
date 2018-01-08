@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/Projection
  */
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 
 /**
  * @classdesc
@@ -153,7 +153,7 @@ _ol_proj_Projection_.prototype.getUnits = function() {
  * @api
  */
 _ol_proj_Projection_.prototype.getMetersPerUnit = function() {
-  return this.metersPerUnit_ || _ol_proj_Units_.METERS_PER_UNIT[this.units_];
+  return this.metersPerUnit_ || Units.METERS_PER_UNIT[this.units_];
 };
 
 

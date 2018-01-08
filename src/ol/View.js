@@ -20,7 +20,7 @@ import SimpleGeometry from './geom/SimpleGeometry.js';
 import {clamp, modulo} from './math.js';
 import _ol_obj_ from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
-import _ol_proj_Units_ from './proj/Units.js';
+import Units from './proj/Units.js';
 
 
 /**
@@ -1133,7 +1133,7 @@ _ol_View_.createResolutionConstraint_ = function(options) {
     var extent = projection.getExtent();
     var size = !extent ?
       // use an extent that can fit the whole world if need be
-      360 * METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
+      360 * METERS_PER_UNIT[Units.DEGREES] /
             projection.getMetersPerUnit() :
       Math.max(getWidth(extent), getHeight(extent));
 

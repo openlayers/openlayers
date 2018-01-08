@@ -18,7 +18,7 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 import _ol_render_Feature_ from '../render/Feature.js';
 
 /**
@@ -41,7 +41,7 @@ var MVT = function(opt_options) {
    */
   this.defaultDataProjection = new _ol_proj_Projection_({
     code: '',
-    units: _ol_proj_Units_.TILE_PIXELS
+    units: Units.TILE_PIXELS
   });
 
   /**

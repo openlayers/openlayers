@@ -7,7 +7,7 @@ import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {FALSE} from '../functions.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 import _ol_transform_ from '../transform.js';
 
 /**
@@ -256,7 +256,7 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
 Geometry.prototype.transform = function(source, destination) {
   var tmpTransform = this.tmpTransform_;
   source = getProjection(source);
-  var transformFn = source.getUnits() == _ol_proj_Units_.TILE_PIXELS ?
+  var transformFn = source.getUnits() == Units.TILE_PIXELS ?
     function(inCoordinates, outCoordinates, stride) {
       var pixelExtent = source.getExtent();
       var projectedExtent = source.getWorldExtent();
