@@ -12,7 +12,7 @@ import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
-import _ol_source_Tile_ from '../source/Tile.js';
+import TileSource from '../source/Tile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -26,7 +26,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @api
  */
 var _ol_source_TileUTFGrid_ = function(options) {
-  _ol_source_Tile_.call(this, {
+  TileSource.call(this, {
     projection: getProjection('EPSG:3857'),
     state: SourceState.LOADING
   });
@@ -74,7 +74,7 @@ var _ol_source_TileUTFGrid_ = function(options) {
   }
 };
 
-inherits(_ol_source_TileUTFGrid_, _ol_source_Tile_);
+inherits(_ol_source_TileUTFGrid_, TileSource);
 
 
 /**

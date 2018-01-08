@@ -6,7 +6,7 @@ import _ol_Tile_ from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_size_ from '../size.js';
-import _ol_source_Tile_ from '../source/Tile.js';
+import TileSource from '../source/Tile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 
 /**
@@ -24,7 +24,7 @@ import _ol_tilecoord_ from '../tilecoord.js';
  */
 var _ol_source_TileDebug_ = function(options) {
 
-  _ol_source_Tile_.call(this, {
+  TileSource.call(this, {
     opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid,
@@ -33,7 +33,7 @@ var _ol_source_TileDebug_ = function(options) {
 
 };
 
-inherits(_ol_source_TileDebug_, _ol_source_Tile_);
+inherits(_ol_source_TileDebug_, TileSource);
 
 
 /**

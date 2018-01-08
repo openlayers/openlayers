@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import TileState from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
-import _ol_source_Tile_ from '../source/Tile.js';
+import TileSource from '../source/Tile.js';
 import TileEventType from '../source/TileEventType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 
@@ -20,7 +20,7 @@ import _ol_tilecoord_ from '../tilecoord.js';
  */
 var _ol_source_UrlTile_ = function(options) {
 
-  _ol_source_Tile_.call(this, {
+  TileSource.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
@@ -69,7 +69,7 @@ var _ol_source_UrlTile_ = function(options) {
 
 };
 
-inherits(_ol_source_UrlTile_, _ol_source_Tile_);
+inherits(_ol_source_UrlTile_, TileSource);
 
 
 /**
@@ -130,7 +130,7 @@ _ol_source_UrlTile_.prototype.handleTileChange = function(event) {
         TileEventType.TILELOADEND : undefined;
   }
   if (type != undefined) {
-    this.dispatchEvent(new _ol_source_Tile_.Event(type, tile));
+    this.dispatchEvent(new TileSource.Event(type, tile));
   }
 };
 

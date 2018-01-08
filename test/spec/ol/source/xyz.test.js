@@ -1,4 +1,4 @@
-import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
+import TileSource from '../../../../src/ol/source/Tile.js';
 import _ol_source_TileImage_ from '../../../../src/ol/source/TileImage.js';
 import _ol_source_UrlTile_ from '../../../../src/ol/source/UrlTile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
@@ -14,7 +14,7 @@ describe('ol.source.XYZ', function() {
       expect(source).to.be.an(_ol_source_XYZ_);
       expect(source).to.be.an(_ol_source_TileImage_);
       expect(source).to.be.an(_ol_source_UrlTile_);
-      expect(source).to.be.an(_ol_source_Tile_);
+      expect(source).to.be.an(TileSource);
     });
 
     it('can be constructed with a custom tile grid', function() {

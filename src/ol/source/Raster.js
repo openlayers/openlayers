@@ -18,7 +18,7 @@ import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import ImageSource from '../source/Image.js';
 import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
-import _ol_source_Tile_ from '../source/Tile.js';
+import TileSource from '../source/Tile.js';
 import _ol_transform_ from '../transform.js';
 
 
@@ -398,7 +398,7 @@ function createRenderers(sources) {
  */
 function createRenderer(source) {
   var renderer = null;
-  if (source instanceof _ol_source_Tile_) {
+  if (source instanceof TileSource) {
     renderer = createTileRenderer(source);
   } else if (source instanceof ImageSource) {
     renderer = createImageRenderer(source);

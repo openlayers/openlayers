@@ -1,5 +1,5 @@
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
-import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
+import TileSource from '../../../../src/ol/source/Tile.js';
 import _ol_source_TileUTFGrid_ from '../../../../src/ol/source/TileUTFGrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
@@ -39,7 +39,7 @@ describe('ol.source.TileUTFGrid', function() {
 
       var source = new _ol_source_TileUTFGrid_({url: url});
       expect(source).to.be.an(_ol_source_TileUTFGrid_);
-      expect(source).to.be.an(_ol_source_Tile_);
+      expect(source).to.be.an(TileSource);
 
       expect(function() {
         // no options: will throw

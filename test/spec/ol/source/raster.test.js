@@ -6,7 +6,7 @@ import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
-import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
+import TileSource from '../../../../src/ol/source/Tile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 
 var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
@@ -92,7 +92,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     it('returns a tile source', function() {
       var source = new RasterSource({
         threads: 0,
-        sources: [new _ol_source_Tile_({})]
+        sources: [new TileSource({})]
       });
       expect(source).to.be.a(Source);
       expect(source).to.be.a(RasterSource);
