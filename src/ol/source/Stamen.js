@@ -2,7 +2,7 @@
  * @module ol/source/Stamen
  */
 import {inherits} from '../index.js';
-import _ol_source_OSM_ from '../source/OSM.js';
+import OSM from '../source/OSM.js';
 import XYZ from '../source/XYZ.js';
 
 /**
@@ -50,7 +50,7 @@ _ol_source_Stamen_.ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
         'under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY' +
         ' 3.0</a>.',
-  _ol_source_OSM_.ATTRIBUTION
+  OSM.ATTRIBUTION
 ];
 
 /**

@@ -6,7 +6,7 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 
@@ -38,7 +38,7 @@ var vectorLayer = new VectorLayer({
 });
 
 var rasterLayer = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 var map = new Map({

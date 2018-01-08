@@ -4,7 +4,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 
 var mousePositionControl = new MousePosition({
   coordinateFormat: _ol_coordinate_.createStringXY(4),
@@ -24,7 +24,7 @@ var map = new Map({
   }).extend([mousePositionControl]),
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',

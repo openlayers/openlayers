@@ -1,5 +1,5 @@
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import _ol_source_OSM_ from '../../../../src/ol/source/OSM.js';
+import OSM from '../../../../src/ol/source/OSM.js';
 
 
 describe('ol.layer.Tile', function() {
@@ -10,7 +10,7 @@ describe('ol.layer.Tile', function() {
 
     beforeEach(function() {
       layer = new TileLayer({
-        source: new _ol_source_OSM_()
+        source: new OSM()
       });
     });
 

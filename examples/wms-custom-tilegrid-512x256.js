@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
@@ -22,7 +22,7 @@ var tileGrid = new TileGrid({
 
 var layers = [
   new TileLayer({
-    source: new _ol_source_OSM_()
+    source: new OSM()
   }),
   new TileLayer({
     source: new _ol_source_TileWMS_({

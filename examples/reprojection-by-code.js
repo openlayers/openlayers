@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import TileImage from '../src/ol/source/TileImage.js';
 import proj4 from 'proj4';
 
@@ -12,7 +12,7 @@ import proj4 from 'proj4';
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',

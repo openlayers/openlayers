@@ -6,7 +6,7 @@ import DragBox from '../src/ol/interaction/DragBox.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 
@@ -19,7 +19,7 @@ var vectorSource = new VectorSource({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
     new VectorLayer({
       source: vectorSource

@@ -7,7 +7,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -83,10 +83,10 @@ vectorSource.on('addfeature', function(event) {
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_({
+      source: new OSM({
         attributions: [
           'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
-          _ol_source_OSM_.ATTRIBUTION
+          OSM.ATTRIBUTION
         ],
         url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'

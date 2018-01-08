@@ -2,10 +2,10 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import _ol_has_ from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 
 var layer = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 var view = new View({

@@ -2,7 +2,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
@@ -56,7 +56,7 @@ var tilePixels = new _ol_proj_Projection_({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',

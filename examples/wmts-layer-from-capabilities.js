@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 
 var parser = new _ol_format_WMTSCapabilities_();
@@ -20,7 +20,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
   map = new Map({
     layers: [
       new TileLayer({
-        source: new _ol_source_OSM_(),
+        source: new OSM(),
         opacity: 0.7
       }),
       new TileLayer({

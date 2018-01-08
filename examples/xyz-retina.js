@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transform, transformExtent} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 var mapMinZoom = 1;
@@ -13,7 +13,7 @@ var map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
     new TileLayer({
       extent: transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),

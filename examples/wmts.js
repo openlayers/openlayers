@@ -4,7 +4,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
@@ -23,7 +23,7 @@ for (var z = 0; z < 14; ++z) {
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_(),
+      source: new OSM(),
       opacity: 0.7
     }),
     new TileLayer({

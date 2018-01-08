@@ -3,10 +3,10 @@ import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 
 var osm = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 var bing = new TileLayer({
   source: new BingMaps({
