@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/ReplayGroup.js';
 import RendererType from '../Type.js';
@@ -215,8 +215,8 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
 
-  var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
-  var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];
+  var animating = frameState.viewHints[ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 

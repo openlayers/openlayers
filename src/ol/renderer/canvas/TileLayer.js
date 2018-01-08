@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import TileRange from '../../TileRange.js';
 import TileState from '../../TileState.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
 import RendererType from '../Type.js';
@@ -209,7 +209,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
   var renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
   var hints = frameState.viewHints;
-  var animatingOrInteracting = hints[_ol_ViewHint_.ANIMATING] || hints[_ol_ViewHint_.INTERACTING];
+  var animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
     newTiles ||
         !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||

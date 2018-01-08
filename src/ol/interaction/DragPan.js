@@ -2,7 +2,7 @@
  * @module ol/interaction/DragPan
  */
 import {inherits} from '../index.js';
-import _ol_ViewHint_ from '../ViewHint.js';
+import ViewHint from '../ViewHint.js';
 import _ol_coordinate_ from '../coordinate.js';
 import {easeOut} from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
@@ -123,7 +123,7 @@ DragPan.handleUpEvent_ = function(mapBrowserEvent) {
         easing: easeOut
       });
     }
-    view.setHint(_ol_ViewHint_.INTERACTING, -1);
+    view.setHint(ViewHint.INTERACTING, -1);
     return false;
   } else {
     if (this.kinetic_) {
@@ -149,7 +149,7 @@ DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     var view = map.getView();
     this.lastCentroid = null;
     if (!this.handlingDownUpSequence) {
-      view.setHint(_ol_ViewHint_.INTERACTING, 1);
+      view.setHint(ViewHint.INTERACTING, 1);
     }
     // stop any current animation
     if (view.getAnimating()) {

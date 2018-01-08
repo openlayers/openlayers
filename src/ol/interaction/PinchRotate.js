@@ -2,7 +2,7 @@
  * @module ol/interaction/PinchRotate
  */
 import {inherits} from '../index.js';
-import _ol_ViewHint_ from '../ViewHint.js';
+import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -131,7 +131,7 @@ _ol_interaction_PinchRotate_.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(_ol_ViewHint_.INTERACTING, -1);
+    view.setHint(ViewHint.INTERACTING, -1);
     if (this.rotating_) {
       var rotation = view.getRotation();
       Interaction.rotate(
@@ -158,7 +158,7 @@ _ol_interaction_PinchRotate_.handleDownEvent_ = function(mapBrowserEvent) {
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
     if (!this.handlingDownUpSequence) {
-      map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
+      map.getView().setHint(ViewHint.INTERACTING, 1);
     }
     return true;
   } else {

@@ -2,7 +2,7 @@
  * @module ol/interaction/MouseWheelZoom
  */
 import {inherits} from '../index.js';
-import _ol_ViewHint_ from '../ViewHint.js';
+import ViewHint from '../ViewHint.js';
 import condition from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
@@ -191,7 +191,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     if (this.trackpadTimeoutId_) {
       clearTimeout(this.trackpadTimeoutId_);
     } else {
-      view.setHint(_ol_ViewHint_.INTERACTING, 1);
+      view.setHint(ViewHint.INTERACTING, 1);
     }
     this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
     var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
@@ -256,7 +256,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
   this.trackpadTimeoutId_ = undefined;
   var view = this.getMap().getView();
-  view.setHint(_ol_ViewHint_.INTERACTING, -1);
+  view.setHint(ViewHint.INTERACTING, -1);
 };
 
 

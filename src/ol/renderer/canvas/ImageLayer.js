@@ -5,7 +5,7 @@ import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits} from '../../index.js';
 import _ol_ImageCanvas_ from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
@@ -125,7 +125,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     renderedExtent = getIntersection(renderedExtent, layerState.extent);
   }
 
-  if (!hints[_ol_ViewHint_.ANIMATING] && !hints[_ol_ViewHint_.INTERACTING] &&
+  if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] &&
       !isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     if (!ENABLE_RASTER_REPROJECTION) {

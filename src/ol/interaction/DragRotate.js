@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import RotationConstraint from '../RotationConstraint.js';
-import _ol_ViewHint_ from '../ViewHint.js';
+import ViewHint from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
@@ -97,7 +97,7 @@ DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(_ol_ViewHint_.INTERACTING, -1);
+  view.setHint(ViewHint.INTERACTING, -1);
   var rotation = view.getRotation();
   Interaction.rotate(view, rotation,
       undefined, this.duration_);
@@ -119,7 +119,7 @@ DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
   if (_ol_events_condition_.mouseActionButton(mapBrowserEvent) &&
       this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
-    map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
+    map.getView().setHint(ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     return true;
   } else {

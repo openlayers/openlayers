@@ -14,7 +14,7 @@ import _ol_Object_ from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
 import _ol_View_ from './View.js';
-import _ol_ViewHint_ from './ViewHint.js';
+import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
@@ -954,11 +954,11 @@ PluggableMap.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[_ol_ViewHint_.ANIMATING]) {
+      if (hints[ViewHint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[_ol_ViewHint_.INTERACTING]) {
+      if (hints[ViewHint.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -1260,8 +1260,8 @@ PluggableMap.prototype.renderFrame_ = function(time) {
     }
 
     var idle = this.previousExtent_ &&
-        !frameState.viewHints[_ol_ViewHint_.ANIMATING] &&
-        !frameState.viewHints[_ol_ViewHint_.INTERACTING] &&
+        !frameState.viewHints[ViewHint.ANIMATING] &&
+        !frameState.viewHints[ViewHint.INTERACTING] &&
         !equals(frameState.extent, this.previousExtent_);
 
     if (idle) {

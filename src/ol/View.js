@@ -7,7 +7,7 @@ import CenterConstraint from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
 import ResolutionConstraint from './ResolutionConstraint.js';
 import RotationConstraint from './RotationConstraint.js';
-import _ol_ViewHint_ from './ViewHint.js';
+import ViewHint from './ViewHint.js';
 import _ol_ViewProperty_ from './ViewProperty.js';
 import {linearFindNearest} from './array.js';
 import {assert} from './asserts.js';
@@ -345,7 +345,7 @@ _ol_View_.prototype.animate = function(var_args) {
     series.push(animation);
   }
   this.animations_.push(series);
-  this.setHint(_ol_ViewHint_.ANIMATING, 1);
+  this.setHint(ViewHint.ANIMATING, 1);
   this.updateAnimations_();
 };
 
@@ -356,7 +356,7 @@ _ol_View_.prototype.animate = function(var_args) {
  * @api
  */
 _ol_View_.prototype.getAnimating = function() {
-  return this.hints_[_ol_ViewHint_.ANIMATING] > 0;
+  return this.hints_[ViewHint.ANIMATING] > 0;
 };
 
 
@@ -366,7 +366,7 @@ _ol_View_.prototype.getAnimating = function() {
  * @api
  */
 _ol_View_.prototype.getInteracting = function() {
-  return this.hints_[_ol_ViewHint_.INTERACTING] > 0;
+  return this.hints_[ViewHint.INTERACTING] > 0;
 };
 
 
@@ -375,7 +375,7 @@ _ol_View_.prototype.getInteracting = function() {
  * @api
  */
 _ol_View_.prototype.cancelAnimations = function() {
-  this.setHint(_ol_ViewHint_.ANIMATING, -this.hints_[_ol_ViewHint_.ANIMATING]);
+  this.setHint(ViewHint.ANIMATING, -this.hints_[ViewHint.ANIMATING]);
   for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
     var series = this.animations_[i];
     if (series[0].callback) {
@@ -451,7 +451,7 @@ _ol_View_.prototype.updateAnimations_ = function() {
     }
     if (seriesComplete) {
       this.animations_[i] = null;
-      this.setHint(_ol_ViewHint_.ANIMATING, -1);
+      this.setHint(ViewHint.ANIMATING, -1);
       var callback = series[0].callback;
       if (callback) {
         callback(true);

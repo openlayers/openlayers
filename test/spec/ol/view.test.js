@@ -1,6 +1,6 @@
 import Map from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
-import _ol_ViewHint_ from '../../../src/ol/ViewHint.js';
+import ViewHint from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
 import LineString from '../../../src/ol/geom/LineString.js';
@@ -311,7 +311,7 @@ describe('ol.View', function() {
       expect(view.getHints()).to.eql([0, 0]);
       expect(view.getInteracting()).to.eql(false);
 
-      view.setHint(_ol_ViewHint_.INTERACTING, 1);
+      view.setHint(ViewHint.INTERACTING, 1);
       expect(view.getHints()).to.eql([0, 1]);
       expect(view.getInteracting()).to.eql(true);
     });
@@ -327,7 +327,7 @@ describe('ol.View', function() {
         expect(view.getInteracting()).to.eql(true);
         done();
       });
-      view.setHint(_ol_ViewHint_.INTERACTING, 1);
+      view.setHint(ViewHint.INTERACTING, 1);
     });
 
   });
@@ -680,7 +680,7 @@ describe('ol.View', function() {
       function decrement() {
         --count;
         if (count === 0) {
-          expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(0);
+          expect(view.getHints()[ViewHint.ANIMATING]).to.be(0);
           done();
         }
       }
@@ -688,19 +688,19 @@ describe('ol.View', function() {
         center: [1, 2],
         duration: 25
       }, decrement);
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(1);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(1);
 
       view.animate({
         zoom: 1,
         duration: 25
       }, decrement);
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(2);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(2);
 
       view.animate({
         rotation: Math.PI,
         duration: 25
       }, decrement);
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(3);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(3);
 
     });
 
@@ -715,23 +715,23 @@ describe('ol.View', function() {
         center: [1, 2],
         duration: 25
       });
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(1);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(1);
 
       view.animate({
         zoom: 1,
         duration: 25
       });
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(2);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(2);
 
       view.animate({
         rotation: Math.PI,
         duration: 25
       });
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(3);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(3);
 
       // cancel animations
       view.setCenter([10, 20]);
-      expect(view.getHints()[_ol_ViewHint_.ANIMATING]).to.be(0);
+      expect(view.getHints()[ViewHint.ANIMATING]).to.be(0);
 
     });
 

@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import EventType from '../../events/EventType.js';
@@ -301,8 +301,8 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
 
-  var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
-  var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];
+  var animating = frameState.viewHints[ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
