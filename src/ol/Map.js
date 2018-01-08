@@ -15,7 +15,7 @@ import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
 import WebGLImageLayerRenderer from './renderer/webgl/ImageLayer.js';
 import WebGLMapRenderer from './renderer/webgl/Map.js';
-import _ol_renderer_webgl_TileLayer_ from './renderer/webgl/TileLayer.js';
+import WebGLTileLayerRenderer from './renderer/webgl/TileLayer.js';
 import _ol_renderer_webgl_VectorLayer_ from './renderer/webgl/VectorLayer.js';
 
 
@@ -31,7 +31,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
 register(PluginType.MAP_RENDERER, WebGLMapRenderer);
 registerMultiple(PluginType.LAYER_RENDERER, [
   WebGLImageLayerRenderer,
-  _ol_renderer_webgl_TileLayer_,
+  WebGLTileLayerRenderer,
   _ol_renderer_webgl_VectorLayer_
 ]);
 

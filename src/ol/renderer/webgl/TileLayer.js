@@ -27,7 +27,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.layer.Tile} tileLayer Tile layer.
  * @api
  */
-var _ol_renderer_webgl_TileLayer_ = function(mapRenderer, tileLayer) {
+var WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   _ol_renderer_webgl_Layer_.call(this, mapRenderer, tileLayer);
 
@@ -86,7 +86,7 @@ var _ol_renderer_webgl_TileLayer_ = function(mapRenderer, tileLayer) {
 
 };
 
-inherits(_ol_renderer_webgl_TileLayer_, _ol_renderer_webgl_Layer_);
+inherits(WebGLTileLayerRenderer, _ol_renderer_webgl_Layer_);
 
 
 /**
@@ -95,7 +95,7 @@ inherits(_ol_renderer_webgl_TileLayer_, _ol_renderer_webgl_Layer_);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_webgl_TileLayer_['handles'] = function(type, layer) {
+WebGLTileLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.WEBGL && layer.getType() === LayerType.TILE;
 };
 
@@ -106,8 +106,8 @@ _ol_renderer_webgl_TileLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.TileLayer} The layer renderer.
  */
-_ol_renderer_webgl_TileLayer_['create'] = function(mapRenderer, layer) {
-  return new _ol_renderer_webgl_TileLayer_(
+WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
+  return new WebGLTileLayerRenderer(
       /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
       /** @type {ol.layer.Tile} */ (layer)
   );
@@ -117,7 +117,7 @@ _ol_renderer_webgl_TileLayer_['create'] = function(mapRenderer, layer) {
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_TileLayer_.prototype.disposeInternal = function() {
+WebGLTileLayerRenderer.prototype.disposeInternal = function() {
   var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
   _ol_renderer_webgl_Layer_.prototype.disposeInternal.call(this);
@@ -127,7 +127,7 @@ _ol_renderer_webgl_TileLayer_.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_TileLayer_.prototype.createLoadedTileFinder = function(source, projection, tiles) {
+WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   var mapRenderer = this.mapRenderer;
 
   return (
@@ -155,7 +155,7 @@ _ol_renderer_webgl_TileLayer_.prototype.createLoadedTileFinder = function(source
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_TileLayer_.prototype.handleWebGLContextLost = function() {
+WebGLTileLayerRenderer.prototype.handleWebGLContextLost = function() {
   _ol_renderer_webgl_Layer_.prototype.handleWebGLContextLost.call(this);
   this.locations_ = null;
 };
@@ -164,7 +164,7 @@ _ol_renderer_webgl_TileLayer_.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, layerState, context) {
+WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var mapRenderer = this.mapRenderer;
   var gl = context.getGL();
@@ -379,7 +379,7 @@ _ol_renderer_webgl_TileLayer_.prototype.prepareFrame = function(frameState, laye
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_TileLayer_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+WebGLTileLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.framebuffer) {
     return undefined;
   }
@@ -406,4 +406,4 @@ _ol_renderer_webgl_TileLayer_.prototype.forEachLayerAtPixel = function(pixel, fr
     return undefined;
   }
 };
-export default _ol_renderer_webgl_TileLayer_;
+export default WebGLTileLayerRenderer;
