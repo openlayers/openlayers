@@ -9,7 +9,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 
 /**
  * @classdesc
@@ -23,7 +23,7 @@ import _ol_source_Vector_ from '../source/Vector.js';
  * @api
  */
 var _ol_source_Cluster_ = function(options) {
-  _ol_source_Vector_.call(this, {
+  VectorSource.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     projection: options.projection,
@@ -70,7 +70,7 @@ var _ol_source_Cluster_ = function(options) {
       _ol_source_Cluster_.prototype.refresh, this);
 };
 
-inherits(_ol_source_Cluster_, _ol_source_Vector_);
+inherits(_ol_source_Cluster_, VectorSource);
 
 
 /**
@@ -127,7 +127,7 @@ _ol_source_Cluster_.prototype.refresh = function() {
   this.clear();
   this.cluster();
   this.addFeatures(this.features);
-  _ol_source_Vector_.prototype.refresh.call(this);
+  VectorSource.prototype.refresh.call(this);
 };
 
 

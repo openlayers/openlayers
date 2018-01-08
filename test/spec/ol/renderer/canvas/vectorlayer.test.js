@@ -9,7 +9,7 @@ import _ol_obj_ from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
-import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 
@@ -38,7 +38,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     it('creates a new instance', function() {
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_()
+        source: new VectorSource()
       });
       var renderer = new CanvasVectorLayerRenderer(layer);
       expect(renderer).to.be.a(CanvasVectorLayerRenderer);
@@ -70,7 +70,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var feature2 = new Feature(new Point([0, 0]));
       feature2.setStyle(featureStyle);
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [feature1, feature2]
         }),
         style: layerStyle
@@ -102,7 +102,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
       var feature = new Feature(new Point([0, 0]));
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
@@ -133,7 +133,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
       var feature = new Feature(new Point([0, 0]));
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
@@ -165,7 +165,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
       var feature = new Feature(new Point([0, 0]));
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
@@ -186,7 +186,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     beforeEach(function() {
       layer = new VectorLayer({
-        source: new _ol_source_Vector_()
+        source: new VectorSource()
       });
       renderer = new CanvasVectorLayerRenderer(layer);
       var replayGroup = {};
@@ -223,7 +223,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     beforeEach(function() {
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_({wrapX: true})
+        source: new VectorSource({wrapX: true})
       });
       renderer = new CanvasVectorLayerRenderer(layer);
       var projection = getProjection('EPSG:3857');

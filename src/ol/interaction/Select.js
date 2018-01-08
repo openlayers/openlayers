@@ -12,7 +12,7 @@ import GeometryType from '../geom/GeometryType.js';
 import Interaction from '../interaction/Interaction.js';
 import VectorLayer from '../layer/Vector.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
 
 /**
@@ -88,7 +88,7 @@ var _ol_interaction_Select_ = function(opt_options) {
   this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
   var featureOverlay = new VectorLayer({
-    source: new _ol_source_Vector_({
+    source: new VectorSource({
       useSpatialIndex: false,
       features: options.features,
       wrapX: options.wrapX

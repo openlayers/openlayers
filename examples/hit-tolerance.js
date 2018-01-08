@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -23,7 +23,7 @@ var style = new _ol_style_Style_({
 var feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
 
 var vector = new VectorLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     features: [feature]
   }),
   style: style

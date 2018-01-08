@@ -7,7 +7,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -70,7 +70,7 @@ describe('ol.rendering.layer.Vector', function() {
   describe('vector layer', function() {
 
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('renders opacity correctly with the canvas renderer', function(done) {
@@ -274,7 +274,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      source = new _ol_source_Vector_({
+      source = new VectorSource({
         overlaps: false
       });
       addPolygon(100);
@@ -300,7 +300,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      source = new _ol_source_Vector_({
+      source = new VectorSource({
         overlaps: false
       });
       addLineString(100);
@@ -327,7 +327,7 @@ describe('ol.rendering.layer.Vector', function() {
       var color;
       function createSource(overlaps) {
         color = '#3399CC';
-        source = new _ol_source_Vector_({
+        source = new VectorSource({
           overlaps: overlaps
         });
         addPolygon(720);
@@ -380,7 +380,7 @@ describe('ol.rendering.layer.Vector', function() {
       var color;
       function createSource(overlaps) {
         color = '#3399CC';
-        source = new _ol_source_Vector_({
+        source = new VectorSource({
           overlaps: overlaps
         });
         addLineString(720);
@@ -467,7 +467,7 @@ describe('ol.rendering.layer.Vector', function() {
       var feature = format.readFeature(json);
 
       var layer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [feature]
         }),
         style: new _ol_style_Style_({
@@ -492,7 +492,7 @@ describe('ol.rendering.layer.Vector', function() {
     var layer, map3;
 
     beforeEach(function() {
-      var src = new _ol_source_Vector_({
+      var src = new VectorSource({
         features: [
           new Feature(new Polygon([[
             [-22, 58],
@@ -579,7 +579,7 @@ describe('ol.rendering.layer.Vector', function() {
   describe('decluttering', function() {
 
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('declutters text', function(done) {

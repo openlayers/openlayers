@@ -4,7 +4,7 @@ import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import DragAndDrop from '../../../../src/ol/interaction/DragAndDrop.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
@@ -36,7 +36,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
 
     it('accepts a source option', function() {
-      var source = new _ol_source_Vector_();
+      var source = new VectorSource();
       var drop = new DragAndDrop({
         formatConstructors: [GeoJSON],
         source: source
@@ -136,7 +136,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     });
 
     it('adds dropped features to a source', function(done) {
-      var source = new _ol_source_Vector_();
+      var source = new VectorSource();
       var drop = new DragAndDrop({
         formatConstructors: [GeoJSON],
         source: source

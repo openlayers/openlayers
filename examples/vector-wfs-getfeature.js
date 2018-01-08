@@ -6,12 +6,12 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var vectorSource = new _ol_source_Vector_();
+var vectorSource = new VectorSource();
 var vector = new VectorLayer({
   source: vectorSource,
   style: new _ol_style_Style_({

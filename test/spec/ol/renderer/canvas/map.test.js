@@ -7,7 +7,7 @@ import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_Layer_ from '../../../../../src/ol/renderer/canvas/Layer.js';
 import CanvasMapRenderer from '../../../../../src/ol/renderer/canvas/Map.js';
-import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../../../../../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 
@@ -51,7 +51,7 @@ describe('ol.renderer.canvas.Map', function() {
       img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
 
       layer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [
             new Feature({
               geometry: new Point([0, 0])
@@ -93,7 +93,7 @@ describe('ol.renderer.canvas.Map', function() {
     it('calls callback with main layer when skipped feature on unmanaged layer', function() {
       var feature = layer.getSource().getFeatures()[0];
       var managedLayer = new VectorLayer({
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [feature]
         })
       });
@@ -170,7 +170,7 @@ describe('ol.renderer.canvas.Map', function() {
       map = new Map({});
       map.on('postcompose', function() {});
       layer = new VectorLayer({
-        source: new _ol_source_Vector_({wrapX: true})
+        source: new VectorSource({wrapX: true})
       });
       renderer = map.getRenderer();
       renderer.layerRenderers_ = {};

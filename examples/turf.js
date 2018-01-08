@@ -7,10 +7,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 
-var source = new _ol_source_Vector_();
+var source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   return response.json();
 }).then(function(json) {

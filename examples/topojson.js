@@ -4,7 +4,7 @@ import TopoJSON from '../src/ol/format/TopoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -27,7 +27,7 @@ var style = new _ol_style_Style_({
 });
 
 var vector = new VectorLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     url: 'data/topojson/world-110m.json',
     format: new TopoJSON({
       // don't want to render the full world polygon (stored as 'land' layer),

@@ -19,7 +19,7 @@ import Point from '../geom/Point.js';
 import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import _ol_style_Style_ from '../style/Style.js';
@@ -158,7 +158,7 @@ var _ol_interaction_Modify_ = function(options) {
    * @private
    */
   this.overlay_ = new VectorLayer({
-    source: new _ol_source_Vector_({
+    source: new VectorSource({
       useSpatialIndex: false,
       wrapX: !!options.wrapX
     }),

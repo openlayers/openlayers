@@ -5,14 +5,14 @@ import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var vectorLayer4326 = new VectorLayer({
-  source: new _ol_source_Vector_()
+  source: new VectorSource()
 });
 
 var vectorLayer3857 = new VectorLayer({
-  source: new _ol_source_Vector_()
+  source: new VectorSource()
 });
 
 var map4326 = new Map({

@@ -4,7 +4,7 @@ import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
@@ -16,7 +16,7 @@ describe('ol.rendering.style.Circle', function() {
   var map, vectorSource;
 
   function createMap(renderer) {
-    vectorSource = new _ol_source_Vector_();
+    vectorSource = new VectorSource();
     var vectorLayer = new VectorLayer({
       source: vectorSource
     });

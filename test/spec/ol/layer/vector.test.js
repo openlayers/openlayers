@@ -1,13 +1,13 @@
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 
 
 describe('ol.layer.Vector', function() {
 
   describe('constructor', function() {
-    var source = new _ol_source_Vector_();
+    var source = new VectorSource();
     var style = new _ol_style_Style_();
 
     it('creates a new layer', function() {
@@ -56,7 +56,7 @@ describe('ol.layer.Vector', function() {
 
     beforeEach(function() {
       layer = new VectorLayer({
-        source: new _ol_source_Vector_()
+        source: new VectorSource()
       });
       style = new _ol_style_Style_();
     });
@@ -97,7 +97,7 @@ describe('ol.layer.Vector', function() {
 
   describe('#getStyle()', function() {
 
-    var source = new _ol_source_Vector_();
+    var source = new VectorSource();
     var style = new _ol_style_Style_();
 
     it('returns what is provided to setStyle', function() {

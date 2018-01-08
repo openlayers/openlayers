@@ -6,7 +6,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
@@ -70,7 +70,7 @@ var animateFlights = function(event) {
   map.render();
 };
 
-flightsSource = new _ol_source_Vector_({
+flightsSource = new VectorSource({
   wrapX: false,
   attributions: 'Flight data by ' +
         '<a href="http://openflights.org/data.html">OpenFlights</a>,',

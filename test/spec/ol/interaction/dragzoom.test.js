@@ -5,7 +5,7 @@ import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.j
 import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.DragZoom', function() {
@@ -24,7 +24,7 @@ describe('ol.interaction.DragZoom', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new _ol_source_Vector_();
+    source = new VectorSource();
     var layer = new VectorLayer({source: source});
     map = new Map({
       target: target,

@@ -6,7 +6,7 @@ import WKT from '../src/ol/format/WKT.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var raster = new TileLayer({
   source: new _ol_source_OSM_()
@@ -20,7 +20,7 @@ var feature = format.readFeature(
 feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
 var vector = new VectorLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     features: [feature]
   })
 });

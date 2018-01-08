@@ -16,7 +16,7 @@ import Draw from '../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Draw', function() {
@@ -34,7 +34,7 @@ describe('ol.interaction.Draw', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new _ol_source_Vector_();
+    source = new VectorSource();
     var layer = new VectorLayer({source: source});
     map = new Map({
       target: target,

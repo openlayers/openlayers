@@ -3,7 +3,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
@@ -13,7 +13,7 @@ describe('ol.rendering.style.LineString', function() {
   var map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
-    vectorSource = new _ol_source_Vector_();
+    vectorSource = new VectorSource();
     var vectorLayer = new VectorLayer({
       source: vectorSource
     });

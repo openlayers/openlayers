@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_render_ from '../src/ol/render.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -53,7 +53,7 @@ var styleFunction = function(feature) {
 };
 
 var vector = new VectorLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
       extractStyles: false

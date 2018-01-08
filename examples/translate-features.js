@@ -7,7 +7,7 @@ import _ol_interaction_Translate_ from '../src/ol/interaction/Translate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 
 var raster = new TileLayer({
@@ -15,7 +15,7 @@ var raster = new TileLayer({
 });
 
 var vector = new VectorLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     url: 'data/geojson/countries.geojson',
     format: new GeoJSON()
   })

@@ -5,12 +5,12 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   format: new GeoJSON(),
   url: function(extent) {
     return 'https://ahocevar.com/geoserver/wfs?service=WFS&' +

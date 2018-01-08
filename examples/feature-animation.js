@@ -9,7 +9,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -35,7 +35,7 @@ var map = new Map({
   })
 });
 
-var source = new _ol_source_Vector_({
+var source = new VectorSource({
   wrapX: false
 });
 var vector = new VectorLayer({

@@ -13,7 +13,7 @@ import _ol_interaction_PinchZoom_ from '../../../src/ol/interaction/PinchZoom.js
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
-import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
 import _ol_source_XYZ_ from '../../../src/ol/source/XYZ.js';
 
 describe('ol.Map', function() {
@@ -196,7 +196,7 @@ describe('ol.Map', function() {
       map = new Map({
         target: target,
         layers: [new VectorLayer({
-          source: new _ol_source_Vector_({
+          source: new VectorSource({
             features: [new Feature(new LineString([[-50, 0], [50, 0]]))]
           })
         })],
@@ -238,7 +238,7 @@ describe('ol.Map', function() {
 
     it('respects options', function() {
       var otherLayer = new VectorLayer({
-        source: new _ol_source_Vector_
+        source: new VectorSource
       });
       map.addLayer(otherLayer);
       var features = map.getFeaturesAtPixel([50, 50], {

@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
@@ -48,7 +48,7 @@ madrid.setStyle(new _ol_style_Style_({
 }));
 
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   features: [rome, london, madrid]
 });
 

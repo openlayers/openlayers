@@ -10,7 +10,7 @@ import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -153,7 +153,7 @@ var map = new Map({
       })
     }),
     new VectorLayer({
-      source: new _ol_source_Vector_({
+      source: new VectorSource({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new _ol_style_Style_({

@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import {register} from '../src/ol/proj/proj4.js';
 import proj4 from 'proj4';
 
@@ -26,7 +26,7 @@ var map = new Map({
   keyboardEventTarget: document,
   layers: [
     new VectorLayer({
-      source: new _ol_source_Vector_({
+      source: new VectorSource({
         url: 'data/geojson/countries-110m.geojson',
         format: new GeoJSON()
       })

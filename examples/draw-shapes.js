@@ -5,13 +5,13 @@ import Draw from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var raster = new TileLayer({
   source: new _ol_source_OSM_()
 });
 
-var source = new _ol_source_Vector_({wrapX: false});
+var source = new VectorSource({wrapX: false});
 
 var vector = new VectorLayer({
   source: source

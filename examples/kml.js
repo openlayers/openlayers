@@ -4,7 +4,7 @@ import KML from '../src/ol/format/KML.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var raster = new TileLayer({
   source: new _ol_source_BingMaps_({
@@ -14,7 +14,7 @@ var raster = new TileLayer({
 });
 
 var vector = new VectorLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     url: 'data/kml/2012-02-10.kml',
     format: new KML()
   })

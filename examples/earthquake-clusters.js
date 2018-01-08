@@ -8,7 +8,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
@@ -124,7 +124,7 @@ function selectStyleFunction(feature) {
 vector = new VectorLayer({
   source: new _ol_source_Cluster_({
     distance: 40,
-    source: new _ol_source_Vector_({
+    source: new VectorSource({
       url: 'data/kml/2012_Earthquakes_Mag5.kml',
       format: new KML({
         extractStyles: false

@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_AtlasManager_ from '../src/ol/style/AtlasManager.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -99,7 +99,7 @@ for (i = 0; i < featureCount; ++i) {
   features[i] = feature;
 }
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   features: features
 });
 var vector = new VectorLayer({

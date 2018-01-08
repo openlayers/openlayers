@@ -8,7 +8,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../../../../src/ol/loadingstrategy.js';
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.source.Vector', function() {
@@ -24,7 +24,7 @@ describe('ol.source.Vector', function() {
 
     var vectorSource;
     beforeEach(function() {
-      vectorSource = new _ol_source_Vector_();
+      vectorSource = new VectorSource();
     });
 
     describe('#forEachFeatureInExtent', function() {
@@ -73,7 +73,7 @@ describe('ol.source.Vector', function() {
       });
 
       it('adds same id features only once', function() {
-        var source = new _ol_source_Vector_();
+        var source = new VectorSource();
         var feature1 = new Feature();
         feature1.setId('1');
         var feature2 = new Feature();
@@ -95,7 +95,7 @@ describe('ol.source.Vector', function() {
       features.push(new Feature(new LineString([[0, 0], [10, 10]])));
       features.push(new Feature(new Point([0, 10])));
       features.push(new Feature(new Point([10, 5])));
-      vectorSource = new _ol_source_Vector_({
+      vectorSource = new VectorSource({
         features: features
       });
     });
@@ -130,7 +130,7 @@ describe('ol.source.Vector', function() {
             new Feature(new Point([Math.random(), Math.random()]));
       }
       features.push(new Feature(null));
-      vectorSource = new _ol_source_Vector_({
+      vectorSource = new VectorSource({
         features: features
       });
     });
@@ -265,7 +265,7 @@ describe('ol.source.Vector', function() {
 
     var vectorSource;
     beforeEach(function() {
-      vectorSource = new _ol_source_Vector_();
+      vectorSource = new VectorSource();
     });
 
     it('keeps its index up-to-date', function() {
@@ -332,7 +332,7 @@ describe('ol.source.Vector', function() {
   describe('#getFeatureById()', function() {
     var source;
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('returns a feature by id', function() {
@@ -424,7 +424,7 @@ describe('ol.source.Vector', function() {
 
       it('requests the view extent plus render buffer', function(done) {
         var center = [-97.6114, 38.8403];
-        var source = new _ol_source_Vector_({
+        var source = new VectorSource({
           strategy: _ol_loadingstrategy_.bbox,
           loader: function(extent) {
             setTimeout(function() {
@@ -460,7 +460,7 @@ describe('ol.source.Vector', function() {
     describe('with no loader and the "all" strategy', function() {
 
       it('stores the infinity extent in the Rtree', function() {
-        var source = new _ol_source_Vector_();
+        var source = new VectorSource();
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
             getProjection('EPSG:3857'));
         var loadedExtents = source.loadedExtentsRtree_.getAll();
@@ -481,7 +481,7 @@ describe('ol.source.Vector', function() {
         var loader2 = function(bbox, resolution, projection) {
           count2++;
         };
-        var source = new _ol_source_Vector_({loader: loader1});
+        var source = new VectorSource({loader: loader1});
         source.loadFeatures([-10000, -10000, 10000, 10000], 1,
             getProjection('EPSG:3857'));
         source.setLoader(loader2);
@@ -493,7 +493,7 @@ describe('ol.source.Vector', function() {
       });
 
       it('removes extents with #removeLoadedExtent()', function(done) {
-        var source = new _ol_source_Vector_();
+        var source = new VectorSource();
         source.setLoader(function(bbox, resolution, projection) {
           setTimeout(function() {
             expect(source.loadedExtentsRtree_.getAll()).to.have.length(1);
@@ -511,7 +511,7 @@ describe('ol.source.Vector', function() {
   describe('the feature id index', function() {
     var source;
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('ignores features with the same id', function() {
@@ -541,7 +541,7 @@ describe('ol.source.Vector', function() {
   describe('the undefined feature id index', function() {
     var source;
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('disallows adding the same feature twice', function() {
@@ -556,7 +556,7 @@ describe('ol.source.Vector', function() {
   describe('with useSpatialIndex set to false', function() {
     var source;
     beforeEach(function() {
-      source = new _ol_source_Vector_({useSpatialIndex: false});
+      source = new VectorSource({useSpatialIndex: false});
     });
 
     it('returns a features collection', function() {
@@ -575,7 +575,7 @@ describe('ol.source.Vector', function() {
   describe('with a collection of features', function() {
     var collection, source;
     beforeEach(function() {
-      source = new _ol_source_Vector_({
+      source = new VectorSource({
         useSpatialIndex: false
       });
       collection = source.getFeaturesCollection();
@@ -623,7 +623,7 @@ describe('ol.source.Vector', function() {
     var collection, source;
     beforeEach(function() {
       collection = new _ol_Collection_();
-      source = new _ol_source_Vector_({
+      source = new VectorSource({
         features: collection
       });
     });

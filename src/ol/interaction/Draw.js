@@ -23,7 +23,7 @@ import DrawEventType from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
 
 /**
@@ -250,7 +250,7 @@ var Draw = function(options) {
    * @private
    */
   this.overlay_ = new VectorLayer({
-    source: new _ol_source_Vector_({
+    source: new VectorSource({
       useSpatialIndex: false,
       wrapX: options.wrapX ? options.wrapX : false
     }),

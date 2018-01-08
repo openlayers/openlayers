@@ -4,13 +4,13 @@ import KML from '../src/ol/format/KML.js';
 import HeatmapLayer from '../src/ol/layer/Heatmap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var blur = document.getElementById('blur');
 var radius = document.getElementById('radius');
 
 var vector = new HeatmapLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
       extractStyles: false

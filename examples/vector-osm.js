@@ -7,7 +7,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -77,7 +77,7 @@ var styles = {
   }
 };
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   format: new OSMXML(),
   loader: function(extent, resolution, projection) {
     var epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');

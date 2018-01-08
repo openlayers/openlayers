@@ -12,7 +12,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Modify', function() {
@@ -41,7 +41,7 @@ describe('ol.interaction.Modify', function() {
       })
     ];
 
-    source = new _ol_source_Vector_({
+    source = new VectorSource({
       features: features
     });
 
@@ -180,7 +180,7 @@ describe('ol.interaction.Modify', function() {
     it('accepts a source', function() {
       var feature = new Feature(
           new Point([0, 0]));
-      var source = new _ol_source_Vector_({features: [feature]});
+      var source = new VectorSource({features: [feature]});
       var modify = new _ol_interaction_Modify_({source: source});
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);

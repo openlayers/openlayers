@@ -9,7 +9,7 @@ import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Select', function() {
@@ -53,7 +53,7 @@ describe('ol.interaction.Select', function() {
           type: 'foo'
         }));
 
-    source = new _ol_source_Vector_({
+    source = new VectorSource({
       features: features
     });
 

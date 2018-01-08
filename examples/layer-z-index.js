@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -49,7 +49,7 @@ function createLayer(coordinates, style, zIndex) {
   var feature = new Feature(new Point(coordinates));
   feature.setStyle(style);
 
-  var source = new _ol_source_Vector_({
+  var source = new VectorSource({
     features: [feature]
   });
 

@@ -8,7 +8,7 @@ import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Translate', function() {
@@ -26,7 +26,7 @@ describe('ol.interaction.Translate', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new _ol_source_Vector_();
+    source = new VectorSource();
     features = [new Feature({
       geometry: new Point([10, -20])
     }), new Feature({

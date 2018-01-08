@@ -6,7 +6,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
@@ -96,7 +96,7 @@ describe('ol.rendering.layer.VectorTile', function() {
 
     it('renders rotated view correctly with vector layer on top', function(done) {
       createMap('canvas');
-      var vectorSource = new _ol_source_Vector_({
+      var vectorSource = new VectorSource({
         features: [
           new Feature(new Point([1825727.7316762917, 6143091.089223046]))
         ]

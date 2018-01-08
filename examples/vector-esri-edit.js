@@ -9,7 +9,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
@@ -20,7 +20,7 @@ var layer = '0';
 
 var esrijsonFormat = new EsriJSON();
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   loader: function(extent, resolution, projection) {
     var url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
