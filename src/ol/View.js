@@ -5,7 +5,7 @@ import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {inherits, getUid, nullFunction} from './index.js';
 import CenterConstraint from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
-import _ol_ResolutionConstraint_ from './ResolutionConstraint.js';
+import ResolutionConstraint from './ResolutionConstraint.js';
 import _ol_RotationConstraint_ from './RotationConstraint.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_ViewProperty_ from './ViewProperty.js';
@@ -1125,7 +1125,7 @@ _ol_View_.createResolutionConstraint_ = function(options) {
     maxResolution = resolutions[minZoom];
     minResolution = resolutions[maxZoom] !== undefined ?
       resolutions[maxZoom] : resolutions[resolutions.length - 1];
-    resolutionConstraint = _ol_ResolutionConstraint_.createSnapToResolutions(
+    resolutionConstraint = ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
     // calculate the default min and max resolution
@@ -1170,7 +1170,7 @@ _ol_View_.createResolutionConstraint_ = function(options) {
         Math.log(maxResolution / minResolution) / Math.log(zoomFactor));
     minResolution = maxResolution / Math.pow(zoomFactor, maxZoom - minZoom);
 
-    resolutionConstraint = _ol_ResolutionConstraint_.createSnapToPower(
+    resolutionConstraint = ResolutionConstraint.createSnapToPower(
         zoomFactor, maxResolution, maxZoom - minZoom);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
