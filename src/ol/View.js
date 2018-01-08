@@ -4,7 +4,7 @@
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {inherits, getUid, nullFunction} from './index.js';
 import CenterConstraint from './CenterConstraint.js';
-import _ol_Object_ from './Object.js';
+import BaseObject from './Object.js';
 import ResolutionConstraint from './ResolutionConstraint.js';
 import RotationConstraint from './RotationConstraint.js';
 import ViewHint from './ViewHint.js';
@@ -87,7 +87,7 @@ var DEFAULT_MIN_ZOOM = 0;
  * @api
  */
 var View = function(opt_options) {
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   var options = _ol_obj_.assign({}, opt_options);
 
@@ -121,7 +121,7 @@ var View = function(opt_options) {
   this.applyOptions_(options);
 };
 
-inherits(View, _ol_Object_);
+inherits(View, BaseObject);
 
 
 /**

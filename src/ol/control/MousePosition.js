@@ -5,7 +5,7 @@
 import {inherits} from '../index.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import Control from '../control/Control.js';
 import {getTransformFromProjections, identityTransform, get as getProjection} from '../proj.js';
 
@@ -39,7 +39,7 @@ var MousePosition = function(opt_options) {
   });
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(MousePosition.Property_.PROJECTION),
+      BaseObject.getChangeEventType(MousePosition.Property_.PROJECTION),
       this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {

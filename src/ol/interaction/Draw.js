@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -285,7 +285,7 @@ var Draw = function(options) {
   }
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_interaction_Property_.ACTIVE),
+      BaseObject.getChangeEventType(_ol_interaction_Property_.ACTIVE),
       this.updateState_, this);
 
 };

@@ -4,7 +4,7 @@
 import {inherits} from './index.js';
 import AssertionError from './AssertionError.js';
 import CollectionEventType from './CollectionEventType.js';
-import _ol_Object_ from './Object.js';
+import BaseObject from './Object.js';
 import Event from './events/Event.js';
 
 
@@ -43,7 +43,7 @@ export var CollectionOptions;
  */
 var _ol_Collection_ = function(opt_array, opt_options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   var options = opt_options || {};
 
@@ -69,7 +69,7 @@ var _ol_Collection_ = function(opt_array, opt_options) {
 
 };
 
-inherits(_ol_Collection_, _ol_Object_);
+inherits(_ol_Collection_, BaseObject);
 
 
 /**

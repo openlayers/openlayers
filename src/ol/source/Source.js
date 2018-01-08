@@ -2,7 +2,7 @@
  * @module ol/source/Source
  */
 import {inherits, nullFunction} from '../index.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import {get as getProjection} from '../proj.js';
 import SourceState from '../source/State.js';
 
@@ -23,7 +23,7 @@ import SourceState from '../source/State.js';
  */
 var Source = function(options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @private
@@ -52,7 +52,7 @@ var Source = function(options) {
 
 };
 
-inherits(Source, _ol_Object_);
+inherits(Source, BaseObject);
 
 /**
  * Turns the attributions option into an attributions function.

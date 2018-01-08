@@ -2,7 +2,7 @@
  * @module ol/layer/Base
  */
 import {inherits} from '../index.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import _ol_layer_Property_ from '../layer/Property.js';
 import {clamp} from '../math.js';
 import _ol_obj_ from '../obj.js';
@@ -23,7 +23,7 @@ import _ol_obj_ from '../obj.js';
  */
 var _ol_layer_Base_ = function(options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @type {Object.<string, *>}
@@ -60,7 +60,7 @@ var _ol_layer_Base_ = function(options) {
 
 };
 
-inherits(_ol_layer_Base_, _ol_Object_);
+inherits(_ol_layer_Base_, BaseObject);
 
 
 /**

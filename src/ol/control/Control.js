@@ -3,7 +3,7 @@
  */
 import {inherits, nullFunction} from '../index.js';
 import MapEventType from '../MapEventType.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import {removeNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 
@@ -38,7 +38,7 @@ import _ol_events_ from '../events.js';
  */
 var Control = function(options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @protected
@@ -75,7 +75,7 @@ var Control = function(options) {
 
 };
 
-inherits(Control, _ol_Object_);
+inherits(Control, BaseObject);
 
 
 /**
@@ -83,7 +83,7 @@ inherits(Control, _ol_Object_);
  */
 Control.prototype.disposeInternal = function() {
   removeNode(this.element);
-  _ol_Object_.prototype.disposeInternal.call(this);
+  BaseObject.prototype.disposeInternal.call(this);
 };
 
 

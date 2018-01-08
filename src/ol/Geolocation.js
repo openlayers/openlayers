@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import _ol_GeolocationProperty_ from './GeolocationProperty.js';
-import _ol_Object_ from './Object.js';
+import BaseObject from './Object.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
@@ -55,7 +55,7 @@ export var GeolocationOptions;
  */
 var Geolocation = function(opt_options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   var options = opt_options || {};
 
@@ -79,10 +79,10 @@ var Geolocation = function(opt_options) {
   this.watchId_ = undefined;
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_GeolocationProperty_.PROJECTION),
+      this, BaseObject.getChangeEventType(_ol_GeolocationProperty_.PROJECTION),
       this.handleProjectionChanged_, this);
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_GeolocationProperty_.TRACKING),
+      this, BaseObject.getChangeEventType(_ol_GeolocationProperty_.TRACKING),
       this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {
@@ -96,7 +96,7 @@ var Geolocation = function(opt_options) {
 
 };
 
-inherits(Geolocation, _ol_Object_);
+inherits(Geolocation, BaseObject);
 
 
 /**
@@ -104,7 +104,7 @@ inherits(Geolocation, _ol_Object_);
  */
 Geolocation.prototype.disposeInternal = function() {
   this.setTracking(false);
-  _ol_Object_.prototype.disposeInternal.call(this);
+  BaseObject.prototype.disposeInternal.call(this);
 };
 
 

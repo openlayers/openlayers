@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import MapEventType from './MapEventType.js';
-import _ol_Object_ from './Object.js';
+import BaseObject from './Object.js';
 import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
 import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
@@ -47,7 +47,7 @@ var Property = {
  */
 var Overlay = function(options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @protected
@@ -126,23 +126,23 @@ var Overlay = function(options) {
   this.mapPostrenderListenerKey = null;
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(Property.ELEMENT),
+      this, BaseObject.getChangeEventType(Property.ELEMENT),
       this.handleElementChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(Property.MAP),
+      this, BaseObject.getChangeEventType(Property.MAP),
       this.handleMapChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(Property.OFFSET),
+      this, BaseObject.getChangeEventType(Property.OFFSET),
       this.handleOffsetChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(Property.POSITION),
+      this, BaseObject.getChangeEventType(Property.POSITION),
       this.handlePositionChanged, this);
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(Property.POSITIONING),
+      this, BaseObject.getChangeEventType(Property.POSITIONING),
       this.handlePositioningChanged, this);
 
   if (options.element !== undefined) {
@@ -161,7 +161,7 @@ var Overlay = function(options) {
 
 };
 
-inherits(Overlay, _ol_Object_);
+inherits(Overlay, BaseObject);
 
 
 /**

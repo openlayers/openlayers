@@ -5,7 +5,7 @@ import {assert} from './asserts.js';
 import _ol_events_ from './events.js';
 import EventType from './events/EventType.js';
 import {inherits} from './index.js';
-import _ol_Object_ from './Object.js';
+import BaseObject from './Object.js';
 import Geometry from './geom/Geometry.js';
 import _ol_style_Style_ from './style/Style.js';
 
@@ -56,7 +56,7 @@ import _ol_style_Style_ from './style/Style.js';
  */
 var Feature = function(opt_geometryOrProperties) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @private
@@ -91,7 +91,7 @@ var Feature = function(opt_geometryOrProperties) {
   this.geometryChangeKey_ = null;
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(this.geometryName_),
+      this, BaseObject.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
 
   if (opt_geometryOrProperties !== undefined) {
@@ -107,7 +107,7 @@ var Feature = function(opt_geometryOrProperties) {
   }
 };
 
-inherits(Feature, _ol_Object_);
+inherits(Feature, BaseObject);
 
 
 /**
@@ -270,11 +270,11 @@ Feature.prototype.setId = function(id) {
  */
 Feature.prototype.setGeometryName = function(name) {
   _ol_events_.unlisten(
-      this, _ol_Object_.getChangeEventType(this.geometryName_),
+      this, BaseObject.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
   this.geometryName_ = name;
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(this.geometryName_),
+      this, BaseObject.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };

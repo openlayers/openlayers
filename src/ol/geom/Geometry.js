@@ -2,7 +2,7 @@
  * @module ol/geom/Geometry
  */
 import {inherits} from '../index.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {FALSE} from '../functions.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
@@ -26,7 +26,7 @@ import _ol_transform_ from '../transform.js';
  */
 var Geometry = function() {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @private
@@ -66,7 +66,7 @@ var Geometry = function() {
 
 };
 
-inherits(Geometry, _ol_Object_);
+inherits(Geometry, BaseObject);
 
 
 /**

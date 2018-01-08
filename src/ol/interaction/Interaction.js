@@ -2,7 +2,7 @@
  * @module ol/interaction/Interaction
  */
 import {inherits} from '../index.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
 import {clamp} from '../math.js';
@@ -40,7 +40,7 @@ export var InteractionOptions;
  */
 var Interaction = function(options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @private
@@ -57,7 +57,7 @@ var Interaction = function(options) {
 
 };
 
-inherits(Interaction, _ol_Object_);
+inherits(Interaction, BaseObject);
 
 
 /**
