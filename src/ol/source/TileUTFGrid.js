@@ -25,7 +25,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.TileUTFGridOptions} options Source options.
  * @api
  */
-var _ol_source_TileUTFGrid_ = function(options) {
+var UTFGrid = function(options) {
   TileSource.call(this, {
     projection: getProjection('EPSG:3857'),
     state: SourceState.LOADING
@@ -74,14 +74,14 @@ var _ol_source_TileUTFGrid_ = function(options) {
   }
 };
 
-inherits(_ol_source_TileUTFGrid_, TileSource);
+inherits(UTFGrid, TileSource);
 
 
 /**
  * @private
  * @param {Event} event The load event.
  */
-_ol_source_TileUTFGrid_.prototype.onXHRLoad_ = function(event) {
+UTFGrid.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
@@ -103,7 +103,7 @@ _ol_source_TileUTFGrid_.prototype.onXHRLoad_ = function(event) {
  * @private
  * @param {Event} event The error event.
  */
-_ol_source_TileUTFGrid_.prototype.onXHRError_ = function(event) {
+UTFGrid.prototype.onXHRError_ = function(event) {
   this.handleTileJSONError();
 };
 
@@ -113,7 +113,7 @@ _ol_source_TileUTFGrid_.prototype.onXHRError_ = function(event) {
  * @return {string|undefined} The template from TileJSON.
  * @api
  */
-_ol_source_TileUTFGrid_.prototype.getTemplate = function() {
+UTFGrid.prototype.getTemplate = function() {
   return this.template_;
 };
 
@@ -129,7 +129,7 @@ _ol_source_TileUTFGrid_.prototype.getTemplate = function() {
  *                               The tile data is requested if not yet loaded.
  * @api
  */
-_ol_source_TileUTFGrid_.prototype.forDataAtCoordinateAndResolution = function(
+UTFGrid.prototype.forDataAtCoordinateAndResolution = function(
     coordinate, resolution, callback, opt_request) {
   if (this.tileGrid) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
@@ -152,7 +152,7 @@ _ol_source_TileUTFGrid_.prototype.forDataAtCoordinateAndResolution = function(
 /**
  * @protected
  */
-_ol_source_TileUTFGrid_.prototype.handleTileJSONError = function() {
+UTFGrid.prototype.handleTileJSONError = function() {
   this.setState(SourceState.ERROR);
 };
 
@@ -162,7 +162,7 @@ _ol_source_TileUTFGrid_.prototype.handleTileJSONError = function() {
  * @protected
  * @param {TileJSON} tileJSON Tile JSON.
  */
-_ol_source_TileUTFGrid_.prototype.handleTileJSONResponse = function(tileJSON) {
+UTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var epsg4326Projection = getProjection('EPSG:4326');
 
@@ -213,7 +213,7 @@ _ol_source_TileUTFGrid_.prototype.handleTileJSONResponse = function(tileJSON) {
 /**
  * @inheritDoc
  */
-_ol_source_TileUTFGrid_.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+UTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
@@ -222,7 +222,7 @@ _ol_source_TileUTFGrid_.prototype.getTile = function(z, x, y, pixelRatio, projec
     var urlTileCoord =
         this.getTileCoordForTileUrlFunction(tileCoord, projection);
     var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-    var tile = new _ol_source_TileUTFGrid_.Tile_(
+    var tile = new UTFGrid.Tile_(
         tileCoord,
         tileUrl !== undefined ? TileState.IDLE : TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
@@ -238,7 +238,7 @@ _ol_source_TileUTFGrid_.prototype.getTile = function(z, x, y, pixelRatio, projec
 /**
  * @inheritDoc
  */
-_ol_source_TileUTFGrid_.prototype.useTile = function(z, x, y) {
+UTFGrid.prototype.useTile = function(z, x, y) {
   var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
@@ -257,7 +257,7 @@ _ol_source_TileUTFGrid_.prototype.useTile = function(z, x, y) {
  * @param {boolean} jsonp Load the tile as a script.
  * @private
  */
-_ol_source_TileUTFGrid_.Tile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
+UTFGrid.Tile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
 
   _ol_Tile_.call(this, tileCoord, state);
 
@@ -305,14 +305,14 @@ _ol_source_TileUTFGrid_.Tile_ = function(tileCoord, state, src, extent, preempti
   this.jsonp_ = jsonp;
 
 };
-inherits(_ol_source_TileUTFGrid_.Tile_, _ol_Tile_);
+inherits(UTFGrid.Tile_, _ol_Tile_);
 
 
 /**
  * Get the image element for this tile.
  * @return {Image} Image.
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.getImage = function() {
+UTFGrid.Tile_.prototype.getImage = function() {
   return null;
 };
 
@@ -322,7 +322,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.getImage = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {*} The data.
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.getData = function(coordinate) {
+UTFGrid.Tile_.prototype.getData = function(coordinate) {
   if (!this.grid_ || !this.keys_) {
     return null;
   }
@@ -369,7 +369,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.getData = function(coordinate) {
  *                               The tile data is requested if not yet loaded.
  * @template T
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
+UTFGrid.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == TileState.IDLE && opt_request === true) {
     _ol_events_.listenOnce(this, EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
@@ -390,7 +390,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.forDataAtCoordinate = function(coordinat
 /**
  * @inheritDoc
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.getKey = function() {
+UTFGrid.Tile_.prototype.getKey = function() {
   return this.src_;
 };
 
@@ -398,7 +398,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.getKey = function() {
 /**
  * @private
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.handleError_ = function() {
+UTFGrid.Tile_.prototype.handleError_ = function() {
   this.state = TileState.ERROR;
   this.changed();
 };
@@ -408,7 +408,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.handleError_ = function() {
  * @param {!UTFGridJSON} json UTFGrid data.
  * @private
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.handleLoad_ = function(json) {
+UTFGrid.Tile_.prototype.handleLoad_ = function(json) {
   this.grid_ = json.grid;
   this.keys_ = json.keys;
   this.data_ = json.data;
@@ -421,7 +421,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.handleLoad_ = function(json) {
 /**
  * @private
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.loadInternal_ = function() {
+UTFGrid.Tile_.prototype.loadInternal_ = function() {
   if (this.state == TileState.IDLE) {
     this.state = TileState.LOADING;
     if (this.jsonp_) {
@@ -442,7 +442,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.loadInternal_ = function() {
  * @private
  * @param {Event} event The load event.
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.onXHRLoad_ = function(event) {
+UTFGrid.Tile_.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
@@ -464,7 +464,7 @@ _ol_source_TileUTFGrid_.Tile_.prototype.onXHRLoad_ = function(event) {
  * @private
  * @param {Event} event The error event.
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.onXHRError_ = function(event) {
+UTFGrid.Tile_.prototype.onXHRError_ = function(event) {
   this.handleError_();
 };
 
@@ -472,9 +472,9 @@ _ol_source_TileUTFGrid_.Tile_.prototype.onXHRError_ = function(event) {
 /**
  * @override
  */
-_ol_source_TileUTFGrid_.Tile_.prototype.load = function() {
+UTFGrid.Tile_.prototype.load = function() {
   if (this.preemptive_) {
     this.loadInternal_();
   }
 };
-export default _ol_source_TileUTFGrid_;
+export default UTFGrid;

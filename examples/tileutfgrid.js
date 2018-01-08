@@ -3,7 +3,7 @@ import _ol_Overlay_ from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
-import _ol_source_TileUTFGrid_ from '../src/ol/source/TileUTFGrid.js';
+import UTFGrid from '../src/ol/source/TileUTFGrid.js';
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
@@ -14,7 +14,7 @@ var mapLayer = new TileLayer({
 });
 
 
-var gridSource = new _ol_source_TileUTFGrid_({
+var gridSource = new UTFGrid({
   url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
 });
 
