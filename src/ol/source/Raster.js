@@ -13,7 +13,7 @@ import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import _ol_layer_Image_ from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
-import _ol_renderer_canvas_ImageLayer_ from '../renderer/canvas/ImageLayer.js';
+import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_TileLayer_ from '../renderer/canvas/TileLayer.js';
 import _ol_source_Image_ from '../source/Image.js';
 import RasterOperationType from '../source/RasterOperationType.js';
@@ -414,7 +414,7 @@ function createRenderer(source) {
  */
 function createImageRenderer(source) {
   var layer = new _ol_layer_Image_({source: source});
-  return new _ol_renderer_canvas_ImageLayer_(layer);
+  return new CanvasImageLayerRenderer(layer);
 }
 
 

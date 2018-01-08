@@ -8,7 +8,7 @@ import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
 import _ol_obj_ from './obj.js';
 import {register, registerMultiple} from './plugins.js';
-import _ol_renderer_canvas_ImageLayer_ from './renderer/canvas/ImageLayer.js';
+import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_Map_ from './renderer/canvas/Map.js';
 import _ol_renderer_canvas_TileLayer_ from './renderer/canvas/TileLayer.js';
 import _ol_renderer_canvas_VectorLayer_ from './renderer/canvas/VectorLayer.js';
@@ -17,7 +17,7 @@ import _ol_renderer_canvas_VectorTileLayer_ from './renderer/canvas/VectorTileLa
 
 register(PluginType.MAP_RENDERER, _ol_renderer_canvas_Map_);
 registerMultiple(PluginType.LAYER_RENDERER, [
-  _ol_renderer_canvas_ImageLayer_,
+  CanvasImageLayerRenderer,
   _ol_renderer_canvas_TileLayer_,
   _ol_renderer_canvas_VectorLayer_,
   _ol_renderer_canvas_VectorTileLayer_
