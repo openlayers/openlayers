@@ -9,7 +9,7 @@ import DragRotate from './interaction/DragRotate.js';
 import DragZoom from './interaction/DragZoom.js';
 import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
 import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
-import _ol_interaction_MouseWheelZoom_ from './interaction/MouseWheelZoom.js';
+import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import _ol_interaction_PinchRotate_ from './interaction/PinchRotate.js';
 import _ol_interaction_PinchZoom_ from './interaction/PinchZoom.js';
 
@@ -93,7 +93,7 @@ export function defaults(opt_options) {
   var mouseWheelZoom = options.mouseWheelZoom !== undefined ?
     options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
-    interactions.push(new _ol_interaction_MouseWheelZoom_({
+    interactions.push(new MouseWheelZoom({
       constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));
