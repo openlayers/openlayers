@@ -12,7 +12,7 @@ import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_Map_ from './renderer/canvas/Map.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
 import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
-import _ol_renderer_canvas_VectorTileLayer_ from './renderer/canvas/VectorTileLayer.js';
+import CanvasVectorTileLayerRenderer from './renderer/canvas/VectorTileLayer.js';
 import _ol_renderer_webgl_ImageLayer_ from './renderer/webgl/ImageLayer.js';
 import _ol_renderer_webgl_Map_ from './renderer/webgl/Map.js';
 import _ol_renderer_webgl_TileLayer_ from './renderer/webgl/TileLayer.js';
@@ -24,7 +24,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
   CanvasImageLayerRenderer,
   CanvasTileLayerRenderer,
   CanvasVectorLayerRenderer,
-  _ol_renderer_canvas_VectorTileLayer_
+  CanvasVectorTileLayerRenderer
 ]);
 
 // TODO: move these to new ol-webgl package

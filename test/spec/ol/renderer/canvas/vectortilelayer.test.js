@@ -14,7 +14,7 @@ import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
-import _ol_renderer_canvas_VectorTileLayer_ from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
+import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
 import _ol_source_VectorTile_ from '../../../../../src/ol/source/VectorTile.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
@@ -90,20 +90,20 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('creates a new instance', function() {
-      var renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
-      expect(renderer).to.be.a(_ol_renderer_canvas_VectorTileLayer_);
+      var renderer = new CanvasVectorTileLayerRenderer(layer);
+      expect(renderer).to.be.a(CanvasVectorTileLayerRenderer);
       expect(renderer.zDirection).to.be(0);
     });
 
     it('uses lower resolution for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
-      var renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
+      var renderer = new CanvasVectorTileLayerRenderer(layer);
       expect(renderer.zDirection).to.be(1);
     });
 
     it('does not render images for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
-      var spy = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'renderTileImage_');
       map.renderSync();
       expect(spy.callCount).to.be(0);
@@ -112,7 +112,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not render replays for pure image rendering', function() {
       layer.renderMode_ = 'image';
-      var spy = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'getTransform');
       map.renderSync();
       expect(spy.callCount).to.be(0);
@@ -120,9 +120,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('renders both replays and images for hybrid rendering', function() {
-      var spy1 = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy1 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'getTransform');
-      var spy2 = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy2 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'renderTileImage_');
       map.renderSync();
       expect(spy1.callCount).to.be(1);
@@ -136,7 +136,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       layer.setStyle(new _ol_style_Style_({
         renderer: function() {}
       }));
-      var spy = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'getTransform');
       map.renderSync();
       expect(spy.callCount).to.be(1);
@@ -261,7 +261,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       layer.getSource().getTile = function() {
         return tile;
       };
-      var renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
+      var renderer = new CanvasVectorTileLayerRenderer(layer);
       renderer.renderTileImage_ = sinon.spy();
       var proj = getProjection('EPSG:3857');
       var frameState = {
@@ -314,7 +314,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           tileGrid: _ol_tilegrid_.createXYZ()
         })
       });
-      renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
+      renderer = new CanvasVectorTileLayerRenderer(layer);
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
         var feature = new Feature();
