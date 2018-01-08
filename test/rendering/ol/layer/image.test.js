@@ -3,7 +3,7 @@ import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
-import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
+import Static from '../../../../src/ol/source/ImageStatic.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -65,7 +65,7 @@ describe('ol.rendering.layer.Image', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_ImageStatic_({
+      source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent(
             [5, 5, -12 - 1]),
@@ -95,7 +95,7 @@ describe('ol.rendering.layer.Image', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_ImageStatic_({
+      source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: transformExtent(
             [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')

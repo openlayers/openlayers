@@ -2,7 +2,7 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
-import _ol_source_ImageStatic_ from '../../../../../src/ol/source/ImageStatic.js';
+import Static from '../../../../../src/ol/source/ImageStatic.js';
 
 
 describe('ol.renderer.canvas.ImageLayer', function() {
@@ -20,7 +20,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      source = new _ol_source_ImageStatic_({
+      source = new Static({
         url: 'spec/ol/data/dot.png',
         projection: projection,
         imageExtent: [0, 0, 20, 20]

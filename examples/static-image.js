@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
+import Static from '../src/ol/source/ImageStatic.js';
 
 
 // Map views always need a projection.  Here we just want to map image
@@ -19,7 +19,7 @@ var projection = new _ol_proj_Projection_({
 var map = new Map({
   layers: [
     new ImageLayer({
-      source: new _ol_source_ImageStatic_({
+      source: new Static({
         attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
         url: 'https://imgs.xkcd.com/comics/online_communities.png',
         projection: projection,

@@ -3,7 +3,7 @@ import TileState from '../../../../src/ol/TileState.js';
 import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
-import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
+import Static from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
@@ -35,17 +35,17 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     var extent = [-1, -1, 1, 1];
 
-    redSource = new _ol_source_ImageStatic_({
+    redSource = new Static({
       url: red,
       imageExtent: extent
     });
 
-    greenSource = new _ol_source_ImageStatic_({
+    greenSource = new Static({
       url: green,
       imageExtent: extent
     });
 
-    blueSource = new _ol_source_ImageStatic_({
+    blueSource = new Static({
       url: blue,
       imageExtent: extent
     });
