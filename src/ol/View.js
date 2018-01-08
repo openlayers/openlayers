@@ -3,7 +3,7 @@
  */
 import {DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import {inherits, getUid, nullFunction} from './index.js';
-import _ol_CenterConstraint_ from './CenterConstraint.js';
+import CenterConstraint from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
 import _ol_ResolutionConstraint_ from './ResolutionConstraint.js';
 import _ol_RotationConstraint_ from './RotationConstraint.js';
@@ -1088,9 +1088,9 @@ _ol_View_.prototype.setZoom = function(zoom) {
  */
 _ol_View_.createCenterConstraint_ = function(options) {
   if (options.extent !== undefined) {
-    return _ol_CenterConstraint_.createExtent(options.extent);
+    return CenterConstraint.createExtent(options.extent);
   } else {
-    return _ol_CenterConstraint_.none;
+    return CenterConstraint.none;
   }
 };
 

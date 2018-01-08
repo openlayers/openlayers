@@ -2,14 +2,14 @@
  * @module ol/CenterConstraint
  */
 import {clamp} from './math.js';
-var _ol_CenterConstraint_ = {};
+var CenterConstraint = {};
 
 
 /**
  * @param {ol.Extent} extent Extent.
  * @return {ol.CenterConstraintType} The constraint.
  */
-_ol_CenterConstraint_.createExtent = function(extent) {
+CenterConstraint.createExtent = function(extent) {
   return (
     /**
      * @param {ol.Coordinate|undefined} center Center.
@@ -33,7 +33,7 @@ _ol_CenterConstraint_.createExtent = function(extent) {
  * @param {ol.Coordinate|undefined} center Center.
  * @return {ol.Coordinate|undefined} Center.
  */
-_ol_CenterConstraint_.none = function(center) {
+CenterConstraint.none = function(center) {
   return center;
 };
-export default _ol_CenterConstraint_;
+export default CenterConstraint;
