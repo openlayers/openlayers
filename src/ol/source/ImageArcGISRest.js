@@ -26,7 +26,7 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.ImageArcGISRestOptions=} opt_options Image ArcGIS Rest Options.
  * @api
  */
-var _ol_source_ImageArcGISRest_ = function(opt_options) {
+var ImageArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -96,7 +96,7 @@ var _ol_source_ImageArcGISRest_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_ImageArcGISRest_, ImageSource);
+inherits(ImageArcGISRest, ImageSource);
 
 
 /**
@@ -105,7 +105,7 @@ inherits(_ol_source_ImageArcGISRest_, ImageSource);
  * @return {Object} Params.
  * @api
  */
-_ol_source_ImageArcGISRest_.prototype.getParams = function() {
+ImageArcGISRest.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -113,7 +113,7 @@ _ol_source_ImageArcGISRest_.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-_ol_source_ImageArcGISRest_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
 
   if (this.url_ === undefined) {
     return null;
@@ -186,7 +186,7 @@ _ol_source_ImageArcGISRest_.prototype.getImageInternal = function(extent, resolu
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
-_ol_source_ImageArcGISRest_.prototype.getImageLoadFunction = function() {
+ImageArcGISRest.prototype.getImageLoadFunction = function() {
   return this.imageLoadFunction_;
 };
 
@@ -200,7 +200,7 @@ _ol_source_ImageArcGISRest_.prototype.getImageLoadFunction = function() {
  * @return {string} Request URL.
  * @private
  */
-_ol_source_ImageArcGISRest_.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
+ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
 
@@ -227,7 +227,7 @@ _ol_source_ImageArcGISRest_.prototype.getRequestUrl_ = function(extent, size, pi
  * @return {string|undefined} URL.
  * @api
  */
-_ol_source_ImageArcGISRest_.prototype.getUrl = function() {
+ImageArcGISRest.prototype.getUrl = function() {
   return this.url_;
 };
 
@@ -237,7 +237,7 @@ _ol_source_ImageArcGISRest_.prototype.getUrl = function() {
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-_ol_source_ImageArcGISRest_.prototype.setImageLoadFunction = function(imageLoadFunction) {
+ImageArcGISRest.prototype.setImageLoadFunction = function(imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();
@@ -249,7 +249,7 @@ _ol_source_ImageArcGISRest_.prototype.setImageLoadFunction = function(imageLoadF
  * @param {string|undefined} url URL.
  * @api
  */
-_ol_source_ImageArcGISRest_.prototype.setUrl = function(url) {
+ImageArcGISRest.prototype.setUrl = function(url) {
   if (url != this.url_) {
     this.url_ = url;
     this.image_ = null;
@@ -263,9 +263,9 @@ _ol_source_ImageArcGISRest_.prototype.setUrl = function(url) {
  * @param {Object} params Params.
  * @api
  */
-_ol_source_ImageArcGISRest_.prototype.updateParams = function(params) {
+ImageArcGISRest.prototype.updateParams = function(params) {
   _ol_obj_.assign(this.params_, params);
   this.image_ = null;
   this.changed();
 };
-export default _ol_source_ImageArcGISRest_;
+export default ImageArcGISRest;
