@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -87,7 +87,7 @@ var vectorSource = new _ol_source_Vector_({
   }))
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
     var classify = feature.get('activeprod');

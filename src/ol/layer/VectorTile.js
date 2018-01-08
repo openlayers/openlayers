@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
 import {assert} from '../asserts.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
-import _ol_layer_Vector_ from '../layer/Vector.js';
+import VectorLayer from '../layer/Vector.js';
 import _ol_layer_VectorTileRenderType_ from '../layer/VectorTileRenderType.js';
 import _ol_obj_ from '../obj.js';
 
@@ -39,7 +39,7 @@ var _ol_layer_VectorTile_ = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  _ol_layer_Vector_.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  VectorLayer.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   this.setPreload(options.preload ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
@@ -54,7 +54,7 @@ var _ol_layer_VectorTile_ = function(opt_options) {
 
 };
 
-inherits(_ol_layer_VectorTile_, _ol_layer_Vector_);
+inherits(_ol_layer_VectorTile_, VectorLayer);
 
 
 /**

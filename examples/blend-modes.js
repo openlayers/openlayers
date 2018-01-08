@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -14,7 +14,7 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 //
 // Every layer has one feature that is styled with a circle, together the
 // features form the corners of an equilateral triangle and their styles overlap
-var redLayer = new _ol_layer_Vector_({
+var redLayer = new VectorLayer({
   source: new _ol_source_Vector_({
     features: [new Feature(new Point([0, 0]))]
   }),
@@ -31,7 +31,7 @@ var redLayer = new _ol_layer_Vector_({
     })
   })
 });
-var greenLayer = new _ol_layer_Vector_({
+var greenLayer = new VectorLayer({
   source: new _ol_source_Vector_({
     // 433.013 is roughly 250 * Math.sqrt(3)
     features: [new Feature(new Point([250, 433.013]))]
@@ -49,7 +49,7 @@ var greenLayer = new _ol_layer_Vector_({
     })
   })
 });
-var blueLayer = new _ol_layer_Vector_({
+var blueLayer = new VectorLayer({
   source: new _ol_source_Vector_({
     features: [new Feature(new Point([500, 0]))]
   }),

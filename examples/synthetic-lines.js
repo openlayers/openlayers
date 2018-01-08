@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -36,7 +36,7 @@ for (i = 0; i < count; ++i) {
   startPoint = endPoint;
 }
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: new _ol_source_Vector_({
     features: features,
     wrapX: false

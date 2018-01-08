@@ -6,7 +6,7 @@ import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
@@ -90,7 +90,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source
       }));
       map.once('postrender', function() {
@@ -116,7 +116,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renerMode: 'image',
         source: source
       }));
@@ -155,7 +155,7 @@ describe('ol.rendering.layer.Vector', function() {
       ]);
       source.addFeature(smallLine2);
 
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         opacity: 0.5
       }));
@@ -194,7 +194,7 @@ describe('ol.rendering.layer.Vector', function() {
       ]);
       source.addFeature(smallLine2);
 
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
         opacity: 0.5
@@ -210,7 +210,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         style: new _ol_style_Style_({
           stroke: new _ol_style_Stroke_({
@@ -230,7 +230,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
         style: new _ol_style_Style_({
@@ -251,7 +251,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(300);
       map.skipFeature(source.getFeatures()[1]);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
         style: new _ol_style_Style_({
@@ -283,7 +283,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         style: new _ol_style_Style_({
           stroke: new _ol_style_Stroke_({
@@ -307,7 +307,7 @@ describe('ol.rendering.layer.Vector', function() {
       addLineString(250);
       addLineString(600);
       addLineString(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         style: new _ol_style_Style_({
           stroke: new _ol_style_Stroke_({
@@ -346,7 +346,7 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
@@ -397,7 +397,7 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
@@ -466,7 +466,7 @@ describe('ol.rendering.layer.Vector', function() {
       var format = new GeoJSON({featureProjection: 'EPSG:3857'});
       var feature = format.readFeature(json);
 
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [feature]
         }),
@@ -510,7 +510,7 @@ describe('ol.rendering.layer.Vector', function() {
           ]]))
         ]
       });
-      layer = new _ol_layer_Vector_({
+      layer = new VectorLayer({
         renderBuffer: 0,
         source: src
       });
@@ -584,7 +584,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -624,7 +624,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         renderMode: 'image',
         source: source
       });
@@ -665,7 +665,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text and respects z-index', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -705,7 +705,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters images', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -744,7 +744,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters images with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         renderMode: 'image',
         source: source
       });
@@ -784,7 +784,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters images and respects z-index', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -823,7 +823,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters image & text groups', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -867,7 +867,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text along lines and images', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -910,7 +910,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text along lines and images with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -953,7 +953,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text along lines and images with z-index', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);

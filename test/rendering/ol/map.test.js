@@ -2,7 +2,7 @@ import Feature from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Map from '../../../src/ol/Map.js';
 import View from '../../../src/ol/View.js';
-import _ol_layer_Vector_ from '../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
 
 
@@ -10,7 +10,7 @@ describe('ol.rendering.Map', function() {
 
   var map;
   function createMap(renderer) {
-    var vectorLayer = new _ol_layer_Vector_({
+    var vectorLayer = new VectorLayer({
       source: new _ol_source_Vector_({
         features: [new Feature({
           geometry: new Point([0, 0])

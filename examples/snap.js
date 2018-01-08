@@ -5,7 +5,7 @@ import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -17,7 +17,7 @@ var raster = new TileLayer({
   source: new _ol_source_OSM_()
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: new _ol_source_Vector_(),
   style: new _ol_style_Style_({
     fill: new _ol_style_Fill_({

@@ -5,7 +5,7 @@ import _ol_events_ from '../events.js';
 import {inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
-import _ol_layer_Vector_ from '../layer/Vector.js';
+import VectorLayer from '../layer/Vector.js';
 import {clamp} from '../math.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
@@ -54,7 +54,7 @@ var Heatmap = function(opt_options) {
   delete baseOptions.blur;
   delete baseOptions.shadow;
   delete baseOptions.weight;
-  _ol_layer_Vector_.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  VectorLayer.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   /**
    * @private
@@ -136,7 +136,7 @@ var Heatmap = function(opt_options) {
   _ol_events_.listen(this, RenderEventType.RENDER, this.handleRender_, this);
 };
 
-inherits(Heatmap, _ol_layer_Vector_);
+inherits(Heatmap, VectorLayer);
 
 
 /**

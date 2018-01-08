@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import Feature from '../src/ol/Feature.js';
@@ -22,7 +22,7 @@ var style = new _ol_style_Style_({
 
 var feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: new _ol_source_Vector_({
     features: [feature]
   }),

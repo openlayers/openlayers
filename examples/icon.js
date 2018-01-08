@@ -4,7 +4,7 @@ import _ol_Overlay_ from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
@@ -33,7 +33,7 @@ var vectorSource = new _ol_source_Vector_({
   features: [iconFeature]
 });
 
-var vectorLayer = new _ol_layer_Vector_({
+var vectorLayer = new VectorLayer({
   source: vectorSource
 });
 

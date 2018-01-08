@@ -3,7 +3,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -101,7 +101,7 @@ describe('ol.rendering.layer.VectorTile', function() {
           new Feature(new Point([1825727.7316762917, 6143091.089223046]))
         ]
       });
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         zIndex: 1,
         source: vectorSource,
         style: new _ol_style_Style_({

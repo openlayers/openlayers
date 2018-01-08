@@ -1,5 +1,5 @@
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 
@@ -11,13 +11,13 @@ describe('ol.layer.Vector', function() {
     var style = new _ol_style_Style_();
 
     it('creates a new layer', function() {
-      var layer = new _ol_layer_Vector_({source: source});
-      expect(layer).to.be.a(_ol_layer_Vector_);
+      var layer = new VectorLayer({source: source});
+      expect(layer).to.be.a(VectorLayer);
       expect(layer).to.be.a(_ol_layer_Layer_);
     });
 
     it('accepts a style option with a single style', function() {
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source,
         style: style
       });
@@ -27,7 +27,7 @@ describe('ol.layer.Vector', function() {
     });
 
     it('accepts a style option with an array of styles', function() {
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source,
         style: [style]
       });
@@ -37,7 +37,7 @@ describe('ol.layer.Vector', function() {
     });
 
     it('accepts a style option with a style function', function() {
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source,
         style: function(feature, resolution) {
           return [style];
@@ -55,7 +55,7 @@ describe('ol.layer.Vector', function() {
     var layer, style;
 
     beforeEach(function() {
-      layer = new _ol_layer_Vector_({
+      layer = new VectorLayer({
         source: new _ol_source_Vector_()
       });
       style = new _ol_style_Style_();
@@ -101,7 +101,7 @@ describe('ol.layer.Vector', function() {
     var style = new _ol_style_Style_();
 
     it('returns what is provided to setStyle', function() {
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
 

@@ -4,7 +4,7 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -148,7 +148,7 @@ var source = new _ol_source_Vector_({
   features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
-var layer = new _ol_layer_Vector_({
+var layer = new VectorLayer({
   source: source,
   style: styleFunction
 });

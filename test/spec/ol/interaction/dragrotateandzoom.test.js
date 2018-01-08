@@ -3,7 +3,7 @@ import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js
 import View from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
@@ -35,7 +35,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       style.height = height + 'px';
       document.body.appendChild(target);
       var source = new _ol_source_Vector_();
-      var layer = new _ol_layer_Vector_({source: source});
+      var layer = new VectorLayer({source: source});
       interaction = new DragRotateAndZoom();
       map = new Map({
         target: target,

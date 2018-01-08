@@ -6,7 +6,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
@@ -20,7 +20,7 @@ describe('ol.rendering.style.Text', function() {
   function createMap(renderer, opt_pixelRatio) {
     var pixelRatio = opt_pixelRatio || 1;
     vectorSource = new _ol_source_Vector_();
-    var vectorLayer = new _ol_layer_Vector_({
+    var vectorLayer = new VectorLayer({
       source: vectorSource
     });
 

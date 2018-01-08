@@ -8,7 +8,7 @@ import TopoJSON from '../src/ol/format/TopoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -114,7 +114,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
   var vectorSource = new _ol_source_Vector_({
     features: event.features
   });
-  map.addLayer(new _ol_layer_Vector_({
+  map.addLayer(new VectorLayer({
     source: vectorSource,
     style: styleFunction
   }));

@@ -5,7 +5,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../../../../src/ol/loadingstrategy.js';
 import {get as getProjection, transformExtent, fromLonLat} from '../../../../src/ol/proj.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
@@ -441,7 +441,7 @@ describe('ol.source.Vector', function() {
         var map = new Map({
           target: div,
           layers: [
-            new _ol_layer_Vector_({
+            new VectorLayer({
               source: source
             })
           ],

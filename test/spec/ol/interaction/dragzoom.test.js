@@ -3,7 +3,7 @@ import View from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.js';
 import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
@@ -25,7 +25,7 @@ describe('ol.interaction.DragZoom', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
     source = new _ol_source_Vector_();
-    var layer = new _ol_layer_Vector_({source: source});
+    var layer = new VectorLayer({source: source});
     map = new Map({
       target: target,
       layers: [layer],

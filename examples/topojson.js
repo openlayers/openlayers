@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -26,7 +26,7 @@ var style = new _ol_style_Style_({
   })
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: new _ol_source_Vector_({
     url: 'data/topojson/world-110m.json',
     format: new TopoJSON({

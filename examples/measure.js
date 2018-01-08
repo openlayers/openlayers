@@ -7,7 +7,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -22,7 +22,7 @@ var raster = new TileLayer({
 
 var source = new _ol_source_Vector_();
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: source,
   style: new _ol_style_Style_({
     fill: new _ol_style_Fill_({

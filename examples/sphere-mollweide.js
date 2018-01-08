@@ -2,7 +2,7 @@ import Graticule from '../src/ol/Graticule.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import {register} from '../src/ol/proj/proj4.js';
@@ -25,7 +25,7 @@ var sphereMollweideProjection = new _ol_proj_Projection_({
 var map = new Map({
   keyboardEventTarget: document,
   layers: [
-    new _ol_layer_Vector_({
+    new VectorLayer({
       source: new _ol_source_Vector_({
         url: 'data/geojson/countries-110m.geojson',
         format: new GeoJSON()

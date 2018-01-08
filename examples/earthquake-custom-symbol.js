@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_render_ from '../src/ol/render.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -52,7 +52,7 @@ var styleFunction = function(feature) {
   return style;
 };
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: new _ol_source_Vector_({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({

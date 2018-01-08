@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
@@ -53,7 +53,7 @@ function createLayer(coordinates, style, zIndex) {
     features: [feature]
   });
 
-  var vectorLayer = new _ol_layer_Vector_({
+  var vectorLayer = new VectorLayer({
     source: source
   });
   vectorLayer.setZIndex(zIndex);

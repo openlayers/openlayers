@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -34,7 +34,7 @@ var clusterSource = new _ol_source_Cluster_({
 });
 
 var styleCache = {};
-var clusters = new _ol_layer_Vector_({
+var clusters = new VectorLayer({
   source: clusterSource,
   style: function(feature) {
     var size = feature.get('features').length;

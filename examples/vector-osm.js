@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import OSMXML from '../src/ol/format/OSMXML.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -98,7 +98,7 @@ var vectorSource = new _ol_source_Vector_({
   strategy: _ol_loadingstrategy_.bbox
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
     for (var key in styles) {

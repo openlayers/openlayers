@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -27,7 +27,7 @@ var map = new Map({
       key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
       imagerySet: 'Aerial'
     })
-  }), new _ol_layer_Vector_({
+  }), new VectorLayer({
     declutter: true,
     source: new _ol_source_Vector_({
       format: new GeoJSON(),

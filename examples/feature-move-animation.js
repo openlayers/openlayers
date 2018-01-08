@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import Polyline from '../src/ol/format/Polyline.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -113,7 +113,7 @@ var speed, now;
 var speedInput = document.getElementById('speed');
 var startButton = document.getElementById('start-animation');
 
-var vectorLayer = new _ol_layer_Vector_({
+var vectorLayer = new VectorLayer({
   source: new _ol_source_Vector_({
     features: [routeFeature, geoMarker, startMarker, endMarker]
   }),

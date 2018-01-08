@@ -31,7 +31,7 @@ var Property = {
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @api
  */
-var _ol_layer_Vector_ = function(opt_options) {
+var VectorLayer = function(opt_options) {
   var options = opt_options ?
     opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
@@ -101,13 +101,13 @@ var _ol_layer_Vector_ = function(opt_options) {
 
 };
 
-inherits(_ol_layer_Vector_, _ol_layer_Layer_);
+inherits(VectorLayer, _ol_layer_Layer_);
 
 
 /**
  * @return {boolean} Declutter.
  */
-_ol_layer_Vector_.prototype.getDeclutter = function() {
+VectorLayer.prototype.getDeclutter = function() {
   return this.declutter_;
 };
 
@@ -115,7 +115,7 @@ _ol_layer_Vector_.prototype.getDeclutter = function() {
 /**
  * @param {boolean} declutter Declutter.
  */
-_ol_layer_Vector_.prototype.setDeclutter = function(declutter) {
+VectorLayer.prototype.setDeclutter = function(declutter) {
   this.declutter_ = declutter;
 };
 
@@ -123,7 +123,7 @@ _ol_layer_Vector_.prototype.setDeclutter = function(declutter) {
 /**
  * @return {number|undefined} Render buffer.
  */
-_ol_layer_Vector_.prototype.getRenderBuffer = function() {
+VectorLayer.prototype.getRenderBuffer = function() {
   return this.renderBuffer_;
 };
 
@@ -132,7 +132,7 @@ _ol_layer_Vector_.prototype.getRenderBuffer = function() {
  * @return {function(ol.Feature, ol.Feature): number|null|undefined} Render
  *     order.
  */
-_ol_layer_Vector_.prototype.getRenderOrder = function() {
+VectorLayer.prototype.getRenderOrder = function() {
   return (/** @type {ol.RenderOrderFunction|null|undefined} */ this.get(Property.RENDER_ORDER));
 };
 
@@ -143,7 +143,7 @@ _ol_layer_Vector_.prototype.getRenderOrder = function() {
  * @return {ol.source.Vector} Source.
  * @api
  */
-_ol_layer_Vector_.prototype.getSource;
+VectorLayer.prototype.getSource;
 
 
 /**
@@ -153,7 +153,7 @@ _ol_layer_Vector_.prototype.getSource;
  *     Layer style.
  * @api
  */
-_ol_layer_Vector_.prototype.getStyle = function() {
+VectorLayer.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -163,7 +163,7 @@ _ol_layer_Vector_.prototype.getStyle = function() {
  * @return {ol.StyleFunction|undefined} Layer style function.
  * @api
  */
-_ol_layer_Vector_.prototype.getStyleFunction = function() {
+VectorLayer.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
 
@@ -172,7 +172,7 @@ _ol_layer_Vector_.prototype.getStyleFunction = function() {
  * @return {boolean} Whether the rendered layer should be updated while
  *     animating.
  */
-_ol_layer_Vector_.prototype.getUpdateWhileAnimating = function() {
+VectorLayer.prototype.getUpdateWhileAnimating = function() {
   return this.updateWhileAnimating_;
 };
 
@@ -181,7 +181,7 @@ _ol_layer_Vector_.prototype.getUpdateWhileAnimating = function() {
  * @return {boolean} Whether the rendered layer should be updated while
  *     interacting.
  */
-_ol_layer_Vector_.prototype.getUpdateWhileInteracting = function() {
+VectorLayer.prototype.getUpdateWhileInteracting = function() {
   return this.updateWhileInteracting_;
 };
 
@@ -190,7 +190,7 @@ _ol_layer_Vector_.prototype.getUpdateWhileInteracting = function() {
  * @param {ol.RenderOrderFunction|null|undefined} renderOrder
  *     Render order.
  */
-_ol_layer_Vector_.prototype.setRenderOrder = function(renderOrder) {
+VectorLayer.prototype.setRenderOrder = function(renderOrder) {
   this.set(Property.RENDER_ORDER, renderOrder);
 };
 
@@ -206,7 +206,7 @@ _ol_layer_Vector_.prototype.setRenderOrder = function(renderOrder) {
  *     style Layer style.
  * @api
  */
-_ol_layer_Vector_.prototype.setStyle = function(style) {
+VectorLayer.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : _ol_style_Style_.defaultFunction;
   this.styleFunction_ = style === null ?
     undefined : _ol_style_Style_.createFunction(this.style_);
@@ -217,9 +217,9 @@ _ol_layer_Vector_.prototype.setStyle = function(style) {
 /**
  * @return {ol.layer.VectorRenderType|string} The render mode.
  */
-_ol_layer_Vector_.prototype.getRenderMode = function() {
+VectorLayer.prototype.getRenderMode = function() {
   return this.renderMode_;
 };
 
 
-export default _ol_layer_Vector_;
+export default VectorLayer;

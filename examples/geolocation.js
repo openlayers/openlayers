@@ -5,7 +5,7 @@ import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -86,7 +86,7 @@ geolocation.on('change:position', function() {
     new Point(coordinates) : null);
 });
 
-new _ol_layer_Vector_({
+new VectorLayer({
   map: map,
   source: new _ol_source_Vector_({
     features: [accuracyFeature, positionFeature]

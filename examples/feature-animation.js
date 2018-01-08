@@ -6,7 +6,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import {easeOut} from '../src/ol/easing.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -38,7 +38,7 @@ var map = new Map({
 var source = new _ol_source_Vector_({
   wrapX: false
 });
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: source
 });
 map.addLayer(vector);

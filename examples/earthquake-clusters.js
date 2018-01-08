@@ -5,7 +5,7 @@ import KML from '../src/ol/format/KML.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -121,7 +121,7 @@ function selectStyleFunction(feature) {
   return styles;
 }
 
-vector = new _ol_layer_Vector_({
+vector = new VectorLayer({
   source: new _ol_source_Cluster_({
     distance: 40,
     source: new _ol_source_Vector_({

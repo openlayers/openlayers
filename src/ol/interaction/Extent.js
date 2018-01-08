@@ -13,7 +13,7 @@ import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
-import _ol_layer_Vector_ from '../layer/Vector.js';
+import VectorLayer from '../layer/Vector.js';
 import _ol_source_Vector_ from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
 
@@ -93,7 +93,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
    * @type {ol.layer.Vector}
    * @private
    */
-  this.extentOverlay_ = new _ol_layer_Vector_({
+  this.extentOverlay_ = new VectorLayer({
     source: new _ol_source_Vector_({
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
@@ -108,7 +108,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
    * @type {ol.layer.Vector}
    * @private
    */
-  this.vertexOverlay_ = new _ol_layer_Vector_({
+  this.vertexOverlay_ = new VectorLayer({
     source: new _ol_source_Vector_({
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX

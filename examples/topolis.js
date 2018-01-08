@@ -10,7 +10,7 @@ import Polygon from '../src/ol/geom/Polygon.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -25,7 +25,7 @@ var raster = new TileLayer({
 });
 
 var nodes = new _ol_source_Vector_({wrapX: false});
-var nodesLayer = new _ol_layer_Vector_({
+var nodesLayer = new VectorLayer({
   source: nodes,
   style: function(f) {
     var style = new _ol_style_Style_({
@@ -48,7 +48,7 @@ var nodesLayer = new _ol_layer_Vector_({
 });
 
 var edges = new _ol_source_Vector_({wrapX: false});
-var edgesLayer = new _ol_layer_Vector_({
+var edgesLayer = new VectorLayer({
   source: edges,
   style: function(f) {
     var style = new _ol_style_Style_({
@@ -70,7 +70,7 @@ var edgesLayer = new _ol_layer_Vector_({
 });
 
 var faces = new _ol_source_Vector_({wrapX: false});
-var facesLayer = new _ol_layer_Vector_({
+var facesLayer = new VectorLayer({
   source: faces,
   style: function(f) {
     var style = new _ol_style_Style_({

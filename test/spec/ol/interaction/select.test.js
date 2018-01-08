@@ -7,7 +7,7 @@ import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
@@ -57,7 +57,7 @@ describe('ol.interaction.Select', function() {
       features: features
     });
 
-    layer = new _ol_layer_Vector_({source: source});
+    layer = new VectorLayer({source: source});
 
     map = new Map({
       target: target,
@@ -357,7 +357,7 @@ describe('ol.interaction.Select', function() {
         var layer_ = interaction.getLayer(feature);
         expect(e.selected).to.have.length(1);
         expect(feature).to.be.a(Feature);
-        expect(layer_).to.be.a(_ol_layer_Vector_);
+        expect(layer_).to.be.a(VectorLayer);
         expect(layer_).to.equal(layer);
       });
       interaction.on('select', listenerSpy);

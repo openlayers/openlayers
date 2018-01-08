@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
@@ -31,7 +31,7 @@ var map = new Map({
     new TileLayer({
       source: new _ol_source_Stamen_({layer: 'watercolor'})
     }),
-    new _ol_layer_Vector_({
+    new VectorLayer({
       style: function(feature) {
         return feature.get('style');
       },

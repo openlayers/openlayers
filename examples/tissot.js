@@ -3,15 +3,15 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 
-var vectorLayer4326 = new _ol_layer_Vector_({
+var vectorLayer4326 = new VectorLayer({
   source: new _ol_source_Vector_()
 });
 
-var vectorLayer3857 = new _ol_layer_Vector_({
+var vectorLayer3857 = new VectorLayer({
   source: new _ol_source_Vector_()
 });
 

@@ -8,7 +8,7 @@ import Polygon from '../src/ol/geom/Polygon.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -152,7 +152,7 @@ var map = new Map({
         url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure'
       })
     }),
-    new _ol_layer_Vector_({
+    new VectorLayer({
       source: new _ol_source_Vector_({
         features: [pointFeature, lineFeature, polygonFeature]
       }),

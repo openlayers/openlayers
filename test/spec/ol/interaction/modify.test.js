@@ -10,7 +10,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
 
@@ -45,7 +45,7 @@ describe('ol.interaction.Modify', function() {
       features: features
     });
 
-    var layer = new _ol_layer_Vector_({source: source});
+    var layer = new VectorLayer({source: source});
 
     map = new Map({
       target: target,

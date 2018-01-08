@@ -4,7 +4,7 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
@@ -37,7 +37,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('creates a new instance', function() {
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_()
       });
       var renderer = new CanvasVectorLayerRenderer(layer);
@@ -69,7 +69,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var feature1 = new Feature(new Point([0, 0]));
       var feature2 = new Feature(new Point([0, 0]));
       feature2.setStyle(featureStyle);
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [feature1, feature2]
         }),
@@ -101,7 +101,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       });
 
       var feature = new Feature(new Point([0, 0]));
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [feature]
         }),
@@ -132,7 +132,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       });
 
       var feature = new Feature(new Point([0, 0]));
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [feature]
         }),
@@ -164,7 +164,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       });
 
       var feature = new Feature(new Point([0, 0]));
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [feature]
         }),
@@ -185,7 +185,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     var layer, renderer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Vector_({
+      layer = new VectorLayer({
         source: new _ol_source_Vector_()
       });
       renderer = new CanvasVectorLayerRenderer(layer);
@@ -222,7 +222,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     var frameState, projExtent, renderer, worldWidth, buffer;
 
     beforeEach(function() {
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: new _ol_source_Vector_({wrapX: true})
       });
       renderer = new CanvasVectorLayerRenderer(layer);

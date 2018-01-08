@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -22,7 +22,7 @@ var style = new _ol_style_Style_({
 
 var map = new Map({
   layers: [
-    new _ol_layer_Vector_({
+    new VectorLayer({
       renderMode: 'image',
       source: new _ol_source_Vector_({
         url: 'data/geojson/countries.geojson',
@@ -41,7 +41,7 @@ var map = new Map({
   })
 });
 
-var featureOverlay = new _ol_layer_Vector_({
+var featureOverlay = new VectorLayer({
   source: new _ol_source_Vector_(),
   map: map,
   style: new _ol_style_Style_({

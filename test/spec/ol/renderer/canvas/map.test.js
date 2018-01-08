@@ -4,7 +4,7 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_Layer_ from '../../../../../src/ol/renderer/canvas/Layer.js';
 import CanvasMapRenderer from '../../../../../src/ol/renderer/canvas/Map.js';
 import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
@@ -50,7 +50,7 @@ describe('ol.renderer.canvas.Map', function() {
       };
       img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
 
-      layer = new _ol_layer_Vector_({
+      layer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [
             new Feature({
@@ -92,7 +92,7 @@ describe('ol.renderer.canvas.Map', function() {
 
     it('calls callback with main layer when skipped feature on unmanaged layer', function() {
       var feature = layer.getSource().getFeatures()[0];
-      var managedLayer = new _ol_layer_Vector_({
+      var managedLayer = new VectorLayer({
         source: new _ol_source_Vector_({
           features: [feature]
         })
@@ -169,7 +169,7 @@ describe('ol.renderer.canvas.Map', function() {
     beforeEach(function() {
       map = new Map({});
       map.on('postcompose', function() {});
-      layer = new _ol_layer_Vector_({
+      layer = new VectorLayer({
         source: new _ol_source_Vector_({wrapX: true})
       });
       renderer = map.getRenderer();

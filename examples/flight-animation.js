@@ -4,7 +4,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -109,7 +109,7 @@ flightsSource = new _ol_source_Vector_({
   }
 });
 
-var flightsLayer = new _ol_layer_Vector_({
+var flightsLayer = new VectorLayer({
   source: flightsSource,
   style: function(feature) {
     // if the animation is still active for a feature, do not

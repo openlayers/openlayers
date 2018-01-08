@@ -6,7 +6,7 @@ import IGC from '../src/ol/format/IGC.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -92,7 +92,7 @@ var map = new Map({
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
       })
     }),
-    new _ol_layer_Vector_({
+    new VectorLayer({
       source: vectorSource,
       style: styleFunction
     })
@@ -175,7 +175,7 @@ map.on('postcompose', function(evt) {
   }
 });
 
-var featureOverlay = new _ol_layer_Vector_({
+var featureOverlay = new VectorLayer({
   source: new _ol_source_Vector_(),
   map: map,
   style: new _ol_style_Style_({

@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -75,7 +75,7 @@ for (i = 0; i < featureCount; ++i) {
 var vectorSource = new _ol_source_Vector_({
   features: features
 });
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource
 });
 
@@ -96,7 +96,7 @@ for (i = 0; i < featureCount; i += 30) {
   overlayFeatures.push(clone);
 }
 
-new _ol_layer_Vector_({
+new VectorLayer({
   map: map,
   source: new _ol_source_Vector_({
     features: overlayFeatures
