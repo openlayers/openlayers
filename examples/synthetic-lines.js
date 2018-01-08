@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -30,7 +30,7 @@ for (i = 0; i < count; ++i) {
   deltaX = delta * signX;
   deltaY = delta * signY;
   endPoint = [startPoint[0] + deltaX, startPoint[1] + deltaY];
-  features[i] = new _ol_Feature_({
+  features[i] = new Feature({
     'geometry': new LineString([startPoint, endPoint])
   });
   startPoint = endPoint;

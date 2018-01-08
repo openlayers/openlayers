@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -15,7 +15,7 @@ var triangle = new LineString([
   [0, radius], [run, -rise], [-run, -rise], [0, radius]
 ]);
 
-var feature = new _ol_Feature_(triangle);
+var feature = new Feature(triangle);
 
 var layer = new _ol_layer_Vector_({
   source: new _ol_source_Vector_({

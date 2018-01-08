@@ -2,7 +2,7 @@
  * @module ol/format/KML
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {extend, includes} from '../array.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
@@ -1700,7 +1700,7 @@ KML.prototype.readPlacemark_ = function(node, objectStack) {
   if (!object) {
     return undefined;
   }
-  var feature = new _ol_Feature_();
+  var feature = new Feature();
   var id = node.getAttribute('id');
   if (id !== null) {
     feature.setId(id);

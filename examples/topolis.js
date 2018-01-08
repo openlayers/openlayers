@@ -1,7 +1,7 @@
 // NOCOMPILE
 // this example uses topolis and toastr for which we don't have an externs file.
 
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
@@ -129,7 +129,7 @@ function removeElementFeature(source, element) {
 }
 
 function nodeToFeature(node) {
-  var feature = new _ol_Feature_({
+  var feature = new Feature({
     geometry: new Point(node.coordinate),
     node: node
   });
@@ -138,7 +138,7 @@ function nodeToFeature(node) {
 }
 
 function edgeToFeature(edge) {
-  var feature = new _ol_Feature_({
+  var feature = new Feature({
     geometry: new LineString(edge.coordinates),
     edge: edge
   });
@@ -148,7 +148,7 @@ function edgeToFeature(edge) {
 
 function faceToFeature(face) {
   var coordinates = topo.getFaceGeometry(face);
-  var feature = new _ol_Feature_({
+  var feature = new Feature({
     geometry: new Polygon(coordinates),
     face: face
   });

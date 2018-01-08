@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
@@ -62,7 +62,7 @@ for (x = -180; x < 180; x += 30) {
   for (y = -90; y < 90; y += 30) {
     var circle4326 = circularPolygon([x, y], radius, 64);
     var circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
-    vectorLayer4326.getSource().addFeature(new _ol_Feature_(circle4326));
-    vectorLayer3857.getSource().addFeature(new _ol_Feature_(circle3857));
+    vectorLayer4326.getSource().addFeature(new Feature(circle4326));
+    vectorLayer3857.getSource().addFeature(new Feature(circle3857));
   }
 }

@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
@@ -1035,7 +1035,7 @@ describe('ol.interaction.Draw', function() {
         type: 'LineString'
       });
       map.addInteraction(draw);
-      feature = new _ol_Feature_(
+      feature = new Feature(
           new LineString([[0, 0], [1, 1], [2, 0]]));
     });
 

@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../src/ol/Feature.js';
+import Feature from '../../../src/ol/Feature.js';
 import {defaultLoadFunction} from '../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
@@ -19,7 +19,7 @@ describe('ol.VectorTile', function() {
       });
     };
     format.readFeatures = function(source, options) {
-      return [new _ol_Feature_()];
+      return [new Feature()];
     };
 
     var tile = new VectorTile([0, 0, 0], null, null, format);

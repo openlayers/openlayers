@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Polyline from '../src/ol/format/Polyline.js';
@@ -67,19 +67,19 @@ var route = /** @type {ol.geom.LineString} */ (new Polyline({
 var routeCoords = route.getCoordinates();
 var routeLength = routeCoords.length;
 
-var routeFeature = new _ol_Feature_({
+var routeFeature = new Feature({
   type: 'route',
   geometry: route
 });
-var geoMarker = new _ol_Feature_({
+var geoMarker = new Feature({
   type: 'geoMarker',
   geometry: new Point(routeCoords[0])
 });
-var startMarker = new _ol_Feature_({
+var startMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[0])
 });
-var endMarker = new _ol_Feature_({
+var endMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[routeLength - 1])
 });
@@ -163,7 +163,7 @@ var moveFeature = function(event) {
     }
 
     var currentPoint = new Point(routeCoords[index]);
-    var feature = new _ol_Feature_(currentPoint);
+    var feature = new Feature(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
   // tell OpenLayers to continue the postcompose animation

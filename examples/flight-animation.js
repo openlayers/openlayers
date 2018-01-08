@@ -1,5 +1,5 @@
 // NOCOMPILE
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -95,7 +95,7 @@ flightsSource = new _ol_source_Vector_({
           var line = new LineString(arcLine.geometries[0].coords);
           line.transform('EPSG:4326', 'EPSG:3857');
 
-          var feature = new _ol_Feature_({
+          var feature = new Feature({
             geometry: line,
             finished: false
           });

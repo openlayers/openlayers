@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../src/ol/Feature.js';
+import Feature from '../../../src/ol/Feature.js';
 import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
@@ -197,7 +197,7 @@ describe('ol.Map', function() {
         target: target,
         layers: [new _ol_layer_Vector_({
           source: new _ol_source_Vector_({
-            features: [new _ol_Feature_(new LineString([[-50, 0], [50, 0]]))]
+            features: [new Feature(new LineString([[-50, 0], [50, 0]]))]
           })
         })],
         view: new _ol_View_({
@@ -219,7 +219,7 @@ describe('ol.Map', function() {
     it('returns an array of found features', function() {
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(_ol_Feature_);
+      expect(features[0]).to.be.an(Feature);
     });
 
     it('returns an array of found features with declutter: true', function() {
@@ -233,7 +233,7 @@ describe('ol.Map', function() {
       map.renderSync();
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(_ol_Feature_);
+      expect(features[0]).to.be.a(Feature);
     });
 
     it('respects options', function() {

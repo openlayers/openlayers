@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../src/ol/Feature.js';
+import Feature from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Map from '../../../src/ol/Map.js';
 import _ol_View_ from '../../../src/ol/View.js';
@@ -12,7 +12,7 @@ describe('ol.rendering.Map', function() {
   function createMap(renderer) {
     var vectorLayer = new _ol_layer_Vector_({
       source: new _ol_source_Vector_({
-        features: [new _ol_Feature_({
+        features: [new Feature({
           geometry: new Point([0, 0])
         })]
       })

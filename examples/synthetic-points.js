@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -15,7 +15,7 @@ var count = 20000;
 var features = new Array(count);
 var e = 18000000;
 for (var i = 0; i < count; ++i) {
-  features[i] = new _ol_Feature_({
+  features[i] = new Feature({
     'geometry': new Point(
         [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
     'i': i,

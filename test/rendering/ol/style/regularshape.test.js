@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
@@ -42,7 +42,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
   function createFeatures(stroke, fill) {
     var feature;
-    feature = new _ol_Feature_({
+    feature = new Feature({
       geometry: new Point([-15, 15])
     });
     // square
@@ -57,7 +57,7 @@ describe('ol.rendering.style.RegularShape', function() {
     }));
     vectorSource.addFeature(feature);
 
-    feature = new _ol_Feature_({
+    feature = new Feature({
       geometry: new Point([8, 15])
     });
     // triangle
@@ -73,7 +73,7 @@ describe('ol.rendering.style.RegularShape', function() {
     }));
     vectorSource.addFeature(feature);
 
-    feature = new _ol_Feature_({
+    feature = new Feature({
       geometry: new Point([-10, -8])
     });
     // star
@@ -89,7 +89,7 @@ describe('ol.rendering.style.RegularShape', function() {
     }));
     vectorSource.addFeature(feature);
 
-    feature = new _ol_Feature_({
+    feature = new Feature({
       geometry: new Point([12, -8])
     });
     // cross

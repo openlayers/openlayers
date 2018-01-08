@@ -2,7 +2,7 @@
  * @module ol/format/TopoJSON
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
 import LineString from '../geom/LineString.js';
@@ -260,7 +260,7 @@ function readFeatureFromGeometry(object, arcs, scale, translate, property, name,
   } else {
     geometry = geometryReader(object, arcs);
   }
-  var feature = new _ol_Feature_();
+  var feature = new Feature();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
     transformWithOptions(geometry, false, opt_options)));
   if (object.id !== undefined) {

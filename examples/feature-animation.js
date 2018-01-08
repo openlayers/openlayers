@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_Observable_ from '../src/ol/Observable.js';
 import _ol_View_ from '../src/ol/View.js';
@@ -47,7 +47,7 @@ function addRandomFeature() {
   var x = Math.random() * 360 - 180;
   var y = Math.random() * 180 - 90;
   var geom = new Point(fromLonLat([x, y]));
-  var feature = new _ol_Feature_(geom);
+  var feature = new Feature(geom);
   source.addFeature(feature);
 }
 

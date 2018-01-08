@@ -1,5 +1,5 @@
 import {getUid} from '../../../../../src/ol/index.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -53,7 +53,7 @@ describe('ol.renderer.canvas.Map', function() {
       layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [
-            new _ol_Feature_({
+            new Feature({
               geometry: new Point([0, 0])
             })
           ]

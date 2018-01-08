@@ -54,7 +54,7 @@ import _ol_style_Style_ from './style/Style.js';
  *     include a Geometry associated with a `geometry` key.
  * @api
  */
-var _ol_Feature_ = function(opt_geometryOrProperties) {
+var Feature = function(opt_geometryOrProperties) {
 
   _ol_Object_.call(this);
 
@@ -107,7 +107,7 @@ var _ol_Feature_ = function(opt_geometryOrProperties) {
   }
 };
 
-inherits(_ol_Feature_, _ol_Object_);
+inherits(Feature, _ol_Object_);
 
 
 /**
@@ -116,8 +116,8 @@ inherits(_ol_Feature_, _ol_Object_);
  * @return {ol.Feature} The clone.
  * @api
  */
-_ol_Feature_.prototype.clone = function() {
-  var clone = new _ol_Feature_(this.getProperties());
+Feature.prototype.clone = function() {
+  var clone = new Feature(this.getProperties());
   clone.setGeometryName(this.getGeometryName());
   var geometry = this.getGeometry();
   if (geometry) {
@@ -139,7 +139,7 @@ _ol_Feature_.prototype.clone = function() {
  * @api
  * @observable
  */
-_ol_Feature_.prototype.getGeometry = function() {
+Feature.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
     this.get(this.geometryName_));
 };
@@ -152,7 +152,7 @@ _ol_Feature_.prototype.getGeometry = function() {
  * @return {number|string|undefined} Id.
  * @api
  */
-_ol_Feature_.prototype.getId = function() {
+Feature.prototype.getId = function() {
   return this.id_;
 };
 
@@ -164,7 +164,7 @@ _ol_Feature_.prototype.getId = function() {
  *     for this feature.
  * @api
  */
-_ol_Feature_.prototype.getGeometryName = function() {
+Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
 };
 
@@ -176,7 +176,7 @@ _ol_Feature_.prototype.getGeometryName = function() {
  *     ol.FeatureStyleFunction|ol.StyleFunction} The feature style.
  * @api
  */
-_ol_Feature_.prototype.getStyle = function() {
+Feature.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -187,7 +187,7 @@ _ol_Feature_.prototype.getStyle = function() {
  * representing the current style of this feature.
  * @api
  */
-_ol_Feature_.prototype.getStyleFunction = function() {
+Feature.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
 
@@ -195,7 +195,7 @@ _ol_Feature_.prototype.getStyleFunction = function() {
 /**
  * @private
  */
-_ol_Feature_.prototype.handleGeometryChange_ = function() {
+Feature.prototype.handleGeometryChange_ = function() {
   this.changed();
 };
 
@@ -203,7 +203,7 @@ _ol_Feature_.prototype.handleGeometryChange_ = function() {
 /**
  * @private
  */
-_ol_Feature_.prototype.handleGeometryChanged_ = function() {
+Feature.prototype.handleGeometryChanged_ = function() {
   if (this.geometryChangeKey_) {
     _ol_events_.unlistenByKey(this.geometryChangeKey_);
     this.geometryChangeKey_ = null;
@@ -224,7 +224,7 @@ _ol_Feature_.prototype.handleGeometryChanged_ = function() {
  * @api
  * @observable
  */
-_ol_Feature_.prototype.setGeometry = function(geometry) {
+Feature.prototype.setGeometry = function(geometry) {
   this.set(this.geometryName_, geometry);
 };
 
@@ -238,10 +238,10 @@ _ol_Feature_.prototype.setGeometry = function(geometry) {
  * @api
  * @fires ol.events.Event#event:change
  */
-_ol_Feature_.prototype.setStyle = function(style) {
+Feature.prototype.setStyle = function(style) {
   this.style_ = style;
   this.styleFunction_ = !style ?
-    undefined : _ol_Feature_.createStyleFunction(style);
+    undefined : Feature.createStyleFunction(style);
   this.changed();
 };
 
@@ -255,7 +255,7 @@ _ol_Feature_.prototype.setStyle = function(style) {
  * @api
  * @fires ol.events.Event#event:change
  */
-_ol_Feature_.prototype.setId = function(id) {
+Feature.prototype.setId = function(id) {
   this.id_ = id;
   this.changed();
 };
@@ -268,7 +268,7 @@ _ol_Feature_.prototype.setId = function(id) {
  * @param {string} name The property name of the default geometry.
  * @api
  */
-_ol_Feature_.prototype.setGeometryName = function(name) {
+Feature.prototype.setGeometryName = function(name) {
   _ol_events_.unlisten(
       this, _ol_Object_.getChangeEventType(this.geometryName_),
       this.handleGeometryChanged_, this);
@@ -288,7 +288,7 @@ _ol_Feature_.prototype.setGeometryName = function(name) {
  *     A feature style function, a single style, or an array of styles.
  * @return {ol.FeatureStyleFunction} A style function.
  */
-_ol_Feature_.createStyleFunction = function(obj) {
+Feature.createStyleFunction = function(obj) {
   var styleFunction;
 
   if (typeof obj === 'function') {
@@ -317,4 +317,4 @@ _ol_Feature_.createStyleFunction = function(obj) {
   }
   return styleFunction;
 };
-export default _ol_Feature_;
+export default Feature;

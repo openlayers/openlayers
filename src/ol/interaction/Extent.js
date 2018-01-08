@@ -2,7 +2,7 @@
  * @module ol/interaction/Extent
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -374,9 +374,9 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
 
   if (!extentFeature) {
     if (!extent) {
-      extentFeature = new _ol_Feature_({});
+      extentFeature = new Feature({});
     } else {
-      extentFeature = new _ol_Feature_(polygonFromExtent(extent));
+      extentFeature = new Feature(polygonFromExtent(extent));
     }
     this.extentFeature_ = extentFeature;
     this.extentOverlay_.getSource().addFeature(extentFeature);
@@ -399,7 +399,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
 _ol_interaction_Extent_.prototype.createOrUpdatePointerFeature_ = function(vertex) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new Point(vertex));
+    vertexFeature = new Feature(new Point(vertex));
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {

@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import EsriJSON from '../../../../src/ol/format/EsriJSON.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -161,7 +161,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a single point feature', function() {
       var feature = format.readFeature(pointEsriJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
@@ -170,7 +170,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a single multipoint feature', function() {
       var feature = format.readFeature(multiPointEsriJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(MultiPoint);
       expect(geometry.getCoordinates()).to.eql([[102.0, 0.0], [103.0, 1.0]]);
@@ -179,7 +179,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a single line string feature', function() {
       var feature = format.readFeature(lineStringEsriJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(LineString);
       expect(geometry.getCoordinates()).to.eql(
@@ -190,7 +190,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a multi line string feature', function() {
       var feature = format.readFeature(multiLineStringEsriJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(MultiLineString);
       expect(geometry.getCoordinates()).to.eql([
@@ -203,7 +203,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a single polygon feature', function() {
       var feature = format.readFeature(polygonEsriJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(Polygon);
       expect(geometry.getCoordinates()).to.eql([[
@@ -215,7 +215,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('can read a multi polygon feature', function() {
       var feature = format.readFeature(multiPolygonEsriJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(MultiPolygon);
       expect(geometry.getCoordinates()).to.eql([
@@ -282,13 +282,13 @@ describe('ol.format.EsriJSON', function() {
       expect(array.length).to.be(2);
 
       var first = array[0];
-      expect(first).to.be.a(_ol_Feature_);
+      expect(first).to.be.a(Feature);
       expect(first.get('LINK_ID')).to.be(573730499);
       var firstGeom = first.getGeometry();
       expect(firstGeom).to.be.a(LineString);
 
       var second = array[1];
-      expect(second).to.be.a(_ol_Feature_);
+      expect(second).to.be.a(Feature);
       expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
       var secondGeom = second.getGeometry();
       expect(secondGeom).to.be.a(LineString);
@@ -300,7 +300,7 @@ describe('ol.format.EsriJSON', function() {
         expect(result.length).to.be(9);
 
         var first = result[0];
-        expect(first).to.be.a(_ol_Feature_);
+        expect(first).to.be.a(Feature);
         expect(first.get('field_name')).to.be('EUDORA');
         expect(first.getId()).to.be(6406);
         var firstGeom = first.getGeometry();
@@ -311,7 +311,7 @@ describe('ol.format.EsriJSON', function() {
         ])).to.be(true);
 
         var last = result[8];
-        expect(last).to.be.a(_ol_Feature_);
+        expect(last).to.be.a(Feature);
         expect(last.get('field_name')).to.be('FEAGINS');
         expect(last.getId()).to.be(6030);
         var lastGeom = last.getGeometry();
@@ -744,12 +744,12 @@ describe('ol.format.EsriJSON', function() {
       expect(features.length).to.be(2);
 
       var first = features[0];
-      expect(first).to.be.a(_ol_Feature_);
+      expect(first).to.be.a(Feature);
       expect(first.get('foo')).to.be('bar');
       expect(first.getGeometry()).to.be.a(Point);
 
       var second = features[1];
-      expect(second).to.be.a(_ol_Feature_);
+      expect(second).to.be.a(Feature);
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(LineString);
 
@@ -1048,7 +1048,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('writes out a feature with a different geometryName correctly',
         function() {
-          var feature = new _ol_Feature_({'foo': 'bar'});
+          var feature = new Feature({'foo': 'bar'});
           feature.setGeometryName('mygeom');
           feature.setGeometry(new Point([5, 10]));
           var esrijson = format.writeFeaturesObject([feature]);
@@ -1056,7 +1056,7 @@ describe('ol.format.EsriJSON', function() {
         });
 
     it('writes out a feature without properties correctly', function() {
-      var feature = new _ol_Feature_(new Point([5, 10]));
+      var feature = new Feature(new Point([5, 10]));
       var esrijson = format.writeFeatureObject(feature);
       expect(esrijson.attributes).to.eql({});
     });

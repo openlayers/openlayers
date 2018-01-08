@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
@@ -23,7 +23,7 @@ function createStyle(src, img) {
   });
 }
 
-var iconFeature = new _ol_Feature_(new Point([0, 0]));
+var iconFeature = new Feature(new Point([0, 0]));
 iconFeature.set('style', createStyle('data/icon.png', undefined));
 
 var map = new Map({

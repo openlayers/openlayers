@@ -1,5 +1,5 @@
 import {inherits} from '../src/ol/index.js';
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -134,12 +134,12 @@ app.Drag.prototype.handleUpEvent = function() {
 };
 
 
-var pointFeature = new _ol_Feature_(new Point([0, 0]));
+var pointFeature = new Feature(new Point([0, 0]));
 
-var lineFeature = new _ol_Feature_(
+var lineFeature = new Feature(
     new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
 
-var polygonFeature = new _ol_Feature_(
+var polygonFeature = new Feature(
     new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
       [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 

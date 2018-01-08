@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import GeometryCollection from '../../../../../src/ol/geom/GeometryCollection.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
@@ -47,7 +47,7 @@ describe('ol.render.webgl.Immediate', function() {
   describe('#drawFeature', function() {
     var feat;
     beforeEach(function() {
-      feat = new _ol_Feature_({
+      feat = new Feature({
         geometry: circle
       });
       context.setStyle = function() {};
@@ -67,14 +67,14 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     it('does nothing if no geometry is provided', function() {
-      feat = new _ol_Feature_();
+      feat = new Feature();
       context.drawFeature(feat, style);
       expect(context.setStyle.called).to.be(false);
       expect(context.drawGeometry.called).to.be(false);
     });
 
     it('does nothing if geometry is out of bounds', function() {
-      feat = new _ol_Feature_({
+      feat = new Feature({
         geometry: new Circle([540, 540], 1)
       });
       context.drawFeature(feat, style);

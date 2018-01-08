@@ -6,7 +6,7 @@
 
 import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import JSONFeature from '../format/JSONFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
@@ -360,7 +360,7 @@ GeoJSON.prototype.readFeatureFromObject = function(object, opt_options) {
   }
 
   var geometry = readGeometry(geoJSONFeature.geometry, opt_options);
-  var feature = new _ol_Feature_();
+  var feature = new Feature();
   if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
   } else if (this.extractGeometryName_ && geoJSONFeature.geometry_name !== undefined) {

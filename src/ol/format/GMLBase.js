@@ -6,7 +6,7 @@
 // envelopes/extents, only geometries!
 import {inherits} from '../index.js';
 import {extend} from '../array.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -244,7 +244,7 @@ GMLBase.prototype.readFeatureElement = function(node, objectStack) {
       values[localName] = this.readGeometryElement(n, objectStack);
     }
   }
-  var feature = new _ol_Feature_(values);
+  var feature = new Feature(values);
   if (geometryName) {
     feature.setGeometryName(geometryName);
   }

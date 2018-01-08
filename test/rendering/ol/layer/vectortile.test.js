@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
@@ -98,7 +98,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       createMap('canvas');
       var vectorSource = new _ol_source_Vector_({
         features: [
-          new _ol_Feature_(new Point([1825727.7316762917, 6143091.089223046]))
+          new Feature(new Point([1825727.7316762917, 6143091.089223046]))
         ]
       });
       map.addLayer(new _ol_layer_Vector_({

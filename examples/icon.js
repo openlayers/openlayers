@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import _ol_View_ from '../src/ol/View.js';
@@ -11,7 +11,7 @@ import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var iconFeature = new _ol_Feature_({
+var iconFeature = new Feature({
   geometry: new Point([0, 0]),
   name: 'Null Island',
   population: 4000,

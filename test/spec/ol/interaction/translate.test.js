@@ -1,5 +1,5 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import _ol_View_ from '../../../../src/ol/View.js';
@@ -27,9 +27,9 @@ describe('ol.interaction.Translate', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
     source = new _ol_source_Vector_();
-    features = [new _ol_Feature_({
+    features = [new Feature({
       geometry: new Point([10, -20])
-    }), new _ol_Feature_({
+    }), new Feature({
       geometry: new Point([20, -30])
     })];
     source.addFeatures(features);

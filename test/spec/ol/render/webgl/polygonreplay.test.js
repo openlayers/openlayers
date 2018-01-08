@@ -1,5 +1,5 @@
 import {getUid} from '../../../../../src/ol/index.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
@@ -395,13 +395,13 @@ describe('ol.render.webgl.PolygonReplay', function() {
 
   describe('#drawReplay', function() {
     var gl, context;
-    var feature1 = new _ol_Feature_({
+    var feature1 = new Feature({
       geometry: new Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
-    var feature2 = new _ol_Feature_({
+    var feature2 = new Feature({
       geometry: new Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
-    var feature3 = new _ol_Feature_({
+    var feature3 = new Feature({
       geometry: new Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
     beforeEach(function() {

@@ -2,7 +2,7 @@
  * @module ol/interaction/Draw
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import _ol_Object_ from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
@@ -481,7 +481,7 @@ Draw.prototype.atFinish_ = function(event) {
 Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
   var coordinates = event.coordinate.slice();
   if (!this.sketchPoint_) {
-    this.sketchPoint_ = new _ol_Feature_(new Point(coordinates));
+    this.sketchPoint_ = new Feature(new Point(coordinates));
     this.updateSketchFeatures_();
   } else {
     var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
@@ -510,11 +510,11 @@ Draw.prototype.startDrawing_ = function(event) {
     }
   }
   if (this.sketchLineCoords_) {
-    this.sketchLine_ = new _ol_Feature_(
+    this.sketchLine_ = new Feature(
         new LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
-  this.sketchFeature_ = new _ol_Feature_();
+  this.sketchFeature_ = new Feature();
   if (this.geometryName_) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
   }
@@ -557,7 +557,7 @@ Draw.prototype.modifyDrawing_ = function(event) {
   if (geometry instanceof Polygon &&
       this.mode_ !== Draw.Mode_.POLYGON) {
     if (!this.sketchLine_) {
-      this.sketchLine_ = new _ol_Feature_(new LineString(null));
+      this.sketchLine_ = new Feature(new LineString(null));
     }
     var ring = geometry.getLinearRing(0);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());

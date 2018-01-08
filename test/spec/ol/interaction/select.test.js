@@ -1,5 +1,5 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
@@ -36,19 +36,19 @@ describe('ol.interaction.Select', function() {
     // -> foo -> bar.
     var features = [];
     features.push(
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'bar'
         }),
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'foo'
         }),
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'bar'
         }),
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'foo'
         }));
@@ -356,7 +356,7 @@ describe('ol.interaction.Select', function() {
         var feature = e.selected[0];
         var layer_ = interaction.getLayer(feature);
         expect(e.selected).to.have.length(1);
-        expect(feature).to.be.a(_ol_Feature_);
+        expect(feature).to.be.a(Feature);
         expect(layer_).to.be.a(_ol_layer_Vector_);
         expect(layer_).to.equal(layer);
       });

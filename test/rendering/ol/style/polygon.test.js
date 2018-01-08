@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
@@ -48,7 +48,7 @@ describe('ol.rendering.style.Polygon', function() {
 
       var feature;
       // rectangle
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
         ])
@@ -59,7 +59,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with 1 hole
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[0, 10], [0, 20], [15, 20], [15, 10], [0, 10]],
           [[5, 13], [10, 13], [10, 17], [5, 17], [5, 13]]
@@ -72,7 +72,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with 2 holes
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, -20], [-20, 5], [15, 5], [15, -20], [-20, -20]],
           [[-18, -18], [-12, -18], [-12, -12], [-18, -12], [-18, -18]],
@@ -113,7 +113,7 @@ describe('ol.rendering.style.Polygon', function() {
 
       var feature;
       // rectangle
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
         ])
@@ -124,7 +124,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with 1 hole
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[0, 10], [0, 20], [20, 20], [20, 10], [0, 10]],
           [[5, 13], [10, 13], [10, 17], [5, 17], [5, 13]]
@@ -137,7 +137,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with 2 holes
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, -20], [-20, 5], [20, 5], [20, -20], [-20, -20]],
           [[-12, -3], [-12, -12], [-8, -12], [-8, -3], [-12, -3]],
@@ -173,7 +173,7 @@ describe('ol.rendering.style.Polygon', function() {
     function createFeatures() {
       var feature;
       // rectangle with z-index 2
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, 10], [-20, 20], [-0, 20], [-0, 10], [-20, 10]]
         ])
@@ -185,7 +185,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with z-index 3
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-15, 5], [-15, 15], [5, 15], [5, 5], [-15, 5]]
         ])
@@ -197,7 +197,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with z-index 1
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-10, 0], [-10, 10], [10, 10], [10, 0], [-10, 0]]
         ])
@@ -230,7 +230,7 @@ describe('ol.rendering.style.Polygon', function() {
     function createFeatures() {
       var feature;
       // rectangle
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
         ])
@@ -242,7 +242,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with 1 hole
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[0, 10], [0, 20], [15, 20], [15, 10], [0, 10]]
         ])
@@ -254,7 +254,7 @@ describe('ol.rendering.style.Polygon', function() {
       vectorSource.addFeature(feature);
 
       // rectangle with 2 holes
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Polygon([
           [[-20, -20], [-20, 5], [15, 5], [15, -20], [-20, -20]]
         ])
@@ -316,7 +316,7 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     function createFeatures() {
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new Polygon([
           [[-20, -20], [-20, 20], [18, 20], [-20, -20]]
         ])

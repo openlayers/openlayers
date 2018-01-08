@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -28,8 +28,8 @@ describe('ol.source.Cluster', function() {
       var source = new _ol_source_Cluster_({
         source: new _ol_source_Vector_({
           features: [
-            new _ol_Feature_(new Point([0, 0])),
-            new _ol_Feature_(new Point([0, 0]))
+            new Feature(new Point([0, 0])),
+            new Feature(new Point([0, 0]))
           ]
         })
       });
@@ -50,9 +50,9 @@ describe('ol.source.Cluster', function() {
         },
         source: new _ol_source_Vector_({
           features: [
-            new _ol_Feature_(new Point([0, 0])),
-            new _ol_Feature_(new LineString([[0, 0], [1, 1]])),
-            new _ol_Feature_(new Polygon(
+            new Feature(new Point([0, 0])),
+            new Feature(new LineString([[0, 0], [1, 1]])),
+            new Feature(new Polygon(
                 [[[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]]))
           ]
         })

@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
@@ -11,15 +11,15 @@ import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var rome = new _ol_Feature_({
+var rome = new Feature({
   geometry: new Point(fromLonLat([12.5, 41.9]))
 });
 
-var london = new _ol_Feature_({
+var london = new Feature({
   geometry: new Point(fromLonLat([-0.12755, 51.507222]))
 });
 
-var madrid = new _ol_Feature_({
+var madrid = new Feature({
   geometry: new Point(fromLonLat([-3.683333, 40.4]))
 });
 

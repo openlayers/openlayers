@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import GPX from '../../../../src/ol/format/GPX.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
@@ -36,7 +36,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([]);
@@ -65,7 +65,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       expect(f.get('name')).to.be('Name');
       expect(f.get('cmt')).to.be('Comment');
       expect(f.get('desc')).to.be('Description');
@@ -93,7 +93,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
@@ -118,7 +118,7 @@ describe('ol.format.GPX', function() {
       });
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(LineString);
       var p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
@@ -160,7 +160,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([]);
@@ -189,7 +189,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       expect(f.get('name')).to.be('Name');
       expect(f.get('cmt')).to.be('Comment');
       expect(f.get('desc')).to.be('Description');
@@ -216,7 +216,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([[]]);
@@ -247,7 +247,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([
@@ -282,7 +282,7 @@ describe('ol.format.GPX', function() {
       });
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(MultiLineString);
       var p1 = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
@@ -329,7 +329,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(MultiLineString);
       expect(g.getCoordinates()).to.eql([
@@ -391,7 +391,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1]);
@@ -413,7 +413,7 @@ describe('ol.format.GPX', function() {
       });
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       var expectedPoint = transform([2, 1], 'EPSG:4326', 'EPSG:3857');
@@ -438,7 +438,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1, 3]);
@@ -460,7 +460,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1, 1263115752]);
@@ -483,7 +483,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1, 3, 1263115752]);
@@ -523,7 +523,7 @@ describe('ol.format.GPX', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       expect(f.get('magvar')).to.be(11);
       expect(f.get('geoidheight')).to.be(4);
       expect(f.get('name')).to.be('Name');
@@ -663,7 +663,7 @@ describe('ol.format.GPX', function() {
     it('does not fail', function() {
       var polygon = new Polygon(
           [[[0, 0], [2, 2], [4, 0], [0, 0]]]);
-      var feature = new _ol_Feature_(polygon);
+      var feature = new Feature(polygon);
       var features = [feature];
       var gpx = format.writeFeaturesNode(features);
       var expected =

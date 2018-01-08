@@ -4,7 +4,7 @@
 
 import {getUid, inherits} from '../index.js';
 import {assert} from '../asserts.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
@@ -191,7 +191,7 @@ _ol_source_Cluster_.prototype.createCluster = function(features) {
   }
   _ol_coordinate_.scale(centroid, 1 / features.length);
 
-  var cluster = new _ol_Feature_(new Point(centroid));
+  var cluster = new Feature(new Point(centroid));
   cluster.set('features', features);
   return cluster;
 };

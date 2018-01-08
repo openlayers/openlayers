@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
@@ -49,7 +49,7 @@ describe('ol.rendering.style.Text', function() {
     function createFeatures(opt_scale) {
       var scale = opt_scale || 1;
       var feature;
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Point([-20, 18])
       });
       feature.setStyle(new _ol_style_Style_({
@@ -61,7 +61,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Point([-10, 0])
       });
       feature.setStyle(new _ol_style_Style_({
@@ -80,7 +80,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Point([20, 10])
       });
       feature.setStyle(new _ol_style_Style_({
@@ -124,13 +124,13 @@ describe('ol.rendering.style.Text', function() {
           })
         })
       });
-      var feature = new _ol_Feature_(geom);
+      var feature = new Feature(geom);
       feature.setStyle(style);
       vectorSource.addFeature(feature);
 
       geom = geom.clone();
       geom.translate(0, 5);
-      feature = new _ol_Feature_(geom);
+      feature = new Feature(geom);
       style = style.clone();
       style.getText().setTextBaseline('top');
       feature.setStyle(style);
@@ -138,7 +138,7 @@ describe('ol.rendering.style.Text', function() {
 
       geom = geom.clone();
       geom.translate(0, -10);
-      feature = new _ol_Feature_(geom);
+      feature = new Feature(geom);
       style = style.clone();
       style.getText().setTextBaseline('bottom');
       feature.setStyle(style);
@@ -175,7 +175,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders multiline text with alignment options', function(done) {
       createMap('canvas');
       var feature;
-      feature = new _ol_Feature_(new Point([25, 0]));
+      feature = new Feature(new Point([25, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nleft',
@@ -184,7 +184,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new Point([-25, 0]));
+      feature = new Feature(new Point([-25, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nright',
@@ -193,7 +193,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new Point([0, 25]));
+      feature = new Feature(new Point([0, 25]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nbottom',
@@ -202,7 +202,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new Point([0, -25]));
+      feature = new Feature(new Point([0, -25]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'top\nHello world',
@@ -217,7 +217,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders multiline text with positioning options', function(done) {
       createMap('canvas');
       var feature;
-      feature = new _ol_Feature_(new Point([0, 0]));
+      feature = new Feature(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nleft',
@@ -227,7 +227,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new Point([0, 0]));
+      feature = new Feature(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nright',
@@ -237,7 +237,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new Point([0, 0]));
+      feature = new Feature(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world\nbottom',
@@ -247,7 +247,7 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-      feature = new _ol_Feature_(new Point([0, 0]));
+      feature = new Feature(new Point([0, 0]));
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'top\nHello world',
@@ -272,7 +272,7 @@ describe('ol.rendering.style.Text', function() {
       line = line.clone();
       line.translate(0, -100);
       geom.appendLineString(line);
-      var feature = new _ol_Feature_(geom);
+      var feature = new Feature(geom);
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world',
@@ -289,7 +289,7 @@ describe('ol.rendering.style.Text', function() {
       createMap('canvas');
       var geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      var feature = new _ol_Feature_(geom);
+      var feature = new Feature(geom);
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world',
@@ -315,7 +315,7 @@ describe('ol.rendering.style.Text', function() {
       geom = geom.clone();
       geom.translate(0, -60);
       multiPolygon.appendPolygon(geom);
-      var feature = new _ol_Feature_(multiPolygon);
+      var feature = new Feature(multiPolygon);
       feature.setStyle(new _ol_style_Style_({
         text: new _ol_style_Text_({
           text: 'Hello world',

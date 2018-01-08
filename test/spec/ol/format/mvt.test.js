@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -36,7 +36,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
     it('parses geometries correctly', function() {
       var format = new MVT({
-        featureClass: _ol_Feature_,
+        featureClass: Feature,
         layers: ['poi_label']
       });
       var geometry;
@@ -61,7 +61,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
     it('parses id property', function() {
       // ol.Feature
       var format = new MVT({
-        featureClass: _ol_Feature_,
+        featureClass: Feature,
         layers: ['building']
       });
       var features = format.readFeatures(data);
@@ -90,7 +90,7 @@ describe('ol.format.MVT', function() {
   describe('#createFeature_', function() {
     it('accepts a geometryName', function() {
       var format = new MVT({
-        featureClass: _ol_Feature_,
+        featureClass: Feature,
         geometryName: 'myGeom'
       });
       var rawFeature = {
@@ -118,7 +118,7 @@ describe('ol.format.MVT', function() {
 
     it('detects a Polygon', function() {
       var format = new MVT({
-        featureClass: _ol_Feature_
+        featureClass: Feature
       });
       var rawFeature = {
         type: 3,
@@ -141,7 +141,7 @@ describe('ol.format.MVT', function() {
 
     it('detects a MultiPolygon', function() {
       var format = new MVT({
-        featureClass: _ol_Feature_
+        featureClass: Feature
       });
       var rawFeature = {
         type: 3,

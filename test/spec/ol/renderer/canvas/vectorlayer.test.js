@@ -1,5 +1,5 @@
 import {getUid} from '../../../../../src/ol/index.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
@@ -66,8 +66,8 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           text: 'feature'
         })
       })];
-      var feature1 = new _ol_Feature_(new Point([0, 0]));
-      var feature2 = new _ol_Feature_(new Point([0, 0]));
+      var feature1 = new Feature(new Point([0, 0]));
+      var feature2 = new Feature(new Point([0, 0]));
       feature2.setStyle(featureStyle);
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
@@ -100,7 +100,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new Point([0, 0]));
+      var feature = new Feature(new Point([0, 0]));
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [feature]
@@ -131,7 +131,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new Point([0, 0]));
+      var feature = new Feature(new Point([0, 0]));
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [feature]
@@ -163,7 +163,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new Point([0, 0]));
+      var feature = new Feature(new Point([0, 0]));
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({
           features: [feature]
@@ -193,7 +193,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
-        var feature = new _ol_Feature_();
+        var feature = new Feature();
         callback(feature);
         callback(feature);
       };

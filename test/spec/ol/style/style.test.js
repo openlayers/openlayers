@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
@@ -194,7 +194,7 @@ describe('ol.style.Style', function() {
     var style = new _ol_style_Style_();
 
     it('creates a geometry function from a string', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.set('myGeom', new Point([0, 0]));
       style.setGeometry('myGeom');
       expect(style.getGeometryFunction()(feature))

@@ -1,6 +1,6 @@
 import {getUid, inherits} from '../../../../../src/ol/index.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorImageTile from '../../../../../src/ol/VectorImageTile.js';
@@ -55,8 +55,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           text: 'feature'
         })
       })];
-      feature1 = new _ol_Feature_(new Point([1, -1]));
-      feature2 = new _ol_Feature_(new Point([0, 0]));
+      feature1 = new Feature(new Point([1, -1]));
+      feature2 = new Feature(new Point([0, 0]));
       feature3 = new _ol_render_Feature_('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
       var TileClass = function() {
@@ -317,7 +317,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
-        var feature = new _ol_Feature_();
+        var feature = new Feature();
         callback(feature);
         callback(feature);
       };

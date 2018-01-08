@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {equals} from '../array.js';
@@ -579,7 +579,7 @@ _ol_interaction_Modify_.prototype.writeGeometryCollectionGeometry_ = function(fe
 _ol_interaction_Modify_.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new Point(coordinates));
+    vertexFeature = new Feature(new Point(coordinates));
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {

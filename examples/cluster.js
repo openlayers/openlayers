@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
@@ -21,7 +21,7 @@ var features = new Array(count);
 var e = 4500000;
 for (var i = 0; i < count; ++i) {
   var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
-  features[i] = new _ol_Feature_(new Point(coordinates));
+  features[i] = new Feature(new Point(coordinates));
 }
 
 var source = new _ol_source_Vector_({

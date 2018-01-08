@@ -4,7 +4,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -20,7 +20,7 @@ var style = new _ol_style_Style_({
   })
 });
 
-var feature = new _ol_Feature_(new LineString([[-4000000, 0], [4000000, 0]]));
+var feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
 
 var vector = new _ol_layer_Vector_({
   source: new _ol_source_Vector_({

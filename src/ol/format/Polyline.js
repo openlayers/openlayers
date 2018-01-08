@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -282,7 +282,7 @@ Polyline.prototype.readFeature;
  */
 Polyline.prototype.readFeatureFromText = function(text, opt_options) {
   var geometry = this.readGeometryFromText(text, opt_options);
-  return new _ol_Feature_(geometry);
+  return new Feature(geometry);
 };
 
 

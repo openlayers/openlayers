@@ -1,5 +1,5 @@
 import {getUid} from '../../../../../src/ol/index.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
@@ -286,13 +286,13 @@ describe('ol.render.webgl.LineStringReplay', function() {
 
   describe('#drawReplay', function() {
     var gl, context;
-    var feature1 = new _ol_Feature_({
+    var feature1 = new Feature({
       geometry: new LineString([[0, 0], [500, 500]])
     });
-    var feature2 = new _ol_Feature_({
+    var feature2 = new Feature({
       geometry: new LineString([[0, 0], [500, 500]])
     });
-    var feature3 = new _ol_Feature_({
+    var feature3 = new Feature({
       geometry: new LineString([[0, 0], [500, 500]])
     });
     beforeEach(function() {

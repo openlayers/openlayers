@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
@@ -61,12 +61,12 @@ geolocation.on('error', function(error) {
   info.style.display = '';
 });
 
-var accuracyFeature = new _ol_Feature_();
+var accuracyFeature = new Feature();
 geolocation.on('change:accuracyGeometry', function() {
   accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
 });
 
-var positionFeature = new _ol_Feature_();
+var positionFeature = new Feature();
 positionFeature.setStyle(new _ol_style_Style_({
   image: new _ol_style_Circle_({
     radius: 6,

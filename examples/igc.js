@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
@@ -196,7 +196,7 @@ document.getElementById('time').addEventListener('input', function() {
     var coordinate = geometry.getCoordinateAtM(m, true);
     var highlight = feature.get('highlight');
     if (highlight === undefined) {
-      highlight = new _ol_Feature_(new Point(coordinate));
+      highlight = new Feature(new Point(coordinate));
       feature.set('highlight', highlight);
       featureOverlay.getSource().addFeature(highlight);
     } else {

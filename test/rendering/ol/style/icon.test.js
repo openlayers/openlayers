@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
@@ -51,7 +51,7 @@ describe('ol.rendering.style.Icon', function() {
 
     function createFeatures(src, imgInfo, callback) {
       var feature;
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Point([0, 0])
       });
 

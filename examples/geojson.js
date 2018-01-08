@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
@@ -164,7 +164,7 @@ var vectorSource = new _ol_source_Vector_({
   features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
-vectorSource.addFeature(new _ol_Feature_(new Circle([5e6, 7e6], 1e6)));
+vectorSource.addFeature(new Feature(new Circle([5e6, 7e6], 1e6)));
 
 var vectorLayer = new _ol_layer_Vector_({
   source: vectorSource,

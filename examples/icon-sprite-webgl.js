@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_View_ from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
@@ -63,7 +63,7 @@ var e = 25000000;
 for (i = 0; i < featureCount; ++i) {
   geometry = new Point(
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
-  feature = new _ol_Feature_(geometry);
+  feature = new Feature(geometry);
   feature.setStyle(
       new _ol_style_Style_({
         image: icons[i % (iconCount - 1)]

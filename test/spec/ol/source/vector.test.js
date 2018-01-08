@@ -1,6 +1,6 @@
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_View_ from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -16,7 +16,7 @@ describe('ol.source.Vector', function() {
   var pointFeature;
   var infiniteExtent;
   beforeEach(function() {
-    pointFeature = new _ol_Feature_(new Point([0, 0]));
+    pointFeature = new Feature(new Point([0, 0]));
     infiniteExtent = [-Infinity, -Infinity, Infinity, Infinity];
   });
 
@@ -74,9 +74,9 @@ describe('ol.source.Vector', function() {
 
       it('adds same id features only once', function() {
         var source = new _ol_source_Vector_();
-        var feature1 = new _ol_Feature_();
+        var feature1 = new Feature();
         feature1.setId('1');
-        var feature2 = new _ol_Feature_();
+        var feature2 = new Feature();
         feature2.setId('1');
         source.addFeature(feature1);
         source.addFeature(feature2);
@@ -92,9 +92,9 @@ describe('ol.source.Vector', function() {
     var features = [];
     var vectorSource;
     beforeEach(function() {
-      features.push(new _ol_Feature_(new LineString([[0, 0], [10, 10]])));
-      features.push(new _ol_Feature_(new Point([0, 10])));
-      features.push(new _ol_Feature_(new Point([10, 5])));
+      features.push(new Feature(new LineString([[0, 0], [10, 10]])));
+      features.push(new Feature(new Point([0, 10])));
+      features.push(new Feature(new Point([10, 5])));
       vectorSource = new _ol_source_Vector_({
         features: features
       });
@@ -127,9 +127,9 @@ describe('ol.source.Vector', function() {
       var i;
       for (i = 0; i < 10; ++i) {
         features[i] =
-            new _ol_Feature_(new Point([Math.random(), Math.random()]));
+            new Feature(new Point([Math.random(), Math.random()]));
       }
-      features.push(new _ol_Feature_(null));
+      features.push(new Feature(null));
       vectorSource = new _ol_source_Vector_({
         features: features
       });
@@ -269,7 +269,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('keeps its index up-to-date', function() {
-      var feature = new _ol_Feature_(new Point([1, 1]));
+      var feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
           to.eql([feature]);
@@ -281,13 +281,13 @@ describe('ol.source.Vector', function() {
     });
 
     it('handles features with null geometries', function() {
-      var feature = new _ol_Feature_(null);
+      var feature = new Feature(null);
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
     it('handles features with geometries changing from null', function() {
-      var feature = new _ol_Feature_(null);
+      var feature = new Feature(null);
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
       feature.setGeometry(new Point([1, 1]));
@@ -297,7 +297,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('handles features with geometries changing to null', function() {
-      var feature = new _ol_Feature_(new Point([1, 1]));
+      var feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
       expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
@@ -308,7 +308,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('fires a change event when setting a feature\'s property', function() {
-      var feature = new _ol_Feature_(new Point([1, 1]));
+      var feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       var listener = sinon.spy();
       _ol_events_.listen(vectorSource, 'change', listener);
@@ -317,7 +317,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('fires a changefeature event when updating a feature', function() {
-      var feature = new _ol_Feature_(new Point([1, 1]));
+      var feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       var listener = sinon.spy(function(event) {
         expect(event.feature).to.be(feature);
@@ -336,14 +336,14 @@ describe('ol.source.Vector', function() {
     });
 
     it('returns a feature by id', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       expect(source.getFeatureById('foo')).to.be(feature);
     });
 
     it('returns a feature by id (set after add)', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       source.addFeature(feature);
       expect(source.getFeatureById('foo')).to.be(null);
       feature.setId('foo');
@@ -351,14 +351,14 @@ describe('ol.source.Vector', function() {
     });
 
     it('returns null when no feature is found', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       expect(source.getFeatureById('bar')).to.be(null);
     });
 
     it('returns null after removing feature', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       expect(source.getFeatureById('foo')).to.be(feature);
@@ -367,7 +367,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('returns null after unsetting id', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       expect(source.getFeatureById('foo')).to.be(feature);
@@ -376,7 +376,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('returns null after clear', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       expect(source.getFeatureById('foo')).to.be(feature);
@@ -386,19 +386,19 @@ describe('ol.source.Vector', function() {
 
     it('returns null when no features are indexed', function() {
       expect(source.getFeatureById('foo')).to.be(null);
-      source.addFeature(new _ol_Feature_());
+      source.addFeature(new Feature());
       expect(source.getFeatureById('foo')).to.be(null);
     });
 
     it('returns correct feature after add/remove/add', function() {
       expect(source.getFeatureById('foo')).to.be(null);
-      var first = new _ol_Feature_();
+      var first = new Feature();
       first.setId('foo');
       source.addFeature(first);
       expect(source.getFeatureById('foo')).to.be(first);
       source.removeFeature(first);
       expect(source.getFeatureById('foo')).to.be(null);
-      var second = new _ol_Feature_();
+      var second = new Feature();
       second.setId('foo');
       source.addFeature(second);
       expect(source.getFeatureById('foo')).to.be(second);
@@ -406,7 +406,7 @@ describe('ol.source.Vector', function() {
 
     it('returns correct feature after add/change', function() {
       expect(source.getFeatureById('foo')).to.be(null);
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
       expect(source.getFeatureById('foo')).to.be(feature);
@@ -515,10 +515,10 @@ describe('ol.source.Vector', function() {
     });
 
     it('ignores features with the same id', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId('foo');
       source.addFeature(feature);
-      var dupe = new _ol_Feature_();
+      var dupe = new Feature();
       dupe.setId('foo');
       source.addFeature(dupe);
       expect(source.getFeatures()).to.have.length(1);
@@ -526,10 +526,10 @@ describe('ol.source.Vector', function() {
     });
 
     it('allows changing feature and set the same id', function() {
-      var foo = new _ol_Feature_();
+      var foo = new Feature();
       foo.setId('foo');
       source.addFeature(foo);
-      var bar = new _ol_Feature_();
+      var bar = new Feature();
       bar.setId('bar');
       source.addFeature(bar);
       bar.setId('foo');
@@ -545,7 +545,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('disallows adding the same feature twice', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       source.addFeature(feature);
       expect(function() {
         source.addFeature(feature);
@@ -564,7 +564,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('#forEachFeatureInExtent loops through all features', function() {
-      source.addFeatures([new _ol_Feature_(), new _ol_Feature_()]);
+      source.addFeatures([new Feature(), new Feature()]);
       var spy = sinon.spy();
       source.forEachFeatureInExtent([0, 0, 0, 0], spy);
       expect(spy.callCount).to.be(2);
@@ -586,7 +586,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('adding/removing features keeps the collection in sync', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       source.addFeature(feature);
       expect(collection.getLength()).to.be(1);
       source.removeFeature(feature);
@@ -594,7 +594,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('#clear() features keeps the collection in sync', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       source.addFeatures([feature]);
       expect(collection.getLength()).to.be(1);
       source.clear();
@@ -606,7 +606,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('keeps the source\'s features in sync with the collection', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       collection.push(feature);
       expect(source.getFeatures().length).to.be(1);
       collection.remove(feature);
@@ -633,7 +633,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('adding/removing features keeps the collection in sync', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       source.addFeature(feature);
       expect(collection.getLength()).to.be(1);
       source.removeFeature(feature);
@@ -641,7 +641,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('#clear() features keeps the collection in sync', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       source.addFeatures([feature]);
       expect(collection.getLength()).to.be(1);
       source.clear();
@@ -653,7 +653,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('keeps the source\'s features in sync with the collection', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       collection.push(feature);
       expect(source.getFeatures().length).to.be(1);
       collection.remove(feature);
