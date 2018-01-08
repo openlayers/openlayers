@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_Observable_ from '../src/ol/Observable.js';
+import Observable from '../src/ol/Observable.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import {easeOut} from '../src/ol/easing.js';
@@ -80,7 +80,7 @@ function flash(feature) {
     vectorContext.setStyle(style);
     vectorContext.drawGeometry(flashGeom);
     if (elapsed > duration) {
-      _ol_Observable_.unByKey(listenerKey);
+      Observable.unByKey(listenerKey);
       return;
     }
     // tell OpenLayers to continue postcompose animation

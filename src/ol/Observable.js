@@ -20,7 +20,7 @@ import EventType from './events/EventType.js';
  * @struct
  * @api
  */
-var _ol_Observable_ = function() {
+var Observable = function() {
 
   EventTarget.call(this);
 
@@ -32,7 +32,7 @@ var _ol_Observable_ = function() {
 
 };
 
-inherits(_ol_Observable_, EventTarget);
+inherits(Observable, EventTarget);
 
 
 /**
@@ -41,7 +41,7 @@ inherits(_ol_Observable_, EventTarget);
  *     or `once()` (or an array of keys).
  * @api
  */
-_ol_Observable_.unByKey = function(key) {
+Observable.unByKey = function(key) {
   if (Array.isArray(key)) {
     for (var i = 0, ii = key.length; i < ii; ++i) {
       _ol_events_.unlistenByKey(key[i]);
@@ -56,7 +56,7 @@ _ol_Observable_.unByKey = function(key) {
  * Increases the revision counter and dispatches a 'change' event.
  * @api
  */
-_ol_Observable_.prototype.changed = function() {
+Observable.prototype.changed = function() {
   ++this.revision_;
   this.dispatchEvent(EventType.CHANGE);
 };
@@ -73,7 +73,7 @@ _ol_Observable_.prototype.changed = function() {
  * @function
  * @api
  */
-_ol_Observable_.prototype.dispatchEvent;
+Observable.prototype.dispatchEvent;
 
 
 /**
@@ -82,7 +82,7 @@ _ol_Observable_.prototype.dispatchEvent;
  * @return {number} Revision.
  * @api
  */
-_ol_Observable_.prototype.getRevision = function() {
+Observable.prototype.getRevision = function() {
   return this.revision_;
 };
 
@@ -96,7 +96,7 @@ _ol_Observable_.prototype.getRevision = function() {
  *     will be an array of keys.
  * @api
  */
-_ol_Observable_.prototype.on = function(type, listener) {
+Observable.prototype.on = function(type, listener) {
   if (Array.isArray(type)) {
     var len = type.length;
     var keys = new Array(len);
@@ -120,7 +120,7 @@ _ol_Observable_.prototype.on = function(type, listener) {
  *     will be an array of keys.
  * @api
  */
-_ol_Observable_.prototype.once = function(type, listener) {
+Observable.prototype.once = function(type, listener) {
   if (Array.isArray(type)) {
     var len = type.length;
     var keys = new Array(len);
@@ -141,7 +141,7 @@ _ol_Observable_.prototype.once = function(type, listener) {
  * @param {function(?): ?} listener The listener function.
  * @api
  */
-_ol_Observable_.prototype.un = function(type, listener) {
+Observable.prototype.un = function(type, listener) {
   if (Array.isArray(type)) {
     for (var i = 0, ii = type.length; i < ii; ++i) {
       _ol_events_.unlisten(this, type[i], listener);
@@ -151,4 +151,4 @@ _ol_Observable_.prototype.un = function(type, listener) {
     _ol_events_.unlisten(this, /** @type {string} */ (type), listener);
   }
 };
-export default _ol_Observable_;
+export default Observable;

@@ -1,7 +1,7 @@
 import _ol_net_ from '../../../../src/ol/net.js';
 import _ol_source_BingMaps_ from '../../../../src/ol/source/BingMaps.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
-import _ol_Observable_ from '../../../../src/ol/Observable.js';
+import Observable from '../../../../src/ol/Observable.js';
 
 
 describe('ol.source.BingMaps', function() {
@@ -28,7 +28,7 @@ describe('ol.source.BingMaps', function() {
       _ol_net_.jsonp = olNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          _ol_Observable_.unByKey(key);
+          Observable.unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }

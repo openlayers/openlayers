@@ -1,5 +1,5 @@
 import EventTarget from '../../../src/ol/events/EventTarget.js';
-import _ol_Observable_ from '../../../src/ol/Observable.js';
+import Observable from '../../../src/ol/Observable.js';
 
 
 describe('ol.Observable', function() {
@@ -7,8 +7,8 @@ describe('ol.Observable', function() {
   describe('constructor', function() {
 
     it('creates a new observable', function() {
-      var observable = new _ol_Observable_();
-      expect(observable).to.be.a(_ol_Observable_);
+      var observable = new Observable();
+      expect(observable).to.be.a(Observable);
       expect(observable).to.be.a(EventTarget);
     });
 
@@ -17,7 +17,7 @@ describe('ol.Observable', function() {
   describe('#on()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new _ol_Observable_();
+      observable = new Observable();
       listener = sinon.spy();
     });
 
@@ -52,7 +52,7 @@ describe('ol.Observable', function() {
   describe('#once()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new _ol_Observable_();
+      observable = new Observable();
       listener = sinon.spy();
     });
 
@@ -108,7 +108,7 @@ describe('ol.Observable', function() {
   describe('#un()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new _ol_Observable_();
+      observable = new Observable();
       listener = sinon.spy();
     });
 
@@ -128,7 +128,7 @@ describe('ol.Observable', function() {
   describe('ol.Observable.unByKey()', function() {
     var observable, listener;
     beforeEach(function() {
-      observable = new _ol_Observable_();
+      observable = new Observable();
       listener = sinon.spy();
     });
 
@@ -138,7 +138,7 @@ describe('ol.Observable', function() {
       observable.dispatchEvent('foo');
       expect(listener.calledOnce).to.be(true);
 
-      _ol_Observable_.unByKey(key);
+      Observable.unByKey(key);
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
     });

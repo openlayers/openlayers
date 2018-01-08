@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from './index.js';
 import ObjectEventType from './ObjectEventType.js';
-import _ol_Observable_ from './Observable.js';
+import Observable from './Observable.js';
 import Event from './events/Event.js';
 import _ol_obj_ from './obj.js';
 
@@ -53,7 +53,7 @@ import _ol_obj_ from './obj.js';
  * @api
  */
 var _ol_Object_ = function(opt_values) {
-  _ol_Observable_.call(this);
+  Observable.call(this);
 
   // Call ol.getUid to ensure that the order of objects' ids is the same as
   // the order in which they were created.  This also helps to ensure that
@@ -72,7 +72,7 @@ var _ol_Object_ = function(opt_values) {
   }
 };
 
-inherits(_ol_Object_, _ol_Observable_);
+inherits(_ol_Object_, Observable);
 
 
 /**
