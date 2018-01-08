@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
+import WMTS from '../src/ol/source/WMTS.js';
 
 var parser = new _ol_format_WMTSCapabilities_();
 var map;
@@ -12,7 +12,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
   return response.text();
 }).then(function(text) {
   var result = parser.read(text);
-  var options = _ol_source_WMTS_.optionsFromCapabilities(result, {
+  var options = WMTS.optionsFromCapabilities(result, {
     layer: 'layer-7328',
     matrixSet: 'EPSG:3857'
   });
@@ -25,7 +25,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
       }),
       new TileLayer({
         opacity: 1,
-        source: new _ol_source_WMTS_(/** @type {!olx.source.WMTSOptions} */ (options))
+        source: new WMTS(/** @type {!olx.source.WMTSOptions} */ (options))
       })
     ],
     target: 'map',

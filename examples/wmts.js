@@ -5,7 +5,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
+import WMTS from '../src/ol/source/WMTS.js';
 import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
@@ -28,7 +28,7 @@ var map = new Map({
     }),
     new TileLayer({
       opacity: 0.7,
-      source: new _ol_source_WMTS_({
+      source: new WMTS({
         attributions: 'Tiles © <a href="https://services.arcgisonline.com/arcgis/rest/' +
             'services/Demographics/USA_Population_Density/MapServer/">ArcGIS</a>',
         url: 'https://services.arcgisonline.com/arcgis/rest/' +

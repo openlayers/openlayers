@@ -21,7 +21,7 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.WMTSOptions} options WMTS options.
  * @api
  */
-var _ol_source_WMTS_ = function(options) {
+var WMTS = function(options) {
 
   // TODO: add support for TileMatrixLimits
 
@@ -173,14 +173,14 @@ var _ol_source_WMTS_ = function(options) {
 
 };
 
-inherits(_ol_source_WMTS_, TileImage);
+inherits(WMTS, TileImage);
 
 /**
  * Set the URLs to use for requests.
  * URLs may contain OCG conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
  * @override
  */
-_ol_source_WMTS_.prototype.setUrls = function(urls) {
+WMTS.prototype.setUrls = function(urls) {
   this.urls = urls;
   var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
@@ -195,7 +195,7 @@ _ol_source_WMTS_.prototype.setUrls = function(urls) {
  * @return {!Object} Dimensions.
  * @api
  */
-_ol_source_WMTS_.prototype.getDimensions = function() {
+WMTS.prototype.getDimensions = function() {
   return this.dimensions_;
 };
 
@@ -205,7 +205,7 @@ _ol_source_WMTS_.prototype.getDimensions = function() {
  * @return {string} Format.
  * @api
  */
-_ol_source_WMTS_.prototype.getFormat = function() {
+WMTS.prototype.getFormat = function() {
   return this.format_;
 };
 
@@ -215,7 +215,7 @@ _ol_source_WMTS_.prototype.getFormat = function() {
  * @return {string} Layer.
  * @api
  */
-_ol_source_WMTS_.prototype.getLayer = function() {
+WMTS.prototype.getLayer = function() {
   return this.layer_;
 };
 
@@ -225,7 +225,7 @@ _ol_source_WMTS_.prototype.getLayer = function() {
  * @return {string} MatrixSet.
  * @api
  */
-_ol_source_WMTS_.prototype.getMatrixSet = function() {
+WMTS.prototype.getMatrixSet = function() {
   return this.matrixSet_;
 };
 
@@ -235,7 +235,7 @@ _ol_source_WMTS_.prototype.getMatrixSet = function() {
  * @return {ol.source.WMTSRequestEncoding} Request encoding.
  * @api
  */
-_ol_source_WMTS_.prototype.getRequestEncoding = function() {
+WMTS.prototype.getRequestEncoding = function() {
   return this.requestEncoding_;
 };
 
@@ -245,7 +245,7 @@ _ol_source_WMTS_.prototype.getRequestEncoding = function() {
  * @return {string} Style.
  * @api
  */
-_ol_source_WMTS_.prototype.getStyle = function() {
+WMTS.prototype.getStyle = function() {
   return this.style_;
 };
 
@@ -255,7 +255,7 @@ _ol_source_WMTS_.prototype.getStyle = function() {
  * @return {string} Version.
  * @api
  */
-_ol_source_WMTS_.prototype.getVersion = function() {
+WMTS.prototype.getVersion = function() {
   return this.version_;
 };
 
@@ -264,7 +264,7 @@ _ol_source_WMTS_.prototype.getVersion = function() {
  * @private
  * @return {string} The key for the current dimensions.
  */
-_ol_source_WMTS_.prototype.getKeyForDimensions_ = function() {
+WMTS.prototype.getKeyForDimensions_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
@@ -279,7 +279,7 @@ _ol_source_WMTS_.prototype.getKeyForDimensions_ = function() {
  * @param {Object} dimensions Dimensions.
  * @api
  */
-_ol_source_WMTS_.prototype.updateDimensions = function(dimensions) {
+WMTS.prototype.updateDimensions = function(dimensions) {
   _ol_obj_.assign(this.dimensions_, dimensions);
   this.setKey(this.getKeyForDimensions_());
 };
@@ -309,7 +309,7 @@ _ol_source_WMTS_.prototype.updateDimensions = function(dimensions) {
  * @return {?olx.source.WMTSOptions} WMTS source options object or `null` if the layer was not found.
  * @api
  */
-_ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
+WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var layers = wmtsCap['Contents']['Layer'];
   var l = find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
@@ -477,4 +477,4 @@ _ol_source_WMTS_.optionsFromCapabilities = function(wmtsCap, config) {
     crossOrigin: config['crossOrigin']
   };
 };
-export default _ol_source_WMTS_;
+export default WMTS;
