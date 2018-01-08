@@ -3,6 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_ViewHint_ from '../ViewHint.js';
+import condition from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import _ol_has_ from '../has.js';
@@ -62,6 +63,12 @@ var MouseWheelZoom = function(opt_options) {
    * @type {boolean}
    */
   this.constrainResolution_ = options.constrainResolution || false;
+
+  /**
+   * @private
+   * @type {ol.EventsConditionType}
+   */
+  this.condition_ = options.condition ? options.condition : condition.always;
 
   /**
    * @private
@@ -127,6 +134,9 @@ inherits(MouseWheelZoom, Interaction);
  * @api
  */
 MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
+  if (!this.condition_(mapBrowserEvent)) {
+    return true;
+  }
   var type = mapBrowserEvent.type;
   if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
     return true;

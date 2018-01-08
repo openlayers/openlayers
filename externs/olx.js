@@ -2772,11 +2772,21 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 /**
  * @typedef {{constrainResolution: (boolean|undefined),
+ *     condition: (ol.EventsConditionType|undefined),
  *     duration: (number|undefined),
  *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  */
 olx.interaction.MouseWheelZoomOptions;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled. Default is {@link ol.events.condition.always}.
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.condition;
 
 
 /**
