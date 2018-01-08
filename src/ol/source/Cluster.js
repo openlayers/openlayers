@@ -22,7 +22,7 @@ import VectorSource from '../source/Vector.js';
  * @extends {ol.source.Vector}
  * @api
  */
-var _ol_source_Cluster_ = function(options) {
+var Cluster = function(options) {
   VectorSource.call(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -67,10 +67,10 @@ var _ol_source_Cluster_ = function(options) {
   this.source = options.source;
 
   this.source.on(EventType.CHANGE,
-      _ol_source_Cluster_.prototype.refresh, this);
+      Cluster.prototype.refresh, this);
 };
 
-inherits(_ol_source_Cluster_, VectorSource);
+inherits(Cluster, VectorSource);
 
 
 /**
@@ -78,7 +78,7 @@ inherits(_ol_source_Cluster_, VectorSource);
  * @return {number} Distance.
  * @api
  */
-_ol_source_Cluster_.prototype.getDistance = function() {
+Cluster.prototype.getDistance = function() {
   return this.distance;
 };
 
@@ -88,7 +88,7 @@ _ol_source_Cluster_.prototype.getDistance = function() {
  * @return {ol.source.Vector} Source.
  * @api
  */
-_ol_source_Cluster_.prototype.getSource = function() {
+Cluster.prototype.getSource = function() {
   return this.source;
 };
 
@@ -96,7 +96,7 @@ _ol_source_Cluster_.prototype.getSource = function() {
 /**
  * @inheritDoc
  */
-_ol_source_Cluster_.prototype.loadFeatures = function(extent, resolution,
+Cluster.prototype.loadFeatures = function(extent, resolution,
     projection) {
   this.source.loadFeatures(extent, resolution, projection);
   if (resolution !== this.resolution) {
@@ -113,7 +113,7 @@ _ol_source_Cluster_.prototype.loadFeatures = function(extent, resolution,
  * @param {number} distance The distance in pixels.
  * @api
  */
-_ol_source_Cluster_.prototype.setDistance = function(distance) {
+Cluster.prototype.setDistance = function(distance) {
   this.distance = distance;
   this.refresh();
 };
@@ -123,7 +123,7 @@ _ol_source_Cluster_.prototype.setDistance = function(distance) {
  * handle the source changing
  * @override
  */
-_ol_source_Cluster_.prototype.refresh = function() {
+Cluster.prototype.refresh = function() {
   this.clear();
   this.cluster();
   this.addFeatures(this.features);
@@ -134,7 +134,7 @@ _ol_source_Cluster_.prototype.refresh = function() {
 /**
  * @protected
  */
-_ol_source_Cluster_.prototype.cluster = function() {
+Cluster.prototype.cluster = function() {
   if (this.resolution === undefined) {
     return;
   }
@@ -179,7 +179,7 @@ _ol_source_Cluster_.prototype.cluster = function() {
  * @return {ol.Feature} The cluster feature.
  * @protected
  */
-_ol_source_Cluster_.prototype.createCluster = function(features) {
+Cluster.prototype.createCluster = function(features) {
   var centroid = [0, 0];
   for (var i = features.length - 1; i >= 0; --i) {
     var geometry = this.geometryFunction(features[i]);
@@ -195,4 +195,4 @@ _ol_source_Cluster_.prototype.createCluster = function(features) {
   cluster.set('features', features);
   return cluster;
 };
-export default _ol_source_Cluster_;
+export default Cluster;

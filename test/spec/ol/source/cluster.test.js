@@ -3,7 +3,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_source_Cluster_ from '../../../../src/ol/source/Cluster.js';
+import Cluster from '../../../../src/ol/source/Cluster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
@@ -11,12 +11,12 @@ describe('ol.source.Cluster', function() {
 
   describe('constructor', function() {
     it('returns a cluster source', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         projection: getProjection('EPSG:4326'),
         source: new VectorSource()
       });
       expect(source).to.be.a(Source);
-      expect(source).to.be.a(_ol_source_Cluster_);
+      expect(source).to.be.a(Cluster);
       expect(source.getDistance()).to.be(20);
     });
   });
@@ -25,7 +25,7 @@ describe('ol.source.Cluster', function() {
     var extent = [-1, -1, 1, 1];
     var projection = getProjection('EPSG:3857');
     it('clusters a source with point features', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         source: new VectorSource({
           features: [
             new Feature(new Point([0, 0])),
@@ -38,7 +38,7 @@ describe('ol.source.Cluster', function() {
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
     it('clusters with a custom geometryFunction', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         geometryFunction: function(feature) {
           var geom = feature.getGeometry();
           if (geom.getType() == 'Point') {
@@ -65,7 +65,7 @@ describe('ol.source.Cluster', function() {
 
   describe('#setDistance', function() {
     it('changes the distance value', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         distance: 100,
         source: new VectorSource()
       });

@@ -6,7 +6,7 @@ import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
+import Cluster from '../src/ol/source/Cluster.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -122,7 +122,7 @@ function selectStyleFunction(feature) {
 }
 
 vector = new VectorLayer({
-  source: new _ol_source_Cluster_({
+  source: new Cluster({
     distance: 40,
     source: new VectorSource({
       url: 'data/kml/2012_Earthquakes_Mag5.kml',

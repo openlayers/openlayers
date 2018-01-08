@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
+import Cluster from '../src/ol/source/Cluster.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -28,7 +28,7 @@ var source = new VectorSource({
   features: features
 });
 
-var clusterSource = new _ol_source_Cluster_({
+var clusterSource = new Cluster({
   distance: parseInt(distance.value, 10),
   source: source
 });
