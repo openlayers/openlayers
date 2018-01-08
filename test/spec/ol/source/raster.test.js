@@ -7,7 +7,7 @@ import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 
 var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
     'BAAEAAAICRAEAOw==';
@@ -311,7 +311,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('is initiated on the underlying source', function(done) {
 
-      var source = new _ol_source_XYZ_({
+      var source = new XYZ({
         url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
       });
 

@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 
@@ -55,7 +55,7 @@ describe('layer clipping', function() {
 
     it('clips to all parts of the MultiPolygon', function(done) {
 
-      var source = new _ol_source_XYZ_({
+      var source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });

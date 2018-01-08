@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transform, transformExtent} from '../src/ol/proj.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 var mapMinZoom = 1;
 var mapMaxZoom = 15;
@@ -17,7 +17,7 @@ var map = new Map({
     }),
     new TileLayer({
       extent: transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),
-      source: new _ol_source_XYZ_({
+      source: new XYZ({
         attributions: 'Tiles © USGS, rendered with ' +
             '<a href="http://www.maptiler.com/">MapTiler</a>',
         url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',

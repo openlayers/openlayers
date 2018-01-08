@@ -5,7 +5,7 @@ import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import RasterSource from '../src/ol/source/Raster.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 
 /**
@@ -102,7 +102,7 @@ function shade(inputs, data) {
   return {data: shadeData, width: width, height: height};
 }
 
-var elevation = new _ol_source_XYZ_({
+var elevation = new XYZ({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
   crossOrigin: 'anonymous',
   transition: 0

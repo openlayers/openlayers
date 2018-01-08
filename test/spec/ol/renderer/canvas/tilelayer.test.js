@@ -5,7 +5,7 @@ import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
 import CanvasTileLayerRenderer from '../../../../../src/ol/renderer/canvas/TileLayer.js';
 import _ol_source_TileWMS_ from '../../../../../src/ol/source/TileWMS.js';
-import _ol_source_XYZ_ from '../../../../../src/ol/source/XYZ.js';
+import XYZ from '../../../../../src/ol/source/XYZ.js';
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 
 
@@ -71,7 +71,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
 
     it('uses correct draw scale when rotating (HiDPI)', function() {
       var layer = new TileLayer({
-        source: new _ol_source_XYZ_({
+        source: new XYZ({
           tileSize: 1
         })
       });

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_source_OSM_ from '../source/OSM.js';
-import _ol_source_XYZ_ from '../source/XYZ.js';
+import XYZ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -25,7 +25,7 @@ var _ol_source_Stamen_ = function(options) {
     'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
       '/{z}/{x}/{y}.' + layerConfig.extension;
 
-  _ol_source_XYZ_.call(this, {
+  XYZ.call(this, {
     attributions: _ol_source_Stamen_.ATTRIBUTIONS,
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
@@ -39,7 +39,7 @@ var _ol_source_Stamen_ = function(options) {
   });
 };
 
-inherits(_ol_source_Stamen_, _ol_source_XYZ_);
+inherits(_ol_source_Stamen_, XYZ);
 
 
 /**

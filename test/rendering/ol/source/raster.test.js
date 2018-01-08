@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 
 where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
 
@@ -50,7 +50,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
     it('renders the result of an operation', function(done) {
       createMap('canvas', 1);
 
-      var source = new _ol_source_XYZ_({
+      var source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });

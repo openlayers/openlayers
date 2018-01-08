@@ -14,7 +14,7 @@ import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
-import _ol_source_XYZ_ from '../../../src/ol/source/XYZ.js';
+import XYZ from '../../../src/ol/source/XYZ.js';
 
 describe('ol.Map', function() {
 
@@ -125,7 +125,7 @@ describe('ol.Map', function() {
         view: view,
         layers: [
           new TileLayer({
-            source: new _ol_source_XYZ_({
+            source: new XYZ({
               url: '#{x}/{y}/{z}'
             })
           })
@@ -279,13 +279,13 @@ describe('ol.Map', function() {
         }),
         layers: [
           new TileLayer({
-            source: new _ol_source_XYZ_()
+            source: new XYZ()
           }),
           new TileLayer({
-            source: new _ol_source_XYZ_()
+            source: new XYZ()
           }),
           new TileLayer({
-            source: new _ol_source_XYZ_()
+            source: new XYZ()
           })
         ]
       });

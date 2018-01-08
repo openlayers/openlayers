@@ -2,7 +2,7 @@
  * @module ol/source/OSM
  */
 import {inherits} from '../index.js';
-import _ol_source_XYZ_ from '../source/XYZ.js';
+import XYZ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -30,7 +30,7 @@ var _ol_source_OSM_ = function(opt_options) {
   var url = options.url !== undefined ?
     options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-  _ol_source_XYZ_.call(this, {
+  XYZ.call(this, {
     attributions: attributions,
     cacheSize: options.cacheSize,
     crossOrigin: crossOrigin,
@@ -44,7 +44,7 @@ var _ol_source_OSM_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_OSM_, _ol_source_XYZ_);
+inherits(_ol_source_OSM_, XYZ);
 
 
 /**

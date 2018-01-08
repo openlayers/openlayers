@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_obj_ from '../obj.js';
 import SourceState from '../source/State.js';
-import _ol_source_XYZ_ from '../source/XYZ.js';
+import XYZ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -41,7 +41,7 @@ var CartoDB = function(options) {
    */
   this.templateCache_ = {};
 
-  _ol_source_XYZ_.call(this, {
+  XYZ.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -54,7 +54,7 @@ var CartoDB = function(options) {
   this.initializeMap_();
 };
 
-inherits(CartoDB, _ol_source_XYZ_);
+inherits(CartoDB, XYZ);
 
 
 /**

@@ -6,7 +6,7 @@ import TileLayer from '../../../../src/ol/layer/Tile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -73,7 +73,7 @@ describe('ol.rendering.layer.Tile', function() {
   describe('with tile transition', function() {
     it('renders correctly after the transition', function(done) {
       createMap('canvas');
-      var source = new _ol_source_XYZ_({
+      var source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
       waitForTiles([source], {}, function() {
@@ -89,7 +89,7 @@ describe('ol.rendering.layer.Tile', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });
@@ -117,11 +117,11 @@ describe('ol.rendering.layer.Tile', function() {
     var source1, source2;
 
     beforeEach(function() {
-      source1 = new _ol_source_XYZ_({
+      source1 = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });
-      source2 = new _ol_source_XYZ_({
+      source2 = new XYZ({
         url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png',
         transition: 0
       });
@@ -191,7 +191,7 @@ describe('ol.rendering.layer.Tile', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });
@@ -272,7 +272,7 @@ describe('ol.rendering.layer.Tile', function() {
     var source, onAddLayer;
 
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });

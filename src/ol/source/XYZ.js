@@ -27,7 +27,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.XYZOptions=} opt_options XYZ options.
  * @api
  */
-var _ol_source_XYZ_ = function(opt_options) {
+var XYZ = function(opt_options) {
   var options = opt_options || {};
   var projection = options.projection !== undefined ?
     options.projection : 'EPSG:3857';
@@ -59,5 +59,5 @@ var _ol_source_XYZ_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_XYZ_, TileImage);
-export default _ol_source_XYZ_;
+inherits(XYZ, TileImage);
+export default XYZ;

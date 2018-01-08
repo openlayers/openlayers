@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 // The tile size supported by the ArcGIS tile service.
 var tileSize = 512;
@@ -13,7 +13,7 @@ var map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new _ol_source_XYZ_({
+      source: new XYZ({
         attributions: 'Copyright:© 2013 ESRI, i-cubed, GeoEye',
         maxZoom: 16,
         projection: 'EPSG:4326',

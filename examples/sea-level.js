@@ -5,7 +5,7 @@ import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import RasterSource from '../src/ol/source/Raster.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 function flood(pixels, data) {
   var pixel = pixels[0];
@@ -24,7 +24,7 @@ function flood(pixels, data) {
 }
 
 var key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
-var elevation = new _ol_source_XYZ_({
+var elevation = new XYZ({
   url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
   crossOrigin: 'anonymous',
   transition: 0
@@ -39,7 +39,7 @@ var map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
-      source: new _ol_source_XYZ_({
+      source: new XYZ({
         url: 'https://api.mapbox.com/styles/v1/tschaub/ciutc102t00c62js5fqd47kqw/tiles/256/{z}/{x}/{y}?access_token=' + key
       })
     }),

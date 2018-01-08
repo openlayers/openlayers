@@ -9,7 +9,7 @@ import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import TileImage from '../src/ol/source/TileImage.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import proj4 from 'proj4';
 
@@ -59,7 +59,7 @@ proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 var layers = {};
 
 layers['bng'] = new TileLayer({
-  source: new _ol_source_XYZ_({
+  source: new XYZ({
     projection: 'EPSG:27700',
     url: 'https://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
     crossOrigin: '',
@@ -117,7 +117,7 @@ fetch(url).then(function(response) {
 });
 
 layers['grandcanyon'] = new TileLayer({
-  source: new _ol_source_XYZ_({
+  source: new XYZ({
     url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
     crossOrigin: '',
     tilePixelRatio: 2,

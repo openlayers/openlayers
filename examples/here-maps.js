@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 var appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
 var appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';
@@ -59,7 +59,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   layers.push(new TileLayer({
     visible: false,
     preload: Infinity,
-    source: new _ol_source_XYZ_({
+    source: new XYZ({
       url: createUrl(urlTpl, layerDesc),
       attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
         '<a href="http://developer.here.com">HERE</a>'
