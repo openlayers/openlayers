@@ -3,7 +3,7 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits} from '../../index.js';
-import _ol_ImageCanvas_ from '../../ImageCanvas.js';
+import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
@@ -153,7 +153,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
         context.canvas.width = imageFrameState.size[0] * pixelRatio;
         context.canvas.height = imageFrameState.size[1] * pixelRatio;
         vectorRenderer.composeFrame(imageFrameState, layerState, context);
-        this.image_ = new _ol_ImageCanvas_(renderedExtent, viewResolution, pixelRatio, context.canvas);
+        this.image_ = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
         this.skippedFeatures_ = skippedFeatures;
       }
     } else {

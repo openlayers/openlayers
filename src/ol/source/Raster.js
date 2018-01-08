@@ -2,7 +2,7 @@
  * @module ol/source/Raster
  */
 import {getUid, inherits} from '../index.js';
-import _ol_ImageCanvas_ from '../ImageCanvas.js';
+import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -317,7 +317,7 @@ RasterSource.prototype.onWorkerComplete_ = function(frameState, err, output, dat
     var width = Math.round(getWidth(extent) / resolution);
     var height = Math.round(getHeight(extent) / resolution);
     context = createCanvasContext2D(width, height);
-    this.renderedImageCanvas_ = new _ol_ImageCanvas_(extent, resolution, 1, context.canvas);
+    this.renderedImageCanvas_ = new ImageCanvas(extent, resolution, 1, context.canvas);
   }
   context.putImageData(output, 0, 0);
 

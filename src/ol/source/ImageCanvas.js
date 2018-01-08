@@ -2,7 +2,7 @@
  * @module ol/source/ImageCanvas
  */
 import {inherits} from '../index.js';
-import _ol_ImageCanvas_ from '../ImageCanvas.js';
+import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import ImageSource from '../source/Image.js';
 
@@ -78,7 +78,7 @@ _ol_source_ImageCanvas_.prototype.getImageInternal = function(extent, resolution
   var canvasElement = this.canvasFunction_(
       extent, resolution, pixelRatio, size, projection);
   if (canvasElement) {
-    canvas = new _ol_ImageCanvas_(extent, resolution, pixelRatio, canvasElement);
+    canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
   }
   this.canvas_ = canvas;
   this.renderedRevision_ = this.getRevision();
