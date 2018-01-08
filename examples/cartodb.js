@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_CartoDB_ from '../src/ol/source/CartoDB.js';
+import CartoDB from '../src/ol/source/CartoDB.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 
 var mapConfig = {
@@ -15,7 +15,7 @@ var mapConfig = {
   }]
 };
 
-var cartoDBSource = new _ol_source_CartoDB_({
+var cartoDBSource = new CartoDB({
   account: 'documentation',
   config: mapConfig
 });
