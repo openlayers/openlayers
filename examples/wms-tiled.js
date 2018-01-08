@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
 var layers = [
@@ -11,7 +11,7 @@ var layers = [
   }),
   new TileLayer({
     extent: [-13884991, 2870341, -7455066, 6338219],
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
       serverType: 'geoserver',

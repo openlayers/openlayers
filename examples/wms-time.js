@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
 import Stamen from '../src/ol/source/Stamen.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 function threeHoursAgo() {
   return new Date(Math.round(Date.now() / 3600000) * 3600000 - 3600000 * 3);
@@ -23,7 +23,7 @@ var layers = [
   }),
   new TileLayer({
     extent: extent,
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       attributions: ['Iowa State University'],
       url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
       params: {'LAYERS': 'nexrad-n0r-wmst'}

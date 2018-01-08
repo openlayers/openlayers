@@ -4,7 +4,7 @@ import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
 import CanvasTileLayerRenderer from '../../../../../src/ol/renderer/canvas/TileLayer.js';
-import _ol_source_TileWMS_ from '../../../../../src/ol/source/TileWMS.js';
+import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 
@@ -19,7 +19,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
       target.style.width = '100px';
       target.style.height = '100px';
       document.body.appendChild(target);
-      source = new _ol_source_TileWMS_({
+      source = new TileWMS({
         url: 'spec/ol/data/osm-0-0-0.png',
         params: {LAYERS: 'foo', TIME: '0'}
       });

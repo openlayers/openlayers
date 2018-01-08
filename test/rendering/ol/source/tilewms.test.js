@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import _ol_source_TileWMS_ from '../../../../src/ol/source/TileWMS.js';
+import TileWMS from '../../../../src/ol/source/TileWMS.js';
 
 describe('ol.rendering.source.TileWMS', function() {
 
@@ -44,7 +44,7 @@ describe('ol.rendering.source.TileWMS', function() {
   });
 
   function createSource(gutter) {
-    return new _ol_source_TileWMS_({
+    return new TileWMS({
       params: {
         'LAYERS': 'layer'
       },

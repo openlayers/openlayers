@@ -4,12 +4,12 @@ import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import ImageWMS from '../src/ol/source/ImageWMS.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
 var layers = [
   new TileLayer({
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
       crossOrigin: 'anonymous',

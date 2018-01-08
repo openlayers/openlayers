@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 
@@ -25,7 +25,7 @@ var layers = [
     source: new OSM()
   }),
   new TileLayer({
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
       serverType: 'geoserver',

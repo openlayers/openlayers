@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 var vectorLayer4326 = new VectorLayer({
@@ -18,7 +18,7 @@ var vectorLayer3857 = new VectorLayer({
 var map4326 = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_TileWMS_({
+      source: new TileWMS({
         url: 'https://ahocevar.com/geoserver/wms',
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
@@ -39,7 +39,7 @@ var map4326 = new Map({
 var map3857 = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_TileWMS_({
+      source: new TileWMS({
         url: 'https://ahocevar.com/geoserver/wms',
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',

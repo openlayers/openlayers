@@ -7,7 +7,7 @@ import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileImage from '../src/ol/source/TileImage.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import XYZ from '../src/ol/source/XYZ.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
@@ -72,7 +72,7 @@ layers['osm'] = new TileLayer({
 });
 
 layers['wms4326'] = new TileLayer({
-  source: new _ol_source_TileWMS_({
+  source: new TileWMS({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {
@@ -84,7 +84,7 @@ layers['wms4326'] = new TileLayer({
 });
 
 layers['wms21781'] = new TileLayer({
-  source: new _ol_source_TileWMS_({
+  source: new TileWMS({
     attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
       'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
     crossOrigin: 'anonymous',
@@ -135,7 +135,7 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
 }
 
 layers['states'] = new TileLayer({
-  source: new _ol_source_TileWMS_({
+  source: new TileWMS({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {'LAYERS': 'topp:states'},
