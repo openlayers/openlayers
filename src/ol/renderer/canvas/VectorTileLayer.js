@@ -17,7 +17,7 @@ import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
 import RendererType from '../Type.js';
-import _ol_renderer_canvas_TileLayer_ from '../canvas/TileLayer.js';
+import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
 import _ol_renderer_vector_ from '../vector.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -34,7 +34,7 @@ var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
    */
   this.context = null;
 
-  _ol_renderer_canvas_TileLayer_.call(this, layer);
+  CanvasTileLayerRenderer.call(this, layer);
 
   /**
    * Declutter tree.
@@ -68,7 +68,7 @@ var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
+inherits(_ol_renderer_canvas_VectorTileLayer_, CanvasTileLayerRenderer);
 
 
 /**
@@ -120,7 +120,7 @@ _ol_renderer_canvas_VectorTileLayer_.VECTOR_REPLAYS = {
  */
 _ol_renderer_canvas_VectorTileLayer_.prototype.disposeInternal = function() {
   _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-  _ol_renderer_canvas_TileLayer_.prototype.disposeInternal.call(this);
+  CanvasTileLayerRenderer.prototype.disposeInternal.call(this);
 };
 
 
@@ -141,7 +141,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.prepareFrame = function(frameStat
     }
   }
   this.renderedLayerRevision_ = layerRevision;
-  return _ol_renderer_canvas_TileLayer_.prototype.prepareFrame.apply(this, arguments);
+  return CanvasTileLayerRenderer.prototype.prepareFrame.apply(this, arguments);
 };
 
 
@@ -258,7 +258,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.drawTileImage = function(
   this.createReplayGroup_(vectorImageTile, frameState);
   if (this.context) {
     this.renderTileImage_(vectorImageTile, frameState, layerState);
-    _ol_renderer_canvas_TileLayer_.prototype.drawTileImage.apply(this, arguments);
+    CanvasTileLayerRenderer.prototype.drawTileImage.apply(this, arguments);
   }
 };
 
@@ -448,7 +448,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.postCompose = function(context, f
     _ol_render_canvas_.rotateAtOffset(context, rotation,
         /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
   }
-  _ol_renderer_canvas_TileLayer_.prototype.postCompose.apply(this, arguments);
+  CanvasTileLayerRenderer.prototype.postCompose.apply(this, arguments);
 };
 
 

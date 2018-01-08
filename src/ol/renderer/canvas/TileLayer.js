@@ -18,7 +18,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.Tile|ol.layer.VectorTile} tileLayer Tile layer.
  * @api
  */
-var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
+var CanvasTileLayerRenderer = function(tileLayer) {
 
   _ol_renderer_canvas_IntermediateCanvas_.call(this, tileLayer);
 
@@ -78,7 +78,7 @@ var _ol_renderer_canvas_TileLayer_ = function(tileLayer) {
 
 };
 
-inherits(_ol_renderer_canvas_TileLayer_, _ol_renderer_canvas_IntermediateCanvas_);
+inherits(CanvasTileLayerRenderer, _ol_renderer_canvas_IntermediateCanvas_);
 
 
 /**
@@ -87,7 +87,7 @@ inherits(_ol_renderer_canvas_TileLayer_, _ol_renderer_canvas_IntermediateCanvas_
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_canvas_TileLayer_['handles'] = function(type, layer) {
+CanvasTileLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && layer.getType() === LayerType.TILE;
 };
 
@@ -98,8 +98,8 @@ _ol_renderer_canvas_TileLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.TileLayer} The layer renderer.
  */
-_ol_renderer_canvas_TileLayer_['create'] = function(mapRenderer, layer) {
-  return new _ol_renderer_canvas_TileLayer_(/** @type {ol.layer.Tile} */ (layer));
+CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
+  return new CanvasTileLayerRenderer(/** @type {ol.layer.Tile} */ (layer));
 };
 
 
@@ -108,7 +108,7 @@ _ol_renderer_canvas_TileLayer_['create'] = function(mapRenderer, layer) {
  * @param {ol.Tile} tile Tile.
  * @return {boolean} Tile is drawable.
  */
-_ol_renderer_canvas_TileLayer_.prototype.isDrawableTile_ = function(tile) {
+CanvasTileLayerRenderer.prototype.isDrawableTile_ = function(tile) {
   var tileState = tile.getState();
   var useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
   return tileState == TileState.LOADED ||
@@ -119,7 +119,7 @@ _ol_renderer_canvas_TileLayer_.prototype.isDrawableTile_ = function(tile) {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, layerState) {
+CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
   var size = frameState.size;
@@ -308,7 +308,7 @@ _ol_renderer_canvas_TileLayer_.prototype.prepareFrame = function(frameState, lay
  * @param {number} gutter Tile gutter.
  * @param {boolean} transition Apply an alpha transition.
  */
-_ol_renderer_canvas_TileLayer_.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter, transition) {
+CanvasTileLayerRenderer.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter, transition) {
   var image = tile.getImage(this.getLayer());
   if (!image) {
     return;
@@ -340,7 +340,7 @@ _ol_renderer_canvas_TileLayer_.prototype.drawTileImage = function(tile, frameSta
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_TileLayer_.prototype.getImage = function() {
+CanvasTileLayerRenderer.prototype.getImage = function() {
   var context = this.context;
   return context ? context.canvas : null;
 };
@@ -350,13 +350,13 @@ _ol_renderer_canvas_TileLayer_.prototype.getImage = function() {
  * @function
  * @return {ol.layer.Tile|ol.layer.VectorTile}
  */
-_ol_renderer_canvas_TileLayer_.prototype.getLayer;
+CanvasTileLayerRenderer.prototype.getLayer;
 
 
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_TileLayer_.prototype.getImageTransform = function() {
+CanvasTileLayerRenderer.prototype.getImageTransform = function() {
   return this.imageTransform_;
 };
-export default _ol_renderer_canvas_TileLayer_;
+export default CanvasTileLayerRenderer;

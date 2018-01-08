@@ -3,7 +3,7 @@ import _ol_View_ from '../../../../../src/ol/View.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
-import _ol_renderer_canvas_TileLayer_ from '../../../../../src/ol/renderer/canvas/TileLayer.js';
+import CanvasTileLayerRenderer from '../../../../../src/ol/renderer/canvas/TileLayer.js';
 import _ol_source_TileWMS_ from '../../../../../src/ol/source/TileWMS.js';
 import _ol_source_XYZ_ from '../../../../../src/ol/source/XYZ.js';
 import _ol_transform_ from '../../../../../src/ol/transform.js';
@@ -75,7 +75,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
           tileSize: 1
         })
       });
-      var renderer = new _ol_renderer_canvas_TileLayer_(layer);
+      var renderer = new CanvasTileLayerRenderer(layer);
       renderer.renderedTiles = [];
       var frameState = {
         viewHints: [],

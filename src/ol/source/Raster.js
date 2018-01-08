@@ -14,7 +14,7 @@ import _ol_layer_Image_ from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
-import _ol_renderer_canvas_TileLayer_ from '../renderer/canvas/TileLayer.js';
+import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import _ol_source_Image_ from '../source/Image.js';
 import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
@@ -425,7 +425,7 @@ function createImageRenderer(source) {
  */
 function createTileRenderer(source) {
   var layer = new TileLayer({source: source});
-  return new _ol_renderer_canvas_TileLayer_(layer);
+  return new CanvasTileLayerRenderer(layer);
 }
 
 
