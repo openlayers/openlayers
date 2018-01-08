@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -42,7 +42,7 @@ var raster = new TileLayer({
 var map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: [-8908887.277395891, 5381918.072437216],
     maxZoom: 19,
     zoom: 12

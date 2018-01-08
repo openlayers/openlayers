@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -156,7 +156,7 @@ var map = new Map({
     layers['bng']
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: 'EPSG:3857',
     center: [0, 0],
     zoom: 2
@@ -173,7 +173,7 @@ var renderEdges = false;
 function updateViewProjection() {
   var newProj = getProjection(viewProjSelect.value);
   var newProjExtent = newProj.getExtent();
-  var newView = new _ol_View_({
+  var newView = new View({
     projection: newProj,
     center: _ol_extent_.getCenter(newProjExtent || [0, 0, 0, 0]),
     zoom: 0,

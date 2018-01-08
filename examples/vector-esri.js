@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -107,7 +107,7 @@ var raster = new TileLayer({
 var map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-97.6114, 38.8403]),
     zoom: 7
   })

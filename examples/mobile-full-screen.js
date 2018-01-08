@@ -1,11 +1,11 @@
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 2
 });

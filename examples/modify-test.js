@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
@@ -235,7 +235,7 @@ var map = new Map({
   interactions: defaultInteractions().extend([select, modify]),
   layers: [layer],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 1000000],
     zoom: 2
   })

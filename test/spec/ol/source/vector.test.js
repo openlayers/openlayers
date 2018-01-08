@@ -2,7 +2,7 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -445,7 +445,7 @@ describe('ol.source.Vector', function() {
               source: source
             })
           ],
-          view: new _ol_View_({
+          view: new View({
             center: fromLonLat(center),
             zoom: 7
           })

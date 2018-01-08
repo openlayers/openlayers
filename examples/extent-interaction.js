@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_events_condition_ from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_interaction_Extent_ from '../src/ol/interaction/Extent.js';
@@ -23,7 +23,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

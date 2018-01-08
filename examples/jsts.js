@@ -1,7 +1,7 @@
 // NOCOMPILE
 // this example uses JSTS for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -44,7 +44,7 @@ var rasterLayer = new TileLayer({
 var map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([126.979293, 37.528787]),
     zoom: 15
   })

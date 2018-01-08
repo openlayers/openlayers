@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Polyline from '../src/ol/format/Polyline.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -130,7 +130,7 @@ var center = [-5639523.95, -3501274.52];
 var map = new Map({
   target: document.getElementById('map'),
   loadTilesWhileAnimating: true,
-  view: new _ol_View_({
+  view: new View({
     center: center,
     zoom: 10,
     minZoom: 2,

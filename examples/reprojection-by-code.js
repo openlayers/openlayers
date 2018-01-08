@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
@@ -16,7 +16,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: 'EPSG:3857',
     center: [0, 0],
     zoom: 1
@@ -32,7 +32,7 @@ var renderEdgesCheckbox = document.getElementById('render-edges');
 function setProjection(code, name, proj4def, bbox) {
   if (code === null || name === null || proj4def === null || bbox === null) {
     resultSpan.innerHTML = 'Nothing usable found, using EPSG:3857...';
-    map.setView(new _ol_View_({
+    map.setView(new View({
       projection: 'EPSG:3857',
       center: [0, 0],
       zoom: 1
@@ -52,7 +52,7 @@ function setProjection(code, name, proj4def, bbox) {
   var extent = _ol_extent_.applyTransform(
       [bbox[1], bbox[2], bbox[3], bbox[0]], fromLonLat);
   newProj.setExtent(extent);
-  var newView = new _ol_View_({
+  var newView = new View({
     projection: newProj
   });
   map.setView(newView);

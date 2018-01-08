@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -19,7 +19,7 @@ var map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

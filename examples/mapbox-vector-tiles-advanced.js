@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../src/ol/proj.js';
@@ -49,7 +49,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     minZoom: 1,
     zoom: 2

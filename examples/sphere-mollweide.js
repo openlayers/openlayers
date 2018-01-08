@@ -1,6 +1,6 @@
 import Graticule from '../src/ol/Graticule.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
@@ -33,7 +33,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     projection: sphereMollweideProjection,
     resolutions: [65536, 32768, 16384, 8192, 4096, 2048],

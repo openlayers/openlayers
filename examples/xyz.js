@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
 
@@ -14,7 +14,7 @@ var map = new Map({
       })
     })
   ],
-  view: new _ol_View_({
+  view: new View({
     center: [-472202, 7530279],
     zoom: 12
   })

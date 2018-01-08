@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
@@ -24,7 +24,7 @@ describe('ol.rendering.layer.Tile', function() {
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size[0], size[1]),
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: opt_center !== undefined ? opt_center : transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         resolutions: opt_resolutions,

@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
 import _ol_source_Vector_ from '../src/ol/source/Vector.js';
@@ -76,7 +76,7 @@ var map = new Map({
     blueLayer
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [250, 220],
     extent: [0, 0, 500, 500],
     resolution: 4,

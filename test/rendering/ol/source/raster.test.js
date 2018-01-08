@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
@@ -32,7 +32,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
       target: createMapDiv(200, 200),
       pixelRatio: pixelRatio,
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: [0, 0],
         zoom: 0
       })

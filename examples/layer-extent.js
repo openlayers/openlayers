@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transformExtent} from '../src/ol/proj.js';
 import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
@@ -33,7 +33,7 @@ var overlay = new TileLayer({
 var map = new Map({
   layers: [base, overlay],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 1
   })

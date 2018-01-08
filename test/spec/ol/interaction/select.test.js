@@ -3,7 +3,7 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
@@ -62,7 +62,7 @@ describe('ol.interaction.Select', function() {
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

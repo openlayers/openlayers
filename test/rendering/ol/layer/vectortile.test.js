@@ -1,6 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -25,7 +25,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size, size),
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: [1825927.7316762917, 6143091.089223046],
         zoom: 14
       })

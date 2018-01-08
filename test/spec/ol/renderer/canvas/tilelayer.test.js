@@ -1,5 +1,5 @@
 import Map from '../../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../../src/ol/View.js';
+import View from '../../../../../src/ol/View.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
@@ -32,7 +32,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
         layers: [new TileLayer({
           source: source
         })],
-        view: new _ol_View_({
+        view: new View({
           zoom: 0,
           center: [0, 0]
         })

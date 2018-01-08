@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 
@@ -15,7 +15,7 @@ var wmsLayer = new TileLayer({
   source: wmsSource
 });
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 1
 });

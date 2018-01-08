@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_Zoomify_ from '../src/ol/source/Zoomify.js';
 
@@ -23,7 +23,7 @@ var extent = [0, -imgHeight, imgWidth, 0];
 var map = new Map({
   layers: [layer],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     // adjust zoom levels to those provided by the source
     resolutions: layer.getSource().getTileGrid().getResolutions(),
     // constrain the center: center cannot be set outside this extent

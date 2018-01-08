@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_has_ from '../src/ol/has.js';
@@ -95,7 +95,7 @@ var map = new Map({
     vectorLayer
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([7, 52]),
     zoom: 3
   })

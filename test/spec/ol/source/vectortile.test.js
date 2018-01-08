@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../../src/ol/VectorTile.js';
 import MVT from '../../../../src/ol/format/MVT.js';
@@ -117,7 +117,7 @@ describe('ol.source.VectorTile', function() {
           })
         ],
         target: target,
-        view: new _ol_View_({
+        view: new View({
           zoom: 11,
           center: [666373.1624999996, 7034265.3572]
         })

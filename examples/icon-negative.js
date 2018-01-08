@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -39,7 +39,7 @@ var map = new Map({
     })
   ],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 3
   })

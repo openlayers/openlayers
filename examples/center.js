@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -38,7 +38,7 @@ var vectorLayer = new _ol_layer_Vector_({
   source: source,
   style: style
 });
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 1
 });

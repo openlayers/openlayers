@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 
@@ -59,7 +59,7 @@ describe('ol.interaction.Interaction', function() {
   describe('zoomByDelta()', function() {
 
     it('changes view resolution', function() {
-      var view = new _ol_View_({
+      var view = new View({
         resolution: 1,
         resolutions: [4, 2, 1, 0.5, 0.25]
       });
@@ -78,7 +78,7 @@ describe('ol.interaction.Interaction', function() {
     });
 
     it('changes view resolution and center relative to the anchor', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         resolution: 1,
         resolutions: [4, 2, 1, 0.5, 0.25]
@@ -98,7 +98,7 @@ describe('ol.interaction.Interaction', function() {
     });
 
     it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         extent: [-2.5, -2.5, 2.5, 2.5],
         resolution: 1,

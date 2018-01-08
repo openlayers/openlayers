@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import FullScreen from '../src/ol/control/FullScreen.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
@@ -25,7 +25,7 @@ var map = new Map({
   ],
   // Use the canvas renderer because it's currently the fastest
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-33519607, 5616436],
     rotation: -Math.PI / 8,
     zoom: 8

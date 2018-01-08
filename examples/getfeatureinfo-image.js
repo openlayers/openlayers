@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
 
@@ -15,7 +15,7 @@ var wmsLayer = new _ol_layer_Image_({
   source: wmsSource
 });
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 1
 });

@@ -1,7 +1,7 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -38,7 +38,7 @@ describe('ol.interaction.Snap', function() {
 
       map = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           projection: 'EPSG:4326',
           center: [0, 0],
           resolution: 1

@@ -2,7 +2,7 @@ import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
@@ -50,7 +50,7 @@ describe('ol.interaction.Modify', function() {
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

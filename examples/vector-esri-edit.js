@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import Draw from '../src/ol/interaction/Draw.js';
@@ -80,7 +80,7 @@ var map = new Map({
   interactions: defaultInteractions().extend([draw, select, modify]),
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-122.619, 45.512]),
     zoom: 12
   })

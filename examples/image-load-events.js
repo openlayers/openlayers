@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
 
@@ -99,7 +99,7 @@ var map = new Map({
     new _ol_layer_Image_({source: source})
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-10997148, 4569099],
     zoom: 4
   })

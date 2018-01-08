@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {circular as circularPolygon} from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
@@ -29,7 +29,7 @@ var map4326 = new Map({
     vectorLayer4326
   ],
   target: 'map4326',
-  view: new _ol_View_({
+  view: new View({
     projection: 'EPSG:4326',
     center: [0, 0],
     zoom: 2
@@ -50,7 +50,7 @@ var map3857 = new Map({
     vectorLayer3857
   ],
   target: 'map3857',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

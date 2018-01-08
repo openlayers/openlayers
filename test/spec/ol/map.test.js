@@ -2,7 +2,7 @@ import Feature from '../../../src/ol/Feature.js';
 import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
-import _ol_View_ from '../../../src/ol/View.js';
+import View from '../../../src/ol/View.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
@@ -117,7 +117,7 @@ describe('ol.Map', function() {
       style.height = '180px';
       document.body.appendChild(target);
 
-      view = new _ol_View_({
+      view = new View({
         projection: 'EPSG:4326'
       });
       map = new Map({
@@ -200,7 +200,7 @@ describe('ol.Map', function() {
             features: [new Feature(new LineString([[-50, 0], [50, 0]]))]
           })
         })],
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 17
         })
@@ -273,7 +273,7 @@ describe('ol.Map', function() {
 
       map = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 1
         }),
@@ -328,7 +328,7 @@ describe('ol.Map', function() {
       document.body.appendChild(target);
       map = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           projection: 'EPSG:4326',
           center: [0, 0],
           resolution: 1
@@ -608,7 +608,7 @@ describe('ol.Map', function() {
         document.body.appendChild(target);
         map = new Map({
           target: target,
-          view: new _ol_View_({
+          view: new View({
             projection: 'EPSG:4326',
             center: [0, 0],
             resolution: 1

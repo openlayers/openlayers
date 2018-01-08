@@ -5,7 +5,7 @@ import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorImageTile from '../../../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
-import _ol_View_ from '../../../../../src/ol/View.js';
+import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -39,7 +39,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       target.style.height = '256px';
       document.body.appendChild(target);
       map = new Map({
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
@@ -363,7 +363,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
             source: source
           })
         ],
-        view: new _ol_View_({
+        view: new View({
           center: _ol_extent_.getCenter(extent),
           zoom: 19
         })

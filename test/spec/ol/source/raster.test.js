@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import TileState from '../../../../src/ol/TileState.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
@@ -60,7 +60,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     map = new Map({
       target: target,
-      view: new _ol_View_({
+      view: new View({
         resolutions: [1],
         projection: new _ol_proj_Projection_({
           code: 'image',
@@ -325,7 +325,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
       map2 = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),

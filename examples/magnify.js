@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -15,7 +15,7 @@ var container = document.getElementById('map');
 var map = new Map({
   layers: [imagery],
   target: container,
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-109, 46.5]),
     zoom: 6
   })

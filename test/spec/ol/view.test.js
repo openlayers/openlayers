@@ -1,5 +1,5 @@
 import Map from '../../../src/ol/Map.js';
-import _ol_View_ from '../../../src/ol/View.js';
+import View from '../../../src/ol/View.js';
 import ViewHint from '../../../src/ol/ViewHint.js';
 import * as _ol_extent_ from '../../../src/ol/extent.js';
 import Circle from '../../../src/ol/geom/Circle.js';
@@ -12,11 +12,11 @@ describe('ol.View', function() {
     var view;
 
     beforeEach(function() {
-      view = new _ol_View_();
+      view = new View();
     });
 
     it('creates an instance', function() {
-      expect(view).to.be.a(_ol_View_);
+      expect(view).to.be.a(View);
     });
 
     it('provides default rotation', function() {
@@ -32,7 +32,7 @@ describe('ol.View', function() {
       describe('with no options', function() {
         it('gives a correct center constraint function', function() {
           var options = {};
-          var fn = _ol_View_.createCenterConstraint_(options);
+          var fn = View.createCenterConstraint_(options);
           expect(fn([0, 0])).to.eql([0, 0]);
           expect(fn(undefined)).to.eql(undefined);
           expect(fn([42, -100])).to.eql([42, -100]);
@@ -44,7 +44,7 @@ describe('ol.View', function() {
           var options = {
             extent: [0, 0, 1, 1]
           };
-          var fn = _ol_View_.createCenterConstraint_(options);
+          var fn = View.createCenterConstraint_(options);
           expect(fn([0, 0])).to.eql([0, 0]);
           expect(fn([-10, 0])).to.eql([0, 0]);
           expect(fn([100, 100])).to.eql([1, 1]);
@@ -58,7 +58,7 @@ describe('ol.View', function() {
       describe('with no options', function() {
         it('gives a correct resolution constraint function', function() {
           var options = {};
-          var fn = _ol_View_.createResolutionConstraint_(options).constraint;
+          var fn = View.createResolutionConstraint_(options).constraint;
           expect(fn(156543.03392804097, 0, 0))
               .to.roughlyEqual(156543.03392804097, 1e-9);
           expect(fn(78271.51696402048, 0, 0))
@@ -74,7 +74,7 @@ describe('ol.View', function() {
                 maxZoom: 3,
                 zoomFactor: 3
               };
-              var info = _ol_View_.createResolutionConstraint_(options);
+              var info = View.createResolutionConstraint_(options);
               var maxResolution = info.maxResolution;
               expect(maxResolution).to.eql(81);
               var minResolution = info.minResolution;
@@ -94,7 +94,7 @@ describe('ol.View', function() {
           var options = {
             resolutions: [97, 76, 65, 54, 0.45]
           };
-          var info = _ol_View_.createResolutionConstraint_(options);
+          var info = View.createResolutionConstraint_(options);
           var maxResolution = info.maxResolution;
           expect(maxResolution).to.eql(97);
           var minResolution = info.minResolution;
@@ -112,7 +112,7 @@ describe('ol.View', function() {
 
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return _ol_View_.createResolutionConstraint_(options).constraint;
+          return View.createResolutionConstraint_(options).constraint;
         }
 
         it('works with only maxZoom', function() {
@@ -179,7 +179,7 @@ describe('ol.View', function() {
 
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return _ol_View_.createResolutionConstraint_(options).constraint;
+          return View.createResolutionConstraint_(options).constraint;
         }
 
         it('works with only maxResolution', function() {
@@ -248,7 +248,7 @@ describe('ol.View', function() {
 
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
-          return _ol_View_.createResolutionConstraint_(options).constraint;
+          return View.createResolutionConstraint_(options).constraint;
         }
 
         it('respects maxResolution over minZoom', function() {
@@ -292,7 +292,7 @@ describe('ol.View', function() {
     describe('create rotation constraint', function() {
       it('gives a correct rotation constraint function', function() {
         var options = {};
-        var fn = _ol_View_.createRotationConstraint_(options);
+        var fn = View.createRotationConstraint_(options);
         expect(fn(0.01, 0)).to.eql(0);
         expect(fn(0.15, 0)).to.eql(0.15);
       });
@@ -303,7 +303,7 @@ describe('ol.View', function() {
   describe('#setHint()', function() {
 
     it('changes a view hint', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -317,7 +317,7 @@ describe('ol.View', function() {
     });
 
     it('triggers the change event', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -335,7 +335,7 @@ describe('ol.View', function() {
   describe('#getUpdatedOptions_()', function() {
 
     it('applies minZoom to constructor options', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         minZoom: 2,
         zoom: 10
@@ -348,7 +348,7 @@ describe('ol.View', function() {
     });
 
     it('applies the current zoom', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 10
       });
@@ -360,7 +360,7 @@ describe('ol.View', function() {
     });
 
     it('applies the current resolution if resolution was originally supplied', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         resolution: 1000
       });
@@ -372,7 +372,7 @@ describe('ol.View', function() {
     });
 
     it('applies the current center', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 10
       });
@@ -384,7 +384,7 @@ describe('ol.View', function() {
     });
 
     it('applies the current rotation', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 10
       });
@@ -418,7 +418,7 @@ describe('ol.View', function() {
     });
 
     it('can be called to animate view properties', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 5
       });
@@ -438,7 +438,7 @@ describe('ol.View', function() {
     });
 
     it('allows duration to be zero', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 5
       });
@@ -457,7 +457,7 @@ describe('ol.View', function() {
     });
 
     it('immediately completes for no-op animations', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 5
       });
@@ -471,7 +471,7 @@ describe('ol.View', function() {
     });
 
     it('immediately completes if view is not defined before', function() {
-      var view = new _ol_View_();
+      var view = new View();
       var center = [1, 2];
       var zoom = 3;
       var rotation = 0.4;
@@ -489,7 +489,7 @@ describe('ol.View', function() {
     });
 
     it('sets final animation state if view is not defined before', function() {
-      var view = new _ol_View_();
+      var view = new View();
 
       var center = [1, 2];
       var zoom = 3;
@@ -514,7 +514,7 @@ describe('ol.View', function() {
     });
 
     it('prefers zoom over resolution', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 5
       });
@@ -532,7 +532,7 @@ describe('ol.View', function() {
 
     it('avoids going under minResolution', function(done) {
       var maxZoom = 14;
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         maxZoom: maxZoom
@@ -551,7 +551,7 @@ describe('ol.View', function() {
     });
 
     it('takes the shortest arc to the target rotation', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: Math.PI / 180 * 1
@@ -566,7 +566,7 @@ describe('ol.View', function() {
     });
 
     it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: Math.PI / 180 * 1
@@ -581,7 +581,7 @@ describe('ol.View', function() {
     });
 
     it('calls a callback when animation completes', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -596,7 +596,7 @@ describe('ol.View', function() {
     });
 
     it('calls callback with false when animation is interrupted', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -613,7 +613,7 @@ describe('ol.View', function() {
     });
 
     it('calls a callback even if animation is a no-op', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -628,7 +628,7 @@ describe('ol.View', function() {
     });
 
     it('calls a callback if view is not defined before', function(done) {
-      var view = new _ol_View_();
+      var view = new View();
 
       view.animate({
         zoom: 10,
@@ -641,7 +641,7 @@ describe('ol.View', function() {
     });
 
     it('can run multiple animations in series', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -670,7 +670,7 @@ describe('ol.View', function() {
     });
 
     it('properly sets the ANIMATING hint', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -705,7 +705,7 @@ describe('ol.View', function() {
     });
 
     it('clears the ANIMATING hint when animations are cancelled', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -737,7 +737,7 @@ describe('ol.View', function() {
 
     it('completes multiple staggered animations run in parallel', function(done) {
 
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -770,7 +770,7 @@ describe('ol.View', function() {
 
     it('completes complex animation using resolution', function(done) {
 
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         resolution: 2
       });
@@ -841,7 +841,7 @@ describe('ol.View', function() {
     });
 
     it('cancels a currently running animation', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -863,7 +863,7 @@ describe('ol.View', function() {
     });
 
     it('cancels a multiple animations', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -893,7 +893,7 @@ describe('ol.View', function() {
     });
 
     it('calls callbacks with false to indicate animations did not complete', function(done) {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0
       });
@@ -920,14 +920,14 @@ describe('ol.View', function() {
     var resolutions = [512, 256, 128, 64, 32, 16];
 
     it('returns correct resolutions', function() {
-      view = new _ol_View_({
+      view = new View({
         resolutions: resolutions
       });
       expect(view.getResolutions()).to.be(resolutions);
     });
 
     it('returns resolutions as undefined', function() {
-      view = new _ol_View_();
+      view = new View();
       expect(view.getResolutions()).to.be(undefined);
     });
   });
@@ -935,7 +935,7 @@ describe('ol.View', function() {
   describe('#getZoom', function() {
     var view;
     beforeEach(function() {
-      view = new _ol_View_({
+      view = new View({
         resolutions: [512, 256, 128, 64, 32, 16]
       });
     });
@@ -967,7 +967,7 @@ describe('ol.View', function() {
     });
 
     it('works for resolution arrays with variable zoom factors', function() {
-      var view = new _ol_View_({
+      var view = new View({
         resolutions: [10, 5, 2, 1]
       });
 
@@ -991,7 +991,7 @@ describe('ol.View', function() {
 
   describe('#getZoom() - constrained', function() {
     it('returns correct zoom levels', function() {
-      var view = new _ol_View_({
+      var view = new View({
         minZoom: 10,
         maxZoom: 20
       });
@@ -1020,7 +1020,7 @@ describe('ol.View', function() {
 
     it('gives maxResolution precedence over minZoom', function() {
 
-      var view = new _ol_View_({
+      var view = new View({
         maxResolution: 100,
         minZoom: 2 // this should get ignored
       });
@@ -1036,7 +1036,7 @@ describe('ol.View', function() {
   describe('#getZoomForResolution', function() {
 
     it('returns correct zoom levels', function() {
-      var view = new _ol_View_();
+      var view = new View();
       var max = view.getMaxResolution();
 
       expect(view.getZoomForResolution(max)).to.be(0);
@@ -1049,7 +1049,7 @@ describe('ol.View', function() {
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function() {
-      var view = new _ol_View_({
+      var view = new View({
         resolutions: [10, 8, 6, 4, 2]
       });
 
@@ -1069,7 +1069,7 @@ describe('ol.View', function() {
   describe('#getResolutionForZoom', function() {
 
     it('returns correct zoom resolution', function() {
-      var view = new _ol_View_();
+      var view = new View();
       var max = view.getMaxZoom();
       var min = view.getMinZoom();
 
@@ -1078,7 +1078,7 @@ describe('ol.View', function() {
     });
 
     it('returns correct zoom levels for specifically configured resolutions', function() {
-      var view = new _ol_View_({
+      var view = new View({
         resolutions: [10, 8, 6, 4, 2]
       });
 
@@ -1094,12 +1094,12 @@ describe('ol.View', function() {
   describe('#getMaxZoom', function() {
 
     it('returns the zoom level for the min resolution', function() {
-      var view = new _ol_View_();
+      var view = new View();
       expect(view.getMaxZoom()).to.be(view.getZoomForResolution(view.getMinResolution()));
     });
 
     it('works for a view configured with a maxZoom', function() {
-      var view = new _ol_View_({
+      var view = new View({
         maxZoom: 10
       });
       expect(view.getMaxZoom()).to.be(10);
@@ -1110,12 +1110,12 @@ describe('ol.View', function() {
   describe('#getMinZoom', function() {
 
     it('returns the zoom level for the max resolution', function() {
-      var view = new _ol_View_();
+      var view = new View();
       expect(view.getMinZoom()).to.be(view.getZoomForResolution(view.getMaxResolution()));
     });
 
     it('works for views configured with a minZoom', function() {
-      var view = new _ol_View_({
+      var view = new View({
         minZoom: 3
       });
       expect(view.getMinZoom()).to.be(3);
@@ -1126,7 +1126,7 @@ describe('ol.View', function() {
   describe('#setMaxZoom', function() {
     describe('with resolutions property in view', function() {
       it('changes the zoom level when the level is over max zoom', function() {
-        var view = new _ol_View_({
+        var view = new View({
           resolutions: [100000, 50000, 25000, 12500, 6250, 3125],
           zoom: 4
         });
@@ -1138,7 +1138,7 @@ describe('ol.View', function() {
 
     describe('with no resolutions property in view', function() {
       it('changes the zoom level when the level is over max zoom', function() {
-        var view = new _ol_View_({
+        var view = new View({
           zoom: 4
         });
 
@@ -1151,7 +1151,7 @@ describe('ol.View', function() {
   describe('#setMinZoom', function() {
     describe('with resolutions property in view', function() {
       it('changes the zoom level when the level is under min zoom', function() {
-        var view = new _ol_View_({
+        var view = new View({
           resolutions: [100000, 50000, 25000, 12500, 6250, 3125],
           zoom: 4
         });
@@ -1163,7 +1163,7 @@ describe('ol.View', function() {
 
     describe('with no resolutions property in view', function() {
       it('changes the zoom level when the level is under min zoom', function() {
-        var view = new _ol_View_({
+        var view = new View({
           zoom: 4
         });
 
@@ -1175,7 +1175,7 @@ describe('ol.View', function() {
 
   describe('#calculateExtent', function() {
     it('returns the expected extent', function() {
-      var view = new _ol_View_({
+      var view = new View({
         resolutions: [512],
         zoom: 0,
         center: [0, 0]
@@ -1188,7 +1188,7 @@ describe('ol.View', function() {
       expect(extent[3]).to.be(51200);
     });
     it('returns the expected extent with rotation', function() {
-      var view = new _ol_View_({
+      var view = new View({
         resolutions: [512],
         zoom: 0,
         center: [0, 0],
@@ -1244,7 +1244,7 @@ describe('ol.View', function() {
 
     var view;
     beforeEach(function() {
-      view = new _ol_View_({
+      view = new View({
         center: [0, 0],
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1],
         zoom: 5
@@ -1370,7 +1370,7 @@ describe('ol.View', function() {
   describe('centerOn', function() {
     var view;
     beforeEach(function() {
-      view = new _ol_View_({
+      view = new View({
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
       });
     });
@@ -1460,7 +1460,7 @@ describe('ol.View.isNoopAnimation()', function() {
 
   cases.forEach(function(c, i) {
     it('works for case ' + i, function() {
-      var noop = _ol_View_.isNoopAnimation(c.animation);
+      var noop = View.isNoopAnimation(c.animation);
       expect(noop).to.equal(c.noop);
     });
   });

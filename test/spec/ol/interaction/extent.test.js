@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import _ol_interaction_Extent_ from '../../../../src/ol/interaction/Extent.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 
@@ -16,7 +16,7 @@ describe('ol.interaction.Extent', function() {
     map = new Map({
       target: target,
       layers: [],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

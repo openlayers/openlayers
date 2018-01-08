@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_has_ from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -8,7 +8,7 @@ var layer = new TileLayer({
   source: new _ol_source_OSM_()
 });
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 1
 });

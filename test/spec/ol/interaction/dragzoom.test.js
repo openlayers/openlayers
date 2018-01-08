@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.js';
 import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
@@ -29,7 +29,7 @@ describe('ol.interaction.DragZoom', function() {
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

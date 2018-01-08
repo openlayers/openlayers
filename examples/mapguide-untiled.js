@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_source_ImageMapGuide_ from '../src/ol/source/ImageMapGuide.js';
 
@@ -32,7 +32,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-87.7302542509315, 43.744459064634],
     projection: 'EPSG:4326',
     zoom: 12

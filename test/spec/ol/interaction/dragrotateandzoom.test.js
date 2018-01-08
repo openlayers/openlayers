@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
@@ -41,7 +41,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         target: target,
         layers: [layer],
         interactions: [interaction],
-        view: new _ol_View_({
+        view: new View({
           projection: 'EPSG:4326',
           center: [0, 0],
           resolution: 1
@@ -66,7 +66,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       expect(interaction.lastAngle_).to.be(-0.8308214428190254);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1,

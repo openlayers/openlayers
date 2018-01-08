@@ -1,6 +1,6 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -97,7 +97,7 @@ var rasterImage = new _ol_layer_Image_({
 var map = new Map({
   layers: [imagery, rasterImage],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-119.07, 47.65]),
     zoom: 11
   })

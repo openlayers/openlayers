@@ -13,7 +13,7 @@ import _ol_MapProperty_ from './MapProperty.js';
 import _ol_Object_ from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
-import _ol_View_ from './View.js';
+import View from './View.js';
 import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
@@ -1411,7 +1411,7 @@ function createOptionsInternal(options) {
   values[_ol_MapProperty_.TARGET] = options.target;
 
   values[_ol_MapProperty_.VIEW] = options.view !== undefined ?
-    options.view : new _ol_View_();
+    options.view : new View();
 
   /**
    * @type {Array.<ol.renderer.Type>}

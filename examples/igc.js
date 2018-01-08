@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import IGC from '../src/ol/format/IGC.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -103,7 +103,7 @@ var map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     center: [703365.7089403362, 5714629.865071137],
     zoom: 9
   })

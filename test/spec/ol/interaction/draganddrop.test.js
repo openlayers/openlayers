@@ -1,5 +1,5 @@
 import {inherits} from '../../../../src/ol/index.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
@@ -16,7 +16,7 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
         return viewport;
       },
       getView: function() {
-        return new _ol_View_();
+        return new View();
       }
     };
     interaction = new DragAndDrop({

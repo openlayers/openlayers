@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Control from '../../../../src/ol/control/Control.js';
 import OverviewMap from '../../../../src/ol/control/OverviewMap.js';
 
@@ -32,7 +32,7 @@ describe('ol.control.OverviewMap', function() {
   describe('setMap()', function() {
 
     it('keeps ovmap view rotation in sync with map view rotation', function() {
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -54,7 +54,7 @@ describe('ol.control.OverviewMap', function() {
       var ovView = control.ovmap_.getView();
       expect(ovView.getRotation()).to.be(0);
 
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0
@@ -68,7 +68,7 @@ describe('ol.control.OverviewMap', function() {
       var control = new OverviewMap();
       var ovView = control.ovmap_.getView();
 
-      var view = new _ol_View_({
+      var view = new View({
         center: [0, 0],
         zoom: 0,
         rotation: 0

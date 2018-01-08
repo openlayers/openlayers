@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
@@ -82,7 +82,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-74.0064, 40.7142]),
     maxZoom: 19,
     zoom: 15

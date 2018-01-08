@@ -1,7 +1,7 @@
 import Feature from '../src/ol/Feature.js';
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -13,7 +13,7 @@ import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 2
 });

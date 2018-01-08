@@ -1,7 +1,7 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_Observable_ from '../src/ol/Observable.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import {easeOut} from '../src/ol/easing.js';
 import Point from '../src/ol/geom/Point.js';
@@ -29,7 +29,7 @@ var map = new Map({
     }
   }),
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 1
   })

@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
@@ -28,7 +28,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: projection,
     center: _ol_extent_.getCenter(extent),
     zoom: 2,

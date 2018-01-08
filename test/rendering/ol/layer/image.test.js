@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
@@ -16,7 +16,7 @@ describe('ol.rendering.layer.Image', function() {
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5

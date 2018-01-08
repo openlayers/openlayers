@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
@@ -29,7 +29,7 @@ fetch('data/WMTSCapabilities.xml').then(function(response) {
       })
     ],
     target: 'map',
-    view: new _ol_View_({
+    view: new View({
       center: [19412406.33, -5050500.21],
       zoom: 5
     })

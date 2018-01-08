@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import OverviewMap from '../src/ol/control/OverviewMap.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
@@ -37,7 +37,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [500000, 6000000],
     zoom: 7
   })

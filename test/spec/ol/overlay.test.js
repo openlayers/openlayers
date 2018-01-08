@@ -1,6 +1,6 @@
 import Map from '../../../src/ol/Map.js';
 import Overlay from '../../../src/ol/Overlay.js';
-import _ol_View_ from '../../../src/ol/View.js';
+import View from '../../../src/ol/View.js';
 
 
 describe('ol.Overlay', function() {
@@ -22,7 +22,7 @@ describe('ol.Overlay', function() {
 
     map = new Map({
       target: target,
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

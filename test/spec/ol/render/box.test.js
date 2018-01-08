@@ -1,6 +1,6 @@
 import Disposable from '../../../../src/ol/Disposable.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
 
@@ -17,7 +17,7 @@ describe('ol.render.Box', function() {
 
     map = new Map({
       target: target,
-      view: new _ol_View_({
+      view: new View({
         center: [0, 0],
         zoom: 0
       })

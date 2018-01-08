@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import _ol_layer_Image_ from '../src/ol/layer/Image.js';
@@ -69,7 +69,7 @@ var map = new Map({
   ]),
   layers: layers,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: projection,
     center: fromLonLat([8.23, 46.86], projection),
     extent: extent,

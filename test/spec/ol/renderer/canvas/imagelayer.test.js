@@ -1,5 +1,5 @@
 import Map from '../../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../../src/ol/View.js';
+import View from '../../../../../src/ol/View.js';
 import _ol_layer_Image_ from '../../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
 import _ol_source_ImageStatic_ from '../../../../../src/ol/source/ImageStatic.js';
@@ -31,7 +31,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
         layers: [new _ol_layer_Image_({
           source: source
         })],
-        view: new _ol_View_({
+        view: new View({
           projection: projection,
           center: [10, 10],
           zoom: 2,

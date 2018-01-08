@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import _ol_has_ from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -17,7 +17,7 @@ var tilePixelRatio = hiDPI ? 2 : 1;
 
 var map = new Map({
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [1823849, 6143760],
     zoom: 11
   })

@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
 
@@ -33,7 +33,7 @@ var map = new Map({
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-6655.5402445057125, 6709968.258934638],
     zoom: 13
   })

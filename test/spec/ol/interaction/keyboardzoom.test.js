@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 
@@ -10,7 +10,7 @@ describe('ol.interaction.KeyboardZoom', function() {
   beforeEach(function() {
     map = new Map({
       target: createMapDiv(100, 100),
-      view: new _ol_View_({
+      view: new View({
         center: [0, 0],
         resolutions: [1],
         zoom: 0

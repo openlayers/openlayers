@@ -2,7 +2,7 @@ import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
@@ -37,7 +37,7 @@ describe('ol.interaction.Translate', function() {
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

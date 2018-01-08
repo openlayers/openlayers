@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import ScaleLine from '../../../../src/ol/control/ScaleLine.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
@@ -91,7 +91,7 @@ describe('ol.control.ScaleLine', function() {
       expect(renderSpy.called).to.be(false);
       ctrl.setMap(map);
       expect(renderSpy.called).to.be(false);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
@@ -108,7 +108,7 @@ describe('ol.control.ScaleLine', function() {
         render: renderSpy
       });
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
@@ -125,7 +125,7 @@ describe('ol.control.ScaleLine', function() {
         render: renderSpy
       });
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
@@ -143,7 +143,7 @@ describe('ol.control.ScaleLine', function() {
       var ctrl = new ScaleLine();
       expect(ctrl.element.innerText).to.be('');
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
@@ -173,7 +173,7 @@ describe('ol.control.ScaleLine', function() {
   describe('#setUnits', function() {
     it('triggers rerendering', function() {
       var ctrl = new ScaleLine();
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
@@ -198,7 +198,7 @@ describe('ol.control.ScaleLine', function() {
     beforeEach(function(done) {
       ctrl = new ScaleLine();
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0
       }));
@@ -248,14 +248,14 @@ describe('ol.control.ScaleLine', function() {
     it('is rendered differently for different projections', function() {
       var ctrl = new ScaleLine();
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: fromLonLat([7, 52]),
         zoom: 2,
         projection: 'EPSG:3857'
       }));
       map.renderSync();
       var innerHtml3857 = ctrl.element_.innerHTML;
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [7, 52],
         zoom: 2,
         projection: 'EPSG:4326'
@@ -268,7 +268,7 @@ describe('ol.control.ScaleLine', function() {
     it('Projection\'s metersPerUnit affect scale for non-degree units', function() {
       var ctrl = new ScaleLine();
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0,
         resolutions: [1],
@@ -282,7 +282,7 @@ describe('ol.control.ScaleLine', function() {
       }));
       map.renderSync();
       expect(ctrl.element_.innerText).to.be('100 m');
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: 0,
         resolutions: [1],
@@ -305,7 +305,7 @@ describe('ol.control.ScaleLine', function() {
     it('is rendered differently at different latitudes for metric', function() {
       var ctrl = new ScaleLine();
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: fromLonLat([7, 0]),
         zoom: 2,
         projection: 'EPSG:4326'
@@ -323,7 +323,7 @@ describe('ol.control.ScaleLine', function() {
         units: 'degrees'
       });
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: fromLonLat([7, 0]),
         zoom: 2,
         projection: 'EPSG:4326'
@@ -363,7 +363,7 @@ describe('ol.control.ScaleLine', function() {
         minWidth: 10
       });
       ctrl.setMap(map);
-      map.setView(new _ol_View_({
+      map.setView(new View({
         center: [0, 0],
         zoom: currentZoom,
         maxZoom: currentZoom
