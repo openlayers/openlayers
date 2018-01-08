@@ -4,7 +4,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_source_TileDebug_ from '../src/ol/source/TileDebug.js';
+import TileDebug from '../src/ol/source/TileDebug.js';
 
 
 var osmSource = new OSM();
@@ -14,7 +14,7 @@ var map = new Map({
       source: osmSource
     }),
     new TileLayer({
-      source: new _ol_source_TileDebug_({
+      source: new TileDebug({
         projection: 'EPSG:3857',
         tileGrid: osmSource.getTileGrid()
       })

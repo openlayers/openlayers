@@ -22,7 +22,7 @@ import _ol_tilecoord_ from '../tilecoord.js';
  * @param {olx.source.TileDebugOptions} options Debug tile options.
  * @api
  */
-var _ol_source_TileDebug_ = function(options) {
+var TileDebug = function(options) {
 
   TileSource.call(this, {
     opaque: false,
@@ -33,13 +33,13 @@ var _ol_source_TileDebug_ = function(options) {
 
 };
 
-inherits(_ol_source_TileDebug_, TileSource);
+inherits(TileDebug, TileSource);
 
 
 /**
  * @inheritDoc
  */
-_ol_source_TileDebug_.prototype.getTile = function(z, x, y) {
+TileDebug.prototype.getTile = function(z, x, y) {
   var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.source.TileDebug.Tile_} */ (this.tileCache.get(tileCoordKey));
@@ -49,7 +49,7 @@ _ol_source_TileDebug_.prototype.getTile = function(z, x, y) {
     var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
     var text = !textTileCoord ? '' :
       this.getTileCoordForTileUrlFunction(textTileCoord).toString();
-    var tile = new _ol_source_TileDebug_.Tile_(tileCoord, tileSize, text);
+    var tile = new TileDebug.Tile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
@@ -64,7 +64,7 @@ _ol_source_TileDebug_.prototype.getTile = function(z, x, y) {
  * @param {string} text Text.
  * @private
  */
-_ol_source_TileDebug_.Tile_ = function(tileCoord, tileSize, text) {
+TileDebug.Tile_ = function(tileCoord, tileSize, text) {
 
   _ol_Tile_.call(this, tileCoord, TileState.LOADED);
 
@@ -87,14 +87,14 @@ _ol_source_TileDebug_.Tile_ = function(tileCoord, tileSize, text) {
   this.canvas_ = null;
 
 };
-inherits(_ol_source_TileDebug_.Tile_, _ol_Tile_);
+inherits(TileDebug.Tile_, _ol_Tile_);
 
 
 /**
  * Get the image element for this tile.
  * @return {HTMLCanvasElement} Image.
  */
-_ol_source_TileDebug_.Tile_.prototype.getImage = function() {
+TileDebug.Tile_.prototype.getImage = function() {
   if (this.canvas_) {
     return this.canvas_;
   } else {
@@ -119,5 +119,5 @@ _ol_source_TileDebug_.Tile_.prototype.getImage = function() {
 /**
  * @override
  */
-_ol_source_TileDebug_.Tile_.prototype.load = function() {};
-export default _ol_source_TileDebug_;
+TileDebug.Tile_.prototype.load = function() {};
+export default TileDebug;
