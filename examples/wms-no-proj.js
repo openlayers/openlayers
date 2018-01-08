@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
@@ -20,7 +20,7 @@ var layers = [
       url: 'https://wms.geo.admin.ch/'
     })
   }),
-  new _ol_layer_Image_({
+  new ImageLayer({
     source: new _ol_source_ImageWMS_({
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',

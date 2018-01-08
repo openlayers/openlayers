@@ -19,7 +19,7 @@ import _ol_layer_Layer_ from '../layer/Layer.js';
  * @param {olx.layer.ImageOptions=} opt_options Layer options.
  * @api
  */
-var _ol_layer_Image_ = function(opt_options) {
+var ImageLayer = function(opt_options) {
   var options = opt_options ? opt_options : {};
   _ol_layer_Layer_.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
 
@@ -32,7 +32,7 @@ var _ol_layer_Image_ = function(opt_options) {
 
 };
 
-inherits(_ol_layer_Image_, _ol_layer_Layer_);
+inherits(ImageLayer, _ol_layer_Layer_);
 
 
 /**
@@ -41,5 +41,5 @@ inherits(_ol_layer_Image_, _ol_layer_Layer_);
  * @return {ol.source.Image} Source.
  * @api
  */
-_ol_layer_Image_.prototype.getSource;
-export default _ol_layer_Image_;
+ImageLayer.prototype.getSource;
+export default ImageLayer;

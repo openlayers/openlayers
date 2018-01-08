@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
@@ -36,7 +36,7 @@ var projection = new _ol_proj_Projection_({
 
 var extent = [420000, 30000, 900000, 350000];
 var layers = [
-  new _ol_layer_Image_({
+  new ImageLayer({
     extent: extent,
     source: new _ol_source_ImageWMS_({
       url: 'https://wms.geo.admin.ch/',
@@ -50,7 +50,7 @@ var layers = [
       serverType: 'mapserver'
     })
   }),
-  new _ol_layer_Image_({
+  new ImageLayer({
     extent: extent,
     source: new _ol_source_ImageWMS_({
       url: 'https://wms.geo.admin.ch/',

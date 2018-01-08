@@ -1,6 +1,6 @@
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
-import _ol_layer_Image_ from '../../../../../src/ol/layer/Image.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
 import _ol_source_ImageStatic_ from '../../../../../src/ol/source/ImageStatic.js';
 
@@ -28,7 +28,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
       map = new Map({
         pixelRatio: 1,
         target: target,
-        layers: [new _ol_layer_Image_({
+        layers: [new ImageLayer({
           source: source
         })],
         view: new View({

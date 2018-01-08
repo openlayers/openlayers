@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
 
 
@@ -96,7 +96,7 @@ source.on('imageloaderror', function() {
 
 var map = new Map({
   layers: [
-    new _ol_layer_Image_({source: source})
+    new ImageLayer({source: source})
   ],
   target: 'map',
   view: new View({

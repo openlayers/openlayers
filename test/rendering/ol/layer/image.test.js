@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
 import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
@@ -57,7 +57,7 @@ describe('ol.rendering.layer.Image', function() {
         source: source
       };
       _ol_obj_.assign(options, layerOptions);
-      map.addLayer(new _ol_layer_Image_(options));
+      map.addLayer(new ImageLayer(options));
     });
   }
 

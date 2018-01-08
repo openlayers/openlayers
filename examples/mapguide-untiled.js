@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import _ol_source_ImageMapGuide_ from '../src/ol/source/ImageMapGuide.js';
 
 var mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
@@ -14,7 +14,7 @@ var bounds = [
 ];
 var map = new Map({
   layers: [
-    new _ol_layer_Image_({
+    new ImageLayer({
       extent: bounds,
       source: new _ol_source_ImageMapGuide_({
         projection: 'EPSG:4326',

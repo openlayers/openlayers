@@ -1,6 +1,6 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 
@@ -75,7 +75,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
         expectResemble(map, 'rendering/ol/source/expected/raster-1.png', IMAGE_TOLERANCE, done);
       });
 
-      var layer = new _ol_layer_Image_({source: raster});
+      var layer = new ImageLayer({source: raster});
 
       map.addLayer(layer);
     });

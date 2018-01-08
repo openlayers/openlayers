@@ -1,7 +1,7 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
@@ -89,7 +89,7 @@ var raster = new RasterSource({
   }
 });
 
-var rasterImage = new _ol_layer_Image_({
+var rasterImage = new ImageLayer({
   opacity: 0.7,
   source: raster
 });

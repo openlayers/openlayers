@@ -1,7 +1,7 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
 import RasterSource from '../src/ol/source/Raster.js';
@@ -120,7 +120,7 @@ var map = new Map({
     new TileLayer({
       source: new _ol_source_OSM_()
     }),
-    new _ol_layer_Image_({
+    new ImageLayer({
       opacity: 0.3,
       source: raster
     })

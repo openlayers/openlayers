@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transform} from '../src/ol/proj.js';
 import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
@@ -22,7 +22,7 @@ var map = new Map({
     new TileLayer({
       source: new _ol_source_OSM_()
     }),
-    new _ol_layer_Image_({
+    new ImageLayer({
       source: new _ol_source_ImageStatic_({
         url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
                'British_National_Grid.svg/2000px-British_National_Grid.svg.png',

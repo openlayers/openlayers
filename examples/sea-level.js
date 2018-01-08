@@ -1,7 +1,7 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import RasterSource from '../src/ol/source/Raster.js';
@@ -43,7 +43,7 @@ var map = new Map({
         url: 'https://api.mapbox.com/styles/v1/tschaub/ciutc102t00c62js5fqd47kqw/tiles/256/{z}/{x}/{y}?access_token=' + key
       })
     }),
-    new _ol_layer_Image_({
+    new ImageLayer({
       opacity: 0.6,
       source: raster
     })

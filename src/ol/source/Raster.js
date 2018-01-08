@@ -10,7 +10,7 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
-import _ol_layer_Image_ from '../layer/Image.js';
+import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
@@ -413,7 +413,7 @@ function createRenderer(source) {
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createImageRenderer(source) {
-  var layer = new _ol_layer_Image_({source: source});
+  var layer = new ImageLayer({source: source});
   return new CanvasImageLayerRenderer(layer);
 }
 

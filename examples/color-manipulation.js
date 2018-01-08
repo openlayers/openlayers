@@ -1,7 +1,7 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import RasterSource from '../src/ol/source/Raster.js';
 import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
 
@@ -150,7 +150,7 @@ raster.on('beforeoperations', function(event) {
 
 var map = new Map({
   layers: [
-    new _ol_layer_Image_({
+    new ImageLayer({
       source: raster
     })
   ],

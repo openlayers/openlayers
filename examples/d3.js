@@ -2,7 +2,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {getWidth, getCenter} from '../src/ol/extent.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import _ol_source_ImageCanvas_ from '../src/ol/source/ImageCanvas.js';
@@ -80,7 +80,7 @@ d3.json('data/topojson/us.json', function(error, us) {
     return canvas.node();
   };
 
-  var layer = new _ol_layer_Image_({
+  var layer = new ImageLayer({
     source: new _ol_source_ImageCanvas_({
       canvasFunction: canvasFunction,
       projection: 'EPSG:3857'

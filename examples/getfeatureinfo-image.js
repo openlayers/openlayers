@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
 
 
@@ -11,7 +11,7 @@ var wmsSource = new _ol_source_ImageWMS_({
   crossOrigin: 'anonymous'
 });
 
-var wmsLayer = new _ol_layer_Image_({
+var wmsLayer = new ImageLayer({
   source: wmsSource
 });
 
