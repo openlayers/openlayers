@@ -11,7 +11,7 @@ import {register, registerMultiple} from './plugins.js';
 import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import _ol_renderer_canvas_Map_ from './renderer/canvas/Map.js';
 import CanvasTileLayerRenderer from './renderer/canvas/TileLayer.js';
-import _ol_renderer_canvas_VectorLayer_ from './renderer/canvas/VectorLayer.js';
+import CanvasVectorLayerRenderer from './renderer/canvas/VectorLayer.js';
 import _ol_renderer_canvas_VectorTileLayer_ from './renderer/canvas/VectorTileLayer.js';
 import _ol_renderer_webgl_ImageLayer_ from './renderer/webgl/ImageLayer.js';
 import _ol_renderer_webgl_Map_ from './renderer/webgl/Map.js';
@@ -23,7 +23,7 @@ register(PluginType.MAP_RENDERER, _ol_renderer_canvas_Map_);
 registerMultiple(PluginType.LAYER_RENDERER, [
   CanvasImageLayerRenderer,
   CanvasTileLayerRenderer,
-  _ol_renderer_canvas_VectorLayer_,
+  CanvasVectorLayerRenderer,
   _ol_renderer_canvas_VectorTileLayer_
 ]);
 

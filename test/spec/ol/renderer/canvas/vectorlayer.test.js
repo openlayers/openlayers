@@ -8,7 +8,7 @@ import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
-import _ol_renderer_canvas_VectorLayer_ from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
+import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
@@ -40,8 +40,8 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_()
       });
-      var renderer = new _ol_renderer_canvas_VectorLayer_(layer);
-      expect(renderer).to.be.a(_ol_renderer_canvas_VectorLayer_);
+      var renderer = new CanvasVectorLayerRenderer(layer);
+      expect(renderer).to.be.a(CanvasVectorLayerRenderer);
     });
 
     it('gives precedence to feature styles over layer styles', function() {
@@ -188,7 +188,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_()
       });
-      renderer = new _ol_renderer_canvas_VectorLayer_(layer);
+      renderer = new CanvasVectorLayerRenderer(layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
@@ -225,7 +225,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var layer = new _ol_layer_Vector_({
         source: new _ol_source_Vector_({wrapX: true})
       });
-      renderer = new _ol_renderer_canvas_VectorLayer_(layer);
+      renderer = new CanvasVectorLayerRenderer(layer);
       var projection = getProjection('EPSG:3857');
       projExtent = projection.getExtent();
       worldWidth = _ol_extent_.getWidth(projExtent);
