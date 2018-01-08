@@ -6,7 +6,7 @@ import {inherits, getUid, nullFunction} from './index.js';
 import CenterConstraint from './CenterConstraint.js';
 import _ol_Object_ from './Object.js';
 import ResolutionConstraint from './ResolutionConstraint.js';
-import _ol_RotationConstraint_ from './RotationConstraint.js';
+import RotationConstraint from './RotationConstraint.js';
 import _ol_ViewHint_ from './ViewHint.js';
 import _ol_ViewProperty_ from './ViewProperty.js';
 import {linearFindNearest} from './array.js';
@@ -1189,16 +1189,16 @@ _ol_View_.createRotationConstraint_ = function(options) {
   if (enableRotation) {
     var constrainRotation = options.constrainRotation;
     if (constrainRotation === undefined || constrainRotation === true) {
-      return _ol_RotationConstraint_.createSnapToZero();
+      return RotationConstraint.createSnapToZero();
     } else if (constrainRotation === false) {
-      return _ol_RotationConstraint_.none;
+      return RotationConstraint.none;
     } else if (typeof constrainRotation === 'number') {
-      return _ol_RotationConstraint_.createSnapToN(constrainRotation);
+      return RotationConstraint.createSnapToN(constrainRotation);
     } else {
-      return _ol_RotationConstraint_.none;
+      return RotationConstraint.none;
     }
   } else {
-    return _ol_RotationConstraint_.disable;
+    return RotationConstraint.disable;
   }
 };
 

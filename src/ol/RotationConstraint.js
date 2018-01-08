@@ -2,7 +2,7 @@
  * @module ol/RotationConstraint
  */
 import {toRadians} from './math.js';
-var _ol_RotationConstraint_ = {};
+var RotationConstraint = {};
 
 
 /**
@@ -10,7 +10,7 @@ var _ol_RotationConstraint_ = {};
  * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-_ol_RotationConstraint_.disable = function(rotation, delta) {
+RotationConstraint.disable = function(rotation, delta) {
   if (rotation !== undefined) {
     return 0;
   } else {
@@ -24,7 +24,7 @@ _ol_RotationConstraint_.disable = function(rotation, delta) {
  * @param {number} delta Delta.
  * @return {number|undefined} Rotation.
  */
-_ol_RotationConstraint_.none = function(rotation, delta) {
+RotationConstraint.none = function(rotation, delta) {
   if (rotation !== undefined) {
     return rotation + delta;
   } else {
@@ -37,7 +37,7 @@ _ol_RotationConstraint_.none = function(rotation, delta) {
  * @param {number} n N.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
-_ol_RotationConstraint_.createSnapToN = function(n) {
+RotationConstraint.createSnapToN = function(n) {
   var theta = 2 * Math.PI / n;
   return (
     /**
@@ -60,7 +60,7 @@ _ol_RotationConstraint_.createSnapToN = function(n) {
  * @param {number=} opt_tolerance Tolerance.
  * @return {ol.RotationConstraintType} Rotation constraint.
  */
-_ol_RotationConstraint_.createSnapToZero = function(opt_tolerance) {
+RotationConstraint.createSnapToZero = function(opt_tolerance) {
   var tolerance = opt_tolerance || toRadians(5);
   return (
     /**
@@ -80,4 +80,4 @@ _ol_RotationConstraint_.createSnapToZero = function(opt_tolerance) {
       }
     });
 };
-export default _ol_RotationConstraint_;
+export default RotationConstraint;

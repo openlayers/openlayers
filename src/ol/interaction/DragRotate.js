@@ -2,7 +2,7 @@
  * @module ol/interaction/DragRotate
  */
 import {inherits} from '../index.js';
-import _ol_RotationConstraint_ from '../RotationConstraint.js';
+import RotationConstraint from '../RotationConstraint.js';
 import _ol_ViewHint_ from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {FALSE} from '../functions.js';
@@ -67,7 +67,7 @@ DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  if (view.getConstraints().rotation === _ol_RotationConstraint_.disable) {
+  if (view.getConstraints().rotation === RotationConstraint.disable) {
     return;
   }
   var size = map.getSize();

@@ -6,7 +6,7 @@ import _ol_ViewHint_ from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
-import _ol_RotationConstraint_ from '../RotationConstraint.js';
+import RotationConstraint from '../RotationConstraint.js';
 
 /**
  * @classdesc
@@ -98,7 +98,7 @@ _ol_interaction_PinchRotate_.handleDragEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  if (view.getConstraints().rotation === _ol_RotationConstraint_.disable) {
+  if (view.getConstraints().rotation === RotationConstraint.disable) {
     return;
   }
 
