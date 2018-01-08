@@ -7,7 +7,7 @@ import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
 import _ol_uri_ from '../uri.js';
@@ -153,7 +153,7 @@ var _ol_source_WMTS_ = function(options) {
   var tileUrlFunction = (urls && urls.length > 0) ?
     createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate_)) : nullTileUrlFunction;
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -173,7 +173,7 @@ var _ol_source_WMTS_ = function(options) {
 
 };
 
-inherits(_ol_source_WMTS_, _ol_source_TileImage_);
+inherits(_ol_source_WMTS_, TileImage);
 
 /**
  * Set the URLs to use for requests.

@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
+import TileImage from '../src/ol/source/TileImage.js';
 import proj4 from 'proj4';
 
 
@@ -102,7 +102,7 @@ renderEdgesCheckbox.onchange = function() {
   map.getLayers().forEach(function(layer) {
     if (layer instanceof TileLayer) {
       var source = layer.getSource();
-      if (source instanceof _ol_source_TileImage_) {
+      if (source instanceof TileImage) {
         source.setRenderReprojectionEdges(renderEdgesCheckbox.checked);
       }
     }

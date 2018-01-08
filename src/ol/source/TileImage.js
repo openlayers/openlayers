@@ -24,7 +24,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.TileImageOptions} options Image tile options.
  * @api
  */
-var _ol_source_TileImage_ = function(options) {
+var TileImage = function(options) {
 
   _ol_source_UrlTile_.call(this, {
     attributions: options.attributions,
@@ -35,7 +35,7 @@ var _ol_source_TileImage_ = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-      options.tileLoadFunction : _ol_source_TileImage_.defaultTileLoadFunction,
+      options.tileLoadFunction : TileImage.defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
@@ -84,13 +84,13 @@ var _ol_source_TileImage_ = function(options) {
   this.renderReprojectionEdges_ = false;
 };
 
-inherits(_ol_source_TileImage_, _ol_source_UrlTile_);
+inherits(TileImage, _ol_source_UrlTile_);
 
 
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.canExpireCache = function() {
+TileImage.prototype.canExpireCache = function() {
   if (!ENABLE_RASTER_REPROJECTION) {
     return _ol_source_UrlTile_.prototype.canExpireCache.call(this);
   }
@@ -110,7 +110,7 @@ _ol_source_TileImage_.prototype.canExpireCache = function() {
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.expireCache = function(projection, usedTiles) {
+TileImage.prototype.expireCache = function(projection, usedTiles) {
   if (!ENABLE_RASTER_REPROJECTION) {
     _ol_source_UrlTile_.prototype.expireCache.call(this, projection, usedTiles);
     return;
@@ -128,7 +128,7 @@ _ol_source_TileImage_.prototype.expireCache = function(projection, usedTiles) {
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.getGutter = function(projection) {
+TileImage.prototype.getGutter = function(projection) {
   if (ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
     return 0;
@@ -142,7 +142,7 @@ _ol_source_TileImage_.prototype.getGutter = function(projection) {
  * @protected
  * @return {number} Gutter.
  */
-_ol_source_TileImage_.prototype.getGutterInternal = function() {
+TileImage.prototype.getGutterInternal = function() {
   return 0;
 };
 
@@ -150,7 +150,7 @@ _ol_source_TileImage_.prototype.getGutterInternal = function() {
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.getOpaque = function(projection) {
+TileImage.prototype.getOpaque = function(projection) {
   if (ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
     return false;
@@ -163,7 +163,7 @@ _ol_source_TileImage_.prototype.getOpaque = function(projection) {
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.getTileGridForProjection = function(projection) {
+TileImage.prototype.getTileGridForProjection = function(projection) {
   if (!ENABLE_RASTER_REPROJECTION) {
     return _ol_source_UrlTile_.prototype.getTileGridForProjection.call(this, projection);
   }
@@ -184,7 +184,7 @@ _ol_source_TileImage_.prototype.getTileGridForProjection = function(projection) 
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.getTileCacheForProjection = function(projection) {
+TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (!ENABLE_RASTER_REPROJECTION) {
     return _ol_source_UrlTile_.prototype.getTileCacheForProjection.call(this, projection);
   }
@@ -210,7 +210,7 @@ _ol_source_TileImage_.prototype.getTileCacheForProjection = function(projection)
  * @return {!ol.Tile} Tile.
  * @private
  */
-_ol_source_TileImage_.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
+TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
   var tileCoord = [z, x, y];
   var urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord, projection);
@@ -233,7 +233,7 @@ _ol_source_TileImage_.prototype.createTile_ = function(z, x, y, pixelRatio, proj
 /**
  * @inheritDoc
  */
-_ol_source_TileImage_.prototype.getTile = function(z, x, y, pixelRatio, projection) {
+TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
   if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection || !projection || equivalent(sourceProjection, projection)) {
@@ -287,7 +287,7 @@ _ol_source_TileImage_.prototype.getTile = function(z, x, y, pixelRatio, projecti
  * @return {!ol.Tile} Tile.
  * @protected
  */
-_ol_source_TileImage_.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
+TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var tile = null;
   var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   var key = this.getKey();
@@ -323,7 +323,7 @@ _ol_source_TileImage_.prototype.getTileInternal = function(z, x, y, pixelRatio, 
  * @param {boolean} render Render the edges.
  * @api
  */
-_ol_source_TileImage_.prototype.setRenderReprojectionEdges = function(render) {
+TileImage.prototype.setRenderReprojectionEdges = function(render) {
   if (!ENABLE_RASTER_REPROJECTION ||
       this.renderReprojectionEdges_ == render) {
     return;
@@ -348,7 +348,7 @@ _ol_source_TileImage_.prototype.setRenderReprojectionEdges = function(render) {
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
-_ol_source_TileImage_.prototype.setTileGridForProjection = function(projection, tilegrid) {
+TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
   if (ENABLE_RASTER_REPROJECTION) {
     var proj = getProjection(projection);
     if (proj) {
@@ -365,7 +365,7 @@ _ol_source_TileImage_.prototype.setTileGridForProjection = function(projection, 
  * @param {ol.ImageTile} imageTile Image tile.
  * @param {string} src Source.
  */
-_ol_source_TileImage_.defaultTileLoadFunction = function(imageTile, src) {
+TileImage.defaultTileLoadFunction = function(imageTile, src) {
   imageTile.getImage().src = src;
 };
-export default _ol_source_TileImage_;
+export default TileImage;

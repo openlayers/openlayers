@@ -7,7 +7,7 @@ import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -28,7 +28,7 @@ var BingMaps = function(options) {
    */
   this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     opaque: true,
@@ -75,7 +75,7 @@ var BingMaps = function(options) {
 
 };
 
-inherits(BingMaps, _ol_source_TileImage_);
+inherits(BingMaps, TileImage);
 
 
 /**

@@ -14,7 +14,7 @@ import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
 /**
@@ -34,7 +34,7 @@ var _ol_source_TileJSON_ = function(options) {
    */
   this.tileJSON_ = null;
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -65,7 +65,7 @@ var _ol_source_TileJSON_ = function(options) {
 
 };
 
-inherits(_ol_source_TileJSON_, _ol_source_TileImage_);
+inherits(_ol_source_TileJSON_, TileImage);
 
 
 /**

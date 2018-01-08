@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
 import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
+import TileImage from '../src/ol/source/TileImage.js';
 import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
 import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
 import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
@@ -202,7 +202,7 @@ updateViewProjection();
 var updateRenderEdgesOnLayer = function(layer) {
   if (layer instanceof TileLayer) {
     var source = layer.getSource();
-    if (source instanceof _ol_source_TileImage_) {
+    if (source instanceof TileImage) {
       source.setRenderReprojectionEdges(renderEdges);
     }
   }

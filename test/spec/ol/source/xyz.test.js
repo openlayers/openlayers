@@ -1,5 +1,5 @@
 import TileSource from '../../../../src/ol/source/Tile.js';
-import _ol_source_TileImage_ from '../../../../src/ol/source/TileImage.js';
+import TileImage from '../../../../src/ol/source/TileImage.js';
 import _ol_source_UrlTile_ from '../../../../src/ol/source/UrlTile.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -12,7 +12,7 @@ describe('ol.source.XYZ', function() {
     it('can be constructed without options', function() {
       var source = new _ol_source_XYZ_();
       expect(source).to.be.an(_ol_source_XYZ_);
-      expect(source).to.be.an(_ol_source_TileImage_);
+      expect(source).to.be.an(TileImage);
       expect(source).to.be.an(_ol_source_UrlTile_);
       expect(source).to.be.an(TileSource);
     });

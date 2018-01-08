@@ -6,7 +6,7 @@ import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import _ol_obj_ from '../obj.js';
 import _ol_size_ from '../size.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_uri_ from '../uri.js';
 
@@ -28,7 +28,7 @@ var _ol_source_TileArcGISRest_ = function(opt_options) {
 
   var options = opt_options || {};
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -57,7 +57,7 @@ var _ol_source_TileArcGISRest_ = function(opt_options) {
   this.setKey(this.getKeyForParams_());
 };
 
-inherits(_ol_source_TileArcGISRest_, _ol_source_TileImage_);
+inherits(_ol_source_TileArcGISRest_, TileImage);
 
 
 /**

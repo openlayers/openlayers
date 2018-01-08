@@ -2,7 +2,7 @@
  * @module ol/source/XYZ
  */
 import {inherits} from '../index.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
 /**
@@ -40,7 +40,7 @@ var _ol_source_XYZ_ = function(opt_options) {
       tileSize: options.tileSize
     });
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -59,5 +59,5 @@ var _ol_source_XYZ_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_XYZ_, _ol_source_TileImage_);
+inherits(_ol_source_XYZ_, TileImage);
 export default _ol_source_XYZ_;

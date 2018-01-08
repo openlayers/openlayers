@@ -5,7 +5,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
-import _ol_source_TileImage_ from '../../../../src/ol/source/TileImage.js';
+import TileImage from '../../../../src/ol/source/TileImage.js';
 import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
@@ -218,7 +218,7 @@ describe('ol.rendering.layer.Tile', function() {
   describe('tile layer with non-square tiles', function() {
 
     function createSource(tileSize) {
-      return new _ol_source_TileImage_({
+      return new TileImage({
         url: 'rendering/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
         tileGrid: _ol_tilegrid_.createXYZ({
           tileSize: tileSize.split('x')

@@ -11,7 +11,7 @@ import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_size_ from '../size.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_string_ from '../string.js';
@@ -34,7 +34,7 @@ var _ol_source_TileWMS_ = function(opt_options) {
 
   var transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -91,7 +91,7 @@ var _ol_source_TileWMS_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_TileWMS_, _ol_source_TileImage_);
+inherits(_ol_source_TileWMS_, TileImage);
 
 
 /**

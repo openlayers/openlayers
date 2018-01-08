@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
 import _ol_size_ from '../size.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 
 /**
@@ -137,7 +137,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
 
   var ZoomifyTileClass = _ol_source_Zoomify_.Tile_.bind(null, tileGrid);
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -151,7 +151,7 @@ var _ol_source_Zoomify_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_Zoomify_, _ol_source_TileImage_);
+inherits(_ol_source_Zoomify_, TileImage);
 
 /**
  * @constructor
