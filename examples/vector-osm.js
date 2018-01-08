@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -116,7 +116,7 @@ var vector = new VectorLayer({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_BingMaps_({
+  source: new BingMaps({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })

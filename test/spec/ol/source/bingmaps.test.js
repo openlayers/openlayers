@@ -1,5 +1,5 @@
 import _ol_net_ from '../../../../src/ol/net.js';
-import _ol_source_BingMaps_ from '../../../../src/ol/source/BingMaps.js';
+import BingMaps from '../../../../src/ol/source/BingMaps.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 import Observable from '../../../../src/ol/Observable.js';
 
@@ -21,7 +21,7 @@ describe('ol.source.BingMaps', function() {
         };
         client.send();
       };
-      source = new _ol_source_BingMaps_({
+      source = new BingMaps({
         imagerySet: 'AerialWithLabels',
         key: ''
       });

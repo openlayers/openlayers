@@ -20,7 +20,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
  * @api
  */
-var _ol_source_BingMaps_ = function(options) {
+var BingMaps = function(options) {
 
   /**
    * @private
@@ -75,7 +75,7 @@ var _ol_source_BingMaps_ = function(options) {
 
 };
 
-inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
+inherits(BingMaps, _ol_source_TileImage_);
 
 
 /**
@@ -85,7 +85,7 @@ inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
  * @type {string}
  * @api
  */
-_ol_source_BingMaps_.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
+BingMaps.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
       'href="https://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>';
 
@@ -96,7 +96,7 @@ _ol_source_BingMaps_.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * @return {string} The api key.
  * @api
  */
-_ol_source_BingMaps_.prototype.getApiKey = function() {
+BingMaps.prototype.getApiKey = function() {
   return this.apiKey_;
 };
 
@@ -107,7 +107,7 @@ _ol_source_BingMaps_.prototype.getApiKey = function() {
  * @return {string} The imagery set.
  * @api
  */
-_ol_source_BingMaps_.prototype.getImagerySet = function() {
+BingMaps.prototype.getImagerySet = function() {
   return this.imagerySet_;
 };
 
@@ -115,7 +115,7 @@ _ol_source_BingMaps_.prototype.getImagerySet = function() {
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-_ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response) {
+BingMaps.prototype.handleImageryMetadataResponse = function(response) {
   if (response.statusCode != 200 ||
       response.statusDescription != 'OK' ||
       response.authenticationResultCode != 'ValidCredentials' ||
@@ -199,11 +199,11 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
         }
       });
 
-      attributions.push(_ol_source_BingMaps_.TOS_ATTRIBUTION);
+      attributions.push(BingMaps.TOS_ATTRIBUTION);
       return attributions;
     });
   }
 
   this.setState(SourceState.READY);
 };
-export default _ol_source_BingMaps_;
+export default BingMaps;

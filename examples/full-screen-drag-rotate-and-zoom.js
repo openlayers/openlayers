@@ -5,7 +5,7 @@ import FullScreen from '../src/ol/control/FullScreen.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragRotateAndZoom from '../src/ol/interaction/DragRotateAndZoom.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 
 
 var map = new Map({
@@ -17,7 +17,7 @@ var map = new Map({
   ]),
   layers: [
     new TileLayer({
-      source: new _ol_source_BingMaps_({
+      source: new BingMaps({
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
         imagerySet: 'Aerial'
       })
