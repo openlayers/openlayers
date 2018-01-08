@@ -15,7 +15,7 @@ import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
-import _ol_source_VectorTile_ from '../../../../../src/ol/source/VectorTile.js';
+import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../../src/ol/tilegrid.js';
@@ -67,13 +67,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileCallback(this);
       };
       inherits(TileClass, VectorTile);
-      source = new _ol_source_VectorTile_({
+      source = new VectorTileSource({
         format: new MVT(),
         tileClass: TileClass,
         tileGrid: _ol_tilegrid_.createXYZ()
       });
       source.getTile = function() {
-        var tile = _ol_source_VectorTile_.prototype.getTile.apply(source, arguments);
+        var tile = VectorTileSource.prototype.getTile.apply(source, arguments);
         tile.setState(TileState.LOADED);
         return tile;
       };
@@ -240,7 +240,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   describe('#prepareFrame', function() {
     it('re-renders when layer changed', function() {
       var layer = new _ol_layer_VectorTile_({
-        source: new _ol_source_VectorTile_({
+        source: new VectorTileSource({
           tileGrid: _ol_tilegrid_.createXYZ(),
           transition: 0
         })
@@ -309,7 +309,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     beforeEach(function() {
       replayGroup = {};
       layer = new _ol_layer_VectorTile_({
-        source: new _ol_source_VectorTile_({
+        source: new VectorTileSource({
           tileClass: TileClass,
           tileGrid: _ol_tilegrid_.createXYZ()
         })
@@ -349,7 +349,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       target.style.height = '100px';
       document.body.appendChild(target);
       var extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
-      var source = new _ol_source_VectorTile_({
+      var source = new VectorTileSource({
         format: new MVT(),
         url: 'spec/ol/data/14-8938-5680.vector.pbf',
         minZoom: 14,

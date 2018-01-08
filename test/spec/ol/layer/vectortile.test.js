@@ -1,5 +1,5 @@
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
-import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 
 
 describe('ol.layer.VectorTile', function() {
@@ -10,7 +10,7 @@ describe('ol.layer.VectorTile', function() {
 
     beforeEach(function() {
       layer = new _ol_layer_VectorTile_({
-        source: new _ol_source_VectorTile_({})
+        source: new VectorTileSource({})
       });
     });
 
@@ -40,18 +40,18 @@ describe('ol.layer.VectorTile', function() {
     it('works with options', function() {
       var layer = new _ol_layer_VectorTile_({
         renderMode: 'vector',
-        source: new _ol_source_VectorTile_({})
+        source: new VectorTileSource({})
       });
       expect(layer.getRenderMode()).to.be('vector');
       layer = new _ol_layer_VectorTile_({
         renderMode: 'image',
-        source: new _ol_source_VectorTile_({})
+        source: new VectorTileSource({})
       });
       expect(layer.getRenderMode()).to.be('image');
       expect(function() {
         layer = new _ol_layer_VectorTile_({
           renderMode: 'foo',
-          source: new _ol_source_VectorTile_({})
+          source: new VectorTileSource({})
         });
       }).to.throwException();
     });

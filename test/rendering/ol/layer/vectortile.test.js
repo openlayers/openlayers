@@ -7,7 +7,7 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_source_VectorTile_ from '../../../../src/ol/source/VectorTile.js';
+import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
@@ -69,7 +69,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_VectorTile_({
+      source = new VectorTileSource({
         format: new MVT(),
         tileGrid: _ol_tilegrid_.createXYZ(),
         url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf',
