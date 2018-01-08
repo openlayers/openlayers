@@ -10,7 +10,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import _ol_reproj_Tile_ from '../reproj/Tile.js';
-import _ol_source_UrlTile_ from '../source/UrlTile.js';
+import UrlTile from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -26,7 +26,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  */
 var TileImage = function(options) {
 
-  _ol_source_UrlTile_.call(this, {
+  UrlTile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
@@ -84,7 +84,7 @@ var TileImage = function(options) {
   this.renderReprojectionEdges_ = false;
 };
 
-inherits(TileImage, _ol_source_UrlTile_);
+inherits(TileImage, UrlTile);
 
 
 /**
@@ -92,7 +92,7 @@ inherits(TileImage, _ol_source_UrlTile_);
  */
 TileImage.prototype.canExpireCache = function() {
   if (!ENABLE_RASTER_REPROJECTION) {
-    return _ol_source_UrlTile_.prototype.canExpireCache.call(this);
+    return UrlTile.prototype.canExpireCache.call(this);
   }
   if (this.tileCache.canExpireCache()) {
     return true;
@@ -112,7 +112,7 @@ TileImage.prototype.canExpireCache = function() {
  */
 TileImage.prototype.expireCache = function(projection, usedTiles) {
   if (!ENABLE_RASTER_REPROJECTION) {
-    _ol_source_UrlTile_.prototype.expireCache.call(this, projection, usedTiles);
+    UrlTile.prototype.expireCache.call(this, projection, usedTiles);
     return;
   }
   var usedTileCache = this.getTileCacheForProjection(projection);
@@ -155,7 +155,7 @@ TileImage.prototype.getOpaque = function(projection) {
       this.getProjection() && projection && !equivalent(this.getProjection(), projection)) {
     return false;
   } else {
-    return _ol_source_UrlTile_.prototype.getOpaque.call(this, projection);
+    return UrlTile.prototype.getOpaque.call(this, projection);
   }
 };
 
@@ -165,7 +165,7 @@ TileImage.prototype.getOpaque = function(projection) {
  */
 TileImage.prototype.getTileGridForProjection = function(projection) {
   if (!ENABLE_RASTER_REPROJECTION) {
-    return _ol_source_UrlTile_.prototype.getTileGridForProjection.call(this, projection);
+    return UrlTile.prototype.getTileGridForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
   if (this.tileGrid && (!thisProj || equivalent(thisProj, projection))) {
@@ -186,7 +186,7 @@ TileImage.prototype.getTileGridForProjection = function(projection) {
  */
 TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (!ENABLE_RASTER_REPROJECTION) {
-    return _ol_source_UrlTile_.prototype.getTileCacheForProjection.call(this, projection);
+    return UrlTile.prototype.getTileCacheForProjection.call(this, projection);
   }
   var thisProj = this.getProjection(); if (!thisProj || equivalent(thisProj, projection)) {
     return this.tileCache;

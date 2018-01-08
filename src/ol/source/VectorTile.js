@@ -6,7 +6,7 @@ import TileState from '../TileState.js';
 import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
 import VectorTile from '../VectorTile.js';
 import _ol_size_ from '../size.js';
-import _ol_source_UrlTile_ from '../source/UrlTile.js';
+import UrlTile from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -38,7 +38,7 @@ var _ol_source_VectorTile_ = function(options) {
     tileSize: options.tileSize || 512
   });
 
-  _ol_source_UrlTile_.call(this, {
+  UrlTile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
     extent: extent,
@@ -87,7 +87,7 @@ var _ol_source_VectorTile_ = function(options) {
 
 };
 
-inherits(_ol_source_VectorTile_, _ol_source_UrlTile_);
+inherits(_ol_source_VectorTile_, UrlTile);
 
 
 /**

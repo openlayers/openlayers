@@ -1,6 +1,6 @@
 import TileSource from '../../../../src/ol/source/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
-import _ol_source_UrlTile_ from '../../../../src/ol/source/UrlTile.js';
+import UrlTile from '../../../../src/ol/source/UrlTile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -13,7 +13,7 @@ describe('ol.source.XYZ', function() {
       var source = new XYZ();
       expect(source).to.be.an(XYZ);
       expect(source).to.be.an(TileImage);
-      expect(source).to.be.an(_ol_source_UrlTile_);
+      expect(source).to.be.an(UrlTile);
       expect(source).to.be.an(TileSource);
     });
 
