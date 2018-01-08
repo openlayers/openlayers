@@ -15,7 +15,7 @@ import TileLayer from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
-import _ol_source_Image_ from '../source/Image.js';
+import ImageSource from '../source/Image.js';
 import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
 import _ol_source_Tile_ from '../source/Tile.js';
@@ -149,7 +149,7 @@ var RasterSource = function(options) {
     wantedTiles: {}
   };
 
-  _ol_source_Image_.call(this, {});
+  ImageSource.call(this, {});
 
   if (options.operation !== undefined) {
     this.setOperation(options.operation, options.lib);
@@ -157,7 +157,7 @@ var RasterSource = function(options) {
 
 };
 
-inherits(RasterSource, _ol_source_Image_);
+inherits(RasterSource, ImageSource);
 
 
 /**
@@ -400,7 +400,7 @@ function createRenderer(source) {
   var renderer = null;
   if (source instanceof _ol_source_Tile_) {
     renderer = createTileRenderer(source);
-  } else if (source instanceof _ol_source_Image_) {
+  } else if (source instanceof ImageSource) {
     renderer = createImageRenderer(source);
   }
   return renderer;

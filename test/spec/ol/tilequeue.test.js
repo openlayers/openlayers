@@ -2,7 +2,7 @@ import ImageTile from '../../../src/ol/ImageTile.js';
 import _ol_Tile_ from '../../../src/ol/Tile.js';
 import TileQueue from '../../../src/ol/TileQueue.js';
 import TileState from '../../../src/ol/TileState.js';
-import _ol_source_Image_ from '../../../src/ol/source/Image.js';
+import ImageSource from '../../../src/ol/source/Image.js';
 import PriorityQueue from '../../../src/ol/structs/PriorityQueue.js';
 
 
@@ -32,7 +32,7 @@ describe('ol.TileQueue', function() {
         'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
 
     var tileLoadFunction = opt_tileLoadFunction ?
-      opt_tileLoadFunction : _ol_source_Image_.defaultImageLoadFunction;
+      opt_tileLoadFunction : ImageSource.defaultImageLoadFunction;
     return new ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
 

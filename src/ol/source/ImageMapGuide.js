@@ -7,7 +7,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_Image_ from '../source/Image.js';
+import ImageSource from '../source/Image.js';
 import _ol_uri_ from '../uri.js';
 
 /**
@@ -22,7 +22,7 @@ import _ol_uri_ from '../uri.js';
  */
 var _ol_source_ImageMapGuide_ = function(options) {
 
-  _ol_source_Image_.call(this, {
+  ImageSource.call(this, {
     projection: options.projection,
     resolutions: options.resolutions
   });
@@ -58,7 +58,7 @@ var _ol_source_ImageMapGuide_ = function(options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : _ol_source_Image_.defaultImageLoadFunction;
+    options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
 
   /**
    * @private
@@ -100,7 +100,7 @@ var _ol_source_ImageMapGuide_ = function(options) {
 
 };
 
-inherits(_ol_source_ImageMapGuide_, _ol_source_Image_);
+inherits(_ol_source_ImageMapGuide_, ImageSource);
 
 
 /**

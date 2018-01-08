@@ -12,7 +12,7 @@ import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from 
 import _ol_obj_ from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
-import _ol_source_Image_ from '../source/Image.js';
+import ImageSource from '../source/Image.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_string_ from '../string.js';
 import _ol_uri_ from '../uri.js';
@@ -31,7 +31,7 @@ var _ol_source_ImageWMS_ = function(opt_options) {
 
   var options = opt_options || {};
 
-  _ol_source_Image_.call(this, {
+  ImageSource.call(this, {
     attributions: options.attributions,
     projection: options.projection,
     resolutions: options.resolutions
@@ -55,7 +55,7 @@ var _ol_source_ImageWMS_ = function(opt_options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-    options.imageLoadFunction : _ol_source_Image_.defaultImageLoadFunction;
+    options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
 
   /**
    * @private
@@ -108,7 +108,7 @@ var _ol_source_ImageWMS_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_ImageWMS_, _ol_source_Image_);
+inherits(_ol_source_ImageWMS_, ImageSource);
 
 
 /**

@@ -1,7 +1,7 @@
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 import Map from '../../../../../src/ol/Map.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
-import _ol_source_Image_ from '../../../../../src/ol/source/Image.js';
+import ImageSource from '../../../../../src/ol/source/Image.js';
 import WebGLImageLayerRenderer from '../../../../../src/ol/renderer/webgl/ImageLayer.js';
 
 
@@ -22,7 +22,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
         target: document.createElement('div')
       });
       var layer = new ImageLayer({
-        source: new _ol_source_Image_({
+        source: new ImageSource({
           extent: [0, 0, 1, 1]
         })
       });

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_ImageCanvas_ from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
-import _ol_source_Image_ from '../source/Image.js';
+import ImageSource from '../source/Image.js';
 
 /**
  * @classdesc
@@ -17,7 +17,7 @@ import _ol_source_Image_ from '../source/Image.js';
  */
 var _ol_source_ImageCanvas_ = function(options) {
 
-  _ol_source_Image_.call(this, {
+  ImageSource.call(this, {
     attributions: options.attributions,
     projection: options.projection,
     resolutions: options.resolutions,
@@ -51,7 +51,7 @@ var _ol_source_ImageCanvas_ = function(options) {
 
 };
 
-inherits(_ol_source_ImageCanvas_, _ol_source_Image_);
+inherits(_ol_source_ImageCanvas_, ImageSource);
 
 
 /**

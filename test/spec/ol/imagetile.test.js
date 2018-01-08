@@ -2,7 +2,7 @@ import ImageTile from '../../../src/ol/ImageTile.js';
 import TileState from '../../../src/ol/TileState.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import EventType from '../../../src/ol/events/EventType.js';
-import _ol_source_Image_ from '../../../src/ol/source/Image.js';
+import ImageSource from '../../../src/ol/source/Image.js';
 
 
 describe('ol.ImageTile', function() {
@@ -13,7 +13,7 @@ describe('ol.ImageTile', function() {
       var tileCoord = [0, 0, 0];
       var state = TileState.IDLE;
       var src = 'spec/ol/data/osm-0-0-0.png';
-      var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
+      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
       var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       var previousState = tile.getState();
@@ -38,7 +38,7 @@ describe('ol.ImageTile', function() {
       var tileCoord = [0, 0, 0];
       var state = TileState.ERROR;
       var src = 'spec/ol/data/osm-0-0-0.png';
-      var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
+      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
       var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       var previousState = tile.getState();
@@ -63,7 +63,7 @@ describe('ol.ImageTile', function() {
       var tileCoord = [0, 0, 0];
       var state = TileState.IDLE;
       var src = 'spec/ol/data/osm-0-0-99.png';
-      var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
+      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
       var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
       var key = _ol_events_.listen(tile, EventType.CHANGE, function(event) {
@@ -89,7 +89,7 @@ describe('ol.ImageTile', function() {
       var tileCoord = [0, 0, 0];
       var state = TileState.IDLE;
       var src = 'spec/ol/data/osm-0-0-0.png';
-      var tileLoadFunction = _ol_source_Image_.defaultImageLoadFunction;
+      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
       var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
       tile.load();
       expect(tile.getState()).to.be(TileState.LOADING);
