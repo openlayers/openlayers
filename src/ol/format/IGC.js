@@ -4,11 +4,20 @@
 import {inherits} from '../index.js';
 import _ol_Feature_ from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
-import _ol_format_IGCZ_ from '../format/IGCZ.js';
 import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {get as getProjection} from '../proj.js';
+
+/**
+ * IGC altitude/z. One of 'barometric', 'gps', 'none'.
+ * @enum {string}
+ */
+var IGCZ = {
+  BAROMETRIC: 'barometric',
+  GPS: 'gps',
+  NONE: 'none'
+};
 
 /**
  * @classdesc
@@ -32,11 +41,9 @@ var IGC = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.IGCZ}
+   * @type {IGCZ}
    */
-  this.altitudeMode_ = options.altitudeMode ?
-    options.altitudeMode : _ol_format_IGCZ_.NONE;
-
+  this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : IGCZ.NONE;
 };
 
 inherits(IGC, TextFeature);
@@ -45,26 +52,23 @@ inherits(IGC, TextFeature);
 /**
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.B_RECORD_RE_ =
+var B_RECORD_RE =
     /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
 
 /**
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
+var H_RECORD_RE = /^H.([A-Z]{3}).*?:(.*)/;
 
 
 /**
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
+var HFDTE_RECORD_RE = /^HFDTE(\d{2})(\d{2})(\d{2})/;
 
 
 /**
@@ -72,9 +76,8 @@ IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
  *
  * @const
  * @type {RegExp}
- * @private
  */
-IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
+var NEWLINE_RE = /\r\n|\r|\n/;
 
 
 /**
@@ -94,7 +97,7 @@ IGC.prototype.readFeature;
  */
 IGC.prototype.readFeatureFromText = function(text, opt_options) {
   var altitudeMode = this.altitudeMode_;
-  var lines = text.split(IGC.NEWLINE_RE_);
+  var lines = text.split(NEWLINE_RE);
   /** @type {Object.<string, string>} */
   var properties = {};
   var flatCoordinates = [];
@@ -107,7 +110,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
     var line = lines[i];
     var m;
     if (line.charAt(0) == 'B') {
-      m = IGC.B_RECORD_RE_.exec(line);
+      m = B_RECORD_RE.exec(line);
       if (m) {
         var hour = parseInt(m[1], 10);
         var minute = parseInt(m[2], 10);
@@ -121,11 +124,11 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
           x = -x;
         }
         flatCoordinates.push(x, y);
-        if (altitudeMode != _ol_format_IGCZ_.NONE) {
+        if (altitudeMode != IGCZ.NONE) {
           var z;
-          if (altitudeMode == _ol_format_IGCZ_.GPS) {
+          if (altitudeMode == IGCZ.GPS) {
             z = parseInt(m[11], 10);
-          } else if (altitudeMode == _ol_format_IGCZ_.BAROMETRIC) {
+          } else if (altitudeMode == IGCZ.BAROMETRIC) {
             z = parseInt(m[12], 10);
           } else {
             z = 0;
@@ -141,13 +144,13 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
         lastDateTime = dateTime;
       }
     } else if (line.charAt(0) == 'H') {
-      m = IGC.HFDTE_RECORD_RE_.exec(line);
+      m = HFDTE_RECORD_RE.exec(line);
       if (m) {
         day = parseInt(m[1], 10);
         month = parseInt(m[2], 10) - 1;
         year = 2000 + parseInt(m[3], 10);
       } else {
-        m = IGC.H_RECORD_RE_.exec(line);
+        m = H_RECORD_RE.exec(line);
         if (m) {
           properties[m[1]] = m[2].trim();
         }
@@ -158,8 +161,7 @@ IGC.prototype.readFeatureFromText = function(text, opt_options) {
     return null;
   }
   var lineString = new LineString(null);
-  var layout = altitudeMode == _ol_format_IGCZ_.NONE ?
-    GeometryLayout.XYM : GeometryLayout.XYZM;
+  var layout = altitudeMode == IGCZ.NONE ? GeometryLayout.XYM : GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
   var feature = new _ol_Feature_(transformWithOptions(lineString, false, opt_options));
   feature.setProperties(properties);

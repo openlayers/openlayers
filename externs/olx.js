@@ -1538,7 +1538,7 @@ olx.format.TopoJSONOptions.prototype.layers;
 
 
 /**
- * @typedef {{altitudeMode: (ol.format.IGCZ|undefined)}}
+ * @typedef {{altitudeMode: (IGCZ|string|undefined)}}
  */
 olx.format.IGCOptions;
 
@@ -1546,7 +1546,7 @@ olx.format.IGCOptions;
 /**
  * Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
  * is `none`.
- * @type {ol.format.IGCZ|undefined}
+ * @type {IGCZ|string|undefined}
  * @api
  */
 olx.format.IGCOptions.prototype.altitudeMode;
