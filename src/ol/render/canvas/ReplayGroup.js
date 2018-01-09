@@ -35,11 +35,6 @@ var _ol_render_canvas_ReplayGroup_ = function(
   _ol_render_ReplayGroup_.call(this);
 
   /**
-   * @type {ol.render.ReplayType}
-   */
-  this.currentReplayType_;
-
-  /**
    * Declutter tree.
    * @private
    */
@@ -327,18 +322,18 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
     });
   }
 
+  var replayType;
+
   /**
    * @param {ol.Feature|ol.render.Feature} feature Feature.
    * @return {?} Callback result.
-   * @this {ol.render.canvas.ReplayGroup}
    */
-  var hitDetectionCallback = (function(feature) {
+  function featureCallback(feature) {
     var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
     for (var i = 0; i < contextSize; i++) {
       for (var j = 0; j < contextSize; j++) {
         if (mask[i][j]) {
           if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-            var replayType = this.currentReplayType_;
             var result;
             if (!(declutteredFeatures && (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) ||
                 declutteredFeatures.indexOf(feature) !== -1) {
@@ -354,10 +349,39 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
         }
       }
     }
-  }).bind(this);
+  }
 
-  return this.replayHitDetection_(context, transform, rotation,
-      skippedFeaturesHash, hitDetectionCallback, hitExtent, declutterReplays);
+  /** @type {Array.<number>} */
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  zs.sort(numberSafeCompareFunction);
+
+  var i, j, replays, replay, result;
+  for (i = zs.length - 1; i >= 0; --i) {
+    var zIndexKey = zs[i].toString();
+    replays = this.replaysByZIndex_[zIndexKey];
+    for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
+      replayType = _ol_render_replay_.ORDER[j];
+      replay = replays[replayType];
+      if (replay !== undefined) {
+        if (declutterReplays &&
+            (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
+          var declutter = declutterReplays[zIndexKey];
+          if (!declutter) {
+            declutterReplays[zIndexKey] = [replay, transform.slice(0)];
+          } else {
+            declutter.push(replay, transform.slice(0));
+          }
+        } else {
+          result = replay.replayHitDetection(context, transform, rotation,
+              skippedFeaturesHash, featureCallback, hitExtent);
+          if (result) {
+            return result;
+          }
+        }
+      }
+    }
+  }
+  return undefined;
 };
 
 
@@ -463,60 +487,6 @@ _ol_render_canvas_ReplayGroup_.prototype.replay = function(context,
   }
 
   context.restore();
-};
-
-
-/**
- * @private
- * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
- * @param {number} viewRotation View rotation.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *     to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T} featureCallback
- *     Feature callback.
- * @param {ol.Extent=} opt_hitExtent Only check features that intersect this
- *     extent.
- * @param {Object.<string, ol.DeclutterGroup>=} opt_declutterReplays Declutter
- *     replays.
- * @return {T|undefined} Callback result.
- * @template T
- */
-_ol_render_canvas_ReplayGroup_.prototype.replayHitDetection_ = function(
-    context, transform, viewRotation, skippedFeaturesHash,
-    featureCallback, opt_hitExtent, opt_declutterReplays) {
-  /** @type {Array.<number>} */
-  var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort(numberSafeCompareFunction);
-
-  var i, j, replays, replay, result;
-  for (i = zs.length - 1; i >= 0; --i) {
-    var zIndexKey = zs[i].toString();
-    replays = this.replaysByZIndex_[zIndexKey];
-    for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
-      var replayType = _ol_render_replay_.ORDER[j];
-      replay = replays[replayType];
-      if (replay !== undefined) {
-        if (opt_declutterReplays &&
-            (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
-          var declutter = opt_declutterReplays[zIndexKey];
-          if (!declutter) {
-            opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
-          } else {
-            declutter.push(replay, transform.slice(0));
-          }
-        } else {
-          this.currentReplayType_ = replayType;
-          result = replay.replayHitDetection(context, transform, viewRotation,
-              skippedFeaturesHash, featureCallback, opt_hitExtent);
-          if (result) {
-            return result;
-          }
-        }
-      }
-    }
-  }
-  return undefined;
 };
 
 
