@@ -5,7 +5,7 @@ goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Overlay');
 goog.require('ol.View');
-goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
 goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DoubleClickZoom');
@@ -197,14 +197,14 @@ describe('ol.Map', function() {
       document.body.appendChild(target);
       map = new ol.Map({
         target: target,
-        layers: [new ol.layer.Vector({
-          source: new ol.source.Vector({
-            features: [new ol.Feature(new ol.geom.Point([0, 0]))]
+        layers: [new ol.layer.Vector_({
+          source: new ol.source.Vector_({
+            features: [new ol.Feature(new ol.geom.LineString([[-50, 0], [50, 0]]))]
           })
         })],
         view: new ol.View({
           center: [0, 0],
-          zoom: 2
+          zoom: 17
         })
       });
       map.renderSync();
@@ -222,6 +222,20 @@ describe('ol.Map', function() {
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
       expect(features[0]).to.be.an(ol.Feature);
+    });
+
+    it('returns an array of found features with declutter: true', function() {
+      var layer = map.getLayers().item(0);
+      map.removeLayer(layer);
+      var otherLayer = new _ol_layer_Vector_({
+        declutter: true,
+        source: layer.getSource()
+      });
+      map.addLayer(otherLayer);
+      map.renderSync();
+      var features = map.getFeaturesAtPixel([50, 50]);
+      expect(features).to.be.an(Array);
+      expect(features[0]).to.be.an(_ol_Feature_);
     });
 
     it('respects options', function() {
