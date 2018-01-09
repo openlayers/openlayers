@@ -3,7 +3,7 @@ import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import _ol_View_ from '../../../src/ol/View.js';
-import Point from '../../../src/ol/geom/Point.js';
+import LineString from '../../../src/ol/geom/LineString.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
@@ -197,12 +197,12 @@ describe('ol.Map', function() {
         target: target,
         layers: [new _ol_layer_Vector_({
           source: new _ol_source_Vector_({
-            features: [new _ol_Feature_(new Point([0, 0]))]
+            features: [new _ol_Feature_(new LineString([[-50, 0], [50, 0]]))]
           })
         })],
         view: new _ol_View_({
           center: [0, 0],
-          zoom: 2
+          zoom: 17
         })
       });
       map.renderSync();
@@ -217,6 +217,20 @@ describe('ol.Map', function() {
     });
 
     it('returns an array of found features', function() {
+      var features = map.getFeaturesAtPixel([50, 50]);
+      expect(features).to.be.an(Array);
+      expect(features[0]).to.be.an(_ol_Feature_);
+    });
+
+    it('returns an array of found features with declutter: true', function() {
+      var layer = map.getLayers().item(0);
+      map.removeLayer(layer);
+      var otherLayer = new _ol_layer_Vector_({
+        declutter: true,
+        source: layer.getSource()
+      });
+      map.addLayer(otherLayer);
+      map.renderSync();
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
       expect(features[0]).to.be.an(_ol_Feature_);
