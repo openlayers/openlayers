@@ -41,7 +41,7 @@ var IGC = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.IGCZ}
+   * @type {IGCZ}
    */
   this.altitudeMode_ = options.altitudeMode ? options.altitudeMode : IGCZ.NONE;
 };
