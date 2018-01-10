@@ -1,15 +1,15 @@
 import {getUid} from '../../../../../src/ol/index.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../../src/ol/View.js';
+import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
-import _ol_renderer_canvas_VectorLayer_ from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
-import _ol_source_Vector_ from '../../../../../src/ol/source/Vector.js';
+import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
+import VectorSource from '../../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 
@@ -37,11 +37,11 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('creates a new instance', function() {
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_()
+      var layer = new VectorLayer({
+        source: new VectorSource()
       });
-      var renderer = new _ol_renderer_canvas_VectorLayer_(layer);
-      expect(renderer).to.be.a(_ol_renderer_canvas_VectorLayer_);
+      var renderer = new CanvasVectorLayerRenderer(layer);
+      expect(renderer).to.be.a(CanvasVectorLayerRenderer);
     });
 
     it('gives precedence to feature styles over layer styles', function() {
@@ -50,7 +50,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       target.style.height = '256px';
       document.body.appendChild(target);
       var map = new Map({
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
@@ -66,11 +66,11 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           text: 'feature'
         })
       })];
-      var feature1 = new _ol_Feature_(new Point([0, 0]));
-      var feature2 = new _ol_Feature_(new Point([0, 0]));
+      var feature1 = new Feature(new Point([0, 0]));
+      var feature2 = new Feature(new Point([0, 0]));
       feature2.setStyle(featureStyle);
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_({
+      var layer = new VectorLayer({
+        source: new VectorSource({
           features: [feature1, feature2]
         }),
         style: layerStyle
@@ -87,7 +87,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     it('does not re-render for unavailable fonts', function(done) {
       _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
       var map = new Map({
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
@@ -100,9 +100,9 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new Point([0, 0]));
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_({
+      var feature = new Feature(new Point([0, 0]));
+      var layer = new VectorLayer({
+        source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
@@ -118,7 +118,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     it('does not re-render for available fonts', function(done) {
       _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
       var map = new Map({
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
@@ -131,9 +131,9 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new Point([0, 0]));
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_({
+      var feature = new Feature(new Point([0, 0]));
+      var layer = new VectorLayer({
+        source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
@@ -150,7 +150,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
       head.appendChild(font);
       var map = new Map({
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
@@ -163,9 +163,9 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         })
       });
 
-      var feature = new _ol_Feature_(new Point([0, 0]));
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_({
+      var feature = new Feature(new Point([0, 0]));
+      var layer = new VectorLayer({
+        source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
@@ -185,15 +185,15 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     var layer, renderer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_()
+      layer = new VectorLayer({
+        source: new VectorSource()
       });
-      renderer = new _ol_renderer_canvas_VectorLayer_(layer);
+      renderer = new CanvasVectorLayerRenderer(layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
-        var feature = new _ol_Feature_();
+        var feature = new Feature();
         callback(feature);
         callback(feature);
       };
@@ -222,10 +222,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     var frameState, projExtent, renderer, worldWidth, buffer;
 
     beforeEach(function() {
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_({wrapX: true})
+      var layer = new VectorLayer({
+        source: new VectorSource({wrapX: true})
       });
-      renderer = new _ol_renderer_canvas_VectorLayer_(layer);
+      renderer = new CanvasVectorLayerRenderer(layer);
       var projection = getProjection('EPSG:3857');
       projExtent = projection.getExtent();
       worldWidth = _ol_extent_.getWidth(projExtent);

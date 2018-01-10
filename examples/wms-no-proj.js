@@ -1,15 +1,15 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import View from '../src/ol/View.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_ImageWMS_ from '../src/ol/source/ImageWMS.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import ImageWMS from '../src/ol/source/ImageWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
 var layers = [
   new TileLayer({
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
@@ -20,8 +20,8 @@ var layers = [
       url: 'https://wms.geo.admin.ch/'
     })
   }),
-  new _ol_layer_Image_({
-    source: new _ol_source_ImageWMS_({
+  new ImageLayer({
+    source: new ImageWMS({
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
@@ -45,7 +45,7 @@ var projection = new _ol_proj_Projection_({
 var map = new Map({
   layers: layers,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [660000, 190000],
     projection: projection,
     zoom: 9

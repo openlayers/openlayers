@@ -1,21 +1,21 @@
 // NOCOMPILE
 // this example uses FileSaver.js for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
-    new _ol_layer_Vector_({
-      source: new _ol_source_Vector_({
+    new VectorLayer({
+      source: new VectorSource({
         url: 'data/geojson/countries.geojson',
         format: new GeoJSON()
       })
@@ -27,7 +27,7 @@ var map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

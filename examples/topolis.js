@@ -1,18 +1,18 @@
 // NOCOMPILE
 // this example uses topolis and toastr for which we don't have an externs file.
 
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -21,11 +21,11 @@ import _ol_style_Text_ from '../src/ol/style/Text.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 
 var raster = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
-var nodes = new _ol_source_Vector_({wrapX: false});
-var nodesLayer = new _ol_layer_Vector_({
+var nodes = new VectorSource({wrapX: false});
+var nodesLayer = new VectorLayer({
   source: nodes,
   style: function(f) {
     var style = new _ol_style_Style_({
@@ -47,8 +47,8 @@ var nodesLayer = new _ol_layer_Vector_({
   }
 });
 
-var edges = new _ol_source_Vector_({wrapX: false});
-var edgesLayer = new _ol_layer_Vector_({
+var edges = new VectorSource({wrapX: false});
+var edgesLayer = new VectorLayer({
   source: edges,
   style: function(f) {
     var style = new _ol_style_Style_({
@@ -69,8 +69,8 @@ var edgesLayer = new _ol_layer_Vector_({
   }
 });
 
-var faces = new _ol_source_Vector_({wrapX: false});
-var facesLayer = new _ol_layer_Vector_({
+var faces = new VectorSource({wrapX: false});
+var facesLayer = new VectorLayer({
   source: faces,
   style: function(f) {
     var style = new _ol_style_Style_({
@@ -98,7 +98,7 @@ var facesLayer = new _ol_layer_Vector_({
 var map = new Map({
   layers: [raster, facesLayer, edgesLayer, nodesLayer],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-11000000, 4600000],
     zoom: 16
   })
@@ -129,7 +129,7 @@ function removeElementFeature(source, element) {
 }
 
 function nodeToFeature(node) {
-  var feature = new _ol_Feature_({
+  var feature = new Feature({
     geometry: new Point(node.coordinate),
     node: node
   });
@@ -138,7 +138,7 @@ function nodeToFeature(node) {
 }
 
 function edgeToFeature(edge) {
-  var feature = new _ol_Feature_({
+  var feature = new Feature({
     geometry: new LineString(edge.coordinates),
     edge: edge
   });
@@ -148,7 +148,7 @@ function edgeToFeature(edge) {
 
 function faceToFeature(face) {
   var coordinates = topo.getFaceGeometry(face);
-  var feature = new _ol_Feature_({
+  var feature = new Feature({
     geometry: new Polygon(coordinates),
     face: face
   });

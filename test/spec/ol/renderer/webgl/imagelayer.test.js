@@ -1,8 +1,8 @@
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 import Map from '../../../../../src/ol/Map.js';
-import _ol_layer_Image_ from '../../../../../src/ol/layer/Image.js';
-import _ol_source_Image_ from '../../../../../src/ol/source/Image.js';
-import _ol_renderer_webgl_ImageLayer_ from '../../../../../src/ol/renderer/webgl/ImageLayer.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
+import ImageSource from '../../../../../src/ol/source/Image.js';
+import WebGLImageLayerRenderer from '../../../../../src/ol/renderer/webgl/ImageLayer.js';
 
 
 describe('ol.renderer.webgl.ImageLayer', function() {
@@ -21,12 +21,12 @@ describe('ol.renderer.webgl.ImageLayer', function() {
       map = new Map({
         target: document.createElement('div')
       });
-      var layer = new _ol_layer_Image_({
-        source: new _ol_source_Image_({
+      var layer = new ImageLayer({
+        source: new ImageSource({
           extent: [0, 0, 1, 1]
         })
       });
-      renderer = new _ol_renderer_webgl_ImageLayer_(map.renderer_, layer);
+      renderer = new WebGLImageLayerRenderer(map.renderer_, layer);
 
       // input params
       canvasWidth = 512;

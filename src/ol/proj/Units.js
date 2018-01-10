@@ -6,7 +6,7 @@
  * `'us-ft'`.
  * @enum {string}
  */
-var _ol_proj_Units_ = {
+var Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
   METERS: 'm',
@@ -22,11 +22,11 @@ var _ol_proj_Units_ = {
  * @type {Object.<ol.proj.Units, number>}
  * @api
  */
-_ol_proj_Units_.METERS_PER_UNIT = {};
+Units.METERS_PER_UNIT = {};
 // use the radius of the Normal sphere
-_ol_proj_Units_.METERS_PER_UNIT[_ol_proj_Units_.DEGREES] =
+Units.METERS_PER_UNIT[Units.DEGREES] =
     2 * Math.PI * 6370997 / 360;
-_ol_proj_Units_.METERS_PER_UNIT[_ol_proj_Units_.FEET] = 0.3048;
-_ol_proj_Units_.METERS_PER_UNIT[_ol_proj_Units_.METERS] = 1;
-_ol_proj_Units_.METERS_PER_UNIT[_ol_proj_Units_.USFEET] = 1200 / 3937;
-export default _ol_proj_Units_;
+Units.METERS_PER_UNIT[Units.FEET] = 0.3048;
+Units.METERS_PER_UNIT[Units.METERS] = 1;
+Units.METERS_PER_UNIT[Units.USFEET] = 1200 / 3937;
+export default Units;

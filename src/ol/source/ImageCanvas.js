@@ -2,9 +2,9 @@
  * @module ol/source/ImageCanvas
  */
 import {inherits} from '../index.js';
-import _ol_ImageCanvas_ from '../ImageCanvas.js';
+import ImageCanvas from '../ImageCanvas.js';
 import {containsExtent, getHeight, getWidth, scaleFromCenter} from '../extent.js';
-import _ol_source_Image_ from '../source/Image.js';
+import ImageSource from '../source/Image.js';
 
 /**
  * @classdesc
@@ -15,9 +15,9 @@ import _ol_source_Image_ from '../source/Image.js';
  * @param {olx.source.ImageCanvasOptions} options Constructor options.
  * @api
  */
-var _ol_source_ImageCanvas_ = function(options) {
+var ImageCanvasSource = function(options) {
 
-  _ol_source_Image_.call(this, {
+  ImageSource.call(this, {
     attributions: options.attributions,
     projection: options.projection,
     resolutions: options.resolutions,
@@ -51,13 +51,13 @@ var _ol_source_ImageCanvas_ = function(options) {
 
 };
 
-inherits(_ol_source_ImageCanvas_, _ol_source_Image_);
+inherits(ImageCanvasSource, ImageSource);
 
 
 /**
  * @inheritDoc
  */
-_ol_source_ImageCanvas_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+ImageCanvasSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
   var canvas = this.canvas_;
@@ -78,11 +78,11 @@ _ol_source_ImageCanvas_.prototype.getImageInternal = function(extent, resolution
   var canvasElement = this.canvasFunction_(
       extent, resolution, pixelRatio, size, projection);
   if (canvasElement) {
-    canvas = new _ol_ImageCanvas_(extent, resolution, pixelRatio, canvasElement);
+    canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
   }
   this.canvas_ = canvas;
   this.renderedRevision_ = this.getRevision();
 
   return canvas;
 };
-export default _ol_source_ImageCanvas_;
+export default ImageCanvasSource;

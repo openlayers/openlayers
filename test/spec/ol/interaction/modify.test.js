@@ -1,8 +1,8 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
@@ -10,9 +10,9 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Modify', function() {
@@ -34,23 +34,23 @@ describe('ol.interaction.Modify', function() {
     document.body.appendChild(target);
 
     features = [
-      new _ol_Feature_({
+      new Feature({
         geometry: new Polygon([
           [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         ])
       })
     ];
 
-    source = new _ol_source_Vector_({
+    source = new VectorSource({
       features: features
     });
 
-    var layer = new _ol_layer_Vector_({source: source});
+    var layer = new VectorLayer({source: source});
 
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -151,7 +151,7 @@ describe('ol.interaction.Modify', function() {
 
   describe('constructor', function() {
     it('adds features to the RTree', function() {
-      var feature = new _ol_Feature_(
+      var feature = new Feature(
           new Point([0, 0]));
       var features = new _ol_Collection_([feature]);
       var modify = new _ol_interaction_Modify_({
@@ -163,7 +163,7 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('accepts feature without geometry', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       var features = new _ol_Collection_([feature]);
       var modify = new _ol_interaction_Modify_({
         features: features
@@ -178,9 +178,9 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('accepts a source', function() {
-      var feature = new _ol_Feature_(
+      var feature = new Feature(
           new Point([0, 0]));
-      var source = new _ol_source_Vector_({features: [feature]});
+      var source = new VectorSource({features: [feature]});
       var modify = new _ol_interaction_Modify_({source: source});
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
@@ -225,7 +225,7 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('deletes first vertex of a LineString', function() {
-      var lineFeature = new _ol_Feature_({
+      var lineFeature = new Feature({
         geometry: new LineString(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
@@ -261,7 +261,7 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('deletes last vertex of a LineString', function() {
-      var lineFeature = new _ol_Feature_({
+      var lineFeature = new Feature({
         geometry: new LineString(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
@@ -297,7 +297,7 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('deletes vertex of a LineString programmatically', function() {
-      var lineFeature = new _ol_Feature_({
+      var lineFeature = new Feature({
         geometry: new LineString(
             [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
@@ -339,7 +339,7 @@ describe('ol.interaction.Modify', function() {
   describe('vertex modification', function() {
 
     it('keeps the third dimension', function() {
-      var lineFeature = new _ol_Feature_({
+      var lineFeature = new Feature({
         geometry: new LineString(
             [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
         )
@@ -382,7 +382,7 @@ describe('ol.interaction.Modify', function() {
 
   describe('circle modification', function() {
     it('changes the circle radius and center', function() {
-      var circleFeature = new _ol_Feature_(new Circle([10, 10], 20));
+      var circleFeature = new Feature(new Circle([10, 10], 20));
       features.length = 0;
       features.push(circleFeature);
 
@@ -617,7 +617,7 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('updates circle segment data', function() {
-      var feature = new _ol_Feature_(new Circle([10, 10], 20));
+      var feature = new Feature(new Circle([10, 10], 20));
       features.length = 0;
       features.push(feature);
 

@@ -1,4 +1,4 @@
-import _ol_source_Stamen_ from '../../../../src/ol/source/Stamen.js';
+import Stamen from '../../../../src/ol/source/Stamen.js';
 
 
 describe('ol.source.Stamen', function() {
@@ -6,7 +6,7 @@ describe('ol.source.Stamen', function() {
   describe('constructor', function() {
 
     it('can be constructed with a custom minZoom', function() {
-      var source = new _ol_source_Stamen_({
+      var source = new Stamen({
         layer: 'watercolor',
         minZoom: 10
       });
@@ -14,7 +14,7 @@ describe('ol.source.Stamen', function() {
     });
 
     it('can be constructed with a custom maxZoom', function() {
-      var source = new _ol_source_Stamen_({
+      var source = new Stamen({
         layer: 'watercolor',
         maxZoom: 8
       });

@@ -6,7 +6,7 @@ import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import _ol_obj_ from '../obj.js';
 import _ol_size_ from '../size.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_uri_ from '../uri.js';
 
@@ -24,11 +24,11 @@ import _ol_uri_ from '../uri.js';
  *     options.
  * @api
  */
-var _ol_source_TileArcGISRest_ = function(opt_options) {
+var TileArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -57,14 +57,14 @@ var _ol_source_TileArcGISRest_ = function(opt_options) {
   this.setKey(this.getKeyForParams_());
 };
 
-inherits(_ol_source_TileArcGISRest_, _ol_source_TileImage_);
+inherits(TileArcGISRest, TileImage);
 
 
 /**
  * @private
  * @return {string} The key for the current params.
  */
-_ol_source_TileArcGISRest_.prototype.getKeyForParams_ = function() {
+TileArcGISRest.prototype.getKeyForParams_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.params_) {
@@ -80,7 +80,7 @@ _ol_source_TileArcGISRest_.prototype.getKeyForParams_ = function() {
  * @return {Object} Params.
  * @api
  */
-_ol_source_TileArcGISRest_.prototype.getParams = function() {
+TileArcGISRest.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -95,7 +95,7 @@ _ol_source_TileArcGISRest_.prototype.getParams = function() {
  * @return {string|undefined} Request URL.
  * @private
  */
-_ol_source_TileArcGISRest_.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
+TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
     pixelRatio, projection, params) {
 
   var urls = this.urls;
@@ -132,7 +132,7 @@ _ol_source_TileArcGISRest_.prototype.getRequestUrl_ = function(tileCoord, tileSi
 /**
  * @inheritDoc
  */
-_ol_source_TileArcGISRest_.prototype.getTilePixelRatio = function(pixelRatio) {
+TileArcGISRest.prototype.getTilePixelRatio = function(pixelRatio) {
   return /** @type {number} */ (pixelRatio);
 };
 
@@ -140,7 +140,7 @@ _ol_source_TileArcGISRest_.prototype.getTilePixelRatio = function(pixelRatio) {
 /**
  * @inheritDoc
  */
-_ol_source_TileArcGISRest_.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
   if (!tileGrid) {
@@ -178,8 +178,8 @@ _ol_source_TileArcGISRest_.prototype.fixedTileUrlFunction = function(tileCoord, 
  * @param {Object} params Params.
  * @api
  */
-_ol_source_TileArcGISRest_.prototype.updateParams = function(params) {
+TileArcGISRest.prototype.updateParams = function(params) {
   _ol_obj_.assign(this.params_, params);
   this.setKey(this.getKeyForParams_());
 };
-export default _ol_source_TileArcGISRest_;
+export default TileArcGISRest;

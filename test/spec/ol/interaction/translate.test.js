@@ -1,14 +1,14 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Translate', function() {
@@ -26,18 +26,18 @@ describe('ol.interaction.Translate', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new _ol_source_Vector_();
-    features = [new _ol_Feature_({
+    source = new VectorSource();
+    features = [new Feature({
       geometry: new Point([10, -20])
-    }), new _ol_Feature_({
+    }), new Feature({
       geometry: new Point([20, -30])
     })];
     source.addFeatures(features);
-    var layer = new _ol_layer_Vector_({source: source});
+    var layer = new VectorLayer({source: source});
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

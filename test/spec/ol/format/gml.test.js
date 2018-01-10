@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import _ol_format_GML_ from '../../../../src/ol/format/GML.js';
 import GML2 from '../../../../src/ol/format/GML2.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -163,7 +163,7 @@ describe('ol.format.GML2', function() {
         '    </geometry>' +
         '  </layer>';
 
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new LineString([[1.1, 2], [3, 4.2]])
       });
       feature.setId(1);
@@ -194,7 +194,7 @@ describe('ol.format.GML2', function() {
         '    </geometry>' +
         '  </layer>';
 
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new Polygon([[[1.1, 2], [3, 4.2], [5.2, 6]]])
       });
       feature.setId(1);
@@ -221,7 +221,7 @@ describe('ol.format.GML2', function() {
         '    </geometry>' +
         '  </layer>';
 
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new Point([1.1, 2])
       });
       feature.setId(1);
@@ -252,7 +252,7 @@ describe('ol.format.GML2', function() {
         '    </geometry>' +
         '  </layer>';
 
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new MultiPoint([[1.1, 2]])
       });
       feature.setId(1);
@@ -283,7 +283,7 @@ describe('ol.format.GML2', function() {
         '    </geometry>' +
         '  </layer>';
 
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new MultiLineString([[[1.1, 2], [3, 4.2]]])
       });
       feature.setId(1);
@@ -318,7 +318,7 @@ describe('ol.format.GML2', function() {
         '    </geometry>' +
         '  </layer>';
 
-      var feature = new _ol_Feature_({
+      var feature = new Feature({
         geometry: new MultiPolygon([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
       });
       feature.setId(1);

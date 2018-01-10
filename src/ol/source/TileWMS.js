@@ -11,7 +11,7 @@ import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import _ol_size_ from '../size.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_string_ from '../string.js';
@@ -26,7 +26,7 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
  * @api
  */
-var _ol_source_TileWMS_ = function(opt_options) {
+var TileWMS = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -34,7 +34,7 @@ var _ol_source_TileWMS_ = function(opt_options) {
 
   var transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -91,7 +91,7 @@ var _ol_source_TileWMS_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_TileWMS_, _ol_source_TileImage_);
+inherits(TileWMS, TileImage);
 
 
 /**
@@ -108,7 +108,7 @@ inherits(_ol_source_TileWMS_, _ol_source_TileImage_);
  * @return {string|undefined} GetFeatureInfo URL.
  * @api
  */
-_ol_source_TileWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
+TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
   var projectionObj = getProjection(projection);
   var sourceProjectionObj = this.getProjection();
 
@@ -164,7 +164,7 @@ _ol_source_TileWMS_.prototype.getGetFeatureInfoUrl = function(coordinate, resolu
 /**
  * @inheritDoc
  */
-_ol_source_TileWMS_.prototype.getGutterInternal = function() {
+TileWMS.prototype.getGutterInternal = function() {
   return this.gutter_;
 };
 
@@ -175,7 +175,7 @@ _ol_source_TileWMS_.prototype.getGutterInternal = function() {
  * @return {Object} Params.
  * @api
  */
-_ol_source_TileWMS_.prototype.getParams = function() {
+TileWMS.prototype.getParams = function() {
   return this.params_;
 };
 
@@ -190,7 +190,7 @@ _ol_source_TileWMS_.prototype.getParams = function() {
  * @return {string|undefined} Request URL.
  * @private
  */
-_ol_source_TileWMS_.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
+TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
     pixelRatio, projection, params) {
 
   var urls = this.urls;
@@ -257,7 +257,7 @@ _ol_source_TileWMS_.prototype.getRequestUrl_ = function(tileCoord, tileSize, til
 /**
  * @inheritDoc
  */
-_ol_source_TileWMS_.prototype.getTilePixelRatio = function(pixelRatio) {
+TileWMS.prototype.getTilePixelRatio = function(pixelRatio) {
   return (!this.hidpi_ || this.serverType_ === undefined) ? 1 :
   /** @type {number} */ (pixelRatio);
 };
@@ -267,7 +267,7 @@ _ol_source_TileWMS_.prototype.getTilePixelRatio = function(pixelRatio) {
  * @private
  * @return {string} The key for the current params.
  */
-_ol_source_TileWMS_.prototype.getKeyForParams_ = function() {
+TileWMS.prototype.getKeyForParams_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.params_) {
@@ -280,7 +280,7 @@ _ol_source_TileWMS_.prototype.getKeyForParams_ = function() {
 /**
  * @inheritDoc
  */
-_ol_source_TileWMS_.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
+TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
   if (!tileGrid) {
@@ -328,7 +328,7 @@ _ol_source_TileWMS_.prototype.fixedTileUrlFunction = function(tileCoord, pixelRa
  * @param {Object} params Params.
  * @api
  */
-_ol_source_TileWMS_.prototype.updateParams = function(params) {
+TileWMS.prototype.updateParams = function(params) {
   _ol_obj_.assign(this.params_, params);
   this.updateV13_();
   this.setKey(this.getKeyForParams_());
@@ -338,8 +338,8 @@ _ol_source_TileWMS_.prototype.updateParams = function(params) {
 /**
  * @private
  */
-_ol_source_TileWMS_.prototype.updateV13_ = function() {
+TileWMS.prototype.updateV13_ = function() {
   var version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
   this.v13_ = _ol_string_.compareVersions(version, '1.3') >= 0;
 };
-export default _ol_source_TileWMS_;
+export default TileWMS;

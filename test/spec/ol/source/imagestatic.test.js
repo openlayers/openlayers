@@ -1,4 +1,4 @@
-import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
+import Static from '../../../../src/ol/source/ImageStatic.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 
 
@@ -17,7 +17,7 @@ describe('ol.source.ImageStatic', function() {
   describe('#getImage', function() {
 
     it('scales image to fit imageExtent', function(done) {
-      var source = new _ol_source_ImageStatic_({
+      var source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
           -13629027.891360067, 4539747.983913189,
@@ -37,7 +37,7 @@ describe('ol.source.ImageStatic', function() {
     });
 
     it('respects imageSize', function(done) {
-      var source = new _ol_source_ImageStatic_({
+      var source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
           -13629027.891360067, 4539747.983913189,
@@ -58,7 +58,7 @@ describe('ol.source.ImageStatic', function() {
     });
 
     it('triggers image load events', function(done) {
-      var source = new _ol_source_ImageStatic_({
+      var source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
           -13629027.891360067, 4539747.983913189,

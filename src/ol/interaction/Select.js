@@ -10,9 +10,9 @@ import _ol_events_condition_ from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_layer_Vector_ from '../layer/Vector.js';
+import VectorLayer from '../layer/Vector.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
 
 /**
@@ -87,8 +87,8 @@ var _ol_interaction_Select_ = function(opt_options) {
    */
   this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
-  var featureOverlay = new _ol_layer_Vector_({
-    source: new _ol_source_Vector_({
+  var featureOverlay = new VectorLayer({
+    source: new VectorSource({
       useSpatialIndex: false,
       features: options.features,
       wrapX: options.wrapX

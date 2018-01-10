@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -140,8 +140,8 @@ function polygonStyleFunction(feature, resolution) {
   });
 }
 
-var vectorPolygons = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vectorPolygons = new VectorLayer({
+  source: new VectorSource({
     url: 'data/geojson/polygon-samples.geojson',
     format: new GeoJSON()
   }),
@@ -160,8 +160,8 @@ function lineStyleFunction(feature, resolution) {
   });
 }
 
-var vectorLines = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vectorLines = new VectorLayer({
+  source: new VectorSource({
     url: 'data/geojson/line-samples.geojson',
     format: new GeoJSON()
   }),
@@ -181,8 +181,8 @@ function pointStyleFunction(feature, resolution) {
   });
 }
 
-var vectorPoints = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vectorPoints = new VectorLayer({
+  source: new VectorSource({
     url: 'data/geojson/point-samples.geojson',
     format: new GeoJSON()
   }),
@@ -192,14 +192,14 @@ var vectorPoints = new _ol_layer_Vector_({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
     vectorPolygons,
     vectorLines,
     vectorPoints
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-8161939, 6095025],
     zoom: 8
   })

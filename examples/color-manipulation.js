@@ -1,9 +1,9 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import View from '../src/ol/View.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import RasterSource from '../src/ol/source/Raster.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import Stamen from '../src/ol/source/Stamen.js';
 
 
 /**
@@ -101,7 +101,7 @@ function xyz2rgb(x) {
 }
 
 var raster = new RasterSource({
-  sources: [new _ol_source_Stamen_({
+  sources: [new Stamen({
     layer: 'watercolor',
     transition: 0
   })],
@@ -150,12 +150,12 @@ raster.on('beforeoperations', function(event) {
 
 var map = new Map({
   layers: [
-    new _ol_layer_Image_({
+    new ImageLayer({
       source: raster
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 2500000],
     zoom: 2,
     maxZoom: 18

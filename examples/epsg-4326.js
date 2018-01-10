@@ -1,14 +1,14 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
 var layers = [
   new TileLayer({
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {
         'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
@@ -26,7 +26,7 @@ var map = new Map({
   ]),
   layers: layers,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: 'EPSG:4326',
     center: [0, 0],
     zoom: 2

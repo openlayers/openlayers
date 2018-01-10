@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -80,11 +80,11 @@ var geojsonObject = {
   }]
 };
 
-var source = new _ol_source_Vector_({
+var source = new VectorSource({
   features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
-var layer = new _ol_layer_Vector_({
+var layer = new VectorLayer({
   source: source,
   style: styles
 });
@@ -92,7 +92,7 @@ var layer = new _ol_layer_Vector_({
 var map = new Map({
   layers: [layer],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 3000000],
     zoom: 2
   })

@@ -1,19 +1,19 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 2
 });
@@ -21,7 +21,7 @@ var view = new _ol_View_({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',
@@ -61,12 +61,12 @@ geolocation.on('error', function(error) {
   info.style.display = '';
 });
 
-var accuracyFeature = new _ol_Feature_();
+var accuracyFeature = new Feature();
 geolocation.on('change:accuracyGeometry', function() {
   accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
 });
 
-var positionFeature = new _ol_Feature_();
+var positionFeature = new Feature();
 positionFeature.setStyle(new _ol_style_Style_({
   image: new _ol_style_Circle_({
     radius: 6,
@@ -86,9 +86,9 @@ geolocation.on('change:position', function() {
     new Point(coordinates) : null);
 });
 
-new _ol_layer_Vector_({
+new VectorLayer({
   map: map,
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     features: [accuracyFeature, positionFeature]
   })
 });

@@ -1,15 +1,15 @@
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Select', function() {
@@ -36,33 +36,33 @@ describe('ol.interaction.Select', function() {
     // -> foo -> bar.
     var features = [];
     features.push(
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'bar'
         }),
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'foo'
         }),
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'bar'
         }),
-        new _ol_Feature_({
+        new Feature({
           geometry: geometry,
           type: 'foo'
         }));
 
-    source = new _ol_source_Vector_({
+    source = new VectorSource({
       features: features
     });
 
-    layer = new _ol_layer_Vector_({source: source});
+    layer = new VectorLayer({source: source});
 
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -356,8 +356,8 @@ describe('ol.interaction.Select', function() {
         var feature = e.selected[0];
         var layer_ = interaction.getLayer(feature);
         expect(e.selected).to.have.length(1);
-        expect(feature).to.be.a(_ol_Feature_);
-        expect(layer_).to.be.a(_ol_layer_Vector_);
+        expect(feature).to.be.a(Feature);
+        expect(layer_).to.be.a(VectorLayer);
         expect(layer_).to.equal(layer);
       });
       interaction.on('select', listenerSpy);

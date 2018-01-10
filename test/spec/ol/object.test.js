@@ -1,4 +1,4 @@
-import _ol_Object_ from '../../../src/ol/Object.js';
+import BaseObject from '../../../src/ol/Object.js';
 import _ol_events_ from '../../../src/ol/events.js';
 
 
@@ -6,7 +6,7 @@ describe('ol.Object', function() {
 
   var o;
   beforeEach(function() {
-    o = new _ol_Object_();
+    o = new BaseObject();
   });
 
   describe('get, set and unset', function() {
@@ -49,7 +49,7 @@ describe('ol.Object', function() {
   describe('#get()', function() {
 
     it('does not return values that are not explicitly set', function() {
-      var o = new _ol_Object_();
+      var o = new BaseObject();
       expect(o.get('constructor')).to.be(undefined);
       expect(o.get('hasOwnProperty')).to.be(undefined);
       expect(o.get('isPrototypeOf')).to.be(undefined);
@@ -63,7 +63,7 @@ describe('ol.Object', function() {
 
   describe('#set()', function() {
     it('can be used with arbitrary names', function() {
-      var o = new _ol_Object_();
+      var o = new BaseObject();
 
       o.set('set', 'sat');
       expect(o.get('set')).to.be('sat');
@@ -80,7 +80,7 @@ describe('ol.Object', function() {
   describe('#getKeys()', function() {
 
     it('returns property names set at construction', function() {
-      var o = new _ol_Object_({
+      var o = new BaseObject({
         prop1: 'val1',
         prop2: 'val2',
         toString: 'string',
@@ -212,7 +212,7 @@ describe('ol.Object', function() {
 
   describe('create with options', function() {
     it('sets the property', function() {
-      var o = new _ol_Object_({k: 1});
+      var o = new BaseObject({k: 1});
       expect(o.get('k')).to.eql(1);
 
       expect(o.getKeys()).to.eql(['k']);

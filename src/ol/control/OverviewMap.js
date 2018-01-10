@@ -6,11 +6,11 @@ import _ol_Collection_ from '../Collection.js';
 import PluggableMap from '../PluggableMap.js';
 import MapEventType from '../MapEventType.js';
 import _ol_MapProperty_ from '../MapProperty.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
-import _ol_ViewProperty_ from '../ViewProperty.js';
+import ViewProperty from '../ViewProperty.js';
 import Control from '../control/Control.js';
 import _ol_coordinate_ from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
@@ -270,7 +270,7 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  */
 OverviewMap.prototype.bindView_ = function(view) {
   _ol_events_.listen(view,
-      _ol_Object_.getChangeEventType(_ol_ViewProperty_.ROTATION),
+      BaseObject.getChangeEventType(ViewProperty.ROTATION),
       this.handleRotationChanged_, this);
 };
 
@@ -282,7 +282,7 @@ OverviewMap.prototype.bindView_ = function(view) {
  */
 OverviewMap.prototype.unbindView_ = function(view) {
   _ol_events_.unlisten(view,
-      _ol_Object_.getChangeEventType(_ol_ViewProperty_.ROTATION),
+      BaseObject.getChangeEventType(ViewProperty.ROTATION),
       this.handleRotationChanged_, this);
 };
 

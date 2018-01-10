@@ -1,13 +1,13 @@
 import Map from '../../../../src/ol/Map.js';
 import TileState from '../../../../src/ol/TileState.js';
-import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
+import View from '../../../../src/ol/View.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
-import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
+import Static from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
-import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import TileSource from '../../../../src/ol/source/Tile.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 
 var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
     'BAAEAAAICRAEAOw==';
@@ -35,17 +35,17 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     var extent = [-1, -1, 1, 1];
 
-    redSource = new _ol_source_ImageStatic_({
+    redSource = new Static({
       url: red,
       imageExtent: extent
     });
 
-    greenSource = new _ol_source_ImageStatic_({
+    greenSource = new Static({
       url: green,
       imageExtent: extent
     });
 
-    blueSource = new _ol_source_ImageStatic_({
+    blueSource = new Static({
       url: blue,
       imageExtent: extent
     });
@@ -60,7 +60,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     map = new Map({
       target: target,
-      view: new _ol_View_({
+      view: new View({
         resolutions: [1],
         projection: new _ol_proj_Projection_({
           code: 'image',
@@ -69,7 +69,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         })
       }),
       layers: [
-        new _ol_layer_Image_({
+        new ImageLayer({
           source: raster
         })
       ]
@@ -92,7 +92,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     it('returns a tile source', function() {
       var source = new RasterSource({
         threads: 0,
-        sources: [new _ol_source_Tile_({})]
+        sources: [new TileSource({})]
       });
       expect(source).to.be.a(Source);
       expect(source).to.be.a(RasterSource);
@@ -311,7 +311,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('is initiated on the underlying source', function(done) {
 
-      var source = new _ol_source_XYZ_({
+      var source = new XYZ({
         url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
       });
 
@@ -325,12 +325,12 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
       map2 = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
         layers: [
-          new _ol_layer_Image_({
+          new ImageLayer({
             source: raster
           })
         ]

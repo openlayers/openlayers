@@ -1,5 +1,5 @@
 import _ol_transform_ from '../../../../../src/ol/transform.js';
-import _ol_layer_Image_ from '../../../../../src/ol/layer/Image.js';
+import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../../../src/ol/renderer/canvas/IntermediateCanvas.js';
 
@@ -9,7 +9,7 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
   describe('#composeFrame()', function() {
     var renderer, frameState, layerState, context;
     beforeEach(function() {
-      var layer = new _ol_layer_Image_({
+      var layer = new ImageLayer({
         extent: [1, 2, 3, 4]
       });
       renderer = new _ol_renderer_canvas_IntermediateCanvas_(layer);

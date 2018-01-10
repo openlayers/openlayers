@@ -1,12 +1,12 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -58,7 +58,7 @@ var styleCache = {
   })
 };
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   loader: function(extent, resolution, projection) {
     var url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
@@ -87,7 +87,7 @@ var vectorSource = new _ol_source_Vector_({
   }))
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
     var classify = feature.get('activeprod');
@@ -96,7 +96,7 @@ var vector = new _ol_layer_Vector_({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_XYZ_({
+  source: new XYZ({
     attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
@@ -107,7 +107,7 @@ var raster = new TileLayer({
 var map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-97.6114, 38.8403]),
     zoom: 7
   })

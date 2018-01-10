@@ -2,7 +2,7 @@
  * @module ol/format/EsriJSON
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {assert} from '../asserts.js';
 import {containsExtent} from '../extent.js';
 import {transformWithOptions} from '../format/Feature.js';
@@ -464,7 +464,7 @@ EsriJSON.prototype.readFeatureFromObject = function(
   var esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
   var geometry = EsriJSON.readGeometry_(esriJSONFeature.geometry,
       opt_options);
-  var feature = new _ol_Feature_();
+  var feature = new Feature();
   if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
   }

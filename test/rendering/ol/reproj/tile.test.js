@@ -2,7 +2,7 @@ import TileState from '../../../../src/ol/TileState.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 
@@ -38,7 +38,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
   describe('single tile reprojections from EPSG:3857', function() {
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         projection: 'EPSG:3857',
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
@@ -83,7 +83,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
   describe('stitching several tiles from EPSG:3857', function() {
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         projection: 'EPSG:3857',
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
@@ -111,7 +111,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
   describe('tile projection from EPSG:4326', function() {
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         projection: 'EPSG:4326',
         maxZoom: 0,
         url: 'rendering/ol/data/tiles/4326/{z}/{x}/{y}.png'
@@ -132,7 +132,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
   describe('non-square source tiles', function() {
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         projection: 'EPSG:3857',
         url: 'rendering/ol/data/tiles/osm-512x256/{z}/{x}/{y}.png',
         tileSize: [512, 256]
@@ -153,7 +153,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
   describe('dateline wrapping', function() {
     beforeEach(function() {
-      source = new _ol_source_XYZ_({
+      source = new XYZ({
         projection: 'EPSG:4326',
         maxZoom: 0,
         url: 'rendering/ol/data/tiles/4326/{z}/{x}/{y}.png'

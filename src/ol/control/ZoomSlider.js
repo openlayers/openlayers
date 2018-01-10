@@ -4,7 +4,7 @@
 // FIXME should possibly show tooltip when dragging?
 
 import {inherits} from '../index.js';
-import _ol_ViewHint_ from '../ViewHint.js';
+import ViewHint from '../ViewHint.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
@@ -251,7 +251,7 @@ ZoomSlider.prototype.handleContainerClick_ = function(event) {
  */
 ZoomSlider.prototype.handleDraggerStart_ = function(event) {
   if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
-    this.getMap().getView().setHint(_ol_ViewHint_.INTERACTING, 1);
+    this.getMap().getView().setHint(ViewHint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;
     this.dragging_ = true;
@@ -288,7 +288,7 @@ ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
 ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
     var view = this.getMap().getView();
-    view.setHint(_ol_ViewHint_.INTERACTING, -1);
+    view.setHint(ViewHint.INTERACTING, -1);
 
     view.animate({
       resolution: view.constrainResolution(this.currentResolution_),

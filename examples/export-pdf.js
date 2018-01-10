@@ -1,15 +1,15 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import WKT from '../src/ol/format/WKT.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var raster = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 var format = new WKT();
@@ -19,8 +19,8 @@ var feature = format.readFeature(
         '-39.1552734375, 10.689697265625 -25.0927734375))');
 feature.getGeometry().transform('EPSG:4326', 'EPSG:3857');
 
-var vector = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vector = new VectorLayer({
+  source: new VectorSource({
     features: [feature]
   })
 });
@@ -34,7 +34,7 @@ var map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

@@ -1,22 +1,22 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection, getTransform} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileImage from '../src/ol/source/TileImage.js';
 import proj4 from 'proj4';
 
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: 'EPSG:3857',
     center: [0, 0],
     zoom: 1
@@ -32,7 +32,7 @@ var renderEdgesCheckbox = document.getElementById('render-edges');
 function setProjection(code, name, proj4def, bbox) {
   if (code === null || name === null || proj4def === null || bbox === null) {
     resultSpan.innerHTML = 'Nothing usable found, using EPSG:3857...';
-    map.setView(new _ol_View_({
+    map.setView(new View({
       projection: 'EPSG:3857',
       center: [0, 0],
       zoom: 1
@@ -52,7 +52,7 @@ function setProjection(code, name, proj4def, bbox) {
   var extent = _ol_extent_.applyTransform(
       [bbox[1], bbox[2], bbox[3], bbox[0]], fromLonLat);
   newProj.setExtent(extent);
-  var newView = new _ol_View_({
+  var newView = new View({
     projection: newProj
   });
   map.setView(newView);
@@ -102,7 +102,7 @@ renderEdgesCheckbox.onchange = function() {
   map.getLayers().forEach(function(layer) {
     if (layer instanceof TileLayer) {
       var source = layer.getSource();
-      if (source instanceof _ol_source_TileImage_) {
+      if (source instanceof TileImage) {
         source.setRenderReprojectionEdges(renderEdgesCheckbox.checked);
       }
     }

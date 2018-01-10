@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
-var wmsSource = new _ol_source_TileWMS_({
+var wmsSource = new TileWMS({
   url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'ne:ne', 'TILED': true},
   serverType: 'geoserver',
@@ -15,7 +15,7 @@ var wmsLayer = new TileLayer({
   source: wmsSource
 });
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 1
 });

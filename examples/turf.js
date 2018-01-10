@@ -1,16 +1,16 @@
 // NOCOMPILE
 // this example uses turf.js for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 
-var source = new _ol_source_Vector_();
+var source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   return response.json();
 }).then(function(json) {
@@ -38,18 +38,18 @@ fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   street.getGeometry().transform('EPSG:4326', 'EPSG:3857');
   source.addFeature(street);
 });
-var vectorLayer = new _ol_layer_Vector_({
+var vectorLayer = new VectorLayer({
   source: source
 });
 
 var rasterLayer = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 var map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([126.980366, 37.526540]),
     zoom: 15
   })

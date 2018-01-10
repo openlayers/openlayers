@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/ReplayGroup.js';
 import RendererType from '../Type.js';
@@ -18,7 +18,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  * @api
  */
-var _ol_renderer_webgl_VectorLayer_ = function(mapRenderer, vectorLayer) {
+var WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
   _ol_renderer_webgl_Layer_.call(this, mapRenderer, vectorLayer);
 
@@ -67,7 +67,7 @@ var _ol_renderer_webgl_VectorLayer_ = function(mapRenderer, vectorLayer) {
 
 };
 
-inherits(_ol_renderer_webgl_VectorLayer_, _ol_renderer_webgl_Layer_);
+inherits(WebGLVectorLayerRenderer, _ol_renderer_webgl_Layer_);
 
 
 /**
@@ -76,7 +76,7 @@ inherits(_ol_renderer_webgl_VectorLayer_, _ol_renderer_webgl_Layer_);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_webgl_VectorLayer_['handles'] = function(type, layer) {
+WebGLVectorLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.WEBGL && layer.getType() === LayerType.VECTOR;
 };
 
@@ -87,8 +87,8 @@ _ol_renderer_webgl_VectorLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.webgl.VectorLayer} The layer renderer.
  */
-_ol_renderer_webgl_VectorLayer_['create'] = function(mapRenderer, layer) {
-  return new _ol_renderer_webgl_VectorLayer_(
+WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
+  return new WebGLVectorLayerRenderer(
       /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
       /** @type {ol.layer.Vector} */ (layer)
   );
@@ -98,7 +98,7 @@ _ol_renderer_webgl_VectorLayer_['create'] = function(mapRenderer, layer) {
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_VectorLayer_.prototype.composeFrame = function(frameState, layerState, context) {
+WebGLVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
   this.layerState_ = layerState;
   var viewState = frameState.viewState;
   var replayGroup = this.replayGroup_;
@@ -121,7 +121,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.composeFrame = function(frameState, la
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_VectorLayer_.prototype.disposeInternal = function() {
+WebGLVectorLayerRenderer.prototype.disposeInternal = function() {
   var replayGroup = this.replayGroup_;
   if (replayGroup) {
     var context = this.mapRenderer.getContext();
@@ -135,7 +135,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_VectorLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.replayGroup_ || !this.layerState_) {
     return undefined;
   } else {
@@ -167,7 +167,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.forEachFeatureAtCoordinate = function(
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_VectorLayer_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+WebGLVectorLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   if (!this.replayGroup_ || !this.layerState_) {
     return false;
   } else {
@@ -185,7 +185,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.hasFeatureAtCoordinate = function(coor
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_VectorLayer_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+WebGLVectorLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   var coordinate = _ol_transform_.apply(
       frameState.pixelToCoordinateTransform, pixel.slice());
   var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
@@ -203,7 +203,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.forEachLayerAtPixel = function(pixel, 
  * @param {ol.events.Event} event Image style change event.
  * @private
  */
-_ol_renderer_webgl_VectorLayer_.prototype.handleStyleImageChange_ = function(event) {
+WebGLVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -211,12 +211,12 @@ _ol_renderer_webgl_VectorLayer_.prototype.handleStyleImageChange_ = function(eve
 /**
  * @inheritDoc
  */
-_ol_renderer_webgl_VectorLayer_.prototype.prepareFrame = function(frameState, layerState, context) {
+WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
 
-  var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
-  var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];
+  var animating = frameState.viewHints[ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
@@ -317,7 +317,7 @@ _ol_renderer_webgl_VectorLayer_.prototype.prepareFrame = function(frameState, la
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-_ol_renderer_webgl_VectorLayer_.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
+WebGLVectorLayerRenderer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
   if (!styles) {
     return false;
   }
@@ -337,4 +337,4 @@ _ol_renderer_webgl_VectorLayer_.prototype.renderFeature = function(feature, reso
   }
   return loading;
 };
-export default _ol_renderer_webgl_VectorLayer_;
+export default WebGLVectorLayerRenderer;

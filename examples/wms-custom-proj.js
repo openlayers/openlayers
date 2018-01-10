@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {addProjection, addCoordinateTransforms, transform} from '../src/ol/proj.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
 
 
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
@@ -44,7 +44,7 @@ var extent = [420000, 30000, 900000, 350000];
 var layers = [
   new TileLayer({
     extent: extent,
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
@@ -58,7 +58,7 @@ var layers = [
   }),
   new TileLayer({
     extent: extent,
-    source: new _ol_source_TileWMS_({
+    source: new TileWMS({
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
@@ -77,7 +77,7 @@ var map = new Map({
   ]),
   layers: layers,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: projection,
     center: transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781'),
     extent: extent,

@@ -1,25 +1,25 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var raster = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
-var source = new _ol_source_Vector_({wrapX: false});
+var source = new VectorSource({wrapX: false});
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: source
 });
 
 var map = new Map({
   layers: [raster, vector],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-11000000, 4600000],
     zoom: 4
   })

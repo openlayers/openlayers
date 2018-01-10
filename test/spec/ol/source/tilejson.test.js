@@ -1,6 +1,6 @@
 import Source from '../../../../src/ol/source/Source.js';
-import _ol_source_TileJSON_ from '../../../../src/ol/source/TileJSON.js';
-import _ol_Observable_ from '../../../../src/ol/Observable.js';
+import TileJSON from '../../../../src/ol/source/TileJSON.js';
+import Observable from '../../../../src/ol/Observable.js';
 
 
 describe('ol.source.TileJSON', function() {
@@ -8,18 +8,18 @@ describe('ol.source.TileJSON', function() {
   describe('constructor', function() {
 
     it('returns a tileJSON source', function() {
-      var source = new _ol_source_TileJSON_({
+      var source = new TileJSON({
         url: 'spec/ol/data/tilejson.json'
       });
       expect(source).to.be.a(Source);
-      expect(source).to.be.a(_ol_source_TileJSON_);
+      expect(source).to.be.a(TileJSON);
     });
   });
 
   describe('#getTileJSON', function() {
 
     it('parses the tilejson file', function() {
-      var source = new _ol_source_TileJSON_({
+      var source = new TileJSON({
         url: 'spec/ol/data/tilejson.json'
       });
       source.on('change', function() {
@@ -63,7 +63,7 @@ describe('ol.source.TileJSON', function() {
         version: '1.0.0',
         webpage: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class/page.html'
       };
-      var source = new _ol_source_TileJSON_({
+      var source = new TileJSON({
         tileJSON: tileJSON
       });
       expect(source.getState()).to.be('ready');
@@ -74,7 +74,7 @@ describe('ol.source.TileJSON', function() {
   describe('#getState', function() {
 
     it('returns error on HTTP 404', function() {
-      var source = new _ol_source_TileJSON_({
+      var source = new TileJSON({
         url: 'invalid.jsonp'
       });
       source.on('change', function() {
@@ -84,7 +84,7 @@ describe('ol.source.TileJSON', function() {
     });
 
     it('returns error on CORS issues', function() {
-      var source = new _ol_source_TileJSON_({
+      var source = new TileJSON({
         url: 'http://example.com'
       });
       source.on('change', function() {
@@ -94,7 +94,7 @@ describe('ol.source.TileJSON', function() {
     });
 
     it('returns error on JSON parsing issues', function() {
-      var source = new _ol_source_TileJSON_({
+      var source = new TileJSON({
         url: '/'
       });
       source.on('change', function() {
@@ -110,12 +110,12 @@ describe('ol.source.TileJSON', function() {
     var source, tileGrid;
 
     beforeEach(function(done) {
-      source = new _ol_source_TileJSON_({
+      source = new TileJSON({
         url: 'spec/ol/data/tilejson.json'
       });
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          _ol_Observable_.unByKey(key);
+          Observable.unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }

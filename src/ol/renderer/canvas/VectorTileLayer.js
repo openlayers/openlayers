@@ -11,13 +11,13 @@ import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
 import _ol_layer_VectorTileRenderType_ from '../../layer/VectorTileRenderType.js';
 import {equivalent as equivalentProjection} from '../../proj.js';
-import _ol_proj_Units_ from '../../proj/Units.js';
+import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
 import RendererType from '../Type.js';
-import _ol_renderer_canvas_TileLayer_ from '../canvas/TileLayer.js';
+import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
 import _ol_renderer_vector_ from '../vector.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -27,14 +27,14 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.VectorTile} layer VectorTile layer.
  * @api
  */
-var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
+var CanvasVectorTileLayerRenderer = function(layer) {
 
   /**
    * @type {CanvasRenderingContext2D}
    */
   this.context = null;
 
-  _ol_renderer_canvas_TileLayer_.call(this, layer);
+  CanvasTileLayerRenderer.call(this, layer);
 
   /**
    * Declutter tree.
@@ -68,7 +68,7 @@ var _ol_renderer_canvas_VectorTileLayer_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
+inherits(CanvasVectorTileLayerRenderer, CanvasTileLayerRenderer);
 
 
 /**
@@ -77,7 +77,7 @@ inherits(_ol_renderer_canvas_VectorTileLayer_, _ol_renderer_canvas_TileLayer_);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_canvas_VectorTileLayer_['handles'] = function(type, layer) {
+CanvasVectorTileLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR_TILE;
 };
 
@@ -88,8 +88,8 @@ _ol_renderer_canvas_VectorTileLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.VectorTileLayer} The layer renderer.
  */
-_ol_renderer_canvas_VectorTileLayer_['create'] = function(mapRenderer, layer) {
-  return new _ol_renderer_canvas_VectorTileLayer_(/** @type {ol.layer.VectorTile} */ (layer));
+CanvasVectorTileLayerRenderer['create'] = function(mapRenderer, layer) {
+  return new CanvasVectorTileLayerRenderer(/** @type {ol.layer.VectorTile} */ (layer));
 };
 
 
@@ -97,7 +97,7 @@ _ol_renderer_canvas_VectorTileLayer_['create'] = function(mapRenderer, layer) {
  * @const
  * @type {!Object.<string, Array.<ol.render.ReplayType>>}
  */
-_ol_renderer_canvas_VectorTileLayer_.IMAGE_REPLAYS = {
+CanvasVectorTileLayerRenderer.IMAGE_REPLAYS = {
   'image': [ReplayType.POLYGON, ReplayType.CIRCLE,
     ReplayType.LINE_STRING, ReplayType.IMAGE, ReplayType.TEXT],
   'hybrid': [ReplayType.POLYGON, ReplayType.LINE_STRING]
@@ -108,7 +108,7 @@ _ol_renderer_canvas_VectorTileLayer_.IMAGE_REPLAYS = {
  * @const
  * @type {!Object.<string, Array.<ol.render.ReplayType>>}
  */
-_ol_renderer_canvas_VectorTileLayer_.VECTOR_REPLAYS = {
+CanvasVectorTileLayerRenderer.VECTOR_REPLAYS = {
   'image': [ReplayType.DEFAULT],
   'hybrid': [ReplayType.IMAGE, ReplayType.TEXT, ReplayType.DEFAULT],
   'vector': _ol_render_replay_.ORDER
@@ -118,16 +118,16 @@ _ol_renderer_canvas_VectorTileLayer_.VECTOR_REPLAYS = {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.disposeInternal = function() {
+CanvasVectorTileLayerRenderer.prototype.disposeInternal = function() {
   _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-  _ol_renderer_canvas_TileLayer_.prototype.disposeInternal.call(this);
+  CanvasTileLayerRenderer.prototype.disposeInternal.call(this);
 };
 
 
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.prepareFrame = function(frameState, layerState) {
+CanvasVectorTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
   var layer = this.getLayer();
   var layerRevision = layer.getRevision();
   if (this.renderedLayerRevision_ != layerRevision) {
@@ -141,7 +141,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.prepareFrame = function(frameStat
     }
   }
   this.renderedLayerRevision_ = layerRevision;
-  return _ol_renderer_canvas_TileLayer_.prototype.prepareFrame.apply(this, arguments);
+  return CanvasTileLayerRenderer.prototype.prepareFrame.apply(this, arguments);
 };
 
 
@@ -150,7 +150,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.prepareFrame = function(frameStat
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
+CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
     tile, frameState) {
   var layer = this.getLayer();
   var pixelRatio = frameState.pixelRatio;
@@ -226,7 +226,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
     for (var i = 0, ii = features.length; i < ii; ++i) {
       feature = features[i];
       if (reproject) {
-        if (tileProjection.getUnits() == _ol_proj_Units_.TILE_PIXELS) {
+        if (tileProjection.getUnits() == Units.TILE_PIXELS) {
           // projected tile extent
           tileProjection.setWorldExtent(sourceTileExtent);
           // tile extent in tile pixel space
@@ -252,13 +252,13 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.createReplayGroup_ = function(
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.drawTileImage = function(
+CanvasVectorTileLayerRenderer.prototype.drawTileImage = function(
     tile, frameState, layerState, x, y, w, h, gutter, transition) {
   var vectorImageTile = /** @type {ol.VectorImageTile} */ (tile);
   this.createReplayGroup_(vectorImageTile, frameState);
   if (this.context) {
     this.renderTileImage_(vectorImageTile, frameState, layerState);
-    _ol_renderer_canvas_TileLayer_.prototype.drawTileImage.apply(this, arguments);
+    CanvasTileLayerRenderer.prototype.drawTileImage.apply(this, arguments);
   }
 };
 
@@ -266,7 +266,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.drawTileImage = function(
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
@@ -321,7 +321,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.forEachFeatureAtCoordinate = func
  * @return {ol.Transform} transform Transform.
  * @private
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.getReplayTransform_ = function(tile, frameState) {
+CanvasVectorTileLayerRenderer.prototype.getReplayTransform_ = function(tile, frameState) {
   var layer = this.getLayer();
   var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tileGrid = source.getTileGrid();
@@ -348,7 +348,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.getReplayTransform_ = function(ti
 /**
  * @param {ol.events.Event} event Event.
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.handleFontsChanged_ = function(event) {
+CanvasVectorTileLayerRenderer.prototype.handleFontsChanged_ = function(event) {
   var layer = this.getLayer();
   if (layer.getVisible() && this.renderedLayerRevision_ !== undefined) {
     layer.changed();
@@ -361,7 +361,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.handleFontsChanged_ = function(ev
  * @param {ol.events.Event} event Image style change event.
  * @private
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.handleStyleImageChange_ = function(event) {
+CanvasVectorTileLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -369,12 +369,12 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.handleStyleImageChange_ = functio
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.postCompose = function(context, frameState, layerState) {
+CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameState, layerState) {
   var layer = this.getLayer();
   var declutterReplays = layer.getDeclutter() ? {} : null;
   var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var renderMode = layer.getRenderMode();
-  var replayTypes = _ol_renderer_canvas_VectorTileLayer_.VECTOR_REPLAYS[renderMode];
+  var replayTypes = CanvasVectorTileLayerRenderer.VECTOR_REPLAYS[renderMode];
   var pixelRatio = frameState.pixelRatio;
   var rotation = frameState.viewState.rotation;
   var size = frameState.size;
@@ -448,7 +448,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.postCompose = function(context, f
     _ol_render_canvas_.rotateAtOffset(context, rotation,
         /** @type {number} */ (offsetX), /** @type {number} */ (offsetY));
   }
-  _ol_renderer_canvas_TileLayer_.prototype.postCompose.apply(this, arguments);
+  CanvasTileLayerRenderer.prototype.postCompose.apply(this, arguments);
 };
 
 
@@ -460,7 +460,7 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.postCompose = function(context, f
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.renderFeature = function(feature, squaredTolerance, styles, replayGroup) {
+CanvasVectorTileLayerRenderer.prototype.renderFeature = function(feature, squaredTolerance, styles, replayGroup) {
   if (!styles) {
     return false;
   }
@@ -486,12 +486,12 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.renderFeature = function(feature,
  * @param {ol.LayerState} layerState Layer state.
  * @private
  */
-_ol_renderer_canvas_VectorTileLayer_.prototype.renderTileImage_ = function(
+CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
     tile, frameState, layerState) {
   var layer = this.getLayer();
   var replayState = tile.getReplayState(layer);
   var revision = layer.getRevision();
-  var replays = _ol_renderer_canvas_VectorTileLayer_.IMAGE_REPLAYS[layer.getRenderMode()];
+  var replays = CanvasVectorTileLayerRenderer.IMAGE_REPLAYS[layer.getRenderMode()];
   if (replays && replayState.renderedTileRevision !== revision) {
     replayState.renderedTileRevision = revision;
     var tileCoord = tile.wrappedTileCoord;
@@ -519,4 +519,4 @@ _ol_renderer_canvas_VectorTileLayer_.prototype.renderTileImage_ = function(
     }
   }
 };
-export default _ol_renderer_canvas_VectorTileLayer_;
+export default CanvasVectorTileLayerRenderer;

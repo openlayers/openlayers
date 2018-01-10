@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {equals} from '../array.js';
@@ -18,8 +18,8 @@ import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
-import _ol_layer_Vector_ from '../layer/Vector.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorLayer from '../layer/Vector.js';
+import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import _ol_style_Style_ from '../style/Style.js';
@@ -157,8 +157,8 @@ var _ol_interaction_Modify_ = function(options) {
    * @type {ol.layer.Vector}
    * @private
    */
-  this.overlay_ = new _ol_layer_Vector_({
-    source: new _ol_source_Vector_({
+  this.overlay_ = new VectorLayer({
+    source: new VectorSource({
       useSpatialIndex: false,
       wrapX: !!options.wrapX
     }),
@@ -579,7 +579,7 @@ _ol_interaction_Modify_.prototype.writeGeometryCollectionGeometry_ = function(fe
 _ol_interaction_Modify_.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
-    vertexFeature = new _ol_Feature_(new Point(coordinates));
+    vertexFeature = new Feature(new Point(coordinates));
     this.vertexFeature_ = vertexFeature;
     this.overlay_.getSource().addFeature(vertexFeature);
   } else {

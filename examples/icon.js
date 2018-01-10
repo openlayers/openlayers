@@ -1,17 +1,17 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var iconFeature = new _ol_Feature_({
+var iconFeature = new Feature({
   geometry: new Point([0, 0]),
   name: 'Null Island',
   population: 4000,
@@ -29,16 +29,16 @@ var iconStyle = new _ol_style_Style_({
 
 iconFeature.setStyle(iconStyle);
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   features: [iconFeature]
 });
 
-var vectorLayer = new _ol_layer_Vector_({
+var vectorLayer = new VectorLayer({
   source: vectorSource
 });
 
 var rasterLayer = new TileLayer({
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
     crossOrigin: ''
   })
@@ -47,7 +47,7 @@ var rasterLayer = new TileLayer({
 var map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 3
   })

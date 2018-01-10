@@ -7,7 +7,7 @@ import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
-import _ol_source_TileImage_ from '../source/TileImage.js';
+import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
 
@@ -20,7 +20,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
  * @api
  */
-var _ol_source_BingMaps_ = function(options) {
+var BingMaps = function(options) {
 
   /**
    * @private
@@ -28,7 +28,7 @@ var _ol_source_BingMaps_ = function(options) {
    */
   this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
 
-  _ol_source_TileImage_.call(this, {
+  TileImage.call(this, {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     opaque: true,
@@ -75,7 +75,7 @@ var _ol_source_BingMaps_ = function(options) {
 
 };
 
-inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
+inherits(BingMaps, TileImage);
 
 
 /**
@@ -85,7 +85,7 @@ inherits(_ol_source_BingMaps_, _ol_source_TileImage_);
  * @type {string}
  * @api
  */
-_ol_source_BingMaps_.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
+BingMaps.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
       'href="https://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>';
 
@@ -96,7 +96,7 @@ _ol_source_BingMaps_.TOS_ATTRIBUTION = '<a class="ol-attribution-bing-tos" ' +
  * @return {string} The api key.
  * @api
  */
-_ol_source_BingMaps_.prototype.getApiKey = function() {
+BingMaps.prototype.getApiKey = function() {
   return this.apiKey_;
 };
 
@@ -107,7 +107,7 @@ _ol_source_BingMaps_.prototype.getApiKey = function() {
  * @return {string} The imagery set.
  * @api
  */
-_ol_source_BingMaps_.prototype.getImagerySet = function() {
+BingMaps.prototype.getImagerySet = function() {
   return this.imagerySet_;
 };
 
@@ -115,7 +115,7 @@ _ol_source_BingMaps_.prototype.getImagerySet = function() {
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-_ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response) {
+BingMaps.prototype.handleImageryMetadataResponse = function(response) {
   if (response.statusCode != 200 ||
       response.statusDescription != 'OK' ||
       response.authenticationResultCode != 'ValidCredentials' ||
@@ -199,11 +199,11 @@ _ol_source_BingMaps_.prototype.handleImageryMetadataResponse = function(response
         }
       });
 
-      attributions.push(_ol_source_BingMaps_.TOS_ATTRIBUTION);
+      attributions.push(BingMaps.TOS_ATTRIBUTION);
       return attributions;
     });
   }
 
   this.setState(SourceState.READY);
 };
-export default _ol_source_BingMaps_;
+export default BingMaps;

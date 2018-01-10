@@ -1,12 +1,12 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import FullScreen from '../src/ol/control/FullScreen.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 
 
-var view = new _ol_View_({
+var view = new View({
   center: [-9101767, 2822912],
   zoom: 14
 });
@@ -17,7 +17,7 @@ var map = new Map({
   ]),
   layers: [
     new TileLayer({
-      source: new _ol_source_BingMaps_({
+      source: new BingMaps({
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
         imagerySet: 'Aerial'
       })

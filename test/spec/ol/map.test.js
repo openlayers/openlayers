@@ -1,8 +1,8 @@
-import _ol_Feature_ from '../../../src/ol/Feature.js';
+import Feature from '../../../src/ol/Feature.js';
 import Map from '../../../src/ol/Map.js';
 import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
-import _ol_View_ from '../../../src/ol/View.js';
+import View from '../../../src/ol/View.js';
 import LineString from '../../../src/ol/geom/LineString.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
@@ -11,10 +11,10 @@ import Interaction from '../../../src/ol/interaction/Interaction.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import _ol_interaction_PinchZoom_ from '../../../src/ol/interaction/PinchZoom.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
-import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
-import _ol_source_XYZ_ from '../../../src/ol/source/XYZ.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
+import XYZ from '../../../src/ol/source/XYZ.js';
 
 describe('ol.Map', function() {
 
@@ -117,7 +117,7 @@ describe('ol.Map', function() {
       style.height = '180px';
       document.body.appendChild(target);
 
-      view = new _ol_View_({
+      view = new View({
         projection: 'EPSG:4326'
       });
       map = new Map({
@@ -125,7 +125,7 @@ describe('ol.Map', function() {
         view: view,
         layers: [
           new TileLayer({
-            source: new _ol_source_XYZ_({
+            source: new XYZ({
               url: '#{x}/{y}/{z}'
             })
           })
@@ -195,12 +195,12 @@ describe('ol.Map', function() {
       document.body.appendChild(target);
       map = new Map({
         target: target,
-        layers: [new _ol_layer_Vector_({
-          source: new _ol_source_Vector_({
-            features: [new _ol_Feature_(new LineString([[-50, 0], [50, 0]]))]
+        layers: [new VectorLayer({
+          source: new VectorSource({
+            features: [new Feature(new LineString([[-50, 0], [50, 0]]))]
           })
         })],
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 17
         })
@@ -219,13 +219,13 @@ describe('ol.Map', function() {
     it('returns an array of found features', function() {
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(_ol_Feature_);
+      expect(features[0]).to.be.an(Feature);
     });
 
     it('returns an array of found features with declutter: true', function() {
       var layer = map.getLayers().item(0);
       map.removeLayer(layer);
-      var otherLayer = new _ol_layer_Vector_({
+      var otherLayer = new VectorLayer({
         declutter: true,
         source: layer.getSource()
       });
@@ -233,12 +233,12 @@ describe('ol.Map', function() {
       map.renderSync();
       var features = map.getFeaturesAtPixel([50, 50]);
       expect(features).to.be.an(Array);
-      expect(features[0]).to.be.an(_ol_Feature_);
+      expect(features[0]).to.be.a(Feature);
     });
 
     it('respects options', function() {
-      var otherLayer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_
+      var otherLayer = new VectorLayer({
+        source: new VectorSource
       });
       map.addLayer(otherLayer);
       var features = map.getFeaturesAtPixel([50, 50], {
@@ -273,19 +273,19 @@ describe('ol.Map', function() {
 
       map = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 1
         }),
         layers: [
           new TileLayer({
-            source: new _ol_source_XYZ_()
+            source: new XYZ()
           }),
           new TileLayer({
-            source: new _ol_source_XYZ_()
+            source: new XYZ()
           }),
           new TileLayer({
-            source: new _ol_source_XYZ_()
+            source: new XYZ()
           })
         ]
       });
@@ -328,7 +328,7 @@ describe('ol.Map', function() {
       document.body.appendChild(target);
       map = new Map({
         target: target,
-        view: new _ol_View_({
+        view: new View({
           projection: 'EPSG:4326',
           center: [0, 0],
           resolution: 1
@@ -608,7 +608,7 @@ describe('ol.Map', function() {
         document.body.appendChild(target);
         map = new Map({
           target: target,
-          view: new _ol_View_({
+          view: new View({
             projection: 'EPSG:4326',
             center: [0, 0],
             resolution: 1

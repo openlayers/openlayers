@@ -1,9 +1,9 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_layer_Image_ from '../../../../src/ol/layer/Image.js';
+import View from '../../../../src/ol/View.js';
+import ImageLayer from '../../../../src/ol/layer/Image.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
-import _ol_source_ImageStatic_ from '../../../../src/ol/source/ImageStatic.js';
+import Static from '../../../../src/ol/source/ImageStatic.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -16,7 +16,7 @@ describe('ol.rendering.layer.Image', function() {
       pixelRatio: 1,
       target: createMapDiv(50, 50),
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5
@@ -57,7 +57,7 @@ describe('ol.rendering.layer.Image', function() {
         source: source
       };
       _ol_obj_.assign(options, layerOptions);
-      map.addLayer(new _ol_layer_Image_(options));
+      map.addLayer(new ImageLayer(options));
     });
   }
 
@@ -65,7 +65,7 @@ describe('ol.rendering.layer.Image', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_ImageStatic_({
+      source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent(
             [5, 5, -12 - 1]),
@@ -95,7 +95,7 @@ describe('ol.rendering.layer.Image', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_ImageStatic_({
+      source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: transformExtent(
             [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')

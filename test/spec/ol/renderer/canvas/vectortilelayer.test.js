@@ -1,11 +1,11 @@
 import {getUid, inherits} from '../../../../../src/ol/index.js';
 import _ol_obj_ from '../../../../../src/ol/obj.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Map from '../../../../../src/ol/Map.js';
 import TileState from '../../../../../src/ol/TileState.js';
 import VectorImageTile from '../../../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../../../src/ol/VectorTile.js';
-import _ol_View_ from '../../../../../src/ol/View.js';
+import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
@@ -14,8 +14,8 @@ import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
-import _ol_renderer_canvas_VectorTileLayer_ from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
-import _ol_source_VectorTile_ from '../../../../../src/ol/source/VectorTile.js';
+import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
+import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../../src/ol/tilegrid.js';
@@ -39,7 +39,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       target.style.height = '256px';
       document.body.appendChild(target);
       map = new Map({
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         }),
@@ -55,8 +55,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           text: 'feature'
         })
       })];
-      feature1 = new _ol_Feature_(new Point([1, -1]));
-      feature2 = new _ol_Feature_(new Point([0, 0]));
+      feature1 = new Feature(new Point([1, -1]));
+      feature2 = new Feature(new Point([0, 0]));
       feature3 = new _ol_render_Feature_('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
       var TileClass = function() {
@@ -67,13 +67,13 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileCallback(this);
       };
       inherits(TileClass, VectorTile);
-      source = new _ol_source_VectorTile_({
+      source = new VectorTileSource({
         format: new MVT(),
         tileClass: TileClass,
         tileGrid: _ol_tilegrid_.createXYZ()
       });
       source.getTile = function() {
-        var tile = _ol_source_VectorTile_.prototype.getTile.apply(source, arguments);
+        var tile = VectorTileSource.prototype.getTile.apply(source, arguments);
         tile.setState(TileState.LOADED);
         return tile;
       };
@@ -90,20 +90,20 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('creates a new instance', function() {
-      var renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
-      expect(renderer).to.be.a(_ol_renderer_canvas_VectorTileLayer_);
+      var renderer = new CanvasVectorTileLayerRenderer(layer);
+      expect(renderer).to.be.a(CanvasVectorTileLayerRenderer);
       expect(renderer.zDirection).to.be(0);
     });
 
     it('uses lower resolution for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
-      var renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
+      var renderer = new CanvasVectorTileLayerRenderer(layer);
       expect(renderer.zDirection).to.be(1);
     });
 
     it('does not render images for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
-      var spy = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'renderTileImage_');
       map.renderSync();
       expect(spy.callCount).to.be(0);
@@ -112,7 +112,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not render replays for pure image rendering', function() {
       layer.renderMode_ = 'image';
-      var spy = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'getTransform');
       map.renderSync();
       expect(spy.callCount).to.be(0);
@@ -120,9 +120,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('renders both replays and images for hybrid rendering', function() {
-      var spy1 = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy1 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'getTransform');
-      var spy2 = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy2 = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'renderTileImage_');
       map.renderSync();
       expect(spy1.callCount).to.be(1);
@@ -136,7 +136,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       layer.setStyle(new _ol_style_Style_({
         renderer: function() {}
       }));
-      var spy = sinon.spy(_ol_renderer_canvas_VectorTileLayer_.prototype,
+      var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
           'getTransform');
       map.renderSync();
       expect(spy.callCount).to.be(1);
@@ -240,7 +240,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   describe('#prepareFrame', function() {
     it('re-renders when layer changed', function() {
       var layer = new _ol_layer_VectorTile_({
-        source: new _ol_source_VectorTile_({
+        source: new VectorTileSource({
           tileGrid: _ol_tilegrid_.createXYZ(),
           transition: 0
         })
@@ -261,7 +261,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       layer.getSource().getTile = function() {
         return tile;
       };
-      var renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
+      var renderer = new CanvasVectorTileLayerRenderer(layer);
       renderer.renderTileImage_ = sinon.spy();
       var proj = getProjection('EPSG:3857');
       var frameState = {
@@ -309,15 +309,15 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     beforeEach(function() {
       replayGroup = {};
       layer = new _ol_layer_VectorTile_({
-        source: new _ol_source_VectorTile_({
+        source: new VectorTileSource({
           tileClass: TileClass,
           tileGrid: _ol_tilegrid_.createXYZ()
         })
       });
-      renderer = new _ol_renderer_canvas_VectorTileLayer_(layer);
+      renderer = new CanvasVectorTileLayerRenderer(layer);
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
-        var feature = new _ol_Feature_();
+        var feature = new Feature();
         callback(feature);
         callback(feature);
       };
@@ -349,7 +349,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       target.style.height = '100px';
       document.body.appendChild(target);
       var extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
-      var source = new _ol_source_VectorTile_({
+      var source = new VectorTileSource({
         format: new MVT(),
         url: 'spec/ol/data/14-8938-5680.vector.pbf',
         minZoom: 14,
@@ -363,7 +363,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
             source: source
           })
         ],
-        view: new _ol_View_({
+        view: new View({
           center: _ol_extent_.getCenter(extent),
           zoom: 19
         })

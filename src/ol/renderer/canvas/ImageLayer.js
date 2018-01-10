@@ -3,9 +3,9 @@
  */
 import {ENABLE_RASTER_REPROJECTION} from '../../reproj/common.js';
 import {inherits} from '../../index.js';
-import _ol_ImageCanvas_ from '../../ImageCanvas.js';
+import ImageCanvas from '../../ImageCanvas.js';
 import LayerType from '../../LayerType.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
@@ -21,7 +21,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.Image} imageLayer Single image layer.
  * @api
  */
-var _ol_renderer_canvas_ImageLayer_ = function(imageLayer) {
+var CanvasImageLayerRenderer = function(imageLayer) {
 
   _ol_renderer_canvas_IntermediateCanvas_.call(this, imageLayer);
 
@@ -50,7 +50,7 @@ var _ol_renderer_canvas_ImageLayer_ = function(imageLayer) {
 
 };
 
-inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas_);
+inherits(CanvasImageLayerRenderer, _ol_renderer_canvas_IntermediateCanvas_);
 
 
 /**
@@ -59,7 +59,7 @@ inherits(_ol_renderer_canvas_ImageLayer_, _ol_renderer_canvas_IntermediateCanvas
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
+CanvasImageLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && (layer.getType() === LayerType.IMAGE ||
       layer.getType() === LayerType.VECTOR &&
       /** @type {ol.layer.Vector} */ (layer).getRenderMode() === _ol_layer_VectorRenderType_.IMAGE);
@@ -72,13 +72,13 @@ _ol_renderer_canvas_ImageLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
-_ol_renderer_canvas_ImageLayer_['create'] = function(mapRenderer, layer) {
-  var renderer = new _ol_renderer_canvas_ImageLayer_(/** @type {ol.layer.Image} */ (layer));
+CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
+  var renderer = new CanvasImageLayerRenderer(/** @type {ol.layer.Image} */ (layer));
   if (layer.getType() === LayerType.VECTOR) {
     var candidates = getLayerRendererPlugins();
     for (var i = 0, ii = candidates.length; i < ii; ++i) {
       var candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
-      if (candidate !== _ol_renderer_canvas_ImageLayer_ && candidate['handles'](RendererType.CANVAS, layer)) {
+      if (candidate !== CanvasImageLayerRenderer && candidate['handles'](RendererType.CANVAS, layer)) {
         renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
       }
     }
@@ -90,7 +90,7 @@ _ol_renderer_canvas_ImageLayer_['create'] = function(mapRenderer, layer) {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_ImageLayer_.prototype.getImage = function() {
+CanvasImageLayerRenderer.prototype.getImage = function() {
   return !this.image_ ? null : this.image_.getImage();
 };
 
@@ -98,7 +98,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_ImageLayer_.prototype.getImageTransform = function() {
+CanvasImageLayerRenderer.prototype.getImageTransform = function() {
   return this.imageTransform_;
 };
 
@@ -106,7 +106,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.getImageTransform = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, layerState) {
+CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
   var size = frameState.size;
@@ -125,7 +125,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
     renderedExtent = getIntersection(renderedExtent, layerState.extent);
   }
 
-  if (!hints[_ol_ViewHint_.ANIMATING] && !hints[_ol_ViewHint_.INTERACTING] &&
+  if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] &&
       !isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     if (!ENABLE_RASTER_REPROJECTION) {
@@ -153,7 +153,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
         context.canvas.width = imageFrameState.size[0] * pixelRatio;
         context.canvas.height = imageFrameState.size[1] * pixelRatio;
         vectorRenderer.composeFrame(imageFrameState, layerState, context);
-        this.image_ = new _ol_ImageCanvas_(renderedExtent, viewResolution, pixelRatio, context.canvas);
+        this.image_ = new ImageCanvas(renderedExtent, viewResolution, pixelRatio, context.canvas);
         this.skippedFeatures_ = skippedFeatures;
       }
     } else {
@@ -197,7 +197,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.prepareFrame = function(frameState, la
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_ImageLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (this.vectorRenderer_) {
     return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
   } else {
@@ -209,7 +209,7 @@ _ol_renderer_canvas_ImageLayer_.prototype.forEachFeatureAtCoordinate = function(
 /**
  * @param {ol.renderer.canvas.VectorLayer} renderer Vector renderer.
  */
-_ol_renderer_canvas_ImageLayer_.prototype.setVectorRenderer = function(renderer) {
+CanvasImageLayerRenderer.prototype.setVectorRenderer = function(renderer) {
   this.vectorRenderer_ = renderer;
 };
-export default _ol_renderer_canvas_ImageLayer_;
+export default CanvasImageLayerRenderer;

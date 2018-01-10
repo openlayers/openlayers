@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import _ol_has_ from '../src/ol/has.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -81,8 +81,8 @@ var getStackedStyle = function(feature, resolution) {
 };
 
 // Create a vector layer that makes use of the style function above…
-var vectorLayer = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vectorLayer = new VectorLayer({
+  source: new VectorSource({
     url: 'data/geojson/countries.geojson',
     format: new GeoJSON()
   }),
@@ -95,7 +95,7 @@ var map = new Map({
     vectorLayer
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([7, 52]),
     zoom: 3
   })

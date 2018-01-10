@@ -1,6 +1,6 @@
 import {xhr} from '../../../src/ol/featureloader.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
-import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
 
 
 describe('ol.featureloader', function() {
@@ -15,7 +15,7 @@ describe('ol.featureloader', function() {
       url = 'spec/ol/data/point.json';
       format = new GeoJSON();
 
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('adds features to the source', function(done) {

@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import ZoomSlider from '../../../../src/ol/control/ZoomSlider.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
 
@@ -91,7 +91,7 @@ describe('ol.control.ZoomSlider', function() {
     beforeEach(function() {
       map = new Map({
         target: createMapDiv(500, 100),
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           resolutions: [16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625]
         })

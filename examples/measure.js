@@ -1,15 +1,15 @@
 import Map from '../src/ol/Map.js';
-import _ol_Observable_ from '../src/ol/Observable.js';
+import Observable from '../src/ol/Observable.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
 import {getArea, getLength} from '../src/ol/sphere.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -17,12 +17,12 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
 var raster = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
-var source = new _ol_source_Vector_();
+var source = new VectorSource();
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: source,
   style: new _ol_style_Style_({
     fill: new _ol_style_Fill_({
@@ -121,7 +121,7 @@ var pointerMoveHandler = function(evt) {
 var map = new Map({
   layers: [raster, vector],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-11000000, 4600000],
     zoom: 15
   })
@@ -238,7 +238,7 @@ function addInteraction() {
         // unset tooltip so that a new one can be created
         measureTooltipElement = null;
         createMeasureTooltip();
-        _ol_Observable_.unByKey(listener);
+        Observable.unByKey(listener);
       }, this);
 }
 

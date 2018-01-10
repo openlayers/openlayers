@@ -1,14 +1,14 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import IGC from '../src/ol/format/IGC.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -39,7 +39,7 @@ var styleFunction = function(feature) {
   return style;
 };
 
-var vectorSource = new _ol_source_Vector_();
+var vectorSource = new VectorSource();
 
 var igcUrls = [
   'data/igc/Clement-Latour.igc',
@@ -83,16 +83,16 @@ vectorSource.on('addfeature', function(event) {
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_({
+      source: new OSM({
         attributions: [
           'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
-          _ol_source_OSM_.ATTRIBUTION
+          OSM.ATTRIBUTION
         ],
         url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
       })
     }),
-    new _ol_layer_Vector_({
+    new VectorLayer({
       source: vectorSource,
       style: styleFunction
     })
@@ -103,7 +103,7 @@ var map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     center: [703365.7089403362, 5714629.865071137],
     zoom: 9
   })
@@ -175,8 +175,8 @@ map.on('postcompose', function(evt) {
   }
 });
 
-var featureOverlay = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_(),
+var featureOverlay = new VectorLayer({
+  source: new VectorSource(),
   map: map,
   style: new _ol_style_Style_({
     image: new _ol_style_Circle_({
@@ -196,7 +196,7 @@ document.getElementById('time').addEventListener('input', function() {
     var coordinate = geometry.getCoordinateAtM(m, true);
     var highlight = feature.get('highlight');
     if (highlight === undefined) {
-      highlight = new _ol_Feature_(new Point(coordinate));
+      highlight = new Feature(new Point(coordinate));
       feature.set('highlight', highlight);
       featureOverlay.getSource().addFeature(highlight);
     } else {

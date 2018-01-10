@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, get as getProjection} from '../src/ol/proj.js';
-import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
+import WMTS from '../src/ol/source/WMTS.js';
 import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
@@ -15,7 +15,7 @@ var map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     zoom: 5,
     center: fromLonLat([5, 45])
   })
@@ -41,7 +41,7 @@ var tileGrid = new WMTSTileGrid({
 // Expiration date is 06/29/2018.
 var key = '2mqbg0z6cx7ube8gsou10nrt';
 
-var ign_source = new _ol_source_WMTS_({
+var ign_source = new WMTS({
   url: 'https://wxs.ign.fr/' + key + '/wmts',
   layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
   matrixSet: 'PM',

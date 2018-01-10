@@ -1,5 +1,5 @@
 import IGC from '../../../../src/ol/format/IGC.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
@@ -46,7 +46,7 @@ describe('ol.format.IGC', function() {
 
     it('does read a feature', function() {
       var feature = format.readFeature(igc);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
       expect(geom.getCoordinates()).to.eql([
@@ -60,7 +60,7 @@ describe('ol.format.IGC', function() {
       var feature = format.readFeature(igc, {
         featureProjection: 'EPSG:3857'
       });
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
 
@@ -93,7 +93,7 @@ describe('ol.format.IGC', function() {
       var features = format.readFeatures(igc);
       expect(features.length).to.eql(1);
       var feature = features[0];
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
       expect(geom.getCoordinates()).to.eql([
@@ -109,7 +109,7 @@ describe('ol.format.IGC', function() {
       });
       expect(features.length).to.eql(1);
       var feature = features[0];
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
 

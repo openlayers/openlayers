@@ -4,7 +4,7 @@
 import {getUid, inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
@@ -59,7 +59,7 @@ var _ol_layer_Group_ = function(opt_options) {
   this.listenerKeys_ = {};
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(Property.LAYERS),
+      BaseObject.getChangeEventType(Property.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {

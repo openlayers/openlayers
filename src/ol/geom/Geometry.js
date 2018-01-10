@@ -2,12 +2,12 @@
  * @module ol/geom/Geometry
  */
 import {inherits} from '../index.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import {createEmpty, getHeight, returnOrUpdate} from '../extent.js';
 import {FALSE} from '../functions.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
 import {get as getProjection, getTransform} from '../proj.js';
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 import _ol_transform_ from '../transform.js';
 
 /**
@@ -26,7 +26,7 @@ import _ol_transform_ from '../transform.js';
  */
 var Geometry = function() {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   /**
    * @private
@@ -66,7 +66,7 @@ var Geometry = function() {
 
 };
 
-inherits(Geometry, _ol_Object_);
+inherits(Geometry, BaseObject);
 
 
 /**
@@ -256,7 +256,7 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
 Geometry.prototype.transform = function(source, destination) {
   var tmpTransform = this.tmpTransform_;
   source = getProjection(source);
-  var transformFn = source.getUnits() == _ol_proj_Units_.TILE_PIXELS ?
+  var transformFn = source.getUnits() == Units.TILE_PIXELS ?
     function(inCoordinates, outCoordinates, stride) {
       var pixelExtent = source.getExtent();
       var projectedExtent = source.getWorldExtent();

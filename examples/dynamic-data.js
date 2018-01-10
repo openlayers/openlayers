@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -13,11 +13,11 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

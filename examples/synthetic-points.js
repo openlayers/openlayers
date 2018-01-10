@@ -1,10 +1,10 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -15,7 +15,7 @@ var count = 20000;
 var features = new Array(count);
 var e = 18000000;
 for (var i = 0; i < count; ++i) {
-  features[i] = new _ol_Feature_({
+  features[i] = new Feature({
     'geometry': new Point(
         [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
     'i': i,
@@ -40,11 +40,11 @@ var styles = {
   })
 };
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   features: features,
   wrapX: false
 });
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
     return styles[feature.get('size')];
@@ -54,7 +54,7 @@ var vector = new _ol_layer_Vector_({
 var map = new Map({
   layers: [vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

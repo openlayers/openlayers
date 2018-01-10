@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../src/ol/proj.js';
-import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -33,7 +33,7 @@ function tileUrlFunction(tileCoord) {
 var map = new Map({
   layers: [
     new _ol_layer_VectorTile_({
-      source: new _ol_source_VectorTile_({
+      source: new VectorTileSource({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
           '© <a href="https://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
@@ -49,7 +49,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     minZoom: 1,
     zoom: 2

@@ -1,9 +1,9 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
@@ -30,14 +30,14 @@ for (i = 0; i < count; ++i) {
   deltaX = delta * signX;
   deltaY = delta * signY;
   endPoint = [startPoint[0] + deltaX, startPoint[1] + deltaY];
-  features[i] = new _ol_Feature_({
+  features[i] = new Feature({
     'geometry': new LineString([startPoint, endPoint])
   });
   startPoint = endPoint;
 }
 
-var vector = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vector = new VectorLayer({
+  source: new VectorSource({
     features: features,
     wrapX: false
   }),
@@ -49,7 +49,7 @@ var vector = new _ol_layer_Vector_({
   })
 });
 
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 0
 });

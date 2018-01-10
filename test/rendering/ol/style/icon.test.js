@@ -1,9 +1,9 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import View from '../../../../src/ol/View.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 
@@ -22,8 +22,8 @@ describe('ol.rendering.style.Icon', function() {
   };
 
   function createMap(renderer, width, height) {
-    vectorSource = new _ol_source_Vector_();
-    var vectorLayer = new _ol_layer_Vector_({
+    vectorSource = new VectorSource();
+    var vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -32,7 +32,7 @@ describe('ol.rendering.style.Icon', function() {
       target: createMapDiv(width ? width : 50, height ? height : 50),
       renderer: renderer,
       layers: [vectorLayer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -51,7 +51,7 @@ describe('ol.rendering.style.Icon', function() {
 
     function createFeatures(src, imgInfo, callback) {
       var feature;
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new Point([0, 0])
       });
 

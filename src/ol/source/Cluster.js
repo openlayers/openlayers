@@ -4,12 +4,12 @@
 
 import {getUid, inherits} from '../index.js';
 import {assert} from '../asserts.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import {buffer, createEmpty, createOrUpdateFromCoordinate} from '../extent.js';
 import Point from '../geom/Point.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 
 /**
  * @classdesc
@@ -22,8 +22,8 @@ import _ol_source_Vector_ from '../source/Vector.js';
  * @extends {ol.source.Vector}
  * @api
  */
-var _ol_source_Cluster_ = function(options) {
-  _ol_source_Vector_.call(this, {
+var Cluster = function(options) {
+  VectorSource.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     projection: options.projection,
@@ -67,10 +67,10 @@ var _ol_source_Cluster_ = function(options) {
   this.source = options.source;
 
   this.source.on(EventType.CHANGE,
-      _ol_source_Cluster_.prototype.refresh, this);
+      Cluster.prototype.refresh, this);
 };
 
-inherits(_ol_source_Cluster_, _ol_source_Vector_);
+inherits(Cluster, VectorSource);
 
 
 /**
@@ -78,7 +78,7 @@ inherits(_ol_source_Cluster_, _ol_source_Vector_);
  * @return {number} Distance.
  * @api
  */
-_ol_source_Cluster_.prototype.getDistance = function() {
+Cluster.prototype.getDistance = function() {
   return this.distance;
 };
 
@@ -88,7 +88,7 @@ _ol_source_Cluster_.prototype.getDistance = function() {
  * @return {ol.source.Vector} Source.
  * @api
  */
-_ol_source_Cluster_.prototype.getSource = function() {
+Cluster.prototype.getSource = function() {
   return this.source;
 };
 
@@ -96,7 +96,7 @@ _ol_source_Cluster_.prototype.getSource = function() {
 /**
  * @inheritDoc
  */
-_ol_source_Cluster_.prototype.loadFeatures = function(extent, resolution,
+Cluster.prototype.loadFeatures = function(extent, resolution,
     projection) {
   this.source.loadFeatures(extent, resolution, projection);
   if (resolution !== this.resolution) {
@@ -113,7 +113,7 @@ _ol_source_Cluster_.prototype.loadFeatures = function(extent, resolution,
  * @param {number} distance The distance in pixels.
  * @api
  */
-_ol_source_Cluster_.prototype.setDistance = function(distance) {
+Cluster.prototype.setDistance = function(distance) {
   this.distance = distance;
   this.refresh();
 };
@@ -123,18 +123,18 @@ _ol_source_Cluster_.prototype.setDistance = function(distance) {
  * handle the source changing
  * @override
  */
-_ol_source_Cluster_.prototype.refresh = function() {
+Cluster.prototype.refresh = function() {
   this.clear();
   this.cluster();
   this.addFeatures(this.features);
-  _ol_source_Vector_.prototype.refresh.call(this);
+  VectorSource.prototype.refresh.call(this);
 };
 
 
 /**
  * @protected
  */
-_ol_source_Cluster_.prototype.cluster = function() {
+Cluster.prototype.cluster = function() {
   if (this.resolution === undefined) {
     return;
   }
@@ -179,7 +179,7 @@ _ol_source_Cluster_.prototype.cluster = function() {
  * @return {ol.Feature} The cluster feature.
  * @protected
  */
-_ol_source_Cluster_.prototype.createCluster = function(features) {
+Cluster.prototype.createCluster = function(features) {
   var centroid = [0, 0];
   for (var i = features.length - 1; i >= 0; --i) {
     var geometry = this.geometryFunction(features[i]);
@@ -191,8 +191,8 @@ _ol_source_Cluster_.prototype.createCluster = function(features) {
   }
   _ol_coordinate_.scale(centroid, 1 / features.length);
 
-  var cluster = new _ol_Feature_(new Point(centroid));
+  var cluster = new Feature(new Point(centroid));
   cluster.set('features', features);
   return cluster;
 };
-export default _ol_source_Cluster_;
+export default Cluster;

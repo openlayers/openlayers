@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {cosh} from '../math.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 var _ol_proj_EPSG3857_ = {};
 
 
@@ -20,7 +20,7 @@ var _ol_proj_EPSG3857_ = {};
 _ol_proj_EPSG3857_.Projection_ = function(code) {
   _ol_proj_Projection_.call(this, {
     code: code,
-    units: _ol_proj_Units_.METERS,
+    units: Units.METERS,
     extent: _ol_proj_EPSG3857_.EXTENT,
     global: true,
     worldExtent: _ol_proj_EPSG3857_.WORLD_EXTENT,

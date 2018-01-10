@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import {find} from '../../../../src/ol/array.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import KML from '../../../../src/ol/format/KML.js';
@@ -54,7 +54,7 @@ describe('ol.format.KML', function() {
         var fs = format.readFeatures(text);
         expect(fs).to.have.length(1);
         var f = fs[0];
-        expect(f).to.be.an(_ol_Feature_);
+        expect(f).to.be.an(Feature);
         var styleFunction = f.getStyleFunction();
         expect(styleFunction).not.to.be(undefined);
         var styleArray = styleFunction.call(f, 0);
@@ -101,7 +101,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getId()).to.be('foo');
         });
 
@@ -113,12 +113,12 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getId()).to.be(undefined);
         });
 
         it('can write a Feature', function() {
-          var features = [new _ol_Feature_()];
+          var features = [new Feature()];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -132,7 +132,7 @@ describe('ol.format.KML', function() {
         });
 
         it('can write a Feature as string', function() {
-          var features = [new _ol_Feature_()];
+          var features = [new Feature()];
           var node = format.writeFeatures(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -146,7 +146,7 @@ describe('ol.format.KML', function() {
         });
 
         it('can write a Feature\'s id', function() {
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setId('foo');
           var features = [feature];
           var node = format.writeFeaturesNode(features);
@@ -173,13 +173,13 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be(null);
         });
 
         it('can write feature with null geometries', function() {
-          var features = [new _ol_Feature_(null)];
+          var features = [new Feature(null)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -199,7 +199,7 @@ describe('ol.format.KML', function() {
           lineString.set('tessellate', true);
           lineString.set('altitudeMode', 'clampToGround');
           lineString.set('unsupportedProperty', 'foo');
-          var features = [new _ol_Feature_(lineString)];
+          var features = [new Feature(lineString)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -237,7 +237,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Point);
           expect(g.getCoordinates()).to.eql([1, 2, 3]);
@@ -263,7 +263,7 @@ describe('ol.format.KML', function() {
           });
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Point);
           var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
@@ -285,7 +285,7 @@ describe('ol.format.KML', function() {
               '  </Placemark>' +
               '</kml>';
           var f = format.readFeature(text);
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Point);
           expect(g.getCoordinates()).to.eql([1, 2, 3]);
@@ -307,7 +307,7 @@ describe('ol.format.KML', function() {
           var f = format.readFeature(text, {
             featureProjection: 'EPSG:3857'
           });
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Point);
           var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
@@ -318,7 +318,7 @@ describe('ol.format.KML', function() {
         it('can write XY Point geometries', function() {
           var layout = 'XY';
           var point = new Point([1, 2], layout);
-          var features = [new _ol_Feature_(point)];
+          var features = [new Feature(point)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -338,7 +338,7 @@ describe('ol.format.KML', function() {
         it('can write XYZ Point geometries', function() {
           var layout = 'XYZ';
           var point = new Point([1, 2, 3], layout);
-          var features = [new _ol_Feature_(point)];
+          var features = [new Feature(point)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -368,7 +368,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZ';
           var point = new Point([1, 2, 3], layout).transform(
               'EPSG:4326', 'double');
-          var features = [new _ol_Feature_(point)];
+          var features = [new Feature(point)];
           var node = format.writeFeaturesNode(features, {
             featureProjection: 'double'
           });
@@ -393,7 +393,7 @@ describe('ol.format.KML', function() {
         it('can write XYM Point geometries', function() {
           var layout = 'XYM';
           var point = new Point([1, 2, 100], layout);
-          var features = [new _ol_Feature_(point)];
+          var features = [new Feature(point)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -413,7 +413,7 @@ describe('ol.format.KML', function() {
         it('can write XYZM Point geometries', function() {
           var layout = 'XYZM';
           var point = new Point([1, 2, 3, 100], layout);
-          var features = [new _ol_Feature_(point)];
+          var features = [new Feature(point)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -445,7 +445,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(LineString);
           expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
@@ -457,7 +457,7 @@ describe('ol.format.KML', function() {
         it('can write XY LineString geometries', function() {
           var layout = 'XY';
           var lineString = new LineString([[1, 2], [3, 4]], layout);
-          var features = [new _ol_Feature_(lineString)];
+          var features = [new Feature(lineString)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -478,7 +478,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZ';
           var lineString = new LineString(
               [[1, 2, 3], [4, 5, 6]], layout);
-          var features = [new _ol_Feature_(lineString)];
+          var features = [new Feature(lineString)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -499,7 +499,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYM';
           var lineString = new LineString(
               [[1, 2, 100], [3, 4, 200]], layout);
-          var features = [new _ol_Feature_(lineString)];
+          var features = [new Feature(lineString)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -520,7 +520,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZM';
           var lineString = new LineString(
               [[1, 2, 3, 100], [4, 5, 6, 200]], layout);
-          var features = [new _ol_Feature_(lineString)];
+          var features = [new Feature(lineString)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -549,7 +549,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Polygon);
           expect(g.getCoordinates()).to.eql([[[1, 2, 3], [4, 5, 6], [7, 8, 9]]]);
@@ -559,7 +559,7 @@ describe('ol.format.KML', function() {
           var layout = 'XY';
           var linearRing = new LinearRing(
               [[1, 2], [3, 4], [1, 2]], layout);
-          var features = [new _ol_Feature_(linearRing)];
+          var features = [new Feature(linearRing)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -580,7 +580,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZ';
           var linearRing = new LinearRing(
               [[1, 2, 3], [4, 5, 6], [1, 2, 3]], layout);
-          var features = [new _ol_Feature_(linearRing)];
+          var features = [new Feature(linearRing)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -601,7 +601,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYM';
           var linearRing = new LinearRing(
               [[1, 2, 100], [3, 4, 200], [1, 2, 100]], layout);
-          var features = [new _ol_Feature_(linearRing)];
+          var features = [new Feature(linearRing)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -622,7 +622,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZM';
           var linearRing = new LinearRing(
               [[1, 2, 3, 100], [4, 5, 6, 200], [1, 2, 3, 100]], layout);
-          var features = [new _ol_Feature_(linearRing)];
+          var features = [new Feature(linearRing)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -657,7 +657,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Polygon);
           expect(g.getCoordinates()).to.eql(
@@ -670,7 +670,7 @@ describe('ol.format.KML', function() {
           var layout = 'XY';
           var polygon = new Polygon(
               [[[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]]], layout);
-          var features = [new _ol_Feature_(polygon)];
+          var features = [new Feature(polygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -695,7 +695,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZ';
           var polygon = new Polygon(
               [[[0, 0, 1], [0, 2, 2], [2, 2, 3], [2, 0, 4], [0, 0, 5]]], layout);
-          var features = [new _ol_Feature_(polygon)];
+          var features = [new Feature(polygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -722,7 +722,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYM';
           var polygon = new Polygon(
               [[[0, 0, 1], [0, 2, 1], [2, 2, 1], [2, 0, 1], [0, 0, 1]]], layout);
-          var features = [new _ol_Feature_(polygon)];
+          var features = [new Feature(polygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -750,7 +750,7 @@ describe('ol.format.KML', function() {
           var polygon = new Polygon([
             [[0, 0, 1, 1], [0, 2, 2, 1], [2, 2, 3, 1], [2, 0, 4, 1], [0, 0, 5, 1]]
           ], layout);
-          var features = [new _ol_Feature_(polygon)];
+          var features = [new Feature(polygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -797,7 +797,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Polygon);
           expect(g.getCoordinates()).to.eql([
@@ -814,7 +814,7 @@ describe('ol.format.KML', function() {
             [[1, 1, 0], [1, 2, 0], [2, 2, 0], [2, 1, 0]],
             [[3, 3, 0], [3, 4, 0], [4, 4, 0], [4, 3, 0]]
           ], layout);
-          var features = [new _ol_Feature_(polygon)];
+          var features = [new Feature(polygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -872,7 +872,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(MultiPolygon);
           expect(g.getCoordinates()).to.eql(
@@ -893,7 +893,7 @@ describe('ol.format.KML', function() {
           var multiPolygon = new MultiPolygon(
               [[[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
                 [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]], layout);
-          var features = [new _ol_Feature_(multiPolygon)];
+          var features = [new Feature(multiPolygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -944,7 +944,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(MultiPoint);
           expect(g.getCoordinates()).to.eql([[1, 2, 3], [4, 5, 6]]);
@@ -962,7 +962,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZ';
           var multiPoint = new MultiPoint(
               [[1, 2, 3], [4, 5, 6]], layout);
-          var features = [new _ol_Feature_(multiPoint)];
+          var features = [new Feature(multiPoint)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -1004,7 +1004,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(MultiLineString);
           expect(g.getCoordinates()).to.eql(
@@ -1027,7 +1027,7 @@ describe('ol.format.KML', function() {
           var layout = 'XYZ';
           var multiLineString = new MultiLineString(
               [[[1, 2, 3], [4, 5, 6]], [[7, 8, 9], [10, 11, 12]]], layout);
-          var features = [new _ol_Feature_(multiLineString)];
+          var features = [new Feature(multiLineString)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -1076,7 +1076,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(MultiPolygon);
           expect(g.getCoordinates()).to.eql([
@@ -1099,7 +1099,7 @@ describe('ol.format.KML', function() {
             [[[0, 0, 0], [0, 1, 0], [1, 1, 0], [1, 0, 0]]],
             [[[3, 0, 0], [3, 1, 0], [4, 1, 0], [4, 0, 0]]]
           ], layout);
-          var features = [new _ol_Feature_(multiPolygon)];
+          var features = [new Feature(multiPolygon)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -1140,7 +1140,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(GeometryCollection);
           expect(g.getGeometries()).to.be.empty();
@@ -1173,7 +1173,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(GeometryCollection);
           var gs = g.getGeometries();
@@ -1197,7 +1197,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(GeometryCollection);
           var gs = g.getGeometries();
@@ -1211,7 +1211,7 @@ describe('ol.format.KML', function() {
             new LineString([[1, 2], [3, 4]]),
             new Polygon([[[1, 2], [3, 4], [3, 2], [1, 2]]])
           ]);
-          var features = [new _ol_Feature_(collection)];
+          var features = [new Feature(collection)];
           var node = format.writeFeaturesNode(features);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -1258,7 +1258,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(LineString);
         });
@@ -1285,7 +1285,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(MultiLineString);
           var gs = g.getLineStrings();
@@ -1340,7 +1340,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('open')).to.be(true);
           expect(f.get('visibility')).to.be(false);
         });
@@ -1358,7 +1358,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('address')).to.be('My address');
           expect(f.get('description')).to.be('My description');
           expect(f.get('name')).to.be('My name');
@@ -1375,7 +1375,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('description')).to.be('My  description');
         });
 
@@ -1389,7 +1389,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('name')).to.be('My name in CDATA');
         });
 
@@ -1403,12 +1403,12 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('name')).to.be('My name in CDATA');
         });
 
         it('can write Feature\'s string attributes', function() {
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.set('address', 'My address');
           feature.set('description', 'My description');
           feature.set('name', 'My name');
@@ -1432,7 +1432,7 @@ describe('ol.format.KML', function() {
         });
 
         it('can write Feature\'s boolean attributes', function() {
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.set('open', true);
           feature.set('visibility', false);
           var features = [feature];
@@ -1477,7 +1477,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var extent = f.get('extent');
           expect(extent).to.be.an(Array);
           expect(extent).to.have.length(4);
@@ -1509,7 +1509,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('minLodPixels')).to.be(128);
           expect(f.get('maxLodPixels')).to.be(2048);
           expect(f.get('minFadeExtent')).to.be(0.2);
@@ -1521,7 +1521,7 @@ describe('ol.format.KML', function() {
       describe('extended data', function() {
 
         it('can write ExtendedData with no values', function() {
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.set('foo', null);
           feature.set('bar', undefined);
           var features = [feature];
@@ -1543,7 +1543,7 @@ describe('ol.format.KML', function() {
         });
 
         it('can write ExtendedData with values', function() {
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.set('foo', 'bar');
           feature.set('aNumber', 1000);
           var features = [feature];
@@ -1574,7 +1574,7 @@ describe('ol.format.KML', function() {
             displayName: 'display name'
           };
 
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.set('foo', pair);
 
           var features = [feature];
@@ -1611,7 +1611,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getProperties()).to.only.have.keys(['foo', 'geometry']);
           expect(f.get('foo')).to.be('bar');
         });
@@ -1631,7 +1631,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getProperties()).to.only.have.keys(['foo', 'bar', 'geometry']);
           expect(f.get('foo')).to.be('200');
           expect(f.get('bar')).to.be(undefined);
@@ -1652,7 +1652,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('foo')).to.be('bar');
         });
 
@@ -1671,7 +1671,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('capital')).to.be('London');
           expect(f.get('population')).to.be('60000000');
         });
@@ -1695,7 +1695,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('capital')).to.be('London');
           expect(f.get('country')).to.be('United-Kingdom');
         });
@@ -1712,7 +1712,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -1745,7 +1745,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -1824,7 +1824,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(5);
           fs.forEach(function(f) {
-            expect(f).to.be.an(_ol_Feature_);
+            expect(f).to.be.an(Feature);
             expect(f.getId()).to.be.within(1, 5);
             var styleFunction = f.getStyleFunction();
             expect(styleFunction).not.to.be(undefined);
@@ -1896,7 +1896,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -1932,7 +1932,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -1967,7 +1967,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -1999,7 +1999,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2036,7 +2036,7 @@ describe('ol.format.KML', function() {
 
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2075,7 +2075,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2112,7 +2112,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2150,7 +2150,7 @@ describe('ol.format.KML', function() {
               var fs = format.readFeatures(text);
               expect(fs).to.have.length(1);
               var f = fs[0];
-              expect(f).to.be.an(_ol_Feature_);
+              expect(f).to.be.an(Feature);
               var styleFunction = f.getStyleFunction();
               expect(styleFunction).not.to.be(undefined);
               var styleArray = styleFunction.call(f, 0);
@@ -2203,7 +2203,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2252,7 +2252,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2281,7 +2281,7 @@ describe('ol.format.KML', function() {
           });
           var imageStyle = style.getImage();
           imageStyle.iconImage_.size_ = [192, 144]; // sprite de 12 images(4*3)
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle([style]);
           var node = format.writeFeaturesNode([feature]);
           var text =
@@ -2318,7 +2318,7 @@ describe('ol.format.KML', function() {
               src: 'http://foo.png'
             })
           });
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle([style]);
           var node = format.writeFeaturesNode([feature]);
           var text =
@@ -2342,7 +2342,7 @@ describe('ol.format.KML', function() {
               })
             })
           });
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle([style]);
           var node = format.writeFeaturesNode([feature]);
           var text =
@@ -2369,7 +2369,7 @@ describe('ol.format.KML', function() {
               })
             })
           });
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle([style]);
           var node = format.writeFeaturesNode([feature]);
           var text =
@@ -2398,7 +2398,7 @@ describe('ol.format.KML', function() {
               width: 2
             })
           });
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle([style]);
           var node = format.writeFeaturesNode([feature]);
           var text =
@@ -2425,7 +2425,7 @@ describe('ol.format.KML', function() {
               color: 'rgba(12, 34, 223, 0.7)'
             })
           });
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle([style]);
           var node = format.writeFeaturesNode([feature]);
           var text =
@@ -2451,9 +2451,9 @@ describe('ol.format.KML', function() {
               color: 'rgba(12, 34, 223, 0.7)'
             })
           });
-          var feature = new _ol_Feature_();
+          var feature = new Feature();
           feature.setStyle(style);
-          var feature2 = new _ol_Feature_();
+          var feature2 = new Feature();
           feature2.setStyle(style);
           var node = format.writeFeaturesNode([feature, feature2]);
           var text =
@@ -2506,7 +2506,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2539,7 +2539,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2580,7 +2580,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2614,7 +2614,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2648,7 +2648,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2682,7 +2682,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2715,7 +2715,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2747,7 +2747,7 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var styleFunction = f.getStyleFunction();
           expect(styleFunction).not.to.be(undefined);
           var styleArray = styleFunction.call(f, 0);
@@ -2780,13 +2780,13 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(2);
           var f1 = fs[0];
-          expect(f1).to.be.an(_ol_Feature_);
+          expect(f1).to.be.an(Feature);
           var styleFunction1 = f1.getStyleFunction();
           expect(styleFunction1).not.to.be(undefined);
           var styleArray1 = styleFunction1.call(f1, 0);
           expect(styleArray1).to.be.an(Array);
           var f2 = fs[1];
-          expect(f2).to.be.an(_ol_Feature_);
+          expect(f2).to.be.an(Feature);
           var styleFunction2 = f2.getStyleFunction();
           expect(styleFunction2).not.to.be(undefined);
           var styleArray2 = styleFunction2.call(f2, 0);
@@ -2814,7 +2814,7 @@ describe('ol.format.KML', function() {
               '</Document>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
         });
 
         it('can read a single feature from nested Document', function() {
@@ -2827,7 +2827,7 @@ describe('ol.format.KML', function() {
               '</Document>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
         });
 
         it('can transform and read a single feature from a Document', function() {
@@ -2844,7 +2844,7 @@ describe('ol.format.KML', function() {
           });
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(Point);
           var expectedPoint = transform([1, 2], 'EPSG:4326', 'EPSG:3857');
@@ -2862,9 +2862,9 @@ describe('ol.format.KML', function() {
               '</Document>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(2);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
           expect(fs[0].getId()).to.be('1');
-          expect(fs[1]).to.be.an(_ol_Feature_);
+          expect(fs[1]).to.be.an(Feature);
           expect(fs[1].getId()).to.be('2');
         });
 
@@ -2884,7 +2884,7 @@ describe('ol.format.KML', function() {
               '</Folder>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
         });
 
         it('can read a multiple features from a Folder', function() {
@@ -2897,9 +2897,9 @@ describe('ol.format.KML', function() {
               '</Folder>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(2);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
           expect(fs[0].getId()).to.be('1');
-          expect(fs[1]).to.be.an(_ol_Feature_);
+          expect(fs[1]).to.be.an(Feature);
           expect(fs[1].getId()).to.be('2');
         });
 
@@ -2913,7 +2913,7 @@ describe('ol.format.KML', function() {
               '</Document>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
         });
 
         it('can read features from Folders nested in Folders', function() {
@@ -2926,7 +2926,7 @@ describe('ol.format.KML', function() {
               '</Folder>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
         });
 
         it('can read a single feature', function() {
@@ -2935,7 +2935,7 @@ describe('ol.format.KML', function() {
               '</Placemark>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(1);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
         });
 
         it('can read features at multiple levels', function() {
@@ -2955,15 +2955,15 @@ describe('ol.format.KML', function() {
               '</kml>';
           var fs = format.readFeatures(text);
           expect(fs).to.have.length(5);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
           expect(fs[0].getId()).to.be('a');
-          expect(fs[1]).to.be.an(_ol_Feature_);
+          expect(fs[1]).to.be.an(Feature);
           expect(fs[1].getId()).to.be('b');
-          expect(fs[2]).to.be.an(_ol_Feature_);
+          expect(fs[2]).to.be.an(Feature);
           expect(fs[2].getId()).to.be('c');
-          expect(fs[3]).to.be.an(_ol_Feature_);
+          expect(fs[3]).to.be.an(Feature);
           expect(fs[3].getId()).to.be('d');
-          expect(fs[4]).to.be.an(_ol_Feature_);
+          expect(fs[4]).to.be.an(Feature);
           expect(fs[4].getId()).to.be('e');
         });
 
@@ -2990,9 +2990,9 @@ describe('ol.format.KML', function() {
         });
 
         it('can write multiple features', function() {
-          var feature1 = new _ol_Feature_();
+          var feature1 = new Feature();
           feature1.setId('1');
-          var feature2 = new _ol_Feature_();
+          var feature2 = new Feature();
           feature2.setId('2');
           var node = format.writeFeaturesNode([feature1, feature2]);
           var text =
@@ -3034,7 +3034,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getGeometry()).to.be(null);
         });
 
@@ -3051,7 +3051,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getGeometry()).to.be(null);
         });
 
@@ -3068,7 +3068,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getGeometry()).to.be(null);
         });
 
@@ -3089,7 +3089,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.getGeometry()).to.be(null);
         });
 
@@ -3108,7 +3108,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           var g = f.getGeometry();
           expect(g).to.be.an(GeometryCollection);
           expect(g.getGeometries()).to.be.empty();
@@ -3125,7 +3125,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(1);
           var f = fs[0];
-          expect(f).to.be.an(_ol_Feature_);
+          expect(f).to.be.an(Feature);
           expect(f.get('visibility')).to.be(undefined);
         });
 
@@ -3145,15 +3145,15 @@ describe('ol.format.KML', function() {
           var fs = format.readFeatures(kml);
           expect(fs).to.be.an(Array);
           expect(fs).to.have.length(5);
-          expect(fs[0]).to.be.an(_ol_Feature_);
+          expect(fs[0]).to.be.an(Feature);
           expect(fs[0].getId()).to.be('a');
-          expect(fs[1]).to.be.an(_ol_Feature_);
+          expect(fs[1]).to.be.an(Feature);
           expect(fs[1].getId()).to.be('b');
-          expect(fs[2]).to.be.an(_ol_Feature_);
+          expect(fs[2]).to.be.an(Feature);
           expect(fs[2].getId()).to.be('c');
-          expect(fs[3]).to.be.an(_ol_Feature_);
+          expect(fs[3]).to.be.an(Feature);
           expect(fs[3].getId()).to.be('d');
-          expect(fs[4]).to.be.an(_ol_Feature_);
+          expect(fs[4]).to.be.an(Feature);
           expect(fs[4].getId()).to.be('e');
         });
 
@@ -3182,7 +3182,7 @@ describe('ol.format.KML', function() {
       it('creates features with heterogeneous geometry collections', function() {
         // FIXME decide if we should instead create features with multiple geoms
         var feature = features[0];
-        expect(feature).to.be.an(_ol_Feature_);
+        expect(feature).to.be.an(Feature);
         var geometry = feature.getGeometry();
         expect(geometry).to.be.an(GeometryCollection);
       });
@@ -3191,7 +3191,7 @@ describe('ol.format.KML', function() {
         var alaska = find(features, function(feature) {
           return feature.get('name') === 'Alaska';
         });
-        expect(alaska).to.be.an(_ol_Feature_);
+        expect(alaska).to.be.an(Feature);
         var geometry = alaska.getGeometry();
         expect(geometry).to.be.an(GeometryCollection);
         var components = geometry.getGeometries();

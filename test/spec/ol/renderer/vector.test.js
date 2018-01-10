@@ -12,7 +12,7 @@ import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 
 
 describe('ol.renderer.vector', function() {
@@ -23,7 +23,7 @@ describe('ol.renderer.vector', function() {
 
     beforeEach(function() {
       replayGroup = new _ol_render_canvas_ReplayGroup_(1);
-      feature = new _ol_Feature_();
+      feature = new Feature();
       iconStyle = new _ol_style_Icon_({
         src: 'http://example.com/icon.png'
       });

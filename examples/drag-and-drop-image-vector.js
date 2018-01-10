@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GPX from '../src/ol/format/GPX.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import IGC from '../src/ol/format/IGC.js';
@@ -7,10 +7,10 @@ import KML from '../src/ol/format/KML.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import DragAndDrop from '../src/ol/interaction/DragAndDrop.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -97,24 +97,24 @@ var map = new Map({
   interactions: defaultInteractions().extend([dragAndDropInteraction]),
   layers: [
     new TileLayer({
-      source: new _ol_source_BingMaps_({
+      source: new BingMaps({
         imagerySet: 'Aerial',
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
       })
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })
 });
 
 dragAndDropInteraction.on('addfeatures', function(event) {
-  var vectorSource = new _ol_source_Vector_({
+  var vectorSource = new VectorSource({
     features: event.features
   });
-  map.addLayer(new _ol_layer_Vector_({
+  map.addLayer(new VectorLayer({
     renderMode: 'image',
     source: vectorSource,
     style: styleFunction

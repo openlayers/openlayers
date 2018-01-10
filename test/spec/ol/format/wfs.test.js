@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import GML2 from '../../../../src/ol/format/GML2.js';
 import WFS from '../../../../src/ol/format/WFS.js';
 import _ol_format_filter_ from '../../../../src/ol/format/filter.js';
@@ -712,7 +712,7 @@ describe('ol.format.WFS', function() {
     });
     it('creates the correct srsName', function() {
       var format = new WFS();
-      var insertFeature = new _ol_Feature_({
+      var insertFeature = new Feature({
         the_geom: new MultiLineString([[
           [-5178372.1885436, 1992365.7775042],
           [-4434792.7774889, 1601008.1927386],
@@ -743,7 +743,7 @@ describe('ol.format.WFS', function() {
 
     it('creates the correct update', function() {
       var format = new WFS();
-      var updateFeature = new _ol_Feature_();
+      var updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -764,7 +764,7 @@ describe('ol.format.WFS', function() {
 
     it('creates the correct update if geometry name is alias', function() {
       var format = new WFS();
-      var updateFeature = new _ol_Feature_(new MultiLineString([[
+      var updateFeature = new Feature(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -788,7 +788,7 @@ describe('ol.format.WFS', function() {
 
     it('creates the correct update with default featurePrefix', function() {
       var format = new WFS();
-      var updateFeature = new _ol_Feature_();
+      var updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -811,7 +811,7 @@ describe('ol.format.WFS', function() {
 
     it('does not create an update if no fid', function() {
       var format = new WFS();
-      var updateFeature = new _ol_Feature_();
+      var updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -844,7 +844,7 @@ describe('ol.format.WFS', function() {
 
     it('handles multiple geometries', function() {
       var format = new WFS();
-      var updateFeature = new _ol_Feature_();
+      var updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -879,14 +879,14 @@ describe('ol.format.WFS', function() {
 
     it('creates the correct transaction body', function() {
       var format = new WFS();
-      var insertFeature = new _ol_Feature_({
+      var insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
-      var updateFeature = new _ol_Feature_({
+      var updateFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -898,7 +898,7 @@ describe('ol.format.WFS', function() {
       updateFeature.setGeometryName('the_geom');
       var updates = [updateFeature];
 
-      var deleteFeature = new _ol_Feature_();
+      var deleteFeature = new Feature();
       deleteFeature.setId('fid.37');
       var deletes = [deleteFeature];
       var serialized = format.writeTransaction(inserts, updates, deletes, {
@@ -949,14 +949,14 @@ describe('ol.format.WFS', function() {
 
     it('handles the WFS version', function() {
       var format = new WFS();
-      var insertFeature = new _ol_Feature_({
+      var insertFeature = new Feature({
         the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
-      var updateFeature = new _ol_Feature_({
+      var updateFeature = new Feature({
         the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -968,7 +968,7 @@ describe('ol.format.WFS', function() {
       updateFeature.setGeometryName('the_geom');
       var updates = [updateFeature];
 
-      var deleteFeature = new _ol_Feature_();
+      var deleteFeature = new Feature();
       deleteFeature.setId('fid.37');
       var deletes = [deleteFeature];
       var serialized = format.writeTransaction(inserts, updates, deletes, {
@@ -993,14 +993,14 @@ describe('ol.format.WFS', function() {
 
     it('do not add feature prefix twice', function() {
       var format = new WFS();
-      var insertFeature = new _ol_Feature_({
+      var insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
-      var updateFeature = new _ol_Feature_({
+      var updateFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -1012,7 +1012,7 @@ describe('ol.format.WFS', function() {
       updateFeature.setGeometryName('the_geom');
       var updates = [updateFeature];
 
-      var deleteFeature = new _ol_Feature_();
+      var deleteFeature = new Feature();
       deleteFeature.setId('fid.37');
       var deletes = [deleteFeature];
       var serialized = format.writeTransaction(inserts, updates, deletes, {
@@ -1036,14 +1036,14 @@ describe('ol.format.WFS', function() {
 
     it('handles 3D in WFS 1.0.0', function() {
       var format = new WFS();
-      var insertFeature = new _ol_Feature_({
+      var insertFeature = new Feature({
         the_geom: new LineString([[1.1, 2, 4], [3, 4.2, 5]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
-      var updateFeature = new _ol_Feature_({
+      var updateFeature = new Feature({
         the_geom: new LineString([[1.1, 2, 6], [3, 4.2, 7]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -1078,14 +1078,14 @@ describe('ol.format.WFS', function() {
 
     it('handles 3D in WFS 1.1.0', function() {
       var format = new WFS();
-      var insertFeature = new _ol_Feature_({
+      var insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
       var inserts = [insertFeature];
-      var updateFeature = new _ol_Feature_({
+      var updateFeature = new Feature({
         the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -1247,7 +1247,7 @@ describe('ol.format.WFS', function() {
     it('reads all features', function() {
       expect(features.length).to.be(5);
       features.forEach(function(feature) {
-        expect(feature instanceof _ol_Feature_).to.be(true);
+        expect(feature instanceof Feature).to.be(true);
       });
     });
 

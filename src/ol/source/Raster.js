@@ -2,7 +2,7 @@
  * @module ol/source/Raster
  */
 import {getUid, inherits} from '../index.js';
-import _ol_ImageCanvas_ from '../ImageCanvas.js';
+import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_events_ from '../events.js';
@@ -10,15 +10,15 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
-import _ol_layer_Image_ from '../layer/Image.js';
+import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
 import _ol_obj_ from '../obj.js';
-import _ol_renderer_canvas_ImageLayer_ from '../renderer/canvas/ImageLayer.js';
-import _ol_renderer_canvas_TileLayer_ from '../renderer/canvas/TileLayer.js';
-import _ol_source_Image_ from '../source/Image.js';
+import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
+import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
+import ImageSource from '../source/Image.js';
 import RasterOperationType from '../source/RasterOperationType.js';
 import SourceState from '../source/State.js';
-import _ol_source_Tile_ from '../source/Tile.js';
+import TileSource from '../source/Tile.js';
 import _ol_transform_ from '../transform.js';
 
 
@@ -149,7 +149,7 @@ var RasterSource = function(options) {
     wantedTiles: {}
   };
 
-  _ol_source_Image_.call(this, {});
+  ImageSource.call(this, {});
 
   if (options.operation !== undefined) {
     this.setOperation(options.operation, options.lib);
@@ -157,7 +157,7 @@ var RasterSource = function(options) {
 
 };
 
-inherits(RasterSource, _ol_source_Image_);
+inherits(RasterSource, ImageSource);
 
 
 /**
@@ -317,7 +317,7 @@ RasterSource.prototype.onWorkerComplete_ = function(frameState, err, output, dat
     var width = Math.round(getWidth(extent) / resolution);
     var height = Math.round(getHeight(extent) / resolution);
     context = createCanvasContext2D(width, height);
-    this.renderedImageCanvas_ = new _ol_ImageCanvas_(extent, resolution, 1, context.canvas);
+    this.renderedImageCanvas_ = new ImageCanvas(extent, resolution, 1, context.canvas);
   }
   context.putImageData(output, 0, 0);
 
@@ -398,9 +398,9 @@ function createRenderers(sources) {
  */
 function createRenderer(source) {
   var renderer = null;
-  if (source instanceof _ol_source_Tile_) {
+  if (source instanceof TileSource) {
     renderer = createTileRenderer(source);
-  } else if (source instanceof _ol_source_Image_) {
+  } else if (source instanceof ImageSource) {
     renderer = createImageRenderer(source);
   }
   return renderer;
@@ -413,8 +413,8 @@ function createRenderer(source) {
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createImageRenderer(source) {
-  var layer = new _ol_layer_Image_({source: source});
-  return new _ol_renderer_canvas_ImageLayer_(layer);
+  var layer = new ImageLayer({source: source});
+  return new CanvasImageLayerRenderer(layer);
 }
 
 
@@ -425,7 +425,7 @@ function createImageRenderer(source) {
  */
 function createTileRenderer(source) {
   var layer = new TileLayer({source: source});
-  return new _ol_renderer_canvas_TileLayer_(layer);
+  return new CanvasTileLayerRenderer(layer);
 }
 
 

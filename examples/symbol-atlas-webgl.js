@@ -1,9 +1,9 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_AtlasManager_ from '../src/ol/style/AtlasManager.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -90,7 +90,7 @@ var e = 25000000;
 for (i = 0; i < featureCount; ++i) {
   geometry = new Point(
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
-  feature = new _ol_Feature_(geometry);
+  feature = new Feature(geometry);
   feature.setStyle(
       new _ol_style_Style_({
         image: symbols[i % symbolCount]
@@ -99,10 +99,10 @@ for (i = 0; i < featureCount; ++i) {
   features[i] = feature;
 }
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   features: features
 });
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource
 });
 
@@ -110,7 +110,7 @@ var map = new Map({
   renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
   layers: [vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 4
   })

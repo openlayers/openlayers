@@ -1,17 +1,17 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
-var source = new _ol_source_Vector_({
+var source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON()
 });
@@ -34,18 +34,18 @@ var style = new _ol_style_Style_({
     })
   })
 });
-var vectorLayer = new _ol_layer_Vector_({
+var vectorLayer = new VectorLayer({
   source: source,
   style: style
 });
-var view = new _ol_View_({
+var view = new View({
   center: [0, 0],
   zoom: 1
 });
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
     vectorLayer
   ],

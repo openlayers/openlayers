@@ -9,7 +9,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
-import _ol_source_Image_ from '../source/Image.js';
+import ImageSource from '../source/Image.js';
 
 /**
  * @classdesc
@@ -20,7 +20,7 @@ import _ol_source_Image_ from '../source/Image.js';
  * @param {olx.source.ImageStaticOptions} options Options.
  * @api
  */
-var _ol_source_ImageStatic_ = function(options) {
+var Static = function(options) {
   var imageExtent = options.imageExtent;
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -28,9 +28,9 @@ var _ol_source_ImageStatic_ = function(options) {
 
   var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
       options.imageLoadFunction !== undefined ?
-        options.imageLoadFunction : _ol_source_Image_.defaultImageLoadFunction;
+        options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
 
-  _ol_source_Image_.call(this, {
+  ImageSource.call(this, {
     attributions: options.attributions,
     projection: getProjection(options.projection)
   });
@@ -52,13 +52,13 @@ var _ol_source_ImageStatic_ = function(options) {
 
 };
 
-inherits(_ol_source_ImageStatic_, _ol_source_Image_);
+inherits(Static, ImageSource);
 
 
 /**
  * @inheritDoc
  */
-_ol_source_ImageStatic_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+Static.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   if (intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
@@ -69,7 +69,7 @@ _ol_source_ImageStatic_.prototype.getImageInternal = function(extent, resolution
 /**
  * @inheritDoc
  */
-_ol_source_ImageStatic_.prototype.handleImageChange = function(evt) {
+Static.prototype.handleImageChange = function(evt) {
   if (this.image_.getState() == ImageState.LOADED) {
     var imageExtent = this.image_.getExtent();
     var image = this.image_.getImage();
@@ -91,6 +91,6 @@ _ol_source_ImageStatic_.prototype.handleImageChange = function(evt) {
       this.image_.setImage(canvas);
     }
   }
-  _ol_source_Image_.prototype.handleImageChange.call(this, evt);
+  ImageSource.prototype.handleImageChange.call(this, evt);
 };
-export default _ol_source_ImageStatic_;
+export default Static;

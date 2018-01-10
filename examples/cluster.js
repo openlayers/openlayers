@@ -1,12 +1,12 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import Cluster from '../src/ol/source/Cluster.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -21,20 +21,20 @@ var features = new Array(count);
 var e = 4500000;
 for (var i = 0; i < count; ++i) {
   var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
-  features[i] = new _ol_Feature_(new Point(coordinates));
+  features[i] = new Feature(new Point(coordinates));
 }
 
-var source = new _ol_source_Vector_({
+var source = new VectorSource({
   features: features
 });
 
-var clusterSource = new _ol_source_Cluster_({
+var clusterSource = new Cluster({
   distance: parseInt(distance.value, 10),
   source: source
 });
 
 var styleCache = {};
-var clusters = new _ol_layer_Vector_({
+var clusters = new VectorLayer({
   source: clusterSource,
   style: function(feature) {
     var size = feature.get('features').length;
@@ -64,13 +64,13 @@ var clusters = new _ol_layer_Vector_({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 var map = new Map({
   layers: [raster, clusters],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

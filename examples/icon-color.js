@@ -1,25 +1,25 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
-var rome = new _ol_Feature_({
+var rome = new Feature({
   geometry: new Point(fromLonLat([12.5, 41.9]))
 });
 
-var london = new _ol_Feature_({
+var london = new Feature({
   geometry: new Point(fromLonLat([-0.12755, 51.507222]))
 });
 
-var madrid = new _ol_Feature_({
+var madrid = new Feature({
   geometry: new Point(fromLonLat([-3.683333, 40.4]))
 });
 
@@ -48,16 +48,16 @@ madrid.setStyle(new _ol_style_Style_({
 }));
 
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   features: [rome, london, madrid]
 });
 
-var vectorLayer = new _ol_layer_Vector_({
+var vectorLayer = new VectorLayer({
   source: vectorSource
 });
 
 var rasterLayer = new TileLayer({
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
     crossOrigin: ''
   })
@@ -66,7 +66,7 @@ var rasterLayer = new TileLayer({
 var map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([2.896372, 44.60240]),
     zoom: 3
   })

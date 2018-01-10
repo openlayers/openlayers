@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_CartoDB_ from '../src/ol/source/CartoDB.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import CartoDB from '../src/ol/source/CartoDB.js';
+import OSM from '../src/ol/source/OSM.js';
 
 var mapConfig = {
   'layers': [{
@@ -15,7 +15,7 @@ var mapConfig = {
   }]
 };
 
-var cartoDBSource = new _ol_source_CartoDB_({
+var cartoDBSource = new CartoDB({
   account: 'documentation',
   config: mapConfig
 });
@@ -23,14 +23,14 @@ var cartoDBSource = new _ol_source_CartoDB_({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
     new TileLayer({
       source: cartoDBSource
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

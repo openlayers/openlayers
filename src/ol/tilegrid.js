@@ -7,7 +7,7 @@ import {containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth} from
 import Corner from './extent/Corner.js';
 import _ol_obj_ from './obj.js';
 import {get as getProjection, METERS_PER_UNIT} from './proj.js';
-import _ol_proj_Units_ from './proj/Units.js';
+import Units from './proj/Units.js';
 import TileGrid from './tilegrid/TileGrid.js';
 var _ol_tilegrid_ = {};
 
@@ -150,7 +150,7 @@ _ol_tilegrid_.extentFromProjection = function(projection) {
   projection = getProjection(projection);
   var extent = projection.getExtent();
   if (!extent) {
-    var half = 180 * METERS_PER_UNIT[_ol_proj_Units_.DEGREES] /
+    var half = 180 * METERS_PER_UNIT[Units.DEGREES] /
         projection.getMetersPerUnit();
     extent = createOrUpdate(-half, -half, half, half);
   }

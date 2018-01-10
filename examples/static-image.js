@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
-import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
+import Static from '../src/ol/source/ImageStatic.js';
 
 
 // Map views always need a projection.  Here we just want to map image
@@ -18,8 +18,8 @@ var projection = new _ol_proj_Projection_({
 
 var map = new Map({
   layers: [
-    new _ol_layer_Image_({
-      source: new _ol_source_ImageStatic_({
+    new ImageLayer({
+      source: new Static({
         attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
         url: 'https://imgs.xkcd.com/comics/online_communities.png',
         projection: projection,
@@ -28,7 +28,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: projection,
     center: _ol_extent_.getCenter(extent),
     zoom: 2,

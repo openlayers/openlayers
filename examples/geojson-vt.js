@@ -1,9 +1,9 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
@@ -56,11 +56,11 @@ var tilePixels = new _ol_proj_Projection_({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })
@@ -74,7 +74,7 @@ fetch(url).then(function(response) {
     extent: 4096,
     debug: 1
   });
-  var vectorSource = new _ol_source_VectorTile_({
+  var vectorSource = new VectorTileSource({
     format: new GeoJSON(),
     tileLoadFunction: function(tile) {
       var format = tile.getFormat();

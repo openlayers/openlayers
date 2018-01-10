@@ -1,13 +1,13 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -25,7 +25,7 @@ describe('ol.rendering.layer.Vector', function() {
       pixelRatio: 1,
       target: createMapDiv(80, 80),
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: center,
         zoom: 13
       })
@@ -42,11 +42,11 @@ describe('ol.rendering.layer.Vector', function() {
   var source;
 
   function addCircle(r) {
-    source.addFeature(new _ol_Feature_(new Circle(center, r)));
+    source.addFeature(new Feature(new Circle(center, r)));
   }
 
   function addPolygon(r) {
-    source.addFeature(new _ol_Feature_(new Polygon([
+    source.addFeature(new Feature(new Polygon([
       [
         [center[0] - r, center[1] - r],
         [center[0] + r, center[1] - r],
@@ -58,7 +58,7 @@ describe('ol.rendering.layer.Vector', function() {
   }
 
   function addLineString(r) {
-    source.addFeature(new _ol_Feature_(new LineString([
+    source.addFeature(new Feature(new LineString([
       [center[0] - r, center[1] - r],
       [center[0] + r, center[1] - r],
       [center[0] + r, center[1] + r],
@@ -70,12 +70,12 @@ describe('ol.rendering.layer.Vector', function() {
   describe('vector layer', function() {
 
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('renders opacity correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new LineString([
+      var smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -90,7 +90,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source
       }));
       map.once('postrender', function() {
@@ -101,7 +101,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders opacity correctly with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new LineString([
+      var smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -116,7 +116,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renerMode: 'image',
         source: source
       }));
@@ -128,7 +128,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders transparent layers correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new LineString([
+      var smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -141,7 +141,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new _ol_Feature_(new LineString([
+      var smallLine2 = new Feature(new LineString([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
@@ -155,7 +155,7 @@ describe('ol.rendering.layer.Vector', function() {
       ]);
       source.addFeature(smallLine2);
 
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         opacity: 0.5
       }));
@@ -167,7 +167,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders transparent layers correctly with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var smallLine = new _ol_Feature_(new LineString([
+      var smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -180,7 +180,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new _ol_Feature_(new LineString([
+      var smallLine2 = new Feature(new LineString([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
@@ -194,7 +194,7 @@ describe('ol.rendering.layer.Vector', function() {
       ]);
       source.addFeature(smallLine2);
 
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
         opacity: 0.5
@@ -210,7 +210,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         style: new _ol_style_Style_({
           stroke: new _ol_style_Stroke_({
@@ -230,7 +230,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
         style: new _ol_style_Style_({
@@ -251,7 +251,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(300);
       map.skipFeature(source.getFeatures()[1]);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
         style: new _ol_style_Style_({
@@ -274,7 +274,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      source = new _ol_source_Vector_({
+      source = new VectorSource({
         overlaps: false
       });
       addPolygon(100);
@@ -283,7 +283,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         style: new _ol_style_Style_({
           stroke: new _ol_style_Stroke_({
@@ -300,14 +300,14 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      source = new _ol_source_Vector_({
+      source = new VectorSource({
         overlaps: false
       });
       addLineString(100);
       addLineString(250);
       addLineString(600);
       addLineString(720);
-      map.addLayer(new _ol_layer_Vector_({
+      map.addLayer(new VectorLayer({
         source: source,
         style: new _ol_style_Style_({
           stroke: new _ol_style_Stroke_({
@@ -327,7 +327,7 @@ describe('ol.rendering.layer.Vector', function() {
       var color;
       function createSource(overlaps) {
         color = '#3399CC';
-        source = new _ol_source_Vector_({
+        source = new VectorSource({
           overlaps: overlaps
         });
         addPolygon(720);
@@ -346,7 +346,7 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
@@ -380,7 +380,7 @@ describe('ol.rendering.layer.Vector', function() {
       var color;
       function createSource(overlaps) {
         color = '#3399CC';
-        source = new _ol_source_Vector_({
+        source = new VectorSource({
           overlaps: overlaps
         });
         addLineString(720);
@@ -397,7 +397,7 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
@@ -434,7 +434,7 @@ describe('ol.rendering.layer.Vector', function() {
       map2 = new Map({
         pixelRatio: 1,
         target: createMapDiv(128, 128),
-        view: new _ol_View_({
+        view: new View({
           center: [0, 0],
           zoom: 0
         })
@@ -466,8 +466,8 @@ describe('ol.rendering.layer.Vector', function() {
       var format = new GeoJSON({featureProjection: 'EPSG:3857'});
       var feature = format.readFeature(json);
 
-      var layer = new _ol_layer_Vector_({
-        source: new _ol_source_Vector_({
+      var layer = new VectorLayer({
+        source: new VectorSource({
           features: [feature]
         }),
         style: new _ol_style_Style_({
@@ -492,16 +492,16 @@ describe('ol.rendering.layer.Vector', function() {
     var layer, map3;
 
     beforeEach(function() {
-      var src = new _ol_source_Vector_({
+      var src = new VectorSource({
         features: [
-          new _ol_Feature_(new Polygon([[
+          new Feature(new Polygon([[
             [-22, 58],
             [-22, 78],
             [-9, 78],
             [-9, 58],
             [-22, 58]
           ]])),
-          new _ol_Feature_(new Polygon([[
+          new Feature(new Polygon([[
             [-9, 58],
             [-9, 78],
             [4, 78],
@@ -510,11 +510,11 @@ describe('ol.rendering.layer.Vector', function() {
           ]]))
         ]
       });
-      layer = new _ol_layer_Vector_({
+      layer = new VectorLayer({
         renderBuffer: 0,
         source: src
       });
-      var view = new _ol_View_({
+      var view = new View({
         center: [-9.5, 78],
         zoom: 2,
         projection: 'EPSG:4326'
@@ -579,26 +579,26 @@ describe('ol.rendering.layer.Vector', function() {
   describe('decluttering', function() {
 
     beforeEach(function() {
-      source = new _ol_source_Vector_();
+      source = new VectorSource();
     });
 
     it('declutters text', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new _ol_Feature_({
+      var centerFeature = new Feature({
         geometry: new Point(center),
         text: 'center'
       });
       source.addFeature(centerFeature);
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
@@ -624,22 +624,22 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         renderMode: 'image',
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new _ol_Feature_({
+      var centerFeature = new Feature({
         geometry: new Point(center),
         text: 'center'
       });
       source.addFeature(centerFeature);
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
@@ -665,22 +665,22 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text and respects z-index', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point(center),
         text: 'center',
         zIndex: 2
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]]),
         text: 'west',
         zIndex: 3
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]]),
         text: 'east',
         zIndex: 1
@@ -705,19 +705,19 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters images', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new _ol_Feature_({
+      var centerFeature = new Feature({
         geometry: new Point(center)
       });
       source.addFeature(centerFeature);
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]])
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]])
       }));
 
@@ -744,20 +744,20 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters images with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         renderMode: 'image',
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new _ol_Feature_({
+      var centerFeature = new Feature({
         geometry: new Point(center)
       });
       source.addFeature(centerFeature);
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]])
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]])
       }));
 
@@ -784,20 +784,20 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters images and respects z-index', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point(center),
         zIndex: 2
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]]),
         zIndex: 3
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]]),
         zIndex: 1
       }));
@@ -823,20 +823,20 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters image & text groups', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point(center),
         text: 'center'
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] - 540, center[1]]),
         text: 'west'
       }));
-      source.addFeature(new _ol_Feature_({
+      source.addFeature(new Feature({
         geometry: new Point([center[0] + 540, center[1]]),
         text: 'east'
       }));
@@ -867,12 +867,12 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text along lines and images', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var point = new _ol_Feature_(new Point(center));
+      var point = new Feature(new Point(center));
       point.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
           radius: 8,
@@ -881,7 +881,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new _ol_Feature_(new LineString([
+      var line = new Feature(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -910,12 +910,12 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text along lines and images with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var point = new _ol_Feature_(new Point(center));
+      var point = new Feature(new Point(center));
       point.setStyle(new _ol_style_Style_({
         image: new _ol_style_Circle_({
           radius: 8,
@@ -924,7 +924,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new _ol_Feature_(new LineString([
+      var line = new Feature(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -953,12 +953,12 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text along lines and images with z-index', function(done) {
       createMap('canvas');
-      var layer = new _ol_layer_Vector_({
+      var layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var point = new _ol_Feature_(new Point(center));
+      var point = new Feature(new Point(center));
       point.setStyle(new _ol_style_Style_({
         zIndex: 2,
         image: new _ol_style_Circle_({
@@ -968,7 +968,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new _ol_Feature_(new LineString([
+      var line = new Feature(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));

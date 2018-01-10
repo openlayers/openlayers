@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_VectorTile_ from '../src/ol/source/VectorTile.js';
+import VectorTileSource from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -61,7 +61,7 @@ var roadStyle = function(feature) {
 var map = new Map({
   layers: [
     new _ol_layer_VectorTile_({
-      source: new _ol_source_VectorTile_({
+      source: new VectorTileSource({
         attributions: '&copy; OpenStreetMap contributors, Who’s On First, ' +
             'Natural Earth, and openstreetmapdata.com',
         format: new TopoJSON({
@@ -82,7 +82,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-74.0064, 40.7142]),
     maxZoom: 19,
     zoom: 15

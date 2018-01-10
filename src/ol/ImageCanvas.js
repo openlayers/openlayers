@@ -15,7 +15,7 @@ import ImageState from './ImageState.js';
  * @param {ol.ImageCanvasLoader=} opt_loader Optional loader function to
  *     support asynchronous canvas drawing.
  */
-var _ol_ImageCanvas_ = function(extent, resolution, pixelRatio, canvas, opt_loader) {
+var ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader) {
 
   /**
    * Optional canvas loader function.
@@ -42,14 +42,14 @@ var _ol_ImageCanvas_ = function(extent, resolution, pixelRatio, canvas, opt_load
 
 };
 
-inherits(_ol_ImageCanvas_, _ol_ImageBase_);
+inherits(ImageCanvas, _ol_ImageBase_);
 
 
 /**
  * Get any error associated with asynchronous rendering.
  * @return {Error} Any error that occurred during rendering.
  */
-_ol_ImageCanvas_.prototype.getError = function() {
+ImageCanvas.prototype.getError = function() {
   return this.error_;
 };
 
@@ -59,7 +59,7 @@ _ol_ImageCanvas_.prototype.getError = function() {
  * @param {Error} err Any error during drawing.
  * @private
  */
-_ol_ImageCanvas_.prototype.handleLoad_ = function(err) {
+ImageCanvas.prototype.handleLoad_ = function(err) {
   if (err) {
     this.error_ = err;
     this.state = ImageState.ERROR;
@@ -73,7 +73,7 @@ _ol_ImageCanvas_.prototype.handleLoad_ = function(err) {
 /**
  * @inheritDoc
  */
-_ol_ImageCanvas_.prototype.load = function() {
+ImageCanvas.prototype.load = function() {
   if (this.state == ImageState.IDLE) {
     this.state = ImageState.LOADING;
     this.changed();
@@ -85,7 +85,7 @@ _ol_ImageCanvas_.prototype.load = function() {
 /**
  * @inheritDoc
  */
-_ol_ImageCanvas_.prototype.getImage = function() {
+ImageCanvas.prototype.getImage = function() {
   return this.canvas_;
 };
-export default _ol_ImageCanvas_;
+export default ImageCanvas;

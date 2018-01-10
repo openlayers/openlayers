@@ -1,16 +1,16 @@
 import {inherits} from '../src/ol/index.js';
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -134,12 +134,12 @@ app.Drag.prototype.handleUpEvent = function() {
 };
 
 
-var pointFeature = new _ol_Feature_(new Point([0, 0]));
+var pointFeature = new Feature(new Point([0, 0]));
 
-var lineFeature = new _ol_Feature_(
+var lineFeature = new Feature(
     new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
 
-var polygonFeature = new _ol_Feature_(
+var polygonFeature = new Feature(
     new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
       [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
@@ -148,12 +148,12 @@ var map = new Map({
   interactions: defaultInteractions().extend([new app.Drag()]),
   layers: [
     new TileLayer({
-      source: new _ol_source_TileJSON_({
+      source: new TileJSON({
         url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure'
       })
     }),
-    new _ol_layer_Vector_({
-      source: new _ol_source_Vector_({
+    new VectorLayer({
+      source: new VectorSource({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new _ol_style_Style_({
@@ -175,7 +175,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

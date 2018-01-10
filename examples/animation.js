@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {easeIn, easeOut} from '../src/ol/easing.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 
 var london = fromLonLat([-0.12755, 51.507222]);
 var moscow = fromLonLat([37.6178, 55.7517]);
@@ -11,7 +11,7 @@ var istanbul = fromLonLat([28.9744, 41.0128]);
 var rome = fromLonLat([12.5, 41.9]);
 var bern = fromLonLat([7.4458, 46.95]);
 
-var view = new _ol_View_({
+var view = new View({
   center: istanbul,
   zoom: 6
 });
@@ -21,7 +21,7 @@ var map = new Map({
   layers: [
     new TileLayer({
       preload: 4,
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   // Improve user experience by loading tiles while animating. Will make

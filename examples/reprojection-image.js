@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {getCenter} from '../src/ol/extent.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {transform} from '../src/ol/proj.js';
-import _ol_source_ImageStatic_ from '../src/ol/source/ImageStatic.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import Static from '../src/ol/source/ImageStatic.js';
+import OSM from '../src/ol/source/OSM.js';
 import {register} from '../src/ol/proj/proj4.js';
 import proj4 from 'proj4';
 
@@ -20,10 +20,10 @@ var imageExtent = [0, 0, 700000, 1300000];
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     }),
-    new _ol_layer_Image_({
-      source: new _ol_source_ImageStatic_({
+    new ImageLayer({
+      source: new Static({
         url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
                'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
         crossOrigin: '',
@@ -33,7 +33,7 @@ var map = new Map({
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: transform(getCenter(imageExtent), 'EPSG:27700', 'EPSG:3857'),
     zoom: 4
   })

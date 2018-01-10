@@ -2,8 +2,8 @@
  * @module ol/interaction/DragRotateAndZoom
  */
 import {inherits} from '../index.js';
-import _ol_RotationConstraint_ from '../RotationConstraint.js';
-import _ol_ViewHint_ from '../ViewHint.js';
+import RotationConstraint from '../RotationConstraint.js';
+import ViewHint from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
@@ -87,7 +87,7 @@ DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var theta = Math.atan2(deltaY, deltaX);
   var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var view = map.getView();
-  if (view.getConstraints().rotation !== _ol_RotationConstraint_.disable && this.lastAngle_ !== undefined) {
+  if (view.getConstraints().rotation !== RotationConstraint.disable && this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
     Interaction.rotateWithoutConstraints(
         view, view.getRotation() - angleDelta);
@@ -117,7 +117,7 @@ DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
-  view.setHint(_ol_ViewHint_.INTERACTING, -1);
+  view.setHint(ViewHint.INTERACTING, -1);
   var direction = this.lastScaleDelta_ - 1;
   Interaction.rotate(view, view.getRotation());
   Interaction.zoom(view, view.getResolution(),
@@ -139,7 +139,7 @@ DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
   }
 
   if (this.condition_(mapBrowserEvent)) {
-    mapBrowserEvent.map.getView().setHint(_ol_ViewHint_.INTERACTING, 1);
+    mapBrowserEvent.map.getView().setHint(ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     this.lastMagnitude_ = undefined;
     return true;

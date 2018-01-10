@@ -10,11 +10,11 @@ import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
 import _ol_MapProperty_ from './MapProperty.js';
-import _ol_Object_ from './Object.js';
+import BaseObject from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
-import _ol_View_ from './View.js';
-import _ol_ViewHint_ from './ViewHint.js';
+import View from './View.js';
+import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
 import _ol_events_ from './events.js';
@@ -111,7 +111,7 @@ export var MapOptions;
  */
 var PluggableMap = function(options) {
 
-  _ol_Object_.call(this);
+  BaseObject.call(this);
 
   var optionsInternal = createOptionsInternal(options);
 
@@ -337,13 +337,13 @@ var PluggableMap = function(options) {
   this.skippedFeatureUids_ = {};
 
   _ol_events_.listen(
-      this, _ol_Object_.getChangeEventType(_ol_MapProperty_.LAYERGROUP),
+      this, BaseObject.getChangeEventType(_ol_MapProperty_.LAYERGROUP),
       this.handleLayerGroupChanged_, this);
-  _ol_events_.listen(this, _ol_Object_.getChangeEventType(_ol_MapProperty_.VIEW),
+  _ol_events_.listen(this, BaseObject.getChangeEventType(_ol_MapProperty_.VIEW),
       this.handleViewChanged_, this);
-  _ol_events_.listen(this, _ol_Object_.getChangeEventType(_ol_MapProperty_.SIZE),
+  _ol_events_.listen(this, BaseObject.getChangeEventType(_ol_MapProperty_.SIZE),
       this.handleSizeChanged_, this);
-  _ol_events_.listen(this, _ol_Object_.getChangeEventType(_ol_MapProperty_.TARGET),
+  _ol_events_.listen(this, BaseObject.getChangeEventType(_ol_MapProperty_.TARGET),
       this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
@@ -425,7 +425,7 @@ var PluggableMap = function(options) {
 
 };
 
-inherits(PluggableMap, _ol_Object_);
+inherits(PluggableMap, BaseObject);
 
 
 /**
@@ -505,7 +505,7 @@ PluggableMap.prototype.disposeInternal = function() {
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
-  _ol_Object_.prototype.disposeInternal.call(this);
+  BaseObject.prototype.disposeInternal.call(this);
 };
 
 
@@ -954,11 +954,11 @@ PluggableMap.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[_ol_ViewHint_.ANIMATING]) {
+      if (hints[ViewHint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[_ol_ViewHint_.INTERACTING]) {
+      if (hints[ViewHint.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -1260,8 +1260,8 @@ PluggableMap.prototype.renderFrame_ = function(time) {
     }
 
     var idle = this.previousExtent_ &&
-        !frameState.viewHints[_ol_ViewHint_.ANIMATING] &&
-        !frameState.viewHints[_ol_ViewHint_.INTERACTING] &&
+        !frameState.viewHints[ViewHint.ANIMATING] &&
+        !frameState.viewHints[ViewHint.INTERACTING] &&
         !equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
@@ -1411,7 +1411,7 @@ function createOptionsInternal(options) {
   values[_ol_MapProperty_.TARGET] = options.target;
 
   values[_ol_MapProperty_.VIEW] = options.view !== undefined ?
-    options.view : new _ol_View_();
+    options.view : new View();
 
   /**
    * @type {Array.<ol.renderer.Type>}

@@ -1,17 +1,17 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_TileJSON_ from '../src/ol/source/TileJSON.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import TileJSON from '../src/ol/source/TileJSON.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 
 var raster = new TileLayer({
-  source: new _ol_source_TileJSON_({
+  source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure'
   })
 });
@@ -26,8 +26,8 @@ var style = new _ol_style_Style_({
   })
 });
 
-var vector = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vector = new VectorLayer({
+  source: new VectorSource({
     url: 'data/topojson/world-110m.json',
     format: new TopoJSON({
       // don't want to render the full world polygon (stored as 'land' layer),
@@ -42,7 +42,7 @@ var vector = new _ol_layer_Vector_({
 var map = new Map({
   layers: [raster, vector],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 1
   })

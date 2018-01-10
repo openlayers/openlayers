@@ -1,9 +1,9 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import View from '../../../../src/ol/View.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
@@ -13,8 +13,8 @@ describe('ol.rendering.style.LineString', function() {
   var map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
-    vectorSource = new _ol_source_Vector_();
-    var vectorLayer = new _ol_layer_Vector_({
+    vectorSource = new VectorSource();
+    var vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -23,7 +23,7 @@ describe('ol.rendering.style.LineString', function() {
       target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -43,7 +43,7 @@ describe('ol.rendering.style.LineString', function() {
     function createFeatures() {
       var feature;
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new LineString(
             [[-20, 20], [15, 20]]
         )
@@ -53,7 +53,7 @@ describe('ol.rendering.style.LineString', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new LineString(
             [[-20, 15], [15, 15]]
         )
@@ -63,7 +63,7 @@ describe('ol.rendering.style.LineString', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new LineString(
             [[-20, 10], [15, 10]]
         )
@@ -75,7 +75,7 @@ describe('ol.rendering.style.LineString', function() {
       })]);
       vectorSource.addFeature(feature);
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new LineString(
             [[-20, -20], [-2, 0], [15, -20]]
         )
@@ -91,7 +91,7 @@ describe('ol.rendering.style.LineString', function() {
       }));
       vectorSource.addFeature(feature);
 
-      feature = new _ol_Feature_({
+      feature = new Feature({
         geometry: new LineString(
             [[-20, -15], [-2, 5], [15, -15]]
         )

@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import FeatureFormat from '../../../../src/ol/format/Feature.js';
@@ -59,7 +59,7 @@ describe('ol.format.TopoJSON', function() {
       expect(features).to.have.length(1);
 
       var feature = features[0];
-      expect(feature).to.be.a(_ol_Feature_);
+      expect(feature).to.be.a(Feature);
 
       var geometry = feature.getGeometry();
       expect(geometry).to.be.a(Polygon);
@@ -80,7 +80,7 @@ describe('ol.format.TopoJSON', function() {
       expect(features).to.have.length(1);
 
       var feature = features[0];
-      expect(feature).to.be.a(_ol_Feature_);
+      expect(feature).to.be.a(Feature);
       expect(feature.getId()).to.be(0);
     });
 
@@ -155,14 +155,14 @@ describe('ol.format.TopoJSON', function() {
         expect(features.length).to.be(178);
 
         var first = features[0];
-        expect(first).to.be.a(_ol_Feature_);
+        expect(first).to.be.a(Feature);
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(MultiPolygon);
         expect(firstGeom.getExtent()).to.eql(
             [-180, -85.60903777459777, 180, 83.64513000000002]);
 
         var last = features[177];
-        expect(last).to.be.a(_ol_Feature_);
+        expect(last).to.be.a(Feature);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(Polygon);
         expect(lastGeom.getExtent()).to.eql([

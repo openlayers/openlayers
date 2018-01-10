@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import WKT from '../../../../src/ol/format/WKT.js';
 import {transform} from '../../../../src/ol/proj.js';
@@ -62,14 +62,14 @@ describe('ol.format.WKT', function() {
   describe('#writeFeature()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var feature = new _ol_Feature_(
+      var feature = new Feature(
           new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'));
       var wkt = format.writeFeature(feature, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       var gotFeature = format.readFeature(wkt);
-      expect(gotFeature).to.be.a(_ol_Feature_);
+      expect(gotFeature).to.be.a(Feature);
       var got = gotFeature.getGeometry().getCoordinates();
       expect(got[0]).to.roughlyEqual(1, 1e-6);
       expect(got[1]).to.roughlyEqual(2, 1e-6);
@@ -101,9 +101,9 @@ describe('ol.format.WKT', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
       var features = [
-        new _ol_Feature_(
+        new Feature(
             new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
-        new _ol_Feature_(
+        new Feature(
             new Point([4, 5]).transform('EPSG:4326', 'EPSG:3857'))
       ];
       var wkt = format.writeFeatures(features, {

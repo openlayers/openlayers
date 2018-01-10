@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
-import _ol_ViewHint_ from '../../ViewHint.js';
+import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import EventType from '../../events/EventType.js';
@@ -22,7 +22,7 @@ import _ol_renderer_vector_ from '../vector.js';
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  * @api
  */
-var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
+var CanvasVectorLayerRenderer = function(vectorLayer) {
 
   _ol_renderer_canvas_Layer_.call(this, vectorLayer);
 
@@ -83,7 +83,7 @@ var _ol_renderer_canvas_VectorLayer_ = function(vectorLayer) {
 
 };
 
-inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
+inherits(CanvasVectorLayerRenderer, _ol_renderer_canvas_Layer_);
 
 
 /**
@@ -92,7 +92,7 @@ inherits(_ol_renderer_canvas_VectorLayer_, _ol_renderer_canvas_Layer_);
  * @param {ol.layer.Layer} layer The candidate layer.
  * @return {boolean} The renderer can render the layer.
  */
-_ol_renderer_canvas_VectorLayer_['handles'] = function(type, layer) {
+CanvasVectorLayerRenderer['handles'] = function(type, layer) {
   return type === RendererType.CANVAS && layer.getType() === LayerType.VECTOR;
 };
 
@@ -103,15 +103,15 @@ _ol_renderer_canvas_VectorLayer_['handles'] = function(type, layer) {
  * @param {ol.layer.Layer} layer The layer to be rendererd.
  * @return {ol.renderer.canvas.VectorLayer} The layer renderer.
  */
-_ol_renderer_canvas_VectorLayer_['create'] = function(mapRenderer, layer) {
-  return new _ol_renderer_canvas_VectorLayer_(/** @type {ol.layer.Vector} */ (layer));
+CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
+  return new CanvasVectorLayerRenderer(/** @type {ol.layer.Vector} */ (layer));
 };
 
 
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorLayer_.prototype.disposeInternal = function() {
+CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
   _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   _ol_renderer_canvas_Layer_.prototype.disposeInternal.call(this);
 };
@@ -120,7 +120,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorLayer_.prototype.composeFrame = function(frameState, layerState, context) {
+CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
 
   var extent = frameState.extent;
   var pixelRatio = frameState.pixelRatio;
@@ -246,7 +246,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.composeFrame = function(frameState, l
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorLayer_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
@@ -276,7 +276,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.forEachFeatureAtCoordinate = function
 /**
  * @param {ol.events.Event} event Event.
  */
-_ol_renderer_canvas_VectorLayer_.prototype.handleFontsChanged_ = function(event) {
+CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
   var layer = this.getLayer();
   if (layer.getVisible() && this.replayGroup_) {
     layer.changed();
@@ -289,7 +289,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.handleFontsChanged_ = function(event)
  * @param {ol.events.Event} event Image style change event.
  * @private
  */
-_ol_renderer_canvas_VectorLayer_.prototype.handleStyleImageChange_ = function(event) {
+CanvasVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -297,12 +297,12 @@ _ol_renderer_canvas_VectorLayer_.prototype.handleStyleImageChange_ = function(ev
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_VectorLayer_.prototype.prepareFrame = function(frameState, layerState) {
+CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   var vectorSource = vectorLayer.getSource();
 
-  var animating = frameState.viewHints[_ol_ViewHint_.ANIMATING];
-  var interacting = frameState.viewHints[_ol_ViewHint_.INTERACTING];
+  var animating = frameState.viewHints[ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
@@ -418,7 +418,7 @@ _ol_renderer_canvas_VectorLayer_.prototype.prepareFrame = function(frameState, l
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-_ol_renderer_canvas_VectorLayer_.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
+CanvasVectorLayerRenderer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
   if (!styles) {
     return false;
   }
@@ -438,4 +438,4 @@ _ol_renderer_canvas_VectorLayer_.prototype.renderFeature = function(feature, res
   }
   return loading;
 };
-export default _ol_renderer_canvas_VectorLayer_;
+export default CanvasVectorLayerRenderer;

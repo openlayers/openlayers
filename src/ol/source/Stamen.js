@@ -2,8 +2,8 @@
  * @module ol/source/Stamen
  */
 import {inherits} from '../index.js';
-import _ol_source_OSM_ from '../source/OSM.js';
-import _ol_source_XYZ_ from '../source/XYZ.js';
+import OSM from '../source/OSM.js';
+import XYZ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -14,19 +14,19 @@ import _ol_source_XYZ_ from '../source/XYZ.js';
  * @param {olx.source.StamenOptions} options Stamen options.
  * @api
  */
-var _ol_source_Stamen_ = function(options) {
+var Stamen = function(options) {
   var i = options.layer.indexOf('-');
   var provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  var providerConfig = _ol_source_Stamen_.ProviderConfig[provider];
+  var providerConfig = Stamen.ProviderConfig[provider];
 
-  var layerConfig = _ol_source_Stamen_.LayerConfig[options.layer];
+  var layerConfig = Stamen.LayerConfig[options.layer];
 
   var url = options.url !== undefined ? options.url :
     'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
       '/{z}/{x}/{y}.' + layerConfig.extension;
 
-  _ol_source_XYZ_.call(this, {
-    attributions: _ol_source_Stamen_.ATTRIBUTIONS,
+  XYZ.call(this, {
+    attributions: Stamen.ATTRIBUTIONS,
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     maxZoom: options.maxZoom != undefined ? options.maxZoom : providerConfig.maxZoom,
@@ -39,24 +39,24 @@ var _ol_source_Stamen_ = function(options) {
   });
 };
 
-inherits(_ol_source_Stamen_, _ol_source_XYZ_);
+inherits(Stamen, XYZ);
 
 
 /**
  * @const
  * @type {Array.<string>}
  */
-_ol_source_Stamen_.ATTRIBUTIONS = [
+Stamen.ATTRIBUTIONS = [
   'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
         'under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY' +
         ' 3.0</a>.',
-  _ol_source_OSM_.ATTRIBUTION
+  OSM.ATTRIBUTION
 ];
 
 /**
  * @type {Object.<string, {extension: string, opaque: boolean}>}
  */
-_ol_source_Stamen_.LayerConfig = {
+Stamen.LayerConfig = {
   'terrain': {
     extension: 'jpg',
     opaque: true
@@ -106,7 +106,7 @@ _ol_source_Stamen_.LayerConfig = {
 /**
  * @type {Object.<string, {minZoom: number, maxZoom: number}>}
  */
-_ol_source_Stamen_.ProviderConfig = {
+Stamen.ProviderConfig = {
   'terrain': {
     minZoom: 4,
     maxZoom: 18
@@ -120,4 +120,4 @@ _ol_source_Stamen_.ProviderConfig = {
     maxZoom: 16
   }
 };
-export default _ol_source_Stamen_;
+export default Stamen;

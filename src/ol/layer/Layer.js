@@ -4,7 +4,7 @@
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import _ol_layer_Base_ from '../layer/Base.js';
 import _ol_layer_Property_ from '../layer/Property.js';
 import _ol_obj_ from '../obj.js';
@@ -63,7 +63,7 @@ var _ol_layer_Layer_ = function(options) {
   }
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_layer_Property_.SOURCE),
+      BaseObject.getChangeEventType(_ol_layer_Property_.SOURCE),
       this.handleSourcePropertyChange_, this);
 
   var source = options.source ? options.source : null;

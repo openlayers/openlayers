@@ -1,24 +1,24 @@
 // NOCOMPILE
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {getWidth, getCenter} from '../src/ol/extent.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, toLonLat} from '../src/ol/proj.js';
-import _ol_source_ImageCanvas_ from '../src/ol/source/ImageCanvas.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
+import ImageCanvasSource from '../src/ol/source/ImageCanvas.js';
+import Stamen from '../src/ol/source/Stamen.js';
 
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({
+      source: new Stamen({
         layer: 'watercolor'
       })
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-97, 38]),
     zoom: 4
   })
@@ -80,8 +80,8 @@ d3.json('data/topojson/us.json', function(error, us) {
     return canvas.node();
   };
 
-  var layer = new _ol_layer_Image_({
-    source: new _ol_source_ImageCanvas_({
+  var layer = new ImageLayer({
+    source: new ImageCanvasSource({
       canvasFunction: canvasFunction,
       projection: 'EPSG:3857'
     })

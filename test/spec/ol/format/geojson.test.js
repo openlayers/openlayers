@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import GeoJSON from '../../../../src/ol/format/GeoJSON.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
@@ -145,7 +145,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a single point feature', function() {
       var feature = format.readFeature(pointGeoJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
@@ -154,7 +154,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a single point geometry as a feature', function() {
       var feature = format.readFeature(pointGeoJSON.geometry);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(Point);
       expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
@@ -162,7 +162,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a single line string feature', function() {
       var feature = format.readFeature(lineStringGeoJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(LineString);
       expect(geometry.getCoordinates()).to.eql(
@@ -173,7 +173,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a single polygon feature', function() {
       var feature = format.readFeature(polygonGeoJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(Polygon);
       expect(geometry.getCoordinates()).to.eql([[
@@ -185,7 +185,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a feature with null geometry', function() {
       var feature = format.readFeature(nullGeometryGeoJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.eql(null);
       expect(feature.get('prop0')).to.be('value0');
@@ -193,7 +193,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('can read a feature with id equal to 0', function() {
       var feature = format.readFeature(zeroIdGeoJSON);
-      expect(feature).to.be.an(_ol_Feature_);
+      expect(feature).to.be.an(Feature);
       expect(feature.getId()).to.be(0);
     });
 
@@ -271,13 +271,13 @@ describe('ol.format.GeoJSON', function() {
       expect(array.length).to.be(2);
 
       var first = array[0];
-      expect(first).to.be.a(_ol_Feature_);
+      expect(first).to.be.a(Feature);
       expect(first.get('LINK_ID')).to.be(573730499);
       var firstGeom = first.getGeometry();
       expect(firstGeom).to.be.a(LineString);
 
       var second = array[1];
-      expect(second).to.be.a(_ol_Feature_);
+      expect(second).to.be.a(Feature);
       expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
       var secondGeom = second.getGeometry();
       expect(secondGeom).to.be.a(LineString);
@@ -297,7 +297,7 @@ describe('ol.format.GeoJSON', function() {
         expect(result.length).to.be(179);
 
         var first = result[0];
-        expect(first).to.be.a(_ol_Feature_);
+        expect(first).to.be.a(Feature);
         expect(first.get('name')).to.be('Afghanistan');
         expect(first.getId()).to.be('AFG');
         var firstGeom = first.getGeometry();
@@ -307,7 +307,7 @@ describe('ol.format.GeoJSON', function() {
             .to.be(true);
 
         var last = result[178];
-        expect(last).to.be.a(_ol_Feature_);
+        expect(last).to.be.a(Feature);
         expect(last.get('name')).to.be('Zimbabwe');
         expect(last.getId()).to.be('ZWE');
         var lastGeom = last.getGeometry();
@@ -338,7 +338,7 @@ describe('ol.format.GeoJSON', function() {
       expect(features.length).to.be(1);
 
       var first = features[0];
-      expect(first).to.be.a(_ol_Feature_);
+      expect(first).to.be.a(Feature);
       expect(first.get('bam')).to.be('baz');
       expect(first.getGeometry()).to.be.a(LineString);
 
@@ -462,12 +462,12 @@ describe('ol.format.GeoJSON', function() {
       expect(features.length).to.be(2);
 
       var first = features[0];
-      expect(first).to.be.a(_ol_Feature_);
+      expect(first).to.be.a(Feature);
       expect(first.get('foo')).to.be('bar');
       expect(first.getGeometry()).to.be.a(Point);
 
       var second = features[1];
-      expect(second).to.be.a(_ol_Feature_);
+      expect(second).to.be.a(Feature);
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(LineString);
 
@@ -505,12 +505,12 @@ describe('ol.format.GeoJSON', function() {
       expect(features.length).to.be(2);
 
       var first = features[0];
-      expect(first).to.be.a(_ol_Feature_);
+      expect(first).to.be.a(Feature);
       expect(first.get('foo')).to.be('bar');
       expect(first.getGeometry()).to.be.a(Point);
 
       var second = features[1];
-      expect(second).to.be.a(_ol_Feature_);
+      expect(second).to.be.a(Feature);
       expect(second.get('bam')).to.be('baz');
       expect(second.getGeometry()).to.be.a(LineString);
 
@@ -560,7 +560,7 @@ describe('ol.format.GeoJSON', function() {
 
     it('writes out a feature with a different geometryName correctly',
         function() {
-          var feature = new _ol_Feature_({'foo': 'bar'});
+          var feature = new Feature({'foo': 'bar'});
           feature.setGeometryName('mygeom');
           feature.setGeometry(new Point([5, 10]));
           var geojson = format.writeFeaturesObject([feature]);
@@ -568,19 +568,19 @@ describe('ol.format.GeoJSON', function() {
         });
 
     it('writes out a feature without properties correctly', function() {
-      var feature = new _ol_Feature_(new Point([5, 10]));
+      var feature = new Feature(new Point([5, 10]));
       var geojson = format.writeFeatureObject(feature);
       expect(geojson.properties).to.eql(null);
     });
 
     it('writes out a feature without geometry correctly', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       var geojson = format.writeFeatureObject(feature);
       expect(geojson.geometry).to.eql(null);
     });
 
     it('writes out a feature with id equal to 0 correctly', function() {
-      var feature = new _ol_Feature_();
+      var feature = new Feature();
       feature.setId(0);
       var geojson = format.writeFeatureObject(feature);
       expect(geojson.id).to.eql(0);

@@ -1,9 +1,9 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var radius = 10e6;
 var cos30 = Math.cos(Math.PI / 6);
@@ -15,10 +15,10 @@ var triangle = new LineString([
   [0, radius], [run, -rise], [-run, -rise], [0, radius]
 ]);
 
-var feature = new _ol_Feature_(triangle);
+var feature = new Feature(triangle);
 
-var layer = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var layer = new VectorLayer({
+  source: new VectorSource({
     features: [feature]
   })
 });
@@ -26,7 +26,7 @@ var layer = new _ol_layer_Vector_({
 var map = new Map({
   layers: [layer],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 1
   })

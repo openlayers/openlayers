@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_obj_ from '../obj.js';
 import SourceState from '../source/State.js';
-import _ol_source_XYZ_ from '../source/XYZ.js';
+import XYZ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -15,7 +15,7 @@ import _ol_source_XYZ_ from '../source/XYZ.js';
  * @param {olx.source.CartoDBOptions} options CartoDB options.
  * @api
  */
-var _ol_source_CartoDB_ = function(options) {
+var CartoDB = function(options) {
 
   /**
    * @type {string}
@@ -41,7 +41,7 @@ var _ol_source_CartoDB_ = function(options) {
    */
   this.templateCache_ = {};
 
-  _ol_source_XYZ_.call(this, {
+  XYZ.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -54,7 +54,7 @@ var _ol_source_CartoDB_ = function(options) {
   this.initializeMap_();
 };
 
-inherits(_ol_source_CartoDB_, _ol_source_XYZ_);
+inherits(CartoDB, XYZ);
 
 
 /**
@@ -62,7 +62,7 @@ inherits(_ol_source_CartoDB_, _ol_source_XYZ_);
  * @return {!Object} The current configuration.
  * @api
  */
-_ol_source_CartoDB_.prototype.getConfig = function() {
+CartoDB.prototype.getConfig = function() {
   return this.config_;
 };
 
@@ -73,7 +73,7 @@ _ol_source_CartoDB_.prototype.getConfig = function() {
  *     in the config.
  * @api
  */
-_ol_source_CartoDB_.prototype.updateConfig = function(config) {
+CartoDB.prototype.updateConfig = function(config) {
   _ol_obj_.assign(this.config_, config);
   this.initializeMap_();
 };
@@ -86,7 +86,7 @@ _ol_source_CartoDB_.prototype.updateConfig = function(config) {
  * If using named maps, a key-value lookup with the template parameters.
  * @api
  */
-_ol_source_CartoDB_.prototype.setConfig = function(config) {
+CartoDB.prototype.setConfig = function(config) {
   this.config_ = config || {};
   this.initializeMap_();
 };
@@ -96,7 +96,7 @@ _ol_source_CartoDB_.prototype.setConfig = function(config) {
  * Issue a request to initialize the CartoDB map.
  * @private
  */
-_ol_source_CartoDB_.prototype.initializeMap_ = function() {
+CartoDB.prototype.initializeMap_ = function() {
   var paramHash = JSON.stringify(this.config_);
   if (this.templateCache_[paramHash]) {
     this.applyTemplate_(this.templateCache_[paramHash]);
@@ -124,7 +124,7 @@ _ol_source_CartoDB_.prototype.initializeMap_ = function() {
  * @param {Event} event Event.
  * @private
  */
-_ol_source_CartoDB_.prototype.handleInitResponse_ = function(paramHash, event) {
+CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
@@ -148,7 +148,7 @@ _ol_source_CartoDB_.prototype.handleInitResponse_ = function(paramHash, event) {
  * @private
  * @param {Event} event Event.
  */
-_ol_source_CartoDB_.prototype.handleInitError_ = function(event) {
+CartoDB.prototype.handleInitError_ = function(event) {
   this.setState(SourceState.ERROR);
 };
 
@@ -158,9 +158,9 @@ _ol_source_CartoDB_.prototype.handleInitError_ = function(event) {
  * @param {CartoDBLayerInfo} data Result of carto db call.
  * @private
  */
-_ol_source_CartoDB_.prototype.applyTemplate_ = function(data) {
+CartoDB.prototype.applyTemplate_ = function(data) {
   var tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
       '/api/v1/map/' + data.layergroupid + '/{z}/{x}/{y}.png';
   this.setUrl(tilesUrl);
 };
-export default _ol_source_CartoDB_;
+export default CartoDB;

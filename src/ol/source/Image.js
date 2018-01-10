@@ -23,7 +23,7 @@ import Source from '../source/Source.js';
  * @param {ol.SourceImageOptions} options Single image source options.
  * @api
  */
-var _ol_source_Image_ = function(options) {
+var ImageSource = function(options) {
   Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -53,14 +53,14 @@ var _ol_source_Image_ = function(options) {
   this.reprojectedRevision_ = 0;
 };
 
-inherits(_ol_source_Image_, Source);
+inherits(ImageSource, Source);
 
 
 /**
  * @return {Array.<number>} Resolutions.
  * @override
  */
-_ol_source_Image_.prototype.getResolutions = function() {
+ImageSource.prototype.getResolutions = function() {
   return this.resolutions_;
 };
 
@@ -70,7 +70,7 @@ _ol_source_Image_.prototype.getResolutions = function() {
  * @param {number} resolution Resolution.
  * @return {number} Resolution.
  */
-_ol_source_Image_.prototype.findNearestResolution = function(resolution) {
+ImageSource.prototype.findNearestResolution = function(resolution) {
   if (this.resolutions_) {
     var idx = linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
@@ -86,7 +86,7 @@ _ol_source_Image_.prototype.findNearestResolution = function(resolution) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  */
-_ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   var sourceProjection = this.getProjection();
   if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
@@ -131,7 +131,7 @@ _ol_source_Image_.prototype.getImage = function(extent, resolution, pixelRatio, 
  * @return {ol.ImageBase} Single image.
  * @protected
  */
-_ol_source_Image_.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
+ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
 
 
 /**
@@ -139,22 +139,22 @@ _ol_source_Image_.prototype.getImageInternal = function(extent, resolution, pixe
  * @param {ol.events.Event} event Event.
  * @protected
  */
-_ol_source_Image_.prototype.handleImageChange = function(event) {
+ImageSource.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   switch (image.getState()) {
     case ImageState.LOADING:
       this.dispatchEvent(
-          new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADSTART,
+          new ImageSource.Event(ImageSource.EventType_.IMAGELOADSTART,
               image));
       break;
     case ImageState.LOADED:
       this.dispatchEvent(
-          new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADEND,
+          new ImageSource.Event(ImageSource.EventType_.IMAGELOADEND,
               image));
       break;
     case ImageState.ERROR:
       this.dispatchEvent(
-          new _ol_source_Image_.Event(_ol_source_Image_.EventType_.IMAGELOADERROR,
+          new ImageSource.Event(ImageSource.EventType_.IMAGELOADERROR,
               image));
       break;
     default:
@@ -169,7 +169,7 @@ _ol_source_Image_.prototype.handleImageChange = function(event) {
  * @param {ol.Image} image Image.
  * @param {string} src Source.
  */
-_ol_source_Image_.defaultImageLoadFunction = function(image, src) {
+ImageSource.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
 };
 
@@ -185,7 +185,7 @@ _ol_source_Image_.defaultImageLoadFunction = function(image, src) {
  * @param {string} type Type.
  * @param {ol.Image} image The image.
  */
-_ol_source_Image_.Event = function(type, image) {
+ImageSource.Event = function(type, image) {
 
   Event.call(this, type);
 
@@ -197,14 +197,14 @@ _ol_source_Image_.Event = function(type, image) {
   this.image = image;
 
 };
-inherits(_ol_source_Image_.Event, Event);
+inherits(ImageSource.Event, Event);
 
 
 /**
  * @enum {string}
  * @private
  */
-_ol_source_Image_.EventType_ = {
+ImageSource.EventType_ = {
 
   /**
    * Triggered when an image starts loading.
@@ -228,4 +228,4 @@ _ol_source_Image_.EventType_ = {
   IMAGELOADERROR: 'imageloaderror'
 
 };
-export default _ol_source_Image_;
+export default ImageSource;

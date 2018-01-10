@@ -1,4 +1,4 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import OSMXML from '../../../../src/ol/format/OSMXML.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -49,7 +49,7 @@ describe('ol.format.OSMXML', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(2);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1]);
@@ -74,12 +74,12 @@ describe('ol.format.OSMXML', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
       var point = fs[0];
-      expect(point).to.be.an(_ol_Feature_);
+      expect(point).to.be.an(Feature);
       var g = point.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1]);
       var line = fs[2];
-      expect(line).to.be.an(_ol_Feature_);
+      expect(line).to.be.an(Feature);
       g = line.getGeometry();
       expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
@@ -105,7 +105,7 @@ describe('ol.format.OSMXML', function() {
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
       var line = fs[2];
-      expect(line).to.be.an(_ol_Feature_);
+      expect(line).to.be.an(Feature);
       var g = line.getGeometry();
       expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
@@ -128,7 +128,7 @@ describe('ol.format.OSMXML', function() {
       });
       expect(fs).to.have.length(2);
       var f = fs[0];
-      expect(f).to.be.an(_ol_Feature_);
+      expect(f).to.be.an(Feature);
       var g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql(

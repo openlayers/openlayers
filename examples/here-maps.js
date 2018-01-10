@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import XYZ from '../src/ol/source/XYZ.js';
 
 var appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
 var appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';
@@ -59,7 +59,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   layers.push(new TileLayer({
     visible: false,
     preload: Infinity,
-    source: new _ol_source_XYZ_({
+    source: new XYZ({
       url: createUrl(urlTpl, layerDesc),
       attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
         '<a href="http://developer.here.com">HERE</a>'
@@ -73,7 +73,7 @@ var map = new Map({
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [921371.9389, 6358337.7609],
     zoom: 10
   })

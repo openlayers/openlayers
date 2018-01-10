@@ -4,7 +4,7 @@ import TileRange from '../../../../src/ol/TileRange.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import Source from '../../../../src/ol/source/Source.js';
-import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
+import TileSource from '../../../../src/ol/source/Tile.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
@@ -25,7 +25,7 @@ var MockTile = function(tileStates) {
     tileSize: 256
   });
 
-  _ol_source_Tile_.call(this, {
+  TileSource.call(this, {
     projection: getProjection('EPSG:4326'),
     tileGrid: tileGrid
   });
@@ -35,7 +35,7 @@ var MockTile = function(tileStates) {
   }
 
 };
-inherits(MockTile, _ol_source_Tile_);
+inherits(MockTile, TileSource);
 
 
 /**
@@ -56,15 +56,15 @@ describe('ol.source.Tile', function() {
 
   describe('constructor', function() {
     it('returns a tile source', function() {
-      var source = new _ol_source_Tile_({
+      var source = new TileSource({
         projection: getProjection('EPSG:4326')
       });
       expect(source).to.be.a(Source);
-      expect(source).to.be.a(_ol_source_Tile_);
+      expect(source).to.be.a(TileSource);
     });
     it('sets a custom cache size', function() {
       var projection = getProjection('EPSG:4326');
-      var source = new _ol_source_Tile_({
+      var source = new TileSource({
         projection: projection,
         cacheSize: 42
       });
@@ -74,7 +74,7 @@ describe('ol.source.Tile', function() {
 
   describe('#setKey()', function() {
     it('sets the source key', function() {
-      var source = new _ol_source_Tile_({});
+      var source = new TileSource({});
       expect(source.getKey()).to.equal('');
 
       var key = 'foo';
@@ -85,7 +85,7 @@ describe('ol.source.Tile', function() {
 
   describe('#setKey()', function() {
     it('dispatches a change event', function(done) {
-      var source = new _ol_source_Tile_({});
+      var source = new TileSource({});
 
       var key = 'foo';
       source.once('change', function() {
@@ -95,7 +95,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('does not dispatch change if key does not change', function(done) {
-      var source = new _ol_source_Tile_({});
+      var source = new TileSource({});
 
       var key = 'foo';
       source.once('change', function() {
@@ -225,7 +225,7 @@ describe('ol.source.Tile', function() {
   describe('#getTileCoordForTileUrlFunction()', function() {
 
     it('returns the expected tile coordinate - {wrapX: true}', function() {
-      var tileSource = new _ol_source_Tile_({
+      var tileSource = new TileSource({
         projection: 'EPSG:3857',
         wrapX: true
       });
@@ -241,7 +241,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('returns the expected tile coordinate - {wrapX: false}', function() {
-      var tileSource = new _ol_source_Tile_({
+      var tileSource = new TileSource({
         projection: 'EPSG:3857',
         wrapX: false
       });
@@ -257,7 +257,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('works with wrapX and custom projection without extent', function() {
-      var tileSource = new _ol_source_Tile_({
+      var tileSource = new TileSource({
         projection: new _ol_proj_Projection_({
           code: 'foo',
           global: true,
@@ -297,7 +297,7 @@ describe('MockTile', function() {
   describe('constructor', function() {
     it('creates a tile source', function() {
       var source = new MockTile({});
-      expect(source).to.be.a(_ol_source_Tile_);
+      expect(source).to.be.a(TileSource);
       expect(source).to.be.a(MockTile);
     });
   });

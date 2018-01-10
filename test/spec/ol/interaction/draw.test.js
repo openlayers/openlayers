@@ -1,7 +1,7 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import {equals} from '../../../../src/ol/array.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
@@ -14,9 +14,9 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Draw from '../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import _ol_layer_Vector_ from '../../../../src/ol/layer/Vector.js';
+import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Draw', function() {
@@ -34,12 +34,12 @@ describe('ol.interaction.Draw', function() {
     style.width = width + 'px';
     style.height = height + 'px';
     document.body.appendChild(target);
-    source = new _ol_source_Vector_();
-    var layer = new _ol_layer_Vector_({source: source});
+    source = new VectorSource();
+    var layer = new VectorLayer({source: source});
     map = new Map({
       target: target,
       layers: [layer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
@@ -1035,7 +1035,7 @@ describe('ol.interaction.Draw', function() {
         type: 'LineString'
       });
       map.addInteraction(draw);
-      feature = new _ol_Feature_(
+      feature = new Feature(
           new LineString([[0, 0], [1, 1], [2, 0]]));
     });
 

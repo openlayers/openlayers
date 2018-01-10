@@ -1,13 +1,13 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import OSMXML from '../src/ol/format/OSMXML.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -77,7 +77,7 @@ var styles = {
   }
 };
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   format: new OSMXML(),
   loader: function(extent, resolution, projection) {
     var epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');
@@ -98,7 +98,7 @@ var vectorSource = new _ol_source_Vector_({
   strategy: _ol_loadingstrategy_.bbox
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
     for (var key in styles) {
@@ -116,7 +116,7 @@ var vector = new _ol_layer_Vector_({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_BingMaps_({
+  source: new BingMaps({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
@@ -130,7 +130,7 @@ map = new Map({
       collapsible: false
     }
   }),
-  view: new _ol_View_({
+  view: new View({
     center: [739218, 5906096],
     maxZoom: 19,
     zoom: 17

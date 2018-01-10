@@ -1,22 +1,22 @@
-import _ol_Feature_ from '../../../../src/ol/Feature.js';
+import Feature from '../../../../src/ol/Feature.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_source_Cluster_ from '../../../../src/ol/source/Cluster.js';
+import Cluster from '../../../../src/ol/source/Cluster.js';
 import Source from '../../../../src/ol/source/Source.js';
-import _ol_source_Vector_ from '../../../../src/ol/source/Vector.js';
+import VectorSource from '../../../../src/ol/source/Vector.js';
 
 describe('ol.source.Cluster', function() {
 
   describe('constructor', function() {
     it('returns a cluster source', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         projection: getProjection('EPSG:4326'),
-        source: new _ol_source_Vector_()
+        source: new VectorSource()
       });
       expect(source).to.be.a(Source);
-      expect(source).to.be.a(_ol_source_Cluster_);
+      expect(source).to.be.a(Cluster);
       expect(source.getDistance()).to.be(20);
     });
   });
@@ -25,11 +25,11 @@ describe('ol.source.Cluster', function() {
     var extent = [-1, -1, 1, 1];
     var projection = getProjection('EPSG:3857');
     it('clusters a source with point features', function() {
-      var source = new _ol_source_Cluster_({
-        source: new _ol_source_Vector_({
+      var source = new Cluster({
+        source: new VectorSource({
           features: [
-            new _ol_Feature_(new Point([0, 0])),
-            new _ol_Feature_(new Point([0, 0]))
+            new Feature(new Point([0, 0])),
+            new Feature(new Point([0, 0]))
           ]
         })
       });
@@ -38,7 +38,7 @@ describe('ol.source.Cluster', function() {
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
     it('clusters with a custom geometryFunction', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         geometryFunction: function(feature) {
           var geom = feature.getGeometry();
           if (geom.getType() == 'Point') {
@@ -48,11 +48,11 @@ describe('ol.source.Cluster', function() {
           }
           return null;
         },
-        source: new _ol_source_Vector_({
+        source: new VectorSource({
           features: [
-            new _ol_Feature_(new Point([0, 0])),
-            new _ol_Feature_(new LineString([[0, 0], [1, 1]])),
-            new _ol_Feature_(new Polygon(
+            new Feature(new Point([0, 0])),
+            new Feature(new LineString([[0, 0], [1, 1]])),
+            new Feature(new Polygon(
                 [[[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]]))
           ]
         })
@@ -65,9 +65,9 @@ describe('ol.source.Cluster', function() {
 
   describe('#setDistance', function() {
     it('changes the distance value', function() {
-      var source = new _ol_source_Cluster_({
+      var source = new Cluster({
         distance: 100,
-        source: new _ol_source_Vector_()
+        source: new VectorSource()
       });
       expect(source.getDistance()).to.be(100);
       source.setDistance(10);

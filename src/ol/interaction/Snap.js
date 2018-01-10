@@ -13,7 +13,7 @@ import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_obj_ from '../obj.js';
-import _ol_source_Vector_ from '../source/Vector.js';
+import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 
@@ -219,7 +219,7 @@ _ol_interaction_Snap_.prototype.getFeatures_ = function() {
  */
 _ol_interaction_Snap_.prototype.handleFeatureAdd_ = function(evt) {
   var feature;
-  if (evt instanceof _ol_source_Vector_.Event) {
+  if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
   } else if (evt instanceof _ol_Collection_.Event) {
     feature = evt.element;
@@ -234,7 +234,7 @@ _ol_interaction_Snap_.prototype.handleFeatureAdd_ = function(evt) {
  */
 _ol_interaction_Snap_.prototype.handleFeatureRemove_ = function(evt) {
   var feature;
-  if (evt instanceof _ol_source_Vector_.Event) {
+  if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
   } else if (evt instanceof _ol_Collection_.Event) {
     feature = evt.element;

@@ -7,7 +7,7 @@ import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
-import _ol_source_TileImage_ from '../../../../src/ol/source/TileImage.js';
+import TileImage from '../../../../src/ol/source/TileImage.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -15,7 +15,7 @@ import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 describe('ol.source.TileImage', function() {
   function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
     var proj = opt_proj || 'EPSG:3857';
-    return new _ol_source_TileImage_({
+    return new TileImage({
       cacheSize: opt_cacheSize,
       projection: proj,
       tileGrid: opt_tileGrid ||
@@ -181,7 +181,7 @@ describe('ol.source.TileImage', function() {
     var source;
 
     beforeEach(function() {
-      source = new _ol_source_TileImage_({
+      source = new TileImage({
         url: '{z}/{x}/{y}'
       });
     });

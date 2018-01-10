@@ -1,7 +1,7 @@
-import _ol_source_Tile_ from '../../../../src/ol/source/Tile.js';
-import _ol_source_TileImage_ from '../../../../src/ol/source/TileImage.js';
-import _ol_source_UrlTile_ from '../../../../src/ol/source/UrlTile.js';
-import _ol_source_XYZ_ from '../../../../src/ol/source/XYZ.js';
+import TileSource from '../../../../src/ol/source/Tile.js';
+import TileImage from '../../../../src/ol/source/TileImage.js';
+import UrlTile from '../../../../src/ol/source/UrlTile.js';
+import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -10,30 +10,30 @@ describe('ol.source.XYZ', function() {
   describe('constructor', function() {
 
     it('can be constructed without options', function() {
-      var source = new _ol_source_XYZ_();
-      expect(source).to.be.an(_ol_source_XYZ_);
-      expect(source).to.be.an(_ol_source_TileImage_);
-      expect(source).to.be.an(_ol_source_UrlTile_);
-      expect(source).to.be.an(_ol_source_Tile_);
+      var source = new XYZ();
+      expect(source).to.be.an(XYZ);
+      expect(source).to.be.an(TileImage);
+      expect(source).to.be.an(UrlTile);
+      expect(source).to.be.an(TileSource);
     });
 
     it('can be constructed with a custom tile grid', function() {
       var tileGrid = _ol_tilegrid_.createXYZ();
-      var tileSource = new _ol_source_XYZ_({
+      var tileSource = new XYZ({
         tileGrid: tileGrid
       });
       expect(tileSource.getTileGrid()).to.be(tileGrid);
     });
 
     it('can be constructed with a custom tile size', function() {
-      var tileSource = new _ol_source_XYZ_({
+      var tileSource = new XYZ({
         tileSize: 512
       });
       expect(tileSource.getTileGrid().getTileSize(0)).to.be(512);
     });
 
     it('can be constructed with a custom min zoom', function() {
-      var tileSource = new _ol_source_XYZ_({
+      var tileSource = new XYZ({
         minZoom: 2
       });
       expect(tileSource.getTileGrid().getMinZoom()).to.be(2);
@@ -46,7 +46,7 @@ describe('ol.source.XYZ', function() {
     var xyzTileSource, tileGrid;
 
     beforeEach(function() {
-      xyzTileSource = new _ol_source_XYZ_({
+      xyzTileSource = new XYZ({
         maxZoom: 6,
         url: '{z}/{x}/{y}'
       });
@@ -149,7 +149,7 @@ describe('ol.source.XYZ', function() {
     describe('using a "url" option', function() {
       beforeEach(function() {
         sourceOptions.url = url;
-        source = new _ol_source_XYZ_(sourceOptions);
+        source = new XYZ(sourceOptions);
       });
 
       it('returns the XYZ URL', function() {
@@ -162,7 +162,7 @@ describe('ol.source.XYZ', function() {
     describe('using a "urls" option', function() {
       beforeEach(function() {
         sourceOptions.urls = ['some_xyz_url1', 'some_xyz_url2'];
-        source = new _ol_source_XYZ_(sourceOptions);
+        source = new XYZ(sourceOptions);
       });
 
       it('returns the XYZ URLs', function() {
@@ -177,7 +177,7 @@ describe('ol.source.XYZ', function() {
         sourceOptions.tileUrlFunction = function() {
           return 'some_xyz_url';
         };
-        source = new _ol_source_XYZ_(sourceOptions);
+        source = new XYZ(sourceOptions);
       });
 
       it('returns null', function() {

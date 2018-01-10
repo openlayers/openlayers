@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
-import _ol_Object_ from '../Object.js';
+import BaseObject from '../Object.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
@@ -80,7 +80,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
   this.lastFeature_ = null;
 
   _ol_events_.listen(this,
-      _ol_Object_.getChangeEventType(_ol_interaction_Property_.ACTIVE),
+      BaseObject.getChangeEventType(_ol_interaction_Property_.ACTIVE),
       this.handleActiveChanged_, this);
 
 };

@@ -1,16 +1,16 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
 
@@ -20,7 +20,7 @@ var layer = '0';
 
 var esrijsonFormat = new EsriJSON();
 
-var vectorSource = new _ol_source_Vector_({
+var vectorSource = new VectorSource({
   loader: function(extent, resolution, projection) {
     var url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
@@ -49,12 +49,12 @@ var vectorSource = new _ol_source_Vector_({
   }))
 });
 
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: vectorSource
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_XYZ_({
+  source: new XYZ({
     attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
     url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
@@ -80,7 +80,7 @@ var map = new Map({
   interactions: defaultInteractions().extend([draw, select, modify]),
   layers: [raster, vector],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: fromLonLat([-122.619, 45.512]),
     zoom: 12
   })

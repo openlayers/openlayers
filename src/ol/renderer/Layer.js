@@ -3,7 +3,7 @@
  */
 import {getUid, inherits, nullFunction} from '../index.js';
 import ImageState from '../ImageState.js';
-import _ol_Observable_ from '../Observable.js';
+import Observable from '../Observable.js';
 import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -18,7 +18,7 @@ import SourceState from '../source/State.js';
  */
 var _ol_renderer_Layer_ = function(layer) {
 
-  _ol_Observable_.call(this);
+  Observable.call(this);
 
   /**
    * @private
@@ -29,7 +29,7 @@ var _ol_renderer_Layer_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_Layer_, _ol_Observable_);
+inherits(_ol_renderer_Layer_, Observable);
 
 
 /**

@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_View_ from '../../../../src/ol/View.js';
+import View from '../../../../src/ol/View.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import _ol_source_TileWMS_ from '../../../../src/ol/source/TileWMS.js';
+import TileWMS from '../../../../src/ol/source/TileWMS.js';
 
 describe('ol.rendering.source.TileWMS', function() {
 
@@ -29,7 +29,7 @@ describe('ol.rendering.source.TileWMS', function() {
       target: createMapDiv(200, 200),
       pixelRatio: pixelRatio,
       renderer: renderer,
-      view: new _ol_View_({
+      view: new View({
         center: [0, 0],
         zoom: 5
       })
@@ -44,7 +44,7 @@ describe('ol.rendering.source.TileWMS', function() {
   });
 
   function createSource(gutter) {
-    return new _ol_source_TileWMS_({
+    return new TileWMS({
       params: {
         'LAYERS': 'layer'
       },

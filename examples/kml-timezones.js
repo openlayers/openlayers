@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -45,8 +45,8 @@ var styleFunction = function(feature) {
   });
 };
 
-var vector = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vector = new VectorLayer({
+  source: new VectorSource({
     url: 'data/kml/timezones.kml',
     format: new KML({
       extractStyles: false
@@ -56,7 +56,7 @@ var vector = new _ol_layer_Vector_({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_Stamen_({
+  source: new Stamen({
     layer: 'toner'
   })
 });
@@ -64,7 +64,7 @@ var raster = new TileLayer({
 var map = new Map({
   layers: [raster, vector],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

@@ -1,16 +1,16 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
-import _ol_Feature_ from '../src/ol/Feature.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
+import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 
 var raster = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 var style = new _ol_style_Style_({
@@ -20,10 +20,10 @@ var style = new _ol_style_Style_({
   })
 });
 
-var feature = new _ol_Feature_(new LineString([[-4000000, 0], [4000000, 0]]));
+var feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
 
-var vector = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vector = new VectorLayer({
+  source: new VectorSource({
     features: [feature]
   }),
   style: style
@@ -32,7 +32,7 @@ var vector = new _ol_layer_Vector_({
 var map = new Map({
   layers: [raster, vector],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

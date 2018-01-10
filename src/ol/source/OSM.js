@@ -2,7 +2,7 @@
  * @module ol/source/OSM
  */
 import {inherits} from '../index.js';
-import _ol_source_XYZ_ from '../source/XYZ.js';
+import XYZ from '../source/XYZ.js';
 
 /**
  * @classdesc
@@ -13,7 +13,7 @@ import _ol_source_XYZ_ from '../source/XYZ.js';
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
  * @api
  */
-var _ol_source_OSM_ = function(opt_options) {
+var OSM = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -21,7 +21,7 @@ var _ol_source_OSM_ = function(opt_options) {
   if (options.attributions !== undefined) {
     attributions = options.attributions;
   } else {
-    attributions = [_ol_source_OSM_.ATTRIBUTION];
+    attributions = [OSM.ATTRIBUTION];
   }
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -30,7 +30,7 @@ var _ol_source_OSM_ = function(opt_options) {
   var url = options.url !== undefined ?
     options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
-  _ol_source_XYZ_.call(this, {
+  XYZ.call(this, {
     attributions: attributions,
     cacheSize: options.cacheSize,
     crossOrigin: crossOrigin,
@@ -44,7 +44,7 @@ var _ol_source_OSM_ = function(opt_options) {
 
 };
 
-inherits(_ol_source_OSM_, _ol_source_XYZ_);
+inherits(OSM, XYZ);
 
 
 /**
@@ -54,7 +54,7 @@ inherits(_ol_source_OSM_, _ol_source_XYZ_);
  * @type {string}
  * @api
  */
-_ol_source_OSM_.ATTRIBUTION = '&copy; ' +
+OSM.ATTRIBUTION = '&copy; ' +
       '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
       'contributors.';
-export default _ol_source_OSM_;
+export default OSM;

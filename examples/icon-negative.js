@@ -1,12 +1,12 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
@@ -23,23 +23,23 @@ function createStyle(src, img) {
   });
 }
 
-var iconFeature = new _ol_Feature_(new Point([0, 0]));
+var iconFeature = new Feature(new Point([0, 0]));
 iconFeature.set('style', createStyle('data/icon.png', undefined));
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({layer: 'watercolor'})
+      source: new Stamen({layer: 'watercolor'})
     }),
-    new _ol_layer_Vector_({
+    new VectorLayer({
       style: function(feature) {
         return feature.get('style');
       },
-      source: new _ol_source_Vector_({features: [iconFeature]})
+      source: new VectorSource({features: [iconFeature]})
     })
   ],
   target: document.getElementById('map'),
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 3
   })

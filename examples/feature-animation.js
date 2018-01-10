@@ -1,15 +1,15 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_Observable_ from '../src/ol/Observable.js';
-import _ol_View_ from '../src/ol/View.js';
+import Observable from '../src/ol/Observable.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import {easeOut} from '../src/ol/easing.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import OSM from '../src/ol/source/OSM.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -18,7 +18,7 @@ import _ol_style_Style_ from '../src/ol/style/Style.js';
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_({
+      source: new OSM({
         wrapX: false
       })
     })
@@ -29,16 +29,16 @@ var map = new Map({
     }
   }),
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 1
   })
 });
 
-var source = new _ol_source_Vector_({
+var source = new VectorSource({
   wrapX: false
 });
-var vector = new _ol_layer_Vector_({
+var vector = new VectorLayer({
   source: source
 });
 map.addLayer(vector);
@@ -47,7 +47,7 @@ function addRandomFeature() {
   var x = Math.random() * 360 - 180;
   var y = Math.random() * 180 - 90;
   var geom = new Point(fromLonLat([x, y]));
-  var feature = new _ol_Feature_(geom);
+  var feature = new Feature(geom);
   source.addFeature(feature);
 }
 
@@ -80,7 +80,7 @@ function flash(feature) {
     vectorContext.setStyle(style);
     vectorContext.drawGeometry(flashGeom);
     if (elapsed > duration) {
-      _ol_Observable_.unByKey(listenerKey);
+      Observable.unByKey(listenerKey);
       return;
     }
     // tell OpenLayers to continue postcompose animation

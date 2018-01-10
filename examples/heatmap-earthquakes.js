@@ -1,16 +1,16 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import KML from '../src/ol/format/KML.js';
 import HeatmapLayer from '../src/ol/layer/Heatmap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
 
 var blur = document.getElementById('blur');
 var radius = document.getElementById('radius');
 
 var vector = new HeatmapLayer({
-  source: new _ol_source_Vector_({
+  source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
       extractStyles: false
@@ -30,7 +30,7 @@ vector.getSource().on('addfeature', function(event) {
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_Stamen_({
+  source: new Stamen({
     layer: 'toner'
   })
 });
@@ -38,7 +38,7 @@ var raster = new TileLayer({
 var map = new Map({
   layers: [raster, vector],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

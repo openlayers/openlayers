@@ -1,9 +1,9 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
@@ -11,7 +11,7 @@ import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 var map = new Map({
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 1
   })
@@ -58,8 +58,8 @@ var countryStyle = new _ol_style_Style_({
 });
 var style = [countryStyle, labelStyle];
 
-var vectorLayer = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vectorLayer = new VectorLayer({
+  source: new VectorSource({
     url: 'data/geojson/countries.geojson',
     format: new GeoJSON()
   }),

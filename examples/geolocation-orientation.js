@@ -1,15 +1,15 @@
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
 import _ol_Overlay_ from '../src/ol/Overlay.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 
 // creating the view
-var view = new _ol_View_({
+var view = new View({
   center: fromLonLat([5.8713, 45.6452]),
   zoom: 19
 });
@@ -18,7 +18,7 @@ var view = new _ol_View_({
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',

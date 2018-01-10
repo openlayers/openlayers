@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 
 
 var styles = [
@@ -18,7 +18,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
   layers.push(new TileLayer({
     visible: false,
     preload: Infinity,
-    source: new _ol_source_BingMaps_({
+    source: new BingMaps({
       key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
       imagerySet: styles[i]
       // use maxZoom 19 to see stretched tiles instead of the BingMaps
@@ -33,7 +33,7 @@ var map = new Map({
   // zooming choppy on mobile or slow devices.
   loadTilesWhileInteracting: true,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-6655.5402445057125, 6709968.258934638],
     zoom: 13
   })

@@ -1,8 +1,8 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 
 // default zoom, center and rotation
 var zoom = 2;
@@ -26,7 +26,7 @@ if (window.location.hash !== '') {
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   controls: defaultControls({
@@ -35,7 +35,7 @@ var map = new Map({
     }
   }),
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: center,
     zoom: zoom,
     rotation: rotation

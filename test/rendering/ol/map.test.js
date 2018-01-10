@@ -1,18 +1,18 @@
-import _ol_Feature_ from '../../../src/ol/Feature.js';
+import Feature from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Map from '../../../src/ol/Map.js';
-import _ol_View_ from '../../../src/ol/View.js';
-import _ol_layer_Vector_ from '../../../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../../../src/ol/source/Vector.js';
+import View from '../../../src/ol/View.js';
+import VectorLayer from '../../../src/ol/layer/Vector.js';
+import VectorSource from '../../../src/ol/source/Vector.js';
 
 
 describe('ol.rendering.Map', function() {
 
   var map;
   function createMap(renderer) {
-    var vectorLayer = new _ol_layer_Vector_({
-      source: new _ol_source_Vector_({
-        features: [new _ol_Feature_({
+    var vectorLayer = new VectorLayer({
+      source: new VectorSource({
+        features: [new Feature({
           geometry: new Point([0, 0])
         })]
       })
@@ -23,7 +23,7 @@ describe('ol.rendering.Map', function() {
       target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
-      view: new _ol_View_({
+      view: new View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1

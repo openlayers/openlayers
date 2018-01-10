@@ -1,25 +1,25 @@
 // NOCOMPILE
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Style_ from '../src/ol/style/Style.js';
 
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_Stamen_({
+      source: new Stamen({
         layer: 'toner'
       })
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })
@@ -70,7 +70,7 @@ var animateFlights = function(event) {
   map.render();
 };
 
-flightsSource = new _ol_source_Vector_({
+flightsSource = new VectorSource({
   wrapX: false,
   attributions: 'Flight data by ' +
         '<a href="http://openflights.org/data.html">OpenFlights</a>,',
@@ -95,7 +95,7 @@ flightsSource = new _ol_source_Vector_({
           var line = new LineString(arcLine.geometries[0].coords);
           line.transform('EPSG:4326', 'EPSG:3857');
 
-          var feature = new _ol_Feature_({
+          var feature = new Feature({
             geometry: line,
             finished: false
           });
@@ -109,7 +109,7 @@ flightsSource = new _ol_source_Vector_({
   }
 });
 
-var flightsLayer = new _ol_layer_Vector_({
+var flightsLayer = new VectorLayer({
   source: flightsSource,
   style: function(feature) {
     // if the animation is still active for a feature, do not

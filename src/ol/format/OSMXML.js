@@ -4,7 +4,7 @@
 // FIXME add typedef for stack state objects
 import {inherits} from '../index.js';
 import {extend} from '../array.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
@@ -58,7 +58,7 @@ OSMXML.readNode_ = function(node, objectStack) {
   if (!_ol_obj_.isEmpty(values.tags)) {
     var geometry = new Point(coordinates);
     transformWithOptions(geometry, false, options);
-    var feature = new _ol_Feature_(geometry);
+    var feature = new Feature(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
     state.features.push(feature);
@@ -193,7 +193,7 @@ OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
         geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
       }
       transformWithOptions(geometry, false, options);
-      var feature = new _ol_Feature_(geometry);
+      var feature = new Feature(geometry);
       feature.setId(values.id);
       feature.setProperties(values.tags);
       state.features.push(feature);

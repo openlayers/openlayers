@@ -1,10 +1,10 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat, transformExtent} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
+import OSM from '../src/ol/source/OSM.js';
 import proj4 from 'proj4';
 
 proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
@@ -21,11 +21,11 @@ register(proj4);
 var map = new Map({
   layers: [
     new TileLayer({
-      source: new _ol_source_OSM_()
+      source: new OSM()
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: 'Indiana-East',
     center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
     zoom: 7,

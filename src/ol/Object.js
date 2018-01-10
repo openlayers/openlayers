@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from './index.js';
 import ObjectEventType from './ObjectEventType.js';
-import _ol_Observable_ from './Observable.js';
+import Observable from './Observable.js';
 import Event from './events/Event.js';
 import _ol_obj_ from './obj.js';
 
@@ -52,8 +52,8 @@ import _ol_obj_ from './obj.js';
  * @fires ol.Object.Event
  * @api
  */
-var _ol_Object_ = function(opt_values) {
-  _ol_Observable_.call(this);
+var BaseObject = function(opt_values) {
+  Observable.call(this);
 
   // Call ol.getUid to ensure that the order of objects' ids is the same as
   // the order in which they were created.  This also helps to ensure that
@@ -72,24 +72,24 @@ var _ol_Object_ = function(opt_values) {
   }
 };
 
-inherits(_ol_Object_, _ol_Observable_);
+inherits(BaseObject, Observable);
 
 
 /**
  * @private
  * @type {Object.<string, string>}
  */
-_ol_Object_.changeEventTypeCache_ = {};
+BaseObject.changeEventTypeCache_ = {};
 
 
 /**
  * @param {string} key Key name.
  * @return {string} Change name.
  */
-_ol_Object_.getChangeEventType = function(key) {
-  return _ol_Object_.changeEventTypeCache_.hasOwnProperty(key) ?
-    _ol_Object_.changeEventTypeCache_[key] :
-    (_ol_Object_.changeEventTypeCache_[key] = 'change:' + key);
+BaseObject.getChangeEventType = function(key) {
+  return BaseObject.changeEventTypeCache_.hasOwnProperty(key) ?
+    BaseObject.changeEventTypeCache_[key] :
+    (BaseObject.changeEventTypeCache_[key] = 'change:' + key);
 };
 
 
@@ -99,7 +99,7 @@ _ol_Object_.getChangeEventType = function(key) {
  * @return {*} Value.
  * @api
  */
-_ol_Object_.prototype.get = function(key) {
+BaseObject.prototype.get = function(key) {
   var value;
   if (this.values_.hasOwnProperty(key)) {
     value = this.values_[key];
@@ -113,7 +113,7 @@ _ol_Object_.prototype.get = function(key) {
  * @return {Array.<string>} List of property names.
  * @api
  */
-_ol_Object_.prototype.getKeys = function() {
+BaseObject.prototype.getKeys = function() {
   return Object.keys(this.values_);
 };
 
@@ -123,7 +123,7 @@ _ol_Object_.prototype.getKeys = function() {
  * @return {Object.<string, *>} Object.
  * @api
  */
-_ol_Object_.prototype.getProperties = function() {
+BaseObject.prototype.getProperties = function() {
   return _ol_obj_.assign({}, this.values_);
 };
 
@@ -132,12 +132,12 @@ _ol_Object_.prototype.getProperties = function() {
  * @param {string} key Key name.
  * @param {*} oldValue Old value.
  */
-_ol_Object_.prototype.notify = function(key, oldValue) {
+BaseObject.prototype.notify = function(key, oldValue) {
   var eventType;
-  eventType = _ol_Object_.getChangeEventType(key);
-  this.dispatchEvent(new _ol_Object_.Event(eventType, key, oldValue));
+  eventType = BaseObject.getChangeEventType(key);
+  this.dispatchEvent(new BaseObject.Event(eventType, key, oldValue));
   eventType = ObjectEventType.PROPERTYCHANGE;
-  this.dispatchEvent(new _ol_Object_.Event(eventType, key, oldValue));
+  this.dispatchEvent(new BaseObject.Event(eventType, key, oldValue));
 };
 
 
@@ -148,7 +148,7 @@ _ol_Object_.prototype.notify = function(key, oldValue) {
  * @param {boolean=} opt_silent Update without triggering an event.
  * @api
  */
-_ol_Object_.prototype.set = function(key, value, opt_silent) {
+BaseObject.prototype.set = function(key, value, opt_silent) {
   if (opt_silent) {
     this.values_[key] = value;
   } else {
@@ -168,7 +168,7 @@ _ol_Object_.prototype.set = function(key, value, opt_silent) {
  * @param {boolean=} opt_silent Update without triggering an event.
  * @api
  */
-_ol_Object_.prototype.setProperties = function(values, opt_silent) {
+BaseObject.prototype.setProperties = function(values, opt_silent) {
   var key;
   for (key in values) {
     this.set(key, values[key], opt_silent);
@@ -182,7 +182,7 @@ _ol_Object_.prototype.setProperties = function(values, opt_silent) {
  * @param {boolean=} opt_silent Unset without triggering an event.
  * @api
  */
-_ol_Object_.prototype.unset = function(key, opt_silent) {
+BaseObject.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
@@ -204,7 +204,7 @@ _ol_Object_.prototype.unset = function(key, opt_silent) {
  * @implements {oli.Object.Event}
  * @constructor
  */
-_ol_Object_.Event = function(type, key, oldValue) {
+BaseObject.Event = function(type, key, oldValue) {
   Event.call(this, type);
 
   /**
@@ -223,5 +223,5 @@ _ol_Object_.Event = function(type, key, oldValue) {
   this.oldValue = oldValue;
 
 };
-inherits(_ol_Object_.Event, Event);
-export default _ol_Object_;
+inherits(BaseObject.Event, Event);
+export default BaseObject;

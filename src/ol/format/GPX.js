@@ -2,7 +2,7 @@
  * @module ol/format/GPX
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {includes} from '../array.js';
 import {transformWithOptions} from '../format/Feature.js';
 import XMLFeature from '../format/XMLFeature.js';
@@ -542,7 +542,7 @@ function readRte(node, objectStack) {
   var geometry = new LineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates);
   transformWithOptions(geometry, false, options);
-  var feature = new _ol_Feature_(geometry);
+  var feature = new Feature(geometry);
   feature.setProperties(values);
   return feature;
 }
@@ -574,7 +574,7 @@ function readTrk(node, objectStack) {
   var geometry = new MultiLineString(null);
   geometry.setFlatCoordinates(layout, flatCoordinates, ends);
   transformWithOptions(geometry, false, options);
-  var feature = new _ol_Feature_(geometry);
+  var feature = new Feature(geometry);
   feature.setProperties(values);
   return feature;
 }
@@ -596,7 +596,7 @@ function readWpt(node, objectStack) {
   var layout = GPX.applyLayoutOptions_(layoutOptions, coordinates);
   var geometry = new Point(coordinates, layout);
   transformWithOptions(geometry, false, options);
-  var feature = new _ol_Feature_(geometry);
+  var feature = new Feature(geometry);
   feature.setProperties(values);
   return feature;
 }

@@ -1,10 +1,10 @@
 // NOCOMPILE
 // this example uses d3 for which we don't have an externs file.
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
-import _ol_layer_Image_ from '../src/ol/layer/Image.js';
+import View from '../src/ol/View.js';
+import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
 import RasterSource from '../src/ol/source/Raster.js';
 
 var minVgi = 0;
@@ -49,7 +49,7 @@ function summarize(value, counts) {
 /**
  * Use aerial imagery as the input data for the raster source.
  */
-var bing = new _ol_source_BingMaps_({
+var bing = new BingMaps({
   key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
   imagerySet: 'Aerial'
 });
@@ -115,12 +115,12 @@ var map = new Map({
     new TileLayer({
       source: bing
     }),
-    new _ol_layer_Image_({
+    new ImageLayer({
       source: raster
     })
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [-9651695, 4937351],
     zoom: 13,
     minZoom: 12,

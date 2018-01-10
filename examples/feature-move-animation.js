@@ -1,12 +1,12 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Polyline from '../src/ol/format/Polyline.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_BingMaps_ from '../src/ol/source/BingMaps.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import BingMaps from '../src/ol/source/BingMaps.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
@@ -67,19 +67,19 @@ var route = /** @type {ol.geom.LineString} */ (new Polyline({
 var routeCoords = route.getCoordinates();
 var routeLength = routeCoords.length;
 
-var routeFeature = new _ol_Feature_({
+var routeFeature = new Feature({
   type: 'route',
   geometry: route
 });
-var geoMarker = new _ol_Feature_({
+var geoMarker = new Feature({
   type: 'geoMarker',
   geometry: new Point(routeCoords[0])
 });
-var startMarker = new _ol_Feature_({
+var startMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[0])
 });
-var endMarker = new _ol_Feature_({
+var endMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[routeLength - 1])
 });
@@ -113,8 +113,8 @@ var speed, now;
 var speedInput = document.getElementById('speed');
 var startButton = document.getElementById('start-animation');
 
-var vectorLayer = new _ol_layer_Vector_({
-  source: new _ol_source_Vector_({
+var vectorLayer = new VectorLayer({
+  source: new VectorSource({
     features: [routeFeature, geoMarker, startMarker, endMarker]
   }),
   style: function(feature) {
@@ -130,7 +130,7 @@ var center = [-5639523.95, -3501274.52];
 var map = new Map({
   target: document.getElementById('map'),
   loadTilesWhileAnimating: true,
-  view: new _ol_View_({
+  view: new View({
     center: center,
     zoom: 10,
     minZoom: 2,
@@ -138,7 +138,7 @@ var map = new Map({
   }),
   layers: [
     new TileLayer({
-      source: new _ol_source_BingMaps_({
+      source: new BingMaps({
         imagerySet: 'AerialWithLabels',
         key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
       })
@@ -163,7 +163,7 @@ var moveFeature = function(event) {
     }
 
     var currentPoint = new Point(routeCoords[index]);
-    var feature = new _ol_Feature_(currentPoint);
+    var feature = new Feature(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
   // tell OpenLayers to continue the postcompose animation

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_proj_Projection_ from '../proj/Projection.js';
-import _ol_proj_Units_ from '../proj/Units.js';
+import Units from '../proj/Units.js';
 var _ol_proj_EPSG4326_ = {};
 
 
@@ -24,7 +24,7 @@ var _ol_proj_EPSG4326_ = {};
 _ol_proj_EPSG4326_.Projection_ = function(code, opt_axisOrientation) {
   _ol_proj_Projection_.call(this, {
     code: code,
-    units: _ol_proj_Units_.DEGREES,
+    units: Units.DEGREES,
     extent: _ol_proj_EPSG4326_.EXTENT,
     axisOrientation: opt_axisOrientation,
     global: true,

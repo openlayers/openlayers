@@ -1,5 +1,5 @@
 import {getUid} from '../../../../../src/ol/index.js';
-import _ol_Feature_ from '../../../../../src/ol/Feature.js';
+import Feature from '../../../../../src/ol/Feature.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
@@ -173,13 +173,13 @@ describe('ol.render.webgl.CircleReplay', function() {
 
   describe('#drawReplay', function() {
     var gl, context;
-    var feature1 = new _ol_Feature_({
+    var feature1 = new Feature({
       geometry: new Circle([0, 0], 5000)
     });
-    var feature2 = new _ol_Feature_({
+    var feature2 = new Feature({
       geometry: new Circle([10, 10], 5000)
     });
-    var feature3 = new _ol_Feature_({
+    var feature3 = new Feature({
       geometry: new Circle([20, 20], 5000)
     });
     beforeEach(function() {

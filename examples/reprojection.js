@@ -1,15 +1,15 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
-import _ol_source_OSM_ from '../src/ol/source/OSM.js';
-import _ol_source_TileImage_ from '../src/ol/source/TileImage.js';
-import _ol_source_TileWMS_ from '../src/ol/source/TileWMS.js';
-import _ol_source_WMTS_ from '../src/ol/source/WMTS.js';
-import _ol_source_XYZ_ from '../src/ol/source/XYZ.js';
+import OSM from '../src/ol/source/OSM.js';
+import TileImage from '../src/ol/source/TileImage.js';
+import TileWMS from '../src/ol/source/TileWMS.js';
+import WMTS from '../src/ol/source/WMTS.js';
+import XYZ from '../src/ol/source/XYZ.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 import proj4 from 'proj4';
 
@@ -59,7 +59,7 @@ proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 var layers = {};
 
 layers['bng'] = new TileLayer({
-  source: new _ol_source_XYZ_({
+  source: new XYZ({
     projection: 'EPSG:27700',
     url: 'https://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
     crossOrigin: '',
@@ -68,11 +68,11 @@ layers['bng'] = new TileLayer({
 });
 
 layers['osm'] = new TileLayer({
-  source: new _ol_source_OSM_()
+  source: new OSM()
 });
 
 layers['wms4326'] = new TileLayer({
-  source: new _ol_source_TileWMS_({
+  source: new TileWMS({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {
@@ -84,7 +84,7 @@ layers['wms4326'] = new TileLayer({
 });
 
 layers['wms21781'] = new TileLayer({
-  source: new _ol_source_TileWMS_({
+  source: new TileWMS({
     attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
       'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
     crossOrigin: 'anonymous',
@@ -104,7 +104,7 @@ fetch(url).then(function(response) {
   return response.text();
 }).then(function(text) {
   var result = parser.read(text);
-  var options = _ol_source_WMTS_.optionsFromCapabilities(result, {
+  var options = WMTS.optionsFromCapabilities(result, {
     layer: 'OSM_Land_Mask',
     matrixSet: 'EPSG3413_250m'
   });
@@ -112,12 +112,12 @@ fetch(url).then(function(response) {
   options.projection = 'EPSG:3413';
   options.wrapX = false;
   layers['wmts3413'] = new TileLayer({
-    source: new _ol_source_WMTS_(/** @type {!olx.source.WMTSOptions} */ (options))
+    source: new WMTS(/** @type {!olx.source.WMTSOptions} */ (options))
   });
 });
 
 layers['grandcanyon'] = new TileLayer({
-  source: new _ol_source_XYZ_({
+  source: new XYZ({
     url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
     crossOrigin: '',
     tilePixelRatio: 2,
@@ -135,7 +135,7 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
 }
 
 layers['states'] = new TileLayer({
-  source: new _ol_source_TileWMS_({
+  source: new TileWMS({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {'LAYERS': 'topp:states'},
@@ -156,7 +156,7 @@ var map = new Map({
     layers['bng']
   ],
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     projection: 'EPSG:3857',
     center: [0, 0],
     zoom: 2
@@ -173,7 +173,7 @@ var renderEdges = false;
 function updateViewProjection() {
   var newProj = getProjection(viewProjSelect.value);
   var newProjExtent = newProj.getExtent();
-  var newView = new _ol_View_({
+  var newView = new View({
     projection: newProj,
     center: _ol_extent_.getCenter(newProjExtent || [0, 0, 0, 0]),
     zoom: 0,
@@ -202,7 +202,7 @@ updateViewProjection();
 var updateRenderEdgesOnLayer = function(layer) {
   if (layer instanceof TileLayer) {
     var source = layer.getSource();
-    if (source instanceof _ol_source_TileImage_) {
+    if (source instanceof TileImage) {
       source.setRenderReprojectionEdges(renderEdges);
     }
   }

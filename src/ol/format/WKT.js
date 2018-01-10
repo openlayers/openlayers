@@ -2,7 +2,7 @@
  * @module ol/format/WKT
  */
 import {inherits} from '../index.js';
-import _ol_Feature_ from '../Feature.js';
+import Feature from '../Feature.js';
 import {transformWithOptions} from '../format/Feature.js';
 import TextFeature from '../format/TextFeature.js';
 import GeometryCollection from '../geom/GeometryCollection.js';
@@ -269,7 +269,7 @@ WKT.prototype.readFeature;
 WKT.prototype.readFeatureFromText = function(text, opt_options) {
   var geom = this.readGeometryFromText(text, opt_options);
   if (geom) {
-    var feature = new _ol_Feature_();
+    var feature = new Feature();
     feature.setGeometry(geom);
     return feature;
   }
@@ -304,7 +304,7 @@ WKT.prototype.readFeaturesFromText = function(text, opt_options) {
   }
   var feature, features = [];
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
-    feature = new _ol_Feature_();
+    feature = new Feature();
     feature.setGeometry(geometries[i]);
     features.push(feature);
   }

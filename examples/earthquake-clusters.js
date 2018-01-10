@@ -1,14 +1,14 @@
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import KML from '../src/ol/format/KML.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Cluster_ from '../src/ol/source/Cluster.js';
-import _ol_source_Stamen_ from '../src/ol/source/Stamen.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import Cluster from '../src/ol/source/Cluster.js';
+import Stamen from '../src/ol/source/Stamen.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
@@ -121,10 +121,10 @@ function selectStyleFunction(feature) {
   return styles;
 }
 
-vector = new _ol_layer_Vector_({
-  source: new _ol_source_Cluster_({
+vector = new VectorLayer({
+  source: new Cluster({
     distance: 40,
-    source: new _ol_source_Vector_({
+    source: new VectorSource({
       url: 'data/kml/2012_Earthquakes_Mag5.kml',
       format: new KML({
         extractStyles: false
@@ -135,7 +135,7 @@ vector = new _ol_layer_Vector_({
 });
 
 var raster = new TileLayer({
-  source: new _ol_source_Stamen_({
+  source: new Stamen({
     layer: 'toner'
   })
 });
@@ -150,7 +150,7 @@ var map = new Map({
     style: selectStyleFunction
   })]),
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 2
   })

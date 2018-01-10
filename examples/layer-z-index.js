@@ -1,9 +1,9 @@
-import _ol_Feature_ from '../src/ol/Feature.js';
+import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_View_ from '../src/ol/View.js';
+import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_layer_Vector_ from '../src/ol/layer/Vector.js';
-import _ol_source_Vector_ from '../src/ol/source/Vector.js';
+import VectorLayer from '../src/ol/layer/Vector.js';
+import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
@@ -46,14 +46,14 @@ var styles = {
 
 
 function createLayer(coordinates, style, zIndex) {
-  var feature = new _ol_Feature_(new Point(coordinates));
+  var feature = new Feature(new Point(coordinates));
   feature.setStyle(style);
 
-  var source = new _ol_source_Vector_({
+  var source = new VectorSource({
     features: [feature]
   });
 
-  var vectorLayer = new _ol_layer_Vector_({
+  var vectorLayer = new VectorLayer({
     source: source
   });
   vectorLayer.setZIndex(zIndex);
@@ -72,7 +72,7 @@ layers.push(layer2);
 var map = new Map({
   layers: layers,
   target: 'map',
-  view: new _ol_View_({
+  view: new View({
     center: [0, 0],
     zoom: 18
   })
