@@ -5,7 +5,7 @@ import View from '../../../../../src/ol/View.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import _ol_renderer_canvas_Layer_ from '../../../../../src/ol/renderer/canvas/Layer.js';
+import CanvasLayerRenderer from '../../../../../src/ol/renderer/canvas/Layer.js';
 import CanvasMapRenderer from '../../../../../src/ol/renderer/canvas/Map.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../../../../../src/ol/style/Icon.js';
@@ -174,7 +174,7 @@ describe('ol.renderer.canvas.Map', function() {
       });
       renderer = map.getRenderer();
       renderer.layerRenderers_ = {};
-      var layerRenderer = new _ol_renderer_canvas_Layer_(layer);
+      var layerRenderer = new CanvasLayerRenderer(layer);
       layerRenderer.prepareFrame = function() {
         return true;
       };

@@ -13,7 +13,7 @@ import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
 import RendererType from '../Type.js';
-import _ol_renderer_canvas_Layer_ from '../canvas/Layer.js';
+import CanvasLayerRenderer from '../canvas/Layer.js';
 import _ol_renderer_vector_ from '../vector.js';
 
 /**
@@ -24,7 +24,7 @@ import _ol_renderer_vector_ from '../vector.js';
  */
 var CanvasVectorLayerRenderer = function(vectorLayer) {
 
-  _ol_renderer_canvas_Layer_.call(this, vectorLayer);
+  CanvasLayerRenderer.call(this, vectorLayer);
 
   /**
    * Declutter tree.
@@ -83,7 +83,7 @@ var CanvasVectorLayerRenderer = function(vectorLayer) {
 
 };
 
-inherits(CanvasVectorLayerRenderer, _ol_renderer_canvas_Layer_);
+inherits(CanvasVectorLayerRenderer, CanvasLayerRenderer);
 
 
 /**
@@ -113,7 +113,7 @@ CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
  */
 CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
   _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
-  _ol_renderer_canvas_Layer_.prototype.disposeInternal.call(this);
+  CanvasLayerRenderer.prototype.disposeInternal.call(this);
 };
 
 
