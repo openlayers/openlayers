@@ -12,7 +12,7 @@ import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
+import Text from '../../../../../src/ol/style/Text.js';
 
 
 describe('ol.render.canvas.Immediate', function() {
@@ -44,7 +44,7 @@ describe('ol.render.canvas.Immediate', function() {
       sinon.spy(context, 'setTextStyle');
       var fill = new Fill({});
       var stroke = new Stroke({});
-      var text = new _ol_style_Text_({});
+      var text = new Text({});
       var image = new _ol_style_Circle_({});
       var style = new Style({
         fill: fill,

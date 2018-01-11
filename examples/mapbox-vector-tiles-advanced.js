@@ -8,7 +8,7 @@ import Fill from '../src/ol/style/Fill.js';
 import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 
@@ -45,7 +45,7 @@ var map = new Map({
         }),
         tileUrlFunction: tileUrlFunction
       }),
-      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, _ol_style_Text_)
+      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text)
     })
   ],
   target: 'map',

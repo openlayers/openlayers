@@ -20,7 +20,7 @@ import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import Text from '../../../../src/ol/style/Text.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
 
 
@@ -1944,7 +1944,7 @@ describe('ol.format.KML', function() {
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
           var textStyle = style.getText();
-          expect(textStyle).to.be.an(_ol_style_Text_);
+          expect(textStyle).to.be.an(Text);
           expect(textStyle.getScale()).to.be(0.25);
           var textFillStyle = textStyle.getFill();
           expect(textFillStyle).to.be.an(Fill);
@@ -2361,7 +2361,7 @@ describe('ol.format.KML', function() {
 
         it('can write an feature\'s text style', function() {
           var style = new Style({
-            text: new _ol_style_Text_({
+            text: new Text({
               scale: 0.5,
               text: 'foo',
               fill: new Fill({

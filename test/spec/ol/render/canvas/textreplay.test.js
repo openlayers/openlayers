@@ -2,7 +2,7 @@ import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_TextReplay_ from '../../../../../src/ol/render/canvas/TextReplay.js';
-import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
+import Text from '../../../../../src/ol/style/Text.js';
 
 describe('ol.render.canvas.TextReplay', function() {
 
@@ -11,13 +11,13 @@ describe('ol.render.canvas.TextReplay', function() {
     var geometry = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
     var feature = new Feature(geometry);
 
-    replay.setTextStyle(new _ol_style_Text_({
+    replay.setTextStyle(new Text({
       text: 'This is a long text'
     }));
     replay.drawText(geometry, feature);
     expect(replay.instructions.length).to.be(0);
 
-    replay.setTextStyle(new _ol_style_Text_({
+    replay.setTextStyle(new Text({
       text: 'short'
     }));
     replay.drawText(geometry, feature);
@@ -32,13 +32,13 @@ describe('ol.render.canvas.TextReplay', function() {
     ]);
     var feature = new Feature(geometry);
 
-    replay.setTextStyle(new _ol_style_Text_({
+    replay.setTextStyle(new Text({
       text: 'This is a long text'
     }));
     replay.drawText(geometry, feature);
     expect(replay.instructions.length).to.be(0);
 
-    replay.setTextStyle(new _ol_style_Text_({
+    replay.setTextStyle(new Text({
       text: 'short'
     }));
     replay.drawText(geometry, feature);

@@ -11,7 +11,7 @@ import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import Text from '../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -150,7 +150,7 @@ describe('ol.rendering.layer.VectorTile', function() {
                 color: 'red'
               })
             }),
-            text: new _ol_style_Text_({
+            text: new Text({
               text: feature.get('name_en'),
               font: '12px sans-serif',
               textBaseline: 'bottom',

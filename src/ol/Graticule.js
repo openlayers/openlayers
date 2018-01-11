@@ -12,7 +12,7 @@ import {get as getProjection, equivalent as equivalentProjection, getTransform, 
 import RenderEventType from './render/EventType.js';
 import Fill from './style/Fill.js';
 import Stroke from './style/Stroke.js';
-import _ol_style_Text_ from './style/Text.js';
+import Text from './style/Text.js';
 
 
 /**
@@ -283,7 +283,7 @@ var Graticule = function(opt_options) {
      * @private
      */
     this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
-      new _ol_style_Text_({
+      new Text({
         font: '12px Calibri,sans-serif',
         textBaseline: 'bottom',
         fill: new Fill({
@@ -300,7 +300,7 @@ var Graticule = function(opt_options) {
      * @private
      */
     this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
-      new _ol_style_Text_({
+      new Text({
         font: '12px Calibri,sans-serif',
         textAlign: 'end',
         fill: new Fill({

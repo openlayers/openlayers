@@ -26,7 +26,7 @@ import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
 import Stroke from '../style/Stroke.js';
 import Style from '../style/Style.js';
-import _ol_style_Text_ from '../style/Text.js';
+import Text from '../style/Text.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -241,7 +241,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Text}
    * @private
    */
-  KML.DEFAULT_TEXT_STYLE_ = new _ol_style_Text_({
+  KML.DEFAULT_TEXT_STYLE_ = new Text({
     font: 'bold 16px Helvetica',
     fill: KML.DEFAULT_FILL_STYLE_,
     stroke: KML.DEFAULT_TEXT_STROKE_STYLE_,
@@ -665,7 +665,7 @@ KML.LabelStyleParser_ = function(node, objectStack) {
     return;
   }
   var styleObject = objectStack[objectStack.length - 1];
-  var textStyle = new _ol_style_Text_({
+  var textStyle = new Text({
     fill: new Fill({
       color: /** @type {ol.Color} */
           ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)

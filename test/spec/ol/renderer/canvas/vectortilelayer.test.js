@@ -17,7 +17,7 @@ import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import Style from '../../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
+import Text from '../../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../../src/ol/tilegrid.js';
 
 
@@ -46,12 +46,12 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         target: target
       });
       layerStyle = [new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'layer'
         })
       })];
       var featureStyle = [new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'feature'
         })
       })];
@@ -217,7 +217,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var layer2 = new VectorTileLayer({
         source: source,
         style: new Style({
-          text: new _ol_style_Text_({
+          text: new Text({
             text: 'layer2'
           })
         })

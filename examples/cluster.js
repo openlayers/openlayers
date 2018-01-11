@@ -11,7 +11,7 @@ import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 
 var distance = document.getElementById('distance');
@@ -50,7 +50,7 @@ var clusters = new VectorLayer({
             color: '#3399CC'
           })
         }),
-        text: new _ol_style_Text_({
+        text: new Text({
           text: size.toString(),
           fill: new Fill({
             color: '#fff'

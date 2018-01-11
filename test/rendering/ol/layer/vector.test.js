@@ -12,7 +12,7 @@ import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import Text from '../../../../src/ol/style/Text.js';
 
 
 describe('ol.rendering.layer.Vector', function() {
@@ -606,7 +606,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
-          text: new _ol_style_Text_({
+          text: new Text({
             text: feature.get('text'),
             font: '12px sans-serif'
           })
@@ -647,7 +647,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
-          text: new _ol_style_Text_({
+          text: new Text({
             text: feature.get('text'),
             font: '12px sans-serif'
           })
@@ -690,7 +690,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setStyle(function(feature) {
         return new Style({
           zIndex: feature.get('zIndex'),
-          text: new _ol_style_Text_({
+          text: new Text({
             text: feature.get('text'),
             font: '12px sans-serif'
           })
@@ -850,7 +850,7 @@ describe('ol.rendering.layer.Vector', function() {
               color: 'blue'
             })
           }),
-          text: new _ol_style_Text_({
+          text: new Text({
             text: feature.get('text'),
             font: '12px sans-serif',
             textBaseline: 'bottom',
@@ -890,7 +890,7 @@ describe('ol.rendering.layer.Vector', function() {
           color: '#CCC',
           width: 12
         }),
-        text: new _ol_style_Text_({
+        text: new Text({
           placement: 'line',
           text: 'east-west',
           font: '12px sans-serif'
@@ -933,7 +933,7 @@ describe('ol.rendering.layer.Vector', function() {
           color: '#CCC',
           width: 12
         }),
-        text: new _ol_style_Text_({
+        text: new Text({
           placement: 'line',
           text: 'east-west',
           font: '12px sans-serif'
@@ -978,7 +978,7 @@ describe('ol.rendering.layer.Vector', function() {
           color: '#CCC',
           width: 12
         }),
-        text: new _ol_style_Text_({
+        text: new Text({
           placement: 'line',
           text: 'east-west',
           font: '12px sans-serif'

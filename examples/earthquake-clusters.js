@@ -14,7 +14,7 @@ import Fill from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 
 var earthquakeFill = new Fill({
@@ -92,7 +92,7 @@ function styleFunction(feature, resolution) {
           color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
         })
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         text: size.toString(),
         fill: textFill,
         stroke: textStroke

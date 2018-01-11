@@ -8,10 +8,10 @@ import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 var style = new Style({
-  text: new _ol_style_Text_({
+  text: new Text({
     font: 'bold 11px "Open Sans", "Arial Unicode MS", "sans-serif"',
     placement: 'line',
     fill: new Fill({

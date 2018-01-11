@@ -7,7 +7,7 @@ import Fill from '../src/ol/style/Fill.js';
 import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
@@ -24,7 +24,7 @@ var map = new Map({
         url: 'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
             '{z}/{x}/{y}.vector.pbf?access_token=' + key
       }),
-      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, _ol_style_Text_)
+      style: createMapboxStreetsV6Style(Style, Fill, Stroke, Icon, Text)
     })
   ],
   target: 'map',

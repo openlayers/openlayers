@@ -17,7 +17,7 @@ import Style from '../src/ol/style/Style.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 
 var raster = new TileLayer({
@@ -34,7 +34,7 @@ var nodesLayer = new VectorLayer({
         fill: new Fill({color: 'rgba(255, 0, 0, 0.2)'}),
         stroke: new Stroke({color: 'red', width: 1})
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         text: f.get('node').id.toString(),
         fill: new Fill({color: 'red'}),
         stroke: new Stroke({
@@ -56,7 +56,7 @@ var edgesLayer = new VectorLayer({
         color: 'blue',
         width: 1
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         text: f.get('edge').id.toString(),
         fill: new Fill({color: 'blue'}),
         stroke: new Stroke({
@@ -81,7 +81,7 @@ var facesLayer = new VectorLayer({
       fill: new Fill({
         color: 'rgba(0, 255, 0, 0.2)'
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         font: 'bold 12px sans-serif',
         text: f.get('face').id.toString(),
         fill: new Fill({color: 'green'}),

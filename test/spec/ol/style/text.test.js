@@ -1,6 +1,6 @@
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
-import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import Text from '../../../../src/ol/style/Text.js';
 
 
 describe('ol.style.Text', function() {
@@ -8,19 +8,19 @@ describe('ol.style.Text', function() {
   describe('#constructor', function() {
 
     it('uses a default fill style if none passed', function() {
-      var style = new _ol_style_Text_();
+      var style = new Text();
       expect(style.getFill().getColor()).to.be('#333');
     });
 
     it('uses a provided fill style if one passed', function() {
-      var style = new _ol_style_Text_({
+      var style = new Text({
         fill: new Fill({color: '#123456'})
       });
       expect(style.getFill().getColor()).to.be('#123456');
     });
 
     it('can always be resetted to no color', function() {
-      var style = new _ol_style_Text_();
+      var style = new Text();
       style.getFill().setColor();
       expect(style.getFill().getColor()).to.be(undefined);
     });
@@ -30,14 +30,14 @@ describe('ol.style.Text', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Text', function() {
-      var original = new _ol_style_Text_();
+      var original = new Text();
       var clone = original.clone();
-      expect(clone).to.be.an(_ol_style_Text_);
+      expect(clone).to.be.an(Text);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new _ol_style_Text_({
+      var original = new Text({
         font: '12px serif',
         offsetX: 4,
         offsetY: 10,
@@ -77,7 +77,7 @@ describe('ol.style.Text', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new _ol_style_Text_({
+      var original = new Text({
         fill: new Fill({
           color: '#319FD3'
         }),

@@ -4,7 +4,7 @@ import Style from '../../../../src/ol/style/Style.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
-import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import Text from '../../../../src/ol/style/Text.js';
 
 
 describe('ol.style.Style', function() {
@@ -18,7 +18,7 @@ describe('ol.style.Style', function() {
     width: 1
   });
 
-  var testText = new _ol_style_Text_({
+  var testText = new Text({
     font: '12px Calibri,sans-serif',
     fill: new Fill({
       color: '#000'
@@ -54,7 +54,7 @@ describe('ol.style.Style', function() {
         stroke: new Stroke({
           color: '#319FD3'
         }),
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'test'
         }),
         zIndex: 2
@@ -80,7 +80,7 @@ describe('ol.style.Style', function() {
         stroke: new Stroke({
           color: '#319FD3'
         }),
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'test'
         })
       });

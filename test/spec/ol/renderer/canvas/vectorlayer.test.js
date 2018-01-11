@@ -11,7 +11,7 @@ import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
 import Style from '../../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
+import Text from '../../../../../src/ol/style/Text.js';
 
 
 describe('ol.renderer.canvas.VectorLayer', function() {
@@ -57,12 +57,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         target: target
       });
       var layerStyle = [new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'layer'
         })
       })];
       var featureStyle = [new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'feature'
         })
       })];
@@ -94,7 +94,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         target: target
       });
       var layerStyle = new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'layer',
           font: '12px "Unavailable Font",sans-serif'
         })
@@ -125,7 +125,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         target: target
       });
       var layerStyle = new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'layer',
           font: '12px sans-serif'
         })
@@ -157,7 +157,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         target: target
       });
       var layerStyle = new Style({
-        text: new _ol_style_Text_({
+        text: new Text({
           text: 'layer',
           font: '12px "Droid Sans",sans-serif'
         })

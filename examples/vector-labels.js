@@ -9,7 +9,7 @@ import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 var openSansAdded = false;
 
@@ -109,7 +109,7 @@ var createTextStyle = function(feature, resolution, dom) {
   var outlineColor = dom.outline.value;
   var outlineWidth = parseInt(dom.outlineWidth.value, 10);
 
-  return new _ol_style_Text_({
+  return new Text({
     textAlign: align == '' ? undefined : align,
     textBaseline: baseline,
     font: font,

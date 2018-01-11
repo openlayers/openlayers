@@ -7,7 +7,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 var map = new Map({
   target: 'map',
@@ -35,7 +35,7 @@ var labelStyle = new Style({
     }
     return geometry;
   },
-  text: new _ol_style_Text_({
+  text: new Text({
     font: '12px Calibri,sans-serif',
     overflow: true,
     fill: new Fill({

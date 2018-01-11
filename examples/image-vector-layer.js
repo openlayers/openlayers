@@ -6,7 +6,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Text from '../src/ol/style/Text.js';
 
 
 var style = new Style({
@@ -17,7 +17,7 @@ var style = new Style({
     color: '#319FD3',
     width: 1
   }),
-  text: new _ol_style_Text_()
+  text: new Text()
 });
 
 var map = new Map({
