@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
-import _ol_layer_Layer_ from '../layer/Layer.js';
+import Layer from '../layer/Layer.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
 import _ol_obj_ from '../obj.js';
 
@@ -28,7 +28,7 @@ var TileLayer = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  _ol_layer_Layer_.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   this.setPreload(options.preload !== undefined ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
@@ -43,7 +43,7 @@ var TileLayer = function(opt_options) {
 
 };
 
-inherits(TileLayer, _ol_layer_Layer_);
+inherits(TileLayer, Layer);
 
 
 /**

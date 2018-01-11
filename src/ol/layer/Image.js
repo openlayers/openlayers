@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
-import _ol_layer_Layer_ from '../layer/Layer.js';
+import Layer from '../layer/Layer.js';
 
 /**
  * @classdesc
@@ -21,7 +21,7 @@ import _ol_layer_Layer_ from '../layer/Layer.js';
  */
 var ImageLayer = function(opt_options) {
   var options = opt_options ? opt_options : {};
-  _ol_layer_Layer_.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
+  Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
 
   /**
    * The layer type.
@@ -32,7 +32,7 @@ var ImageLayer = function(opt_options) {
 
 };
 
-inherits(ImageLayer, _ol_layer_Layer_);
+inherits(ImageLayer, Layer);
 
 
 /**

@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
-import _ol_layer_Layer_ from '../layer/Layer.js';
+import Layer from '../layer/Layer.js';
 import _ol_layer_VectorRenderType_ from '../layer/VectorRenderType.js';
 import _ol_obj_ from '../obj.js';
 import _ol_style_Style_ from '../style/Style.js';
@@ -41,7 +41,7 @@ var VectorLayer = function(opt_options) {
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
   delete baseOptions.updateWhileInteracting;
-  _ol_layer_Layer_.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
    * @private
@@ -101,7 +101,7 @@ var VectorLayer = function(opt_options) {
 
 };
 
-inherits(VectorLayer, _ol_layer_Layer_);
+inherits(VectorLayer, Layer);
 
 
 /**

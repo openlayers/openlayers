@@ -8,7 +8,7 @@ import {inherits} from '../../index.js';
 import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
-import _ol_layer_Layer_ from '../../layer/Layer.js';
+import Layer from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
@@ -179,7 +179,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
-    if (!_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) ||
+    if (!Layer.visibleAtResolution(layerState, viewResolution) ||
         layerState.sourceState != SourceState.READY) {
       continue;
     }
@@ -223,7 +223,7 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) &&
+    if (Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(

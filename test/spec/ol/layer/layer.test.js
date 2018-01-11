@@ -1,6 +1,6 @@
 import {getUid} from '../../../../src/ol/index.js';
 import Map from '../../../../src/ol/Map.js';
-import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
+import Layer from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import RenderEvent from '../../../../src/ol/render/Event.js';
 import Source from '../../../../src/ol/source/Source.js';
@@ -13,7 +13,7 @@ describe('ol.layer.Layer', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Layer_({
+      layer = new Layer({
         source: new Source({
           projection: getProjection('EPSG:4326')
         })
@@ -25,7 +25,7 @@ describe('ol.layer.Layer', function() {
     });
 
     it('creates an instance', function() {
-      expect(layer).to.be.a(_ol_layer_Layer_);
+      expect(layer).to.be.a(Layer);
     });
 
     it('provides default opacity', function() {
@@ -63,7 +63,7 @@ describe('ol.layer.Layer', function() {
   describe('constructor (options)', function() {
 
     it('accepts options', function() {
-      var layer = new _ol_layer_Layer_({
+      var layer = new Layer({
         source: new Source({
           projection: getProjection('EPSG:4326')
         }),
@@ -101,7 +101,7 @@ describe('ol.layer.Layer', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Layer_({
+      layer = new Layer({
         source: new Source({
           projection: getProjection('EPSG:4326')
         })
@@ -117,7 +117,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       var layerState = layer.getLayerState();
-      expect(_ol_layer_Layer_.visibleAtResolution(layerState, 4)).to.be(false);
+      expect(Layer.visibleAtResolution(layerState, 4)).to.be(false);
     });
 
     it('returns false if resolution lower than minResolution', function() {
@@ -125,7 +125,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       var layerState = layer.getLayerState();
-      expect(_ol_layer_Layer_.visibleAtResolution(layerState, 2)).to.be(false);
+      expect(Layer.visibleAtResolution(layerState, 2)).to.be(false);
     });
 
     it('returns false if resolution greater than maxResolution', function() {
@@ -133,7 +133,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       var layerState = layer.getLayerState();
-      expect(_ol_layer_Layer_.visibleAtResolution(layerState, 6)).to.be(false);
+      expect(Layer.visibleAtResolution(layerState, 6)).to.be(false);
     });
 
     it('returns true otherwise', function() {
@@ -141,7 +141,7 @@ describe('ol.layer.Layer', function() {
       layer.setMinResolution(3);
       layer.setMaxResolution(5);
       var layerState = layer.getLayerState();
-      expect(_ol_layer_Layer_.visibleAtResolution(layerState, 4)).to.be(true);
+      expect(Layer.visibleAtResolution(layerState, 4)).to.be(true);
     });
 
   });
@@ -151,7 +151,7 @@ describe('ol.layer.Layer', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Layer_({
+      layer = new Layer({
         source: new Source({
           projection: getProjection('EPSG:4326')
         })
@@ -217,7 +217,7 @@ describe('ol.layer.Layer', function() {
 
     it('gets the layer source', function() {
       var source = new Source({projection: getProjection('EPSG:4326')});
-      var layer = new _ol_layer_Layer_({source: source});
+      var layer = new Layer({source: source});
       expect(layer.getSource()).to.be(source);
     });
 
@@ -227,7 +227,7 @@ describe('ol.layer.Layer', function() {
     var projection = getProjection('EPSG:4326');
 
     it('sets the layer source', function() {
-      var layer = new _ol_layer_Layer_({
+      var layer = new Layer({
         source: new Source({projection: projection})
       });
 
@@ -237,7 +237,7 @@ describe('ol.layer.Layer', function() {
     });
 
     it('calls changed', function() {
-      var layer = new _ol_layer_Layer_({
+      var layer = new Layer({
         source: new Source({projection: projection})
       });
       sinon.spy(layer, 'changed');
@@ -248,10 +248,10 @@ describe('ol.layer.Layer', function() {
     });
 
     it('sets up event listeners', function() {
-      sinon.spy(_ol_layer_Layer_.prototype, 'handleSourceChange_');
+      sinon.spy(Layer.prototype, 'handleSourceChange_');
 
       var first = new Source({projection: projection});
-      var layer = new _ol_layer_Layer_({source: first});
+      var layer = new Layer({source: first});
 
       first.setState('ready');
       expect(layer.handleSourceChange_.calledOnce).to.be(true);
@@ -264,7 +264,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.handleSourceChange_.callCount).to.be(2);
 
       // remove spy
-      _ol_layer_Layer_.prototype.handleSourceChange_.restore();
+      Layer.prototype.handleSourceChange_.restore();
     });
 
   });
@@ -273,7 +273,7 @@ describe('ol.layer.Layer', function() {
     var projection = getProjection('EPSG:4326');
 
     it('sets the layer source', function() {
-      var layer = new _ol_layer_Layer_({
+      var layer = new Layer({
         source: new Source({projection: projection})
       });
 
@@ -283,7 +283,7 @@ describe('ol.layer.Layer', function() {
     });
 
     it('calls changed', function() {
-      var layer = new _ol_layer_Layer_({
+      var layer = new Layer({
         source: new Source({projection: projection})
       });
       sinon.spy(layer, 'changed');
@@ -294,10 +294,10 @@ describe('ol.layer.Layer', function() {
     });
 
     it('sets up event listeners', function() {
-      sinon.spy(_ol_layer_Layer_.prototype, 'handleSourceChange_');
+      sinon.spy(Layer.prototype, 'handleSourceChange_');
 
       var first = new Source({projection: projection});
-      var layer = new _ol_layer_Layer_({source: first});
+      var layer = new Layer({source: first});
 
       first.setState('ready');
       expect(layer.handleSourceChange_.calledOnce).to.be(true);
@@ -310,7 +310,7 @@ describe('ol.layer.Layer', function() {
       expect(layer.handleSourceChange_.callCount).to.be(2);
 
       // remove spy
-      _ol_layer_Layer_.prototype.handleSourceChange_.restore();
+      Layer.prototype.handleSourceChange_.restore();
     });
 
   });
@@ -321,7 +321,7 @@ describe('ol.layer.Layer', function() {
     var layer;
 
     beforeEach(function() {
-      layer = new _ol_layer_Layer_({
+      layer = new Layer({
         source: new Source({
           projection: getProjection('EPSG:4326')
         })
@@ -351,7 +351,7 @@ describe('ol.layer.Layer', function() {
 
     var layer;
     beforeEach(function() {
-      layer = new _ol_layer_Layer_({
+      layer = new Layer({
         source: new Source({
           projection: getProjection('EPSG:4326')
         })
@@ -392,7 +392,7 @@ describe('ol.layer.Layer', function() {
 
     describe('with map in constructor options', function() {
       it('renders the layer', function() {
-        var layer = new _ol_layer_Layer_({
+        var layer = new Layer({
           map: map
         });
         var frameState = {
@@ -420,7 +420,7 @@ describe('ol.layer.Layer', function() {
       });
 
       it('requests a render frame', function() {
-        var layer = new _ol_layer_Layer_({});
+        var layer = new Layer({});
 
         layer.setMap(map);
         expect(mapRenderSpy.callCount).to.be(1);

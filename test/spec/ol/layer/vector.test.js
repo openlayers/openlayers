@@ -1,4 +1,4 @@
-import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
+import Layer from '../../../../src/ol/layer/Layer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
@@ -13,7 +13,7 @@ describe('ol.layer.Vector', function() {
     it('creates a new layer', function() {
       var layer = new VectorLayer({source: source});
       expect(layer).to.be.a(VectorLayer);
-      expect(layer).to.be.a(_ol_layer_Layer_);
+      expect(layer).to.be.a(Layer);
     });
 
     it('accepts a style option with a single style', function() {
