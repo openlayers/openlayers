@@ -21,7 +21,7 @@ import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import DrawEventType from '../interaction/DrawEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
-import _ol_interaction_Property_ from '../interaction/Property.js';
+import InteractionProperty from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
@@ -285,7 +285,7 @@ var Draw = function(options) {
   }
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(_ol_interaction_Property_.ACTIVE),
+      BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
       this.updateState_, this);
 
 };

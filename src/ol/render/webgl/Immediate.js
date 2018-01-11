@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import ReplayType from '../ReplayType.js';
-import _ol_render_VectorContext_ from '../VectorContext.js';
+import VectorContext from '../VectorContext.js';
 import _ol_render_webgl_ReplayGroup_ from '../webgl/ReplayGroup.js';
 
 /**
@@ -21,7 +21,7 @@ import _ol_render_webgl_ReplayGroup_ from '../webgl/ReplayGroup.js';
  * @struct
  */
 var _ol_render_webgl_Immediate_ = function(context, center, resolution, rotation, size, extent, pixelRatio) {
-  _ol_render_VectorContext_.call(this);
+  VectorContext.call(this);
 
   /**
    * @private
@@ -84,7 +84,7 @@ var _ol_render_webgl_Immediate_ = function(context, center, resolution, rotation
 
 };
 
-inherits(_ol_render_webgl_Immediate_, _ol_render_VectorContext_);
+inherits(_ol_render_webgl_Immediate_, VectorContext);
 
 
 /**

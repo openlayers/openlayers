@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_Overlay_ from '../src/ol/Overlay.js';
+import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -23,7 +23,7 @@ var map = new Map({
 var pos = fromLonLat([16.3725, 48.208889]);
 
 // Vienna marker
-var marker = new _ol_Overlay_({
+var marker = new Overlay({
   position: pos,
   positioning: 'center-center',
   element: document.getElementById('marker'),
@@ -32,14 +32,14 @@ var marker = new _ol_Overlay_({
 map.addOverlay(marker);
 
 // Vienna label
-var vienna = new _ol_Overlay_({
+var vienna = new Overlay({
   position: pos,
   element: document.getElementById('vienna')
 });
 map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
-var popup = new _ol_Overlay_({
+var popup = new Overlay({
   element: document.getElementById('popup')
 });
 map.addOverlay(popup);

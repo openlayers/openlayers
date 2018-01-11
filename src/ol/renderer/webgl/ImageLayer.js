@@ -9,7 +9,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {getIntersection, isEmpty} from '../../extent.js';
 import {TRUE} from '../../functions.js';
 import RendererType from '../Type.js';
-import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
+import WebGLLayerRenderer from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
@@ -23,7 +23,7 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  */
 var WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
 
-  _ol_renderer_webgl_Layer_.call(this, mapRenderer, imageLayer);
+  WebGLLayerRenderer.call(this, mapRenderer, imageLayer);
 
   /**
    * The last rendered image.
@@ -46,7 +46,7 @@ var WebGLImageLayerRenderer = function(mapRenderer, imageLayer) {
 
 };
 
-inherits(WebGLImageLayerRenderer, _ol_renderer_webgl_Layer_);
+inherits(WebGLImageLayerRenderer, WebGLLayerRenderer);
 
 
 /**

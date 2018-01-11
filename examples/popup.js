@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_Overlay_ from '../src/ol/Overlay.js';
+import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import _ol_coordinate_ from '../src/ol/coordinate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -18,7 +18,7 @@ var closer = document.getElementById('popup-closer');
 /**
  * Create an overlay to anchor the popup to the map.
  */
-var overlay = new _ol_Overlay_({
+var overlay = new Overlay({
   element: container,
   autoPan: true,
   autoPanAnimation: {

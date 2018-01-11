@@ -2,7 +2,7 @@ import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Polygon from '../../../src/ol/geom/Polygon.js';
 import _ol_render_ from '../../../src/ol/render.js';
-import _ol_render_VectorContext_ from '../../../src/ol/render/VectorContext.js';
+import VectorContext from '../../../src/ol/render/VectorContext.js';
 import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../src/ol/style/Fill.js';
@@ -22,7 +22,7 @@ describe('ol.render', function() {
         pixelRatio: 1,
         size: [100, 100]
       });
-      expect(vectorContext).to.be.a(_ol_render_VectorContext_);
+      expect(vectorContext).to.be.a(VectorContext);
       expect(vectorContext).to.be.a(_ol_render_canvas_Immediate_);
     });
 

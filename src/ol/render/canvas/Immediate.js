@@ -13,7 +13,7 @@ import GeometryType from '../../geom/GeometryType.js';
 import SimpleGeometry from '../../geom/SimpleGeometry.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_has_ from '../../has.js';
-import _ol_render_VectorContext_ from '../VectorContext.js';
+import VectorContext from '../VectorContext.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -36,7 +36,7 @@ import _ol_transform_ from '../../transform.js';
  * @struct
  */
 var _ol_render_canvas_Immediate_ = function(context, pixelRatio, extent, transform, viewRotation) {
-  _ol_render_VectorContext_.call(this);
+  VectorContext.call(this);
 
   /**
    * @private
@@ -238,7 +238,7 @@ var _ol_render_canvas_Immediate_ = function(context, pixelRatio, extent, transfo
 
 };
 
-inherits(_ol_render_canvas_Immediate_, _ol_render_VectorContext_);
+inherits(_ol_render_canvas_Immediate_, VectorContext);
 
 
 /**

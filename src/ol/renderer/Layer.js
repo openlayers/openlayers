@@ -16,7 +16,7 @@ import SourceState from '../source/State.js';
  * @param {ol.layer.Layer} layer Layer.
  * @struct
  */
-var _ol_renderer_Layer_ = function(layer) {
+var LayerRenderer = function(layer) {
 
   Observable.call(this);
 
@@ -29,7 +29,7 @@ var _ol_renderer_Layer_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_Layer_, Observable);
+inherits(LayerRenderer, Observable);
 
 
 /**
@@ -42,7 +42,7 @@ inherits(_ol_renderer_Layer_, Observable);
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-_ol_renderer_Layer_.prototype.forEachFeatureAtCoordinate = nullFunction;
+LayerRenderer.prototype.forEachFeatureAtCoordinate = nullFunction;
 
 
 /**
@@ -50,7 +50,7 @@ _ol_renderer_Layer_.prototype.forEachFeatureAtCoordinate = nullFunction;
  * @param {olx.FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
-_ol_renderer_Layer_.prototype.hasFeatureAtCoordinate = FALSE;
+LayerRenderer.prototype.hasFeatureAtCoordinate = FALSE;
 
 
 /**
@@ -64,7 +64,7 @@ _ol_renderer_Layer_.prototype.hasFeatureAtCoordinate = FALSE;
  *     lookup.
  * @protected
  */
-_ol_renderer_Layer_.prototype.createLoadedTileFinder = function(source, projection, tiles) {
+LayerRenderer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   return (
     /**
      * @param {number} zoom Zoom level.
@@ -86,7 +86,7 @@ _ol_renderer_Layer_.prototype.createLoadedTileFinder = function(source, projecti
 /**
  * @return {ol.layer.Layer} Layer.
  */
-_ol_renderer_Layer_.prototype.getLayer = function() {
+LayerRenderer.prototype.getLayer = function() {
   return this.layer_;
 };
 
@@ -96,7 +96,7 @@ _ol_renderer_Layer_.prototype.getLayer = function() {
  * @param {ol.events.Event} event Image change event.
  * @private
  */
-_ol_renderer_Layer_.prototype.handleImageChange_ = function(event) {
+LayerRenderer.prototype.handleImageChange_ = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   if (image.getState() === ImageState.LOADED) {
     this.renderIfReadyAndVisible();
@@ -112,7 +112,7 @@ _ol_renderer_Layer_.prototype.handleImageChange_ = function(event) {
  *     otherwise.
  * @protected
  */
-_ol_renderer_Layer_.prototype.loadImage = function(image) {
+LayerRenderer.prototype.loadImage = function(image) {
   var imageState = image.getState();
   if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
     _ol_events_.listen(image, EventType.CHANGE, this.handleImageChange_, this);
@@ -128,7 +128,7 @@ _ol_renderer_Layer_.prototype.loadImage = function(image) {
 /**
  * @protected
  */
-_ol_renderer_Layer_.prototype.renderIfReadyAndVisible = function() {
+LayerRenderer.prototype.renderIfReadyAndVisible = function() {
   var layer = this.getLayer();
   if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
     this.changed();
@@ -141,7 +141,7 @@ _ol_renderer_Layer_.prototype.renderIfReadyAndVisible = function() {
  * @param {ol.source.Tile} tileSource Tile source.
  * @protected
  */
-_ol_renderer_Layer_.prototype.scheduleExpireCache = function(frameState, tileSource) {
+LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     /**
      * @param {ol.source.Tile} tileSource Tile source.
@@ -170,7 +170,7 @@ _ol_renderer_Layer_.prototype.scheduleExpireCache = function(frameState, tileSou
  * @param {ol.TileRange} tileRange Tile range.
  * @protected
  */
-_ol_renderer_Layer_.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
+LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
   var tileSourceKey = getUid(tileSource).toString();
   var zKey = z.toString();
@@ -207,7 +207,7 @@ _ol_renderer_Layer_.prototype.updateUsedTiles = function(usedTiles, tileSource, 
  * @protected
  * @template T
  */
-_ol_renderer_Layer_.prototype.manageTilePyramid = function(
+LayerRenderer.prototype.manageTilePyramid = function(
     frameState, tileSource, tileGrid, pixelRatio, projection, extent,
     currentZ, preload, opt_tileCallback, opt_this) {
   var tileSourceKey = getUid(tileSource).toString();
@@ -242,4 +242,4 @@ _ol_renderer_Layer_.prototype.manageTilePyramid = function(
     }
   }
 };
-export default _ol_renderer_Layer_;
+export default LayerRenderer;

@@ -1,6 +1,6 @@
 import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
-import _ol_Overlay_ from '../src/ol/Overlay.js';
+import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -55,7 +55,7 @@ var map = new Map({
 
 var element = document.getElementById('popup');
 
-var popup = new _ol_Overlay_({
+var popup = new Overlay({
   element: element,
   positioning: 'bottom-center',
   stopEvent: false,

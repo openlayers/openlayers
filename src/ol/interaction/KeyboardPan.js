@@ -25,10 +25,10 @@ import Interaction from '../interaction/Interaction.js';
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_KeyboardPan_ = function(opt_options) {
+var KeyboardPan = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: _ol_interaction_KeyboardPan_.handleEvent
+    handleEvent: KeyboardPan.handleEvent
   });
 
   var options = opt_options || {};
@@ -65,7 +65,7 @@ var _ol_interaction_KeyboardPan_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_KeyboardPan_, Interaction);
+inherits(KeyboardPan, Interaction);
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
@@ -76,7 +76,7 @@ inherits(_ol_interaction_KeyboardPan_, Interaction);
  * @this {ol.interaction.KeyboardPan}
  * @api
  */
-_ol_interaction_KeyboardPan_.handleEvent = function(mapBrowserEvent) {
+KeyboardPan.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN) {
     var keyEvent = mapBrowserEvent.originalEvent;
@@ -108,4 +108,4 @@ _ol_interaction_KeyboardPan_.handleEvent = function(mapBrowserEvent) {
   }
   return !stopEvent;
 };
-export default _ol_interaction_KeyboardPan_;
+export default KeyboardPan;

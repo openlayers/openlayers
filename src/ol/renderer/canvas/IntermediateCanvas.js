@@ -5,7 +5,7 @@ import {inherits, nullFunction} from '../../index.js';
 import _ol_coordinate_ from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
-import _ol_renderer_canvas_Layer_ from '../canvas/Layer.js';
+import CanvasLayerRenderer from '../canvas/Layer.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -16,7 +16,7 @@ import _ol_transform_ from '../../transform.js';
  */
 var _ol_renderer_canvas_IntermediateCanvas_ = function(layer) {
 
-  _ol_renderer_canvas_Layer_.call(this, layer);
+  CanvasLayerRenderer.call(this, layer);
 
   /**
    * @protected
@@ -32,7 +32,7 @@ var _ol_renderer_canvas_IntermediateCanvas_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_canvas_IntermediateCanvas_, _ol_renderer_canvas_Layer_);
+inherits(_ol_renderer_canvas_IntermediateCanvas_, CanvasLayerRenderer);
 
 
 /**
@@ -126,7 +126,7 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = fun
   if (this.getLayer().getSource().forEachFeatureAtCoordinate !== nullFunction) {
     // for ImageCanvas sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    return _ol_renderer_canvas_Layer_.prototype.forEachLayerAtCoordinate.apply(this, arguments);
+    return CanvasLayerRenderer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {
     var pixel = _ol_transform_.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
     _ol_coordinate_.scale(pixel, frameState.viewState.resolution / this.renderedResolution);

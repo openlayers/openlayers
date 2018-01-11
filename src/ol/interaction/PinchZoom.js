@@ -17,12 +17,12 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
  * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_PinchZoom_ = function(opt_options) {
+var PinchZoom = function(opt_options) {
 
   _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_PinchZoom_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_PinchZoom_.handleDragEvent_,
-    handleUpEvent: _ol_interaction_PinchZoom_.handleUpEvent_
+    handleDownEvent: PinchZoom.handleDownEvent_,
+    handleDragEvent: PinchZoom.handleDragEvent_,
+    handleUpEvent: PinchZoom.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -59,7 +59,7 @@ var _ol_interaction_PinchZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_PinchZoom_, _ol_interaction_Pointer_);
+inherits(PinchZoom, _ol_interaction_Pointer_);
 
 
 /**
@@ -67,7 +67,7 @@ inherits(_ol_interaction_PinchZoom_, _ol_interaction_Pointer_);
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-_ol_interaction_PinchZoom_.handleDragEvent_ = function(mapBrowserEvent) {
+PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var scaleDelta = 1.0;
 
   var touch0 = this.targetPointers[0];
@@ -121,7 +121,7 @@ _ol_interaction_PinchZoom_.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-_ol_interaction_PinchZoom_.handleUpEvent_ = function(mapBrowserEvent) {
+PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -150,7 +150,7 @@ _ol_interaction_PinchZoom_.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchZoom}
  * @private
  */
-_ol_interaction_PinchZoom_.handleDownEvent_ = function(mapBrowserEvent) {
+PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
@@ -169,5 +169,5 @@ _ol_interaction_PinchZoom_.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-_ol_interaction_PinchZoom_.prototype.shouldStopEvent = FALSE;
-export default _ol_interaction_PinchZoom_;
+PinchZoom.prototype.shouldStopEvent = FALSE;
+export default PinchZoom;

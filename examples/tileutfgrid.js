@@ -1,5 +1,5 @@
 import Map from '../src/ol/Map.js';
-import _ol_Overlay_ from '../src/ol/Overlay.js';
+import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
@@ -36,7 +36,7 @@ var infoElement = document.getElementById('country-info');
 var flagElement = document.getElementById('country-flag');
 var nameElement = document.getElementById('country-name');
 
-var infoOverlay = new _ol_Overlay_({
+var infoOverlay = new Overlay({
   element: infoElement,
   offset: [15, 15],
   stopEvent: false

@@ -2,7 +2,7 @@ import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import TileLayer from '../../../../../src/ol/layer/Tile.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
-import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
+import MapRenderer from '../../../../../src/ol/renderer/Map.js';
 import CanvasTileLayerRenderer from '../../../../../src/ol/renderer/canvas/TileLayer.js';
 import TileWMS from '../../../../../src/ol/source/TileWMS.js';
 import XYZ from '../../../../../src/ol/source/XYZ.js';
@@ -97,7 +97,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
       renderer.getImageTransform = function() {
         return _ol_transform_.create();
       };
-      _ol_renderer_Map_.prototype.calculateMatrices2D(frameState);
+      MapRenderer.prototype.calculateMatrices2D(frameState);
       var layerState = layer.getLayerState();
       var canvas = document.createElement('canvas');
       canvas.width = 200;

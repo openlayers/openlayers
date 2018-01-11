@@ -9,7 +9,7 @@ import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
-import _ol_interaction_Property_ from '../interaction/Property.js';
+import InteractionProperty from '../interaction/Property.js';
 import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventType.js';
 
 /**
@@ -80,7 +80,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
   this.lastFeature_ = null;
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(_ol_interaction_Property_.ACTIVE),
+      BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
       this.handleActiveChanged_, this);
 
 };

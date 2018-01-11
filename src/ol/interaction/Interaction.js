@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import {easeOut, linear} from '../easing.js';
-import _ol_interaction_Property_ from '../interaction/Property.js';
+import InteractionProperty from '../interaction/Property.js';
 import {clamp} from '../math.js';
 
 
@@ -67,9 +67,7 @@ inherits(Interaction, BaseObject);
  * @api
  */
 Interaction.prototype.getActive = function() {
-  return (
-    /** @type {boolean} */ this.get(_ol_interaction_Property_.ACTIVE)
-  );
+  return (/** @type {boolean} */ this.get(InteractionProperty.ACTIVE));
 };
 
 
@@ -90,7 +88,7 @@ Interaction.prototype.getMap = function() {
  * @api
  */
 Interaction.prototype.setActive = function(active) {
-  this.set(_ol_interaction_Property_.ACTIVE, active);
+  this.set(InteractionProperty.ACTIVE, active);
 };
 
 

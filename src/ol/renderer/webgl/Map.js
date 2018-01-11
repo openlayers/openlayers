@@ -12,7 +12,7 @@ import _ol_layer_Layer_ from '../../layer/Layer.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
-import _ol_renderer_Map_ from '../Map.js';
+import MapRenderer from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
@@ -36,7 +36,7 @@ var WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
  * @api
  */
 var WebGLMapRenderer = function(container, map) {
-  _ol_renderer_Map_.call(this, container, map);
+  MapRenderer.call(this, container, map);
 
   /**
    * @private
@@ -166,7 +166,7 @@ var WebGLMapRenderer = function(container, map) {
   this.initializeGL_();
 };
 
-inherits(WebGLMapRenderer, _ol_renderer_Map_);
+inherits(WebGLMapRenderer, MapRenderer);
 
 
 /**
@@ -301,7 +301,7 @@ WebGLMapRenderer.prototype.disposeInternal = function() {
         });
   }
   this.context_.dispose();
-  _ol_renderer_Map_.prototype.disposeInternal.call(this);
+  MapRenderer.prototype.disposeInternal.call(this);
 };
 
 
@@ -443,7 +443,7 @@ WebGLMapRenderer.prototype.renderFrame = function(frameState) {
   /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
-  stableSort(layerStatesArray, _ol_renderer_Map_.sortByZIndex);
+  stableSort(layerStatesArray, MapRenderer.sortByZIndex);
 
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layerRenderer, layerState;

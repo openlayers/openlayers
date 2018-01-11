@@ -7,11 +7,11 @@ import DoubleClickZoom from './interaction/DoubleClickZoom.js';
 import DragPan from './interaction/DragPan.js';
 import DragRotate from './interaction/DragRotate.js';
 import DragZoom from './interaction/DragZoom.js';
-import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
-import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
+import KeyboardPan from './interaction/KeyboardPan.js';
+import KeyboardZoom from './interaction/KeyboardZoom.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
-import _ol_interaction_PinchRotate_ from './interaction/PinchRotate.js';
-import _ol_interaction_PinchZoom_ from './interaction/PinchZoom.js';
+import PinchRotate from './interaction/PinchRotate.js';
+import PinchZoom from './interaction/PinchZoom.js';
 
 
 /**
@@ -70,12 +70,12 @@ export function defaults(opt_options) {
   var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
     true;
   if (pinchRotate) {
-    interactions.push(new _ol_interaction_PinchRotate_());
+    interactions.push(new PinchRotate());
   }
 
   var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
-    interactions.push(new _ol_interaction_PinchZoom_({
+    interactions.push(new PinchZoom({
       constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));
@@ -83,8 +83,8 @@ export function defaults(opt_options) {
 
   var keyboard = options.keyboard !== undefined ? options.keyboard : true;
   if (keyboard) {
-    interactions.push(new _ol_interaction_KeyboardPan_());
-    interactions.push(new _ol_interaction_KeyboardZoom_({
+    interactions.push(new KeyboardPan());
+    interactions.push(new KeyboardZoom({
       delta: options.zoomDelta,
       duration: options.zoomDuration
     }));

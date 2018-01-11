@@ -18,12 +18,12 @@ import RotationConstraint from '../RotationConstraint.js';
  * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_PinchRotate_ = function(opt_options) {
+var PinchRotate = function(opt_options) {
 
   _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_PinchRotate_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_PinchRotate_.handleDragEvent_,
-    handleUpEvent: _ol_interaction_PinchRotate_.handleUpEvent_
+    handleDownEvent: PinchRotate.handleDownEvent_,
+    handleDragEvent: PinchRotate.handleDragEvent_,
+    handleUpEvent: PinchRotate.handleUpEvent_
   });
 
   var options = opt_options || {};
@@ -66,7 +66,7 @@ var _ol_interaction_PinchRotate_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_PinchRotate_, _ol_interaction_Pointer_);
+inherits(PinchRotate, _ol_interaction_Pointer_);
 
 
 /**
@@ -74,7 +74,7 @@ inherits(_ol_interaction_PinchRotate_, _ol_interaction_Pointer_);
  * @this {ol.interaction.PinchRotate}
  * @private
  */
-_ol_interaction_PinchRotate_.handleDragEvent_ = function(mapBrowserEvent) {
+PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   var rotationDelta = 0.0;
 
   var touch0 = this.targetPointers[0];
@@ -127,7 +127,7 @@ _ol_interaction_PinchRotate_.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchRotate}
  * @private
  */
-_ol_interaction_PinchRotate_.handleUpEvent_ = function(mapBrowserEvent) {
+PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -150,7 +150,7 @@ _ol_interaction_PinchRotate_.handleUpEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.PinchRotate}
  * @private
  */
-_ol_interaction_PinchRotate_.handleDownEvent_ = function(mapBrowserEvent) {
+PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
     var map = mapBrowserEvent.map;
     this.anchor_ = null;
@@ -170,5 +170,5 @@ _ol_interaction_PinchRotate_.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-_ol_interaction_PinchRotate_.prototype.shouldStopEvent = FALSE;
-export default _ol_interaction_PinchRotate_;
+PinchRotate.prototype.shouldStopEvent = FALSE;
+export default PinchRotate;
