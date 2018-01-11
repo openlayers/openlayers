@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import Modify from '../src/ol/interaction/Modify.js';
 import Select from '../src/ol/interaction/Select.js';
-import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
+import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -144,7 +144,7 @@ ExampleModify.setActive(false);
 // The snap interaction must be added after the Modify and Draw interactions
 // in order for its map browser event handlers to be fired first. Its handlers
 // are responsible of doing the snapping.
-var snap = new _ol_interaction_Snap_({
+var snap = new Snap({
   source: vector.getSource()
 });
 map.addInteraction(snap);

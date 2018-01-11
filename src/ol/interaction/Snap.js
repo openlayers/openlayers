@@ -39,12 +39,12 @@ import RBush from '../structs/RBush.js';
  * @param {olx.interaction.SnapOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_Snap_ = function(opt_options) {
+var Snap = function(opt_options) {
 
   PointerInteraction.call(this, {
-    handleEvent: _ol_interaction_Snap_.handleEvent_,
+    handleEvent: Snap.handleEvent_,
     handleDownEvent: TRUE,
-    handleUpEvent: _ol_interaction_Snap_.handleUpEvent_
+    handleUpEvent: Snap.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -120,7 +120,7 @@ var _ol_interaction_Snap_ = function(opt_options) {
    * @type {function(ol.SnapSegmentDataType, ol.SnapSegmentDataType): number}
    * @private
    */
-  this.sortByDistance_ = _ol_interaction_Snap_.sortByDistance.bind(this);
+  this.sortByDistance_ = Snap.sortByDistance.bind(this);
 
 
   /**
@@ -149,7 +149,7 @@ var _ol_interaction_Snap_ = function(opt_options) {
   };
 };
 
-inherits(_ol_interaction_Snap_, PointerInteraction);
+inherits(Snap, PointerInteraction);
 
 
 /**
@@ -159,7 +159,7 @@ inherits(_ol_interaction_Snap_, PointerInteraction);
  *     Defaults to `true`.
  * @api
  */
-_ol_interaction_Snap_.prototype.addFeature = function(feature, opt_listen) {
+Snap.prototype.addFeature = function(feature, opt_listen) {
   var listen = opt_listen !== undefined ? opt_listen : true;
   var feature_uid = getUid(feature);
   var geometry = feature.getGeometry();
@@ -184,7 +184,7 @@ _ol_interaction_Snap_.prototype.addFeature = function(feature, opt_listen) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-_ol_interaction_Snap_.prototype.forEachFeatureAdd_ = function(feature) {
+Snap.prototype.forEachFeatureAdd_ = function(feature) {
   this.addFeature(feature);
 };
 
@@ -193,7 +193,7 @@ _ol_interaction_Snap_.prototype.forEachFeatureAdd_ = function(feature) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-_ol_interaction_Snap_.prototype.forEachFeatureRemove_ = function(feature) {
+Snap.prototype.forEachFeatureRemove_ = function(feature) {
   this.removeFeature(feature);
 };
 
@@ -202,7 +202,7 @@ _ol_interaction_Snap_.prototype.forEachFeatureRemove_ = function(feature) {
  * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>} Features.
  * @private
  */
-_ol_interaction_Snap_.prototype.getFeatures_ = function() {
+Snap.prototype.getFeatures_ = function() {
   var features;
   if (this.features_) {
     features = this.features_;
@@ -217,7 +217,7 @@ _ol_interaction_Snap_.prototype.getFeatures_ = function() {
  * @param {ol.source.Vector.Event|ol.Collection.Event} evt Event.
  * @private
  */
-_ol_interaction_Snap_.prototype.handleFeatureAdd_ = function(evt) {
+Snap.prototype.handleFeatureAdd_ = function(evt) {
   var feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
@@ -232,7 +232,7 @@ _ol_interaction_Snap_.prototype.handleFeatureAdd_ = function(evt) {
  * @param {ol.source.Vector.Event|ol.Collection.Event} evt Event.
  * @private
  */
-_ol_interaction_Snap_.prototype.handleFeatureRemove_ = function(evt) {
+Snap.prototype.handleFeatureRemove_ = function(evt) {
   var feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
@@ -247,7 +247,7 @@ _ol_interaction_Snap_.prototype.handleFeatureRemove_ = function(evt) {
  * @param {ol.events.Event} evt Event.
  * @private
  */
-_ol_interaction_Snap_.prototype.handleFeatureChange_ = function(evt) {
+Snap.prototype.handleFeatureChange_ = function(evt) {
   var feature = /** @type {ol.Feature} */ (evt.target);
   if (this.handlingDownUpSequence) {
     var uid = getUid(feature);
@@ -267,7 +267,7 @@ _ol_interaction_Snap_.prototype.handleFeatureChange_ = function(evt) {
  *     or not. Defaults to `true`.
  * @api
  */
-_ol_interaction_Snap_.prototype.removeFeature = function(feature, opt_unlisten) {
+Snap.prototype.removeFeature = function(feature, opt_unlisten) {
   var unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
   var feature_uid = getUid(feature);
   var extent = this.indexedFeaturesExtents_[feature_uid];
@@ -294,7 +294,7 @@ _ol_interaction_Snap_.prototype.removeFeature = function(feature, opt_unlisten) 
 /**
  * @inheritDoc
  */
-_ol_interaction_Snap_.prototype.setMap = function(map) {
+Snap.prototype.setMap = function(map) {
   var currentMap = this.getMap();
   var keys = this.featuresListenerKeys_;
   var features = this.getFeatures_();
@@ -330,7 +330,7 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
 /**
  * @inheritDoc
  */
-_ol_interaction_Snap_.prototype.shouldStopEvent = FALSE;
+Snap.prototype.shouldStopEvent = FALSE;
 
 
 /**
@@ -339,7 +339,7 @@ _ol_interaction_Snap_.prototype.shouldStopEvent = FALSE;
  * @param {ol.PluggableMap} map Map.
  * @return {ol.SnapResultType} Snap result
  */
-_ol_interaction_Snap_.prototype.snapTo = function(pixel, pixelCoordinate, map) {
+Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
 
   var lowerLeft = map.getCoordinateFromPixel(
       [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
@@ -423,7 +423,7 @@ _ol_interaction_Snap_.prototype.snapTo = function(pixel, pixelCoordinate, map) {
  * @param {ol.Feature} feature Feature
  * @private
  */
-_ol_interaction_Snap_.prototype.updateFeature_ = function(feature) {
+Snap.prototype.updateFeature_ = function(feature) {
   this.removeFeature(feature, false);
   this.addFeature(feature, false);
 };
@@ -434,7 +434,7 @@ _ol_interaction_Snap_.prototype.updateFeature_ = function(feature) {
  * @param {ol.geom.Circle} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writeCircleGeometry_ = function(feature, geometry) {
+Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
   var polygon = fromCircle(geometry);
   var coordinates = polygon.getCoordinates()[0];
   var i, ii, segment, segmentData;
@@ -454,7 +454,7 @@ _ol_interaction_Snap_.prototype.writeCircleGeometry_ = function(feature, geometr
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
+Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
   var i, geometries = geometry.getGeometriesArray();
   for (i = 0; i < geometries.length; ++i) {
     var segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
@@ -470,7 +470,7 @@ _ol_interaction_Snap_.prototype.writeGeometryCollectionGeometry_ = function(feat
  * @param {ol.geom.LineString} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writeLineStringGeometry_ = function(feature, geometry) {
+Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -489,7 +489,7 @@ _ol_interaction_Snap_.prototype.writeLineStringGeometry_ = function(feature, geo
  * @param {ol.geom.MultiLineString} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
+Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
   var lines = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = lines.length; j < jj; ++j) {
@@ -511,7 +511,7 @@ _ol_interaction_Snap_.prototype.writeMultiLineStringGeometry_ = function(feature
  * @param {ol.geom.MultiPoint} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
+Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   var points = geometry.getCoordinates();
   var coordinates, i, ii, segmentData;
   for (i = 0, ii = points.length; i < ii; ++i) {
@@ -530,7 +530,7 @@ _ol_interaction_Snap_.prototype.writeMultiPointGeometry_ = function(feature, geo
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
+Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
   var polygons = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
   for (k = 0, kk = polygons.length; k < kk; ++k) {
@@ -555,7 +555,7 @@ _ol_interaction_Snap_.prototype.writeMultiPolygonGeometry_ = function(feature, g
  * @param {ol.geom.Point} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writePointGeometry_ = function(feature, geometry) {
+Snap.prototype.writePointGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var segmentData = /** @type {ol.SnapSegmentDataType} */ ({
     feature: feature,
@@ -570,7 +570,7 @@ _ol_interaction_Snap_.prototype.writePointGeometry_ = function(feature, geometry
  * @param {ol.geom.Polygon} geometry Geometry.
  * @private
  */
-_ol_interaction_Snap_.prototype.writePolygonGeometry_ = function(feature, geometry) {
+Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
   var rings = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = rings.length; j < jj; ++j) {
@@ -594,7 +594,7 @@ _ol_interaction_Snap_.prototype.writePolygonGeometry_ = function(feature, geomet
  * @this {ol.interaction.Snap}
  * @private
  */
-_ol_interaction_Snap_.handleEvent_ = function(evt) {
+Snap.handleEvent_ = function(evt) {
   var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
   if (result.snapped) {
     evt.coordinate = result.vertex.slice(0, 2);
@@ -610,7 +610,7 @@ _ol_interaction_Snap_.handleEvent_ = function(evt) {
  * @this {ol.interaction.Snap}
  * @private
  */
-_ol_interaction_Snap_.handleUpEvent_ = function(evt) {
+Snap.handleUpEvent_ = function(evt) {
   var featuresToUpdate = _ol_obj_.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
     featuresToUpdate.forEach(this.updateFeature_.bind(this));
@@ -627,10 +627,10 @@ _ol_interaction_Snap_.handleUpEvent_ = function(evt) {
  * @return {number} The difference in distance.
  * @this {ol.interaction.Snap}
  */
-_ol_interaction_Snap_.sortByDistance = function(a, b) {
+Snap.sortByDistance = function(a, b) {
   return _ol_coordinate_.squaredDistanceToSegment(
       this.pixelCoordinate_, a.segment) -
       _ol_coordinate_.squaredDistanceToSegment(
           this.pixelCoordinate_, b.segment);
 };
-export default _ol_interaction_Snap_;
+export default Snap;

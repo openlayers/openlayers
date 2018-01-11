@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import Modify from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
+import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -57,7 +57,7 @@ function addInteractions() {
     type: typeSelect.value
   });
   map.addInteraction(draw);
-  snap = new _ol_interaction_Snap_({source: source});
+  snap = new Snap({source: source});
   map.addInteraction(snap);
 
 }
