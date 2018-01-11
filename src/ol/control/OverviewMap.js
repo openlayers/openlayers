@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Collection_ from '../Collection.js';
 import PluggableMap from '../PluggableMap.js';
 import MapEventType from '../MapEventType.js';
-import _ol_MapProperty_ from '../MapProperty.js';
+import MapProperty from '../MapProperty.js';
 import BaseObject from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import Overlay from '../Overlay.js';
@@ -252,7 +252,7 @@ OverviewMap.prototype.setMap = function(map) {
  * @private
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
-  if (event.key === _ol_MapProperty_.VIEW) {
+  if (event.key === MapProperty.VIEW) {
     var oldView = /** @type {ol.View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);

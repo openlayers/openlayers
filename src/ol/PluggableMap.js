@@ -9,7 +9,7 @@ import MapBrowserEventHandler from './MapBrowserEventHandler.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapEvent from './MapEvent.js';
 import MapEventType from './MapEventType.js';
-import _ol_MapProperty_ from './MapProperty.js';
+import MapProperty from './MapProperty.js';
 import BaseObject from './Object.js';
 import ObjectEventType from './ObjectEventType.js';
 import TileQueue from './TileQueue.js';
@@ -337,13 +337,13 @@ var PluggableMap = function(options) {
   this.skippedFeatureUids_ = {};
 
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(_ol_MapProperty_.LAYERGROUP),
+      this, BaseObject.getChangeEventType(MapProperty.LAYERGROUP),
       this.handleLayerGroupChanged_, this);
-  _ol_events_.listen(this, BaseObject.getChangeEventType(_ol_MapProperty_.VIEW),
+  _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.VIEW),
       this.handleViewChanged_, this);
-  _ol_events_.listen(this, BaseObject.getChangeEventType(_ol_MapProperty_.SIZE),
+  _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.SIZE),
       this.handleSizeChanged_, this);
-  _ol_events_.listen(this, BaseObject.getChangeEventType(_ol_MapProperty_.TARGET),
+  _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.TARGET),
       this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
@@ -661,7 +661,7 @@ PluggableMap.prototype.getEventPixel = function(event) {
  */
 PluggableMap.prototype.getTarget = function() {
   return (
-    /** @type {Element|string|undefined} */ this.get(_ol_MapProperty_.TARGET)
+    /** @type {Element|string|undefined} */ this.get(MapProperty.TARGET)
   );
 };
 
@@ -759,7 +759,7 @@ PluggableMap.prototype.getInteractions = function() {
  */
 PluggableMap.prototype.getLayerGroup = function() {
   return (
-    /** @type {ol.layer.Group} */ this.get(_ol_MapProperty_.LAYERGROUP)
+    /** @type {ol.layer.Group} */ this.get(MapProperty.LAYERGROUP)
   );
 };
 
@@ -810,7 +810,7 @@ PluggableMap.prototype.getRenderer = function() {
  */
 PluggableMap.prototype.getSize = function() {
   return (
-    /** @type {ol.Size|undefined} */ this.get(_ol_MapProperty_.SIZE)
+    /** @type {ol.Size|undefined} */ this.get(MapProperty.SIZE)
   );
 };
 
@@ -824,7 +824,7 @@ PluggableMap.prototype.getSize = function() {
  */
 PluggableMap.prototype.getView = function() {
   return (
-    /** @type {ol.View} */ this.get(_ol_MapProperty_.VIEW)
+    /** @type {ol.View} */ this.get(MapProperty.VIEW)
   );
 };
 
@@ -1287,7 +1287,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
  * @api
  */
 PluggableMap.prototype.setLayerGroup = function(layerGroup) {
-  this.set(_ol_MapProperty_.LAYERGROUP, layerGroup);
+  this.set(MapProperty.LAYERGROUP, layerGroup);
 };
 
 
@@ -1298,7 +1298,7 @@ PluggableMap.prototype.setLayerGroup = function(layerGroup) {
  * @api
  */
 PluggableMap.prototype.setSize = function(size) {
-  this.set(_ol_MapProperty_.SIZE, size);
+  this.set(MapProperty.SIZE, size);
 };
 
 
@@ -1310,7 +1310,7 @@ PluggableMap.prototype.setSize = function(size) {
  * @api
  */
 PluggableMap.prototype.setTarget = function(target) {
-  this.set(_ol_MapProperty_.TARGET, target);
+  this.set(MapProperty.TARGET, target);
 };
 
 
@@ -1321,7 +1321,7 @@ PluggableMap.prototype.setTarget = function(target) {
  * @api
  */
 PluggableMap.prototype.setView = function(view) {
-  this.set(_ol_MapProperty_.VIEW, view);
+  this.set(MapProperty.VIEW, view);
 };
 
 
@@ -1406,11 +1406,11 @@ function createOptionsInternal(options) {
 
   var layerGroup = (options.layers instanceof _ol_layer_Group_) ?
     options.layers : new _ol_layer_Group_({layers: options.layers});
-  values[_ol_MapProperty_.LAYERGROUP] = layerGroup;
+  values[MapProperty.LAYERGROUP] = layerGroup;
 
-  values[_ol_MapProperty_.TARGET] = options.target;
+  values[MapProperty.TARGET] = options.target;
 
-  values[_ol_MapProperty_.VIEW] = options.view !== undefined ?
+  values[MapProperty.VIEW] = options.view !== undefined ?
     options.view : new View();
 
   /**
