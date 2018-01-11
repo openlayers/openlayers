@@ -423,6 +423,9 @@ Draw.prototype.handlePointerMove_ = function(event) {
     this.shouldHandle_ = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
+    if (!this.shouldHandle_) {
+      return true;
+    }
   }
 
   if (this.finishCoordinate_) {

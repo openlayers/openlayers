@@ -339,7 +339,6 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointermove', 20, 30);
 
       // freehand
-      simulateEvent('pointerdown', 20, 30, true);
       simulateEvent('pointermove', 20, 30, true);
       simulateEvent('pointerdrag', 20, 30, true);
       simulateEvent('pointermove', 30, 40, true);
