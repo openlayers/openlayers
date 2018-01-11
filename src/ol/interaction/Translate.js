@@ -8,7 +8,7 @@ import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
 import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventType.js';
 
@@ -23,7 +23,7 @@ import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventTy
  * @api
  */
 var _ol_interaction_Translate_ = function(opt_options) {
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: _ol_interaction_Translate_.handleDownEvent_,
     handleDragEvent: _ol_interaction_Translate_.handleDragEvent_,
     handleMoveEvent: _ol_interaction_Translate_.handleMoveEvent_,
@@ -85,7 +85,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Translate_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Translate_, PointerInteraction);
 
 
 /**
@@ -231,7 +231,7 @@ _ol_interaction_Translate_.prototype.setHitTolerance = function(hitTolerance) {
  */
 _ol_interaction_Translate_.prototype.setMap = function(map) {
   var oldMap = this.getMap();
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
   this.updateState_(oldMap);
 };
 

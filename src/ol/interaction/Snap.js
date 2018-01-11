@@ -11,7 +11,7 @@ import {boundingExtent, createEmpty} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import _ol_obj_ from '../obj.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -41,7 +41,7 @@ import RBush from '../structs/RBush.js';
  */
 var _ol_interaction_Snap_ = function(opt_options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleEvent: _ol_interaction_Snap_.handleEvent_,
     handleDownEvent: TRUE,
     handleUpEvent: _ol_interaction_Snap_.handleUpEvent_
@@ -149,7 +149,7 @@ var _ol_interaction_Snap_ = function(opt_options) {
   };
 };
 
-inherits(_ol_interaction_Snap_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Snap_, PointerInteraction);
 
 
 /**
@@ -304,7 +304,7 @@ _ol_interaction_Snap_.prototype.setMap = function(map) {
     keys.length = 0;
     features.forEach(this.forEachFeatureRemove_.bind(this));
   }
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
 
   if (map) {
     if (this.features_) {
@@ -600,7 +600,7 @@ _ol_interaction_Snap_.handleEvent_ = function(evt) {
     evt.coordinate = result.vertex.slice(0, 2);
     evt.pixel = result.vertexPixel;
   }
-  return _ol_interaction_Pointer_.handleEvent.call(this, evt);
+  return PointerInteraction.handleEvent.call(this, evt);
 };
 
 

@@ -17,7 +17,7 @@ import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -45,7 +45,7 @@ import _ol_style_Style_ from '../style/Style.js';
  */
 var _ol_interaction_Modify_ = function(options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: _ol_interaction_Modify_.handleDownEvent_,
     handleDragEvent: _ol_interaction_Modify_.handleDragEvent_,
     handleEvent: _ol_interaction_Modify_.handleEvent,
@@ -227,7 +227,7 @@ var _ol_interaction_Modify_ = function(options) {
 
 };
 
-inherits(_ol_interaction_Modify_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Modify_, PointerInteraction);
 
 
 /**
@@ -321,7 +321,7 @@ _ol_interaction_Modify_.prototype.setActive = function(active) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  _ol_interaction_Pointer_.prototype.setActive.call(this, active);
+  PointerInteraction.prototype.setActive.call(this, active);
 };
 
 
@@ -330,7 +330,7 @@ _ol_interaction_Modify_.prototype.setActive = function(active) {
  */
 _ol_interaction_Modify_.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
 };
 
 
@@ -823,7 +823,7 @@ _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
     this.ignoreNextSingleClick_ = false;
   }
 
-  return _ol_interaction_Pointer_.handleEvent.call(this, mapBrowserEvent) &&
+  return PointerInteraction.handleEvent.call(this, mapBrowserEvent) &&
       !handled;
 };
 

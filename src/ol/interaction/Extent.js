@@ -12,7 +12,7 @@ import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
 import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
@@ -81,7 +81,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
   }
 
   /* Inherit ol.interaction.Pointer */
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: _ol_interaction_Extent_.handleDownEvent_,
     handleDragEvent: _ol_interaction_Extent_.handleDragEvent_,
     handleEvent: _ol_interaction_Extent_.handleEvent_,
@@ -123,7 +123,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
   }
 };
 
-inherits(_ol_interaction_Extent_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Extent_, PointerInteraction);
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
@@ -140,7 +140,7 @@ _ol_interaction_Extent_.handleEvent_ = function(mapBrowserEvent) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   //call pointer to determine up/down/drag
-  _ol_interaction_Pointer_.handleEvent.call(this, mapBrowserEvent);
+  PointerInteraction.handleEvent.call(this, mapBrowserEvent);
   //return false to stop propagation
   return false;
 };
@@ -416,7 +416,7 @@ _ol_interaction_Extent_.prototype.createOrUpdatePointerFeature_ = function(verte
 _ol_interaction_Extent_.prototype.setMap = function(map) {
   this.extentOverlay_.setMap(map);
   this.vertexOverlay_.setMap(map);
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
 };
 
 /**

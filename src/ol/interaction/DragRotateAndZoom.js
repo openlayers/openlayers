@@ -6,7 +6,7 @@ import RotationConstraint from '../RotationConstraint.js';
 import ViewHint from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 
 /**
  * @classdesc
@@ -27,7 +27,7 @@ var DragRotateAndZoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: DragRotateAndZoom.handleDownEvent_,
     handleDragEvent: DragRotateAndZoom.handleDragEvent_,
     handleUpEvent: DragRotateAndZoom.handleUpEvent_
@@ -66,7 +66,7 @@ var DragRotateAndZoom = function(opt_options) {
 
 };
 
-inherits(DragRotateAndZoom, _ol_interaction_Pointer_);
+inherits(DragRotateAndZoom, PointerInteraction);
 
 
 /**

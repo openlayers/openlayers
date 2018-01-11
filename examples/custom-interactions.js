@@ -6,7 +6,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
+import PointerInteraction from '../src/ol/interaction/Pointer.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
@@ -29,7 +29,7 @@ var app = {};
  */
 app.Drag = function() {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: app.Drag.prototype.handleDownEvent,
     handleDragEvent: app.Drag.prototype.handleDragEvent,
     handleMoveEvent: app.Drag.prototype.handleMoveEvent,
@@ -61,7 +61,7 @@ app.Drag = function() {
   this.previousCursor_ = undefined;
 
 };
-inherits(app.Drag, _ol_interaction_Pointer_);
+inherits(app.Drag, PointerInteraction);
 
 
 /**

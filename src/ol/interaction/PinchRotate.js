@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import RotationConstraint from '../RotationConstraint.js';
 
 /**
@@ -20,7 +20,7 @@ import RotationConstraint from '../RotationConstraint.js';
  */
 var PinchRotate = function(opt_options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: PinchRotate.handleDownEvent_,
     handleDragEvent: PinchRotate.handleDragEvent_,
     handleUpEvent: PinchRotate.handleUpEvent_
@@ -66,7 +66,7 @@ var PinchRotate = function(opt_options) {
 
 };
 
-inherits(PinchRotate, _ol_interaction_Pointer_);
+inherits(PinchRotate, PointerInteraction);
 
 
 /**
@@ -106,7 +106,7 @@ PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
   var viewportPosition = map.getViewport().getBoundingClientRect();
-  var centroid = _ol_interaction_Pointer_.centroid(this.targetPointers);
+  var centroid = PointerInteraction.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.left;
   centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);

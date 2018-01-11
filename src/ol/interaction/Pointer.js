@@ -23,12 +23,12 @@ import _ol_obj_ from '../obj.js';
  * @extends {ol.interaction.Interaction}
  * @api
  */
-var _ol_interaction_Pointer_ = function(opt_options) {
+var PointerInteraction = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
   var handleEvent = options.handleEvent ?
-    options.handleEvent : _ol_interaction_Pointer_.handleEvent;
+    options.handleEvent : PointerInteraction.handleEvent;
 
   Interaction.call(this, {
     handleEvent: handleEvent
@@ -39,28 +39,28 @@ var _ol_interaction_Pointer_ = function(opt_options) {
    * @private
    */
   this.handleDownEvent_ = options.handleDownEvent ?
-    options.handleDownEvent : _ol_interaction_Pointer_.handleDownEvent;
+    options.handleDownEvent : PointerInteraction.handleDownEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleDragEvent_ = options.handleDragEvent ?
-    options.handleDragEvent : _ol_interaction_Pointer_.handleDragEvent;
+    options.handleDragEvent : PointerInteraction.handleDragEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent)}
    * @private
    */
   this.handleMoveEvent_ = options.handleMoveEvent ?
-    options.handleMoveEvent : _ol_interaction_Pointer_.handleMoveEvent;
+    options.handleMoveEvent : PointerInteraction.handleMoveEvent;
 
   /**
    * @type {function(ol.MapBrowserPointerEvent):boolean}
    * @private
    */
   this.handleUpEvent_ = options.handleUpEvent ?
-    options.handleUpEvent : _ol_interaction_Pointer_.handleUpEvent;
+    options.handleUpEvent : PointerInteraction.handleUpEvent;
 
   /**
    * @type {boolean}
@@ -82,14 +82,14 @@ var _ol_interaction_Pointer_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Pointer_, Interaction);
+inherits(PointerInteraction, Interaction);
 
 
 /**
  * @param {Array.<ol.pointer.PointerEvent>} pointerEvents List of events.
  * @return {ol.Pixel} Centroid pixel.
  */
-_ol_interaction_Pointer_.centroid = function(pointerEvents) {
+PointerInteraction.centroid = function(pointerEvents) {
   var length = pointerEvents.length;
   var clientX = 0;
   var clientY = 0;
@@ -107,7 +107,7 @@ _ol_interaction_Pointer_.centroid = function(pointerEvents) {
  *     or pointerup event.
  * @private
  */
-_ol_interaction_Pointer_.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
+PointerInteraction.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return type === MapBrowserEventType.POINTERDOWN ||
     type === MapBrowserEventType.POINTERDRAG ||
@@ -119,7 +119,7 @@ _ol_interaction_Pointer_.prototype.isPointerDraggingEvent_ = function(mapBrowser
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @private
  */
-_ol_interaction_Pointer_.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
+PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
 
@@ -142,7 +142,7 @@ _ol_interaction_Pointer_.prototype.updateTrackedPointers_ = function(mapBrowserE
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleDragEvent = nullFunction;
+PointerInteraction.handleDragEvent = nullFunction;
 
 
 /**
@@ -150,7 +150,7 @@ _ol_interaction_Pointer_.handleDragEvent = nullFunction;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleUpEvent = FALSE;
+PointerInteraction.handleUpEvent = FALSE;
 
 
 /**
@@ -158,14 +158,14 @@ _ol_interaction_Pointer_.handleUpEvent = FALSE;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleDownEvent = FALSE;
+PointerInteraction.handleDownEvent = FALSE;
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @this {ol.interaction.Pointer}
  */
-_ol_interaction_Pointer_.handleMoveEvent = nullFunction;
+PointerInteraction.handleMoveEvent = nullFunction;
 
 
 /**
@@ -177,7 +177,7 @@ _ol_interaction_Pointer_.handleMoveEvent = nullFunction;
  * @this {ol.interaction.Pointer}
  * @api
  */
-_ol_interaction_Pointer_.handleEvent = function(mapBrowserEvent) {
+PointerInteraction.handleEvent = function(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
@@ -217,8 +217,8 @@ _ol_interaction_Pointer_.handleEvent = function(mapBrowserEvent) {
  * @return {boolean} Should the event be stopped?
  * @protected
  */
-_ol_interaction_Pointer_.prototype.shouldStopEvent = function(handled) {
+PointerInteraction.prototype.shouldStopEvent = function(handled) {
   return handled;
 };
 
-export default _ol_interaction_Pointer_;
+export default PointerInteraction;

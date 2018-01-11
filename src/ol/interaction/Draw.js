@@ -20,7 +20,7 @@ import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import DrawEventType from '../interaction/DrawEventType.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
@@ -38,7 +38,7 @@ import _ol_style_Style_ from '../style/Style.js';
  */
 var Draw = function(options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: Draw.handleDownEvent_,
     handleEvent: Draw.handleEvent,
     handleUpEvent: Draw.handleUpEvent_
@@ -290,7 +290,7 @@ var Draw = function(options) {
 
 };
 
-inherits(Draw, _ol_interaction_Pointer_);
+inherits(Draw, PointerInteraction);
 
 
 /**
@@ -308,7 +308,7 @@ Draw.getDefaultStyleFunction = function() {
  * @inheritDoc
  */
 Draw.prototype.setMap = function(map) {
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
   this.updateState_();
 };
 
@@ -337,7 +337,7 @@ Draw.handleEvent = function(event) {
   } else if (event.type === MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
-  return _ol_interaction_Pointer_.handleEvent.call(this, event) && pass;
+  return PointerInteraction.handleEvent.call(this, event) && pass;
 };
 
 
