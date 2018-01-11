@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
+import Icon from '../src/ol/style/Icon.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -44,7 +44,7 @@ var iconCount = iconInfo.length;
 var icons = new Array(iconCount);
 for (i = 0; i < iconCount; ++i) {
   var info = iconInfo[i];
-  icons[i] = new _ol_style_Icon_({
+  icons[i] = new Icon({
     offset: info.offset,
     opacity: info.opacity,
     rotateWithView: info.rotateWithView,

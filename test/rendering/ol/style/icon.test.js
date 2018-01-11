@@ -4,7 +4,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
+import Icon from '../../../../src/ol/style/Icon.js';
 import Style from '../../../../src/ol/style/Style.js';
 
 
@@ -59,7 +59,7 @@ describe('ol.rendering.style.Icon', function() {
       img.onload = function() {
         imgInfo.img = img;
         feature.setStyle(new Style({
-          image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ (imgInfo))
+          image: new Icon(/** @type {olx.style.IconOptions} */ (imgInfo))
         }));
         vectorSource.addFeature(feature);
         callback();

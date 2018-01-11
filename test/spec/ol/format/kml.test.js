@@ -15,7 +15,7 @@ import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
-import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
+import Icon from '../../../../src/ol/style/Icon.js';
 import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
@@ -1756,7 +1756,7 @@ describe('ol.format.KML', function() {
           expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
           expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
           var imageStyle = style.getImage();
-          expect(imageStyle).to.be.an(_ol_style_Icon_);
+          expect(imageStyle).to.be.an(Icon);
           expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
           expect(imageStyle.getAnchor()).to.be(null);
           expect(imageStyle.getOrigin()).to.be(null);
@@ -1836,7 +1836,7 @@ describe('ol.format.KML', function() {
             expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
             expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
             var imageStyle = style.getImage();
-            expect(imageStyle).to.be.an(_ol_style_Icon_);
+            expect(imageStyle).to.be.an(Icon);
             expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
             expect(imageStyle.anchor_).to.be.an(Array);
             expect(imageStyle.anchor_).to.have.length(2);
@@ -2265,7 +2265,7 @@ describe('ol.format.KML', function() {
 
         it('can write an feature\'s icon style', function() {
           var style = new Style({
-            image: new _ol_style_Icon_({
+            image: new Icon({
               anchor: [0.25, 36],
               anchorOrigin: 'top-left',
               anchorXUnits: 'fraction',
@@ -2314,7 +2314,7 @@ describe('ol.format.KML', function() {
         it('does not write styles when writeStyles option is false', function() {
           format = new KML({writeStyles: false});
           var style = new Style({
-            image: new _ol_style_Icon_({
+            image: new Icon({
               src: 'http://foo.png'
             })
           });
@@ -3209,7 +3209,7 @@ describe('ol.format.KML', function() {
         var style = styleArray[0];
         expect(style).to.be.an(Style);
         var imageStyle = style.getImage();
-        expect(imageStyle).to.be.an(_ol_style_Icon_);
+        expect(imageStyle).to.be.an(Icon);
         expect(imageStyle.getSrc()).to.eql('http://maps.google.com/mapfiles/kml/shapes/star.png');
       });
 

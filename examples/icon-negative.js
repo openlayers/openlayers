@@ -7,13 +7,13 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
+import Icon from '../src/ol/style/Icon.js';
 import Style from '../src/ol/style/Style.js';
 
 
 function createStyle(src, img) {
   return new Style({
-    image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
+    image: new Icon(/** @type {olx.style.IconOptions} */ ({
       anchor: [0.5, 0.96],
       crossOrigin: 'anonymous',
       src: src,

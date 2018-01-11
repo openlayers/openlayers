@@ -21,7 +21,7 @@ import _ol_style_Image_ from '../style/Image.js';
  * @extends {ol.style.Image}
  * @api
  */
-var _ol_style_Icon_ = function(opt_options) {
+var Icon = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -172,7 +172,7 @@ var _ol_style_Icon_ = function(opt_options) {
 
 };
 
-inherits(_ol_style_Icon_, _ol_style_Image_);
+inherits(Icon, _ol_style_Image_);
 
 
 /**
@@ -180,8 +180,8 @@ inherits(_ol_style_Icon_, _ol_style_Image_);
  * @return {ol.style.Icon} The cloned style.
  * @api
  */
-_ol_style_Icon_.prototype.clone = function() {
-  return new _ol_style_Icon_({
+Icon.prototype.clone = function() {
+  return new Icon({
     anchor: this.anchor_.slice(),
     anchorOrigin: this.anchorOrigin_,
     anchorXUnits: this.anchorXUnits_,
@@ -205,7 +205,7 @@ _ol_style_Icon_.prototype.clone = function() {
  * @inheritDoc
  * @api
  */
-_ol_style_Icon_.prototype.getAnchor = function() {
+Icon.prototype.getAnchor = function() {
   if (this.normalizedAnchor_) {
     return this.normalizedAnchor_;
   }
@@ -251,7 +251,7 @@ _ol_style_Icon_.prototype.getAnchor = function() {
  * @return {ol.Color} Color.
  * @api
  */
-_ol_style_Icon_.prototype.getColor = function() {
+Icon.prototype.getColor = function() {
   return this.color_;
 };
 
@@ -263,7 +263,7 @@ _ol_style_Icon_.prototype.getColor = function() {
  * @override
  * @api
  */
-_ol_style_Icon_.prototype.getImage = function(pixelRatio) {
+Icon.prototype.getImage = function(pixelRatio) {
   return this.iconImage_.getImage(pixelRatio);
 };
 
@@ -271,7 +271,7 @@ _ol_style_Icon_.prototype.getImage = function(pixelRatio) {
 /**
  * @override
  */
-_ol_style_Icon_.prototype.getImageSize = function() {
+Icon.prototype.getImageSize = function() {
   return this.iconImage_.getSize();
 };
 
@@ -279,7 +279,7 @@ _ol_style_Icon_.prototype.getImageSize = function() {
 /**
  * @override
  */
-_ol_style_Icon_.prototype.getHitDetectionImageSize = function() {
+Icon.prototype.getHitDetectionImageSize = function() {
   return this.getImageSize();
 };
 
@@ -287,7 +287,7 @@ _ol_style_Icon_.prototype.getHitDetectionImageSize = function() {
 /**
  * @override
  */
-_ol_style_Icon_.prototype.getImageState = function() {
+Icon.prototype.getImageState = function() {
   return this.iconImage_.getImageState();
 };
 
@@ -295,7 +295,7 @@ _ol_style_Icon_.prototype.getImageState = function() {
 /**
  * @override
  */
-_ol_style_Icon_.prototype.getHitDetectionImage = function(pixelRatio) {
+Icon.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.iconImage_.getHitDetectionImage(pixelRatio);
 };
 
@@ -304,7 +304,7 @@ _ol_style_Icon_.prototype.getHitDetectionImage = function(pixelRatio) {
  * @inheritDoc
  * @api
  */
-_ol_style_Icon_.prototype.getOrigin = function() {
+Icon.prototype.getOrigin = function() {
   if (this.origin_) {
     return this.origin_;
   }
@@ -336,7 +336,7 @@ _ol_style_Icon_.prototype.getOrigin = function() {
  * @return {string|undefined} Image src.
  * @api
  */
-_ol_style_Icon_.prototype.getSrc = function() {
+Icon.prototype.getSrc = function() {
   return this.iconImage_.getSrc();
 };
 
@@ -345,7 +345,7 @@ _ol_style_Icon_.prototype.getSrc = function() {
  * @inheritDoc
  * @api
  */
-_ol_style_Icon_.prototype.getSize = function() {
+Icon.prototype.getSize = function() {
   return !this.size_ ? this.iconImage_.getSize() : this.size_;
 };
 
@@ -353,7 +353,7 @@ _ol_style_Icon_.prototype.getSize = function() {
 /**
  * @override
  */
-_ol_style_Icon_.prototype.listenImageChange = function(listener, thisArg) {
+Icon.prototype.listenImageChange = function(listener, thisArg) {
   return _ol_events_.listen(this.iconImage_, EventType.CHANGE,
       listener, thisArg);
 };
@@ -367,7 +367,7 @@ _ol_style_Icon_.prototype.listenImageChange = function(listener, thisArg) {
  * @override
  * @api
  */
-_ol_style_Icon_.prototype.load = function() {
+Icon.prototype.load = function() {
   this.iconImage_.load();
 };
 
@@ -375,8 +375,8 @@ _ol_style_Icon_.prototype.load = function() {
 /**
  * @override
  */
-_ol_style_Icon_.prototype.unlistenImageChange = function(listener, thisArg) {
+Icon.prototype.unlistenImageChange = function(listener, thisArg) {
   _ol_events_.unlisten(this.iconImage_, EventType.CHANGE,
       listener, thisArg);
 };
-export default _ol_style_Icon_;
+export default Icon;

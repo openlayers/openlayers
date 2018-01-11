@@ -9,7 +9,7 @@ import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
+import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -91,7 +91,7 @@ var styles = {
     })
   }),
   'icon': new Style({
-    image: new _ol_style_Icon_({
+    image: new Icon({
       anchor: [0.5, 1],
       src: 'data/icon.png'
     })

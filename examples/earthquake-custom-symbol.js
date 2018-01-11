@@ -8,7 +8,7 @@ import _ol_render_ from '../src/ol/render.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
+import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -41,7 +41,7 @@ var styleFunction = function(feature) {
     }));
     vectorContext.drawGeometry(new Polygon([symbol.map(scaleFunction)]));
     style = new Style({
-      image: new _ol_style_Icon_({
+      image: new Icon({
         img: canvas,
         imgSize: [size, size],
         rotation: 1.2

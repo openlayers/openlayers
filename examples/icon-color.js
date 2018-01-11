@@ -7,7 +7,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
+import Icon from '../src/ol/style/Icon.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -24,7 +24,7 @@ var madrid = new Feature({
 });
 
 rome.setStyle(new Style({
-  image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
+  image: new Icon(/** @type {olx.style.IconOptions} */ ({
     color: '#8959A8',
     crossOrigin: 'anonymous',
     src: 'data/dot.png'
@@ -32,7 +32,7 @@ rome.setStyle(new Style({
 }));
 
 london.setStyle(new Style({
-  image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
+  image: new Icon(/** @type {olx.style.IconOptions} */ ({
     color: '#4271AE',
     crossOrigin: 'anonymous',
     src: 'data/dot.png'
@@ -40,7 +40,7 @@ london.setStyle(new Style({
 }));
 
 madrid.setStyle(new Style({
-  image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
+  image: new Icon(/** @type {olx.style.IconOptions} */ ({
     color: [113, 140, 0],
     crossOrigin: 'anonymous',
     src: 'data/dot.png'

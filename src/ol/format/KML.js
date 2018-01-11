@@ -21,7 +21,7 @@ import Polygon from '../geom/Polygon.js';
 import {toRadians} from '../math.js';
 import {get as getProjection} from '../proj.js';
 import Fill from '../style/Fill.js';
-import _ol_style_Icon_ from '../style/Icon.js';
+import Icon from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
 import Stroke from '../style/Stroke.js';
@@ -197,7 +197,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Image}
    * @private
    */
-  KML.DEFAULT_IMAGE_STYLE_ = new _ol_style_Icon_({
+  KML.DEFAULT_IMAGE_STYLE_ = new Icon({
     anchor: KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
     anchorOrigin: IconOrigin.BOTTOM_LEFT,
     anchorXUnits: KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
@@ -631,7 +631,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
       }
     }
 
-    var imageStyle = new _ol_style_Icon_({
+    var imageStyle = new Icon({
       anchor: anchor,
       anchorOrigin: anchorOrigin,
       anchorXUnits: anchorXUnits,
@@ -2555,7 +2555,7 @@ KML.writeStyle_ = function(node, style, objectStack) {
   var strokeStyle = style.getStroke();
   var imageStyle = style.getImage();
   var textStyle = style.getText();
-  if (imageStyle instanceof _ol_style_Icon_) {
+  if (imageStyle instanceof Icon) {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {
