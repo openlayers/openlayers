@@ -5,7 +5,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
 import BaseObject from '../Object.js';
-import _ol_layer_Base_ from '../layer/Base.js';
+import BaseLayer from '../layer/Base.js';
 import LayerProperty from '../layer/Property.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
@@ -38,7 +38,7 @@ var _ol_layer_Layer_ = function(options) {
   var baseOptions = _ol_obj_.assign({}, options);
   delete baseOptions.source;
 
-  _ol_layer_Base_.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
+  BaseLayer.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
 
   /**
    * @private
@@ -70,7 +70,7 @@ var _ol_layer_Layer_ = function(options) {
   this.setSource(source);
 };
 
-inherits(_ol_layer_Layer_, _ol_layer_Base_);
+inherits(_ol_layer_Layer_, BaseLayer);
 
 
 /**

@@ -21,7 +21,7 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.layer.BaseOptions} options Layer options.
  * @api
  */
-var _ol_layer_Base_ = function(options) {
+var BaseLayer = function(options) {
 
   BaseObject.call(this);
 
@@ -60,14 +60,14 @@ var _ol_layer_Base_ = function(options) {
 
 };
 
-inherits(_ol_layer_Base_, BaseObject);
+inherits(BaseLayer, BaseObject);
 
 
 /**
  * Get the layer type (used when creating a layer renderer).
  * @return {ol.LayerType} The layer type.
  */
-_ol_layer_Base_.prototype.getType = function() {
+BaseLayer.prototype.getType = function() {
   return this.type;
 };
 
@@ -75,7 +75,7 @@ _ol_layer_Base_.prototype.getType = function() {
 /**
  * @return {ol.LayerState} Layer state.
  */
-_ol_layer_Base_.prototype.getLayerState = function() {
+BaseLayer.prototype.getLayerState = function() {
   this.state_.opacity = clamp(this.getOpacity(), 0, 1);
   this.state_.sourceState = this.getSourceState();
   this.state_.visible = this.getVisible();
@@ -94,7 +94,7 @@ _ol_layer_Base_.prototype.getLayerState = function() {
  *     modified in place).
  * @return {Array.<ol.layer.Layer>} Array of layers.
  */
-_ol_layer_Base_.prototype.getLayersArray = function(opt_array) {};
+BaseLayer.prototype.getLayersArray = function(opt_array) {};
 
 
 /**
@@ -103,7 +103,7 @@ _ol_layer_Base_.prototype.getLayersArray = function(opt_array) {};
  *     states (to be modified in place).
  * @return {Array.<ol.LayerState>} List of layer states.
  */
-_ol_layer_Base_.prototype.getLayerStatesArray = function(opt_states) {};
+BaseLayer.prototype.getLayerStatesArray = function(opt_states) {};
 
 
 /**
@@ -113,7 +113,7 @@ _ol_layer_Base_.prototype.getLayerStatesArray = function(opt_states) {};
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.getExtent = function() {
+BaseLayer.prototype.getExtent = function() {
   return (
   /** @type {ol.Extent|undefined} */ this.get(LayerProperty.EXTENT)
   );
@@ -126,7 +126,7 @@ _ol_layer_Base_.prototype.getExtent = function() {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.getMaxResolution = function() {
+BaseLayer.prototype.getMaxResolution = function() {
   return (
   /** @type {number} */ this.get(LayerProperty.MAX_RESOLUTION)
   );
@@ -139,7 +139,7 @@ _ol_layer_Base_.prototype.getMaxResolution = function() {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.getMinResolution = function() {
+BaseLayer.prototype.getMinResolution = function() {
   return (
   /** @type {number} */ this.get(LayerProperty.MIN_RESOLUTION)
   );
@@ -152,7 +152,7 @@ _ol_layer_Base_.prototype.getMinResolution = function() {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.getOpacity = function() {
+BaseLayer.prototype.getOpacity = function() {
   return (
   /** @type {number} */ this.get(LayerProperty.OPACITY)
   );
@@ -163,7 +163,7 @@ _ol_layer_Base_.prototype.getOpacity = function() {
  * @abstract
  * @return {ol.source.State} Source state.
  */
-_ol_layer_Base_.prototype.getSourceState = function() {};
+BaseLayer.prototype.getSourceState = function() {};
 
 
 /**
@@ -172,7 +172,7 @@ _ol_layer_Base_.prototype.getSourceState = function() {};
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.getVisible = function() {
+BaseLayer.prototype.getVisible = function() {
   return (
   /** @type {boolean} */ this.get(LayerProperty.VISIBLE)
   );
@@ -186,7 +186,7 @@ _ol_layer_Base_.prototype.getVisible = function() {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.getZIndex = function() {
+BaseLayer.prototype.getZIndex = function() {
   return (
   /** @type {number} */ this.get(LayerProperty.Z_INDEX)
   );
@@ -200,7 +200,7 @@ _ol_layer_Base_.prototype.getZIndex = function() {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.setExtent = function(extent) {
+BaseLayer.prototype.setExtent = function(extent) {
   this.set(LayerProperty.EXTENT, extent);
 };
 
@@ -211,7 +211,7 @@ _ol_layer_Base_.prototype.setExtent = function(extent) {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.setMaxResolution = function(maxResolution) {
+BaseLayer.prototype.setMaxResolution = function(maxResolution) {
   this.set(LayerProperty.MAX_RESOLUTION, maxResolution);
 };
 
@@ -222,7 +222,7 @@ _ol_layer_Base_.prototype.setMaxResolution = function(maxResolution) {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.setMinResolution = function(minResolution) {
+BaseLayer.prototype.setMinResolution = function(minResolution) {
   this.set(LayerProperty.MIN_RESOLUTION, minResolution);
 };
 
@@ -233,7 +233,7 @@ _ol_layer_Base_.prototype.setMinResolution = function(minResolution) {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.setOpacity = function(opacity) {
+BaseLayer.prototype.setOpacity = function(opacity) {
   this.set(LayerProperty.OPACITY, opacity);
 };
 
@@ -244,7 +244,7 @@ _ol_layer_Base_.prototype.setOpacity = function(opacity) {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.setVisible = function(visible) {
+BaseLayer.prototype.setVisible = function(visible) {
   this.set(LayerProperty.VISIBLE, visible);
 };
 
@@ -256,7 +256,7 @@ _ol_layer_Base_.prototype.setVisible = function(visible) {
  * @observable
  * @api
  */
-_ol_layer_Base_.prototype.setZIndex = function(zindex) {
+BaseLayer.prototype.setZIndex = function(zindex) {
   this.set(LayerProperty.Z_INDEX, zindex);
 };
-export default _ol_layer_Base_;
+export default BaseLayer;

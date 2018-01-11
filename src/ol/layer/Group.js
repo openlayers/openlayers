@@ -10,7 +10,7 @@ import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
-import _ol_layer_Base_ from '../layer/Base.js';
+import BaseLayer from '../layer/Base.js';
 import _ol_obj_ from '../obj.js';
 import SourceState from '../source/State.js';
 
@@ -44,7 +44,7 @@ var _ol_layer_Group_ = function(opt_options) {
 
   var layers = options.layers;
 
-  _ol_layer_Base_.call(this, baseOptions);
+  BaseLayer.call(this, baseOptions);
 
   /**
    * @private
@@ -78,7 +78,7 @@ var _ol_layer_Group_ = function(opt_options) {
 
 };
 
-inherits(_ol_layer_Group_, _ol_layer_Base_);
+inherits(_ol_layer_Group_, BaseLayer);
 
 
 /**
