@@ -9,7 +9,7 @@ import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
 import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
-import _ol_interaction_PinchZoom_ from '../../../src/ol/interaction/PinchZoom.js';
+import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
@@ -509,7 +509,7 @@ describe('ol.Map', function() {
         options.pinchZoom = true;
         var interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(1);
-        expect(interactions.item(0)).to.be.a(_ol_interaction_PinchZoom_);
+        expect(interactions.item(0)).to.be.a(PinchZoom);
         expect(interactions.item(0).constrainResolution_).to.eql(false);
       });
     });
@@ -521,7 +521,7 @@ describe('ol.Map', function() {
         options.constrainResolution = true;
         var interactions = defaultInteractions(options);
         expect(interactions.getLength()).to.eql(2);
-        expect(interactions.item(0)).to.be.a(_ol_interaction_PinchZoom_);
+        expect(interactions.item(0)).to.be.a(PinchZoom);
         expect(interactions.item(0).constrainResolution_).to.eql(true);
         expect(interactions.item(1)).to.be.a(MouseWheelZoom);
         expect(interactions.item(1).constrainResolution_).to.eql(true);

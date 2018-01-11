@@ -1,14 +1,14 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_PinchZoom_ from '../src/ol/interaction/PinchZoom.js';
+import PinchZoom from '../src/ol/interaction/PinchZoom.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
 var map = new Map({
   interactions: defaultInteractions({pinchZoom: false}).extend([
-    new _ol_interaction_PinchZoom_({
+    new PinchZoom({
       constrainResolution: true // force zooming to a integer zoom
     })
   ]),

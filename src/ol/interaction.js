@@ -11,7 +11,7 @@ import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
 import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import _ol_interaction_PinchRotate_ from './interaction/PinchRotate.js';
-import _ol_interaction_PinchZoom_ from './interaction/PinchZoom.js';
+import PinchZoom from './interaction/PinchZoom.js';
 
 
 /**
@@ -75,7 +75,7 @@ export function defaults(opt_options) {
 
   var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
-    interactions.push(new _ol_interaction_PinchZoom_({
+    interactions.push(new PinchZoom({
       constrainResolution: options.constrainResolution,
       duration: options.zoomDuration
     }));
