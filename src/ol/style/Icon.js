@@ -8,7 +8,7 @@ import {asArray} from '../color.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
-import _ol_style_IconImage_ from '../style/IconImage.js';
+import IconImage from '../style/IconImage.js';
 import IconOrigin from '../style/IconOrigin.js';
 import _ol_style_Image_ from '../style/Image.js';
 
@@ -107,7 +107,7 @@ var Icon = function(opt_options) {
    * @private
    * @type {ol.style.IconImage}
    */
-  this.iconImage_ = _ol_style_IconImage_.get(
+  this.iconImage_ = IconImage.get(
       image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
 
   /**

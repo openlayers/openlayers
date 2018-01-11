@@ -1,7 +1,7 @@
 import {getUid} from '../../../../src/ol/index.js';
 import {iconImageCache} from '../../../../src/ol/style.js';
 import Icon from '../../../../src/ol/style/Icon.js';
-import _ol_style_IconImage_ from '../../../../src/ol/style/IconImage.js';
+import IconImage from '../../../../src/ol/style/IconImage.js';
 
 
 describe('ol.style.Icon', function() {
@@ -17,7 +17,7 @@ describe('ol.style.Icon', function() {
         img: canvas,
         imgSize: size
       });
-      expect(_ol_style_IconImage_.get(
+      expect(IconImage.get(
           canvas, getUid(canvas), size, '').getImage()).to.eql(canvas);
     });
 
@@ -227,7 +227,7 @@ describe('ol.style.Icon', function() {
       // pretend that the image is already in the cache,
       // this image will be used for the icon.
       var src = 'test.png';
-      var iconImage = new _ol_style_IconImage_(null, 'test.png', imgSize);
+      var iconImage = new IconImage(null, 'test.png', imgSize);
       iconImageCache.set(src, null, null, iconImage);
 
       var iconStyle = new Icon({

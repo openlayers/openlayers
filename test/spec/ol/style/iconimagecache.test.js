@@ -1,7 +1,7 @@
 import {nullFunction} from '../../../../src/ol/index.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {iconImageCache} from '../../../../src/ol/style.js';
-import _ol_style_IconImage_ from '../../../../src/ol/style/IconImage.js';
+import IconImage from '../../../../src/ol/style/IconImage.js';
 
 describe('ol.style.IconImageCache', function() {
   var originalMaxCacheSize;
@@ -23,7 +23,7 @@ describe('ol.style.IconImageCache', function() {
 
       for (i = 0; i < 4; ++i) {
         src = i + '';
-        iconImage = new _ol_style_IconImage_(null, src);
+        iconImage = new IconImage(null, src);
         iconImageCache.set(src, null, null, iconImage);
       }
 
@@ -33,7 +33,7 @@ describe('ol.style.IconImageCache', function() {
       expect(iconImageCache.cacheSize_).to.eql(4);
 
       src = '4';
-      iconImage = new _ol_style_IconImage_(null, src);
+      iconImage = new IconImage(null, src);
       iconImageCache.set(src, null, null, iconImage);
       expect(iconImageCache.cacheSize_).to.eql(5);
 
@@ -41,13 +41,13 @@ describe('ol.style.IconImageCache', function() {
       expect(iconImageCache.cacheSize_).to.eql(3);
 
       src = '0';
-      iconImage = new _ol_style_IconImage_(null, src);
+      iconImage = new IconImage(null, src);
       _ol_events_.listen(iconImage, 'change', nullFunction, false);
       iconImageCache.set(src, null, null, iconImage);
       expect(iconImageCache.cacheSize_).to.eql(4);
 
       src = '4';
-      iconImage = new _ol_style_IconImage_(null, src);
+      iconImage = new IconImage(null, src);
       _ol_events_.listen(iconImage, 'change', nullFunction, false);
       iconImageCache.set(src, null, null, iconImage);
       expect(iconImageCache.cacheSize_).to.eql(5);
@@ -65,7 +65,7 @@ describe('ol.style.IconImageCache', function() {
 
       for (i = 0; i < 3; ++i) {
         src = i + '';
-        iconImage = new _ol_style_IconImage_(null, src);
+        iconImage = new IconImage(null, src);
         iconImageCache.set(src, null, null, iconImage);
       }
 
