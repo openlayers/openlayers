@@ -11,11 +11,24 @@ import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
-import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import _ol_style_Style_ from '../style/Style.js';
+
+
+/**
+ * @enum {string}
+ */
+var ExtentEventType = {
+  /**
+   * Triggered after the extent is changed
+   * @event ol.interaction.Extent.Event#extentchanged
+   * @api
+   */
+  EXTENTCHANGED: 'extentchanged'
+};
+
 
 /**
  * @classdesc
@@ -454,7 +467,7 @@ _ol_interaction_Extent_.prototype.setExtent = function(extent) {
  * @extends {ol.events.Event}
  */
 _ol_interaction_Extent_.Event = function(extent) {
-  Event.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
+  Event.call(this, ExtentEventType.EXTENTCHANGED);
 
   /**
    * The current extent.

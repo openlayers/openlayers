@@ -11,6 +11,36 @@ import {equivalent} from '../proj.js';
 import _ol_reproj_Image_ from '../reproj/Image.js';
 import Source from '../source/Source.js';
 
+
+/**
+ * @enum {string}
+ */
+var ImageSourceEventType = {
+
+  /**
+   * Triggered when an image starts loading.
+   * @event ol.source.Image.Event#imageloadstart
+   * @api
+   */
+  IMAGELOADSTART: 'imageloadstart',
+
+  /**
+   * Triggered when an image finishes loading.
+   * @event ol.source.Image.Event#imageloadend
+   * @api
+   */
+  IMAGELOADEND: 'imageloadend',
+
+  /**
+   * Triggered if image loading results in an error.
+   * @event ol.source.Image.Event#imageloaderror
+   * @api
+   */
+  IMAGELOADERROR: 'imageloaderror'
+
+};
+
+
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -143,19 +173,13 @@ ImageSource.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   switch (image.getState()) {
     case ImageState.LOADING:
-      this.dispatchEvent(
-          new ImageSource.Event(ImageSource.EventType_.IMAGELOADSTART,
-              image));
+      this.dispatchEvent(new ImageSource.Event(ImageSourceEventType.IMAGELOADSTART, image));
       break;
     case ImageState.LOADED:
-      this.dispatchEvent(
-          new ImageSource.Event(ImageSource.EventType_.IMAGELOADEND,
-              image));
+      this.dispatchEvent(new ImageSource.Event(ImageSourceEventType.IMAGELOADEND, image));
       break;
     case ImageState.ERROR:
-      this.dispatchEvent(
-          new ImageSource.Event(ImageSource.EventType_.IMAGELOADERROR,
-              image));
+      this.dispatchEvent(new ImageSource.Event(ImageSourceEventType.IMAGELOADERROR, image));
       break;
     default:
       // pass
@@ -182,7 +206,7 @@ ImageSource.defaultImageLoadFunction = function(image, src) {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.source.ImageEvent}
- * @param {string} type Type.
+ * @param {ImageSourceEventType} type Type.
  * @param {ol.Image} image The image.
  */
 ImageSource.Event = function(type, image) {
@@ -199,33 +223,4 @@ ImageSource.Event = function(type, image) {
 };
 inherits(ImageSource.Event, Event);
 
-
-/**
- * @enum {string}
- * @private
- */
-ImageSource.EventType_ = {
-
-  /**
-   * Triggered when an image starts loading.
-   * @event ol.source.Image.Event#imageloadstart
-   * @api
-   */
-  IMAGELOADSTART: 'imageloadstart',
-
-  /**
-   * Triggered when an image finishes loading.
-   * @event ol.source.Image.Event#imageloadend
-   * @api
-   */
-  IMAGELOADEND: 'imageloadend',
-
-  /**
-   * Triggered if image loading results in an error.
-   * @event ol.source.Image.Event#imageloaderror
-   * @api
-   */
-  IMAGELOADERROR: 'imageloaderror'
-
-};
 export default ImageSource;
