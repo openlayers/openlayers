@@ -8,7 +8,7 @@ import {buffer, containsExtent, createEmpty} from '../../extent.js';
 import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/ReplayGroup.js';
 import RendererType from '../Type.js';
 import _ol_renderer_vector_ from '../vector.js';
-import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
+import WebGLLayerRenderer from '../webgl/Layer.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -20,7 +20,7 @@ import _ol_transform_ from '../../transform.js';
  */
 var WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
-  _ol_renderer_webgl_Layer_.call(this, mapRenderer, vectorLayer);
+  WebGLLayerRenderer.call(this, mapRenderer, vectorLayer);
 
   /**
    * @private
@@ -67,7 +67,7 @@ var WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
 };
 
-inherits(WebGLVectorLayerRenderer, _ol_renderer_webgl_Layer_);
+inherits(WebGLVectorLayerRenderer, WebGLLayerRenderer);
 
 
 /**
@@ -128,7 +128,7 @@ WebGLVectorLayerRenderer.prototype.disposeInternal = function() {
     replayGroup.getDeleteResourcesFunction(context)();
     this.replayGroup_ = null;
   }
-  _ol_renderer_webgl_Layer_.prototype.disposeInternal.call(this);
+  WebGLLayerRenderer.prototype.disposeInternal.call(this);
 };
 
 

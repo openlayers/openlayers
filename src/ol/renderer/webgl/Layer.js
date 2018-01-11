@@ -21,7 +21,7 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
  * @param {ol.layer.Layer} layer Layer.
  */
-var _ol_renderer_webgl_Layer_ = function(mapRenderer, layer) {
+var WebGLLayerRenderer = function(mapRenderer, layer) {
 
   LayerRenderer.call(this, layer);
 
@@ -86,7 +86,7 @@ var _ol_renderer_webgl_Layer_ = function(mapRenderer, layer) {
 
 };
 
-inherits(_ol_renderer_webgl_Layer_, LayerRenderer);
+inherits(WebGLLayerRenderer, LayerRenderer);
 
 
 /**
@@ -94,7 +94,7 @@ inherits(_ol_renderer_webgl_Layer_, LayerRenderer);
  * @param {number} framebufferDimension Framebuffer dimension.
  * @protected
  */
-_ol_renderer_webgl_Layer_.prototype.bindFramebuffer = function(frameState, framebufferDimension) {
+WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferDimension) {
 
   var gl = this.mapRenderer.getGL();
 
@@ -140,7 +140,7 @@ _ol_renderer_webgl_Layer_.prototype.bindFramebuffer = function(frameState, frame
  * @param {ol.LayerState} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  */
-_ol_renderer_webgl_Layer_.prototype.composeFrame = function(frameState, layerState, context) {
+WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
 
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, context, frameState);
 
@@ -189,7 +189,7 @@ _ol_renderer_webgl_Layer_.prototype.composeFrame = function(frameState, layerSta
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-_ol_renderer_webgl_Layer_.prototype.dispatchComposeEvent_ = function(type, context, frameState) {
+WebGLLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, frameState) {
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
     var viewState = frameState.viewState;
@@ -212,7 +212,7 @@ _ol_renderer_webgl_Layer_.prototype.dispatchComposeEvent_ = function(type, conte
 /**
  * @return {!ol.Transform} Matrix.
  */
-_ol_renderer_webgl_Layer_.prototype.getTexCoordMatrix = function() {
+WebGLLayerRenderer.prototype.getTexCoordMatrix = function() {
   return this.texCoordMatrix;
 };
 
@@ -220,7 +220,7 @@ _ol_renderer_webgl_Layer_.prototype.getTexCoordMatrix = function() {
 /**
  * @return {WebGLTexture} Texture.
  */
-_ol_renderer_webgl_Layer_.prototype.getTexture = function() {
+WebGLLayerRenderer.prototype.getTexture = function() {
   return this.texture;
 };
 
@@ -228,7 +228,7 @@ _ol_renderer_webgl_Layer_.prototype.getTexture = function() {
 /**
  * @return {!ol.Transform} Matrix.
  */
-_ol_renderer_webgl_Layer_.prototype.getProjectionMatrix = function() {
+WebGLLayerRenderer.prototype.getProjectionMatrix = function() {
   return this.projectionMatrix;
 };
 
@@ -236,7 +236,7 @@ _ol_renderer_webgl_Layer_.prototype.getProjectionMatrix = function() {
 /**
  * Handle webglcontextlost.
  */
-_ol_renderer_webgl_Layer_.prototype.handleWebGLContextLost = function() {
+WebGLLayerRenderer.prototype.handleWebGLContextLost = function() {
   this.texture = null;
   this.framebuffer = null;
   this.framebufferDimension = undefined;
@@ -250,7 +250,7 @@ _ol_renderer_webgl_Layer_.prototype.handleWebGLContextLost = function() {
  * @param {ol.webgl.Context} context Context.
  * @return {boolean} whether composeFrame should be called.
  */
-_ol_renderer_webgl_Layer_.prototype.prepareFrame = function(frameState, layerState, context) {};
+WebGLLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {};
 
 
 /**
@@ -263,5 +263,5 @@ _ol_renderer_webgl_Layer_.prototype.prepareFrame = function(frameState, layerSta
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-_ol_renderer_webgl_Layer_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {};
-export default _ol_renderer_webgl_Layer_;
+WebGLLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {};
+export default WebGLLayerRenderer;

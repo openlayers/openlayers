@@ -12,7 +12,7 @@ import {numberSafeCompareFunction} from '../../array.js';
 import {createEmpty, intersects} from '../../extent.js';
 import {roundUpToPowerOfTwo} from '../../math.js';
 import RendererType from '../Type.js';
-import _ol_renderer_webgl_Layer_ from '../webgl/Layer.js';
+import WebGLLayerRenderer from '../webgl/Layer.js';
 import _ol_renderer_webgl_tilelayershader_ from '../webgl/tilelayershader.js';
 import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayershader/Locations.js';
 import _ol_size_ from '../../size.js';
@@ -29,7 +29,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  */
 var WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
-  _ol_renderer_webgl_Layer_.call(this, mapRenderer, tileLayer);
+  WebGLLayerRenderer.call(this, mapRenderer, tileLayer);
 
   /**
    * @private
@@ -86,7 +86,7 @@ var WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
 };
 
-inherits(WebGLTileLayerRenderer, _ol_renderer_webgl_Layer_);
+inherits(WebGLTileLayerRenderer, WebGLLayerRenderer);
 
 
 /**
@@ -120,7 +120,7 @@ WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
 WebGLTileLayerRenderer.prototype.disposeInternal = function() {
   var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
-  _ol_renderer_webgl_Layer_.prototype.disposeInternal.call(this);
+  WebGLLayerRenderer.prototype.disposeInternal.call(this);
 };
 
 
@@ -156,7 +156,7 @@ WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, proje
  * @inheritDoc
  */
 WebGLTileLayerRenderer.prototype.handleWebGLContextLost = function() {
-  _ol_renderer_webgl_Layer_.prototype.handleWebGLContextLost.call(this);
+  WebGLLayerRenderer.prototype.handleWebGLContextLost.call(this);
   this.locations_ = null;
 };
 
