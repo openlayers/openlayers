@@ -6,7 +6,7 @@ import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import _ol_layer_Base_ from '../layer/Base.js';
-import _ol_layer_Property_ from '../layer/Property.js';
+import LayerProperty from '../layer/Property.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
@@ -63,7 +63,7 @@ var _ol_layer_Layer_ = function(options) {
   }
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(_ol_layer_Property_.SOURCE),
+      BaseObject.getChangeEventType(LayerProperty.SOURCE),
       this.handleSourcePropertyChange_, this);
 
   var source = options.source ? options.source : null;
@@ -114,7 +114,7 @@ _ol_layer_Layer_.prototype.getLayerStatesArray = function(opt_states) {
  * @api
  */
 _ol_layer_Layer_.prototype.getSource = function() {
-  var source = this.get(_ol_layer_Property_.SOURCE);
+  var source = this.get(LayerProperty.SOURCE);
   return /** @type {ol.source.Source} */ (source) || null;
 };
 
@@ -200,6 +200,6 @@ _ol_layer_Layer_.prototype.setMap = function(map) {
  * @api
  */
 _ol_layer_Layer_.prototype.setSource = function(source) {
-  this.set(_ol_layer_Property_.SOURCE, source);
+  this.set(LayerProperty.SOURCE, source);
 };
 export default _ol_layer_Layer_;
