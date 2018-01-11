@@ -14,7 +14,7 @@ import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/web
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.render.webgl.Immediate', function() {
@@ -24,7 +24,7 @@ describe('ol.render.webgl.Immediate', function() {
     style = new Style({
       image: new _ol_style_Circle_(),
       fill: new Fill(),
-      stroke: new _ol_style_Stroke_()
+      stroke: new Stroke()
     });
     circle = new Circle([0, 0], 5);
     line = new LineString([[0, 0], [5, 5]]);

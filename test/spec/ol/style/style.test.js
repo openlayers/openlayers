@@ -3,7 +3,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 
 
@@ -13,7 +13,7 @@ describe('ol.style.Style', function() {
     color: 'rgba(255, 255, 255, 0.6)'
   });
 
-  var testStroke = new _ol_style_Stroke_({
+  var testStroke = new Stroke({
     color: '#319FD3',
     width: 1
   });
@@ -23,7 +23,7 @@ describe('ol.style.Style', function() {
     fill: new Fill({
       color: '#000'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#fff',
       width: 3
     })
@@ -51,7 +51,7 @@ describe('ol.style.Style', function() {
         image: new _ol_style_Circle_({
           radius: 5
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         }),
         text: new _ol_style_Text_({
@@ -77,7 +77,7 @@ describe('ol.style.Style', function() {
         image: new _ol_style_Circle_({
           radius: 5
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         }),
         text: new _ol_style_Text_({

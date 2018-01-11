@@ -4,7 +4,7 @@ import Polygon from '../src/ol/geom/Polygon.js';
 import _ol_render_ from '../src/ol/render.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -12,7 +12,7 @@ var canvas = document.getElementById('canvas');
 var vectorContext = _ol_render_.toContext(canvas.getContext('2d'), {size: [100, 100]});
 
 var fill = new Fill({color: 'blue'});
-var stroke = new _ol_style_Stroke_({color: 'black'});
+var stroke = new Stroke({color: 'black'});
 var style = new Style({
   fill: fill,
   stroke: stroke,

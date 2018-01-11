@@ -1,18 +1,18 @@
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.style.Stroke', function() {
 
   describe('#clone', function() {
 
     it('creates a new ol.style.Stroke', function() {
-      var original = new _ol_style_Stroke_();
+      var original = new Stroke();
       var clone = original.clone();
-      expect(clone).to.be.an(_ol_style_Stroke_);
+      expect(clone).to.be.an(Stroke);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new _ol_style_Stroke_({
+      var original = new Stroke({
         color: '#319FD3',
         lineCap: 'square',
         lineJoin: 'miter',
@@ -32,7 +32,7 @@ describe('ol.style.Stroke', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new _ol_style_Stroke_({
+      var original = new Stroke({
         color: [1, 2, 3, 0.4],
         lineDash: [1, 2, 3]
       });

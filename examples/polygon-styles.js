@@ -6,7 +6,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var styles = [
@@ -18,7 +18,7 @@ var styles = [
    *    the style.
    */
   new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'blue',
       width: 3
     }),

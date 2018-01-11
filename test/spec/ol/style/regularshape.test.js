@@ -1,7 +1,7 @@
 import AtlasManager from '../../../../src/ol/style/AtlasManager.js';
 import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
 import Fill from '../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.style.RegularShape', function() {
@@ -122,7 +122,7 @@ describe('ol.style.RegularShape', function() {
         radius2: 6,
         angle: 1,
         snapToPixel: false,
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         }),
         rotation: 2,
@@ -149,7 +149,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });
@@ -210,7 +210,7 @@ describe('ol.style.RegularShape', function() {
       });
       var style2 = new _ol_style_RegularShape_({
         radius: 5,
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });
@@ -226,7 +226,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -243,7 +243,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -264,7 +264,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -281,7 +281,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3',
           lineCap: 'round',
           lineDash: [5, 15, 25],
@@ -299,7 +299,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });
@@ -308,7 +308,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });
@@ -324,7 +324,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });
@@ -333,7 +333,7 @@ describe('ol.style.RegularShape', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });

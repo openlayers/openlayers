@@ -1,5 +1,5 @@
 import Fill from '../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 
 
@@ -50,13 +50,13 @@ describe('ol.style.Text', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         }),
         backgroundFill: new Fill({
           color: 'white'
         }),
-        backgroundStroke: new _ol_style_Stroke_({
+        backgroundStroke: new Stroke({
           color: 'black'
         })
       });
@@ -81,7 +81,7 @@ describe('ol.style.Text', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#319FD3'
         })
       });

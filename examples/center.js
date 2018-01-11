@@ -8,7 +8,7 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var source = new VectorSource({
@@ -19,7 +19,7 @@ var style = new Style({
   fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
-  stroke: new _ol_style_Stroke_({
+  stroke: new Stroke({
     color: '#319FD3',
     width: 1
   }),
@@ -28,7 +28,7 @@ var style = new Style({
     fill: new Fill({
       color: 'rgba(255, 255, 255, 0.6)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#319FD3',
       width: 1
     })

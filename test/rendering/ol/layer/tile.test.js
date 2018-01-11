@@ -9,7 +9,7 @@ import TileImage from '../../../../src/ol/source/TileImage.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -282,7 +282,7 @@ describe('ol.rendering.layer.Tile', function() {
             radius: 5,
             snapToPixel: false,
             fill: new Fill({color: 'yellow'}),
-            stroke: new _ol_style_Stroke_({color: 'red', width: 1})
+            stroke: new Stroke({color: 'red', width: 1})
           }));
           e.vectorContext.drawPoint(new Point(
               transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));

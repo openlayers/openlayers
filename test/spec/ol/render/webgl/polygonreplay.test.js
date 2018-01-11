@@ -8,7 +8,7 @@ import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../../../..
 import LinkedList from '../../../../../src/ol/structs/LinkedList.js';
 import RBush from '../../../../../src/ol/structs/RBush.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.PolygonReplay', function() {
   var replay;
@@ -16,7 +16,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
   var fillStyle = new Fill({
     color: [0, 0, 255, 0.5]
   });
-  var strokeStyle = new _ol_style_Stroke_({
+  var strokeStyle = new Stroke({
     color: [0, 255, 0, 0.4]
   });
 

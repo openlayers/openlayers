@@ -11,7 +11,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.Text', function() {
 
@@ -72,7 +72,7 @@ describe('ol.rendering.style.Text', function() {
             color: 'red',
             font: '12px sans-serif'
           }),
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#000',
             width: 3
           })
@@ -89,7 +89,7 @@ describe('ol.rendering.style.Text', function() {
           rotateWithView: true,
           text: 'hello',
           font: '10px sans-serif',
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: [10, 10, 10, 0.5]
           })
         })
@@ -108,7 +108,7 @@ describe('ol.rendering.style.Text', function() {
       var geom = new LineString();
       geom.setFlatCoordinates('XY', coords);
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'red'
         }),
         text: new _ol_style_Text_({
@@ -118,7 +118,7 @@ describe('ol.rendering.style.Text', function() {
           textAlign: textAlign,
           maxAngle: maxAngle,
           placement: 'line',
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: strokeColor || 'white',
             width: strokeWidth
           })
@@ -339,14 +339,14 @@ describe('ol.rendering.style.Text', function() {
       features[1].getStyle().getText().setBackgroundFill(new Fill({
         color: 'red'
       }));
-      features[1].getStyle().getText().setBackgroundStroke(new _ol_style_Stroke_({
+      features[1].getStyle().getText().setBackgroundStroke(new Stroke({
         color: 'blue',
         width: 3
       }));
       features[2].getStyle().getText().setBackgroundFill(new Fill({
         color: 'red'
       }));
-      features[2].getStyle().getText().setBackgroundStroke(new _ol_style_Stroke_({
+      features[2].getStyle().getText().setBackgroundStroke(new Stroke({
         color: 'blue',
         width: 3
       }));

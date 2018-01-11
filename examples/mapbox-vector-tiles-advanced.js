@@ -6,7 +6,7 @@ import {get as getProjection} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
@@ -45,7 +45,7 @@ var map = new Map({
         }),
         tileUrlFunction: tileUrlFunction
       }),
-      style: createMapboxStreetsV6Style(Style, Fill, _ol_style_Stroke_, _ol_style_Icon_, _ol_style_Text_)
+      style: createMapboxStreetsV6Style(Style, Fill, Stroke, _ol_style_Icon_, _ol_style_Text_)
     })
   ],
   target: 'map',

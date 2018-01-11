@@ -14,7 +14,7 @@ import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../webgl/po
 import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
 import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
-import _ol_style_Stroke_ from '../../style/Stroke.js';
+import Stroke from '../../style/Stroke.js';
 import LinkedList from '../../structs/LinkedList.js';
 import RBush from '../../structs/RBush.js';
 import _ol_webgl_ from '../../webgl.js';
@@ -1063,7 +1063,7 @@ _ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle = function(fillStyl
   if (strokeStyle) {
     this.lineStringReplay.setFillStrokeStyle(null, strokeStyle);
   } else {
-    var nullStrokeStyle = new _ol_style_Stroke_({
+    var nullStrokeStyle = new Stroke({
       color: [0, 0, 0, 0],
       lineWidth: 0
     });

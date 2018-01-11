@@ -6,7 +6,7 @@ import VectorContext from '../../../src/ol/render/VectorContext.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
 import Fill from '../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
+import Stroke from '../../../src/ol/style/Stroke.js';
 import Style from '../../../src/ol/style/Style.js';
 
 function getContext() {
@@ -58,7 +58,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'red',
           width: 14
         })
@@ -82,7 +82,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           lineCap: 'butt',
           color: 'red',
           width: 14
@@ -107,7 +107,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           lineJoin: 'bevel',
           color: 'red',
           width: 14
@@ -132,7 +132,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'blue',
           width: 8
         }),
@@ -161,7 +161,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           lineDash: [10, 5]
         })
       });
@@ -186,7 +186,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           lineDash: [10, 5],
           lineDashOffset: 5
         })

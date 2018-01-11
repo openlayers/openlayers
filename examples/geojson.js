@@ -10,14 +10,14 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
 var image = new _ol_style_Circle_({
   radius: 5,
   fill: null,
-  stroke: new _ol_style_Stroke_({color: 'red', width: 1})
+  stroke: new Stroke({color: 'red', width: 1})
 });
 
 var styles = {
@@ -25,13 +25,13 @@ var styles = {
     image: image
   }),
   'LineString': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'green',
       width: 1
     })
   }),
   'MultiLineString': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'green',
       width: 1
     })
@@ -40,7 +40,7 @@ var styles = {
     image: image
   }),
   'MultiPolygon': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'yellow',
       width: 1
     }),
@@ -49,7 +49,7 @@ var styles = {
     })
   }),
   'Polygon': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'blue',
       lineDash: [4],
       width: 3
@@ -59,7 +59,7 @@ var styles = {
     })
   }),
   'GeometryCollection': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'magenta',
       width: 2
     }),
@@ -69,13 +69,13 @@ var styles = {
     image: new _ol_style_Circle_({
       radius: 10,
       fill: null,
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'magenta'
       })
     })
   }),
   'Circle': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'red',
       width: 2
     }),

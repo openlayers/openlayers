@@ -11,7 +11,7 @@ import {clamp} from './math.js';
 import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
 import RenderEventType from './render/EventType.js';
 import Fill from './style/Fill.js';
-import _ol_style_Stroke_ from './style/Stroke.js';
+import Stroke from './style/Stroke.js';
 import _ol_style_Text_ from './style/Text.js';
 
 
@@ -20,7 +20,7 @@ import _ol_style_Text_ from './style/Text.js';
  * @private
  * @const
  */
-var DEFAULT_STROKE_STYLE = new _ol_style_Stroke_({
+var DEFAULT_STROKE_STYLE = new Stroke({
   color: 'rgba(0,0,0,0.2)'
 });
 
@@ -289,7 +289,7 @@ var Graticule = function(opt_options) {
         fill: new Fill({
           color: 'rgba(0,0,0,1)'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(255,255,255,1)',
           width: 3
         })
@@ -306,7 +306,7 @@ var Graticule = function(opt_options) {
         fill: new Fill({
           color: 'rgba(0,0,0,1)'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(255,255,255,1)',
           width: 3
         })

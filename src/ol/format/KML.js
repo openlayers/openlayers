@@ -24,7 +24,7 @@ import Fill from '../style/Fill.js';
 import _ol_style_Icon_ from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
-import _ol_style_Stroke_ from '../style/Stroke.js';
+import Stroke from '../style/Stroke.js';
 import Style from '../style/Style.js';
 import _ol_style_Text_ from '../style/Text.js';
 import _ol_xml_ from '../xml.js';
@@ -221,7 +221,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Stroke}
    * @private
    */
-  KML.DEFAULT_STROKE_STYLE_ = new _ol_style_Stroke_({
+  KML.DEFAULT_STROKE_STYLE_ = new Stroke({
     color: KML.DEFAULT_COLOR_,
     width: 1
   });
@@ -231,7 +231,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Stroke}
    * @private
    */
-  KML.DEFAULT_TEXT_STROKE_STYLE_ = new _ol_style_Stroke_({
+  KML.DEFAULT_TEXT_STROKE_STYLE_ = new Stroke({
     color: [51, 51, 51, 1],
     width: 2
   });
@@ -694,7 +694,7 @@ KML.LineStyleParser_ = function(node, objectStack) {
     return;
   }
   var styleObject = objectStack[objectStack.length - 1];
-  var strokeStyle = new _ol_style_Stroke_({
+  var strokeStyle = new Stroke({
     color: /** @type {ol.Color} */
         ('color' in object ? object['color'] : KML.DEFAULT_COLOR_),
     width: /** @type {number} */ ('width' in object ? object['width'] : 1)

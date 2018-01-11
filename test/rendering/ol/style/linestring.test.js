@@ -5,7 +5,7 @@ import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.rendering.style.LineString', function() {
@@ -49,7 +49,7 @@ describe('ol.rendering.style.LineString', function() {
         )
       });
       feature.setStyle(new Style({
-        stroke: new _ol_style_Stroke_({color: '#DE213A', width: 3})
+        stroke: new Stroke({color: '#DE213A', width: 3})
       }));
       vectorSource.addFeature(feature);
 
@@ -59,7 +59,7 @@ describe('ol.rendering.style.LineString', function() {
         )
       });
       feature.setStyle(new Style({
-        stroke: new _ol_style_Stroke_({color: '#9696EB', width: 1})
+        stroke: new Stroke({color: '#9696EB', width: 1})
       }));
       vectorSource.addFeature(feature);
 
@@ -69,9 +69,9 @@ describe('ol.rendering.style.LineString', function() {
         )
       });
       feature.setStyle([new Style({
-        stroke: new _ol_style_Stroke_({color: '#F2F211', width: 5})
+        stroke: new Stroke({color: '#F2F211', width: 5})
       }), new Style({
-        stroke: new _ol_style_Stroke_({color: '#292921', width: 1})
+        stroke: new Stroke({color: '#292921', width: 1})
       })]);
       vectorSource.addFeature(feature);
 
@@ -81,7 +81,7 @@ describe('ol.rendering.style.LineString', function() {
         )
       });
       feature.setStyle(new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#000000',
           width: 2,
           lineCap: 'square',
@@ -97,7 +97,7 @@ describe('ol.rendering.style.LineString', function() {
         )
       });
       feature.setStyle(new Style({
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: '#000000',
           width: 2,
           lineCap: 'square',

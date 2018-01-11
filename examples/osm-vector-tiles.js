@@ -5,7 +5,7 @@ import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var key = 'vector-tiles-5eJz6JX';
@@ -21,7 +21,7 @@ var buildingStyle = new Style({
     color: '#666',
     opacity: 0.4
   }),
-  stroke: new _ol_style_Stroke_({
+  stroke: new Stroke({
     color: '#444',
     width: 1
   })
@@ -47,7 +47,7 @@ var roadStyle = function(feature) {
       width = kind == 'highway' ? 1.5 : 1;
     }
     style = new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: color,
         width: width
       }),

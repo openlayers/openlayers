@@ -6,7 +6,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -25,7 +25,7 @@ var vectorSource = new VectorSource({
 var vector = new VectorLayer({
   source: vectorSource,
   style: new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(0, 0, 255, 1.0)',
       width: 2
     })

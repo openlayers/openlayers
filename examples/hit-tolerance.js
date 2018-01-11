@@ -7,14 +7,14 @@ import VectorSource from '../src/ol/source/Vector.js';
 import Feature from '../src/ol/Feature.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 
 var raster = new TileLayer({
   source: new OSM()
 });
 
 var style = new Style({
-  stroke: new _ol_style_Stroke_({
+  stroke: new Stroke({
     color: 'black',
     width: 1
   })

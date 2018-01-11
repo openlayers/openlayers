@@ -14,7 +14,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Style from '../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
@@ -32,12 +32,12 @@ var nodesLayer = new VectorLayer({
       image: new _ol_style_Circle_({
         radius: 8,
         fill: new Fill({color: 'rgba(255, 0, 0, 0.2)'}),
-        stroke: new _ol_style_Stroke_({color: 'red', width: 1})
+        stroke: new Stroke({color: 'red', width: 1})
       }),
       text: new _ol_style_Text_({
         text: f.get('node').id.toString(),
         fill: new Fill({color: 'red'}),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'white',
           width: 3
         })
@@ -52,14 +52,14 @@ var edgesLayer = new VectorLayer({
   source: edges,
   style: function(f) {
     var style = new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'blue',
         width: 1
       }),
       text: new _ol_style_Text_({
         text: f.get('edge').id.toString(),
         fill: new Fill({color: 'blue'}),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'white',
           width: 2
         })
@@ -74,7 +74,7 @@ var facesLayer = new VectorLayer({
   source: faces,
   style: function(f) {
     var style = new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'black',
         width: 1
       }),
@@ -85,7 +85,7 @@ var facesLayer = new VectorLayer({
         font: 'bold 12px sans-serif',
         text: f.get('face').id.toString(),
         fill: new Fill({color: 'green'}),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'white',
           width: 2
         })

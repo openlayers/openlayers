@@ -6,7 +6,7 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.rendering.style.Polygon', function() {
@@ -104,7 +104,7 @@ describe('ol.rendering.style.Polygon', function() {
   describe('different types with stroke', function() {
 
     function createFeatures() {
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         width: 10,
         color: '#000',
         lineJoin: 'round',
@@ -237,7 +237,7 @@ describe('ol.rendering.style.Polygon', function() {
       });
       feature.setStyle(new Style({
         fill: new Fill({color: '#9696EB'}),
-        stroke: new _ol_style_Stroke_({color: '#9696EB', width: 1})
+        stroke: new Stroke({color: '#9696EB', width: 1})
       }));
       vectorSource.addFeature(feature);
 
@@ -249,7 +249,7 @@ describe('ol.rendering.style.Polygon', function() {
       });
       feature.setStyle(new Style({
         fill: new Fill({color: 'rgba(255, 0, 0, 0.1)'}),
-        stroke: new _ol_style_Stroke_({color: '#DE213A', width: 3})
+        stroke: new Stroke({color: '#DE213A', width: 3})
       }));
       vectorSource.addFeature(feature);
 
@@ -261,7 +261,7 @@ describe('ol.rendering.style.Polygon', function() {
       });
       feature.setStyle(new Style({
         fill: new Fill({color: 'rgba(18, 204, 105, 0.3)'}),
-        stroke: new _ol_style_Stroke_({color: '#032E17', width: 2})
+        stroke: new Stroke({color: '#032E17', width: 2})
       }));
       vectorSource.addFeature(feature);
     }
@@ -323,7 +323,7 @@ describe('ol.rendering.style.Polygon', function() {
       });
       feature.setStyle(new Style({
         fill: new Fill({color: createPattern()}),
-        stroke: new _ol_style_Stroke_({color: createRainbowGradient(), width: 3})
+        stroke: new Stroke({color: createRainbowGradient(), width: 3})
       }));
       vectorSource.addFeature(feature);
     }

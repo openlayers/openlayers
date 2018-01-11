@@ -10,7 +10,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 // This long string is placed here due to jsFiddle limitations.
@@ -86,7 +86,7 @@ var endMarker = new Feature({
 
 var styles = {
   'route': new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       width: 6, color: [237, 212, 0, 0.8]
     })
   }),
@@ -101,7 +101,7 @@ var styles = {
       radius: 7,
       snapToPixel: false,
       fill: new Fill({color: 'black'}),
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'white', width: 2
       })
     })

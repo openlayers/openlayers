@@ -5,7 +5,7 @@ import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
 import _ol_style_Circle_ from '../style/Circle.js';
 import Fill from '../style/Fill.js';
-import _ol_style_Stroke_ from '../style/Stroke.js';
+import Stroke from '../style/Stroke.js';
 
 /**
  * @classdesc
@@ -325,7 +325,7 @@ Style.defaultFunction = function(feature, resolution) {
     var fill = new Fill({
       color: 'rgba(255,255,255,0.4)'
     });
-    var stroke = new _ol_style_Stroke_({
+    var stroke = new Stroke({
       color: '#3399CC',
       width: 1.25
     });
@@ -367,13 +367,13 @@ Style.createDefaultEditing = function() {
 
   styles[GeometryType.LINE_STRING] = [
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: white,
         width: width + 2
       })
     }),
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: blue,
         width: width
       })
@@ -395,7 +395,7 @@ Style.createDefaultEditing = function() {
         fill: new Fill({
           color: blue
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: white,
           width: width / 2
         })

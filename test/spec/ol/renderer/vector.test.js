@@ -10,7 +10,7 @@ import _ol_render_canvas_ReplayGroup_ from '../../../../src/ol/render/canvas/Rep
 import _ol_renderer_vector_ from '../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Feature from '../../../../src/ol/Feature.js';
 
@@ -30,7 +30,7 @@ describe('ol.renderer.vector', function() {
       style = new Style({
         image: iconStyle,
         fill: new Fill({}),
-        stroke: new _ol_style_Stroke_({})
+        stroke: new Stroke({})
       });
       squaredTolerance = 1;
       listener = function() {};

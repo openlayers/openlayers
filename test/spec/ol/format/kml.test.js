@@ -18,7 +18,7 @@ import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 import _ol_xml_ from '../../../../src/ol/xml.js';
@@ -1978,7 +1978,7 @@ describe('ol.format.KML', function() {
           expect(style.getFill()).to.be(KML.DEFAULT_FILL_STYLE_);
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(_ol_style_Stroke_);
+          expect(strokeStyle).to.be.an(Stroke);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
           expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
@@ -2049,7 +2049,7 @@ describe('ol.format.KML', function() {
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(_ol_style_Stroke_);
+          expect(strokeStyle).to.be.an(Stroke);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
           expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
@@ -2086,7 +2086,7 @@ describe('ol.format.KML', function() {
           expect(style.getFill()).to.be(null);
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
-          expect(strokeStyle).to.be.an(_ol_style_Stroke_);
+          expect(strokeStyle).to.be.an(Stroke);
           expect(strokeStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(strokeStyle.getWidth()).to.be(9);
           expect(style.getText()).to.be(KML.DEFAULT_TEXT_STYLE_);
@@ -2393,7 +2393,7 @@ describe('ol.format.KML', function() {
 
         it('can write an feature\'s stroke style', function() {
           var style = new Style({
-            stroke: new _ol_style_Stroke_({
+            stroke: new Stroke({
               color: '#112233',
               width: 2
             })

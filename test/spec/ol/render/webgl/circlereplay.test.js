@@ -5,12 +5,12 @@ import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/C
 import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/Locations.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.CircleReplay', function() {
   var replay;
 
-  var strokeStyle = new _ol_style_Stroke_({
+  var strokeStyle = new Stroke({
     color: [0, 255, 0, 0.4]
   });
 

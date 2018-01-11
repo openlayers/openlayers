@@ -12,7 +12,7 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -28,7 +28,7 @@ var vector = new VectorLayer({
     fill: new Fill({
       color: 'rgba(255, 255, 255, 0.2)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#ffcc33',
       width: 2
     }),
@@ -184,14 +184,14 @@ function addInteraction() {
       fill: new Fill({
         color: 'rgba(255, 255, 255, 0.2)'
       }),
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(0, 0, 0, 0.5)',
         lineDash: [10, 10],
         width: 2
       }),
       image: new _ol_style_Circle_({
         radius: 5,
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(0, 0, 0, 0.7)'
         }),
         fill: new Fill({

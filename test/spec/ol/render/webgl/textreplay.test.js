@@ -2,7 +2,7 @@ import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_render_webgl_TextReplay_ from '../../../../../src/ol/render/webgl/TextReplay.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 
 describe('ol.render.webgl.TextReplay', function() {
@@ -40,7 +40,7 @@ describe('ol.render.webgl.TextReplay', function() {
           new Fill({
             color: [0, 0, 0, 1]
           }),
-          new _ol_style_Stroke_({
+          new Stroke({
             width: 1,
             color: [0, 0, 0, 1],
             lineCap: 'butt',
@@ -54,7 +54,7 @@ describe('ol.render.webgl.TextReplay', function() {
           new Fill({
             color: [255, 255, 255, 1]
           }),
-          new _ol_style_Stroke_({
+          new Stroke({
             width: 1,
             color: [255, 255, 255, 1]
           }),
@@ -65,7 +65,7 @@ describe('ol.render.webgl.TextReplay', function() {
           new Fill({
             color: [0, 0, 0, 1]
           }),
-          new _ol_style_Stroke_({
+          new Stroke({
             width: 1,
             color: [0, 0, 0, 1]
           }),

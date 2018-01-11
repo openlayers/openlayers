@@ -7,7 +7,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var canvas = document.createElement('canvas');
@@ -60,7 +60,7 @@ var pattern = (function() {
 var fill = new Fill();
 var style = new Style({
   fill: fill,
-  stroke: new _ol_style_Stroke_({
+  stroke: new Stroke({
     color: '#333',
     width: 2
   })

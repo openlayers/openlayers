@@ -11,7 +11,7 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -29,7 +29,7 @@ var styleFunction = function(feature) {
   var style = styleCache[color];
   if (!style) {
     style = new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: color,
         width: 3
       })
@@ -152,7 +152,7 @@ map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
-var stroke = new _ol_style_Stroke_({
+var stroke = new Stroke({
   color: 'rgba(255,0,0,0.9)',
   width: 1
 });

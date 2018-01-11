@@ -7,7 +7,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.rendering.style.RegularShape', function() {
@@ -108,7 +108,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
 
   describe('#render', function() {
-    var stroke = new _ol_style_Stroke_({width: 2});
+    var stroke = new Stroke({width: 2});
     var fill = new Fill({color: 'red'});
 
     it('tests the canvas renderer', function(done) {
@@ -119,7 +119,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
     it('supports lineDash', function(done) {
       createMap('canvas');
-      createFeatures(new _ol_style_Stroke_({
+      createFeatures(new Stroke({
         lineDash: [10, 5]
       }));
       expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedash.png', 5, done);
@@ -127,7 +127,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
     it('supports lineDashOffset', function(done) {
       createMap('canvas');
-      createFeatures(new _ol_style_Stroke_({
+      createFeatures(new Stroke({
         lineDash: [10, 5],
         lineDashOffset: 5
       }));
@@ -143,7 +143,7 @@ describe('ol.rendering.style.RegularShape', function() {
   });
 
   describe('uses the default fill and stroke color', function() {
-    var stroke = new _ol_style_Stroke_();
+    var stroke = new Stroke();
     var fill = new Fill();
 
     it('tests the canvas renderer', function(done) {

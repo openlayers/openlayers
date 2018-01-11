@@ -13,7 +13,7 @@ import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -164,7 +164,7 @@ var map = new Map({
           opacity: 0.95,
           src: 'data/icon.png'
         })),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           width: 3,
           color: [255, 0, 0, 1]
         }),

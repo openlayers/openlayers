@@ -7,7 +7,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var map = new Map({
@@ -26,7 +26,7 @@ var map = new Map({
 });
 
 var style = new Style({
-  stroke: new _ol_style_Stroke_({
+  stroke: new Stroke({
     color: '#EAE911',
     width: 2
   })

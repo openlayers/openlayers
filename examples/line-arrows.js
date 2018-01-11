@@ -7,7 +7,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
@@ -21,7 +21,7 @@ var styleFunction = function(feature) {
   var styles = [
     // linestring
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: '#ffcc33',
         width: 2
       })

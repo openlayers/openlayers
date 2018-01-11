@@ -8,7 +8,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -17,11 +17,11 @@ var styleFunction = (function() {
   var image = new _ol_style_Circle_({
     radius: 5,
     fill: null,
-    stroke: new _ol_style_Stroke_({color: 'orange', width: 2})
+    stroke: new Stroke({color: 'orange', width: 2})
   });
   styles['Point'] = new Style({image: image});
   styles['Polygon'] = new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'blue',
       width: 3
     }),
@@ -30,13 +30,13 @@ var styleFunction = (function() {
     })
   });
   styles['MultiLineString'] = new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'green',
       width: 3
     })
   });
   styles['MultiPolygon'] = new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'yellow',
       width: 1
     }),
@@ -45,7 +45,7 @@ var styleFunction = (function() {
     })
   });
   styles['default'] = new Style({
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'red',
       width: 3
     }),
@@ -162,13 +162,13 @@ var overlayStyle = (function() {
       })
     }),
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: [0, 153, 255, 1],
         width: 3
       })
@@ -178,13 +178,13 @@ var overlayStyle = (function() {
 
   styles['LineString'] = [
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
     new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: [0, 153, 255, 1],
         width: 3
       })
@@ -199,7 +199,7 @@ var overlayStyle = (function() {
         fill: new Fill({
           color: [0, 153, 255, 1]
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: [255, 255, 255, 0.75],
           width: 1.5
         })

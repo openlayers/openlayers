@@ -12,7 +12,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 
@@ -20,14 +20,14 @@ import _ol_style_Text_ from '../src/ol/style/Text.js';
 var earthquakeFill = new Fill({
   color: 'rgba(255, 153, 0, 0.8)'
 });
-var earthquakeStroke = new _ol_style_Stroke_({
+var earthquakeStroke = new Stroke({
   color: 'rgba(255, 204, 0, 0.2)',
   width: 1
 });
 var textFill = new Fill({
   color: '#fff'
 });
-var textStroke = new _ol_style_Stroke_({
+var textStroke = new Stroke({
   color: 'rgba(0, 0, 0, 0.6)',
   width: 3
 });

@@ -5,16 +5,16 @@ import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import _ol_render_webgl_linestringreplay_defaultshader_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
 import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader/Locations.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.LineStringReplay', function() {
   var replay;
 
-  var strokeStyle1 = new _ol_style_Stroke_({
+  var strokeStyle1 = new Stroke({
     color: [0, 255, 0, 0.4]
   });
 
-  var strokeStyle2 = new _ol_style_Stroke_({
+  var strokeStyle2 = new Stroke({
     color: [255, 0, 0, 1],
     lineCap: 'square',
     lineJoin: 'miter'
@@ -100,7 +100,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('triangulates linestrings', function() {
       var linestring;
 
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
@@ -121,7 +121,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('optionally creates miters', function() {
       var linestring;
 
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt'
       });
@@ -141,7 +141,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('optionally creates caps', function() {
       var linestring;
 
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         color: [0, 255, 0, 1]
       });
 
@@ -162,7 +162,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('respects segment orientation', function() {
       var linestring;
 
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
@@ -183,7 +183,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
     it('closes boundaries', function() {
       var linestring;
 
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'

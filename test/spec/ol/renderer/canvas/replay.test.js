@@ -13,7 +13,7 @@ import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Repla
 import _ol_render_canvas_ReplayGroup_ from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 
@@ -45,11 +45,11 @@ describe('ol.render.canvas.ReplayGroup', function() {
       });
       style1 = new Style({
         fill: new Fill({color: 'black'}),
-        stroke: new _ol_style_Stroke_({color: 'white', width: 1})
+        stroke: new Stroke({color: 'white', width: 1})
       });
       style2 = new Style({
         fill: new Fill({color: 'white'}),
-        stroke: new _ol_style_Stroke_({color: 'black', width: 1, lineDash: [3, 6],
+        stroke: new Stroke({color: 'black', width: 1, lineDash: [3, 6],
           lineDashOffset: 2})
       });
       fillCount = 0;
@@ -448,7 +448,7 @@ describe('ol.render.canvas.LineStringReplay', function() {
       var resolution = 10;
       var replay = new _ol_render_canvas_LineStringReplay_(tolerance, extent,
           resolution);
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         width: 2
       });
       replay.setFillStrokeStyle(null, stroke);
@@ -476,7 +476,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
     it('returns correct offset', function() {
       var coords = [1, 2, 3, 4, 5, 6, 1, 2, 1, 2, 3, 4, 5, 6, 1, 2];
       var ends = [7, 14];
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         width: 5
       });
       replay.setFillStrokeStyle(null, stroke);
@@ -491,7 +491,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
   describe('#getBufferedMaxExtent()', function() {
 
     it('buffers the max extent to accommodate stroke width', function() {
-      var stroke = new _ol_style_Stroke_({
+      var stroke = new Stroke({
         width: 5
       });
       replay.setFillStrokeStyle(null, stroke);

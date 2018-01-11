@@ -7,7 +7,7 @@ import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
@@ -27,7 +27,7 @@ var styleFunction = function(feature) {
         fill: new Fill({
           color: 'rgba(255, 153, 0, 0.4)'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(255, 204, 0, 0.2)',
           width: 1
         })

@@ -8,7 +8,7 @@ import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import XYZ from '../src/ol/source/XYZ.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
@@ -24,7 +24,7 @@ var styleCache = {
     fill: new Fill({
       color: 'rgba(225, 225, 225, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(0, 0, 0, 255)',
       width: 0.4
     })
@@ -33,7 +33,7 @@ var styleCache = {
     fill: new Fill({
       color: 'rgba(255, 0, 0, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(110, 110, 110, 255)',
       width: 0.4
     })
@@ -42,7 +42,7 @@ var styleCache = {
     fill: new Fill({
       color: 'rgba(56, 168, 0, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(110, 110, 110, 255)',
       width: 0
     })
@@ -51,7 +51,7 @@ var styleCache = {
     fill: new Fill({
       color: 'rgba(168, 112, 0, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(110, 110, 110, 255)',
       width: 0.4
     })

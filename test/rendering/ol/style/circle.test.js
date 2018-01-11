@@ -8,7 +8,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
+import Stroke from '../../../../src/ol/style/Stroke.js';
 
 
 describe('ol.rendering.style.Circle', function() {
@@ -93,7 +93,7 @@ describe('ol.rendering.style.Circle', function() {
           fill: new Fill({
             color: '#91E339'
           }),
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#000000',
             width: 1
           })
@@ -110,7 +110,7 @@ describe('ol.rendering.style.Circle', function() {
           fill: new Fill({
             color: '#5447E6'
           }),
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#000000',
             width: 2
           })
@@ -127,7 +127,7 @@ describe('ol.rendering.style.Circle', function() {
           fill: new Fill({
             color: '#92A8A6'
           }),
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#000000',
             width: 3
           })
@@ -141,7 +141,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 2,
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#256308',
             width: 1
           })
@@ -158,7 +158,7 @@ describe('ol.rendering.style.Circle', function() {
           fill: new Fill({
             color: 'rgba(0, 0, 255, 0.3)'
           }),
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#256308',
             width: 2
           })
@@ -175,7 +175,7 @@ describe('ol.rendering.style.Circle', function() {
           fill: new Fill({
             color: 'rgba(235, 45, 70, 0.6)'
           }),
-          stroke: new _ol_style_Stroke_({
+          stroke: new Stroke({
             color: '#256308',
             width: 3
           })

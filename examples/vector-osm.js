@@ -10,7 +10,7 @@ import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 var map;
@@ -18,7 +18,7 @@ var map;
 var styles = {
   'amenity': {
     'parking': new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(170, 170, 170, 1.0)',
         width: 1
       }),
@@ -30,7 +30,7 @@ var styles = {
   'building': {
     '.*': new Style({
       zIndex: 100,
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(246, 99, 79, 1.0)',
         width: 1
       }),
@@ -41,13 +41,13 @@ var styles = {
   },
   'highway': {
     'service': new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(255, 255, 255, 1.0)',
         width: 2
       })
     }),
     '.*': new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(255, 255, 255, 1.0)',
         width: 3
       })
@@ -55,7 +55,7 @@ var styles = {
   },
   'landuse': {
     'forest|grass|allotments': new Style({
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(140, 208, 95, 1.0)',
         width: 1
       }),
