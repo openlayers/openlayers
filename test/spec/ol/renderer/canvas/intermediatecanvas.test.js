@@ -1,6 +1,6 @@
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
-import _ol_renderer_Map_ from '../../../../../src/ol/renderer/Map.js';
+import MapRenderer from '../../../../../src/ol/renderer/Map.js';
 import _ol_renderer_canvas_IntermediateCanvas_ from '../../../../../src/ol/renderer/canvas/IntermediateCanvas.js';
 
 
@@ -33,7 +33,7 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       renderer.getImageTransform = function() {
         return _ol_transform_.create();
       };
-      _ol_renderer_Map_.prototype.calculateMatrices2D(frameState);
+      MapRenderer.prototype.calculateMatrices2D(frameState);
       layerState = layer.getLayerState();
       context = {
         save: sinon.spy(),

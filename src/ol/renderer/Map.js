@@ -20,7 +20,7 @@ import _ol_transform_ from '../transform.js';
  * @param {ol.PluggableMap} map Map.
  * @struct
  */
-var _ol_renderer_Map_ = function(container, map) {
+var MapRenderer = function(container, map) {
 
   Disposable.call(this);
 
@@ -45,14 +45,14 @@ var _ol_renderer_Map_ = function(container, map) {
 
 };
 
-inherits(_ol_renderer_Map_, Disposable);
+inherits(MapRenderer, Disposable);
 
 
 /**
  * @param {olx.FrameState} frameState FrameState.
  * @protected
  */
-_ol_renderer_Map_.prototype.calculateMatrices2D = function(frameState) {
+MapRenderer.prototype.calculateMatrices2D = function(frameState) {
   var viewState = frameState.viewState;
   var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
   var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
@@ -71,7 +71,7 @@ _ol_renderer_Map_.prototype.calculateMatrices2D = function(frameState) {
 /**
  * Removes all layer renderers.
  */
-_ol_renderer_Map_.prototype.removeLayerRenderers = function() {
+MapRenderer.prototype.removeLayerRenderers = function() {
   for (var key in this.layerRenderers_) {
     this.removeLayerRendererByKey_(key).dispose();
   }
@@ -83,7 +83,7 @@ _ol_renderer_Map_.prototype.removeLayerRenderers = function() {
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-_ol_renderer_Map_.expireIconCache_ = function(map, frameState) {
+MapRenderer.expireIconCache_ = function(map, frameState) {
   iconImageCache.expire();
 };
 
@@ -103,7 +103,7 @@ _ol_renderer_Map_.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-_ol_renderer_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
+MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
     layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -173,7 +173,7 @@ _ol_renderer_Map_.prototype.forEachFeatureAtCoordinate = function(coordinate, fr
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-_ol_renderer_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
     layerFilter, thisArg2) {};
 
 
@@ -189,7 +189,7 @@ _ol_renderer_Map_.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
  * @return {boolean} Is there a feature at the given coordinate?
  * @template U
  */
-_ol_renderer_Map_.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
+MapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, hitTolerance, TRUE, this, layerFilter, thisArg);
 
@@ -202,7 +202,7 @@ _ol_renderer_Map_.prototype.hasFeatureAtCoordinate = function(coordinate, frameS
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
  */
-_ol_renderer_Map_.prototype.getLayerRenderer = function(layer) {
+MapRenderer.prototype.getLayerRenderer = function(layer) {
   var layerKey = getUid(layer).toString();
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
@@ -234,7 +234,7 @@ _ol_renderer_Map_.prototype.getLayerRenderer = function(layer) {
  * @protected
  * @return {ol.renderer.Layer} Layer renderer.
  */
-_ol_renderer_Map_.prototype.getLayerRendererByKey = function(layerKey) {
+MapRenderer.prototype.getLayerRendererByKey = function(layerKey) {
   return this.layerRenderers_[layerKey];
 };
 
@@ -243,7 +243,7 @@ _ol_renderer_Map_.prototype.getLayerRendererByKey = function(layerKey) {
  * @protected
  * @return {Object.<string, ol.renderer.Layer>} Layer renderers.
  */
-_ol_renderer_Map_.prototype.getLayerRenderers = function() {
+MapRenderer.prototype.getLayerRenderers = function() {
   return this.layerRenderers_;
 };
 
@@ -251,7 +251,7 @@ _ol_renderer_Map_.prototype.getLayerRenderers = function() {
 /**
  * @return {ol.PluggableMap} Map.
  */
-_ol_renderer_Map_.prototype.getMap = function() {
+MapRenderer.prototype.getMap = function() {
   return this.map_;
 };
 
@@ -260,14 +260,14 @@ _ol_renderer_Map_.prototype.getMap = function() {
  * @abstract
  * @return {ol.renderer.Type} Type
  */
-_ol_renderer_Map_.prototype.getType = function() {};
+MapRenderer.prototype.getType = function() {};
 
 
 /**
  * Handle changes in a layer renderer.
  * @private
  */
-_ol_renderer_Map_.prototype.handleLayerRendererChange_ = function() {
+MapRenderer.prototype.handleLayerRendererChange_ = function() {
   this.map_.render();
 };
 
@@ -277,7 +277,7 @@ _ol_renderer_Map_.prototype.handleLayerRendererChange_ = function() {
  * @return {ol.renderer.Layer} Layer renderer.
  * @private
  */
-_ol_renderer_Map_.prototype.removeLayerRendererByKey_ = function(layerKey) {
+MapRenderer.prototype.removeLayerRendererByKey_ = function(layerKey) {
   var layerRenderer = this.layerRenderers_[layerKey];
   delete this.layerRenderers_[layerKey];
 
@@ -292,7 +292,7 @@ _ol_renderer_Map_.prototype.removeLayerRendererByKey_ = function(layerKey) {
  * Render.
  * @param {?olx.FrameState} frameState Frame state.
  */
-_ol_renderer_Map_.prototype.renderFrame = nullFunction;
+MapRenderer.prototype.renderFrame = nullFunction;
 
 
 /**
@@ -300,7 +300,7 @@ _ol_renderer_Map_.prototype.renderFrame = nullFunction;
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-_ol_renderer_Map_.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
+MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
@@ -314,9 +314,9 @@ _ol_renderer_Map_.prototype.removeUnusedLayerRenderers_ = function(map, frameSta
  * @param {olx.FrameState} frameState Frame state.
  * @protected
  */
-_ol_renderer_Map_.prototype.scheduleExpireIconCache = function(frameState) {
+MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
-      /** @type {ol.PostRenderFunction} */ (_ol_renderer_Map_.expireIconCache_)
+      /** @type {ol.PostRenderFunction} */ (MapRenderer.expireIconCache_)
   );
 };
 
@@ -325,7 +325,7 @@ _ol_renderer_Map_.prototype.scheduleExpireIconCache = function(frameState) {
  * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
-_ol_renderer_Map_.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
+MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
@@ -343,7 +343,7 @@ _ol_renderer_Map_.prototype.scheduleRemoveUnusedLayerRenderers = function(frameS
  * @param {ol.LayerState} state2 Second layer state.
  * @return {number} The zIndex difference.
  */
-_ol_renderer_Map_.sortByZIndex = function(state1, state2) {
+MapRenderer.sortByZIndex = function(state1, state2) {
   return state1.zIndex - state2.zIndex;
 };
-export default _ol_renderer_Map_;
+export default MapRenderer;
