@@ -1,6 +1,6 @@
 import Geolocation from '../src/ol/Geolocation.js';
 import Map from '../src/ol/Map.js';
-import _ol_Overlay_ from '../src/ol/Overlay.js';
+import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -32,7 +32,7 @@ var map = new Map({
 
 // Geolocation marker
 var markerEl = document.getElementById('geolocation_marker');
-var marker = new _ol_Overlay_({
+var marker = new Overlay({
   positioning: 'center-center',
   element: markerEl,
   stopEvent: false

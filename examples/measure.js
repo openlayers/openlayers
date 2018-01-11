@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import Observable from '../src/ol/Observable.js';
-import _ol_Overlay_ from '../src/ol/Overlay.js';
+import Overlay from '../src/ol/Overlay.js';
 import {getArea, getLength} from '../src/ol/sphere.js';
 import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
@@ -252,7 +252,7 @@ function createHelpTooltip() {
   }
   helpTooltipElement = document.createElement('div');
   helpTooltipElement.className = 'tooltip hidden';
-  helpTooltip = new _ol_Overlay_({
+  helpTooltip = new Overlay({
     element: helpTooltipElement,
     offset: [15, 0],
     positioning: 'center-left'
@@ -270,7 +270,7 @@ function createMeasureTooltip() {
   }
   measureTooltipElement = document.createElement('div');
   measureTooltipElement.className = 'tooltip tooltip-measure';
-  measureTooltip = new _ol_Overlay_({
+  measureTooltip = new Overlay({
     element: measureTooltipElement,
     offset: [0, -15],
     positioning: 'bottom-center'
