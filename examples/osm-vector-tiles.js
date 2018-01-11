@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
-import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -60,7 +60,7 @@ var roadStyle = function(feature) {
 
 var map = new Map({
   layers: [
-    new _ol_layer_VectorTile_({
+    new VectorTileLayer({
       source: new VectorTileSource({
         attributions: '&copy; OpenStreetMap contributors, Who’s On First, ' +
             'Natural Earth, and openstreetmapdata.com',

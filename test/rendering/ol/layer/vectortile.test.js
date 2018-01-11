@@ -4,7 +4,7 @@ import View from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
@@ -62,7 +62,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       source: source
     };
     _ol_obj_.assign(options, layerOptions);
-    map.addLayer(new _ol_layer_VectorTile_(options));
+    map.addLayer(new VectorTileLayer(options));
   }
 
   describe('vector tile layer', function() {

@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
-import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
@@ -32,7 +32,7 @@ function tileUrlFunction(tileCoord) {
 
 var map = new Map({
   layers: [
-    new _ol_layer_VectorTile_({
+    new VectorTileLayer({
       source: new VectorTileSource({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
           '© <a href="https://www.openstreetmap.org/copyright">' +

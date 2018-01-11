@@ -9,7 +9,7 @@ import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_layer_VectorTile_ from '../../../../../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
@@ -77,7 +77,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tile.setState(TileState.LOADED);
         return tile;
       };
-      layer = new _ol_layer_VectorTile_({
+      layer = new VectorTileLayer({
         source: source,
         style: layerStyle
       });
@@ -214,7 +214,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('works for multiple layers that use the same source', function() {
-      var layer2 = new _ol_layer_VectorTile_({
+      var layer2 = new VectorTileLayer({
         source: source,
         style: new _ol_style_Style_({
           text: new _ol_style_Text_({
@@ -239,7 +239,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('#prepareFrame', function() {
     it('re-renders when layer changed', function() {
-      var layer = new _ol_layer_VectorTile_({
+      var layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileGrid: _ol_tilegrid_.createXYZ(),
           transition: 0
@@ -308,7 +308,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     beforeEach(function() {
       replayGroup = {};
-      layer = new _ol_layer_VectorTile_({
+      layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileClass: TileClass,
           tileGrid: _ol_tilegrid_.createXYZ()
@@ -358,7 +358,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var map = new Map({
         target: target,
         layers: [
-          new _ol_layer_VectorTile_({
+          new VectorTileLayer({
             extent: extent,
             source: source
           })
