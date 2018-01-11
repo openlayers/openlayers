@@ -10,7 +10,7 @@ import EventType from '../events/EventType.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconImage from '../style/IconImage.js';
 import IconOrigin from '../style/IconOrigin.js';
-import _ol_style_Image_ from '../style/Image.js';
+import ImageStyle from '../style/Image.js';
 
 /**
  * @classdesc
@@ -162,7 +162,7 @@ var Icon = function(opt_options) {
   var snapToPixel = options.snapToPixel !== undefined ?
     options.snapToPixel : true;
 
-  _ol_style_Image_.call(this, {
+  ImageStyle.call(this, {
     opacity: opacity,
     rotation: rotation,
     scale: scale,
@@ -172,7 +172,7 @@ var Icon = function(opt_options) {
 
 };
 
-inherits(Icon, _ol_style_Image_);
+inherits(Icon, ImageStyle);
 
 
 /**

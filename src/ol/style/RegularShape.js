@@ -7,7 +7,7 @@ import {createCanvasContext2D} from '../dom.js';
 import _ol_has_ from '../has.js';
 import ImageState from '../ImageState.js';
 import _ol_render_canvas_ from '../render/canvas.js';
-import _ol_style_Image_ from '../style/Image.js';
+import ImageStyle from '../style/Image.js';
 
 /**
  * @classdesc
@@ -126,7 +126,7 @@ var RegularShape = function(options) {
   var rotateWithView = options.rotateWithView !== undefined ?
     options.rotateWithView : false;
 
-  _ol_style_Image_.call(this, {
+  ImageStyle.call(this, {
     opacity: 1,
     rotateWithView: rotateWithView,
     rotation: options.rotation !== undefined ? options.rotation : 0,
@@ -135,7 +135,7 @@ var RegularShape = function(options) {
   });
 };
 
-inherits(RegularShape, _ol_style_Image_);
+inherits(RegularShape, ImageStyle);
 
 
 /**
