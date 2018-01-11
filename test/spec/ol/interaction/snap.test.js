@@ -1,4 +1,4 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
@@ -58,7 +58,7 @@ describe('ol.interaction.Snap', function() {
     it('can handle XYZ coordinates', function() {
       var point = new Feature(new Point([0, 0, 123]));
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([point])
+        features: new Collection([point])
       });
       snapInteraction.setMap(map);
 
@@ -75,7 +75,7 @@ describe('ol.interaction.Snap', function() {
     it('snaps to edges only', function() {
       var point = new Feature(new LineString([[-10, 0], [10, 0]]));
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([point]),
+        features: new Collection([point]),
         pixelTolerance: 5,
         vertex: false
       });
@@ -93,7 +93,7 @@ describe('ol.interaction.Snap', function() {
     it('snaps to vertices only', function() {
       var point = new Feature(new LineString([[-10, 0], [10, 0]]));
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([point]),
+        features: new Collection([point]),
         pixelTolerance: 5,
         edge: false
       });
@@ -111,7 +111,7 @@ describe('ol.interaction.Snap', function() {
     it('snaps to circle', function() {
       var circle = new Feature(new Circle([0, 0], 10));
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([circle]),
+        features: new Collection([circle]),
         pixelTolerance: 5
       });
       snapInteraction.setMap(map);
@@ -130,7 +130,7 @@ describe('ol.interaction.Snap', function() {
     it('handle feature without geometry', function() {
       var feature = new Feature();
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([feature]),
+        features: new Collection([feature]),
         pixelTolerance: 5,
         edge: false
       });
@@ -150,7 +150,7 @@ describe('ol.interaction.Snap', function() {
     it('handle geometry changes', function() {
       var line = new Feature(new LineString([[-10, 0], [0, 0]]));
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([line]),
+        features: new Collection([line]),
         pixelTolerance: 5,
         edge: false
       });
@@ -173,7 +173,7 @@ describe('ol.interaction.Snap', function() {
         alt_geometry: new LineString([[-10, 0], [10, 0]])
       });
       var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([line]),
+        features: new Collection([line]),
         pixelTolerance: 5,
         edge: false
       });

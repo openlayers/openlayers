@@ -2,7 +2,7 @@
  * @module ol/interaction/Snap
  */
 import {getUid, inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
@@ -221,7 +221,7 @@ _ol_interaction_Snap_.prototype.handleFeatureAdd_ = function(evt) {
   var feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
-  } else if (evt instanceof _ol_Collection_.Event) {
+  } else if (evt instanceof Collection.Event) {
     feature = evt.element;
   }
   this.addFeature(/** @type {ol.Feature} */ (feature));
@@ -236,7 +236,7 @@ _ol_interaction_Snap_.prototype.handleFeatureRemove_ = function(evt) {
   var feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
-  } else if (evt instanceof _ol_Collection_.Event) {
+  } else if (evt instanceof Collection.Event) {
     feature = evt.element;
   }
   this.removeFeature(/** @type {ol.Feature} */ (feature));

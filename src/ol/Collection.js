@@ -41,7 +41,7 @@ export var CollectionOptions;
  * @template T
  * @api
  */
-var _ol_Collection_ = function(opt_array, opt_options) {
+var Collection = function(opt_array, opt_options) {
 
   BaseObject.call(this);
 
@@ -69,14 +69,14 @@ var _ol_Collection_ = function(opt_array, opt_options) {
 
 };
 
-inherits(_ol_Collection_, BaseObject);
+inherits(Collection, BaseObject);
 
 
 /**
  * Remove all elements from the collection.
  * @api
  */
-_ol_Collection_.prototype.clear = function() {
+Collection.prototype.clear = function() {
   while (this.getLength() > 0) {
     this.pop();
   }
@@ -90,7 +90,7 @@ _ol_Collection_.prototype.clear = function() {
  * @return {ol.Collection.<T>} This collection.
  * @api
  */
-_ol_Collection_.prototype.extend = function(arr) {
+Collection.prototype.extend = function(arr) {
   var i, ii;
   for (i = 0, ii = arr.length; i < ii; ++i) {
     this.push(arr[i]);
@@ -106,7 +106,7 @@ _ol_Collection_.prototype.extend = function(arr) {
  *     index and the array). The return value is ignored.
  * @api
  */
-_ol_Collection_.prototype.forEach = function(f) {
+Collection.prototype.forEach = function(f) {
   var array = this.array_;
   for (var i = 0, ii = array.length; i < ii; ++i) {
     f(array[i], i, array);
@@ -122,7 +122,7 @@ _ol_Collection_.prototype.forEach = function(f) {
  * @return {!Array.<T>} Array.
  * @api
  */
-_ol_Collection_.prototype.getArray = function() {
+Collection.prototype.getArray = function() {
   return this.array_;
 };
 
@@ -133,7 +133,7 @@ _ol_Collection_.prototype.getArray = function() {
  * @return {T} Element.
  * @api
  */
-_ol_Collection_.prototype.item = function(index) {
+Collection.prototype.item = function(index) {
   return this.array_[index];
 };
 
@@ -144,7 +144,7 @@ _ol_Collection_.prototype.item = function(index) {
  * @observable
  * @api
  */
-_ol_Collection_.prototype.getLength = function() {
+Collection.prototype.getLength = function() {
   return (/** @type {number} */ this.get(Property.LENGTH));
 };
 
@@ -155,14 +155,14 @@ _ol_Collection_.prototype.getLength = function() {
  * @param {T} elem Element.
  * @api
  */
-_ol_Collection_.prototype.insertAt = function(index, elem) {
+Collection.prototype.insertAt = function(index, elem) {
   if (this.unique_) {
     this.assertUnique_(elem);
   }
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
-      new _ol_Collection_.Event(CollectionEventType.ADD, elem));
+      new Collection.Event(CollectionEventType.ADD, elem));
 };
 
 
@@ -172,7 +172,7 @@ _ol_Collection_.prototype.insertAt = function(index, elem) {
  * @return {T|undefined} Element.
  * @api
  */
-_ol_Collection_.prototype.pop = function() {
+Collection.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
 };
 
@@ -183,7 +183,7 @@ _ol_Collection_.prototype.pop = function() {
  * @return {number} New length of the collection.
  * @api
  */
-_ol_Collection_.prototype.push = function(elem) {
+Collection.prototype.push = function(elem) {
   if (this.unique_) {
     this.assertUnique_(elem);
   }
@@ -199,7 +199,7 @@ _ol_Collection_.prototype.push = function(elem) {
  * @return {T|undefined} The removed element or undefined if none found.
  * @api
  */
-_ol_Collection_.prototype.remove = function(elem) {
+Collection.prototype.remove = function(elem) {
   var arr = this.array_;
   var i, ii;
   for (i = 0, ii = arr.length; i < ii; ++i) {
@@ -218,12 +218,12 @@ _ol_Collection_.prototype.remove = function(elem) {
  * @return {T|undefined} Value.
  * @api
  */
-_ol_Collection_.prototype.removeAt = function(index) {
+Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
   this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
-      new _ol_Collection_.Event(CollectionEventType.REMOVE, prev));
+      new Collection.Event(CollectionEventType.REMOVE, prev));
   return prev;
 };
 
@@ -234,7 +234,7 @@ _ol_Collection_.prototype.removeAt = function(index) {
  * @param {T} elem Element.
  * @api
  */
-_ol_Collection_.prototype.setAt = function(index, elem) {
+Collection.prototype.setAt = function(index, elem) {
   var n = this.getLength();
   if (index < n) {
     if (this.unique_) {
@@ -243,9 +243,9 @@ _ol_Collection_.prototype.setAt = function(index, elem) {
     var prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-        new _ol_Collection_.Event(CollectionEventType.REMOVE, prev));
+        new Collection.Event(CollectionEventType.REMOVE, prev));
     this.dispatchEvent(
-        new _ol_Collection_.Event(CollectionEventType.ADD, elem));
+        new Collection.Event(CollectionEventType.ADD, elem));
   } else {
     var j;
     for (j = n; j < index; ++j) {
@@ -259,7 +259,7 @@ _ol_Collection_.prototype.setAt = function(index, elem) {
 /**
  * @private
  */
-_ol_Collection_.prototype.updateLength_ = function() {
+Collection.prototype.updateLength_ = function() {
   this.set(Property.LENGTH, this.array_.length);
 };
 
@@ -269,7 +269,7 @@ _ol_Collection_.prototype.updateLength_ = function() {
  * @param {T} elem Element.
  * @param {number=} opt_except Optional index to ignore.
  */
-_ol_Collection_.prototype.assertUnique_ = function(elem, opt_except) {
+Collection.prototype.assertUnique_ = function(elem, opt_except) {
   for (var i = 0, ii = this.array_.length; i < ii; ++i) {
     if (this.array_[i] === elem && i !== opt_except) {
       throw new AssertionError(58);
@@ -288,7 +288,7 @@ _ol_Collection_.prototype.assertUnique_ = function(elem, opt_except) {
  * @param {ol.CollectionEventType} type Type.
  * @param {*=} opt_element Element.
  */
-_ol_Collection_.Event = function(type, opt_element) {
+Collection.Event = function(type, opt_element) {
 
   Event.call(this, type);
 
@@ -300,6 +300,6 @@ _ol_Collection_.Event = function(type, opt_element) {
   this.element = opt_element;
 
 };
-inherits(_ol_Collection_.Event, Event);
+inherits(Collection.Event, Event);
 
-export default _ol_Collection_;
+export default Collection;

@@ -1,7 +1,7 @@
 /**
  * @module ol/interaction
  */
-import _ol_Collection_ from './Collection.js';
+import Collection from './Collection.js';
 import Kinetic from './Kinetic.js';
 import DoubleClickZoom from './interaction/DoubleClickZoom.js';
 import DragPan from './interaction/DragPan.js';
@@ -41,7 +41,7 @@ export function defaults(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var interactions = new _ol_Collection_();
+  var interactions = new Collection();
 
   var kinetic = new Kinetic(-0.005, 0.05, 100);
 

@@ -2,7 +2,7 @@
  * @module ol/layer/Group
  */
 import {getUid, inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import BaseObject from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
@@ -64,14 +64,14 @@ var LayerGroup = function(opt_options) {
 
   if (layers) {
     if (Array.isArray(layers)) {
-      layers = new _ol_Collection_(layers.slice(), {unique: true});
+      layers = new Collection(layers.slice(), {unique: true});
     } else {
-      assert(layers instanceof _ol_Collection_,
+      assert(layers instanceof Collection,
           43); // Expected `layers` to be an array or an `ol.Collection`
       layers = layers;
     }
   } else {
-    layers = new _ol_Collection_(undefined, {unique: true});
+    layers = new Collection(undefined, {unique: true});
   }
 
   this.setLayers(layers);

@@ -2,7 +2,7 @@
  * @module ol/interaction/Modify
  */
 import {getUid, inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
@@ -195,7 +195,7 @@ var _ol_interaction_Modify_ = function(options) {
   var features;
   if (options.source) {
     this.source_ = options.source;
-    features = new _ol_Collection_(this.source_.getFeatures());
+    features = new Collection(this.source_.getFeatures());
     _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
         this.handleSourceAdd_, this);
     _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,

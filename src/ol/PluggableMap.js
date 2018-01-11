@@ -2,7 +2,7 @@
  * @module ol/PluggableMap
  */
 import {getUid, inherits} from './index.js';
-import _ol_Collection_ from './Collection.js';
+import Collection from './Collection.js';
 import CollectionEventType from './CollectionEventType.js';
 import MapBrowserEvent from './MapBrowserEvent.js';
 import MapBrowserEventHandler from './MapBrowserEventHandler.js';
@@ -276,13 +276,13 @@ var PluggableMap = function(options) {
    * @type {ol.Collection.<ol.control.Control>}
    * @protected
    */
-  this.controls = optionsInternal.controls || new _ol_Collection_();
+  this.controls = optionsInternal.controls || new Collection();
 
   /**
    * @type {ol.Collection.<ol.interaction.Interaction>}
    * @protected
    */
-  this.interactions = optionsInternal.interactions || new _ol_Collection_();
+  this.interactions = optionsInternal.interactions || new Collection();
 
   /**
    * @type {ol.Collection.<ol.Overlay>}
@@ -1457,9 +1457,9 @@ function createOptionsInternal(options) {
   var controls;
   if (options.controls !== undefined) {
     if (Array.isArray(options.controls)) {
-      controls = new _ol_Collection_(options.controls.slice());
+      controls = new Collection(options.controls.slice());
     } else {
-      assert(options.controls instanceof _ol_Collection_,
+      assert(options.controls instanceof Collection,
           47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
@@ -1468,9 +1468,9 @@ function createOptionsInternal(options) {
   var interactions;
   if (options.interactions !== undefined) {
     if (Array.isArray(options.interactions)) {
-      interactions = new _ol_Collection_(options.interactions.slice());
+      interactions = new Collection(options.interactions.slice());
     } else {
-      assert(options.interactions instanceof _ol_Collection_,
+      assert(options.interactions instanceof Collection,
           48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
@@ -1479,14 +1479,14 @@ function createOptionsInternal(options) {
   var overlays;
   if (options.overlays !== undefined) {
     if (Array.isArray(options.overlays)) {
-      overlays = new _ol_Collection_(options.overlays.slice());
+      overlays = new Collection(options.overlays.slice());
     } else {
-      assert(options.overlays instanceof _ol_Collection_,
+      assert(options.overlays instanceof Collection,
           49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }
   } else {
-    overlays = new _ol_Collection_();
+    overlays = new Collection();
   }
 
   return {

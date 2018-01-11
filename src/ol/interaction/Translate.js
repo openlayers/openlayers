@@ -2,7 +2,7 @@
  * @module ol/interaction/Translate
  */
 import {inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import BaseObject from '../Object.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
@@ -100,7 +100,7 @@ _ol_interaction_Translate_.handleDownEvent_ = function(event) {
     this.lastCoordinate_ = event.coordinate;
     _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
 
-    var features = this.features_ || new _ol_Collection_([this.lastFeature_]);
+    var features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
@@ -123,7 +123,7 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
     this.lastCoordinate_ = null;
     _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
 
-    var features = this.features_ || new _ol_Collection_([this.lastFeature_]);
+    var features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
@@ -146,7 +146,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    var features = this.features_ || new _ol_Collection_([this.lastFeature_]);
+    var features = this.features_ || new Collection([this.lastFeature_]);
 
     features.forEach(function(feature) {
       var geom = feature.getGeometry();

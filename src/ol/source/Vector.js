@@ -3,7 +3,7 @@
  */
 
 import {getUid, inherits, nullFunction} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {extend} from '../array.js';
@@ -131,14 +131,14 @@ var VectorSource = function(opt_options) {
   this.featuresCollection_ = null;
 
   var collection, features;
-  if (options.features instanceof _ol_Collection_) {
+  if (options.features instanceof Collection) {
     collection = options.features;
     features = collection.getArray();
   } else if (Array.isArray(options.features)) {
     features = options.features;
   }
   if (!useSpatialIndex && collection === undefined) {
-    collection = new _ol_Collection_(features);
+    collection = new Collection(features);
   }
   if (features !== undefined) {
     this.addFeaturesInternal(features);

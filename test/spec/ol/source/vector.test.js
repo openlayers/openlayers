@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
@@ -560,7 +560,7 @@ describe('ol.source.Vector', function() {
     });
 
     it('returns a features collection', function() {
-      expect(source.getFeaturesCollection()).to.be.a(_ol_Collection_);
+      expect(source.getFeaturesCollection()).to.be.a(Collection);
     });
 
     it('#forEachFeatureInExtent loops through all features', function() {
@@ -622,7 +622,7 @@ describe('ol.source.Vector', function() {
   describe('with a collection of features plus spatial index', function() {
     var collection, source;
     beforeEach(function() {
-      collection = new _ol_Collection_();
+      collection = new Collection();
       source = new VectorSource({
         features: collection
       });

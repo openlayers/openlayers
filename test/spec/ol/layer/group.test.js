@@ -1,6 +1,6 @@
 import {getUid} from '../../../../src/ol/index.js';
 import {stableSort} from '../../../../src/ol/array.js';
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
@@ -50,7 +50,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('provides default empty layers collection', function() {
-      expect(layerGroup.getLayers()).to.be.a(_ol_Collection_);
+      expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(0);
     });
 
@@ -166,7 +166,7 @@ describe('ol.layer.Group', function() {
         maxResolution: 500,
         minResolution: 0.25
       });
-      expect(layerGroup.getLayers()).to.be.a(_ol_Collection_);
+      expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
       expect(layerGroup.getLayers().item(0)).to.be(layer);
 
@@ -207,7 +207,7 @@ describe('ol.layer.Group', function() {
         maxResolution: 500,
         minResolution: 0.25
       });
-      expect(layerGroup.getLayers()).to.be.a(_ol_Collection_);
+      expect(layerGroup.getLayers()).to.be.a(Collection);
       expect(layerGroup.getLayers().getLength()).to.be(1);
       expect(layerGroup.getLayers().item(0)).to.be(layer);
 
@@ -284,7 +284,7 @@ describe('ol.layer.Group', function() {
   describe('layers events', function() {
 
     it('listen / unlisten for layers added to the collection', function() {
-      var layers = new _ol_Collection_();
+      var layers = new Collection();
       var layerGroup = new LayerGroup({
         layers: layers
       });
@@ -315,7 +315,7 @@ describe('ol.layer.Group', function() {
           projection: 'EPSG:4326'
         })
       });
-      var layers = new _ol_Collection_([layer]);
+      var layers = new Collection([layer]);
       var layerGroup = new LayerGroup();
 
       layerGroup.setLayers(layers);

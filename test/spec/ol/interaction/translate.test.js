@@ -1,4 +1,4 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
@@ -159,7 +159,7 @@ describe('ol.interaction.Translate', function() {
 
     beforeEach(function() {
       translate = new _ol_interaction_Translate_({
-        features: new _ol_Collection_([features[0]])
+        features: new Collection([features[0]])
       });
       map.addInteraction(translate);
     });

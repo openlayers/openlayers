@@ -1,4 +1,4 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
@@ -111,7 +111,7 @@ describe('ol.interaction.Select', function() {
     describe('user-provided collection', function() {
 
       it('uses the user-provided collection', function() {
-        var features = new _ol_Collection_();
+        var features = new Collection();
         var select = new _ol_interaction_Select_({features: features});
         expect(select.getFeatures()).to.be(features);
       });

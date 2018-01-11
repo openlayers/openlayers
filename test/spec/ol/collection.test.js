@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../src/ol/events.js';
-import _ol_Collection_ from '../../../src/ol/Collection.js';
+import Collection from '../../../src/ol/Collection.js';
 import CollectionEventType from '../../../src/ol/CollectionEventType.js';
 
 
@@ -7,7 +7,7 @@ describe('ol.collection', function() {
   var collection;
 
   beforeEach(function() {
-    collection = new _ol_Collection_();
+    collection = new Collection();
   });
 
   describe('create an empty collection', function() {
@@ -21,7 +21,7 @@ describe('ol.collection', function() {
   describe('create a collection from an array', function() {
     it('creates the expected collection', function() {
       var array = [0, 1, 2];
-      var collection = new _ol_Collection_(array);
+      var collection = new Collection(array);
       expect(collection.item(0)).to.eql(0);
       expect(collection.item(1)).to.eql(1);
       expect(collection.item(2)).to.eql(2);
@@ -61,7 +61,7 @@ describe('ol.collection', function() {
 
   describe('insertAt', function() {
     it('inserts elements at the correct location', function() {
-      collection = new _ol_Collection_([0, 2]);
+      collection = new Collection([0, 2]);
       collection.insertAt(1, 1);
       expect(collection.item(0)).to.eql(0);
       expect(collection.item(1)).to.eql(1);
@@ -80,7 +80,7 @@ describe('ol.collection', function() {
 
   describe('removeAt', function() {
     it('removes elements at the correction', function() {
-      var collection = new _ol_Collection_([0, 1, 2]);
+      var collection = new Collection([0, 1, 2]);
       collection.removeAt(1);
       expect(collection.item(0)).to.eql(0);
       expect(collection.item(1)).to.eql(2);
@@ -110,13 +110,13 @@ describe('ol.collection', function() {
 
   describe('remove', function() {
     it('removes the first matching element', function() {
-      var collection = new _ol_Collection_([0, 1, 2]);
+      var collection = new Collection([0, 1, 2]);
       expect(collection.remove(1)).to.eql(1);
       expect(collection.getArray()).to.eql([0, 2]);
       expect(collection.getLength()).to.eql(2);
     });
     it('fires a remove event', function() {
-      var collection = new _ol_Collection_([0, 1, 2]);
+      var collection = new Collection([0, 1, 2]);
       var cb = sinon.spy();
       _ol_events_.listen(collection, CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
@@ -124,13 +124,13 @@ describe('ol.collection', function() {
       expect(cb.lastCall.args[0].element).to.eql(1);
     });
     it('does not remove more than one matching element', function() {
-      var collection = new _ol_Collection_([0, 1, 1, 2]);
+      var collection = new Collection([0, 1, 1, 2]);
       expect(collection.remove(1)).to.eql(1);
       expect(collection.getArray()).to.eql([0, 1, 2]);
       expect(collection.getLength()).to.eql(3);
     });
     it('returns undefined if the element is not found', function() {
-      var collection = new _ol_Collection_([0, 1, 2]);
+      var collection = new Collection([0, 1, 2]);
       expect(collection.remove(3)).to.be(undefined);
       expect(collection.getArray()).to.eql([0, 1, 2]);
       expect(collection.getLength()).to.eql(3);
@@ -139,7 +139,7 @@ describe('ol.collection', function() {
 
   describe('setAt and event', function() {
     it('does dispatch events', function() {
-      var collection = new _ol_Collection_(['a', 'b']);
+      var collection = new Collection(['a', 'b']);
       var added, removed;
       _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
         added = e.element;
@@ -156,7 +156,7 @@ describe('ol.collection', function() {
 
   describe('removeAt and event', function() {
     it('does dispatch events', function() {
-      var collection = new _ol_Collection_(['a']);
+      var collection = new Collection(['a']);
       var removed;
       _ol_events_.listen(
           collection, CollectionEventType.REMOVE, function(e) {
@@ -169,7 +169,7 @@ describe('ol.collection', function() {
 
   describe('insertAt and event', function() {
     it('does dispatch events', function() {
-      var collection = new _ol_Collection_([0, 2]);
+      var collection = new Collection([0, 2]);
       var added;
       _ol_events_.listen(
           collection, CollectionEventType.ADD, function(e) {
@@ -202,7 +202,7 @@ describe('ol.collection', function() {
   describe('change:length event', function() {
     var collection, cb;
     beforeEach(function() {
-      collection = new _ol_Collection_([0, 1, 2]);
+      collection = new Collection([0, 1, 2]);
       cb = sinon.spy();
       _ol_events_.listen(collection, 'change:length', cb);
     });
@@ -231,7 +231,7 @@ describe('ol.collection', function() {
 
   describe('add event', function() {
     it('triggers add when pushing', function() {
-      var collection = new _ol_Collection_();
+      var collection = new Collection();
       var elem;
       _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
         elem = e.element;
@@ -244,7 +244,7 @@ describe('ol.collection', function() {
   describe('remove event', function() {
     var collection, cb1, cb2;
     beforeEach(function() {
-      collection = new _ol_Collection_([1]);
+      collection = new Collection([1]);
       cb1 = sinon.spy();
       cb2 = sinon.spy();
     });
@@ -275,7 +275,7 @@ describe('ol.collection', function() {
       expect(collection.item(1)).to.eql(2);
     });
     it('fires events', function() {
-      var collection = new _ol_Collection_();
+      var collection = new Collection();
       var elems = [];
       _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
         elems.push(e.element);
@@ -287,25 +287,25 @@ describe('ol.collection', function() {
 
   describe('unique collection', function() {
     it('allows unique items in the constructor', function() {
-      new _ol_Collection_([{}, {}, {}], {unique: true});
+      new Collection([{}, {}, {}], {unique: true});
     });
 
     it('throws if duplicate items are passed to the constructor', function() {
       var item = {};
       var call = function() {
-        new _ol_Collection_([item, item], {unique: true});
+        new Collection([item, item], {unique: true});
       };
       expect(call).to.throwException();
     });
 
     it('allows unique items to be added via push', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       unique.push({});
       unique.push({});
     });
 
     it('throws if duplicate items are added via push', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       var item = {};
       unique.push(item);
       var call = function() {
@@ -315,13 +315,13 @@ describe('ol.collection', function() {
     });
 
     it('allows unique items to be added via insertAt', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       unique.insertAt(0, {});
       unique.insertAt(0, {});
     });
 
     it('throws if duplicate items are added via insertAt', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       var item = {};
       unique.insertAt(0, item);
       var call = function() {
@@ -331,20 +331,20 @@ describe('ol.collection', function() {
     });
 
     it('allows unique items to be added via setAt', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       unique.setAt(0, {});
       unique.setAt(1, {});
     });
 
     it('allows items to be reset via setAt', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       var item = {};
       unique.setAt(0, item);
       unique.setAt(0, item);
     });
 
     it('throws if duplicate items are added via setAt', function() {
-      var unique = new _ol_Collection_(undefined, {unique: true});
+      var unique = new Collection(undefined, {unique: true});
       var item = {};
       unique.setAt(0, item);
       var call = function() {
