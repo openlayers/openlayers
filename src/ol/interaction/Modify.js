@@ -16,7 +16,7 @@ import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
-import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
+import ModifyEventType from '../interaction/ModifyEventType.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
@@ -269,7 +269,7 @@ Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
     this.dispatchEvent(new Modify.Event(
-        _ol_interaction_ModifyEventType_.MODIFYSTART, this.features_, evt));
+        ModifyEventType.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -783,7 +783,7 @@ Modify.handleUpEvent_ = function(evt) {
   }
   if (this.modified_) {
     this.dispatchEvent(new Modify.Event(
-        _ol_interaction_ModifyEventType_.MODIFYEND, this.features_, evt));
+        ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -1031,7 +1031,7 @@ Modify.prototype.removePoint = function() {
     this.willModifyFeatures_(evt);
     this.removeVertex_();
     this.dispatchEvent(new Modify.Event(
-        _ol_interaction_ModifyEventType_.MODIFYEND, this.features_, evt));
+        ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }
