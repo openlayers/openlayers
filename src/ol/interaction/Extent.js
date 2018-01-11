@@ -29,7 +29,7 @@ import _ol_style_Style_ from '../style/Style.js';
  * @param {olx.interaction.ExtentOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_Extent_ = function(opt_options) {
+var ExtentInteraction = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -82,10 +82,10 @@ var _ol_interaction_Extent_ = function(opt_options) {
 
   /* Inherit ol.interaction.Pointer */
   PointerInteraction.call(this, {
-    handleDownEvent: _ol_interaction_Extent_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_Extent_.handleDragEvent_,
-    handleEvent: _ol_interaction_Extent_.handleEvent_,
-    handleUpEvent: _ol_interaction_Extent_.handleUpEvent_
+    handleDownEvent: ExtentInteraction.handleDownEvent_,
+    handleDragEvent: ExtentInteraction.handleDragEvent_,
+    handleEvent: ExtentInteraction.handleEvent_,
+    handleUpEvent: ExtentInteraction.handleUpEvent_
   });
 
   /**
@@ -98,7 +98,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
     }),
-    style: opt_options.boxStyle ? opt_options.boxStyle : _ol_interaction_Extent_.getDefaultExtentStyleFunction_(),
+    style: opt_options.boxStyle ? opt_options.boxStyle : ExtentInteraction.getDefaultExtentStyleFunction_(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -113,7 +113,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
     }),
-    style: opt_options.pointerStyle ? opt_options.pointerStyle : _ol_interaction_Extent_.getDefaultPointerStyleFunction_(),
+    style: opt_options.pointerStyle ? opt_options.pointerStyle : ExtentInteraction.getDefaultPointerStyleFunction_(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -123,7 +123,7 @@ var _ol_interaction_Extent_ = function(opt_options) {
   }
 };
 
-inherits(_ol_interaction_Extent_, PointerInteraction);
+inherits(ExtentInteraction, PointerInteraction);
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent Event.
@@ -131,7 +131,7 @@ inherits(_ol_interaction_Extent_, PointerInteraction);
  * @this {ol.interaction.Extent}
  * @private
  */
-_ol_interaction_Extent_.handleEvent_ = function(mapBrowserEvent) {
+ExtentInteraction.handleEvent_ = function(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
@@ -151,7 +151,7 @@ _ol_interaction_Extent_.handleEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.Extent}
  * @private
  */
-_ol_interaction_Extent_.handleDownEvent_ = function(mapBrowserEvent) {
+ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
   var pixel = mapBrowserEvent.pixel;
   var map = mapBrowserEvent.map;
 
@@ -183,15 +183,15 @@ _ol_interaction_Extent_.handleDownEvent_ = function(mapBrowserEvent) {
 
     //snap to point
     if (x !== null && y !== null) {
-      this.pointerHandler_ = _ol_interaction_Extent_.getPointHandler_(getOpposingPoint(vertex));
+      this.pointerHandler_ = ExtentInteraction.getPointHandler_(getOpposingPoint(vertex));
     //snap to edge
     } else if (x !== null) {
-      this.pointerHandler_ = _ol_interaction_Extent_.getEdgeHandler_(
+      this.pointerHandler_ = ExtentInteraction.getEdgeHandler_(
           getOpposingPoint([x, extent[1]]),
           getOpposingPoint([x, extent[3]])
       );
     } else if (y !== null) {
-      this.pointerHandler_ = _ol_interaction_Extent_.getEdgeHandler_(
+      this.pointerHandler_ = ExtentInteraction.getEdgeHandler_(
           getOpposingPoint([extent[0], y]),
           getOpposingPoint([extent[2], y])
       );
@@ -200,7 +200,7 @@ _ol_interaction_Extent_.handleDownEvent_ = function(mapBrowserEvent) {
   } else {
     vertex = map.getCoordinateFromPixel(pixel);
     this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
-    this.pointerHandler_ = _ol_interaction_Extent_.getPointHandler_(vertex);
+    this.pointerHandler_ = ExtentInteraction.getPointHandler_(vertex);
   }
   return true; //event handled; start downup sequence
 };
@@ -211,7 +211,7 @@ _ol_interaction_Extent_.handleDownEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.Extent}
  * @private
  */
-_ol_interaction_Extent_.handleDragEvent_ = function(mapBrowserEvent) {
+ExtentInteraction.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.pointerHandler_) {
     var pixelCoordinate = mapBrowserEvent.coordinate;
     this.setExtent(this.pointerHandler_(pixelCoordinate));
@@ -226,7 +226,7 @@ _ol_interaction_Extent_.handleDragEvent_ = function(mapBrowserEvent) {
  * @this {ol.interaction.Extent}
  * @private
  */
-_ol_interaction_Extent_.handleUpEvent_ = function(mapBrowserEvent) {
+ExtentInteraction.handleUpEvent_ = function(mapBrowserEvent) {
   this.pointerHandler_ = null;
   //If bbox is zero area, set to null;
   var extent = this.getExtent();
@@ -242,7 +242,7 @@ _ol_interaction_Extent_.handleUpEvent_ = function(mapBrowserEvent) {
  * @return {ol.StyleFunction} Default Extent style
  * @private
  */
-_ol_interaction_Extent_.getDefaultExtentStyleFunction_ = function() {
+ExtentInteraction.getDefaultExtentStyleFunction_ = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POLYGON];
@@ -255,7 +255,7 @@ _ol_interaction_Extent_.getDefaultExtentStyleFunction_ = function() {
  * @return {ol.StyleFunction} Default pointer style
  * @private
  */
-_ol_interaction_Extent_.getDefaultPointerStyleFunction_ = function() {
+ExtentInteraction.getDefaultPointerStyleFunction_ = function() {
   var style = _ol_style_Style_.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
@@ -267,7 +267,7 @@ _ol_interaction_Extent_.getDefaultPointerStyleFunction_ = function() {
  * @returns {function (ol.Coordinate): ol.Extent} event handler
  * @private
  */
-_ol_interaction_Extent_.getPointHandler_ = function(fixedPoint) {
+ExtentInteraction.getPointHandler_ = function(fixedPoint) {
   return function(point) {
     return boundingExtent([fixedPoint, point]);
   };
@@ -279,7 +279,7 @@ _ol_interaction_Extent_.getPointHandler_ = function(fixedPoint) {
  * @returns {function (ol.Coordinate): ol.Extent|null} event handler
  * @private
  */
-_ol_interaction_Extent_.getEdgeHandler_ = function(fixedP1, fixedP2) {
+ExtentInteraction.getEdgeHandler_ = function(fixedP1, fixedP2) {
   if (fixedP1[0] == fixedP2[0]) {
     return function(point) {
       return boundingExtent([fixedP1, [point[0], fixedP2[1]]]);
@@ -298,7 +298,7 @@ _ol_interaction_Extent_.getEdgeHandler_ = function(fixedP1, fixedP2) {
  * @returns {Array<Array<ol.Coordinate>>} extent line segments
  * @private
  */
-_ol_interaction_Extent_.getSegments_ = function(extent) {
+ExtentInteraction.getSegments_ = function(extent) {
   return [
     [[extent[0], extent[1]], [extent[0], extent[3]]],
     [[extent[0], extent[3]], [extent[2], extent[3]]],
@@ -313,7 +313,7 @@ _ol_interaction_Extent_.getSegments_ = function(extent) {
  * @returns {ol.Coordinate|null} snapped vertex on extent
  * @private
  */
-_ol_interaction_Extent_.prototype.snapToVertex_ = function(pixel, map) {
+ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
     return _ol_coordinate_.squaredDistanceToSegment(pixelCoordinate, a) -
@@ -322,7 +322,7 @@ _ol_interaction_Extent_.prototype.snapToVertex_ = function(pixel, map) {
   var extent = this.getExtent();
   if (extent) {
     //convert extents to line segments and find the segment closest to pixelCoordinate
-    var segments = _ol_interaction_Extent_.getSegments_(extent);
+    var segments = ExtentInteraction.getSegments_(extent);
     segments.sort(sortByDistance);
     var closestSegment = segments[0];
 
@@ -353,7 +353,7 @@ _ol_interaction_Extent_.prototype.snapToVertex_ = function(pixel, map) {
  * @param {ol.MapBrowserEvent} mapBrowserEvent pointer move event
  * @private
  */
-_ol_interaction_Extent_.prototype.handlePointerMove_ = function(mapBrowserEvent) {
+ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
   var pixel = mapBrowserEvent.pixel;
   var map = mapBrowserEvent.map;
 
@@ -369,7 +369,7 @@ _ol_interaction_Extent_.prototype.handlePointerMove_ = function(mapBrowserEvent)
  * @returns {ol.Feature} extent as featrue
  * @private
  */
-_ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent) {
+ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
   var extentFeature = this.extentFeature_;
 
   if (!extentFeature) {
@@ -396,7 +396,7 @@ _ol_interaction_Extent_.prototype.createOrUpdateExtentFeature_ = function(extent
  * @returns {ol.Feature} vertex as feature
  * @private
  */
-_ol_interaction_Extent_.prototype.createOrUpdatePointerFeature_ = function(vertex) {
+ExtentInteraction.prototype.createOrUpdatePointerFeature_ = function(vertex) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
     vertexFeature = new Feature(new Point(vertex));
@@ -413,7 +413,7 @@ _ol_interaction_Extent_.prototype.createOrUpdatePointerFeature_ = function(verte
 /**
  * @inheritDoc
  */
-_ol_interaction_Extent_.prototype.setMap = function(map) {
+ExtentInteraction.prototype.setMap = function(map) {
   this.extentOverlay_.setMap(map);
   this.vertexOverlay_.setMap(map);
   PointerInteraction.prototype.setMap.call(this, map);
@@ -425,7 +425,7 @@ _ol_interaction_Extent_.prototype.setMap = function(map) {
  * @return {ol.Extent} Drawn extent in the view projection.
  * @api
  */
-_ol_interaction_Extent_.prototype.getExtent = function() {
+ExtentInteraction.prototype.getExtent = function() {
   return this.extent_;
 };
 
@@ -435,11 +435,11 @@ _ol_interaction_Extent_.prototype.getExtent = function() {
  * @param {ol.Extent} extent Extent
  * @api
  */
-_ol_interaction_Extent_.prototype.setExtent = function(extent) {
+ExtentInteraction.prototype.setExtent = function(extent) {
   //Null extent means no bbox
   this.extent_ = extent ? extent : null;
   this.createOrUpdateExtentFeature_(extent);
-  this.dispatchEvent(new _ol_interaction_Extent_.Event(this.extent_));
+  this.dispatchEvent(new ExtentInteraction.Event(this.extent_));
 };
 
 
@@ -453,7 +453,7 @@ _ol_interaction_Extent_.prototype.setExtent = function(extent) {
  * @param {ol.Extent} extent the new extent
  * @extends {ol.events.Event}
  */
-_ol_interaction_Extent_.Event = function(extent) {
+ExtentInteraction.Event = function(extent) {
   Event.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
 
   /**
@@ -464,5 +464,5 @@ _ol_interaction_Extent_.Event = function(extent) {
   this.extent = extent;
 
 };
-inherits(_ol_interaction_Extent_.Event, Event);
-export default _ol_interaction_Extent_;
+inherits(ExtentInteraction.Event, Event);
+export default ExtentInteraction;
