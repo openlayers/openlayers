@@ -5,7 +5,7 @@ import {inherits} from '../../index.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
-import _ol_renderer_Layer_ from '../Layer.js';
+import LayerRenderer from '../Layer.js';
 import _ol_renderer_webgl_defaultmapshader_ from '../webgl/defaultmapshader.js';
 import _ol_renderer_webgl_defaultmapshader_Locations_ from '../webgl/defaultmapshader/Locations.js';
 import _ol_transform_ from '../../transform.js';
@@ -23,7 +23,7 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  */
 var _ol_renderer_webgl_Layer_ = function(mapRenderer, layer) {
 
-  _ol_renderer_Layer_.call(this, layer);
+  LayerRenderer.call(this, layer);
 
   /**
    * @protected
@@ -86,7 +86,7 @@ var _ol_renderer_webgl_Layer_ = function(mapRenderer, layer) {
 
 };
 
-inherits(_ol_renderer_webgl_Layer_, _ol_renderer_Layer_);
+inherits(_ol_renderer_webgl_Layer_, LayerRenderer);
 
 
 /**

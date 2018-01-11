@@ -8,7 +8,7 @@ import _ol_render_Event_ from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
-import _ol_renderer_Layer_ from '../Layer.js';
+import LayerRenderer from '../Layer.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -19,7 +19,7 @@ import _ol_transform_ from '../../transform.js';
  */
 var _ol_renderer_canvas_Layer_ = function(layer) {
 
-  _ol_renderer_Layer_.call(this, layer);
+  LayerRenderer.call(this, layer);
 
   /**
    * @protected
@@ -35,7 +35,7 @@ var _ol_renderer_canvas_Layer_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_canvas_Layer_, _ol_renderer_Layer_);
+inherits(_ol_renderer_canvas_Layer_, LayerRenderer);
 
 
 /**

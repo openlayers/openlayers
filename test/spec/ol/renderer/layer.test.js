@@ -3,7 +3,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import _ol_renderer_Layer_ from '../../../../src/ol/renderer/Layer.js';
+import LayerRenderer from '../../../../src/ol/renderer/Layer.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 
@@ -14,7 +14,7 @@ describe('ol.renderer.Layer', function() {
 
   beforeEach(function() {
     var layer = new _ol_layer_Layer_({});
-    renderer = new _ol_renderer_Layer_(layer);
+    renderer = new LayerRenderer(layer);
   });
 
   describe('#loadImage', function() {
