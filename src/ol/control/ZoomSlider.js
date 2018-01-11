@@ -13,7 +13,7 @@ import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
 import PointerEventType from '../pointer/EventType.js';
-import _ol_pointer_PointerEventHandler_ from '../pointer/PointerEventHandler.js';
+import PointerEventHandler from '../pointer/PointerEventHandler.js';
 
 /**
  * @classdesc
@@ -111,7 +111,7 @@ var ZoomSlider = function(opt_options) {
    * @type {ol.pointer.PointerEventHandler}
    * @private
    */
-  this.dragger_ = new _ol_pointer_PointerEventHandler_(containerElement);
+  this.dragger_ = new PointerEventHandler(containerElement);
 
   _ol_events_.listen(this.dragger_, PointerEventType.POINTERDOWN,
       this.handleDraggerStart_, this);

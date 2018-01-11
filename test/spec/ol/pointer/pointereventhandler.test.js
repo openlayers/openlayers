@@ -3,7 +3,7 @@ import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_pointer_MouseSource_ from '../../../../src/ol/pointer/MouseSource.js';
 import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_pointer_PointerEventHandler_ from '../../../../src/ol/pointer/PointerEventHandler.js';
+import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
 
 
 describe('ol.pointer.PointerEventHandler', function() {
@@ -18,7 +18,7 @@ describe('ol.pointer.PointerEventHandler', function() {
     _ol_has_.POINTER = false;
     _ol_has_.MSPOINTER = false;
 
-    handler = new _ol_pointer_PointerEventHandler_(target);
+    handler = new PointerEventHandler(target);
     eventSpy = sinon.spy();
   });
 
