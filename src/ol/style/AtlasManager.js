@@ -2,7 +2,7 @@
  * @module ol/style/AtlasManager
  */
 import {WEBGL_MAX_TEXTURE_SIZE, nullFunction} from '../index.js';
-import _ol_style_Atlas_ from '../style/Atlas.js';
+import Atlas from '../style/Atlas.js';
 
 
 /**
@@ -66,7 +66,7 @@ var _ol_style_AtlasManager_ = function(opt_options) {
    * @private
    * @type {Array.<ol.style.Atlas>}
    */
-  this.atlases_ = [new _ol_style_Atlas_(this.currentSize_, this.space_)];
+  this.atlases_ = [new Atlas(this.currentSize_, this.space_)];
 
   /**
    * The size in pixels of the latest atlas image for hit-detection images.
@@ -79,7 +79,7 @@ var _ol_style_AtlasManager_ = function(opt_options) {
    * @private
    * @type {Array.<ol.style.Atlas>}
    */
-  this.hitAtlases_ = [new _ol_style_Atlas_(this.currentHitSize_, this.space_)];
+  this.hitAtlases_ = [new Atlas(this.currentHitSize_, this.space_)];
 };
 
 
@@ -221,7 +221,7 @@ _ol_style_AtlasManager_.prototype.add_ = function(isHitAtlas, id, width, height,
         size = Math.min(this.currentSize_ * 2, this.maxSize_);
         this.currentSize_ = size;
       }
-      atlas = new _ol_style_Atlas_(size, this.space_);
+      atlas = new Atlas(size, this.space_);
       atlases.push(atlas);
       // run the loop another time
       ++ii;
