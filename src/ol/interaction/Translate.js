@@ -10,7 +10,35 @@ import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import _ol_interaction_Property_ from '../interaction/Property.js';
-import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventType.js';
+
+
+/**
+ * @enum {string}
+ */
+var TranslateEventType = {
+
+  /**
+   * Triggered upon feature translation start.
+   * @event ol.interaction.Translate.Event#translatestart
+   * @api
+   */
+  TRANSLATESTART: 'translatestart',
+
+  /**
+   * Triggered upon feature translation.
+   * @event ol.interaction.Translate.Event#translating
+   * @api
+   */
+  TRANSLATING: 'translating',
+
+  /**
+   * Triggered upon feature translation end.
+   * @event ol.interaction.Translate.Event#translateend
+   * @api
+   */
+  TRANSLATEEND: 'translateend'
+};
+
 
 /**
  * @classdesc
@@ -104,8 +132,7 @@ _ol_interaction_Translate_.handleDownEvent_ = function(event) {
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATESTART, features,
-            event.coordinate));
+            TranslateEventType.TRANSLATESTART, features, event.coordinate));
     return true;
   }
   return false;
@@ -127,8 +154,7 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATEEND, features,
-            event.coordinate));
+            TranslateEventType.TRANSLATEEND, features, event.coordinate));
     return true;
   }
   return false;
@@ -157,8 +183,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATING, features,
-            newCoordinate));
+            TranslateEventType.TRANSLATING, features, newCoordinate));
   }
 };
 
@@ -269,7 +294,7 @@ _ol_interaction_Translate_.prototype.updateState_ = function(oldMap) {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.TranslateEvent}
- * @param {ol.interaction.TranslateEventType} type Type.
+ * @param {TranslateEventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features translated.
  * @param {ol.Coordinate} coordinate The event coordinate.
  */
