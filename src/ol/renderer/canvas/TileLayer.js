@@ -9,7 +9,7 @@ import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, createEmpty, equals, getIntersection, isEmpty} from '../../extent.js';
 import RendererType from '../Type.js';
-import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
+import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -20,7 +20,7 @@ import _ol_transform_ from '../../transform.js';
  */
 var CanvasTileLayerRenderer = function(tileLayer) {
 
-  _ol_renderer_canvas_IntermediateCanvas_.call(this, tileLayer);
+  IntermediateCanvasRenderer.call(this, tileLayer);
 
   /**
    * @protected
@@ -78,7 +78,7 @@ var CanvasTileLayerRenderer = function(tileLayer) {
 
 };
 
-inherits(CanvasTileLayerRenderer, _ol_renderer_canvas_IntermediateCanvas_);
+inherits(CanvasTileLayerRenderer, IntermediateCanvasRenderer);
 
 
 /**

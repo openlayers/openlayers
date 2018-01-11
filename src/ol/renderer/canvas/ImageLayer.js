@@ -12,7 +12,7 @@ import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
 import _ol_obj_ from '../../obj.js';
 import {getLayerRendererPlugins} from '../../plugins.js';
 import RendererType from '../Type.js';
-import _ol_renderer_canvas_IntermediateCanvas_ from '../canvas/IntermediateCanvas.js';
+import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
 import _ol_transform_ from '../../transform.js';
 
 /**
@@ -23,7 +23,7 @@ import _ol_transform_ from '../../transform.js';
  */
 var CanvasImageLayerRenderer = function(imageLayer) {
 
-  _ol_renderer_canvas_IntermediateCanvas_.call(this, imageLayer);
+  IntermediateCanvasRenderer.call(this, imageLayer);
 
   /**
    * @private
@@ -50,7 +50,7 @@ var CanvasImageLayerRenderer = function(imageLayer) {
 
 };
 
-inherits(CanvasImageLayerRenderer, _ol_renderer_canvas_IntermediateCanvas_);
+inherits(CanvasImageLayerRenderer, IntermediateCanvasRenderer);
 
 
 /**
@@ -201,7 +201,7 @@ CanvasImageLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
   if (this.vectorRenderer_) {
     return this.vectorRenderer_.forEachFeatureAtCoordinate(coordinate, frameState, hitTolerance, callback, thisArg);
   } else {
-    return _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachFeatureAtCoordinate.call(this, coordinate, frameState, hitTolerance, callback, thisArg);
+    return IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate.call(this, coordinate, frameState, hitTolerance, callback, thisArg);
   }
 };
 
