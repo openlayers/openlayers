@@ -12,7 +12,7 @@ import _ol_layer_Layer_ from '../../layer/Layer.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
-import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
+import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
@@ -100,7 +100,7 @@ CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
 
     var transform = this.getTransform(frameState);
 
-    var vectorContext = new _ol_render_canvas_Immediate_(context, pixelRatio,
+    var vectorContext = new CanvasImmediateRenderer(context, pixelRatio,
         extent, transform, rotation);
     var composeEvent = new _ol_render_Event_(type, vectorContext,
         frameState, context, null);

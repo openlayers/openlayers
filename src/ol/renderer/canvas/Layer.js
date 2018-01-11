@@ -7,7 +7,7 @@ import {TRUE} from '../../functions.js';
 import _ol_render_Event_ from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
-import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
+import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -87,7 +87,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
     _ol_render_canvas_.rotateAtOffset(context, -rotation, width / 2, height / 2);
     var transform = opt_transform !== undefined ?
       opt_transform : this.getTransform(frameState, 0);
-    var render = new _ol_render_canvas_Immediate_(
+    var render = new CanvasImmediateRenderer(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);
     var composeEvent = new _ol_render_Event_(type, render, frameState,

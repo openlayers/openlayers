@@ -3,7 +3,7 @@ import Point from '../../../src/ol/geom/Point.js';
 import Polygon from '../../../src/ol/geom/Polygon.js';
 import _ol_render_ from '../../../src/ol/render.js';
 import VectorContext from '../../../src/ol/render/VectorContext.js';
-import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/Immediate.js';
+import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
@@ -23,7 +23,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
       expect(vectorContext).to.be.a(VectorContext);
-      expect(vectorContext).to.be.a(_ol_render_canvas_Immediate_);
+      expect(vectorContext).to.be.a(CanvasImmediateRenderer);
     });
 
     it('can be used to render a point geometry', function(done) {
