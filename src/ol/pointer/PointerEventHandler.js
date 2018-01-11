@@ -39,7 +39,7 @@ import PointerEventType from '../pointer/EventType.js';
 import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
 import _ol_pointer_MsSource_ from '../pointer/MsSource.js';
 import _ol_pointer_NativeSource_ from '../pointer/NativeSource.js';
-import _ol_pointer_PointerEvent_ from '../pointer/PointerEvent.js';
+import PointerEvent from '../pointer/PointerEvent.js';
 import _ol_pointer_TouchSource_ from '../pointer/TouchSource.js';
 
 /**
@@ -353,7 +353,7 @@ PointerEventHandler.prototype.contains_ = function(container, contained) {
  * @return {ol.pointer.PointerEvent} A PointerEvent of type `inType`.
  */
 PointerEventHandler.prototype.makeEvent = function(inType, data, event) {
-  return new _ol_pointer_PointerEvent_(inType, event, data);
+  return new PointerEvent(inType, event, data);
 };
 
 

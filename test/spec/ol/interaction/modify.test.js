@@ -11,7 +11,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Modify from '../../../../src/ol/interaction/Modify.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
@@ -81,7 +81,7 @@ describe('ol.interaction.Modify', function() {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
-    var pointerEvent = new _ol_pointer_PointerEvent_(type, {
+    var pointerEvent = new PointerEvent(type, {
       type: type,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,

@@ -15,7 +15,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Draw from '../../../../src/ol/interaction/Draw.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
@@ -68,7 +68,7 @@ describe('ol.interaction.Draw', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new _ol_pointer_PointerEvent_(type, {
+    var event = new PointerEvent(type, {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
@@ -94,7 +94,7 @@ describe('ol.interaction.Draw', function() {
         freehand: true
       });
 
-      var event = new _ol_pointer_PointerEvent_('pointerdown', {
+      var event = new PointerEvent('pointerdown', {
         clientX: 0,
         clientY: 0,
         shiftKey: false

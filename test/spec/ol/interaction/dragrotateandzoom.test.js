@@ -4,7 +4,7 @@ import View from '../../../../src/ol/View.js';
 import DragRotateAndZoom from '../../../../src/ol/interaction/DragRotateAndZoom.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 describe('ol.interaction.DragRotateAndZoom', function() {
@@ -59,7 +59,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
 
     it('does not rotate when rotation is disabled on the view', function() {
       var event = new MapBrowserPointerEvent('pointermove', map,
-          new _ol_pointer_PointerEvent_('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
+          new PointerEvent('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
           true);
       interaction.lastAngle_ = Math.PI;
       var spy = sinon.spy(Interaction, 'rotateWithoutConstraints');
@@ -73,7 +73,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         enableRotation: false
       }));
       event = new MapBrowserPointerEvent('pointermove', map,
-          new _ol_pointer_PointerEvent_('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
+          new PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
           true);
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
