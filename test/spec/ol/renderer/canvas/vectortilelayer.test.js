@@ -13,7 +13,7 @@ import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
 import Projection from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
-import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
+import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
 import Style from '../../../../../src/ol/style/Style.js';
@@ -57,7 +57,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       })];
       feature1 = new Feature(new Point([1, -1]));
       feature2 = new Feature(new Point([0, 0]));
-      feature3 = new _ol_render_Feature_('Point', [1, -1], []);
+      feature3 = new RenderFeature('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
       var TileClass = function() {
         VectorTile.apply(this, arguments);

@@ -19,7 +19,7 @@ import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
-import _ol_render_Feature_ from '../render/Feature.js';
+import RenderFeature from '../render/Feature.js';
 
 /**
  * @classdesc
@@ -51,7 +51,7 @@ var MVT = function(opt_options) {
    *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
-    options.featureClass : _ol_render_Feature_;
+    options.featureClass : RenderFeature;
 
   /**
    * @private
@@ -287,7 +287,7 @@ MVT.prototype.createFeature_ = function(pbf, rawFeature, opt_options) {
 
   var geometryType = MVT.getGeometryType_(type, ends.length);
 
-  if (this.featureClass_ === _ol_render_Feature_) {
+  if (this.featureClass_ === RenderFeature) {
     feature = new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
   } else {
     var geom;

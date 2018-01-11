@@ -2,7 +2,7 @@ import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
+import RenderFeature from '../../../../src/ol/render/Feature.js';
 
 
 describe('ol.render.Feature', function() {
@@ -16,8 +16,8 @@ describe('ol.render.Feature', function() {
   describe('Constructor', function() {
     it('creates an instance', function() {
       renderFeature =
-          new _ol_render_Feature_(type, flatCoordinates, ends, properties, 'foo');
-      expect(renderFeature).to.be.a(_ol_render_Feature_);
+          new RenderFeature(type, flatCoordinates, ends, properties, 'foo');
+      expect(renderFeature).to.be.a(RenderFeature);
     });
   });
 
@@ -42,7 +42,7 @@ describe('ol.render.Feature', function() {
     });
     it('returns the correct extent for a linestring', function() {
       var feature =
-          new _ol_render_Feature_('LineString', [-1, -2, 2, 1], null, {});
+          new RenderFeature('LineString', [-1, -2, 2, 1], null, {});
       expect(feature.getExtent()).to.eql([-1, -2, 2, 1]);
     });
   });
@@ -56,7 +56,7 @@ describe('ol.render.Feature', function() {
   describe('#getFlatInteriorPoint()', function() {
     it('returns correct point and caches it', function() {
       var polygon = new Polygon([[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]]);
-      var feature = new _ol_render_Feature_('Polygon', polygon.getOrientedFlatCoordinates(),
+      var feature = new RenderFeature('Polygon', polygon.getOrientedFlatCoordinates(),
           polygon.getEnds());
       expect(feature.getFlatInteriorPoint()).to.eql([5, 5, 10]);
       expect(feature.getFlatInteriorPoint()).to.be(feature.flatInteriorPoints_);
@@ -69,7 +69,7 @@ describe('ol.render.Feature', function() {
         [[[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]],
         [[[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]]
       ]);
-      var feature = new _ol_render_Feature_('MultiPolygon', polygon.getOrientedFlatCoordinates(),
+      var feature = new RenderFeature('MultiPolygon', polygon.getOrientedFlatCoordinates(),
           polygon.getEndss());
       expect(feature.getFlatInteriorPoints()).to.eql([5, 5, 10, 15, 5, 10]);
       expect(feature.getFlatInteriorPoints()).to.be(feature.flatInteriorPoints_);
@@ -79,7 +79,7 @@ describe('ol.render.Feature', function() {
   describe('#getFlatMidpoint()', function() {
     it('returns correct point', function() {
       var line = new LineString([[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]]);
-      var feature = new _ol_render_Feature_('LineString', line.getFlatCoordinates());
+      var feature = new RenderFeature('LineString', line.getFlatCoordinates());
       expect(feature.getFlatMidpoint()).to.eql([10, 10]);
       expect(feature.getFlatMidpoint()).to.eql(feature.flatMidpoints_);
     });
@@ -91,7 +91,7 @@ describe('ol.render.Feature', function() {
         [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
         [[10, 0], [10, 10], [20, 10], [20, 0], [10, 0]]
       ]);
-      var feature = new _ol_render_Feature_('MultiLineString', line.getFlatCoordinates(),
+      var feature = new RenderFeature('MultiLineString', line.getFlatCoordinates(),
           line.getEnds());
       expect(feature.getFlatMidpoints()).to.eql([10, 10, 20, 10]);
       expect(feature.getFlatMidpoints()).to.be(feature.flatMidpoints_);
