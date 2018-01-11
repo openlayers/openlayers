@@ -5,7 +5,7 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
@@ -119,7 +119,7 @@ describe('ol.source.TileImage', function() {
       expect(tile3857).to.be.a(ImageTile);
       expect(tile3857).not.to.be.a(ReprojTile);
 
-      var projXXX = new _ol_proj_Projection_({
+      var projXXX = new Projection({
         code: 'XXX',
         units: 'degrees'
       });

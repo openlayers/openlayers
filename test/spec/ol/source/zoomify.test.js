@@ -1,6 +1,6 @@
 import {DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
 import _ol_events_ from '../../../../src/ol/events.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import Zoomify from '../../../../src/ol/source/Zoomify.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
@@ -11,7 +11,7 @@ describe('ol.source.Zoomify', function() {
   var size = [w, h];
   var zoomifyUrl = 'spec/ol/source/images/zoomify/{TileGroup}/{z}-{x}-{y}.jpg';
   var iipUrl = 'spec/ol/source/images/zoomify?JTL={z},{tileIndex}';
-  var proj = new _ol_proj_Projection_({
+  var proj = new Projection({
     code: 'ZOOMIFY',
     units: 'pixels',
     extent: [0, 0, w, h]

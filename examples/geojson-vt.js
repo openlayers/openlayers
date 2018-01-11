@@ -6,7 +6,7 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import Projection from '../src/ol/proj/Projection.js';
 
 
 var replacer = function(key, value) {
@@ -48,7 +48,7 @@ var replacer = function(key, value) {
   }
 };
 
-var tilePixels = new _ol_proj_Projection_({
+var tilePixels = new Projection({
   code: 'TILE_PIXELS',
   units: 'tile-pixels'
 });

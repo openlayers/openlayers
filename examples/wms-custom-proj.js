@@ -4,7 +4,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {addProjection, addCoordinateTransforms, transform} from '../src/ol/proj.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import Projection from '../src/ol/proj/Projection.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 
 
@@ -13,7 +13,7 @@ import TileWMS from '../src/ol/source/TileWMS.js';
 // ol.proj.addProjection to make it available to the library for lookup by its
 // code.
 
-var projection = new _ol_proj_Projection_({
+var projection = new Projection({
   code: 'EPSG:21781',
   // The extent is used to determine zoom level 0. Recommended values for a
   // projection's validity extent can be found at https://epsg.io/.

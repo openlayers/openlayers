@@ -1,4 +1,4 @@
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import * as transforms from '../../../../src/ol/proj/transforms.js';
 
 
@@ -8,12 +8,12 @@ describe('transforms.remove()', function() {
   var units = 'degrees';
 
   it('removes functions cached by transforms.add()', function() {
-    var foo = new _ol_proj_Projection_({
+    var foo = new Projection({
       code: 'foo',
       units: units,
       extent: extent
     });
-    var bar = new _ol_proj_Projection_({
+    var bar = new Projection({
       code: 'bar',
       units: units,
       extent: extent

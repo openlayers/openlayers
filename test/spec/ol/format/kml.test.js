@@ -11,7 +11,7 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
@@ -356,7 +356,7 @@ describe('ol.format.KML', function() {
         });
 
         it('can transform and write XYZ Point geometries', function() {
-          addProjection(new _ol_proj_Projection_({code: 'double'}));
+          addProjection(new Projection({code: 'double'}));
           addCoordinateTransforms('EPSG:4326', 'double',
               function(coordinate) {
                 return [2 * coordinate[0], 2 * coordinate[1]];

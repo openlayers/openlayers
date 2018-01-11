@@ -11,7 +11,7 @@ import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
@@ -201,7 +201,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('Geometries are transformed from tile-pixels', function() {
-      var proj = new _ol_proj_Projection_({code: 'EPSG:3857', units: 'tile-pixels'});
+      var proj = new Projection({code: 'EPSG:3857', units: 'tile-pixels'});
       var tile;
       tileCallback = function(t) {
         t.setProjection(proj);

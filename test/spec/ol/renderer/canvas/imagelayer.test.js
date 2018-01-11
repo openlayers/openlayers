@@ -1,7 +1,7 @@
 import Map from '../../../../../src/ol/Map.js';
 import View from '../../../../../src/ol/View.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
-import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import Static from '../../../../../src/ol/source/ImageStatic.js';
 
 
@@ -11,7 +11,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
 
     var map, target, source;
     beforeEach(function(done) {
-      var projection = new _ol_proj_Projection_({
+      var projection = new Projection({
         code: 'custom-image',
         units: 'pixels',
         extent: [0, 0, 200, 200]

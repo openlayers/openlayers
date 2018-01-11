@@ -2,7 +2,7 @@ import {inherits} from '../../../../src/ol/index.js';
 import Tile from '../../../../src/ol/Tile.js';
 import TileRange from '../../../../src/ol/TileRange.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
@@ -258,7 +258,7 @@ describe('ol.source.Tile', function() {
 
     it('works with wrapX and custom projection without extent', function() {
       var tileSource = new TileSource({
-        projection: new _ol_proj_Projection_({
+        projection: new Projection({
           code: 'foo',
           global: true,
           units: 'm'

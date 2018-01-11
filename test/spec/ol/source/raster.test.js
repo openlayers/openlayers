@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import TileState from '../../../../src/ol/TileState.js';
 import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
 import RasterSource from '../../../../src/ol/source/Raster.js';
 import Source from '../../../../src/ol/source/Source.js';
@@ -62,7 +62,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       target: target,
       view: new View({
         resolutions: [1],
-        projection: new _ol_proj_Projection_({
+        projection: new Projection({
           code: 'image',
           units: 'pixels',
           extent: extent
