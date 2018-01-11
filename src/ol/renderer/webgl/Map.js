@@ -9,7 +9,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import _ol_events_ from '../../events.js';
 import _ol_has_ from '../../has.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
-import _ol_render_Event_ from '../../render/Event.js';
+import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import MapRenderer from '../Map.js';
@@ -276,7 +276,7 @@ WebGLMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
 
     var vectorContext = new _ol_render_webgl_Immediate_(context,
         center, resolution, rotation, size, extent, pixelRatio);
-    var composeEvent = new _ol_render_Event_(type, vectorContext,
+    var composeEvent = new RenderEvent(type, vectorContext,
         frameState, null, context);
     map.dispatchEvent(composeEvent);
   }

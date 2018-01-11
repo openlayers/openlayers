@@ -2,7 +2,7 @@ import {getUid} from '../../../../src/ol/index.js';
 import Map from '../../../../src/ol/Map.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_render_Event_ from '../../../../src/ol/render/Event.js';
+import RenderEvent from '../../../../src/ol/render/Event.js';
 import Source from '../../../../src/ol/source/Source.js';
 
 
@@ -399,7 +399,7 @@ describe('ol.layer.Layer', function() {
           layerStatesArray: [],
           layerStates: {}
         };
-        map.dispatchEvent(new _ol_render_Event_('precompose', null,
+        map.dispatchEvent(new RenderEvent('precompose', null,
             frameState, null, null));
         expect(frameState.layerStatesArray.length).to.be(1);
         var layerState = frameState.layerStatesArray[0];

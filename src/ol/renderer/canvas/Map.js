@@ -9,7 +9,7 @@ import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import _ol_layer_Layer_ from '../../layer/Layer.js';
-import _ol_render_Event_ from '../../render/Event.js';
+import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
@@ -102,7 +102,7 @@ CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
 
     var vectorContext = new CanvasImmediateRenderer(context, pixelRatio,
         extent, transform, rotation);
-    var composeEvent = new _ol_render_Event_(type, vectorContext,
+    var composeEvent = new RenderEvent(type, vectorContext,
         frameState, context, null);
     map.dispatchEvent(composeEvent);
   }

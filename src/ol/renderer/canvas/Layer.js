@@ -4,7 +4,7 @@
 import {inherits} from '../../index.js';
 import {getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../../extent.js';
 import {TRUE} from '../../functions.js';
-import _ol_render_Event_ from '../../render/Event.js';
+import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
 import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
@@ -90,7 +90,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
     var render = new CanvasImmediateRenderer(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);
-    var composeEvent = new _ol_render_Event_(type, render, frameState,
+    var composeEvent = new RenderEvent(type, render, frameState,
         context, null);
     layer.dispatchEvent(composeEvent);
     _ol_render_canvas_.rotateAtOffset(context, rotation, width / 2, height / 2);

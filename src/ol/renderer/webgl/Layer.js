@@ -2,7 +2,7 @@
  * @module ol/renderer/webgl/Layer
  */
 import {inherits} from '../../index.js';
-import _ol_render_Event_ from '../../render/Event.js';
+import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import LayerRenderer from '../Layer.js';
@@ -202,7 +202,7 @@ WebGLLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fra
 
     var render = new _ol_render_webgl_Immediate_(
         context, center, resolution, rotation, size, extent, pixelRatio);
-    var composeEvent = new _ol_render_Event_(
+    var composeEvent = new RenderEvent(
         type, render, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
