@@ -12,7 +12,7 @@ import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canva
 import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Replay.js';
 import _ol_render_canvas_ReplayGroup_ from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 import _ol_transform_ from '../../../../../src/ol/transform.js';
@@ -38,17 +38,17 @@ describe('ol.render.canvas.ReplayGroup', function() {
       feature3 = new Feature(new Polygon(
           [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
       fill0 = new Style({
-        fill: new _ol_style_Fill_({color: 'black'})
+        fill: new Fill({color: 'black'})
       });
       fill1 = new Style({
-        fill: new _ol_style_Fill_({color: 'red'})
+        fill: new Fill({color: 'red'})
       });
       style1 = new Style({
-        fill: new _ol_style_Fill_({color: 'black'}),
+        fill: new Fill({color: 'black'}),
         stroke: new _ol_style_Stroke_({color: 'white', width: 1})
       });
       style2 = new Style({
-        fill: new _ol_style_Fill_({color: 'white'}),
+        fill: new Fill({color: 'white'}),
         stroke: new _ol_style_Stroke_({color: 'black', width: 1, lineDash: [3, 6],
           lineDashOffset: 2})
       });

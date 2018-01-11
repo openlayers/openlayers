@@ -6,7 +6,7 @@ import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
@@ -51,7 +51,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 2,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: '#91E339'
           })
         })
@@ -64,7 +64,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 4,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: '#5447E6'
           })
         })
@@ -77,7 +77,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 6,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: '#92A8A6'
           })
         })
@@ -90,7 +90,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 2,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: '#91E339'
           }),
           stroke: new _ol_style_Stroke_({
@@ -107,7 +107,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 4,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: '#5447E6'
           }),
           stroke: new _ol_style_Stroke_({
@@ -124,7 +124,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 6,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: '#92A8A6'
           }),
           stroke: new _ol_style_Stroke_({
@@ -155,7 +155,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 4,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: 'rgba(0, 0, 255, 0.3)'
           }),
           stroke: new _ol_style_Stroke_({
@@ -172,7 +172,7 @@ describe('ol.rendering.style.Circle', function() {
       feature.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 6,
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: 'rgba(235, 45, 70, 0.6)'
           }),
           stroke: new _ol_style_Stroke_({

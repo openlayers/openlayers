@@ -20,7 +20,7 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {toRadians} from '../math.js';
 import {get as getProjection} from '../proj.js';
-import _ol_style_Fill_ from '../style/Fill.js';
+import Fill from '../style/Fill.js';
 import _ol_style_Icon_ from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
@@ -145,7 +145,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Fill}
    * @private
    */
-  KML.DEFAULT_FILL_STYLE_ = new _ol_style_Fill_({
+  KML.DEFAULT_FILL_STYLE_ = new Fill({
     color: KML.DEFAULT_COLOR_
   });
 
@@ -666,7 +666,7 @@ KML.LabelStyleParser_ = function(node, objectStack) {
   }
   var styleObject = objectStack[objectStack.length - 1];
   var textStyle = new _ol_style_Text_({
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: /** @type {ol.Color} */
           ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)
     }),
@@ -716,7 +716,7 @@ KML.PolyStyleParser_ = function(node, objectStack) {
     return;
   }
   var styleObject = objectStack[objectStack.length - 1];
-  var fillStyle = new _ol_style_Fill_({
+  var fillStyle = new Fill({
     color: /** @type {ol.Color} */
         ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)
   });

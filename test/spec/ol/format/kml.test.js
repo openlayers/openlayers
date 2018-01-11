@@ -14,7 +14,7 @@ import {addProjection, addCoordinateTransforms, transform, get as getProjection}
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
 import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
@@ -1947,7 +1947,7 @@ describe('ol.format.KML', function() {
           expect(textStyle).to.be.an(_ol_style_Text_);
           expect(textStyle.getScale()).to.be(0.25);
           var textFillStyle = textStyle.getFill();
-          expect(textFillStyle).to.be.an(_ol_style_Fill_);
+          expect(textFillStyle).to.be.an(Fill);
           expect(textFillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(style.getZIndex()).to.be(undefined);
         });
@@ -2008,7 +2008,7 @@ describe('ol.format.KML', function() {
           var style = styleArray[0];
           expect(style).to.be.an(Style);
           var fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(_ol_style_Fill_);
+          expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           expect(style.getStroke()).to.be(KML.DEFAULT_STROKE_STYLE_);
@@ -2045,7 +2045,7 @@ describe('ol.format.KML', function() {
           var style = styleArray[0];
           expect(style).to.be.an(Style);
           var fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(_ol_style_Fill_);
+          expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           var strokeStyle = style.getStroke();
@@ -2121,7 +2121,7 @@ describe('ol.format.KML', function() {
           var style = styleArray[0];
           expect(style).to.be.an(Style);
           var fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(_ol_style_Fill_);
+          expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
           expect(style.getImage()).to.be(KML.DEFAULT_IMAGE_STYLE_);
           expect(style.getStroke()).to.be(null);
@@ -2337,7 +2337,7 @@ describe('ol.format.KML', function() {
           var style = new Style({
             image: new _ol_style_Circle_({
               radius: 4,
-              fill: new _ol_style_Fill_({
+              fill: new Fill({
                 color: 'rgb(12, 34, 223)'
               })
             })
@@ -2364,7 +2364,7 @@ describe('ol.format.KML', function() {
             text: new _ol_style_Text_({
               scale: 0.5,
               text: 'foo',
-              fill: new _ol_style_Fill_({
+              fill: new Fill({
                 color: 'rgb(12, 34, 223)'
               })
             })
@@ -2421,7 +2421,7 @@ describe('ol.format.KML', function() {
 
         it('can write an feature\'s fill style', function() {
           var style = new Style({
-            fill: new _ol_style_Fill_({
+            fill: new Fill({
               color: 'rgba(12, 34, 223, 0.7)'
             })
           });
@@ -2447,7 +2447,7 @@ describe('ol.format.KML', function() {
 
         it('can write multiple features with Style', function() {
           var style = new Style({
-            fill: new _ol_style_Fill_({
+            fill: new Fill({
               color: 'rgba(12, 34, 223, 0.7)'
             })
           });
@@ -2724,7 +2724,7 @@ describe('ol.format.KML', function() {
           var style = styleArray[0];
           expect(style).to.be.an(Style);
           var fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(_ol_style_Fill_);
+          expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
         });
 
@@ -2756,7 +2756,7 @@ describe('ol.format.KML', function() {
           var style = styleArray[0];
           expect(style).to.be.an(Style);
           var fillStyle = style.getFill();
-          expect(fillStyle).to.be.an(_ol_style_Fill_);
+          expect(fillStyle).to.be.an(Fill);
           expect(fillStyle.getColor()).to.eql([0x78, 0x56, 0x34, 0x12 / 255]);
         });
 

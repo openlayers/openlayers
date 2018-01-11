@@ -9,7 +9,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
@@ -255,7 +255,7 @@ describe('ol.rendering.layer.Vector', function() {
         renderMode: 'image',
         source: source,
         style: new Style({
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: 'rgba(255,0,0,0.5)'
           }),
           stroke: new _ol_style_Stroke_({
@@ -355,7 +355,7 @@ describe('ol.rendering.layer.Vector', function() {
               color: alternateColor(),
               width: 1.25
             }),
-            fill: new _ol_style_Fill_({
+            fill: new Fill({
               color: alternateColor()
             })
           });
@@ -406,7 +406,7 @@ describe('ol.rendering.layer.Vector', function() {
               color: alternateColor(),
               width: 1.25
             }),
-            fill: new _ol_style_Fill_({
+            fill: new Fill({
               color: alternateColor()
             })
           });
@@ -471,7 +471,7 @@ describe('ol.rendering.layer.Vector', function() {
           features: [feature]
         }),
         style: new Style({
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: 'blue'
           })
         })
@@ -539,7 +539,7 @@ describe('ol.rendering.layer.Vector', function() {
           color: [0, 0, 0, 1],
           width: 2
         }),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [255, 0, 0, 1]
         })
       }));
@@ -551,7 +551,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders partially out-of-view polygons with a fill', function(done) {
       layer.setStyle(new Style({
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [0, 0, 0, 1]
         })
       }));

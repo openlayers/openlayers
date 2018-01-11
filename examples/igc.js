@@ -10,7 +10,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -181,7 +181,7 @@ var featureOverlay = new VectorLayer({
   style: new Style({
     image: new _ol_style_Circle_({
       radius: 5,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(255,0,0,0.9)'
       })
     })

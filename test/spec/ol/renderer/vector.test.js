@@ -8,7 +8,7 @@ import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import _ol_render_canvas_ReplayGroup_ from '../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../src/ol/renderer/vector.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
@@ -29,7 +29,7 @@ describe('ol.renderer.vector', function() {
       });
       style = new Style({
         image: iconStyle,
-        fill: new _ol_style_Fill_({}),
+        fill: new Fill({}),
         stroke: new _ol_style_Stroke_({})
       });
       squaredTolerance = 1;

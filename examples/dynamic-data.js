@@ -5,7 +5,7 @@ import Point from '../src/ol/geom/Point.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -27,7 +27,7 @@ var imageStyle = new Style({
   image: new _ol_style_Circle_({
     radius: 5,
     snapToPixel: false,
-    fill: new _ol_style_Fill_({color: 'yellow'}),
+    fill: new Fill({color: 'yellow'}),
     stroke: new _ol_style_Stroke_({color: 'red', width: 1})
   })
 });
@@ -36,7 +36,7 @@ var headInnerImageStyle = new Style({
   image: new _ol_style_Circle_({
     radius: 2,
     snapToPixel: false,
-    fill: new _ol_style_Fill_({color: 'blue'})
+    fill: new Fill({color: 'blue'})
   })
 });
 
@@ -44,7 +44,7 @@ var headOuterImageStyle = new Style({
   image: new _ol_style_Circle_({
     radius: 5,
     snapToPixel: false,
-    fill: new _ol_style_Fill_({color: 'black'})
+    fill: new Fill({color: 'black'})
   })
 });
 

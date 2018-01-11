@@ -7,7 +7,7 @@ import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -25,7 +25,7 @@ var styleFunction = (function() {
       color: 'blue',
       width: 3
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   });
@@ -40,7 +40,7 @@ var styleFunction = (function() {
       color: 'yellow',
       width: 1
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(255, 255, 0, 0.1)'
     })
   });
@@ -49,7 +49,7 @@ var styleFunction = (function() {
       color: 'red',
       width: 3
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(255, 0, 0, 0.1)'
     }),
     image: image
@@ -157,7 +157,7 @@ var overlayStyle = (function() {
   var styles = {};
   styles['Polygon'] = [
     new Style({
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: [255, 255, 255, 0.5]
       })
     }),
@@ -196,7 +196,7 @@ var overlayStyle = (function() {
     new Style({
       image: new _ol_style_Circle_({
         radius: 7,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [0, 153, 255, 1]
         }),
         stroke: new _ol_style_Stroke_({

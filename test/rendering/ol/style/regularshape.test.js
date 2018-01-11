@@ -4,7 +4,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
 import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -109,7 +109,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
   describe('#render', function() {
     var stroke = new _ol_style_Stroke_({width: 2});
-    var fill = new _ol_style_Fill_({color: 'red'});
+    var fill = new Fill({color: 'red'});
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
@@ -144,7 +144,7 @@ describe('ol.rendering.style.RegularShape', function() {
 
   describe('uses the default fill and stroke color', function() {
     var stroke = new _ol_style_Stroke_();
-    var fill = new _ol_style_Fill_();
+    var fill = new Fill();
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');

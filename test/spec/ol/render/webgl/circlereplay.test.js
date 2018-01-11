@@ -4,7 +4,7 @@ import Circle from '../../../../../src/ol/geom/Circle.js';
 import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/Locations.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.CircleReplay', function() {
@@ -14,7 +14,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     color: [0, 255, 0, 0.4]
   });
 
-  var fillStyle = new _ol_style_Fill_({
+  var fillStyle = new Fill({
     color: [255, 0, 0, 1]
   });
 

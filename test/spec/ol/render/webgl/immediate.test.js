@@ -13,7 +13,7 @@ import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Imme
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 
@@ -23,7 +23,7 @@ describe('ol.render.webgl.Immediate', function() {
     context = new _ol_render_webgl_Immediate_({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
     style = new Style({
       image: new _ol_style_Circle_(),
-      fill: new _ol_style_Fill_(),
+      fill: new Fill(),
       stroke: new _ol_style_Stroke_()
     });
     circle = new Circle([0, 0], 5);

@@ -3,14 +3,14 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 
 var style = new Style({
-  fill: new _ol_style_Fill_({
+  fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
   stroke: new _ol_style_Stroke_({
@@ -19,7 +19,7 @@ var style = new Style({
   }),
   text: new _ol_style_Text_({
     font: '12px Calibri,sans-serif',
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: '#000'
     }),
     stroke: new _ol_style_Stroke_({
@@ -54,12 +54,12 @@ var highlightStyle = new Style({
     color: '#f00',
     width: 1
   }),
-  fill: new _ol_style_Fill_({
+  fill: new Fill({
     color: 'rgba(255,0,0,0.1)'
   }),
   text: new _ol_style_Text_({
     font: '12px Calibri,sans-serif',
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: '#000'
     }),
     stroke: new _ol_style_Stroke_({

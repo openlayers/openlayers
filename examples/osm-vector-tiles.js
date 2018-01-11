@@ -4,7 +4,7 @@ import TopoJSON from '../src/ol/format/TopoJSON.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -17,7 +17,7 @@ var roadColor = {
   'highway': '#f39'
 };
 var buildingStyle = new Style({
-  fill: new _ol_style_Fill_({
+  fill: new Fill({
     color: '#666',
     opacity: 0.4
   }),
@@ -27,7 +27,7 @@ var buildingStyle = new Style({
   })
 });
 var waterStyle = new Style({
-  fill: new _ol_style_Fill_({
+  fill: new Fill({
     color: '#9db9e8'
   })
 });

@@ -1,7 +1,7 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Style from '../../../../src/ol/style/Style.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
@@ -9,7 +9,7 @@ import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 
 describe('ol.style.Style', function() {
 
-  var testFill = new _ol_style_Fill_({
+  var testFill = new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   });
 
@@ -20,7 +20,7 @@ describe('ol.style.Style', function() {
 
   var testText = new _ol_style_Text_({
     font: '12px Calibri,sans-serif',
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: '#000'
     }),
     stroke: new _ol_style_Stroke_({
@@ -45,7 +45,7 @@ describe('ol.style.Style', function() {
     it('copies all values', function() {
       var original = new Style({
         geometry: new Point([0, 0, 0]),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         image: new _ol_style_Circle_({
@@ -71,7 +71,7 @@ describe('ol.style.Style', function() {
     it('the clone does not reference the same objects as the original', function() {
       var original = new Style({
         geometry: new Point([0, 0, 0]),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         image: new _ol_style_Circle_({

@@ -4,14 +4,14 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
 var stroke = new _ol_style_Stroke_({color: 'black', width: 2});
-var fill = new _ol_style_Fill_({color: 'red'});
+var fill = new Fill({color: 'red'});
 
 var styles = {
   'square': new Style({

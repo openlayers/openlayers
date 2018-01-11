@@ -9,7 +9,7 @@ import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
@@ -68,7 +68,7 @@ describe('ol.rendering.style.Text', function() {
         text: new _ol_style_Text_({
           scale: scale,
           text: 'hello',
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: 'red',
             font: '12px sans-serif'
           }),
@@ -333,17 +333,17 @@ describe('ol.rendering.style.Text', function() {
       createMap('canvas');
       createFeatures();
       var features = vectorSource.getFeatures();
-      features[0].getStyle().getText().setBackgroundFill(new _ol_style_Fill_({
+      features[0].getStyle().getText().setBackgroundFill(new Fill({
         color: 'red'
       }));
-      features[1].getStyle().getText().setBackgroundFill(new _ol_style_Fill_({
+      features[1].getStyle().getText().setBackgroundFill(new Fill({
         color: 'red'
       }));
       features[1].getStyle().getText().setBackgroundStroke(new _ol_style_Stroke_({
         color: 'blue',
         width: 3
       }));
-      features[2].getStyle().getText().setBackgroundFill(new _ol_style_Fill_({
+      features[2].getStyle().getText().setBackgroundFill(new Fill({
         color: 'red'
       }));
       features[2].getStyle().getText().setBackgroundStroke(new _ol_style_Stroke_({

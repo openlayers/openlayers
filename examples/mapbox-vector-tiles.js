@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -24,7 +24,7 @@ var map = new Map({
         url: 'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
             '{z}/{x}/{y}.vector.pbf?access_token=' + key
       }),
-      style: createMapboxStreetsV6Style(Style, _ol_style_Fill_, _ol_style_Stroke_, _ol_style_Icon_, _ol_style_Text_)
+      style: createMapboxStreetsV6Style(Style, Fill, _ol_style_Stroke_, _ol_style_Icon_, _ol_style_Text_)
     })
   ],
   target: 'map',

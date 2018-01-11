@@ -6,7 +6,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
@@ -114,7 +114,7 @@ var createTextStyle = function(feature, resolution, dom) {
     textBaseline: baseline,
     font: font,
     text: getText(feature, resolution, dom),
-    fill: new _ol_style_Fill_({color: fillColor}),
+    fill: new Fill({color: fillColor}),
     stroke: new _ol_style_Stroke_({color: outlineColor, width: outlineWidth}),
     offsetX: offsetX,
     offsetY: offsetY,
@@ -133,7 +133,7 @@ function polygonStyleFunction(feature, resolution) {
       color: 'blue',
       width: 1
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     }),
     text: createTextStyle(feature, resolution, myDom.polygons)
@@ -174,7 +174,7 @@ function pointStyleFunction(feature, resolution) {
   return new Style({
     image: new _ol_style_Circle_({
       radius: 10,
-      fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.1)'}),
+      fill: new Fill({color: 'rgba(255, 0, 0, 0.1)'}),
       stroke: new _ol_style_Stroke_({color: 'red', width: 1})
     }),
     text: createTextStyle(feature, resolution, myDom.points)

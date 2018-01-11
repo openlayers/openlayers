@@ -1,4 +1,4 @@
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 
@@ -14,7 +14,7 @@ describe('ol.style.Text', function() {
 
     it('uses a provided fill style if one passed', function() {
       var style = new _ol_style_Text_({
-        fill: new _ol_style_Fill_({color: '#123456'})
+        fill: new Fill({color: '#123456'})
       });
       expect(style.getFill().getColor()).to.be('#123456');
     });
@@ -47,13 +47,13 @@ describe('ol.style.Text', function() {
         text: 'test',
         textAlign: 'center',
         textBaseline: 'top',
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
           color: '#319FD3'
         }),
-        backgroundFill: new _ol_style_Fill_({
+        backgroundFill: new Fill({
           color: 'white'
         }),
         backgroundStroke: new _ol_style_Stroke_({
@@ -78,7 +78,7 @@ describe('ol.style.Text', function() {
 
     it('the clone does not reference the same objects as the original', function() {
       var original = new _ol_style_Text_({
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({

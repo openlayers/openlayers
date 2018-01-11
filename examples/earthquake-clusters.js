@@ -10,28 +10,28 @@ import Cluster from '../src/ol/source/Cluster.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 
-var earthquakeFill = new _ol_style_Fill_({
+var earthquakeFill = new Fill({
   color: 'rgba(255, 153, 0, 0.8)'
 });
 var earthquakeStroke = new _ol_style_Stroke_({
   color: 'rgba(255, 204, 0, 0.2)',
   width: 1
 });
-var textFill = new _ol_style_Fill_({
+var textFill = new Fill({
   color: '#fff'
 });
 var textStroke = new _ol_style_Stroke_({
   color: 'rgba(0, 0, 0, 0.6)',
   width: 3
 });
-var invisibleFill = new _ol_style_Fill_({
+var invisibleFill = new Fill({
   color: 'rgba(255, 255, 255, 0.01)'
 });
 
@@ -88,7 +88,7 @@ function styleFunction(feature, resolution) {
     style = new Style({
       image: new _ol_style_Circle_({
         radius: feature.get('radius'),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
         })
       }),

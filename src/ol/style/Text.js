@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Text
  */
-import _ol_style_Fill_ from '../style/Fill.js';
+import Fill from '../style/Fill.js';
 import TextPlacement from '../style/TextPlacement.js';
 
 /**
@@ -63,7 +63,7 @@ var _ol_style_Text_ = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
-    new _ol_style_Fill_({color: _ol_style_Text_.DEFAULT_FILL_COLOR_});
+    new Fill({color: _ol_style_Text_.DEFAULT_FILL_COLOR_});
 
   /**
    * @private

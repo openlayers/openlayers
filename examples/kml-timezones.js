@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -36,7 +36,7 @@ var styleFunction = function(feature) {
   }
   var opacity = 0.75 * (1 - delta / 12);
   return new Style({
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: [0xff, 0xff, 0x33, opacity]
     }),
     stroke: new _ol_style_Stroke_({

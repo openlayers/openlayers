@@ -10,7 +10,7 @@ import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
 import {clamp} from './math.js';
 import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
 import RenderEventType from './render/EventType.js';
-import _ol_style_Fill_ from './style/Fill.js';
+import Fill from './style/Fill.js';
 import _ol_style_Stroke_ from './style/Stroke.js';
 import _ol_style_Text_ from './style/Text.js';
 
@@ -286,7 +286,7 @@ var Graticule = function(opt_options) {
       new _ol_style_Text_({
         font: '12px Calibri,sans-serif',
         textBaseline: 'bottom',
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(0,0,0,1)'
         }),
         stroke: new _ol_style_Stroke_({
@@ -303,7 +303,7 @@ var Graticule = function(opt_options) {
       new _ol_style_Text_({
         font: '12px Calibri,sans-serif',
         textAlign: 'end',
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(0,0,0,1)'
         }),
         stroke: new _ol_style_Stroke_({

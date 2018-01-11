@@ -6,7 +6,7 @@ import _ol_has_ from '../src/ol/has.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -57,7 +57,7 @@ var pattern = (function() {
 }());
 
 // Generate style for gradient or pattern fill
-var fill = new _ol_style_Fill_();
+var fill = new Fill();
 var style = new Style({
   fill: fill,
   stroke: new _ol_style_Stroke_({

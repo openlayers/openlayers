@@ -9,7 +9,7 @@ import _ol_obj_ from '../../../../src/ol/obj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -107,7 +107,7 @@ describe('ol.rendering.layer.VectorTile', function() {
         style: new Style({
           image: new _ol_style_Circle_({
             radius: 10,
-            fill: new _ol_style_Fill_({
+            fill: new Fill({
               color: 'red'
             })
           })
@@ -146,7 +146,7 @@ describe('ol.rendering.layer.VectorTile', function() {
           return new Style({
             image: new _ol_style_Circle_({
               radius: 7,
-              fill: new _ol_style_Fill_({
+              fill: new Fill({
                 color: 'red'
               })
             }),

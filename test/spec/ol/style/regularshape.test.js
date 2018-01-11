@@ -1,6 +1,6 @@
 import AtlasManager from '../../../../src/ol/style/AtlasManager.js';
 import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
@@ -50,7 +50,7 @@ describe('ol.style.RegularShape', function() {
     it('creates a canvas if no atlas is used (fill-style)', function() {
       var style = new _ol_style_RegularShape_({
         radius: 10,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#FFFF00'
         })
       });
@@ -85,7 +85,7 @@ describe('ol.style.RegularShape', function() {
       var style = new _ol_style_RegularShape_({
         radius: 10,
         atlasManager: atlasManager,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#FFFF00'
         })
       });
@@ -114,7 +114,7 @@ describe('ol.style.RegularShape', function() {
 
     it('copies all values', function() {
       var original = new _ol_style_RegularShape_({
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         points: 5,
@@ -146,7 +146,7 @@ describe('ol.style.RegularShape', function() {
 
     it('the clone does not reference the same objects as the original', function() {
       var original = new _ol_style_RegularShape_({
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -204,7 +204,7 @@ describe('ol.style.RegularShape', function() {
     it('calculates not the same hash code (color)', function() {
       var style1 = new _ol_style_RegularShape_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         })
       });
@@ -223,7 +223,7 @@ describe('ol.style.RegularShape', function() {
         radius2: 3,
         angle: 1.41,
         points: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -240,7 +240,7 @@ describe('ol.style.RegularShape', function() {
         radius2: 3,
         angle: 1.41,
         points: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -261,7 +261,7 @@ describe('ol.style.RegularShape', function() {
         radius2: 3,
         angle: 1.41,
         points: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -278,7 +278,7 @@ describe('ol.style.RegularShape', function() {
         radius2: 3,
         angle: 1.41,
         points: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -296,7 +296,7 @@ describe('ol.style.RegularShape', function() {
     it('invalidates a cached checksum if values change (fill)', function() {
       var style1 = new _ol_style_RegularShape_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -305,7 +305,7 @@ describe('ol.style.RegularShape', function() {
       });
       var style2 = new _ol_style_RegularShape_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -321,7 +321,7 @@ describe('ol.style.RegularShape', function() {
     it('invalidates a cached checksum if values change (stroke)', function() {
       var style1 = new _ol_style_RegularShape_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -330,7 +330,7 @@ describe('ol.style.RegularShape', function() {
       });
       var style2 = new _ol_style_RegularShape_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({

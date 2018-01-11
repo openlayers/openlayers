@@ -9,7 +9,7 @@ import {transformExtent} from '../src/ol/proj.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -22,7 +22,7 @@ var styles = {
         color: 'rgba(170, 170, 170, 1.0)',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(170, 170, 170, 0.3)'
       })
     })
@@ -34,7 +34,7 @@ var styles = {
         color: 'rgba(246, 99, 79, 1.0)',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(246, 99, 79, 0.3)'
       })
     })
@@ -59,7 +59,7 @@ var styles = {
         color: 'rgba(140, 208, 95, 1.0)',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(140, 208, 95, 0.3)'
       })
     })
@@ -68,7 +68,7 @@ var styles = {
     'tree': new Style({
       image: new _ol_style_Circle_({
         radius: 2,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(140, 208, 95, 1.0)'
         }),
         stroke: null

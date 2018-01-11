@@ -1,6 +1,6 @@
 import AtlasManager from '../../../../src/ol/style/AtlasManager.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
@@ -24,7 +24,7 @@ describe('ol.style.Circle', function() {
     it('creates a canvas if no atlas is used (fill-style)', function() {
       var style = new _ol_style_Circle_({
         radius: 10,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#FFFF00'
         })
       });
@@ -58,7 +58,7 @@ describe('ol.style.Circle', function() {
       var style = new _ol_style_Circle_({
         radius: 10,
         atlasManager: atlasManager,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#FFFF00'
         })
       });
@@ -85,7 +85,7 @@ describe('ol.style.Circle', function() {
 
     it('copies all values', function() {
       var original = new _ol_style_Circle_({
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -107,7 +107,7 @@ describe('ol.style.Circle', function() {
 
     it('the clone does not reference the same objects as the original', function() {
       var original = new _ol_style_Circle_({
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -155,7 +155,7 @@ describe('ol.style.Circle', function() {
     it('calculates not the same hash code (color)', function() {
       var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         })
       });
@@ -171,7 +171,7 @@ describe('ol.style.Circle', function() {
     it('calculates the same hash code (everything set)', function() {
       var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -185,7 +185,7 @@ describe('ol.style.Circle', function() {
       });
       var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -203,7 +203,7 @@ describe('ol.style.Circle', function() {
     it('calculates not the same hash code (stroke width differs)', function() {
       var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -217,7 +217,7 @@ describe('ol.style.Circle', function() {
       });
       var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -235,7 +235,7 @@ describe('ol.style.Circle', function() {
     it('invalidates a cached checksum if values change (fill)', function() {
       var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -244,7 +244,7 @@ describe('ol.style.Circle', function() {
       });
       var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -260,7 +260,7 @@ describe('ol.style.Circle', function() {
     it('invalidates a cached checksum if values change (stroke)', function() {
       var style1 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -269,7 +269,7 @@ describe('ol.style.Circle', function() {
       });
       var style2 = new _ol_style_Circle_({
         radius: 5,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#319FD3'
         }),
         stroke: new _ol_style_Stroke_({
@@ -288,7 +288,7 @@ describe('ol.style.Circle', function() {
     it('changes the circle radius', function() {
       var style = new _ol_style_Circle_({
         radius: 10,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: '#FFFF00'
         })
       });

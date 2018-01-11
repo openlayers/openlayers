@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -17,7 +17,7 @@ var raster = new TileLayer({
 });
 
 var style = new Style({
-  fill: new _ol_style_Fill_({
+  fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
   stroke: new _ol_style_Stroke_({

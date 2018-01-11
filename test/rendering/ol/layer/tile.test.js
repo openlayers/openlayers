@@ -8,7 +8,7 @@ import {transform} from '../../../../src/ol/proj.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
+import Fill from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -281,7 +281,7 @@ describe('ol.rendering.layer.Tile', function() {
           e.vectorContext.setImageStyle(new _ol_style_Circle_({
             radius: 5,
             snapToPixel: false,
-            fill: new _ol_style_Fill_({color: 'yellow'}),
+            fill: new Fill({color: 'yellow'}),
             stroke: new _ol_style_Stroke_({color: 'red', width: 1})
           }));
           e.vectorContext.drawPoint(new Point(

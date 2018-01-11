@@ -1,7 +1,7 @@
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_render_webgl_TextReplay_ from '../../../../../src/ol/render/webgl/TextReplay.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 
@@ -37,7 +37,7 @@ describe('ol.render.webgl.TextReplay', function() {
 
     beforeEach(function() {
       textStyle1 = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [0, 0, 0, 1]
           }),
           new _ol_style_Stroke_({
@@ -51,7 +51,7 @@ describe('ol.render.webgl.TextReplay', function() {
           }),
           'someText');
       textStyle2 = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [255, 255, 255, 1]
           }),
           new _ol_style_Stroke_({
@@ -62,7 +62,7 @@ describe('ol.render.webgl.TextReplay', function() {
       );
       textStyle3 = createTextStyle(null, null, 'someText');
       textStyle4 = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [0, 0, 0, 1]
           }),
           new _ol_style_Stroke_({
@@ -115,7 +115,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#drawText', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');
@@ -171,7 +171,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#addCharToAtlas_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');
@@ -209,7 +209,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#getTextSize_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');
@@ -261,7 +261,7 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#getAtlas_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-          new _ol_style_Fill_({
+          new Fill({
             color: [0, 0, 0, 1]
           }),
           null, 'someText');

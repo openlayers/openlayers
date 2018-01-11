@@ -6,7 +6,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import AtlasManager from '../src/ol/style/AtlasManager.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
+import Fill from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -51,7 +51,7 @@ for (i = 0; i < symbolInfo.length; ++i) {
       opacity: info.opacity,
       scale: info.scale,
       radius: radiuses[j],
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: info.fillColor
       }),
       stroke: new _ol_style_Stroke_({
@@ -71,7 +71,7 @@ for (i = 0; i < symbolInfo.length; ++i) {
       radius: radiuses[j],
       radius2: radiuses[j] * 0.7,
       angle: 1.4,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: info.fillColor
       }),
       stroke: new _ol_style_Stroke_({

@@ -4,7 +4,7 @@
 import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
 import _ol_style_Circle_ from '../style/Circle.js';
-import _ol_style_Fill_ from '../style/Fill.js';
+import Fill from '../style/Fill.js';
 import _ol_style_Stroke_ from '../style/Stroke.js';
 
 /**
@@ -322,7 +322,7 @@ Style.defaultFunction = function(feature, resolution) {
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
   if (!Style.default_) {
-    var fill = new _ol_style_Fill_({
+    var fill = new Fill({
       color: 'rgba(255,255,255,0.4)'
     });
     var stroke = new _ol_style_Stroke_({
@@ -357,7 +357,7 @@ Style.createDefaultEditing = function() {
   var width = 3;
   styles[GeometryType.POLYGON] = [
     new Style({
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: [255, 255, 255, 0.5]
       })
     })
@@ -392,7 +392,7 @@ Style.createDefaultEditing = function() {
     new Style({
       image: new _ol_style_Circle_({
         radius: width * 2,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: blue
         }),
         stroke: new _ol_style_Stroke_({

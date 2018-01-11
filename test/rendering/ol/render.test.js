@@ -5,7 +5,7 @@ import _ol_render_ from '../../../src/ol/render.js';
 import VectorContext from '../../../src/ol/render/VectorContext.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../src/ol/style/Fill.js';
+import Fill from '../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
 import Style from '../../../src/ol/style/Style.js';
 
@@ -35,7 +35,7 @@ describe('ol.render', function() {
 
       var style = new Style({
         image: new _ol_style_Circle_({
-          fill: new _ol_style_Fill_({
+          fill: new Fill({
             color: 'green'
           }),
           radius: 10
@@ -136,7 +136,7 @@ describe('ol.render', function() {
           color: 'blue',
           width: 8
         }),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(0,0,255,0.5)'
         })
       });
