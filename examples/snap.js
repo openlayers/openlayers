@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
 import Modify from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -47,7 +47,7 @@ var map = new Map({
 
 var ExampleModify = {
   init: function() {
-    this.select = new _ol_interaction_Select_();
+    this.select = new Select();
     map.addInteraction(this.select);
 
     this.modify = new Modify({

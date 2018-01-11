@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import Modify from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -216,7 +216,7 @@ var overlayStyle = (function() {
   };
 })();
 
-var select = new _ol_interaction_Select_({
+var select = new Select({
   style: overlayStyle
 });
 

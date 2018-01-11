@@ -2,7 +2,7 @@ import Feature from '../src/ol/Feature.js';
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
@@ -46,7 +46,7 @@ var map = new Map({
 });
 
 var selectStyle = {};
-var select = new _ol_interaction_Select_({
+var select = new Select({
   style: function(feature) {
     var image = feature.get('style').getImage().getImage();
     if (!selectStyle[image.src]) {

@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import KML from '../src/ol/format/KML.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Cluster from '../src/ol/source/Cluster.js';
@@ -142,7 +142,7 @@ var raster = new TileLayer({
 
 var map = new Map({
   layers: [raster, vector],
-  interactions: defaultInteractions().extend([new _ol_interaction_Select_({
+  interactions: defaultInteractions().extend([new Select({
     condition: function(evt) {
       return  evt.type == 'pointermove' ||
           evt.type == 'singleclick';

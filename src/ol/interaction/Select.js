@@ -33,10 +33,10 @@ import _ol_style_Style_ from '../style/Style.js';
  * @fires ol.interaction.Select.Event
  * @api
  */
-var _ol_interaction_Select_ = function(opt_options) {
+var Select = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: _ol_interaction_Select_.handleEvent
+    handleEvent: Select.handleEvent
   });
 
   var options = opt_options ? opt_options : {};
@@ -94,7 +94,7 @@ var _ol_interaction_Select_ = function(opt_options) {
       wrapX: options.wrapX
     }),
     style: options.style ? options.style :
-      _ol_interaction_Select_.getDefaultStyleFunction(),
+      Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -142,7 +142,7 @@ var _ol_interaction_Select_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Select_, Interaction);
+inherits(Select, Interaction);
 
 
 /**
@@ -150,7 +150,7 @@ inherits(_ol_interaction_Select_, Interaction);
  * @param {ol.layer.Layer} layer Layer.
  * @private
  */
-_ol_interaction_Select_.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
+Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
   var key = getUid(feature);
   this.featureLayerAssociation_[key] = layer;
 };
@@ -161,7 +161,7 @@ _ol_interaction_Select_.prototype.addFeatureLayerAssociation_ = function(feature
  * @return {ol.Collection.<ol.Feature>} Features collection.
  * @api
  */
-_ol_interaction_Select_.prototype.getFeatures = function() {
+Select.prototype.getFeatures = function() {
   return this.featureOverlay_.getSource().getFeaturesCollection();
 };
 
@@ -171,7 +171,7 @@ _ol_interaction_Select_.prototype.getFeatures = function() {
  * @returns {number} Hit tolerance in pixels.
  * @api
  */
-_ol_interaction_Select_.prototype.getHitTolerance = function() {
+Select.prototype.getHitTolerance = function() {
   return this.hitTolerance_;
 };
 
@@ -185,7 +185,7 @@ _ol_interaction_Select_.prototype.getHitTolerance = function() {
  * @return {ol.layer.Vector} Layer.
  * @api
  */
-_ol_interaction_Select_.prototype.getLayer = function(feature) {
+Select.prototype.getLayer = function(feature) {
   var key = getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
@@ -199,7 +199,7 @@ _ol_interaction_Select_.prototype.getLayer = function(feature) {
  * @this {ol.interaction.Select}
  * @api
  */
-_ol_interaction_Select_.handleEvent = function(mapBrowserEvent) {
+Select.handleEvent = function(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
     return true;
   }
@@ -280,7 +280,7 @@ _ol_interaction_Select_.handleEvent = function(mapBrowserEvent) {
   }
   if (selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
-        new _ol_interaction_Select_.Event(_ol_interaction_Select_.EventType_.SELECT,
+        new Select.Event(Select.EventType_.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return _ol_events_condition_.pointerMove(mapBrowserEvent);
@@ -294,7 +294,7 @@ _ol_interaction_Select_.handleEvent = function(mapBrowserEvent) {
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @api
  */
-_ol_interaction_Select_.prototype.setHitTolerance = function(hitTolerance) {
+Select.prototype.setHitTolerance = function(hitTolerance) {
   this.hitTolerance_ = hitTolerance;
 };
 
@@ -306,7 +306,7 @@ _ol_interaction_Select_.prototype.setHitTolerance = function(hitTolerance) {
  * @override
  * @api
  */
-_ol_interaction_Select_.prototype.setMap = function(map) {
+Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();
   var selectedFeatures =
       this.featureOverlay_.getSource().getFeaturesCollection();
@@ -324,7 +324,7 @@ _ol_interaction_Select_.prototype.setMap = function(map) {
 /**
  * @return {ol.StyleFunction} Styles.
  */
-_ol_interaction_Select_.getDefaultStyleFunction = function() {
+Select.getDefaultStyleFunction = function() {
   var styles = _ol_style_Style_.createDefaultEditing();
   extend(styles[GeometryType.POLYGON], styles[GeometryType.LINE_STRING]);
   extend(styles[GeometryType.GEOMETRY_COLLECTION], styles[GeometryType.LINE_STRING]);
@@ -342,7 +342,7 @@ _ol_interaction_Select_.getDefaultStyleFunction = function() {
  * @param {ol.Collection.Event} evt Event.
  * @private
  */
-_ol_interaction_Select_.prototype.addFeature_ = function(evt) {
+Select.prototype.addFeature_ = function(evt) {
   var map = this.getMap();
   if (map) {
     map.skipFeature(/** @type {ol.Feature} */ (evt.element));
@@ -354,7 +354,7 @@ _ol_interaction_Select_.prototype.addFeature_ = function(evt) {
  * @param {ol.Collection.Event} evt Event.
  * @private
  */
-_ol_interaction_Select_.prototype.removeFeature_ = function(evt) {
+Select.prototype.removeFeature_ = function(evt) {
   var map = this.getMap();
   if (map) {
     map.unskipFeature(/** @type {ol.Feature} */ (evt.element));
@@ -366,7 +366,7 @@ _ol_interaction_Select_.prototype.removeFeature_ = function(evt) {
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-_ol_interaction_Select_.prototype.removeFeatureLayerAssociation_ = function(feature) {
+Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
   var key = getUid(feature);
   delete this.featureLayerAssociation_[key];
 };
@@ -386,7 +386,7 @@ _ol_interaction_Select_.prototype.removeFeatureLayerAssociation_ = function(feat
  * @extends {ol.events.Event}
  * @constructor
  */
-_ol_interaction_Select_.Event = function(type, selected, deselected, mapBrowserEvent) {
+Select.Event = function(type, selected, deselected, mapBrowserEvent) {
   Event.call(this, type);
 
   /**
@@ -410,14 +410,14 @@ _ol_interaction_Select_.Event = function(type, selected, deselected, mapBrowserE
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
-inherits(_ol_interaction_Select_.Event, Event);
+inherits(Select.Event, Event);
 
 
 /**
  * @enum {string}
  * @private
  */
-_ol_interaction_Select_.EventType_ = {
+Select.EventType_ = {
   /**
    * Triggered when feature(s) has been (de)selected.
    * @event ol.interaction.Select.Event#select
@@ -425,4 +425,4 @@ _ol_interaction_Select_.EventType_ = {
    */
   SELECT: 'select'
 };
-export default _ol_interaction_Select_;
+export default Select;
