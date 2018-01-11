@@ -16,13 +16,32 @@ import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
-import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
 import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
 import _ol_style_Style_ from '../style/Style.js';
+
+
+/**
+ * @enum {string}
+ */
+var ModifyEventType = {
+  /**
+   * Triggered upon feature modification start
+   * @event ol.interaction.Modify.Event#modifystart
+   * @api
+   */
+  MODIFYSTART: 'modifystart',
+  /**
+   * Triggered upon feature modification end
+   * @event ol.interaction.Modify.Event#modifyend
+   * @api
+   */
+  MODIFYEND: 'modifyend'
+};
+
 
 /**
  * @classdesc
@@ -269,7 +288,7 @@ _ol_interaction_Modify_.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
     this.dispatchEvent(new _ol_interaction_Modify_.Event(
-        _ol_interaction_ModifyEventType_.MODIFYSTART, this.features_, evt));
+        ModifyEventType.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -783,7 +802,7 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
   }
   if (this.modified_) {
     this.dispatchEvent(new _ol_interaction_Modify_.Event(
-        _ol_interaction_ModifyEventType_.MODIFYEND, this.features_, evt));
+        ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -1031,7 +1050,7 @@ _ol_interaction_Modify_.prototype.removePoint = function() {
     this.willModifyFeatures_(evt);
     this.removeVertex_();
     this.dispatchEvent(new _ol_interaction_Modify_.Event(
-        _ol_interaction_ModifyEventType_.MODIFYEND, this.features_, evt));
+        ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }
@@ -1208,7 +1227,7 @@ _ol_interaction_Modify_.getDefaultStyleFunction = function() {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.ModifyEvent}
- * @param {ol.interaction.ModifyEventType} type Type.
+ * @param {ModifyEventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features modified.
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
