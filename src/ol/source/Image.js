@@ -8,7 +8,7 @@ import {linearFindNearest} from '../array.js';
 import Event from '../events/Event.js';
 import {equals} from '../extent.js';
 import {equivalent} from '../proj.js';
-import _ol_reproj_Image_ from '../reproj/Image.js';
+import ReprojImage from '../reproj/Image.js';
 import Source from '../source/Source.js';
 
 /**
@@ -109,7 +109,7 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
       this.reprojectedImage_ = null;
     }
 
-    this.reprojectedImage_ = new _ol_reproj_Image_(
+    this.reprojectedImage_ = new ReprojImage(
         sourceProjection, projection, extent, resolution, pixelRatio,
         function(extent, resolution, pixelRatio) {
           return this.getImageInternal(extent, resolution,

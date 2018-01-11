@@ -1,12 +1,12 @@
 import _ol_Image_ from '../../../../src/ol/Image.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_reproj_Image_ from '../../../../src/ol/reproj/Image.js';
+import ReprojImage from '../../../../src/ol/reproj/Image.js';
 
 
 describe('ol.reproj.Image', function() {
   function createImage(pixelRatio) {
-    return new _ol_reproj_Image_(
+    return new ReprojImage(
         getProjection('EPSG:3857'), getProjection('EPSG:4326'),
         [-180, -85, 180, 85], 10, pixelRatio,
         function(extent, resolution, pixelRatio) {
