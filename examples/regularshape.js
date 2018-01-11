@@ -5,7 +5,7 @@ import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -15,7 +15,7 @@ var fill = new Fill({color: 'red'});
 
 var styles = {
   'square': new Style({
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,
@@ -24,7 +24,7 @@ var styles = {
     })
   }),
   'triangle': new Style({
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 3,
@@ -34,7 +34,7 @@ var styles = {
     })
   }),
   'star': new Style({
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 5,
@@ -44,7 +44,7 @@ var styles = {
     })
   }),
   'cross': new Style({
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,
@@ -54,7 +54,7 @@ var styles = {
     })
   }),
   'x': new Style({
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,

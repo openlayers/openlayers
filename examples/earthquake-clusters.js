@@ -11,7 +11,7 @@ import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
@@ -45,7 +45,7 @@ function createEarthquakeStyle(feature) {
 
   return new Style({
     geometry: feature.getGeometry(),
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       radius1: radius,
       radius2: 3,
       points: 5,

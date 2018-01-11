@@ -7,7 +7,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import AtlasManager from '../src/ol/style/AtlasManager.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
@@ -64,7 +64,7 @@ for (i = 0; i < symbolInfo.length; ++i) {
     }));
 
     // star symbol
-    symbols.push(new _ol_style_RegularShape_({
+    symbols.push(new RegularShape({
       points: 8,
       opacity: info.opacity,
       scale: info.scale,

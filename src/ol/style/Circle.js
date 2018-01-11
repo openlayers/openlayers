@@ -2,7 +2,7 @@
  * @module ol/style/Circle
  */
 import {inherits} from '../index.js';
-import _ol_style_RegularShape_ from '../style/RegularShape.js';
+import RegularShape from '../style/RegularShape.js';
 
 /**
  * @classdesc
@@ -17,7 +17,7 @@ var _ol_style_Circle_ = function(opt_options) {
 
   var options = opt_options || {};
 
-  _ol_style_RegularShape_.call(this, {
+  RegularShape.call(this, {
     points: Infinity,
     fill: options.fill,
     radius: options.radius,
@@ -28,7 +28,7 @@ var _ol_style_Circle_ = function(opt_options) {
 
 };
 
-inherits(_ol_style_Circle_, _ol_style_RegularShape_);
+inherits(_ol_style_Circle_, RegularShape);
 
 
 /**
