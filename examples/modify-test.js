@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
+import Modify from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -220,7 +220,7 @@ var select = new _ol_interaction_Select_({
   style: overlayStyle
 });
 
-var modify = new _ol_interaction_Modify_({
+var modify = new Modify({
   features: select.getFeatures(),
   style: overlayStyle,
   insertVertexCondition: function() {

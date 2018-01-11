@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
+import Modify from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
@@ -45,7 +45,7 @@ var map = new Map({
   })
 });
 
-var modify = new _ol_interaction_Modify_({source: source});
+var modify = new Modify({source: source});
 map.addInteraction(modify);
 
 var draw, snap; // global so we can remove them later

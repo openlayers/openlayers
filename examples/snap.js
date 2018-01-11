@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
+import Modify from '../src/ol/interaction/Modify.js';
 import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
 import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -50,7 +50,7 @@ var ExampleModify = {
     this.select = new _ol_interaction_Select_();
     map.addInteraction(this.select);
 
-    this.modify = new _ol_interaction_Modify_({
+    this.modify = new Modify({
       features: this.select.getFeatures()
     });
     map.addInteraction(this.modify);
