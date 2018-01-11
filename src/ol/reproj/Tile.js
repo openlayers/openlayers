@@ -10,7 +10,7 @@ import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
 import _ol_reproj_ from '../reproj.js';
-import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
+import Triangulation from '../reproj/Triangulation.js';
 
 /**
  * @classdesc
@@ -142,7 +142,7 @@ var ReprojTile = function(sourceProj, sourceTileGrid,
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangulation_ = new _ol_reproj_Triangulation_(
+  this.triangulation_ = new Triangulation(
       sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
       sourceResolution * errorThresholdInPixels);
 

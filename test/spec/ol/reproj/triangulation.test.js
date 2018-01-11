@@ -1,6 +1,6 @@
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
-import _ol_reproj_Triangulation_ from '../../../../src/ol/reproj/Triangulation.js';
+import Triangulation from '../../../../src/ol/reproj/Triangulation.js';
 
 
 describe('ol.reproj.Triangulation', function() {
@@ -23,7 +23,7 @@ describe('ol.reproj.Triangulation', function() {
   describe('constructor', function() {
     it('is trivial for identity', function() {
       var proj4326 = getProjection('EPSG:4326');
-      var triangulation = new _ol_reproj_Triangulation_(proj4326, proj4326,
+      var triangulation = new Triangulation(proj4326, proj4326,
           [20, 20, 30, 30], [-180, -90, 180, 90], 0);
       expect(triangulation.getTriangles().length).to.be(2);
     });
@@ -31,14 +31,14 @@ describe('ol.reproj.Triangulation', function() {
     it('is empty when outside source extent', function() {
       var proj4326 = getProjection('EPSG:4326');
       var proj27700 = getProjection('EPSG:27700');
-      var triangulation = new _ol_reproj_Triangulation_(proj27700, proj4326,
+      var triangulation = new Triangulation(proj27700, proj4326,
           [0, 0, 10, 10], proj27700.getExtent(), 0);
       expect(triangulation.getTriangles().length).to.be(0);
     });
 
     it('can handle null source extent', function() {
       var proj4326 = getProjection('EPSG:4326');
-      var triangulation = new _ol_reproj_Triangulation_(proj4326, proj4326,
+      var triangulation = new Triangulation(proj4326, proj4326,
           [20, 20, 30, 30], null, 0);
       expect(triangulation.getTriangles().length).to.be(2);
     });

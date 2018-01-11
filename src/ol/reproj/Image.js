@@ -9,7 +9,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import _ol_reproj_ from '../reproj.js';
-import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
+import Triangulation from '../reproj/Triangulation.js';
 
 /**
  * @classdesc
@@ -55,7 +55,7 @@ var ReprojImage = function(sourceProj, targetProj,
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangulation_ = new _ol_reproj_Triangulation_(
+  this.triangulation_ = new Triangulation(
       sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
       sourceResolution * errorThresholdInPixels);
 
