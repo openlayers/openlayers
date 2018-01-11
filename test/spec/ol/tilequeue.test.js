@@ -1,5 +1,5 @@
 import ImageTile from '../../../src/ol/ImageTile.js';
-import _ol_Tile_ from '../../../src/ol/Tile.js';
+import Tile from '../../../src/ol/Tile.js';
 import TileQueue from '../../../src/ol/TileQueue.js';
 import TileState from '../../../src/ol/TileState.js';
 import ImageSource from '../../../src/ol/source/Image.js';
@@ -11,7 +11,7 @@ describe('ol.TileQueue', function() {
   function addRandomPriorityTiles(tq, num) {
     var i, tile, priority;
     for (i = 0; i < num; i++) {
-      tile = new _ol_Tile_();
+      tile = new Tile();
       priority = Math.floor(Math.random() * 100);
       tq.elements_.push([tile, '', [0, 0]]);
       tq.priorities_.push(priority);

@@ -2,7 +2,7 @@
  * @module ol/VectorImageTile
  */
 import {getUid, inherits} from './index.js';
-import _ol_Tile_ from './Tile.js';
+import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
@@ -36,7 +36,7 @@ var VectorImageTile = function(tileCoord, state, sourceRevision, format,
     tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
     sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
 
-  _ol_Tile_.call(this, tileCoord, state, opt_options);
+  Tile.call(this, tileCoord, state, opt_options);
 
   /**
    * @private
@@ -121,7 +121,7 @@ var VectorImageTile = function(tileCoord, state, sourceRevision, format,
 
 };
 
-inherits(VectorImageTile, _ol_Tile_);
+inherits(VectorImageTile, Tile);
 
 
 /**
@@ -149,7 +149,7 @@ VectorImageTile.prototype.disposeInternal = function() {
   this.loadListenerKeys_.length = 0;
   this.sourceTileListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.sourceTileListenerKeys_.length = 0;
-  _ol_Tile_.prototype.disposeInternal.call(this);
+  Tile.prototype.disposeInternal.call(this);
 };
 
 

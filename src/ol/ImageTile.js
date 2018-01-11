@@ -2,7 +2,7 @@
  * @module ol/ImageTile
  */
 import {inherits} from './index.js';
-import _ol_Tile_ from './Tile.js';
+import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
 import _ol_events_ from './events.js';
@@ -20,7 +20,7 @@ import EventType from './events/EventType.js';
  */
 var ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
-  _ol_Tile_.call(this, tileCoord, state, opt_options);
+  Tile.call(this, tileCoord, state, opt_options);
 
   /**
    * @private
@@ -59,7 +59,7 @@ var ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, o
 
 };
 
-inherits(ImageTile, _ol_Tile_);
+inherits(ImageTile, Tile);
 
 
 /**
@@ -75,7 +75,7 @@ ImageTile.prototype.disposeInternal = function() {
   }
   this.state = TileState.ABORT;
   this.changed();
-  _ol_Tile_.prototype.disposeInternal.call(this);
+  Tile.prototype.disposeInternal.call(this);
 };
 
 

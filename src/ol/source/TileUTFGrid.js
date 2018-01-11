@@ -2,7 +2,7 @@
  * @module ol/source/TileUTFGrid
  */
 import {inherits} from '../index.js';
-import _ol_Tile_ from '../Tile.js';
+import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
@@ -259,7 +259,7 @@ UTFGrid.prototype.useTile = function(z, x, y) {
  */
 UTFGrid.Tile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
 
-  _ol_Tile_.call(this, tileCoord, state);
+  Tile.call(this, tileCoord, state);
 
   /**
    * @private
@@ -305,7 +305,7 @@ UTFGrid.Tile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
   this.jsonp_ = jsonp;
 
 };
-inherits(UTFGrid.Tile_, _ol_Tile_);
+inherits(UTFGrid.Tile_, Tile);
 
 
 /**

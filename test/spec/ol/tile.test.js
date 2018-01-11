@@ -1,6 +1,6 @@
 import {getUid} from '../../../src/ol/index.js';
 import ImageTile from '../../../src/ol/ImageTile.js';
-import _ol_Tile_ from '../../../src/ol/Tile.js';
+import Tile from '../../../src/ol/Tile.js';
 import TileState from '../../../src/ol/TileState.js';
 
 
@@ -8,14 +8,14 @@ describe('ol.Tile', function() {
   describe('constructor', function()  {
     it('sets a default transition', function() {
       var coord = [0, 0, 0];
-      var tile = new _ol_Tile_(coord, TileState.IDLE);
+      var tile = new Tile(coord, TileState.IDLE);
       expect(tile.transition_).to.equal(250);
     });
 
     it('allows the transition to be set', function() {
       var coord = [0, 0, 0];
       var transition = 500;
-      var tile = new _ol_Tile_(coord, TileState.IDLE, {transition: transition});
+      var tile = new Tile(coord, TileState.IDLE, {transition: transition});
       expect(tile.transition_).to.equal(transition);
     });
   });
@@ -23,7 +23,7 @@ describe('ol.Tile', function() {
   describe('#getAlpha()', function() {
     it('returns the alpha value for a tile in transition', function() {
       var coord = [0, 0, 0];
-      var tile = new _ol_Tile_(coord, TileState.IDLE);
+      var tile = new Tile(coord, TileState.IDLE);
       var id = 'test';
       var time = Date.now();
 
@@ -45,7 +45,7 @@ describe('ol.Tile', function() {
   describe('#inTransition()', function() {
     it('determines if the tile is in transition', function() {
       var coord = [0, 0, 0];
-      var tile = new _ol_Tile_(coord, TileState.IDLE);
+      var tile = new Tile(coord, TileState.IDLE);
       var id = 'test';
 
       expect(tile.inTransition(id)).to.be(true);

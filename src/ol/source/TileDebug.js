@@ -2,7 +2,7 @@
  * @module ol/source/TileDebug
  */
 import {inherits} from '../index.js';
-import _ol_Tile_ from '../Tile.js';
+import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
 import _ol_size_ from '../size.js';
@@ -66,7 +66,7 @@ TileDebug.prototype.getTile = function(z, x, y) {
  */
 TileDebug.Tile_ = function(tileCoord, tileSize, text) {
 
-  _ol_Tile_.call(this, tileCoord, TileState.LOADED);
+  Tile.call(this, tileCoord, TileState.LOADED);
 
   /**
    * @private
@@ -87,7 +87,7 @@ TileDebug.Tile_ = function(tileCoord, tileSize, text) {
   this.canvas_ = null;
 
 };
-inherits(TileDebug.Tile_, _ol_Tile_);
+inherits(TileDebug.Tile_, Tile);
 
 
 /**

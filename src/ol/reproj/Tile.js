@@ -3,7 +3,7 @@
  */
 import {ERROR_THRESHOLD} from './common.js';
 import {inherits} from '../index.js';
-import _ol_Tile_ from '../Tile.js';
+import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
@@ -36,7 +36,7 @@ var ReprojTile = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
     pixelRatio, gutter, getTileFunction,
     opt_errorThreshold, opt_renderEdges) {
-  _ol_Tile_.call(this, tileCoord, TileState.IDLE);
+  Tile.call(this, tileCoord, TileState.IDLE);
 
   /**
    * @private
@@ -187,7 +187,7 @@ var ReprojTile = function(sourceProj, sourceTileGrid,
   }
 };
 
-inherits(ReprojTile, _ol_Tile_);
+inherits(ReprojTile, Tile);
 
 
 /**
@@ -197,7 +197,7 @@ ReprojTile.prototype.disposeInternal = function() {
   if (this.state == TileState.LOADING) {
     this.unlistenSources_();
   }
-  _ol_Tile_.prototype.disposeInternal.call(this);
+  Tile.prototype.disposeInternal.call(this);
 };
 
 

@@ -1,5 +1,5 @@
 import Map from '../../../../src/ol/Map.js';
-import _ol_Tile_ from '../../../../src/ol/Tile.js';
+import Tile from '../../../../src/ol/Tile.js';
 import View from '../../../../src/ol/View.js';
 import Attribution from '../../../../src/ol/control/Attribution.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
@@ -50,7 +50,7 @@ describe('ol.control.Attribution', function() {
     map.getLayers().forEach(function(layer) {
       var source = layer.getSource();
       source.getTile = function() {
-        var tile = new _ol_Tile_([0, 0, -1], 2 /* LOADED */);
+        var tile = new Tile([0, 0, -1], 2 /* LOADED */);
         tile.getImage = function() {
           var image = new Image();
           image.width = 256;

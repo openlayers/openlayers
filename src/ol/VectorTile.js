@@ -2,7 +2,7 @@
  * @module ol/VectorTile
  */
 import {getUid, inherits} from './index.js';
-import _ol_Tile_ from './Tile.js';
+import Tile from './Tile.js';
 import TileState from './TileState.js';
 
 /**
@@ -17,7 +17,7 @@ import TileState from './TileState.js';
  */
 var VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
-  _ol_Tile_.call(this, tileCoord, state, opt_options);
+  Tile.call(this, tileCoord, state, opt_options);
 
   /**
    * @type {number}
@@ -75,7 +75,7 @@ var VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt_o
 
 };
 
-inherits(VectorTile, _ol_Tile_);
+inherits(VectorTile, Tile);
 
 /**
  * @const
@@ -92,7 +92,7 @@ VectorTile.prototype.disposeInternal = function() {
   this.replayGroups_ = {};
   this.state = TileState.ABORT;
   this.changed();
-  _ol_Tile_.prototype.disposeInternal.call(this);
+  Tile.prototype.disposeInternal.call(this);
 };
 
 
