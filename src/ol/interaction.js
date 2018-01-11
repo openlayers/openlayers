@@ -10,7 +10,7 @@ import DragZoom from './interaction/DragZoom.js';
 import _ol_interaction_KeyboardPan_ from './interaction/KeyboardPan.js';
 import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
-import _ol_interaction_PinchRotate_ from './interaction/PinchRotate.js';
+import PinchRotate from './interaction/PinchRotate.js';
 import PinchZoom from './interaction/PinchZoom.js';
 
 
@@ -70,7 +70,7 @@ export function defaults(opt_options) {
   var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
     true;
   if (pinchRotate) {
-    interactions.push(new _ol_interaction_PinchRotate_());
+    interactions.push(new PinchRotate());
   }
 
   var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
