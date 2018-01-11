@@ -9,7 +9,7 @@
  * @struct
  * @api
  */
-var _ol_render_VectorContext_ = function() {
+var VectorContext = function() {
 };
 
 
@@ -20,7 +20,7 @@ var _ol_render_VectorContext_ = function() {
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {Function} renderer Renderer.
  */
-_ol_render_VectorContext_.prototype.drawCustom = function(geometry, feature, renderer) {};
+VectorContext.prototype.drawCustom = function(geometry, feature, renderer) {};
 
 
 /**
@@ -28,7 +28,7 @@ _ol_render_VectorContext_.prototype.drawCustom = function(geometry, feature, ren
  *
  * @param {ol.geom.Geometry} geometry The geometry to render.
  */
-_ol_render_VectorContext_.prototype.drawGeometry = function(geometry) {};
+VectorContext.prototype.drawGeometry = function(geometry) {};
 
 
 /**
@@ -36,21 +36,21 @@ _ol_render_VectorContext_.prototype.drawGeometry = function(geometry) {};
  *
  * @param {ol.style.Style} style The rendering style.
  */
-_ol_render_VectorContext_.prototype.setStyle = function(style) {};
+VectorContext.prototype.setStyle = function(style) {};
 
 
 /**
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {ol.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawCircle = function(circleGeometry, feature) {};
+VectorContext.prototype.drawCircle = function(circleGeometry, feature) {};
 
 
 /**
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  */
-_ol_render_VectorContext_.prototype.drawFeature = function(feature, style) {};
+VectorContext.prototype.drawFeature = function(feature, style) {};
 
 
 /**
@@ -58,7 +58,7 @@ _ol_render_VectorContext_.prototype.drawFeature = function(feature, style) {};
  *     collection.
  * @param {ol.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawGeometryCollection = function(geometryCollectionGeometry, feature) {};
+VectorContext.prototype.drawGeometryCollection = function(geometryCollectionGeometry, feature) {};
 
 
 /**
@@ -66,7 +66,7 @@ _ol_render_VectorContext_.prototype.drawGeometryCollection = function(geometryCo
  *     string geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawLineString = function(lineStringGeometry, feature) {};
+VectorContext.prototype.drawLineString = function(lineStringGeometry, feature) {};
 
 
 /**
@@ -74,7 +74,7 @@ _ol_render_VectorContext_.prototype.drawLineString = function(lineStringGeometry
  *     MultiLineString geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {};
+VectorContext.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {};
 
 
 /**
@@ -82,21 +82,21 @@ _ol_render_VectorContext_.prototype.drawMultiLineString = function(multiLineStri
  *     geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawMultiPoint = function(multiPointGeometry, feature) {};
+VectorContext.prototype.drawMultiPoint = function(multiPointGeometry, feature) {};
 
 
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {};
+VectorContext.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {};
 
 
 /**
  * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawPoint = function(pointGeometry, feature) {};
+VectorContext.prototype.drawPoint = function(pointGeometry, feature) {};
 
 
 /**
@@ -104,33 +104,33 @@ _ol_render_VectorContext_.prototype.drawPoint = function(pointGeometry, feature)
  *     geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawPolygon = function(polygonGeometry, feature) {};
+VectorContext.prototype.drawPolygon = function(polygonGeometry, feature) {};
 
 
 /**
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-_ol_render_VectorContext_.prototype.drawText = function(geometry, feature) {};
+VectorContext.prototype.drawText = function(geometry, feature) {};
 
 
 /**
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
  */
-_ol_render_VectorContext_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {};
+VectorContext.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {};
 
 
 /**
  * @param {ol.style.Image} imageStyle Image style.
  * @param {ol.DeclutterGroup=} opt_declutterGroup Declutter.
  */
-_ol_render_VectorContext_.prototype.setImageStyle = function(imageStyle, opt_declutterGroup) {};
+VectorContext.prototype.setImageStyle = function(imageStyle, opt_declutterGroup) {};
 
 
 /**
  * @param {ol.style.Text} textStyle Text style.
  * @param {ol.DeclutterGroup=} opt_declutterGroup Declutter.
  */
-_ol_render_VectorContext_.prototype.setTextStyle = function(textStyle, opt_declutterGroup) {};
-export default _ol_render_VectorContext_;
+VectorContext.prototype.setTextStyle = function(textStyle, opt_declutterGroup) {};
+export default VectorContext;

@@ -14,7 +14,7 @@ import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_has_ from '../../has.js';
 import _ol_obj_ from '../../obj.js';
-import _ol_render_VectorContext_ from '../VectorContext.js';
+import VectorContext from '../VectorContext.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
 import _ol_render_replay_ from '../replay.js';
@@ -32,7 +32,7 @@ import _ol_transform_ from '../../transform.js';
  * @struct
  */
 var _ol_render_canvas_Replay_ = function(tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-  _ol_render_VectorContext_.call(this);
+  VectorContext.call(this);
 
   /**
    * @type {?}
@@ -168,7 +168,7 @@ var _ol_render_canvas_Replay_ = function(tolerance, maxExtent, resolution, pixel
   this.resetTransform_ = _ol_transform_.create();
 };
 
-inherits(_ol_render_canvas_Replay_, _ol_render_VectorContext_);
+inherits(_ol_render_canvas_Replay_, VectorContext);
 
 
 /**

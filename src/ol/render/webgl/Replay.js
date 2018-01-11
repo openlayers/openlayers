@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import {getCenter} from '../../extent.js';
-import _ol_render_VectorContext_ from '../VectorContext.js';
+import VectorContext from '../VectorContext.js';
 import _ol_transform_ from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
@@ -17,7 +17,7 @@ import _ol_webgl_ from '../../webgl.js';
  * @struct
  */
 var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
-  _ol_render_VectorContext_.call(this);
+  VectorContext.call(this);
 
   /**
    * @protected
@@ -113,7 +113,7 @@ var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_Replay_, _ol_render_VectorContext_);
+inherits(_ol_render_webgl_Replay_, VectorContext);
 
 
 /**

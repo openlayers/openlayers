@@ -6,7 +6,7 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import _ol_render_VectorContext_ from '../../../../../src/ol/render/VectorContext.js';
+import VectorContext from '../../../../../src/ol/render/VectorContext.js';
 import _ol_render_canvas_Immediate_ from '../../../../../src/ol/render/canvas/Immediate.js';
 import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
@@ -32,7 +32,7 @@ describe('ol.render.canvas.Immediate', function() {
     it('creates an instance', function() {
       var instance = new _ol_render_canvas_Immediate_();
       expect(instance).to.be.a(_ol_render_canvas_Immediate_);
-      expect(instance).to.be.a(_ol_render_VectorContext_);
+      expect(instance).to.be.a(VectorContext);
     });
   });
 
