@@ -45,7 +45,7 @@ var map = new Map({
   })
 });
 
-var Modify = {
+var ExampleModify = {
   init: function() {
     this.select = new _ol_interaction_Select_();
     map.addInteraction(this.select);
@@ -69,7 +69,7 @@ var Modify = {
     this.modify.setActive(active);
   }
 };
-Modify.init();
+ExampleModify.init();
 
 var optionsForm = document.getElementById('options-form');
 
@@ -126,20 +126,20 @@ optionsForm.onchange = function(e) {
   var type = e.target.getAttribute('name');
   var value = e.target.value;
   if (type == 'draw-type') {
-    Draw.getActive() && Draw.setActive(true);
+    ExampleDraw.getActive() && ExampleDraw.setActive(true);
   } else if (type == 'interaction') {
     if (value == 'modify') {
-      Draw.setActive(false);
-      Modify.setActive(true);
+      ExampleDraw.setActive(false);
+      ExampleModify.setActive(true);
     } else if (value == 'draw') {
-      Draw.setActive(true);
-      Modify.setActive(false);
+      ExampleDraw.setActive(true);
+      ExampleModify.setActive(false);
     }
   }
 };
 
-Draw.setActive(true);
-Modify.setActive(false);
+ExampleDraw.setActive(true);
+ExampleModify.setActive(false);
 
 // The snap interaction must be added after the Modify and Draw interactions
 // in order for its map browser event handlers to be fired first. Its handlers
