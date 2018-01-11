@@ -8,7 +8,7 @@ import DragPan from './interaction/DragPan.js';
 import DragRotate from './interaction/DragRotate.js';
 import DragZoom from './interaction/DragZoom.js';
 import KeyboardPan from './interaction/KeyboardPan.js';
-import _ol_interaction_KeyboardZoom_ from './interaction/KeyboardZoom.js';
+import KeyboardZoom from './interaction/KeyboardZoom.js';
 import MouseWheelZoom from './interaction/MouseWheelZoom.js';
 import PinchRotate from './interaction/PinchRotate.js';
 import PinchZoom from './interaction/PinchZoom.js';
@@ -84,7 +84,7 @@ export function defaults(opt_options) {
   var keyboard = options.keyboard !== undefined ? options.keyboard : true;
   if (keyboard) {
     interactions.push(new KeyboardPan());
-    interactions.push(new _ol_interaction_KeyboardZoom_({
+    interactions.push(new KeyboardZoom({
       delta: options.zoomDelta,
       duration: options.zoomDuration
     }));

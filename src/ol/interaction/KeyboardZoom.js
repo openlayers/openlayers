@@ -23,10 +23,10 @@ import Interaction from '../interaction/Interaction.js';
  * @extends {ol.interaction.Interaction}
  * @api
  */
-var _ol_interaction_KeyboardZoom_ = function(opt_options) {
+var KeyboardZoom = function(opt_options) {
 
   Interaction.call(this, {
-    handleEvent: _ol_interaction_KeyboardZoom_.handleEvent
+    handleEvent: KeyboardZoom.handleEvent
   });
 
   var options = opt_options ? opt_options : {};
@@ -52,7 +52,7 @@ var _ol_interaction_KeyboardZoom_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_KeyboardZoom_, Interaction);
+inherits(KeyboardZoom, Interaction);
 
 
 /**
@@ -64,7 +64,7 @@ inherits(_ol_interaction_KeyboardZoom_, Interaction);
  * @this {ol.interaction.KeyboardZoom}
  * @api
  */
-_ol_interaction_KeyboardZoom_.handleEvent = function(mapBrowserEvent) {
+KeyboardZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN ||
       mapBrowserEvent.type == EventType.KEYPRESS) {
@@ -83,4 +83,4 @@ _ol_interaction_KeyboardZoom_.handleEvent = function(mapBrowserEvent) {
   }
   return !stopEvent;
 };
-export default _ol_interaction_KeyboardZoom_;
+export default KeyboardZoom;
