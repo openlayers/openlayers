@@ -1,4 +1,4 @@
-import _ol_style_AtlasManager_ from '../../../../src/ol/style/AtlasManager.js';
+import AtlasManager from '../../../../src/ol/style/AtlasManager.js';
 import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -66,7 +66,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
-      var atlasManager = new _ol_style_AtlasManager_({initialSize: 512});
+      var atlasManager = new AtlasManager({initialSize: 512});
       var style = new _ol_style_RegularShape_(
           {radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
@@ -81,7 +81,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
-      var atlasManager = new _ol_style_AtlasManager_({initialSize: 512});
+      var atlasManager = new AtlasManager({initialSize: 512});
       var style = new _ol_style_RegularShape_({
         radius: 10,
         atlasManager: atlasManager,

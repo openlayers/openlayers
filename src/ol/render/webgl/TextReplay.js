@@ -9,7 +9,7 @@ import _ol_has_ from '../../has.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import _ol_render_webgl_TextureReplay_ from '../webgl/TextureReplay.js';
-import _ol_style_AtlasManager_ from '../../style/AtlasManager.js';
+import AtlasManager from '../../style/AtlasManager.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
 /**
@@ -421,7 +421,7 @@ _ol_render_webgl_TextReplay_.prototype.getAtlas_ = function(state) {
         state.lineWidth / 2) * state.scale);
 
     this.atlases_[hash] = {
-      atlas: new _ol_style_AtlasManager_({
+      atlas: new AtlasManager({
         space: state.lineWidth + 1
       }),
       width: {},
