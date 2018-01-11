@@ -11,6 +11,20 @@ import EventType from '../events/EventType.js';
 import Interaction from '../interaction/Interaction.js';
 import {get as getProjection} from '../proj.js';
 
+
+/**
+ * @enum {string}
+ */
+var DragAndDropEventType = {
+  /**
+   * Triggered when features are added
+   * @event ol.interaction.DragAndDrop.Event#addfeatures
+   * @api
+   */
+  ADD_FEATURES: 'addfeatures'
+};
+
+
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
@@ -135,7 +149,7 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
   }
   this.dispatchEvent(
       new DragAndDrop.Event(
-          DragAndDrop.EventType_.ADD_FEATURES, file,
+          DragAndDropEventType.ADD_FEATURES, file,
           features, projection));
 };
 
@@ -225,20 +239,6 @@ DragAndDrop.prototype.unregisterListeners_ = function() {
 
 
 /**
- * @enum {string}
- * @private
- */
-DragAndDrop.EventType_ = {
-  /**
-   * Triggered when features are added
-   * @event ol.interaction.DragAndDrop.Event#addfeatures
-   * @api
-   */
-  ADD_FEATURES: 'addfeatures'
-};
-
-
-/**
  * @classdesc
  * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
  * of this type.
@@ -246,7 +246,7 @@ DragAndDrop.EventType_ = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
- * @param {ol.interaction.DragAndDrop.EventType_} type Type.
+ * @param {DragAndDropEventType} type Type.
  * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
