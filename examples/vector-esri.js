@@ -9,7 +9,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import XYZ from '../src/ol/source/XYZ.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
 
@@ -20,7 +20,7 @@ var layer = '0';
 var esrijsonFormat = new EsriJSON();
 
 var styleCache = {
-  'ABANDONED': new _ol_style_Style_({
+  'ABANDONED': new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(225, 225, 225, 255)'
     }),
@@ -29,7 +29,7 @@ var styleCache = {
       width: 0.4
     })
   }),
-  'GAS': new _ol_style_Style_({
+  'GAS': new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(255, 0, 0, 255)'
     }),
@@ -38,7 +38,7 @@ var styleCache = {
       width: 0.4
     })
   }),
-  'OIL': new _ol_style_Style_({
+  'OIL': new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(56, 168, 0, 255)'
     }),
@@ -47,7 +47,7 @@ var styleCache = {
       width: 0
     })
   }),
-  'OILGAS': new _ol_style_Style_({
+  'OILGAS': new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(168, 112, 0, 255)'
     }),

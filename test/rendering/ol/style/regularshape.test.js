@@ -6,7 +6,7 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../../../../src/ol/style/RegularShape.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
@@ -46,7 +46,7 @@ describe('ol.rendering.style.RegularShape', function() {
       geometry: new Point([-15, 15])
     });
     // square
-    feature.setStyle(new _ol_style_Style_({
+    feature.setStyle(new Style({
       image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
@@ -61,7 +61,7 @@ describe('ol.rendering.style.RegularShape', function() {
       geometry: new Point([8, 15])
     });
     // triangle
-    feature.setStyle(new _ol_style_Style_({
+    feature.setStyle(new Style({
       image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
@@ -77,7 +77,7 @@ describe('ol.rendering.style.RegularShape', function() {
       geometry: new Point([-10, -8])
     });
     // star
-    feature.setStyle(new _ol_style_Style_({
+    feature.setStyle(new Style({
       image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,
@@ -93,7 +93,7 @@ describe('ol.rendering.style.RegularShape', function() {
       geometry: new Point([12, -8])
     });
     // cross
-    feature.setStyle(new _ol_style_Style_({
+    feature.setStyle(new Style({
       image: new _ol_style_RegularShape_({
         fill: fill,
         stroke: stroke,

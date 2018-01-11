@@ -11,13 +11,13 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var map;
 
 var styles = {
   'amenity': {
-    'parking': new _ol_style_Style_({
+    'parking': new Style({
       stroke: new _ol_style_Stroke_({
         color: 'rgba(170, 170, 170, 1.0)',
         width: 1
@@ -28,7 +28,7 @@ var styles = {
     })
   },
   'building': {
-    '.*': new _ol_style_Style_({
+    '.*': new Style({
       zIndex: 100,
       stroke: new _ol_style_Stroke_({
         color: 'rgba(246, 99, 79, 1.0)',
@@ -40,13 +40,13 @@ var styles = {
     })
   },
   'highway': {
-    'service': new _ol_style_Style_({
+    'service': new Style({
       stroke: new _ol_style_Stroke_({
         color: 'rgba(255, 255, 255, 1.0)',
         width: 2
       })
     }),
-    '.*': new _ol_style_Style_({
+    '.*': new Style({
       stroke: new _ol_style_Stroke_({
         color: 'rgba(255, 255, 255, 1.0)',
         width: 3
@@ -54,7 +54,7 @@ var styles = {
     })
   },
   'landuse': {
-    'forest|grass|allotments': new _ol_style_Style_({
+    'forest|grass|allotments': new Style({
       stroke: new _ol_style_Stroke_({
         color: 'rgba(140, 208, 95, 1.0)',
         width: 1
@@ -65,7 +65,7 @@ var styles = {
     })
   },
   'natural': {
-    'tree': new _ol_style_Style_({
+    'tree': new Style({
       image: new _ol_style_Circle_({
         radius: 2,
         fill: new _ol_style_Fill_({

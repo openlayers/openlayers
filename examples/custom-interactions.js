@@ -14,7 +14,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 /**
@@ -156,7 +156,7 @@ var map = new Map({
       source: new VectorSource({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
-      style: new _ol_style_Style_({
+      style: new Style({
         image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',

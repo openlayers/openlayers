@@ -7,7 +7,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 // Create separate layers for red, green an blue circles.
@@ -18,7 +18,7 @@ var redLayer = new VectorLayer({
   source: new VectorSource({
     features: [new Feature(new Point([0, 0]))]
   }),
-  style: new _ol_style_Style_({
+  style: new Style({
     image: new _ol_style_Circle_({
       fill: new _ol_style_Fill_({
         color: 'rgba(255,0,0,0.8)'
@@ -36,7 +36,7 @@ var greenLayer = new VectorLayer({
     // 433.013 is roughly 250 * Math.sqrt(3)
     features: [new Feature(new Point([250, 433.013]))]
   }),
-  style: new _ol_style_Style_({
+  style: new Style({
     image: new _ol_style_Circle_({
       fill: new _ol_style_Fill_({
         color: 'rgba(0,255,0,0.8)'
@@ -53,7 +53,7 @@ var blueLayer = new VectorLayer({
   source: new VectorSource({
     features: [new Feature(new Point([500, 0]))]
   }),
-  style: new _ol_style_Style_({
+  style: new Style({
     image: new _ol_style_Circle_({
       fill: new _ol_style_Fill_({
         color: 'rgba(0,0,255,0.8)'

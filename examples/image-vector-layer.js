@@ -5,11 +5,11 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 
-var style = new _ol_style_Style_({
+var style = new Style({
   fill: new _ol_style_Fill_({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -44,7 +44,7 @@ var map = new Map({
 var featureOverlay = new VectorLayer({
   source: new VectorSource(),
   map: map,
-  style: new _ol_style_Style_({
+  style: new Style({
     stroke: new _ol_style_Stroke_({
       color: '#f00',
       width: 1

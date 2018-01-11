@@ -15,13 +15,13 @@ import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/
 import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.render.webgl.Immediate', function() {
   var context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
   beforeEach(function() {
     context = new _ol_render_webgl_Immediate_({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
-    style = new _ol_style_Style_({
+    style = new Style({
       image: new _ol_style_Circle_(),
       fill: new _ol_style_Fill_(),
       stroke: new _ol_style_Stroke_()

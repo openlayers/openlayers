@@ -11,7 +11,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 
 
@@ -79,7 +79,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
-      smallLine.setStyle(new _ol_style_Style_({
+      smallLine.setStyle(new Style({
         zIndex: -99,
         stroke: new _ol_style_Stroke_({width: 75, color: 'red'})
       }));
@@ -105,7 +105,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
-      smallLine.setStyle(new _ol_style_Style_({
+      smallLine.setStyle(new Style({
         zIndex: -99,
         stroke: new _ol_style_Stroke_({width: 75, color: 'red'})
       }));
@@ -133,10 +133,10 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0], center[1] + 1]
       ]));
       smallLine.setStyle([
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 75, color: 'red'})
         }),
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 45, color: 'white'})
         })
       ]);
@@ -146,10 +146,10 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0], center[1] + 1000]
       ]));
       smallLine2.setStyle([
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 35, color: 'blue'})
         }),
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 15, color: 'green'})
         })
       ]);
@@ -172,10 +172,10 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0], center[1] + 1]
       ]));
       smallLine.setStyle([
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 75, color: 'red'})
         }),
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 45, color: 'white'})
         })
       ]);
@@ -185,10 +185,10 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0], center[1] + 1000]
       ]));
       smallLine2.setStyle([
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 35, color: 'blue'})
         }),
-        new _ol_style_Style_({
+        new Style({
           stroke: new _ol_style_Stroke_({width: 15, color: 'green'})
         })
       ]);
@@ -212,7 +212,7 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       map.addLayer(new VectorLayer({
         source: source,
-        style: new _ol_style_Style_({
+        style: new Style({
           stroke: new _ol_style_Stroke_({
             width: 2,
             color: 'black'
@@ -233,7 +233,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
-        style: new _ol_style_Style_({
+        style: new Style({
           stroke: new _ol_style_Stroke_({
             width: 2,
             color: 'black'
@@ -254,7 +254,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(new VectorLayer({
         renderMode: 'image',
         source: source,
-        style: new _ol_style_Style_({
+        style: new Style({
           fill: new _ol_style_Fill_({
             color: 'rgba(255,0,0,0.5)'
           }),
@@ -285,7 +285,7 @@ describe('ol.rendering.layer.Vector', function() {
       addPolygon(720);
       map.addLayer(new VectorLayer({
         source: source,
-        style: new _ol_style_Style_({
+        style: new Style({
           stroke: new _ol_style_Stroke_({
             color: '#3399CC',
             width: 1.25
@@ -309,7 +309,7 @@ describe('ol.rendering.layer.Vector', function() {
       addLineString(720);
       map.addLayer(new VectorLayer({
         source: source,
-        style: new _ol_style_Style_({
+        style: new Style({
           stroke: new _ol_style_Stroke_({
             color: '#3399CC',
             width: 1.25
@@ -350,7 +350,7 @@ describe('ol.rendering.layer.Vector', function() {
         source: createSource(true),
         style: function(feature) {
           alternateColor();
-          return new _ol_style_Style_({
+          return new Style({
             stroke: new _ol_style_Stroke_({
               color: alternateColor(),
               width: 1.25
@@ -401,7 +401,7 @@ describe('ol.rendering.layer.Vector', function() {
         source: createSource(true),
         style: function(feature) {
           alternateColor();
-          return new _ol_style_Style_({
+          return new Style({
             stroke: new _ol_style_Stroke_({
               color: alternateColor(),
               width: 1.25
@@ -470,7 +470,7 @@ describe('ol.rendering.layer.Vector', function() {
         source: new VectorSource({
           features: [feature]
         }),
-        style: new _ol_style_Style_({
+        style: new Style({
           fill: new _ol_style_Fill_({
             color: 'blue'
           })
@@ -534,7 +534,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders partially out-of-view polygons with a fill and stroke', function(done) {
-      layer.setStyle(new _ol_style_Style_({
+      layer.setStyle(new Style({
         stroke: new _ol_style_Stroke_({
           color: [0, 0, 0, 1],
           width: 2
@@ -550,7 +550,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders partially out-of-view polygons with a fill', function(done) {
-      layer.setStyle(new _ol_style_Style_({
+      layer.setStyle(new Style({
         fill: new _ol_style_Fill_({
           color: [0, 0, 0, 1]
         })
@@ -562,7 +562,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders partially out-of-view polygons with a stroke', function(done) {
-      layer.setStyle(new _ol_style_Style_({
+      layer.setStyle(new Style({
         stroke: new _ol_style_Stroke_({
           color: [0, 0, 0, 1],
           width: 2
@@ -605,7 +605,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           text: new _ol_style_Text_({
             text: feature.get('text'),
             font: '12px sans-serif'
@@ -646,7 +646,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           text: new _ol_style_Text_({
             text: feature.get('text'),
             font: '12px sans-serif'
@@ -688,7 +688,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           zIndex: feature.get('zIndex'),
           text: new _ol_style_Text_({
             text: feature.get('text'),
@@ -723,7 +723,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           image: new _ol_style_Circle_({
             radius: 15,
             stroke: new _ol_style_Stroke_({
@@ -763,7 +763,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           image: new _ol_style_Circle_({
             radius: 15,
             stroke: new _ol_style_Stroke_({
@@ -804,7 +804,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           zIndex: feature.get('zIndex'),
           image: new _ol_style_Circle_({
             radius: 15,
@@ -843,7 +843,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
-        return new _ol_style_Style_({
+        return new Style({
           image: new _ol_style_Circle_({
             radius: 5,
             stroke: new _ol_style_Stroke_({
@@ -873,7 +873,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var point = new Feature(new Point(center));
-      point.setStyle(new _ol_style_Style_({
+      point.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 8,
           stroke: new _ol_style_Stroke_({
@@ -885,7 +885,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
-      line.setStyle(new _ol_style_Style_({
+      line.setStyle(new Style({
         stroke: new _ol_style_Stroke_({
           color: '#CCC',
           width: 12
@@ -916,7 +916,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var point = new Feature(new Point(center));
-      point.setStyle(new _ol_style_Style_({
+      point.setStyle(new Style({
         image: new _ol_style_Circle_({
           radius: 8,
           stroke: new _ol_style_Stroke_({
@@ -928,7 +928,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
-      line.setStyle(new _ol_style_Style_({
+      line.setStyle(new Style({
         stroke: new _ol_style_Stroke_({
           color: '#CCC',
           width: 12
@@ -959,7 +959,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       var point = new Feature(new Point(center));
-      point.setStyle(new _ol_style_Style_({
+      point.setStyle(new Style({
         zIndex: 2,
         image: new _ol_style_Circle_({
           radius: 8,
@@ -972,7 +972,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
-      line.setStyle(new _ol_style_Style_({
+      line.setStyle(new Style({
         zIndex: 1,
         stroke: new _ol_style_Stroke_({
           color: '#CCC',

@@ -14,7 +14,7 @@ import _ol_render_canvas_ReplayGroup_ from '../../../../../src/ol/render/canvas/
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
 import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
+import Style from '../../../../../src/ol/style/Style.js';
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 
 describe('ol.render.canvas.ReplayGroup', function() {
@@ -37,17 +37,17 @@ describe('ol.render.canvas.ReplayGroup', function() {
           [[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]]));
       feature3 = new Feature(new Polygon(
           [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
-      fill0 = new _ol_style_Style_({
+      fill0 = new Style({
         fill: new _ol_style_Fill_({color: 'black'})
       });
-      fill1 = new _ol_style_Style_({
+      fill1 = new Style({
         fill: new _ol_style_Fill_({color: 'red'})
       });
-      style1 = new _ol_style_Style_({
+      style1 = new Style({
         fill: new _ol_style_Fill_({color: 'black'}),
         stroke: new _ol_style_Stroke_({color: 'white', width: 1})
       });
-      style2 = new _ol_style_Style_({
+      style2 = new Style({
         fill: new _ol_style_Fill_({color: 'white'}),
         stroke: new _ol_style_Stroke_({color: 'black', width: 1, lineDash: [3, 6],
           lineDashOffset: 2})
@@ -216,7 +216,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('calls the renderer function configured for the style', function() {
       var calls = [];
-      var style = new _ol_style_Style_({
+      var style = new Style({
         renderer: function(coords, state) {
           calls.push({
             coords: coords,

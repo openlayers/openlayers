@@ -11,7 +11,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var view = new View({
   center: [0, 0],
@@ -67,7 +67,7 @@ geolocation.on('change:accuracyGeometry', function() {
 });
 
 var positionFeature = new Feature();
-positionFeature.setStyle(new _ol_style_Style_({
+positionFeature.setStyle(new Style({
   image: new _ol_style_Circle_({
     radius: 6,
     fill: new _ol_style_Fill_({

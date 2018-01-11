@@ -7,13 +7,13 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var stroke = new _ol_style_Stroke_({color: 'black', width: 1});
 
 var styles = {
-  'square': new _ol_style_Style_({
+  'square': new Style({
     image: new _ol_style_RegularShape_({
       fill: new _ol_style_Fill_({color: 'blue'}),
       stroke: stroke,
@@ -22,7 +22,7 @@ var styles = {
       angle: Math.PI / 4
     })
   }),
-  'triangle': new _ol_style_Style_({
+  'triangle': new Style({
     image: new _ol_style_RegularShape_({
       fill: new _ol_style_Fill_({color: 'red'}),
       stroke: stroke,
@@ -32,7 +32,7 @@ var styles = {
       angle: 0
     })
   }),
-  'star': new _ol_style_Style_({
+  'star': new Style({
     image: new _ol_style_RegularShape_({
       fill: new _ol_style_Fill_({color: 'green'}),
       stroke: stroke,

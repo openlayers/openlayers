@@ -9,13 +9,13 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON()
 });
-var style = new _ol_style_Style_({
+var style = new Style({
   fill: new _ol_style_Fill_({
     color: 'rgba(255, 255, 255, 0.6)'
   }),

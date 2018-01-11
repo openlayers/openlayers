@@ -5,7 +5,7 @@ import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 
 describe('ol.rendering.style.Icon', function() {
@@ -58,7 +58,7 @@ describe('ol.rendering.style.Icon', function() {
       var img = new Image();
       img.onload = function() {
         imgInfo.img = img;
-        feature.setStyle(new _ol_style_Style_({
+        feature.setStyle(new Style({
           image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ (imgInfo))
         }));
         vectorSource.addFeature(feature);

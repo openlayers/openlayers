@@ -10,7 +10,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 
@@ -40,7 +40,7 @@ var clusters = new VectorLayer({
     var size = feature.get('features').length;
     var style = styleCache[size];
     if (!style) {
-      style = new _ol_style_Style_({
+      style = new Style({
         image: new _ol_style_Circle_({
           radius: 10,
           stroke: new _ol_style_Stroke_({

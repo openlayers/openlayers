@@ -7,14 +7,14 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var stroke = new _ol_style_Stroke_({color: 'black', width: 2});
 var fill = new _ol_style_Fill_({color: 'red'});
 
 var styles = {
-  'square': new _ol_style_Style_({
+  'square': new Style({
     image: new _ol_style_RegularShape_({
       fill: fill,
       stroke: stroke,
@@ -23,7 +23,7 @@ var styles = {
       angle: Math.PI / 4
     })
   }),
-  'triangle': new _ol_style_Style_({
+  'triangle': new Style({
     image: new _ol_style_RegularShape_({
       fill: fill,
       stroke: stroke,
@@ -33,7 +33,7 @@ var styles = {
       angle: 0
     })
   }),
-  'star': new _ol_style_Style_({
+  'star': new Style({
     image: new _ol_style_RegularShape_({
       fill: fill,
       stroke: stroke,
@@ -43,7 +43,7 @@ var styles = {
       angle: 0
     })
   }),
-  'cross': new _ol_style_Style_({
+  'cross': new Style({
     image: new _ol_style_RegularShape_({
       fill: fill,
       stroke: stroke,
@@ -53,7 +53,7 @@ var styles = {
       angle: 0
     })
   }),
-  'x': new _ol_style_Style_({
+  'x': new Style({
     image: new _ol_style_RegularShape_({
       fill: fill,
       stroke: stroke,

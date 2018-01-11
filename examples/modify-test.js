@@ -9,7 +9,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var styleFunction = (function() {
@@ -19,8 +19,8 @@ var styleFunction = (function() {
     fill: null,
     stroke: new _ol_style_Stroke_({color: 'orange', width: 2})
   });
-  styles['Point'] = new _ol_style_Style_({image: image});
-  styles['Polygon'] = new _ol_style_Style_({
+  styles['Point'] = new Style({image: image});
+  styles['Polygon'] = new Style({
     stroke: new _ol_style_Stroke_({
       color: 'blue',
       width: 3
@@ -29,13 +29,13 @@ var styleFunction = (function() {
       color: 'rgba(0, 0, 255, 0.1)'
     })
   });
-  styles['MultiLineString'] = new _ol_style_Style_({
+  styles['MultiLineString'] = new Style({
     stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 3
     })
   });
-  styles['MultiPolygon'] = new _ol_style_Style_({
+  styles['MultiPolygon'] = new Style({
     stroke: new _ol_style_Stroke_({
       color: 'yellow',
       width: 1
@@ -44,7 +44,7 @@ var styleFunction = (function() {
       color: 'rgba(255, 255, 0, 0.1)'
     })
   });
-  styles['default'] = new _ol_style_Style_({
+  styles['default'] = new Style({
     stroke: new _ol_style_Stroke_({
       color: 'red',
       width: 3
@@ -156,18 +156,18 @@ var layer = new VectorLayer({
 var overlayStyle = (function() {
   var styles = {};
   styles['Polygon'] = [
-    new _ol_style_Style_({
+    new Style({
       fill: new _ol_style_Fill_({
         color: [255, 255, 255, 0.5]
       })
     }),
-    new _ol_style_Style_({
+    new Style({
       stroke: new _ol_style_Stroke_({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
-    new _ol_style_Style_({
+    new Style({
       stroke: new _ol_style_Stroke_({
         color: [0, 153, 255, 1],
         width: 3
@@ -177,13 +177,13 @@ var overlayStyle = (function() {
   styles['MultiPolygon'] = styles['Polygon'];
 
   styles['LineString'] = [
-    new _ol_style_Style_({
+    new Style({
       stroke: new _ol_style_Stroke_({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
-    new _ol_style_Style_({
+    new Style({
       stroke: new _ol_style_Stroke_({
         color: [0, 153, 255, 1],
         width: 3
@@ -193,7 +193,7 @@ var overlayStyle = (function() {
   styles['MultiLineString'] = styles['LineString'];
 
   styles['Point'] = [
-    new _ol_style_Style_({
+    new Style({
       image: new _ol_style_Circle_({
         radius: 7,
         fill: new _ol_style_Fill_({

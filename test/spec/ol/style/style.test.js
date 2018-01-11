@@ -1,6 +1,6 @@
 import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
@@ -36,14 +36,14 @@ describe('ol.style.Style', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Style', function() {
-      var original = new _ol_style_Style_();
+      var original = new Style();
       var clone = original.clone();
-      expect(clone).to.be.an(_ol_style_Style_);
+      expect(clone).to.be.an(Style);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new _ol_style_Style_({
+      var original = new Style({
         geometry: new Point([0, 0, 0]),
         fill: new _ol_style_Fill_({
           color: '#319FD3'
@@ -69,7 +69,7 @@ describe('ol.style.Style', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new _ol_style_Style_({
+      var original = new Style({
         geometry: new Point([0, 0, 0]),
         fill: new _ol_style_Fill_({
           color: '#319FD3'
@@ -107,7 +107,7 @@ describe('ol.style.Style', function() {
   describe('#setZIndex', function() {
 
     it('sets the zIndex', function() {
-      var style = new _ol_style_Style_();
+      var style = new Style();
 
       style.setZIndex(0.7);
       expect(style.getZIndex()).to.be(0.7);
@@ -115,7 +115,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getFill', function() {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       fill: testFill
     });
 
@@ -125,7 +125,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setFill', function() {
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('sets the fill style of a style', function() {
       style.setFill(testFill);
@@ -134,7 +134,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getImage', function() {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       image: testImage
     });
 
@@ -144,7 +144,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setImage', function() {
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('sets the image style of a style', function() {
       style.setImage(testImage);
@@ -153,7 +153,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getStroke', function() {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       stroke: testStroke
     });
 
@@ -163,7 +163,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setStroke', function() {
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('sets the stroke style of a style', function() {
       style.setStroke(testStroke);
@@ -172,7 +172,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#getText', function() {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       text: testText
     });
 
@@ -182,7 +182,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setText', function() {
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('sets the text style of a style', function() {
       style.setText(testText);
@@ -191,7 +191,7 @@ describe('ol.style.Style', function() {
   });
 
   describe('#setGeometry', function() {
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('creates a geometry function from a string', function() {
       var feature = new Feature();
@@ -221,7 +221,7 @@ describe('ol.style.Style', function() {
   describe('#getGeometry', function() {
 
     it('returns whatever was passed to setGeometry', function() {
-      var style = new _ol_style_Style_();
+      var style = new Style();
       style.setGeometry('foo');
       expect(style.getGeometry()).to.eql('foo');
       var geom = new Point([1, 2]);
@@ -241,15 +241,15 @@ describe('ol.style.Style', function() {
 });
 
 describe('ol.style.Style.createFunction()', function() {
-  var style = new _ol_style_Style_();
+  var style = new Style();
 
   it('creates a style function from a single style', function() {
-    var styleFunction = _ol_style_Style_.createFunction(style);
+    var styleFunction = Style.createFunction(style);
     expect(styleFunction()).to.eql([style]);
   });
 
   it('creates a style function from an array of styles', function() {
-    var styleFunction = _ol_style_Style_.createFunction([style]);
+    var styleFunction = Style.createFunction([style]);
     expect(styleFunction()).to.eql([style]);
   });
 
@@ -257,13 +257,13 @@ describe('ol.style.Style.createFunction()', function() {
     var original = function() {
       return [style];
     };
-    var styleFunction = _ol_style_Style_.createFunction(original);
+    var styleFunction = Style.createFunction(original);
     expect(styleFunction).to.be(original);
   });
 
   it('throws on (some) unexpected input', function() {
     expect(function() {
-      _ol_style_Style_.createFunction({bogus: 'input'});
+      Style.createFunction({bogus: 'input'});
     }).to.throwException();
   });
 

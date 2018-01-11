@@ -8,7 +8,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
   source: new BingMaps({
@@ -18,7 +18,7 @@ var raster = new TileLayer({
 });
 
 var style = {
-  'Point': new _ol_style_Style_({
+  'Point': new Style({
     image: new _ol_style_Circle_({
       fill: new _ol_style_Fill_({
         color: 'rgba(255,255,0,0.4)'
@@ -30,13 +30,13 @@ var style = {
       })
     })
   }),
-  'LineString': new _ol_style_Style_({
+  'LineString': new Style({
     stroke: new _ol_style_Stroke_({
       color: '#f00',
       width: 3
     })
   }),
-  'MultiLineString': new _ol_style_Style_({
+  'MultiLineString': new Style({
     stroke: new _ol_style_Stroke_({
       color: '#0f0',
       width: 3

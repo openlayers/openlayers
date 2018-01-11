@@ -15,7 +15,7 @@ import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js'
 import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
-import _ol_style_Style_ from '../style/Style.js';
+import Style from '../style/Style.js';
 
 /**
  * @classdesc
@@ -243,7 +243,7 @@ ExtentInteraction.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ExtentInteraction.getDefaultExtentStyleFunction_ = function() {
-  var style = _ol_style_Style_.createDefaultEditing();
+  var style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POLYGON];
   };
@@ -256,7 +256,7 @@ ExtentInteraction.getDefaultExtentStyleFunction_ = function() {
  * @private
  */
 ExtentInteraction.getDefaultPointerStyleFunction_ = function() {
-  var style = _ol_style_Style_.createDefaultEditing();
+  var style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
   };

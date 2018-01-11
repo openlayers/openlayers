@@ -11,7 +11,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
   source: new OSM()
@@ -19,7 +19,7 @@ var raster = new TileLayer({
 
 var vector = new VectorLayer({
   source: new VectorSource(),
-  style: new _ol_style_Style_({
+  style: new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(255, 255, 255, 0.2)'
     }),

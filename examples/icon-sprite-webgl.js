@@ -5,7 +5,7 @@ import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var iconInfo = [{
@@ -65,7 +65,7 @@ for (i = 0; i < featureCount; ++i) {
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
   feature = new Feature(geometry);
   feature.setStyle(
-      new _ol_style_Style_({
+      new Style({
         image: icons[i % (iconCount - 1)]
       })
   );
@@ -101,7 +101,7 @@ new VectorLayer({
   source: new VectorSource({
     features: overlayFeatures
   }),
-  style: new _ol_style_Style_({
+  style: new Style({
     image: icons[iconCount - 1]
   })
 });

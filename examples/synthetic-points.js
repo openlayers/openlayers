@@ -8,7 +8,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var count = 20000;
@@ -24,14 +24,14 @@ for (var i = 0; i < count; ++i) {
 }
 
 var styles = {
-  '10': new _ol_style_Style_({
+  '10': new Style({
     image: new _ol_style_Circle_({
       radius: 5,
       fill: new _ol_style_Fill_({color: '#666666'}),
       stroke: new _ol_style_Stroke_({color: '#bada55', width: 1})
     })
   }),
-  '20': new _ol_style_Style_({
+  '20': new Style({
     image: new _ol_style_Circle_({
       radius: 10,
       fill: new _ol_style_Fill_({color: '#666666'}),
@@ -100,7 +100,7 @@ var stroke = new _ol_style_Stroke_({
   color: 'rgba(255,255,0,0.9)',
   width: 3
 });
-var style = new _ol_style_Style_({
+var style = new Style({
   stroke: stroke,
   image: new _ol_style_Circle_({
     radius: 10,

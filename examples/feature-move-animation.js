@@ -11,7 +11,7 @@ import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
@@ -85,18 +85,18 @@ var endMarker = new Feature({
 });
 
 var styles = {
-  'route': new _ol_style_Style_({
+  'route': new Style({
     stroke: new _ol_style_Stroke_({
       width: 6, color: [237, 212, 0, 0.8]
     })
   }),
-  'icon': new _ol_style_Style_({
+  'icon': new Style({
     image: new _ol_style_Icon_({
       anchor: [0.5, 1],
       src: 'data/icon.png'
     })
   }),
-  'geoMarker': new _ol_style_Style_({
+  'geoMarker': new Style({
     image: new _ol_style_Circle_({
       radius: 7,
       snapToPixel: false,

@@ -4,7 +4,7 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 
 describe('layer clipping', function() {
@@ -69,7 +69,7 @@ describe('layer clipping', function() {
         [[[80, -40], [120, 0], [80, 40], [40, 0], [80, -40]]]
       ]).transform('EPSG:4326', 'EPSG:3857');
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           width: 2,
           color: 'blue'

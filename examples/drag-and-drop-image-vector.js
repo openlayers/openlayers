@@ -14,11 +14,11 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var defaultStyle = {
-  'Point': new _ol_style_Style_({
+  'Point': new Style({
     image: new _ol_style_Circle_({
       fill: new _ol_style_Fill_({
         color: 'rgba(255,255,0,0.5)'
@@ -30,13 +30,13 @@ var defaultStyle = {
       })
     })
   }),
-  'LineString': new _ol_style_Style_({
+  'LineString': new Style({
     stroke: new _ol_style_Stroke_({
       color: '#f00',
       width: 3
     })
   }),
-  'Polygon': new _ol_style_Style_({
+  'Polygon': new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(0,255,255,0.5)'
     }),
@@ -45,7 +45,7 @@ var defaultStyle = {
       width: 1
     })
   }),
-  'MultiPoint': new _ol_style_Style_({
+  'MultiPoint': new Style({
     image: new _ol_style_Circle_({
       fill: new _ol_style_Fill_({
         color: 'rgba(255,0,255,0.5)'
@@ -57,13 +57,13 @@ var defaultStyle = {
       })
     })
   }),
-  'MultiLineString': new _ol_style_Style_({
+  'MultiLineString': new Style({
     stroke: new _ol_style_Stroke_({
       color: '#0f0',
       width: 3
     })
   }),
-  'MultiPolygon': new _ol_style_Style_({
+  'MultiPolygon': new Style({
     fill: new _ol_style_Fill_({
       color: 'rgba(0,0,255,0.5)'
     }),

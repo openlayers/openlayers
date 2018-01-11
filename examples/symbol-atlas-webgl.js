@@ -9,7 +9,7 @@ import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var atlasManager = new AtlasManager({
   // we increase the initial size so that all symbols fit into
@@ -92,7 +92,7 @@ for (i = 0; i < featureCount; ++i) {
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
   feature = new Feature(geometry);
   feature.setStyle(
-      new _ol_style_Style_({
+      new Style({
         image: symbols[i % symbolCount]
       })
   );

@@ -4,7 +4,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
@@ -48,7 +48,7 @@ describe('ol.rendering.style.LineString', function() {
             [[-20, 20], [15, 20]]
         )
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: new _ol_style_Stroke_({color: '#DE213A', width: 3})
       }));
       vectorSource.addFeature(feature);
@@ -58,7 +58,7 @@ describe('ol.rendering.style.LineString', function() {
             [[-20, 15], [15, 15]]
         )
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: new _ol_style_Stroke_({color: '#9696EB', width: 1})
       }));
       vectorSource.addFeature(feature);
@@ -68,9 +68,9 @@ describe('ol.rendering.style.LineString', function() {
             [[-20, 10], [15, 10]]
         )
       });
-      feature.setStyle([new _ol_style_Style_({
+      feature.setStyle([new Style({
         stroke: new _ol_style_Stroke_({color: '#F2F211', width: 5})
-      }), new _ol_style_Style_({
+      }), new Style({
         stroke: new _ol_style_Stroke_({color: '#292921', width: 1})
       })]);
       vectorSource.addFeature(feature);
@@ -80,7 +80,7 @@ describe('ol.rendering.style.LineString', function() {
             [[-20, -20], [-2, 0], [15, -20]]
         )
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: new _ol_style_Stroke_({
           color: '#000000',
           width: 2,
@@ -96,7 +96,7 @@ describe('ol.rendering.style.LineString', function() {
             [[-20, -15], [-2, 5], [15, -15]]
         )
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: new _ol_style_Stroke_({
           color: '#000000',
           width: 2,

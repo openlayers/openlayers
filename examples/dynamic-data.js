@@ -7,7 +7,7 @@ import OSM from '../src/ol/source/OSM.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var map = new Map({
@@ -23,7 +23,7 @@ var map = new Map({
   })
 });
 
-var imageStyle = new _ol_style_Style_({
+var imageStyle = new Style({
   image: new _ol_style_Circle_({
     radius: 5,
     snapToPixel: false,
@@ -32,7 +32,7 @@ var imageStyle = new _ol_style_Style_({
   })
 });
 
-var headInnerImageStyle = new _ol_style_Style_({
+var headInnerImageStyle = new Style({
   image: new _ol_style_Circle_({
     radius: 2,
     snapToPixel: false,
@@ -40,7 +40,7 @@ var headInnerImageStyle = new _ol_style_Style_({
   })
 });
 
-var headOuterImageStyle = new _ol_style_Style_({
+var headOuterImageStyle = new Style({
   image: new _ol_style_Circle_({
     radius: 5,
     snapToPixel: false,

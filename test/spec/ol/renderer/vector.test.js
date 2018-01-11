@@ -11,7 +11,7 @@ import _ol_renderer_vector_ from '../../../../src/ol/renderer/vector.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../../../../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import Feature from '../../../../src/ol/Feature.js';
 
 
@@ -27,7 +27,7 @@ describe('ol.renderer.vector', function() {
       iconStyle = new _ol_style_Icon_({
         src: 'http://example.com/icon.png'
       });
-      style = new _ol_style_Style_({
+      style = new Style({
         image: iconStyle,
         fill: new _ol_style_Fill_({}),
         stroke: new _ol_style_Stroke_({})

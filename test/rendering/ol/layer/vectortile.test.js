@@ -10,7 +10,7 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -104,7 +104,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.addLayer(new VectorLayer({
         zIndex: 1,
         source: vectorSource,
-        style: new _ol_style_Style_({
+        style: new Style({
           image: new _ol_style_Circle_({
             radius: 10,
             fill: new _ol_style_Fill_({
@@ -143,7 +143,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       var style = function(feature, resolution) {
         var geom = feature.getGeometry();
         if (geom.getType() == 'Point') {
-          return new _ol_style_Style_({
+          return new Style({
             image: new _ol_style_Circle_({
               radius: 7,
               fill: new _ol_style_Fill_({

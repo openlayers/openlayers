@@ -10,7 +10,7 @@ import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.Text', function() {
@@ -52,7 +52,7 @@ describe('ol.rendering.style.Text', function() {
       feature = new Feature({
         geometry: new Point([-20, 18])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           scale: scale,
           text: 'hello',
@@ -64,7 +64,7 @@ describe('ol.rendering.style.Text', function() {
       feature = new Feature({
         geometry: new Point([-10, 0])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           scale: scale,
           text: 'hello',
@@ -83,7 +83,7 @@ describe('ol.rendering.style.Text', function() {
       feature = new Feature({
         geometry: new Point([20, 10])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           scale: scale,
           rotateWithView: true,
@@ -107,7 +107,7 @@ describe('ol.rendering.style.Text', function() {
     function createLineString(coords, textAlign, maxAngle, strokeColor, strokeWidth, scale) {
       var geom = new LineString();
       geom.setFlatCoordinates('XY', coords);
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           color: 'red'
         }),
@@ -176,7 +176,7 @@ describe('ol.rendering.style.Text', function() {
       createMap('canvas');
       var feature;
       feature = new Feature(new Point([25, 0]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world\nleft',
           font: 'bold 14px sans-serif',
@@ -185,7 +185,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       feature = new Feature(new Point([-25, 0]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world\nright',
           font: 'bold 14px sans-serif',
@@ -194,7 +194,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       feature = new Feature(new Point([0, 25]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world\nbottom',
           font: 'bold 14px sans-serif',
@@ -203,7 +203,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       feature = new Feature(new Point([0, -25]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'top\nHello world',
           font: 'bold 14px sans-serif',
@@ -218,7 +218,7 @@ describe('ol.rendering.style.Text', function() {
       createMap('canvas');
       var feature;
       feature = new Feature(new Point([0, 0]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world\nleft',
           font: 'bold 14px sans-serif',
@@ -228,7 +228,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       feature = new Feature(new Point([0, 0]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world\nright',
           font: 'bold 14px sans-serif',
@@ -238,7 +238,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       feature = new Feature(new Point([0, 0]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world\nbottom',
           font: 'bold 14px sans-serif',
@@ -248,7 +248,7 @@ describe('ol.rendering.style.Text', function() {
       }));
       vectorSource.addFeature(feature);
       feature = new Feature(new Point([0, 0]));
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'top\nHello world',
           font: 'bold 14px sans-serif',
@@ -273,7 +273,7 @@ describe('ol.rendering.style.Text', function() {
       line.translate(0, -100);
       geom.appendLineString(line);
       var feature = new Feature(geom);
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world',
           placement: 'line',
@@ -290,7 +290,7 @@ describe('ol.rendering.style.Text', function() {
       var geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
       var feature = new Feature(geom);
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world',
           font: 'bold 24px sans-serif',
@@ -316,7 +316,7 @@ describe('ol.rendering.style.Text', function() {
       geom.translate(0, -60);
       multiPolygon.appendPolygon(geom);
       var feature = new Feature(multiPolygon);
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         text: new _ol_style_Text_({
           text: 'Hello world',
           font: 'bold 24px sans-serif',

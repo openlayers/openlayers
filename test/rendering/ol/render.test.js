@@ -7,7 +7,7 @@ import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js'
 import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../../../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../src/ol/style/Style.js';
+import Style from '../../../src/ol/style/Style.js';
 
 function getContext() {
   return document.createElement('canvas').getContext('2d');
@@ -33,7 +33,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         image: new _ol_style_Circle_({
           fill: new _ol_style_Fill_({
             color: 'green'
@@ -57,7 +57,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           color: 'red',
           width: 14
@@ -81,7 +81,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           lineCap: 'butt',
           color: 'red',
@@ -106,7 +106,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           lineJoin: 'bevel',
           color: 'red',
@@ -131,7 +131,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           color: 'blue',
           width: 8
@@ -160,7 +160,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           lineDash: [10, 5]
         })
@@ -185,7 +185,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
+      var style = new Style({
         stroke: new _ol_style_Stroke_({
           lineDash: [10, 5],
           lineDashOffset: 5

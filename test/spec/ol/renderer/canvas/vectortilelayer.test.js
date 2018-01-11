@@ -16,7 +16,7 @@ import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
+import Style from '../../../../../src/ol/style/Style.js';
 import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../../src/ol/tilegrid.js';
 
@@ -45,12 +45,12 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         }),
         target: target
       });
-      layerStyle = [new _ol_style_Style_({
+      layerStyle = [new Style({
         text: new _ol_style_Text_({
           text: 'layer'
         })
       })];
-      var featureStyle = [new _ol_style_Style_({
+      var featureStyle = [new Style({
         text: new _ol_style_Text_({
           text: 'feature'
         })
@@ -133,7 +133,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('renders replays with custom renderers as direct replays', function() {
       layer.renderMode_ = 'image';
-      layer.setStyle(new _ol_style_Style_({
+      layer.setStyle(new Style({
         renderer: function() {}
       }));
       var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
@@ -216,7 +216,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('works for multiple layers that use the same source', function() {
       var layer2 = new VectorTileLayer({
         source: source,
-        style: new _ol_style_Style_({
+        style: new Style({
           text: new _ol_style_Text_({
             text: 'layer2'
           })

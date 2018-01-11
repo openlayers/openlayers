@@ -25,7 +25,7 @@ import _ol_style_Icon_ from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
 import _ol_style_Stroke_ from '../style/Stroke.js';
-import _ol_style_Style_ from '../style/Style.js';
+import Style from '../style/Style.js';
 import _ol_style_Text_ from '../style/Text.js';
 import _ol_xml_ from '../xml.js';
 
@@ -253,7 +253,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Style}
    * @private
    */
-  KML.DEFAULT_STYLE_ = new _ol_style_Style_({
+  KML.DEFAULT_STYLE_ = new Style({
     fill: KML.DEFAULT_FILL_STYLE_,
     image: KML.DEFAULT_IMAGE_STYLE_,
     text: KML.DEFAULT_TEXT_STYLE_,
@@ -325,7 +325,7 @@ KML.createNameStyleFunction_ = function(foundStyle, name) {
   textStyle.setOffsetY(textOffset[1]);
   textStyle.setTextAlign(textAlign);
 
-  var nameStyle = new _ol_style_Style_({
+  var nameStyle = new Style({
     text: textStyle
   });
   return nameStyle;
@@ -1042,7 +1042,7 @@ KML.readStyle_ = function(node, objectStack) {
   if (outline !== undefined && !outline) {
     strokeStyle = null;
   }
-  return [new _ol_style_Style_({
+  return [new Style({
     fill: fillStyle,
     image: imageStyle,
     stroke: strokeStyle,

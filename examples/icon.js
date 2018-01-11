@@ -8,7 +8,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var iconFeature = new Feature({
@@ -18,7 +18,7 @@ var iconFeature = new Feature({
   rainfall: 500
 });
 
-var iconStyle = new _ol_style_Style_({
+var iconStyle = new Style({
   image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',

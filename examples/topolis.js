@@ -13,7 +13,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
@@ -28,7 +28,7 @@ var nodes = new VectorSource({wrapX: false});
 var nodesLayer = new VectorLayer({
   source: nodes,
   style: function(f) {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       image: new _ol_style_Circle_({
         radius: 8,
         fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.2)'}),
@@ -51,7 +51,7 @@ var edges = new VectorSource({wrapX: false});
 var edgesLayer = new VectorLayer({
   source: edges,
   style: function(f) {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       stroke: new _ol_style_Stroke_({
         color: 'blue',
         width: 1
@@ -73,7 +73,7 @@ var faces = new VectorSource({wrapX: false});
 var facesLayer = new VectorLayer({
   source: faces,
   style: function(f) {
-    var style = new _ol_style_Style_({
+    var style = new Style({
       stroke: new _ol_style_Stroke_({
         color: 'black',
         width: 1

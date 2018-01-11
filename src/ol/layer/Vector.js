@@ -6,7 +6,7 @@ import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
 import _ol_layer_VectorRenderType_ from '../layer/VectorRenderType.js';
 import _ol_obj_ from '../obj.js';
-import _ol_style_Style_ from '../style/Style.js';
+import Style from '../style/Style.js';
 
 
 /**
@@ -207,9 +207,9 @@ VectorLayer.prototype.setRenderOrder = function(renderOrder) {
  * @api
  */
 VectorLayer.prototype.setStyle = function(style) {
-  this.style_ = style !== undefined ? style : _ol_style_Style_.defaultFunction;
+  this.style_ = style !== undefined ? style : Style.defaultFunction;
   this.styleFunction_ = style === null ?
-    undefined : _ol_style_Style_.createFunction(this.style_);
+    undefined : Style.createFunction(this.style_);
   this.changed();
 };
 

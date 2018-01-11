@@ -8,13 +8,13 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var vectorSource = new VectorSource();
 var vector = new VectorLayer({
   source: vectorSource,
-  style: new _ol_style_Style_({
+  style: new Style({
     stroke: new _ol_style_Stroke_({
       color: 'rgba(0, 0, 255, 1.0)',
       width: 2

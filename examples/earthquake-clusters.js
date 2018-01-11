@@ -13,7 +13,7 @@ import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 import _ol_style_Text_ from '../src/ol/style/Text.js';
 
 
@@ -43,7 +43,7 @@ function createEarthquakeStyle(feature) {
   var magnitude = parseFloat(name.substr(2));
   var radius = 5 + 20 * (magnitude - 5);
 
-  return new _ol_style_Style_({
+  return new Style({
     geometry: feature.getGeometry(),
     image: new _ol_style_RegularShape_({
       radius1: radius,
@@ -85,7 +85,7 @@ function styleFunction(feature, resolution) {
   var style;
   var size = feature.get('features').length;
   if (size > 1) {
-    style = new _ol_style_Style_({
+    style = new Style({
       image: new _ol_style_Circle_({
         radius: feature.get('radius'),
         fill: new _ol_style_Fill_({
@@ -106,7 +106,7 @@ function styleFunction(feature, resolution) {
 }
 
 function selectStyleFunction(feature) {
-  var styles = [new _ol_style_Style_({
+  var styles = [new Style({
     image: new _ol_style_Circle_({
       radius: feature.get('radius'),
       fill: invisibleFill

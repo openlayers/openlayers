@@ -8,7 +8,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var styleCache = {};
@@ -21,7 +21,7 @@ var styleFunction = function(feature) {
   var radius = 5 + 20 * (magnitude - 5);
   var style = styleCache[radius];
   if (!style) {
-    style = new _ol_style_Style_({
+    style = new Style({
       image: new _ol_style_Circle_({
         radius: radius,
         fill: new _ol_style_Fill_({

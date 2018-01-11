@@ -5,7 +5,7 @@ import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 import _ol_style_Stroke_ from '../../../../src/ol/style/Stroke.js';
 
 
@@ -53,7 +53,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: fill
       }));
       vectorSource.addFeature(feature);
@@ -66,7 +66,7 @@ describe('ol.rendering.style.Polygon', function() {
 
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: fill
       }));
       vectorSource.addFeature(feature);
@@ -80,7 +80,7 @@ describe('ol.rendering.style.Polygon', function() {
 
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: fill
       }));
       vectorSource.addFeature(feature);
@@ -118,7 +118,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: stroke
       }));
       vectorSource.addFeature(feature);
@@ -131,7 +131,7 @@ describe('ol.rendering.style.Polygon', function() {
 
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: stroke
       }));
       vectorSource.addFeature(feature);
@@ -145,7 +145,7 @@ describe('ol.rendering.style.Polygon', function() {
 
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         stroke: stroke
       }));
       vectorSource.addFeature(feature);
@@ -178,7 +178,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-20, 10], [-20, 20], [-0, 20], [-0, 10], [-20, 10]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: '#E31E10'}),
         zIndex: 2
       }));
@@ -190,7 +190,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-15, 5], [-15, 15], [5, 15], [5, 5], [-15, 5]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: '#1A5E42'}),
         zIndex: 3
       }));
@@ -202,7 +202,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-10, 0], [-10, 10], [10, 10], [10, 0], [-10, 0]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: '#DEDE21'}),
         zIndex: 1
       }));
@@ -235,7 +235,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: '#9696EB'}),
         stroke: new _ol_style_Stroke_({color: '#9696EB', width: 1})
       }));
@@ -247,7 +247,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[0, 10], [0, 20], [15, 20], [15, 10], [0, 10]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.1)'}),
         stroke: new _ol_style_Stroke_({color: '#DE213A', width: 3})
       }));
@@ -259,7 +259,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-20, -20], [-20, 5], [15, 5], [15, -20], [-20, -20]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: 'rgba(18, 204, 105, 0.3)'}),
         stroke: new _ol_style_Stroke_({color: '#032E17', width: 2})
       }));
@@ -321,7 +321,7 @@ describe('ol.rendering.style.Polygon', function() {
           [[-20, -20], [-20, 20], [18, 20], [-20, -20]]
         ])
       });
-      feature.setStyle(new _ol_style_Style_({
+      feature.setStyle(new Style({
         fill: new _ol_style_Fill_({color: createPattern()}),
         stroke: new _ol_style_Stroke_({color: createRainbowGradient(), width: 3})
       }));

@@ -6,7 +6,7 @@ import {fromLonLat} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var key = 'vector-tiles-5eJz6JX';
 
@@ -16,7 +16,7 @@ var roadColor = {
   'minor_road': '#ccb',
   'highway': '#f39'
 };
-var buildingStyle = new _ol_style_Style_({
+var buildingStyle = new Style({
   fill: new _ol_style_Fill_({
     color: '#666',
     opacity: 0.4
@@ -26,7 +26,7 @@ var buildingStyle = new _ol_style_Style_({
     width: 1
   })
 });
-var waterStyle = new _ol_style_Style_({
+var waterStyle = new Style({
   fill: new _ol_style_Fill_({
     color: '#9db9e8'
   })
@@ -46,7 +46,7 @@ var roadStyle = function(feature) {
       color = roadColor[kind];
       width = kind == 'highway' ? 1.5 : 1;
     }
-    style = new _ol_style_Style_({
+    style = new Style({
       stroke: new _ol_style_Stroke_({
         color: color,
         width: width

@@ -8,7 +8,7 @@ import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var canvas = document.createElement('canvas');
 var context = canvas.getContext('2d');
@@ -58,7 +58,7 @@ var pattern = (function() {
 
 // Generate style for gradient or pattern fill
 var fill = new _ol_style_Fill_();
-var style = new _ol_style_Style_({
+var style = new Style({
   fill: fill,
   stroke: new _ol_style_Stroke_({
     color: '#333',

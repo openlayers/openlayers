@@ -8,7 +8,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 var map = new Map({
   layers: [
@@ -25,7 +25,7 @@ var map = new Map({
   })
 });
 
-var style = new _ol_style_Style_({
+var style = new Style({
   stroke: new _ol_style_Stroke_({
     color: '#EAE911',
     width: 2

@@ -8,11 +8,11 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 function createStyle(src, img) {
-  return new _ol_style_Style_({
+  return new Style({
     image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
       anchor: [0.5, 0.96],
       crossOrigin: 'anonymous',

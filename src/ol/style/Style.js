@@ -18,7 +18,7 @@ import _ol_style_Stroke_ from '../style/Stroke.js';
  * @param {olx.style.StyleOptions=} opt_options Style options.
  * @api
  */
-var _ol_style_Style_ = function(opt_options) {
+var Style = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -32,7 +32,7 @@ var _ol_style_Style_ = function(opt_options) {
    * @private
    * @type {!ol.StyleGeometryFunction}
    */
-  this.geometryFunction_ = _ol_style_Style_.defaultGeometryFunction;
+  this.geometryFunction_ = Style.defaultGeometryFunction;
 
   if (options.geometry !== undefined) {
     this.setGeometry(options.geometry);
@@ -82,12 +82,12 @@ var _ol_style_Style_ = function(opt_options) {
  * @return {ol.style.Style} The cloned style.
  * @api
  */
-_ol_style_Style_.prototype.clone = function() {
+Style.prototype.clone = function() {
   var geometry = this.getGeometry();
   if (geometry && geometry.clone) {
     geometry = geometry.clone();
   }
-  return new _ol_style_Style_({
+  return new Style({
     geometry: geometry,
     fill: this.getFill() ? this.getFill().clone() : undefined,
     image: this.getImage() ? this.getImage().clone() : undefined,
@@ -104,7 +104,7 @@ _ol_style_Style_.prototype.clone = function() {
  * @return {ol.StyleRenderFunction|null} Custom renderer function.
  * @api
  */
-_ol_style_Style_.prototype.getRenderer = function() {
+Style.prototype.getRenderer = function() {
   return this.renderer_;
 };
 
@@ -115,7 +115,7 @@ _ol_style_Style_.prototype.getRenderer = function() {
  * @param {ol.StyleRenderFunction|null} renderer Custom renderer function.
  * @api
  */
-_ol_style_Style_.prototype.setRenderer = function(renderer) {
+Style.prototype.setRenderer = function(renderer) {
   this.renderer_ = renderer;
 };
 
@@ -127,7 +127,7 @@ _ol_style_Style_.prototype.setRenderer = function(renderer) {
  * be rendered with this style.
  * @api
  */
-_ol_style_Style_.prototype.getGeometry = function() {
+Style.prototype.getGeometry = function() {
   return this.geometry_;
 };
 
@@ -138,7 +138,7 @@ _ol_style_Style_.prototype.getGeometry = function() {
  * and returns the geometry to render instead of the feature's geometry.
  * @api
  */
-_ol_style_Style_.prototype.getGeometryFunction = function() {
+Style.prototype.getGeometryFunction = function() {
   return this.geometryFunction_;
 };
 
@@ -148,7 +148,7 @@ _ol_style_Style_.prototype.getGeometryFunction = function() {
  * @return {ol.style.Fill} Fill style.
  * @api
  */
-_ol_style_Style_.prototype.getFill = function() {
+Style.prototype.getFill = function() {
   return this.fill_;
 };
 
@@ -158,7 +158,7 @@ _ol_style_Style_.prototype.getFill = function() {
  * @param {ol.style.Fill} fill Fill style.
  * @api
  */
-_ol_style_Style_.prototype.setFill = function(fill) {
+Style.prototype.setFill = function(fill) {
   this.fill_ = fill;
 };
 
@@ -168,7 +168,7 @@ _ol_style_Style_.prototype.setFill = function(fill) {
  * @return {ol.style.Image} Image style.
  * @api
  */
-_ol_style_Style_.prototype.getImage = function() {
+Style.prototype.getImage = function() {
   return this.image_;
 };
 
@@ -178,7 +178,7 @@ _ol_style_Style_.prototype.getImage = function() {
  * @param {ol.style.Image} image Image style.
  * @api
  */
-_ol_style_Style_.prototype.setImage = function(image) {
+Style.prototype.setImage = function(image) {
   this.image_ = image;
 };
 
@@ -188,7 +188,7 @@ _ol_style_Style_.prototype.setImage = function(image) {
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
-_ol_style_Style_.prototype.getStroke = function() {
+Style.prototype.getStroke = function() {
   return this.stroke_;
 };
 
@@ -198,7 +198,7 @@ _ol_style_Style_.prototype.getStroke = function() {
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
  */
-_ol_style_Style_.prototype.setStroke = function(stroke) {
+Style.prototype.setStroke = function(stroke) {
   this.stroke_ = stroke;
 };
 
@@ -208,7 +208,7 @@ _ol_style_Style_.prototype.setStroke = function(stroke) {
  * @return {ol.style.Text} Text style.
  * @api
  */
-_ol_style_Style_.prototype.getText = function() {
+Style.prototype.getText = function() {
   return this.text_;
 };
 
@@ -218,7 +218,7 @@ _ol_style_Style_.prototype.getText = function() {
  * @param {ol.style.Text} text Text style.
  * @api
  */
-_ol_style_Style_.prototype.setText = function(text) {
+Style.prototype.setText = function(text) {
   this.text_ = text;
 };
 
@@ -228,7 +228,7 @@ _ol_style_Style_.prototype.setText = function(text) {
  * @return {number|undefined} ZIndex.
  * @api
  */
-_ol_style_Style_.prototype.getZIndex = function() {
+Style.prototype.getZIndex = function() {
   return this.zIndex_;
 };
 
@@ -241,7 +241,7 @@ _ol_style_Style_.prototype.getZIndex = function() {
  *     for this style.
  * @api
  */
-_ol_style_Style_.prototype.setGeometry = function(geometry) {
+Style.prototype.setGeometry = function(geometry) {
   if (typeof geometry === 'function') {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
@@ -249,7 +249,7 @@ _ol_style_Style_.prototype.setGeometry = function(geometry) {
       return /** @type {ol.geom.Geometry} */ (feature.get(geometry));
     };
   } else if (!geometry) {
-    this.geometryFunction_ = _ol_style_Style_.defaultGeometryFunction;
+    this.geometryFunction_ = Style.defaultGeometryFunction;
   } else if (geometry !== undefined) {
     this.geometryFunction_ = function() {
       return /** @type {ol.geom.Geometry} */ (geometry);
@@ -265,7 +265,7 @@ _ol_style_Style_.prototype.setGeometry = function(geometry) {
  * @param {number|undefined} zIndex ZIndex.
  * @api
  */
-_ol_style_Style_.prototype.setZIndex = function(zIndex) {
+Style.prototype.setZIndex = function(zIndex) {
   this.zIndex_ = zIndex;
 };
 
@@ -278,7 +278,7 @@ _ol_style_Style_.prototype.setZIndex = function(zIndex) {
  *     A style function, a single style, or an array of styles.
  * @return {ol.StyleFunction} A style function.
  */
-_ol_style_Style_.createFunction = function(obj) {
+Style.createFunction = function(obj) {
   var styleFunction;
 
   if (typeof obj === 'function') {
@@ -291,7 +291,7 @@ _ol_style_Style_.createFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(obj instanceof _ol_style_Style_,
+      assert(obj instanceof Style,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
@@ -307,7 +307,7 @@ _ol_style_Style_.createFunction = function(obj) {
  * @type {Array.<ol.style.Style>}
  * @private
  */
-_ol_style_Style_.default_ = null;
+Style.default_ = null;
 
 
 /**
@@ -315,13 +315,13 @@ _ol_style_Style_.default_ = null;
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
-_ol_style_Style_.defaultFunction = function(feature, resolution) {
+Style.defaultFunction = function(feature, resolution) {
   // We don't use an immediately-invoked function
   // and a closure so we don't get an error at script evaluation time in
   // browsers that do not support Canvas. (ol.style.Circle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
-  if (!_ol_style_Style_.default_) {
+  if (!Style.default_) {
     var fill = new _ol_style_Fill_({
       color: 'rgba(255,255,255,0.4)'
     });
@@ -329,8 +329,8 @@ _ol_style_Style_.defaultFunction = function(feature, resolution) {
       color: '#3399CC',
       width: 1.25
     });
-    _ol_style_Style_.default_ = [
-      new _ol_style_Style_({
+    Style.default_ = [
+      new Style({
         image: new _ol_style_Circle_({
           fill: fill,
           stroke: stroke,
@@ -341,7 +341,7 @@ _ol_style_Style_.defaultFunction = function(feature, resolution) {
       })
     ];
   }
-  return _ol_style_Style_.default_;
+  return Style.default_;
 };
 
 
@@ -349,14 +349,14 @@ _ol_style_Style_.defaultFunction = function(feature, resolution) {
  * Default styles for editing features.
  * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
  */
-_ol_style_Style_.createDefaultEditing = function() {
+Style.createDefaultEditing = function() {
   /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
   var styles = {};
   var white = [255, 255, 255, 1];
   var blue = [0, 153, 255, 1];
   var width = 3;
   styles[GeometryType.POLYGON] = [
-    new _ol_style_Style_({
+    new Style({
       fill: new _ol_style_Fill_({
         color: [255, 255, 255, 0.5]
       })
@@ -366,13 +366,13 @@ _ol_style_Style_.createDefaultEditing = function() {
       styles[GeometryType.POLYGON];
 
   styles[GeometryType.LINE_STRING] = [
-    new _ol_style_Style_({
+    new Style({
       stroke: new _ol_style_Stroke_({
         color: white,
         width: width + 2
       })
     }),
-    new _ol_style_Style_({
+    new Style({
       stroke: new _ol_style_Stroke_({
         color: blue,
         width: width
@@ -389,7 +389,7 @@ _ol_style_Style_.createDefaultEditing = function() {
 
 
   styles[GeometryType.POINT] = [
-    new _ol_style_Style_({
+    new Style({
       image: new _ol_style_Circle_({
         radius: width * 2,
         fill: new _ol_style_Fill_({
@@ -422,7 +422,7 @@ _ol_style_Style_.createDefaultEditing = function() {
  *     for.
  * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
-_ol_style_Style_.defaultGeometryFunction = function(feature) {
+Style.defaultGeometryFunction = function(feature) {
   return feature.getGeometry();
 };
-export default _ol_style_Style_;
+export default Style;

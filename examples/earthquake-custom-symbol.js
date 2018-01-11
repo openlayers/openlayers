@@ -10,7 +10,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Icon_ from '../src/ol/style/Icon.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var symbol = [[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]];
@@ -35,12 +35,12 @@ var styleFunction = function(feature) {
     var vectorContext = _ol_render_.toContext(
         /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
         {size: [size, size], pixelRatio: 1});
-    vectorContext.setStyle(new _ol_style_Style_({
+    vectorContext.setStyle(new Style({
       fill: new _ol_style_Fill_({color: 'rgba(255, 153, 0, 0.4)'}),
       stroke: new _ol_style_Stroke_({color: 'rgba(255, 204, 0, 0.2)', width: 2})
     }));
     vectorContext.drawGeometry(new Polygon([symbol.map(scaleFunction)]));
-    style = new _ol_style_Style_({
+    style = new Style({
       image: new _ol_style_Icon_({
         img: canvas,
         imgSize: [size, size],

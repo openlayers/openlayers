@@ -1,7 +1,7 @@
 import Feature from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
 import _ol_obj_ from '../../../src/ol/obj.js';
-import _ol_style_Style_ from '../../../src/ol/style/Style.js';
+import Style from '../../../src/ol/style/Style.js';
 
 
 describe('ol.Feature', function() {
@@ -298,7 +298,7 @@ describe('ol.Feature', function() {
 
   describe('#setStyle()', function() {
 
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     var styleFunction = function(feature, resolution) {
       return resolution;
@@ -355,7 +355,7 @@ describe('ol.Feature', function() {
 
   describe('#getStyle()', function() {
 
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     var styleFunction = function(resolution) {
       return null;
@@ -403,7 +403,7 @@ describe('ol.Feature', function() {
       feature.setGeometryName('geom');
       var geometry = new Point([1, 2]);
       feature.setGeometry(geometry);
-      var style = new _ol_style_Style_({});
+      var style = new Style({});
       feature.setStyle(style);
       feature.set('barkey', 'barval');
 
@@ -448,7 +448,7 @@ describe('ol.Feature', function() {
 });
 
 describe('ol.Feature.createStyleFunction()', function() {
-  var style = new _ol_style_Style_();
+  var style = new Style();
 
   it('creates a feature style function from a single style', function() {
     var styleFunction = Feature.createStyleFunction(style);

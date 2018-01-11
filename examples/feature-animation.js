@@ -12,7 +12,7 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var map = new Map({
@@ -66,7 +66,7 @@ function flash(feature) {
     var radius = easeOut(elapsedRatio) * 25 + 5;
     var opacity = easeOut(1 - elapsedRatio);
 
-    var style = new _ol_style_Style_({
+    var style = new Style({
       image: new _ol_style_Circle_({
         radius: radius,
         snapToPixel: false,

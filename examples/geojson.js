@@ -11,7 +11,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import _ol_style_Circle_ from '../src/ol/style/Circle.js';
 import _ol_style_Fill_ from '../src/ol/style/Fill.js';
 import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var image = new _ol_style_Circle_({
@@ -21,25 +21,25 @@ var image = new _ol_style_Circle_({
 });
 
 var styles = {
-  'Point': new _ol_style_Style_({
+  'Point': new Style({
     image: image
   }),
-  'LineString': new _ol_style_Style_({
+  'LineString': new Style({
     stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 1
     })
   }),
-  'MultiLineString': new _ol_style_Style_({
+  'MultiLineString': new Style({
     stroke: new _ol_style_Stroke_({
       color: 'green',
       width: 1
     })
   }),
-  'MultiPoint': new _ol_style_Style_({
+  'MultiPoint': new Style({
     image: image
   }),
-  'MultiPolygon': new _ol_style_Style_({
+  'MultiPolygon': new Style({
     stroke: new _ol_style_Stroke_({
       color: 'yellow',
       width: 1
@@ -48,7 +48,7 @@ var styles = {
       color: 'rgba(255, 255, 0, 0.1)'
     })
   }),
-  'Polygon': new _ol_style_Style_({
+  'Polygon': new Style({
     stroke: new _ol_style_Stroke_({
       color: 'blue',
       lineDash: [4],
@@ -58,7 +58,7 @@ var styles = {
       color: 'rgba(0, 0, 255, 0.1)'
     })
   }),
-  'GeometryCollection': new _ol_style_Style_({
+  'GeometryCollection': new Style({
     stroke: new _ol_style_Stroke_({
       color: 'magenta',
       width: 2
@@ -74,7 +74,7 @@ var styles = {
       })
     })
   }),
-  'Circle': new _ol_style_Style_({
+  'Circle': new Style({
     stroke: new _ol_style_Stroke_({
       color: 'red',
       width: 2

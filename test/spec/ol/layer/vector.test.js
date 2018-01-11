@@ -1,14 +1,14 @@
 import Layer from '../../../../src/ol/layer/Layer.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
+import Style from '../../../../src/ol/style/Style.js';
 
 
 describe('ol.layer.Vector', function() {
 
   describe('constructor', function() {
     var source = new VectorSource();
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('creates a new layer', function() {
       var layer = new VectorLayer({source: source});
@@ -58,7 +58,7 @@ describe('ol.layer.Vector', function() {
       layer = new VectorLayer({
         source: new VectorSource()
       });
-      style = new _ol_style_Style_();
+      style = new Style();
     });
 
     it('allows the style to be set after construction', function() {
@@ -74,10 +74,10 @@ describe('ol.layer.Vector', function() {
     });
 
     it('updates the internal style function', function() {
-      expect(layer.getStyleFunction()).to.be(_ol_style_Style_.defaultFunction);
+      expect(layer.getStyleFunction()).to.be(Style.defaultFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          _ol_style_Style_.defaultFunction);
+          Style.defaultFunction);
     });
 
     it('allows setting an null style', function() {
@@ -89,8 +89,8 @@ describe('ol.layer.Vector', function() {
     it('sets the default style when passing undefined', function() {
       layer.setStyle(style);
       layer.setStyle(undefined);
-      expect(layer.getStyle()).to.be(_ol_style_Style_.defaultFunction);
-      expect(layer.getStyleFunction()).to.be(_ol_style_Style_.defaultFunction);
+      expect(layer.getStyle()).to.be(Style.defaultFunction);
+      expect(layer.getStyleFunction()).to.be(Style.defaultFunction);
     });
 
   });
@@ -98,14 +98,14 @@ describe('ol.layer.Vector', function() {
   describe('#getStyle()', function() {
 
     var source = new VectorSource();
-    var style = new _ol_style_Style_();
+    var style = new Style();
 
     it('returns what is provided to setStyle', function() {
       var layer = new VectorLayer({
         source: source
       });
 
-      expect(layer.getStyle()).to.be(_ol_style_Style_.defaultFunction);
+      expect(layer.getStyle()).to.be(Style.defaultFunction);
 
       layer.setStyle(style);
       expect(layer.getStyle()).to.be(style);
