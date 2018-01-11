@@ -5,7 +5,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
@@ -49,7 +49,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[-20, 18]]) : new Point([-20, 18])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 2,
           fill: new Fill({
             color: '#91E339'
@@ -62,7 +62,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[-10, 18]]) : new Point([-10, 18])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 4,
           fill: new Fill({
             color: '#5447E6'
@@ -75,7 +75,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[4, 18]]) : new Point([4, 18])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 6,
           fill: new Fill({
             color: '#92A8A6'
@@ -88,7 +88,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[-20, 3]]) : new Point([-20, 3])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 2,
           fill: new Fill({
             color: '#91E339'
@@ -105,7 +105,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[-10, 3]]) : new Point([-10, 3])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 4,
           fill: new Fill({
             color: '#5447E6'
@@ -122,7 +122,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[4, 3]]) : new Point([4, 3])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 6,
           fill: new Fill({
             color: '#92A8A6'
@@ -139,7 +139,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[-20, -15]]) : new Point([-20, -15])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 2,
           stroke: new Stroke({
             color: '#256308',
@@ -153,7 +153,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[-10, -15]]) : new Point([-10, -15])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 4,
           fill: new Fill({
             color: 'rgba(0, 0, 255, 0.3)'
@@ -170,7 +170,7 @@ describe('ol.rendering.style.Circle', function() {
         geometry: multi ? new MultiPoint([[4, -15]]) : new Point([4, -15])
       });
       feature.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 6,
           fill: new Fill({
             color: 'rgba(235, 45, 70, 0.6)'

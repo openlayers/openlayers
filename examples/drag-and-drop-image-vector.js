@@ -11,7 +11,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -19,7 +19,7 @@ import Style from '../src/ol/style/Style.js';
 
 var defaultStyle = {
   'Point': new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       fill: new Fill({
         color: 'rgba(255,255,0,0.5)'
       }),
@@ -46,7 +46,7 @@ var defaultStyle = {
     })
   }),
   'MultiPoint': new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       fill: new Fill({
         color: 'rgba(255,0,255,0.5)'
       }),

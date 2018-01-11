@@ -8,7 +8,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
@@ -724,7 +724,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
-          image: new _ol_style_Circle_({
+          image: new CircleStyle({
             radius: 15,
             stroke: new Stroke({
               color: 'blue'
@@ -764,7 +764,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
-          image: new _ol_style_Circle_({
+          image: new CircleStyle({
             radius: 15,
             stroke: new Stroke({
               color: 'blue'
@@ -806,7 +806,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setStyle(function(feature) {
         return new Style({
           zIndex: feature.get('zIndex'),
-          image: new _ol_style_Circle_({
+          image: new CircleStyle({
             radius: 15,
             stroke: new Stroke({
               color: 'blue'
@@ -844,7 +844,7 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
       layer.setStyle(function(feature) {
         return new Style({
-          image: new _ol_style_Circle_({
+          image: new CircleStyle({
             radius: 5,
             stroke: new Stroke({
               color: 'blue'
@@ -874,7 +874,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       var point = new Feature(new Point(center));
       point.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 8,
           stroke: new Stroke({
             color: 'blue'
@@ -917,7 +917,7 @@ describe('ol.rendering.layer.Vector', function() {
 
       var point = new Feature(new Point(center));
       point.setStyle(new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 8,
           stroke: new Stroke({
             color: 'blue'
@@ -961,7 +961,7 @@ describe('ol.rendering.layer.Vector', function() {
       var point = new Feature(new Point(center));
       point.setStyle(new Style({
         zIndex: 2,
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 8,
           stroke: new Stroke({
             color: 'blue'

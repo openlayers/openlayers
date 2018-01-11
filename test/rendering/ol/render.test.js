@@ -4,7 +4,7 @@ import Polygon from '../../../src/ol/geom/Polygon.js';
 import _ol_render_ from '../../../src/ol/render.js';
 import VectorContext from '../../../src/ol/render/VectorContext.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
-import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../src/ol/style/Circle.js';
 import Fill from '../../../src/ol/style/Fill.js';
 import Stroke from '../../../src/ol/style/Stroke.js';
 import Style from '../../../src/ol/style/Style.js';
@@ -34,7 +34,7 @@ describe('ol.render', function() {
       });
 
       var style = new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           fill: new Fill({
             color: 'green'
           }),

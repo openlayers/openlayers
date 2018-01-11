@@ -13,7 +13,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addProjection, addCoordinateTransforms, transform, get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
 import {remove as removeTransform} from '../../../../src/ol/proj/transforms.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Icon from '../../../../src/ol/style/Icon.js';
 import IconAnchorUnits from '../../../../src/ol/style/IconAnchorUnits.js';
@@ -2335,7 +2335,7 @@ describe('ol.format.KML', function() {
 
         it('skips image styles that are not icon styles', function() {
           var style = new Style({
-            image: new _ol_style_Circle_({
+            image: new CircleStyle({
               radius: 4,
               fill: new Fill({
                 color: 'rgb(12, 34, 223)'

@@ -6,7 +6,7 @@ import Modify from '../src/ol/interaction/Modify.js';
 import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -14,7 +14,7 @@ import Style from '../src/ol/style/Style.js';
 
 var styleFunction = (function() {
   var styles = {};
-  var image = new _ol_style_Circle_({
+  var image = new CircleStyle({
     radius: 5,
     fill: null,
     stroke: new Stroke({color: 'orange', width: 2})
@@ -194,7 +194,7 @@ var overlayStyle = (function() {
 
   styles['Point'] = [
     new Style({
-      image: new _ol_style_Circle_({
+      image: new CircleStyle({
         radius: 7,
         fill: new Fill({
           color: [0, 153, 255, 1]

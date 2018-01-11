@@ -7,7 +7,7 @@ import _ol_obj_ from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -278,7 +278,7 @@ describe('ol.rendering.layer.Tile', function() {
       });
       onAddLayer = function(evt) {
         evt.element.on('render', function(e) {
-          e.vectorContext.setImageStyle(new _ol_style_Circle_({
+          e.vectorContext.setImageStyle(new CircleStyle({
             radius: 5,
             snapToPixel: false,
             fill: new Fill({color: 'yellow'}),

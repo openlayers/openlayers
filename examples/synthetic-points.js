@@ -5,7 +5,7 @@ import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -25,14 +25,14 @@ for (var i = 0; i < count; ++i) {
 
 var styles = {
   '10': new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 5,
       fill: new Fill({color: '#666666'}),
       stroke: new Stroke({color: '#bada55', width: 1})
     })
   }),
   '20': new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 10,
       fill: new Fill({color: '#666666'}),
       stroke: new Stroke({color: '#bada55', width: 1})
@@ -102,7 +102,7 @@ var stroke = new Stroke({
 });
 var style = new Style({
   stroke: stroke,
-  image: new _ol_style_Circle_({
+  image: new CircleStyle({
     radius: 10,
     stroke: stroke
   })

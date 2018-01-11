@@ -8,7 +8,7 @@ import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Text from '../../../../src/ol/style/Text.js';
@@ -105,7 +105,7 @@ describe('ol.rendering.layer.VectorTile', function() {
         zIndex: 1,
         source: vectorSource,
         style: new Style({
-          image: new _ol_style_Circle_({
+          image: new CircleStyle({
             radius: 10,
             fill: new Fill({
               color: 'red'
@@ -144,7 +144,7 @@ describe('ol.rendering.layer.VectorTile', function() {
         var geom = feature.getGeometry();
         if (geom.getType() == 'Point') {
           return new Style({
-            image: new _ol_style_Circle_({
+            image: new CircleStyle({
               radius: 7,
               fill: new Fill({
                 color: 'red'

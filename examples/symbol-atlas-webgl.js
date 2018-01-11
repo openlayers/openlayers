@@ -5,7 +5,7 @@ import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import AtlasManager from '../src/ol/style/AtlasManager.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import RegularShape from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
@@ -47,7 +47,7 @@ for (i = 0; i < symbolInfo.length; ++i) {
   var info = symbolInfo[i];
   for (j = 0; j < radiuses.length; ++j) {
     // circle symbol
-    symbols.push(new _ol_style_Circle_({
+    symbols.push(new CircleStyle({
       opacity: info.opacity,
       scale: info.scale,
       radius: radiuses[j],

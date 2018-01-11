@@ -8,13 +8,13 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var image = new _ol_style_Circle_({
+var image = new CircleStyle({
   radius: 5,
   fill: null,
   stroke: new Stroke({color: 'red', width: 1})
@@ -66,7 +66,7 @@ var styles = {
     fill: new Fill({
       color: 'magenta'
     }),
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 10,
       fill: null,
       stroke: new Stroke({

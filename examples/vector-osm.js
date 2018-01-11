@@ -8,7 +8,7 @@ import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -66,7 +66,7 @@ var styles = {
   },
   'natural': {
     'tree': new Style({
-      image: new _ol_style_Circle_({
+      image: new CircleStyle({
         radius: 2,
         fill: new Fill({
           color: 'rgba(140, 208, 95, 1.0)'

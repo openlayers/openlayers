@@ -2,7 +2,7 @@ import Feature from '../../../../src/ol/Feature.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Fill from '../../../../src/ol/style/Fill.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Text from '../../../../src/ol/style/Text.js';
 
@@ -29,7 +29,7 @@ describe('ol.style.Style', function() {
     })
   });
 
-  var testImage = new _ol_style_Circle_({
+  var testImage = new CircleStyle({
     radius: 5
   });
 
@@ -48,7 +48,7 @@ describe('ol.style.Style', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 5
         }),
         stroke: new Stroke({
@@ -74,7 +74,7 @@ describe('ol.style.Style', function() {
         fill: new Fill({
           color: '#319FD3'
         }),
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           radius: 5
         }),
         stroke: new Stroke({

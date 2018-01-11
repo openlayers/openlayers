@@ -8,7 +8,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -68,7 +68,7 @@ geolocation.on('change:accuracyGeometry', function() {
 
 var positionFeature = new Feature();
 positionFeature.setStyle(new Style({
-  image: new _ol_style_Circle_({
+  image: new CircleStyle({
     radius: 6,
     fill: new Fill({
       color: '#3399CC'

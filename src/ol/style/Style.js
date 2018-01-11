@@ -3,7 +3,7 @@
  */
 import {assert} from '../asserts.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_style_Circle_ from '../style/Circle.js';
+import CircleStyle from '../style/Circle.js';
 import Fill from '../style/Fill.js';
 import Stroke from '../style/Stroke.js';
 
@@ -331,7 +331,7 @@ Style.defaultFunction = function(feature, resolution) {
     });
     Style.default_ = [
       new Style({
-        image: new _ol_style_Circle_({
+        image: new CircleStyle({
           fill: fill,
           stroke: stroke,
           radius: 5
@@ -390,7 +390,7 @@ Style.createDefaultEditing = function() {
 
   styles[GeometryType.POINT] = [
     new Style({
-      image: new _ol_style_Circle_({
+      image: new CircleStyle({
         radius: width * 2,
         fill: new Fill({
           color: blue

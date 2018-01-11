@@ -9,7 +9,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import Cluster from '../src/ol/source/Cluster.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import RegularShape from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
@@ -86,7 +86,7 @@ function styleFunction(feature, resolution) {
   var size = feature.get('features').length;
   if (size > 1) {
     style = new Style({
-      image: new _ol_style_Circle_({
+      image: new CircleStyle({
         radius: feature.get('radius'),
         fill: new Fill({
           color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
@@ -107,7 +107,7 @@ function styleFunction(feature, resolution) {
 
 function selectStyleFunction(feature) {
   var styles = [new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: feature.get('radius'),
       fill: invisibleFill
     })

@@ -7,7 +7,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
@@ -97,7 +97,7 @@ var styles = {
     })
   }),
   'geoMarker': new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 7,
       snapToPixel: false,
       fill: new Fill({color: 'black'}),

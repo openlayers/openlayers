@@ -16,7 +16,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import Style from '../src/ol/style/Style.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Fill from '../src/ol/style/Fill.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Text from '../src/ol/style/Text.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 
@@ -29,7 +29,7 @@ var nodesLayer = new VectorLayer({
   source: nodes,
   style: function(f) {
     var style = new Style({
-      image: new _ol_style_Circle_({
+      image: new CircleStyle({
         radius: 8,
         fill: new Fill({color: 'rgba(255, 0, 0, 0.2)'}),
         stroke: new Stroke({color: 'red', width: 1})

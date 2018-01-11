@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
+import CircleStyle from '../src/ol/style/Circle.js';
 import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
@@ -19,7 +19,7 @@ var redLayer = new VectorLayer({
     features: [new Feature(new Point([0, 0]))]
   }),
   style: new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       fill: new Fill({
         color: 'rgba(255,0,0,0.8)'
       }),
@@ -37,7 +37,7 @@ var greenLayer = new VectorLayer({
     features: [new Feature(new Point([250, 433.013]))]
   }),
   style: new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       fill: new Fill({
         color: 'rgba(0,255,0,0.8)'
       }),
@@ -54,7 +54,7 @@ var blueLayer = new VectorLayer({
     features: [new Feature(new Point([500, 0]))]
   }),
   style: new Style({
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       fill: new Fill({
         color: 'rgba(0,0,255,0.8)'
       }),
