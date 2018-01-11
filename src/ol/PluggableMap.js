@@ -23,7 +23,7 @@ import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
 import _ol_has_ from './has.js';
-import _ol_layer_Group_ from './layer/Group.js';
+import LayerGroup from './layer/Group.js';
 import {getMapRendererPlugins} from './plugins.js';
 import RendererType from './renderer/Type.js';
 import _ol_size_ from './size.js';
@@ -1404,8 +1404,8 @@ function createOptionsInternal(options) {
    */
   var values = {};
 
-  var layerGroup = (options.layers instanceof _ol_layer_Group_) ?
-    options.layers : new _ol_layer_Group_({layers: options.layers});
+  var layerGroup = (options.layers instanceof LayerGroup) ?
+    options.layers : new LayerGroup({layers: options.layers});
   values[MapProperty.LAYERGROUP] = layerGroup;
 
   values[MapProperty.TARGET] = options.target;

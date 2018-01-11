@@ -2,7 +2,7 @@ import {getUid} from '../../../../src/ol/index.js';
 import {stableSort} from '../../../../src/ol/array.js';
 import _ol_Collection_ from '../../../../src/ol/Collection.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
-import _ol_layer_Group_ from '../../../../src/ol/layer/Group.js';
+import LayerGroup from '../../../../src/ol/layer/Group.js';
 import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import MapRenderer from '../../../../src/ol/renderer/Map.js';
@@ -16,7 +16,7 @@ describe('ol.layer.Group', function() {
     var layerGroup;
 
     beforeEach(function() {
-      layerGroup = new _ol_layer_Group_();
+      layerGroup = new LayerGroup();
     });
 
     afterEach(function() {
@@ -24,7 +24,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('creates an instance', function() {
-      expect(layerGroup).to.be.a(_ol_layer_Group_);
+      expect(layerGroup).to.be.a(LayerGroup);
     });
 
     it('provides default opacity', function() {
@@ -65,7 +65,7 @@ describe('ol.layer.Group', function() {
           projection: 'EPSG:4326'
         })
       });
-      group = new _ol_layer_Group_({
+      group = new LayerGroup({
         layers: [layer]
       });
       listener = sinon.spy();
@@ -104,7 +104,7 @@ describe('ol.layer.Group', function() {
           projection: 'EPSG:4326'
         })
       });
-      group = new _ol_layer_Group_({
+      group = new LayerGroup({
         layers: [layer]
       });
       listener = sinon.spy();
@@ -142,7 +142,7 @@ describe('ol.layer.Group', function() {
           projection: 'EPSG:4326'
         })
       });
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: [layer],
         opacity: 0.5,
         visible: false,
@@ -182,7 +182,7 @@ describe('ol.layer.Group', function() {
       });
 
       var groupExtent = [-10, -5, 10, 5];
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: [layer],
         opacity: 0.5,
         visible: false,
@@ -221,7 +221,7 @@ describe('ol.layer.Group', function() {
     var layerGroup;
 
     beforeEach(function() {
-      layerGroup = new _ol_layer_Group_();
+      layerGroup = new LayerGroup();
     });
 
     afterEach(function() {
@@ -285,7 +285,7 @@ describe('ol.layer.Group', function() {
 
     it('listen / unlisten for layers added to the collection', function() {
       var layers = new _ol_Collection_();
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: layers
       });
       expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(0);
@@ -316,7 +316,7 @@ describe('ol.layer.Group', function() {
         })
       });
       var layers = new _ol_Collection_([layer]);
-      var layerGroup = new _ol_layer_Group_();
+      var layerGroup = new LayerGroup();
 
       layerGroup.setLayers(layers);
       expect(layerGroup.getLayers()).to.be(layers);
@@ -332,7 +332,7 @@ describe('ol.layer.Group', function() {
   describe('#getLayerStatesArray', function() {
 
     it('returns an empty array if no layer', function() {
-      var layerGroup = new _ol_layer_Group_();
+      var layerGroup = new LayerGroup();
 
       var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray).to.be.a(Array);
@@ -363,7 +363,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('does not transform layerStates by default', function() {
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: [layer1, layer2]
       });
 
@@ -386,7 +386,7 @@ describe('ol.layer.Group', function() {
 
     it('uses the layer group extent if layer has no extent', function() {
       var groupExtent = [-10, -5, 10, 5];
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         extent: groupExtent,
         layers: [layer1]
       });
@@ -397,7 +397,7 @@ describe('ol.layer.Group', function() {
 
     it('uses the intersection of group and child extent', function() {
       var groupExtent = [-10, -5, 10, 5];
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         extent: groupExtent,
         layers: [layer3]
       });
@@ -408,7 +408,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('transforms layerStates correctly', function() {
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: [layer1, layer2],
         opacity: 0.5,
         visible: false,
@@ -446,7 +446,7 @@ describe('ol.layer.Group', function() {
     });
 
     it('let order of layers without Z-index unchanged', function() {
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: [layer1, layer2]
       });
 
@@ -474,7 +474,7 @@ describe('ol.layer.Group', function() {
       });
       layerM1.setZIndex(-1);
 
-      var layerGroup = new _ol_layer_Group_({
+      var layerGroup = new LayerGroup({
         layers: [layer1, layer10, layer2, layerM1]
       });
 
