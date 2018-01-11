@@ -32,7 +32,7 @@ import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
  * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  */
-var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
+var ReprojTile = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
     pixelRatio, gutter, getTileFunction,
     opt_errorThreshold, opt_renderEdges) {
@@ -187,13 +187,13 @@ var _ol_reproj_Tile_ = function(sourceProj, sourceTileGrid,
   }
 };
 
-inherits(_ol_reproj_Tile_, _ol_Tile_);
+inherits(ReprojTile, _ol_Tile_);
 
 
 /**
  * @inheritDoc
  */
-_ol_reproj_Tile_.prototype.disposeInternal = function() {
+ReprojTile.prototype.disposeInternal = function() {
   if (this.state == TileState.LOADING) {
     this.unlistenSources_();
   }
@@ -205,7 +205,7 @@ _ol_reproj_Tile_.prototype.disposeInternal = function() {
  * Get the HTML Canvas element for this tile.
  * @return {HTMLCanvasElement} Canvas.
  */
-_ol_reproj_Tile_.prototype.getImage = function() {
+ReprojTile.prototype.getImage = function() {
   return this.canvas_;
 };
 
@@ -213,7 +213,7 @@ _ol_reproj_Tile_.prototype.getImage = function() {
 /**
  * @private
  */
-_ol_reproj_Tile_.prototype.reproject_ = function() {
+ReprojTile.prototype.reproject_ = function() {
   var sources = [];
   this.sourceTiles_.forEach(function(tile, i, arr) {
     if (tile && tile.getState() == TileState.LOADED) {
@@ -251,7 +251,7 @@ _ol_reproj_Tile_.prototype.reproject_ = function() {
 /**
  * @inheritDoc
  */
-_ol_reproj_Tile_.prototype.load = function() {
+ReprojTile.prototype.load = function() {
   if (this.state == TileState.IDLE) {
     this.state = TileState.LOADING;
     this.changed();
@@ -300,8 +300,8 @@ _ol_reproj_Tile_.prototype.load = function() {
 /**
  * @private
  */
-_ol_reproj_Tile_.prototype.unlistenSources_ = function() {
+ReprojTile.prototype.unlistenSources_ = function() {
   this.sourcesListenerKeys_.forEach(_ol_events_.unlistenByKey);
   this.sourcesListenerKeys_ = null;
 };
-export default _ol_reproj_Tile_;
+export default ReprojTile;

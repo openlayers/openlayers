@@ -2,7 +2,7 @@ import ImageTile from '../../../../src/ol/ImageTile.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
-import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
+import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -27,7 +27,7 @@ describe('ol.reproj.Tile', function() {
   function createTile(pixelRatio, opt_tileSize) {
     var proj4326 = getProjection('EPSG:4326');
     var proj3857 = getProjection('EPSG:3857');
-    return new _ol_reproj_Tile_(
+    return new ReprojTile(
         proj3857, _ol_tilegrid_.createForProjection(proj3857), proj4326,
         _ol_tilegrid_.createForProjection(proj4326, 3, opt_tileSize),
         [3, 2, -2], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
@@ -54,7 +54,7 @@ describe('ol.reproj.Tile', function() {
   it('is empty when outside target tile grid', function() {
     var proj4326 = getProjection('EPSG:4326');
     var proj3857 = getProjection('EPSG:3857');
-    var tile = new _ol_reproj_Tile_(
+    var tile = new ReprojTile(
         proj3857, _ol_tilegrid_.createForProjection(proj3857),
         proj4326, _ol_tilegrid_.createForProjection(proj4326),
         [0, -1, 0], null, 1, 0, function() {
@@ -66,7 +66,7 @@ describe('ol.reproj.Tile', function() {
   it('is empty when outside source tile grid', function() {
     var proj4326 = getProjection('EPSG:4326');
     var proj27700 = getProjection('EPSG:27700');
-    var tile = new _ol_reproj_Tile_(
+    var tile = new ReprojTile(
         proj27700, _ol_tilegrid_.createForProjection(proj27700),
         proj4326, _ol_tilegrid_.createForProjection(proj4326),
         [3, 2, -2], null, 1, 0, function() {

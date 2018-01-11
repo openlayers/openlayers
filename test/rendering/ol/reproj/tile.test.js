@@ -1,7 +1,7 @@
 import TileState from '../../../../src/ol/TileState.js';
 import _ol_events_ from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
+import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
@@ -16,7 +16,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
     var tilesRequested = 0;
 
-    var tile = new _ol_reproj_Tile_(sourceProjection, source.getTileGrid(),
+    var tile = new ReprojTile(sourceProjection, source.getTileGrid(),
         getProjection(targetProjection), targetTileGrid,
         [z, x, y], null, pixelRatio, sourceGutter,
         function(z, x, y, pixelRatio) {
