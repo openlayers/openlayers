@@ -10,7 +10,7 @@ import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
-import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventType.js';
+import TranslateEventType from '../interaction/TranslateEventType.js';
 
 /**
  * @classdesc
@@ -104,7 +104,7 @@ _ol_interaction_Translate_.handleDownEvent_ = function(event) {
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATESTART, features,
+            TranslateEventType.TRANSLATESTART, features,
             event.coordinate));
     return true;
   }
@@ -127,7 +127,7 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATEEND, features,
+            TranslateEventType.TRANSLATEEND, features,
             event.coordinate));
     return true;
   }
@@ -157,7 +157,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATING, features,
+            TranslateEventType.TRANSLATING, features,
             newCoordinate));
   }
 };
