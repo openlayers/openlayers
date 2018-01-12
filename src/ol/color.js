@@ -45,10 +45,14 @@ export function asString(color) {
 function fromNamed(color) {
   const el = document.createElement('div');
   el.style.color = color;
-  document.body.appendChild(el);
-  const rgb = getComputedStyle(el).color;
-  document.body.removeChild(el);
-  return rgb;
+  if (el.style.color !== '') {
+    document.body.appendChild(el);
+    const rgb = getComputedStyle(el).color;
+    document.body.removeChild(el);
+    return rgb;
+  } else {
+    return '';
+  }
 }
 
 
