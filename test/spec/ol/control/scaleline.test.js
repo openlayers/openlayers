@@ -298,6 +298,21 @@ describe('ol.control.ScaleLine', function() {
       map.renderSync();
       expect(ctrl.element_.innerText).to.be('100 mm');
     });
+
+    it('Metric display works with Geographic (EPSG:4326) projection', function() {
+      var ctrl = new ScaleLine();
+      ctrl.setMap(map);
+      map.setView(new View({
+        center: [0, 0],
+        zoom: 0, /* min zoom */
+        projection: 'EPSG:4326'
+      }));
+      map.renderSync();
+      expect(ctrl.element_.innerText).to.be('10000 km');
+      map.getView().setZoom(28); /* max zoom */
+      map.renderSync();
+      expect(ctrl.element_.innerText).to.be('50 mm');
+    });
   });
 
   describe('latitude may affect scale line in EPSG:4326', function() {

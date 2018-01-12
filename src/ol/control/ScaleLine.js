@@ -176,7 +176,7 @@ ScaleLine.prototype.updateElement_ = function() {
     Units.METERS;
   let pointResolution =
       getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
-  if (units != ScaleLineUnits.DEGREES) {
+  if (projection.getUnits() != Units.DEGREES && units == ScaleLineUnits.METRIC) {
     pointResolution *= projection.getMetersPerUnit();
   }
 
