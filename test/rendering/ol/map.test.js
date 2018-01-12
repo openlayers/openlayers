@@ -8,9 +8,9 @@ import VectorSource from '../../../src/ol/source/Vector.js';
 
 describe('ol.rendering.Map', function() {
 
-  var map;
+  let map;
   function createMap(renderer) {
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: new VectorSource({
         features: [new Feature({
           geometry: new Point([0, 0])
@@ -43,7 +43,7 @@ describe('ol.rendering.Map', function() {
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
       map.once('postrender', function() {
-        var initialSize = map.getSize();
+        const initialSize = map.getSize();
         map.updateSize();
         expect(map.getSize()).to.eql(initialSize);
         done();
@@ -54,7 +54,7 @@ describe('ol.rendering.Map', function() {
       assertWebGL();
       createMap('webgl');
       map.once('postrender', function() {
-        var initialSize = map.getSize();
+        const initialSize = map.getSize();
         map.updateSize();
         expect(map.getSize()).to.eql(initialSize);
         done();
@@ -67,14 +67,14 @@ describe('ol.rendering.Map', function() {
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
       expectResemble(
-          map, 'rendering/ol/expected/render-canvas.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/render-canvas.png', IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       createMap('webgl');
       expectResemble(
-          map, 'rendering/ol/expected/render-webgl.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/render-webgl.png', IMAGE_TOLERANCE, done);
     });
   });
 
@@ -84,7 +84,7 @@ describe('ol.rendering.Map', function() {
       createMap('canvas');
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'rendering/ol/expected/pan-canvas.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/pan-canvas.png', IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
@@ -92,7 +92,7 @@ describe('ol.rendering.Map', function() {
       createMap('webgl');
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'rendering/ol/expected/pan-webgl.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/pan-webgl.png', IMAGE_TOLERANCE, done);
     });
   });
 
@@ -103,7 +103,7 @@ describe('ol.rendering.Map', function() {
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'rendering/ol/expected/rotate-canvas.png', 2.8, done);
+        map, 'rendering/ol/expected/rotate-canvas.png', 2.8, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
@@ -112,7 +112,7 @@ describe('ol.rendering.Map', function() {
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'rendering/ol/expected/rotate-webgl.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/rotate-webgl.png', IMAGE_TOLERANCE, done);
     });
   });
 
@@ -123,7 +123,7 @@ describe('ol.rendering.Map', function() {
       map.getView().setCenter([10, 10]);
       map.getView().setResolution(2);
       expectResemble(
-          map, 'rendering/ol/expected/zoom-canvas.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/zoom-canvas.png', IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
@@ -132,7 +132,7 @@ describe('ol.rendering.Map', function() {
       map.getView().setCenter([10, 10]);
       map.getView().setResolution(2);
       expectResemble(
-          map, 'rendering/ol/expected/zoom-webgl.png', IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/expected/zoom-webgl.png', IMAGE_TOLERANCE, done);
     });
   });
 });

@@ -24,7 +24,7 @@ import SourceState from '../../source/State.js';
  * @param {ol.PluggableMap} map Map.
  * @api
  */
-var CanvasMapRenderer = function(container, map) {
+const CanvasMapRenderer = function(container, map) {
 
   MapRenderer.call(this, container, map);
 
@@ -90,20 +90,20 @@ CanvasMapRenderer['create'] = function(container, map) {
  * @private
  */
 CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
-  var map = this.getMap();
-  var context = this.context_;
+  const map = this.getMap();
+  const context = this.context_;
   if (map.hasListener(type)) {
-    var extent = frameState.extent;
-    var pixelRatio = frameState.pixelRatio;
-    var viewState = frameState.viewState;
-    var rotation = viewState.rotation;
+    const extent = frameState.extent;
+    const pixelRatio = frameState.pixelRatio;
+    const viewState = frameState.viewState;
+    const rotation = viewState.rotation;
 
-    var transform = this.getTransform(frameState);
+    const transform = this.getTransform(frameState);
 
-    var vectorContext = new CanvasImmediateRenderer(context, pixelRatio,
-        extent, transform, rotation);
-    var composeEvent = new RenderEvent(type, vectorContext,
-        frameState, context, null);
+    const vectorContext = new CanvasImmediateRenderer(context, pixelRatio,
+      extent, transform, rotation);
+    const composeEvent = new RenderEvent(type, vectorContext,
+      frameState, context, null);
     map.dispatchEvent(composeEvent);
   }
 };
@@ -115,14 +115,14 @@ CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
  * @return {!ol.Transform} Transform.
  */
 CanvasMapRenderer.prototype.getTransform = function(frameState) {
-  var viewState = frameState.viewState;
-  var dx1 = this.canvas_.width / 2;
-  var dy1 = this.canvas_.height / 2;
-  var sx = frameState.pixelRatio / viewState.resolution;
-  var sy = -sx;
-  var angle = -viewState.rotation;
-  var dx2 = -viewState.center[0];
-  var dy2 = -viewState.center[1];
+  const viewState = frameState.viewState;
+  const dx1 = this.canvas_.width / 2;
+  const dy1 = this.canvas_.height / 2;
+  const sx = frameState.pixelRatio / viewState.resolution;
+  const sy = -sx;
+  const angle = -viewState.rotation;
+  const dx2 = -viewState.center[0];
+  const dy2 = -viewState.center[1];
   return _ol_transform_.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 
@@ -148,10 +148,10 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
     return;
   }
 
-  var context = this.context_;
-  var pixelRatio = frameState.pixelRatio;
-  var width = Math.round(frameState.size[0] * pixelRatio);
-  var height = Math.round(frameState.size[1] * pixelRatio);
+  const context = this.context_;
+  const pixelRatio = frameState.pixelRatio;
+  const width = Math.round(frameState.size[0] * pixelRatio);
+  const height = Math.round(frameState.size[1] * pixelRatio);
   if (this.canvas_.width != width || this.canvas_.height != height) {
     this.canvas_.width = width;
     this.canvas_.height = height;
@@ -159,13 +159,13 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
     context.clearRect(0, 0, width, height);
   }
 
-  var rotation = frameState.viewState.rotation;
+  const rotation = frameState.viewState.rotation;
 
   this.calculateMatrices2D(frameState);
 
   this.dispatchComposeEvent_(RenderEventType.PRECOMPOSE, frameState);
 
-  var layerStatesArray = frameState.layerStatesArray;
+  const layerStatesArray = frameState.layerStatesArray;
   stableSort(layerStatesArray, MapRenderer.sortByZIndex);
 
   if (rotation) {
@@ -173,8 +173,8 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
     _ol_render_canvas_.rotateAtOffset(context, rotation, width / 2, height / 2);
   }
 
-  var viewResolution = frameState.viewState.resolution;
-  var i, ii, layer, layerRenderer, layerState;
+  const viewResolution = frameState.viewState.resolution;
+  let i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
@@ -208,26 +208,26 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
  * @inheritDoc
  */
 CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-    layerFilter, thisArg2) {
-  var result;
-  var viewState = frameState.viewState;
-  var viewResolution = viewState.resolution;
+  layerFilter, thisArg2) {
+  let result;
+  const viewState = frameState.viewState;
+  const viewResolution = viewState.resolution;
 
-  var layerStates = frameState.layerStatesArray;
-  var numLayers = layerStates.length;
+  const layerStates = frameState.layerStatesArray;
+  const numLayers = layerStates.length;
 
-  var coordinate = _ol_transform_.apply(
-      frameState.pixelToCoordinateTransform, pixel.slice());
+  const coordinate = _ol_transform_.apply(
+    frameState.pixelToCoordinateTransform, pixel.slice());
 
-  var i;
+  let i;
   for (i = numLayers - 1; i >= 0; --i) {
-    var layerState = layerStates[i];
-    var layer = layerState.layer;
+    const layerState = layerStates[i];
+    const layer = layerState.layer;
     if (Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
-      var layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+      const layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(
-          coordinate, frameState, callback, thisArg);
+        coordinate, frameState, callback, thisArg);
       if (result) {
         return result;
       }

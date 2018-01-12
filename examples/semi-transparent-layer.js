@@ -6,7 +6,7 @@ import OSM from '../src/ol/source/OSM.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()

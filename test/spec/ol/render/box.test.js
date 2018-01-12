@@ -7,7 +7,7 @@ import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
 
 describe('ol.render.Box', function() {
 
-  var box, map, target;
+  let box, map, target;
 
   beforeEach(function() {
     box = new _ol_render_Box_('test-box');
@@ -33,7 +33,7 @@ describe('ol.render.Box', function() {
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      var obj = new _ol_render_Box_('test-box');
+      const obj = new _ol_render_Box_('test-box');
       expect(obj).to.be.a(_ol_render_Box_);
       expect(obj).to.be.a(Disposable);
       obj.dispose();

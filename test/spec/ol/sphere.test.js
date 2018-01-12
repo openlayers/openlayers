@@ -11,7 +11,7 @@ describe('ol/sphere', function() {
 
   describe('getDistance()', function() {
 
-    var expected = [{
+    const expected = [{
       c1: [0, 0],
       c2: [0, 0],
       distance: 0
@@ -81,7 +81,7 @@ describe('ol/sphere', function() {
   });
 
   describe('getLength()', function() {
-    var cases = [{
+    const cases = [{
       geometry: new Point([0, 0]),
       length: 0
     }, {
@@ -157,8 +157,8 @@ describe('ol/sphere', function() {
 
     cases.forEach(function(c, i) {
       it('works for case ' + i, function() {
-        var c = cases[i];
-        var length = getLength(c.geometry, c.options);
+        const c = cases[i];
+        const length = getLength(c.geometry, c.options);
         expect(length).to.roughlyEqual(c.length, 1e-8);
       });
     });
@@ -166,12 +166,12 @@ describe('ol/sphere', function() {
   });
 
   describe('getArea()', function() {
-    var geometry;
-    var expectedArea = 145652224192.4434;
+    let geometry;
+    const expectedArea = 145652224192.4434;
     before(function(done) {
       afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
         try {
-          var format = new WKT();
+          const format = new WKT();
           geometry = format.readGeometry(wkt);
         } catch (e) {
           done(e);
@@ -181,20 +181,20 @@ describe('ol/sphere', function() {
     });
 
     it('calculates the area of Ilinois', function() {
-      var area = getArea(geometry, {projection: 'EPSG:4326'});
+      const area = getArea(geometry, {projection: 'EPSG:4326'});
       expect(area).to.equal(expectedArea);
     });
 
     it('calculates the area of a projected geometry', function() {
-      var projected = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
-      var area = getArea(projected);
+      const projected = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+      const area = getArea(projected);
       expect(area).to.roughlyEqual(expectedArea, 1e-3);
     });
 
     it('calculates the area of a projected geometry collection', function() {
-      var part = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
-      var collection = new GeometryCollection([part, part.clone()]);
-      var area = getArea(collection);
+      const part = geometry.clone().transform('EPSG:4326', 'EPSG:3857');
+      const collection = new GeometryCollection([part, part.clone()]);
+      const area = getArea(collection);
       expect(area).to.roughlyEqual(2 * expectedArea, 1e-3);
     });
 

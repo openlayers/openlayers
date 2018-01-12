@@ -13,9 +13,9 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var map;
+let map = null;
 
-var styles = {
+const styles = {
   'amenity': {
     'parking': new Style({
       stroke: new Stroke({
@@ -77,19 +77,19 @@ var styles = {
   }
 };
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   format: new OSMXML(),
   loader: function(extent, resolution, projection) {
-    var epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');
-    var client = new XMLHttpRequest();
+    const epsg4326Extent = transformExtent(extent, projection, 'EPSG:4326');
+    const client = new XMLHttpRequest();
     client.open('POST', 'https://overpass-api.de/api/interpreter');
     client.addEventListener('load', function() {
-      var features = new OSMXML().readFeatures(client.responseText, {
+      const features = new OSMXML().readFeatures(client.responseText, {
         featureProjection: map.getView().getProjection()
       });
       vectorSource.addFeatures(features);
     });
-    var query = '(node(' +
+    const query = '(node(' +
         epsg4326Extent[1] + ',' + epsg4326Extent[0] + ',' +
         epsg4326Extent[3] + ',' + epsg4326Extent[2] +
         ');rel(bn)->.foo;way(bn);node(w)->.foo;rel(bw););out meta;';
@@ -98,13 +98,13 @@ var vectorSource = new VectorSource({
   strategy: _ol_loadingstrategy_.bbox
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
-    for (var key in styles) {
-      var value = feature.get(key);
+    for (const key in styles) {
+      const value = feature.get(key);
       if (value !== undefined) {
-        for (var regexp in styles[key]) {
+        for (const regexp in styles[key]) {
           if (new RegExp(regexp).test(value)) {
             return styles[key][regexp];
           }
@@ -115,7 +115,7 @@ var vector = new VectorLayer({
   }
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new BingMaps({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'

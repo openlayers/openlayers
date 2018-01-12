@@ -1,10 +1,10 @@
-var async = require('async');
-var fs = require('fs-extra');
-var nomnom = require('nomnom');
+const async = require('async');
+const fs = require('fs-extra');
+const nomnom = require('nomnom');
 
-var generateInfo = require('./generate-info');
+const generateInfo = require('./generate-info');
 
-var googRegEx = /^goog\..*$/;
+const googRegEx = /^goog\..*$/;
 
 /**
  * Read the symbols from info file.
@@ -17,7 +17,7 @@ function getInfo(callback) {
       callback(new Error('Trouble generating info: ' + err.message));
       return;
     }
-    var info = require('../build/info.json');
+    const info = require('../build/info.json');
     callback(null, info.typedefs, info.symbols, info.externs, info.base);
   });
 }
@@ -33,18 +33,18 @@ function getInfo(callback) {
  * @return {string} Export code.
  */
 function generateExterns(typedefs, symbols, externs, base) {
-  var lines = [];
-  var processedSymbols = {};
-  var constructors = {};
-  var constructorOptionsTypes = {};
+  const lines = [];
+  const processedSymbols = {};
+  const constructors = {};
+  const constructorOptionsTypes = {};
 
   function addNamespaces(name) {
-    var parts = name.split('.');
+    const parts = name.split('.');
     parts.pop();
-    var namespace = [];
+    const namespace = [];
     parts.forEach(function(part) {
       namespace.push(part);
-      var partialNamespace = namespace.join('.');
+      const partialNamespace = namespace.join('.');
       if (!(partialNamespace in processedSymbols ||
           partialNamespace in constructors)) {
         lines.push('/**');
@@ -77,10 +77,10 @@ function generateExterns(typedefs, symbols, externs, base) {
   function processSymbol(symbol) {
     addNamespaces(symbol.name.split('#')[0]);
 
-    var name = symbol.name;
+    let name = symbol.name;
     if (name.indexOf('#') > 0) {
       name = symbol.name.replace('#', '.prototype.');
-      var constructor = symbol.name.split('#')[0];
+      const constructor = symbol.name.split('#')[0];
       if (!(constructor in constructors)) {
         constructors[constructor] = true;
         lines.push('/**');
@@ -102,7 +102,7 @@ function generateExterns(typedefs, symbols, externs, base) {
     if (symbol.types) {
       lines.push(' * @type {' + symbol.types.join('|') + '}');
     }
-    var args = [];
+    const args = [];
     if (symbol.params) {
       symbol.params.forEach(function(param) {
         findConstructorOptionsTypes(param.types);
@@ -183,7 +183,7 @@ function main(callback) {
   async.waterfall([
     getInfo,
     function(typedefs, symbols, externs, base, done) {
-      var code, err;
+      let code, err;
       try {
         code = generateExterns(typedefs, symbols, externs, base);
       } catch (e) {
@@ -200,7 +200,7 @@ function main(callback) {
  * function, and write the output file.
  */
 if (require.main === module) {
-  var options = nomnom.options({
+  const options = nomnom.options({
     output: {
       position: 0,
       required: true,

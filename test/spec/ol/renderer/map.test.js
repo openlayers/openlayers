@@ -8,8 +8,8 @@ describe('ol.renderer.Map', function() {
   describe('constructor', function() {
 
     it('createst an instance', function() {
-      var map = new Map({});
-      var renderer = new MapRenderer(null, map);
+      const map = new Map({});
+      const renderer = new MapRenderer(null, map);
       expect(renderer).to.be.a(MapRenderer);
       expect(renderer).to.be.a(Disposable);
       renderer.dispose();

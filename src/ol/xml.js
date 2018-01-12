@@ -2,7 +2,7 @@
  * @module ol/xml
  */
 import {extend} from './array.js';
-var _ol_xml_ = {};
+const _ol_xml_ = {};
 
 
 /**
@@ -56,7 +56,7 @@ _ol_xml_.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
       accumulator.push(node.nodeValue);
     }
   } else {
-    var n;
+    let n;
     for (n = node.firstChild; n; n = n.nextSibling) {
       _ol_xml_.getAllTextContent_(n, normalizeWhitespace, accumulator);
     }
@@ -132,9 +132,9 @@ _ol_xml_.makeArrayExtender = function(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      var value = valueReader.call(opt_this, node, objectStack);
+      const value = valueReader.call(opt_this, node, objectStack);
       if (value !== undefined) {
-        var array = /** @type {Array.<*>} */
+        const array = /** @type {Array.<*>} */
               (objectStack[objectStack.length - 1]);
         extend(array, value);
       }
@@ -158,10 +158,10 @@ _ol_xml_.makeArrayPusher = function(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-          node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
+        node, objectStack);
       if (value !== undefined) {
-        var array = objectStack[objectStack.length - 1];
+        const array = objectStack[objectStack.length - 1];
         array.push(value);
       }
     });
@@ -183,8 +183,8 @@ _ol_xml_.makeReplacer = function(valueReader, opt_this) {
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-          node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
+        node, objectStack);
       if (value !== undefined) {
         objectStack[objectStack.length - 1] = value;
       }
@@ -208,14 +208,14 @@ _ol_xml_.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-          node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
+        node, objectStack);
       if (value !== undefined) {
-        var object = /** @type {Object} */
+        const object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
-        var property = opt_property !== undefined ?
+        const property = opt_property !== undefined ?
           opt_property : node.localName;
-        var array;
+        let array;
         if (property in object) {
           array = object[property];
         } else {
@@ -242,12 +242,12 @@ _ol_xml_.makeObjectPropertySetter = function(valueReader, opt_property, opt_this
      * @param {Array.<*>} objectStack Object stack.
      */
     function(node, objectStack) {
-      var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-          node, objectStack);
+      const value = valueReader.call(opt_this !== undefined ? opt_this : this,
+        node, objectStack);
       if (value !== undefined) {
-        var object = /** @type {Object} */
+        const object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
-        var property = opt_property !== undefined ?
+        const property = opt_property !== undefined ?
           opt_property : node.localName;
         object[property] = value;
       }
@@ -268,9 +268,9 @@ _ol_xml_.makeObjectPropertySetter = function(valueReader, opt_property, opt_this
 _ol_xml_.makeChildAppender = function(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
     nodeWriter.call(opt_this !== undefined ? opt_this : this,
-        node, value, objectStack);
-    var parent = objectStack[objectStack.length - 1];
-    var parentNode = parent.node;
+      node, value, objectStack);
+    const parent = objectStack[objectStack.length - 1];
+    const parentNode = parent.node;
     parentNode.appendChild(node);
   };
 };
@@ -290,11 +290,11 @@ _ol_xml_.makeChildAppender = function(nodeWriter, opt_this) {
  * @template T, V
  */
 _ol_xml_.makeArraySerializer = function(nodeWriter, opt_this) {
-  var serializersNS, nodeFactory;
+  let serializersNS, nodeFactory;
   return function(node, value, objectStack) {
     if (serializersNS === undefined) {
       serializersNS = {};
-      var serializers = {};
+      const serializers = {};
       serializers[node.localName] = nodeWriter;
       serializersNS[node.namespaceURI] = serializers;
       nodeFactory = _ol_xml_.makeSimpleNodeFactory(node.localName);
@@ -318,7 +318,7 @@ _ol_xml_.makeArraySerializer = function(nodeWriter, opt_this) {
  * @return {function(*, Array.<*>, string=): (Node|undefined)} Node factory.
  */
 _ol_xml_.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
-  var fixedNodeName = opt_nodeName;
+  const fixedNodeName = opt_nodeName;
   return (
     /**
      * @param {*} value Value.
@@ -327,13 +327,13 @@ _ol_xml_.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
      * @return {Node} Node.
      */
     function(value, objectStack, opt_nodeName) {
-      var context = objectStack[objectStack.length - 1];
-      var node = context.node;
-      var nodeName = fixedNodeName;
+      const context = objectStack[objectStack.length - 1];
+      const node = context.node;
+      let nodeName = fixedNodeName;
       if (nodeName === undefined) {
         nodeName = opt_nodeName;
       }
-      var namespaceURI = opt_namespaceURI;
+      let namespaceURI = opt_namespaceURI;
       if (opt_namespaceURI === undefined) {
         namespaceURI = node.namespaceURI;
       }
@@ -366,9 +366,9 @@ _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY = _ol_xml_.makeSimpleNodeFactory();
  * @template V
  */
 _ol_xml_.makeSequence = function(object, orderedKeys) {
-  var length = orderedKeys.length;
-  var sequence = new Array(length);
-  for (var i = 0; i < length; ++i) {
+  const length = orderedKeys.length;
+  const sequence = new Array(length);
+  for (let i = 0; i < length; ++i) {
     sequence[i] = object[orderedKeys[i]];
   }
   return sequence;
@@ -389,8 +389,8 @@ _ol_xml_.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
   /**
    * @type {Object.<string, *>}
    */
-  var structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
-  var i, ii;
+  const structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
+  let i, ii;
   for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
     structureNS[namespaceURIs[i]] = structure;
   }
@@ -407,11 +407,11 @@ _ol_xml_.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
  * @param {*=} opt_this The object to use as `this`.
  */
 _ol_xml_.parseNode = function(parsersNS, node, objectStack, opt_this) {
-  var n;
+  let n;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    var parsers = parsersNS[n.namespaceURI];
+    const parsers = parsersNS[n.namespaceURI];
     if (parsers !== undefined) {
-      var parser = parsers[n.localName];
+      const parser = parsers[n.localName];
       if (parser !== undefined) {
         parser.call(opt_this, n, objectStack);
       }
@@ -432,7 +432,7 @@ _ol_xml_.parseNode = function(parsersNS, node, objectStack, opt_this) {
  * @template T
  */
 _ol_xml_.pushParseAndPop = function(
-    object, parsersNS, node, objectStack, opt_this) {
+  object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
   _ol_xml_.parseNode(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();
@@ -462,17 +462,17 @@ _ol_xml_.pushParseAndPop = function(
  * @template T
  */
 _ol_xml_.serialize = function(
-    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
-  var length = (opt_keys !== undefined ? opt_keys : values).length;
-  var value, node;
-  for (var i = 0; i < length; ++i) {
+  serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+  const length = (opt_keys !== undefined ? opt_keys : values).length;
+  let value, node;
+  for (let i = 0; i < length; ++i) {
     value = values[i];
     if (value !== undefined) {
       node = nodeFactory.call(opt_this, value, objectStack,
-          opt_keys !== undefined ? opt_keys[i] : undefined);
+        opt_keys !== undefined ? opt_keys[i] : undefined);
       if (node !== undefined) {
         serializersNS[node.namespaceURI][node.localName]
-            .call(opt_this, node, value, objectStack);
+          .call(opt_this, node, value, objectStack);
       }
     }
   }
@@ -503,10 +503,10 @@ _ol_xml_.serialize = function(
  * @template O, T
  */
 _ol_xml_.pushSerializeAndPop = function(object,
-    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+  serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
   objectStack.push(object);
   _ol_xml_.serialize(
-      serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
+    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
   return objectStack.pop();
 };
 export default _ol_xml_;

@@ -18,7 +18,7 @@ proj4.defs('Indiana-East', 'PROJCS["IN83-EF",GEOGCS["LL83",DATUM["NAD83",' +
     'UNIT["Foot_US",0.30480060960122]]');
 register(proj4);
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -30,7 +30,7 @@ var map = new Map({
     center: fromLonLat([-85.685, 39.891], 'Indiana-East'),
     zoom: 7,
     extent: transformExtent([-172.54, 23.81, -47.74, 86.46],
-        'EPSG:4326', 'Indiana-East'),
+      'EPSG:4326', 'Indiana-East'),
     minZoom: 6
   })
 });

@@ -5,7 +5,7 @@ import Stroke from '../../../src/ol/style/Stroke.js';
 import Text from '../../../src/ol/style/Text.js';
 
 describe('ol.Graticule', function() {
-  var graticule;
+  let graticule;
 
   function createGraticule() {
     graticule = new Graticule({
@@ -16,11 +16,11 @@ describe('ol.Graticule', function() {
   describe('#createGraticule', function() {
     it('creates a graticule without labels', function() {
       createGraticule();
-      var extent = [-25614353.926475704, -7827151.696402049,
+      const extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = getProjection('EPSG:3857');
-      var resolution = 39135.75848201024;
-      var squaredTolerance = resolution * resolution / 4.0;
+      const projection = getProjection('EPSG:3857');
+      const resolution = 39135.75848201024;
+      const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
       expect(graticule.getMeridians().length).to.be(13);
@@ -34,11 +34,11 @@ describe('ol.Graticule', function() {
         map: new Map({}),
         showLabels: true
       });
-      var extent = [-25614353.926475704, -7827151.696402049,
+      const extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = getProjection('EPSG:3857');
-      var resolution = 39135.75848201024;
-      var squaredTolerance = resolution * resolution / 4.0;
+      const projection = getProjection('EPSG:3857');
+      const resolution = 39135.75848201024;
+      const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
       expect(graticule.meridiansLabels_.length).to.be(13);
@@ -51,7 +51,7 @@ describe('ol.Graticule', function() {
 
     it('has a default stroke style', function() {
       createGraticule();
-      var actualStyle = graticule.strokeStyle_;
+      const actualStyle = graticule.strokeStyle_;
 
       expect(actualStyle).not.to.be(undefined);
       expect(actualStyle instanceof Stroke).to.be(true);
@@ -59,22 +59,22 @@ describe('ol.Graticule', function() {
 
     it('can be configured with a stroke style', function() {
       createGraticule();
-      var customStrokeStyle = new Stroke({
+      const customStrokeStyle = new Stroke({
         color: 'rebeccapurple'
       });
-      var styledGraticule = new Graticule({
+      const styledGraticule = new Graticule({
         map: new Map({}),
         strokeStyle: customStrokeStyle
       });
-      var actualStyle = styledGraticule.strokeStyle_;
+      const actualStyle = styledGraticule.strokeStyle_;
 
       expect(actualStyle).not.to.be(undefined);
       expect(actualStyle).to.be(customStrokeStyle);
     });
 
     it('can be configured with label options', function() {
-      var latLabelStyle = new Text();
-      var lonLabelStyle = new Text();
+      const latLabelStyle = new Text();
+      const lonLabelStyle = new Text();
       graticule = new Graticule({
         map: new Map({}),
         showLabels: true,
@@ -89,11 +89,11 @@ describe('ol.Graticule', function() {
         lonLabelStyle: lonLabelStyle,
         latLabelStyle: latLabelStyle
       });
-      var extent = [-25614353.926475704, -7827151.696402049,
+      const extent = [-25614353.926475704, -7827151.696402049,
         25614353.926475704, 7827151.696402049];
-      var projection = getProjection('EPSG:3857');
-      var resolution = 39135.75848201024;
-      var squaredTolerance = resolution * resolution / 4.0;
+      const projection = getProjection('EPSG:3857');
+      const resolution = 39135.75848201024;
+      const squaredTolerance = resolution * resolution / 4.0;
       graticule.updateProjectionInfo_(projection);
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
       expect(graticule.meridiansLabels_[0].text).to.be('lon: 0');

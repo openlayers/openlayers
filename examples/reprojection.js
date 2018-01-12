@@ -34,29 +34,29 @@ proj4.defs('ESRI:54009', '+proj=moll +lon_0=0 +x_0=0 +y_0=0 +datum=WGS84 ' +
     '+units=m +no_defs');
 register(proj4);
 
-var proj27700 = getProjection('EPSG:27700');
+const proj27700 = getProjection('EPSG:27700');
 proj27700.setExtent([0, 0, 700000, 1300000]);
 
-var proj23032 = getProjection('EPSG:23032');
+const proj23032 = getProjection('EPSG:23032');
 proj23032.setExtent([-1206118.71, 4021309.92, 1295389.00, 8051813.28]);
 
-var proj5479 = getProjection('EPSG:5479');
+const proj5479 = getProjection('EPSG:5479');
 proj5479.setExtent([6825737.53, 4189159.80, 9633741.96, 5782472.71]);
 
-var proj21781 = getProjection('EPSG:21781');
+const proj21781 = getProjection('EPSG:21781');
 proj21781.setExtent([485071.54, 75346.36, 828515.78, 299941.84]);
 
-var proj3413 = getProjection('EPSG:3413');
+const proj3413 = getProjection('EPSG:3413');
 proj3413.setExtent([-4194304, -4194304, 4194304, 4194304]);
 
-var proj2163 = getProjection('EPSG:2163');
+const proj2163 = getProjection('EPSG:2163');
 proj2163.setExtent([-8040784.5135, -2577524.9210, 3668901.4484, 4785105.1096]);
 
-var proj54009 = getProjection('ESRI:54009');
+const proj54009 = getProjection('ESRI:54009');
 proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
 
-var layers = {};
+const layers = {};
 
 layers['bng'] = new TileLayer({
   source: new XYZ({
@@ -97,14 +97,14 @@ layers['wms21781'] = new TileLayer({
   })
 });
 
-var parser = new _ol_format_WMTSCapabilities_();
-var url = 'https://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
+const parser = new _ol_format_WMTSCapabilities_();
+const url = 'https://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
     'wmts.cgi?SERVICE=WMTS&request=GetCapabilities';
 fetch(url).then(function(response) {
   return response.text();
 }).then(function(text) {
-  var result = parser.read(text);
-  var options = WMTS.optionsFromCapabilities(result, {
+  const result = parser.read(text);
+  const options = WMTS.optionsFromCapabilities(result, {
     layer: 'OSM_Land_Mask',
     matrixSet: 'EPSG3413_250m'
   });
@@ -127,10 +127,10 @@ layers['grandcanyon'] = new TileLayer({
   })
 });
 
-var startResolution =
+const startResolution =
     _ol_extent_.getWidth(getProjection('EPSG:3857').getExtent()) / 256;
-var resolutions = new Array(22);
-for (var i = 0, ii = resolutions.length; i < ii; ++i) {
+const resolutions = new Array(22);
+for (let i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);
 }
 
@@ -150,7 +150,7 @@ layers['states'] = new TileLayer({
 });
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     layers['osm'],
     layers['bng']
@@ -164,16 +164,16 @@ var map = new Map({
 });
 
 
-var baseLayerSelect = document.getElementById('base-layer');
-var overlayLayerSelect = document.getElementById('overlay-layer');
-var viewProjSelect = document.getElementById('view-projection');
-var renderEdgesCheckbox = document.getElementById('render-edges');
-var renderEdges = false;
+const baseLayerSelect = document.getElementById('base-layer');
+const overlayLayerSelect = document.getElementById('overlay-layer');
+const viewProjSelect = document.getElementById('view-projection');
+const renderEdgesCheckbox = document.getElementById('render-edges');
+let renderEdges = false;
 
 function updateViewProjection() {
-  var newProj = getProjection(viewProjSelect.value);
-  var newProjExtent = newProj.getExtent();
-  var newView = new View({
+  const newProj = getProjection(viewProjSelect.value);
+  const newProjExtent = newProj.getExtent();
+  const newView = new View({
     projection: newProj,
     center: _ol_extent_.getCenter(newProjExtent || [0, 0, 0, 0]),
     zoom: 0,
@@ -199,9 +199,9 @@ viewProjSelect.onchange = function() {
 
 updateViewProjection();
 
-var updateRenderEdgesOnLayer = function(layer) {
+const updateRenderEdgesOnLayer = function(layer) {
   if (layer instanceof TileLayer) {
-    var source = layer.getSource();
+    const source = layer.getSource();
     if (source instanceof TileImage) {
       source.setRenderReprojectionEdges(renderEdges);
     }
@@ -213,7 +213,7 @@ var updateRenderEdgesOnLayer = function(layer) {
  * Handle change event.
  */
 baseLayerSelect.onchange = function() {
-  var layer = layers[baseLayerSelect.value];
+  const layer = layers[baseLayerSelect.value];
   if (layer) {
     layer.setOpacity(1);
     updateRenderEdgesOnLayer(layer);
@@ -226,7 +226,7 @@ baseLayerSelect.onchange = function() {
  * Handle change event.
  */
 overlayLayerSelect.onchange = function() {
-  var layer = layers[overlayLayerSelect.value];
+  const layer = layers[overlayLayerSelect.value];
   if (layer) {
     layer.setOpacity(0.7);
     updateRenderEdgesOnLayer(layer);

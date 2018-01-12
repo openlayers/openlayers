@@ -13,7 +13,7 @@
  * @param {!string} tagName The XML tag name for this filter.
  * @struct
  */
-var Filter = function(tagName) {
+const Filter = function(tagName) {
 
   /**
    * @private

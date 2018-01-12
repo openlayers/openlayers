@@ -6,7 +6,7 @@ import Interaction from '../../../../src/ol/interaction/Interaction.js';
 describe('ol.interaction.Interaction', function() {
 
   describe('constructor', function() {
-    var interaction;
+    let interaction;
 
     beforeEach(function() {
       interaction = new Interaction({});
@@ -26,14 +26,14 @@ describe('ol.interaction.Interaction', function() {
   describe('#getMap()', function() {
 
     it('retrieves the associated map', function() {
-      var map = new Map({});
-      var interaction = new Interaction({});
+      const map = new Map({});
+      const interaction = new Interaction({});
       interaction.setMap(map);
       expect(interaction.getMap()).to.be(map);
     });
 
     it('returns null if no map', function() {
-      var interaction = new Interaction({});
+      const interaction = new Interaction({});
       expect(interaction.getMap()).to.be(null);
     });
 
@@ -42,14 +42,14 @@ describe('ol.interaction.Interaction', function() {
   describe('#setMap()', function() {
 
     it('allows a map to be set', function() {
-      var map = new Map({});
-      var interaction = new Interaction({});
+      const map = new Map({});
+      const interaction = new Interaction({});
       interaction.setMap(map);
       expect(interaction.getMap()).to.be(map);
     });
 
     it('accepts null', function() {
-      var interaction = new Interaction({});
+      const interaction = new Interaction({});
       interaction.setMap(null);
       expect(interaction.getMap()).to.be(null);
     });
@@ -59,7 +59,7 @@ describe('ol.interaction.Interaction', function() {
   describe('zoomByDelta()', function() {
 
     it('changes view resolution', function() {
-      var view = new View({
+      const view = new View({
         resolution: 1,
         resolutions: [4, 2, 1, 0.5, 0.25]
       });
@@ -78,7 +78,7 @@ describe('ol.interaction.Interaction', function() {
     });
 
     it('changes view resolution and center relative to the anchor', function() {
-      var view = new View({
+      const view = new View({
         center: [0, 0],
         resolution: 1,
         resolutions: [4, 2, 1, 0.5, 0.25]
@@ -98,7 +98,7 @@ describe('ol.interaction.Interaction', function() {
     });
 
     it('changes view resolution and center relative to the anchor, while respecting the extent', function() {
-      var view = new View({
+      const view = new View({
         center: [0, 0],
         extent: [-2.5, -2.5, 2.5, 2.5],
         resolution: 1,

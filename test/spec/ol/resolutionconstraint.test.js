@@ -5,11 +5,11 @@ describe('ol.ResolutionConstraint', function() {
 
   describe('SnapToResolution', function() {
 
-    var resolutionConstraint;
+    let resolutionConstraint;
 
     beforeEach(function() {
       resolutionConstraint = ResolutionConstraint.createSnapToResolutions(
-          [1000, 500, 250, 100]);
+        [1000, 500, 250, 100]);
     });
 
     describe('delta 0', function() {
@@ -42,12 +42,12 @@ describe('ol.ResolutionConstraint', function() {
 
   describe('SnapToResolutions Nearest', function() {
 
-    var resolutionConstraint;
+    let resolutionConstraint;
 
     beforeEach(function() {
       resolutionConstraint =
           ResolutionConstraint.createSnapToResolutions(
-              [1000, 500, 250, 100]);
+            [1000, 500, 250, 100]);
     });
 
     describe('delta 0', function() {
@@ -92,7 +92,7 @@ describe('ol.ResolutionConstraint', function() {
 
   describe('createSnapToPower', function() {
 
-    var resolutionConstraint;
+    let resolutionConstraint;
 
     beforeEach(function() {
       resolutionConstraint =
@@ -150,7 +150,7 @@ describe('ol.ResolutionConstraint', function() {
 
   describe('createSnapToPower Nearest', function() {
 
-    var resolutionConstraint;
+    let resolutionConstraint;
 
     beforeEach(function() {
       resolutionConstraint =

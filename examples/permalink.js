@@ -5,14 +5,14 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 // default zoom, center and rotation
-var zoom = 2;
-var center = [0, 0];
-var rotation = 0;
+let zoom = 2;
+let center = [0, 0];
+let rotation = 0;
 
 if (window.location.hash !== '') {
   // try to restore center, zoom-level and rotation from the URL
-  var hash = window.location.hash.replace('#map=', '');
-  var parts = hash.split('/');
+  const hash = window.location.hash.replace('#map=', '');
+  const parts = hash.split('/');
   if (parts.length === 4) {
     zoom = parseInt(parts[0], 10);
     center = [
@@ -23,7 +23,7 @@ if (window.location.hash !== '') {
   }
 }
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -42,22 +42,22 @@ var map = new Map({
   })
 });
 
-var shouldUpdate = true;
-var view = map.getView();
-var updatePermalink = function() {
+let shouldUpdate = true;
+const view = map.getView();
+const updatePermalink = function() {
   if (!shouldUpdate) {
     // do not update the URL when the view was changed in the 'popstate' handler
     shouldUpdate = true;
     return;
   }
 
-  var center = view.getCenter();
-  var hash = '#map=' +
+  const center = view.getCenter();
+  const hash = '#map=' +
       view.getZoom() + '/' +
       Math.round(center[0] * 100) / 100 + '/' +
       Math.round(center[1] * 100) / 100 + '/' +
       view.getRotation();
-  var state = {
+  const state = {
     zoom: view.getZoom(),
     center: view.getCenter(),
     rotation: view.getRotation()

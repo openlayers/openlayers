@@ -8,19 +8,19 @@ import TileWMS from '../src/ol/source/TileWMS.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 
-var projExtent = getProjection('EPSG:3857').getExtent();
-var startResolution = _ol_extent_.getWidth(projExtent) / 256;
-var resolutions = new Array(22);
-for (var i = 0, ii = resolutions.length; i < ii; ++i) {
+const projExtent = getProjection('EPSG:3857').getExtent();
+const startResolution = _ol_extent_.getWidth(projExtent) / 256;
+const resolutions = new Array(22);
+for (let i = 0, ii = resolutions.length; i < ii; ++i) {
   resolutions[i] = startResolution / Math.pow(2, i);
 }
-var tileGrid = new TileGrid({
+const tileGrid = new TileGrid({
   extent: [-13884991, 2870341, -7455066, 6338219],
   resolutions: resolutions,
   tileSize: [512, 256]
 });
 
-var layers = [
+const layers = [
   new TileLayer({
     source: new OSM()
   }),
@@ -33,7 +33,7 @@ var layers = [
     })
   })
 ];
-var map = new Map({
+const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({

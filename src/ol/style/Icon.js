@@ -21,9 +21,9 @@ import ImageStyle from '../style/Image.js';
  * @extends {ol.style.Image}
  * @api
  */
-var Icon = function(opt_options) {
+const Icon = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -68,33 +68,33 @@ var Icon = function(opt_options) {
   /**
    * @type {Image|HTMLCanvasElement}
    */
-  var image = options.img !== undefined ? options.img : null;
+  const image = options.img !== undefined ? options.img : null;
 
   /**
    * @type {ol.Size}
    */
-  var imgSize = options.imgSize !== undefined ? options.imgSize : null;
+  const imgSize = options.imgSize !== undefined ? options.imgSize : null;
 
   /**
    * @type {string|undefined}
    */
-  var src = options.src;
+  let src = options.src;
 
   assert(!(src !== undefined && image),
-      4); // `image` and `src` cannot be provided at the same time
+    4); // `image` and `src` cannot be provided at the same time
   assert(!image || (image && imgSize),
-      5); // `imgSize` must be set when `image` is provided
+    5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
     src = image.src || getUid(image).toString();
   }
   assert(src !== undefined && src.length > 0,
-      6); // A defined and non-empty `src` or `image` must be provided
+    6); // A defined and non-empty `src` or `image` must be provided
 
   /**
    * @type {ol.ImageState}
    */
-  var imageState = options.src !== undefined ?
+  const imageState = options.src !== undefined ?
     ImageState.IDLE : ImageState.LOADED;
 
   /**
@@ -108,7 +108,7 @@ var Icon = function(opt_options) {
    * @type {ol.style.IconImage}
    */
   this.iconImage_ = IconImage.get(
-      image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
+    image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
 
   /**
    * @private
@@ -138,28 +138,28 @@ var Icon = function(opt_options) {
   /**
    * @type {number}
    */
-  var opacity = options.opacity !== undefined ? options.opacity : 1;
+  const opacity = options.opacity !== undefined ? options.opacity : 1;
 
   /**
    * @type {boolean}
    */
-  var rotateWithView = options.rotateWithView !== undefined ?
+  const rotateWithView = options.rotateWithView !== undefined ?
     options.rotateWithView : false;
 
   /**
    * @type {number}
    */
-  var rotation = options.rotation !== undefined ? options.rotation : 0;
+  const rotation = options.rotation !== undefined ? options.rotation : 0;
 
   /**
    * @type {number}
    */
-  var scale = options.scale !== undefined ? options.scale : 1;
+  const scale = options.scale !== undefined ? options.scale : 1;
 
   /**
    * @type {boolean}
    */
-  var snapToPixel = options.snapToPixel !== undefined ?
+  const snapToPixel = options.snapToPixel !== undefined ?
     options.snapToPixel : true;
 
   ImageStyle.call(this, {
@@ -209,8 +209,8 @@ Icon.prototype.getAnchor = function() {
   if (this.normalizedAnchor_) {
     return this.normalizedAnchor_;
   }
-  var anchor = this.anchor_;
-  var size = this.getSize();
+  let anchor = this.anchor_;
+  const size = this.getSize();
   if (this.anchorXUnits_ == IconAnchorUnits.FRACTION ||
       this.anchorYUnits_ == IconAnchorUnits.FRACTION) {
     if (!size) {
@@ -308,11 +308,11 @@ Icon.prototype.getOrigin = function() {
   if (this.origin_) {
     return this.origin_;
   }
-  var offset = this.offset_;
+  let offset = this.offset_;
 
   if (this.offsetOrigin_ != IconOrigin.TOP_LEFT) {
-    var size = this.getSize();
-    var iconImageSize = this.iconImage_.getSize();
+    const size = this.getSize();
+    const iconImageSize = this.iconImage_.getSize();
     if (!size || !iconImageSize) {
       return null;
     }
@@ -355,7 +355,7 @@ Icon.prototype.getSize = function() {
  */
 Icon.prototype.listenImageChange = function(listener, thisArg) {
   return _ol_events_.listen(this.iconImage_, EventType.CHANGE,
-      listener, thisArg);
+    listener, thisArg);
 };
 
 
@@ -377,6 +377,6 @@ Icon.prototype.load = function() {
  */
 Icon.prototype.unlistenImageChange = function(listener, thisArg) {
   _ol_events_.unlisten(this.iconImage_, EventType.CHANGE,
-      listener, thisArg);
+    listener, thisArg);
 };
 export default Icon;

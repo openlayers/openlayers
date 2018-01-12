@@ -10,79 +10,79 @@ import {DEBUG_WEBGL} from '../../../../index.js';
  * @param {WebGLProgram} program Program.
  * @struct
  */
-var _ol_render_webgl_circlereplay_defaultshader_Locations_ = function(gl, program) {
+const _ol_render_webgl_circlereplay_defaultshader_Locations_ = function(gl, program) {
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_projectionMatrix' : 'h');
+    program, DEBUG_WEBGL ? 'u_projectionMatrix' : 'h');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetScaleMatrix = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'i');
+    program, DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'i');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetRotateMatrix = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'j');
+    program, DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'j');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_lineWidth = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_lineWidth' : 'k');
+    program, DEBUG_WEBGL ? 'u_lineWidth' : 'k');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_pixelRatio = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_pixelRatio' : 'l');
+    program, DEBUG_WEBGL ? 'u_pixelRatio' : 'l');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_opacity = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_opacity' : 'm');
+    program, DEBUG_WEBGL ? 'u_opacity' : 'm');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_fillColor = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_fillColor' : 'n');
+    program, DEBUG_WEBGL ? 'u_fillColor' : 'n');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_strokeColor = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_strokeColor' : 'o');
+    program, DEBUG_WEBGL ? 'u_strokeColor' : 'o');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_size = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_size' : 'p');
+    program, DEBUG_WEBGL ? 'u_size' : 'p');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? 'a_position' : 'e');
+    program, DEBUG_WEBGL ? 'a_position' : 'e');
 
   /**
    * @type {number}
    */
   this.a_instruction = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? 'a_instruction' : 'f');
+    program, DEBUG_WEBGL ? 'a_instruction' : 'f');
 
   /**
    * @type {number}
    */
   this.a_radius = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? 'a_radius' : 'g');
+    program, DEBUG_WEBGL ? 'a_radius' : 'g');
 };
 
 export default _ol_render_webgl_circlereplay_defaultshader_Locations_;

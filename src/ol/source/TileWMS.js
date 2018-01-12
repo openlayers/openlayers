@@ -26,13 +26,13 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
  * @api
  */
-var TileWMS = function(opt_options) {
+const TileWMS = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
-  var params = options.params || {};
+  const params = options.params || {};
 
-  var transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
+  const transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
   TileImage.call(this, {
     attributions: options.attributions,
@@ -109,26 +109,26 @@ inherits(TileWMS, TileImage);
  * @api
  */
 TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
-  var projectionObj = getProjection(projection);
-  var sourceProjectionObj = this.getProjection();
+  const projectionObj = getProjection(projection);
+  const sourceProjectionObj = this.getProjection();
 
-  var tileGrid = this.getTileGrid();
+  let tileGrid = this.getTileGrid();
   if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projectionObj);
   }
 
-  var tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
+  const tileCoord = tileGrid.getTileCoordForCoordAndResolution(coordinate, resolution);
 
   if (tileGrid.getResolutions().length <= tileCoord[0]) {
     return undefined;
   }
 
-  var tileResolution = tileGrid.getResolution(tileCoord[0]);
-  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  var tileSize = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  let tileResolution = tileGrid.getResolution(tileCoord[0]);
+  let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  let tileSize = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
 
-  var gutter = this.gutter_;
+  const gutter = this.gutter_;
   if (gutter !== 0) {
     tileSize = _ol_size_.buffer(tileSize, gutter, this.tmpSize);
     tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
@@ -140,7 +140,7 @@ TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projec
     coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
   }
 
-  var baseParams = {
+  const baseParams = {
     'SERVICE': 'WMS',
     'VERSION': DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
@@ -150,14 +150,14 @@ TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projec
   };
   _ol_obj_.assign(baseParams, this.params_, params);
 
-  var x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
-  var y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
+  const x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
+  const y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
 
   baseParams[this.v13_ ? 'I' : 'X'] = x;
   baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      1, sourceProjectionObj || projectionObj, baseParams);
+    1, sourceProjectionObj || projectionObj, baseParams);
 };
 
 
@@ -191,9 +191,9 @@ TileWMS.prototype.getParams = function() {
  * @private
  */
 TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
-    pixelRatio, projection, params) {
+  pixelRatio, projection, params) {
 
-  var urls = this.urls;
+  const urls = this.urls;
   if (!urls) {
     return undefined;
   }
@@ -210,7 +210,7 @@ TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
   if (pixelRatio != 1) {
     switch (this.serverType_) {
       case WMSServerType.GEOSERVER:
-        var dpi = (90 * pixelRatio + 0.5) | 0;
+        const dpi = (90 * pixelRatio + 0.5) | 0;
         if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
         } else {
@@ -230,10 +230,10 @@ TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
     }
   }
 
-  var axisOrientation = projection.getAxisOrientation();
-  var bbox = tileExtent;
+  const axisOrientation = projection.getAxisOrientation();
+  const bbox = tileExtent;
   if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
-    var tmp;
+    let tmp;
     tmp = tileExtent[0];
     bbox[0] = tileExtent[1];
     bbox[1] = tmp;
@@ -243,11 +243,11 @@ TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
   }
   params['BBOX'] = bbox.join(',');
 
-  var url;
+  let url;
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
+    const index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
     url = urls[index];
   }
   return _ol_uri_.appendParams(url, params);
@@ -268,9 +268,9 @@ TileWMS.prototype.getTilePixelRatio = function(pixelRatio) {
  * @return {string} The key for the current params.
  */
 TileWMS.prototype.getKeyForParams_ = function() {
-  var i = 0;
-  var res = [];
-  for (var key in this.params_) {
+  let i = 0;
+  const res = [];
+  for (const key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
   return res.join('/');
@@ -282,7 +282,7 @@ TileWMS.prototype.getKeyForParams_ = function() {
  */
 TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
 
-  var tileGrid = this.getTileGrid();
+  let tileGrid = this.getTileGrid();
   if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projection);
   }
@@ -295,12 +295,12 @@ TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, project
     pixelRatio = 1;
   }
 
-  var tileResolution = tileGrid.getResolution(tileCoord[0]);
-  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  var tileSize = _ol_size_.toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  const tileResolution = tileGrid.getResolution(tileCoord[0]);
+  let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+  let tileSize = _ol_size_.toSize(
+    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
-  var gutter = this.gutter_;
+  const gutter = this.gutter_;
   if (gutter !== 0) {
     tileSize = _ol_size_.buffer(tileSize, gutter, this.tmpSize);
     tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
@@ -310,7 +310,7 @@ TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, project
     tileSize = _ol_size_.scale(tileSize, pixelRatio, this.tmpSize);
   }
 
-  var baseParams = {
+  const baseParams = {
     'SERVICE': 'WMS',
     'VERSION': DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
@@ -320,7 +320,7 @@ TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, project
   _ol_obj_.assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+    pixelRatio, projection, baseParams);
 };
 
 /**
@@ -339,7 +339,7 @@ TileWMS.prototype.updateParams = function(params) {
  * @private
  */
 TileWMS.prototype.updateV13_ = function() {
-  var version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
+  const version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
   this.v13_ = _ol_string_.compareVersions(version, '1.3') >= 0;
 };
 export default TileWMS;

@@ -22,7 +22,7 @@ import TranslateEventType from '../interaction/TranslateEventType.js';
  * @param {olx.interaction.TranslateOptions=} opt_options Options.
  * @api
  */
-var _ol_interaction_Translate_ = function(opt_options) {
+const _ol_interaction_Translate_ = function(opt_options) {
   PointerInteraction.call(this, {
     handleDownEvent: _ol_interaction_Translate_.handleDownEvent_,
     handleDragEvent: _ol_interaction_Translate_.handleDragEvent_,
@@ -30,7 +30,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
     handleUpEvent: _ol_interaction_Translate_.handleUpEvent_
   });
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * The last position we translated to.
@@ -47,12 +47,12 @@ var _ol_interaction_Translate_ = function(opt_options) {
   this.features_ = options.features !== undefined ? options.features : null;
 
   /** @type {function(ol.layer.Layer): boolean} */
-  var layerFilter;
+  let layerFilter;
   if (options.layers) {
     if (typeof options.layers === 'function') {
       layerFilter = options.layers;
     } else {
-      var layers = options.layers;
+      const layers = options.layers;
       layerFilter = function(layer) {
         return includes(layers, layer);
       };
@@ -80,8 +80,8 @@ var _ol_interaction_Translate_ = function(opt_options) {
   this.lastFeature_ = null;
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
-      this.handleActiveChanged_, this);
+    BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
+    this.handleActiveChanged_, this);
 
 };
 
@@ -100,12 +100,12 @@ _ol_interaction_Translate_.handleDownEvent_ = function(event) {
     this.lastCoordinate_ = event.coordinate;
     _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
 
-    var features = this.features_ || new Collection([this.lastFeature_]);
+    const features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
-        new _ol_interaction_Translate_.Event(
-            TranslateEventType.TRANSLATESTART, features,
-            event.coordinate));
+      new _ol_interaction_Translate_.Event(
+        TranslateEventType.TRANSLATESTART, features,
+        event.coordinate));
     return true;
   }
   return false;
@@ -123,12 +123,12 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
     this.lastCoordinate_ = null;
     _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
 
-    var features = this.features_ || new Collection([this.lastFeature_]);
+    const features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
-        new _ol_interaction_Translate_.Event(
-            TranslateEventType.TRANSLATEEND, features,
-            event.coordinate));
+      new _ol_interaction_Translate_.Event(
+        TranslateEventType.TRANSLATEEND, features,
+        event.coordinate));
     return true;
   }
   return false;
@@ -142,23 +142,23 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
  */
 _ol_interaction_Translate_.handleDragEvent_ = function(event) {
   if (this.lastCoordinate_) {
-    var newCoordinate = event.coordinate;
-    var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
-    var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
+    const newCoordinate = event.coordinate;
+    const deltaX = newCoordinate[0] - this.lastCoordinate_[0];
+    const deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    var features = this.features_ || new Collection([this.lastFeature_]);
+    const features = this.features_ || new Collection([this.lastFeature_]);
 
     features.forEach(function(feature) {
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       geom.translate(deltaX, deltaY);
       feature.setGeometry(geom);
     });
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
-        new _ol_interaction_Translate_.Event(
-            TranslateEventType.TRANSLATING, features,
-            newCoordinate));
+      new _ol_interaction_Translate_.Event(
+        TranslateEventType.TRANSLATING, features,
+        newCoordinate));
   }
 };
 
@@ -169,7 +169,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
  * @private
  */
 _ol_interaction_Translate_.handleMoveEvent_ = function(event) {
-  var elem = event.map.getViewport();
+  const elem = event.map.getViewport();
 
   // Change the cursor to grab/grabbing if hovering any of the features managed
   // by the interaction
@@ -193,14 +193,14 @@ _ol_interaction_Translate_.handleMoveEvent_ = function(event) {
  */
 _ol_interaction_Translate_.prototype.featuresAtPixel_ = function(pixel, map) {
   return map.forEachFeatureAtPixel(pixel,
-      function(feature) {
-        if (!this.features_ || includes(this.features_.getArray(), feature)) {
-          return feature;
-        }
-      }.bind(this), {
-        layerFilter: this.layerFilter_,
-        hitTolerance: this.hitTolerance_
-      });
+    function(feature) {
+      if (!this.features_ || includes(this.features_.getArray(), feature)) {
+        return feature;
+      }
+    }.bind(this), {
+      layerFilter: this.layerFilter_,
+      hitTolerance: this.hitTolerance_
+    });
 };
 
 
@@ -230,7 +230,7 @@ _ol_interaction_Translate_.prototype.setHitTolerance = function(hitTolerance) {
  * @inheritDoc
  */
 _ol_interaction_Translate_.prototype.setMap = function(map) {
-  var oldMap = this.getMap();
+  const oldMap = this.getMap();
   PointerInteraction.prototype.setMap.call(this, map);
   this.updateState_(oldMap);
 };
@@ -249,12 +249,12 @@ _ol_interaction_Translate_.prototype.handleActiveChanged_ = function() {
  * @private
  */
 _ol_interaction_Translate_.prototype.updateState_ = function(oldMap) {
-  var map = this.getMap();
-  var active = this.getActive();
+  let map = this.getMap();
+  const active = this.getActive();
   if (!map || !active) {
     map = map || oldMap;
     if (map) {
-      var elem = map.getViewport();
+      const elem = map.getViewport();
       elem.classList.remove('ol-grab', 'ol-grabbing');
     }
   }

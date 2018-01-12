@@ -21,10 +21,10 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.layer.VectorTileOptions=} opt_options Options.
  * @api
  */
-var VectorTileLayer = function(opt_options) {
-  var options = opt_options ? opt_options : {};
+const VectorTileLayer = function(opt_options) {
+  const options = opt_options ? opt_options : {};
 
-  var renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
+  let renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
   assert(renderMode == undefined ||
       renderMode == _ol_layer_VectorTileRenderType_.IMAGE ||
       renderMode == _ol_layer_VectorTileRenderType_.HYBRID ||
@@ -35,7 +35,7 @@ var VectorTileLayer = function(opt_options) {
   }
   options.renderMode = renderMode;
 
-  var baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
@@ -102,7 +102,7 @@ VectorTileLayer.prototype.setPreload = function(preload) {
  */
 VectorTileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
-      _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+    _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
 
 

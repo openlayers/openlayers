@@ -6,12 +6,12 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var view = new View({
+const view = new View({
   center: [-9101767, 2822912],
   zoom: 14
 });
 
-var map = new Map({
+const map = new Map({
   controls: defaultControls().extend([
     new FullScreen({
       source: 'fullscreen'

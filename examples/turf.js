@@ -10,27 +10,27 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 
-var source = new VectorSource();
+const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   return response.json();
 }).then(function(json) {
-  var format = new GeoJSON();
-  var features = format.readFeatures(json);
-  var street = features[0];
+  const format = new GeoJSON();
+  const features = format.readFeatures(json);
+  const street = features[0];
 
   // convert to a turf.js feature
-  var turfLine = format.writeFeatureObject(street);
+  const turfLine = format.writeFeatureObject(street);
 
   // show a marker every 200 meters
-  var distance = 0.2;
+  const distance = 0.2;
 
   // get the line length in kilometers
-  var length = turf.lineDistance(turfLine, 'kilometers');
-  for (var i = 1; i <= length / distance; i++) {
-    var turfPoint = turf.along(turfLine, i * distance, 'kilometers');
+  const length = turf.lineDistance(turfLine, 'kilometers');
+  for (let i = 1; i <= length / distance; i++) {
+    const turfPoint = turf.along(turfLine, i * distance, 'kilometers');
 
     // convert the generated point to a OpenLayers feature
-    var marker = format.readFeature(turfPoint);
+    const marker = format.readFeature(turfPoint);
     marker.getGeometry().transform('EPSG:4326', 'EPSG:3857');
     source.addFeature(marker);
   }
@@ -38,15 +38,15 @@ fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   street.getGeometry().transform('EPSG:4326', 'EPSG:3857');
   source.addFeature(street);
 });
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: source
 });
 
-var rasterLayer = new TileLayer({
+const rasterLayer = new TileLayer({
   source: new OSM()
 });
 
-var map = new Map({
+const map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new View({

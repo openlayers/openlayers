@@ -7,15 +7,15 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var vectorLayer4326 = new VectorLayer({
+const vectorLayer4326 = new VectorLayer({
   source: new VectorSource()
 });
 
-var vectorLayer3857 = new VectorLayer({
+const vectorLayer3857 = new VectorLayer({
   source: new VectorSource()
 });
 
-var map4326 = new Map({
+const map4326 = new Map({
   layers: [
     new TileLayer({
       source: new TileWMS({
@@ -36,7 +36,7 @@ var map4326 = new Map({
   })
 });
 
-var map3857 = new Map({
+const map3857 = new Map({
   layers: [
     new TileLayer({
       source: new TileWMS({
@@ -56,12 +56,12 @@ var map3857 = new Map({
   })
 });
 
-var radius = 800000;
-var x, y;
+const radius = 800000;
+let x, y;
 for (x = -180; x < 180; x += 30) {
   for (y = -90; y < 90; y += 30) {
-    var circle4326 = circularPolygon([x, y], radius, 64);
-    var circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
+    const circle4326 = circularPolygon([x, y], radius, 64);
+    const circle3857 = circle4326.clone().transform('EPSG:4326', 'EPSG:3857');
     vectorLayer4326.getSource().addFeature(new Feature(circle4326));
     vectorLayer3857.getSource().addFeature(new Feature(circle3857));
   }

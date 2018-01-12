@@ -9,7 +9,7 @@ import {FALSE} from '../functions.js';
  * @param {string} source Source.
  * @struct
  */
-var _ol_webgl_Shader_ = function(source) {
+const _ol_webgl_Shader_ = function(source) {
 
   /**
    * @private

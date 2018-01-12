@@ -14,7 +14,7 @@ describe('ol/geom/Polygon', function() {
 
   describe('construct empty', function() {
 
-    var polygon;
+    let polygon;
     beforeEach(function() {
       polygon = new Polygon([]);
     });
@@ -41,21 +41,21 @@ describe('ol/geom/Polygon', function() {
 
     it('can append linear rings', function() {
       polygon.appendLinearRing(
-          new LinearRing([[1, 2], [3, 4], [5, 6]]));
+        new LinearRing([[1, 2], [3, 4], [5, 6]]));
       expect(polygon.getCoordinates()).to.eql(
-          [[[1, 2], [3, 4], [5, 6]]]);
+        [[[1, 2], [3, 4], [5, 6]]]);
       polygon.appendLinearRing(
-          new LinearRing([[7, 8], [9, 10], [11, 12]]));
+        new LinearRing([[7, 8], [9, 10], [11, 12]]));
       expect(polygon.getCoordinates()).to.eql(
-          [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]);
+        [[[1, 2], [3, 4], [5, 6]], [[7, 8], [9, 10], [11, 12]]]);
     });
 
   });
 
   describe('construct with 2D coordinates', function() {
 
-    var outerRing, innerRing, polygon, flatCoordinates;
-    var outsideOuter, inside, insideInner;
+    let outerRing, innerRing, polygon, flatCoordinates;
+    let outsideOuter, inside, insideInner;
     beforeEach(function() {
       outerRing = [[0, 1], [1, 4], [4, 3], [3, 0]];
       innerRing = [[2, 2], [3, 2], [3, 3], [2, 3]];
@@ -92,7 +92,7 @@ describe('ol/geom/Polygon', function() {
     });
 
     it('has the expected rings', function() {
-      var linearRings = polygon.getLinearRings();
+      const linearRings = polygon.getLinearRings();
       expect(linearRings).to.be.an(Array);
       expect(linearRings).to.have.length(2);
       expect(linearRings[0]).to.be.an(LinearRing);
@@ -105,7 +105,7 @@ describe('ol/geom/Polygon', function() {
       outerRing.reverse();
       innerRing.reverse();
       polygon = new Polygon([outerRing, innerRing]);
-      var coordinates = polygon.getCoordinates();
+      const coordinates = polygon.getCoordinates();
       expect(coordinates[0]).to.eql(outerRing);
       expect(coordinates[1]).to.eql(innerRing);
     });
@@ -124,10 +124,10 @@ describe('ol/geom/Polygon', function() {
 
     describe('#getCoordinates()', function() {
 
-      var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
-      var ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
-      var right = new Polygon([ccw, cw]);
-      var left = new Polygon([cw, ccw]);
+      const cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
+      const ccw = [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]];
+      const right = new Polygon([ccw, cw]);
+      const left = new Polygon([cw, ccw]);
 
       it('returns coordinates as they were constructed', function() {
         expect(right.getCoordinates()).to.eql([ccw, cw]);
@@ -173,8 +173,8 @@ describe('ol/geom/Polygon', function() {
 
   describe('construct with 3D coordinates', function() {
 
-    var outerRing, innerRing, polygon, flatCoordinates;
-    var outsideOuter, inside, insideInner;
+    let outerRing, innerRing, polygon, flatCoordinates;
+    let outsideOuter, inside, insideInner;
     beforeEach(function() {
       outerRing = [[0, 0, 1], [4, 4, 2], [4, 0, 3]];
       innerRing = [[2, 1, 4], [3, 1, 5], [3, 2, 6]];
@@ -221,17 +221,17 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect outside extent', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
+          _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
       });
 
       it('does intersect inside extent', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([inside]))).to.be(true);
+          _ol_extent_.boundingExtent([inside]))).to.be(true);
       });
 
       it('does intersect boundary extent', function() {
-        var firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
-        var firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
+        const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
+        const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
         expect(polygon.intersectsExtent(_ol_extent_.boundingExtent([[firstMidX,
           firstMidY]]))).to.be(true);
@@ -239,7 +239,7 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect extent fully contained by inner ring', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([insideInner]))).to.be(false);
+          _ol_extent_.boundingExtent([insideInner]))).to.be(false);
       });
 
     });
@@ -271,13 +271,13 @@ describe('ol/geom/Polygon', function() {
 
   describe('construct with 3D coordinates and layout XYM', function() {
 
-    var outerRing, innerRing, polygon, flatCoordinates;
-    var outsideOuter, inside, insideInner;
+    let outerRing, innerRing, polygon, flatCoordinates;
+    let outsideOuter, inside, insideInner;
     beforeEach(function() {
       outerRing = [[0, 0, 1], [4, 4, 2], [4, 0, 3]];
       innerRing = [[2, 1, 4], [3, 1, 5], [3, 2, 6]];
       polygon = new Polygon(
-          [outerRing, innerRing], 'XYM');
+        [outerRing, innerRing], 'XYM');
       flatCoordinates = [0, 0, 1, 4, 4, 2, 4, 0, 3, 2, 1, 4, 3, 1, 5, 3, 2, 6];
       outsideOuter = [1, 3];
       inside = [3.5, 0.5];
@@ -320,17 +320,17 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect outside extent', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
+          _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
       });
 
       it('does intersect inside extent', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([inside]))).to.be(true);
+          _ol_extent_.boundingExtent([inside]))).to.be(true);
       });
 
       it('does intersect boundary extent', function() {
-        var firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
-        var firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
+        const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
+        const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
         expect(polygon.intersectsExtent(_ol_extent_.boundingExtent([[firstMidX,
           firstMidY]]))).to.be(true);
@@ -338,7 +338,7 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect extent fully contained by inner ring', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([insideInner]))).to.be(false);
+          _ol_extent_.boundingExtent([insideInner]))).to.be(false);
       });
 
     });
@@ -370,8 +370,8 @@ describe('ol/geom/Polygon', function() {
 
   describe('construct with 4D coordinates', function() {
 
-    var outerRing, innerRing1, innerRing2, polygon, flatCoordinates;
-    var outsideOuter, inside, insideInner1, insideInner2;
+    let outerRing, innerRing1, innerRing2, polygon, flatCoordinates;
+    let outsideOuter, inside, insideInner1, insideInner2;
     beforeEach(function() {
       outerRing = [[0, 6, 1, 2], [6, 6, 3, 4], [3, 0, 5, 6]];
       innerRing1 =
@@ -395,7 +395,7 @@ describe('ol/geom/Polygon', function() {
 
     it('has the expected coordinates', function() {
       expect(polygon.getCoordinates()).to.eql(
-          [outerRing, innerRing1, innerRing2]);
+        [outerRing, innerRing1, innerRing2]);
     });
 
     it('has the expected extent', function() {
@@ -427,17 +427,17 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect outside extent', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
+          _ol_extent_.boundingExtent([outsideOuter]))).to.be(false);
       });
 
       it('does intersect inside extent', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([inside]))).to.be(true);
+          _ol_extent_.boundingExtent([inside]))).to.be(true);
       });
 
       it('does intersect boundary extent', function() {
-        var firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
-        var firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
+        const firstMidX = (outerRing[0][0] + outerRing[1][0]) / 2;
+        const firstMidY = (outerRing[0][1] + outerRing[1][1]) / 2;
 
         expect(polygon.intersectsExtent(_ol_extent_.boundingExtent([[firstMidX,
           firstMidY]]))).to.be(true);
@@ -445,9 +445,9 @@ describe('ol/geom/Polygon', function() {
 
       it('does not intersect extent fully contained by inner ring', function() {
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([insideInner1]))).to.be(false);
+          _ol_extent_.boundingExtent([insideInner1]))).to.be(false);
         expect(polygon.intersectsExtent(
-            _ol_extent_.boundingExtent([insideInner2]))).to.be(false);
+          _ol_extent_.boundingExtent([insideInner2]))).to.be(false);
       });
 
     });
@@ -481,26 +481,26 @@ describe('ol/geom/Polygon', function() {
 
   describe('with a simple polygon', function() {
 
-    var polygon;
+    let polygon;
     beforeEach(function() {
       polygon = new Polygon(
-          [[[3, 0], [1, 3], [0, 6], [2, 6], [3, 7], [4, 6], [6, 6], [4, 3]]]);
+        [[[3, 0], [1, 3], [0, 6], [2, 6], [3, 7], [4, 6], [6, 6], [4, 3]]]);
     });
 
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expected result', function() {
-        var simplifiedGeometry = polygon.getSimplifiedGeometry(9);
+        const simplifiedGeometry = polygon.getSimplifiedGeometry(9);
         expect(simplifiedGeometry).to.be.an(Polygon);
         expect(simplifiedGeometry.getCoordinates()).to.eql(
-            [[[3, 0], [0, 3], [0, 6], [6, 6], [3, 3]]]);
+          [[[3, 0], [0, 3], [0, 6], [6, 6], [3, 3]]]);
       });
 
       it('caches multiple simplified geometries', function() {
-        var simplifiedGeometry1 = polygon.getSimplifiedGeometry(4);
-        var simplifiedGeometry2 = polygon.getSimplifiedGeometry(9);
-        var simplifiedGeometry3 = polygon.getSimplifiedGeometry(4);
-        var simplifiedGeometry4 = polygon.getSimplifiedGeometry(9);
+        const simplifiedGeometry1 = polygon.getSimplifiedGeometry(4);
+        const simplifiedGeometry2 = polygon.getSimplifiedGeometry(9);
+        const simplifiedGeometry3 = polygon.getSimplifiedGeometry(4);
+        const simplifiedGeometry4 = polygon.getSimplifiedGeometry(9);
         expect(simplifiedGeometry1).to.be(simplifiedGeometry3);
         expect(simplifiedGeometry2).to.be(simplifiedGeometry4);
       });
@@ -511,29 +511,29 @@ describe('ol/geom/Polygon', function() {
   describe('#scale()', function() {
 
     it('scales a polygon', function() {
-      var geom = new Polygon([
+      const geom = new Polygon([
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]);
       geom.scale(10);
-      var coordinates = geom.getCoordinates();
+      const coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[[-10, -20], [10, -20], [10, 20], [-10, 20], [-10, -20]]]);
     });
 
     it('accepts sx and sy', function() {
-      var geom = new Polygon([
+      const geom = new Polygon([
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]);
       geom.scale(2, 3);
-      var coordinates = geom.getCoordinates();
+      const coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[[-2, -6], [2, -6], [2, 6], [-2, 6], [-2, -6]]]);
     });
 
     it('accepts an anchor', function() {
-      var geom = new Polygon([
+      const geom = new Polygon([
         [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
       ]);
       geom.scale(3, 2, [-1, -2]);
-      var coordinates = geom.getCoordinates();
+      const coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[[-1, -2], [5, -2], [5, 6], [-1, 6], [-1, -2]]]);
     });
 
@@ -542,19 +542,19 @@ describe('ol/geom/Polygon', function() {
   describe('#getInteriorPoint', function() {
 
     it('returns XYM point with intersection width as M', function() {
-      var geom = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
-      var interiorPoint = geom.getInteriorPoint();
+      const geom = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
+      const interiorPoint = geom.getInteriorPoint();
       expect(interiorPoint.getType()).to.be('Point');
       expect(interiorPoint.layout).to.be('XYM');
       expect(interiorPoint.getCoordinates()).to.eql([0.5, 0.5, 1]);
     });
 
     it('returns XYM point for donut polygons', function() {
-      var geom = new Polygon([
+      const geom = new Polygon([
         [[0.5, 0.5], [0.5, 2.5], [2.5, 2.5], [2.5, 0.5], [0.5, 0.5]],
         [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]]
       ]);
-      var interiorPoint = geom.getInteriorPoint();
+      const interiorPoint = geom.getInteriorPoint();
       expect(interiorPoint.getType()).to.be('Point');
       expect(interiorPoint.layout).to.be('XYM');
       expect(interiorPoint.getCoordinates()).to.eql([0.75, 1.5, 0.5]);
@@ -563,23 +563,23 @@ describe('ol/geom/Polygon', function() {
 
   describe('fromExtent()', function() {
     it('creates the correct polygon', function() {
-      var extent = [1, 2, 3, 5];
-      var polygon = fromExtent(extent);
-      var flatCoordinates = polygon.getFlatCoordinates();
+      const extent = [1, 2, 3, 5];
+      const polygon = fromExtent(extent);
+      const flatCoordinates = polygon.getFlatCoordinates();
       expect(flatCoordinates).to.eql(
-          [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
-      var orientedFlatCoordinates = polygon.getOrientedFlatCoordinates();
+        [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+      const orientedFlatCoordinates = polygon.getOrientedFlatCoordinates();
       expect(orientedFlatCoordinates).to.eql(
-          [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
+        [1, 2, 1, 5, 3, 5, 3, 2, 1, 2]);
     });
   });
 
   describe('fromCircle()', function() {
 
     it('creates a regular polygon', function() {
-      var circle = new Circle([0, 0, 0], 1, 'XYZ');
-      var polygon = fromCircle(circle);
-      var coordinates = polygon.getLinearRing(0).getCoordinates();
+      const circle = new Circle([0, 0, 0], 1, 'XYZ');
+      const polygon = fromCircle(circle);
+      const coordinates = polygon.getLinearRing(0).getCoordinates();
       expect(coordinates[0].length).to.eql(3);
       expect(coordinates[0][2]).to.eql(0);
       expect(coordinates[32]).to.eql(coordinates[0]);
@@ -598,9 +598,9 @@ describe('ol/geom/Polygon', function() {
     });
 
     it('creates a regular polygon with custom sides and angle', function() {
-      var circle = new Circle([0, 0], 1);
-      var polygon = fromCircle(circle, 4, Math.PI / 2);
-      var coordinates = polygon.getLinearRing(0).getCoordinates();
+      const circle = new Circle([0, 0], 1);
+      const polygon = fromCircle(circle, 4, Math.PI / 2);
+      const coordinates = polygon.getLinearRing(0).getCoordinates();
       expect(coordinates[4]).to.eql(coordinates[0]);
       expect(coordinates[0][0]).to.roughlyEqual(0, 1e-9);
       expect(coordinates[0][1]).to.roughlyEqual(1, 1e-9);

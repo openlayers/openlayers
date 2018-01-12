@@ -18,7 +18,7 @@ import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.render.webgl.Immediate', function() {
-  var context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
+  let context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
   beforeEach(function() {
     context = new _ol_render_webgl_Immediate_({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
     style = new Style({
@@ -45,7 +45,7 @@ describe('ol.render.webgl.Immediate', function() {
   });
 
   describe('#drawFeature', function() {
-    var feat;
+    let feat;
     beforeEach(function() {
       feat = new Feature({
         geometry: circle
@@ -84,7 +84,7 @@ describe('ol.render.webgl.Immediate', function() {
   });
 
   describe('#drawGeometryCollection', function() {
-    var geomColl;
+    let geomColl;
     beforeEach(function() {
       geomColl = new GeometryCollection([circle, point, multiPoint,
         line, multiLine, polygon, multiPolygon]);
@@ -101,7 +101,7 @@ describe('ol.render.webgl.Immediate', function() {
 
   describe('geometry functions', function() {
     function mock(ctor, geomFunc) {
-      var tmpObj = {};
+      const tmpObj = {};
       tmpObj.replay = ctor.prototype.replay;
       ctor.prototype.replay = sinon.spy();
       tmpObj.finish = ctor.prototype.finish;
@@ -124,13 +124,13 @@ describe('ol.render.webgl.Immediate', function() {
     }
 
     function restore(ctor, tmpObj) {
-      for (var i in tmpObj) {
+      for (const i in tmpObj) {
         ctor.prototype[i] = tmpObj[i];
       }
     }
 
     describe('#drawPoint', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_ImageReplay_, 'drawPoint');
       });
@@ -150,7 +150,7 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     describe('#drawMultiPoint', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_ImageReplay_, 'drawMultiPoint');
       });
@@ -170,7 +170,7 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     describe('#drawLineString', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_LineStringReplay_, 'drawLineString');
       });
@@ -190,7 +190,7 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     describe('#drawMultiLineString', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_LineStringReplay_, 'drawMultiLineString');
       });
@@ -210,7 +210,7 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     describe('#drawPolygon', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_PolygonReplay_, 'drawPolygon');
       });
@@ -230,7 +230,7 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     describe('#drawMultiPolygon', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_PolygonReplay_, 'drawMultiPolygon');
       });
@@ -250,7 +250,7 @@ describe('ol.render.webgl.Immediate', function() {
     });
 
     describe('#drawCircle', function() {
-      var tmpObj;
+      let tmpObj;
       beforeEach(function() {
         tmpObj = mock(_ol_render_webgl_CircleReplay_, 'drawCircle');
       });

@@ -24,9 +24,9 @@ import _ol_uri_ from '../uri.js';
  *     options.
  * @api
  */
-var TileArcGISRest = function(opt_options) {
+const TileArcGISRest = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   TileImage.call(this, {
     attributions: options.attributions,
@@ -65,9 +65,9 @@ inherits(TileArcGISRest, TileImage);
  * @return {string} The key for the current params.
  */
 TileArcGISRest.prototype.getKeyForParams_ = function() {
-  var i = 0;
-  var res = [];
-  for (var key in this.params_) {
+  let i = 0;
+  const res = [];
+  for (const key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
   return res.join('/');
@@ -96,35 +96,35 @@ TileArcGISRest.prototype.getParams = function() {
  * @private
  */
 TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
-    pixelRatio, projection, params) {
+  pixelRatio, projection, params) {
 
-  var urls = this.urls;
+  const urls = this.urls;
   if (!urls) {
     return undefined;
   }
 
   // ArcGIS Server only wants the numeric portion of the projection ID.
-  var srid = projection.getCode().split(':').pop();
+  const srid = projection.getCode().split(':').pop();
 
   params['SIZE'] = tileSize[0] + ',' + tileSize[1];
   params['BBOX'] = tileExtent.join(',');
   params['BBOXSR'] = srid;
   params['IMAGESR'] = srid;
   params['DPI'] = Math.round(
-      params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
+    params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
   );
 
-  var url;
+  let url;
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
+    const index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
     url = urls[index];
   }
 
-  var modifiedUrl = url
-      .replace(/MapServer\/?$/, 'MapServer/export')
-      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+  const modifiedUrl = url
+    .replace(/MapServer\/?$/, 'MapServer/export')
+    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   return _ol_uri_.appendParams(modifiedUrl, params);
 };
 
@@ -142,7 +142,7 @@ TileArcGISRest.prototype.getTilePixelRatio = function(pixelRatio) {
  */
 TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
 
-  var tileGrid = this.getTileGrid();
+  let tileGrid = this.getTileGrid();
   if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projection);
   }
@@ -151,17 +151,17 @@ TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, 
     return undefined;
   }
 
-  var tileExtent = tileGrid.getTileCoordExtent(
-      tileCoord, this.tmpExtent_);
-  var tileSize = _ol_size_.toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  const tileExtent = tileGrid.getTileCoordExtent(
+    tileCoord, this.tmpExtent_);
+  let tileSize = _ol_size_.toSize(
+    tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
   if (pixelRatio != 1) {
     tileSize = _ol_size_.scale(tileSize, pixelRatio, this.tmpSize);
   }
 
   // Apply default params and override with user specified values.
-  var baseParams = {
+  const baseParams = {
     'F': 'image',
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
@@ -169,7 +169,7 @@ TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, 
   _ol_obj_.assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+    pixelRatio, projection, baseParams);
 };
 
 

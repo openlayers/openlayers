@@ -14,9 +14,9 @@ import Interaction from '../interaction/Interaction.js';
  * @param {olx.interaction.DoubleClickZoomOptions=} opt_options Options.
  * @api
  */
-var DoubleClickZoom = function(opt_options) {
+const DoubleClickZoom = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -48,15 +48,15 @@ inherits(DoubleClickZoom, Interaction);
  * @api
  */
 DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
-  var stopEvent = false;
-  var browserEvent = mapBrowserEvent.originalEvent;
+  let stopEvent = false;
+  const browserEvent = mapBrowserEvent.originalEvent;
   if (mapBrowserEvent.type == MapBrowserEventType.DBLCLICK) {
-    var map = mapBrowserEvent.map;
-    var anchor = mapBrowserEvent.coordinate;
-    var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
-    var view = map.getView();
+    const map = mapBrowserEvent.map;
+    const anchor = mapBrowserEvent.coordinate;
+    const delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
+    const view = map.getView();
     Interaction.zoomByDelta(
-        view, delta, anchor, this.duration_);
+      view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

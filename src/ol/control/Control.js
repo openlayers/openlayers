@@ -36,7 +36,7 @@ import _ol_events_ from '../events.js';
  * @param {olx.control.ControlOptions} options Control options.
  * @api
  */
-var Control = function(options) {
+const Control = function(options) {
 
   BaseObject.call(this);
 
@@ -109,18 +109,18 @@ Control.prototype.setMap = function(map) {
   if (this.map_) {
     removeNode(this.element);
   }
-  for (var i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
+  for (let i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
     _ol_events_.unlistenByKey(this.listenerKeys[i]);
   }
   this.listenerKeys.length = 0;
   this.map_ = map;
   if (this.map_) {
-    var target = this.target_ ?
+    const target = this.target_ ?
       this.target_ : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
     if (this.render !== nullFunction) {
       this.listenerKeys.push(_ol_events_.listen(map,
-          MapEventType.POSTRENDER, this.render, this));
+        MapEventType.POSTRENDER, this.render, this));
     }
     map.render();
   }

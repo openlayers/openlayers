@@ -21,7 +21,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.Image} imageLayer Single image layer.
  * @api
  */
-var CanvasImageLayerRenderer = function(imageLayer) {
+const CanvasImageLayerRenderer = function(imageLayer) {
 
   IntermediateCanvasRenderer.call(this, imageLayer);
 
@@ -73,11 +73,11 @@ CanvasImageLayerRenderer['handles'] = function(type, layer) {
  * @return {ol.renderer.canvas.ImageLayer} The layer renderer.
  */
 CanvasImageLayerRenderer['create'] = function(mapRenderer, layer) {
-  var renderer = new CanvasImageLayerRenderer(/** @type {ol.layer.Image} */ (layer));
+  const renderer = new CanvasImageLayerRenderer(/** @type {ol.layer.Image} */ (layer));
   if (layer.getType() === LayerType.VECTOR) {
-    var candidates = getLayerRendererPlugins();
-    for (var i = 0, ii = candidates.length; i < ii; ++i) {
-      var candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
+    const candidates = getLayerRendererPlugins();
+    for (let i = 0, ii = candidates.length; i < ii; ++i) {
+      const candidate = /** @type {Object.<string, Function>} */ (candidates[i]);
       if (candidate !== CanvasImageLayerRenderer && candidate['handles'](RendererType.CANVAS, layer)) {
         renderer.setVectorRenderer(candidate['create'](mapRenderer, layer));
       }
@@ -108,36 +108,36 @@ CanvasImageLayerRenderer.prototype.getImageTransform = function() {
  */
 CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
 
-  var pixelRatio = frameState.pixelRatio;
-  var size = frameState.size;
-  var viewState = frameState.viewState;
-  var viewCenter = viewState.center;
-  var viewResolution = viewState.resolution;
+  const pixelRatio = frameState.pixelRatio;
+  const size = frameState.size;
+  const viewState = frameState.viewState;
+  const viewCenter = viewState.center;
+  const viewResolution = viewState.resolution;
 
-  var image;
-  var imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
-  var imageSource = imageLayer.getSource();
+  let image;
+  const imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
+  const imageSource = imageLayer.getSource();
 
-  var hints = frameState.viewHints;
+  const hints = frameState.viewHints;
 
-  var renderedExtent = frameState.extent;
+  let renderedExtent = frameState.extent;
   if (layerState.extent !== undefined) {
     renderedExtent = getIntersection(renderedExtent, layerState.extent);
   }
 
   if (!hints[ViewHint.ANIMATING] && !hints[ViewHint.INTERACTING] &&
       !isEmpty(renderedExtent)) {
-    var projection = viewState.projection;
+    let projection = viewState.projection;
     if (!ENABLE_RASTER_REPROJECTION) {
-      var sourceProjection = imageSource.getProjection();
+      const sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
         projection = sourceProjection;
       }
     }
-    var vectorRenderer = this.vectorRenderer_;
+    const vectorRenderer = this.vectorRenderer_;
     if (vectorRenderer) {
-      var context = vectorRenderer.context;
-      var imageFrameState = /** @type {olx.FrameState} */ (_ol_obj_.assign({}, frameState, {
+      const context = vectorRenderer.context;
+      const imageFrameState = /** @type {olx.FrameState} */ (_ol_obj_.assign({}, frameState, {
         size: [
           getWidth(renderedExtent) / viewResolution,
           getHeight(renderedExtent) / viewResolution
@@ -146,7 +146,7 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
           rotation: 0
         }))
       }));
-      var skippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
+      const skippedFeatures = Object.keys(imageFrameState.skippedFeatureUids).sort();
       if (vectorRenderer.prepareFrame(imageFrameState, layerState) &&
           (vectorRenderer.replayGroupChanged ||
           !equals(skippedFeatures, this.skippedFeatures_))) {
@@ -158,9 +158,9 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
       }
     } else {
       image = imageSource.getImage(
-          renderedExtent, viewResolution, pixelRatio, projection);
+        renderedExtent, viewResolution, pixelRatio, projection);
       if (image) {
-        var loaded = this.loadImage(image);
+        const loaded = this.loadImage(image);
         if (loaded) {
           this.image_ = image;
         }
@@ -170,22 +170,22 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
   if (this.image_) {
     image = this.image_;
-    var imageExtent = image.getExtent();
-    var imageResolution = image.getResolution();
-    var imagePixelRatio = image.getPixelRatio();
-    var scale = pixelRatio * imageResolution /
+    const imageExtent = image.getExtent();
+    const imageResolution = image.getResolution();
+    const imagePixelRatio = image.getPixelRatio();
+    const scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
-    var transform = _ol_transform_.compose(this.imageTransform_,
-        pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
-        scale, scale,
-        0,
-        imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
-        imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
+    const transform = _ol_transform_.compose(this.imageTransform_,
+      pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
+      scale, scale,
+      0,
+      imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
+      imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
     _ol_transform_.compose(this.coordinateToCanvasPixelTransform,
-        pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
-        pixelRatio / viewResolution, -pixelRatio / viewResolution,
-        0,
-        -viewCenter[0], -viewCenter[1]);
+      pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
+      pixelRatio / viewResolution, -pixelRatio / viewResolution,
+      0,
+      -viewCenter[0], -viewCenter[1]);
 
     this.renderedResolution = imageResolution * pixelRatio / imagePixelRatio;
   }

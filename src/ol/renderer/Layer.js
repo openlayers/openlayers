@@ -16,7 +16,7 @@ import SourceState from '../source/State.js';
  * @param {ol.layer.Layer} layer Layer.
  * @struct
  */
-var LayerRenderer = function(layer) {
+const LayerRenderer = function(layer) {
 
   Observable.call(this);
 
@@ -97,7 +97,7 @@ LayerRenderer.prototype.getLayer = function() {
  * @private
  */
 LayerRenderer.prototype.handleImageChange_ = function(event) {
-  var image = /** @type {ol.Image} */ (event.target);
+  const image = /** @type {ol.Image} */ (event.target);
   if (image.getState() === ImageState.LOADED) {
     this.renderIfReadyAndVisible();
   }
@@ -113,7 +113,7 @@ LayerRenderer.prototype.handleImageChange_ = function(event) {
  * @protected
  */
 LayerRenderer.prototype.loadImage = function(image) {
-  var imageState = image.getState();
+  let imageState = image.getState();
   if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
     _ol_events_.listen(image, EventType.CHANGE, this.handleImageChange_, this);
   }
@@ -129,7 +129,7 @@ LayerRenderer.prototype.loadImage = function(image) {
  * @protected
  */
 LayerRenderer.prototype.renderIfReadyAndVisible = function() {
-  var layer = this.getLayer();
+  const layer = this.getLayer();
   if (layer.getVisible() && layer.getSourceState() == SourceState.READY) {
     this.changed();
   }
@@ -148,16 +148,16 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
      * @param {ol.PluggableMap} map Map.
      * @param {olx.FrameState} frameState Frame state.
      */
-    var postRenderFunction = function(tileSource, map, frameState) {
-      var tileSourceKey = getUid(tileSource).toString();
+    const postRenderFunction = function(tileSource, map, frameState) {
+      const tileSourceKey = getUid(tileSource).toString();
       if (tileSourceKey in frameState.usedTiles) {
         tileSource.expireCache(frameState.viewState.projection,
-            frameState.usedTiles[tileSourceKey]);
+          frameState.usedTiles[tileSourceKey]);
       }
     }.bind(null, tileSource);
 
     frameState.postRenderFunctions.push(
-        /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+      /** @type {ol.PostRenderFunction} */ (postRenderFunction)
     );
   }
 };
@@ -172,8 +172,8 @@ LayerRenderer.prototype.scheduleExpireCache = function(frameState, tileSource) {
  */
 LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
-  var tileSourceKey = getUid(tileSource).toString();
-  var zKey = z.toString();
+  const tileSourceKey = getUid(tileSource).toString();
+  const zKey = z.toString();
   if (tileSourceKey in usedTiles) {
     if (zKey in usedTiles[tileSourceKey]) {
       usedTiles[tileSourceKey][zKey].extend(tileRange);
@@ -208,16 +208,16 @@ LayerRenderer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, til
  * @template T
  */
 LayerRenderer.prototype.manageTilePyramid = function(
-    frameState, tileSource, tileGrid, pixelRatio, projection, extent,
-    currentZ, preload, opt_tileCallback, opt_this) {
-  var tileSourceKey = getUid(tileSource).toString();
+  frameState, tileSource, tileGrid, pixelRatio, projection, extent,
+  currentZ, preload, opt_tileCallback, opt_this) {
+  const tileSourceKey = getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
   }
-  var wantedTiles = frameState.wantedTiles[tileSourceKey];
-  var tileQueue = frameState.tileQueue;
-  var minZoom = tileGrid.getMinZoom();
-  var tile, tileRange, tileResolution, x, y, z;
+  const wantedTiles = frameState.wantedTiles[tileSourceKey];
+  const tileQueue = frameState.tileQueue;
+  const minZoom = tileGrid.getMinZoom();
+  let tile, tileRange, tileResolution, x, y, z;
   for (z = minZoom; z <= currentZ; ++z) {
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
     tileResolution = tileGrid.getResolution(z);

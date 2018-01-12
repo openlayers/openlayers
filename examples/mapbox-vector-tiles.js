@@ -10,9 +10,9 @@ import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
 
-var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
-var map = new Map({
+const map = new Map({
   layers: [
     new VectorTileLayer({
       declutter: true,

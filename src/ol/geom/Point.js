@@ -19,7 +19,7 @@ import {squaredDistance as squaredDx} from '../math.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var Point = function(coordinates, opt_layout) {
+const Point = function(coordinates, opt_layout) {
   SimpleGeometry.call(this);
   this.setCoordinates(coordinates, opt_layout);
 };
@@ -34,7 +34,7 @@ inherits(Point, SimpleGeometry);
  * @api
  */
 Point.prototype.clone = function() {
-  var point = new Point(null);
+  const point = new Point(null);
   point.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return point;
 };
@@ -44,12 +44,12 @@ Point.prototype.clone = function() {
  * @inheritDoc
  */
 Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  var flatCoordinates = this.flatCoordinates;
-  var squaredDistance = squaredDx(
-      x, y, flatCoordinates[0], flatCoordinates[1]);
+  const flatCoordinates = this.flatCoordinates;
+  const squaredDistance = squaredDx(
+    x, y, flatCoordinates[0], flatCoordinates[1]);
   if (squaredDistance < minSquaredDistance) {
-    var stride = this.stride;
-    var i;
+    const stride = this.stride;
+    let i;
     for (i = 0; i < stride; ++i) {
       closestPoint[i] = flatCoordinates[i];
     }
@@ -111,7 +111,7 @@ Point.prototype.setCoordinates = function(coordinates, opt_layout) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinate(
-        this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }
 };

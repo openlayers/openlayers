@@ -15,7 +15,7 @@ import Style from '../src/ol/style/Style.js';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
-var polyline = [
+const polyline = [
   'hldhx@lnau`BCG_EaC??cFjAwDjF??uBlKMd@}@z@??aC^yk@z_@se@b[wFdE??wFfE}N',
   'fIoGxB_I\\gG}@eHoCyTmPqGaBaHOoD\\??yVrGotA|N??o[N_STiwAtEmHGeHcAkiA}^',
   'aMyBiHOkFNoI`CcVvM??gG^gF_@iJwC??eCcA]OoL}DwFyCaCgCcCwDcGwHsSoX??wI_E',
@@ -57,34 +57,34 @@ var polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-var route = /** @type {ol.geom.LineString} */ (new Polyline({
+const route = /** @type {ol.geom.LineString} */ (new Polyline({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
   featureProjection: 'EPSG:3857'
 }));
 
-var routeCoords = route.getCoordinates();
-var routeLength = routeCoords.length;
+const routeCoords = route.getCoordinates();
+const routeLength = routeCoords.length;
 
-var routeFeature = new Feature({
+const routeFeature = new Feature({
   type: 'route',
   geometry: route
 });
-var geoMarker = new Feature({
+const geoMarker = new Feature({
   type: 'geoMarker',
   geometry: new Point(routeCoords[0])
 });
-var startMarker = new Feature({
+const startMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[0])
 });
-var endMarker = new Feature({
+const endMarker = new Feature({
   type: 'icon',
   geometry: new Point(routeCoords[routeLength - 1])
 });
 
-var styles = {
+const styles = {
   'route': new Style({
     stroke: new Stroke({
       width: 6, color: [237, 212, 0, 0.8]
@@ -108,12 +108,12 @@ var styles = {
   })
 };
 
-var animating = false;
-var speed, now;
-var speedInput = document.getElementById('speed');
-var startButton = document.getElementById('start-animation');
+let animating = false;
+let speed, now;
+const speedInput = document.getElementById('speed');
+const startButton = document.getElementById('start-animation');
 
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: new VectorSource({
     features: [routeFeature, geoMarker, startMarker, endMarker]
   }),
@@ -126,8 +126,8 @@ var vectorLayer = new VectorLayer({
   }
 });
 
-var center = [-5639523.95, -3501274.52];
-var map = new Map({
+const center = [-5639523.95, -3501274.52];
+const map = new Map({
   target: document.getElementById('map'),
   loadTilesWhileAnimating: true,
   view: new View({
@@ -147,23 +147,23 @@ var map = new Map({
   ]
 });
 
-var moveFeature = function(event) {
-  var vectorContext = event.vectorContext;
-  var frameState = event.frameState;
+const moveFeature = function(event) {
+  const vectorContext = event.vectorContext;
+  const frameState = event.frameState;
 
   if (animating) {
-    var elapsedTime = frameState.time - now;
+    const elapsedTime = frameState.time - now;
     // here the trick to increase speed is to jump some indexes
     // on lineString coordinates
-    var index = Math.round(speed * elapsedTime / 1000);
+    const index = Math.round(speed * elapsedTime / 1000);
 
     if (index >= routeLength) {
       stopAnimation(true);
       return;
     }
 
-    var currentPoint = new Point(routeCoords[index]);
-    var feature = new Feature(currentPoint);
+    const currentPoint = new Point(routeCoords[index]);
+    const feature = new Feature(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
   // tell OpenLayers to continue the postcompose animation
@@ -196,9 +196,9 @@ function stopAnimation(ended) {
   startButton.textContent = 'Start Animation';
 
   // if animation cancelled set the marker at the beginning
-  var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
+  const coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
   /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
-      .setCoordinates(coord);
+    .setCoordinates(coord);
   //remove listener
   map.un('postcompose', moveFeature);
 }

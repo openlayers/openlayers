@@ -13,9 +13,9 @@ import RegularShape from '../style/RegularShape.js';
  * @extends {ol.style.RegularShape}
  * @api
  */
-var CircleStyle = function(opt_options) {
+const CircleStyle = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   RegularShape.call(this, {
     points: Infinity,
@@ -38,7 +38,7 @@ inherits(CircleStyle, RegularShape);
  * @api
  */
 CircleStyle.prototype.clone = function() {
-  var style = new CircleStyle({
+  const style = new CircleStyle({
     fill: this.getFill() ? this.getFill().clone() : undefined,
     stroke: this.getStroke() ? this.getStroke().clone() : undefined,
     radius: this.getRadius(),

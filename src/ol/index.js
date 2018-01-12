@@ -10,7 +10,7 @@ import webgl from './webgl.js';
  * @type {boolean} Include debuggable shader sources.  Default is `true`.
  *     This should be set to `false` for production builds.
  */
-export var DEBUG_WEBGL = true;
+export const DEBUG_WEBGL = true;
 
 
 /**
@@ -20,7 +20,7 @@ export var DEBUG_WEBGL = true;
  * @const
  * @type {number|undefined}
  */
-var WEBGL_MAX_TEXTURE_SIZE; // value is set below
+let WEBGL_MAX_TEXTURE_SIZE; // value is set below
 
 
 /**
@@ -29,7 +29,7 @@ var WEBGL_MAX_TEXTURE_SIZE; // value is set below
  * @const
  * @type {Array.<string>}
  */
-var WEBGL_EXTENSIONS; // value is set below
+let WEBGL_EXTENSIONS; // value is set below
 
 
 /**
@@ -37,14 +37,14 @@ var WEBGL_EXTENSIONS; // value is set below
  * WebGL is available.
  * @type {boolean}
  */
-var HAS_WEBGL = false;
+let HAS_WEBGL = false;
 
 
 if ('WebGLRenderingContext' in window) {
   try {
-    var canvas = /** @type {HTMLCanvasElement} */
+    const canvas = /** @type {HTMLCanvasElement} */
         (document.createElement('CANVAS'));
-    var gl = webgl.getContext(canvas, {failIfMajorPerformanceCaveat: true});
+    const gl = webgl.getContext(canvas, {failIfMajorPerformanceCaveat: true});
     if (gl) {
       HAS_WEBGL = true;
       WEBGL_MAX_TEXTURE_SIZE = /** @type {number} */
@@ -62,7 +62,7 @@ export {HAS_WEBGL, WEBGL_MAX_TEXTURE_SIZE, WEBGL_EXTENSIONS};
 /**
  * @type {string} OpenLayers version.
  */
-export var VERSION = 'v4.6.4';
+export const VERSION = 'v4.6.4';
 
 
 /**
@@ -106,7 +106,7 @@ export function nullFunction() {}
  * @type {number}
  * @private
  */
-var uidCounter_ = 0;
+let uidCounter_ = 0;
 
 /**
  * Gets a unique ID for an object. This mutates the object so that further calls

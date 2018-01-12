@@ -7,9 +7,9 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import RasterSource from '../src/ol/source/Raster.js';
 
-var minVgi = 0;
-var maxVgi = 0.25;
-var bins = 10;
+const minVgi = 0;
+const maxVgi = 0.25;
+const bins = 10;
 
 
 /**
@@ -19,9 +19,9 @@ var bins = 10;
  * @return {number} The VGI value for the given pixel.
  */
 function vgi(pixel) {
-  var r = pixel[0] / 255;
-  var g = pixel[1] / 255;
-  var b = pixel[2] / 255;
+  const r = pixel[0] / 255;
+  const g = pixel[1] / 255;
+  const b = pixel[2] / 255;
   return (2 * g - r - b) / (2 * g + r + b);
 }
 
@@ -32,15 +32,15 @@ function vgi(pixel) {
  * @param {Object} counts An object for keeping track of VGI counts.
  */
 function summarize(value, counts) {
-  var min = counts.min;
-  var max = counts.max;
-  var num = counts.values.length;
+  const min = counts.min;
+  const max = counts.max;
+  const num = counts.values.length;
   if (value < min) {
     // do nothing
   } else if (value >= max) {
     counts.values[num - 1] += 1;
   } else {
-    var index = Math.floor((value - min) / counts.delta);
+    const index = Math.floor((value - min) / counts.delta);
     counts.values[index] += 1;
   }
 }
@@ -49,7 +49,7 @@ function summarize(value, counts) {
 /**
  * Use aerial imagery as the input data for the raster source.
  */
-var bing = new BingMaps({
+const bing = new BingMaps({
   key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
   imagerySet: 'Aerial'
 });
@@ -59,7 +59,7 @@ var bing = new BingMaps({
  * Create a raster source where pixels with VGI values above a threshold will
  * be colored green.
  */
-var raster = new RasterSource({
+const raster = new RasterSource({
   sources: [bing],
   /**
    * Run calculations on pixel data.
@@ -68,8 +68,8 @@ var raster = new RasterSource({
    * @return {Array} The output pixel.
    */
   operation: function(pixels, data) {
-    var pixel = pixels[0];
-    var value = vgi(pixel);
+    const pixel = pixels[0];
+    const value = vgi(pixel);
     summarize(value, data.counts);
     if (value >= data.threshold) {
       pixel[0] = 0;
@@ -89,8 +89,8 @@ var raster = new RasterSource({
 raster.set('threshold', 0.1);
 
 function createCounts(min, max, num) {
-  var values = new Array(num);
-  for (var i = 0; i < num; ++i) {
+  const values = new Array(num);
+  for (let i = 0; i < num; ++i) {
     values[i] = 0;
   }
   return {
@@ -110,7 +110,7 @@ raster.on('afteroperations', function(event) {
   schedulePlot(event.resolution, event.data.counts, event.data.threshold);
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: bing
@@ -129,7 +129,7 @@ var map = new Map({
 });
 
 
-var timer = null;
+let timer = null;
 function schedulePlot(resolution, counts, threshold) {
   if (timer) {
     clearTimeout(timer);
@@ -138,40 +138,40 @@ function schedulePlot(resolution, counts, threshold) {
   timer = setTimeout(plot.bind(null, resolution, counts, threshold), 1000 / 60);
 }
 
-var barWidth = 15;
-var plotHeight = 150;
-var chart = d3.select('#plot').append('svg')
-    .attr('width', barWidth * bins)
-    .attr('height', plotHeight);
+const barWidth = 15;
+const plotHeight = 150;
+const chart = d3.select('#plot').append('svg')
+  .attr('width', barWidth * bins)
+  .attr('height', plotHeight);
 
-var chartRect = chart.node().getBoundingClientRect();
+const chartRect = chart.node().getBoundingClientRect();
 
-var tip = d3.select(document.body).append('div')
-    .attr('class', 'tip');
+const tip = d3.select(document.body).append('div')
+  .attr('class', 'tip');
 
 function plot(resolution, counts, threshold) {
-  var yScale = d3.scaleLinear()
-      .domain([0, d3.max(counts.values)])
-      .range([0, plotHeight]);
+  const yScale = d3.scaleLinear()
+    .domain([0, d3.max(counts.values)])
+    .range([0, plotHeight]);
 
-  var bar = chart.selectAll('rect').data(counts.values);
+  const bar = chart.selectAll('rect').data(counts.values);
 
   bar.enter().append('rect');
 
   bar.attr('class', function(count, index) {
-    var value = counts.min + (index * counts.delta);
+    const value = counts.min + (index * counts.delta);
     return 'bar' + (value >= threshold ? ' selected' : '');
   })
-      .attr('width', barWidth - 2);
+    .attr('width', barWidth - 2);
 
   bar.transition().attr('transform', function(value, index) {
     return 'translate(' + (index * barWidth) + ', ' +
         (plotHeight - yScale(value)) + ')';
   })
-      .attr('height', yScale);
+    .attr('height', yScale);
 
   bar.on('mousemove', function(count, index) {
-    var threshold = counts.min + (index * counts.delta);
+    const threshold = counts.min + (index * counts.delta);
     if (raster.get('threshold') !== threshold) {
       raster.set('threshold', threshold);
       raster.changed();
@@ -179,8 +179,8 @@ function plot(resolution, counts, threshold) {
   });
 
   bar.on('mouseover', function(count, index) {
-    var area = 0;
-    for (var i = counts.values.length - 1; i >= index; --i) {
+    let area = 0;
+    for (let i = counts.values.length - 1; i >= index; --i) {
       area += resolution * resolution * counts.values[i];
     }
     tip.html(message(counts.min + (index * counts.delta), area));
@@ -201,6 +201,6 @@ function plot(resolution, counts, threshold) {
 }
 
 function message(value, area) {
-  var acres = (area / 4046.86).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  const acres = (area / 4046.86).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   return acres + ' acres at<br>' + value.toFixed(2) + ' VGI or above';
 }

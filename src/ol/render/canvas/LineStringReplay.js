@@ -16,10 +16,10 @@ import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
  * @param {?} declutterTree Declutter tree.
  * @struct
  */
-var _ol_render_canvas_LineStringReplay_ = function(
-    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+const _ol_render_canvas_LineStringReplay_ = function(
+  tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   _ol_render_canvas_Replay_.call(this,
-      tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
+    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 };
 
 inherits(_ol_render_canvas_LineStringReplay_, _ol_render_canvas_Replay_);
@@ -34,10 +34,10 @@ inherits(_ol_render_canvas_LineStringReplay_, _ol_render_canvas_Replay_);
  * @return {number} end.
  */
 _ol_render_canvas_LineStringReplay_.prototype.drawFlatCoordinates_ = function(flatCoordinates, offset, end, stride) {
-  var myBegin = this.coordinates.length;
-  var myEnd = this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false, false);
-  var moveToLineToInstruction =
+  const myBegin = this.coordinates.length;
+  const myEnd = this.appendFlatCoordinates(
+    flatCoordinates, offset, end, stride, false, false);
+  const moveToLineToInstruction =
       [_ol_render_canvas_Instruction_.MOVE_TO_LINE_TO, myBegin, myEnd];
   this.instructions.push(moveToLineToInstruction);
   this.hitDetectionInstructions.push(moveToLineToInstruction);
@@ -49,9 +49,9 @@ _ol_render_canvas_LineStringReplay_.prototype.drawFlatCoordinates_ = function(fl
  * @inheritDoc
  */
 _ol_render_canvas_LineStringReplay_.prototype.drawLineString = function(lineStringGeometry, feature) {
-  var state = this.state;
-  var strokeStyle = state.strokeStyle;
-  var lineWidth = state.lineWidth;
+  const state = this.state;
+  const strokeStyle = state.strokeStyle;
+  const lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
@@ -64,8 +64,8 @@ _ol_render_canvas_LineStringReplay_.prototype.drawLineString = function(lineStri
   ], [
     _ol_render_canvas_Instruction_.BEGIN_PATH
   ]);
-  var flatCoordinates = lineStringGeometry.getFlatCoordinates();
-  var stride = lineStringGeometry.getStride();
+  const flatCoordinates = lineStringGeometry.getFlatCoordinates();
+  const stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
   this.hitDetectionInstructions.push([_ol_render_canvas_Instruction_.STROKE]);
   this.endGeometry(lineStringGeometry, feature);
@@ -76,9 +76,9 @@ _ol_render_canvas_LineStringReplay_.prototype.drawLineString = function(lineStri
  * @inheritDoc
  */
 _ol_render_canvas_LineStringReplay_.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
-  var state = this.state;
-  var strokeStyle = state.strokeStyle;
-  var lineWidth = state.lineWidth;
+  const state = this.state;
+  const strokeStyle = state.strokeStyle;
+  const lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
     return;
   }
@@ -91,14 +91,14 @@ _ol_render_canvas_LineStringReplay_.prototype.drawMultiLineString = function(mul
   ], [
     _ol_render_canvas_Instruction_.BEGIN_PATH
   ]);
-  var ends = multiLineStringGeometry.getEnds();
-  var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
-  var stride = multiLineStringGeometry.getStride();
-  var offset = 0;
-  var i, ii;
+  const ends = multiLineStringGeometry.getEnds();
+  const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+  const stride = multiLineStringGeometry.getStride();
+  let offset = 0;
+  let i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     offset = this.drawFlatCoordinates_(
-        flatCoordinates, offset, ends[i], stride);
+      flatCoordinates, offset, ends[i], stride);
   }
   this.hitDetectionInstructions.push([_ol_render_canvas_Instruction_.STROKE]);
   this.endGeometry(multiLineStringGeometry, feature);
@@ -109,7 +109,7 @@ _ol_render_canvas_LineStringReplay_.prototype.drawMultiLineString = function(mul
  * @inheritDoc
  */
 _ol_render_canvas_LineStringReplay_.prototype.finish = function() {
-  var state = this.state;
+  const state = this.state;
   if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
     this.instructions.push([_ol_render_canvas_Instruction_.STROKE]);
   }

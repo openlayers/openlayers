@@ -19,7 +19,7 @@ import _ol_obj_ from '../obj.js';
  * @extends {ol.geom.Geometry}
  * @api
  */
-var SimpleGeometry = function() {
+const SimpleGeometry = function() {
 
   Geometry.call(this);
 
@@ -51,7 +51,7 @@ inherits(SimpleGeometry, Geometry);
  * @return {ol.geom.GeometryLayout} layout Layout.
  */
 function getLayoutForStride(stride) {
-  var layout;
+  let layout;
   if (stride == 2) {
     layout = GeometryLayout.XY;
   } else if (stride == 3) {
@@ -68,7 +68,7 @@ function getLayoutForStride(stride) {
  * @return {number} Stride.
  */
 export function getStrideForLayout(layout) {
-  var stride;
+  let stride;
   if (layout == GeometryLayout.XY) {
     stride = 2;
   } else if (layout == GeometryLayout.XYZ || layout == GeometryLayout.XYM) {
@@ -91,7 +91,7 @@ SimpleGeometry.prototype.containsXY = FALSE;
  */
 SimpleGeometry.prototype.computeExtent = function(extent) {
   return createOrUpdateFromFlatCoordinates(this.flatCoordinates,
-      0, this.flatCoordinates.length, this.stride, extent);
+    0, this.flatCoordinates.length, this.stride, extent);
 };
 
 
@@ -156,13 +156,13 @@ SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
        squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)) {
     return this;
   }
-  var key = squaredTolerance.toString();
+  const key = squaredTolerance.toString();
   if (this.simplifiedGeometryCache.hasOwnProperty(key)) {
     return this.simplifiedGeometryCache[key];
   } else {
-    var simplifiedGeometry =
+    const simplifiedGeometry =
         this.getSimplifiedGeometryInternal(squaredTolerance);
-    var simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
+    const simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
     if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
       this.simplifiedGeometryCache[key] = simplifiedGeometry;
       return simplifiedGeometry;
@@ -226,11 +226,11 @@ SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layout) {};
  */
 SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
   /** @type {number} */
-  var stride;
+  let stride;
   if (layout) {
     stride = getStrideForLayout(layout);
   } else {
-    var i;
+    let i;
     for (i = 0; i < nesting; ++i) {
       if (coordinates.length === 0) {
         this.layout = GeometryLayout.XY;
@@ -265,12 +265,12 @@ SimpleGeometry.prototype.applyTransform = function(transformFn) {
  * @api
  */
 SimpleGeometry.prototype.rotate = function(angle, anchor) {
-  var flatCoordinates = this.getFlatCoordinates();
+  const flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {
-    var stride = this.getStride();
+    const stride = this.getStride();
     _ol_geom_flat_transform_.rotate(
-        flatCoordinates, 0, flatCoordinates.length,
-        stride, angle, anchor, flatCoordinates);
+      flatCoordinates, 0, flatCoordinates.length,
+      stride, angle, anchor, flatCoordinates);
     this.changed();
   }
 };
@@ -281,20 +281,20 @@ SimpleGeometry.prototype.rotate = function(angle, anchor) {
  * @api
  */
 SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
-  var sy = opt_sy;
+  let sy = opt_sy;
   if (sy === undefined) {
     sy = sx;
   }
-  var anchor = opt_anchor;
+  let anchor = opt_anchor;
   if (!anchor) {
     anchor = getCenter(this.getExtent());
   }
-  var flatCoordinates = this.getFlatCoordinates();
+  const flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {
-    var stride = this.getStride();
+    const stride = this.getStride();
     _ol_geom_flat_transform_.scale(
-        flatCoordinates, 0, flatCoordinates.length,
-        stride, sx, sy, anchor, flatCoordinates);
+      flatCoordinates, 0, flatCoordinates.length,
+      stride, sx, sy, anchor, flatCoordinates);
     this.changed();
   }
 };
@@ -305,12 +305,12 @@ SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
  * @api
  */
 SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
-  var flatCoordinates = this.getFlatCoordinates();
+  const flatCoordinates = this.getFlatCoordinates();
   if (flatCoordinates) {
-    var stride = this.getStride();
+    const stride = this.getStride();
     _ol_geom_flat_transform_.translate(
-        flatCoordinates, 0, flatCoordinates.length, stride,
-        deltaX, deltaY, flatCoordinates);
+      flatCoordinates, 0, flatCoordinates.length, stride,
+      deltaX, deltaY, flatCoordinates);
     this.changed();
   }
 };
@@ -323,14 +323,14 @@ SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
  * @return {Array.<number>} Transformed flat coordinates.
  */
 SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
-  var flatCoordinates = simpleGeometry.getFlatCoordinates();
+  const flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;
   } else {
-    var stride = simpleGeometry.getStride();
+    const stride = simpleGeometry.getStride();
     return _ol_geom_flat_transform_.transform2D(
-        flatCoordinates, 0, flatCoordinates.length, stride,
-        transform, opt_dest);
+      flatCoordinates, 0, flatCoordinates.length, stride,
+      transform, opt_dest);
   }
 };
 export default SimpleGeometry;

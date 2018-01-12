@@ -18,7 +18,7 @@ import ContextEventType from '../webgl/ContextEventType.js';
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {WebGLRenderingContext} gl GL.
  */
-var _ol_webgl_Context_ = function(canvas, gl) {
+const _ol_webgl_Context_ = function(canvas, gl) {
 
   /**
    * @private
@@ -85,9 +85,9 @@ var _ol_webgl_Context_ = function(canvas, gl) {
   }
 
   _ol_events_.listen(this.canvas_, ContextEventType.LOST,
-      this.handleWebGLContextLost, this);
+    this.handleWebGLContextLost, this);
   _ol_events_.listen(this.canvas_, ContextEventType.RESTORED,
-      this.handleWebGLContextRestored, this);
+    this.handleWebGLContextRestored, this);
 
 };
 
@@ -102,16 +102,16 @@ inherits(_ol_webgl_Context_, Disposable);
  * @param {ol.webgl.Buffer} buf Buffer.
  */
 _ol_webgl_Context_.prototype.bindBuffer = function(target, buf) {
-  var gl = this.getGL();
-  var arr = buf.getArray();
-  var bufferKey = String(getUid(buf));
+  const gl = this.getGL();
+  const arr = buf.getArray();
+  const bufferKey = String(getUid(buf));
   if (bufferKey in this.bufferCache_) {
-    var bufferCacheEntry = this.bufferCache_[bufferKey];
+    const bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
   } else {
-    var buffer = gl.createBuffer();
+    const buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    var /** @type {ArrayBufferView} */ arrayBuffer;
+    let /** @type {ArrayBufferView} */ arrayBuffer;
     if (target == _ol_webgl_.ARRAY_BUFFER) {
       arrayBuffer = new Float32Array(arr);
     } else if (target == _ol_webgl_.ELEMENT_ARRAY_BUFFER) {
@@ -131,9 +131,9 @@ _ol_webgl_Context_.prototype.bindBuffer = function(target, buf) {
  * @param {ol.webgl.Buffer} buf Buffer.
  */
 _ol_webgl_Context_.prototype.deleteBuffer = function(buf) {
-  var gl = this.getGL();
-  var bufferKey = String(getUid(buf));
-  var bufferCacheEntry = this.bufferCache_[bufferKey];
+  const gl = this.getGL();
+  const bufferKey = String(getUid(buf));
+  const bufferCacheEntry = this.bufferCache_[bufferKey];
   if (!gl.isContextLost()) {
     gl.deleteBuffer(bufferCacheEntry.buffer);
   }
@@ -146,9 +146,9 @@ _ol_webgl_Context_.prototype.deleteBuffer = function(buf) {
  */
 _ol_webgl_Context_.prototype.disposeInternal = function() {
   _ol_events_.unlistenAll(this.canvas_);
-  var gl = this.getGL();
+  const gl = this.getGL();
   if (!gl.isContextLost()) {
-    var key;
+    let key;
     for (key in this.bufferCache_) {
       gl.deleteBuffer(this.bufferCache_[key].buffer);
     }
@@ -203,12 +203,12 @@ _ol_webgl_Context_.prototype.getHitDetectionFramebuffer = function() {
  * @return {WebGLShader} Shader.
  */
 _ol_webgl_Context_.prototype.getShader = function(shaderObject) {
-  var shaderKey = String(getUid(shaderObject));
+  const shaderKey = String(getUid(shaderObject));
   if (shaderKey in this.shaderCache_) {
     return this.shaderCache_[shaderKey];
   } else {
-    var gl = this.getGL();
-    var shader = gl.createShader(shaderObject.getType());
+    const gl = this.getGL();
+    const shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
     this.shaderCache_[shaderKey] = shader;
@@ -226,14 +226,14 @@ _ol_webgl_Context_.prototype.getShader = function(shaderObject) {
  * @return {WebGLProgram} Program.
  */
 _ol_webgl_Context_.prototype.getProgram = function(
-    fragmentShaderObject, vertexShaderObject) {
-  var programKey =
+  fragmentShaderObject, vertexShaderObject) {
+  const programKey =
       getUid(fragmentShaderObject) + '/' + getUid(vertexShaderObject);
   if (programKey in this.programCache_) {
     return this.programCache_[programKey];
   } else {
-    var gl = this.getGL();
-    var program = gl.createProgram();
+    const gl = this.getGL();
+    const program = gl.createProgram();
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
@@ -269,18 +269,18 @@ _ol_webgl_Context_.prototype.handleWebGLContextRestored = function() {
  * @private
  */
 _ol_webgl_Context_.prototype.initHitDetectionFramebuffer_ = function() {
-  var gl = this.gl_;
-  var framebuffer = gl.createFramebuffer();
+  const gl = this.gl_;
+  const framebuffer = gl.createFramebuffer();
   gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
 
-  var texture = _ol_webgl_Context_.createEmptyTexture(gl, 1, 1);
-  var renderbuffer = gl.createRenderbuffer();
+  const texture = _ol_webgl_Context_.createEmptyTexture(gl, 1, 1);
+  const renderbuffer = gl.createRenderbuffer();
   gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
   gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
   gl.framebufferTexture2D(
-      gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
+    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
   gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-      gl.RENDERBUFFER, renderbuffer);
+    gl.RENDERBUFFER, renderbuffer);
 
   gl.bindTexture(gl.TEXTURE_2D, null);
   gl.bindRenderbuffer(gl.RENDERBUFFER, null);
@@ -302,7 +302,7 @@ _ol_webgl_Context_.prototype.useProgram = function(program) {
   if (program == this.currentProgram_) {
     return false;
   } else {
-    var gl = this.getGL();
+    const gl = this.getGL();
     gl.useProgram(program);
     this.currentProgram_ = program;
     return true;
@@ -318,18 +318,18 @@ _ol_webgl_Context_.prototype.useProgram = function(program) {
  * @private
  */
 _ol_webgl_Context_.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
-  var texture = gl.createTexture();
+  const texture = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, texture);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
   if (opt_wrapS !== undefined) {
     gl.texParameteri(
-        _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_S, opt_wrapS);
+      _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_S, opt_wrapS);
   }
   if (opt_wrapT !== undefined) {
     gl.texParameteri(
-        _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_T, opt_wrapT);
+      _ol_webgl_.TEXTURE_2D, _ol_webgl_.TEXTURE_WRAP_T, opt_wrapT);
   }
 
   return texture;
@@ -345,11 +345,11 @@ _ol_webgl_Context_.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
  * @return {WebGLTexture} The texture.
  */
 _ol_webgl_Context_.createEmptyTexture = function(
-    gl, width, height, opt_wrapS, opt_wrapT) {
-  var texture = _ol_webgl_Context_.createTexture_(gl, opt_wrapS, opt_wrapT);
+  gl, width, height, opt_wrapS, opt_wrapT) {
+  const texture = _ol_webgl_Context_.createTexture_(gl, opt_wrapS, opt_wrapT);
   gl.texImage2D(
-      gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      null);
+    gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+    null);
 
   return texture;
 };
@@ -363,9 +363,9 @@ _ol_webgl_Context_.createEmptyTexture = function(
  * @return {WebGLTexture} The texture.
  */
 _ol_webgl_Context_.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
-  var texture = _ol_webgl_Context_.createTexture_(gl, opt_wrapS, opt_wrapT);
+  const texture = _ol_webgl_Context_.createTexture_(gl, opt_wrapS, opt_wrapT);
   gl.texImage2D(
-      gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
   return texture;
 };

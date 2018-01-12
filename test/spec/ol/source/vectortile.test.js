@@ -11,13 +11,13 @@ import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.source.VectorTile', function() {
 
-  var format = new MVT();
-  var source = new VectorTileSource({
+  const format = new MVT();
+  const source = new VectorTileSource({
     format: format,
     tilePixelRatio: 8,
     url: 'spec/ol/data/{z}-{x}-{y}.vector.pbf'
   });
-  var tile;
+  let tile;
 
   describe('constructor', function() {
     it('sets the format on the instance', function() {
@@ -29,7 +29,7 @@ describe('ol.source.VectorTile', function() {
     });
 
     it('creates a 512 XYZ tilegrid by default', function() {
-      var tileGrid = _ol_tilegrid_.createXYZ({tileSize: 512});
+      const tileGrid = _ol_tilegrid_.createXYZ({tileSize: 512});
       expect(source.tileGrid.tileSize_).to.equal(tileGrid.tileSize_);
       expect(source.tileGrid.extent_).to.equal(tileGrid.extent_);
     });
@@ -45,13 +45,13 @@ describe('ol.source.VectorTile', function() {
     });
     it('fetches tile from cache when requested again', function() {
       expect(source.getTile(0, 0, 0, 1, getProjection('EPSG:3857')))
-          .to.equal(tile);
+        .to.equal(tile);
     });
   });
 
   describe('#getTileGridForProjection', function() {
     it('creates a tile grid with the source tile grid\'s tile size', function() {
-      var tileGrid = source.getTileGridForProjection(getProjection('EPSG:3857'));
+      const tileGrid = source.getTileGridForProjection(getProjection('EPSG:3857'));
       expect(tileGrid.getTileSize(0)).to.be(512);
     });
   });
@@ -59,7 +59,7 @@ describe('ol.source.VectorTile', function() {
   describe('Tile load events', function() {
     it('triggers tileloadstart and tileloadend with ol.VectorTile', function(done) {
       tile = source.getTile(14, 8938, -5681, 1, getProjection('EPSG:3857'));
-      var started = false;
+      let started = false;
       source.on('tileloadstart', function() {
         started = true;
       });
@@ -75,7 +75,7 @@ describe('ol.source.VectorTile', function() {
 
   describe('different source and render tile grids', function() {
 
-    var source, map, loaded, requested, target;
+    let source, map, loaded, requested, target;
 
     beforeEach(function() {
 
@@ -94,7 +94,7 @@ describe('ol.source.VectorTile', function() {
         loaded.push(src);
       }
 
-      var extent = [665584.2026596286, 7033250.839875697, 667162.0221431496, 7035280.378636755];
+      const extent = [665584.2026596286, 7033250.839875697, 667162.0221431496, 7035280.378636755];
 
       source = new VectorTileSource({
         tileGrid: new TileGrid({

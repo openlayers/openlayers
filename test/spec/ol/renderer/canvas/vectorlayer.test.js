@@ -18,12 +18,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
   describe('constructor', function() {
 
-    var head = document.getElementsByTagName('head')[0];
-    var font = document.createElement('link');
+    const head = document.getElementsByTagName('head')[0];
+    const font = document.createElement('link');
     font.href = 'https://fonts.googleapis.com/css?family=Droid+Sans';
     font.rel = 'stylesheet';
 
-    var target;
+    let target;
 
     beforeEach(function() {
       target = document.createElement('div');
@@ -37,47 +37,47 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('creates a new instance', function() {
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: new VectorSource()
       });
-      var renderer = new CanvasVectorLayerRenderer(layer);
+      const renderer = new CanvasVectorLayerRenderer(layer);
       expect(renderer).to.be.a(CanvasVectorLayerRenderer);
     });
 
     it('gives precedence to feature styles over layer styles', function() {
-      var target = document.createElement('div');
+      const target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
-      var map = new Map({
+      const map = new Map({
         view: new View({
           center: [0, 0],
           zoom: 0
         }),
         target: target
       });
-      var layerStyle = [new Style({
+      const layerStyle = [new Style({
         text: new Text({
           text: 'layer'
         })
       })];
-      var featureStyle = [new Style({
+      const featureStyle = [new Style({
         text: new Text({
           text: 'feature'
         })
       })];
-      var feature1 = new Feature(new Point([0, 0]));
-      var feature2 = new Feature(new Point([0, 0]));
+      const feature1 = new Feature(new Point([0, 0]));
+      const feature2 = new Feature(new Point([0, 0]));
       feature2.setStyle(featureStyle);
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature1, feature2]
         }),
         style: layerStyle
       });
       map.addLayer(layer);
-      var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
-          'renderFeature');
+      const spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
+        'renderFeature');
       map.renderSync();
       expect(spy.getCall(0).args[3]).to.be(layerStyle);
       expect(spy.getCall(1).args[3]).to.be(featureStyle);
@@ -86,29 +86,29 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     it('does not re-render for unavailable fonts', function(done) {
       _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
-      var map = new Map({
+      const map = new Map({
         view: new View({
           center: [0, 0],
           zoom: 0
         }),
         target: target
       });
-      var layerStyle = new Style({
+      const layerStyle = new Style({
         text: new Text({
           text: 'layer',
           font: '12px "Unavailable Font",sans-serif'
         })
       });
 
-      var feature = new Feature(new Point([0, 0]));
-      var layer = new VectorLayer({
+      const feature = new Feature(new Point([0, 0]));
+      const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
       });
       map.addLayer(layer);
-      var revision = layer.getRevision();
+      const revision = layer.getRevision();
       setTimeout(function() {
         expect(layer.getRevision()).to.be(revision);
         done();
@@ -117,29 +117,29 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 
     it('does not re-render for available fonts', function(done) {
       _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
-      var map = new Map({
+      const map = new Map({
         view: new View({
           center: [0, 0],
           zoom: 0
         }),
         target: target
       });
-      var layerStyle = new Style({
+      const layerStyle = new Style({
         text: new Text({
           text: 'layer',
           font: '12px sans-serif'
         })
       });
 
-      var feature = new Feature(new Point([0, 0]));
-      var layer = new VectorLayer({
+      const feature = new Feature(new Point([0, 0]));
+      const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
       });
       map.addLayer(layer);
-      var revision = layer.getRevision();
+      const revision = layer.getRevision();
       setTimeout(function() {
         expect(layer.getRevision()).to.be(revision);
         done();
@@ -149,29 +149,29 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     it('re-renders for fonts that become available', function(done) {
       _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
       head.appendChild(font);
-      var map = new Map({
+      const map = new Map({
         view: new View({
           center: [0, 0],
           zoom: 0
         }),
         target: target
       });
-      var layerStyle = new Style({
+      const layerStyle = new Style({
         text: new Text({
           text: 'layer',
           font: '12px "Droid Sans",sans-serif'
         })
       });
 
-      var feature = new Feature(new Point([0, 0]));
-      var layer = new VectorLayer({
+      const feature = new Feature(new Point([0, 0]));
+      const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature]
         }),
         style: layerStyle
       });
       map.addLayer(layer);
-      var revision = layer.getRevision();
+      const revision = layer.getRevision();
       setTimeout(function() {
         expect(layer.getRevision()).to.be(revision + 1);
         head.removeChild(font);
@@ -182,27 +182,27 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-    var layer, renderer;
+    let layer, renderer;
 
     beforeEach(function() {
       layer = new VectorLayer({
         source: new VectorSource()
       });
       renderer = new CanvasVectorLayerRenderer(layer);
-      var replayGroup = {};
+      const replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
-          resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
-        var feature = new Feature();
+        resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
+        const feature = new Feature();
         callback(feature);
         callback(feature);
       };
     });
 
     it('calls callback once per feature with a layer as 2nd arg', function() {
-      var spy = sinon.spy();
-      var coordinate = [0, 0];
-      var frameState = {
+      const spy = sinon.spy();
+      const coordinate = [0, 0];
+      const frameState = {
         layerStates: {},
         skippedFeatureUids: {},
         viewState: {
@@ -212,21 +212,21 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
       frameState.layerStates[getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, 0, spy, undefined);
+        coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });
   });
 
   describe('#prepareFrame', function() {
-    var frameState, projExtent, renderer, worldWidth, buffer;
+    let frameState, projExtent, renderer, worldWidth, buffer;
 
     beforeEach(function() {
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: new VectorSource({wrapX: true})
       });
       renderer = new CanvasVectorLayerRenderer(layer);
-      var projection = getProjection('EPSG:3857');
+      const projection = getProjection('EPSG:3857');
       projExtent = projection.getExtent();
       worldWidth = _ol_extent_.getWidth(projExtent);
       buffer = layer.getRenderBuffer();

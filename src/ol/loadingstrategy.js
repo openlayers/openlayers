@@ -1,7 +1,7 @@
 /**
  * @module ol/loadingstrategy
  */
-var _ol_loadingstrategy_ = {};
+const _ol_loadingstrategy_ = {};
 
 
 /**
@@ -43,12 +43,12 @@ _ol_loadingstrategy_.tile = function(tileGrid) {
        * @return {Array.<ol.Extent>} Extents.
        */
     function(extent, resolution) {
-      var z = tileGrid.getZForResolution(resolution);
-      var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+      const z = tileGrid.getZForResolution(resolution);
+      const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
       /** @type {Array.<ol.Extent>} */
-      var extents = [];
+      const extents = [];
       /** @type {ol.TileCoord} */
-      var tileCoord = [z, 0, 0];
+      const tileCoord = [z, 0, 0];
       for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX;
         ++tileCoord[1]) {
         for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY;

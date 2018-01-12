@@ -15,7 +15,7 @@ import _ol_obj_ from '../obj.js';
  * @struct
  * @template T
  */
-var RBush = function(opt_maxEntries) {
+const RBush = function(opt_maxEntries) {
 
   /**
    * @private
@@ -40,7 +40,7 @@ var RBush = function(opt_maxEntries) {
  */
 RBush.prototype.insert = function(extent, value) {
   /** @type {ol.RBushEntry} */
-  var item = {
+  const item = {
     minX: extent[0],
     minY: extent[1],
     maxX: extent[2],
@@ -59,13 +59,13 @@ RBush.prototype.insert = function(extent, value) {
  * @param {Array.<T>} values Values.
  */
 RBush.prototype.load = function(extents, values) {
-  var items = new Array(values.length);
-  for (var i = 0, l = values.length; i < l; i++) {
-    var extent = extents[i];
-    var value = values[i];
+  const items = new Array(values.length);
+  for (let i = 0, l = values.length; i < l; i++) {
+    const extent = extents[i];
+    const value = values[i];
 
     /** @type {ol.RBushEntry} */
-    var item = {
+    const item = {
       minX: extent[0],
       minY: extent[1],
       maxX: extent[2],
@@ -85,11 +85,11 @@ RBush.prototype.load = function(extents, values) {
  * @return {boolean} Removed.
  */
 RBush.prototype.remove = function(value) {
-  var uid = getUid(value);
+  const uid = getUid(value);
 
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
-  var item = this.items_[uid];
+  const item = this.items_[uid];
   delete this.items_[uid];
   return this.rbush_.remove(item) !== null;
 };
@@ -101,8 +101,8 @@ RBush.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 RBush.prototype.update = function(extent, value) {
-  var item = this.items_[getUid(value)];
-  var bbox = [item.minX, item.minY, item.maxX, item.maxY];
+  const item = this.items_[getUid(value)];
+  const bbox = [item.minX, item.minY, item.maxX, item.maxY];
   if (!equals(bbox, extent)) {
     this.remove(value);
     this.insert(extent, value);
@@ -115,7 +115,7 @@ RBush.prototype.update = function(extent, value) {
  * @return {Array.<T>} All.
  */
 RBush.prototype.getAll = function() {
-  var items = this.rbush_.all();
+  const items = this.rbush_.all();
   return items.map(function(item) {
     return item.value;
   });
@@ -129,13 +129,13 @@ RBush.prototype.getAll = function() {
  */
 RBush.prototype.getInExtent = function(extent) {
   /** @type {ol.RBushEntry} */
-  var bbox = {
+  const bbox = {
     minX: extent[0],
     minY: extent[1],
     maxX: extent[2],
     maxY: extent[3]
   };
-  var items = this.rbush_.search(bbox);
+  const items = this.rbush_.search(bbox);
   return items.map(function(item) {
     return item.value;
   });
@@ -178,8 +178,8 @@ RBush.prototype.forEachInExtent = function(extent, callback, opt_this) {
  * @template S
  */
 RBush.prototype.forEach_ = function(values, callback, opt_this) {
-  var result;
-  for (var i = 0, l = values.length; i < l; i++) {
+  let result;
+  for (let i = 0, l = values.length; i < l; i++) {
     result = callback.call(opt_this, values[i]);
     if (result) {
       return result;
@@ -212,7 +212,7 @@ RBush.prototype.clear = function() {
  */
 RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
-  var data = this.rbush_.data;
+  const data = this.rbush_.data;
   return createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
 };
 
@@ -222,7 +222,7 @@ RBush.prototype.getExtent = function(opt_extent) {
  */
 RBush.prototype.concat = function(rbush) {
   this.rbush_.load(rbush.rbush_.all());
-  for (var i in rbush.items_) {
+  for (const i in rbush.items_) {
     this.items_[i | 0] = rbush.items_[i | 0];
   }
 };

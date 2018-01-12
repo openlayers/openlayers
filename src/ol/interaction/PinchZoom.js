@@ -17,7 +17,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  * @param {olx.interaction.PinchZoomOptions=} opt_options Options.
  * @api
  */
-var PinchZoom = function(opt_options) {
+const PinchZoom = function(opt_options) {
 
   PointerInteraction.call(this, {
     handleDownEvent: PinchZoom.handleDownEvent_,
@@ -25,7 +25,7 @@ var PinchZoom = function(opt_options) {
     handleUpEvent: PinchZoom.handleUpEvent_
   });
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -68,15 +68,15 @@ inherits(PinchZoom, PointerInteraction);
  * @private
  */
 PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  var scaleDelta = 1.0;
+  let scaleDelta = 1.0;
 
-  var touch0 = this.targetPointers[0];
-  var touch1 = this.targetPointers[1];
-  var dx = touch0.clientX - touch1.clientX;
-  var dy = touch0.clientY - touch1.clientY;
+  const touch0 = this.targetPointers[0];
+  const touch1 = this.targetPointers[1];
+  const dx = touch0.clientX - touch1.clientX;
+  const dy = touch0.clientY - touch1.clientY;
 
   // distance between touches
-  var distance = Math.sqrt(dx * dx + dy * dy);
+  const distance = Math.sqrt(dx * dx + dy * dy);
 
   if (this.lastDistance_ !== undefined) {
     scaleDelta = this.lastDistance_ / distance;
@@ -84,12 +84,12 @@ PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   this.lastDistance_ = distance;
 
 
-  var map = mapBrowserEvent.map;
-  var view = map.getView();
-  var resolution = view.getResolution();
-  var maxResolution = view.getMaxResolution();
-  var minResolution = view.getMinResolution();
-  var newResolution = resolution * scaleDelta;
+  const map = mapBrowserEvent.map;
+  const view = map.getView();
+  const resolution = view.getResolution();
+  const maxResolution = view.getMaxResolution();
+  const minResolution = view.getMinResolution();
+  let newResolution = resolution * scaleDelta;
   if (newResolution > maxResolution) {
     scaleDelta = maxResolution / resolution;
     newResolution = maxResolution;
@@ -103,8 +103,8 @@ PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   }
 
   // scale anchor point.
-  var viewportPosition = map.getViewport().getBoundingClientRect();
-  var centroid = PointerInteraction.centroid(this.targetPointers);
+  const viewportPosition = map.getViewport().getBoundingClientRect();
+  const centroid = PointerInteraction.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.left;
   centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
@@ -123,19 +123,19 @@ PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
  */
 PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
+    const map = mapBrowserEvent.map;
+    const view = map.getView();
     view.setHint(ViewHint.INTERACTING, -1);
-    var resolution = view.getResolution();
+    const resolution = view.getResolution();
     if (this.constrainResolution_ ||
         resolution < view.getMinResolution() ||
         resolution > view.getMaxResolution()) {
       // Zoom to final resolution, with an animation, and provide a
       // direction not to zoom out/in if user was pinching in/out.
       // Direction is > 0 if pinching out, and < 0 if pinching in.
-      var direction = this.lastScaleDelta_ - 1;
+      const direction = this.lastScaleDelta_ - 1;
       Interaction.zoom(view, resolution,
-          this.anchor_, this.duration_, direction);
+        this.anchor_, this.duration_, direction);
     }
     return false;
   } else {
@@ -152,7 +152,7 @@ PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
  */
 PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length >= 2) {
-    var map = mapBrowserEvent.map;
+    const map = mapBrowserEvent.map;
     this.anchor_ = null;
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;

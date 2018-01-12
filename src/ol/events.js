@@ -2,7 +2,7 @@
  * @module ol/events
  */
 import _ol_obj_ from './obj.js';
-var _ol_events_ = {};
+const _ol_events_ = {};
 
 
 /**
@@ -10,9 +10,9 @@ var _ol_events_ = {};
  * @return {ol.EventsListenerFunctionType} Bound listener.
  */
 _ol_events_.bindListener_ = function(listenerObj) {
-  var boundListener = function(evt) {
-    var listener = listenerObj.listener;
-    var bindTo = listenerObj.bindTo || listenerObj.target;
+  const boundListener = function(evt) {
+    const listener = listenerObj.listener;
+    const bindTo = listenerObj.bindTo || listenerObj.target;
     if (listenerObj.callOnce) {
       _ol_events_.unlistenByKey(listenerObj);
     }
@@ -36,9 +36,9 @@ _ol_events_.bindListener_ = function(listenerObj) {
  * @private
  */
 _ol_events_.findListener_ = function(listeners, listener, opt_this,
-    opt_setDeleteIndex) {
-  var listenerObj;
-  for (var i = 0, ii = listeners.length; i < ii; ++i) {
+  opt_setDeleteIndex) {
+  let listenerObj;
+  for (let i = 0, ii = listeners.length; i < ii; ++i) {
     listenerObj = listeners[i];
     if (listenerObj.listener === listener &&
         listenerObj.bindTo === opt_this) {
@@ -58,7 +58,7 @@ _ol_events_.findListener_ = function(listeners, listener, opt_this,
  * @return {Array.<ol.EventsKey>|undefined} Listeners.
  */
 _ol_events_.getListeners = function(target, type) {
-  var listenerMap = target.ol_lm;
+  const listenerMap = target.ol_lm;
   return listenerMap ? listenerMap[type] : undefined;
 };
 
@@ -72,7 +72,7 @@ _ol_events_.getListeners = function(target, type) {
  * @private
  */
 _ol_events_.getListenerMap_ = function(target) {
-  var listenerMap = target.ol_lm;
+  let listenerMap = target.ol_lm;
   if (!listenerMap) {
     listenerMap = target.ol_lm = {};
   }
@@ -89,14 +89,14 @@ _ol_events_.getListenerMap_ = function(target) {
  * @private
  */
 _ol_events_.removeListeners_ = function(target, type) {
-  var listeners = _ol_events_.getListeners(target, type);
+  const listeners = _ol_events_.getListeners(target, type);
   if (listeners) {
-    for (var i = 0, ii = listeners.length; i < ii; ++i) {
+    for (let i = 0, ii = listeners.length; i < ii; ++i) {
       target.removeEventListener(type, listeners[i].boundListener);
       _ol_obj_.clear(listeners[i]);
     }
     listeners.length = 0;
-    var listenerMap = target.ol_lm;
+    const listenerMap = target.ol_lm;
     if (listenerMap) {
       delete listenerMap[type];
       if (Object.keys(listenerMap).length === 0) {
@@ -123,13 +123,13 @@ _ol_events_.removeListeners_ = function(target, type) {
  * @return {ol.EventsKey} Unique key for the listener.
  */
 _ol_events_.listen = function(target, type, listener, opt_this, opt_once) {
-  var listenerMap = _ol_events_.getListenerMap_(target);
-  var listeners = listenerMap[type];
+  const listenerMap = _ol_events_.getListenerMap_(target);
+  let listeners = listenerMap[type];
   if (!listeners) {
     listeners = listenerMap[type] = [];
   }
-  var listenerObj = _ol_events_.findListener_(listeners, listener, opt_this,
-      false);
+  let listenerObj = _ol_events_.findListener_(listeners, listener, opt_this,
+    false);
   if (listenerObj) {
     if (!opt_once) {
       // Turn one-off listener into a permanent one.
@@ -190,10 +190,10 @@ _ol_events_.listenOnce = function(target, type, listener, opt_this) {
  *     listener. Default is the `target`.
  */
 _ol_events_.unlisten = function(target, type, listener, opt_this) {
-  var listeners = _ol_events_.getListeners(target, type);
+  const listeners = _ol_events_.getListeners(target, type);
   if (listeners) {
-    var listenerObj = _ol_events_.findListener_(listeners, listener, opt_this,
-        true);
+    const listenerObj = _ol_events_.findListener_(listeners, listener, opt_this,
+      true);
     if (listenerObj) {
       _ol_events_.unlistenByKey(listenerObj);
     }
@@ -213,9 +213,9 @@ _ol_events_.unlisten = function(target, type, listener, opt_this) {
 _ol_events_.unlistenByKey = function(key) {
   if (key && key.target) {
     key.target.removeEventListener(key.type, key.boundListener);
-    var listeners = _ol_events_.getListeners(key.target, key.type);
+    const listeners = _ol_events_.getListeners(key.target, key.type);
     if (listeners) {
-      var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
+      const i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
       if (i !== -1) {
         listeners.splice(i, 1);
       }
@@ -235,8 +235,8 @@ _ol_events_.unlistenByKey = function(key) {
  * @param {ol.EventTargetLike} target Target.
  */
 _ol_events_.unlistenAll = function(target) {
-  var listenerMap = _ol_events_.getListenerMap_(target);
-  for (var type in listenerMap) {
+  const listenerMap = _ol_events_.getListenerMap_(target);
+  for (const type in listenerMap) {
     _ol_events_.removeListeners_(target, type);
   }
 };

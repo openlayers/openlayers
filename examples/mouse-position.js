@@ -6,7 +6,7 @@ import _ol_coordinate_ from '../src/ol/coordinate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
-var mousePositionControl = new MousePosition({
+const mousePositionControl = new MousePosition({
   coordinateFormat: _ol_coordinate_.createStringXY(4),
   projection: 'EPSG:4326',
   // comment the following two lines to have the mouse position
@@ -16,7 +16,7 @@ var mousePositionControl = new MousePosition({
   undefinedHTML: '&nbsp;'
 });
 
-var map = new Map({
+const map = new Map({
   controls: defaultControls({
     attributionOptions: {
       collapsible: false
@@ -34,13 +34,13 @@ var map = new Map({
   })
 });
 
-var projectionSelect = document.getElementById('projection');
+const projectionSelect = document.getElementById('projection');
 projectionSelect.addEventListener('change', function(event) {
   mousePositionControl.setProjection(event.target.value);
 });
 
-var precisionInput = document.getElementById('precision');
+const precisionInput = document.getElementById('precision');
 precisionInput.addEventListener('change', function(event) {
-  var format = _ol_coordinate_.createStringXY(event.target.valueAsNumber);
+  const format = _ol_coordinate_.createStringXY(event.target.valueAsNumber);
   mousePositionControl.setCoordinateFormat(format);
 });

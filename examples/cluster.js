@@ -14,31 +14,31 @@ import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
 
-var distance = document.getElementById('distance');
+const distance = document.getElementById('distance');
 
-var count = 20000;
-var features = new Array(count);
-var e = 4500000;
-for (var i = 0; i < count; ++i) {
-  var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
+const count = 20000;
+const features = new Array(count);
+const e = 4500000;
+for (let i = 0; i < count; ++i) {
+  const coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
   features[i] = new Feature(new Point(coordinates));
 }
 
-var source = new VectorSource({
+const source = new VectorSource({
   features: features
 });
 
-var clusterSource = new Cluster({
+const clusterSource = new Cluster({
   distance: parseInt(distance.value, 10),
   source: source
 });
 
-var styleCache = {};
-var clusters = new VectorLayer({
+const styleCache = {};
+const clusters = new VectorLayer({
   source: clusterSource,
   style: function(feature) {
-    var size = feature.get('features').length;
-    var style = styleCache[size];
+    const size = feature.get('features').length;
+    let style = styleCache[size];
     if (!style) {
       style = new Style({
         image: new CircleStyle({
@@ -63,11 +63,11 @@ var clusters = new VectorLayer({
   }
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, clusters],
   target: 'map',
   view: new View({

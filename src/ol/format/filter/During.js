@@ -15,7 +15,7 @@ import Comparison from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var During = function(propertyName, begin, end) {
+const During = function(propertyName, begin, end) {
   Comparison.call(this, 'During', propertyName);
 
   /**

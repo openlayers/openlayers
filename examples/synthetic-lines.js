@@ -8,18 +8,18 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var count = 10000;
-var features = new Array(count);
+const count = 10000;
+const features = new Array(count);
 
-var startPoint = [0, 0];
-var endPoint;
+let startPoint = [0, 0];
+let endPoint;
 
-var delta, deltaX, deltaY;
-var signX = 1;
-var signY = -1;
+let delta, deltaX, deltaY;
+let signX = 1;
+let signY = -1;
 
 // Create a square spiral.
-var i;
+let i;
 for (i = 0; i < count; ++i) {
   delta = (i + 1) * 2500;
   if (i % 2 === 0) {
@@ -36,7 +36,7 @@ for (i = 0; i < count; ++i) {
   startPoint = endPoint;
 }
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     features: features,
     wrapX: false
@@ -49,12 +49,12 @@ var vector = new VectorLayer({
   })
 });
 
-var view = new View({
+const view = new View({
   center: [0, 0],
   zoom: 0
 });
 
-var map = new Map({
+const map = new Map({
   layers: [vector],
   target: 'map',
   view: view

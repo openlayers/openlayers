@@ -14,7 +14,7 @@ import {clamp} from '../math.js';
 /**
  * @type {number} Maximum mouse wheel delta.
  */
-var MAX_DELTA = 1;
+const MAX_DELTA = 1;
 
 
 /**
@@ -26,13 +26,13 @@ var MAX_DELTA = 1;
  * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
  * @api
  */
-var MouseWheelZoom = function(opt_options) {
+const MouseWheelZoom = function(opt_options) {
 
   Interaction.call(this, {
     handleEvent: MouseWheelZoom.handleEvent
   });
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -137,15 +137,15 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   if (!this.condition_(mapBrowserEvent)) {
     return true;
   }
-  var type = mapBrowserEvent.type;
+  const type = mapBrowserEvent.type;
   if (type !== EventType.WHEEL && type !== EventType.MOUSEWHEEL) {
     return true;
   }
 
   mapBrowserEvent.preventDefault();
 
-  var map = mapBrowserEvent.map;
-  var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
+  const map = mapBrowserEvent.map;
+  const wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
 
   if (this.useAnchor_) {
     this.lastAnchor_ = mapBrowserEvent.coordinate;
@@ -153,7 +153,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   // Delta normalisation inspired by
   // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-  var delta;
+  let delta;
   if (mapBrowserEvent.type == EventType.WHEEL) {
     delta = wheelEvent.deltaY;
     if (_ol_has_.FIREFOX &&
@@ -174,7 +174,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     return false;
   }
 
-  var now = Date.now();
+  const now = Date.now();
 
   if (this.startTime_ === undefined) {
     this.startTime_ = now;
@@ -187,17 +187,17 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   }
 
   if (this.mode_ === MouseWheelZoom.Mode_.TRACKPAD) {
-    var view = map.getView();
+    const view = map.getView();
     if (this.trackpadTimeoutId_) {
       clearTimeout(this.trackpadTimeoutId_);
     } else {
       view.setHint(ViewHint.INTERACTING, 1);
     }
     this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
-    var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
-    var minResolution = view.getMinResolution();
-    var maxResolution = view.getMaxResolution();
-    var rebound = 0;
+    let resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
+    const minResolution = view.getMinResolution();
+    const maxResolution = view.getMaxResolution();
+    let rebound = 0;
     if (resolution < minResolution) {
       resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
       rebound = 1;
@@ -206,7 +206,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       rebound = -1;
     }
     if (this.lastAnchor_) {
-      var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
+      const center = view.calculateCenterZoom(resolution, this.lastAnchor_);
       view.setCenter(view.constrainCenter(center));
     }
     view.setResolution(resolution);
@@ -241,7 +241,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   this.delta_ += delta;
 
-  var timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
+  const timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
 
   clearTimeout(this.timeoutId_);
   this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
@@ -255,7 +255,7 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  */
 MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
   this.trackpadTimeoutId_ = undefined;
-  var view = this.getMap().getView();
+  const view = this.getMap().getView();
   view.setHint(ViewHint.INTERACTING, -1);
 };
 
@@ -265,14 +265,14 @@ MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
  * @param {ol.PluggableMap} map Map.
  */
 MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
-  var view = map.getView();
+  const view = map.getView();
   if (view.getAnimating()) {
     view.cancelAnimations();
   }
-  var maxDelta = MAX_DELTA;
-  var delta = clamp(this.delta_, -maxDelta, maxDelta);
+  const maxDelta = MAX_DELTA;
+  const delta = clamp(this.delta_, -maxDelta, maxDelta);
   Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
-      this.duration_);
+    this.duration_);
   this.mode_ = undefined;
   this.delta_ = 0;
   this.lastAnchor_ = null;

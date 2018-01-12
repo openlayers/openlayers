@@ -14,7 +14,7 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-var LessThan = function(propertyName, expression) {
+const LessThan = function(propertyName, expression) {
   ComparisonBinary.call(this, 'PropertyIsLessThan', propertyName, expression);
 };
 

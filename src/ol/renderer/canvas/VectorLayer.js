@@ -22,7 +22,7 @@ import _ol_renderer_vector_ from '../vector.js';
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  * @api
  */
-var CanvasVectorLayerRenderer = function(vectorLayer) {
+const CanvasVectorLayerRenderer = function(vectorLayer) {
 
   CanvasLayerRenderer.call(this, vectorLayer);
 
@@ -122,42 +122,42 @@ CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
  */
 CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
 
-  var extent = frameState.extent;
-  var pixelRatio = frameState.pixelRatio;
-  var skippedFeatureUids = layerState.managed ?
+  const extent = frameState.extent;
+  const pixelRatio = frameState.pixelRatio;
+  const skippedFeatureUids = layerState.managed ?
     frameState.skippedFeatureUids : {};
-  var viewState = frameState.viewState;
-  var projection = viewState.projection;
-  var rotation = viewState.rotation;
-  var projectionExtent = projection.getExtent();
-  var vectorSource = /** @type {ol.source.Vector} */ (this.getLayer().getSource());
+  const viewState = frameState.viewState;
+  const projection = viewState.projection;
+  const rotation = viewState.rotation;
+  const projectionExtent = projection.getExtent();
+  const vectorSource = /** @type {ol.source.Vector} */ (this.getLayer().getSource());
 
-  var transform = this.getTransform(frameState, 0);
+  let transform = this.getTransform(frameState, 0);
 
   this.preCompose(context, frameState, transform);
 
   // clipped rendering if layer extent is set
-  var clipExtent = layerState.extent;
-  var clipped = clipExtent !== undefined;
+  const clipExtent = layerState.extent;
+  const clipped = clipExtent !== undefined;
   if (clipped) {
     this.clip(context, frameState,  /** @type {ol.Extent} */ (clipExtent));
   }
-  var replayGroup = this.replayGroup_;
+  const replayGroup = this.replayGroup_;
   if (replayGroup && !replayGroup.isEmpty()) {
     if (this.declutterTree_) {
       this.declutterTree_.clear();
     }
-    var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
-    var drawOffsetX = 0;
-    var drawOffsetY = 0;
-    var replayContext;
-    var transparentLayer = layerState.opacity !== 1;
-    var hasRenderListeners = layer.hasListener(RenderEventType.RENDER);
+    const layer = /** @type {ol.layer.Vector} */ (this.getLayer());
+    let drawOffsetX = 0;
+    let drawOffsetY = 0;
+    let replayContext;
+    const transparentLayer = layerState.opacity !== 1;
+    const hasRenderListeners = layer.hasListener(RenderEventType.RENDER);
     if (transparentLayer || hasRenderListeners) {
-      var drawWidth = context.canvas.width;
-      var drawHeight = context.canvas.height;
+      let drawWidth = context.canvas.width;
+      let drawHeight = context.canvas.height;
       if (rotation) {
-        var drawSize = Math.round(Math.sqrt(drawWidth * drawWidth + drawHeight * drawHeight));
+        const drawSize = Math.round(Math.sqrt(drawWidth * drawWidth + drawHeight * drawHeight));
         drawOffsetX = (drawSize - drawWidth) / 2;
         drawOffsetY = (drawSize - drawHeight) / 2;
         drawWidth = drawHeight = drawSize;
@@ -170,7 +170,7 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
       replayContext = context;
     }
 
-    var alpha = replayContext.globalAlpha;
+    const alpha = replayContext.globalAlpha;
     if (!transparentLayer) {
       // for performance reasons, context.save / context.restore is not used
       // to save and restore the transformation matrix and the opacity.
@@ -182,17 +182,17 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
       replayContext.translate(drawOffsetX, drawOffsetY);
     }
 
-    var width = frameState.size[0] * pixelRatio;
-    var height = frameState.size[1] * pixelRatio;
+    const width = frameState.size[0] * pixelRatio;
+    const height = frameState.size[1] * pixelRatio;
     _ol_render_canvas_.rotateAtOffset(replayContext, -rotation,
-        width / 2, height / 2);
+      width / 2, height / 2);
     replayGroup.replay(replayContext, transform, rotation, skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
         !containsExtent(projectionExtent, extent)) {
-      var startX = extent[0];
-      var worldWidth = getWidth(projectionExtent);
-      var world = 0;
-      var offsetX;
+      let startX = extent[0];
+      const worldWidth = getWidth(projectionExtent);
+      let world = 0;
+      let offsetX;
       while (startX < projectionExtent[0]) {
         --world;
         offsetX = worldWidth * world;
@@ -213,14 +213,14 @@ CanvasVectorLayerRenderer.prototype.composeFrame = function(frameState, layerSta
       transform = this.getTransform(frameState, 0);
     }
     _ol_render_canvas_.rotateAtOffset(replayContext, rotation,
-        width / 2, height / 2);
+      width / 2, height / 2);
 
     if (replayContext != context) {
       if (hasRenderListeners) {
         this.dispatchRenderEvent(replayContext, frameState, transform);
       }
       if (transparentLayer) {
-        var mainContextAlpha = context.globalAlpha;
+        const mainContextAlpha = context.globalAlpha;
         context.globalAlpha = layerState.opacity;
         context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
         context.globalAlpha = mainContextAlpha;
@@ -250,24 +250,24 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
   if (!this.replayGroup_) {
     return undefined;
   } else {
-    var resolution = frameState.viewState.resolution;
-    var rotation = frameState.viewState.rotation;
-    var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
+    const resolution = frameState.viewState.resolution;
+    const rotation = frameState.viewState.rotation;
+    const layer = /** @type {ol.layer.Vector} */ (this.getLayer());
     /** @type {Object.<string, boolean>} */
-    var features = {};
-    var result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-        rotation, hitTolerance, {},
-        /**
+    const features = {};
+    const result = this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
+      rotation, hitTolerance, {},
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(feature) {
-          var key = getUid(feature).toString();
-          if (!(key in features)) {
-            features[key] = true;
-            return callback.call(thisArg, feature, layer);
-          }
-        }, null);
+      function(feature) {
+        const key = getUid(feature).toString();
+        if (!(key in features)) {
+          features[key] = true;
+          return callback.call(thisArg, feature, layer);
+        }
+      }, null);
     return result;
   }
 };
@@ -277,7 +277,7 @@ CanvasVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordi
  * @param {ol.events.Event} event Event.
  */
 CanvasVectorLayerRenderer.prototype.handleFontsChanged_ = function(event) {
-  var layer = this.getLayer();
+  const layer = this.getLayer();
   if (layer.getVisible() && this.replayGroup_) {
     layer.changed();
   }
@@ -298,35 +298,35 @@ CanvasVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
  * @inheritDoc
  */
 CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
-  var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
-  var vectorSource = vectorLayer.getSource();
+  const vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
+  const vectorSource = vectorLayer.getSource();
 
-  var animating = frameState.viewHints[ViewHint.ANIMATING];
-  var interacting = frameState.viewHints[ViewHint.INTERACTING];
-  var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
-  var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
+  const animating = frameState.viewHints[ViewHint.ANIMATING];
+  const interacting = frameState.viewHints[ViewHint.INTERACTING];
+  const updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
+  const updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
   if (!this.dirty_ && (!updateWhileAnimating && animating) ||
       (!updateWhileInteracting && interacting)) {
     return true;
   }
 
-  var frameStateExtent = frameState.extent;
-  var viewState = frameState.viewState;
-  var projection = viewState.projection;
-  var resolution = viewState.resolution;
-  var pixelRatio = frameState.pixelRatio;
-  var vectorLayerRevision = vectorLayer.getRevision();
-  var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
-  var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+  const frameStateExtent = frameState.extent;
+  const viewState = frameState.viewState;
+  const projection = viewState.projection;
+  const resolution = viewState.resolution;
+  const pixelRatio = frameState.pixelRatio;
+  const vectorLayerRevision = vectorLayer.getRevision();
+  const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
+  let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
   if (vectorLayerRenderOrder === undefined) {
     vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
   }
 
-  var extent = buffer(frameStateExtent,
-      vectorLayerRenderBuffer * resolution);
-  var projectionExtent = viewState.projection.getExtent();
+  const extent = buffer(frameStateExtent,
+    vectorLayerRenderBuffer * resolution);
+  const projectionExtent = viewState.projection.getExtent();
 
   if (vectorSource.getWrapX() && viewState.projection.canWrapX() &&
       !containsExtent(projectionExtent, frameState.extent)) {
@@ -335,8 +335,8 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
     // to +540°, we add at least 1 world width on each side of the projection
     // extent. If the viewport is wider than the world, we need to add half of
     // the viewport width to make sure we cover the whole viewport.
-    var worldWidth = getWidth(projectionExtent);
-    var gutter = Math.max(getWidth(extent) / 2, worldWidth);
+    const worldWidth = getWidth(projectionExtent);
+    const gutter = Math.max(getWidth(extent) / 2, worldWidth);
     extent[0] = projectionExtent[0] - gutter;
     extent[2] = projectionExtent[2] + gutter;
   }
@@ -354,17 +354,17 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
 
   this.dirty_ = false;
 
-  var replayGroup = new _ol_render_canvas_ReplayGroup_(
-      _ol_renderer_vector_.getTolerance(resolution, pixelRatio), extent, resolution,
-      pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
+  const replayGroup = new _ol_render_canvas_ReplayGroup_(
+    _ol_renderer_vector_.getTolerance(resolution, pixelRatio), extent, resolution,
+    pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.
    * @this {ol.renderer.canvas.VectorLayer}
    */
-  var renderFeature = function(feature) {
-    var styles;
-    var styleFunction = feature.getStyleFunction();
+  const renderFeature = function(feature) {
+    let styles;
+    let styleFunction = feature.getStyleFunction();
     if (styleFunction) {
       styles = styleFunction.call(feature, resolution);
     } else {
@@ -374,23 +374,23 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
       }
     }
     if (styles) {
-      var dirty = this.renderFeature(
-          feature, resolution, pixelRatio, styles, replayGroup);
+      const dirty = this.renderFeature(
+        feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
   }.bind(this);
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
-    var features = [];
+    const features = [];
     vectorSource.forEachFeatureInExtent(extent,
-        /**
+      /**
          * @param {ol.Feature} feature Feature.
          */
-        function(feature) {
-          features.push(feature);
-        }, this);
+      function(feature) {
+        features.push(feature);
+      }, this);
     features.sort(vectorLayerRenderOrder);
-    for (var i = 0, ii = features.length; i < ii; ++i) {
+    for (let i = 0, ii = features.length; i < ii; ++i) {
       renderFeature(features[i]);
     }
   } else {
@@ -422,19 +422,19 @@ CanvasVectorLayerRenderer.prototype.renderFeature = function(feature, resolution
   if (!styles) {
     return false;
   }
-  var loading = false;
+  let loading = false;
   if (Array.isArray(styles)) {
-    for (var i = 0, ii = styles.length; i < ii; ++i) {
+    for (let i = 0, ii = styles.length; i < ii; ++i) {
       loading = _ol_renderer_vector_.renderFeature(
-          replayGroup, feature, styles[i],
-          _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+        replayGroup, feature, styles[i],
+        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+        this.handleStyleImageChange_, this) || loading;
     }
   } else {
     loading = _ol_renderer_vector_.renderFeature(
-        replayGroup, feature, styles,
-        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this);
+      replayGroup, feature, styles,
+      _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+      this.handleStyleImageChange_, this);
   }
   return loading;
 };

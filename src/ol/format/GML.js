@@ -15,7 +15,7 @@ import GML3 from '../format/GML3.js';
  * @extends {ol.format.GMLBase}
  * @api
  */
-var _ol_format_GML_ = GML3;
+const _ol_format_GML_ = GML3;
 
 
 /**

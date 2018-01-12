@@ -9,7 +9,7 @@ describe('ol.style.Circle', function() {
   describe('#constructor', function() {
 
     it('creates a canvas if no atlas is used (no fill-style)', function() {
-      var style = new CircleStyle({radius: 10});
+      const style = new CircleStyle({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([21, 21]);
@@ -22,7 +22,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('creates a canvas if no atlas is used (fill-style)', function() {
-      var style = new CircleStyle({
+      const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
           color: '#FFFF00'
@@ -40,8 +40,8 @@ describe('ol.style.Circle', function() {
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
-      var atlasManager = new AtlasManager({initialSize: 512});
-      var style = new CircleStyle({radius: 10, atlasManager: atlasManager});
+      const atlasManager = new AtlasManager({initialSize: 512});
+      const style = new CircleStyle({radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([512, 512]);
@@ -54,8 +54,8 @@ describe('ol.style.Circle', function() {
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
-      var atlasManager = new AtlasManager({initialSize: 512});
-      var style = new CircleStyle({
+      const atlasManager = new AtlasManager({initialSize: 512});
+      const style = new CircleStyle({
         radius: 10,
         atlasManager: atlasManager,
         fill: new Fill({
@@ -77,14 +77,14 @@ describe('ol.style.Circle', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Circle', function() {
-      var original = new CircleStyle();
-      var clone = original.clone();
+      const original = new CircleStyle();
+      const clone = original.clone();
       expect(clone).to.be.an(CircleStyle);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new CircleStyle({
+      const original = new CircleStyle({
         fill: new Fill({
           color: '#319FD3'
         }),
@@ -96,7 +96,7 @@ describe('ol.style.Circle', function() {
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRadius()).to.eql(clone.getRadius());
@@ -106,7 +106,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new CircleStyle({
+      const original = new CircleStyle({
         fill: new Fill({
           color: '#319FD3'
         }),
@@ -114,7 +114,7 @@ describe('ol.style.Circle', function() {
           color: '#319FD3'
         })
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getFill()).to.not.be(clone.getFill());
       expect(original.getStroke()).to.not.be(clone.getStroke());
 
@@ -129,37 +129,37 @@ describe('ol.style.Circle', function() {
   describe('#getChecksum', function() {
 
     it('calculates the same hash code for default options', function() {
-      var style1 = new CircleStyle();
-      var style2 = new CircleStyle();
+      const style1 = new CircleStyle();
+      const style2 = new CircleStyle();
       expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (radius)', function() {
-      var style1 = new CircleStyle();
-      var style2 = new CircleStyle({
+      const style1 = new CircleStyle();
+      const style2 = new CircleStyle({
         radius: 5
       });
       expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
 
     it('calculates the same hash code (radius)', function() {
-      var style1 = new CircleStyle({
+      const style1 = new CircleStyle({
         radius: 5
       });
-      var style2 = new CircleStyle({
+      const style2 = new CircleStyle({
         radius: 5
       });
       expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (color)', function() {
-      var style1 = new CircleStyle({
+      const style1 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
         })
       });
-      var style2 = new CircleStyle({
+      const style2 = new CircleStyle({
         radius: 5,
         stroke: new Stroke({
           color: '#319FD3'
@@ -169,7 +169,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('calculates the same hash code (everything set)', function() {
-      var style1 = new CircleStyle({
+      const style1 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -183,7 +183,7 @@ describe('ol.style.Circle', function() {
           width: 2
         })
       });
-      var style2 = new CircleStyle({
+      const style2 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -201,7 +201,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('calculates not the same hash code (stroke width differs)', function() {
-      var style1 = new CircleStyle({
+      const style1 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -215,7 +215,7 @@ describe('ol.style.Circle', function() {
           width: 3
         })
       });
-      var style2 = new CircleStyle({
+      const style2 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -233,7 +233,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('invalidates a cached checksum if values change (fill)', function() {
-      var style1 = new CircleStyle({
+      const style1 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -242,7 +242,7 @@ describe('ol.style.Circle', function() {
           color: '#319FD3'
         })
       });
-      var style2 = new CircleStyle({
+      const style2 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -258,7 +258,7 @@ describe('ol.style.Circle', function() {
     });
 
     it('invalidates a cached checksum if values change (stroke)', function() {
-      var style1 = new CircleStyle({
+      const style1 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -267,7 +267,7 @@ describe('ol.style.Circle', function() {
           color: '#319FD3'
         })
       });
-      var style2 = new CircleStyle({
+      const style2 = new CircleStyle({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -286,7 +286,7 @@ describe('ol.style.Circle', function() {
 
   describe('#setRadius', function() {
     it('changes the circle radius', function() {
-      var style = new CircleStyle({
+      const style = new CircleStyle({
         radius: 10,
         fill: new Fill({
           color: '#FFFF00'

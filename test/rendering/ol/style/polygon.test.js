@@ -11,13 +11,13 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.Polygon', function() {
 
-  var map, vectorSource;
+  let map, vectorSource;
 
   function createMap(renderer, opt_size) {
-    var size = opt_size || 50;
+    const size = opt_size || 50;
 
     vectorSource = new VectorSource();
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -44,9 +44,9 @@ describe('ol.rendering.style.Polygon', function() {
   describe('different types', function() {
 
     function createFeatures() {
-      var fill = new Fill({color: 'red'});
+      const fill = new Fill({color: 'red'});
 
-      var feature;
+      let feature;
       // rectangle
       feature = new Feature({
         geometry: new Polygon([
@@ -90,28 +90,28 @@ describe('ol.rendering.style.Polygon', function() {
       createMap('canvas');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-types-canvas.png',
-          IMAGE_TOLERANCE, done);
+        IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the webgl renderer', function(done) {
       createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-types-webgl.png',
-          IMAGE_TOLERANCE, done);
+        IMAGE_TOLERANCE, done);
     });
   });
 
   describe('different types with stroke', function() {
 
     function createFeatures() {
-      var stroke = new Stroke({
+      const stroke = new Stroke({
         width: 10,
         color: '#000',
         lineJoin: 'round',
         lineCap: 'butt'
       });
 
-      var feature;
+      let feature;
       // rectangle
       feature = new Feature({
         geometry: new Polygon([
@@ -156,7 +156,7 @@ describe('ol.rendering.style.Polygon', function() {
       map.getView().setResolution(0.5);
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-types-canvas-stroke.png',
-          IMAGE_TOLERANCE, done);
+        IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the webgl renderer', function(done) {
@@ -164,14 +164,14 @@ describe('ol.rendering.style.Polygon', function() {
       map.getView().setResolution(0.5);
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-types-webgl-stroke.png',
-          IMAGE_TOLERANCE, done);
+        IMAGE_TOLERANCE, done);
     });
   });
 
   describe('z-index', function() {
 
     function createFeatures() {
-      var feature;
+      let feature;
       // rectangle with z-index 2
       feature = new Feature({
         geometry: new Polygon([
@@ -214,21 +214,21 @@ describe('ol.rendering.style.Polygon', function() {
       createMap('canvas');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-zindex-canvas.png',
-          IMAGE_TOLERANCE, done);
+        IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the webgl renderer', function(done) {
       createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-zindex-webgl.png',
-          IMAGE_TOLERANCE, done);
+        IMAGE_TOLERANCE, done);
     });
   });
 
   describe('different fills and strokes', function() {
 
     function createFeatures() {
-      var feature;
+      let feature;
       // rectangle
       feature = new Feature({
         geometry: new Polygon([
@@ -270,25 +270,25 @@ describe('ol.rendering.style.Polygon', function() {
       createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'rendering/ol/style/expected/polygon-fill-and-strokes-canvas.png',
-          IMAGE_TOLERANCE, done);
+        map, 'rendering/ol/style/expected/polygon-fill-and-strokes-canvas.png',
+        IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the webgl renderer', function(done) {
       createMap('webgl');
       createFeatures();
       expectResemble(
-          map, 'rendering/ol/style/expected/polygon-fill-and-strokes-webgl.png',
-          5.76, done);
+        map, 'rendering/ol/style/expected/polygon-fill-and-strokes-webgl.png',
+        5.76, done);
     });
   });
 
   describe('CanvasPattern and LinearGradient as fills and strokes', function() {
 
     function createRainbowGradient() {
-      var canvas = document.createElement('canvas');
-      var context = canvas.getContext('2d');
-      var gradient = context.createLinearGradient(0, 0, 30, 0);
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
+      const gradient = context.createLinearGradient(0, 0, 30, 0);
       gradient.addColorStop(0, 'red');
       gradient.addColorStop(1 / 6, 'orange');
       gradient.addColorStop(2 / 6, 'yellow');
@@ -300,8 +300,8 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     function createPattern() {
-      var canvas = document.createElement('canvas');
-      var context = canvas.getContext('2d');
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
       canvas.width = 11;
       canvas.height = 11;
       context.fillStyle = 'rgba(102, 0, 102, 0.5)';
@@ -316,7 +316,7 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     function createFeatures() {
-      var feature = new Feature({
+      const feature = new Feature({
         geometry: new Polygon([
           [[-20, -20], [-20, 20], [18, 20], [-20, -20]]
         ])
@@ -332,8 +332,8 @@ describe('ol.rendering.style.Polygon', function() {
       createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'rendering/ol/style/expected/polygon-pattern-gradient-canvas.png',
-          2.75, done);
+        map, 'rendering/ol/style/expected/polygon-pattern-gradient-canvas.png',
+        2.75, done);
     });
   });
 

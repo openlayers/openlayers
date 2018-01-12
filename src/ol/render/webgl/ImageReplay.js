@@ -12,7 +12,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-var _ol_render_webgl_ImageReplay_ = function(tolerance, maxExtent) {
+const _ol_render_webgl_ImageReplay_ = function(tolerance, maxExtent) {
   _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
 
   /**
@@ -50,10 +50,10 @@ inherits(_ol_render_webgl_ImageReplay_, _ol_render_webgl_TextureReplay_);
 _ol_render_webgl_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
   this.startIndices.push(this.indices.length);
   this.startIndicesFeature.push(feature);
-  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
-  var stride = multiPointGeometry.getStride();
+  const flatCoordinates = multiPointGeometry.getFlatCoordinates();
+  const stride = multiPointGeometry.getStride();
   this.drawCoordinates(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+    flatCoordinates, 0, flatCoordinates.length, stride);
 };
 
 
@@ -63,10 +63,10 @@ _ol_render_webgl_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeom
 _ol_render_webgl_ImageReplay_.prototype.drawPoint = function(pointGeometry, feature) {
   this.startIndices.push(this.indices.length);
   this.startIndicesFeature.push(feature);
-  var flatCoordinates = pointGeometry.getFlatCoordinates();
-  var stride = pointGeometry.getStride();
+  const flatCoordinates = pointGeometry.getFlatCoordinates();
+  const stride = pointGeometry.getStride();
   this.drawCoordinates(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+    flatCoordinates, 0, flatCoordinates.length, stride);
 };
 
 
@@ -74,7 +74,7 @@ _ol_render_webgl_ImageReplay_.prototype.drawPoint = function(pointGeometry, feat
  * @inheritDoc
  */
 _ol_render_webgl_ImageReplay_.prototype.finish = function(context) {
-  var gl = context.getGL();
+  const gl = context.getGL();
 
   this.groupIndices.push(this.indices.length);
   this.hitDetectionGroupIndices.push(this.indices.length);
@@ -82,19 +82,19 @@ _ol_render_webgl_ImageReplay_.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
   this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
-  var indices = this.indices;
+  const indices = this.indices;
 
   // create, bind, and populate the indices buffer
   this.indicesBuffer = new _ol_webgl_Buffer_(indices);
 
   // create textures
   /** @type {Object.<string, WebGLTexture>} */
-  var texturePerImage = {};
+  const texturePerImage = {};
 
   this.createTextures(this.textures_, this.images_, texturePerImage, gl);
 
   this.createTextures(this.hitDetectionTextures_, this.hitDetectionImages_,
-      texturePerImage, gl);
+    texturePerImage, gl);
 
   this.images_ = null;
   this.hitDetectionImages_ = null;
@@ -106,18 +106,18 @@ _ol_render_webgl_ImageReplay_.prototype.finish = function(context) {
  * @inheritDoc
  */
 _ol_render_webgl_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
-  var anchor = imageStyle.getAnchor();
-  var image = imageStyle.getImage(1);
-  var imageSize = imageStyle.getImageSize();
-  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-  var opacity = imageStyle.getOpacity();
-  var origin = imageStyle.getOrigin();
-  var rotateWithView = imageStyle.getRotateWithView();
-  var rotation = imageStyle.getRotation();
-  var size = imageStyle.getSize();
-  var scale = imageStyle.getScale();
+  const anchor = imageStyle.getAnchor();
+  const image = imageStyle.getImage(1);
+  const imageSize = imageStyle.getImageSize();
+  const hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  const opacity = imageStyle.getOpacity();
+  const origin = imageStyle.getOrigin();
+  const rotateWithView = imageStyle.getRotateWithView();
+  const rotation = imageStyle.getRotation();
+  const size = imageStyle.getSize();
+  const scale = imageStyle.getScale();
 
-  var currentImage;
+  let currentImage;
   if (this.images_.length === 0) {
     this.images_.push(image);
   } else {

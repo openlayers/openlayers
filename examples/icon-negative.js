@@ -23,10 +23,10 @@ function createStyle(src, img) {
   });
 }
 
-var iconFeature = new Feature(new Point([0, 0]));
+const iconFeature = new Feature(new Point([0, 0]));
 iconFeature.set('style', createStyle('data/icon.png', undefined));
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new Stamen({layer: 'watercolor'})
@@ -45,19 +45,19 @@ var map = new Map({
   })
 });
 
-var selectStyle = {};
-var select = new Select({
+const selectStyle = {};
+const select = new Select({
   style: function(feature) {
-    var image = feature.get('style').getImage().getImage();
+    const image = feature.get('style').getImage().getImage();
     if (!selectStyle[image.src]) {
-      var canvas = document.createElement('canvas');
-      var context = canvas.getContext('2d');
+      const canvas = document.createElement('canvas');
+      const context = canvas.getContext('2d');
       canvas.width = image.width;
       canvas.height = image.height;
       context.drawImage(image, 0, 0, image.width, image.height);
-      var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      var data = imageData.data;
-      for (var i = 0, ii = data.length; i < ii; i = i + (i % 4 == 2 ? 2 : 1)) {
+      const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      for (let i = 0, ii = data.length; i < ii; i = i + (i % 4 == 2 ? 2 : 1)) {
         data[i] = 255 - data[i];
       }
       context.putImageData(imageData, 0, 0);

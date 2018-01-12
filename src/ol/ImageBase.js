@@ -14,7 +14,7 @@ import EventType from './events/EventType.js';
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
  */
-var _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
+const _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
 
   EventTarget.call(this);
 

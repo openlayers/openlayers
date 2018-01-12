@@ -16,7 +16,7 @@ describe('ol.format.WFS', function() {
   describe('featureType', function() {
 
     it('#getFeatureType #setFeatureType', function() {
-      var format = new WFS({
+      const format = new WFS({
         featureNS: 'http://www.openplans.org/topp',
         featureType: ['foo', 'bar']
       });
@@ -29,8 +29,8 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing TOPP states GML from WFS', function() {
 
-    var features, feature, xml;
-    var config = {
+    let features, feature, xml;
+    const config = {
       'featureNS': 'http://www.openplans.org/topp',
       'featureType': 'states'
     };
@@ -73,9 +73,9 @@ describe('ol.format.WFS', function() {
       feature = features[0];
       expect(feature.getId()).to.equal('states.1');
       expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       expect(geom).to.be.an(MultiPolygon);
-      var p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
+      const p = transform([-88.071, 37.511], 'EPSG:4326', 'EPSG:3857');
       p.push(0);
       expect(geom.getFirstCoordinate()).to.eql(p);
     });
@@ -84,8 +84,8 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing mapserver GML2 polygon', function() {
 
-    var features, feature, xml;
-    var config = {
+    let features, feature, xml;
+    const config = {
       'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
       'featureType': 'polygon',
       'gmlFormat': new GML2()
@@ -120,41 +120,41 @@ describe('ol.format.WFS', function() {
       expect(feature.getId()).to.equal('1');
       expect(feature.get('name')).to.equal('My Polygon with hole');
       expect(feature.get('boundedBy')).to.eql(
-          [47.003018, -0.768746, 47.925567, 0.532597]);
+        [47.003018, -0.768746, 47.925567, 0.532597]);
       expect(feature.getGeometry()).to.be.an(MultiPolygon);
       expect(feature.getGeometry().getFlatCoordinates()).
-          to.have.length(60);
+        to.have.length(60);
     });
 
   });
 
   describe('when parsing FeatureCollection', function() {
-    var xml;
+    let xml;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/EmptyFeatureCollection.xml',
-          function(_xml) {
-            xml = _xml;
-            done();
-          });
+        function(_xml) {
+          xml = _xml;
+          done();
+        });
     });
     it('returns an empty array of features when none exist', function() {
-      var result = new WFS().readFeatures(xml);
+      const result = new WFS().readFeatures(xml);
       expect(result).to.have.length(0);
     });
   });
 
   describe('when parsing FeatureCollection', function() {
-    var response;
+    let response;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/NumberOfFeatures.xml',
-          function(xml) {
-            try {
-              response = new WFS().readFeatureCollectionMetadata(xml);
-            } catch (e) {
-              done(e);
-            }
-            done();
-          });
+        function(xml) {
+          try {
+            response = new WFS().readFeatureCollectionMetadata(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        });
     });
     it('returns the correct number of features', function() {
       expect(response.numberOfFeatures).to.equal(625);
@@ -162,7 +162,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when parsing FeatureCollection', function() {
-    var response;
+    let response;
     before(function(done) {
       proj4.defs('EPSG:28992', '+proj=sterea +lat_0=52.15616055555555 ' +
           '+lon_0=5.38763888888889 +k=0.9999079 +x_0=155000 +y_0=463000 ' +
@@ -170,14 +170,14 @@ describe('ol.format.WFS', function() {
           '-1.8774,4.0725 +units=m +no_defs');
       register(proj4);
       afterLoadText('spec/ol/format/wfs/boundedBy.xml',
-          function(xml) {
-            try {
-              response = new WFS().readFeatureCollectionMetadata(xml);
-            } catch (e) {
-              done(e);
-            }
-            done();
-          });
+        function(xml) {
+          try {
+            response = new WFS().readFeatureCollectionMetadata(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        });
     });
     it('returns the correct bounds', function() {
       expect(response.bounds).to.eql([3197.88, 306457.313,
@@ -186,17 +186,17 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when parsing TransactionResponse', function() {
-    var response;
+    let response;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionResponse.xml',
-          function(xml) {
-            try {
-              response = new WFS().readTransactionResponse(xml);
-            } catch (e) {
-              done(e);
-            }
-            done();
-          });
+        function(xml) {
+          try {
+            response = new WFS().readTransactionResponse(xml);
+          } catch (e) {
+            done(e);
+          }
+          done();
+        });
     });
     it('returns the correct TransactionResponse object', function() {
       expect(response.transactionSummary.totalDeleted).to.equal(0);
@@ -210,7 +210,7 @@ describe('ol.format.WFS', function() {
   describe('when writing out a GetFeature request', function() {
 
     it('creates the expected output', function() {
-      var text =
+      const text =
           '<wfs:GetFeature service="WFS" version="1.1.0" resultType="hits" ' +
           '    xmlns:topp="http://www.openplans.org/topp"' +
           '    xmlns:wfs="http://www.opengis.net/wfs"' +
@@ -226,7 +226,7 @@ describe('ol.format.WFS', function() {
           '    <wfs:PropertyName>STATE_ABBR</wfs:PropertyName>' +
           '  </wfs:Query>' +
           '</wfs:GetFeature>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         resultType: 'hits',
         featureTypes: ['states'],
         featureNS: 'http://www.openplans.org/topp',
@@ -238,7 +238,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates paging headers', function() {
-      var text =
+      const text =
           '<wfs:GetFeature service="WFS" version="1.1.0" startIndex="20" ' +
           '    count="10" xmlns:topp="http://www.openplans.org/topp"' +
           '    xmlns:wfs="http://www.opengis.net/wfs"' +
@@ -251,7 +251,7 @@ describe('ol.format.WFS', function() {
           '       xmlns:topp="http://www.openplans.org/topp">' +
           '  </wfs:Query>' +
           '</wfs:GetFeature>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         count: 10,
         startIndex: 20,
         srsName: 'urn:ogc:def:crs:EPSG::4326',
@@ -263,7 +263,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates a BBOX filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -278,7 +278,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:BBOX>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -290,7 +290,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates a property filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -301,7 +301,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsEqualTo>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -312,7 +312,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates two property filters', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -329,20 +329,20 @@ describe('ol.format.WFS', function() {
           '    </ogc:Or>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
         filter: _ol_format_filter_.or(
-            _ol_format_filter_.equalTo('name', 'New York'),
-            _ol_format_filter_.equalTo('area', 1234))
+          _ol_format_filter_.equalTo('name', 'New York'),
+          _ol_format_filter_.equalTo('area', 1234))
       });
       expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
     });
 
     it('creates greater/less than property filters', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -371,27 +371,27 @@ describe('ol.format.WFS', function() {
           '    </ogc:Or>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
         filter: _ol_format_filter_.or(
-            _ol_format_filter_.and(
-                _ol_format_filter_.greaterThan('area', 100),
-                _ol_format_filter_.greaterThanOrEqualTo('pop', 20000)
-            ),
-            _ol_format_filter_.and(
-                _ol_format_filter_.lessThan('area', 100),
-                _ol_format_filter_.lessThanOrEqualTo('pop', 20000)
-            )
+          _ol_format_filter_.and(
+            _ol_format_filter_.greaterThan('area', 100),
+            _ol_format_filter_.greaterThanOrEqualTo('pop', 20000)
+          ),
+          _ol_format_filter_.and(
+            _ol_format_filter_.lessThan('area', 100),
+            _ol_format_filter_.lessThanOrEqualTo('pop', 20000)
+          )
         )
       });
       expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
     });
 
     it('creates isBetween property filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -403,7 +403,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsBetween>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -414,7 +414,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates isNull property filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -424,7 +424,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsNull>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -435,7 +435,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates isLike property filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -446,7 +446,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsLike>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -457,7 +457,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates isLike property filter with arguments', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -468,7 +468,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsLike>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -479,7 +479,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates a Not filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -492,7 +492,7 @@ describe('ol.format.WFS', function() {
           '    </ogc:Not>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
@@ -503,7 +503,7 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates an AND filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -528,22 +528,22 @@ describe('ol.format.WFS', function() {
           '    </ogc:And>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
         filter: _ol_format_filter_.and(
-            _ol_format_filter_.equalTo('name', 'New York'),
-            _ol_format_filter_.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326'),
-            _ol_format_filter_.greaterThan('population', 2000000)
+          _ol_format_filter_.equalTo('name', 'New York'),
+          _ol_format_filter_.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326'),
+          _ol_format_filter_.greaterThan('population', 2000000)
         )
       });
       expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
     });
 
     it('creates a contains filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -562,25 +562,25 @@ describe('ol.format.WFS', function() {
           '    </ogc:Contains>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
         filter: _ol_format_filter_.contains(
-            'the_geom',
-            new Polygon([[
-              [10, 20],
-              [10, 25],
-              [15, 25],
-              [15, 20],
-              [10, 20]
-            ]])
+          'the_geom',
+          new Polygon([[
+            [10, 20],
+            [10, 25],
+            [15, 25],
+            [15, 20],
+            [10, 20]
+          ]])
         )
       });
       expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
     });
 
     it('creates a intersects filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -599,25 +599,25 @@ describe('ol.format.WFS', function() {
           '    </ogc:Intersects>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
         filter: _ol_format_filter_.intersects(
-            'the_geom',
-            new Polygon([[
-              [10, 20],
-              [10, 25],
-              [15, 25],
-              [15, 20],
-              [10, 20]
-            ]])
+          'the_geom',
+          new Polygon([[
+            [10, 20],
+            [10, 25],
+            [15, 25],
+            [15, 20],
+            [10, 20]
+          ]])
         )
       });
       expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
     });
 
     it('creates a within filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
           '    xmlns:topp="http://www.openplans.org/topp">' +
@@ -636,25 +636,25 @@ describe('ol.format.WFS', function() {
           '    </ogc:Within>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
         filter: _ol_format_filter_.within(
-            'the_geom',
-            new Polygon([[
-              [10, 20],
-              [10, 25],
-              [15, 25],
-              [15, 20],
-              [10, 20]
-            ]])
+          'the_geom',
+          new Polygon([[
+            [10, 20],
+            [10, 25],
+            [15, 25],
+            [15, 20],
+            [10, 20]
+          ]])
         )
       });
       expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
     });
 
     it('creates During property filter', function() {
-      var text =
+      const text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="states" srsName="EPSG:4326">' +
           '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
@@ -676,7 +676,7 @@ describe('ol.format.WFS', function() {
           '  </ogc:Filter>' +
           '</wfs:Query>';
 
-      var serialized = new WFS().writeGetFeature({
+      const serialized = new WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['states'],
         filter: _ol_format_filter_.during('date_prop', '2010-01-20T00:00:00Z', '2012-12-31T00:00:00Z')
@@ -689,21 +689,21 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
 
     it('creates a handle', function() {
-      var text =
+      const text =
           '<wfs:Transaction xmlns:wfs="http://www.opengis.net/wfs" ' +
           'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
           'service="WFS" version="1.1.0" handle="handle_t" ' +
           'xsi:schemaLocation="http://www.opengis.net/wfs ' +
           'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"/>';
-      var serialized = new WFS().writeTransaction(null, null, null,
-          {handle: 'handle_t'});
+      const serialized = new WFS().writeTransaction(null, null, null,
+        {handle: 'handle_t'});
       expect(serialized).to.xmleql(_ol_xml_.parse(text));
     });
 
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionSrs.xml', function(xml) {
         text = xml;
@@ -711,8 +711,8 @@ describe('ol.format.WFS', function() {
       });
     });
     it('creates the correct srsName', function() {
-      var format = new WFS();
-      var insertFeature = new Feature({
+      const format = new WFS();
+      const insertFeature = new Feature({
         the_geom: new MultiLineString([[
           [-5178372.1885436, 1992365.7775042],
           [-4434792.7774889, 1601008.1927386],
@@ -721,8 +721,8 @@ describe('ol.format.WFS', function() {
         TYPE: 'xyz'
       });
       insertFeature.setGeometryName('the_geom');
-      var inserts = [insertFeature];
-      var serialized = format.writeTransaction(inserts, null, null, {
+      const inserts = [insertFeature];
+      const serialized = format.writeTransaction(inserts, null, null, {
         featureNS: 'http://foo',
         featureType: 'FAULTS',
         featurePrefix: 'feature',
@@ -733,7 +733,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionUpdate.xml', function(xml) {
         text = xml;
@@ -742,8 +742,8 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates the correct update', function() {
-      var format = new WFS();
-      var updateFeature = new Feature();
+      const format = new WFS();
+      const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -753,7 +753,7 @@ describe('ol.format.WFS', function() {
         [-12416429, 6604910]
       ]]));
       updateFeature.setId('FAULTS.4455');
-      var serialized = format.writeTransaction(null, [updateFeature], null, {
+      const serialized = format.writeTransaction(null, [updateFeature], null, {
         featureNS: 'http://foo',
         featureType: 'FAULTS',
         featurePrefix: 'foo',
@@ -763,8 +763,8 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates the correct update if geometry name is alias', function() {
-      var format = new WFS();
-      var updateFeature = new Feature(new MultiLineString([[
+      const format = new WFS();
+      const updateFeature = new Feature(new MultiLineString([[
         [-12279454, 6741885],
         [-12064207, 6732101],
         [-11941908, 6595126],
@@ -773,7 +773,7 @@ describe('ol.format.WFS', function() {
       ]]));
       updateFeature.setGeometryName('the_geom');
       updateFeature.setId('FAULTS.4455');
-      var serialized = format.writeTransaction(null, [updateFeature], null, {
+      const serialized = format.writeTransaction(null, [updateFeature], null, {
         featureNS: 'http://foo',
         featureType: 'FAULTS',
         featurePrefix: 'foo',
@@ -787,8 +787,8 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
 
     it('creates the correct update with default featurePrefix', function() {
-      var format = new WFS();
-      var updateFeature = new Feature();
+      const format = new WFS();
+      const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -798,7 +798,7 @@ describe('ol.format.WFS', function() {
         [-12416429, 6604910]
       ]]));
       updateFeature.setId('FAULTS.4455');
-      var serialized = format.writeTransaction(null, [updateFeature], null, {
+      const serialized = format.writeTransaction(null, [updateFeature], null, {
         featureNS: 'http://foo',
         featureType: 'FAULTS',
         gmlOptions: {srsName: 'EPSG:900913'}
@@ -810,8 +810,8 @@ describe('ol.format.WFS', function() {
   describe('when writing out a Transaction request', function() {
 
     it('does not create an update if no fid', function() {
-      var format = new WFS();
-      var updateFeature = new Feature();
+      const format = new WFS();
+      const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -833,7 +833,8 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text, filename = 'spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml';
+    let text;
+    const filename = 'spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml';
     before(function(done) {
       afterLoadText(filename, function(xml) {
         text = xml;
@@ -843,8 +844,8 @@ describe('ol.format.WFS', function() {
     });
 
     it('handles multiple geometries', function() {
-      var format = new WFS();
-      var updateFeature = new Feature();
+      const format = new WFS();
+      const updateFeature = new Feature();
       updateFeature.setGeometryName('the_geom');
       updateFeature.setGeometry(new MultiLineString([[
         [-12279454, 6741885],
@@ -858,7 +859,7 @@ describe('ol.format.WFS', function() {
         [-12000001, 6700001],
         [-12000002, 6700002]
       ]]));
-      var serialized = format.writeTransaction([updateFeature], [], null, {
+      const serialized = format.writeTransaction([updateFeature], [], null, {
         featureNS: 'http://foo',
         featureType: 'FAULTS',
         featurePrefix: 'foo',
@@ -869,7 +870,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
@@ -878,15 +879,15 @@ describe('ol.format.WFS', function() {
     });
 
     it('creates the correct transaction body', function() {
-      var format = new WFS();
-      var insertFeature = new Feature({
+      const format = new WFS();
+      const insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
-      var inserts = [insertFeature];
-      var updateFeature = new Feature({
+      const inserts = [insertFeature];
+      const updateFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -896,12 +897,12 @@ describe('ol.format.WFS', function() {
       });
       updateFeature.setId('fid.42');
       updateFeature.setGeometryName('the_geom');
-      var updates = [updateFeature];
+      const updates = [updateFeature];
 
-      var deleteFeature = new Feature();
+      const deleteFeature = new Feature();
       deleteFeature.setId('fid.37');
-      var deletes = [deleteFeature];
-      var serialized = format.writeTransaction(inserts, updates, deletes, {
+      const deletes = [deleteFeature];
+      const serialized = format.writeTransaction(inserts, updates, deletes, {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'states',
         featurePrefix: 'topp'
@@ -912,7 +913,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/Native.xml', function(xml) {
         text = xml;
@@ -921,8 +922,8 @@ describe('ol.format.WFS', function() {
     });
 
     it('handles writing out Native', function() {
-      var format = new WFS();
-      var serialized = format.writeTransaction(null, null, null, {
+      const format = new WFS();
+      const serialized = format.writeTransaction(null, null, null, {
         nativeElements: [{
           vendorId: 'ORACLE',
           safeToIgnore: true,
@@ -938,8 +939,8 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
-    var filename = 'spec/ol/format/wfs/TransactionMultiVersion100.xml';
+    let text;
+    const filename = 'spec/ol/format/wfs/TransactionMultiVersion100.xml';
     before(function(done) {
       afterLoadText(filename, function(xml) {
         text = xml;
@@ -948,15 +949,15 @@ describe('ol.format.WFS', function() {
     });
 
     it('handles the WFS version', function() {
-      var format = new WFS();
-      var insertFeature = new Feature({
+      const format = new WFS();
+      const insertFeature = new Feature({
         the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
-      var inserts = [insertFeature];
-      var updateFeature = new Feature({
+      const inserts = [insertFeature];
+      const updateFeature = new Feature({
         the_geom: new LineString([[1.1, 2], [3, 4.2]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -966,12 +967,12 @@ describe('ol.format.WFS', function() {
       });
       updateFeature.setId('fid.42');
       updateFeature.setGeometryName('the_geom');
-      var updates = [updateFeature];
+      const updates = [updateFeature];
 
-      var deleteFeature = new Feature();
+      const deleteFeature = new Feature();
       deleteFeature.setId('fid.37');
-      var deletes = [deleteFeature];
-      var serialized = format.writeTransaction(inserts, updates, deletes, {
+      const deletes = [deleteFeature];
+      const serialized = format.writeTransaction(inserts, updates, deletes, {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'states',
         featurePrefix: 'topp',
@@ -983,7 +984,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
         text = xml;
@@ -992,15 +993,15 @@ describe('ol.format.WFS', function() {
     });
 
     it('do not add feature prefix twice', function() {
-      var format = new WFS();
-      var insertFeature = new Feature({
+      const format = new WFS();
+      const insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
-      var inserts = [insertFeature];
-      var updateFeature = new Feature({
+      const inserts = [insertFeature];
+      const updateFeature = new Feature({
         the_geom: new MultiPoint([[1, 2]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -1010,12 +1011,12 @@ describe('ol.format.WFS', function() {
       });
       updateFeature.setId('fid.42');
       updateFeature.setGeometryName('the_geom');
-      var updates = [updateFeature];
+      const updates = [updateFeature];
 
-      var deleteFeature = new Feature();
+      const deleteFeature = new Feature();
       deleteFeature.setId('fid.37');
-      var deletes = [deleteFeature];
-      var serialized = format.writeTransaction(inserts, updates, deletes, {
+      const deletes = [deleteFeature];
+      const serialized = format.writeTransaction(inserts, updates, deletes, {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'topp:states',
         featurePrefix: 'topp'
@@ -1025,8 +1026,8 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a transaction request', function() {
-    var text;
-    var filename = 'spec/ol/format/wfs/TransactionMultiVersion100_3D.xml';
+    let text;
+    const filename = 'spec/ol/format/wfs/TransactionMultiVersion100_3D.xml';
     before(function(done) {
       afterLoadText(filename, function(xml) {
         text = xml;
@@ -1035,15 +1036,15 @@ describe('ol.format.WFS', function() {
     });
 
     it('handles 3D in WFS 1.0.0', function() {
-      var format = new WFS();
-      var insertFeature = new Feature({
+      const format = new WFS();
+      const insertFeature = new Feature({
         the_geom: new LineString([[1.1, 2, 4], [3, 4.2, 5]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
-      var inserts = [insertFeature];
-      var updateFeature = new Feature({
+      const inserts = [insertFeature];
+      const updateFeature = new Feature({
         the_geom: new LineString([[1.1, 2, 6], [3, 4.2, 7]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -1053,9 +1054,9 @@ describe('ol.format.WFS', function() {
       });
       updateFeature.setGeometryName('the_geom');
       updateFeature.setId('fid.42');
-      var updates = [updateFeature];
+      const updates = [updateFeature];
 
-      var serialized = format.writeTransaction(inserts, updates, null, {
+      const serialized = format.writeTransaction(inserts, updates, null, {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'states',
         featurePrefix: 'topp',
@@ -1068,7 +1069,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a Transaction request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/TransactionMulti_3D.xml', function(xml) {
         text = xml;
@@ -1077,15 +1078,15 @@ describe('ol.format.WFS', function() {
     });
 
     it('handles 3D in WFS 1.1.0', function() {
-      var format = new WFS();
-      var insertFeature = new Feature({
+      const format = new WFS();
+      const insertFeature = new Feature({
         the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         nul: null
       });
       insertFeature.setGeometryName('the_geom');
-      var inserts = [insertFeature];
-      var updateFeature = new Feature({
+      const inserts = [insertFeature];
+      const updateFeature = new Feature({
         the_geom: new MultiPoint([[1, 2, 3]]),
         foo: 'bar',
         // null value gets Property element with no Value
@@ -1095,9 +1096,9 @@ describe('ol.format.WFS', function() {
       });
       updateFeature.setGeometryName('the_geom');
       updateFeature.setId('fid.42');
-      var updates = [updateFeature];
+      const updates = [updateFeature];
 
-      var serialized = format.writeTransaction(inserts, updates, null, {
+      const serialized = format.writeTransaction(inserts, updates, null, {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'states',
         hasZ: true,
@@ -1108,7 +1109,7 @@ describe('ol.format.WFS', function() {
   });
 
   describe('when writing out a GetFeature request', function() {
-    var text;
+    let text;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/GetFeatureMultiple.xml', function(xml) {
         text = xml;
@@ -1117,8 +1118,8 @@ describe('ol.format.WFS', function() {
     });
 
     it('handles writing multiple Query elements', function() {
-      var format = new WFS();
-      var serialized = format.writeGetFeature({
+      const format = new WFS();
+      const serialized = format.writeGetFeature({
         featureNS: 'http://www.openplans.org/topp',
         featureTypes: ['states', 'cities'],
         featurePrefix: 'topp'
@@ -1129,11 +1130,11 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing GML from MapServer', function() {
 
-    var features, feature;
+    let features, feature;
     before(function(done) {
       afterLoadText('spec/ol/format/wfs/mapserver.xml', function(xml) {
         try {
-          var config = {
+          const config = {
             'featureNS': 'http://mapserver.gis.umn.edu/mapserver',
             'featureType': 'Historische_Messtischblaetter_WFS'
           };
@@ -1151,7 +1152,7 @@ describe('ol.format.WFS', function() {
 
     it('creates a polygon for Arnstadt', function() {
       feature = features[0];
-      var fid = 'Historische_Messtischblaetter_WFS.71055885';
+      const fid = 'Historische_Messtischblaetter_WFS.71055885';
       expect(feature.getId()).to.equal(fid);
       expect(feature.get('titel')).to.equal('Arnstadt');
       expect(feature.getGeometry()).to.be.an(Polygon);
@@ -1161,7 +1162,7 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing multiple feature types', function() {
 
-    var features;
+    let features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
         try {
@@ -1184,7 +1185,7 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing multiple feature types separately', function() {
 
-    var lineFeatures, polygonFeatures;
+    let lineFeatures, polygonFeatures;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
         try {
@@ -1212,7 +1213,7 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing multiple feature types', function() {
 
-    var features;
+    let features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
         try {
@@ -1232,7 +1233,7 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing multiple feature types (MapServer)', function() {
 
-    var features;
+    let features;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
         try {
@@ -1255,7 +1256,7 @@ describe('ol.format.WFS', function() {
 
   describe('when parsing multiple feature types separately (MapServer)', function() {
 
-    var busFeatures, infoFeatures;
+    let busFeatures, infoFeatures;
     before(function(done) {
       afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
         try {
@@ -1283,7 +1284,7 @@ describe('ol.format.WFS', function() {
 
   describe('when writing out a WFS Filter', function() {
     it('creates a filter', function() {
-      var text =
+      const text =
           '<Filter xmlns="http://www.opengis.net/ogc">' +
           '  <And>' +
           '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
@@ -1296,11 +1297,11 @@ describe('ol.format.WFS', function() {
           '    </PropertyIsEqualTo>' +
           '  </And>' +
           '</Filter>';
-      var serialized = WFS.writeFilter(
-          _ol_format_filter_.and(
-              _ol_format_filter_.like('name', 'Mississippi*'),
-              _ol_format_filter_.equalTo('waterway', 'riverbank')
-          )
+      const serialized = WFS.writeFilter(
+        _ol_format_filter_.and(
+          _ol_format_filter_.like('name', 'Mississippi*'),
+          _ol_format_filter_.equalTo('waterway', 'riverbank')
+        )
       );
       expect(serialized).to.xmleql(_ol_xml_.parse(text));
     });

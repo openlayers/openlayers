@@ -13,7 +13,7 @@ import Comparison from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var IsNull = function(propertyName) {
+const IsNull = function(propertyName) {
   Comparison.call(this, 'PropertyIsNull', propertyName);
 };
 

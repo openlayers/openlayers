@@ -27,7 +27,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.layer.Tile} tileLayer Tile layer.
  * @api
  */
-var WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
+const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
 
   WebGLLayerRenderer.call(this, mapRenderer, tileLayer);
 
@@ -108,8 +108,8 @@ WebGLTileLayerRenderer['handles'] = function(type, layer) {
  */
 WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLTileLayerRenderer(
-      /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-      /** @type {ol.layer.Tile} */ (layer)
+    /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+    /** @type {ol.layer.Tile} */ (layer)
   );
 };
 
@@ -118,7 +118,7 @@ WebGLTileLayerRenderer['create'] = function(mapRenderer, layer) {
  * @inheritDoc
  */
 WebGLTileLayerRenderer.prototype.disposeInternal = function() {
-  var context = this.mapRenderer.getContext();
+  const context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
   WebGLLayerRenderer.prototype.disposeInternal.call(this);
 };
@@ -128,7 +128,7 @@ WebGLTileLayerRenderer.prototype.disposeInternal = function() {
  * @inheritDoc
  */
 WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
-  var mapRenderer = this.mapRenderer;
+  const mapRenderer = this.mapRenderer;
 
   return (
     /**
@@ -138,7 +138,7 @@ WebGLTileLayerRenderer.prototype.createLoadedTileFinder = function(source, proje
      */
     function(zoom, tileRange) {
       function callback(tile) {
-        var loaded = mapRenderer.isTileTextureLoaded(tile);
+        const loaded = mapRenderer.isTileTextureLoaded(tile);
         if (loaded) {
           if (!tiles[zoom]) {
             tiles[zoom] = {};
@@ -166,47 +166,47 @@ WebGLTileLayerRenderer.prototype.handleWebGLContextLost = function() {
  */
 WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
 
-  var mapRenderer = this.mapRenderer;
-  var gl = context.getGL();
+  const mapRenderer = this.mapRenderer;
+  const gl = context.getGL();
 
-  var viewState = frameState.viewState;
-  var projection = viewState.projection;
+  const viewState = frameState.viewState;
+  const projection = viewState.projection;
 
-  var tileLayer = /** @type {ol.layer.Tile} */ (this.getLayer());
-  var tileSource = tileLayer.getSource();
-  var tileGrid = tileSource.getTileGridForProjection(projection);
-  var z = tileGrid.getZForResolution(viewState.resolution);
-  var tileResolution = tileGrid.getResolution(z);
+  const tileLayer = /** @type {ol.layer.Tile} */ (this.getLayer());
+  const tileSource = tileLayer.getSource();
+  const tileGrid = tileSource.getTileGridForProjection(projection);
+  const z = tileGrid.getZForResolution(viewState.resolution);
+  const tileResolution = tileGrid.getResolution(z);
 
-  var tilePixelSize =
+  const tilePixelSize =
       tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
-  var pixelRatio = tilePixelSize[0] /
+  const pixelRatio = tilePixelSize[0] /
       _ol_size_.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
-  var tilePixelResolution = tileResolution / pixelRatio;
-  var tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
+  const tilePixelResolution = tileResolution / pixelRatio;
+  const tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
 
-  var center = viewState.center;
-  var extent = frameState.extent;
-  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+  const center = viewState.center;
+  const extent = frameState.extent;
+  const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
 
-  var framebufferExtent;
+  let framebufferExtent;
   if (this.renderedTileRange_ &&
       this.renderedTileRange_.equals(tileRange) &&
       this.renderedRevision_ == tileSource.getRevision()) {
     framebufferExtent = this.renderedFramebufferExtent_;
   } else {
 
-    var tileRangeSize = tileRange.getSize();
+    const tileRangeSize = tileRange.getSize();
 
-    var maxDimension = Math.max(
-        tileRangeSize[0] * tilePixelSize[0],
-        tileRangeSize[1] * tilePixelSize[1]);
-    var framebufferDimension = roundUpToPowerOfTwo(maxDimension);
-    var framebufferExtentDimension = tilePixelResolution * framebufferDimension;
-    var origin = tileGrid.getOrigin(z);
-    var minX = origin[0] +
+    const maxDimension = Math.max(
+      tileRangeSize[0] * tilePixelSize[0],
+      tileRangeSize[1] * tilePixelSize[1]);
+    const framebufferDimension = roundUpToPowerOfTwo(maxDimension);
+    const framebufferExtentDimension = tilePixelResolution * framebufferDimension;
+    const origin = tileGrid.getOrigin(z);
+    const minX = origin[0] +
         tileRange.minX * tilePixelSize[0] * tilePixelResolution;
-    var minY = origin[1] +
+    const minY = origin[1] +
         tileRange.minY * tilePixelSize[1] * tilePixelResolution;
     framebufferExtent = [
       minX, minY,
@@ -220,7 +220,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     gl.clear(_ol_webgl_.COLOR_BUFFER_BIT);
     gl.disable(_ol_webgl_.BLEND);
 
-    var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
+    const program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
     if (!this.locations_) {
       this.locations_ = new _ol_renderer_webgl_tilelayershader_Locations_(gl, program);
@@ -229,27 +229,27 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.renderArrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
-        this.locations_.a_position, 2, _ol_webgl_.FLOAT, false, 16, 0);
+      this.locations_.a_position, 2, _ol_webgl_.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.locations_.a_texCoord);
     gl.vertexAttribPointer(
-        this.locations_.a_texCoord, 2, _ol_webgl_.FLOAT, false, 16, 8);
+      this.locations_.a_texCoord, 2, _ol_webgl_.FLOAT, false, 16, 8);
     gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
      * @type {Object.<number, Object.<string, ol.Tile>>}
      */
-    var tilesToDrawByZ = {};
+    const tilesToDrawByZ = {};
     tilesToDrawByZ[z] = {};
 
-    var findLoadedTiles = this.createLoadedTileFinder(
-        tileSource, projection, tilesToDrawByZ);
+    const findLoadedTiles = this.createLoadedTileFinder(
+      tileSource, projection, tilesToDrawByZ);
 
-    var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
-    var allTilesLoaded = true;
-    var tmpExtent = createEmpty();
-    var tmpTileRange = new TileRange(0, 0, 0, 0);
-    var childTileRange, drawable, fullyLoaded, tile, tileState;
-    var x, y, tileExtent;
+    const useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
+    let allTilesLoaded = true;
+    const tmpExtent = createEmpty();
+    const tmpTileRange = new TileRange(0, 0, 0, 0);
+    let childTileRange, drawable, fullyLoaded, tile, tileState;
+    let x, y, tileExtent;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
@@ -282,10 +282,10 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
 
         allTilesLoaded = false;
         fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
-            tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+          tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
         if (!fullyLoaded) {
           childTileRange = tileGrid.getTileCoordChildTileRange(
-              tile.tileCoord, tmpTileRange, tmpExtent);
+            tile.tileCoord, tmpTileRange, tmpExtent);
           if (childTileRange) {
             findLoadedTiles(z + 1, childTileRange);
           }
@@ -296,10 +296,10 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     }
 
     /** @type {Array.<number>} */
-    var zs = Object.keys(tilesToDrawByZ).map(Number);
+    const zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(numberSafeCompareFunction);
-    var u_tileOffset = new Float32Array(4);
-    var i, ii, tileKey, tilesToDraw;
+    const u_tileOffset = new Float32Array(4);
+    let i, ii, tileKey, tilesToDraw;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       tilesToDraw = tilesToDrawByZ[zs[i]];
       for (tileKey in tilesToDraw) {
@@ -315,7 +315,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
             framebufferExtentDimension - 1;
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, tilePixelSize,
-            tileGutter * pixelRatio, _ol_webgl_.LINEAR, _ol_webgl_.LINEAR);
+          tileGutter * pixelRatio, _ol_webgl_.LINEAR, _ol_webgl_.LINEAR);
         gl.drawArrays(_ol_webgl_.TRIANGLE_STRIP, 0, 4);
       }
     }
@@ -334,41 +334,41 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
-  var tileTextureQueue = mapRenderer.getTileTextureQueue();
+  const tileTextureQueue = mapRenderer.getTileTextureQueue();
   this.manageTilePyramid(
-      frameState, tileSource, tileGrid, pixelRatio, projection, extent, z,
-      tileLayer.getPreload(),
-      /**
+    frameState, tileSource, tileGrid, pixelRatio, projection, extent, z,
+    tileLayer.getPreload(),
+    /**
        * @param {ol.Tile} tile Tile.
        */
-      function(tile) {
-        if (tile.getState() == TileState.LOADED &&
+    function(tile) {
+      if (tile.getState() == TileState.LOADED &&
             !mapRenderer.isTileTextureLoaded(tile) &&
             !tileTextureQueue.isKeyQueued(tile.getKey())) {
-          tileTextureQueue.enqueue([
-            tile,
-            tileGrid.getTileCoordCenter(tile.tileCoord),
-            tileGrid.getResolution(tile.tileCoord[0]),
-            tilePixelSize, tileGutter * pixelRatio
-          ]);
-        }
-      }, this);
+        tileTextureQueue.enqueue([
+          tile,
+          tileGrid.getTileCoordCenter(tile.tileCoord),
+          tileGrid.getResolution(tile.tileCoord[0]),
+          tilePixelSize, tileGutter * pixelRatio
+        ]);
+      }
+    }, this);
   this.scheduleExpireCache(frameState, tileSource);
 
-  var texCoordMatrix = this.texCoordMatrix;
+  const texCoordMatrix = this.texCoordMatrix;
   _ol_transform_.reset(texCoordMatrix);
   _ol_transform_.translate(texCoordMatrix,
-      (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) /
+    (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
-      (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) /
+    (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]));
   if (viewState.rotation !== 0) {
     _ol_transform_.rotate(texCoordMatrix, viewState.rotation);
   }
   _ol_transform_.scale(texCoordMatrix,
-      frameState.size[0] * viewState.resolution /
+    frameState.size[0] * viewState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
-      frameState.size[1] * viewState.resolution /
+    frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]));
   _ol_transform_.translate(texCoordMatrix, -0.5, -0.5);
 
@@ -384,21 +384,21 @@ WebGLTileLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameStat
     return undefined;
   }
 
-  var pixelOnMapScaled = [
+  const pixelOnMapScaled = [
     pixel[0] / frameState.size[0],
     (frameState.size[1] - pixel[1]) / frameState.size[1]];
 
-  var pixelOnFrameBufferScaled = _ol_transform_.apply(
-      this.texCoordMatrix, pixelOnMapScaled.slice());
-  var pixelOnFrameBuffer = [
+  const pixelOnFrameBufferScaled = _ol_transform_.apply(
+    this.texCoordMatrix, pixelOnMapScaled.slice());
+  const pixelOnFrameBuffer = [
     pixelOnFrameBufferScaled[0] * this.framebufferDimension,
     pixelOnFrameBufferScaled[1] * this.framebufferDimension];
 
-  var gl = this.mapRenderer.getContext().getGL();
+  const gl = this.mapRenderer.getContext().getGL();
   gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-  var imageData = new Uint8Array(4);
+  const imageData = new Uint8Array(4);
   gl.readPixels(pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1,
-      gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+    gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
   if (imageData[3] > 0) {
     return callback.call(thisArg, this.getLayer(), imageData);

@@ -10,14 +10,14 @@ import Stamen from '../src/ol/source/Stamen.js';
  * Color manipulation functions below are adapted from
  * https://github.com/d3/d3-color.
  */
-var Xn = 0.950470;
-var Yn = 1;
-var Zn = 1.088830;
-var t0 = 4 / 29;
-var t1 = 6 / 29;
-var t2 = 3 * t1 * t1;
-var t3 = t1 * t1 * t1;
-var twoPi = 2 * Math.PI;
+const Xn = 0.950470;
+const Yn = 1;
+const Zn = 1.088830;
+const t0 = 4 / 29;
+const t1 = 6 / 29;
+const t2 = 3 * t1 * t1;
+const t3 = t1 * t1 * t1;
+const twoPi = 2 * Math.PI;
 
 
 /**
@@ -26,23 +26,23 @@ var twoPi = 2 * Math.PI;
  * @return {Array.<number>} A pixel in HCL space.
  */
 function rgb2hcl(pixel) {
-  var red = rgb2xyz(pixel[0]);
-  var green = rgb2xyz(pixel[1]);
-  var blue = rgb2xyz(pixel[2]);
+  const red = rgb2xyz(pixel[0]);
+  const green = rgb2xyz(pixel[1]);
+  const blue = rgb2xyz(pixel[2]);
 
-  var x = xyz2lab(
-      (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn);
-  var y = xyz2lab(
-      (0.2126729 * red + 0.7151522 * green + 0.0721750 * blue) / Yn);
-  var z = xyz2lab(
-      (0.0193339 * red + 0.1191920 * green + 0.9503041 * blue) / Zn);
+  const x = xyz2lab(
+    (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn);
+  const y = xyz2lab(
+    (0.2126729 * red + 0.7151522 * green + 0.0721750 * blue) / Yn);
+  const z = xyz2lab(
+    (0.0193339 * red + 0.1191920 * green + 0.9503041 * blue) / Zn);
 
-  var l = 116 * y - 16;
-  var a = 500 * (x - y);
-  var b = 200 * (y - z);
+  const l = 116 * y - 16;
+  const a = 500 * (x - y);
+  const b = 200 * (y - z);
 
-  var c = Math.sqrt(a * a + b * b);
-  var h = Math.atan2(b, a);
+  const c = Math.sqrt(a * a + b * b);
+  let h = Math.atan2(b, a);
   if (h < 0) {
     h += twoPi;
   }
@@ -61,16 +61,16 @@ function rgb2hcl(pixel) {
  * @return {Array.<number>} A pixel in RGB space.
  */
 function hcl2rgb(pixel) {
-  var h = pixel[0];
-  var c = pixel[1];
-  var l = pixel[2];
+  const h = pixel[0];
+  const c = pixel[1];
+  const l = pixel[2];
 
-  var a = Math.cos(h) * c;
-  var b = Math.sin(h) * c;
+  const a = Math.cos(h) * c;
+  const b = Math.sin(h) * c;
 
-  var y = (l + 16) / 116;
-  var x = isNaN(a) ? y : y + a / 500;
-  var z = isNaN(b) ? y : y - b / 200;
+  let y = (l + 16) / 116;
+  let x = isNaN(a) ? y : y + a / 500;
+  let z = isNaN(b) ? y : y - b / 200;
 
   y = Yn * lab2xyz(y);
   x = Xn * lab2xyz(x);
@@ -100,15 +100,15 @@ function xyz2rgb(x) {
     12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055);
 }
 
-var raster = new RasterSource({
+const raster = new RasterSource({
   sources: [new Stamen({
     layer: 'watercolor',
     transition: 0
   })],
   operation: function(pixels, data) {
-    var hcl = rgb2hcl(pixels[0]);
+    const hcl = rgb2hcl(pixels[0]);
 
-    var h = hcl[0] + Math.PI * data.hue / 180;
+    let h = hcl[0] + Math.PI * data.hue / 180;
     if (h < 0) {
       h += twoPi;
     } else if (h > twoPi) {
@@ -139,16 +139,16 @@ var raster = new RasterSource({
   }
 });
 
-var controls = {};
+const controls = {};
 
 raster.on('beforeoperations', function(event) {
-  var data = event.data;
-  for (var id in controls) {
+  const data = event.data;
+  for (const id in controls) {
     data[id] = Number(controls[id].value);
   }
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new ImageLayer({
       source: raster
@@ -162,10 +162,10 @@ var map = new Map({
   })
 });
 
-var controlIds = ['hue', 'chroma', 'lightness'];
+const controlIds = ['hue', 'chroma', 'lightness'];
 controlIds.forEach(function(id) {
-  var control = document.getElementById(id);
-  var output = document.getElementById(id + 'Out');
+  const control = document.getElementById(id);
+  const output = document.getElementById(id + 'Out');
   control.addEventListener('input', function() {
     output.innerText = control.value;
     raster.changed();

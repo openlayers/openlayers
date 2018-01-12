@@ -12,9 +12,9 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var styleFunction = (function() {
-  var styles = {};
-  var image = new CircleStyle({
+const styleFunction = (function() {
+  const styles = {};
+  const image = new CircleStyle({
     radius: 5,
     fill: null,
     stroke: new Stroke({color: 'orange', width: 2})
@@ -59,7 +59,7 @@ var styleFunction = (function() {
   };
 })();
 
-var geojsonObject = {
+const geojsonObject = {
   'type': 'FeatureCollection',
   'crs': {
     'type': 'name',
@@ -144,17 +144,17 @@ var geojsonObject = {
   }]
 };
 
-var source = new VectorSource({
+const source = new VectorSource({
   features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
-var layer = new VectorLayer({
+const layer = new VectorLayer({
   source: source,
   style: styleFunction
 });
 
-var overlayStyle = (function() {
-  var styles = {};
+const overlayStyle = (function() {
+  const styles = {};
   styles['Polygon'] = [
     new Style({
       fill: new Fill({
@@ -216,11 +216,11 @@ var overlayStyle = (function() {
   };
 })();
 
-var select = new Select({
+const select = new Select({
   style: overlayStyle
 });
 
-var modify = new Modify({
+const modify = new Modify({
   features: select.getFeatures(),
   style: overlayStyle,
   insertVertexCondition: function() {
@@ -231,7 +231,7 @@ var modify = new Modify({
   }
 });
 
-var map = new Map({
+const map = new Map({
   interactions: defaultInteractions().extend([select, modify]),
   layers: [layer],
   target: 'map',

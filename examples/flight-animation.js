@@ -10,7 +10,7 @@ import VectorSource from '../src/ol/source/Vector.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new Stamen({
@@ -25,77 +25,39 @@ var map = new Map({
   })
 });
 
-var style = new Style({
+const style = new Style({
   stroke: new Stroke({
     color: '#EAE911',
     width: 2
   })
 });
 
-var flightsSource;
-var addLater = function(feature, timeout) {
-  window.setTimeout(function() {
-    feature.set('start', new Date().getTime());
-    flightsSource.addFeature(feature);
-  }, timeout);
-};
-
-var pointsPerMs = 0.1;
-var animateFlights = function(event) {
-  var vectorContext = event.vectorContext;
-  var frameState = event.frameState;
-  vectorContext.setStyle(style);
-
-  var features = flightsSource.getFeatures();
-  for (var i = 0; i < features.length; i++) {
-    var feature = features[i];
-    if (!feature.get('finished')) {
-      // only draw the lines for which the animation has not finished yet
-      var coords = feature.getGeometry().getCoordinates();
-      var elapsedTime = frameState.time - feature.get('start');
-      var elapsedPoints = elapsedTime * pointsPerMs;
-
-      if (elapsedPoints >= coords.length) {
-        feature.set('finished', true);
-      }
-
-      var maxIndex = Math.min(elapsedPoints, coords.length);
-      var currentLine = new LineString(coords.slice(0, maxIndex));
-
-      // directly draw the line with the vector context
-      vectorContext.drawGeometry(currentLine);
-    }
-  }
-  // tell OpenLayers to continue the animation
-  map.render();
-};
-
-flightsSource = new VectorSource({
+const flightsSource = new VectorSource({
   wrapX: false,
   attributions: 'Flight data by ' +
         '<a href="http://openflights.org/data.html">OpenFlights</a>,',
   loader: function() {
-    var url = 'data/openflights/flights.json';
+    const url = 'data/openflights/flights.json';
     fetch(url).then(function(response) {
       return response.json();
     }).then(function(json) {
-      var flightsData = json.flights;
-      for (var i = 0; i < flightsData.length; i++) {
-        var flight = flightsData[i];
-        var from = flight[0];
-        var to = flight[1];
+      const flightsData = json.flights;
+      for (let i = 0; i < flightsData.length; i++) {
+        const flight = flightsData[i];
+        const from = flight[0];
+        const to = flight[1];
 
         // create an arc circle between the two locations
-        var arcGenerator = new arc.GreatCircle(
-            {x: from[1], y: from[0]},
-            {x: to[1], y: to[0]});
+        const arcGenerator = new arc.GreatCircle(
+          {x: from[1], y: from[0]},
+          {x: to[1], y: to[0]});
 
-        var arcLine = arcGenerator.Arc(100, {offset: 10});
+        const arcLine = arcGenerator.Arc(100, {offset: 10});
         if (arcLine.geometries.length === 1) {
-          var line = new LineString(arcLine.geometries[0].coords);
+          const line = new LineString(arcLine.geometries[0].coords);
           line.transform('EPSG:4326', 'EPSG:3857');
 
-          var feature = new Feature({
+          const feature = new Feature({
             geometry: line,
             finished: false
           });
@@ -109,7 +71,7 @@ flightsSource = new VectorSource({
   }
 });
 
-var flightsLayer = new VectorLayer({
+const flightsLayer = new VectorLayer({
   source: flightsSource,
   style: function(feature) {
     // if the animation is still active for a feature, do not
@@ -121,4 +83,42 @@ var flightsLayer = new VectorLayer({
     }
   }
 });
+
 map.addLayer(flightsLayer);
+
+const pointsPerMs = 0.1;
+function animateFlights(event) {
+  const vectorContext = event.vectorContext;
+  const frameState = event.frameState;
+  vectorContext.setStyle(style);
+
+  const features = flightsSource.getFeatures();
+  for (let i = 0; i < features.length; i++) {
+    const feature = features[i];
+    if (!feature.get('finished')) {
+      // only draw the lines for which the animation has not finished yet
+      const coords = feature.getGeometry().getCoordinates();
+      const elapsedTime = frameState.time - feature.get('start');
+      const elapsedPoints = elapsedTime * pointsPerMs;
+
+      if (elapsedPoints >= coords.length) {
+        feature.set('finished', true);
+      }
+
+      const maxIndex = Math.min(elapsedPoints, coords.length);
+      const currentLine = new LineString(coords.slice(0, maxIndex));
+
+      // directly draw the line with the vector context
+      vectorContext.drawGeometry(currentLine);
+    }
+  }
+  // tell OpenLayers to continue the animation
+  map.render();
+}
+
+function addLater(feature, timeout) {
+  window.setTimeout(function() {
+    feature.set('start', new Date().getTime());
+    flightsSource.addFeature(feature);
+  }, timeout);
+}

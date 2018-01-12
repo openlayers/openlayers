@@ -15,7 +15,7 @@ import TileState from './TileState.js';
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt_options) {
+const VectorTile = function(tileCoord, state, src, format, tileLoadFunction, opt_options) {
 
   Tile.call(this, tileCoord, state, opt_options);
 
@@ -81,7 +81,7 @@ inherits(VectorTile, Tile);
  * @const
  * @type {ol.Extent}
  */
-var DEFAULT_EXTENT = [0, 0, 4096, 4096];
+const DEFAULT_EXTENT = [0, 0, 4096, 4096];
 
 
 /**

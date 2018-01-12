@@ -4,7 +4,7 @@ import {get as getProjection} from '../../../../src/ol/proj.js';
 
 describe('ol.source.ImageStatic', function() {
 
-  var extent, pixelRatio, projection, resolution;
+  let extent, pixelRatio, projection, resolution;
   beforeEach(function() {
     extent = [
       -13637278.73946974, 4543799.13271362,
@@ -17,7 +17,7 @@ describe('ol.source.ImageStatic', function() {
   describe('#getImage', function() {
 
     it('scales image to fit imageExtent', function(done) {
-      var source = new Static({
+      const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
           -13629027.891360067, 4539747.983913189,
@@ -25,7 +25,7 @@ describe('ol.source.ImageStatic', function() {
         projection: projection
       });
 
-      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function(event) {
         expect(image.getImage().width).to.be(128);
@@ -37,7 +37,7 @@ describe('ol.source.ImageStatic', function() {
     });
 
     it('respects imageSize', function(done) {
-      var source = new Static({
+      const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
           -13629027.891360067, 4539747.983913189,
@@ -46,7 +46,7 @@ describe('ol.source.ImageStatic', function() {
         projection: projection
       });
 
-      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
 
       source.on('imageloadend', function(event) {
         expect(image.getImage().width).to.be(127);
@@ -58,7 +58,7 @@ describe('ol.source.ImageStatic', function() {
     });
 
     it('triggers image load events', function(done) {
-      var source = new Static({
+      const source = new Static({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
           -13629027.891360067, 4539747.983913189,
@@ -66,8 +66,8 @@ describe('ol.source.ImageStatic', function() {
         projection: projection
       });
 
-      var imageloadstart = sinon.spy();
-      var imageloaderror = sinon.spy();
+      const imageloadstart = sinon.spy();
+      const imageloaderror = sinon.spy();
 
       source.on('imageloadstart', imageloadstart);
       source.on('imageloaderror', imageloaderror);
@@ -77,7 +77,7 @@ describe('ol.source.ImageStatic', function() {
         done();
       });
 
-      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      const image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
     });
   });

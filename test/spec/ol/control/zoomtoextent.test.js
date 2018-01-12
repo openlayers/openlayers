@@ -5,7 +5,7 @@ describe('ol.control.ZoomToExtent', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new ZoomToExtent();
+      const instance = new ZoomToExtent();
       expect(instance).to.be.an(ZoomToExtent);
     });
 

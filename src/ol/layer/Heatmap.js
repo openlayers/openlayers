@@ -17,7 +17,7 @@ import Style from '../style/Style.js';
  * @enum {string}
  * @private
  */
-var Property = {
+const Property = {
   BLUR: 'blur',
   GRADIENT: 'gradient',
   RADIUS: 'radius'
@@ -28,7 +28,7 @@ var Property = {
  * @const
  * @type {Array.<string>}
  */
-var DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
+const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
 
 /**
@@ -44,10 +44,10 @@ var DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
  * @param {olx.layer.HeatmapOptions=} opt_options Options.
  * @api
  */
-var Heatmap = function(opt_options) {
-  var options = opt_options ? opt_options : {};
+const Heatmap = function(opt_options) {
+  const options = opt_options ? opt_options : {};
 
-  var baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.gradient;
   delete baseOptions.radius;
@@ -81,8 +81,8 @@ var Heatmap = function(opt_options) {
   this.styleCache_ = null;
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(Property.GRADIENT),
-      this.handleGradientChanged_, this);
+    BaseObject.getChangeEventType(Property.GRADIENT),
+    this.handleGradientChanged_, this);
 
   this.setGradient(options.gradient ? options.gradient : DEFAULT_GRADIENT);
 
@@ -91,16 +91,16 @@ var Heatmap = function(opt_options) {
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(Property.BLUR),
-      this.handleStyleChanged_, this);
+    BaseObject.getChangeEventType(Property.BLUR),
+    this.handleStyleChanged_, this);
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(Property.RADIUS),
-      this.handleStyleChanged_, this);
+    BaseObject.getChangeEventType(Property.RADIUS),
+    this.handleStyleChanged_, this);
 
   this.handleStyleChanged_();
 
-  var weight = options.weight ? options.weight : 'weight';
-  var weightFunction;
+  const weight = options.weight ? options.weight : 'weight';
+  let weightFunction;
   if (typeof weight === 'string') {
     weightFunction = function(feature) {
       return feature.get(weight);
@@ -110,11 +110,11 @@ var Heatmap = function(opt_options) {
   }
 
   this.setStyle(function(feature, resolution) {
-    var weight = weightFunction(feature);
-    var opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
+    const weight = weightFunction(feature);
+    const opacity = weight !== undefined ? clamp(weight, 0, 1) : 1;
     // cast to 8 bits
-    var index = (255 * opacity) | 0;
-    var style = this.styleCache_[index];
+    const index = (255 * opacity) | 0;
+    let style = this.styleCache_[index];
     if (!style) {
       style = [
         new Style({
@@ -144,14 +144,14 @@ inherits(Heatmap, VectorLayer);
  * @return {Uint8ClampedArray} An array.
  * @private
  */
-var createGradient = function(colors) {
-  var width = 1;
-  var height = 256;
-  var context = createCanvasContext2D(width, height);
+const createGradient = function(colors) {
+  const width = 1;
+  const height = 256;
+  const context = createCanvasContext2D(width, height);
 
-  var gradient = context.createLinearGradient(0, 0, width, height);
-  var step = 1 / (colors.length - 1);
-  for (var i = 0, ii = colors.length; i < ii; ++i) {
+  const gradient = context.createLinearGradient(0, 0, width, height);
+  const step = 1 / (colors.length - 1);
+  for (let i = 0, ii = colors.length; i < ii; ++i) {
     gradient.addColorStop(i * step, colors[i]);
   }
 
@@ -167,16 +167,16 @@ var createGradient = function(colors) {
  * @private
  */
 Heatmap.prototype.createCircle_ = function() {
-  var radius = this.getRadius();
-  var blur = this.getBlur();
-  var halfSize = radius + blur + 1;
-  var size = 2 * halfSize;
-  var context = createCanvasContext2D(size, size);
+  const radius = this.getRadius();
+  const blur = this.getBlur();
+  const halfSize = radius + blur + 1;
+  const size = 2 * halfSize;
+  const context = createCanvasContext2D(size, size);
   context.shadowOffsetX = context.shadowOffsetY = this.shadow_;
   context.shadowBlur = blur;
   context.shadowColor = '#000';
   context.beginPath();
-  var center = halfSize - this.shadow_;
+  const center = halfSize - this.shadow_;
   context.arc(center, center, radius, 0, Math.PI * 2, true);
   context.fill();
   return context.canvas.toDataURL();
@@ -239,11 +239,11 @@ Heatmap.prototype.handleStyleChanged_ = function() {
  * @private
  */
 Heatmap.prototype.handleRender_ = function(event) {
-  var context = event.context;
-  var canvas = context.canvas;
-  var image = context.getImageData(0, 0, canvas.width, canvas.height);
-  var view8 = image.data;
-  var i, ii, alpha;
+  const context = event.context;
+  const canvas = context.canvas;
+  const image = context.getImageData(0, 0, canvas.width, canvas.height);
+  const view8 = image.data;
+  let i, ii, alpha;
   for (i = 0, ii = view8.length; i < ii; i += 4) {
     alpha = view8[i + 3] * 4;
     if (alpha) {

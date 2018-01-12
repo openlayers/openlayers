@@ -17,7 +17,7 @@ import _ol_transform_ from '../../transform.js';
  * @extends {ol.renderer.Layer}
  * @param {ol.layer.Layer} layer Layer.
  */
-var CanvasLayerRenderer = function(layer) {
+const CanvasLayerRenderer = function(layer) {
 
   LayerRenderer.call(this, layer);
 
@@ -45,14 +45,14 @@ inherits(CanvasLayerRenderer, LayerRenderer);
  * @protected
  */
 CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
-  var pixelRatio = frameState.pixelRatio;
-  var width = frameState.size[0] * pixelRatio;
-  var height = frameState.size[1] * pixelRatio;
-  var rotation = frameState.viewState.rotation;
-  var topLeft = getTopLeft(/** @type {ol.Extent} */ (extent));
-  var topRight = getTopRight(/** @type {ol.Extent} */ (extent));
-  var bottomRight = getBottomRight(/** @type {ol.Extent} */ (extent));
-  var bottomLeft = getBottomLeft(/** @type {ol.Extent} */ (extent));
+  const pixelRatio = frameState.pixelRatio;
+  const width = frameState.size[0] * pixelRatio;
+  const height = frameState.size[1] * pixelRatio;
+  const rotation = frameState.viewState.rotation;
+  const topLeft = getTopLeft(/** @type {ol.Extent} */ (extent));
+  const topRight = getTopRight(/** @type {ol.Extent} */ (extent));
+  const bottomRight = getBottomRight(/** @type {ol.Extent} */ (extent));
+  const bottomLeft = getBottomLeft(/** @type {ol.Extent} */ (extent));
 
   _ol_transform_.apply(frameState.coordinateToPixelTransform, topLeft);
   _ol_transform_.apply(frameState.coordinateToPixelTransform, topRight);
@@ -79,19 +79,19 @@ CanvasLayerRenderer.prototype.clip = function(context, frameState, extent) {
  * @private
  */
 CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
-  var layer = this.getLayer();
+  const layer = this.getLayer();
   if (layer.hasListener(type)) {
-    var width = frameState.size[0] * frameState.pixelRatio;
-    var height = frameState.size[1] * frameState.pixelRatio;
-    var rotation = frameState.viewState.rotation;
+    const width = frameState.size[0] * frameState.pixelRatio;
+    const height = frameState.size[1] * frameState.pixelRatio;
+    const rotation = frameState.viewState.rotation;
     _ol_render_canvas_.rotateAtOffset(context, -rotation, width / 2, height / 2);
-    var transform = opt_transform !== undefined ?
+    const transform = opt_transform !== undefined ?
       opt_transform : this.getTransform(frameState, 0);
-    var render = new CanvasImmediateRenderer(
-        context, frameState.pixelRatio, frameState.extent, transform,
-        frameState.viewState.rotation);
-    var composeEvent = new RenderEvent(type, render, frameState,
-        context, null);
+    const render = new CanvasImmediateRenderer(
+      context, frameState.pixelRatio, frameState.extent, transform,
+      frameState.viewState.rotation);
+    const composeEvent = new RenderEvent(type, render, frameState,
+      context, null);
     layer.dispatchEvent(composeEvent);
     _ol_render_canvas_.rotateAtOffset(context, rotation, width / 2, height / 2);
   }
@@ -108,7 +108,7 @@ CanvasLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fr
  * @template S,T,U
  */
 CanvasLayerRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  var hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
+  const hasFeature = this.forEachFeatureAtCoordinate(coordinate, frameState, 0, TRUE, this);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);
@@ -159,15 +159,15 @@ CanvasLayerRenderer.prototype.dispatchRenderEvent = function(context, frameState
  * @return {!ol.Transform} Transform.
  */
 CanvasLayerRenderer.prototype.getTransform = function(frameState, offsetX) {
-  var viewState = frameState.viewState;
-  var pixelRatio = frameState.pixelRatio;
-  var dx1 = pixelRatio * frameState.size[0] / 2;
-  var dy1 = pixelRatio * frameState.size[1] / 2;
-  var sx = pixelRatio / viewState.resolution;
-  var sy = -sx;
-  var angle = -viewState.rotation;
-  var dx2 = -viewState.center[0] + offsetX;
-  var dy2 = -viewState.center[1];
+  const viewState = frameState.viewState;
+  const pixelRatio = frameState.pixelRatio;
+  const dx1 = pixelRatio * frameState.size[0] / 2;
+  const dy1 = pixelRatio * frameState.size[1] / 2;
+  const sx = pixelRatio / viewState.resolution;
+  const sy = -sx;
+  const angle = -viewState.rotation;
+  const dx2 = -viewState.center[0] + offsetX;
+  const dy2 = -viewState.center[1];
   return _ol_transform_.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 

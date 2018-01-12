@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/flip
  */
-var _ol_geom_flat_flip_ = {};
+const _ol_geom_flat_flip_ = {};
 
 
 /**
@@ -14,7 +14,7 @@ var _ol_geom_flat_flip_ = {};
  * @return {Array.<number>} Flat coordinates.
  */
 _ol_geom_flat_flip_.flipXY = function(flatCoordinates, offset, end, stride, opt_dest, opt_destOffset) {
-  var dest, destOffset;
+  let dest, destOffset;
   if (opt_dest !== undefined) {
     dest = opt_dest;
     destOffset = opt_destOffset !== undefined ? opt_destOffset : 0;
@@ -22,12 +22,12 @@ _ol_geom_flat_flip_.flipXY = function(flatCoordinates, offset, end, stride, opt_
     dest = [];
     destOffset = 0;
   }
-  var j = offset;
+  let j = offset;
   while (j < end) {
-    var x = flatCoordinates[j++];
+    const x = flatCoordinates[j++];
     dest[destOffset++] = flatCoordinates[j++];
     dest[destOffset++] = x;
-    for (var k = 2; k < stride; ++k) {
+    for (let k = 2; k < stride; ++k) {
       dest[destOffset++] = flatCoordinates[j++];
     }
   }

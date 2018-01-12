@@ -13,15 +13,15 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Select', function() {
-  var target, map, layer, source;
+  let target, map, layer, source;
 
-  var width = 360;
-  var height = 180;
+  const width = 360;
+  const height = 180;
 
   beforeEach(function(done) {
     target = document.createElement('div');
 
-    var style = target.style;
+    const style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
     style.top = '-1000px';
@@ -29,29 +29,29 @@ describe('ol.interaction.Select', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
 
-    var geometry = new Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
+    const geometry = new Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]);
 
     // Four overlapping features, two features of type "foo" and two features
     // of type "bar". The rendering order is, from top to bottom, foo -> bar
     // -> foo -> bar.
-    var features = [];
+    const features = [];
     features.push(
-        new Feature({
-          geometry: geometry,
-          type: 'bar'
-        }),
-        new Feature({
-          geometry: geometry,
-          type: 'foo'
-        }),
-        new Feature({
-          geometry: geometry,
-          type: 'bar'
-        }),
-        new Feature({
-          geometry: geometry,
-          type: 'foo'
-        }));
+      new Feature({
+        geometry: geometry,
+        type: 'bar'
+      }),
+      new Feature({
+        geometry: geometry,
+        type: 'foo'
+      }),
+      new Feature({
+        geometry: geometry,
+        type: 'bar'
+      }),
+      new Feature({
+        geometry: geometry,
+        type: 'foo'
+      }));
 
     source = new VectorSource({
       features: features
@@ -88,11 +88,11 @@ describe('ol.interaction.Select', function() {
    * @param {boolean=} opt_shiftKey Shift key is pressed.
    */
   function simulateEvent(type, x, y, opt_shiftKey) {
-    var viewport = map.getViewport();
+    const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
-    var position = viewport.getBoundingClientRect();
-    var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new PointerEvent(type, {
+    const position = viewport.getBoundingClientRect();
+    const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
+    const event = new PointerEvent(type, {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
@@ -103,7 +103,7 @@ describe('ol.interaction.Select', function() {
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var select = new Select();
+      const select = new Select();
       expect(select).to.be.a(Select);
       expect(select).to.be.a(Interaction);
     });
@@ -111,8 +111,8 @@ describe('ol.interaction.Select', function() {
     describe('user-provided collection', function() {
 
       it('uses the user-provided collection', function() {
-        var features = new Collection();
-        var select = new Select({features: features});
+        const features = new Collection();
+        const select = new Select({features: features});
         expect(select.getFeatures()).to.be(features);
       });
 
@@ -121,7 +121,7 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('selecting a polygon', function() {
-    var select;
+    let select;
 
     beforeEach(function() {
       select = new Select();
@@ -129,7 +129,7 @@ describe('ol.interaction.Select', function() {
     });
 
     it('select with single-click', function() {
-      var listenerSpy = sinon.spy(function(e) {
+      const listenerSpy = sinon.spy(function(e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -138,12 +138,12 @@ describe('ol.interaction.Select', function() {
 
       expect(listenerSpy.callCount).to.be(1);
 
-      var features = select.getFeatures();
+      const features = select.getFeatures();
       expect(features.getLength()).to.equal(1);
     });
 
     it('single-click outside the geometry', function() {
-      var listenerSpy = sinon.spy(function(e) {
+      const listenerSpy = sinon.spy(function(e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -152,12 +152,12 @@ describe('ol.interaction.Select', function() {
 
       expect(listenerSpy.callCount).to.be(0);
 
-      var features = select.getFeatures();
+      const features = select.getFeatures();
       expect(features.getLength()).to.equal(0);
     });
 
     it('select twice with single-click', function() {
-      var listenerSpy = sinon.spy(function(e) {
+      const listenerSpy = sinon.spy(function(e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -167,12 +167,12 @@ describe('ol.interaction.Select', function() {
 
       expect(listenerSpy.callCount).to.be(1);
 
-      var features = select.getFeatures();
+      const features = select.getFeatures();
       expect(features.getLength()).to.equal(1);
     });
 
     it('select with shift single-click', function() {
-      var listenerSpy = sinon.spy(function(e) {
+      const listenerSpy = sinon.spy(function(e) {
         expect(e.selected).to.have.length(1);
       });
       select.on('select', listenerSpy);
@@ -181,13 +181,13 @@ describe('ol.interaction.Select', function() {
 
       expect(listenerSpy.callCount).to.be(1);
 
-      var features = select.getFeatures();
+      const features = select.getFeatures();
       expect(features.getLength()).to.equal(1);
     });
   });
 
   describe('multiselecting polygons', function() {
-    var select;
+    let select;
 
     beforeEach(function() {
       select = new Select({
@@ -197,7 +197,7 @@ describe('ol.interaction.Select', function() {
     });
 
     it('select with single-click', function() {
-      var listenerSpy = sinon.spy(function(e) {
+      const listenerSpy = sinon.spy(function(e) {
         expect(e.selected).to.have.length(4);
       });
       select.on('select', listenerSpy);
@@ -206,12 +206,12 @@ describe('ol.interaction.Select', function() {
 
       expect(listenerSpy.callCount).to.be(1);
 
-      var features = select.getFeatures();
+      const features = select.getFeatures();
       expect(features.getLength()).to.equal(4);
     });
 
     it('select with shift single-click', function() {
-      var listenerSpy = sinon.spy(function(e) {
+      const listenerSpy = sinon.spy(function(e) {
         expect(e.selected).to.have.length(4);
       });
       select.on('select', listenerSpy);
@@ -220,7 +220,7 @@ describe('ol.interaction.Select', function() {
 
       expect(listenerSpy.callCount).to.be(1);
 
-      var features = select.getFeatures();
+      let features = select.getFeatures();
       expect(features.getLength()).to.equal(4);
       expect(select.getLayer(features.item(0))).to.equal(layer);
 
@@ -236,7 +236,7 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('toggle selecting polygons', function() {
-    var select;
+    let select;
 
     beforeEach(function() {
       select = new Select({
@@ -246,14 +246,14 @@ describe('ol.interaction.Select', function() {
     });
 
     it('with SHIFT + single-click', function() {
-      var listenerSpy = sinon.spy();
+      const listenerSpy = sinon.spy();
       select.on('select', listenerSpy);
 
       simulateEvent('singleclick', 10, -20, true);
 
       expect(listenerSpy.callCount).to.be(1);
 
-      var features = select.getFeatures();
+      let features = select.getFeatures();
       expect(features.getLength()).to.equal(4);
 
       map.renderSync();
@@ -272,7 +272,7 @@ describe('ol.interaction.Select', function() {
     describe('with multi set to true', function() {
 
       it('only selects features that pass the filter', function() {
-        var select = new Select({
+        const select = new Select({
           multi: true,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -281,7 +281,7 @@ describe('ol.interaction.Select', function() {
         map.addInteraction(select);
 
         simulateEvent('singleclick', 10, -20);
-        var features = select.getFeatures();
+        const features = select.getFeatures();
         expect(features.getLength()).to.equal(2);
         expect(features.item(0).get('type')).to.be('bar');
         expect(features.item(1).get('type')).to.be('bar');
@@ -289,7 +289,7 @@ describe('ol.interaction.Select', function() {
 
       it('only selects features that pass the filter ' +
          'using shift single-click', function() {
-        var select = new Select({
+        const select = new Select({
           multi: true,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -298,8 +298,8 @@ describe('ol.interaction.Select', function() {
         map.addInteraction(select);
 
         simulateEvent('singleclick', 10, -20,
-            true);
-        var features = select.getFeatures();
+          true);
+        const features = select.getFeatures();
         expect(features.getLength()).to.equal(2);
         expect(features.item(0).get('type')).to.be('bar');
         expect(features.item(1).get('type')).to.be('bar');
@@ -309,7 +309,7 @@ describe('ol.interaction.Select', function() {
     describe('with multi set to false', function() {
 
       it('only selects the first feature that passes the filter', function() {
-        var select = new Select({
+        const select = new Select({
           multi: false,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -317,14 +317,14 @@ describe('ol.interaction.Select', function() {
         });
         map.addInteraction(select);
         simulateEvent('singleclick', 10, -20);
-        var features = select.getFeatures();
+        const features = select.getFeatures();
         expect(features.getLength()).to.equal(1);
         expect(features.item(0).get('type')).to.be('bar');
       });
 
       it('only selects the first feature that passes the filter ' +
          'using shift single-click', function() {
-        var select = new Select({
+        const select = new Select({
           multi: false,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -332,8 +332,8 @@ describe('ol.interaction.Select', function() {
         });
         map.addInteraction(select);
         simulateEvent('singleclick', 10, -20,
-            true);
-        var features = select.getFeatures();
+          true);
+        const features = select.getFeatures();
         expect(features.getLength()).to.equal(1);
         expect(features.item(0).get('type')).to.be('bar');
       });
@@ -341,7 +341,7 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('#getLayer(feature)', function() {
-    var interaction;
+    let interaction;
 
     beforeEach(function() {
       interaction = new Select();
@@ -352,9 +352,9 @@ describe('ol.interaction.Select', function() {
     });
 
     it('returns a layer from a selected feature', function() {
-      var listenerSpy = sinon.spy(function(e) {
-        var feature = e.selected[0];
-        var layer_ = interaction.getLayer(feature);
+      const listenerSpy = sinon.spy(function(e) {
+        const feature = e.selected[0];
+        const layer_ = interaction.getLayer(feature);
         expect(e.selected).to.have.length(1);
         expect(feature).to.be.a(Feature);
         expect(layer_).to.be.a(VectorLayer);
@@ -369,7 +369,7 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('#setActive()', function() {
-    var interaction;
+    let interaction;
 
     beforeEach(function() {
       interaction = new Select();
@@ -399,7 +399,7 @@ describe('ol.interaction.Select', function() {
         interaction.setActive(false);
       });
       it('fires change:active', function() {
-        var listenerSpy = sinon.spy();
+        const listenerSpy = sinon.spy();
         interaction.on('change:active', listenerSpy);
         interaction.setActive(true);
         expect(listenerSpy.callCount).to.be(1);
@@ -409,7 +409,7 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('#setMap()', function() {
-    var interaction;
+    let interaction;
 
     beforeEach(function() {
       interaction = new Select();
@@ -425,7 +425,7 @@ describe('ol.interaction.Select', function() {
       });
       describe('#setMap(null) when interaction is active', function() {
         it('unsets the map from the feature overlay', function() {
-          var spy = sinon.spy(interaction.featureOverlay_, 'setMap');
+          const spy = sinon.spy(interaction.featureOverlay_, 'setMap');
           interaction.setMap(null);
           expect(spy.getCall(0).args[0]).to.be(null);
         });
@@ -435,7 +435,7 @@ describe('ol.interaction.Select', function() {
     describe('#setMap(map)', function() {
       describe('#setMap(map) when interaction is active', function() {
         it('sets the map into the feature overlay', function() {
-          var spy = sinon.spy(interaction.featureOverlay_, 'setMap');
+          const spy = sinon.spy(interaction.featureOverlay_, 'setMap');
           interaction.setMap(map);
           expect(spy.getCall(0).args[0]).to.be(map);
         });

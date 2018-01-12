@@ -9,24 +9,24 @@ import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
 // create the WMTS tile grid in the google projection
-var projection = getProjection('EPSG:3857');
-var tileSizePixels = 256;
-var tileSizeMtrs = _ol_extent_.getWidth(projection.getExtent()) / tileSizePixels;
-var matrixIds = [];
-var resolutions = [];
-for (var i = 0; i <= 14; i++) {
+const projection = getProjection('EPSG:3857');
+const tileSizePixels = 256;
+const tileSizeMtrs = _ol_extent_.getWidth(projection.getExtent()) / tileSizePixels;
+const matrixIds = [];
+const resolutions = [];
+for (let i = 0; i <= 14; i++) {
   matrixIds[i] = i;
   resolutions[i] = tileSizeMtrs / Math.pow(2, i);
 }
-var tileGrid = new WMTSTileGrid({
+const tileGrid = new WMTSTileGrid({
   origin: _ol_extent_.getTopLeft(projection.getExtent()),
   resolutions: resolutions,
   matrixIds: matrixIds
 });
 
-var scalgoToken = 'CC5BF28A7D96B320C7DFBFD1236B5BEB';
+const scalgoToken = 'CC5BF28A7D96B320C7DFBFD1236B5BEB';
 
-var wmtsSource = new WMTS({
+const wmtsSource = new WMTS({
   url: 'http://ts2.scalgo.com/olpatch/wmts?token=' + scalgoToken,
   layer: 'SRTM_4_1:SRTM_4_1_flooded_sealevels',
   format: 'image/png',
@@ -43,7 +43,7 @@ var wmtsSource = new WMTS({
   }
 });
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   view: new View({
     projection: projection,
@@ -61,7 +61,7 @@ var map = new Map({
   ]
 });
 
-var updateSourceDimension = function(source, sliderVal) {
+const updateSourceDimension = function(source, sliderVal) {
   source.updateDimensions({'threshold': sliderVal});
   document.getElementById('theinfo').innerHTML = sliderVal + ' meters';
 };

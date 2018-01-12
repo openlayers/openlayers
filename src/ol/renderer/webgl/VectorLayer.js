@@ -18,7 +18,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.Vector} vectorLayer Vector layer.
  * @api
  */
-var WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
+const WebGLVectorLayerRenderer = function(mapRenderer, vectorLayer) {
 
   WebGLLayerRenderer.call(this, mapRenderer, vectorLayer);
 
@@ -89,8 +89,8 @@ WebGLVectorLayerRenderer['handles'] = function(type, layer) {
  */
 WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
   return new WebGLVectorLayerRenderer(
-      /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-      /** @type {ol.layer.Vector} */ (layer)
+    /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+    /** @type {ol.layer.Vector} */ (layer)
   );
 };
 
@@ -100,18 +100,18 @@ WebGLVectorLayerRenderer['create'] = function(mapRenderer, layer) {
  */
 WebGLVectorLayerRenderer.prototype.composeFrame = function(frameState, layerState, context) {
   this.layerState_ = layerState;
-  var viewState = frameState.viewState;
-  var replayGroup = this.replayGroup_;
-  var size = frameState.size;
-  var pixelRatio = frameState.pixelRatio;
-  var gl = this.mapRenderer.getGL();
+  const viewState = frameState.viewState;
+  const replayGroup = this.replayGroup_;
+  const size = frameState.size;
+  const pixelRatio = frameState.pixelRatio;
+  const gl = this.mapRenderer.getGL();
   if (replayGroup && !replayGroup.isEmpty()) {
     gl.enable(gl.SCISSOR_TEST);
     gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
     replayGroup.replay(context,
-        viewState.center, viewState.resolution, viewState.rotation,
-        size, pixelRatio, layerState.opacity,
-        layerState.managed ? frameState.skippedFeatureUids : {});
+      viewState.center, viewState.resolution, viewState.rotation,
+      size, pixelRatio, layerState.opacity,
+      layerState.managed ? frameState.skippedFeatureUids : {});
     gl.disable(gl.SCISSOR_TEST);
   }
 
@@ -122,9 +122,9 @@ WebGLVectorLayerRenderer.prototype.composeFrame = function(frameState, layerStat
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.disposeInternal = function() {
-  var replayGroup = this.replayGroup_;
+  const replayGroup = this.replayGroup_;
   if (replayGroup) {
-    var context = this.mapRenderer.getContext();
+    const context = this.mapRenderer.getContext();
     replayGroup.getDeleteResourcesFunction(context)();
     this.replayGroup_ = null;
   }
@@ -139,27 +139,27 @@ WebGLVectorLayerRenderer.prototype.forEachFeatureAtCoordinate = function(coordin
   if (!this.replayGroup_ || !this.layerState_) {
     return undefined;
   } else {
-    var context = this.mapRenderer.getContext();
-    var viewState = frameState.viewState;
-    var layer = this.getLayer();
-    var layerState = this.layerState_;
+    const context = this.mapRenderer.getContext();
+    const viewState = frameState.viewState;
+    const layer = this.getLayer();
+    const layerState = this.layerState_;
     /** @type {Object.<string, boolean>} */
-    var features = {};
+    const features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
-        context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio, layerState.opacity,
-        {},
-        /**
+      context, viewState.center, viewState.resolution, viewState.rotation,
+      frameState.size, frameState.pixelRatio, layerState.opacity,
+      {},
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(feature) {
-          var key = getUid(feature).toString();
-          if (!(key in features)) {
-            features[key] = true;
-            return callback.call(thisArg, feature, layer);
-          }
-        });
+      function(feature) {
+        const key = getUid(feature).toString();
+        if (!(key in features)) {
+          features[key] = true;
+          return callback.call(thisArg, feature, layer);
+        }
+      });
   }
 };
 
@@ -171,13 +171,13 @@ WebGLVectorLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinate,
   if (!this.replayGroup_ || !this.layerState_) {
     return false;
   } else {
-    var context = this.mapRenderer.getContext();
-    var viewState = frameState.viewState;
-    var layerState = this.layerState_;
+    const context = this.mapRenderer.getContext();
+    const viewState = frameState.viewState;
+    const layerState = this.layerState_;
     return this.replayGroup_.hasFeatureAtCoordinate(coordinate,
-        context, viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio, layerState.opacity,
-        frameState.skippedFeatureUids);
+      context, viewState.center, viewState.resolution, viewState.rotation,
+      frameState.size, frameState.pixelRatio, layerState.opacity,
+      frameState.skippedFeatureUids);
   }
 };
 
@@ -186,9 +186,9 @@ WebGLVectorLayerRenderer.prototype.hasFeatureAtCoordinate = function(coordinate,
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-  var coordinate = _ol_transform_.apply(
-      frameState.pixelToCoordinateTransform, pixel.slice());
-  var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
+  const coordinate = _ol_transform_.apply(
+    frameState.pixelToCoordinateTransform, pixel.slice());
+  const hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);
@@ -212,34 +212,34 @@ WebGLVectorLayerRenderer.prototype.handleStyleImageChange_ = function(event) {
  * @inheritDoc
  */
 WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerState, context) {
-  var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
-  var vectorSource = vectorLayer.getSource();
+  const vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
+  const vectorSource = vectorLayer.getSource();
 
-  var animating = frameState.viewHints[ViewHint.ANIMATING];
-  var interacting = frameState.viewHints[ViewHint.INTERACTING];
-  var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
-  var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
+  const animating = frameState.viewHints[ViewHint.ANIMATING];
+  const interacting = frameState.viewHints[ViewHint.INTERACTING];
+  const updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
+  const updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 
   if (!this.dirty_ && (!updateWhileAnimating && animating) ||
       (!updateWhileInteracting && interacting)) {
     return true;
   }
 
-  var frameStateExtent = frameState.extent;
-  var viewState = frameState.viewState;
-  var projection = viewState.projection;
-  var resolution = viewState.resolution;
-  var pixelRatio = frameState.pixelRatio;
-  var vectorLayerRevision = vectorLayer.getRevision();
-  var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
-  var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
+  const frameStateExtent = frameState.extent;
+  const viewState = frameState.viewState;
+  const projection = viewState.projection;
+  const resolution = viewState.resolution;
+  const pixelRatio = frameState.pixelRatio;
+  const vectorLayerRevision = vectorLayer.getRevision();
+  const vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
+  let vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
   if (vectorLayerRenderOrder === undefined) {
     vectorLayerRenderOrder = _ol_renderer_vector_.defaultOrder;
   }
 
-  var extent = buffer(frameStateExtent,
-      vectorLayerRenderBuffer * resolution);
+  const extent = buffer(frameStateExtent,
+    vectorLayerRenderBuffer * resolution);
 
   if (!this.dirty_ &&
       this.renderedResolution_ == resolution &&
@@ -251,22 +251,22 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
   if (this.replayGroup_) {
     frameState.postRenderFunctions.push(
-        this.replayGroup_.getDeleteResourcesFunction(context));
+      this.replayGroup_.getDeleteResourcesFunction(context));
   }
 
   this.dirty_ = false;
 
-  var replayGroup = new _ol_render_webgl_ReplayGroup_(
-      _ol_renderer_vector_.getTolerance(resolution, pixelRatio),
-      extent, vectorLayer.getRenderBuffer());
+  const replayGroup = new _ol_render_webgl_ReplayGroup_(
+    _ol_renderer_vector_.getTolerance(resolution, pixelRatio),
+    extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.
    * @this {ol.renderer.webgl.VectorLayer}
    */
-  var renderFeature = function(feature) {
-    var styles;
-    var styleFunction = feature.getStyleFunction();
+  const renderFeature = function(feature) {
+    let styles;
+    let styleFunction = feature.getStyleFunction();
     if (styleFunction) {
       styles = styleFunction.call(feature, resolution);
     } else {
@@ -276,21 +276,21 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
       }
     }
     if (styles) {
-      var dirty = this.renderFeature(
-          feature, resolution, pixelRatio, styles, replayGroup);
+      const dirty = this.renderFeature(
+        feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
   };
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
-    var features = [];
+    const features = [];
     vectorSource.forEachFeatureInExtent(extent,
-        /**
+      /**
          * @param {ol.Feature} feature Feature.
          */
-        function(feature) {
-          features.push(feature);
-        }, this);
+      function(feature) {
+        features.push(feature);
+      }, this);
     features.sort(vectorLayerRenderOrder);
     features.forEach(renderFeature.bind(this));
   } else {
@@ -321,19 +321,19 @@ WebGLVectorLayerRenderer.prototype.renderFeature = function(feature, resolution,
   if (!styles) {
     return false;
   }
-  var loading = false;
+  let loading = false;
   if (Array.isArray(styles)) {
-    for (var i = styles.length - 1, ii = 0; i >= ii; --i) {
+    for (let i = styles.length - 1, ii = 0; i >= ii; --i) {
       loading = _ol_renderer_vector_.renderFeature(
-          replayGroup, feature, styles[i],
-          _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+        replayGroup, feature, styles[i],
+        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+        this.handleStyleImageChange_, this) || loading;
     }
   } else {
     loading = _ol_renderer_vector_.renderFeature(
-        replayGroup, feature, styles,
-        _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+      replayGroup, feature, styles,
+      _ol_renderer_vector_.getSquaredTolerance(resolution, pixelRatio),
+      this.handleStyleImageChange_, this) || loading;
   }
   return loading;
 };

@@ -1,9 +1,9 @@
-var fs = require('fs-extra');
+const fs = require('fs-extra');
 
-var async = require('async');
-var nomnom = require('nomnom');
+const async = require('async');
+const nomnom = require('nomnom');
 
-var generateInfo = require('./generate-info');
+const generateInfo = require('./generate-info');
 
 
 /**
@@ -21,19 +21,19 @@ function getConfig(configPath, callback) {
         callback(err);
         return;
       }
-      var obj;
+      let obj;
       try {
         obj = JSON.parse(String(data));
       } catch (err2) {
         callback(new Error('Trouble parsing file as JSON: ' + configPath));
         return;
       }
-      var patterns = obj.exports;
+      const patterns = obj.exports;
       if (patterns && !Array.isArray(patterns)) {
         callback(new Error('Expected an exports array, got: ' + patterns));
         return;
       }
-      var namespace = obj.namespace;
+      const namespace = obj.namespace;
       if (namespace && typeof namespace !== 'string') {
         callback(new Error('Expected an namespace string, got: ' +
             namespace));
@@ -61,7 +61,7 @@ function getSymbols(patterns, callback) {
       callback(new Error('Trouble generating info: ' + err.message));
       return;
     }
-    var symbols = require('../build/info.json').symbols;
+    const symbols = require('../build/info.json').symbols;
     callback(null, patterns, symbols);
   });
 }
@@ -80,10 +80,10 @@ function getSymbols(patterns, callback) {
  *     the filtered list of symbols and a list of all provides (or any error).
  */
 function filterSymbols(patterns, symbols, callback) {
-  var matches = [];
+  const matches = [];
 
-  var provides = {};
-  var lookup = {};
+  const provides = {};
+  const lookup = {};
   symbols.forEach(function(symbol) {
     lookup[symbol.name] = symbol;
     symbol.provides.forEach(function(provide) {
@@ -92,8 +92,8 @@ function filterSymbols(patterns, symbols, callback) {
   });
 
   patterns.forEach(function(name) {
-    var match = false;
-    var pattern = (name.substr(-1) === '*');
+    let match = false;
+    const pattern = (name.substr(-1) === '*');
     if (pattern) {
       name = name.substr(0, name.length - 1);
       symbols.forEach(function(symbol) {
@@ -103,14 +103,14 @@ function filterSymbols(patterns, symbols, callback) {
         }
       });
     } else {
-      var symbol = lookup[name];
+      const symbol = lookup[name];
       if (symbol) {
         matches.push(symbol);
         match = true;
       }
     }
     if (!match) {
-      var message = 'No matching symbol found: ' + name + (pattern ? '*' : '');
+      const message = 'No matching symbol found: ' + name + (pattern ? '*' : '');
       callback(new Error(message));
     }
   });
@@ -140,9 +140,9 @@ function formatSymbolExport(name, namespace) {
  * @return {string} Export code.
  */
 function formatPropertyExport(name) {
-  var parts = name.split('#');
-  var prototype = parts[0] + '.prototype';
-  var property = parts[1];
+  const parts = name.split('#');
+  const prototype = parts[0] + '.prototype';
+  const property = parts[1];
   return 'goog.exportProperty(\n' +
       '    ' + prototype + ',\n' +
       '    \'' + property + '\',\n' +
@@ -158,13 +158,13 @@ function formatPropertyExport(name) {
  * @return {string} Export code.
  */
 function generateExports(symbols, namespace, provides) {
-  var blocks = [];
+  const blocks = [];
   provides.forEach(function(provide) {
     blocks.push('goog.require(\'' + provide + '\');');
   });
   blocks.push('\n\n');
   symbols.forEach(function(symbol) {
-    var name = symbol.name;
+    const name = symbol.name;
     if (name.indexOf('#') > 0) {
       blocks.push(formatPropertyExport(name));
     } else {
@@ -172,7 +172,7 @@ function generateExports(symbols, namespace, provides) {
     }
   });
   blocks.unshift(
-      '/**\n' +
+    '/**\n' +
       ' * @fileoverview Custom exports file.\n' +
       ' * @suppress {checkVars,extraRequire}\n' +
       ' */\n');
@@ -192,7 +192,7 @@ function main(config, callback) {
     getSymbols.bind(null, config.exports),
     filterSymbols,
     function(symbols, provides, done) {
-      var code, err;
+      let code, err;
       try {
         code = generateExports(symbols, config.namespace, provides);
       } catch (e) {
@@ -209,7 +209,7 @@ function main(config, callback) {
  * function, and write the output file.
  */
 if (require.main === module) {
-  var options = nomnom.options({
+  const options = nomnom.options({
     output: {
       position: 0,
       required: true,

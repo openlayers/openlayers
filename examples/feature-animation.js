@@ -15,7 +15,7 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM({
@@ -35,38 +35,38 @@ var map = new Map({
   })
 });
 
-var source = new VectorSource({
+const source = new VectorSource({
   wrapX: false
 });
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: source
 });
 map.addLayer(vector);
 
 function addRandomFeature() {
-  var x = Math.random() * 360 - 180;
-  var y = Math.random() * 180 - 90;
-  var geom = new Point(fromLonLat([x, y]));
-  var feature = new Feature(geom);
+  const x = Math.random() * 360 - 180;
+  const y = Math.random() * 180 - 90;
+  const geom = new Point(fromLonLat([x, y]));
+  const feature = new Feature(geom);
   source.addFeature(feature);
 }
 
-var duration = 3000;
+const duration = 3000;
 function flash(feature) {
-  var start = new Date().getTime();
-  var listenerKey;
+  const start = new Date().getTime();
+  const listenerKey = map.on('postcompose', animate);
 
   function animate(event) {
-    var vectorContext = event.vectorContext;
-    var frameState = event.frameState;
-    var flashGeom = feature.getGeometry().clone();
-    var elapsed = frameState.time - start;
-    var elapsedRatio = elapsed / duration;
+    const vectorContext = event.vectorContext;
+    const frameState = event.frameState;
+    const flashGeom = feature.getGeometry().clone();
+    const elapsed = frameState.time - start;
+    const elapsedRatio = elapsed / duration;
     // radius will be 5 at start and 30 at end.
-    var radius = easeOut(elapsedRatio) * 25 + 5;
-    var opacity = easeOut(1 - elapsedRatio);
+    const radius = easeOut(elapsedRatio) * 25 + 5;
+    const opacity = easeOut(1 - elapsedRatio);
 
-    var style = new Style({
+    const style = new Style({
       image: new CircleStyle({
         radius: radius,
         snapToPixel: false,
@@ -86,7 +86,6 @@ function flash(feature) {
     // tell OpenLayers to continue postcompose animation
     map.render();
   }
-  listenerKey = map.on('postcompose', animate);
 }
 
 source.on('addfeature', function(e) {

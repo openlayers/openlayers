@@ -5,7 +5,7 @@ describe('ol.control.Rotate', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new Rotate();
+      const instance = new Rotate();
       expect(instance).to.be.an(Rotate);
     });
 

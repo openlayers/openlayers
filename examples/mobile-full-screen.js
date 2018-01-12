@@ -5,12 +5,12 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 
 
-var view = new View({
+const view = new View({
   center: [0, 0],
   zoom: 2
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new BingMaps({
@@ -23,7 +23,7 @@ var map = new Map({
   view: view
 });
 
-var geolocation = new Geolocation({
+const geolocation = new Geolocation({
   projection: view.getProjection(),
   tracking: true
 });

@@ -4,7 +4,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 
 
-var styles = [
+const styles = [
   'Road',
   'RoadOnDemand',
   'Aerial',
@@ -12,8 +12,8 @@ var styles = [
   'collinsBart',
   'ordnanceSurvey'
 ];
-var layers = [];
-var i, ii;
+const layers = [];
+let i, ii;
 for (i = 0, ii = styles.length; i < ii; ++i) {
   layers.push(new TileLayer({
     visible: false,
@@ -27,7 +27,7 @@ for (i = 0, ii = styles.length; i < ii; ++i) {
     })
   }));
 }
-var map = new Map({
+const map = new Map({
   layers: layers,
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.
@@ -39,10 +39,10 @@ var map = new Map({
   })
 });
 
-var select = document.getElementById('layer-select');
+const select = document.getElementById('layer-select');
 function onChange() {
-  var style = select.value;
-  for (var i = 0, ii = layers.length; i < ii; ++i) {
+  const style = select.value;
+  for (let i = 0, ii = layers.length; i < ii; ++i) {
     layers[i].setVisible(styles[i] === style);
   }
 }

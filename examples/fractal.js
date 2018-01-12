@@ -5,25 +5,25 @@ import LineString from '../src/ol/geom/LineString.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var radius = 10e6;
-var cos30 = Math.cos(Math.PI / 6);
-var sin30 = Math.sin(Math.PI / 6);
-var rise = radius * sin30;
-var run = radius * cos30;
+const radius = 10e6;
+const cos30 = Math.cos(Math.PI / 6);
+const sin30 = Math.sin(Math.PI / 6);
+const rise = radius * sin30;
+const run = radius * cos30;
 
-var triangle = new LineString([
+const triangle = new LineString([
   [0, radius], [run, -rise], [-run, -rise], [0, radius]
 ]);
 
-var feature = new Feature(triangle);
+const feature = new Feature(triangle);
 
-var layer = new VectorLayer({
+const layer = new VectorLayer({
   source: new VectorSource({
     features: [feature]
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [layer],
   target: 'map',
   view: new View({
@@ -33,44 +33,44 @@ var map = new Map({
 });
 
 function makeFractal(depth) {
-  var geometry = triangle.clone();
-  var graph = coordsToGraph(geometry.getCoordinates());
-  for (var i = 0; i < depth; ++i) {
-    var node = graph;
+  const geometry = triangle.clone();
+  const graph = coordsToGraph(geometry.getCoordinates());
+  for (let i = 0; i < depth; ++i) {
+    let node = graph;
     while (node.next) {
-      var next = node.next;
+      const next = node.next;
       injectNodes(node);
       node = next;
     }
   }
-  var coordinates = graphToCoords(graph);
+  const coordinates = graphToCoords(graph);
   document.getElementById('count').innerHTML = coordinates.length;
   geometry.setCoordinates(coordinates);
   feature.setGeometry(geometry);
 }
 
 function injectNodes(startNode) {
-  var endNode = startNode.next;
+  const endNode = startNode.next;
 
-  var start = startNode.point;
-  var end = startNode.next.point;
-  var dx = end[0] - start[0];
-  var dy = end[1] - start[1];
+  const start = startNode.point;
+  const end = startNode.next.point;
+  const dx = end[0] - start[0];
+  const dy = end[1] - start[1];
 
   // first point at 1/3 along the segment
-  var firstNode = {
+  const firstNode = {
     point: [start[0] + dx / 3, start[1] + dy / 3]
   };
 
   // second point at peak of _/\_
-  var r = Math.sqrt(dx * dx + dy * dy) / (2 * cos30);
-  var a = Math.atan2(dy, dx) + Math.PI / 6;
-  var secondNode = {
+  const r = Math.sqrt(dx * dx + dy * dy) / (2 * cos30);
+  const a = Math.atan2(dy, dx) + Math.PI / 6;
+  const secondNode = {
     point: [start[0] + r * Math.cos(a), start[1] + r * Math.sin(a)]
   };
 
   // third point at 2/3 along the segment
-  var thirdNode = {
+  const thirdNode = {
     point: [end[0] - dx / 3, end[1] - dy / 3]
   };
 
@@ -82,11 +82,11 @@ function injectNodes(startNode) {
 
 
 function coordsToGraph(coordinates) {
-  var graph = {
+  const graph = {
     point: coordinates[0]
   };
-  var length = coordinates.length;
-  for (var level = 0, node = graph; level < length - 1; ++level) {
+  const length = coordinates.length;
+  for (let level = 0, node = graph; level < length - 1; ++level) {
     node.next = {
       point: coordinates[level + 1]
     };
@@ -96,20 +96,20 @@ function coordsToGraph(coordinates) {
 }
 
 function graphToCoords(graph) {
-  var coordinates = [graph.point];
-  for (var node = graph, i = 1; node.next; node = node.next, ++i) {
+  const coordinates = [graph.point];
+  for (let node = graph, i = 1; node.next; node = node.next, ++i) {
     coordinates[i] = node.next.point;
   }
   return coordinates;
 }
 
-var depthInput = document.getElementById('depth');
+const depthInput = document.getElementById('depth');
 
 function update() {
   makeFractal(Number(depthInput.value));
 }
 
-var updateTimer;
+let updateTimer;
 
 
 /**

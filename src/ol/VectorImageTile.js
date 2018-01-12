@@ -32,9 +32,9 @@ import {loadFeaturesXhr} from './featureloader.js';
  *     Function to call when a source tile's state changes.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var VectorImageTile = function(tileCoord, state, sourceRevision, format,
-    tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
-    sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
+const VectorImageTile = function(tileCoord, state, sourceRevision, format,
+  tileLoadFunction, urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid,
+  sourceTiles, pixelRatio, projection, tileClass, handleTileChange, opt_options) {
 
   Tile.call(this, tileCoord, state, opt_options);
 
@@ -89,29 +89,29 @@ var VectorImageTile = function(tileCoord, state, sourceRevision, format,
   this.sourceTileListenerKeys_ = [];
 
   if (urlTileCoord) {
-    var extent = tileGrid.getTileCoordExtent(urlTileCoord);
-    var resolution = tileGrid.getResolution(tileCoord[0]);
-    var sourceZ = sourceTileGrid.getZForResolution(resolution);
+    const extent = tileGrid.getTileCoordExtent(urlTileCoord);
+    const resolution = tileGrid.getResolution(tileCoord[0]);
+    const sourceZ = sourceTileGrid.getZForResolution(resolution);
     sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
-      var sharedExtent = getIntersection(extent,
-          sourceTileGrid.getTileCoordExtent(sourceTileCoord));
-      var sourceExtent = sourceTileGrid.getExtent();
+      let sharedExtent = getIntersection(extent,
+        sourceTileGrid.getTileCoordExtent(sourceTileCoord));
+      const sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
         sharedExtent = getIntersection(sharedExtent, sourceExtent);
       }
       if (getWidth(sharedExtent) / resolution >= 0.5 &&
           getHeight(sharedExtent) / resolution >= 0.5) {
         // only include source tile if overlap is at least 1 pixel
-        var sourceTileKey = sourceTileCoord.toString();
-        var sourceTile = sourceTiles[sourceTileKey];
+        const sourceTileKey = sourceTileCoord.toString();
+        let sourceTile = sourceTiles[sourceTileKey];
         if (!sourceTile) {
-          var tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+          const tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
           sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
-              tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
-              tileUrl == undefined ? '' : tileUrl,
-              format, tileLoadFunction);
+            tileUrl == undefined ? TileState.EMPTY : TileState.IDLE,
+            tileUrl == undefined ? '' : tileUrl,
+            format, tileLoadFunction);
           this.sourceTileListenerKeys_.push(
-              _ol_events_.listen(sourceTile, EventType.CHANGE, handleTileChange));
+            _ol_events_.listen(sourceTile, EventType.CHANGE, handleTileChange));
         }
         sourceTile.consumers++;
         this.tileKeys.push(sourceTileKey);
@@ -134,9 +134,9 @@ VectorImageTile.prototype.disposeInternal = function() {
     this.interimTile.dispose();
   }
 
-  for (var i = 0, ii = this.tileKeys.length; i < ii; ++i) {
-    var sourceTileKey = this.tileKeys[i];
-    var sourceTile = this.getTile(sourceTileKey);
+  for (let i = 0, ii = this.tileKeys.length; i < ii; ++i) {
+    const sourceTileKey = this.tileKeys[i];
+    const sourceTile = this.getTile(sourceTileKey);
     sourceTile.consumers--;
     if (sourceTile.consumers == 0) {
       delete this.sourceTiles_[sourceTileKey];
@@ -158,7 +158,7 @@ VectorImageTile.prototype.disposeInternal = function() {
  * @return {CanvasRenderingContext2D} The rendering context.
  */
 VectorImageTile.prototype.getContext = function(layer) {
-  var key = getUid(layer).toString();
+  const key = getUid(layer).toString();
   if (!(key in this.context_)) {
     this.context_[key] = createCanvasContext2D();
   }
@@ -182,7 +182,7 @@ VectorImageTile.prototype.getImage = function(layer) {
  * @return {ol.TileReplayState} The replay state.
  */
 VectorImageTile.prototype.getReplayState = function(layer) {
-  var key = getUid(layer).toString();
+  const key = getUid(layer).toString();
   if (!(key in this.replayState_)) {
     this.replayState_[key] = {
       dirty: false,
@@ -218,27 +218,27 @@ VectorImageTile.prototype.getTile = function(tileKey) {
 VectorImageTile.prototype.load = function() {
   // Source tiles with LOADED state - we just count them because once they are
   // loaded, we're no longer listening to state changes.
-  var leftToLoad = 0;
+  let leftToLoad = 0;
   // Source tiles with ERROR state - we track them because they can still have
   // an ERROR state after another load attempt.
-  var errorSourceTiles = {};
+  const errorSourceTiles = {};
 
   if (this.state == TileState.IDLE) {
     this.setState(TileState.LOADING);
   }
   if (this.state == TileState.LOADING) {
     this.tileKeys.forEach(function(sourceTileKey) {
-      var sourceTile = this.getTile(sourceTileKey);
+      const sourceTile = this.getTile(sourceTileKey);
       if (sourceTile.state == TileState.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
       }
       if (sourceTile.state == TileState.LOADING) {
-        var key = _ol_events_.listen(sourceTile, EventType.CHANGE, function(e) {
-          var state = sourceTile.getState();
+        const key = _ol_events_.listen(sourceTile, EventType.CHANGE, function(e) {
+          const state = sourceTile.getState();
           if (state == TileState.LOADED ||
               state == TileState.ERROR) {
-            var uid = getUid(sourceTile);
+            const uid = getUid(sourceTile);
             if (state == TileState.ERROR) {
               errorSourceTiles[uid] = true;
             } else {
@@ -265,10 +265,10 @@ VectorImageTile.prototype.load = function() {
  * @private
  */
 VectorImageTile.prototype.finishLoading_ = function() {
-  var loaded = this.tileKeys.length;
-  var empty = 0;
-  for (var i = loaded - 1; i >= 0; --i) {
-    var state = this.getTile(this.tileKeys[i]).getState();
+  let loaded = this.tileKeys.length;
+  let empty = 0;
+  for (let i = loaded - 1; i >= 0; --i) {
+    const state = this.getTile(this.tileKeys[i]).getState();
     if (state != TileState.LOADED) {
       --loaded;
     }
@@ -293,6 +293,6 @@ export default VectorImageTile;
  * @param {string} url URL.
  */
 export function defaultLoadFunction(tile, url) {
-  var loader = loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
+  const loader = loadFeaturesXhr(url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
   tile.setLoader(loader);
 }

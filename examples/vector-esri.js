@@ -13,13 +13,13 @@ import Style from '../src/ol/style/Style.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
 
-var serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
+const serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
     'Petroleum/KSFields/FeatureServer/';
-var layer = '0';
+const layer = '0';
 
-var esrijsonFormat = new EsriJSON();
+const esrijsonFormat = new EsriJSON();
 
-var styleCache = {
+const styleCache = {
   'ABANDONED': new Style({
     fill: new Fill({
       color: 'rgba(225, 225, 225, 255)'
@@ -58,9 +58,9 @@ var styleCache = {
   })
 };
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   loader: function(extent, resolution, projection) {
-    var url = serviceUrl + layer + '/query/?f=json&' +
+    const url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
         encodeURIComponent('{"xmin":' + extent[0] + ',"ymin":' +
             extent[1] + ',"xmax":' + extent[2] + ',"ymax":' + extent[3] +
@@ -73,7 +73,7 @@ var vectorSource = new VectorSource({
             response.error.details.join('\n'));
       } else {
         // dataProjection will be read from document
-        var features = esrijsonFormat.readFeatures(response, {
+        const features = esrijsonFormat.readFeatures(response, {
           featureProjection: projection
         });
         if (features.length > 0) {
@@ -87,15 +87,15 @@ var vectorSource = new VectorSource({
   }))
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
-    var classify = feature.get('activeprod');
+    const classify = feature.get('activeprod');
     return styleCache[classify];
   }
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new XYZ({
     attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
@@ -104,7 +104,7 @@ var raster = new TileLayer({
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({
@@ -113,14 +113,14 @@ var map = new Map({
   })
 });
 
-var displayFeatureInfo = function(pixel) {
-  var features = [];
+const displayFeatureInfo = function(pixel) {
+  const features = [];
   map.forEachFeatureAtPixel(pixel, function(feature) {
     features.push(feature);
   });
   if (features.length > 0) {
-    var info = [];
-    var i, ii;
+    const info = [];
+    let i, ii;
     for (i = 0, ii = features.length; i < ii; ++i) {
       info.push(features[i].get('field_name'));
     }
@@ -136,7 +136,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  var pixel = map.getEventPixel(evt.originalEvent);
+  const pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
 });
 

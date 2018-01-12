@@ -11,7 +11,7 @@ import {clamp} from './math.js';
  * @type {RegExp}
  * @private
  */
-var HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
+const HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
 
 
 /**
@@ -20,7 +20,7 @@ var HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3,4}){1,2}$/i;
  * @type {RegExp}
  * @private
  */
-var NAMED_COLOR_RE_ = /^([a-z]*)$/i;
+const NAMED_COLOR_RE_ = /^([a-z]*)$/i;
 
 
 /**
@@ -43,10 +43,10 @@ export function asString(color) {
  * @return {string} Rgb string.
  */
 function fromNamed(color) {
-  var el = document.createElement('div');
+  const el = document.createElement('div');
   el.style.color = color;
   document.body.appendChild(el);
-  var rgb = getComputedStyle(el).color;
+  const rgb = getComputedStyle(el).color;
   document.body.removeChild(el);
   return rgb;
 }
@@ -56,7 +56,7 @@ function fromNamed(color) {
  * @param {string} s String.
  * @return {ol.Color} Color.
  */
-export var fromString = (
+export const fromString = (
   function() {
 
     // We maintain a small cache of parsed strings.  To provide cheap LRU-like
@@ -67,17 +67,17 @@ export var fromString = (
      * @const
      * @type {number}
      */
-    var MAX_CACHE_SIZE = 1024;
+    const MAX_CACHE_SIZE = 1024;
 
     /**
      * @type {Object.<string, ol.Color>}
      */
-    var cache = {};
+    const cache = {};
 
     /**
      * @type {number}
      */
-    var cacheSize = 0;
+    let cacheSize = 0;
 
     return (
       /**
@@ -85,13 +85,13 @@ export var fromString = (
        * @return {ol.Color} Color.
        */
       function(s) {
-        var color;
+        let color;
         if (cache.hasOwnProperty(s)) {
           color = cache[s];
         } else {
           if (cacheSize >= MAX_CACHE_SIZE) {
-            var i = 0;
-            var key;
+            let i = 0;
+            let key;
             for (key in cache) {
               if ((i++ & 3) === 0) {
                 delete cache[key];
@@ -130,21 +130,21 @@ export function asArray(color) {
  * @return {ol.Color} Color.
  */
 function fromStringInternal_(s) {
-  var r, g, b, a, color, parts;
+  let r, g, b, a, color, parts;
 
   if (NAMED_COLOR_RE_.exec(s)) {
     s = fromNamed(s);
   }
 
   if (HEX_COLOR_RE_.exec(s)) { // hex
-    var n = s.length - 1; // number of hex digits
-    var d; // number of digits per channel
+    const n = s.length - 1; // number of hex digits
+    let d; // number of digits per channel
     if (n <= 4) {
       d = 1;
     } else {
       d = 2;
     }
-    var hasAlpha = n === 4 || n === 8;
+    const hasAlpha = n === 4 || n === 8;
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
     b = parseInt(s.substr(1 + 2 * d, d), 16);
@@ -183,7 +183,7 @@ function fromStringInternal_(s) {
  * @return {ol.Color} Clamped color.
  */
 export function normalize(color, opt_color) {
-  var result = opt_color || [];
+  const result = opt_color || [];
   result[0] = clamp((color[0] + 0.5) | 0, 0, 255);
   result[1] = clamp((color[1] + 0.5) | 0, 0, 255);
   result[2] = clamp((color[2] + 0.5) | 0, 0, 255);
@@ -197,18 +197,18 @@ export function normalize(color, opt_color) {
  * @return {string} String.
  */
 export function toString(color) {
-  var r = color[0];
+  let r = color[0];
   if (r != (r | 0)) {
     r = (r + 0.5) | 0;
   }
-  var g = color[1];
+  let g = color[1];
   if (g != (g | 0)) {
     g = (g + 0.5) | 0;
   }
-  var b = color[2];
+  let b = color[2];
   if (b != (b | 0)) {
     b = (b + 0.5) | 0;
   }
-  var a = color[3] === undefined ? 1 : color[3];
+  const a = color[3] === undefined ? 1 : color[3];
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 }

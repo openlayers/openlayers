@@ -23,7 +23,7 @@ import Source from '../source/Source.js';
  * @param {ol.SourceImageOptions} options Single image source options.
  * @api
  */
-var ImageSource = function(options) {
+const ImageSource = function(options) {
   Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -72,7 +72,7 @@ ImageSource.prototype.getResolutions = function() {
  */
 ImageSource.prototype.findNearestResolution = function(resolution) {
   if (this.resolutions_) {
-    var idx = linearFindNearest(this.resolutions_, resolution, 0);
+    const idx = linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
   }
   return resolution;
@@ -87,7 +87,7 @@ ImageSource.prototype.findNearestResolution = function(resolution) {
  * @return {ol.ImageBase} Single image.
  */
 ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
-  var sourceProjection = this.getProjection();
+  const sourceProjection = this.getProjection();
   if (!ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
       !projection ||
@@ -100,7 +100,7 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
     if (this.reprojectedImage_) {
       if (this.reprojectedRevision_ == this.getRevision() &&
           equivalent(
-              this.reprojectedImage_.getProjection(), projection) &&
+            this.reprojectedImage_.getProjection(), projection) &&
           this.reprojectedImage_.getResolution() == resolution &&
           equals(this.reprojectedImage_.getExtent(), extent)) {
         return this.reprojectedImage_;
@@ -110,11 +110,11 @@ ImageSource.prototype.getImage = function(extent, resolution, pixelRatio, projec
     }
 
     this.reprojectedImage_ = new ReprojImage(
-        sourceProjection, projection, extent, resolution, pixelRatio,
-        function(extent, resolution, pixelRatio) {
-          return this.getImageInternal(extent, resolution,
-              pixelRatio, sourceProjection);
-        }.bind(this));
+      sourceProjection, projection, extent, resolution, pixelRatio,
+      function(extent, resolution, pixelRatio) {
+        return this.getImageInternal(extent, resolution,
+          pixelRatio, sourceProjection);
+      }.bind(this));
     this.reprojectedRevision_ = this.getRevision();
 
     return this.reprojectedImage_;
@@ -140,22 +140,22 @@ ImageSource.prototype.getImageInternal = function(extent, resolution, pixelRatio
  * @protected
  */
 ImageSource.prototype.handleImageChange = function(event) {
-  var image = /** @type {ol.Image} */ (event.target);
+  const image = /** @type {ol.Image} */ (event.target);
   switch (image.getState()) {
     case ImageState.LOADING:
       this.dispatchEvent(
-          new ImageSource.Event(ImageSource.EventType_.IMAGELOADSTART,
-              image));
+        new ImageSource.Event(ImageSource.EventType_.IMAGELOADSTART,
+          image));
       break;
     case ImageState.LOADED:
       this.dispatchEvent(
-          new ImageSource.Event(ImageSource.EventType_.IMAGELOADEND,
-              image));
+        new ImageSource.Event(ImageSource.EventType_.IMAGELOADEND,
+          image));
       break;
     case ImageState.ERROR:
       this.dispatchEvent(
-          new ImageSource.Event(ImageSource.EventType_.IMAGELOADERROR,
-              image));
+        new ImageSource.Event(ImageSource.EventType_.IMAGELOADERROR,
+          image));
       break;
     default:
       // pass

@@ -8,15 +8,15 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var key = 'vector-tiles-5eJz6JX';
+const key = 'vector-tiles-5eJz6JX';
 
-var roadStyleCache = {};
-var roadColor = {
+const roadStyleCache = {};
+const roadColor = {
   'major_road': '#776',
   'minor_road': '#ccb',
   'highway': '#f39'
 };
-var buildingStyle = new Style({
+const buildingStyle = new Style({
   fill: new Fill({
     color: '#666',
     opacity: 0.4
@@ -26,19 +26,19 @@ var buildingStyle = new Style({
     width: 1
   })
 });
-var waterStyle = new Style({
+const waterStyle = new Style({
   fill: new Fill({
     color: '#9db9e8'
   })
 });
-var roadStyle = function(feature) {
-  var kind = feature.get('kind');
-  var railway = feature.get('railway');
-  var sort_key = feature.get('sort_key');
-  var styleKey = kind + '/' + railway + '/' + sort_key;
-  var style = roadStyleCache[styleKey];
+const roadStyle = function(feature) {
+  const kind = feature.get('kind');
+  const railway = feature.get('railway');
+  const sort_key = feature.get('sort_key');
+  const styleKey = kind + '/' + railway + '/' + sort_key;
+  let style = roadStyleCache[styleKey];
   if (!style) {
-    var color, width;
+    let color, width;
     if (railway) {
       color = '#7de';
       width = 1;
@@ -58,7 +58,7 @@ var roadStyle = function(feature) {
   return style;
 };
 
-var map = new Map({
+const map = new Map({
   layers: [
     new VectorTileLayer({
       source: new VectorTileSource({

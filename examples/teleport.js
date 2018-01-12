@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -24,9 +24,9 @@ var map = new Map({
 
 map.setTarget('map1');
 
-var teleportButton = document.getElementById('teleport');
+const teleportButton = document.getElementById('teleport');
 
 teleportButton.addEventListener('click', function() {
-  var target = map.getTarget() === 'map1' ? 'map2' : 'map1';
+  const target = map.getTarget() === 'map1' ? 'map2' : 'map1';
   map.setTarget(target);
 }, false);

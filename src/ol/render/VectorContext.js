@@ -9,7 +9,7 @@
  * @struct
  * @api
  */
-var VectorContext = function() {
+const VectorContext = function() {
 };
 
 

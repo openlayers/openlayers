@@ -4,7 +4,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({

@@ -4,10 +4,10 @@ import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/Im
 import ImageStyle from '../../../../../src/ol/style/Image.js';
 
 describe('ol.render.webgl.ImageReplay', function() {
-  var replay;
+  let replay;
 
-  var createImageStyle = function(image) {
-    var imageStyle = new ImageStyle({
+  const createImageStyle = function(image) {
+    const imageStyle = new ImageStyle({
       opacity: 0.1,
       rotateWithView: true,
       rotation: 1.5,
@@ -38,14 +38,14 @@ describe('ol.render.webgl.ImageReplay', function() {
   };
 
   beforeEach(function() {
-    var tolerance = 0.1;
-    var maxExtent = [-10000, -20000, 10000, 20000];
+    const tolerance = 0.1;
+    const maxExtent = [-10000, -20000, 10000, 20000];
     replay = new _ol_render_webgl_ImageReplay_(tolerance, maxExtent);
   });
 
   describe('#setImageStyle', function() {
 
-    var imageStyle1, imageStyle2;
+    let imageStyle1, imageStyle2;
 
     beforeEach(function() {
       imageStyle1 = createImageStyle(new Image());
@@ -87,12 +87,12 @@ describe('ol.render.webgl.ImageReplay', function() {
 
   describe('#drawPoint', function() {
     beforeEach(function() {
-      var imageStyle = createImageStyle(new Image());
+      const imageStyle = createImageStyle(new Image());
       replay.setImageStyle(imageStyle);
     });
 
     it('sets the buffer data', function() {
-      var point;
+      let point;
 
       point = new Point([1000, 2000]);
       replay.drawPoint(point, null);
@@ -120,15 +120,15 @@ describe('ol.render.webgl.ImageReplay', function() {
 
   describe('#drawMultiPoint', function() {
     beforeEach(function() {
-      var imageStyle = createImageStyle(new Image());
+      const imageStyle = createImageStyle(new Image());
       replay.setImageStyle(imageStyle);
     });
 
     it('sets the buffer data', function() {
-      var multiPoint;
+      let multiPoint;
 
       multiPoint = new MultiPoint(
-          [[1000, 2000], [2000, 3000]]);
+        [[1000, 2000], [2000, 3000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(64);
       expect(replay.indices).to.have.length(12);
@@ -146,7 +146,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices[11]).to.be(7);
 
       multiPoint = new MultiPoint(
-          [[3000, 4000], [4000, 5000]]);
+        [[3000, 4000], [4000, 5000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(128);
       expect(replay.indices).to.have.length(24);
@@ -172,7 +172,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
 
     it('returns the textures', function() {
-      var textures = replay.getTextures();
+      const textures = replay.getTextures();
 
       expect(textures).to.have.length(2);
       expect(textures[0]).to.be(1);
@@ -180,7 +180,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
 
     it('can additionally return the hit detection textures', function() {
-      var textures = replay.getTextures(true);
+      const textures = replay.getTextures(true);
 
       expect(textures).to.have.length(4);
       expect(textures[0]).to.be(1);
@@ -197,7 +197,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
 
     it('returns the hit detection textures', function() {
-      var textures = replay.getHitDetectionTextures();
+      const textures = replay.getHitDetectionTextures();
 
       expect(textures).to.have.length(2);
       expect(textures[0]).to.be(3);

@@ -8,21 +8,21 @@ import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../../..
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.LineStringReplay', function() {
-  var replay;
+  let replay;
 
-  var strokeStyle1 = new Stroke({
+  const strokeStyle1 = new Stroke({
     color: [0, 255, 0, 0.4]
   });
 
-  var strokeStyle2 = new Stroke({
+  const strokeStyle2 = new Stroke({
     color: [255, 0, 0, 1],
     lineCap: 'square',
     lineJoin: 'miter'
   });
 
   beforeEach(function() {
-    var tolerance = 0.1;
-    var maxExtent = [-10000, -20000, 10000, 20000];
+    const tolerance = 0.1;
+    const maxExtent = [-10000, -20000, 10000, 20000];
     replay = new _ol_render_webgl_LineStringReplay_(tolerance, maxExtent);
   });
 
@@ -54,10 +54,10 @@ describe('ol.render.webgl.LineStringReplay', function() {
   describe('#drawLineString', function() {
 
     it('sets the buffer data', function() {
-      var linestring;
+      let linestring;
 
       linestring = new LineString(
-          [[1000, 2000], [2000, 3000]]);
+        [[1000, 2000], [2000, 3000]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawLineString(linestring, null);
       expect(replay.vertices).to.have.length(56);
@@ -67,7 +67,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       expect(replay.startIndicesFeature).to.have.length(1);
 
       linestring = new LineString(
-          [[1000, 3000], [2000, 4000], [3000, 3000]]);
+        [[1000, 3000], [2000, 4000], [3000, 3000]]);
       replay.drawLineString(linestring, null);
       expect(replay.vertices).to.have.length(140);
       expect(replay.indices).to.have.length(48);
@@ -80,11 +80,9 @@ describe('ol.render.webgl.LineStringReplay', function() {
   describe('#drawMultiLineString', function() {
 
     it('sets the buffer data', function() {
-      var multilinestring;
-
-      multilinestring = new MultiLineString(
-          [[[1000, 2000], [2000, 3000]],
-            [[1000, 3000], [2000, 4000], [3000, 3000]]]);
+      const multilinestring = new MultiLineString(
+        [[[1000, 2000], [2000, 3000]],
+          [[1000, 3000], [2000, 4000], [3000, 3000]]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawMultiLineString(multilinestring, null);
       expect(replay.vertices).to.have.length(140);
@@ -98,119 +96,109 @@ describe('ol.render.webgl.LineStringReplay', function() {
   describe('#drawCoordinates_', function() {
 
     it('triangulates linestrings', function() {
-      var linestring;
-
-      var stroke = new Stroke({
+      const stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
       });
 
-      linestring = new LineString(
-          [[1000, 3000], [2000, 4000], [3000, 3000]]);
-      var flatCoordinates = linestring.getFlatCoordinates();
+      const linestring = new LineString(
+        [[1000, 3000], [2000, 4000], [3000, 3000]]);
+      const flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
-          flatCoordinates.length, 2);
+        flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 4, 2, 1,
-            2, 4, 3,
-            5, 3, 4, 4, 6, 5]);
+        [2, 0, 1, 4, 2, 1,
+          2, 4, 3,
+          5, 3, 4, 4, 6, 5]);
     });
 
     it('optionally creates miters', function() {
-      var linestring;
-
-      var stroke = new Stroke({
+      const stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt'
       });
 
-      linestring = new LineString(
-          [[1000, 3000], [2000, 4000], [3000, 3000]]);
-      var flatCoordinates = linestring.getFlatCoordinates();
+      const linestring = new LineString(
+        [[1000, 3000], [2000, 4000], [3000, 3000]]);
+      const flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
-          flatCoordinates.length, 2);
+        flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 4, 2, 1,
-            2, 4, 3, 3, 5, 2,
-            6, 3, 4, 4, 7, 6]);
+        [2, 0, 1, 4, 2, 1,
+          2, 4, 3, 3, 5, 2,
+          6, 3, 4, 4, 7, 6]);
     });
 
     it('optionally creates caps', function() {
-      var linestring;
-
-      var stroke = new Stroke({
+      const stroke = new Stroke({
         color: [0, 255, 0, 1]
       });
 
-      linestring = new LineString(
-          [[1000, 3000], [2000, 4000], [3000, 3000]]);
-      var flatCoordinates = linestring.getFlatCoordinates();
+      const linestring = new LineString(
+        [[1000, 3000], [2000, 4000], [3000, 3000]]);
+      const flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
-          flatCoordinates.length, 2);
+        flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 1, 3, 2,
-            4, 2, 3, 6, 4, 3,
-            4, 6, 5, 5, 7, 4,
-            8, 5, 6, 6, 9, 8,
-            10, 8, 9, 9, 11, 10]);
+        [2, 0, 1, 1, 3, 2,
+          4, 2, 3, 6, 4, 3,
+          4, 6, 5, 5, 7, 4,
+          8, 5, 6, 6, 9, 8,
+          10, 8, 9, 9, 11, 10]);
     });
 
     it('respects segment orientation', function() {
-      var linestring;
-
-      var stroke = new Stroke({
+      const stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
       });
 
-      linestring = new LineString(
-          [[1000, 3000], [2000, 2000], [3000, 3000]]);
-      var flatCoordinates = linestring.getFlatCoordinates();
+      const linestring = new LineString(
+        [[1000, 3000], [2000, 2000], [3000, 3000]]);
+      const flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
-          flatCoordinates.length, 2);
+        flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 4, 2, 0,
-            2, 4, 3,
-            5, 3, 4, 4, 6, 5]);
+        [2, 0, 1, 4, 2, 0,
+          2, 4, 3,
+          5, 3, 4, 4, 6, 5]);
     });
 
     it('closes boundaries', function() {
-      var linestring;
-
-      var stroke = new Stroke({
+      const stroke = new Stroke({
         color: [0, 255, 0, 1],
         lineCap: 'butt',
         lineJoin: 'bevel'
       });
 
-      linestring = new LineString(
-          [[1000, 3000], [2000, 4000], [3000, 3000], [1000, 3000]]);
-      var flatCoordinates = linestring.getFlatCoordinates();
+      const linestring = new LineString(
+        [[1000, 3000], [2000, 4000], [3000, 3000], [1000, 3000]]);
+      const flatCoordinates = linestring.getFlatCoordinates();
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
-          flatCoordinates.length, 2);
+        flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [0, 2, 1, 3, 1, 2,
-            5, 3, 2,
-            3, 5, 4, 6, 4, 5,
-            8, 6, 5,
-            6, 8, 7, 9, 7, 8,
-            10, 9, 8]);
+        [0, 2, 1, 3, 1, 2,
+          5, 3, 2,
+          3, 5, 4, 6, 4, 5,
+          8, 6, 5,
+          6, 8, 7, 9, 7, 8,
+          10, 9, 8]);
       expect(replay.vertices.slice(0, 7)).to.eql(
-          replay.vertices.slice(-14, -7));
+        replay.vertices.slice(-14, -7));
       expect(replay.vertices.slice(14, 21)).to.eql(
-          replay.vertices.slice(-7));
+        replay.vertices.slice(-7));
     });
   });
 
   describe('#setUpProgram', function() {
-    var context, gl;
+    let context, gl;
     beforeEach(function() {
       context = {
         getProgram: function() {},
@@ -227,9 +215,9 @@ describe('ol.render.webgl.LineStringReplay', function() {
     });
 
     it('returns the locations used by the shaders', function() {
-      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      const locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          _ol_render_webgl_linestringreplay_defaultshader_Locations_);
+        _ol_render_webgl_linestringreplay_defaultshader_Locations_);
     });
 
     it('gets and compiles the shaders', function() {
@@ -238,8 +226,8 @@ describe('ol.render.webgl.LineStringReplay', function() {
 
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(context.getProgram.calledWithExactly(
-          _ol_render_webgl_linestringreplay_defaultshader_.fragment,
-          _ol_render_webgl_linestringreplay_defaultshader_.vertex)).to.be(true);
+        _ol_render_webgl_linestringreplay_defaultshader_.fragment,
+        _ol_render_webgl_linestringreplay_defaultshader_.vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -251,12 +239,12 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
       expect(gl.enableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount);
     });
   });
 
   describe('#shutDownProgram', function() {
-    var context, gl;
+    let context, gl;
     beforeEach(function() {
       context = {
         getProgram: function() {},
@@ -277,22 +265,22 @@ describe('ol.render.webgl.LineStringReplay', function() {
       sinon.spy(gl, 'getAttribLocation');
       sinon.spy(gl, 'disableVertexAttribArray');
 
-      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      const locations = replay.setUpProgram(gl, context, [2, 2], 1);
       replay.shutDownProgram(gl, locations);
       expect(gl.disableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount);
     });
   });
 
   describe('#drawReplay', function() {
-    var gl, context;
-    var feature1 = new Feature({
+    let gl, context;
+    const feature1 = new Feature({
       geometry: new LineString([[0, 0], [500, 500]])
     });
-    var feature2 = new Feature({
+    const feature2 = new Feature({
       geometry: new LineString([[0, 0], [500, 500]])
     });
-    var feature3 = new Feature({
+    const feature3 = new Feature({
       geometry: new LineString([[0, 0], [500, 500]])
     });
     beforeEach(function() {
@@ -350,7 +338,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawLineString(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
-      var skippedFeatHash = {};
+      const skippedFeatHash = {};
       skippedFeatHash[getUid(feature2).toString()] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);

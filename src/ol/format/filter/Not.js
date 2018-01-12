@@ -13,7 +13,7 @@ import Filter from '../filter/Filter.js';
  * @extends {ol.format.filter.Filter}
  * @api
  */
-var Not = function(condition) {
+const Not = function(condition) {
 
   Filter.call(this, 'Not');
 

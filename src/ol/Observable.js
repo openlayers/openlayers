@@ -20,7 +20,7 @@ import EventType from './events/EventType.js';
  * @struct
  * @api
  */
-var Observable = function() {
+const Observable = function() {
 
   EventTarget.call(this);
 
@@ -43,7 +43,7 @@ inherits(Observable, EventTarget);
  */
 Observable.unByKey = function(key) {
   if (Array.isArray(key)) {
-    for (var i = 0, ii = key.length; i < ii; ++i) {
+    for (let i = 0, ii = key.length; i < ii; ++i) {
       _ol_events_.unlistenByKey(key[i]);
     }
   } else {
@@ -98,15 +98,15 @@ Observable.prototype.getRevision = function() {
  */
 Observable.prototype.on = function(type, listener) {
   if (Array.isArray(type)) {
-    var len = type.length;
-    var keys = new Array(len);
-    for (var i = 0; i < len; ++i) {
+    const len = type.length;
+    const keys = new Array(len);
+    for (let i = 0; i < len; ++i) {
       keys[i] = _ol_events_.listen(this, type[i], listener);
     }
     return keys;
   } else {
     return _ol_events_.listen(
-        this, /** @type {string} */ (type), listener);
+      this, /** @type {string} */ (type), listener);
   }
 };
 
@@ -122,15 +122,15 @@ Observable.prototype.on = function(type, listener) {
  */
 Observable.prototype.once = function(type, listener) {
   if (Array.isArray(type)) {
-    var len = type.length;
-    var keys = new Array(len);
-    for (var i = 0; i < len; ++i) {
+    const len = type.length;
+    const keys = new Array(len);
+    for (let i = 0; i < len; ++i) {
       keys[i] = _ol_events_.listenOnce(this, type[i], listener);
     }
     return keys;
   } else {
     return _ol_events_.listenOnce(
-        this, /** @type {string} */ (type), listener);
+      this, /** @type {string} */ (type), listener);
   }
 };
 
@@ -143,7 +143,7 @@ Observable.prototype.once = function(type, listener) {
  */
 Observable.prototype.un = function(type, listener) {
   if (Array.isArray(type)) {
-    for (var i = 0, ii = type.length; i < ii; ++i) {
+    for (let i = 0, ii = type.length; i < ii; ++i) {
       _ol_events_.unlisten(this, type[i], listener);
     }
     return;

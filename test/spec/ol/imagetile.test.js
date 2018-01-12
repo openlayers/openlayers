@@ -10,16 +10,16 @@ describe('ol.ImageTile', function() {
   describe('#load()', function() {
 
     it('can load idle tile', function(done) {
-      var tileCoord = [0, 0, 0];
-      var state = TileState.IDLE;
-      var src = 'spec/ol/data/osm-0-0-0.png';
-      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
-      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tileCoord = [0, 0, 0];
+      const state = TileState.IDLE;
+      const src = 'spec/ol/data/osm-0-0-0.png';
+      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      var previousState = tile.getState();
+      let previousState = tile.getState();
 
       _ol_events_.listen(tile, EventType.CHANGE, function(event) {
-        var state = tile.getState();
+        const state = tile.getState();
         if (previousState == TileState.IDLE) {
           expect(state).to.be(TileState.LOADING);
         } else if (previousState == TileState.LOADING) {
@@ -35,16 +35,16 @@ describe('ol.ImageTile', function() {
     });
 
     it('can load error tile', function(done) {
-      var tileCoord = [0, 0, 0];
-      var state = TileState.ERROR;
-      var src = 'spec/ol/data/osm-0-0-0.png';
-      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
-      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tileCoord = [0, 0, 0];
+      const state = TileState.ERROR;
+      const src = 'spec/ol/data/osm-0-0-0.png';
+      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      var previousState = tile.getState();
+      let previousState = tile.getState();
 
       _ol_events_.listen(tile, EventType.CHANGE, function(event) {
-        var state = tile.getState();
+        const state = tile.getState();
         if (previousState == TileState.ERROR) {
           expect(state).to.be(TileState.LOADING);
         } else if (previousState == TileState.LOADING) {
@@ -60,14 +60,14 @@ describe('ol.ImageTile', function() {
     });
 
     it('loads an empty image on error ', function(done) {
-      var tileCoord = [0, 0, 0];
-      var state = TileState.IDLE;
-      var src = 'spec/ol/data/osm-0-0-99.png';
-      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
-      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tileCoord = [0, 0, 0];
+      const state = TileState.IDLE;
+      const src = 'spec/ol/data/osm-0-0-99.png';
+      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      var key = _ol_events_.listen(tile, EventType.CHANGE, function(event) {
-        var state = tile.getState();
+      const key = _ol_events_.listen(tile, EventType.CHANGE, function(event) {
+        const state = tile.getState();
         if (state == TileState.ERROR) {
           expect(state).to.be(TileState.ERROR);
           expect(tile.image_).to.be.a(HTMLCanvasElement);
@@ -86,11 +86,11 @@ describe('ol.ImageTile', function() {
   describe('dispose', function() {
 
     it('sets image src to a blank image data uri', function() {
-      var tileCoord = [0, 0, 0];
-      var state = TileState.IDLE;
-      var src = 'spec/ol/data/osm-0-0-0.png';
-      var tileLoadFunction = ImageSource.defaultImageLoadFunction;
-      var tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      const tileCoord = [0, 0, 0];
+      const state = TileState.IDLE;
+      const src = 'spec/ol/data/osm-0-0-0.png';
+      const tileLoadFunction = ImageSource.defaultImageLoadFunction;
+      const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
       tile.load();
       expect(tile.getState()).to.be(TileState.LOADING);
       tile.dispose();

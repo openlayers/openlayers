@@ -13,11 +13,11 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.Circle', function() {
 
-  var map, vectorSource;
+  let map, vectorSource;
 
   function createMap(renderer) {
     vectorSource = new VectorSource();
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -44,7 +44,7 @@ describe('ol.rendering.style.Circle', function() {
   describe('#render', function() {
 
     function createFeatures(multi) {
-      var feature;
+      let feature;
       feature = new Feature({
         geometry: multi ? new MultiPoint([[-20, 18]]) : new Point([-20, 18])
       });
@@ -188,14 +188,14 @@ describe('ol.rendering.style.Circle', function() {
       createMap('canvas');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
-          8.0, done);
+        8.0, done);
     });
 
     it('renders multipoint geometries', function(done) {
       createMap('canvas');
       createFeatures(true);
       expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
-          8.0, done);
+        8.0, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
@@ -203,7 +203,7 @@ describe('ol.rendering.style.Circle', function() {
       createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/circle-webgl.png',
-          8.0, done);
+        8.0, done);
     });
   });
 });

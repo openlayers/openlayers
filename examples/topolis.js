@@ -20,15 +20,15 @@ import CircleStyle from '../src/ol/style/Circle.js';
 import Text from '../src/ol/style/Text.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var nodes = new VectorSource({wrapX: false});
-var nodesLayer = new VectorLayer({
+const nodes = new VectorSource({wrapX: false});
+const nodesLayer = new VectorLayer({
   source: nodes,
   style: function(f) {
-    var style = new Style({
+    const style = new Style({
       image: new CircleStyle({
         radius: 8,
         fill: new Fill({color: 'rgba(255, 0, 0, 0.2)'}),
@@ -47,11 +47,11 @@ var nodesLayer = new VectorLayer({
   }
 });
 
-var edges = new VectorSource({wrapX: false});
-var edgesLayer = new VectorLayer({
+const edges = new VectorSource({wrapX: false});
+const edgesLayer = new VectorLayer({
   source: edges,
   style: function(f) {
-    var style = new Style({
+    const style = new Style({
       stroke: new Stroke({
         color: 'blue',
         width: 1
@@ -69,11 +69,11 @@ var edgesLayer = new VectorLayer({
   }
 });
 
-var faces = new VectorSource({wrapX: false});
-var facesLayer = new VectorLayer({
+const faces = new VectorSource({wrapX: false});
+const facesLayer = new VectorLayer({
   source: faces,
   style: function(f) {
-    var style = new Style({
+    const style = new Style({
       stroke: new Stroke({
         color: 'black',
         width: 1
@@ -95,7 +95,7 @@ var facesLayer = new VectorLayer({
   }
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, facesLayer, edgesLayer, nodesLayer],
   target: 'map',
   view: new View({
@@ -104,7 +104,7 @@ var map = new Map({
   })
 });
 
-var topo = topolis.createTopology();
+const topo = topolis.createTopology();
 
 topo.on('addnode', nodeToFeature);
 topo.on('removenode', function(e) {
@@ -112,7 +112,7 @@ topo.on('removenode', function(e) {
 });
 topo.on('addedge', edgeToFeature);
 topo.on('modedge', function(e) {
-  var feature = edges.getFeatureById(e.id);
+  const feature = edges.getFeatureById(e.id);
   feature.setGeometry(new LineString(e.coordinates));
 });
 topo.on('removeedge', function(e) {
@@ -124,12 +124,12 @@ topo.on('removeface', function(e) {
 });
 
 function removeElementFeature(source, element) {
-  var feature = source.getFeatureById(element.id);
+  const feature = source.getFeatureById(element.id);
   source.removeFeature(feature);
 }
 
 function nodeToFeature(node) {
-  var feature = new Feature({
+  const feature = new Feature({
     geometry: new Point(node.coordinate),
     node: node
   });
@@ -138,7 +138,7 @@ function nodeToFeature(node) {
 }
 
 function edgeToFeature(edge) {
-  var feature = new Feature({
+  const feature = new Feature({
     geometry: new LineString(edge.coordinates),
     edge: edge
   });
@@ -147,8 +147,8 @@ function edgeToFeature(edge) {
 }
 
 function faceToFeature(face) {
-  var coordinates = topo.getFaceGeometry(face);
-  var feature = new Feature({
+  const coordinates = topo.getFaceGeometry(face);
+  const feature = new Feature({
     geometry: new Polygon(coordinates),
     face: face
   });
@@ -157,8 +157,8 @@ function faceToFeature(face) {
 }
 
 function createNode(topo, coord) {
-  var node;
-  var existingEdge = topo.getEdgeByPoint(coord, 5)[0];
+  let node;
+  const existingEdge = topo.getEdgeByPoint(coord, 5)[0];
   if (existingEdge) {
     node = topo.modEdgeSplit(existingEdge, coord);
   } else {
@@ -168,16 +168,16 @@ function createNode(topo, coord) {
 }
 
 function onDrawend(e) {
-  var edgeGeom = e.feature.getGeometry().getCoordinates();
-  var startCoord = edgeGeom[0];
-  var endCoord = edgeGeom[edgeGeom.length - 1];
-  var start, end;
+  const edgeGeom = e.feature.getGeometry().getCoordinates();
+  const startCoord = edgeGeom[0];
+  const endCoord = edgeGeom[edgeGeom.length - 1];
+  let start, end;
   try {
     start = topo.getNodeByPoint(startCoord);
     end = topo.getNodeByPoint(endCoord);
-    var edgesAtStart = topo.getEdgeByPoint(startCoord, 5);
-    var edgesAtEnd = topo.getEdgeByPoint(endCoord, 5);
-    var crossing = topo.getEdgesByLine(edgeGeom);
+    const edgesAtStart = topo.getEdgeByPoint(startCoord, 5);
+    const edgesAtEnd = topo.getEdgeByPoint(endCoord, 5);
+    const crossing = topo.getEdgesByLine(edgeGeom);
     if (crossing.length === 1 && !start && !end && edgesAtStart.length === 0 && edgesAtEnd.length === 0) {
       topo.remEdgeNewFace(crossing[0]);
       start = crossing[0].start;
@@ -204,12 +204,12 @@ function onDrawend(e) {
   }
 }
 
-var draw = new Draw({
+const draw = new Draw({
   type: 'LineString'
 });
 draw.on('drawend', onDrawend);
 map.addInteraction(draw);
-var snap = new Snap({
+const snap = new Snap({
   source: edges
 });
 map.addInteraction(snap);

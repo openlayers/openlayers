@@ -17,9 +17,9 @@ import Text from '../../../../src/ol/style/Text.js';
 
 describe('ol.rendering.layer.Vector', function() {
 
-  var center = [1825927.7316762917, 6143091.089223046];
+  const center = [1825927.7316762917, 6143091.089223046];
 
-  var map;
+  let map;
   function createMap(renderer) {
     map = new Map({
       pixelRatio: 1,
@@ -39,7 +39,7 @@ describe('ol.rendering.layer.Vector', function() {
     map = null;
   });
 
-  var source;
+  let source;
 
   function addCircle(r) {
     source.addFeature(new Feature(new Circle(center, r)));
@@ -75,7 +75,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders opacity correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new Feature(new LineString([
+      const smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -95,13 +95,13 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas.png',
-            17, done);
+          17, done);
       });
     });
 
     it('renders opacity correctly with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var smallLine = new Feature(new LineString([
+      const smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -122,13 +122,13 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas.png',
-            17, done);
+          17, done);
       });
     });
 
     it('renders transparent layers correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var smallLine = new Feature(new LineString([
+      const smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -141,7 +141,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new Feature(new LineString([
+      const smallLine2 = new Feature(new LineString([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
@@ -161,13 +161,13 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-transparent.png',
-            7, done);
+          7, done);
       });
     });
 
     it('renders transparent layers correctly with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var smallLine = new Feature(new LineString([
+      const smallLine = new Feature(new LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
       ]));
@@ -180,7 +180,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       ]);
       source.addFeature(smallLine);
-      var smallLine2 = new Feature(new LineString([
+      const smallLine2 = new Feature(new LineString([
         [center[0], center[1] - 1000],
         [center[0], center[1] + 1000]
       ]));
@@ -201,7 +201,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-transparent.png',
-            7, done);
+          7, done);
       });
     });
 
@@ -221,7 +221,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-rotated.png',
-            1.7, done);
+          1.7, done);
       });
     });
 
@@ -242,7 +242,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-rotated.png',
-            2.9, done);
+          2.9, done);
       });
     });
 
@@ -268,7 +268,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.unskipFeature(source.getFeatures()[1]);
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -294,7 +294,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-opaque.png',
-            24.34, done);
+          24.34, done);
       });
     });
 
@@ -318,13 +318,13 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-stroke.png',
-            7, done);
+          7, done);
       });
     });
 
     it('interrupts fill/stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var color;
+      let color;
       function createSource(overlaps) {
         color = '#3399CC';
         source = new VectorSource({
@@ -346,7 +346,7 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
@@ -363,9 +363,9 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
       map.once('postrender', function() {
-        var canvas = map.getRenderer().canvas_;
+        const canvas = map.getRenderer().canvas_;
         // take a snapshot of this `overlaps: true` image
-        var referenceImage = canvas.toDataURL('image/png');
+        const referenceImage = canvas.toDataURL('image/png');
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
         // result should be the same as with `overlaps: true`
@@ -377,7 +377,7 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('interrupts stroke batches correctly with the canvas renderer', function(done) {
       createMap('canvas');
-      var color;
+      let color;
       function createSource(overlaps) {
         color = '#3399CC';
         source = new VectorSource({
@@ -397,7 +397,7 @@ describe('ol.rendering.layer.Vector', function() {
         }
         return color;
       }
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: createSource(true),
         style: function(feature) {
           alternateColor();
@@ -414,9 +414,9 @@ describe('ol.rendering.layer.Vector', function() {
       });
       map.addLayer(layer);
       map.once('postrender', function() {
-        var canvas = map.getRenderer().canvas_;
+        const canvas = map.getRenderer().canvas_;
         // take a snapshot of this `overlaps: true` image
-        var referenceImage = canvas.toDataURL('image/png');
+        const referenceImage = canvas.toDataURL('image/png');
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
         // result should be exactly the same as with `overlaps: true`
@@ -429,7 +429,7 @@ describe('ol.rendering.layer.Vector', function() {
 
   describe('polygon rendering', function() {
 
-    var map2;
+    let map2;
     beforeEach(function() {
       map2 = new Map({
         pixelRatio: 1,
@@ -447,7 +447,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders a feature that spans the world', function(done) {
-      var json = {
+      const json = {
         type: 'Feature',
         geometry: {
           type: 'Polygon',
@@ -463,10 +463,10 @@ describe('ol.rendering.layer.Vector', function() {
         properties: {}
       };
 
-      var format = new GeoJSON({featureProjection: 'EPSG:3857'});
-      var feature = format.readFeature(json);
+      const format = new GeoJSON({featureProjection: 'EPSG:3857'});
+      const feature = format.readFeature(json);
 
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: new VectorSource({
           features: [feature]
         }),
@@ -489,10 +489,10 @@ describe('ol.rendering.layer.Vector', function() {
 
   describe('Polygon simplification', function() {
 
-    var layer, map3;
+    let layer, map3;
 
     beforeEach(function() {
-      var src = new VectorSource({
+      const src = new VectorSource({
         features: [
           new Feature(new Polygon([[
             [-22, 58],
@@ -514,7 +514,7 @@ describe('ol.rendering.layer.Vector', function() {
         renderBuffer: 0,
         source: src
       });
-      var view = new View({
+      const view = new View({
         center: [-9.5, 78],
         zoom: 2,
         projection: 'EPSG:4326'
@@ -545,7 +545,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map3.once('postrender', function() {
         expectResemble(map3, 'rendering/ol/layer/expected/vector-canvas-simplified.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -557,7 +557,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map3.once('postrender', function() {
         expectResemble(map3, 'rendering/ol/layer/expected/vector-canvas-simplified-fill.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -570,7 +570,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map3.once('postrender', function() {
         expectResemble(map3, 'rendering/ol/layer/expected/vector-canvas-simplified-stroke.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -584,12 +584,12 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('declutters text', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new Feature({
+      const centerFeature = new Feature({
         geometry: new Point(center),
         text: 'center'
       });
@@ -614,23 +614,23 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map.once('postrender', function() {
-        var hitDetected = map.getFeaturesAtPixel([42, 42]);
+        const hitDetected = map.getFeaturesAtPixel([42, 42]);
         expect(hitDetected).to.have.length(1);
         expect(hitDetected[0]).to.equal(centerFeature);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter.png',
-            2.2, done);
+          2.2, done);
       });
     });
 
     it('declutters text with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         renderMode: 'image',
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new Feature({
+      const centerFeature = new Feature({
         geometry: new Point(center),
         text: 'center'
       });
@@ -655,17 +655,17 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map.once('postrender', function() {
-        var hitDetected = map.getFeaturesAtPixel([42, 42]);
+        const hitDetected = map.getFeaturesAtPixel([42, 42]);
         expect(hitDetected).to.have.length(1);
         expect(hitDetected[0]).to.equal(centerFeature);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter.png',
-            2.2, done);
+          2.2, done);
       });
     });
 
     it('declutters text and respects z-index', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -699,18 +699,18 @@ describe('ol.rendering.layer.Vector', function() {
 
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-zindex.png',
-            3.9, done);
+          3.9, done);
       });
     });
 
     it('declutters images', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new Feature({
+      const centerFeature = new Feature({
         geometry: new Point(center)
       });
       source.addFeature(centerFeature);
@@ -734,23 +734,23 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map.once('postrender', function() {
-        var hitDetected = map.getFeaturesAtPixel([40, 40]);
+        const hitDetected = map.getFeaturesAtPixel([40, 40]);
         expect(hitDetected).to.have.length(1);
         expect(hitDetected[0]).to.equal(centerFeature);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-image.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
     it('declutters images with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         renderMode: 'image',
         source: source
       });
       map.addLayer(layer);
 
-      var centerFeature = new Feature({
+      const centerFeature = new Feature({
         geometry: new Point(center)
       });
       source.addFeature(centerFeature);
@@ -774,17 +774,17 @@ describe('ol.rendering.layer.Vector', function() {
       });
 
       map.once('postrender', function() {
-        var hitDetected = map.getFeaturesAtPixel([40, 40]);
+        const hitDetected = map.getFeaturesAtPixel([40, 40]);
         expect(hitDetected).to.have.length(1);
         expect(hitDetected[0]).to.equal(centerFeature);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-image.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
     it('declutters images and respects z-index', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -817,13 +817,13 @@ describe('ol.rendering.layer.Vector', function() {
 
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-image-zindex.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
     it('declutters image & text groups', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
@@ -861,18 +861,18 @@ describe('ol.rendering.layer.Vector', function() {
 
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-group.png',
-            2.2, done);
+          2.2, done);
       });
     });
 
     it('declutters text along lines and images', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var point = new Feature(new Point(center));
+      const point = new Feature(new Point(center));
       point.setStyle(new Style({
         image: new CircleStyle({
           radius: 8,
@@ -881,7 +881,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new Feature(new LineString([
+      const line = new Feature(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -904,18 +904,18 @@ describe('ol.rendering.layer.Vector', function() {
 
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
     it('declutters text along lines and images with renderMode: \'image\'', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var point = new Feature(new Point(center));
+      const point = new Feature(new Point(center));
       point.setStyle(new Style({
         image: new CircleStyle({
           radius: 8,
@@ -924,7 +924,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new Feature(new LineString([
+      const line = new Feature(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -947,18 +947,18 @@ describe('ol.rendering.layer.Vector', function() {
 
       map.once('postrender', function() {
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
     it('declutters text along lines and images with z-index', function(done) {
       createMap('canvas');
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
       map.addLayer(layer);
 
-      var point = new Feature(new Point(center));
+      const point = new Feature(new Point(center));
       point.setStyle(new Style({
         zIndex: 2,
         image: new CircleStyle({
@@ -968,7 +968,7 @@ describe('ol.rendering.layer.Vector', function() {
           })
         })
       }));
-      var line = new Feature(new LineString([
+      const line = new Feature(new LineString([
         [center[0] - 650, center[1] - 200],
         [center[0] + 650, center[1] - 200]
       ]));
@@ -991,11 +991,11 @@ describe('ol.rendering.layer.Vector', function() {
       layer.setDeclutter(true);
 
       map.once('postrender', function() {
-        var hitDetected = map.getFeaturesAtPixel([35, 46]);
+        const hitDetected = map.getFeaturesAtPixel([35, 46]);
         expect(hitDetected).to.have.length(1);
         expect(hitDetected[0]).to.equal(line);
         expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-declutter-line-zindex.png',
-            4.1, done);
+          4.1, done);
       });
     });
   });

@@ -9,27 +9,27 @@ import LineString from '../src/ol/geom/LineString.js';
 import Style from '../src/ol/style/Style.js';
 import Stroke from '../src/ol/style/Stroke.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var style = new Style({
+const style = new Style({
   stroke: new Stroke({
     color: 'black',
     width: 1
   })
 });
 
-var feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
+const feature = new Feature(new LineString([[-4000000, 0], [4000000, 0]]));
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     features: [feature]
   }),
   style: style
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -38,12 +38,12 @@ var map = new Map({
   })
 });
 
-var hitTolerance;
+let hitTolerance;
 
-var statusElement = document.getElementById('status');
+const statusElement = document.getElementById('status');
 
 map.on('singleclick', function(e) {
-  var hit = false;
+  let hit = false;
   map.forEachFeatureAtPixel(e.pixel, function() {
     hit = true;
   }, {
@@ -59,16 +59,16 @@ map.on('singleclick', function(e) {
   feature.changed();
 });
 
-var selectHitToleranceElement = document.getElementById('hitTolerance');
-var circleCanvas = document.getElementById('circle');
+const selectHitToleranceElement = document.getElementById('hitTolerance');
+const circleCanvas = document.getElementById('circle');
 
-var changeHitTolerance = function() {
+const changeHitTolerance = function() {
   hitTolerance = parseInt(selectHitToleranceElement.value, 10);
 
-  var size = 2 * hitTolerance + 2;
+  const size = 2 * hitTolerance + 2;
   circleCanvas.width = size;
   circleCanvas.height = size;
-  var ctx = circleCanvas.getContext('2d');
+  const ctx = circleCanvas.getContext('2d');
   ctx.clearRect(0, 0, size, size);
   ctx.beginPath();
   ctx.arc(hitTolerance + 1, hitTolerance + 1, hitTolerance + 0.5, 0, 2 * Math.PI);

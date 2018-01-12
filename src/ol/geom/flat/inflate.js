@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/inflate
  */
-var _ol_geom_flat_inflate_ = {};
+const _ol_geom_flat_inflate_ = {};
 
 
 /**
@@ -13,9 +13,9 @@ var _ol_geom_flat_inflate_ = {};
  * @return {Array.<ol.Coordinate>} Coordinates.
  */
 _ol_geom_flat_inflate_.coordinates = function(flatCoordinates, offset, end, stride, opt_coordinates) {
-  var coordinates = opt_coordinates !== undefined ? opt_coordinates : [];
-  var i = 0;
-  var j;
+  const coordinates = opt_coordinates !== undefined ? opt_coordinates : [];
+  let i = 0;
+  let j;
   for (j = offset; j < end; j += stride) {
     coordinates[i++] = flatCoordinates.slice(j, j + stride);
   }
@@ -33,13 +33,13 @@ _ol_geom_flat_inflate_.coordinates = function(flatCoordinates, offset, end, stri
  * @return {Array.<Array.<ol.Coordinate>>} Coordinatess.
  */
 _ol_geom_flat_inflate_.coordinatess = function(flatCoordinates, offset, ends, stride, opt_coordinatess) {
-  var coordinatess = opt_coordinatess !== undefined ? opt_coordinatess : [];
-  var i = 0;
-  var j, jj;
+  const coordinatess = opt_coordinatess !== undefined ? opt_coordinatess : [];
+  let i = 0;
+  let j, jj;
   for (j = 0, jj = ends.length; j < jj; ++j) {
-    var end = ends[j];
+    const end = ends[j];
     coordinatess[i++] = _ol_geom_flat_inflate_.coordinates(
-        flatCoordinates, offset, end, stride, coordinatess[i]);
+      flatCoordinates, offset, end, stride, coordinatess[i]);
     offset = end;
   }
   coordinatess.length = i;
@@ -57,13 +57,13 @@ _ol_geom_flat_inflate_.coordinatess = function(flatCoordinates, offset, ends, st
  * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinatesss.
  */
 _ol_geom_flat_inflate_.coordinatesss = function(flatCoordinates, offset, endss, stride, opt_coordinatesss) {
-  var coordinatesss = opt_coordinatesss !== undefined ? opt_coordinatesss : [];
-  var i = 0;
-  var j, jj;
+  const coordinatesss = opt_coordinatesss !== undefined ? opt_coordinatesss : [];
+  let i = 0;
+  let j, jj;
   for (j = 0, jj = endss.length; j < jj; ++j) {
-    var ends = endss[j];
+    const ends = endss[j];
     coordinatesss[i++] = _ol_geom_flat_inflate_.coordinatess(
-        flatCoordinates, offset, ends, stride, coordinatesss[i]);
+      flatCoordinates, offset, ends, stride, coordinatesss[i]);
     offset = ends[ends.length - 1];
   }
   coordinatesss.length = i;

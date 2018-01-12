@@ -24,7 +24,7 @@ import _ol_xml_ from '../xml.js';
  * @extends {ol.format.XMLFeature}
  * @api
  */
-var OSMXML = function() {
+const OSMXML = function() {
   XMLFeature.call(this);
 
   /**
@@ -42,23 +42,23 @@ inherits(OSMXML, XMLFeature);
  * @private
  */
 OSMXML.readNode_ = function(node, objectStack) {
-  var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
-  var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  var id = node.getAttribute('id');
+  const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
+  const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const id = node.getAttribute('id');
   /** @type {ol.Coordinate} */
-  var coordinates = [
+  const coordinates = [
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))
   ];
   state.nodes[id] = coordinates;
 
-  var values = _ol_xml_.pushParseAndPop({
+  const values = _ol_xml_.pushParseAndPop({
     tags: {}
   }, OSMXML.NODE_PARSERS_, node, objectStack);
   if (!_ol_obj_.isEmpty(values.tags)) {
-    var geometry = new Point(coordinates);
+    const geometry = new Point(coordinates);
     transformWithOptions(geometry, false, options);
-    var feature = new Feature(geometry);
+    const feature = new Feature(geometry);
     feature.setId(id);
     feature.setProperties(values.tags);
     state.features.push(feature);
@@ -72,13 +72,13 @@ OSMXML.readNode_ = function(node, objectStack) {
  * @private
  */
 OSMXML.readWay_ = function(node, objectStack) {
-  var id = node.getAttribute('id');
-  var values = _ol_xml_.pushParseAndPop({
+  const id = node.getAttribute('id');
+  const values = _ol_xml_.pushParseAndPop({
     id: id,
     ndrefs: [],
     tags: {}
   }, OSMXML.WAY_PARSERS_, node, objectStack);
-  var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   state.ways.push(values);
 };
 
@@ -89,7 +89,7 @@ OSMXML.readWay_ = function(node, objectStack) {
  * @private
  */
 OSMXML.readNd_ = function(node, objectStack) {
-  var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.ndrefs.push(node.getAttribute('ref'));
 };
 
@@ -100,7 +100,7 @@ OSMXML.readNd_ = function(node, objectStack) {
  * @private
  */
 OSMXML.readTag_ = function(node, objectStack) {
-  var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values.tags[node.getAttribute('k')] = node.getAttribute('v');
 };
 
@@ -121,10 +121,10 @@ OSMXML.NAMESPACE_URIS_ = [
  * @private
  */
 OSMXML.WAY_PARSERS_ = _ol_xml_.makeStructureNS(
-    OSMXML.NAMESPACE_URIS_, {
-      'nd': OSMXML.readNd_,
-      'tag': OSMXML.readTag_
-    });
+  OSMXML.NAMESPACE_URIS_, {
+    'nd': OSMXML.readNd_,
+    'tag': OSMXML.readTag_
+  });
 
 
 /**
@@ -133,10 +133,10 @@ OSMXML.WAY_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OSMXML.PARSERS_ = _ol_xml_.makeStructureNS(
-    OSMXML.NAMESPACE_URIS_, {
-      'node': OSMXML.readNode_,
-      'way': OSMXML.readWay_
-    });
+  OSMXML.NAMESPACE_URIS_, {
+    'node': OSMXML.readNode_,
+    'way': OSMXML.readWay_
+  });
 
 
 /**
@@ -145,9 +145,9 @@ OSMXML.PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OSMXML.NODE_PARSERS_ = _ol_xml_.makeStructureNS(
-    OSMXML.NAMESPACE_URIS_, {
-      'tag': OSMXML.readTag_
-    });
+  OSMXML.NAMESPACE_URIS_, {
+    'tag': OSMXML.readTag_
+  });
 
 
 /**
@@ -166,34 +166,34 @@ OSMXML.prototype.readFeatures;
  * @inheritDoc
  */
 OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
-  var options = this.getReadOptions(node, opt_options);
+  const options = this.getReadOptions(node, opt_options);
   if (node.localName == 'osm') {
-    var state = _ol_xml_.pushParseAndPop({
+    const state = _ol_xml_.pushParseAndPop({
       nodes: {},
       ways: [],
       features: []
     }, OSMXML.PARSERS_, node, [options]);
     // parse nodes in ways
-    for (var j = 0; j < state.ways.length; j++) {
-      var values = /** @type {Object} */ (state.ways[j]);
+    for (let j = 0; j < state.ways.length; j++) {
+      const values = /** @type {Object} */ (state.ways[j]);
       /** @type {Array.<number>} */
-      var flatCoordinates = [];
-      for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
-        var point = state.nodes[values.ndrefs[i]];
+      const flatCoordinates = [];
+      for (let i = 0, ii = values.ndrefs.length; i < ii; i++) {
+        const point = state.nodes[values.ndrefs[i]];
         extend(flatCoordinates, point);
       }
-      var geometry;
+      let geometry;
       if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {
         // closed way
         geometry = new Polygon(null);
         geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates,
-            [flatCoordinates.length]);
+          [flatCoordinates.length]);
       } else {
         geometry = new LineString(null);
         geometry.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
       }
       transformWithOptions(geometry, false, options);
-      var feature = new Feature(geometry);
+      const feature = new Feature(geometry);
       feature.setId(values.id);
       feature.setProperties(values.tags);
       state.features.push(feature);

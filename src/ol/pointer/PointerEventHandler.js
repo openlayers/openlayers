@@ -47,7 +47,7 @@ import _ol_pointer_TouchSource_ from '../pointer/TouchSource.js';
  * @extends {ol.events.EventTarget}
  * @param {Element|HTMLDocument} element Viewport element.
  */
-var PointerEventHandler = function(element) {
+const PointerEventHandler = function(element) {
   EventTarget.call(this);
 
   /**
@@ -91,12 +91,12 @@ PointerEventHandler.prototype.registerSources = function() {
   } else if (_ol_has_.MSPOINTER) {
     this.registerSource('ms', new _ol_pointer_MsSource_(this));
   } else {
-    var mouseSource = new _ol_pointer_MouseSource_(this);
+    const mouseSource = new _ol_pointer_MouseSource_(this);
     this.registerSource('mouse', mouseSource);
 
     if (_ol_has_.TOUCH) {
       this.registerSource('touch',
-          new _ol_pointer_TouchSource_(this, mouseSource));
+        new _ol_pointer_TouchSource_(this, mouseSource));
     }
   }
 
@@ -112,12 +112,12 @@ PointerEventHandler.prototype.registerSources = function() {
  * @param {ol.pointer.EventSource} source The source event.
  */
 PointerEventHandler.prototype.registerSource = function(name, source) {
-  var s = source;
-  var newEvents = s.getEvents();
+  const s = source;
+  const newEvents = s.getEvents();
 
   if (newEvents) {
     newEvents.forEach(function(e) {
-      var handler = s.getHandlerForEvent(e);
+      const handler = s.getHandlerForEvent(e);
 
       if (handler) {
         this.eventMap_[e] = handler.bind(s);
@@ -133,9 +133,9 @@ PointerEventHandler.prototype.registerSource = function(name, source) {
  * @private
  */
 PointerEventHandler.prototype.register_ = function() {
-  var l = this.eventSourceList_.length;
-  var eventSource;
-  for (var i = 0; i < l; i++) {
+  const l = this.eventSourceList_.length;
+  let eventSource;
+  for (let i = 0; i < l; i++) {
     eventSource = this.eventSourceList_[i];
     this.addEvents_(eventSource.getEvents());
   }
@@ -147,9 +147,9 @@ PointerEventHandler.prototype.register_ = function() {
  * @private
  */
 PointerEventHandler.prototype.unregister_ = function() {
-  var l = this.eventSourceList_.length;
-  var eventSource;
-  for (var i = 0; i < l; i++) {
+  const l = this.eventSourceList_.length;
+  let eventSource;
+  for (let i = 0; i < l; i++) {
     eventSource = this.eventSourceList_[i];
     this.removeEvents_(eventSource.getEvents());
   }
@@ -162,8 +162,8 @@ PointerEventHandler.prototype.unregister_ = function() {
  * @param {Event} inEvent Browser event.
  */
 PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
-  var type = inEvent.type;
-  var handler = this.eventMap_[type];
+  const type = inEvent.type;
+  const handler = this.eventMap_[type];
   if (handler) {
     handler(inEvent);
   }
@@ -204,9 +204,9 @@ PointerEventHandler.prototype.removeEvents_ = function(events) {
  *    `inEvent`'s properties.
  */
 PointerEventHandler.prototype.cloneEvent = function(event, inEvent) {
-  var eventCopy = {}, p;
-  for (var i = 0, ii = PointerEventHandler.CLONE_PROPS.length; i < ii; i++) {
-    p = PointerEventHandler.CLONE_PROPS[i][0];
+  const eventCopy = {};
+  for (let i = 0, ii = PointerEventHandler.CLONE_PROPS.length; i < ii; i++) {
+    const p = PointerEventHandler.CLONE_PROPS[i][0];
     eventCopy[p] = event[p] || inEvent[p] || PointerEventHandler.CLONE_PROPS[i][1];
   }
 
@@ -364,7 +364,7 @@ PointerEventHandler.prototype.makeEvent = function(inType, data, event) {
  * @param {Event} event The event.
  */
 PointerEventHandler.prototype.fireEvent = function(inType, data, event) {
-  var e = this.makeEvent(inType, data, event);
+  const e = this.makeEvent(inType, data, event);
   this.dispatchEvent(e);
 };
 
@@ -375,7 +375,7 @@ PointerEventHandler.prototype.fireEvent = function(inType, data, event) {
  * @param {Event} event A platform event with a target.
  */
 PointerEventHandler.prototype.fireNativeEvent = function(event) {
-  var e = this.makeEvent(event.type, event, event);
+  const e = this.makeEvent(event.type, event, event);
   this.dispatchEvent(e);
 };
 
@@ -388,8 +388,8 @@ PointerEventHandler.prototype.fireNativeEvent = function(event) {
  * @return {ol.pointer.PointerEvent} The wrapped event.
  */
 PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
-  var pointerEvent = this.makeEvent(
-      eventType, _ol_pointer_MouseSource_.prepareEvent(event, this), event);
+  const pointerEvent = this.makeEvent(
+    eventType, _ol_pointer_MouseSource_.prepareEvent(event, this), event);
   return pointerEvent;
 };
 

@@ -18,7 +18,7 @@ import _ol_format_filter_Not_ from '../format/filter/Not.js';
 import _ol_format_filter_NotEqualTo_ from '../format/filter/NotEqualTo.js';
 import _ol_format_filter_Or_ from '../format/filter/Or.js';
 import _ol_format_filter_Within_ from '../format/filter/Within.js';
-var _ol_format_filter_ = {};
+const _ol_format_filter_ = {};
 
 
 /**
@@ -29,7 +29,7 @@ var _ol_format_filter_ = {};
  * @api
  */
 _ol_format_filter_.and = function(conditions) {
-  var params = [null].concat(Array.prototype.slice.call(arguments));
+  const params = [null].concat(Array.prototype.slice.call(arguments));
   return new (Function.prototype.bind.apply(_ol_format_filter_And_, params));
 };
 
@@ -42,7 +42,7 @@ _ol_format_filter_.and = function(conditions) {
  * @api
  */
 _ol_format_filter_.or = function(conditions) {
-  var params = [null].concat(Array.prototype.slice.call(arguments));
+  const params = [null].concat(Array.prototype.slice.call(arguments));
   return new (Function.prototype.bind.apply(_ol_format_filter_Or_, params));
 };
 
@@ -245,9 +245,9 @@ _ol_format_filter_.between = function(propertyName, lowerBoundary, upperBoundary
  * @api
  */
 _ol_format_filter_.like = function(propertyName, pattern,
-    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
+  opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
   return new _ol_format_filter_IsLike_(propertyName, pattern,
-      opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
+    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
 };
 
 

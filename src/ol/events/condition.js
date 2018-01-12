@@ -5,7 +5,7 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
 import {assert} from '../asserts.js';
 import {TRUE, FALSE} from '../functions.js';
 import _ol_has_ from '../has.js';
-var _ol_events_condition_ = {};
+const _ol_events_condition_ = {};
 
 
 /**
@@ -17,7 +17,7 @@ var _ol_events_condition_ = {};
  * @api
  */
 _ol_events_condition_.altKeyOnly = function(mapBrowserEvent) {
-  var originalEvent = mapBrowserEvent.originalEvent;
+  const originalEvent = mapBrowserEvent.originalEvent;
   return (
     originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -34,7 +34,7 @@ _ol_events_condition_.altKeyOnly = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.altShiftKeysOnly = function(mapBrowserEvent) {
-  var originalEvent = mapBrowserEvent.originalEvent;
+  const originalEvent = mapBrowserEvent.originalEvent;
   return (
     originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -75,7 +75,7 @@ _ol_events_condition_.click = function(mapBrowserEvent) {
  * @return {boolean} The result.
  */
 _ol_events_condition_.mouseActionButton = function(mapBrowserEvent) {
-  var originalEvent = mapBrowserEvent.originalEvent;
+  const originalEvent = mapBrowserEvent.originalEvent;
   return originalEvent.button == 0 &&
       !(_ol_has_.WEBKIT && _ol_has_.MAC && originalEvent.ctrlKey);
 };
@@ -138,7 +138,7 @@ _ol_events_condition_.doubleClick = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.noModifierKeys = function(mapBrowserEvent) {
-  var originalEvent = mapBrowserEvent.originalEvent;
+  const originalEvent = mapBrowserEvent.originalEvent;
   return (
     !originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -156,7 +156,7 @@ _ol_events_condition_.noModifierKeys = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.platformModifierKeyOnly = function(mapBrowserEvent) {
-  var originalEvent = mapBrowserEvent.originalEvent;
+  const originalEvent = mapBrowserEvent.originalEvent;
   return !originalEvent.altKey &&
     (_ol_has_.MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
     !originalEvent.shiftKey;
@@ -172,7 +172,7 @@ _ol_events_condition_.platformModifierKeyOnly = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.shiftKeyOnly = function(mapBrowserEvent) {
-  var originalEvent = mapBrowserEvent.originalEvent;
+  const originalEvent = mapBrowserEvent.originalEvent;
   return (
     !originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
@@ -189,8 +189,8 @@ _ol_events_condition_.shiftKeyOnly = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.targetNotEditable = function(mapBrowserEvent) {
-  var target = mapBrowserEvent.originalEvent.target;
-  var tagName = target.tagName;
+  const target = mapBrowserEvent.originalEvent.target;
+  const tagName = target.tagName;
   return (
     tagName !== 'INPUT' &&
       tagName !== 'SELECT' &&
@@ -222,7 +222,7 @@ _ol_events_condition_.mouseOnly = function(mapBrowserEvent) {
  * @api
  */
 _ol_events_condition_.primaryAction = function(mapBrowserEvent) {
-  var pointerEvent = mapBrowserEvent.pointerEvent;
+  const pointerEvent = mapBrowserEvent.pointerEvent;
   return pointerEvent.isPrimary && pointerEvent.button === 0;
 };
 export default _ol_events_condition_;

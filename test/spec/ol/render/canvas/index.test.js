@@ -5,10 +5,10 @@ import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 
 describe('ol.render.canvas', function() {
 
-  var font = document.createElement('link');
+  const font = document.createElement('link');
   font.href = 'https://fonts.googleapis.com/css?family=Abel&text=wmytzilWMYTZIL%40%23%2F%26%3F%24%2510';
   font.rel = 'stylesheet';
-  var head = document.getElementsByTagName('head')[0];
+  const head = document.getElementsByTagName('head')[0];
 
   describe('ol.render.canvas.checkFont()', function() {
 
@@ -18,14 +18,14 @@ describe('ol.render.canvas', function() {
       _ol_render_canvas_.measureTextHeight('12px sans-serif');
     });
 
-    var checkFont = _ol_render_canvas_.checkFont;
-    var retries = 60;
+    const checkFont = _ol_render_canvas_.checkFont;
+    const retries = 60;
 
     it('does not clear label cache and measurements for unavailable fonts', function(done) {
       this.timeout(3000);
-      var spy = sinon.spy();
+      const spy = sinon.spy();
       _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
-      var interval = setInterval(function() {
+      const interval = setInterval(function() {
         if (_ol_render_canvas_.checkedFonts_['foo'] == retries && _ol_render_canvas_.checkedFonts_['sans-serif'] == retries) {
           clearInterval(interval);
           _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
@@ -39,9 +39,9 @@ describe('ol.render.canvas', function() {
     });
 
     it('does not clear label cache and measurements for available fonts', function(done) {
-      var spy = sinon.spy();
+      const spy = sinon.spy();
       _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
-      var interval = setInterval(function() {
+      const interval = setInterval(function() {
         if (_ol_render_canvas_.checkedFonts_['sans-serif'] == retries) {
           clearInterval(interval);
           _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
@@ -55,9 +55,9 @@ describe('ol.render.canvas', function() {
     });
 
     it('does not clear label cache and measurements for the \'monospace\' font', function(done) {
-      var spy = sinon.spy();
+      const spy = sinon.spy();
       _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
-      var interval = setInterval(function() {
+      const interval = setInterval(function() {
         if (_ol_render_canvas_.checkedFonts_['monospace'] == retries) {
           clearInterval(interval);
           _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
@@ -85,7 +85,7 @@ describe('ol.render.canvas', function() {
 
   describe('rotateAtOffset', function() {
     it('rotates a canvas at an offset point', function() {
-      var context = {
+      const context = {
         translate: sinon.spy(),
         rotate: sinon.spy()
       };

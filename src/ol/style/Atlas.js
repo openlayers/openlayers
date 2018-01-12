@@ -20,7 +20,7 @@ import {createCanvasContext2D} from '../dom.js';
  *    edges overlap when being rendered). To avoid this we add a
  *    padding around each image.
  */
-var Atlas = function(size, space) {
+const Atlas = function(size, space) {
 
   /**
    * @private
@@ -74,13 +74,13 @@ Atlas.prototype.get = function(id) {
  * @return {?ol.AtlasInfo} The position and atlas image for the entry.
  */
 Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
-  var block, i, ii;
+  let block, i, ii;
   for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
     block = this.emptyBlocks_[i];
     if (block.width >= width + this.space_ &&
         block.height >= height + this.space_) {
       // we found a block that is big enough for our entry
-      var entry = {
+      const entry = {
         offsetX: block.x + this.space_,
         offsetY: block.y + this.space_,
         image: this.canvas_
@@ -89,7 +89,7 @@ Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
 
       // render the image on the atlas image
       renderCallback.call(opt_this, this.context_,
-          block.x + this.space_, block.y + this.space_);
+        block.x + this.space_, block.y + this.space_);
 
       // split the block after the insertion, either horizontally or vertically
       this.split_(i, block, width + this.space_, height + this.space_);
@@ -111,13 +111,13 @@ Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
  * @param {number} height The height of the entry to insert.
  */
 Atlas.prototype.split_ = function(index, block, width, height) {
-  var deltaWidth = block.width - width;
-  var deltaHeight = block.height - height;
+  const deltaWidth = block.width - width;
+  const deltaHeight = block.height - height;
 
   /** @type {ol.AtlasBlock} */
-  var newBlock1;
+  let newBlock1;
   /** @type {ol.AtlasBlock} */
-  var newBlock2;
+  let newBlock2;
 
   if (deltaWidth > deltaHeight) {
     // split vertically
@@ -169,7 +169,7 @@ Atlas.prototype.split_ = function(index, block, width, height) {
  * @param {ol.AtlasBlock} newBlock2 The 2nd block to add.
  */
 Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
-  var args = [index, 1];
+  const args = [index, 1];
   if (newBlock1.width > 0 && newBlock1.height > 0) {
     args.push(newBlock1);
   }

@@ -8,18 +8,18 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/countries.geojson',
     format: new GeoJSON()
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -28,35 +28,35 @@ var map = new Map({
   })
 });
 
-var select = null;  // ref to currently selected interaction
+let select = null;  // ref to currently selected interaction
 
 // select interaction working on "singleclick"
-var selectSingleClick = new Select();
+const selectSingleClick = new Select();
 
 // select interaction working on "click"
-var selectClick = new Select({
+const selectClick = new Select({
   condition: _ol_events_condition_.click
 });
 
 // select interaction working on "pointermove"
-var selectPointerMove = new Select({
+const selectPointerMove = new Select({
   condition: _ol_events_condition_.pointerMove
 });
 
-var selectAltClick = new Select({
+const selectAltClick = new Select({
   condition: function(mapBrowserEvent) {
     return _ol_events_condition_.click(mapBrowserEvent) &&
         _ol_events_condition_.altKeyOnly(mapBrowserEvent);
   }
 });
 
-var selectElement = document.getElementById('type');
+const selectElement = document.getElementById('type');
 
-var changeInteraction = function() {
+const changeInteraction = function() {
   if (select !== null) {
     map.removeInteraction(select);
   }
-  var value = selectElement.value;
+  const value = selectElement.value;
   if (value == 'singleclick') {
     select = selectSingleClick;
   } else if (value == 'click') {

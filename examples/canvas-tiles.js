@@ -7,8 +7,8 @@ import OSM from '../src/ol/source/OSM.js';
 import TileDebug from '../src/ol/source/TileDebug.js';
 
 
-var osmSource = new OSM();
-var map = new Map({
+const osmSource = new OSM();
+const map = new Map({
   layers: [
     new TileLayer({
       source: osmSource

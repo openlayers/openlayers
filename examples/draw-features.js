@@ -6,17 +6,17 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var source = new VectorSource({wrapX: false});
+const source = new VectorSource({wrapX: false});
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: source
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -25,11 +25,11 @@ var map = new Map({
   })
 });
 
-var typeSelect = document.getElementById('type');
+const typeSelect = document.getElementById('type');
 
-var draw; // global so we can remove it later
+let draw; // global so we can remove it later
 function addInteraction() {
-  var value = typeSelect.value;
+  const value = typeSelect.value;
   if (value !== 'None') {
     draw = new Draw({
       source: source,

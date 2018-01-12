@@ -3,7 +3,7 @@
  */
 import {modulo} from './math.js';
 import _ol_string_ from './string.js';
-var _ol_coordinate_ = {};
+const _ol_coordinate_ = {};
 
 
 /**
@@ -36,24 +36,22 @@ _ol_coordinate_.add = function(coordinate, delta) {
  * @return {ol.Coordinate} Closest point on the circumference
  */
 _ol_coordinate_.closestOnCircle = function(coordinate, circle) {
-  var r = circle.getRadius();
-  var center = circle.getCenter();
-  var x0 = center[0];
-  var y0 = center[1];
-  var x1 = coordinate[0];
-  var y1 = coordinate[1];
+  const r = circle.getRadius();
+  const center = circle.getCenter();
+  const x0 = center[0];
+  const y0 = center[1];
+  const x1 = coordinate[0];
+  const y1 = coordinate[1];
 
-  var dx = x1 - x0;
-  var dy = y1 - y0;
+  let dx = x1 - x0;
+  const dy = y1 - y0;
   if (dx === 0 && dy === 0) {
     dx = 1;
   }
-  var d = Math.sqrt(dx * dx + dy * dy);
+  const d = Math.sqrt(dx * dx + dy * dy);
 
-  var x, y;
-
-  x = x0 + r * dx / d;
-  y = y0 + r * dy / d;
+  const x = x0 + r * dx / d;
+  const y = y0 + r * dy / d;
 
   return [x, y];
 };
@@ -71,19 +69,19 @@ _ol_coordinate_.closestOnCircle = function(coordinate, circle) {
  *     the segment.
  */
 _ol_coordinate_.closestOnSegment = function(coordinate, segment) {
-  var x0 = coordinate[0];
-  var y0 = coordinate[1];
-  var start = segment[0];
-  var end = segment[1];
-  var x1 = start[0];
-  var y1 = start[1];
-  var x2 = end[0];
-  var y2 = end[1];
-  var dx = x2 - x1;
-  var dy = y2 - y1;
-  var along = (dx === 0 && dy === 0) ? 0 :
+  const x0 = coordinate[0];
+  const y0 = coordinate[1];
+  const start = segment[0];
+  const end = segment[1];
+  const x1 = start[0];
+  const y1 = start[1];
+  const x2 = end[0];
+  const y2 = end[1];
+  const dx = x2 - x1;
+  const dy = y2 - y1;
+  const along = (dx === 0 && dy === 0) ? 0 :
     ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
-  var x, y;
+  let x, y;
   if (along <= 0) {
     x = x1;
     y = y1;
@@ -142,14 +140,14 @@ _ol_coordinate_.createStringXY = function(opt_fractionDigits) {
  * @return {string} String.
  */
 _ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionDigits) {
-  var normalizedDegrees = modulo(degrees + 180, 360) - 180;
-  var x = Math.abs(3600 * normalizedDegrees);
-  var dflPrecision = opt_fractionDigits || 0;
-  var precision = Math.pow(10, dflPrecision);
+  const normalizedDegrees = modulo(degrees + 180, 360) - 180;
+  const x = Math.abs(3600 * normalizedDegrees);
+  const dflPrecision = opt_fractionDigits || 0;
+  const precision = Math.pow(10, dflPrecision);
 
-  var deg = Math.floor(x / 3600);
-  var min = Math.floor((x - deg * 3600) / 60);
-  var sec = x - (deg * 3600) - (min * 60);
+  let deg = Math.floor(x / 3600);
+  let min = Math.floor((x - deg * 3600) / 60);
+  let sec = x - (deg * 3600) - (min * 60);
   sec = Math.ceil(sec * precision) / precision;
 
   if (sec >= 60) {
@@ -198,8 +196,8 @@ _ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractio
 _ol_coordinate_.format = function(coordinate, template, opt_fractionDigits) {
   if (coordinate) {
     return template
-        .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
-        .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
   } else {
     return '';
   }
@@ -212,8 +210,8 @@ _ol_coordinate_.format = function(coordinate, template, opt_fractionDigits) {
  * @return {boolean} Whether the passed coordinates are equal.
  */
 _ol_coordinate_.equals = function(coordinate1, coordinate2) {
-  var equals = true;
-  for (var i = coordinate1.length - 1; i >= 0; --i) {
+  let equals = true;
+  for (let i = coordinate1.length - 1; i >= 0; --i) {
     if (coordinate1[i] != coordinate2[i]) {
       equals = false;
       break;
@@ -240,10 +238,10 @@ _ol_coordinate_.equals = function(coordinate1, coordinate2) {
  * @api
  */
 _ol_coordinate_.rotate = function(coordinate, angle) {
-  var cosAngle = Math.cos(angle);
-  var sinAngle = Math.sin(angle);
-  var x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
-  var y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+  const cosAngle = Math.cos(angle);
+  const sinAngle = Math.sin(angle);
+  const x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+  const y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
   coordinate[0] = x;
   coordinate[1] = y;
   return coordinate;
@@ -293,8 +291,8 @@ _ol_coordinate_.sub = function(coordinate, delta) {
  * @return {number} Squared distance between coord1 and coord2.
  */
 _ol_coordinate_.squaredDistance = function(coord1, coord2) {
-  var dx = coord1[0] - coord2[0];
-  var dy = coord1[1] - coord2[1];
+  const dx = coord1[0] - coord2[0];
+  const dy = coord1[1] - coord2[1];
   return dx * dx + dy * dy;
 };
 
@@ -318,7 +316,7 @@ _ol_coordinate_.distance = function(coord1, coord2) {
  */
 _ol_coordinate_.squaredDistanceToSegment = function(coordinate, segment) {
   return _ol_coordinate_.squaredDistance(coordinate,
-      _ol_coordinate_.closestOnSegment(coordinate, segment));
+    _ol_coordinate_.closestOnSegment(coordinate, segment));
 };
 
 

@@ -7,7 +7,7 @@ describe('ol.TileCache', function() {
 
   describe('#pruneExceptNewestZ()', function() {
     it('gets rid of all entries that are not at the newest z', function() {
-      var tiles = [
+      const tiles = [
         new Tile([0, 0, 0]),
         new Tile([1, 0, 0]),
         new Tile([1, 1, 0]),
@@ -16,7 +16,7 @@ describe('ol.TileCache', function() {
         new Tile([2, 2, 0]),
         new Tile([2, 3, 0]) // newest tile at z: 2
       ];
-      var cache = new TileCache();
+      const cache = new TileCache();
 
       sinon.spy(tiles[0], 'dispose');
 

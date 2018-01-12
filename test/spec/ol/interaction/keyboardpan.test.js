@@ -5,7 +5,7 @@ import Event from '../../../../src/ol/events/Event.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 
 describe('ol.interaction.KeyboardPan', function() {
-  var map;
+  let map;
 
   beforeEach(function() {
     map = new Map({
@@ -24,8 +24,8 @@ describe('ol.interaction.KeyboardPan', function() {
 
   describe('handleEvent()', function() {
     it('pans on arrow keys', function() {
-      var spy = sinon.spy(Interaction, 'pan');
-      var event = new MapBrowserEvent('keydown', map, {
+      const spy = sinon.spy(Interaction, 'pan');
+      const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
         preventDefault: Event.prototype.preventDefault

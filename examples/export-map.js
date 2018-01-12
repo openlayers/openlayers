@@ -9,7 +9,7 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -35,7 +35,7 @@ var map = new Map({
 
 document.getElementById('export-png').addEventListener('click', function() {
   map.once('postcompose', function(event) {
-    var canvas = event.context.canvas;
+    const canvas = event.context.canvas;
     if (navigator.msSaveBlob) {
       navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
     } else {

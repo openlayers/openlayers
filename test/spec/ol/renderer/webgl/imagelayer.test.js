@@ -7,21 +7,21 @@ import WebGLImageLayerRenderer from '../../../../../src/ol/renderer/webgl/ImageL
 
 describe('ol.renderer.webgl.ImageLayer', function() {
   describe('updateProjectionMatrix_', function() {
-    var map;
-    var renderer;
-    var canvasWidth;
-    var canvasHeight;
-    var pixelRatio;
-    var viewResolution;
-    var viewRotation;
-    var viewCenter;
-    var imageExtent;
+    let map;
+    let renderer;
+    let canvasWidth;
+    let canvasHeight;
+    let pixelRatio;
+    let viewResolution;
+    let viewRotation;
+    let viewCenter;
+    let imageExtent;
 
     beforeEach(function() {
       map = new Map({
         target: document.createElement('div')
       });
-      var layer = new ImageLayer({
+      const layer = new ImageLayer({
         source: new ImageSource({
           extent: [0, 0, 1, 1]
         })
@@ -49,10 +49,10 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     it('produces a correct matrix', function() {
 
       renderer.updateProjectionMatrix_(canvasWidth, canvasHeight,
-          pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
-      var matrix = renderer.getProjectionMatrix();
+        pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
+      const matrix = renderer.getProjectionMatrix();
 
-      var output = _ol_transform_.apply(matrix, [-1, -1]);
+      let output = _ol_transform_.apply(matrix, [-1, -1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(-6);
 

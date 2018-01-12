@@ -39,8 +39,8 @@ import _ol_pointer_EventSource_ from '../pointer/EventSource.js';
  * @constructor
  * @extends {ol.pointer.EventSource}
  */
-var _ol_pointer_NativeSource_ = function(dispatcher) {
-  var mapping = {
+const _ol_pointer_NativeSource_ = function(dispatcher) {
+  const mapping = {
     'pointerdown': this.pointerDown,
     'pointermove': this.pointerMove,
     'pointerup': this.pointerUp,

@@ -7,19 +7,19 @@ import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 describe('ol.format.OSMXML', function() {
 
-  var format;
+  let format;
   beforeEach(function() {
     format = new OSMXML();
   });
 
   describe('#readProjection', function() {
     it('returns the default projection from document', function() {
-      var projection = format.readProjectionFromDocument();
+      const projection = format.readProjectionFromDocument();
       expect(projection).to.eql(getProjection('EPSG:4326'));
     });
 
     it('returns the default projection from node', function() {
-      var projection = format.readProjectionFromNode();
+      const projection = format.readProjectionFromNode();
       expect(projection).to.eql(getProjection('EPSG:4326'));
     });
   });
@@ -27,16 +27,16 @@ describe('ol.format.OSMXML', function() {
   describe('#readFeatures', function() {
 
     it('can read an empty document', function() {
-      var text =
+      const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
           '</osm>';
-      var fs = format.readFeatures(text);
+      const fs = format.readFeatures(text);
       expect(fs).to.have.length(0);
     });
 
     it('can read nodes', function() {
-      var text =
+      const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
           '  <node id="1" lat="1" lon="2">' +
@@ -46,17 +46,17 @@ describe('ol.format.OSMXML', function() {
           '    <tag k="name" v="2"/>' +
           '  </node>' +
           '</osm>';
-      var fs = format.readFeatures(text);
+      const fs = format.readFeatures(text);
       expect(fs).to.have.length(2);
-      var f = fs[0];
+      const f = fs[0];
       expect(f).to.be.an(Feature);
-      var g = f.getGeometry();
+      const g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1]);
     });
 
     it('can read nodes and ways', function() {
-      var text =
+      const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
           '  <node id="1" lat="1" lon="2">' +
@@ -71,14 +71,14 @@ describe('ol.format.OSMXML', function() {
           '    <nd ref="2" />' +
           '  </way>' +
           '</osm>';
-      var fs = format.readFeatures(text);
+      const fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
-      var point = fs[0];
+      const point = fs[0];
       expect(point).to.be.an(Feature);
-      var g = point.getGeometry();
+      let g = point.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql([2, 1]);
-      var line = fs[2];
+      const line = fs[2];
       expect(line).to.be.an(Feature);
       g = line.getGeometry();
       expect(g).to.be.an(LineString);
@@ -87,7 +87,7 @@ describe('ol.format.OSMXML', function() {
 
 
     it('can read ways before nodes', function() {
-      var text =
+      const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
           '  <way id="3">' +
@@ -102,18 +102,18 @@ describe('ol.format.OSMXML', function() {
           '    <tag k="name" v="2"/>' +
           '  </node>' +
           '</osm>';
-      var fs = format.readFeatures(text);
+      const fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
-      var line = fs[2];
+      const line = fs[2];
       expect(line).to.be.an(Feature);
-      var g = line.getGeometry();
+      const g = line.getGeometry();
       expect(g).to.be.an(LineString);
       expect(g.getCoordinates()).to.eql([[2, 1], [4, 3]]);
     });
 
 
     it('can transform and read nodes', function() {
-      var text =
+      const text =
           '<?xml version="1.0" encoding="UTF-8"?>' +
           '<osm version="0.6" generator="my hand">' +
           '  <node id="1" lat="1" lon="2">' +
@@ -123,16 +123,16 @@ describe('ol.format.OSMXML', function() {
           '    <tag k="name" v="2"/>' +
           '  </node>' +
           '</osm>';
-      var fs = format.readFeatures(text, {
+      const fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857'
       });
       expect(fs).to.have.length(2);
-      var f = fs[0];
+      const f = fs[0];
       expect(f).to.be.an(Feature);
-      var g = f.getGeometry();
+      const g = f.getGeometry();
       expect(g).to.be.an(Point);
       expect(g.getCoordinates()).to.eql(
-          transform([2, 1], 'EPSG:4326', 'EPSG:3857'));
+        transform([2, 1], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });

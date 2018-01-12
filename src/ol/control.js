@@ -21,21 +21,21 @@ import Zoom from './control/Zoom.js';
  */
 export function defaults(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
-  var controls = new Collection();
+  const controls = new Collection();
 
-  var zoomControl = options.zoom !== undefined ? options.zoom : true;
+  const zoomControl = options.zoom !== undefined ? options.zoom : true;
   if (zoomControl) {
     controls.push(new Zoom(options.zoomOptions));
   }
 
-  var rotateControl = options.rotate !== undefined ? options.rotate : true;
+  const rotateControl = options.rotate !== undefined ? options.rotate : true;
   if (rotateControl) {
     controls.push(new Rotate(options.rotateOptions));
   }
 
-  var attributionControl = options.attribution !== undefined ?
+  const attributionControl = options.attribution !== undefined ?
     options.attribution : true;
   if (attributionControl) {
     controls.push(new Attribution(options.attributionOptions));

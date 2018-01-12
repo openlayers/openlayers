@@ -14,7 +14,7 @@ import _ol_transform_ from '../../transform.js';
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.layer.Layer} layer Layer.
  */
-var IntermediateCanvasRenderer = function(layer) {
+const IntermediateCanvasRenderer = function(layer) {
 
   CanvasLayerRenderer.call(this, layer);
 
@@ -42,33 +42,33 @@ IntermediateCanvasRenderer.prototype.composeFrame = function(frameState, layerSt
 
   this.preCompose(context, frameState);
 
-  var image = this.getImage();
+  const image = this.getImage();
   if (image) {
 
     // clipped rendering if layer extent is set
-    var extent = layerState.extent;
-    var clipped = extent !== undefined &&
+    const extent = layerState.extent;
+    const clipped = extent !== undefined &&
         !containsExtent(extent, frameState.extent) &&
         intersects(extent, frameState.extent);
     if (clipped) {
       this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
     }
 
-    var imageTransform = this.getImageTransform();
+    const imageTransform = this.getImageTransform();
     // for performance reasons, context.save / context.restore is not used
     // to save and restore the transformation matrix and the opacity.
     // see http://jsperf.com/context-save-restore-versus-variable
-    var alpha = context.globalAlpha;
+    const alpha = context.globalAlpha;
     context.globalAlpha = layerState.opacity;
 
     // for performance reasons, context.setTransform is only used
     // when the view is rotated. see http://jsperf.com/canvas-transform
-    var dx = imageTransform[4];
-    var dy = imageTransform[5];
-    var dw = image.width * imageTransform[0];
-    var dh = image.height * imageTransform[3];
+    const dx = imageTransform[4];
+    const dy = imageTransform[5];
+    const dw = image.width * imageTransform[0];
+    const dh = image.height * imageTransform[3];
     context.drawImage(image, 0, 0, +image.width, +image.height,
-        Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+      Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
     context.globalAlpha = alpha;
 
     if (clipped) {
@@ -98,20 +98,20 @@ IntermediateCanvasRenderer.prototype.getImageTransform = function() {};
  * @inheritDoc
  */
 IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
-  var layer = this.getLayer();
-  var source = layer.getSource();
-  var resolution = frameState.viewState.resolution;
-  var rotation = frameState.viewState.rotation;
-  var skippedFeatureUids = frameState.skippedFeatureUids;
+  const layer = this.getLayer();
+  const source = layer.getSource();
+  const resolution = frameState.viewState.resolution;
+  const rotation = frameState.viewState.rotation;
+  const skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtCoordinate(
-      coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-      /**
+    coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
+    /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
        */
-      function(feature) {
-        return callback.call(thisArg, feature, layer);
-      });
+    function(feature) {
+      return callback.call(thisArg, feature, layer);
+    });
 };
 
 
@@ -128,7 +128,7 @@ IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordin
     // so that for example also transparent polygons are detected
     return CanvasLayerRenderer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {
-    var pixel = _ol_transform_.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
+    const pixel = _ol_transform_.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
     _ol_coordinate_.scale(pixel, frameState.viewState.resolution / this.renderedResolution);
 
     if (!this.hitCanvasContext_) {
@@ -138,7 +138,7 @@ IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordin
     this.hitCanvasContext_.clearRect(0, 0, 1, 1);
     this.hitCanvasContext_.drawImage(this.getImage(), pixel[0], pixel[1], 1, 1, 0, 0, 1, 1);
 
-    var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
+    const imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
     if (imageData[3] > 0) {
       return callback.call(thisArg, this.getLayer(),  imageData);
     } else {

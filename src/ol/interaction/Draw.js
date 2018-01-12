@@ -36,7 +36,7 @@ import Style from '../style/Style.js';
  * @param {olx.interaction.DrawOptions} options Options.
  * @api
  */
-var Draw = function(options) {
+const Draw = function(options) {
 
   PointerInteraction.call(this, {
     handleDownEvent: Draw.handleDownEvent_,
@@ -131,7 +131,7 @@ var Draw = function(options) {
    */
   this.finishCondition_ = options.finishCondition ? options.finishCondition : TRUE;
 
-  var geometryFunction = options.geometryFunction;
+  let geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
     if (this.type_ === GeometryType.CIRCLE) {
       /**
@@ -141,16 +141,16 @@ var Draw = function(options) {
        * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
-        var circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
+        const circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
           new Circle([NaN, NaN]);
-        var squaredLength = _ol_coordinate_.squaredDistance(
-            coordinates[0], coordinates[1]);
+        const squaredLength = _ol_coordinate_.squaredDistance(
+          coordinates[0], coordinates[1]);
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
         return circle;
       };
     } else {
-      var Constructor;
-      var mode = this.mode_;
+      let Constructor;
+      const mode = this.mode_;
       if (mode === Draw.Mode_.POINT) {
         Constructor = Point;
       } else if (mode === Draw.Mode_.LINE_STRING) {
@@ -165,7 +165,7 @@ var Draw = function(options) {
        * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
-        var geometry = opt_geometry;
+        let geometry = opt_geometry;
         if (geometry) {
           if (mode === Draw.Mode_.POLYGON) {
             if (coordinates[0].length) {
@@ -285,8 +285,8 @@ var Draw = function(options) {
   }
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
-      this.updateState_, this);
+    BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
+    this.updateState_, this);
 
 };
 
@@ -297,7 +297,7 @@ inherits(Draw, PointerInteraction);
  * @return {ol.StyleFunction} Styles.
  */
 Draw.getDefaultStyleFunction = function() {
-  var styles = Style.createDefaultEditing();
+  const styles = Style.createDefaultEditing();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };
@@ -323,7 +323,7 @@ Draw.prototype.setMap = function(map) {
  */
 Draw.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
-  var pass = true;
+  let pass = true;
   if (this.freehand_ &&
       event.type === MapBrowserEventType.POINTERDRAG &&
       this.sketchFeature_ !== null) {
@@ -372,11 +372,11 @@ Draw.handleDownEvent_ = function(event) {
  * @private
  */
 Draw.handleUpEvent_ = function(event) {
-  var pass = true;
+  let pass = true;
 
   this.handlePointerMove_(event);
 
-  var circleMode = this.mode_ === Draw.Mode_.CIRCLE;
+  const circleMode = this.mode_ === Draw.Mode_.CIRCLE;
 
   if (this.shouldHandle_) {
     if (!this.finishCoordinate_) {
@@ -415,11 +415,11 @@ Draw.prototype.handlePointerMove_ = function(event) {
   if (this.downPx_ &&
       ((!this.freehand_ && this.shouldHandle_) ||
       (this.freehand_ && !this.shouldHandle_))) {
-    var downPx = this.downPx_;
-    var clickPx = event.pixel;
-    var dx = downPx[0] - clickPx[0];
-    var dy = downPx[1] - clickPx[1];
-    var squaredDistance = dx * dx + dy * dy;
+    const downPx = this.downPx_;
+    const clickPx = event.pixel;
+    const dx = downPx[0] - clickPx[0];
+    const dy = downPx[1] - clickPx[1];
+    const squaredDistance = dx * dx + dy * dy;
     this.shouldHandle_ = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
@@ -441,10 +441,10 @@ Draw.prototype.handlePointerMove_ = function(event) {
  * @private
  */
 Draw.prototype.atFinish_ = function(event) {
-  var at = false;
+  let at = false;
   if (this.sketchFeature_) {
-    var potentiallyDone = false;
-    var potentiallyFinishCoordinates = [this.finishCoordinate_];
+    let potentiallyDone = false;
+    let potentiallyFinishCoordinates = [this.finishCoordinate_];
     if (this.mode_ === Draw.Mode_.LINE_STRING) {
       potentiallyDone = this.sketchCoords_.length > this.minPoints_;
     } else if (this.mode_ === Draw.Mode_.POLYGON) {
@@ -454,14 +454,14 @@ Draw.prototype.atFinish_ = function(event) {
         this.sketchCoords_[0][this.sketchCoords_[0].length - 2]];
     }
     if (potentiallyDone) {
-      var map = event.map;
-      for (var i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
-        var finishCoordinate = potentiallyFinishCoordinates[i];
-        var finishPixel = map.getPixelFromCoordinate(finishCoordinate);
-        var pixel = event.pixel;
-        var dx = pixel[0] - finishPixel[0];
-        var dy = pixel[1] - finishPixel[1];
-        var snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
+      const map = event.map;
+      for (let i = 0, ii = potentiallyFinishCoordinates.length; i < ii; i++) {
+        const finishCoordinate = potentiallyFinishCoordinates[i];
+        const finishPixel = map.getPixelFromCoordinate(finishCoordinate);
+        const pixel = event.pixel;
+        const dx = pixel[0] - finishPixel[0];
+        const dy = pixel[1] - finishPixel[1];
+        const snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
         at = Math.sqrt(dx * dx + dy * dy) <= snapTolerance;
         if (at) {
           this.finishCoordinate_ = finishCoordinate;
@@ -479,12 +479,12 @@ Draw.prototype.atFinish_ = function(event) {
  * @private
  */
 Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
-  var coordinates = event.coordinate.slice();
+  const coordinates = event.coordinate.slice();
   if (!this.sketchPoint_) {
     this.sketchPoint_ = new Feature(new Point(coordinates));
     this.updateSketchFeatures_();
   } else {
-    var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
+    const sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinates);
   }
 };
@@ -496,7 +496,7 @@ Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
  * @private
  */
 Draw.prototype.startDrawing_ = function(event) {
-  var start = event.coordinate;
+  const start = event.coordinate;
   this.finishCoordinate_ = start;
   if (this.mode_ === Draw.Mode_.POINT) {
     this.sketchCoords_ = start.slice();
@@ -511,9 +511,9 @@ Draw.prototype.startDrawing_ = function(event) {
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new Feature(
-        new LineString(this.sketchLineCoords_));
+      new LineString(this.sketchLineCoords_));
   }
-  var geometry = this.geometryFunction_(this.sketchCoords_);
+  const geometry = this.geometryFunction_(this.sketchCoords_);
   this.sketchFeature_ = new Feature();
   if (this.geometryName_) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
@@ -530,9 +530,9 @@ Draw.prototype.startDrawing_ = function(event) {
  * @private
  */
 Draw.prototype.modifyDrawing_ = function(event) {
-  var coordinate = event.coordinate;
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
-  var coordinates, last;
+  let coordinate = event.coordinate;
+  const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  let coordinates, last;
   if (this.mode_ === Draw.Mode_.POINT) {
     last = this.sketchCoords_;
   } else if (this.mode_ === Draw.Mode_.POLYGON) {
@@ -550,19 +550,19 @@ Draw.prototype.modifyDrawing_ = function(event) {
   last[1] = coordinate[1];
   this.geometryFunction_(/** @type {!Array.<ol.Coordinate>} */ (this.sketchCoords_), geometry);
   if (this.sketchPoint_) {
-    var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
+    const sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinate);
   }
-  var sketchLineGeom;
+  let sketchLineGeom;
   if (geometry instanceof Polygon &&
       this.mode_ !== Draw.Mode_.POLYGON) {
     if (!this.sketchLine_) {
       this.sketchLine_ = new Feature(new LineString(null));
     }
-    var ring = geometry.getLinearRing(0);
+    const ring = geometry.getLinearRing(0);
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setFlatCoordinates(
-        ring.getLayout(), ring.getFlatCoordinates());
+      ring.getLayout(), ring.getFlatCoordinates());
   } else if (this.sketchLineCoords_) {
     sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
     sketchLineGeom.setCoordinates(this.sketchLineCoords_);
@@ -577,10 +577,10 @@ Draw.prototype.modifyDrawing_ = function(event) {
  * @private
  */
 Draw.prototype.addToDrawing_ = function(event) {
-  var coordinate = event.coordinate;
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
-  var done;
-  var coordinates;
+  const coordinate = event.coordinate;
+  const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  let done;
+  let coordinates;
   if (this.mode_ === Draw.Mode_.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
     coordinates = this.sketchCoords_;
@@ -623,8 +623,8 @@ Draw.prototype.removeLastPoint = function() {
   if (!this.sketchFeature_) {
     return;
   }
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
-  var coordinates, sketchLineGeom;
+  const geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  let coordinates, sketchLineGeom;
   if (this.mode_ === Draw.Mode_.LINE_STRING) {
     coordinates = this.sketchCoords_;
     coordinates.splice(-2, 1);
@@ -655,9 +655,9 @@ Draw.prototype.removeLastPoint = function() {
  * @api
  */
 Draw.prototype.finishDrawing = function() {
-  var sketchFeature = this.abortDrawing_();
-  var coordinates = this.sketchCoords_;
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
+  const sketchFeature = this.abortDrawing_();
+  let coordinates = this.sketchCoords_;
+  const geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
   if (this.mode_ === Draw.Mode_.LINE_STRING) {
     // remove the redundant last point
     coordinates.pop();
@@ -698,7 +698,7 @@ Draw.prototype.finishDrawing = function() {
  */
 Draw.prototype.abortDrawing_ = function() {
   this.finishCoordinate_ = null;
-  var sketchFeature = this.sketchFeature_;
+  const sketchFeature = this.sketchFeature_;
   if (sketchFeature) {
     this.sketchFeature_ = null;
     this.sketchPoint_ = null;
@@ -717,11 +717,11 @@ Draw.prototype.abortDrawing_ = function() {
  * @api
  */
 Draw.prototype.extend = function(feature) {
-  var geometry = feature.getGeometry();
-  var lineString = /** @type {ol.geom.LineString} */ (geometry);
+  const geometry = feature.getGeometry();
+  const lineString = /** @type {ol.geom.LineString} */ (geometry);
   this.sketchFeature_ = feature;
   this.sketchCoords_ = lineString.getCoordinates();
-  var last = this.sketchCoords_[this.sketchCoords_.length - 1];
+  const last = this.sketchCoords_[this.sketchCoords_.length - 1];
   this.finishCoordinate_ = last.slice();
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
@@ -740,7 +740,7 @@ Draw.prototype.shouldStopEvent = FALSE;
  * @private
  */
 Draw.prototype.updateSketchFeatures_ = function() {
-  var sketchFeatures = [];
+  const sketchFeatures = [];
   if (this.sketchFeature_) {
     sketchFeatures.push(this.sketchFeature_);
   }
@@ -750,7 +750,7 @@ Draw.prototype.updateSketchFeatures_ = function() {
   if (this.sketchPoint_) {
     sketchFeatures.push(this.sketchPoint_);
   }
-  var overlaySource = this.overlay_.getSource();
+  const overlaySource = this.overlay_.getSource();
   overlaySource.clear(true);
   overlaySource.addFeatures(sketchFeatures);
 };
@@ -760,8 +760,8 @@ Draw.prototype.updateSketchFeatures_ = function() {
  * @private
  */
 Draw.prototype.updateState_ = function() {
-  var map = this.getMap();
-  var active = this.getActive();
+  const map = this.getMap();
+  const active = this.getActive();
   if (!map || !active) {
     this.abortDrawing_();
   }
@@ -790,13 +790,13 @@ Draw.createRegularPolygon = function(opt_sides, opt_angle) {
          * @return {ol.geom.SimpleGeometry}
          */
     function(coordinates, opt_geometry) {
-      var center = coordinates[0];
-      var end = coordinates[1];
-      var radius = Math.sqrt(
-          _ol_coordinate_.squaredDistance(center, end));
-      var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
+      const center = coordinates[0];
+      const end = coordinates[1];
+      const radius = Math.sqrt(
+        _ol_coordinate_.squaredDistance(center, end));
+      const geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
         fromCircle(new Circle(center), opt_sides);
-      var angle = opt_angle ? opt_angle :
+      const angle = opt_angle ? opt_angle :
         Math.atan((end[1] - center[1]) / (end[0] - center[0]));
       makeRegular(geometry, center, radius, angle);
       return geometry;
@@ -820,8 +820,8 @@ Draw.createBox = function() {
      * @return {ol.geom.SimpleGeometry}
      */
     function(coordinates, opt_geometry) {
-      var extent = boundingExtent(coordinates);
-      var geometry = opt_geometry || new Polygon(null);
+      const extent = boundingExtent(coordinates);
+      const geometry = opt_geometry || new Polygon(null);
       geometry.setCoordinates([[
         getBottomLeft(extent),
         getBottomRight(extent),
@@ -843,7 +843,7 @@ Draw.createBox = function() {
  * @private
  */
 Draw.getMode_ = function(type) {
-  var mode;
+  let mode;
   if (type === GeometryType.POINT ||
       type === GeometryType.MULTI_POINT) {
     mode = Draw.Mode_.POINT;

@@ -4,7 +4,7 @@ import {iconImageCache} from '../../../../src/ol/style.js';
 import IconImage from '../../../../src/ol/style/IconImage.js';
 
 describe('ol.style.IconImageCache', function() {
-  var originalMaxCacheSize;
+  let originalMaxCacheSize;
 
   beforeEach(function() {
     iconImageCache.clear();
@@ -19,7 +19,7 @@ describe('ol.style.IconImageCache', function() {
 
   describe('#expire', function() {
     it('expires images when expected', function() {
-      var i, src, iconImage;
+      let i, src, iconImage;
 
       for (i = 0; i < 4; ++i) {
         src = i + '';
@@ -61,7 +61,7 @@ describe('ol.style.IconImageCache', function() {
 
   describe('#setSize', function() {
     it('sets max cache size and expires cache', function() {
-      var i, src, iconImage;
+      let i, src, iconImage;
 
       for (i = 0; i < 3; ++i) {
         src = i + '';

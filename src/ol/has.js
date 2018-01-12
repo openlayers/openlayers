@@ -3,9 +3,9 @@
  */
 import {HAS_WEBGL} from './index.js';
 
-var _ol_has_ = {};
+const _ol_has_ = {};
 
-var ua = typeof navigator !== 'undefined' ?
+const ua = typeof navigator !== 'undefined' ?
   navigator.userAgent.toLowerCase() : '';
 
 /**
@@ -65,7 +65,7 @@ _ol_has_.CANVAS = (
       return false;
     }
     try {
-      var context = document.createElement('CANVAS').getContext('2d');
+      const context = document.createElement('CANVAS').getContext('2d');
       if (!context) {
         return false;
       } else {

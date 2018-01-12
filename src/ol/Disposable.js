@@ -7,7 +7,7 @@ import {nullFunction} from './index.js';
  * Objects that need to clean up after themselves.
  * @constructor
  */
-var Disposable = function() {};
+const Disposable = function() {};
 
 /**
  * The object has already been disposed.

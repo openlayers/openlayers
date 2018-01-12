@@ -17,8 +17,8 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
  * @param {olx.control.ZoomToExtentOptions=} opt_options Options.
  * @api
  */
-var ZoomToExtent = function(opt_options) {
-  var options = opt_options ? opt_options : {};
+const ZoomToExtent = function(opt_options) {
+  const options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.Extent}
@@ -26,24 +26,24 @@ var ZoomToExtent = function(opt_options) {
    */
   this.extent = options.extent ? options.extent : null;
 
-  var className = options.className !== undefined ? options.className :
+  const className = options.className !== undefined ? options.className :
     'ol-zoom-extent';
 
-  var label = options.label !== undefined ? options.label : 'E';
-  var tipLabel = options.tipLabel !== undefined ?
+  const label = options.label !== undefined ? options.label : 'E';
+  const tipLabel = options.tipLabel !== undefined ?
     options.tipLabel : 'Fit to extent';
-  var button = document.createElement('button');
+  const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(
-      typeof label === 'string' ? document.createTextNode(label) : label
+    typeof label === 'string' ? document.createTextNode(label) : label
   );
 
   _ol_events_.listen(button, EventType.CLICK,
-      this.handleClick_, this);
+    this.handleClick_, this);
 
-  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-  var element = document.createElement('div');
+  const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+  const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
 
@@ -70,9 +70,9 @@ ZoomToExtent.prototype.handleClick_ = function(event) {
  * @protected
  */
 ZoomToExtent.prototype.handleZoomToExtent = function() {
-  var map = this.getMap();
-  var view = map.getView();
-  var extent = !this.extent ? view.getProjection().getExtent() : this.extent;
+  const map = this.getMap();
+  const view = map.getView();
+  const extent = !this.extent ? view.getProjection().getExtent() : this.extent;
   view.fit(extent);
 };
 export default ZoomToExtent;

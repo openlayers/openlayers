@@ -8,19 +8,19 @@ import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.CircleReplay', function() {
-  var replay;
+  let replay;
 
-  var strokeStyle = new Stroke({
+  const strokeStyle = new Stroke({
     color: [0, 255, 0, 0.4]
   });
 
-  var fillStyle = new Fill({
+  const fillStyle = new Fill({
     color: [255, 0, 0, 1]
   });
 
   beforeEach(function() {
-    var tolerance = 0.1;
-    var maxExtent = [-10000, -20000, 10000, 20000];
+    const tolerance = 0.1;
+    const maxExtent = [-10000, -20000, 10000, 20000];
     replay = new _ol_render_webgl_CircleReplay_(tolerance, maxExtent);
   });
 
@@ -48,7 +48,7 @@ describe('ol.render.webgl.CircleReplay', function() {
 
   describe('#drawCircle', function() {
     it('sets the buffer data', function() {
-      var circle = new Circle([0, 0], 5000);
+      const circle = new Circle([0, 0], 5000);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.drawCircle(circle, null);
@@ -61,7 +61,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('does not draw if radius is zero', function() {
-      var circle = new Circle([0, 0], 0);
+      const circle = new Circle([0, 0], 0);
 
       replay.drawCircle(circle, null);
       expect(replay.vertices).to.have.length(0);
@@ -71,7 +71,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('resets state and removes style if it belongs to a zero radius circle', function() {
-      var circle = new Circle([0, 0], 0);
+      const circle = new Circle([0, 0], 0);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.setFillStrokeStyle(null, strokeStyle);
@@ -97,7 +97,7 @@ describe('ol.render.webgl.CircleReplay', function() {
   });
 
   describe('#setUpProgram', function() {
-    var context, gl;
+    let context, gl;
     beforeEach(function() {
       context = {
         getProgram: function() {},
@@ -114,9 +114,9 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('returns the locations used by the shaders', function() {
-      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      const locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          _ol_render_webgl_circlereplay_defaultshader_Locations_);
+        _ol_render_webgl_circlereplay_defaultshader_Locations_);
     });
 
     it('gets and compiles the shaders', function() {
@@ -125,8 +125,8 @@ describe('ol.render.webgl.CircleReplay', function() {
 
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(context.getProgram.calledWithExactly(
-          _ol_render_webgl_circlereplay_defaultshader_.fragment,
-          _ol_render_webgl_circlereplay_defaultshader_.vertex)).to.be(true);
+        _ol_render_webgl_circlereplay_defaultshader_.fragment,
+        _ol_render_webgl_circlereplay_defaultshader_.vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -138,12 +138,12 @@ describe('ol.render.webgl.CircleReplay', function() {
       replay.setUpProgram(gl, context, [2, 2], 1);
       expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
       expect(gl.enableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount);
     });
   });
 
   describe('#shutDownProgram', function() {
-    var context, gl;
+    let context, gl;
     beforeEach(function() {
       context = {
         getProgram: function() {},
@@ -164,22 +164,22 @@ describe('ol.render.webgl.CircleReplay', function() {
       sinon.spy(gl, 'getAttribLocation');
       sinon.spy(gl, 'disableVertexAttribArray');
 
-      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      const locations = replay.setUpProgram(gl, context, [2, 2], 1);
       replay.shutDownProgram(gl, locations);
       expect(gl.disableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount);
     });
   });
 
   describe('#drawReplay', function() {
-    var gl, context;
-    var feature1 = new Feature({
+    let gl, context;
+    const feature1 = new Feature({
       geometry: new Circle([0, 0], 5000)
     });
-    var feature2 = new Feature({
+    const feature2 = new Feature({
       geometry: new Circle([10, 10], 5000)
     });
-    var feature3 = new Feature({
+    const feature3 = new Feature({
       geometry: new Circle([20, 20], 5000)
     });
     beforeEach(function() {
@@ -231,7 +231,7 @@ describe('ol.render.webgl.CircleReplay', function() {
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.drawCircle(feature3.getGeometry(), feature3);
       replay.startIndices.push(replay.indices.length);
-      var skippedFeatHash = {};
+      const skippedFeatHash = {};
       skippedFeatHash[getUid(feature2).toString()] = true;
 
       replay.drawReplay(gl, context, skippedFeatHash, false);

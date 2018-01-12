@@ -8,9 +8,9 @@ import RenderFeature from '../../../../src/ol/render/Feature.js';
 
 where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
-  var data;
+  let data;
   beforeEach(function(done) {
-    var xhr = new XMLHttpRequest();
+    const xhr = new XMLHttpRequest();
     xhr.open('GET', 'spec/ol/data/14-8938-5680.vector.pbf');
     xhr.responseType = 'arraybuffer';
     xhr.onload = function() {
@@ -23,23 +23,23 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
   describe('#readFeatures', function() {
 
     it('uses ol.render.Feature as feature class by default', function() {
-      var format = new MVT({layers: ['water']});
-      var features = format.readFeatures(data);
+      const format = new MVT({layers: ['water']});
+      const features = format.readFeatures(data);
       expect(features[0]).to.be.a(RenderFeature);
     });
 
     it('parses only specified layers', function() {
-      var format = new MVT({layers: ['water']});
-      var features = format.readFeatures(data);
+      const format = new MVT({layers: ['water']});
+      const features = format.readFeatures(data);
       expect(features.length).to.be(10);
     });
 
     it('parses geometries correctly', function() {
-      var format = new MVT({
+      const format = new MVT({
         featureClass: Feature,
         layers: ['poi_label']
       });
-      var geometry;
+      let geometry;
 
       geometry = format.readFeatures(data)[0].getGeometry();
       expect(geometry.getType()).to.be('Point');
@@ -60,11 +60,11 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
     it('parses id property', function() {
       // ol.Feature
-      var format = new MVT({
+      let format = new MVT({
         featureClass: Feature,
         layers: ['building']
       });
-      var features = format.readFeatures(data);
+      let features = format.readFeatures(data);
       expect(features[0].getId()).to.be(2);
       // ol.render.Feature
       format = new MVT({
@@ -75,9 +75,9 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
     });
 
     it('sets the extent of the last readFeatures call', function() {
-      var format = new MVT();
+      const format = new MVT();
       format.readFeatures(data);
-      var extent = format.getLastExtent();
+      const extent = format.getLastExtent();
       expect(_ol_extent_.getWidth(extent)).to.be(4096);
     });
 
@@ -89,11 +89,11 @@ describe('ol.format.MVT', function() {
 
   describe('#createFeature_', function() {
     it('accepts a geometryName', function() {
-      var format = new MVT({
+      const format = new MVT({
         featureClass: Feature,
         geometryName: 'myGeom'
       });
-      var rawFeature = {
+      const rawFeature = {
         id: 1,
         properties: {
           geometry: 'foo'
@@ -103,68 +103,68 @@ describe('ol.format.MVT', function() {
           name: 'layer1'
         }
       };
-      var readRawGeometry_ = MVT.readRawGeometry_;
+      const readRawGeometry_ = MVT.readRawGeometry_;
       MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0);
         ends.push(2);
       };
-      var feature = format.createFeature_({}, rawFeature);
+      const feature = format.createFeature_({}, rawFeature);
       MVT.readRawGeometry_ = readRawGeometry_;
-      var geometry = feature.getGeometry();
+      const geometry = feature.getGeometry();
       expect(geometry).to.be.a(Point);
       expect(feature.get('myGeom')).to.equal(geometry);
       expect(feature.get('geometry')).to.be('foo');
     });
 
     it('detects a Polygon', function() {
-      var format = new MVT({
+      const format = new MVT({
         featureClass: Feature
       });
-      var rawFeature = {
+      const rawFeature = {
         type: 3,
         properties: {},
         layer: {
           name: 'layer1'
         }
       };
-      var readRawGeometry_ = MVT.readRawGeometry_;
+      const readRawGeometry_ = MVT.readRawGeometry_;
       MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0, 3, 0, 3, 3, 3, 0, 0, 0);
         flatCoordinates.push(1, 1, 1, 2, 2, 2, 2, 1, 1, 1);
         ends.push(10, 20);
       };
-      var feature = format.createFeature_({}, rawFeature);
+      const feature = format.createFeature_({}, rawFeature);
       MVT.readRawGeometry_ = readRawGeometry_;
-      var geometry = feature.getGeometry();
+      const geometry = feature.getGeometry();
       expect(geometry).to.be.a(Polygon);
     });
 
     it('detects a MultiPolygon', function() {
-      var format = new MVT({
+      const format = new MVT({
         featureClass: Feature
       });
-      var rawFeature = {
+      const rawFeature = {
         type: 3,
         properties: {},
         layer: {
           name: 'layer1'
         }
       };
-      var readRawGeometry_ = MVT.readRawGeometry_;
+      const readRawGeometry_ = MVT.readRawGeometry_;
       MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
         ends.push(10, 20);
       };
-      var feature = format.createFeature_({}, rawFeature);
+      const feature = format.createFeature_({}, rawFeature);
       MVT.readRawGeometry_ = readRawGeometry_;
-      var geometry = feature.getGeometry();
+      const geometry = feature.getGeometry();
       expect(geometry).to.be.a(MultiPolygon);
     });
 
     it('creates ol.render.Feature instances', function() {
-      var format = new MVT();
-      var rawFeature = {
+      const format = new MVT();
+      const rawFeature = {
         type: 3,
         properties: {
           foo: 'bar'
@@ -173,9 +173,9 @@ describe('ol.format.MVT', function() {
           name: 'layer1'
         }
       };
-      var readRawGeometry_ = MVT.readRawGeometry_;
-      var createdFlatCoordinates;
-      var createdEnds;
+      const readRawGeometry_ = MVT.readRawGeometry_;
+      let createdFlatCoordinates;
+      let createdEnds;
       MVT.readRawGeometry_ = function({}, rawFeature, flatCoordinates, ends) {
         flatCoordinates.push(0, 0, 1, 0, 1, 1, 1, 0, 0, 0);
         flatCoordinates.push(1, 1, 2, 1, 2, 2, 2, 1, 1, 1);
@@ -183,7 +183,7 @@ describe('ol.format.MVT', function() {
         ends.push(10, 20);
         createdEnds = ends;
       };
-      var feature = format.createFeature_({}, rawFeature);
+      const feature = format.createFeature_({}, rawFeature);
       MVT.readRawGeometry_ = readRawGeometry_;
       expect(feature).to.be.a(RenderFeature);
       expect(feature.getType()).to.be('Polygon');

@@ -2,7 +2,7 @@
  * @module ol/render/replay
  */
 import ReplayType from '../render/ReplayType.js';
-var _ol_render_replay_ = {};
+const _ol_render_replay_ = {};
 
 
 /**

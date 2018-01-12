@@ -3,11 +3,11 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
-var source = new OSM();
+const source = new OSM();
 
-var layer = new TileLayer();
+const layer = new TileLayer();
 
-var map = new Map({
+const map = new Map({
   layers: [layer],
   target: 'map',
   view: new View({

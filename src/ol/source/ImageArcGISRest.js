@@ -26,9 +26,9 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.ImageArcGISRestOptions=} opt_options Image ArcGIS Rest Options.
  * @api
  */
-var ImageArcGISRest = function(opt_options) {
+const ImageArcGISRest = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   ImageSource.call(this, {
     attributions: options.attributions,
@@ -122,7 +122,7 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
-  var image = this.image_;
+  const image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
@@ -131,7 +131,7 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
     return image;
   }
 
-  var params = {
+  const params = {
     'F': 'image',
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
@@ -139,22 +139,22 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
   _ol_obj_.assign(params, this.params_);
 
   extent = extent.slice();
-  var centerX = (extent[0] + extent[2]) / 2;
-  var centerY = (extent[1] + extent[3]) / 2;
+  const centerX = (extent[0] + extent[2]) / 2;
+  const centerY = (extent[1] + extent[3]) / 2;
   if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * getWidth(extent) / 2;
-    var halfHeight = this.ratio_ * getHeight(extent) / 2;
+    const halfWidth = this.ratio_ * getWidth(extent) / 2;
+    const halfHeight = this.ratio_ * getHeight(extent) / 2;
     extent[0] = centerX - halfWidth;
     extent[1] = centerY - halfHeight;
     extent[2] = centerX + halfWidth;
     extent[3] = centerY + halfHeight;
   }
 
-  var imageResolution = resolution / pixelRatio;
+  const imageResolution = resolution / pixelRatio;
 
   // Compute an integer width and height.
-  var width = Math.ceil(getWidth(extent) / imageResolution);
-  var height = Math.ceil(getHeight(extent) / imageResolution);
+  const width = Math.ceil(getWidth(extent) / imageResolution);
+  const height = Math.ceil(getHeight(extent) / imageResolution);
 
   // Modify the extent to match the integer width and height.
   extent[0] = centerX - imageResolution * width / 2;
@@ -165,16 +165,16 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
   this.imageSize_[0] = width;
   this.imageSize_[1] = height;
 
-  var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
-      projection, params);
+  const url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
+    projection, params);
 
   this.image_ = new _ol_Image_(extent, resolution, pixelRatio,
-      url, this.crossOrigin_, this.imageLoadFunction_);
+    url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
 
   _ol_events_.listen(this.image_, EventType.CHANGE,
-      this.handleImageChange, this);
+    this.handleImageChange, this);
 
   return this.image_;
 
@@ -202,7 +202,7 @@ ImageArcGISRest.prototype.getImageLoadFunction = function() {
  */
 ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
   // ArcGIS Server only wants the numeric portion of the projection ID.
-  var srid = projection.getCode().split(':').pop();
+  const srid = projection.getCode().split(':').pop();
 
   params['SIZE'] = size[0] + ',' + size[1];
   params['BBOX'] = extent.join(',');
@@ -210,11 +210,11 @@ ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, pr
   params['IMAGESR'] = srid;
   params['DPI'] = Math.round(90 * pixelRatio);
 
-  var url = this.url_;
+  const url = this.url_;
 
-  var modifiedUrl = url
-      .replace(/MapServer\/?$/, 'MapServer/export')
-      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+  const modifiedUrl = url
+    .replace(/MapServer\/?$/, 'MapServer/export')
+    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
     assert(false, 50); // `options.featureTypes` should be an Array
   }

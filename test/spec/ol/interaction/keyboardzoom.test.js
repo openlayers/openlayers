@@ -5,7 +5,7 @@ import Event from '../../../../src/ol/events/Event.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 
 describe('ol.interaction.KeyboardZoom', function() {
-  var map;
+  let map;
 
   beforeEach(function() {
     map = new Map({
@@ -24,8 +24,8 @@ describe('ol.interaction.KeyboardZoom', function() {
 
   describe('handleEvent()', function() {
     it('zooms on + and - keys', function() {
-      var spy = sinon.spy(Interaction, 'zoomByDelta');
-      var event = new MapBrowserEvent('keydown', map, {
+      const spy = sinon.spy(Interaction, 'zoomByDelta');
+      const event = new MapBrowserEvent('keydown', map, {
         type: 'keydown',
         target: map.getTargetElement(),
         preventDefault: Event.prototype.preventDefault

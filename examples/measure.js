@@ -16,13 +16,13 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var source = new VectorSource();
+const source = new VectorSource();
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: source,
   style: new Style({
     fill: new Fill({
@@ -46,64 +46,64 @@ var vector = new VectorLayer({
  * Currently drawn feature.
  * @type {ol.Feature}
  */
-var sketch;
+let sketch;
 
 
 /**
  * The help tooltip element.
  * @type {Element}
  */
-var helpTooltipElement;
+let helpTooltipElement;
 
 
 /**
  * Overlay to show the help messages.
  * @type {ol.Overlay}
  */
-var helpTooltip;
+let helpTooltip;
 
 
 /**
  * The measure tooltip element.
  * @type {Element}
  */
-var measureTooltipElement;
+let measureTooltipElement;
 
 
 /**
  * Overlay to show the measurement.
  * @type {ol.Overlay}
  */
-var measureTooltip;
+let measureTooltip;
 
 
 /**
  * Message to show when the user is drawing a polygon.
  * @type {string}
  */
-var continuePolygonMsg = 'Click to continue drawing the polygon';
+const continuePolygonMsg = 'Click to continue drawing the polygon';
 
 
 /**
  * Message to show when the user is drawing a line.
  * @type {string}
  */
-var continueLineMsg = 'Click to continue drawing the line';
+const continueLineMsg = 'Click to continue drawing the line';
 
 
 /**
  * Handle pointer move.
  * @param {ol.MapBrowserEvent} evt The event.
  */
-var pointerMoveHandler = function(evt) {
+const pointerMoveHandler = function(evt) {
   if (evt.dragging) {
     return;
   }
   /** @type {string} */
-  var helpMsg = 'Click to start drawing';
+  let helpMsg = 'Click to start drawing';
 
   if (sketch) {
-    var geom = (sketch.getGeometry());
+    const geom = (sketch.getGeometry());
     if (geom instanceof Polygon) {
       helpMsg = continuePolygonMsg;
     } else if (geom instanceof LineString) {
@@ -118,7 +118,7 @@ var pointerMoveHandler = function(evt) {
 };
 
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -133,9 +133,9 @@ map.getViewport().addEventListener('mouseout', function() {
   helpTooltipElement.classList.add('hidden');
 });
 
-var typeSelect = document.getElementById('type');
+const typeSelect = document.getElementById('type');
 
-var draw; // global so we can remove it later
+let draw; // global so we can remove it later
 
 
 /**
@@ -143,9 +143,9 @@ var draw; // global so we can remove it later
  * @param {ol.geom.LineString} line The line.
  * @return {string} The formatted length.
  */
-var formatLength = function(line) {
-  var length = getLength(line);
-  var output;
+const formatLength = function(line) {
+  const length = getLength(line);
+  let output;
   if (length > 100) {
     output = (Math.round(length / 1000 * 100) / 100) +
         ' ' + 'km';
@@ -162,9 +162,9 @@ var formatLength = function(line) {
  * @param {ol.geom.Polygon} polygon The polygon.
  * @return {string} Formatted area.
  */
-var formatArea = function(polygon) {
-  var area = getArea(polygon);
-  var output;
+const formatArea = function(polygon) {
+  const area = getArea(polygon);
+  let output;
   if (area > 10000) {
     output = (Math.round(area / 1000000 * 100) / 100) +
         ' ' + 'km<sup>2</sup>';
@@ -176,7 +176,7 @@ var formatArea = function(polygon) {
 };
 
 function addInteraction() {
-  var type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
+  const type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
   draw = new Draw({
     source: source,
     type: type,
@@ -205,41 +205,41 @@ function addInteraction() {
   createMeasureTooltip();
   createHelpTooltip();
 
-  var listener;
+  let listener;
   draw.on('drawstart',
-      function(evt) {
-        // set sketch
-        sketch = evt.feature;
+    function(evt) {
+      // set sketch
+      sketch = evt.feature;
 
-        /** @type {ol.Coordinate|undefined} */
-        var tooltipCoord = evt.coordinate;
+      /** @type {ol.Coordinate|undefined} */
+      let tooltipCoord = evt.coordinate;
 
-        listener = sketch.getGeometry().on('change', function(evt) {
-          var geom = evt.target;
-          var output;
-          if (geom instanceof Polygon) {
-            output = formatArea(geom);
-            tooltipCoord = geom.getInteriorPoint().getCoordinates();
-          } else if (geom instanceof LineString) {
-            output = formatLength(geom);
-            tooltipCoord = geom.getLastCoordinate();
-          }
-          measureTooltipElement.innerHTML = output;
-          measureTooltip.setPosition(tooltipCoord);
-        });
-      }, this);
+      listener = sketch.getGeometry().on('change', function(evt) {
+        const geom = evt.target;
+        let output;
+        if (geom instanceof Polygon) {
+          output = formatArea(geom);
+          tooltipCoord = geom.getInteriorPoint().getCoordinates();
+        } else if (geom instanceof LineString) {
+          output = formatLength(geom);
+          tooltipCoord = geom.getLastCoordinate();
+        }
+        measureTooltipElement.innerHTML = output;
+        measureTooltip.setPosition(tooltipCoord);
+      });
+    }, this);
 
   draw.on('drawend',
-      function() {
-        measureTooltipElement.className = 'tooltip tooltip-static';
-        measureTooltip.setOffset([0, -7]);
-        // unset sketch
-        sketch = null;
-        // unset tooltip so that a new one can be created
-        measureTooltipElement = null;
-        createMeasureTooltip();
-        Observable.unByKey(listener);
-      }, this);
+    function() {
+      measureTooltipElement.className = 'tooltip tooltip-static';
+      measureTooltip.setOffset([0, -7]);
+      // unset sketch
+      sketch = null;
+      // unset tooltip so that a new one can be created
+      measureTooltipElement = null;
+      createMeasureTooltip();
+      Observable.unByKey(listener);
+    }, this);
 }
 
 

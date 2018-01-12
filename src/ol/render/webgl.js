@@ -1,7 +1,7 @@
 /**
  * @module ol/render/webgl
  */
-var _ol_render_webgl_ = {};
+const _ol_render_webgl_ = {};
 
 
 /**
@@ -90,7 +90,7 @@ _ol_render_webgl_.defaultLineWidth = 1;
  * @return {boolean|undefined} Triangle is clockwise.
  */
 _ol_render_webgl_.triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
-  var area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
+  const area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
   return (area <= _ol_render_webgl_.EPSILON && area >= -_ol_render_webgl_.EPSILON) ?
     undefined : area > 0;
 };

@@ -10,13 +10,13 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   url: 'data/geojson/countries.geojson',
   format: new GeoJSON()
 });
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -33,13 +33,13 @@ var map = new Map({
 });
 
 // a normal select interaction to handle click
-var select = new Select();
+const select = new Select();
 map.addInteraction(select);
 
-var selectedFeatures = select.getFeatures();
+const selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
-var dragBox = new DragBox({
+const dragBox = new DragBox({
   condition: _ol_events_condition_.platformModifierKeyOnly
 });
 
@@ -48,7 +48,7 @@ map.addInteraction(dragBox);
 dragBox.on('boxend', function() {
   // features that intersect the box are added to the collection of
   // selected features
-  var extent = dragBox.getGeometry().getExtent();
+  const extent = dragBox.getGeometry().getExtent();
   vectorSource.forEachFeatureIntersectingExtent(extent, function(feature) {
     selectedFeatures.push(feature);
   });
@@ -59,10 +59,10 @@ dragBox.on('boxstart', function() {
   selectedFeatures.clear();
 });
 
-var infoBox = document.getElementById('info');
+const infoBox = document.getElementById('info');
 
 selectedFeatures.on(['add', 'remove'], function() {
-  var names = selectedFeatures.getArray().map(function(feature) {
+  const names = selectedFeatures.getArray().map(function(feature) {
     return feature.get('name');
   });
   if (names.length > 0) {

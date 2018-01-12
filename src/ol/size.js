@@ -1,7 +1,7 @@
 /**
  * @module ol/size
  */
-var _ol_size_ = {};
+const _ol_size_ = {};
 
 
 /**

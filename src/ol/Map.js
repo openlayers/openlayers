@@ -84,7 +84,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * @fires ol.render.Event#precompose
  * @api
  */
-var Map = function(options) {
+const Map = function(options) {
   options = _ol_obj_.assign({}, options);
   if (!options.controls) {
     options.controls = defaultControls();

@@ -21,7 +21,7 @@ import _ol_render_webgl_TextReplay_ from '../webgl/TextReplay.js';
  * @param {number=} opt_renderBuffer Render buffer.
  * @struct
  */
-var _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderBuffer) {
+const _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderBuffer) {
   _ol_render_ReplayGroup_.call(this);
 
   /**
@@ -66,20 +66,19 @@ _ol_render_webgl_ReplayGroup_.prototype.addDeclutter = function(style, group) {}
  * @return {function()} Delete resources function.
  */
 _ol_render_webgl_ReplayGroup_.prototype.getDeleteResourcesFunction = function(context) {
-  var functions = [];
-  var zKey;
+  const functions = [];
+  let zKey;
   for (zKey in this.replaysByZIndex_) {
-    var replays = this.replaysByZIndex_[zKey];
-    var replayKey;
-    for (replayKey in replays) {
+    const replays = this.replaysByZIndex_[zKey];
+    for (const replayKey in replays) {
       functions.push(
-          replays[replayKey].getDeleteResourcesFunction(context));
+        replays[replayKey].getDeleteResourcesFunction(context));
     }
   }
   return function() {
-    var length = functions.length;
-    var result;
-    for (var i = 0; i < length; i++) {
+    const length = functions.length;
+    let result;
+    for (let i = 0; i < length; i++) {
       result = functions[i].apply(this, arguments);
     }
     return result;
@@ -91,11 +90,10 @@ _ol_render_webgl_ReplayGroup_.prototype.getDeleteResourcesFunction = function(co
  * @param {ol.webgl.Context} context Context.
  */
 _ol_render_webgl_ReplayGroup_.prototype.finish = function(context) {
-  var zKey;
+  let zKey;
   for (zKey in this.replaysByZIndex_) {
-    var replays = this.replaysByZIndex_[zKey];
-    var replayKey;
-    for (replayKey in replays) {
+    const replays = this.replaysByZIndex_[zKey];
+    for (const replayKey in replays) {
       replays[replayKey].finish(context);
     }
   }
@@ -106,18 +104,18 @@ _ol_render_webgl_ReplayGroup_.prototype.finish = function(context) {
  * @inheritDoc
  */
 _ol_render_webgl_ReplayGroup_.prototype.getReplay = function(zIndex, replayType) {
-  var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
-  var replays = this.replaysByZIndex_[zIndexKey];
+  const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
+  let replays = this.replaysByZIndex_[zIndexKey];
   if (replays === undefined) {
     replays = {};
     this.replaysByZIndex_[zIndexKey] = replays;
   }
-  var replay = replays[replayType];
+  let replay = replays[replayType];
   if (replay === undefined) {
     /**
      * @type {Function}
      */
-    var Constructor = _ol_render_webgl_ReplayGroup_.BATCH_CONSTRUCTORS_[replayType];
+    const Constructor = _ol_render_webgl_ReplayGroup_.BATCH_CONSTRUCTORS_[replayType];
     replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }
@@ -145,22 +143,22 @@ _ol_render_webgl_ReplayGroup_.prototype.isEmpty = function() {
  *  to skip.
  */
 _ol_render_webgl_ReplayGroup_.prototype.replay = function(context,
-    center, resolution, rotation, size, pixelRatio,
-    opacity, skippedFeaturesHash) {
+  center, resolution, rotation, size, pixelRatio,
+  opacity, skippedFeaturesHash) {
   /** @type {Array.<number>} */
-  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  const zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(numberSafeCompareFunction);
 
-  var i, ii, j, jj, replays, replay;
+  let i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
     for (j = 0, jj = _ol_render_replay_.ORDER.length; j < jj; ++j) {
       replay = replays[_ol_render_replay_.ORDER[j]];
       if (replay !== undefined) {
         replay.replay(context,
-            center, resolution, rotation, size, pixelRatio,
-            opacity, skippedFeaturesHash,
-            undefined, false);
+          center, resolution, rotation, size, pixelRatio,
+          opacity, skippedFeaturesHash,
+          undefined, false);
       }
     }
   }
@@ -186,23 +184,23 @@ _ol_render_webgl_ReplayGroup_.prototype.replay = function(context,
  * @template T
  */
 _ol_render_webgl_ReplayGroup_.prototype.replayHitDetection_ = function(context,
-    center, resolution, rotation, size, pixelRatio, opacity,
-    skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+  center, resolution, rotation, size, pixelRatio, opacity,
+  skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
   /** @type {Array.<number>} */
-  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  const zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(function(a, b) {
     return b - a;
   });
 
-  var i, ii, j, replays, replay, result;
+  let i, ii, j, replays, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
     for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
       replay = replays[_ol_render_replay_.ORDER[j]];
       if (replay !== undefined) {
         result = replay.replay(context,
-            center, resolution, rotation, size, pixelRatio, opacity,
-            skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
+          center, resolution, rotation, size, pixelRatio, opacity,
+          skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
         if (result) {
           return result;
         }
@@ -229,18 +227,18 @@ _ol_render_webgl_ReplayGroup_.prototype.replayHitDetection_ = function(context,
  * @template T
  */
 _ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
-    coordinate, context, center, resolution, rotation, size, pixelRatio,
-    opacity, skippedFeaturesHash,
-    callback) {
-  var gl = context.getGL();
+  coordinate, context, center, resolution, rotation, size, pixelRatio,
+  opacity, skippedFeaturesHash,
+  callback) {
+  const gl = context.getGL();
   gl.bindFramebuffer(
-      gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
+    gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
 
   /**
    * @type {ol.Extent}
    */
-  var hitExtent;
+  let hitExtent;
   if (this.renderBuffer_ !== undefined) {
     // build an extent around the coordinate, so that only features that
     // intersect this extent are checked
@@ -248,23 +246,23 @@ _ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
   }
 
   return this.replayHitDetection_(context,
-      coordinate, resolution, rotation, _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_,
-      pixelRatio, opacity, skippedFeaturesHash,
-      /**
+    coordinate, resolution, rotation, _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_,
+    pixelRatio, opacity, skippedFeaturesHash,
+    /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
        */
-      function(feature) {
-        var imageData = new Uint8Array(4);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+    function(feature) {
+      const imageData = new Uint8Array(4);
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
-        if (imageData[3] > 0) {
-          var result = callback(feature);
-          if (result) {
-            return result;
-          }
+      if (imageData[3] > 0) {
+        const result = callback(feature);
+        if (result) {
+          return result;
         }
-      }, true, hitExtent);
+      }
+    }, true, hitExtent);
 };
 
 
@@ -282,24 +280,24 @@ _ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
  * @return {boolean} Is there a feature at the given coordinate?
  */
 _ol_render_webgl_ReplayGroup_.prototype.hasFeatureAtCoordinate = function(
-    coordinate, context, center, resolution, rotation, size, pixelRatio,
-    opacity, skippedFeaturesHash) {
-  var gl = context.getGL();
+  coordinate, context, center, resolution, rotation, size, pixelRatio,
+  opacity, skippedFeaturesHash) {
+  const gl = context.getGL();
   gl.bindFramebuffer(
-      gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
+    gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
-  var hasFeature = this.replayHitDetection_(context,
-      coordinate, resolution, rotation, _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_,
-      pixelRatio, opacity, skippedFeaturesHash,
-      /**
+  const hasFeature = this.replayHitDetection_(context,
+    coordinate, resolution, rotation, _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_,
+    pixelRatio, opacity, skippedFeaturesHash,
+    /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {boolean} Is there a feature?
        */
-      function(feature) {
-        var imageData = new Uint8Array(4);
-        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
-        return imageData[3] > 0;
-      }, false);
+    function(feature) {
+      const imageData = new Uint8Array(4);
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+      return imageData[3] > 0;
+    }, false);
 
   return hasFeature !== undefined;
 };

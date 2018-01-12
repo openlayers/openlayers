@@ -17,10 +17,10 @@ import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 describe('ol.rendering.layer.VectorTile', function() {
 
-  var map;
+  let map;
 
   function createMap(renderer, opt_pixelRatio, opt_size) {
-    var size = opt_size || 50;
+    const size = opt_size || 50;
     map = new Map({
       pixelRatio: opt_pixelRatio || 1,
       target: createMapDiv(size, size),
@@ -38,10 +38,10 @@ describe('ol.rendering.layer.VectorTile', function() {
   });
 
   function waitForTiles(source, layerOptions, onTileLoaded) {
-    var tilesLoading = 0;
-    var tileLoaded = 0;
+    let tilesLoading = 0;
+    let tileLoaded = 0;
 
-    var update = function() {
+    const update = function() {
       if (tilesLoading === tileLoaded) {
         onTileLoaded();
       }
@@ -58,7 +58,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       expect().fail('Tile failed to load');
     });
 
-    var options = {
+    const options = {
       source: source
     };
     _ol_obj_.assign(options, layerOptions);
@@ -66,7 +66,7 @@ describe('ol.rendering.layer.VectorTile', function() {
   }
 
   describe('vector tile layer', function() {
-    var source;
+    let source;
 
     beforeEach(function() {
       source = new VectorTileSource({
@@ -81,7 +81,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       createMap('canvas');
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas.png',
-            22, done);
+          22, done);
       });
     });
 
@@ -90,13 +90,13 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated.png',
-            14, done);
+          14, done);
       });
     });
 
     it('renders rotated view correctly with vector layer on top', function(done) {
       createMap('canvas');
-      var vectorSource = new VectorSource({
+      const vectorSource = new VectorSource({
         features: [
           new Feature(new Point([1825727.7316762917, 6143091.089223046]))
         ]
@@ -116,7 +116,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-vector-rotated.png',
-            14, done);
+          14, done);
       });
     });
 
@@ -124,7 +124,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       createMap('canvas', 2);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-hidpi.png',
-            11.3, done);
+          11.3, done);
       });
     });
 
@@ -133,15 +133,15 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
-            14.8, done);
+          14.8, done);
       });
     });
 
     it('declutters text and images', function(done) {
       createMap('canvas', 1, 100);
       map.getView().setZoom(13.8);
-      var style = function(feature, resolution) {
-        var geom = feature.getGeometry();
+      const style = function(feature, resolution) {
+        const geom = feature.getGeometry();
         if (geom.getType() == 'Point') {
           return new Style({
             image: new CircleStyle({
@@ -161,7 +161,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       };
       waitForTiles(source, {declutter: true, style: style}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-declutter.png',
-            8.5, done);
+          8.5, done);
       });
     });
 

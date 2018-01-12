@@ -11,7 +11,7 @@ describe('ol.VectorTile', function() {
 
   it('loader sets features on the tile and updates proj units', function(done) {
     // mock format that return a tile-pixels feature
-    var format = new TextFeature();
+    const format = new TextFeature();
     format.readProjection = function(source) {
       return new Projection({
         code: '',
@@ -22,11 +22,11 @@ describe('ol.VectorTile', function() {
       return [new Feature()];
     };
 
-    var tile = new VectorTile([0, 0, 0], null, null, format);
-    var url = 'spec/ol/data/point.json';
+    const tile = new VectorTile([0, 0, 0], null, null, format);
+    const url = 'spec/ol/data/point.json';
 
     defaultLoadFunction(tile, url);
-    var loader = tile.loader_;
+    const loader = tile.loader_;
     _ol_events_.listen(tile, 'change', function(e) {
       expect(tile.getFeatures().length).to.be.greaterThan(0);
       expect(tile.getProjection().getUnits()).to.be('tile-pixels');

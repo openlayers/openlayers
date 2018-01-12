@@ -4,7 +4,7 @@ import _ol_events_ from '../../../src/ol/events.js';
 
 describe('ol.Object', function() {
 
-  var o;
+  let o;
   beforeEach(function() {
     o = new BaseObject();
   });
@@ -12,7 +12,7 @@ describe('ol.Object', function() {
   describe('get, set and unset', function() {
 
     describe('get an unset property', function() {
-      var v;
+      let v;
       beforeEach(function() {
         v = o.get('k');
       });
@@ -23,7 +23,7 @@ describe('ol.Object', function() {
     });
 
     describe('get a set property', function() {
-      var v;
+      let v;
       beforeEach(function() {
         o.set('k', 1);
         v = o.get('k');
@@ -40,7 +40,7 @@ describe('ol.Object', function() {
       });
 
       it('returns undefined', function() {
-        var v = o.unset('k');
+        const v = o.unset('k');
         expect(v).to.be(undefined);
       });
     });
@@ -49,7 +49,7 @@ describe('ol.Object', function() {
   describe('#get()', function() {
 
     it('does not return values that are not explicitly set', function() {
-      var o = new BaseObject();
+      const o = new BaseObject();
       expect(o.get('constructor')).to.be(undefined);
       expect(o.get('hasOwnProperty')).to.be(undefined);
       expect(o.get('isPrototypeOf')).to.be(undefined);
@@ -63,7 +63,7 @@ describe('ol.Object', function() {
 
   describe('#set()', function() {
     it('can be used with arbitrary names', function() {
-      var o = new BaseObject();
+      const o = new BaseObject();
 
       o.set('set', 'sat');
       expect(o.get('set')).to.be('sat');
@@ -80,14 +80,14 @@ describe('ol.Object', function() {
   describe('#getKeys()', function() {
 
     it('returns property names set at construction', function() {
-      var o = new BaseObject({
+      const o = new BaseObject({
         prop1: 'val1',
         prop2: 'val2',
         toString: 'string',
         get: 'foo'
       });
 
-      var keys = o.getKeys();
+      const keys = o.getKeys();
       expect(keys.length).to.be(4);
       expect(keys.sort()).to.eql(['get', 'prop1', 'prop2', 'toString']);
     });
@@ -104,14 +104,14 @@ describe('ol.Object', function() {
       expect(o.get('k1')).to.eql(1);
       expect(o.get('k2')).to.eql(2);
 
-      var keys = o.getKeys().sort();
+      const keys = o.getKeys().sort();
       expect(keys).to.eql(['k1', 'k2']);
     });
   });
 
   describe('notify', function() {
 
-    var listener1, listener2;
+    let listener1, listener2;
 
     beforeEach(function() {
       listener1 = sinon.spy();
@@ -124,9 +124,9 @@ describe('ol.Object', function() {
     it('dispatches events', function() {
       o.notify('k', 1);
       expect(listener1.calledOnce).to.be(true);
-      var args = listener1.firstCall.args;
+      const args = listener1.firstCall.args;
       expect(args).to.have.length(1);
-      var event = args[0];
+      const event = args[0];
       expect(event.key).to.be('k');
       expect(event.oldValue).to.be(1);
     });
@@ -134,9 +134,9 @@ describe('ol.Object', function() {
     it('dispatches generic change events to bound objects', function() {
       o.notify('k', 1);
       expect(listener2.calledOnce).to.be(true);
-      var args = listener2.firstCall.args;
+      const args = listener2.firstCall.args;
       expect(args).to.have.length(1);
-      var event = args[0];
+      const event = args[0];
       expect(event.key).to.be('k');
       expect(event.oldValue).to.be(1);
     });
@@ -144,7 +144,7 @@ describe('ol.Object', function() {
 
   describe('set', function() {
 
-    var listener1, listener2;
+    let listener1, listener2;
 
     beforeEach(function() {
       listener1 = sinon.spy();
@@ -164,9 +164,9 @@ describe('ol.Object', function() {
     it('dispatches generic change events to object', function() {
       o.set('k', 1);
       expect(listener2.calledOnce).to.be(true);
-      var args = listener2.firstCall.args;
+      const args = listener2.firstCall.args;
       expect(args).to.have.length(1);
-      var event = args[0];
+      const event = args[0];
       expect(event.key).to.be('k');
     });
 
@@ -212,7 +212,7 @@ describe('ol.Object', function() {
 
   describe('create with options', function() {
     it('sets the property', function() {
-      var o = new BaseObject({k: 1});
+      const o = new BaseObject({k: 1});
       expect(o.get('k')).to.eql(1);
 
       expect(o.getKeys()).to.eql(['k']);
@@ -220,7 +220,7 @@ describe('ol.Object', function() {
   });
 
   describe('case sensitivity', function() {
-    var listener1, listener2;
+    let listener1, listener2;
 
     beforeEach(function() {
       listener1 = sinon.spy();

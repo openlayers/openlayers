@@ -22,9 +22,9 @@ import Layer from '../layer/Layer.js';
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
  * @api
  */
-var Attribution = function(opt_options) {
+const Attribution = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -49,11 +49,11 @@ var Attribution = function(opt_options) {
     this.collapsed_ = false;
   }
 
-  var className = options.className !== undefined ? options.className : 'ol-attribution';
+  const className = options.className !== undefined ? options.className : 'ol-attribution';
 
-  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
+  const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
 
-  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
+  const collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
 
   if (typeof collapseLabel === 'string') {
     /**
@@ -66,7 +66,7 @@ var Attribution = function(opt_options) {
     this.collapseLabel_ = collapseLabel;
   }
 
-  var label = options.label !== undefined ? options.label : 'i';
+  const label = options.label !== undefined ? options.label : 'i';
 
   if (typeof label === 'string') {
     /**
@@ -80,24 +80,24 @@ var Attribution = function(opt_options) {
   }
 
 
-  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
+  const activeLabel = (this.collapsible_ && !this.collapsed_) ?
     this.collapseLabel_ : this.label_;
-  var button = document.createElement('button');
+  const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
   _ol_events_.listen(button, EventType.CLICK, this.handleClick_, this);
 
-  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
+  const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-  var element = document.createElement('div');
+  const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(this.ulElement_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : Attribution.render;
+  const render = options.render ? options.render : Attribution.render;
 
   Control.call(this, {
     element: element,
@@ -134,39 +134,39 @@ Attribution.prototype.getSourceAttributions_ = function(frameState) {
    * Used to determine if an attribution already exists.
    * @type {Object.<string, boolean>}
    */
-  var lookup = {};
+  const lookup = {};
 
   /**
    * A list of visible attributions.
    * @type {Array.<string>}
    */
-  var visibleAttributions = [];
+  const visibleAttributions = [];
 
-  var layerStatesArray = frameState.layerStatesArray;
-  var resolution = frameState.viewState.resolution;
-  for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-    var layerState = layerStatesArray[i];
+  const layerStatesArray = frameState.layerStatesArray;
+  const resolution = frameState.viewState.resolution;
+  for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    const layerState = layerStatesArray[i];
     if (!Layer.visibleAtResolution(layerState, resolution)) {
       continue;
     }
 
-    var source = layerState.layer.getSource();
+    const source = layerState.layer.getSource();
     if (!source) {
       continue;
     }
 
-    var attributionGetter = source.getAttributions();
+    const attributionGetter = source.getAttributions();
     if (!attributionGetter) {
       continue;
     }
 
-    var attributions = attributionGetter(frameState);
+    const attributions = attributionGetter(frameState);
     if (!attributions) {
       continue;
     }
 
     if (Array.isArray(attributions)) {
-      for (var j = 0, jj = attributions.length; j < jj; ++j) {
+      for (let j = 0, jj = attributions.length; j < jj; ++j) {
         if (!(attributions[j] in lookup)) {
           visibleAttributions.push(attributions[j]);
           lookup[attributions[j]] = true;
@@ -207,7 +207,7 @@ Attribution.prototype.updateElement_ = function(frameState) {
     return;
   }
 
-  var attributions = this.getSourceAttributions_(frameState);
+  const attributions = this.getSourceAttributions_(frameState);
   if (equals(attributions, this.renderedAttributions_)) {
     return;
   }
@@ -215,14 +215,14 @@ Attribution.prototype.updateElement_ = function(frameState) {
   removeChildren(this.ulElement_);
 
   // append the attributions
-  for (var i = 0, ii = attributions.length; i < ii; ++i) {
-    var element = document.createElement('LI');
+  for (let i = 0, ii = attributions.length; i < ii; ++i) {
+    const element = document.createElement('LI');
     element.innerHTML = attributions[i];
     this.ulElement_.appendChild(element);
   }
 
 
-  var visible = attributions.length > 0;
+  const visible = attributions.length > 0;
   if (this.renderedVisible_ != visible) {
     this.element.style.display = visible ? '' : 'none';
     this.renderedVisible_ = visible;

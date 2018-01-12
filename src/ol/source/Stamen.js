@@ -14,14 +14,14 @@ import XYZ from '../source/XYZ.js';
  * @param {olx.source.StamenOptions} options Stamen options.
  * @api
  */
-var Stamen = function(options) {
-  var i = options.layer.indexOf('-');
-  var provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  var providerConfig = Stamen.ProviderConfig[provider];
+const Stamen = function(options) {
+  const i = options.layer.indexOf('-');
+  const provider = i == -1 ? options.layer : options.layer.slice(0, i);
+  const providerConfig = Stamen.ProviderConfig[provider];
 
-  var layerConfig = Stamen.LayerConfig[options.layer];
+  const layerConfig = Stamen.LayerConfig[options.layer];
 
-  var url = options.url !== undefined ? options.url :
+  const url = options.url !== undefined ? options.url :
     'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
       '/{z}/{x}/{y}.' + layerConfig.extension;
 

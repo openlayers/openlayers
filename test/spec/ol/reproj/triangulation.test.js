@@ -10,7 +10,7 @@ describe('ol.reproj.Triangulation', function() {
         '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
         '+units=m +no_defs');
     register(proj4);
-    var proj27700 = getProjection('EPSG:27700');
+    const proj27700 = getProjection('EPSG:27700');
     proj27700.setExtent([0, 0, 700000, 1300000]);
   });
 
@@ -22,24 +22,24 @@ describe('ol.reproj.Triangulation', function() {
 
   describe('constructor', function() {
     it('is trivial for identity', function() {
-      var proj4326 = getProjection('EPSG:4326');
-      var triangulation = new Triangulation(proj4326, proj4326,
-          [20, 20, 30, 30], [-180, -90, 180, 90], 0);
+      const proj4326 = getProjection('EPSG:4326');
+      const triangulation = new Triangulation(proj4326, proj4326,
+        [20, 20, 30, 30], [-180, -90, 180, 90], 0);
       expect(triangulation.getTriangles().length).to.be(2);
     });
 
     it('is empty when outside source extent', function() {
-      var proj4326 = getProjection('EPSG:4326');
-      var proj27700 = getProjection('EPSG:27700');
-      var triangulation = new Triangulation(proj27700, proj4326,
-          [0, 0, 10, 10], proj27700.getExtent(), 0);
+      const proj4326 = getProjection('EPSG:4326');
+      const proj27700 = getProjection('EPSG:27700');
+      const triangulation = new Triangulation(proj27700, proj4326,
+        [0, 0, 10, 10], proj27700.getExtent(), 0);
       expect(triangulation.getTriangles().length).to.be(0);
     });
 
     it('can handle null source extent', function() {
-      var proj4326 = getProjection('EPSG:4326');
-      var triangulation = new Triangulation(proj4326, proj4326,
-          [20, 20, 30, 30], null, 0);
+      const proj4326 = getProjection('EPSG:4326');
+      const triangulation = new Triangulation(proj4326, proj4326,
+        [20, 20, 30, 30], null, 0);
       expect(triangulation.getTriangles().length).to.be(2);
     });
   });

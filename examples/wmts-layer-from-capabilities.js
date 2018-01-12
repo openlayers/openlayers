@@ -5,14 +5,14 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import WMTS from '../src/ol/source/WMTS.js';
 
-var parser = new _ol_format_WMTSCapabilities_();
-var map;
+const parser = new _ol_format_WMTSCapabilities_();
+let map;
 
 fetch('data/WMTSCapabilities.xml').then(function(response) {
   return response.text();
 }).then(function(text) {
-  var result = parser.read(text);
-  var options = WMTS.optionsFromCapabilities(result, {
+  const result = parser.read(text);
+  const options = WMTS.optionsFromCapabilities(result, {
     layer: 'layer-7328',
     matrixSet: 'EPSG:3857'
   });

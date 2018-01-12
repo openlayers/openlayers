@@ -13,8 +13,8 @@ import LogicalNary from '../filter/LogicalNary.js';
  * @extends {ol.format.filter.LogicalNary}
  * @api
  */
-var Or = function(conditions) {
-  var params = ['Or'].concat(Array.prototype.slice.call(arguments));
+const Or = function(conditions) {
+  const params = ['Or'].concat(Array.prototype.slice.call(arguments));
   LogicalNary.apply(this, params);
 };
 

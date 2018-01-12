@@ -25,7 +25,7 @@ import _ol_render_Box_ from '../render/Box.js';
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @api
  */
-var DragBox = function(opt_options) {
+const DragBox = function(opt_options) {
 
   PointerInteraction.call(this, {
     handleDownEvent: DragBox.handleDownEvent_,
@@ -33,7 +33,7 @@ var DragBox = function(opt_options) {
     handleUpEvent: DragBox.handleUpEvent_
   });
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.render.Box}
@@ -82,8 +82,8 @@ inherits(DragBox, PointerInteraction);
  * @this {ol.interaction.DragBox}
  */
 DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
-  var width = endPixel[0] - startPixel[0];
-  var height = endPixel[1] - startPixel[1];
+  const width = endPixel[0] - startPixel[0];
+  const height = endPixel[1] - startPixel[1];
   return width * width + height * height >= this.minArea_;
 };
 
@@ -101,7 +101,7 @@ DragBox.handleDragEvent_ = function(mapBrowserEvent) {
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
   this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXDRAG,
-      mapBrowserEvent.coordinate, mapBrowserEvent));
+    mapBrowserEvent.coordinate, mapBrowserEvent));
 };
 
 
@@ -138,10 +138,10 @@ DragBox.handleUpEvent_ = function(mapBrowserEvent) {
   this.box_.setMap(null);
 
   if (this.boxEndCondition_(mapBrowserEvent,
-      this.startPixel_, mapBrowserEvent.pixel)) {
+    this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXEND,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
+      mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
 };
@@ -164,7 +164,7 @@ DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new DragBox.Event(DragBox.EventType_.BOXSTART,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
+      mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
     return false;

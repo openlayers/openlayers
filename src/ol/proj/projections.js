@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/projections
  */
-var _ol_proj_projections_ = {};
+const _ol_proj_projections_ = {};
 
 
 /**
@@ -25,7 +25,7 @@ _ol_proj_projections_.clear = function() {
  * @return {ol.proj.Projection} The projection (if cached).
  */
 _ol_proj_projections_.get = function(code) {
-  var projections = _ol_proj_projections_.cache_;
+  const projections = _ol_proj_projections_.cache_;
   return projections[code] || null;
 };
 
@@ -36,7 +36,7 @@ _ol_proj_projections_.get = function(code) {
  * @param {ol.proj.Projection} projection The projection to cache.
  */
 _ol_proj_projections_.add = function(code, projection) {
-  var projections = _ol_proj_projections_.cache_;
+  const projections = _ol_proj_projections_.cache_;
   projections[code] = projection;
 };
 export default _ol_proj_projections_;

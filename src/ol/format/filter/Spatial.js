@@ -19,7 +19,7 @@ import Filter from '../filter/Filter.js';
  *    set on geometries when this is not provided.
  * @extends {ol.format.filter.Filter}
  */
-var Spatial = function(tagName, geometryName, geometry, opt_srsName) {
+const Spatial = function(tagName, geometryName, geometry, opt_srsName) {
 
   Filter.call(this, tagName);
 

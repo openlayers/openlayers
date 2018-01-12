@@ -1,7 +1,7 @@
 /**
  * @module ol/uri
  */
-var _ol_uri_ = {};
+const _ol_uri_ = {};
 
 
 /**
@@ -13,14 +13,14 @@ var _ol_uri_ = {};
  * @return {string} The new URI.
  */
 _ol_uri_.appendParams = function(uri, params) {
-  var keyParams = [];
+  const keyParams = [];
   // Skip any null or undefined parameter values
   Object.keys(params).forEach(function(k) {
     if (params[k] !== null && params[k] !== undefined) {
       keyParams.push(k + '=' + encodeURIComponent(params[k]));
     }
   });
-  var qs = keyParams.join('&');
+  const qs = keyParams.join('&');
   // remove any trailing ? or &
   uri = uri.replace(/[?&]$/, '');
   // append ? or & depending on whether uri has existing parameters

@@ -15,7 +15,7 @@ import Filter from '../filter/Filter.js';
  * @param {!string} propertyName Name of the context property to compare.
  * @extends {ol.format.filter.Filter}
  */
-var Comparison = function(tagName, propertyName) {
+const Comparison = function(tagName, propertyName) {
 
   Filter.call(this, tagName);
 

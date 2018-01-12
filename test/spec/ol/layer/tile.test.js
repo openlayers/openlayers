@@ -6,7 +6,7 @@ describe('ol.layer.Tile', function() {
 
   describe('constructor (defaults)', function() {
 
-    var layer;
+    let layer;
 
     beforeEach(function() {
       layer = new TileLayer({

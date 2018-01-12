@@ -12,12 +12,12 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var source = new VectorSource();
-var vector = new VectorLayer({
+const source = new VectorSource();
+const vector = new VectorLayer({
   source: source,
   style: new Style({
     fill: new Fill({
@@ -36,7 +36,7 @@ var vector = new VectorLayer({
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -45,11 +45,11 @@ var map = new Map({
   })
 });
 
-var modify = new Modify({source: source});
+const modify = new Modify({source: source});
 map.addInteraction(modify);
 
-var draw, snap; // global so we can remove them later
-var typeSelect = document.getElementById('type');
+let draw, snap; // global so we can remove them later
+const typeSelect = document.getElementById('type');
 
 function addInteractions() {
   draw = new Draw({

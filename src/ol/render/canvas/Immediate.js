@@ -35,7 +35,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {number} viewRotation View rotation.
  * @struct
  */
-var CanvasImmediateRenderer = function(context, pixelRatio, extent, transform, viewRotation) {
+const CanvasImmediateRenderer = function(context, pixelRatio, extent, transform, viewRotation) {
   VectorContext.call(this);
 
   /**
@@ -252,40 +252,40 @@ CanvasImmediateRenderer.prototype.drawImages_ = function(flatCoordinates, offset
   if (!this.image_) {
     return;
   }
-  var pixelCoordinates = _ol_geom_flat_transform_.transform2D(
-      flatCoordinates, offset, end, 2, this.transform_,
-      this.pixelCoordinates_);
-  var context = this.context_;
-  var localTransform = this.tmpLocalTransform_;
-  var alpha = context.globalAlpha;
+  const pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+    flatCoordinates, offset, end, 2, this.transform_,
+    this.pixelCoordinates_);
+  const context = this.context_;
+  const localTransform = this.tmpLocalTransform_;
+  const alpha = context.globalAlpha;
   if (this.imageOpacity_ != 1) {
     context.globalAlpha = alpha * this.imageOpacity_;
   }
-  var rotation = this.imageRotation_;
+  let rotation = this.imageRotation_;
   if (this.imageRotateWithView_) {
     rotation += this.viewRotation_;
   }
-  var i, ii;
+  let i, ii;
   for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
-    var x = pixelCoordinates[i] - this.imageAnchorX_;
-    var y = pixelCoordinates[i + 1] - this.imageAnchorY_;
+    let x = pixelCoordinates[i] - this.imageAnchorX_;
+    let y = pixelCoordinates[i + 1] - this.imageAnchorY_;
     if (this.imageSnapToPixel_) {
       x = Math.round(x);
       y = Math.round(y);
     }
     if (rotation !== 0 || this.imageScale_ != 1) {
-      var centerX = x + this.imageAnchorX_;
-      var centerY = y + this.imageAnchorY_;
+      const centerX = x + this.imageAnchorX_;
+      const centerY = y + this.imageAnchorY_;
       _ol_transform_.compose(localTransform,
-          centerX, centerY,
-          this.imageScale_, this.imageScale_,
-          rotation,
-          -centerX, -centerY);
+        centerX, centerY,
+        this.imageScale_, this.imageScale_,
+        rotation,
+        -centerX, -centerY);
       context.setTransform.apply(context, localTransform);
     }
     context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
-        this.imageWidth_, this.imageHeight_, x, y,
-        this.imageWidth_, this.imageHeight_);
+      this.imageWidth_, this.imageHeight_, x, y,
+      this.imageWidth_, this.imageHeight_);
   }
   if (rotation !== 0 || this.imageScale_ != 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
@@ -314,23 +314,23 @@ CanvasImmediateRenderer.prototype.drawText_ = function(flatCoordinates, offset, 
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
-  var pixelCoordinates = _ol_geom_flat_transform_.transform2D(
-      flatCoordinates, offset, end, stride, this.transform_,
-      this.pixelCoordinates_);
-  var context = this.context_;
-  var rotation = this.textRotation_;
+  const pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+    flatCoordinates, offset, end, stride, this.transform_,
+    this.pixelCoordinates_);
+  const context = this.context_;
+  let rotation = this.textRotation_;
   if (this.textRotateWithView_) {
     rotation += this.viewRotation_;
   }
   for (; offset < end; offset += stride) {
-    var x = pixelCoordinates[offset] + this.textOffsetX_;
-    var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
+    const x = pixelCoordinates[offset] + this.textOffsetX_;
+    const y = pixelCoordinates[offset + 1] + this.textOffsetY_;
     if (rotation !== 0 || this.textScale_ != 1) {
-      var localTransform = _ol_transform_.compose(this.tmpLocalTransform_,
-          x, y,
-          this.textScale_, this.textScale_,
-          rotation,
-          -x, -y);
+      const localTransform = _ol_transform_.compose(this.tmpLocalTransform_,
+        x, y,
+        this.textScale_, this.textScale_,
+        rotation,
+        -x, -y);
       context.setTransform.apply(context, localTransform);
     }
     if (this.textStrokeState_) {
@@ -356,16 +356,16 @@ CanvasImmediateRenderer.prototype.drawText_ = function(flatCoordinates, offset, 
  * @return {number} end End.
  */
 CanvasImmediateRenderer.prototype.moveToLineTo_ = function(flatCoordinates, offset, end, stride, close) {
-  var context = this.context_;
-  var pixelCoordinates = _ol_geom_flat_transform_.transform2D(
-      flatCoordinates, offset, end, stride, this.transform_,
-      this.pixelCoordinates_);
+  const context = this.context_;
+  const pixelCoordinates = _ol_geom_flat_transform_.transform2D(
+    flatCoordinates, offset, end, stride, this.transform_,
+    this.pixelCoordinates_);
   context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
-  var length = pixelCoordinates.length;
+  let length = pixelCoordinates.length;
   if (close) {
     length -= 2;
   }
-  for (var i = 2; i < length; i += 2) {
+  for (let i = 2; i < length; i += 2) {
     context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
   }
   if (close) {
@@ -384,10 +384,10 @@ CanvasImmediateRenderer.prototype.moveToLineTo_ = function(flatCoordinates, offs
  * @return {number} End.
  */
 CanvasImmediateRenderer.prototype.drawRings_ = function(flatCoordinates, offset, ends, stride) {
-  var i, ii;
+  let i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     offset = this.moveToLineTo_(
-        flatCoordinates, offset, ends[i], stride, true);
+      flatCoordinates, offset, ends[i], stride, true);
   }
   return offset;
 };
@@ -412,15 +412,15 @@ CanvasImmediateRenderer.prototype.drawCircle = function(geometry) {
     if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    var pixelCoordinates = SimpleGeometry.transform2D(
-        geometry, this.transform_, this.pixelCoordinates_);
-    var dx = pixelCoordinates[2] - pixelCoordinates[0];
-    var dy = pixelCoordinates[3] - pixelCoordinates[1];
-    var radius = Math.sqrt(dx * dx + dy * dy);
-    var context = this.context_;
+    const pixelCoordinates = SimpleGeometry.transform2D(
+      geometry, this.transform_, this.pixelCoordinates_);
+    const dx = pixelCoordinates[2] - pixelCoordinates[0];
+    const dy = pixelCoordinates[3] - pixelCoordinates[1];
+    const radius = Math.sqrt(dx * dx + dy * dy);
+    const context = this.context_;
     context.beginPath();
     context.arc(
-        pixelCoordinates[0], pixelCoordinates[1], radius, 0, 2 * Math.PI);
+      pixelCoordinates[0], pixelCoordinates[1], radius, 0, 2 * Math.PI);
     if (this.fillState_) {
       context.fill();
     }
@@ -458,7 +458,7 @@ CanvasImmediateRenderer.prototype.setStyle = function(style) {
  * @api
  */
 CanvasImmediateRenderer.prototype.drawGeometry = function(geometry) {
-  var type = geometry.getType();
+  const type = geometry.getType();
   switch (type) {
     case GeometryType.POINT:
       this.drawPoint(/** @type {ol.geom.Point} */ (geometry));
@@ -501,7 +501,7 @@ CanvasImmediateRenderer.prototype.drawGeometry = function(geometry) {
  * @api
  */
 CanvasImmediateRenderer.prototype.drawFeature = function(feature, style) {
-  var geometry = style.getGeometryFunction()(feature);
+  const geometry = style.getGeometryFunction()(feature);
   if (!geometry || !intersects(this.extent_, geometry.getExtent())) {
     return;
   }
@@ -518,8 +518,8 @@ CanvasImmediateRenderer.prototype.drawFeature = function(feature, style) {
  * @override
  */
 CanvasImmediateRenderer.prototype.drawGeometryCollection = function(geometry) {
-  var geometries = geometry.getGeometriesArray();
-  var i, ii;
+  const geometries = geometry.getGeometriesArray();
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     this.drawGeometry(geometries[i]);
   }
@@ -534,8 +534,8 @@ CanvasImmediateRenderer.prototype.drawGeometryCollection = function(geometry) {
  * @override
  */
 CanvasImmediateRenderer.prototype.drawPoint = function(geometry) {
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
   if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
@@ -553,8 +553,8 @@ CanvasImmediateRenderer.prototype.drawPoint = function(geometry) {
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiPoint = function(geometry) {
-  var flatCoordinates = geometry.getFlatCoordinates();
-  var stride = geometry.getStride();
+  const flatCoordinates = geometry.getFlatCoordinates();
+  const stride = geometry.getStride();
   if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
@@ -577,15 +577,15 @@ CanvasImmediateRenderer.prototype.drawLineString = function(geometry) {
   }
   if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
-    var context = this.context_;
-    var flatCoordinates = geometry.getFlatCoordinates();
+    const context = this.context_;
+    const flatCoordinates = geometry.getFlatCoordinates();
     context.beginPath();
     this.moveToLineTo_(flatCoordinates, 0, flatCoordinates.length,
-        geometry.getStride(), false);
+      geometry.getStride(), false);
     context.stroke();
   }
   if (this.text_ !== '') {
-    var flatMidpoint = geometry.getFlatMidpoint();
+    const flatMidpoint = geometry.getFlatMidpoint();
     this.drawText_(flatMidpoint, 0, 2, 2);
   }
 };
@@ -600,27 +600,27 @@ CanvasImmediateRenderer.prototype.drawLineString = function(geometry) {
  * @override
  */
 CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
-  var geometryExtent = geometry.getExtent();
+  const geometryExtent = geometry.getExtent();
   if (!intersects(this.extent_, geometryExtent)) {
     return;
   }
   if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
-    var context = this.context_;
-    var flatCoordinates = geometry.getFlatCoordinates();
-    var offset = 0;
-    var ends = geometry.getEnds();
-    var stride = geometry.getStride();
+    const context = this.context_;
+    const flatCoordinates = geometry.getFlatCoordinates();
+    let offset = 0;
+    const ends = geometry.getEnds();
+    const stride = geometry.getStride();
     context.beginPath();
-    var i, ii;
+    let i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
       offset = this.moveToLineTo_(
-          flatCoordinates, offset, ends[i], stride, false);
+        flatCoordinates, offset, ends[i], stride, false);
     }
     context.stroke();
   }
   if (this.text_ !== '') {
-    var flatMidpoints = geometry.getFlatMidpoints();
+    const flatMidpoints = geometry.getFlatMidpoints();
     this.drawText_(flatMidpoints, 0, flatMidpoints.length, 2);
   }
 };
@@ -644,10 +644,10 @@ CanvasImmediateRenderer.prototype.drawPolygon = function(geometry) {
     if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    var context = this.context_;
+    const context = this.context_;
     context.beginPath();
     this.drawRings_(geometry.getOrientedFlatCoordinates(),
-        0, geometry.getEnds(), geometry.getStride());
+      0, geometry.getEnds(), geometry.getStride());
     if (this.fillState_) {
       context.fill();
     }
@@ -656,7 +656,7 @@ CanvasImmediateRenderer.prototype.drawPolygon = function(geometry) {
     }
   }
   if (this.text_ !== '') {
-    var flatInteriorPoint = geometry.getFlatInteriorPoint();
+    const flatInteriorPoint = geometry.getFlatInteriorPoint();
     this.drawText_(flatInteriorPoint, 0, 2, 2);
   }
 };
@@ -679,15 +679,15 @@ CanvasImmediateRenderer.prototype.drawMultiPolygon = function(geometry) {
     if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
-    var context = this.context_;
-    var flatCoordinates = geometry.getOrientedFlatCoordinates();
-    var offset = 0;
-    var endss = geometry.getEndss();
-    var stride = geometry.getStride();
-    var i, ii;
+    const context = this.context_;
+    const flatCoordinates = geometry.getOrientedFlatCoordinates();
+    let offset = 0;
+    const endss = geometry.getEndss();
+    const stride = geometry.getStride();
+    let i, ii;
     context.beginPath();
     for (i = 0, ii = endss.length; i < ii; ++i) {
-      var ends = endss[i];
+      const ends = endss[i];
       offset = this.drawRings_(flatCoordinates, offset, ends, stride);
     }
     if (this.fillState_) {
@@ -698,7 +698,7 @@ CanvasImmediateRenderer.prototype.drawMultiPolygon = function(geometry) {
     }
   }
   if (this.text_ !== '') {
-    var flatInteriorPoints = geometry.getFlatInteriorPoints();
+    const flatInteriorPoints = geometry.getFlatInteriorPoints();
     this.drawText_(flatInteriorPoints, 0, flatInteriorPoints.length, 2);
   }
 };
@@ -709,8 +709,8 @@ CanvasImmediateRenderer.prototype.drawMultiPolygon = function(geometry) {
  * @private
  */
 CanvasImmediateRenderer.prototype.setContextFillState_ = function(fillState) {
-  var context = this.context_;
-  var contextFillState = this.contextFillState_;
+  const context = this.context_;
+  const contextFillState = this.contextFillState_;
   if (!contextFillState) {
     context.fillStyle = fillState.fillStyle;
     this.contextFillState_ = {
@@ -729,8 +729,8 @@ CanvasImmediateRenderer.prototype.setContextFillState_ = function(fillState) {
  * @private
  */
 CanvasImmediateRenderer.prototype.setContextStrokeState_ = function(strokeState) {
-  var context = this.context_;
-  var contextStrokeState = this.contextStrokeState_;
+  const context = this.context_;
+  const contextStrokeState = this.contextStrokeState_;
   if (!contextStrokeState) {
     context.lineCap = strokeState.lineCap;
     if (_ol_has_.CANVAS_LINE_DASH) {
@@ -786,9 +786,9 @@ CanvasImmediateRenderer.prototype.setContextStrokeState_ = function(strokeState)
  * @private
  */
 CanvasImmediateRenderer.prototype.setContextTextState_ = function(textState) {
-  var context = this.context_;
-  var contextTextState = this.contextTextState_;
-  var textAlign = textState.textAlign ?
+  const context = this.context_;
+  const contextTextState = this.contextTextState_;
+  const textAlign = textState.textAlign ?
     textState.textAlign : _ol_render_canvas_.defaultTextAlign;
   if (!contextTextState) {
     context.font = textState.font;
@@ -826,7 +826,7 @@ CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strok
   if (!fillStyle) {
     this.fillState_ = null;
   } else {
-    var fillStyleColor = fillStyle.getColor();
+    const fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
       fillStyle: asColorLike(fillStyleColor ?
         fillStyleColor : _ol_render_canvas_.defaultFillStyle)
@@ -835,13 +835,13 @@ CanvasImmediateRenderer.prototype.setFillStrokeStyle = function(fillStyle, strok
   if (!strokeStyle) {
     this.strokeState_ = null;
   } else {
-    var strokeStyleColor = strokeStyle.getColor();
-    var strokeStyleLineCap = strokeStyle.getLineCap();
-    var strokeStyleLineDash = strokeStyle.getLineDash();
-    var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
-    var strokeStyleLineJoin = strokeStyle.getLineJoin();
-    var strokeStyleWidth = strokeStyle.getWidth();
-    var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+    const strokeStyleColor = strokeStyle.getColor();
+    const strokeStyleLineCap = strokeStyle.getLineCap();
+    const strokeStyleLineDash = strokeStyle.getLineDash();
+    const strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+    const strokeStyleLineJoin = strokeStyle.getLineJoin();
+    const strokeStyleWidth = strokeStyle.getWidth();
+    const strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     this.strokeState_ = {
       lineCap: strokeStyleLineCap !== undefined ?
         strokeStyleLineCap : _ol_render_canvas_.defaultLineCap,
@@ -873,11 +873,11 @@ CanvasImmediateRenderer.prototype.setImageStyle = function(imageStyle) {
   if (!imageStyle) {
     this.image_ = null;
   } else {
-    var imageAnchor = imageStyle.getAnchor();
+    const imageAnchor = imageStyle.getAnchor();
     // FIXME pixel ratio
-    var imageImage = imageStyle.getImage(1);
-    var imageOrigin = imageStyle.getOrigin();
-    var imageSize = imageStyle.getSize();
+    const imageImage = imageStyle.getImage(1);
+    const imageOrigin = imageStyle.getOrigin();
+    const imageSize = imageStyle.getSize();
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];
@@ -905,27 +905,27 @@ CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {
   if (!textStyle) {
     this.text_ = '';
   } else {
-    var textFillStyle = textStyle.getFill();
+    const textFillStyle = textStyle.getFill();
     if (!textFillStyle) {
       this.textFillState_ = null;
     } else {
-      var textFillStyleColor = textFillStyle.getColor();
+      const textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
         fillStyle: asColorLike(textFillStyleColor ?
           textFillStyleColor : _ol_render_canvas_.defaultFillStyle)
       };
     }
-    var textStrokeStyle = textStyle.getStroke();
+    const textStrokeStyle = textStyle.getStroke();
     if (!textStrokeStyle) {
       this.textStrokeState_ = null;
     } else {
-      var textStrokeStyleColor = textStrokeStyle.getColor();
-      var textStrokeStyleLineCap = textStrokeStyle.getLineCap();
-      var textStrokeStyleLineDash = textStrokeStyle.getLineDash();
-      var textStrokeStyleLineDashOffset = textStrokeStyle.getLineDashOffset();
-      var textStrokeStyleLineJoin = textStrokeStyle.getLineJoin();
-      var textStrokeStyleWidth = textStrokeStyle.getWidth();
-      var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
+      const textStrokeStyleColor = textStrokeStyle.getColor();
+      const textStrokeStyleLineCap = textStrokeStyle.getLineCap();
+      const textStrokeStyleLineDash = textStrokeStyle.getLineDash();
+      const textStrokeStyleLineDashOffset = textStrokeStyle.getLineDashOffset();
+      const textStrokeStyleLineJoin = textStrokeStyle.getLineJoin();
+      const textStrokeStyleWidth = textStrokeStyle.getWidth();
+      const textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
       this.textStrokeState_ = {
         lineCap: textStrokeStyleLineCap !== undefined ?
           textStrokeStyleLineCap : _ol_render_canvas_.defaultLineCap,
@@ -943,15 +943,15 @@ CanvasImmediateRenderer.prototype.setTextStyle = function(textStyle) {
           textStrokeStyleColor : _ol_render_canvas_.defaultStrokeStyle)
       };
     }
-    var textFont = textStyle.getFont();
-    var textOffsetX = textStyle.getOffsetX();
-    var textOffsetY = textStyle.getOffsetY();
-    var textRotateWithView = textStyle.getRotateWithView();
-    var textRotation = textStyle.getRotation();
-    var textScale = textStyle.getScale();
-    var textText = textStyle.getText();
-    var textTextAlign = textStyle.getTextAlign();
-    var textTextBaseline = textStyle.getTextBaseline();
+    const textFont = textStyle.getFont();
+    const textOffsetX = textStyle.getOffsetX();
+    const textOffsetY = textStyle.getOffsetY();
+    const textRotateWithView = textStyle.getRotateWithView();
+    const textRotation = textStyle.getRotation();
+    const textScale = textStyle.getScale();
+    const textText = textStyle.getText();
+    const textTextAlign = textStyle.getTextAlign();
+    const textTextBaseline = textStyle.getTextBaseline();
     this.textState_ = {
       font: textFont !== undefined ?
         textFont : _ol_render_canvas_.defaultFont,

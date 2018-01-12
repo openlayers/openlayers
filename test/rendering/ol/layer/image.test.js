@@ -9,7 +9,7 @@ import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 describe('ol.rendering.layer.Image', function() {
 
-  var map;
+  let map;
 
   function createMap(renderer) {
     map = new Map({
@@ -18,7 +18,7 @@ describe('ol.rendering.layer.Image', function() {
       renderer: renderer,
       view: new View({
         center: transform(
-            [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
+          [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5
       })
     });
@@ -32,10 +32,10 @@ describe('ol.rendering.layer.Image', function() {
   });
 
   function waitForImages(sources, layerOptions, onImagesLoaded) {
-    var imagesLoading = 0;
-    var imagesLoaded = 0;
+    let imagesLoading = 0;
+    let imagesLoaded = 0;
 
-    var update = function() {
+    const update = function() {
       if (imagesLoading === imagesLoaded) {
         onImagesLoaded();
       }
@@ -53,7 +53,7 @@ describe('ol.rendering.layer.Image', function() {
         expect().fail('Image failed to load');
       });
 
-      var options = {
+      const options = {
         source: source
       };
       _ol_obj_.assign(options, layerOptions);
@@ -62,13 +62,13 @@ describe('ol.rendering.layer.Image', function() {
   }
 
   describe('single image layer', function() {
-    var source;
+    let source;
 
     beforeEach(function() {
       source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent(
-            [5, 5, -12 - 1]),
+          [5, 5, -12 - 1]),
         projection: getProjection('EPSG:3857')
       });
     });
@@ -77,7 +77,7 @@ describe('ol.rendering.layer.Image', function() {
       createMap('canvas');
       waitForImages([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-canvas.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -86,19 +86,19 @@ describe('ol.rendering.layer.Image', function() {
       createMap('webgl');
       waitForImages([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-webgl.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
   });
 
   describe('single image layer - scaled', function() {
-    var source;
+    let source;
 
     beforeEach(function() {
       source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: transformExtent(
-            [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
+          [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
       });
     });
 
@@ -106,7 +106,7 @@ describe('ol.rendering.layer.Image', function() {
       createMap('canvas');
       waitForImages([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-scaled.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
   });

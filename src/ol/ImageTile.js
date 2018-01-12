@@ -18,7 +18,7 @@ import EventType from './events/EventType.js';
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
+const ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction, opt_options) {
 
   Tile.call(this, tileCoord, state, opt_options);
 
@@ -143,9 +143,9 @@ ImageTile.prototype.load = function() {
     this.changed();
     this.imageListenerKeys_ = [
       _ol_events_.listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
+        this.handleImageError_, this),
       _ol_events_.listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
+        this.handleImageLoad_, this)
     ];
     this.tileLoadFunction_(this, this.src_);
   }
@@ -168,7 +168,7 @@ ImageTile.prototype.unlistenImage_ = function() {
  * @return {HTMLCanvasElement} Blank image.
  */
 ImageTile.getBlankImage = function() {
-  var ctx = createCanvasContext2D(1, 1);
+  const ctx = createCanvasContext2D(1, 1);
   ctx.fillStyle = 'rgba(0,0,0,0)';
   ctx.fillRect(0, 0, 1, 1);
   return ctx.canvas;

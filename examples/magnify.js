@@ -4,15 +4,15 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 
-var key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';
+const key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';
 
-var imagery = new TileLayer({
+const imagery = new TileLayer({
   source: new BingMaps({key: key, imagerySet: 'Aerial'})
 });
 
-var container = document.getElementById('map');
+const container = document.getElementById('map');
 
-var map = new Map({
+const map = new Map({
   layers: [imagery],
   target: container,
   view: new View({
@@ -21,7 +21,7 @@ var map = new Map({
   })
 });
 
-var radius = 75;
+let radius = 75;
 document.addEventListener('keydown', function(evt) {
   if (evt.which === 38) {
     radius = Math.min(radius + 5, 150);
@@ -35,7 +35,7 @@ document.addEventListener('keydown', function(evt) {
 });
 
 // get the pixel position with every move
-var mousePosition = null;
+let mousePosition = null;
 
 container.addEventListener('mousemove', function(event) {
   mousePosition = map.getEventPixel(event);
@@ -50,30 +50,30 @@ container.addEventListener('mouseout', function() {
 // after rendering the layer, show an oversampled version around the pointer
 imagery.on('postcompose', function(event) {
   if (mousePosition) {
-    var context = event.context;
-    var pixelRatio = event.frameState.pixelRatio;
-    var half = radius * pixelRatio;
-    var centerX = mousePosition[0] * pixelRatio;
-    var centerY = mousePosition[1] * pixelRatio;
-    var originX = centerX - half;
-    var originY = centerY - half;
-    var size = 2 * half + 1;
-    var sourceData = context.getImageData(originX, originY, size, size).data;
-    var dest = context.createImageData(size, size);
-    var destData = dest.data;
-    for (var j = 0; j < size; ++j) {
-      for (var i = 0; i < size; ++i) {
-        var dI = i - half;
-        var dJ = j - half;
-        var dist = Math.sqrt(dI * dI + dJ * dJ);
-        var sourceI = i;
-        var sourceJ = j;
+    const context = event.context;
+    const pixelRatio = event.frameState.pixelRatio;
+    const half = radius * pixelRatio;
+    const centerX = mousePosition[0] * pixelRatio;
+    const centerY = mousePosition[1] * pixelRatio;
+    const originX = centerX - half;
+    const originY = centerY - half;
+    const size = 2 * half + 1;
+    const sourceData = context.getImageData(originX, originY, size, size).data;
+    const dest = context.createImageData(size, size);
+    const destData = dest.data;
+    for (let j = 0; j < size; ++j) {
+      for (let i = 0; i < size; ++i) {
+        const dI = i - half;
+        const dJ = j - half;
+        const dist = Math.sqrt(dI * dI + dJ * dJ);
+        let sourceI = i;
+        let sourceJ = j;
         if (dist < half) {
           sourceI = Math.round(half + dI / 2);
           sourceJ = Math.round(half + dJ / 2);
         }
-        var destOffset = (j * size + i) * 4;
-        var sourceOffset = (sourceJ * size + sourceI) * 4;
+        const destOffset = (j * size + i) * 4;
+        const sourceOffset = (sourceJ * size + sourceI) * 4;
         destData[destOffset] = sourceData[sourceOffset];
         destData[destOffset + 1] = sourceData[sourceOffset + 1];
         destData[destOffset + 2] = sourceData[sourceOffset + 2];

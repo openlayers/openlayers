@@ -8,12 +8,12 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var canvas = document.getElementById('canvas');
-var vectorContext = _ol_render_.toContext(canvas.getContext('2d'), {size: [100, 100]});
+const canvas = document.getElementById('canvas');
+const vectorContext = _ol_render_.toContext(canvas.getContext('2d'), {size: [100, 100]});
 
-var fill = new Fill({color: 'blue'});
-var stroke = new Stroke({color: 'black'});
-var style = new Style({
+const fill = new Fill({color: 'blue'});
+const stroke = new Stroke({color: 'black'});
+const style = new Style({
   fill: fill,
   stroke: stroke,
   image: new CircleStyle({

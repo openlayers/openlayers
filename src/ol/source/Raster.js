@@ -25,7 +25,7 @@ import _ol_transform_ from '../transform.js';
 /**
  * @enum {string}
  */
-var RasterEventType = {
+const RasterEventType = {
   /**
    * Triggered before operations are run.
    * @event ol.source.Raster.Event#beforeoperations
@@ -54,7 +54,7 @@ var RasterEventType = {
  * @param {olx.source.RasterOptions} options Options.
  * @api
  */
-var RasterSource = function(options) {
+const RasterSource = function(options) {
 
   /**
    * @private
@@ -81,9 +81,9 @@ var RasterSource = function(options) {
    */
   this.renderers_ = createRenderers(options.sources);
 
-  for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
+  for (let r = 0, rr = this.renderers_.length; r < rr; ++r) {
     _ol_events_.listen(this.renderers_[r], EventType.CHANGE,
-        this.changed, this);
+      this.changed, this);
   }
 
   /**
@@ -91,14 +91,14 @@ var RasterSource = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new TileQueue(
-      function() {
-        return 1;
-      },
-      this.changed.bind(this));
+    function() {
+      return 1;
+    },
+    this.changed.bind(this));
 
-  var layerStatesArray = getLayerStatesArray(this.renderers_);
-  var layerStates = {};
-  for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+  const layerStatesArray = getLayerStatesArray(this.renderers_);
+  const layerStates = {};
+  for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
   }
 
@@ -189,13 +189,13 @@ RasterSource.prototype.setOperation = function(operation, opt_lib) {
  */
 RasterSource.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
-  var frameState = /** @type {olx.FrameState} */ (
+  const frameState = /** @type {olx.FrameState} */ (
     _ol_obj_.assign({}, this.frameState_));
 
   frameState.viewState = /** @type {olx.ViewState} */ (
     _ol_obj_.assign({}, frameState.viewState));
 
-  var center = getCenter(extent);
+  const center = getCenter(extent);
 
   frameState.extent = extent.slice();
   frameState.focus = center;
@@ -204,7 +204,7 @@ RasterSource.prototype.updateFrameState_ = function(extent, resolution, projecti
   frameState.time = Date.now();
   frameState.animate = false;
 
-  var viewState = frameState.viewState;
+  const viewState = frameState.viewState;
   viewState.center = center;
   viewState.projection = projection;
   viewState.resolution = resolution;
@@ -218,9 +218,9 @@ RasterSource.prototype.updateFrameState_ = function(extent, resolution, projecti
  * @private
  */
 RasterSource.prototype.allSourcesReady_ = function() {
-  var ready = true;
-  var source;
-  for (var i = 0, ii = this.renderers_.length; i < ii; ++i) {
+  let ready = true;
+  let source;
+  for (let i = 0, ii = this.renderers_.length; i < ii; ++i) {
     source = this.renderers_[i].getLayer().getSource();
     if (source.getState() !== SourceState.READY) {
       ready = false;
@@ -239,13 +239,13 @@ RasterSource.prototype.getImage = function(extent, resolution, pixelRatio, proje
     return null;
   }
 
-  var frameState = this.updateFrameState_(extent, resolution, projection);
+  const frameState = this.updateFrameState_(extent, resolution, projection);
   this.requestedFrameState_ = frameState;
 
   // check if we can't reuse the existing ol.ImageCanvas
   if (this.renderedImageCanvas_) {
-    var renderedResolution = this.renderedImageCanvas_.getResolution();
-    var renderedExtent = this.renderedImageCanvas_.getExtent();
+    const renderedResolution = this.renderedImageCanvas_.getResolution();
+    const renderedExtent = this.renderedImageCanvas_.getExtent();
     if (resolution !== renderedResolution || !equals(extent, renderedExtent)) {
       this.renderedImageCanvas_ = null;
     }
@@ -270,12 +270,12 @@ RasterSource.prototype.getImage = function(extent, resolution, pixelRatio, proje
  * @private
  */
 RasterSource.prototype.processSources_ = function() {
-  var frameState = this.requestedFrameState_;
-  var len = this.renderers_.length;
-  var imageDatas = new Array(len);
-  for (var i = 0; i < len; ++i) {
-    var imageData = getImageData(
-        this.renderers_[i], frameState, frameState.layerStatesArray[i]);
+  const frameState = this.requestedFrameState_;
+  const len = this.renderers_.length;
+  const imageDatas = new Array(len);
+  for (let i = 0; i < len; ++i) {
+    const imageData = getImageData(
+      this.renderers_[i], frameState, frameState.layerStatesArray[i]);
     if (imageData) {
       imageDatas[i] = imageData;
     } else {
@@ -283,7 +283,7 @@ RasterSource.prototype.processSources_ = function() {
     }
   }
 
-  var data = {};
+  const data = {};
   this.dispatchEvent(new RasterSource.Event(RasterEventType.BEFOREOPERATIONS, frameState, data));
   this.worker_.process(imageDatas, data, this.onWorkerComplete_.bind(this, frameState));
 };
@@ -303,19 +303,19 @@ RasterSource.prototype.onWorkerComplete_ = function(frameState, err, output, dat
   }
 
   // do nothing if extent or resolution changed
-  var extent = frameState.extent;
-  var resolution = frameState.viewState.resolution;
+  const extent = frameState.extent;
+  const resolution = frameState.viewState.resolution;
   if (resolution !== this.requestedFrameState_.viewState.resolution ||
       !equals(extent, this.requestedFrameState_.extent)) {
     return;
   }
 
-  var context;
+  let context;
   if (this.renderedImageCanvas_) {
     context = this.renderedImageCanvas_.getImage().getContext('2d');
   } else {
-    var width = Math.round(getWidth(extent) / resolution);
-    var height = Math.round(getHeight(extent) / resolution);
+    const width = Math.round(getWidth(extent) / resolution);
+    const height = Math.round(getHeight(extent) / resolution);
     context = createCanvasContext2D(width, height);
     this.renderedImageCanvas_ = new ImageCanvas(extent, resolution, 1, context.canvas);
   }
@@ -339,12 +339,12 @@ function getImageData(renderer, frameState, layerState) {
   if (!renderer.prepareFrame(frameState, layerState)) {
     return null;
   }
-  var width = frameState.size[0];
-  var height = frameState.size[1];
+  const width = frameState.size[0];
+  const height = frameState.size[1];
   if (!RasterSource.context_) {
     RasterSource.context_ = createCanvasContext2D(width, height);
   } else {
-    var canvas = RasterSource.context_.canvas;
+    const canvas = RasterSource.context_.canvas;
     if (canvas.width !== width || canvas.height !== height) {
       RasterSource.context_ = createCanvasContext2D(width, height);
     } else {
@@ -382,9 +382,9 @@ function getLayerStatesArray(renderers) {
  * @return {Array.<ol.renderer.canvas.Layer>} Array of layer renderers.
  */
 function createRenderers(sources) {
-  var len = sources.length;
-  var renderers = new Array(len);
-  for (var i = 0; i < len; ++i) {
+  const len = sources.length;
+  const renderers = new Array(len);
+  for (let i = 0; i < len; ++i) {
     renderers[i] = createRenderer(sources[i]);
   }
   return renderers;
@@ -397,7 +397,7 @@ function createRenderers(sources) {
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createRenderer(source) {
-  var renderer = null;
+  let renderer = null;
   if (source instanceof TileSource) {
     renderer = createTileRenderer(source);
   } else if (source instanceof ImageSource) {
@@ -413,7 +413,7 @@ function createRenderer(source) {
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createImageRenderer(source) {
-  var layer = new ImageLayer({source: source});
+  const layer = new ImageLayer({source: source});
   return new CanvasImageLayerRenderer(layer);
 }
 
@@ -424,7 +424,7 @@ function createImageRenderer(source) {
  * @return {ol.renderer.canvas.Layer} The renderer.
  */
 function createTileRenderer(source) {
-  var layer = new TileLayer({source: source});
+  const layer = new TileLayer({source: source});
   return new CanvasTileLayerRenderer(layer);
 }
 

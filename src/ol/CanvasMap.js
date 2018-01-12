@@ -72,7 +72,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * @fires ol.render.Event#precompose
  * @api
  */
-var _ol_CanvasMap_ = function(options) {
+const _ol_CanvasMap_ = function(options) {
   options = _ol_obj_.assign({}, options);
   delete options.renderer;
   if (!options.controls) {

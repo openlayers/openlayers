@@ -10,7 +10,7 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   format: new GeoJSON(),
   url: function(extent) {
     return 'https://ahocevar.com/geoserver/wfs?service=WFS&' +
@@ -22,7 +22,7 @@ var vectorSource = new VectorSource({
 });
 
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: vectorSource,
   style: new Style({
     stroke: new Stroke({
@@ -32,14 +32,14 @@ var vector = new VectorLayer({
   })
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new BingMaps({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({

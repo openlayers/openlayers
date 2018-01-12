@@ -11,15 +11,15 @@ import Icon from '../src/ol/style/Icon.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var rome = new Feature({
+const rome = new Feature({
   geometry: new Point(fromLonLat([12.5, 41.9]))
 });
 
-var london = new Feature({
+const london = new Feature({
   geometry: new Point(fromLonLat([-0.12755, 51.507222]))
 });
 
-var madrid = new Feature({
+const madrid = new Feature({
   geometry: new Point(fromLonLat([-3.683333, 40.4]))
 });
 
@@ -48,22 +48,22 @@ madrid.setStyle(new Style({
 }));
 
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   features: [rome, london, madrid]
 });
 
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: vectorSource
 });
 
-var rasterLayer = new TileLayer({
+const rasterLayer = new TileLayer({
   source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
     crossOrigin: ''
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new View({

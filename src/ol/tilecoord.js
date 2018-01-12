@@ -1,7 +1,7 @@
 /**
  * @module ol/tilecoord
  */
-var _ol_tilecoord_ = {};
+const _ol_tilecoord_ = {};
 
 
 /**
@@ -68,10 +68,10 @@ _ol_tilecoord_.hash = function(tileCoord) {
  * @return {string} Quad key.
  */
 _ol_tilecoord_.quadKey = function(tileCoord) {
-  var z = tileCoord[0];
-  var digits = new Array(z);
-  var mask = 1 << (z - 1);
-  var i, charCode;
+  const z = tileCoord[0];
+  const digits = new Array(z);
+  let mask = 1 << (z - 1);
+  let i, charCode;
   for (i = 0; i < z; ++i) {
     // 48 is charCode for 0 - '0'.charCodeAt(0)
     charCode = 48;
@@ -94,15 +94,15 @@ _ol_tilecoord_.quadKey = function(tileCoord) {
  * @return {boolean} Tile coordinate is within extent and zoom level range.
  */
 _ol_tilecoord_.withinExtentAndZ = function(tileCoord, tileGrid) {
-  var z = tileCoord[0];
-  var x = tileCoord[1];
-  var y = tileCoord[2];
+  const z = tileCoord[0];
+  const x = tileCoord[1];
+  const y = tileCoord[2];
 
   if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
     return false;
   }
-  var extent = tileGrid.getExtent();
-  var tileRange;
+  const extent = tileGrid.getExtent();
+  let tileRange;
   if (!extent) {
     tileRange = tileGrid.getFullTileRange(z);
   } else {

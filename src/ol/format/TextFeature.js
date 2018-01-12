@@ -15,7 +15,7 @@ import FormatType from '../format/FormatType.js';
  * @abstract
  * @extends {ol.format.Feature}
  */
-var TextFeature = function() {
+const TextFeature = function() {
   FeatureFormat.call(this);
 };
 

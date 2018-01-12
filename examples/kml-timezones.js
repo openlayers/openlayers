@@ -17,24 +17,24 @@ import Style from '../src/ol/style/Style.js';
  * currently midnight would have an opacity of 0.  This doesn't account for
  * daylight savings, so don't use it to plan your vacation.
  */
-var styleFunction = function(feature) {
-  var offset = 0;
-  var name = feature.get('name'); // e.g. GMT -08:30
-  var match = name.match(/([\-+]\d{2}):(\d{2})$/);
+const styleFunction = function(feature) {
+  let offset = 0;
+  const name = feature.get('name'); // e.g. GMT -08:30
+  const match = name.match(/([\-+]\d{2}):(\d{2})$/);
   if (match) {
-    var hours = parseInt(match[1], 10);
-    var minutes = parseInt(match[2], 10);
+    const hours = parseInt(match[1], 10);
+    const minutes = parseInt(match[2], 10);
     offset = 60 * hours + minutes;
   }
-  var date = new Date();
-  var local = new Date(date.getTime() +
+  const date = new Date();
+  const local = new Date(date.getTime() +
       (date.getTimezoneOffset() + offset) * 60000);
   // offset from local noon (in hours)
-  var delta = Math.abs(12 - local.getHours() + (local.getMinutes() / 60));
+  let delta = Math.abs(12 - local.getHours() + (local.getMinutes() / 60));
   if (delta > 12) {
     delta = 24 - delta;
   }
-  var opacity = 0.75 * (1 - delta / 12);
+  const opacity = 0.75 * (1 - delta / 12);
   return new Style({
     fill: new Fill({
       color: [0xff, 0xff, 0x33, opacity]
@@ -45,7 +45,7 @@ var styleFunction = function(feature) {
   });
 };
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/kml/timezones.kml',
     format: new KML({
@@ -55,13 +55,13 @@ var vector = new VectorLayer({
   style: styleFunction
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new Stamen({
     layer: 'toner'
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -70,25 +70,25 @@ var map = new Map({
   })
 });
 
-var info = $('#info');
+const info = $('#info');
 info.tooltip({
   animation: false,
   trigger: 'manual'
 });
 
-var displayFeatureInfo = function(pixel) {
+const displayFeatureInfo = function(pixel) {
   info.css({
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'
   });
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+  const feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
   if (feature) {
     info.tooltip('hide')
-        .attr('data-original-title', feature.get('name'))
-        .tooltip('fixTitle')
-        .tooltip('show');
+      .attr('data-original-title', feature.get('name'))
+      .tooltip('fixTitle')
+      .tooltip('show');
   } else {
     info.tooltip('hide');
   }

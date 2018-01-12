@@ -12,25 +12,25 @@ import Text from '../src/ol/style/Text.js';
 import TileGrid from '../src/ol/tilegrid/TileGrid.js';
 
 
-var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+const key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 // Calculation of resolutions that match zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
-var resolutions = [];
-for (var i = 0; i <= 8; ++i) {
+const resolutions = [];
+for (let i = 0; i <= 8; ++i) {
   resolutions.push(156543.03392804097 / Math.pow(2, i * 2));
 }
 // Calculation of tile urls for zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 function tileUrlFunction(tileCoord) {
   return ('https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
       '{z}/{x}/{y}.vector.pbf?access_token=' + key)
-      .replace('{z}', String(tileCoord[0] * 2 - 1))
-      .replace('{x}', String(tileCoord[1]))
-      .replace('{y}', String(-tileCoord[2] - 1))
-      .replace('{a-d}', 'abcd'.substr(
-          ((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1));
+    .replace('{z}', String(tileCoord[0] * 2 - 1))
+    .replace('{x}', String(tileCoord[1]))
+    .replace('{y}', String(-tileCoord[2] - 1))
+    .replace('{a-d}', 'abcd'.substr(
+      ((tileCoord[1] << tileCoord[0]) + tileCoord[2]) % 4, 1));
 }
 
-var map = new Map({
+const map = new Map({
   layers: [
     new VectorTileLayer({
       source: new VectorTileSource({

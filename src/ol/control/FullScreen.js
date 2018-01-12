@@ -25,9 +25,9 @@ import EventType from '../events/EventType.js';
  * @param {olx.control.FullScreenOptions=} opt_options Options.
  * @api
  */
-var FullScreen = function(opt_options) {
+const FullScreen = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -36,7 +36,7 @@ var FullScreen = function(opt_options) {
   this.cssClassName_ = options.className !== undefined ? options.className :
     'ol-full-screen';
 
-  var label = options.label !== undefined ? options.label : '\u2922';
+  const label = options.label !== undefined ? options.label : '\u2922';
 
   /**
    * @private
@@ -45,7 +45,7 @@ var FullScreen = function(opt_options) {
   this.labelNode_ = typeof label === 'string' ?
     document.createTextNode(label) : label;
 
-  var labelActive = options.labelActive !== undefined ? options.labelActive : '\u00d7';
+  const labelActive = options.labelActive !== undefined ? options.labelActive : '\u00d7';
 
   /**
    * @private
@@ -54,20 +54,20 @@ var FullScreen = function(opt_options) {
   this.labelActiveNode_ = typeof labelActive === 'string' ?
     document.createTextNode(labelActive) : labelActive;
 
-  var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
-  var button = document.createElement('button');
+  const tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
+  const button = document.createElement('button');
   button.className = this.cssClassName_ + '-' + FullScreen.isFullScreen();
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(this.labelNode_);
 
   _ol_events_.listen(button, EventType.CLICK,
-      this.handleClick_, this);
+    this.handleClick_, this);
 
-  var cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
+  const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
       ' ' + CLASS_CONTROL + ' ' +
       (!FullScreen.isFullScreenSupported() ? CLASS_UNSUPPORTED : '');
-  var element = document.createElement('div');
+  const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
 
@@ -110,14 +110,14 @@ FullScreen.prototype.handleFullScreen_ = function() {
   if (!FullScreen.isFullScreenSupported()) {
     return;
   }
-  var map = this.getMap();
+  const map = this.getMap();
   if (!map) {
     return;
   }
   if (FullScreen.isFullScreen()) {
     FullScreen.exitFullScreen();
   } else {
-    var element;
+    let element;
     if (this.source_) {
       element = typeof this.source_ === 'string' ?
         document.getElementById(this.source_) :
@@ -139,8 +139,8 @@ FullScreen.prototype.handleFullScreen_ = function() {
  * @private
  */
 FullScreen.prototype.handleFullScreenChange_ = function() {
-  var button = this.element.firstElementChild;
-  var map = this.getMap();
+  const button = this.element.firstElementChild;
+  const map = this.getMap();
   if (FullScreen.isFullScreen()) {
     button.className = this.cssClassName_ + '-true';
     replaceNode(this.labelActiveNode_, this.labelNode_);
@@ -162,8 +162,8 @@ FullScreen.prototype.setMap = function(map) {
   Control.prototype.setMap.call(this, map);
   if (map) {
     this.listenerKeys.push(_ol_events_.listen(document,
-        FullScreen.getChangeType_(),
-        this.handleFullScreenChange_, this)
+      FullScreen.getChangeType_(),
+      this.handleFullScreenChange_, this)
     );
   }
 };
@@ -172,7 +172,7 @@ FullScreen.prototype.setMap = function(map) {
  * @return {boolean} Fullscreen is supported by the current platform.
  */
 FullScreen.isFullScreenSupported = function() {
-  var body = document.body;
+  const body = document.body;
   return !!(
     body.webkitRequestFullscreen ||
     (body.mozRequestFullScreen && document.mozFullScreenEnabled) ||
@@ -241,10 +241,10 @@ FullScreen.exitFullScreen = function() {
  * @private
  */
 FullScreen.getChangeType_ = (function() {
-  var changeType;
+  let changeType;
   return function() {
     if (!changeType) {
-      var body = document.body;
+      const body = document.body;
       if (body.webkitRequestFullscreen) {
         changeType = 'webkitfullscreenchange';
       } else if (body.mozRequestFullScreen) {

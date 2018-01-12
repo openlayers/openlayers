@@ -1,7 +1,7 @@
 /**
  * @module ol/webgl
  */
-var _ol_webgl_ = {};
+const _ol_webgl_ = {};
 
 /**
  * Constants taken from goog.webgl
@@ -276,10 +276,10 @@ _ol_webgl_.CONTEXT_IDS_ = [
  * @return {WebGLRenderingContext} WebGL rendering context.
  */
 _ol_webgl_.getContext = function(canvas, opt_attributes) {
-  var context, i, ii = _ol_webgl_.CONTEXT_IDS_.length;
-  for (i = 0; i < ii; ++i) {
+  const ii = _ol_webgl_.CONTEXT_IDS_.length;
+  for (let i = 0; i < ii; ++i) {
     try {
-      context = canvas.getContext(_ol_webgl_.CONTEXT_IDS_[i], opt_attributes);
+      const context = canvas.getContext(_ol_webgl_.CONTEXT_IDS_[i], opt_attributes);
       if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }

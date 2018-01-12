@@ -19,8 +19,8 @@ import Layer from '../layer/Layer.js';
  * @param {olx.layer.ImageOptions=} opt_options Layer options.
  * @api
  */
-var ImageLayer = function(opt_options) {
-  var options = opt_options ? opt_options : {};
+const ImageLayer = function(opt_options) {
+  const options = opt_options ? opt_options : {};
   Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
 
   /**

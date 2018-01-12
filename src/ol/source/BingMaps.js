@@ -20,7 +20,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.BingMapsOptions} options Bing Maps options.
  * @api
  */
-var BingMaps = function(options) {
+const BingMaps = function(options) {
 
   /**
    * @private
@@ -65,13 +65,13 @@ var BingMaps = function(options) {
    */
   this.imagerySet_ = options.imagerySet;
 
-  var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+  const url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
       this.imagerySet_ +
       '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_ +
       '&c=' + this.culture_;
 
   _ol_net_.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
-      'jsonp');
+    'jsonp');
 
 };
 
@@ -125,14 +125,14 @@ BingMaps.prototype.handleImageryMetadataResponse = function(response) {
     return;
   }
 
-  var resource = response.resourceSets[0].resources[0];
-  var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
+  const resource = response.resourceSets[0].resources[0];
+  const maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
-  var sourceProjection = this.getProjection();
-  var extent = _ol_tilegrid_.extentFromProjection(sourceProjection);
-  var tileSize = resource.imageWidth == resource.imageHeight ?
+  const sourceProjection = this.getProjection();
+  const extent = _ol_tilegrid_.extentFromProjection(sourceProjection);
+  const tileSize = resource.imageWidth == resource.imageHeight ?
     resource.imageWidth : [resource.imageWidth, resource.imageHeight];
-  var tileGrid = _ol_tilegrid_.createXYZ({
+  const tileGrid = _ol_tilegrid_.createXYZ({
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
@@ -140,54 +140,54 @@ BingMaps.prototype.handleImageryMetadataResponse = function(response) {
   });
   this.tileGrid = tileGrid;
 
-  var culture = this.culture_;
-  var hidpi = this.hidpi_;
+  const culture = this.culture_;
+  const hidpi = this.hidpi_;
   this.tileUrlFunction = createFromTileUrlFunctions(
-      resource.imageUrlSubdomains.map(function(subdomain) {
-        var quadKeyTileCoord = [0, 0, 0];
-        var imageUrl = resource.imageUrl
-            .replace('{subdomain}', subdomain)
-            .replace('{culture}', culture);
-        return (
-          /**
+    resource.imageUrlSubdomains.map(function(subdomain) {
+      const quadKeyTileCoord = [0, 0, 0];
+      const imageUrl = resource.imageUrl
+        .replace('{subdomain}', subdomain)
+        .replace('{culture}', culture);
+      return (
+      /**
            * @param {ol.TileCoord} tileCoord Tile coordinate.
            * @param {number} pixelRatio Pixel ratio.
            * @param {ol.proj.Projection} projection Projection.
            * @return {string|undefined} Tile URL.
            */
-          function(tileCoord, pixelRatio, projection) {
-            if (!tileCoord) {
-              return undefined;
-            } else {
-              _ol_tilecoord_.createOrUpdate(tileCoord[0], tileCoord[1],
-                  -tileCoord[2] - 1, quadKeyTileCoord);
-              var url = imageUrl;
-              if (hidpi) {
-                url += '&dpi=d1&device=mobile';
-              }
-              return url.replace('{quadkey}', _ol_tilecoord_.quadKey(
-                  quadKeyTileCoord));
+        function(tileCoord, pixelRatio, projection) {
+          if (!tileCoord) {
+            return undefined;
+          } else {
+            _ol_tilecoord_.createOrUpdate(tileCoord[0], tileCoord[1],
+              -tileCoord[2] - 1, quadKeyTileCoord);
+            let url = imageUrl;
+            if (hidpi) {
+              url += '&dpi=d1&device=mobile';
             }
+            return url.replace('{quadkey}', _ol_tilecoord_.quadKey(
+              quadKeyTileCoord));
           }
-        );
-      }));
+        }
+      );
+    }));
 
   if (resource.imageryProviders) {
-    var transform = getTransformFromProjections(
-        getProjection('EPSG:4326'), this.getProjection());
+    const transform = getTransformFromProjections(
+      getProjection('EPSG:4326'), this.getProjection());
 
     this.setAttributions(function(frameState) {
-      var attributions = [];
-      var zoom = frameState.viewState.zoom;
+      const attributions = [];
+      const zoom = frameState.viewState.zoom;
       resource.imageryProviders.map(function(imageryProvider) {
-        var intersecting = false;
-        var coverageAreas = imageryProvider.coverageAreas;
-        for (var i = 0, ii = coverageAreas.length; i < ii; ++i) {
-          var coverageArea = coverageAreas[i];
+        let intersecting = false;
+        const coverageAreas = imageryProvider.coverageAreas;
+        for (let i = 0, ii = coverageAreas.length; i < ii; ++i) {
+          const coverageArea = coverageAreas[i];
           if (zoom >= coverageArea.zoomMin && zoom <= coverageArea.zoomMax) {
-            var bbox = coverageArea.bbox;
-            var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-            var extent = applyTransform(epsg4326Extent, transform);
+            const bbox = coverageArea.bbox;
+            const epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
+            const extent = applyTransform(epsg4326Extent, transform);
             if (intersects(extent, frameState.extent)) {
               intersecting = true;
               break;

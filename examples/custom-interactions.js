@@ -20,7 +20,7 @@ import Style from '../src/ol/style/Style.js';
 /**
  * Define a namespace for the application.
  */
-var app = {};
+const app = {};
 
 
 /**
@@ -69,12 +69,12 @@ inherits(app.Drag, PointerInteraction);
  * @return {boolean} `true` to start the drag sequence.
  */
 app.Drag.prototype.handleDownEvent = function(evt) {
-  var map = evt.map;
+  const map = evt.map;
 
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature) {
-        return feature;
-      });
+  const feature = map.forEachFeatureAtPixel(evt.pixel,
+    function(feature) {
+      return feature;
+    });
 
   if (feature) {
     this.coordinate_ = evt.coordinate;
@@ -89,10 +89,10 @@ app.Drag.prototype.handleDownEvent = function(evt) {
  * @param {ol.MapBrowserEvent} evt Map browser event.
  */
 app.Drag.prototype.handleDragEvent = function(evt) {
-  var deltaX = evt.coordinate[0] - this.coordinate_[0];
-  var deltaY = evt.coordinate[1] - this.coordinate_[1];
+  const deltaX = evt.coordinate[0] - this.coordinate_[0];
+  const deltaY = evt.coordinate[1] - this.coordinate_[1];
 
-  var geometry = this.feature_.getGeometry();
+  const geometry = this.feature_.getGeometry();
   geometry.translate(deltaX, deltaY);
 
   this.coordinate_[0] = evt.coordinate[0];
@@ -105,12 +105,12 @@ app.Drag.prototype.handleDragEvent = function(evt) {
  */
 app.Drag.prototype.handleMoveEvent = function(evt) {
   if (this.cursor_) {
-    var map = evt.map;
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature) {
-          return feature;
-        });
-    var element = evt.map.getTargetElement();
+    const map = evt.map;
+    const feature = map.forEachFeatureAtPixel(evt.pixel,
+      function(feature) {
+        return feature;
+      });
+    const element = evt.map.getTargetElement();
     if (feature) {
       if (element.style.cursor != this.cursor_) {
         this.previousCursor_ = element.style.cursor;
@@ -134,17 +134,17 @@ app.Drag.prototype.handleUpEvent = function() {
 };
 
 
-var pointFeature = new Feature(new Point([0, 0]));
+const pointFeature = new Feature(new Point([0, 0]));
 
-var lineFeature = new Feature(
-    new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
+const lineFeature = new Feature(
+  new LineString([[-1e7, 1e6], [-1e6, 3e6]]));
 
-var polygonFeature = new Feature(
-    new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
-      [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
+const polygonFeature = new Feature(
+  new Polygon([[[-3e6, -1e6], [-3e6, 1e6],
+    [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
 
-var map = new Map({
+const map = new Map({
   interactions: defaultInteractions().extend([new app.Drag()]),
   layers: [
     new TileLayer({

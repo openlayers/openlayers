@@ -24,14 +24,14 @@ import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, 
  * @type {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
  */
-var MAX_RATIO = 0.75;
+const MAX_RATIO = 0.75;
 
 
 /**
  * @type {number} Minimum width and/or height extent ratio that determines
  * when the overview map should be zoomed in.
  */
-var MIN_RATIO = 0.1;
+const MIN_RATIO = 0.1;
 
 
 /**
@@ -42,9 +42,9 @@ var MIN_RATIO = 0.1;
  * @param {olx.control.OverviewMapOptions=} opt_options OverviewMap options.
  * @api
  */
-var OverviewMap = function(opt_options) {
+const OverviewMap = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @type {boolean}
@@ -63,11 +63,11 @@ var OverviewMap = function(opt_options) {
     this.collapsed_ = false;
   }
 
-  var className = options.className !== undefined ? options.className : 'ol-overviewmap';
+  const className = options.className !== undefined ? options.className : 'ol-overviewmap';
 
-  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
+  const tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
 
-  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00AB';
+  const collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00AB';
 
   if (typeof collapseLabel === 'string') {
     /**
@@ -80,7 +80,7 @@ var OverviewMap = function(opt_options) {
     this.collapseLabel_ = collapseLabel;
   }
 
-  var label = options.label !== undefined ? options.label : '\u00BB';
+  const label = options.label !== undefined ? options.label : '\u00BB';
 
 
   if (typeof label === 'string') {
@@ -94,15 +94,15 @@ var OverviewMap = function(opt_options) {
     this.label_ = label;
   }
 
-  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
+  const activeLabel = (this.collapsible_ && !this.collapsed_) ?
     this.collapseLabel_ : this.label_;
-  var button = document.createElement('button');
+  const button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
   _ol_events_.listen(button, EventType.CLICK,
-      this.handleClick_, this);
+    this.handleClick_, this);
 
   /**
    * @type {Element}
@@ -120,19 +120,19 @@ var OverviewMap = function(opt_options) {
     interactions: new Collection(),
     view: options.view
   });
-  var ovmap = this.ovmap_;
+  const ovmap = this.ovmap_;
 
   if (options.layers) {
     options.layers.forEach(
-        /**
+      /**
        * @param {ol.layer.Layer} layer Layer.
        */
-        function(layer) {
-          ovmap.addLayer(layer);
-        }.bind(this));
+      function(layer) {
+        ovmap.addLayer(layer);
+      }.bind(this));
   }
 
-  var box = document.createElement('DIV');
+  const box = document.createElement('DIV');
   box.className = 'ol-overviewmap-box';
   box.style.boxSizing = 'border-box';
 
@@ -147,15 +147,15 @@ var OverviewMap = function(opt_options) {
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
 
-  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
+  const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-  var element = document.createElement('div');
+  const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(this.ovmapDiv_);
   element.appendChild(button);
 
-  var render = options.render ? options.render : OverviewMap.render;
+  const render = options.render ? options.render : OverviewMap.render;
 
   Control.call(this, {
     element: element,
@@ -165,28 +165,28 @@ var OverviewMap = function(opt_options) {
 
   /* Interactive map */
 
-  var scope = this;
+  const scope = this;
 
-  var overlay = this.boxOverlay_;
-  var overlayBox = this.boxOverlay_.getElement();
+  const overlay = this.boxOverlay_;
+  const overlayBox = this.boxOverlay_.getElement();
 
   /* Functions definition */
 
-  var computeDesiredMousePosition = function(mousePosition) {
+  const computeDesiredMousePosition = function(mousePosition) {
     return {
       clientX: mousePosition.clientX - (overlayBox.offsetWidth / 2),
       clientY: mousePosition.clientY + (overlayBox.offsetHeight / 2)
     };
   };
 
-  var move = function(event) {
-    var coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+  const move = function(event) {
+    const coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
 
     overlay.setPosition(coordinates);
   };
 
-  var endMoving = function(event) {
-    var coordinates = ovmap.getEventCoordinate(event);
+  const endMoving = function(event) {
+    const coordinates = ovmap.getEventCoordinate(event);
 
     scope.getMap().getView().setCenter(coordinates);
 
@@ -210,12 +210,12 @@ inherits(OverviewMap, Control);
  * @api
  */
 OverviewMap.prototype.setMap = function(map) {
-  var oldMap = this.getMap();
+  const oldMap = this.getMap();
   if (map === oldMap) {
     return;
   }
   if (oldMap) {
-    var oldView = oldMap.getView();
+    const oldView = oldMap.getView();
     if (oldView) {
       this.unbindView_(oldView);
     }
@@ -226,15 +226,15 @@ OverviewMap.prototype.setMap = function(map) {
   if (map) {
     this.ovmap_.setTarget(this.ovmapDiv_);
     this.listenerKeys.push(_ol_events_.listen(
-        map, ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, this));
+      map, ObjectEventType.PROPERTYCHANGE,
+      this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked
     if (this.ovmap_.getLayers().getLength() === 0) {
       this.ovmap_.setLayerGroup(map.getLayerGroup());
     }
 
-    var view = map.getView();
+    const view = map.getView();
     if (view) {
       this.bindView_(view);
       if (view.isDef()) {
@@ -253,11 +253,11 @@ OverviewMap.prototype.setMap = function(map) {
  */
 OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
   if (event.key === MapProperty.VIEW) {
-    var oldView = /** @type {ol.View} */ (event.oldValue);
+    const oldView = /** @type {ol.View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);
     }
-    var newView = this.getMap().getView();
+    const newView = this.getMap().getView();
     this.bindView_(newView);
   }
 };
@@ -270,8 +270,8 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  */
 OverviewMap.prototype.bindView_ = function(view) {
   _ol_events_.listen(view,
-      BaseObject.getChangeEventType(ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+    BaseObject.getChangeEventType(ViewProperty.ROTATION),
+    this.handleRotationChanged_, this);
 };
 
 
@@ -282,8 +282,8 @@ OverviewMap.prototype.bindView_ = function(view) {
  */
 OverviewMap.prototype.unbindView_ = function(view) {
   _ol_events_.unlisten(view,
-      BaseObject.getChangeEventType(ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+    BaseObject.getChangeEventType(ViewProperty.ROTATION),
+    this.handleRotationChanged_, this);
 };
 
 
@@ -322,33 +322,33 @@ OverviewMap.render = function(mapEvent) {
  * @private
  */
 OverviewMap.prototype.validateExtent_ = function() {
-  var map = this.getMap();
-  var ovmap = this.ovmap_;
+  const map = this.getMap();
+  const ovmap = this.ovmap_;
 
   if (!map.isRendered() || !ovmap.isRendered()) {
     return;
   }
 
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  const mapSize = /** @type {ol.Size} */ (map.getSize());
 
-  var view = map.getView();
-  var extent = view.calculateExtent(mapSize);
+  const view = map.getView();
+  const extent = view.calculateExtent(mapSize);
 
-  var ovmapSize = /** @type {ol.Size} */ (ovmap.getSize());
+  const ovmapSize = /** @type {ol.Size} */ (ovmap.getSize());
 
-  var ovview = ovmap.getView();
-  var ovextent = ovview.calculateExtent(ovmapSize);
+  const ovview = ovmap.getView();
+  const ovextent = ovview.calculateExtent(ovmapSize);
 
-  var topLeftPixel =
+  const topLeftPixel =
       ovmap.getPixelFromCoordinate(getTopLeft(extent));
-  var bottomRightPixel =
+  const bottomRightPixel =
       ovmap.getPixelFromCoordinate(getBottomRight(extent));
 
-  var boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
-  var boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
+  const boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
+  const boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
 
-  var ovmapWidth = ovmapSize[0];
-  var ovmapHeight = ovmapSize[1];
+  const ovmapWidth = ovmapSize[0];
+  const ovmapHeight = ovmapSize[1];
 
   if (boxWidth < ovmapWidth * MIN_RATIO ||
       boxHeight < ovmapHeight * MIN_RATIO ||
@@ -371,22 +371,22 @@ OverviewMap.prototype.resetExtent_ = function() {
     return;
   }
 
-  var map = this.getMap();
-  var ovmap = this.ovmap_;
+  const map = this.getMap();
+  const ovmap = this.ovmap_;
 
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  const mapSize = /** @type {ol.Size} */ (map.getSize());
 
-  var view = map.getView();
-  var extent = view.calculateExtent(mapSize);
+  const view = map.getView();
+  const extent = view.calculateExtent(mapSize);
 
-  var ovview = ovmap.getView();
+  const ovview = ovmap.getView();
 
   // get how many times the current map overview could hold different
   // box sizes using the min and max ratio, pick the step in the middle used
   // to calculate the extent from the main map to set it to the overview map,
-  var steps = Math.log(
-      MAX_RATIO / MIN_RATIO) / Math.LN2;
-  var ratio = 1 / (Math.pow(2, steps / 2) * MIN_RATIO);
+  const steps = Math.log(
+    MAX_RATIO / MIN_RATIO) / Math.LN2;
+  const ratio = 1 / (Math.pow(2, steps / 2) * MIN_RATIO);
   scaleFromCenter(extent, ratio);
   ovview.fit(extent);
 };
@@ -398,12 +398,12 @@ OverviewMap.prototype.resetExtent_ = function() {
  * @private
  */
 OverviewMap.prototype.recenter_ = function() {
-  var map = this.getMap();
-  var ovmap = this.ovmap_;
+  const map = this.getMap();
+  const ovmap = this.ovmap_;
 
-  var view = map.getView();
+  const view = map.getView();
 
-  var ovview = ovmap.getView();
+  const ovview = ovmap.getView();
 
   ovview.setCenter(view.getCenter());
 };
@@ -414,30 +414,30 @@ OverviewMap.prototype.recenter_ = function() {
  * @private
  */
 OverviewMap.prototype.updateBox_ = function() {
-  var map = this.getMap();
-  var ovmap = this.ovmap_;
+  const map = this.getMap();
+  const ovmap = this.ovmap_;
 
   if (!map.isRendered() || !ovmap.isRendered()) {
     return;
   }
 
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  const mapSize = /** @type {ol.Size} */ (map.getSize());
 
-  var view = map.getView();
+  const view = map.getView();
 
-  var ovview = ovmap.getView();
+  const ovview = ovmap.getView();
 
-  var rotation = view.getRotation();
+  const rotation = view.getRotation();
 
-  var overlay = this.boxOverlay_;
-  var box = this.boxOverlay_.getElement();
-  var extent = view.calculateExtent(mapSize);
-  var ovresolution = ovview.getResolution();
-  var bottomLeft = getBottomLeft(extent);
-  var topRight = getTopRight(extent);
+  const overlay = this.boxOverlay_;
+  const box = this.boxOverlay_.getElement();
+  const extent = view.calculateExtent(mapSize);
+  const ovresolution = ovview.getResolution();
+  const bottomLeft = getBottomLeft(extent);
+  const topRight = getTopRight(extent);
 
   // set position using bottom left coordinates
-  var rotateBottomLeft = this.calculateCoordinateRotate_(rotation, bottomLeft);
+  const rotateBottomLeft = this.calculateCoordinateRotate_(rotation, bottomLeft);
   overlay.setPosition(rotateBottomLeft);
 
   // set box size calculated from map extent size and overview map resolution
@@ -455,13 +455,13 @@ OverviewMap.prototype.updateBox_ = function() {
  * @private
  */
 OverviewMap.prototype.calculateCoordinateRotate_ = function(
-    rotation, coordinate) {
-  var coordinateRotate;
+  rotation, coordinate) {
+  let coordinateRotate;
 
-  var map = this.getMap();
-  var view = map.getView();
+  const map = this.getMap();
+  const view = map.getView();
 
-  var currentCenter = view.getCenter();
+  const currentCenter = view.getCenter();
 
   if (currentCenter) {
     coordinateRotate = [
@@ -499,15 +499,15 @@ OverviewMap.prototype.handleToggle_ = function() {
 
   // manage overview map if it had not been rendered before and control
   // is expanded
-  var ovmap = this.ovmap_;
+  const ovmap = this.ovmap_;
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
     _ol_events_.listenOnce(ovmap, MapEventType.POSTRENDER,
-        function(event) {
-          this.updateBox_();
-        },
-        this);
+      function(event) {
+        this.updateBox_();
+      },
+      this);
   }
 };
 

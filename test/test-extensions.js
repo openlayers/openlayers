@@ -6,10 +6,10 @@ import _ol_has_ from '../src/ol/has.js';
 (function(global) {
 
   // show generated maps for rendering tests
-  var showMap = (global.location.search.indexOf('generate') >= 0);
+  const showMap = (global.location.search.indexOf('generate') >= 0);
 
   // show a diff when rendering tests fail
-  var showDiff = (global.location.search.indexOf('showdiff') >= 0);
+  const showDiff = (global.location.search.indexOf('showdiff') >= 0);
 
   /**
    * The default tolerance for image comparisons.
@@ -17,10 +17,10 @@ import _ol_has_ from '../src/ol/has.js';
   global.IMAGE_TOLERANCE = 1.5;
 
   function afterLoad(type, path, next) {
-    var client = new XMLHttpRequest();
+    const client = new XMLHttpRequest();
     client.open('GET', path, true);
     client.onload = function() {
-      var data;
+      let data;
       if (type === 'xml') {
         data = client.responseXML;
       } else {
@@ -65,7 +65,7 @@ import _ol_has_ from '../src/ol/has.js';
 
 
   // extensions to expect.js
-  var expect = global.expect;
+  const expect = global.expect;
 
 
   /**
@@ -76,15 +76,15 @@ import _ol_has_ from '../src/ol/has.js';
    */
   expect.Assertion.prototype.roughlyEqual = function(n, tol) {
     this.assert(
-        Math.abs(this.obj - n) <= tol,
-        function() {
-          return 'expected ' + expect.stringify(this.obj) + ' to be within ' +
+      Math.abs(this.obj - n) <= tol,
+      function() {
+        return 'expected ' + expect.stringify(this.obj) + ' to be within ' +
               tol + ' of ' + n;
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      },
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' not to be within ' + tol + ' of ' + n;
-        });
+      });
     return this;
   };
 
@@ -95,13 +95,13 @@ import _ol_has_ from '../src/ol/has.js';
    */
   expect.Assertion.prototype.called = function() {
     this.assert(
-        this.obj.called,
-        function() {
-          return 'expected ' + expect.stringify(this.obj) + ' to be called';
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) + ' not to be called';
-        });
+      this.obj.called,
+      function() {
+        return 'expected ' + expect.stringify(this.obj) + ' to be called';
+      },
+      function() {
+        return 'expected ' + expect.stringify(this.obj) + ' not to be called';
+      });
     return this;
   };
 
@@ -111,9 +111,9 @@ import _ol_has_ from '../src/ol/has.js';
     if (options && options.includeWhiteSpace) {
       return node.childNodes;
     } else {
-      var nodes = [];
-      for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
-        var child = node.childNodes[i];
+      const nodes = [];
+      for (let i = 0, ii = node.childNodes.length; i < ii; i++) {
+        const child = node.childNodes[i];
         if (child.nodeType == 1) {
           // element node, add it
           nodes.push(child);
@@ -135,7 +135,7 @@ import _ol_has_ from '../src/ol/has.js';
   }
 
   function assertElementNodesEqual(node1, node2, options, errors) {
-    var testPrefix = (options && options.prefix === true);
+    const testPrefix = (options && options.prefix === true);
     if (node1.nodeType !== node2.nodeType) {
       errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' +
         node2.nodeName + ' | expected ' + node1.nodeType + ' to equal ' +
@@ -148,8 +148,8 @@ import _ol_has_ from '../src/ol/has.js';
             node2.nodeName);
       }
     } else {
-      var n1 = node1.nodeName.split(':').pop();
-      var n2 = node2.nodeName.split(':').pop();
+      const n1 = node1.nodeName.split(':').pop();
+      const n2 = node2.nodeName.split(':').pop();
       if (n1 !== n2) {
         errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
             node2.nodeName + ' | expected ' + n1 + ' to equal ' + n2);
@@ -157,8 +157,8 @@ import _ol_has_ from '../src/ol/has.js';
     }
     // for text nodes compare value
     if (node1.nodeType === 3) {
-      var nv1 = node1.nodeValue.replace(/\s/g, '');
-      var nv2 = node2.nodeValue.replace(/\s/g, '');
+      const nv1 = node1.nodeValue.replace(/\s/g, '');
+      const nv2 = node2.nodeValue.replace(/\s/g, '');
       if (nv1 !== nv2) {
         errors.push('nodeValue test failed | expected ' + nv1 + ' to equal ' +
             nv2);
@@ -182,12 +182,12 @@ import _ol_has_ from '../src/ol/has.js';
         }
       }
       // compare attributes - disregard xmlns given namespace handling above
-      var node1AttrLen = 0;
-      var node1Attr = {};
-      var node2AttrLen = 0;
-      var node2Attr = {};
-      var ga, ea, gn, en;
-      var i, ii;
+      let node1AttrLen = 0;
+      const node1Attr = {};
+      let node2AttrLen = 0;
+      const node2Attr = {};
+      let ga, ea, gn, en;
+      let i, ii;
       if (node1.attributes) {
         for (i = 0, ii = node1.attributes.length; i < ii; ++i) {
           ga = node1.attributes[i];
@@ -216,7 +216,7 @@ import _ol_has_ from '../src/ol/has.js';
         errors.push('Number of attributes test failed for: ' + node1.nodeName +
             ' | expected ' + node1AttrLen + ' to equal ' + node2AttrLen);
       }
-      for (var name in node1Attr) {
+      for (const name in node1Attr) {
         if (node2Attr[name] === undefined) {
           errors.push('Attribute name ' + node1Attr[name].name +
               ' expected for element ' + node1.nodeName);
@@ -240,14 +240,14 @@ import _ol_has_ from '../src/ol/has.js';
         }
       }
       // compare children
-      var node1ChildNodes = getChildNodes(node1, options);
-      var node2ChildNodes = getChildNodes(node2, options);
+      const node1ChildNodes = getChildNodes(node1, options);
+      const node2ChildNodes = getChildNodes(node2, options);
       if (node1ChildNodes.length !== node2ChildNodes.length) {
         // check if all child nodes are text, they could be split up in
         // 4096 chunks
         // if so, ignore the childnode count error
-        var allText = true;
-        var c, cc;
+        let allText = true;
+        let c, cc;
         for (c = 0, cc = node1ChildNodes.length; c < cc; ++c) {
           if (node1ChildNodes[c].nodeType !== 3) {
             allText = false;
@@ -268,9 +268,9 @@ import _ol_has_ from '../src/ol/has.js';
       }
       // only compare if they are equal
       if (node1ChildNodes.length === node2ChildNodes.length) {
-        for (var j = 0, jj = node1ChildNodes.length; j < jj; ++j) {
+        for (let j = 0, jj = node1ChildNodes.length; j < jj; ++j) {
           assertElementNodesEqual(
-              node1ChildNodes[j], node2ChildNodes[j], options, errors);
+            node1ChildNodes[j], node2ChildNodes[j], options, errors);
         }
       }
     }
@@ -291,21 +291,21 @@ import _ol_has_ from '../src/ol/has.js';
     if (this.obj && this.obj.nodeType == 9) {
       this.obj = this.obj.documentElement;
     }
-    var errors = [];
+    const errors = [];
     assertElementNodesEqual(obj, this.obj, options, errors);
-    var result = (errors.length === 0);
+    const result = (errors.length === 0);
     this.assert(
-        !!result,
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      !!result,
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj) + '\n' +
               errors.join('\n');
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      },
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' to sort of not equal ' + expect.stringify(obj) + '\n' +
               errors.join('\n');
-        });
+      });
     return this;
   };
 
@@ -317,15 +317,15 @@ import _ol_has_ from '../src/ol/has.js';
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
-        equals(this.obj, obj),
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      equals(this.obj, obj),
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      },
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' to sort of not equal ' + expect.stringify(obj);
-        });
+      });
     return this;
   };
 
@@ -337,26 +337,26 @@ import _ol_has_ from '../src/ol/has.js';
    */
   expect.Assertion.prototype.arreqlNaN = function(obj) {
     function compare(a, i) {
-      var b = obj[i];
+      const b = obj[i];
       return a === b || (typeof a === 'number' && typeof b === 'number' &&
           isNaN(a) && isNaN(b));
     }
     this.assert(
-        this.obj.length === obj.length && this.obj.every(compare),
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      this.obj.length === obj.length && this.obj.every(compare),
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
+      },
+      function() {
+        return 'expected ' + expect.stringify(this.obj) +
               ' to sort of not equal ' + expect.stringify(obj);
-        });
+      });
     return this;
   };
 
   global.createMapDiv = function(width, height) {
-    var target = document.createElement('div');
-    var style = target.style;
+    const target = document.createElement('div');
+    const style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
     style.top = '-1000px';
@@ -368,7 +368,7 @@ import _ol_has_ from '../src/ol/has.js';
   };
 
   global.disposeMap = function(map) {
-    var target = map.getTarget();
+    const target = map.getTarget();
     map.setTarget(null);
     if (target && target.parentNode) {
       target.parentNode.removeChild(target);
@@ -384,33 +384,33 @@ import _ol_has_ from '../src/ol/has.js';
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
     if (showMap) {
-      var wrapper = document.createElement('div');
+      const wrapper = document.createElement('div');
       wrapper.style.width = canvas.width + 'px';
       wrapper.style.height = canvas.height + 'px';
       wrapper.appendChild(canvas);
       document.body.appendChild(wrapper);
       document.body.appendChild(document.createTextNode(referenceImage));
     }
-    var width = canvas.width;
-    var height = canvas.height;
-    var image = new Image();
+    const width = canvas.width;
+    const height = canvas.height;
+    const image = new Image();
     image.addEventListener('load', function() {
       expect(image.width).to.be(width);
       expect(image.height).to.be(height);
-      var referenceCanvas = document.createElement('CANVAS');
+      const referenceCanvas = document.createElement('CANVAS');
       referenceCanvas.width = image.width;
       referenceCanvas.height = image.height;
-      var referenceContext = referenceCanvas.getContext('2d');
+      const referenceContext = referenceCanvas.getContext('2d');
       referenceContext.drawImage(image, 0, 0, image.width, image.height);
-      var context = canvas.getContext('2d');
-      var output = context.createImageData(canvas.width, canvas.height);
-      var mismatchPx = pixelmatch(
-          context.getImageData(0, 0, width, height).data,
-          referenceContext.getImageData(0, 0, width, height).data,
-          output.data, width, height);
-      var mismatchPct = mismatchPx / (width * height) * 100;
+      const context = canvas.getContext('2d');
+      const output = context.createImageData(canvas.width, canvas.height);
+      const mismatchPx = pixelmatch(
+        context.getImageData(0, 0, width, height).data,
+        referenceContext.getImageData(0, 0, width, height).data,
+        output.data, width, height);
+      const mismatchPct = mismatchPx / (width * height) * 100;
       if (showDiff && mismatchPct > tolerance) {
-        var diffCanvas = document.createElement('canvas');
+        const diffCanvas = document.createElement('canvas');
         diffCanvas.width = width;
         diffCanvas.height = height;
         diffCanvas.getContext('2d').putImageData(output, 0, 0);
@@ -443,9 +443,9 @@ import _ol_has_ from '../src/ol/has.js';
         return;
       }
 
-      var canvas;
+      let canvas;
       if (event.glContext) {
-        var webglCanvas = event.glContext.getCanvas();
+        const webglCanvas = event.glContext.getCanvas();
         expect(webglCanvas).to.be.a(HTMLCanvasElement);
 
         // draw the WebGL canvas on a new canvas, because we can not create
@@ -454,7 +454,7 @@ import _ol_has_ from '../src/ol/has.js';
         canvas.width = webglCanvas.width;
         canvas.height = webglCanvas.height;
         canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
-            webglCanvas.width, webglCanvas.height);
+          webglCanvas.width, webglCanvas.height);
       } else {
         canvas = event.context.canvas;
       }
@@ -464,7 +464,7 @@ import _ol_has_ from '../src/ol/has.js';
     });
   };
 
-  var features = {
+  const features = {
     ArrayBuffer: 'ArrayBuffer' in global,
     'ArrayBuffer.isView': 'ArrayBuffer' in global && !!ArrayBuffer.isView,
     FileReader: 'FileReader' in global,
@@ -492,7 +492,7 @@ import _ol_has_ from '../src/ol/has.js';
 
   // throw if anybody appends a div to the body and doesn't remove it
   afterEach(function() {
-    var garbage = document.body.getElementsByTagName('div');
+    const garbage = document.body.getElementsByTagName('div');
     if (garbage.length) {
       throw new Error('Found extra <div> elements in the body');
     }

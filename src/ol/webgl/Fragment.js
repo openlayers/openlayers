@@ -11,7 +11,7 @@ import _ol_webgl_Shader_ from '../webgl/Shader.js';
  * @param {string} source Source.
  * @struct
  */
-var _ol_webgl_Fragment_ = function(source) {
+const _ol_webgl_Fragment_ = function(source) {
   _ol_webgl_Shader_.call(this, source);
 };
 

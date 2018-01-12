@@ -5,7 +5,7 @@ import {fromLonLat} from '../src/ol/proj.js';
 import Stamen from '../src/ol/source/Stamen.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new Stamen({

@@ -18,7 +18,7 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-var _ol_render_webgl_TextureReplay_ = function(tolerance, maxExtent) {
+const _ol_render_webgl_TextureReplay_ = function(tolerance, maxExtent) {
   _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
 
   /**
@@ -119,13 +119,13 @@ inherits(_ol_render_webgl_TextureReplay_, _ol_render_webgl_Replay_);
  * @inheritDoc
  */
 _ol_render_webgl_TextureReplay_.prototype.getDeleteResourcesFunction = function(context) {
-  var verticesBuffer = this.verticesBuffer;
-  var indicesBuffer = this.indicesBuffer;
-  var textures = this.getTextures(true);
-  var gl = context.getGL();
+  const verticesBuffer = this.verticesBuffer;
+  const indicesBuffer = this.indicesBuffer;
+  const textures = this.getTextures(true);
+  const gl = context.getGL();
   return function() {
     if (!gl.isContextLost()) {
-      var i, ii;
+      let i, ii;
       for (i = 0, ii = textures.length; i < ii; ++i) {
         gl.deleteTexture(textures[i]);
       }
@@ -145,24 +145,24 @@ _ol_render_webgl_TextureReplay_.prototype.getDeleteResourcesFunction = function(
  * @protected
  */
 _ol_render_webgl_TextureReplay_.prototype.drawCoordinates = function(flatCoordinates, offset, end, stride) {
-  var anchorX = /** @type {number} */ (this.anchorX);
-  var anchorY = /** @type {number} */ (this.anchorY);
-  var height = /** @type {number} */ (this.height);
-  var imageHeight = /** @type {number} */ (this.imageHeight);
-  var imageWidth = /** @type {number} */ (this.imageWidth);
-  var opacity = /** @type {number} */ (this.opacity);
-  var originX = /** @type {number} */ (this.originX);
-  var originY = /** @type {number} */ (this.originY);
-  var rotateWithView = this.rotateWithView ? 1.0 : 0.0;
+  const anchorX = /** @type {number} */ (this.anchorX);
+  const anchorY = /** @type {number} */ (this.anchorY);
+  const height = /** @type {number} */ (this.height);
+  const imageHeight = /** @type {number} */ (this.imageHeight);
+  const imageWidth = /** @type {number} */ (this.imageWidth);
+  const opacity = /** @type {number} */ (this.opacity);
+  const originX = /** @type {number} */ (this.originX);
+  const originY = /** @type {number} */ (this.originY);
+  const rotateWithView = this.rotateWithView ? 1.0 : 0.0;
   // this.rotation_ is anti-clockwise, but rotation is clockwise
-  var rotation = /** @type {number} */ (-this.rotation);
-  var scale = /** @type {number} */ (this.scale);
-  var width = /** @type {number} */ (this.width);
-  var cos = Math.cos(rotation);
-  var sin = Math.sin(rotation);
-  var numIndices = this.indices.length;
-  var numVertices = this.vertices.length;
-  var i, n, offsetX, offsetY, x, y;
+  const rotation = /** @type {number} */ (-this.rotation);
+  const scale = /** @type {number} */ (this.scale);
+  const width = /** @type {number} */ (this.width);
+  const cos = Math.cos(rotation);
+  const sin = Math.sin(rotation);
+  let numIndices = this.indices.length;
+  let numVertices = this.vertices.length;
+  let i, n, offsetX, offsetY, x, y;
   for (i = offset; i < end; i += stride) {
     x = flatCoordinates[i] - this.origin[0];
     y = flatCoordinates[i + 1] - this.origin[1];
@@ -248,8 +248,8 @@ _ol_render_webgl_TextureReplay_.prototype.drawCoordinates = function(flatCoordin
  * @param {WebGLRenderingContext} gl Gl.
  */
 _ol_render_webgl_TextureReplay_.prototype.createTextures = function(textures, images, texturePerImage, gl) {
-  var texture, image, uid, i;
-  var ii = images.length;
+  let texture, image, uid, i;
+  const ii = images.length;
   for (i = 0; i < ii; ++i) {
     image = images[i];
 
@@ -258,7 +258,7 @@ _ol_render_webgl_TextureReplay_.prototype.createTextures = function(textures, im
       texture = texturePerImage[uid];
     } else {
       texture = _ol_webgl_Context_.createTexture(
-          gl, image, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
+        gl, image, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
       texturePerImage[uid] = texture;
     }
     textures[i] = texture;
@@ -271,12 +271,12 @@ _ol_render_webgl_TextureReplay_.prototype.createTextures = function(textures, im
  */
 _ol_render_webgl_TextureReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  var fragmentShader = _ol_render_webgl_texturereplay_defaultshader_.fragment;
-  var vertexShader = _ol_render_webgl_texturereplay_defaultshader_.vertex;
-  var program = context.getProgram(fragmentShader, vertexShader);
+  const fragmentShader = _ol_render_webgl_texturereplay_defaultshader_.fragment;
+  const vertexShader = _ol_render_webgl_texturereplay_defaultshader_.vertex;
+  const program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
-  var locations;
+  let locations;
   if (!this.defaultLocations) {
     locations = new _ol_render_webgl_texturereplay_defaultshader_Locations_(gl, program);
     this.defaultLocations = locations;
@@ -290,23 +290,23 @@ _ol_render_webgl_TextureReplay_.prototype.setUpProgram = function(gl, context, s
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, _ol_webgl_.FLOAT,
-      false, 32, 0);
+    false, 32, 0);
 
   gl.enableVertexAttribArray(locations.a_offsets);
   gl.vertexAttribPointer(locations.a_offsets, 2, _ol_webgl_.FLOAT,
-      false, 32, 8);
+    false, 32, 8);
 
   gl.enableVertexAttribArray(locations.a_texCoord);
   gl.vertexAttribPointer(locations.a_texCoord, 2, _ol_webgl_.FLOAT,
-      false, 32, 16);
+    false, 32, 16);
 
   gl.enableVertexAttribArray(locations.a_opacity);
   gl.vertexAttribPointer(locations.a_opacity, 1, _ol_webgl_.FLOAT,
-      false, 32, 24);
+    false, 32, 24);
 
   gl.enableVertexAttribArray(locations.a_rotateWithView);
   gl.vertexAttribPointer(locations.a_rotateWithView, 1, _ol_webgl_.FLOAT,
-      false, 32, 28);
+    false, 32, 28);
 
   return locations;
 };
@@ -328,17 +328,17 @@ _ol_render_webgl_TextureReplay_.prototype.shutDownProgram = function(gl, locatio
  * @inheritDoc
  */
 _ol_render_webgl_TextureReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-  var textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
-  var groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
+  const textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
+  const groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
 
   if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping(
-        gl, context, skippedFeaturesHash, textures, groupIndices);
+      gl, context, skippedFeaturesHash, textures, groupIndices);
   } else {
-    var i, ii, start;
+    let i, ii, start;
     for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
       gl.bindTexture(_ol_webgl_.TEXTURE_2D, textures[i]);
-      var end = groupIndices[i];
+      const end = groupIndices[i];
       this.drawElements(gl, context, start, end);
       start = end;
     }
@@ -373,22 +373,22 @@ _ol_render_webgl_TextureReplay_.prototype.drawReplay = function(gl, context, ski
  * @param {Array.<number>} groupIndices Texture group indices.
  */
 _ol_render_webgl_TextureReplay_.prototype.drawReplaySkipping = function(gl, context, skippedFeaturesHash, textures,
-    groupIndices) {
-  var featureIndex = 0;
+  groupIndices) {
+  let featureIndex = 0;
 
-  var i, ii;
+  let i, ii;
   for (i = 0, ii = textures.length; i < ii; ++i) {
     gl.bindTexture(_ol_webgl_.TEXTURE_2D, textures[i]);
-    var groupStart = (i > 0) ? groupIndices[i - 1] : 0;
-    var groupEnd = groupIndices[i];
+    const groupStart = (i > 0) ? groupIndices[i - 1] : 0;
+    const groupEnd = groupIndices[i];
 
-    var start = groupStart;
-    var end = groupStart;
+    let start = groupStart;
+    let end = groupStart;
     while (featureIndex < this.startIndices.length &&
         this.startIndices[featureIndex] <= groupEnd) {
-      var feature = this.startIndicesFeature[featureIndex];
+      const feature = this.startIndicesFeature[featureIndex];
 
-      var featureUid = getUid(feature).toString();
+      const featureUid = getUid(feature).toString();
       if (skippedFeaturesHash[featureUid] !== undefined) {
         // feature should be skipped
         if (start !== end) {
@@ -420,10 +420,10 @@ _ol_render_webgl_TextureReplay_.prototype.drawReplaySkipping = function(gl, cont
  * @inheritDoc
  */
 _ol_render_webgl_TextureReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
-    featureCallback, opt_hitExtent) {
-  var i, groupStart, start, end, feature, featureUid;
-  var featureIndex = this.startIndices.length - 1;
-  var hitDetectionTextures = this.getHitDetectionTextures();
+  featureCallback, opt_hitExtent) {
+  let i, groupStart, start, end, feature, featureUid;
+  let featureIndex = this.startIndices.length - 1;
+  const hitDetectionTextures = this.getHitDetectionTextures();
   for (i = hitDetectionTextures.length - 1; i >= 0; --i) {
     gl.bindTexture(_ol_webgl_.TEXTURE_2D, hitDetectionTextures[i]);
     groupStart = (i > 0) ? this.hitDetectionGroupIndices[i - 1] : 0;
@@ -439,12 +439,12 @@ _ol_render_webgl_TextureReplay_.prototype.drawHitDetectionReplayOneByOne = funct
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
           (opt_hitExtent === undefined || intersects(
-              /** @type {Array<number>} */ (opt_hitExtent),
-              feature.getGeometry().getExtent()))) {
+            /** @type {Array<number>} */ (opt_hitExtent),
+            feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         this.drawElements(gl, context, start, end);
 
-        var result = featureCallback(feature);
+        const result = featureCallback(feature);
         if (result) {
           return result;
         }

@@ -15,7 +15,7 @@ import XYZ from '../source/XYZ.js';
  * @param {olx.source.CartoDBOptions} options CartoDB options.
  * @api
  */
-var CartoDB = function(options) {
+const CartoDB = function(options) {
 
   /**
    * @type {string}
@@ -97,18 +97,18 @@ CartoDB.prototype.setConfig = function(config) {
  * @private
  */
 CartoDB.prototype.initializeMap_ = function() {
-  var paramHash = JSON.stringify(this.config_);
+  const paramHash = JSON.stringify(this.config_);
   if (this.templateCache_[paramHash]) {
     this.applyTemplate_(this.templateCache_[paramHash]);
     return;
   }
-  var mapUrl = 'https://' + this.account_ + '.carto.com/api/v1/map';
+  let mapUrl = 'https://' + this.account_ + '.carto.com/api/v1/map';
 
   if (this.mapId_) {
     mapUrl += '/named/' + this.mapId_;
   }
 
-  var client = new XMLHttpRequest();
+  const client = new XMLHttpRequest();
   client.addEventListener('load', this.handleInitResponse_.bind(this, paramHash));
   client.addEventListener('error', this.handleInitError_.bind(this));
   client.open('POST', mapUrl);
@@ -125,10 +125,10 @@ CartoDB.prototype.initializeMap_ = function() {
  * @private
  */
 CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
-  var client = /** @type {XMLHttpRequest} */ (event.target);
+  const client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
-    var response;
+    let response;
     try {
       response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));
     } catch (err) {
@@ -159,7 +159,7 @@ CartoDB.prototype.handleInitError_ = function(event) {
  * @private
  */
 CartoDB.prototype.applyTemplate_ = function(data) {
-  var tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
+  const tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
       '/api/v1/map/' + data.layergroupid + '/{z}/{x}/{y}.png';
   this.setUrl(tilesUrl);
 };

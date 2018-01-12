@@ -8,12 +8,12 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   url: 'data/geojson/countries.geojson',
   format: new GeoJSON()
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -29,7 +29,7 @@ var map = new Map({
   })
 });
 
-var extent = new ExtentInteraction({
+const extent = new ExtentInteraction({
   condition: _ol_events_condition_.platformModifierKeyOnly
 });
 map.addInteraction(extent);

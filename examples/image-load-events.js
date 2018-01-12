@@ -32,7 +32,7 @@ Progress.prototype.addLoading = function() {
  * Increment the count of loaded tiles.
  */
 Progress.prototype.addLoaded = function() {
-  var this_ = this;
+  const this_ = this;
   setTimeout(function() {
     ++this_.loaded;
     this_.update();
@@ -44,12 +44,12 @@ Progress.prototype.addLoaded = function() {
  * Update the progress bar.
  */
 Progress.prototype.update = function() {
-  var width = (this.loaded / this.loading * 100).toFixed(1) + '%';
+  const width = (this.loaded / this.loading * 100).toFixed(1) + '%';
   this.el.style.width = width;
   if (this.loading === this.loaded) {
     this.loading = 0;
     this.loaded = 0;
-    var this_ = this;
+    const this_ = this;
     setTimeout(function() {
       this_.hide();
     }, 500);
@@ -75,9 +75,9 @@ Progress.prototype.hide = function() {
   }
 };
 
-var progress = new Progress(document.getElementById('progress'));
+const progress = new Progress(document.getElementById('progress'));
 
-var source = new ImageWMS({
+const source = new ImageWMS({
   url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'topp:states'},
   serverType: 'geoserver'
@@ -94,7 +94,7 @@ source.on('imageloaderror', function() {
   progress.addLoaded();
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new ImageLayer({source: source})
   ],

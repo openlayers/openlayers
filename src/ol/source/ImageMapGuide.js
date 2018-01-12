@@ -20,7 +20,7 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api
  */
-var ImageMapGuide = function(options) {
+const ImageMapGuide = function(options) {
 
   ImageSource.call(this, {
     projection: options.projection,
@@ -121,7 +121,7 @@ ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRat
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
-  var image = this.image_;
+  let image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
@@ -134,18 +134,18 @@ ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRat
     extent = extent.slice();
     scaleFromCenter(extent, this.ratio_);
   }
-  var width = getWidth(extent) / resolution;
-  var height = getHeight(extent) / resolution;
-  var size = [width * pixelRatio, height * pixelRatio];
+  const width = getWidth(extent) / resolution;
+  const height = getHeight(extent) / resolution;
+  const size = [width * pixelRatio, height * pixelRatio];
 
   if (this.url_ !== undefined) {
-    var imageUrl = this.getUrl(this.url_, this.params_, extent, size,
-        projection);
+    const imageUrl = this.getUrl(this.url_, this.params_, extent, size,
+      projection);
     image = new _ol_Image_(extent, resolution, pixelRatio,
-        imageUrl, this.crossOrigin_,
-        this.imageLoadFunction_);
+      imageUrl, this.crossOrigin_,
+      this.imageLoadFunction_);
     _ol_events_.listen(image, EventType.CHANGE,
-        this.handleImageChange, this);
+      this.handleImageChange, this);
   } else {
     image = null;
   }
@@ -174,11 +174,11 @@ ImageMapGuide.prototype.getImageLoadFunction = function() {
  * @return {number} The computed map scale.
  */
 ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
-  var mcsW = getWidth(extent);
-  var mcsH = getHeight(extent);
-  var devW = size[0];
-  var devH = size[1];
-  var mpp = 0.0254 / dpi;
+  const mcsW = getWidth(extent);
+  const mcsH = getHeight(extent);
+  const devW = size[0];
+  const devH = size[1];
+  const mpp = 0.0254 / dpi;
   if (devH * mcsW > devW * mcsH) {
     return mcsW * metersPerUnit / (devW * mpp); // width limited
   } else {
@@ -207,10 +207,10 @@ ImageMapGuide.prototype.updateParams = function(params) {
  * @return {string} The mapagent map image request URL.
  */
 ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
-  var scale = ImageMapGuide.getScale(extent, size,
-      this.metersPerUnit_, this.displayDpi_);
-  var center = getCenter(extent);
-  var baseParams = {
+  const scale = ImageMapGuide.getScale(extent, size,
+    this.metersPerUnit_, this.displayDpi_);
+  const center = getCenter(extent);
+  const baseParams = {
     'OPERATION': this.useOverlay_ ? 'GETDYNAMICMAPOVERLAYIMAGE' : 'GETMAPIMAGE',
     'VERSION': '2.0.0',
     'LOCALE': 'en',
@@ -234,7 +234,7 @@ ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, project
  * @api
  */
 ImageMapGuide.prototype.setImageLoadFunction = function(
-    imageLoadFunction) {
+  imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();

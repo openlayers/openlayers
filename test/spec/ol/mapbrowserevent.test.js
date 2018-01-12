@@ -6,12 +6,12 @@ import PointerEvent from '../../../src/ol/pointer/PointerEvent.js';
 
 describe('ol.MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {
-    var clock;
-    var handler;
-    var clickSpy;
-    var singleclickSpy;
-    var dblclickSpy;
-    var target;
+    let clock;
+    let handler;
+    let clickSpy;
+    let singleclickSpy;
+    let dblclickSpy;
+    let target;
 
     beforeEach(function() {
       clock = sinon.useFakeTimers();
@@ -97,7 +97,7 @@ describe('ol.MapBrowserEventHandler', function() {
 
   describe('#down_', function() {
 
-    var handler;
+    let handler;
     beforeEach(function() {
       handler = new MapBrowserEventHandler(new Map({}));
     });
@@ -107,7 +107,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is an event after handlePointerDown_ has been called', function() {
-      var event = new PointerEvent('pointerdown', {});
+      const event = new PointerEvent('pointerdown', {});
       handler.handlePointerDown_(event);
       expect(handler.down_).to.be(event);
     });
@@ -115,9 +115,9 @@ describe('ol.MapBrowserEventHandler', function() {
   });
 
   describe('#isMoving_', function() {
-    var defaultHandler;
-    var moveToleranceHandler;
-    var pointerdownAt0;
+    let defaultHandler;
+    let moveToleranceHandler;
+    let pointerdownAt0;
     beforeEach(function() {
       defaultHandler = new MapBrowserEventHandler(new Map({}));
       moveToleranceHandler = new MapBrowserEventHandler(new Map({}), 8);
@@ -130,7 +130,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is not moving if distance is 0', function() {
-      var pointerdownAt0 = new PointerEvent('pointerdown', {}, {
+      const pointerdownAt0 = new PointerEvent('pointerdown', {}, {
         clientX: 0,
         clientY: 0
       });
@@ -138,7 +138,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is moving if distance is 2', function() {
-      var pointerdownAt2 = new PointerEvent('pointerdown', {}, {
+      const pointerdownAt2 = new PointerEvent('pointerdown', {}, {
         clientX: _ol_has_.DEVICE_PIXEL_RATIO + 1,
         clientY: _ol_has_.DEVICE_PIXEL_RATIO + 1
       });
@@ -146,7 +146,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is moving with negative distance', function() {
-      var pointerdownAt2 = new PointerEvent('pointerdown', {}, {
+      const pointerdownAt2 = new PointerEvent('pointerdown', {}, {
         clientX: -(_ol_has_.DEVICE_PIXEL_RATIO + 1),
         clientY: -(_ol_has_.DEVICE_PIXEL_RATIO + 1)
       });
@@ -154,7 +154,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is not moving if distance is less than move tolerance', function() {
-      var pointerdownAt2 = new PointerEvent('pointerdown', {}, {
+      const pointerdownAt2 = new PointerEvent('pointerdown', {}, {
         clientX: _ol_has_.DEVICE_PIXEL_RATIO + 1,
         clientY: _ol_has_.DEVICE_PIXEL_RATIO + 1
       });
@@ -162,7 +162,7 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is moving if distance is greater than move tolerance', function() {
-      var pointerdownAt9 = new PointerEvent('pointerdown', {}, {
+      const pointerdownAt9 = new PointerEvent('pointerdown', {}, {
         clientX: (_ol_has_.DEVICE_PIXEL_RATIO * 8) + 1,
         clientY: (_ol_has_.DEVICE_PIXEL_RATIO * 8) + 1
       });

@@ -9,11 +9,11 @@ import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import Projection from '../src/ol/proj/Projection.js';
 
 
-var replacer = function(key, value) {
+const replacer = function(key, value) {
   if (value.geometry) {
-    var type;
-    var rawType = value.type;
-    var geometry = value.geometry;
+    let type;
+    const rawType = value.type;
+    let geometry = value.geometry;
 
     if (rawType === 1) {
       type = 'MultiPoint';
@@ -48,12 +48,12 @@ var replacer = function(key, value) {
   }
 };
 
-var tilePixels = new Projection({
+const tilePixels = new Projection({
   code: 'TILE_PIXELS',
   units: 'tile-pixels'
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -66,26 +66,26 @@ var map = new Map({
   })
 });
 
-var url = 'data/geojson/countries.geojson';
+const url = 'data/geojson/countries.geojson';
 fetch(url).then(function(response) {
   return response.json();
 }).then(function(json) {
-  var tileIndex = geojsonvt(json, {
+  const tileIndex = geojsonvt(json, {
     extent: 4096,
     debug: 1
   });
-  var vectorSource = new VectorTileSource({
+  const vectorSource = new VectorTileSource({
     format: new GeoJSON(),
     tileLoadFunction: function(tile) {
-      var format = tile.getFormat();
-      var tileCoord = tile.getTileCoord();
-      var data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
+      const format = tile.getFormat();
+      const tileCoord = tile.getTileCoord();
+      const data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
 
-      var features = format.readFeatures(
-          JSON.stringify({
-            type: 'FeatureCollection',
-            features: data ? data.features : []
-          }, replacer));
+      const features = format.readFeatures(
+        JSON.stringify({
+          type: 'FeatureCollection',
+          features: data ? data.features : []
+        }, replacer));
       tile.setLoader(function() {
         tile.setFeatures(features);
         tile.setProjection(tilePixels);
@@ -93,7 +93,7 @@ fetch(url).then(function(response) {
     },
     url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
   });
-  var vectorLayer = new VectorTileLayer({
+  const vectorLayer = new VectorTileLayer({
     source: vectorSource
   });
   map.addLayer(vectorLayer);

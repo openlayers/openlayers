@@ -18,7 +18,7 @@ import GeometryType from './geom/GeometryType.js';
  * @typedef {{projection: (ol.ProjectionLike|undefined),
  *    radius: (number|undefined)}}
  */
-export var SphereMetricOptions;
+export let SphereMetricOptions;
 
 
 /**
@@ -26,7 +26,7 @@ export var SphereMetricOptions;
  * https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
  * @type {number}
  */
-export var DEFAULT_RADIUS = 6371008.8;
+export const DEFAULT_RADIUS = 6371008.8;
 
 
 /**
@@ -39,12 +39,12 @@ export var DEFAULT_RADIUS = 6371008.8;
  * @api
  */
 export function getDistance(c1, c2, opt_radius) {
-  var radius = opt_radius || DEFAULT_RADIUS;
-  var lat1 = toRadians(c1[1]);
-  var lat2 = toRadians(c2[1]);
-  var deltaLatBy2 = (lat2 - lat1) / 2;
-  var deltaLonBy2 = toRadians(c2[0] - c1[0]) / 2;
-  var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
+  const radius = opt_radius || DEFAULT_RADIUS;
+  const lat1 = toRadians(c1[1]);
+  const lat2 = toRadians(c2[1]);
+  const deltaLatBy2 = (lat2 - lat1) / 2;
+  const deltaLonBy2 = toRadians(c2[0] - c1[0]) / 2;
+  const a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
       Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
       Math.cos(lat1) * Math.cos(lat2);
   return 2 * radius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
@@ -58,8 +58,8 @@ export function getDistance(c1, c2, opt_radius) {
  * @return {number} The length (in meters).
  */
 function getLengthInternal(coordinates, radius) {
-  var length = 0;
-  for (var i = 0, ii = coordinates.length; i < ii - 1; ++i) {
+  let length = 0;
+  for (let i = 0, ii = coordinates.length; i < ii - 1; ++i) {
     length += getDistance(coordinates[i], coordinates[i + 1], radius);
   }
   return length;
@@ -84,15 +84,15 @@ function getLengthInternal(coordinates, radius) {
  * @api
  */
 export function getLength(geometry, opt_options) {
-  var options = opt_options || {};
-  var radius = options.radius || DEFAULT_RADIUS;
-  var projection = options.projection || 'EPSG:3857';
-  var type = geometry.getType();
+  const options = opt_options || {};
+  const radius = options.radius || DEFAULT_RADIUS;
+  const projection = options.projection || 'EPSG:3857';
+  const type = geometry.getType();
   if (type !== GeometryType.GEOMETRY_COLLECTION) {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
   }
-  var length = 0;
-  var coordinates, coords, i, ii, j, jj;
+  let length = 0;
+  let coordinates, coords, i, ii, j, jj;
   switch (type) {
     case GeometryType.POINT:
     case GeometryType.MULTI_POINT: {
@@ -123,7 +123,7 @@ export function getLength(geometry, opt_options) {
       break;
     }
     case GeometryType.GEOMETRY_COLLECTION: {
-      var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
+      const geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         length += getLength(geometries[i], opt_options);
       }
@@ -152,11 +152,13 @@ export function getLength(geometry, opt_options) {
  * @return {number} Area (in square meters).
  */
 function getAreaInternal(coordinates, radius) {
-  var area = 0, len = coordinates.length;
-  var x1 = coordinates[len - 1][0];
-  var y1 = coordinates[len - 1][1];
-  for (var i = 0; i < len; i++) {
-    var x2 = coordinates[i][0], y2 = coordinates[i][1];
+  let area = 0;
+  const len = coordinates.length;
+  let x1 = coordinates[len - 1][0];
+  let y1 = coordinates[len - 1][1];
+  for (let i = 0; i < len; i++) {
+    const x2 = coordinates[i][0];
+    const y2 = coordinates[i][1];
     area += toRadians(x2 - x1) *
         (2 + Math.sin(toRadians(y1)) +
         Math.sin(toRadians(y2)));
@@ -178,15 +180,15 @@ function getAreaInternal(coordinates, radius) {
  * @api
  */
 export function getArea(geometry, opt_options) {
-  var options = opt_options || {};
-  var radius = options.radius || DEFAULT_RADIUS;
-  var projection = options.projection || 'EPSG:3857';
-  var type = geometry.getType();
+  const options = opt_options || {};
+  const radius = options.radius || DEFAULT_RADIUS;
+  const projection = options.projection || 'EPSG:3857';
+  const type = geometry.getType();
   if (type !== GeometryType.GEOMETRY_COLLECTION) {
     geometry = geometry.clone().transform(projection, 'EPSG:4326');
   }
-  var area = 0;
-  var coordinates, coords, i, ii, j, jj;
+  let area = 0;
+  let coordinates, coords, i, ii, j, jj;
   switch (type) {
     case GeometryType.POINT:
     case GeometryType.MULTI_POINT:
@@ -215,7 +217,7 @@ export function getArea(geometry, opt_options) {
       break;
     }
     case GeometryType.GEOMETRY_COLLECTION: {
-      var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
+      const geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
       for (i = 0, ii = geometries.length; i < ii; ++i) {
         area += getArea(geometries[i], opt_options);
       }
@@ -241,15 +243,15 @@ export function getArea(geometry, opt_options) {
  * @return {ol.Coordinate} The target point.
  */
 export function offset(c1, distance, bearing, opt_radius) {
-  var radius = opt_radius || DEFAULT_RADIUS;
-  var lat1 = toRadians(c1[1]);
-  var lon1 = toRadians(c1[0]);
-  var dByR = distance / radius;
-  var lat = Math.asin(
-      Math.sin(lat1) * Math.cos(dByR) +
+  const radius = opt_radius || DEFAULT_RADIUS;
+  const lat1 = toRadians(c1[1]);
+  const lon1 = toRadians(c1[0]);
+  const dByR = distance / radius;
+  const lat = Math.asin(
+    Math.sin(lat1) * Math.cos(dByR) +
       Math.cos(lat1) * Math.sin(dByR) * Math.cos(bearing));
-  var lon = lon1 + Math.atan2(
-      Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
-      Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
+  const lon = lon1 + Math.atan2(
+    Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
+    Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
   return [toDegrees(lon), toDegrees(lat)];
 }

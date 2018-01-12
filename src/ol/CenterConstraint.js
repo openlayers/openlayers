@@ -2,7 +2,7 @@
  * @module ol/CenterConstraint
  */
 import {clamp} from './math.js';
-var CenterConstraint = {};
+const CenterConstraint = {};
 
 
 /**

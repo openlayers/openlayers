@@ -26,8 +26,8 @@ import Triangulation from '../reproj/Triangulation.js';
  * @param {ol.ReprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
-var ReprojImage = function(sourceProj, targetProj,
-    targetExtent, targetResolution, pixelRatio, getImageFunction) {
+const ReprojImage = function(sourceProj, targetProj,
+  targetExtent, targetResolution, pixelRatio, getImageFunction) {
 
   /**
    * @private
@@ -40,24 +40,24 @@ var ReprojImage = function(sourceProj, targetProj,
    * @type {ol.Extent}
    */
   this.maxSourceExtent_ = sourceProj.getExtent();
-  var maxTargetExtent = targetProj.getExtent();
+  const maxTargetExtent = targetProj.getExtent();
 
-  var limitedTargetExtent = maxTargetExtent ?
+  const limitedTargetExtent = maxTargetExtent ?
     getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
-  var targetCenter = getCenter(limitedTargetExtent);
-  var sourceResolution = _ol_reproj_.calculateSourceResolution(
-      sourceProj, targetProj, targetCenter, targetResolution);
+  const targetCenter = getCenter(limitedTargetExtent);
+  const sourceResolution = _ol_reproj_.calculateSourceResolution(
+    sourceProj, targetProj, targetCenter, targetResolution);
 
-  var errorThresholdInPixels = ERROR_THRESHOLD;
+  const errorThresholdInPixels = ERROR_THRESHOLD;
 
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
   this.triangulation_ = new Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
-      sourceResolution * errorThresholdInPixels);
+    sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
+    sourceResolution * errorThresholdInPixels);
 
   /**
    * @private
@@ -71,7 +71,7 @@ var ReprojImage = function(sourceProj, targetProj,
    */
   this.targetExtent_ = targetExtent;
 
-  var sourceExtent = this.triangulation_.calculateSourceExtent();
+  const sourceExtent = this.triangulation_.calculateSourceExtent();
 
   /**
    * @private
@@ -100,7 +100,7 @@ var ReprojImage = function(sourceProj, targetProj,
   this.sourceListenerKey_ = null;
 
 
-  var state = ImageState.LOADED;
+  let state = ImageState.LOADED;
 
   if (this.sourceImage_) {
     state = ImageState.IDLE;
@@ -143,17 +143,17 @@ ReprojImage.prototype.getProjection = function() {
  * @private
  */
 ReprojImage.prototype.reproject_ = function() {
-  var sourceState = this.sourceImage_.getState();
+  const sourceState = this.sourceImage_.getState();
   if (sourceState == ImageState.LOADED) {
-    var width = getWidth(this.targetExtent_) / this.targetResolution_;
-    var height = getHeight(this.targetExtent_) / this.targetResolution_;
+    const width = getWidth(this.targetExtent_) / this.targetResolution_;
+    const height = getHeight(this.targetExtent_) / this.targetResolution_;
 
     this.canvas_ = _ol_reproj_.render(width, height, this.sourcePixelRatio_,
-        this.sourceImage_.getResolution(), this.maxSourceExtent_,
-        this.targetResolution_, this.targetExtent_, this.triangulation_, [{
-          extent: this.sourceImage_.getExtent(),
-          image: this.sourceImage_.getImage()
-        }], 0);
+      this.sourceImage_.getResolution(), this.maxSourceExtent_,
+      this.targetResolution_, this.targetExtent_, this.triangulation_, [{
+        extent: this.sourceImage_.getExtent(),
+        image: this.sourceImage_.getImage()
+      }], 0);
   }
   this.state = sourceState;
   this.changed();
@@ -168,18 +168,18 @@ ReprojImage.prototype.load = function() {
     this.state = ImageState.LOADING;
     this.changed();
 
-    var sourceState = this.sourceImage_.getState();
+    const sourceState = this.sourceImage_.getState();
     if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
       this.reproject_();
     } else {
       this.sourceListenerKey_ = _ol_events_.listen(this.sourceImage_,
-          EventType.CHANGE, function(e) {
-            var sourceState = this.sourceImage_.getState();
-            if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
-              this.unlistenSource_();
-              this.reproject_();
-            }
-          }, this);
+        EventType.CHANGE, function(e) {
+          const sourceState = this.sourceImage_.getState();
+          if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
+            this.unlistenSource_();
+            this.reproject_();
+          }
+        }, this);
       this.sourceImage_.load();
     }
   }

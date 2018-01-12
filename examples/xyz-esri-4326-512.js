@@ -4,12 +4,12 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 // The tile size supported by the ArcGIS tile service.
-var tileSize = 512;
+const tileSize = 512;
 
-var urlTemplate = 'https://services.arcgisonline.com/arcgis/rest/services/' +
+const urlTemplate = 'https://services.arcgisonline.com/arcgis/rest/services/' +
     'ESRI_Imagery_World_2D/MapServer/tile/{z}/{y}/{x}';
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
@@ -20,8 +20,8 @@ var map = new Map({
         tileSize: tileSize,
         tileUrlFunction: function(tileCoord) {
           return urlTemplate.replace('{z}', (tileCoord[0] - 1).toString())
-              .replace('{x}', tileCoord[1].toString())
-              .replace('{y}', (-tileCoord[2] - 1).toString());
+            .replace('{x}', tileCoord[1].toString())
+            .replace('{y}', (-tileCoord[2] - 1).toString());
         },
         wrapX: true
       })

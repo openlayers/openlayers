@@ -26,7 +26,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var LineString = function(coordinates, opt_layout) {
+const LineString = function(coordinates, opt_layout) {
 
   SimpleGeometry.call(this);
 
@@ -83,7 +83,7 @@ LineString.prototype.appendCoordinate = function(coordinate) {
  * @api
  */
 LineString.prototype.clone = function() {
-  var lineString = new LineString(null);
+  const lineString = new LineString(null);
   lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return lineString;
 };
@@ -98,12 +98,12 @@ LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
-        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
   return _ol_geom_flat_closest_.getClosestPoint(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+    this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
 };
 
 
@@ -120,7 +120,7 @@ LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  */
 LineString.prototype.forEachSegment = function(callback) {
   return _ol_geom_flat_segments_.forEach(this.flatCoordinates, 0,
-      this.flatCoordinates.length, this.stride, callback);
+    this.flatCoordinates.length, this.stride, callback);
 };
 
 
@@ -143,9 +143,9 @@ LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
       this.layout != GeometryLayout.XYZM) {
     return null;
   }
-  var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
+  const extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
   return _ol_geom_flat_interpolate_.lineStringCoordinateAtM(this.flatCoordinates, 0,
-      this.flatCoordinates.length, this.stride, m, extrapolate);
+    this.flatCoordinates.length, this.stride, m, extrapolate);
 };
 
 
@@ -157,7 +157,7 @@ LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
  */
 LineString.prototype.getCoordinates = function() {
   return _ol_geom_flat_inflate_.coordinates(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
@@ -173,8 +173,8 @@ LineString.prototype.getCoordinates = function() {
  */
 LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
   return _ol_geom_flat_interpolate_.lineString(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      fraction, opt_dest);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+    fraction, opt_dest);
 };
 
 
@@ -185,7 +185,7 @@ LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
  */
 LineString.prototype.getLength = function() {
   return _ol_geom_flat_length_.lineString(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
@@ -205,13 +205,13 @@ LineString.prototype.getFlatMidpoint = function() {
  * @inheritDoc
  */
 LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
-  var simplifiedFlatCoordinates = [];
+  const simplifiedFlatCoordinates = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      squaredTolerance, simplifiedFlatCoordinates, 0);
-  var simplifiedLineString = new LineString(null);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+    squaredTolerance, simplifiedFlatCoordinates, 0);
+  const simplifiedLineString = new LineString(null);
   simplifiedLineString.setFlatCoordinates(
-      GeometryLayout.XY, simplifiedFlatCoordinates);
+    GeometryLayout.XY, simplifiedFlatCoordinates);
   return simplifiedLineString;
 };
 
@@ -231,8 +231,8 @@ LineString.prototype.getType = function() {
  */
 LineString.prototype.intersectsExtent = function(extent) {
   return _ol_geom_flat_intersectsextent_.lineString(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      extent);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+    extent);
 };
 
 
@@ -252,7 +252,7 @@ LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinates(
-        this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }
 };

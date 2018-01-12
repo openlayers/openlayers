@@ -91,7 +91,7 @@ describe('ol.math.roundUpToPowerOfTwo', function() {
 describe('ol.math.solveLinearSystem', function() {
 
   it('calculates correctly', function() {
-    var result = solveLinearSystem([
+    const result = solveLinearSystem([
       [2, 1, 3, 1],
       [2, 6, 8, 3],
       [6, 8, 18, 5]
@@ -102,7 +102,7 @@ describe('ol.math.solveLinearSystem', function() {
   });
 
   it('can handle singular matrix', function() {
-    var result = solveLinearSystem([
+    const result = solveLinearSystem([
       [2, 1, 3, 1],
       [2, 6, 8, 3],
       [2, 1, 3, 1]

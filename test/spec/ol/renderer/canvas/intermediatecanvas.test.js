@@ -7,13 +7,13 @@ import IntermediateCanvasRenderer from '../../../../../src/ol/renderer/canvas/In
 describe('ol.renderer.canvas.IntermediateCanvas', function() {
 
   describe('#composeFrame()', function() {
-    var renderer, frameState, layerState, context;
+    let renderer, frameState, layerState, context;
     beforeEach(function() {
-      var layer = new ImageLayer({
+      const layer = new ImageLayer({
         extent: [1, 2, 3, 4]
       });
       renderer = new IntermediateCanvasRenderer(layer);
-      var image = new Image();
+      const image = new Image();
       image.width = 3;
       image.height = 3;
       renderer.getImage = function() {
@@ -62,7 +62,7 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.lineTo.thirdCall.args).to.eql([4, 6]);
       expect(context.clip.callCount).to.be(1);
       expect(context.drawImage.firstCall.args).to.eql(
-          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+        [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
       expect(context.restore.callCount).to.be(1);
     });
 
@@ -76,7 +76,7 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.beginPath.callCount).to.be(0);
       expect(context.clip.callCount).to.be(0);
       expect(context.drawImage.firstCall.args).to.eql(
-          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+        [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
       expect(context.restore.callCount).to.be(0);
     });
 
@@ -90,7 +90,7 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.beginPath.callCount).to.be(0);
       expect(context.clip.callCount).to.be(0);
       expect(context.drawImage.firstCall.args).to.eql(
-          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+        [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
       expect(context.restore.callCount).to.be(0);
     });
 

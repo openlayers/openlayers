@@ -15,7 +15,7 @@ import _ol_xml_ from '../xml.js';
  * @extends {ol.format.XML}
  * @api
  */
-var WMSCapabilities = function() {
+const WMSCapabilities = function() {
 
   XML.call(this);
 
@@ -43,7 +43,7 @@ WMSCapabilities.prototype.read;
  * @inheritDoc
  */
 WMSCapabilities.prototype.readFromDocument = function(doc) {
-  for (var n = doc.firstChild; n; n = n.nextSibling) {
+  for (let n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readFromNode(n);
     }
@@ -57,7 +57,7 @@ WMSCapabilities.prototype.readFromDocument = function(doc) {
  */
 WMSCapabilities.prototype.readFromNode = function(node) {
   this.version = node.getAttribute('version').trim();
-  var wmsCapabilityObject = _ol_xml_.pushParseAndPop({
+  const wmsCapabilityObject = _ol_xml_.pushParseAndPop({
     'version': this.version
   }, WMSCapabilities.PARSERS_, node, []);
   return wmsCapabilityObject ? wmsCapabilityObject : null;
@@ -72,7 +72,7 @@ WMSCapabilities.prototype.readFromNode = function(node) {
  */
 WMSCapabilities.readAttribution_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
 };
 
 
@@ -83,14 +83,14 @@ WMSCapabilities.readAttribution_ = function(node, objectStack) {
  * @return {Object} Bounding box object.
  */
 WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
-  var extent = [
+  const extent = [
     XSD.readDecimalString(node.getAttribute('minx')),
     XSD.readDecimalString(node.getAttribute('miny')),
     XSD.readDecimalString(node.getAttribute('maxx')),
     XSD.readDecimalString(node.getAttribute('maxy'))
   ];
 
-  var resolutions = [
+  const resolutions = [
     XSD.readDecimalString(node.getAttribute('resx')),
     XSD.readDecimalString(node.getAttribute('resy'))
   ];
@@ -110,20 +110,20 @@ WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
  * @return {ol.Extent|undefined} Bounding box object.
  */
 WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
-  var geographicBoundingBox = _ol_xml_.pushParseAndPop(
-      {},
-      WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
-      node, objectStack);
+  const geographicBoundingBox = _ol_xml_.pushParseAndPop(
+    {},
+    WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
+    node, objectStack);
   if (!geographicBoundingBox) {
     return undefined;
   }
-  var westBoundLongitude = /** @type {number|undefined} */
+  const westBoundLongitude = /** @type {number|undefined} */
         (geographicBoundingBox['westBoundLongitude']);
-  var southBoundLatitude = /** @type {number|undefined} */
+  const southBoundLatitude = /** @type {number|undefined} */
         (geographicBoundingBox['southBoundLatitude']);
-  var eastBoundLongitude = /** @type {number|undefined} */
+  const eastBoundLongitude = /** @type {number|undefined} */
         (geographicBoundingBox['eastBoundLongitude']);
-  var northBoundLatitude = /** @type {number|undefined} */
+  const northBoundLatitude = /** @type {number|undefined} */
         (geographicBoundingBox['northBoundLatitude']);
   if (westBoundLongitude === undefined || southBoundLatitude === undefined ||
         eastBoundLongitude === undefined || northBoundLatitude === undefined) {
@@ -144,7 +144,7 @@ WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
  */
 WMSCapabilities.readCapability_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
 };
 
 
@@ -156,7 +156,7 @@ WMSCapabilities.readCapability_ = function(node, objectStack) {
  */
 WMSCapabilities.readService_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
 };
 
 
@@ -168,8 +168,8 @@ WMSCapabilities.readService_ = function(node, objectStack) {
  */
 WMSCapabilities.readContactInformation_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
-      node, objectStack);
+    {}, WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
+    node, objectStack);
 };
 
 
@@ -181,8 +181,8 @@ WMSCapabilities.readContactInformation_ = function(node, objectStack) {
  */
 WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.CONTACT_PERSON_PARSERS_,
-      node, objectStack);
+    {}, WMSCapabilities.CONTACT_PERSON_PARSERS_,
+    node, objectStack);
 };
 
 
@@ -194,8 +194,8 @@ WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
  */
 WMSCapabilities.readContactAddress_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
-      node, objectStack);
+    {}, WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
+    node, objectStack);
 };
 
 
@@ -207,7 +207,7 @@ WMSCapabilities.readContactAddress_ = function(node, objectStack) {
  */
 WMSCapabilities.readException_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      [], WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
+    [], WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
 };
 
 
@@ -219,7 +219,7 @@ WMSCapabilities.readException_ = function(node, objectStack) {
  */
 WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 };
 
 
@@ -230,50 +230,50 @@ WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 WMSCapabilities.readLayer_ = function(node, objectStack) {
-  var parentLayerObject = /**  @type {Object.<string,*>} */
+  const parentLayerObject = /**  @type {Object.<string,*>} */
         (objectStack[objectStack.length - 1]);
 
-  var layerObject = _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+  const layerObject = _ol_xml_.pushParseAndPop(
+    {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 
   if (!layerObject) {
     return undefined;
   }
-  var queryable =
+  let queryable =
         XSD.readBooleanString(node.getAttribute('queryable'));
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
   layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
-  var cascaded = XSD.readNonNegativeIntegerString(
-      node.getAttribute('cascaded'));
+  let cascaded = XSD.readNonNegativeIntegerString(
+    node.getAttribute('cascaded'));
   if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
-  var opaque = XSD.readBooleanString(node.getAttribute('opaque'));
+  let opaque = XSD.readBooleanString(node.getAttribute('opaque'));
   if (opaque === undefined) {
     opaque = parentLayerObject['opaque'];
   }
   layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
-  var noSubsets =
+  let noSubsets =
         XSD.readBooleanString(node.getAttribute('noSubsets'));
   if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
-  var fixedWidth =
+  let fixedWidth =
         XSD.readDecimalString(node.getAttribute('fixedWidth'));
   if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
-  var fixedHeight =
+  let fixedHeight =
         XSD.readDecimalString(node.getAttribute('fixedHeight'));
   if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
@@ -281,19 +281,19 @@ WMSCapabilities.readLayer_ = function(node, objectStack) {
   layerObject['fixedHeight'] = fixedHeight;
 
   // See 7.2.4.8
-  var addKeys = ['Style', 'CRS', 'AuthorityURL'];
+  const addKeys = ['Style', 'CRS', 'AuthorityURL'];
   addKeys.forEach(function(key) {
     if (key in parentLayerObject) {
-      var childValue = layerObject[key] || [];
+      const childValue = layerObject[key] || [];
       layerObject[key] = childValue.concat(parentLayerObject[key]);
     }
   });
 
-  var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
+  const replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
     'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
   replaceKeys.forEach(function(key) {
     if (!(key in layerObject)) {
-      var parentValue = parentLayerObject[key];
+      const parentValue = parentLayerObject[key];
       layerObject[key] = parentValue;
     }
   });
@@ -309,15 +309,15 @@ WMSCapabilities.readLayer_ = function(node, objectStack) {
  * @return {Object} Dimension object.
  */
 WMSCapabilities.readDimension_ = function(node, objectStack) {
-  var dimensionObject = {
+  const dimensionObject = {
     'name': node.getAttribute('name'),
     'units': node.getAttribute('units'),
     'unitSymbol': node.getAttribute('unitSymbol'),
     'default': node.getAttribute('default'),
     'multipleValues': XSD.readBooleanString(
-        node.getAttribute('multipleValues')),
+      node.getAttribute('multipleValues')),
     'nearestValue': XSD.readBooleanString(
-        node.getAttribute('nearestValue')),
+      node.getAttribute('nearestValue')),
     'current': XSD.readBooleanString(node.getAttribute('current')),
     'values': XSD.readString(node)
   };
@@ -333,8 +333,8 @@ WMSCapabilities.readDimension_ = function(node, objectStack) {
  */
 WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
-      node, objectStack);
+    {}, WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
+    node, objectStack);
 };
 
 
@@ -346,7 +346,7 @@ WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
  */
 WMSCapabilities.readRequest_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
 };
 
 
@@ -358,7 +358,7 @@ WMSCapabilities.readRequest_ = function(node, objectStack) {
  */
 WMSCapabilities.readDCPType_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
 };
 
 
@@ -370,7 +370,7 @@ WMSCapabilities.readDCPType_ = function(node, objectStack) {
  */
 WMSCapabilities.readHTTP_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.HTTP_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.HTTP_PARSERS_, node, objectStack);
 };
 
 
@@ -382,7 +382,7 @@ WMSCapabilities.readHTTP_ = function(node, objectStack) {
  */
 WMSCapabilities.readOperationType_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
 };
 
 
@@ -393,10 +393,10 @@ WMSCapabilities.readOperationType_ = function(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
-  var formatOnlineresource =
+  const formatOnlineresource =
         WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (formatOnlineresource) {
-    var size = [
+    const size = [
       XSD.readNonNegativeIntegerString(node.getAttribute('width')),
       XSD.readNonNegativeIntegerString(node.getAttribute('height'))
     ];
@@ -414,7 +414,7 @@ WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
  * @return {Object|undefined} Authority URL object.
  */
 WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
-  var authorityObject =
+  const authorityObject =
         WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (authorityObject) {
     authorityObject['name'] = node.getAttribute('name');
@@ -431,7 +431,7 @@ WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
  * @return {Object|undefined} Metadata URL object.
  */
 WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
-  var metadataObject =
+  const metadataObject =
         WMSCapabilities.readFormatOnlineresource_(node, objectStack);
   if (metadataObject) {
     metadataObject['type'] = node.getAttribute('type');
@@ -449,7 +449,7 @@ WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
  */
 WMSCapabilities.readStyle_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, WMSCapabilities.STYLE_PARSERS_, node, objectStack);
+    {}, WMSCapabilities.STYLE_PARSERS_, node, objectStack);
 };
 
 
@@ -461,7 +461,7 @@ WMSCapabilities.readStyle_ = function(node, objectStack) {
  */
 WMSCapabilities.readKeywordList_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      [], WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
+    [], WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
 };
 
 
@@ -482,12 +482,12 @@ WMSCapabilities.NAMESPACE_URIS_ = [
  * @private
  */
 WMSCapabilities.PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Service': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readService_),
-      'Capability': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readCapability_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Service': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readService_),
+    'Capability': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readCapability_)
+  });
 
 
 /**
@@ -496,14 +496,14 @@ WMSCapabilities.PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.CAPABILITY_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Request': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readRequest_),
-      'Exception': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readException_),
-      'Layer': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readCapabilityLayer_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Request': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readRequest_),
+    'Exception': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readException_),
+    'Layer': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readCapabilityLayer_)
+  });
 
 
 /**
@@ -512,26 +512,26 @@ WMSCapabilities.CAPABILITY_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.SERVICE_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'KeywordList': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readKeywordList_),
-      'OnlineResource': _ol_xml_.makeObjectPropertySetter(
-          XLink.readHref),
-      'ContactInformation': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readContactInformation_),
-      'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'AccessConstraints': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'LayerLimit': _ol_xml_.makeObjectPropertySetter(
-          XSD.readNonNegativeInteger),
-      'MaxWidth': _ol_xml_.makeObjectPropertySetter(
-          XSD.readNonNegativeInteger),
-      'MaxHeight': _ol_xml_.makeObjectPropertySetter(
-          XSD.readNonNegativeInteger)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'KeywordList': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readKeywordList_),
+    'OnlineResource': _ol_xml_.makeObjectPropertySetter(
+      XLink.readHref),
+    'ContactInformation': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readContactInformation_),
+    'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'AccessConstraints': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'LayerLimit': _ol_xml_.makeObjectPropertySetter(
+      XSD.readNonNegativeInteger),
+    'MaxWidth': _ol_xml_.makeObjectPropertySetter(
+      XSD.readNonNegativeInteger),
+    'MaxHeight': _ol_xml_.makeObjectPropertySetter(
+      XSD.readNonNegativeInteger)
+  });
 
 
 /**
@@ -540,20 +540,20 @@ WMSCapabilities.SERVICE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'ContactPersonPrimary': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readContactPersonPrimary_),
-      'ContactPosition': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'ContactAddress': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readContactAddress_),
-      'ContactVoiceTelephone': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'ContactFacsimileTelephone': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'ContactElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'ContactPersonPrimary': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readContactPersonPrimary_),
+    'ContactPosition': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'ContactAddress': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readContactAddress_),
+    'ContactVoiceTelephone': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'ContactFacsimileTelephone': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'ContactElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString)
+  });
 
 
 /**
@@ -562,12 +562,12 @@ WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.CONTACT_PERSON_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'ContactPerson': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'ContactOrganization': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'ContactPerson': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'ContactOrganization': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString)
+  });
 
 
 /**
@@ -576,15 +576,15 @@ WMSCapabilities.CONTACT_PERSON_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'AddressType': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'StateOrProvince': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'PostCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'AddressType': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'StateOrProvince': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'PostCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+  });
 
 
 /**
@@ -593,9 +593,9 @@ WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.EXCEPTION_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': _ol_xml_.makeArrayPusher(XSD.readString)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Format': _ol_xml_.makeArrayPusher(XSD.readString)
+  });
 
 
 /**
@@ -604,39 +604,39 @@ WMSCapabilities.EXCEPTION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'KeywordList': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readKeywordList_),
-      'CRS': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
-      'EX_GeographicBoundingBox': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readEXGeographicBoundingBox_),
-      'BoundingBox': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readBoundingBox_),
-      'Dimension': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readDimension_),
-      'Attribution': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readAttribution_),
-      'AuthorityURL': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readAuthorityURL_),
-      'Identifier': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
-      'MetadataURL': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readMetadataURL_),
-      'DataURL': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readFormatOnlineresource_),
-      'FeatureListURL': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readFormatOnlineresource_),
-      'Style': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readStyle_),
-      'MinScaleDenominator': _ol_xml_.makeObjectPropertySetter(
-          XSD.readDecimal),
-      'MaxScaleDenominator': _ol_xml_.makeObjectPropertySetter(
-          XSD.readDecimal),
-      'Layer': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readLayer_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'KeywordList': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readKeywordList_),
+    'CRS': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
+    'EX_GeographicBoundingBox': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readEXGeographicBoundingBox_),
+    'BoundingBox': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readBoundingBox_),
+    'Dimension': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readDimension_),
+    'Attribution': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readAttribution_),
+    'AuthorityURL': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readAuthorityURL_),
+    'Identifier': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
+    'MetadataURL': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readMetadataURL_),
+    'DataURL': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readFormatOnlineresource_),
+    'FeatureListURL': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readFormatOnlineresource_),
+    'Style': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readStyle_),
+    'MinScaleDenominator': _ol_xml_.makeObjectPropertySetter(
+      XSD.readDecimal),
+    'MaxScaleDenominator': _ol_xml_.makeObjectPropertySetter(
+      XSD.readDecimal),
+    'Layer': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readLayer_)
+  });
 
 
 /**
@@ -645,13 +645,13 @@ WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'OnlineResource': _ol_xml_.makeObjectPropertySetter(
-          XLink.readHref),
-      'LogoURL': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readSizedFormatOnlineresource_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'OnlineResource': _ol_xml_.makeObjectPropertySetter(
+      XLink.readHref),
+    'LogoURL': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readSizedFormatOnlineresource_)
+  });
 
 
 /**
@@ -662,13 +662,13 @@ WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
 WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
     _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
       'westBoundLongitude': _ol_xml_.makeObjectPropertySetter(
-          XSD.readDecimal),
+        XSD.readDecimal),
       'eastBoundLongitude': _ol_xml_.makeObjectPropertySetter(
-          XSD.readDecimal),
+        XSD.readDecimal),
       'southBoundLatitude': _ol_xml_.makeObjectPropertySetter(
-          XSD.readDecimal),
+        XSD.readDecimal),
       'northBoundLatitude': _ol_xml_.makeObjectPropertySetter(
-          XSD.readDecimal)
+        XSD.readDecimal)
     });
 
 
@@ -678,14 +678,14 @@ WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
  * @private
  */
 WMSCapabilities.REQUEST_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'GetCapabilities': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readOperationType_),
-      'GetMap': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readOperationType_),
-      'GetFeatureInfo': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readOperationType_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'GetCapabilities': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readOperationType_),
+    'GetMap': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readOperationType_),
+    'GetFeatureInfo': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readOperationType_)
+  });
 
 
 /**
@@ -694,11 +694,11 @@ WMSCapabilities.REQUEST_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.OPERATIONTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
-      'DCPType': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readDCPType_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Format': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
+    'DCPType': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readDCPType_)
+  });
 
 
 /**
@@ -707,10 +707,10 @@ WMSCapabilities.OPERATIONTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.DCPTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'HTTP': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readHTTP_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'HTTP': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readHTTP_)
+  });
 
 
 /**
@@ -719,12 +719,12 @@ WMSCapabilities.DCPTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Get': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readFormatOnlineresource_),
-      'Post': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readFormatOnlineresource_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Get': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readFormatOnlineresource_),
+    'Post': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readFormatOnlineresource_)
+  });
 
 
 /**
@@ -733,17 +733,17 @@ WMSCapabilities.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'LegendURL': _ol_xml_.makeObjectPropertyPusher(
-          WMSCapabilities.readSizedFormatOnlineresource_),
-      'StyleSheetURL': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readFormatOnlineresource_),
-      'StyleURL': _ol_xml_.makeObjectPropertySetter(
-          WMSCapabilities.readFormatOnlineresource_)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'LegendURL': _ol_xml_.makeObjectPropertyPusher(
+      WMSCapabilities.readSizedFormatOnlineresource_),
+    'StyleSheetURL': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readFormatOnlineresource_),
+    'StyleURL': _ol_xml_.makeObjectPropertySetter(
+      WMSCapabilities.readFormatOnlineresource_)
+  });
 
 
 /**
@@ -755,7 +755,7 @@ WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
     _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
       'Format': _ol_xml_.makeObjectPropertySetter(XSD.readString),
       'OnlineResource': _ol_xml_.makeObjectPropertySetter(
-          XLink.readHref)
+        XLink.readHref)
     });
 
 
@@ -765,7 +765,7 @@ WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
  * @private
  */
 WMSCapabilities.KEYWORDLIST_PARSERS_ = _ol_xml_.makeStructureNS(
-    WMSCapabilities.NAMESPACE_URIS_, {
-      'Keyword': _ol_xml_.makeArrayPusher(XSD.readString)
-    });
+  WMSCapabilities.NAMESPACE_URIS_, {
+    'Keyword': _ol_xml_.makeArrayPusher(XSD.readString)
+  });
 export default WMSCapabilities;

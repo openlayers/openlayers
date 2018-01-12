@@ -14,7 +14,7 @@ import Style from '../src/ol/style/Style.js';
 //
 // Every layer has one feature that is styled with a circle, together the
 // features form the corners of an equilateral triangle and their styles overlap
-var redLayer = new VectorLayer({
+const redLayer = new VectorLayer({
   source: new VectorSource({
     features: [new Feature(new Point([0, 0]))]
   }),
@@ -31,7 +31,7 @@ var redLayer = new VectorLayer({
     })
   })
 });
-var greenLayer = new VectorLayer({
+const greenLayer = new VectorLayer({
   source: new VectorSource({
     // 433.013 is roughly 250 * Math.sqrt(3)
     features: [new Feature(new Point([250, 433.013]))]
@@ -49,7 +49,7 @@ var greenLayer = new VectorLayer({
     })
   })
 });
-var blueLayer = new VectorLayer({
+const blueLayer = new VectorLayer({
   source: new VectorSource({
     features: [new Feature(new Point([500, 0]))]
   }),
@@ -69,7 +69,7 @@ var blueLayer = new VectorLayer({
 
 // Create the map, the view is centered on the triangle. Zooming and panning is
 // restricted to a sane area
-var map = new Map({
+const map = new Map({
   layers: [
     redLayer,
     greenLayer,
@@ -86,10 +86,10 @@ var map = new Map({
 });
 
 // Get the form elements and bind the listeners
-var select = document.getElementById('blend-mode');
-var affectRed = document.getElementById('affect-red');
-var affectGreen = document.getElementById('affect-green');
-var affectBlue = document.getElementById('affect-blue');
+const select = document.getElementById('blend-mode');
+const affectRed = document.getElementById('affect-red');
+const affectGreen = document.getElementById('affect-green');
+const affectBlue = document.getElementById('affect-blue');
 
 
 /**
@@ -98,7 +98,7 @@ var affectBlue = document.getElementById('affect-blue');
  *
  * @param {ol.render.Event} evt The render event.
  */
-var setBlendModeFromSelect = function(evt) {
+const setBlendModeFromSelect = function(evt) {
   evt.context.globalCompositeOperation = select.value;
 };
 
@@ -109,7 +109,7 @@ var setBlendModeFromSelect = function(evt) {
  *
  * @param {ol.render.Event} evt The render event.
  */
-var resetBlendModeFromSelect = function(evt) {
+const resetBlendModeFromSelect = function(evt) {
   evt.context.globalCompositeOperation = 'source-over';
 };
 
@@ -119,7 +119,7 @@ var resetBlendModeFromSelect = function(evt) {
  *
  * @param {ol.layer.Vector} layer The layer to bind the handlers to.
  */
-var bindLayerListeners = function(layer) {
+const bindLayerListeners = function(layer) {
   layer.on('precompose', setBlendModeFromSelect);
   layer.on('postcompose', resetBlendModeFromSelect);
 };
@@ -130,7 +130,7 @@ var bindLayerListeners = function(layer) {
  *
  * @param {ol.layer.Vector} layer The layer to unbind the handlers from.
  */
-var unbindLayerListeners = function(layer) {
+const unbindLayerListeners = function(layer) {
   layer.un('precompose', setBlendModeFromSelect);
   layer.un('postcompose', resetBlendModeFromSelect);
 };
@@ -141,8 +141,8 @@ var unbindLayerListeners = function(layer) {
  *
  * @this {HTMLInputElement}
  */
-var affectLayerClicked = function() {
-  var layer;
+const affectLayerClicked = function() {
+  let layer;
   if (this.id == 'affect-red') {
     layer = redLayer;
   } else if (this.id == 'affect-green') {

@@ -46,7 +46,7 @@ import _ol_transform_ from './transform.js';
  *     target: (Element|string|undefined),
  *     view: (ol.View|undefined)}}
  */
-export var MapOptions;
+export let MapOptions;
 
 
 /**
@@ -109,11 +109,11 @@ export var MapOptions;
  * @fires ol.render.Event#precompose
  * @api
  */
-var PluggableMap = function(options) {
+const PluggableMap = function(options) {
 
   BaseObject.call(this);
 
-  var optionsInternal = createOptionsInternal(options);
+  const optionsInternal = createOptionsInternal(options);
 
   /**
    * @type {boolean}
@@ -229,7 +229,7 @@ var PluggableMap = function(options) {
    */
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
-  var overlayEvents = [
+  const overlayEvents = [
     EventType.CLICK,
     EventType.DBLCLICK,
     EventType.MOUSEDOWN,
@@ -239,9 +239,9 @@ var PluggableMap = function(options) {
     EventType.MOUSEWHEEL,
     EventType.WHEEL
   ];
-  for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
+  for (let i = 0, ii = overlayEvents.length; i < ii; ++i) {
     _ol_events_.listen(this.overlayContainerStopEvent_, overlayEvents[i],
-        Event.stopPropagation);
+      Event.stopPropagation);
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
@@ -250,9 +250,9 @@ var PluggableMap = function(options) {
    * @type {ol.MapBrowserEventHandler}
    */
   this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
-  for (var key in MapBrowserEventType) {
+  for (const key in MapBrowserEventType) {
     _ol_events_.listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
-        this.handleMapBrowserEvent, this);
+      this.handleMapBrowserEvent, this);
   }
 
   /**
@@ -268,9 +268,9 @@ var PluggableMap = function(options) {
   this.keyHandlerKeys_ = null;
 
   _ol_events_.listen(this.viewport_, EventType.WHEEL,
-      this.handleBrowserEvent, this);
+    this.handleBrowserEvent, this);
   _ol_events_.listen(this.viewport_, EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, this);
+    this.handleBrowserEvent, this);
 
   /**
    * @type {ol.Collection.<ol.control.Control>}
@@ -326,8 +326,8 @@ var PluggableMap = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new TileQueue(
-      this.getTilePriority.bind(this),
-      this.handleTileChange_.bind(this));
+    this.getTilePriority.bind(this),
+    this.handleTileChange_.bind(this));
 
   /**
    * Uids of features to skip at rendering time.
@@ -337,91 +337,91 @@ var PluggableMap = function(options) {
   this.skippedFeatureUids_ = {};
 
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(MapProperty.LAYERGROUP),
-      this.handleLayerGroupChanged_, this);
+    this, BaseObject.getChangeEventType(MapProperty.LAYERGROUP),
+    this.handleLayerGroupChanged_, this);
   _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.VIEW),
-      this.handleViewChanged_, this);
+    this.handleViewChanged_, this);
   _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.SIZE),
-      this.handleSizeChanged_, this);
+    this.handleSizeChanged_, this);
   _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.TARGET),
-      this.handleTargetChanged_, this);
+    this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
   // is "defined" already.
   this.setProperties(optionsInternal.values);
 
   this.controls.forEach(
-      /**
+    /**
        * @param {ol.control.Control} control Control.
        * @this {ol.PluggableMap}
        */
-      function(control) {
-        control.setMap(this);
-      }.bind(this));
+    function(control) {
+      control.setMap(this);
+    }.bind(this));
 
   _ol_events_.listen(this.controls, CollectionEventType.ADD,
-      /**
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(this);
-      }, this);
+    function(event) {
+      event.element.setMap(this);
+    }, this);
 
   _ol_events_.listen(this.controls, CollectionEventType.REMOVE,
-      /**
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(null);
-      }, this);
+    function(event) {
+      event.element.setMap(null);
+    }, this);
 
   this.interactions.forEach(
-      /**
+    /**
        * @param {ol.interaction.Interaction} interaction Interaction.
        * @this {ol.PluggableMap}
        */
-      function(interaction) {
-        interaction.setMap(this);
-      }.bind(this));
+    function(interaction) {
+      interaction.setMap(this);
+    }.bind(this));
 
   _ol_events_.listen(this.interactions, CollectionEventType.ADD,
-      /**
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(this);
-      }, this);
+    function(event) {
+      event.element.setMap(this);
+    }, this);
 
   _ol_events_.listen(this.interactions, CollectionEventType.REMOVE,
-      /**
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(null);
-      }, this);
+    function(event) {
+      event.element.setMap(null);
+    }, this);
 
   this.overlays_.forEach(this.addOverlayInternal_.bind(this));
 
   _ol_events_.listen(this.overlays_, CollectionEventType.ADD,
-      /**
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
-      }, this);
+    function(event) {
+      this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
+    }, this);
 
   _ol_events_.listen(this.overlays_, CollectionEventType.REMOVE,
-      /**
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        var overlay = /** @type {ol.Overlay} */ (event.element);
-        var id = overlay.getId();
-        if (id !== undefined) {
-          delete this.overlayIdIndex_[id.toString()];
-        }
-        event.element.setMap(null);
-      }, this);
+    function(event) {
+      const overlay = /** @type {ol.Overlay} */ (event.element);
+      const id = overlay.getId();
+      if (id !== undefined) {
+        delete this.overlayIdIndex_[id.toString()];
+      }
+      event.element.setMap(null);
+    }, this);
 
 };
 
@@ -456,7 +456,7 @@ PluggableMap.prototype.addInteraction = function(interaction) {
  * @api
  */
 PluggableMap.prototype.addLayer = function(layer) {
-  var layers = this.getLayerGroup().getLayers();
+  const layers = this.getLayerGroup().getLayers();
   layers.push(layer);
 };
 
@@ -477,7 +477,7 @@ PluggableMap.prototype.addOverlay = function(overlay) {
  * @private
  */
 PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
-  var id = overlay.getId();
+  const id = overlay.getId();
   if (id !== undefined) {
     this.overlayIdIndex_[id.toString()] = overlay;
   }
@@ -492,12 +492,12 @@ PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
 PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
   _ol_events_.unlisten(this.viewport_, EventType.WHEEL,
-      this.handleBrowserEvent, this);
+    this.handleBrowserEvent, this);
   _ol_events_.unlisten(this.viewport_, EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, this);
+    this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
     window.removeEventListener(EventType.RESIZE,
-        this.handleResize_, false);
+      this.handleResize_, false);
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
@@ -532,15 +532,15 @@ PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_opt
   if (!this.frameState_) {
     return;
   }
-  var coordinate = this.getCoordinateFromPixel(pixel);
+  const coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
-  var hitTolerance = opt_options.hitTolerance !== undefined ?
+  const hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
-  var layerFilter = opt_options.layerFilter !== undefined ?
+  const layerFilter = opt_options.layerFilter !== undefined ?
     opt_options.layerFilter : TRUE;
   return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, callback, null,
-      layerFilter, null);
+    coordinate, this.frameState_, hitTolerance, callback, null,
+    layerFilter, null);
 };
 
 
@@ -553,7 +553,7 @@ PluggableMap.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_opt
  * @api
  */
 PluggableMap.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
-  var features = null;
+  let features = null;
   this.forEachFeatureAtPixel(pixel, function(feature) {
     if (!features) {
       features = [];
@@ -591,12 +591,12 @@ PluggableMap.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this,
   if (!this.frameState_) {
     return;
   }
-  var thisArg = opt_this !== undefined ? opt_this : null;
-  var layerFilter = opt_layerFilter !== undefined ? opt_layerFilter : TRUE;
-  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
+  const thisArg = opt_this !== undefined ? opt_this : null;
+  const layerFilter = opt_layerFilter !== undefined ? opt_layerFilter : TRUE;
+  const thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
-      pixel, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+    pixel, this.frameState_, callback, thisArg,
+    layerFilter, thisArg2);
 };
 
 
@@ -613,13 +613,13 @@ PluggableMap.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   if (!this.frameState_) {
     return false;
   }
-  var coordinate = this.getCoordinateFromPixel(pixel);
+  const coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
-  var layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
-  var hitTolerance = opt_options.hitTolerance !== undefined ?
+  const layerFilter = opt_options.layerFilter !== undefined ? opt_options.layerFilter : TRUE;
+  const hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, layerFilter, null);
+    coordinate, this.frameState_, hitTolerance, layerFilter, null);
 };
 
 
@@ -641,8 +641,8 @@ PluggableMap.prototype.getEventCoordinate = function(event) {
  * @api
  */
 PluggableMap.prototype.getEventPixel = function(event) {
-  var viewportPosition = this.viewport_.getBoundingClientRect();
-  var eventPosition = event.changedTouches ? event.changedTouches[0] : event;
+  const viewportPosition = this.viewport_.getBoundingClientRect();
+  const eventPosition = event.changedTouches ? event.changedTouches[0] : event;
   return [
     eventPosition.clientX - viewportPosition.left,
     eventPosition.clientY - viewportPosition.top
@@ -674,7 +674,7 @@ PluggableMap.prototype.getTarget = function() {
  * @api
  */
 PluggableMap.prototype.getTargetElement = function() {
-  var target = this.getTarget();
+  const target = this.getTarget();
   if (target !== undefined) {
     return typeof target === 'string' ?
       document.getElementById(target) :
@@ -693,7 +693,7 @@ PluggableMap.prototype.getTargetElement = function() {
  * @api
  */
 PluggableMap.prototype.getCoordinateFromPixel = function(pixel) {
-  var frameState = this.frameState_;
+  const frameState = this.frameState_;
   if (!frameState) {
     return null;
   } else {
@@ -733,7 +733,7 @@ PluggableMap.prototype.getOverlays = function() {
  * @api
  */
 PluggableMap.prototype.getOverlayById = function(id) {
-  var overlay = this.overlayIdIndex_[id.toString()];
+  const overlay = this.overlayIdIndex_[id.toString()];
   return overlay !== undefined ? overlay : null;
 };
 
@@ -770,7 +770,7 @@ PluggableMap.prototype.getLayerGroup = function() {
  * @api
  */
 PluggableMap.prototype.getLayers = function() {
-  var layers = this.getLayerGroup().getLayers();
+  const layers = this.getLayerGroup().getLayers();
   return layers;
 };
 
@@ -783,12 +783,12 @@ PluggableMap.prototype.getLayers = function() {
  * @api
  */
 PluggableMap.prototype.getPixelFromCoordinate = function(coordinate) {
-  var frameState = this.frameState_;
+  const frameState = this.frameState_;
   if (!frameState) {
     return null;
   } else {
     return _ol_transform_.apply(frameState.coordinateToPixelTransform,
-        coordinate.slice(0, 2));
+      coordinate.slice(0, 2));
   }
 };
 
@@ -873,7 +873,7 @@ PluggableMap.prototype.getOverlayContainerStopEvent = function() {
 PluggableMap.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, tileResolution) {
   // Filter out tiles at higher zoom levels than the current zoom level, or that
   // are outside the visible extent.
-  var frameState = this.frameState_;
+  const frameState = this.frameState_;
   if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
     return PriorityQueue.DROP;
   }
@@ -886,8 +886,8 @@ PluggableMap.prototype.getTilePriority = function(tile, tileSourceKey, tileCente
   // between the center of the tile and the focus.  The factor of 65536 means
   // that the prioritization should behave as desired for tiles up to
   // 65536 * Math.log(2) = 45426 pixels from the focus.
-  var deltaX = tileCenter[0] - frameState.focus[0];
-  var deltaY = tileCenter[1] - frameState.focus[1];
+  const deltaX = tileCenter[0] - frameState.focus[0];
+  const deltaY = tileCenter[1] - frameState.focus[1];
   return 65536 * Math.log(tileResolution) +
       Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
 };
@@ -898,8 +898,8 @@ PluggableMap.prototype.getTilePriority = function(tile, tileSourceKey, tileCente
  * @param {string=} opt_type Type.
  */
 PluggableMap.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
-  var type = opt_type || browserEvent.type;
-  var mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
+  const type = opt_type || browserEvent.type;
+  const mapBrowserEvent = new MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
 };
 
@@ -915,15 +915,15 @@ PluggableMap.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   }
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
-  var interactionsArray = this.getInteractions().getArray();
-  var i;
+  const interactionsArray = this.getInteractions().getArray();
+  let i;
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
     for (i = interactionsArray.length - 1; i >= 0; i--) {
-      var interaction = interactionsArray[i];
+      const interaction = interactionsArray[i];
       if (!interaction.getActive()) {
         continue;
       }
-      var cont = interaction.handleEvent(mapBrowserEvent);
+      const cont = interaction.handleEvent(mapBrowserEvent);
       if (!cont) {
         break;
       }
@@ -937,7 +937,7 @@ PluggableMap.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
  */
 PluggableMap.prototype.handlePostRender = function() {
 
-  var frameState = this.frameState_;
+  const frameState = this.frameState_;
 
   // Manage the tile queue
   // Image loads are expensive and a limited resource, so try to use them
@@ -948,12 +948,12 @@ PluggableMap.prototype.handlePostRender = function() {
   //   the maximum number of loads per frame and limit the number of parallel
   //   tile loads to remain reactive to view changes and to reduce the chance of
   //   loading tiles that will quickly disappear from view.
-  var tileQueue = this.tileQueue_;
+  const tileQueue = this.tileQueue_;
   if (!tileQueue.isEmpty()) {
-    var maxTotalLoading = 16;
-    var maxNewLoads = maxTotalLoading;
+    let maxTotalLoading = 16;
+    let maxNewLoads = maxTotalLoading;
     if (frameState) {
-      var hints = frameState.viewHints;
+      const hints = frameState.viewHints;
       if (hints[ViewHint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
@@ -969,8 +969,8 @@ PluggableMap.prototype.handlePostRender = function() {
     }
   }
 
-  var postRenderFunctions = this.postRenderFunctions_;
-  var i, ii;
+  const postRenderFunctions = this.postRenderFunctions_;
+  let i, ii;
   for (i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
     postRenderFunctions[i](this, frameState);
   }
@@ -995,13 +995,13 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
   // If it's not now an Element we remove the viewport from the DOM.
   // If it's an Element we append the viewport element to it.
 
-  var targetElement;
+  let targetElement;
   if (this.getTarget()) {
     targetElement = this.getTargetElement();
   }
 
   if (this.keyHandlerKeys_) {
-    for (var i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
+    for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
       _ol_events_.unlistenByKey(this.keyHandlerKeys_[i]);
     }
     this.keyHandlerKeys_ = null;
@@ -1012,25 +1012,25 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
     removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
       window.removeEventListener(EventType.RESIZE,
-          this.handleResize_, false);
+        this.handleResize_, false);
       this.handleResize_ = undefined;
     }
   } else {
     targetElement.appendChild(this.viewport_);
 
-    var keyboardEventTarget = !this.keyboardEventTarget_ ?
+    const keyboardEventTarget = !this.keyboardEventTarget_ ?
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
       _ol_events_.listen(keyboardEventTarget, EventType.KEYDOWN,
-          this.handleBrowserEvent, this),
+        this.handleBrowserEvent, this),
       _ol_events_.listen(keyboardEventTarget, EventType.KEYPRESS,
-          this.handleBrowserEvent, this)
+        this.handleBrowserEvent, this)
     ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
       window.addEventListener(EventType.RESIZE,
-          this.handleResize_, false);
+        this.handleResize_, false);
     }
   }
 
@@ -1068,15 +1068,15 @@ PluggableMap.prototype.handleViewChanged_ = function() {
     _ol_events_.unlistenByKey(this.viewChangeListenerKey_);
     this.viewChangeListenerKey_ = null;
   }
-  var view = this.getView();
+  const view = this.getView();
   if (view) {
     this.viewport_.setAttribute('data-view', getUid(view));
     this.viewPropertyListenerKey_ = _ol_events_.listen(
-        view, ObjectEventType.PROPERTYCHANGE,
-        this.handleViewPropertyChanged_, this);
+      view, ObjectEventType.PROPERTYCHANGE,
+      this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = _ol_events_.listen(
-        view, EventType.CHANGE,
-        this.handleViewPropertyChanged_, this);
+      view, EventType.CHANGE,
+      this.handleViewPropertyChanged_, this);
   }
   this.render();
 };
@@ -1090,15 +1090,15 @@ PluggableMap.prototype.handleLayerGroupChanged_ = function() {
     this.layerGroupPropertyListenerKeys_.forEach(_ol_events_.unlistenByKey);
     this.layerGroupPropertyListenerKeys_ = null;
   }
-  var layerGroup = this.getLayerGroup();
+  const layerGroup = this.getLayerGroup();
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       _ol_events_.listen(
-          layerGroup, ObjectEventType.PROPERTYCHANGE,
-          this.render, this),
+        layerGroup, ObjectEventType.PROPERTYCHANGE,
+        this.render, this),
       _ol_events_.listen(
-          layerGroup, EventType.CHANGE,
-          this.render, this)
+        layerGroup, EventType.CHANGE,
+        this.render, this)
     ];
   }
   this.render();
@@ -1132,7 +1132,7 @@ PluggableMap.prototype.renderSync = function() {
 PluggableMap.prototype.render = function() {
   if (this.animationDelayKey_ === undefined) {
     this.animationDelayKey_ = requestAnimationFrame(
-        this.animationDelay_);
+      this.animationDelay_);
   }
 };
 
@@ -1169,7 +1169,7 @@ PluggableMap.prototype.removeInteraction = function(interaction) {
  * @api
  */
 PluggableMap.prototype.removeLayer = function(layer) {
-  var layers = this.getLayerGroup().getLayers();
+  const layers = this.getLayerGroup().getLayers();
   return layers.remove(layer);
 };
 
@@ -1191,24 +1191,24 @@ PluggableMap.prototype.removeOverlay = function(overlay) {
  * @private
  */
 PluggableMap.prototype.renderFrame_ = function(time) {
-  var i, ii, viewState;
+  let i, ii, viewState;
 
-  var size = this.getSize();
-  var view = this.getView();
-  var extent = createEmpty();
-  var previousFrameState = this.frameState_;
+  const size = this.getSize();
+  const view = this.getView();
+  const extent = createEmpty();
+  const previousFrameState = this.frameState_;
   /** @type {?olx.FrameState} */
-  var frameState = null;
+  let frameState = null;
   if (size !== undefined && _ol_size_.hasArea(size) && view && view.isDef()) {
-    var viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
-    var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
-    var layerStates = {};
+    const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
+    const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
+    const layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
-    var center = viewState.center;
-    var pixelResolution = viewState.resolution / this.pixelRatio_;
+    const center = viewState.center;
+    const pixelResolution = viewState.resolution / this.pixelRatio_;
     center[0] = Math.round(center[0] / pixelResolution) * pixelResolution;
     center[1] = Math.round(center[1] / pixelResolution) * pixelResolution;
     frameState = /** @type {olx.FrameState} */ ({
@@ -1235,7 +1235,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
 
   if (frameState) {
     frameState.extent = getForViewAndSize(viewState.center,
-        viewState.resolution, viewState.rotation, frameState.size, extent);
+      viewState.resolution, viewState.rotation, frameState.size, extent);
   }
 
   this.frameState_ = frameState;
@@ -1246,33 +1246,33 @@ PluggableMap.prototype.renderFrame_ = function(time) {
       this.render();
     }
     Array.prototype.push.apply(
-        this.postRenderFunctions_, frameState.postRenderFunctions);
+      this.postRenderFunctions_, frameState.postRenderFunctions);
 
     if (previousFrameState) {
-      var moveStart = !this.previousExtent_ ||
+      const moveStart = !this.previousExtent_ ||
                   (!isEmpty(this.previousExtent_) &&
                   !equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
-            new MapEvent(MapEventType.MOVESTART, this, previousFrameState));
+          new MapEvent(MapEventType.MOVESTART, this, previousFrameState));
         this.previousExtent_ = createOrUpdateEmpty(this.previousExtent_);
       }
     }
 
-    var idle = this.previousExtent_ &&
+    const idle = this.previousExtent_ &&
         !frameState.viewHints[ViewHint.ANIMATING] &&
         !frameState.viewHints[ViewHint.INTERACTING] &&
         !equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
       this.dispatchEvent(
-          new MapEvent(MapEventType.MOVEEND, this, frameState));
+        new MapEvent(MapEventType.MOVEEND, this, frameState));
       clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new MapEvent(MapEventType.POSTRENDER, this, frameState));
+    new MapEvent(MapEventType.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 
@@ -1329,7 +1329,7 @@ PluggableMap.prototype.setView = function(view) {
  * @param {ol.Feature} feature Feature.
  */
 PluggableMap.prototype.skipFeature = function(feature) {
-  var featureUid = getUid(feature).toString();
+  const featureUid = getUid(feature).toString();
   this.skippedFeatureUids_[featureUid] = true;
   this.render();
 };
@@ -1341,12 +1341,12 @@ PluggableMap.prototype.skipFeature = function(feature) {
  * @api
  */
 PluggableMap.prototype.updateSize = function() {
-  var targetElement = this.getTargetElement();
+  const targetElement = this.getTargetElement();
 
   if (!targetElement) {
     this.setSize(undefined);
   } else {
-    var computedStyle = getComputedStyle(targetElement);
+    const computedStyle = getComputedStyle(targetElement);
     this.setSize([
       targetElement.offsetWidth -
           parseFloat(computedStyle['borderLeftWidth']) -
@@ -1367,7 +1367,7 @@ PluggableMap.prototype.updateSize = function() {
  * @param {ol.Feature} feature Feature.
  */
 PluggableMap.prototype.unskipFeature = function(feature) {
-  var featureUid = getUid(feature).toString();
+  const featureUid = getUid(feature).toString();
   delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
@@ -1377,7 +1377,7 @@ PluggableMap.prototype.unskipFeature = function(feature) {
  * @type {Array.<ol.renderer.Type>}
  * @const
  */
-var DEFAULT_RENDERER_TYPES = [
+const DEFAULT_RENDERER_TYPES = [
   RendererType.CANVAS,
   RendererType.WEBGL
 ];
@@ -1392,7 +1392,7 @@ function createOptionsInternal(options) {
   /**
    * @type {Element|Document}
    */
-  var keyboardEventTarget = null;
+  let keyboardEventTarget = null;
   if (options.keyboardEventTarget !== undefined) {
     keyboardEventTarget = typeof options.keyboardEventTarget === 'string' ?
       document.getElementById(options.keyboardEventTarget) :
@@ -1402,9 +1402,9 @@ function createOptionsInternal(options) {
   /**
    * @type {Object.<string, *>}
    */
-  var values = {};
+  const values = {};
 
-  var layerGroup = (options.layers instanceof LayerGroup) ?
+  const layerGroup = (options.layers instanceof LayerGroup) ?
     options.layers : new LayerGroup({layers: options.layers});
   values[MapProperty.LAYERGROUP] = layerGroup;
 
@@ -1416,7 +1416,7 @@ function createOptionsInternal(options) {
   /**
    * @type {Array.<ol.renderer.Type>}
    */
-  var rendererTypes;
+  let rendererTypes;
 
   if (options.renderer !== undefined) {
     if (Array.isArray(options.renderer)) {
@@ -1436,13 +1436,13 @@ function createOptionsInternal(options) {
   /**
    * @type {olx.MapRendererPlugin}
    */
-  var mapRendererPlugin;
+  let mapRendererPlugin;
 
-  var mapRendererPlugins = getMapRendererPlugins();
-  outer: for (var i = 0, ii = rendererTypes.length; i < ii; ++i) {
-    var rendererType = rendererTypes[i];
-    for (var j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
-      var candidate = mapRendererPlugins[j];
+  const mapRendererPlugins = getMapRendererPlugins();
+  outer: for (let i = 0, ii = rendererTypes.length; i < ii; ++i) {
+    const rendererType = rendererTypes[i];
+    for (let j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
+      const candidate = mapRendererPlugins[j];
       if (candidate['handles'](rendererType)) {
         mapRendererPlugin = candidate;
         break outer;
@@ -1454,35 +1454,35 @@ function createOptionsInternal(options) {
     throw new Error('Unable to create a map renderer for types: ' +  rendererTypes.join(', '));
   }
 
-  var controls;
+  let controls;
   if (options.controls !== undefined) {
     if (Array.isArray(options.controls)) {
       controls = new Collection(options.controls.slice());
     } else {
       assert(options.controls instanceof Collection,
-          47); // Expected `controls` to be an array or an `ol.Collection`
+        47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
   }
 
-  var interactions;
+  let interactions;
   if (options.interactions !== undefined) {
     if (Array.isArray(options.interactions)) {
       interactions = new Collection(options.interactions.slice());
     } else {
       assert(options.interactions instanceof Collection,
-          48); // Expected `interactions` to be an array or an `ol.Collection`
+        48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
   }
 
-  var overlays;
+  let overlays;
   if (options.overlays !== undefined) {
     if (Array.isArray(options.overlays)) {
       overlays = new Collection(options.overlays.slice());
     } else {
       assert(options.overlays instanceof Collection,
-          49); // Expected `overlays` to be an array or an `ol.Collection`
+        49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }
   } else {

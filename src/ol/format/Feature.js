@@ -18,7 +18,7 @@ import {get as getProjection, equivalent as equivalentProjection, transformExten
  * @abstract
  * @api
  */
-var FeatureFormat = function() {
+const FeatureFormat = function() {
 
   /**
    * @protected
@@ -43,7 +43,7 @@ var FeatureFormat = function() {
  * @protected
  */
 FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
-  var options;
+  let options;
   if (opt_options) {
     options = {
       dataProjection: opt_options.dataProjection ?
@@ -173,40 +173,40 @@ export default FeatureFormat;
  * @return {ol.geom.Geometry|ol.Extent} Transformed geometry.
  */
 export function transformWithOptions(geometry, write, opt_options) {
-  var featureProjection = opt_options ?
+  const featureProjection = opt_options ?
     getProjection(opt_options.featureProjection) : null;
-  var dataProjection = opt_options ?
+  const dataProjection = opt_options ?
     getProjection(opt_options.dataProjection) : null;
   /**
    * @type {ol.geom.Geometry|ol.Extent}
    */
-  var transformed;
+  let transformed;
   if (featureProjection && dataProjection &&
       !equivalentProjection(featureProjection, dataProjection)) {
     if (geometry instanceof Geometry) {
       transformed = (write ? geometry.clone() : geometry).transform(
-          write ? featureProjection : dataProjection,
-          write ? dataProjection : featureProjection);
+        write ? featureProjection : dataProjection,
+        write ? dataProjection : featureProjection);
     } else {
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
       transformed = transformExtent(
-          geometry,
-          dataProjection,
-          featureProjection);
+        geometry,
+        dataProjection,
+        featureProjection);
     }
   } else {
     transformed = geometry;
   }
   if (write && opt_options && opt_options.decimals !== undefined) {
-    var power = Math.pow(10, opt_options.decimals);
+    const power = Math.pow(10, opt_options.decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
      * @param {Array.<number>} coordinates Coordinates.
      * @return {Array.<number>} Transformed coordinates.
      */
-    var transform = function(coordinates) {
-      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+    const transform = function(coordinates) {
+      for (let i = 0, ii = coordinates.length; i < ii; ++i) {
         coordinates[i] = Math.round(coordinates[i] * power) / power;
       }
       return coordinates;

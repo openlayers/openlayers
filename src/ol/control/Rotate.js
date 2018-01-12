@@ -20,13 +20,13 @@ import {inherits} from '../index.js';
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
  * @api
  */
-var Rotate = function(opt_options) {
+const Rotate = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
-  var className = options.className !== undefined ? options.className : 'ol-rotate';
+  const className = options.className !== undefined ? options.className : 'ol-rotate';
 
-  var label = options.label !== undefined ? options.label : '\u21E7';
+  const label = options.label !== undefined ? options.label : '\u21E7';
 
   /**
    * @type {Element}
@@ -43,23 +43,23 @@ var Rotate = function(opt_options) {
     this.label_.classList.add('ol-compass');
   }
 
-  var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
+  const tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
 
-  var button = document.createElement('button');
+  const button = document.createElement('button');
   button.className = className + '-reset';
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(this.label_);
 
   _ol_events_.listen(button, EventType.CLICK,
-      Rotate.prototype.handleClick_, this);
+    Rotate.prototype.handleClick_, this);
 
-  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-  var element = document.createElement('div');
+  const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+  const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
 
-  var render = options.render ? options.render : Rotate.render;
+  const render = options.render ? options.render : Rotate.render;
 
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
@@ -114,8 +114,8 @@ Rotate.prototype.handleClick_ = function(event) {
  * @private
  */
 Rotate.prototype.resetNorth_ = function() {
-  var map = this.getMap();
-  var view = map.getView();
+  const map = this.getMap();
+  const view = map.getView();
   if (!view) {
     // the map does not have a view, so we can't act
     // upon it
@@ -142,15 +142,15 @@ Rotate.prototype.resetNorth_ = function() {
  * @api
  */
 Rotate.render = function(mapEvent) {
-  var frameState = mapEvent.frameState;
+  const frameState = mapEvent.frameState;
   if (!frameState) {
     return;
   }
-  var rotation = frameState.viewState.rotation;
+  const rotation = frameState.viewState.rotation;
   if (rotation != this.rotation_) {
-    var transform = 'rotate(' + rotation + 'rad)';
+    const transform = 'rotate(' + rotation + 'rad)';
     if (this.autoHide_) {
-      var contains = this.element.classList.contains(CLASS_HIDDEN);
+      const contains = this.element.classList.contains(CLASS_HIDDEN);
       if (!contains && rotation === 0) {
         this.element.classList.add(CLASS_HIDDEN);
       } else if (contains && rotation !== 0) {

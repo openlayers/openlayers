@@ -10,7 +10,7 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -23,7 +23,7 @@ var map = new Map({
   })
 });
 
-var imageStyle = new Style({
+const imageStyle = new Style({
   image: new CircleStyle({
     radius: 5,
     snapToPixel: false,
@@ -32,7 +32,7 @@ var imageStyle = new Style({
   })
 });
 
-var headInnerImageStyle = new Style({
+const headInnerImageStyle = new Style({
   image: new CircleStyle({
     radius: 2,
     snapToPixel: false,
@@ -40,7 +40,7 @@ var headInnerImageStyle = new Style({
   })
 });
 
-var headOuterImageStyle = new Style({
+const headOuterImageStyle = new Style({
   image: new CircleStyle({
     radius: 5,
     snapToPixel: false,
@@ -48,27 +48,27 @@ var headOuterImageStyle = new Style({
   })
 });
 
-var n = 200;
-var omegaTheta = 30000; // Rotation period in ms
-var R = 7e6;
-var r = 2e6;
-var p = 2e6;
+const n = 200;
+const omegaTheta = 30000; // Rotation period in ms
+const R = 7e6;
+const r = 2e6;
+const p = 2e6;
 map.on('postcompose', function(event) {
-  var vectorContext = event.vectorContext;
-  var frameState = event.frameState;
-  var theta = 2 * Math.PI * frameState.time / omegaTheta;
-  var coordinates = [];
-  var i;
+  const vectorContext = event.vectorContext;
+  const frameState = event.frameState;
+  const theta = 2 * Math.PI * frameState.time / omegaTheta;
+  const coordinates = [];
+  let i;
   for (i = 0; i < n; ++i) {
-    var t = theta + 2 * Math.PI * i / n;
-    var x = (R + r) * Math.cos(t) + p * Math.cos((R + r) * t / r);
-    var y = (R + r) * Math.sin(t) + p * Math.sin((R + r) * t / r);
+    const t = theta + 2 * Math.PI * i / n;
+    const x = (R + r) * Math.cos(t) + p * Math.cos((R + r) * t / r);
+    const y = (R + r) * Math.sin(t) + p * Math.sin((R + r) * t / r);
     coordinates.push([x, y]);
   }
   vectorContext.setStyle(imageStyle);
   vectorContext.drawGeometry(new MultiPoint(coordinates));
 
-  var headPoint = new Point(coordinates[coordinates.length - 1]);
+  const headPoint = new Point(coordinates[coordinates.length - 1]);
 
   vectorContext.setStyle(headOuterImageStyle);
   vectorContext.drawGeometry(headPoint);

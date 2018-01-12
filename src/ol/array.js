@@ -13,11 +13,11 @@
  * @return {number} The index of the item if found, -1 if not.
  */
 export function binarySearch(haystack, needle, opt_comparator) {
-  var mid, cmp;
-  var comparator = opt_comparator || numberSafeCompareFunction;
-  var low = 0;
-  var high = haystack.length;
-  var found = false;
+  let mid, cmp;
+  const comparator = opt_comparator || numberSafeCompareFunction;
+  let low = 0;
+  let high = haystack.length;
+  let found = false;
 
   while (low < high) {
     /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
@@ -71,13 +71,13 @@ export function includes(arr, obj) {
  * @return {number} Index.
  */
 export function linearFindNearest(arr, target, direction) {
-  var n = arr.length;
+  const n = arr.length;
   if (arr[0] <= target) {
     return 0;
   } else if (target <= arr[n - 1]) {
     return n - 1;
   } else {
-    var i;
+    let i;
     if (direction > 0) {
       for (i = 1; i < n; ++i) {
         if (arr[i] < target) {
@@ -115,7 +115,7 @@ export function linearFindNearest(arr, target, direction) {
  */
 export function reverseSubArray(arr, begin, end) {
   while (begin < end) {
-    var tmp = arr[begin];
+    const tmp = arr[begin];
     arr[begin] = arr[end];
     arr[end] = tmp;
     ++begin;
@@ -131,9 +131,9 @@ export function reverseSubArray(arr, begin, end) {
  * @template VALUE
  */
 export function extend(arr, data) {
-  var i;
-  var extension = Array.isArray(data) ? data : [data];
-  var length = extension.length;
+  let i;
+  const extension = Array.isArray(data) ? data : [data];
+  const length = extension.length;
   for (i = 0; i < length; i++) {
     arr[arr.length] = extension[i];
   }
@@ -147,8 +147,8 @@ export function extend(arr, data) {
  * @return {boolean} If the element was removed.
  */
 export function remove(arr, obj) {
-  var i = arr.indexOf(obj);
-  var found = i > -1;
+  const i = arr.indexOf(obj);
+  const found = i > -1;
   if (found) {
     arr.splice(i, 1);
   }
@@ -163,10 +163,10 @@ export function remove(arr, obj) {
  * @return {VALUE} The element found.
  */
 export function find(arr, func) {
-  var length = arr.length >>> 0;
-  var value;
+  const length = arr.length >>> 0;
+  let value;
 
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     value = arr[i];
     if (func(value, i, arr)) {
       return value;
@@ -182,11 +182,11 @@ export function find(arr, func) {
  * @return {boolean} Whether the two arrays are equal.
  */
 export function equals(arr1, arr2) {
-  var len1 = arr1.length;
+  const len1 = arr1.length;
   if (len1 !== arr2.length) {
     return false;
   }
-  for (var i = 0; i < len1; i++) {
+  for (let i = 0; i < len1; i++) {
     if (arr1[i] !== arr2[i]) {
       return false;
     }
@@ -200,9 +200,9 @@ export function equals(arr1, arr2) {
  * @param {Function} compareFnc Comparison function.
  */
 export function stableSort(arr, compareFnc) {
-  var length = arr.length;
-  var tmp = Array(arr.length);
-  var i;
+  const length = arr.length;
+  const tmp = Array(arr.length);
+  let i;
   for (i = 0; i < length; i++) {
     tmp[i] = {index: i, value: arr[i]};
   }
@@ -221,8 +221,8 @@ export function stableSort(arr, compareFnc) {
  * @return {number} Return index.
  */
 export function findIndex(arr, func) {
-  var index;
-  var found = !arr.every(function(el, idx) {
+  let index;
+  const found = !arr.every(function(el, idx) {
     index = idx;
     return !func(el, idx, arr);
   });
@@ -237,12 +237,12 @@ export function findIndex(arr, func) {
  * @return {boolean} Return index.
  */
 export function isSorted(arr, opt_func, opt_strict) {
-  var compare = opt_func || numberSafeCompareFunction;
+  const compare = opt_func || numberSafeCompareFunction;
   return arr.every(function(currentVal, index) {
     if (index === 0) {
       return true;
     }
-    var res = compare(arr[index - 1], currentVal);
+    const res = compare(arr[index - 1], currentVal);
     return !(res > 0 || opt_strict && res === 0);
   });
 }

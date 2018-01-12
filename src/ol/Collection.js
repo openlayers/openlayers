@@ -12,7 +12,7 @@ import Event from './events/Event.js';
  * @enum {string}
  * @private
  */
-var Property = {
+const Property = {
   LENGTH: 'length'
 };
 
@@ -20,7 +20,7 @@ var Property = {
 /**
  * @typedef {{unique: (boolean|undefined)}}
  */
-export var CollectionOptions;
+export let CollectionOptions;
 
 
 /**
@@ -41,11 +41,11 @@ export var CollectionOptions;
  * @template T
  * @api
  */
-var Collection = function(opt_array, opt_options) {
+const Collection = function(opt_array, opt_options) {
 
   BaseObject.call(this);
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -60,7 +60,7 @@ var Collection = function(opt_array, opt_options) {
   this.array_ = opt_array ? opt_array : [];
 
   if (this.unique_) {
-    for (var i = 0, ii = this.array_.length; i < ii; ++i) {
+    for (let i = 0, ii = this.array_.length; i < ii; ++i) {
       this.assertUnique_(this.array_[i], i);
     }
   }
@@ -91,7 +91,7 @@ Collection.prototype.clear = function() {
  * @api
  */
 Collection.prototype.extend = function(arr) {
-  var i, ii;
+  let i, ii;
   for (i = 0, ii = arr.length; i < ii; ++i) {
     this.push(arr[i]);
   }
@@ -107,8 +107,8 @@ Collection.prototype.extend = function(arr) {
  * @api
  */
 Collection.prototype.forEach = function(f) {
-  var array = this.array_;
-  for (var i = 0, ii = array.length; i < ii; ++i) {
+  const array = this.array_;
+  for (let i = 0, ii = array.length; i < ii; ++i) {
     f(array[i], i, array);
   }
 };
@@ -162,7 +162,7 @@ Collection.prototype.insertAt = function(index, elem) {
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
-      new Collection.Event(CollectionEventType.ADD, elem));
+    new Collection.Event(CollectionEventType.ADD, elem));
 };
 
 
@@ -187,7 +187,7 @@ Collection.prototype.push = function(elem) {
   if (this.unique_) {
     this.assertUnique_(elem);
   }
-  var n = this.getLength();
+  const n = this.getLength();
   this.insertAt(n, elem);
   return this.getLength();
 };
@@ -200,8 +200,8 @@ Collection.prototype.push = function(elem) {
  * @api
  */
 Collection.prototype.remove = function(elem) {
-  var arr = this.array_;
-  var i, ii;
+  const arr = this.array_;
+  let i, ii;
   for (i = 0, ii = arr.length; i < ii; ++i) {
     if (arr[i] === elem) {
       return this.removeAt(i);
@@ -219,11 +219,11 @@ Collection.prototype.remove = function(elem) {
  * @api
  */
 Collection.prototype.removeAt = function(index) {
-  var prev = this.array_[index];
+  const prev = this.array_[index];
   this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
-      new Collection.Event(CollectionEventType.REMOVE, prev));
+    new Collection.Event(CollectionEventType.REMOVE, prev));
   return prev;
 };
 
@@ -235,19 +235,19 @@ Collection.prototype.removeAt = function(index) {
  * @api
  */
 Collection.prototype.setAt = function(index, elem) {
-  var n = this.getLength();
+  const n = this.getLength();
   if (index < n) {
     if (this.unique_) {
       this.assertUnique_(elem, index);
     }
-    var prev = this.array_[index];
+    const prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-        new Collection.Event(CollectionEventType.REMOVE, prev));
+      new Collection.Event(CollectionEventType.REMOVE, prev));
     this.dispatchEvent(
-        new Collection.Event(CollectionEventType.ADD, elem));
+      new Collection.Event(CollectionEventType.ADD, elem));
   } else {
-    var j;
+    let j;
     for (j = n; j < index; ++j) {
       this.insertAt(j, undefined);
     }
@@ -270,7 +270,7 @@ Collection.prototype.updateLength_ = function() {
  * @param {number=} opt_except Optional index to ignore.
  */
 Collection.prototype.assertUnique_ = function(elem, opt_except) {
-  for (var i = 0, ii = this.array_.length; i < ii; ++i) {
+  for (let i = 0, ii = this.array_.length; i < ii; ++i) {
     if (this.array_[i] === elem && i !== opt_except) {
       throw new AssertionError(58);
     }

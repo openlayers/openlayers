@@ -11,9 +11,9 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
-var openSansAdded = false;
+let openSansAdded = false;
 
-var myDom = {
+const myDom = {
   points: {
     text: document.getElementById('points-text'),
     align: document.getElementById('points-align'),
@@ -67,10 +67,10 @@ var myDom = {
   }
 };
 
-var getText = function(feature, resolution, dom) {
-  var type = dom.text.value;
-  var maxResolution = dom.maxreso.value;
-  var text = feature.get('name');
+const getText = function(feature, resolution, dom) {
+  const type = dom.text.value;
+  const maxResolution = dom.maxreso.value;
+  let text = feature.get('name');
 
   if (resolution > maxResolution) {
     text = '';
@@ -86,28 +86,28 @@ var getText = function(feature, resolution, dom) {
 };
 
 
-var createTextStyle = function(feature, resolution, dom) {
-  var align = dom.align.value;
-  var baseline = dom.baseline.value;
-  var size = dom.size.value;
-  var offsetX = parseInt(dom.offsetX.value, 10);
-  var offsetY = parseInt(dom.offsetY.value, 10);
-  var weight = dom.weight.value;
-  var placement = dom.placement ? dom.placement.value : undefined;
-  var maxAngle = dom.maxangle ? parseFloat(dom.maxangle.value) : undefined;
-  var overflow = dom.overflow ? (dom.overflow.value == 'true') : undefined;
-  var rotation = parseFloat(dom.rotation.value);
+const createTextStyle = function(feature, resolution, dom) {
+  const align = dom.align.value;
+  const baseline = dom.baseline.value;
+  const size = dom.size.value;
+  const offsetX = parseInt(dom.offsetX.value, 10);
+  const offsetY = parseInt(dom.offsetY.value, 10);
+  const weight = dom.weight.value;
+  const placement = dom.placement ? dom.placement.value : undefined;
+  const maxAngle = dom.maxangle ? parseFloat(dom.maxangle.value) : undefined;
+  const overflow = dom.overflow ? (dom.overflow.value == 'true') : undefined;
+  const rotation = parseFloat(dom.rotation.value);
   if (dom.font.value == '\'Open Sans\'' && !openSansAdded) {
-    var openSans = document.createElement('link');
+    const openSans = document.createElement('link');
     openSans.href = 'https://fonts.googleapis.com/css?family=Open+Sans';
     openSans.rel = 'stylesheet';
     document.getElementsByTagName('head')[0].appendChild(openSans);
     openSansAdded = true;
   }
-  var font = weight + ' ' + size + ' ' + dom.font.value;
-  var fillColor = dom.color.value;
-  var outlineColor = dom.outline.value;
-  var outlineWidth = parseInt(dom.outlineWidth.value, 10);
+  const font = weight + ' ' + size + ' ' + dom.font.value;
+  const fillColor = dom.color.value;
+  const outlineColor = dom.outline.value;
+  const outlineWidth = parseInt(dom.outlineWidth.value, 10);
 
   return new Text({
     textAlign: align == '' ? undefined : align,
@@ -140,7 +140,7 @@ function polygonStyleFunction(feature, resolution) {
   });
 }
 
-var vectorPolygons = new VectorLayer({
+const vectorPolygons = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/polygon-samples.geojson',
     format: new GeoJSON()
@@ -160,7 +160,7 @@ function lineStyleFunction(feature, resolution) {
   });
 }
 
-var vectorLines = new VectorLayer({
+const vectorLines = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/line-samples.geojson',
     format: new GeoJSON()
@@ -181,7 +181,7 @@ function pointStyleFunction(feature, resolution) {
   });
 }
 
-var vectorPoints = new VectorLayer({
+const vectorPoints = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/point-samples.geojson',
     format: new GeoJSON()
@@ -189,7 +189,7 @@ var vectorPoints = new VectorLayer({
   style: pointStyleFunction
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -206,19 +206,19 @@ var map = new Map({
 });
 
 document.getElementById('refresh-points')
-    .addEventListener('click', function() {
-      vectorPoints.setStyle(pointStyleFunction);
-    });
+  .addEventListener('click', function() {
+    vectorPoints.setStyle(pointStyleFunction);
+  });
 
 document.getElementById('refresh-lines')
-    .addEventListener('click', function() {
-      vectorLines.setStyle(lineStyleFunction);
-    });
+  .addEventListener('click', function() {
+    vectorLines.setStyle(lineStyleFunction);
+  });
 
 document.getElementById('refresh-polygons')
-    .addEventListener('click', function() {
-      vectorPolygons.setStyle(polygonStyleFunction);
-    });
+  .addEventListener('click', function() {
+    vectorPolygons.setStyle(polygonStyleFunction);
+  });
 
 
 /**
@@ -234,18 +234,18 @@ String.prototype.trunc = String.prototype.trunc ||
 // http://stackoverflow.com/questions/14484787/wrap-text-in-javascript
 function stringDivider(str, width, spaceReplacer) {
   if (str.length > width) {
-    var p = width;
+    let p = width;
     while (p > 0 && (str[p] != ' ' && str[p] != '-')) {
       p--;
     }
     if (p > 0) {
-      var left;
+      let left;
       if (str.substring(p, p + 1) == '-') {
         left = str.substring(0, p + 1);
       } else {
         left = str.substring(0, p);
       }
-      var right = str.substring(p + 1);
+      const right = str.substring(p + 1);
       return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
     }
   }

@@ -6,7 +6,7 @@ describe('ol.RotationConstraint', function() {
   describe('SnapToZero', function() {
 
     it('returns expected rotation value', function() {
-      var rotationConstraint = RotationConstraint.createSnapToZero(0.3);
+      const rotationConstraint = RotationConstraint.createSnapToZero(0.3);
 
       expect(rotationConstraint(0.1, 0)).to.eql(0);
       expect(rotationConstraint(0.2, 0)).to.eql(0);

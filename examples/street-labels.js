@@ -10,7 +10,7 @@ import Fill from '../src/ol/style/Fill.js';
 import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
-var style = new Style({
+const style = new Style({
   text: new Text({
     font: 'bold 11px "Open Sans", "Arial Unicode MS", "sans-serif"',
     placement: 'line',
@@ -20,8 +20,8 @@ var style = new Style({
   })
 });
 
-var viewExtent = [1817379, 6139595, 1827851, 6143616];
-var map = new Map({
+const viewExtent = [1817379, 6139595, 1827851, 6143616];
+const map = new Map({
   layers: [new TileLayer({
     source: new BingMaps({
       key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',

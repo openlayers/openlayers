@@ -5,7 +5,7 @@ import EventTarget from '../../../../src/ol/events/EventTarget.js';
 
 
 describe('ol.events.EventTarget', function() {
-  var called, events, eventTarget, spy1, spy2, spy3;
+  let called, events, eventTarget, spy1, spy2, spy3;
 
   beforeEach(function() {
     called = [];
@@ -46,7 +46,7 @@ describe('ol.events.EventTarget', function() {
   describe('#getListeners', function() {
     it('returns listeners for a type or undefined if none', function() {
       expect(eventTarget.getListeners('foo')).to.be(undefined);
-      var listeners = [function() {}];
+      const listeners = [function() {}];
       eventTarget.listeners_['foo'] = listeners;
       expect(eventTarget.getListeners('foo')).to.equal(listeners);
     });
@@ -111,7 +111,7 @@ describe('ol.events.EventTarget', function() {
     });
     it('passes a custom event object with target to listeners', function() {
       eventTarget.addEventListener('foo', spy1);
-      var event = {
+      const event = {
         type: 'foo'
       };
       eventTarget.dispatchEvent(event);

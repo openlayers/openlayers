@@ -21,10 +21,10 @@ import DragBox from '../interaction/DragBox.js';
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
  * @api
  */
-var DragZoom = function(opt_options) {
-  var options = opt_options ? opt_options : {};
+const DragZoom = function(opt_options) {
+  const options = opt_options ? opt_options : {};
 
-  var condition = options.condition ?
+  const condition = options.condition ?
     options.condition : _ol_events_condition_.shiftKeyOnly;
 
   /**
@@ -53,29 +53,29 @@ inherits(DragZoom, DragBox);
  * @inheritDoc
  */
 DragZoom.prototype.onBoxEnd = function() {
-  var map = this.getMap();
+  const map = this.getMap();
 
-  var view = /** @type {!ol.View} */ (map.getView());
+  const view = /** @type {!ol.View} */ (map.getView());
 
-  var size = /** @type {!ol.Size} */ (map.getSize());
+  const size = /** @type {!ol.Size} */ (map.getSize());
 
-  var extent = this.getGeometry().getExtent();
+  let extent = this.getGeometry().getExtent();
 
   if (this.out_) {
-    var mapExtent = view.calculateExtent(size);
-    var boxPixelExtent = createOrUpdateFromCoordinates([
+    const mapExtent = view.calculateExtent(size);
+    const boxPixelExtent = createOrUpdateFromCoordinates([
       map.getPixelFromCoordinate(getBottomLeft(extent)),
       map.getPixelFromCoordinate(getTopRight(extent))]);
-    var factor = view.getResolutionForExtent(boxPixelExtent, size);
+    const factor = view.getResolutionForExtent(boxPixelExtent, size);
 
     scaleFromCenter(mapExtent, 1 / factor);
     extent = mapExtent;
   }
 
-  var resolution = view.constrainResolution(
-      view.getResolutionForExtent(extent, size));
+  const resolution = view.constrainResolution(
+    view.getResolutionForExtent(extent, size));
 
-  var center = getCenter(extent);
+  let center = getCenter(extent);
   center = view.constrainCenter(center);
 
   view.animate({

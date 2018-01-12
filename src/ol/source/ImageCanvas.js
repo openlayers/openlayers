@@ -15,7 +15,7 @@ import ImageSource from '../source/Image.js';
  * @param {olx.source.ImageCanvasOptions} options Constructor options.
  * @api
  */
-var ImageCanvasSource = function(options) {
+const ImageCanvasSource = function(options) {
 
   ImageSource.call(this, {
     attributions: options.attributions,
@@ -60,7 +60,7 @@ inherits(ImageCanvasSource, ImageSource);
 ImageCanvasSource.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
-  var canvas = this.canvas_;
+  let canvas = this.canvas_;
   if (canvas &&
       this.renderedRevision_ == this.getRevision() &&
       canvas.getResolution() == resolution &&
@@ -71,12 +71,12 @@ ImageCanvasSource.prototype.getImageInternal = function(extent, resolution, pixe
 
   extent = extent.slice();
   scaleFromCenter(extent, this.ratio_);
-  var width = getWidth(extent) / resolution;
-  var height = getHeight(extent) / resolution;
-  var size = [width * pixelRatio, height * pixelRatio];
+  const width = getWidth(extent) / resolution;
+  const height = getHeight(extent) / resolution;
+  const size = [width * pixelRatio, height * pixelRatio];
 
-  var canvasElement = this.canvasFunction_(
-      extent, resolution, pixelRatio, size, projection);
+  const canvasElement = this.canvasFunction_(
+    extent, resolution, pixelRatio, size, projection);
   if (canvasElement) {
     canvas = new ImageCanvas(extent, resolution, pixelRatio, canvasElement);
   }

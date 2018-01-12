@@ -5,9 +5,9 @@ import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
 describe('ol.pointer.TouchSource', function() {
-  var handler;
-  var target;
-  var eventSpy;
+  let handler;
+  let target;
+  let eventSpy;
 
   beforeEach(function() {
     target = new EventTarget();
@@ -37,14 +37,14 @@ describe('ol.pointer.TouchSource', function() {
       expect(eventSpy.calledTwice).to.be.ok();
 
       // pointer event for the first touch contact
-      var pointerEvent1 = eventSpy.firstCall.args[0];
+      const pointerEvent1 = eventSpy.firstCall.args[0];
       expect(pointerEvent1.pointerId).to.be(5);
       expect(pointerEvent1.pointerType).to.be('touch');
       expect(pointerEvent1.clientX).to.be(10);
       expect(pointerEvent1.clientY).to.be(11);
 
       // pointer event for the second touch contact
-      var pointerEvent2 = eventSpy.secondCall.args[0];
+      const pointerEvent2 = eventSpy.secondCall.args[0];
       expect(pointerEvent2.pointerId).to.be(6);
       expect(pointerEvent2.pointerType).to.be('touch');
       expect(pointerEvent2.clientX).to.be(30);
@@ -72,7 +72,7 @@ describe('ol.pointer.TouchSource', function() {
       expect(Object.keys(handler.pointerMap).length).to.be(2);
 
       // first touch moves
-      var moveEventSpy = sinon.spy();
+      const moveEventSpy = sinon.spy();
       _ol_events_.listen(handler, 'pointermove', moveEventSpy);
 
       simulateTouchEvent('touchmove', [
@@ -82,7 +82,7 @@ describe('ol.pointer.TouchSource', function() {
       expect(moveEventSpy.calledOnce).to.be.ok();
 
       // and then both touches go up
-      var upEventSpy = sinon.spy();
+      const upEventSpy = sinon.spy();
       _ol_events_.listen(handler, 'pointerup', upEventSpy);
 
       simulateTouchEvent('touchend', [
@@ -105,7 +105,7 @@ describe('ol.pointer.TouchSource', function() {
       expect(Object.keys(handler.pointerMap).length).to.be(1);
 
       // second touch, but the first touch has disappeared
-      var cancelEventSpy = sinon.spy();
+      const cancelEventSpy = sinon.spy();
       _ol_events_.listen(handler, 'pointercancel', cancelEventSpy);
       simulateTouchEvent('touchstart', [
         {identifier: 4, clientX: 30, clientY: 45}
@@ -122,7 +122,7 @@ describe('ol.pointer.TouchSource', function() {
   function simulateTouchEvent(type, changedTouches, touches) {
     touches = touches !== undefined ? touches : changedTouches;
 
-    var event = new Event(type);
+    const event = new Event(type);
     _ol_obj_.assign(event, {
       touches: touches,
       changedTouches: changedTouches

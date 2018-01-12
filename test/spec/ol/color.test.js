@@ -11,28 +11,28 @@ describe('ol.color', function() {
   describe('asArray()', function() {
 
     it('returns the same for an array', function() {
-      var color = [1, 2, 3, 0.4];
-      var got = asArray(color);
+      const color = [1, 2, 3, 0.4];
+      const got = asArray(color);
       expect(got).to.be(color);
     });
 
     it('returns an array given an rgba string', function() {
-      var color = asArray('rgba(1,2,3,0.4)');
+      const color = asArray('rgba(1,2,3,0.4)');
       expect(color).to.eql([1, 2, 3, 0.4]);
     });
 
     it('returns an array given an rgb string', function() {
-      var color = asArray('rgb(1,2,3)');
+      const color = asArray('rgb(1,2,3)');
       expect(color).to.eql([1, 2, 3, 1]);
     });
 
     it('returns an array given a hex string', function() {
-      var color = asArray('#00ccff');
+      const color = asArray('#00ccff');
       expect(color).to.eql([0, 204, 255, 1]);
     });
 
     it('returns an array given a hex string with alpha', function() {
-      var color = asArray('#00ccffb0');
+      const color = asArray('#00ccffb0');
       expect(color).to.eql([0, 204, 255, 176 / 255]);
     });
 
@@ -41,18 +41,18 @@ describe('ol.color', function() {
   describe('asString()', function() {
 
     it('returns the same for a string', function() {
-      var color = 'rgba(0,1,2,0.3)';
-      var got = asString(color);
+      const color = 'rgba(0,1,2,0.3)';
+      const got = asString(color);
       expect(got).to.be(color);
     });
 
     it('returns a string given an rgba array', function() {
-      var color = asString([1, 2, 3, 0.4]);
+      const color = asString([1, 2, 3, 0.4]);
       expect(color).to.eql('rgba(1,2,3,0.4)');
     });
 
     it('returns a string given an rgb array', function() {
-      var color = asString([1, 2, 3]);
+      const color = asString([1, 2, 3]);
       expect(color).to.eql('rgba(1,2,3,1)');
     });
 
@@ -82,47 +82,47 @@ describe('ol.color', function() {
 
     it('ignores whitespace before, between & after numbers (rgb)', function() {
       expect(fromString('rgb( \t 0  ,   0 \n , 255  )')).to.eql(
-          [0, 0, 255, 1]);
+        [0, 0, 255, 1]);
     });
 
     it('can parse rgba colors', function() {
       // opacity 0
       expect(fromString('rgba(255, 255, 0, 0)')).to.eql(
-          [255, 255, 0, 0]);
+        [255, 255, 0, 0]);
       // opacity 0.0 (simple float)
       expect(fromString('rgba(255, 255, 0, 0.0)')).to.eql(
-          [255, 255, 0, 0]);
+        [255, 255, 0, 0]);
       // opacity 0.0000000000000000 (float with 16 digits)
       expect(fromString('rgba(255, 255, 0, 0.0000000000000000)')).to.eql(
-          [255, 255, 0, 0]);
+        [255, 255, 0, 0]);
       // opacity 0.1 (simple float)
       expect(fromString('rgba(255, 255, 0, 0.1)')).to.eql(
-          [255, 255, 0, 0.1]);
+        [255, 255, 0, 0.1]);
       // opacity 0.1111111111111111 (float with 16 digits)
       expect(fromString('rgba(255, 255, 0, 0.1111111111111111)')).to.eql(
-          [255, 255, 0, 0.1111111111111111]);
+        [255, 255, 0, 0.1111111111111111]);
       // opacity 1
       expect(fromString('rgba(255, 255, 0, 1)')).to.eql(
-          [255, 255, 0, 1]);
+        [255, 255, 0, 1]);
       // opacity 1.0
       expect(fromString('rgba(255, 255, 0, 1.0)')).to.eql(
-          [255, 255, 0, 1]);
+        [255, 255, 0, 1]);
       // opacity 1.0000000000000000
       expect(fromString('rgba(255, 255, 0, 1.0000000000000000)')).to.eql(
-          [255, 255, 0, 1]);
+        [255, 255, 0, 1]);
       // with 30 decimal digits
       expect(fromString('rgba(255, 255, 0, 0.123456789012345678901234567890)')).to.eql(
-          [255, 255, 0, 0.123456789012345678901234567890]);
+        [255, 255, 0, 0.123456789012345678901234567890]);
     });
 
     it('ignores whitespace before, between & after numbers (rgba)', function() {
       expect(fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')).to.eql(
-          [0, 0, 255, 0.4711]);
+        [0, 0, 255, 0.4711]);
     });
 
     it('throws an error on invalid colors', function() {
-      var invalidColors = ['tuesday', '#12345', '#1234567', 'rgb(255.0,0,0)'];
-      var i, ii;
+      const invalidColors = ['tuesday', '#12345', '#1234567', 'rgb(255.0,0,0)'];
+      let i, ii;
       for (i = 0, ii < invalidColors.length; i < ii; ++i) {
         expect(function() {
           fromString(invalidColors[i]);

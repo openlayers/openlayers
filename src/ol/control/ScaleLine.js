@@ -26,11 +26,11 @@ import Units from '../proj/Units.js';
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
  * @api
  */
-var ScaleLine = function(opt_options) {
+const ScaleLine = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
-  var className = options.className !== undefined ? options.className : 'ol-scale-line';
+  const className = options.className !== undefined ? options.className : 'ol-scale-line';
 
   /**
    * @private
@@ -77,7 +77,7 @@ var ScaleLine = function(opt_options) {
    */
   this.renderedHTML_ = '';
 
-  var render = options.render ? options.render : ScaleLine.render;
+  const render = options.render ? options.render : ScaleLine.render;
 
   Control.call(this, {
     element: this.element_,
@@ -86,8 +86,8 @@ var ScaleLine = function(opt_options) {
   });
 
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(ScaleLine.Property_.UNITS),
-      this.handleUnitsChanged_, this);
+    this, BaseObject.getChangeEventType(ScaleLine.Property_.UNITS),
+    this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
       ScaleLineUnits.METRIC);
@@ -125,7 +125,7 @@ ScaleLine.prototype.getUnits = function() {
  * @api
  */
 ScaleLine.render = function(mapEvent) {
-  var frameState = mapEvent.frameState;
+  const frameState = mapEvent.frameState;
   if (!frameState) {
     this.viewState_ = null;
   } else {
@@ -158,7 +158,7 @@ ScaleLine.prototype.setUnits = function(units) {
  * @private
  */
 ScaleLine.prototype.updateElement_ = function() {
-  var viewState = this.viewState_;
+  const viewState = this.viewState_;
 
   if (!viewState) {
     if (this.renderedVisible_) {
@@ -168,22 +168,22 @@ ScaleLine.prototype.updateElement_ = function() {
     return;
   }
 
-  var center = viewState.center;
-  var projection = viewState.projection;
-  var units = this.getUnits();
-  var pointResolutionUnits = units == ScaleLineUnits.DEGREES ?
+  const center = viewState.center;
+  const projection = viewState.projection;
+  const units = this.getUnits();
+  const pointResolutionUnits = units == ScaleLineUnits.DEGREES ?
     Units.DEGREES :
     Units.METERS;
-  var pointResolution =
+  let pointResolution =
       getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
   if (units != ScaleLineUnits.DEGREES) {
     pointResolution *= projection.getMetersPerUnit();
   }
 
-  var nominalCount = this.minWidth_ * pointResolution;
-  var suffix = '';
+  let nominalCount = this.minWidth_ * pointResolution;
+  let suffix = '';
   if (units == ScaleLineUnits.DEGREES) {
-    var metersPerDegree = METERS_PER_UNIT[Units.DEGREES];
+    const metersPerDegree = METERS_PER_UNIT[Units.DEGREES];
     if (projection.getUnits() == Units.DEGREES) {
       nominalCount *= metersPerDegree;
     } else {
@@ -240,9 +240,9 @@ ScaleLine.prototype.updateElement_ = function() {
     assert(false, 33); // Invalid units
   }
 
-  var i = 3 * Math.floor(
-      Math.log(this.minWidth_ * pointResolution) / Math.log(10));
-  var count, width;
+  let i = 3 * Math.floor(
+    Math.log(this.minWidth_ * pointResolution) / Math.log(10));
+  let count, width;
   while (true) {
     count = ScaleLine.LEADING_DIGITS[((i % 3) + 3) % 3] *
         Math.pow(10, Math.floor(i / 3));
@@ -257,7 +257,7 @@ ScaleLine.prototype.updateElement_ = function() {
     ++i;
   }
 
-  var html = count + ' ' + suffix;
+  const html = count + ' ' + suffix;
   if (this.renderedHTML_ != html) {
     this.innerElement_.innerHTML = html;
     this.renderedHTML_ = html;

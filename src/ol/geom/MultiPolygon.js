@@ -30,7 +30,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var MultiPolygon = function(coordinates, opt_layout) {
+const MultiPolygon = function(coordinates, opt_layout) {
 
   SimpleGeometry.call(this);
 
@@ -90,16 +90,16 @@ inherits(MultiPolygon, SimpleGeometry);
  */
 MultiPolygon.prototype.appendPolygon = function(polygon) {
   /** @type {Array.<number>} */
-  var ends;
+  let ends;
   if (!this.flatCoordinates) {
     this.flatCoordinates = polygon.getFlatCoordinates().slice();
     ends = polygon.getEnds().slice();
     this.endss_.push();
   } else {
-    var offset = this.flatCoordinates.length;
+    const offset = this.flatCoordinates.length;
     extend(this.flatCoordinates, polygon.getFlatCoordinates());
     ends = polygon.getEnds().slice();
-    var i, ii;
+    let i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
       ends[i] += offset;
     }
@@ -116,16 +116,16 @@ MultiPolygon.prototype.appendPolygon = function(polygon) {
  * @api
  */
 MultiPolygon.prototype.clone = function() {
-  var multiPolygon = new MultiPolygon(null);
+  const multiPolygon = new MultiPolygon(null);
 
-  var len = this.endss_.length;
-  var newEndss = new Array(len);
-  for (var i = 0; i < len; ++i) {
+  const len = this.endss_.length;
+  const newEndss = new Array(len);
+  for (let i = 0; i < len; ++i) {
     newEndss[i] = this.endss_[i].slice();
   }
 
   multiPolygon.setFlatCoordinates(
-      this.layout, this.flatCoordinates.slice(), newEndss);
+    this.layout, this.flatCoordinates.slice(), newEndss);
   return multiPolygon;
 };
 
@@ -139,12 +139,12 @@ MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredD
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getssMaxSquaredDelta(
-        this.flatCoordinates, 0, this.endss_, this.stride, 0));
+      this.flatCoordinates, 0, this.endss_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
   return _ol_geom_flat_closest_.getssClosestPoint(
-      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
-      this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
+    this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
+    this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
 
 
@@ -153,7 +153,7 @@ MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredD
  */
 MultiPolygon.prototype.containsXY = function(x, y) {
   return _ol_geom_flat_contains_.linearRingssContainsXY(
-      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
+    this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
 
@@ -164,7 +164,7 @@ MultiPolygon.prototype.containsXY = function(x, y) {
  */
 MultiPolygon.prototype.getArea = function() {
   return _ol_geom_flat_area_.linearRingss(
-      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
+    this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 
 
@@ -183,17 +183,17 @@ MultiPolygon.prototype.getArea = function() {
  * @api
  */
 MultiPolygon.prototype.getCoordinates = function(opt_right) {
-  var flatCoordinates;
+  let flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     _ol_geom_flat_orient_.orientLinearRingss(
-        flatCoordinates, 0, this.endss_, this.stride, opt_right);
+      flatCoordinates, 0, this.endss_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
   }
 
   return _ol_geom_flat_inflate_.coordinatesss(
-      flatCoordinates, 0, this.endss_, this.stride);
+    flatCoordinates, 0, this.endss_, this.stride);
 };
 
 
@@ -210,11 +210,11 @@ MultiPolygon.prototype.getEndss = function() {
  */
 MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-    var flatCenters = _ol_geom_flat_center_.linearRingss(
-        this.flatCoordinates, 0, this.endss_, this.stride);
+    const flatCenters = _ol_geom_flat_center_.linearRingss(
+      this.flatCoordinates, 0, this.endss_, this.stride);
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
-        this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
-        flatCenters);
+      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
+      flatCenters);
     this.flatInteriorPointsRevision_ = this.getRevision();
   }
   return this.flatInteriorPoints_;
@@ -228,9 +228,9 @@ MultiPolygon.prototype.getFlatInteriorPoints = function() {
  * @api
  */
 MultiPolygon.prototype.getInteriorPoints = function() {
-  var interiorPoints = new MultiPoint(null);
+  const interiorPoints = new MultiPoint(null);
   interiorPoints.setFlatCoordinates(GeometryLayout.XYM,
-      this.getFlatInteriorPoints().slice());
+    this.getFlatInteriorPoints().slice());
   return interiorPoints;
 };
 
@@ -240,15 +240,15 @@ MultiPolygon.prototype.getInteriorPoints = function() {
  */
 MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
-    var flatCoordinates = this.flatCoordinates;
+    const flatCoordinates = this.flatCoordinates;
     if (_ol_geom_flat_orient_.linearRingssAreOriented(
-        flatCoordinates, 0, this.endss_, this.stride)) {
+      flatCoordinates, 0, this.endss_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
           _ol_geom_flat_orient_.orientLinearRingss(
-              this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
+            this.orientedFlatCoordinates_, 0, this.endss_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
   }
@@ -260,15 +260,15 @@ MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
  * @inheritDoc
  */
 MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
-  var simplifiedFlatCoordinates = [];
-  var simplifiedEndss = [];
+  const simplifiedFlatCoordinates = [];
+  const simplifiedEndss = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizess(
-      this.flatCoordinates, 0, this.endss_, this.stride,
-      Math.sqrt(squaredTolerance),
-      simplifiedFlatCoordinates, 0, simplifiedEndss);
-  var simplifiedMultiPolygon = new MultiPolygon(null);
+    this.flatCoordinates, 0, this.endss_, this.stride,
+    Math.sqrt(squaredTolerance),
+    simplifiedFlatCoordinates, 0, simplifiedEndss);
+  const simplifiedMultiPolygon = new MultiPolygon(null);
   simplifiedMultiPolygon.setFlatCoordinates(
-      GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEndss);
+    GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEndss);
   return simplifiedMultiPolygon;
 };
 
@@ -283,24 +283,24 @@ MultiPolygon.prototype.getPolygon = function(index) {
   if (index < 0 || this.endss_.length <= index) {
     return null;
   }
-  var offset;
+  let offset;
   if (index === 0) {
     offset = 0;
   } else {
-    var prevEnds = this.endss_[index - 1];
+    const prevEnds = this.endss_[index - 1];
     offset = prevEnds[prevEnds.length - 1];
   }
-  var ends = this.endss_[index].slice();
-  var end = ends[ends.length - 1];
+  const ends = this.endss_[index].slice();
+  const end = ends[ends.length - 1];
   if (offset !== 0) {
-    var i, ii;
+    let i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
       ends[i] -= offset;
     }
   }
-  var polygon = new Polygon(null);
+  const polygon = new Polygon(null);
   polygon.setFlatCoordinates(
-      this.layout, this.flatCoordinates.slice(offset, end), ends);
+    this.layout, this.flatCoordinates.slice(offset, end), ends);
   return polygon;
 };
 
@@ -311,23 +311,23 @@ MultiPolygon.prototype.getPolygon = function(index) {
  * @api
  */
 MultiPolygon.prototype.getPolygons = function() {
-  var layout = this.layout;
-  var flatCoordinates = this.flatCoordinates;
-  var endss = this.endss_;
-  var polygons = [];
-  var offset = 0;
-  var i, ii, j, jj;
+  const layout = this.layout;
+  const flatCoordinates = this.flatCoordinates;
+  const endss = this.endss_;
+  const polygons = [];
+  let offset = 0;
+  let i, ii, j, jj;
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    var ends = endss[i].slice();
-    var end = ends[ends.length - 1];
+    const ends = endss[i].slice();
+    const end = ends[ends.length - 1];
     if (offset !== 0) {
       for (j = 0, jj = ends.length; j < jj; ++j) {
         ends[j] -= offset;
       }
     }
-    var polygon = new Polygon(null);
+    const polygon = new Polygon(null);
     polygon.setFlatCoordinates(
-        layout, flatCoordinates.slice(offset, end), ends);
+      layout, flatCoordinates.slice(offset, end), ends);
     polygons.push(polygon);
     offset = end;
   }
@@ -350,7 +350,7 @@ MultiPolygon.prototype.getType = function() {
  */
 MultiPolygon.prototype.intersectsExtent = function(extent) {
   return _ol_geom_flat_intersectsextent_.linearRingss(
-      this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, extent);
+    this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, extent);
 };
 
 
@@ -369,12 +369,12 @@ MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    var endss = _ol_geom_flat_deflate_.coordinatesss(
-        this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
+    const endss = _ol_geom_flat_deflate_.coordinatesss(
+      this.flatCoordinates, 0, coordinates, this.stride, this.endss_);
     if (endss.length === 0) {
       this.flatCoordinates.length = 0;
     } else {
-      var lastEnds = endss[endss.length - 1];
+      const lastEnds = endss[endss.length - 1];
       this.flatCoordinates.length = lastEnds.length === 0 ?
         0 : lastEnds[lastEnds.length - 1];
     }
@@ -399,19 +399,17 @@ MultiPolygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, en
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
  */
 MultiPolygon.prototype.setPolygons = function(polygons) {
-  var layout = this.getLayout();
-  var flatCoordinates = [];
-  var endss = [];
-  var i, ii, ends;
-  for (i = 0, ii = polygons.length; i < ii; ++i) {
-    var polygon = polygons[i];
+  let layout = this.getLayout();
+  const flatCoordinates = [];
+  const endss = [];
+  for (let i = 0, ii = polygons.length; i < ii; ++i) {
+    const polygon = polygons[i];
     if (i === 0) {
       layout = polygon.getLayout();
     }
-    var offset = flatCoordinates.length;
-    ends = polygon.getEnds();
-    var j, jj;
-    for (j = 0, jj = ends.length; j < jj; ++j) {
+    const offset = flatCoordinates.length;
+    const ends = polygon.getEnds();
+    for (let j = 0, jj = ends.length; j < jj; ++j) {
       ends[j] += offset;
     }
     extend(flatCoordinates, polygon.getFlatCoordinates());
@@ -419,4 +417,5 @@ MultiPolygon.prototype.setPolygons = function(polygons) {
   }
   this.setFlatCoordinates(layout, flatCoordinates, endss);
 };
+
 export default MultiPolygon;

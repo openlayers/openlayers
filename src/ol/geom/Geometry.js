@@ -24,7 +24,7 @@ import _ol_transform_ from '../transform.js';
  * @extends {ol.Object}
  * @api
  */
-var Geometry = function() {
+const Geometry = function() {
 
   BaseObject.call(this);
 
@@ -97,7 +97,7 @@ Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDista
  * @api
  */
 Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
-  var closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
+  const closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
   this.closestPointXY(point[0], point[1], closestPoint, Infinity);
   return closestPoint;
 };
@@ -254,19 +254,19 @@ Geometry.prototype.translate = function(deltaX, deltaY) {};
  * @api
  */
 Geometry.prototype.transform = function(source, destination) {
-  var tmpTransform = this.tmpTransform_;
+  const tmpTransform = this.tmpTransform_;
   source = getProjection(source);
-  var transformFn = source.getUnits() == Units.TILE_PIXELS ?
+  const transformFn = source.getUnits() == Units.TILE_PIXELS ?
     function(inCoordinates, outCoordinates, stride) {
-      var pixelExtent = source.getExtent();
-      var projectedExtent = source.getWorldExtent();
-      var scale = getHeight(projectedExtent) / getHeight(pixelExtent);
+      const pixelExtent = source.getExtent();
+      const projectedExtent = source.getWorldExtent();
+      const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
       _ol_transform_.compose(tmpTransform,
-          projectedExtent[0], projectedExtent[3],
-          scale, -scale, 0,
-          0, 0);
+        projectedExtent[0], projectedExtent[3],
+        scale, -scale, 0,
+        0, 0);
       _ol_geom_flat_transform_.transform2D(inCoordinates, 0, inCoordinates.length, stride,
-          tmpTransform, outCoordinates);
+        tmpTransform, outCoordinates);
       return getTransform(source, destination)(inCoordinates, outCoordinates, stride);
     } :
     getTransform(source, destination);

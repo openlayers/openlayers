@@ -22,7 +22,7 @@ import VectorSource from '../source/Vector.js';
  * @extends {ol.source.Vector}
  * @api
  */
-var Cluster = function(options) {
+const Cluster = function(options) {
   VectorSource.call(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -54,9 +54,9 @@ var Cluster = function(options) {
    * @protected
    */
   this.geometryFunction = options.geometryFunction || function(feature) {
-    var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
+    const geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
     assert(geometry instanceof Point,
-        10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
+      10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
     return geometry;
   };
 
@@ -67,7 +67,7 @@ var Cluster = function(options) {
   this.source = options.source;
 
   this.source.on(EventType.CHANGE,
-      Cluster.prototype.refresh, this);
+    Cluster.prototype.refresh, this);
 };
 
 inherits(Cluster, VectorSource);
@@ -97,7 +97,7 @@ Cluster.prototype.getSource = function() {
  * @inheritDoc
  */
 Cluster.prototype.loadFeatures = function(extent, resolution,
-    projection) {
+  projection) {
   this.source.loadFeatures(extent, resolution, projection);
   if (resolution !== this.resolution) {
     this.clear();
@@ -139,27 +139,27 @@ Cluster.prototype.cluster = function() {
     return;
   }
   this.features.length = 0;
-  var extent = createEmpty();
-  var mapDistance = this.distance * this.resolution;
-  var features = this.source.getFeatures();
+  const extent = createEmpty();
+  const mapDistance = this.distance * this.resolution;
+  const features = this.source.getFeatures();
 
   /**
    * @type {!Object.<string, boolean>}
    */
-  var clustered = {};
+  const clustered = {};
 
-  for (var i = 0, ii = features.length; i < ii; i++) {
-    var feature = features[i];
+  for (let i = 0, ii = features.length; i < ii; i++) {
+    const feature = features[i];
     if (!(getUid(feature).toString() in clustered)) {
-      var geometry = this.geometryFunction(feature);
+      const geometry = this.geometryFunction(feature);
       if (geometry) {
-        var coordinates = geometry.getCoordinates();
+        const coordinates = geometry.getCoordinates();
         createOrUpdateFromCoordinate(coordinates, extent);
         buffer(extent, mapDistance, extent);
 
-        var neighbors = this.source.getFeaturesInExtent(extent);
+        let neighbors = this.source.getFeaturesInExtent(extent);
         neighbors = neighbors.filter(function(neighbor) {
-          var uid = getUid(neighbor).toString();
+          const uid = getUid(neighbor).toString();
           if (!(uid in clustered)) {
             clustered[uid] = true;
             return true;
@@ -180,9 +180,9 @@ Cluster.prototype.cluster = function() {
  * @protected
  */
 Cluster.prototype.createCluster = function(features) {
-  var centroid = [0, 0];
-  for (var i = features.length - 1; i >= 0; --i) {
-    var geometry = this.geometryFunction(features[i]);
+  const centroid = [0, 0];
+  for (let i = features.length - 1; i >= 0; --i) {
+    const geometry = this.geometryFunction(features[i]);
     if (geometry) {
       _ol_coordinate_.add(centroid, geometry.getCoordinates());
     } else {
@@ -191,7 +191,7 @@ Cluster.prototype.createCluster = function(features) {
   }
   _ol_coordinate_.scale(centroid, 1 / features.length);
 
-  var cluster = new Feature(new Point(centroid));
+  const cluster = new Feature(new Point(centroid));
   cluster.set('features', features);
   return cluster;
 };
