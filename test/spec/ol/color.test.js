@@ -123,7 +123,7 @@ describe('ol.color', function() {
     it('throws an error on invalid colors', function() {
       const invalidColors = ['tuesday', '#12345', '#1234567', 'rgb(255.0,0,0)'];
       let i, ii;
-      for (i = 0, ii < invalidColors.length; i < ii; ++i) {
+      for (i = 0, ii = invalidColors.length; i < ii; ++i) {
         expect(function() {
           fromString(invalidColors[i]);
         }).to.throwException();
