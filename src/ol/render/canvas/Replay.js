@@ -580,10 +580,11 @@ _ol_render_canvas_Replay_.prototype.replay_ = function(
   // balance between batch size and number of fill/stroke instructions.
   const batchSize =
       this.instructions != instructions || this.overlaps ? 0 : 200;
+  let /** @type {ol.Feature|ol.render.Feature} */ feature;
+  let x, y;
   while (i < ii) {
     const instruction = instructions[i];
     const type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    let /** @type {ol.Feature|ol.render.Feature} */ feature, x, y;
     switch (type) {
       case _ol_render_canvas_Instruction_.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
