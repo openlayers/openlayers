@@ -8,78 +8,78 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
-var image = new _ol_style_Circle_({
+var image = new CircleStyle({
   radius: 5,
   fill: null,
-  stroke: new _ol_style_Stroke_({color: 'red', width: 1})
+  stroke: new Stroke({color: 'red', width: 1})
 });
 
 var styles = {
-  'Point': new _ol_style_Style_({
+  'Point': new Style({
     image: image
   }),
-  'LineString': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'LineString': new Style({
+    stroke: new Stroke({
       color: 'green',
       width: 1
     })
   }),
-  'MultiLineString': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'MultiLineString': new Style({
+    stroke: new Stroke({
       color: 'green',
       width: 1
     })
   }),
-  'MultiPoint': new _ol_style_Style_({
+  'MultiPoint': new Style({
     image: image
   }),
-  'MultiPolygon': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'MultiPolygon': new Style({
+    stroke: new Stroke({
       color: 'yellow',
       width: 1
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(255, 255, 0, 0.1)'
     })
   }),
-  'Polygon': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'Polygon': new Style({
+    stroke: new Stroke({
       color: 'blue',
       lineDash: [4],
       width: 3
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   }),
-  'GeometryCollection': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'GeometryCollection': new Style({
+    stroke: new Stroke({
       color: 'magenta',
       width: 2
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'magenta'
     }),
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 10,
       fill: null,
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'magenta'
       })
     })
   }),
-  'Circle': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'Circle': new Style({
+    stroke: new Stroke({
       color: 'red',
       width: 2
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(255,0,0,0.2)'
     })
   })

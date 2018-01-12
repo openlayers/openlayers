@@ -1,8 +1,8 @@
 import {inherits} from '../../../../src/ol/index.js';
-import _ol_Tile_ from '../../../../src/ol/Tile.js';
+import Tile from '../../../../src/ol/Tile.js';
 import TileRange from '../../../../src/ol/TileRange.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
@@ -31,7 +31,7 @@ var MockTile = function(tileStates) {
   });
 
   for (var key in tileStates) {
-    this.tileCache.set(key, new _ol_Tile_(key.split('/'), tileStates[key]));
+    this.tileCache.set(key, new Tile(key.split('/'), tileStates[key]));
   }
 
 };
@@ -46,7 +46,7 @@ MockTile.prototype.getTile = function(z, x, y) {
   if (this.tileCache.containsKey(key)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(key));
   } else {
-    var tile = new _ol_Tile_(key, 0); // IDLE
+    var tile = new Tile(key, 0); // IDLE
     this.tileCache.set(key, tile);
     return tile;
   }
@@ -258,7 +258,7 @@ describe('ol.source.Tile', function() {
 
     it('works with wrapX and custom projection without extent', function() {
       var tileSource = new TileSource({
-        projection: new _ol_proj_Projection_({
+        projection: new Projection({
           code: 'foo',
           global: true,
           units: 'm'
@@ -279,7 +279,7 @@ describe('ol.source.Tile', function() {
       });
       // check the loaded tile is there
       var tile = source.getTile(1, 0, 0);
-      expect(tile).to.be.a(_ol_Tile_);
+      expect(tile).to.be.a(Tile);
       // check tile cache is filled
       expect(source.tileCache.getCount()).to.eql(1);
       // refresh the source
@@ -312,17 +312,17 @@ describe('MockTile', function() {
 
       // check a loaded tile
       tile = source.getTile(0, 0, 0);
-      expect(tile).to.be.a(_ol_Tile_);
+      expect(tile).to.be.a(Tile);
       expect(tile.state).to.be(2); // LOADED
 
       // check a tile that is not loaded
       tile = source.getTile(1, 0, -1);
-      expect(tile).to.be.a(_ol_Tile_);
+      expect(tile).to.be.a(Tile);
       expect(tile.state).to.be(0); // IDLE
 
       // check another loaded tile
       tile = source.getTile(1, 0, 0);
-      expect(tile).to.be.a(_ol_Tile_);
+      expect(tile).to.be.a(Tile);
       expect(tile.state).to.be(2); // LOADED
 
     });

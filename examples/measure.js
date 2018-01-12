@@ -10,10 +10,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var raster = new TileLayer({
@@ -24,17 +24,17 @@ var source = new VectorSource();
 
 var vector = new VectorLayer({
   source: source,
-  style: new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  style: new Style({
+    fill: new Fill({
       color: 'rgba(255, 255, 255, 0.2)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#ffcc33',
       width: 2
     }),
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 7,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: '#ffcc33'
       })
     })
@@ -180,21 +180,21 @@ function addInteraction() {
   draw = new Draw({
     source: source,
     type: type,
-    style: new _ol_style_Style_({
-      fill: new _ol_style_Fill_({
+    style: new Style({
+      fill: new Fill({
         color: 'rgba(255, 255, 255, 0.2)'
       }),
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(0, 0, 0, 0.5)',
         lineDash: [10, 10],
         width: 2
       }),
-      image: new _ol_style_Circle_({
+      image: new CircleStyle({
         radius: 5,
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(0, 0, 0, 0.7)'
         }),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(255, 255, 255, 0.2)'
         })
       })

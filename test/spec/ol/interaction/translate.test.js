@@ -1,4 +1,4 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
@@ -7,7 +7,7 @@ import Point from '../../../../src/ol/geom/Point.js';
 import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
@@ -67,7 +67,7 @@ describe('ol.interaction.Translate', function() {
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
     var event = new MapBrowserPointerEvent(type, map,
-        new _ol_pointer_PointerEvent_(type, {
+        new PointerEvent(type, {
           clientX: position.left + x + width / 2,
           clientY: position.top + y + height / 2,
           shiftKey: shiftKey
@@ -159,7 +159,7 @@ describe('ol.interaction.Translate', function() {
 
     beforeEach(function() {
       translate = new _ol_interaction_Translate_({
-        features: new _ol_Collection_([features[0]])
+        features: new Collection([features[0]])
       });
       map.addInteraction(translate);
     });

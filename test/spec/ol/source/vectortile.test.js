@@ -3,7 +3,7 @@ import View from '../../../../src/ol/View.js';
 import VectorImageTile from '../../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../../src/ol/VectorTile.js';
 import MVT from '../../../../src/ol/format/MVT.js';
-import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -111,7 +111,7 @@ describe('ol.source.VectorTile', function() {
 
       map = new Map({
         layers: [
-          new _ol_layer_VectorTile_({
+          new VectorTileLayer({
             extent: extent,
             source: source
           })

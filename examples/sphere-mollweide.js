@@ -3,7 +3,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import Projection from '../src/ol/proj/Projection.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import {register} from '../src/ol/proj/proj4.js';
 import proj4 from 'proj4';
@@ -15,7 +15,7 @@ register(proj4);
 
 // Configure the Sphere Mollweide projection object with an extent,
 // and a world extent. These are required for the Graticule.
-var sphereMollweideProjection = new _ol_proj_Projection_({
+var sphereMollweideProjection = new Projection({
   code: 'ESRI:53009',
   extent: [-9009954.605703328, -9009954.605703328,
     9009954.605703328, 9009954.605703328],

@@ -12,7 +12,7 @@ import {asString} from '../color.js';
  * @param {olx.style.FillOptions=} opt_options Options.
  * @api
  */
-var _ol_style_Fill_ = function(opt_options) {
+var Fill = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -35,9 +35,9 @@ var _ol_style_Fill_ = function(opt_options) {
  * @return {ol.style.Fill} The cloned style.
  * @api
  */
-_ol_style_Fill_.prototype.clone = function() {
+Fill.prototype.clone = function() {
   var color = this.getColor();
-  return new _ol_style_Fill_({
+  return new Fill({
     color: (color && color.slice) ? color.slice() : color || undefined
   });
 };
@@ -48,7 +48,7 @@ _ol_style_Fill_.prototype.clone = function() {
  * @return {ol.Color|ol.ColorLike} Color.
  * @api
  */
-_ol_style_Fill_.prototype.getColor = function() {
+Fill.prototype.getColor = function() {
   return this.color_;
 };
 
@@ -59,7 +59,7 @@ _ol_style_Fill_.prototype.getColor = function() {
  * @param {ol.Color|ol.ColorLike} color Color.
  * @api
  */
-_ol_style_Fill_.prototype.setColor = function(color) {
+Fill.prototype.setColor = function(color) {
   this.color_ = color;
   this.checksum_ = undefined;
 };
@@ -68,7 +68,7 @@ _ol_style_Fill_.prototype.setColor = function(color) {
 /**
  * @return {string} The checksum.
  */
-_ol_style_Fill_.prototype.getChecksum = function() {
+Fill.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
     if (
       this.color_ instanceof CanvasPattern ||
@@ -82,4 +82,4 @@ _ol_style_Fill_.prototype.getChecksum = function() {
 
   return this.checksum_;
 };
-export default _ol_style_Fill_;
+export default Fill;

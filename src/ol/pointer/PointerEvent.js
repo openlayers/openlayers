@@ -47,7 +47,7 @@ import Event from '../events/Event.js';
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
-var _ol_pointer_PointerEvent_ = function(type, originalEvent, opt_eventDict) {
+var PointerEvent = function(type, originalEvent, opt_eventDict) {
   Event.call(this, type);
 
   /**
@@ -192,7 +192,7 @@ var _ol_pointer_PointerEvent_ = function(type, originalEvent, opt_eventDict) {
   }
 };
 
-inherits(_ol_pointer_PointerEvent_, Event);
+inherits(PointerEvent, Event);
 
 
 /**
@@ -200,7 +200,7 @@ inherits(_ol_pointer_PointerEvent_, Event);
  * @param {Object.<string, ?>} eventDict The event dictionary.
  * @return {number} Button indicator.
  */
-_ol_pointer_PointerEvent_.prototype.getButtons_ = function(eventDict) {
+PointerEvent.prototype.getButtons_ = function(eventDict) {
   // According to the w3c spec,
   // http://www.w3.org/TR/DOM-Level-3-Events/#events-MouseEvent-button
   // MouseEvent.button == 0 can mean either no mouse button depressed, or the
@@ -223,7 +223,7 @@ _ol_pointer_PointerEvent_.prototype.getButtons_ = function(eventDict) {
   //
   // This is fixed with DOM Level 4's use of buttons
   var buttons;
-  if (eventDict.buttons || _ol_pointer_PointerEvent_.HAS_BUTTONS) {
+  if (eventDict.buttons || PointerEvent.HAS_BUTTONS) {
     buttons = eventDict.buttons;
   } else {
     switch (eventDict.which) {
@@ -243,7 +243,7 @@ _ol_pointer_PointerEvent_.prototype.getButtons_ = function(eventDict) {
  * @param {number} buttons Button indicator.
  * @return {number} The pressure.
  */
-_ol_pointer_PointerEvent_.prototype.getPressure_ = function(eventDict, buttons) {
+PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
   // Spec requires that pointers without pressure specified use 0.5 for down
   // state and 0 for up state.
   var pressure = 0;
@@ -260,7 +260,7 @@ _ol_pointer_PointerEvent_.prototype.getPressure_ = function(eventDict, buttons) 
  * Is the `buttons` property supported?
  * @type {boolean}
  */
-_ol_pointer_PointerEvent_.HAS_BUTTONS = false;
+PointerEvent.HAS_BUTTONS = false;
 
 
 /**
@@ -269,9 +269,9 @@ _ol_pointer_PointerEvent_.HAS_BUTTONS = false;
 (function() {
   try {
     var ev = new MouseEvent('click', {buttons: 1});
-    _ol_pointer_PointerEvent_.HAS_BUTTONS = ev.buttons === 1;
+    PointerEvent.HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
     // pass
   }
 })();
-export default _ol_pointer_PointerEvent_;
+export default PointerEvent;

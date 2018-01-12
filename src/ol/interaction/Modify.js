@@ -2,7 +2,7 @@
  * @module ol/interaction/Modify
  */
 import {getUid, inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import CollectionEventType from '../CollectionEventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
@@ -16,13 +16,13 @@ import _ol_events_condition_ from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
-import _ol_interaction_ModifyEventType_ from '../interaction/ModifyEventType.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import ModifyEventType from '../interaction/ModifyEventType.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
-import _ol_style_Style_ from '../style/Style.js';
+import Style from '../style/Style.js';
 
 /**
  * @classdesc
@@ -43,13 +43,13 @@ import _ol_style_Style_ from '../style/Style.js';
  * @fires ol.interaction.Modify.Event
  * @api
  */
-var _ol_interaction_Modify_ = function(options) {
+var Modify = function(options) {
 
-  _ol_interaction_Pointer_.call(this, {
-    handleDownEvent: _ol_interaction_Modify_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_Modify_.handleDragEvent_,
-    handleEvent: _ol_interaction_Modify_.handleEvent,
-    handleUpEvent: _ol_interaction_Modify_.handleUpEvent_
+  PointerInteraction.call(this, {
+    handleDownEvent: Modify.handleDownEvent_,
+    handleDragEvent: Modify.handleDragEvent_,
+    handleEvent: Modify.handleEvent,
+    handleUpEvent: Modify.handleUpEvent_
   });
 
   /**
@@ -163,7 +163,7 @@ var _ol_interaction_Modify_ = function(options) {
       wrapX: !!options.wrapX
     }),
     style: options.style ? options.style :
-      _ol_interaction_Modify_.getDefaultStyleFunction(),
+      Modify.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -195,7 +195,7 @@ var _ol_interaction_Modify_ = function(options) {
   var features;
   if (options.source) {
     this.source_ = options.source;
-    features = new _ol_Collection_(this.source_.getFeatures());
+    features = new Collection(this.source_.getFeatures());
     _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
         this.handleSourceAdd_, this);
     _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,
@@ -227,27 +227,27 @@ var _ol_interaction_Modify_ = function(options) {
 
 };
 
-inherits(_ol_interaction_Modify_, _ol_interaction_Pointer_);
+inherits(Modify, PointerInteraction);
 
 
 /**
  * @define {number} The segment index assigned to a circle's center when
  * breaking up a cicrle into ModifySegmentDataType segments.
  */
-_ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX = 0;
+Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX = 0;
 
 /**
  * @define {number} The segment index assigned to a circle's circumference when
  * breaking up a circle into ModifySegmentDataType segments.
  */
-_ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX = 1;
+Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX = 1;
 
 
 /**
  * @param {ol.Feature} feature Feature.
  * @private
  */
-_ol_interaction_Modify_.prototype.addFeature_ = function(feature) {
+Modify.prototype.addFeature_ = function(feature) {
   var geometry = feature.getGeometry();
   if (geometry && geometry.getType() in this.SEGMENT_WRITERS_) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
@@ -265,11 +265,11 @@ _ol_interaction_Modify_.prototype.addFeature_ = function(feature) {
  * @param {ol.MapBrowserPointerEvent} evt Map browser event
  * @private
  */
-_ol_interaction_Modify_.prototype.willModifyFeatures_ = function(evt) {
+Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
-    this.dispatchEvent(new _ol_interaction_Modify_.Event(
-        _ol_interaction_ModifyEventType_.MODIFYSTART, this.features_, evt));
+    this.dispatchEvent(new Modify.Event(
+        ModifyEventType.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -278,7 +278,7 @@ _ol_interaction_Modify_.prototype.willModifyFeatures_ = function(evt) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-_ol_interaction_Modify_.prototype.removeFeature_ = function(feature) {
+Modify.prototype.removeFeature_ = function(feature) {
   this.removeFeatureSegmentData_(feature);
   // Remove the vertex feature if the collection of canditate features
   // is empty.
@@ -295,7 +295,7 @@ _ol_interaction_Modify_.prototype.removeFeature_ = function(feature) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-_ol_interaction_Modify_.prototype.removeFeatureSegmentData_ = function(feature) {
+Modify.prototype.removeFeatureSegmentData_ = function(feature) {
   var rBush = this.rBush_;
   var /** @type {Array.<ol.ModifySegmentDataType>} */ nodesToRemove = [];
   rBush.forEach(
@@ -316,21 +316,21 @@ _ol_interaction_Modify_.prototype.removeFeatureSegmentData_ = function(feature) 
 /**
  * @inheritDoc
  */
-_ol_interaction_Modify_.prototype.setActive = function(active) {
+Modify.prototype.setActive = function(active) {
   if (this.vertexFeature_ && !active) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  _ol_interaction_Pointer_.prototype.setActive.call(this, active);
+  PointerInteraction.prototype.setActive.call(this, active);
 };
 
 
 /**
  * @inheritDoc
  */
-_ol_interaction_Modify_.prototype.setMap = function(map) {
+Modify.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
 };
 
 
@@ -338,7 +338,7 @@ _ol_interaction_Modify_.prototype.setMap = function(map) {
  * @param {ol.source.Vector.Event} event Event.
  * @private
  */
-_ol_interaction_Modify_.prototype.handleSourceAdd_ = function(event) {
+Modify.prototype.handleSourceAdd_ = function(event) {
   if (event.feature) {
     this.features_.push(event.feature);
   }
@@ -349,7 +349,7 @@ _ol_interaction_Modify_.prototype.handleSourceAdd_ = function(event) {
  * @param {ol.source.Vector.Event} event Event.
  * @private
  */
-_ol_interaction_Modify_.prototype.handleSourceRemove_ = function(event) {
+Modify.prototype.handleSourceRemove_ = function(event) {
   if (event.feature) {
     this.features_.remove(event.feature);
   }
@@ -360,7 +360,7 @@ _ol_interaction_Modify_.prototype.handleSourceRemove_ = function(event) {
  * @param {ol.Collection.Event} evt Event.
  * @private
  */
-_ol_interaction_Modify_.prototype.handleFeatureAdd_ = function(evt) {
+Modify.prototype.handleFeatureAdd_ = function(evt) {
   this.addFeature_(/** @type {ol.Feature} */ (evt.element));
 };
 
@@ -369,7 +369,7 @@ _ol_interaction_Modify_.prototype.handleFeatureAdd_ = function(evt) {
  * @param {ol.events.Event} evt Event.
  * @private
  */
-_ol_interaction_Modify_.prototype.handleFeatureChange_ = function(evt) {
+Modify.prototype.handleFeatureChange_ = function(evt) {
   if (!this.changingFeature_) {
     var feature = /** @type {ol.Feature} */ (evt.target);
     this.removeFeature_(feature);
@@ -382,7 +382,7 @@ _ol_interaction_Modify_.prototype.handleFeatureChange_ = function(evt) {
  * @param {ol.Collection.Event} evt Event.
  * @private
  */
-_ol_interaction_Modify_.prototype.handleFeatureRemove_ = function(evt) {
+Modify.prototype.handleFeatureRemove_ = function(evt) {
   var feature = /** @type {ol.Feature} */ (evt.element);
   this.removeFeature_(feature);
 };
@@ -393,7 +393,7 @@ _ol_interaction_Modify_.prototype.handleFeatureRemove_ = function(evt) {
  * @param {ol.geom.Point} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writePointGeometry_ = function(feature, geometry) {
+Modify.prototype.writePointGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var segmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
@@ -409,7 +409,7 @@ _ol_interaction_Modify_.prototype.writePointGeometry_ = function(feature, geomet
  * @param {ol.geom.MultiPoint} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
+Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   var points = geometry.getCoordinates();
   var coordinates, i, ii, segmentData;
   for (i = 0, ii = points.length; i < ii; ++i) {
@@ -431,7 +431,7 @@ _ol_interaction_Modify_.prototype.writeMultiPointGeometry_ = function(feature, g
  * @param {ol.geom.LineString} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writeLineStringGeometry_ = function(feature, geometry) {
+Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -452,7 +452,7 @@ _ol_interaction_Modify_.prototype.writeLineStringGeometry_ = function(feature, g
  * @param {ol.geom.MultiLineString} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
+Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
   var lines = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = lines.length; j < jj; ++j) {
@@ -477,7 +477,7 @@ _ol_interaction_Modify_.prototype.writeMultiLineStringGeometry_ = function(featu
  * @param {ol.geom.Polygon} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writePolygonGeometry_ = function(feature, geometry) {
+Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
   var rings = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = rings.length; j < jj; ++j) {
@@ -502,7 +502,7 @@ _ol_interaction_Modify_.prototype.writePolygonGeometry_ = function(feature, geom
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
+Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
   var polygons = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
   for (k = 0, kk = polygons.length; k < kk; ++k) {
@@ -536,18 +536,18 @@ _ol_interaction_Modify_.prototype.writeMultiPolygonGeometry_ = function(feature,
  * @param {ol.geom.Circle} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writeCircleGeometry_ = function(feature, geometry) {
+Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCenter();
   var centerSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    index: _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX,
+    index: Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX,
     segment: [coordinates, coordinates]
   });
   var circumferenceSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    index: _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX,
+    index: Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX,
     segment: [coordinates, coordinates]
   });
   var featureSegments = [centerSegmentData, circumferenceSegmentData];
@@ -562,7 +562,7 @@ _ol_interaction_Modify_.prototype.writeCircleGeometry_ = function(feature, geome
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @private
  */
-_ol_interaction_Modify_.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
+Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
   var i, geometries = geometry.getGeometriesArray();
   for (i = 0; i < geometries.length; ++i) {
     this.SEGMENT_WRITERS_[geometries[i].getType()].call(
@@ -576,7 +576,7 @@ _ol_interaction_Modify_.prototype.writeGeometryCollectionGeometry_ = function(fe
  * @return {ol.Feature} Vertex feature.
  * @private
  */
-_ol_interaction_Modify_.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
+Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
     vertexFeature = new Feature(new Point(coordinates));
@@ -596,7 +596,7 @@ _ol_interaction_Modify_.prototype.createOrUpdateVertexFeature_ = function(coordi
  * @return {number} The difference in indexes.
  * @private
  */
-_ol_interaction_Modify_.compareIndexes_ = function(a, b) {
+Modify.compareIndexes_ = function(a, b) {
   return a.index - b.index;
 };
 
@@ -607,7 +607,7 @@ _ol_interaction_Modify_.compareIndexes_ = function(a, b) {
  * @this {ol.interaction.Modify}
  * @private
  */
-_ol_interaction_Modify_.handleDownEvent_ = function(evt) {
+Modify.handleDownEvent_ = function(evt) {
   if (!this.condition_(evt)) {
     return false;
   }
@@ -623,7 +623,7 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
     var vertexExtent = boundingExtent([vertex]);
     var segmentDataMatches = this.rBush_.getInExtent(vertexExtent);
     var componentSegments = {};
-    segmentDataMatches.sort(_ol_interaction_Modify_.compareIndexes_);
+    segmentDataMatches.sort(Modify.compareIndexes_);
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
@@ -636,9 +636,9 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
         componentSegments[uid] = new Array(2);
       }
       if (segmentDataMatch.geometry.getType() === GeometryType.CIRCLE &&
-      segmentDataMatch.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      segmentDataMatch.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
-        var closestVertex = _ol_interaction_Modify_.closestOnSegmentData_(pixelCoordinate, segmentDataMatch);
+        var closestVertex = Modify.closestOnSegmentData_(pixelCoordinate, segmentDataMatch);
         if (_ol_coordinate_.equals(closestVertex, vertex) && !componentSegments[uid][0]) {
           this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
@@ -683,7 +683,7 @@ _ol_interaction_Modify_.handleDownEvent_ = function(evt) {
  * @this {ol.interaction.Modify}
  * @private
  */
-_ol_interaction_Modify_.handleDragEvent_ = function(evt) {
+Modify.handleDragEvent_ = function(evt) {
   this.ignoreNextSingleClick_ = false;
   this.willModifyFeatures_(evt);
 
@@ -733,7 +733,7 @@ _ol_interaction_Modify_.handleDragEvent_ = function(evt) {
         break;
       case GeometryType.CIRCLE:
         segment[0] = segment[1] = vertex;
-        if (segmentData.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX) {
+        if (segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX) {
           this.changingFeature_ = true;
           geometry.setCenter(vertex);
           this.changingFeature_ = false;
@@ -761,7 +761,7 @@ _ol_interaction_Modify_.handleDragEvent_ = function(evt) {
  * @this {ol.interaction.Modify}
  * @private
  */
-_ol_interaction_Modify_.handleUpEvent_ = function(evt) {
+Modify.handleUpEvent_ = function(evt) {
   var segmentData;
   var geometry;
   for (var i = this.dragSegments_.length - 1; i >= 0; --i) {
@@ -782,8 +782,8 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
     }
   }
   if (this.modified_) {
-    this.dispatchEvent(new _ol_interaction_Modify_.Event(
-        _ol_interaction_ModifyEventType_.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new Modify.Event(
+        ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -798,7 +798,7 @@ _ol_interaction_Modify_.handleUpEvent_ = function(evt) {
  * @this {ol.interaction.Modify}
  * @api
  */
-_ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
+Modify.handleEvent = function(mapBrowserEvent) {
   if (!(mapBrowserEvent instanceof MapBrowserPointerEvent)) {
     return true;
   }
@@ -823,7 +823,7 @@ _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
     this.ignoreNextSingleClick_ = false;
   }
 
-  return _ol_interaction_Pointer_.handleEvent.call(this, mapBrowserEvent) &&
+  return PointerInteraction.handleEvent.call(this, mapBrowserEvent) &&
       !handled;
 };
 
@@ -832,7 +832,7 @@ _ol_interaction_Modify_.handleEvent = function(mapBrowserEvent) {
  * @param {ol.MapBrowserEvent} evt Event.
  * @private
  */
-_ol_interaction_Modify_.prototype.handlePointerMove_ = function(evt) {
+Modify.prototype.handlePointerMove_ = function(evt) {
   this.lastPixel_ = evt.pixel;
   this.handlePointerAtPixel_(evt.pixel, evt.map);
 };
@@ -843,11 +843,11 @@ _ol_interaction_Modify_.prototype.handlePointerMove_ = function(evt) {
  * @param {ol.PluggableMap} map Map.
  * @private
  */
-_ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
+Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return _ol_interaction_Modify_.pointDistanceToSegmentDataSquared_(pixelCoordinate, a) -
-        _ol_interaction_Modify_.pointDistanceToSegmentDataSquared_(pixelCoordinate, b);
+    return Modify.pointDistanceToSegmentDataSquared_(pixelCoordinate, a) -
+        Modify.pointDistanceToSegmentDataSquared_(pixelCoordinate, b);
   };
 
   var box = buffer(createOrUpdateFromCoordinate(pixelCoordinate),
@@ -859,14 +859,14 @@ _ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
     nodes.sort(sortByDistance);
     var node = nodes[0];
     var closestSegment = node.segment;
-    var vertex = _ol_interaction_Modify_.closestOnSegmentData_(pixelCoordinate, node);
+    var vertex = Modify.closestOnSegmentData_(pixelCoordinate, node);
     var vertexPixel = map.getPixelFromCoordinate(vertex);
     var dist = _ol_coordinate_.distance(pixel, vertexPixel);
     if (dist <= this.pixelTolerance_) {
       var vertexSegments = {};
 
       if (node.geometry.getType() === GeometryType.CIRCLE &&
-      node.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      node.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
         this.snappedToVertex_ = true;
         this.createOrUpdateVertexFeature_(vertex);
@@ -917,13 +917,13 @@ _ol_interaction_Modify_.prototype.handlePointerAtPixel_ = function(pixel, map) {
  *        segment we are calculating the distance to.
  * @return {number} The square of the distance between a point and a line segment.
  */
-_ol_interaction_Modify_.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentData) {
+Modify.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentData) {
   var geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE) {
     var circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
 
-    if (segmentData.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+    if (segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
       var distanceToCenterSquared =
             _ol_coordinate_.squaredDistance(circleGeometry.getCenter(), pointCoordinates);
       var distanceToCircumference =
@@ -943,11 +943,11 @@ _ol_interaction_Modify_.pointDistanceToSegmentDataSquared_ = function(pointCoord
  *        segment which should contain the closest point.
  * @return {ol.Coordinate} The point closest to the specified line segment.
  */
-_ol_interaction_Modify_.closestOnSegmentData_ = function(pointCoordinates, segmentData) {
+Modify.closestOnSegmentData_ = function(pointCoordinates, segmentData) {
   var geometry = segmentData.geometry;
 
   if (geometry.getType() === GeometryType.CIRCLE &&
-  segmentData.index === _ol_interaction_Modify_.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+  segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
   return _ol_coordinate_.closestOnSegment(pointCoordinates, segmentData.segment);
@@ -959,7 +959,7 @@ _ol_interaction_Modify_.closestOnSegmentData_ = function(pointCoordinates, segme
  * @param {ol.Coordinate} vertex Vertex.
  * @private
  */
-_ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) {
+Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   var segment = segmentData.segment;
   var feature = segmentData.feature;
   var geometry = segmentData.geometry;
@@ -1025,13 +1025,13 @@ _ol_interaction_Modify_.prototype.insertVertex_ = function(segmentData, vertex) 
  * @return {boolean} True when a vertex was removed.
  * @api
  */
-_ol_interaction_Modify_.prototype.removePoint = function() {
+Modify.prototype.removePoint = function() {
   if (this.lastPointerEvent_ && this.lastPointerEvent_.type != MapBrowserEventType.POINTERDRAG) {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     this.removeVertex_();
-    this.dispatchEvent(new _ol_interaction_Modify_.Event(
-        _ol_interaction_ModifyEventType_.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new Modify.Event(
+        ModifyEventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }
@@ -1043,7 +1043,7 @@ _ol_interaction_Modify_.prototype.removePoint = function() {
  * @return {boolean} True when a vertex was removed.
  * @private
  */
-_ol_interaction_Modify_.prototype.removeVertex_ = function() {
+Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
   var deleted = false;
@@ -1162,7 +1162,7 @@ _ol_interaction_Modify_.prototype.removeVertex_ = function() {
  * @param {Array} coordinates Coordinates.
  * @private
  */
-_ol_interaction_Modify_.prototype.setGeometryCoordinates_ = function(geometry, coordinates) {
+Modify.prototype.setGeometryCoordinates_ = function(geometry, coordinates) {
   this.changingFeature_ = true;
   geometry.setCoordinates(coordinates);
   this.changingFeature_ = false;
@@ -1176,7 +1176,7 @@ _ol_interaction_Modify_.prototype.setGeometryCoordinates_ = function(geometry, c
  * @param {number} delta Delta (1 or -1).
  * @private
  */
-_ol_interaction_Modify_.prototype.updateSegmentIndices_ = function(
+Modify.prototype.updateSegmentIndices_ = function(
     geometry, index, depth, delta) {
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
@@ -1192,8 +1192,8 @@ _ol_interaction_Modify_.prototype.updateSegmentIndices_ = function(
 /**
  * @return {ol.StyleFunction} Styles.
  */
-_ol_interaction_Modify_.getDefaultStyleFunction = function() {
-  var style = _ol_style_Style_.createDefaultEditing();
+Modify.getDefaultStyleFunction = function() {
+  var style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
   };
@@ -1213,7 +1213,7 @@ _ol_interaction_Modify_.getDefaultStyleFunction = function() {
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
  */
-_ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent) {
+Modify.Event = function(type, features, mapBrowserPointerEvent) {
 
   Event.call(this, type);
 
@@ -1231,5 +1231,5 @@ _ol_interaction_Modify_.Event = function(type, features, mapBrowserPointerEvent)
    */
   this.mapBrowserEvent = mapBrowserPointerEvent;
 };
-inherits(_ol_interaction_Modify_.Event, Event);
-export default _ol_interaction_Modify_;
+inherits(Modify.Event, Event);
+export default Modify;

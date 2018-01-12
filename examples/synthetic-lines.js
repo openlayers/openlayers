@@ -4,8 +4,8 @@ import View from '../src/ol/View.js';
 import LineString from '../src/ol/geom/LineString.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var count = 10000;
@@ -41,8 +41,8 @@ var vector = new VectorLayer({
     features: features,
     wrapX: false
   }),
-  style: new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  style: new Style({
+    stroke: new Stroke({
       color: '#666666',
       width: 1
     })

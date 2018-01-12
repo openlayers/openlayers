@@ -1,7 +1,7 @@
 import _ol_Image_ from '../../../../src/ol/Image.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
-import _ol_layer_Layer_ from '../../../../src/ol/layer/Layer.js';
+import Layer from '../../../../src/ol/layer/Layer.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
 import LayerRenderer from '../../../../src/ol/renderer/Layer.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
@@ -13,7 +13,7 @@ describe('ol.renderer.Layer', function() {
   var eventType = 'change';
 
   beforeEach(function() {
-    var layer = new _ol_layer_Layer_({});
+    var layer = new Layer({});
     renderer = new LayerRenderer(layer);
   });
 

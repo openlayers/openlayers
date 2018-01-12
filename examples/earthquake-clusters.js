@@ -3,35 +3,35 @@ import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import KML from '../src/ol/format/KML.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Cluster from '../src/ol/source/Cluster.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
 
-var earthquakeFill = new _ol_style_Fill_({
+var earthquakeFill = new Fill({
   color: 'rgba(255, 153, 0, 0.8)'
 });
-var earthquakeStroke = new _ol_style_Stroke_({
+var earthquakeStroke = new Stroke({
   color: 'rgba(255, 204, 0, 0.2)',
   width: 1
 });
-var textFill = new _ol_style_Fill_({
+var textFill = new Fill({
   color: '#fff'
 });
-var textStroke = new _ol_style_Stroke_({
+var textStroke = new Stroke({
   color: 'rgba(0, 0, 0, 0.6)',
   width: 3
 });
-var invisibleFill = new _ol_style_Fill_({
+var invisibleFill = new Fill({
   color: 'rgba(255, 255, 255, 0.01)'
 });
 
@@ -43,9 +43,9 @@ function createEarthquakeStyle(feature) {
   var magnitude = parseFloat(name.substr(2));
   var radius = 5 + 20 * (magnitude - 5);
 
-  return new _ol_style_Style_({
+  return new Style({
     geometry: feature.getGeometry(),
-    image: new _ol_style_RegularShape_({
+    image: new RegularShape({
       radius1: radius,
       radius2: 3,
       points: 5,
@@ -85,14 +85,14 @@ function styleFunction(feature, resolution) {
   var style;
   var size = feature.get('features').length;
   if (size > 1) {
-    style = new _ol_style_Style_({
-      image: new _ol_style_Circle_({
+    style = new Style({
+      image: new CircleStyle({
         radius: feature.get('radius'),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
         })
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         text: size.toString(),
         fill: textFill,
         stroke: textStroke
@@ -106,8 +106,8 @@ function styleFunction(feature, resolution) {
 }
 
 function selectStyleFunction(feature) {
-  var styles = [new _ol_style_Style_({
-    image: new _ol_style_Circle_({
+  var styles = [new Style({
+    image: new CircleStyle({
       radius: feature.get('radius'),
       fill: invisibleFill
     })
@@ -142,7 +142,7 @@ var raster = new TileLayer({
 
 var map = new Map({
   layers: [raster, vector],
-  interactions: defaultInteractions().extend([new _ol_interaction_Select_({
+  interactions: defaultInteractions().extend([new Select({
     condition: function(evt) {
       return  evt.type == 'pointermove' ||
           evt.type == 'singleclick';

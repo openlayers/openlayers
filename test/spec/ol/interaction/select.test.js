@@ -1,4 +1,4 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserEventType from '../../../../src/ol/MapBrowserEventType.js';
@@ -6,9 +6,9 @@ import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
-import _ol_interaction_Select_ from '../../../../src/ol/interaction/Select.js';
+import Select from '../../../../src/ol/interaction/Select.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
@@ -92,7 +92,7 @@ describe('ol.interaction.Select', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new _ol_pointer_PointerEvent_(type, {
+    var event = new PointerEvent(type, {
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
@@ -103,16 +103,16 @@ describe('ol.interaction.Select', function() {
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var select = new _ol_interaction_Select_();
-      expect(select).to.be.a(_ol_interaction_Select_);
+      var select = new Select();
+      expect(select).to.be.a(Select);
       expect(select).to.be.a(Interaction);
     });
 
     describe('user-provided collection', function() {
 
       it('uses the user-provided collection', function() {
-        var features = new _ol_Collection_();
-        var select = new _ol_interaction_Select_({features: features});
+        var features = new Collection();
+        var select = new Select({features: features});
         expect(select.getFeatures()).to.be(features);
       });
 
@@ -124,7 +124,7 @@ describe('ol.interaction.Select', function() {
     var select;
 
     beforeEach(function() {
-      select = new _ol_interaction_Select_();
+      select = new Select();
       map.addInteraction(select);
     });
 
@@ -190,7 +190,7 @@ describe('ol.interaction.Select', function() {
     var select;
 
     beforeEach(function() {
-      select = new _ol_interaction_Select_({
+      select = new Select({
         multi: true
       });
       map.addInteraction(select);
@@ -239,7 +239,7 @@ describe('ol.interaction.Select', function() {
     var select;
 
     beforeEach(function() {
-      select = new _ol_interaction_Select_({
+      select = new Select({
         multi: true
       });
       map.addInteraction(select);
@@ -272,7 +272,7 @@ describe('ol.interaction.Select', function() {
     describe('with multi set to true', function() {
 
       it('only selects features that pass the filter', function() {
-        var select = new _ol_interaction_Select_({
+        var select = new Select({
           multi: true,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -289,7 +289,7 @@ describe('ol.interaction.Select', function() {
 
       it('only selects features that pass the filter ' +
          'using shift single-click', function() {
-        var select = new _ol_interaction_Select_({
+        var select = new Select({
           multi: true,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -309,7 +309,7 @@ describe('ol.interaction.Select', function() {
     describe('with multi set to false', function() {
 
       it('only selects the first feature that passes the filter', function() {
-        var select = new _ol_interaction_Select_({
+        var select = new Select({
           multi: false,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -324,7 +324,7 @@ describe('ol.interaction.Select', function() {
 
       it('only selects the first feature that passes the filter ' +
          'using shift single-click', function() {
-        var select = new _ol_interaction_Select_({
+        var select = new Select({
           multi: false,
           filter: function(feature, layer) {
             return feature.get('type') === 'bar';
@@ -344,7 +344,7 @@ describe('ol.interaction.Select', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new _ol_interaction_Select_();
+      interaction = new Select();
       map.addInteraction(interaction);
     });
     afterEach(function() {
@@ -372,7 +372,7 @@ describe('ol.interaction.Select', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new _ol_interaction_Select_();
+      interaction = new Select();
 
       expect(interaction.getActive()).to.be(true);
 
@@ -412,7 +412,7 @@ describe('ol.interaction.Select', function() {
     var interaction;
 
     beforeEach(function() {
-      interaction = new _ol_interaction_Select_();
+      interaction = new Select();
       expect(interaction.getActive()).to.be(true);
     });
 

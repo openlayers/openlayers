@@ -3,7 +3,7 @@ import TileRange from '../../../../src/ol/TileRange.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import {get as getProjection, METERS_PER_UNIT} from '../../../../src/ol/proj.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
@@ -335,7 +335,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('works for projections unknown to the client', function() {
-      var projection = new _ol_proj_Projection_(
+      var projection = new Projection(
           {code: 'EPSG:31287', units: 'm'});
       var grid = _ol_tilegrid_.createForProjection(projection);
       var resolutions = grid.getResolutions();

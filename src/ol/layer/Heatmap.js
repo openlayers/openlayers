@@ -9,8 +9,8 @@ import VectorLayer from '../layer/Vector.js';
 import {clamp} from '../math.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
-import _ol_style_Icon_ from '../style/Icon.js';
-import _ol_style_Style_ from '../style/Style.js';
+import Icon from '../style/Icon.js';
+import Style from '../style/Style.js';
 
 
 /**
@@ -117,8 +117,8 @@ var Heatmap = function(opt_options) {
     var style = this.styleCache_[index];
     if (!style) {
       style = [
-        new _ol_style_Style_({
-          image: new _ol_style_Icon_({
+        new Style({
+          image: new Icon({
             opacity: opacity,
             src: this.circleImage_
           })

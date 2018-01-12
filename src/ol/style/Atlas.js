@@ -20,7 +20,7 @@ import {createCanvasContext2D} from '../dom.js';
  *    edges overlap when being rendered). To avoid this we add a
  *    padding around each image.
  */
-var _ol_style_Atlas_ = function(size, space) {
+var Atlas = function(size, space) {
 
   /**
    * @private
@@ -58,7 +58,7 @@ var _ol_style_Atlas_ = function(size, space) {
  * @param {string} id The identifier of the entry to check.
  * @return {?ol.AtlasInfo} The atlas info.
  */
-_ol_style_Atlas_.prototype.get = function(id) {
+Atlas.prototype.get = function(id) {
   return this.entries_[id] || null;
 };
 
@@ -73,7 +73,7 @@ _ol_style_Atlas_.prototype.get = function(id) {
  *    `renderCallback`.
  * @return {?ol.AtlasInfo} The position and atlas image for the entry.
  */
-_ol_style_Atlas_.prototype.add = function(id, width, height, renderCallback, opt_this) {
+Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
   var block, i, ii;
   for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
     block = this.emptyBlocks_[i];
@@ -110,7 +110,7 @@ _ol_style_Atlas_.prototype.add = function(id, width, height, renderCallback, opt
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
-_ol_style_Atlas_.prototype.split_ = function(index, block, width, height) {
+Atlas.prototype.split_ = function(index, block, width, height) {
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
@@ -168,7 +168,7 @@ _ol_style_Atlas_.prototype.split_ = function(index, block, width, height) {
  * @param {ol.AtlasBlock} newBlock1 The 1st block to add.
  * @param {ol.AtlasBlock} newBlock2 The 2nd block to add.
  */
-_ol_style_Atlas_.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
+Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   var args = [index, 1];
   if (newBlock1.width > 0 && newBlock1.height > 0) {
     args.push(newBlock1);
@@ -178,4 +178,4 @@ _ol_style_Atlas_.prototype.updateBlocks_ = function(index, newBlock1, newBlock2)
   }
   this.emptyBlocks_.splice.apply(this.emptyBlocks_, args);
 };
-export default _ol_style_Atlas_;
+export default Atlas;

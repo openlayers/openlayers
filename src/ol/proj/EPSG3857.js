@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {cosh} from '../math.js';
-import _ol_proj_Projection_ from '../proj/Projection.js';
+import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
 var _ol_proj_EPSG3857_ = {};
 
@@ -18,7 +18,7 @@ var _ol_proj_EPSG3857_ = {};
  * @private
  */
 _ol_proj_EPSG3857_.Projection_ = function(code) {
-  _ol_proj_Projection_.call(this, {
+  Projection.call(this, {
     code: code,
     units: Units.METERS,
     extent: _ol_proj_EPSG3857_.EXTENT,
@@ -29,7 +29,7 @@ _ol_proj_EPSG3857_.Projection_ = function(code) {
     }
   });
 };
-inherits(_ol_proj_EPSG3857_.Projection_, _ol_proj_Projection_);
+inherits(_ol_proj_EPSG3857_.Projection_, Projection);
 
 
 /**

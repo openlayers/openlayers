@@ -3,7 +3,7 @@
  */
 import _ol_has_ from './has.js';
 import _ol_transform_ from './transform.js';
-import _ol_render_canvas_Immediate_ from './render/canvas/Immediate.js';
+import CanvasImmediateRenderer from './render/canvas/Immediate.js';
 var _ol_render_ = {};
 
 
@@ -40,7 +40,7 @@ _ol_render_.toContext = function(context, opt_options) {
   }
   var extent = [0, 0, canvas.width, canvas.height];
   var transform = _ol_transform_.scale(_ol_transform_.create(), pixelRatio, pixelRatio);
-  return new _ol_render_canvas_Immediate_(context, pixelRatio, extent, transform,
+  return new CanvasImmediateRenderer(context, pixelRatio, extent, transform,
       0);
 };
 export default _ol_render_;

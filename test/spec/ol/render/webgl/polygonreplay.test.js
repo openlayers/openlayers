@@ -7,16 +7,16 @@ import _ol_render_webgl_polygonreplay_defaultshader_ from '../../../../../src/ol
 import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader/Locations.js';
 import LinkedList from '../../../../../src/ol/structs/LinkedList.js';
 import RBush from '../../../../../src/ol/structs/RBush.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.PolygonReplay', function() {
   var replay;
 
-  var fillStyle = new _ol_style_Fill_({
+  var fillStyle = new Fill({
     color: [0, 0, 255, 0.5]
   });
-  var strokeStyle = new _ol_style_Stroke_({
+  var strokeStyle = new Stroke({
     color: [0, 255, 0, 0.4]
   });
 
@@ -435,7 +435,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
     });
 
     it('draws the elements in batches if there are multiple fill styles', function() {
-      var fillStyle2 = new _ol_style_Fill_({
+      var fillStyle2 = new Fill({
         color: [0, 255, 0, 1]
       });
       replay.setFillStrokeStyle(fillStyle, strokeStyle);

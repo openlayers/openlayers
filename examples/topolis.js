@@ -8,16 +8,16 @@ import Point from '../src/ol/geom/Point.js';
 import LineString from '../src/ol/geom/LineString.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import Draw from '../src/ol/interaction/Draw.js';
-import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
+import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Style from '../src/ol/style/Style.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Fill from '../src/ol/style/Fill.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Text from '../src/ol/style/Text.js';
 import MousePosition from '../src/ol/control/MousePosition.js';
 
 var raster = new TileLayer({
@@ -28,16 +28,16 @@ var nodes = new VectorSource({wrapX: false});
 var nodesLayer = new VectorLayer({
   source: nodes,
   style: function(f) {
-    var style = new _ol_style_Style_({
-      image: new _ol_style_Circle_({
+    var style = new Style({
+      image: new CircleStyle({
         radius: 8,
-        fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.2)'}),
-        stroke: new _ol_style_Stroke_({color: 'red', width: 1})
+        fill: new Fill({color: 'rgba(255, 0, 0, 0.2)'}),
+        stroke: new Stroke({color: 'red', width: 1})
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         text: f.get('node').id.toString(),
-        fill: new _ol_style_Fill_({color: 'red'}),
-        stroke: new _ol_style_Stroke_({
+        fill: new Fill({color: 'red'}),
+        stroke: new Stroke({
           color: 'white',
           width: 3
         })
@@ -51,15 +51,15 @@ var edges = new VectorSource({wrapX: false});
 var edgesLayer = new VectorLayer({
   source: edges,
   style: function(f) {
-    var style = new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    var style = new Style({
+      stroke: new Stroke({
         color: 'blue',
         width: 1
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         text: f.get('edge').id.toString(),
-        fill: new _ol_style_Fill_({color: 'blue'}),
-        stroke: new _ol_style_Stroke_({
+        fill: new Fill({color: 'blue'}),
+        stroke: new Stroke({
           color: 'white',
           width: 2
         })
@@ -73,19 +73,19 @@ var faces = new VectorSource({wrapX: false});
 var facesLayer = new VectorLayer({
   source: faces,
   style: function(f) {
-    var style = new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    var style = new Style({
+      stroke: new Stroke({
         color: 'black',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(0, 255, 0, 0.2)'
       }),
-      text: new _ol_style_Text_({
+      text: new Text({
         font: 'bold 12px sans-serif',
         text: f.get('face').id.toString(),
-        fill: new _ol_style_Fill_({color: 'green'}),
-        stroke: new _ol_style_Stroke_({
+        fill: new Fill({color: 'green'}),
+        stroke: new Stroke({
           color: 'white',
           width: 2
         })
@@ -209,7 +209,7 @@ var draw = new Draw({
 });
 draw.on('drawend', onDrawend);
 map.addInteraction(draw);
-var snap = new _ol_interaction_Snap_({
+var snap = new Snap({
   source: edges
 });
 map.addInteraction(snap);

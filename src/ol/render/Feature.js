@@ -24,7 +24,7 @@ import _ol_transform_ from '../transform.js';
  * @param {Object.<string, *>} properties Properties.
  * @param {number|string|undefined} id Feature id.
  */
-var _ol_render_Feature_ = function(type, flatCoordinates, ends, properties, id) {
+var RenderFeature = function(type, flatCoordinates, ends, properties, id) {
   /**
    * @private
    * @type {ol.Extent|undefined}
@@ -88,7 +88,7 @@ var _ol_render_Feature_ = function(type, flatCoordinates, ends, properties, id) 
  * @return {*} Value for the requested key.
  * @api
  */
-_ol_render_Feature_.prototype.get = function(key) {
+RenderFeature.prototype.get = function(key) {
   return this.properties_[key];
 };
 
@@ -96,8 +96,8 @@ _ol_render_Feature_.prototype.get = function(key) {
 /**
  * @return {Array.<number>|Array.<Array.<number>>} Ends or endss.
  */
-_ol_render_Feature_.prototype.getEnds =
-_ol_render_Feature_.prototype.getEndss = function() {
+RenderFeature.prototype.getEnds =
+RenderFeature.prototype.getEndss = function() {
   return this.ends_;
 };
 
@@ -107,7 +107,7 @@ _ol_render_Feature_.prototype.getEndss = function() {
  * @return {ol.Extent} Extent.
  * @api
  */
-_ol_render_Feature_.prototype.getExtent = function() {
+RenderFeature.prototype.getExtent = function() {
   if (!this.extent_) {
     this.extent_ = this.type_ === GeometryType.POINT ?
       createOrUpdateFromCoordinate(this.flatCoordinates_) :
@@ -122,7 +122,7 @@ _ol_render_Feature_.prototype.getExtent = function() {
 /**
  * @return {Array.<number>} Flat interior points.
  */
-_ol_render_Feature_.prototype.getFlatInteriorPoint = function() {
+RenderFeature.prototype.getFlatInteriorPoint = function() {
   if (!this.flatInteriorPoints_) {
     var flatCenter = getCenter(this.getExtent());
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRings(
@@ -135,7 +135,7 @@ _ol_render_Feature_.prototype.getFlatInteriorPoint = function() {
 /**
  * @return {Array.<number>} Flat interior points.
  */
-_ol_render_Feature_.prototype.getFlatInteriorPoints = function() {
+RenderFeature.prototype.getFlatInteriorPoints = function() {
   if (!this.flatInteriorPoints_) {
     var flatCenters = _ol_geom_flat_center_.linearRingss(
         this.flatCoordinates_, 0, this.ends_, 2);
@@ -149,7 +149,7 @@ _ol_render_Feature_.prototype.getFlatInteriorPoints = function() {
 /**
  * @return {Array.<number>} Flat midpoint.
  */
-_ol_render_Feature_.prototype.getFlatMidpoint = function() {
+RenderFeature.prototype.getFlatMidpoint = function() {
   if (!this.flatMidpoints_) {
     this.flatMidpoints_ = _ol_geom_flat_interpolate_.lineString(
         this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
@@ -161,7 +161,7 @@ _ol_render_Feature_.prototype.getFlatMidpoint = function() {
 /**
  * @return {Array.<number>} Flat midpoints.
  */
-_ol_render_Feature_.prototype.getFlatMidpoints = function() {
+RenderFeature.prototype.getFlatMidpoints = function() {
   if (!this.flatMidpoints_) {
     this.flatMidpoints_ = [];
     var flatCoordinates = this.flatCoordinates_;
@@ -184,7 +184,7 @@ _ol_render_Feature_.prototype.getFlatMidpoints = function() {
  * @return {number|string|undefined} Id.
  * @api
  */
-_ol_render_Feature_.prototype.getId = function() {
+RenderFeature.prototype.getId = function() {
   return this.id_;
 };
 
@@ -192,7 +192,7 @@ _ol_render_Feature_.prototype.getId = function() {
 /**
  * @return {Array.<number>} Flat coordinates.
  */
-_ol_render_Feature_.prototype.getOrientedFlatCoordinates = function() {
+RenderFeature.prototype.getOrientedFlatCoordinates = function() {
   return this.flatCoordinates_;
 };
 
@@ -200,8 +200,8 @@ _ol_render_Feature_.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @return {Array.<number>} Flat coordinates.
  */
-_ol_render_Feature_.prototype.getFlatCoordinates =
-    _ol_render_Feature_.prototype.getOrientedFlatCoordinates;
+RenderFeature.prototype.getFlatCoordinates =
+    RenderFeature.prototype.getOrientedFlatCoordinates;
 
 
 /**
@@ -210,7 +210,7 @@ _ol_render_Feature_.prototype.getFlatCoordinates =
  * @return {ol.render.Feature} Feature.
  * @api
  */
-_ol_render_Feature_.prototype.getGeometry = function() {
+RenderFeature.prototype.getGeometry = function() {
   return this;
 };
 
@@ -220,7 +220,7 @@ _ol_render_Feature_.prototype.getGeometry = function() {
  * @return {Object.<string, *>} Feature properties.
  * @api
  */
-_ol_render_Feature_.prototype.getProperties = function() {
+RenderFeature.prototype.getProperties = function() {
   return this.properties_;
 };
 
@@ -229,14 +229,14 @@ _ol_render_Feature_.prototype.getProperties = function() {
  * Get the feature for working with its geometry.
  * @return {ol.render.Feature} Feature.
  */
-_ol_render_Feature_.prototype.getSimplifiedGeometry =
-    _ol_render_Feature_.prototype.getGeometry;
+RenderFeature.prototype.getSimplifiedGeometry =
+    RenderFeature.prototype.getGeometry;
 
 
 /**
  * @return {number} Stride.
  */
-_ol_render_Feature_.prototype.getStride = function() {
+RenderFeature.prototype.getStride = function() {
   return 2;
 };
 
@@ -244,7 +244,7 @@ _ol_render_Feature_.prototype.getStride = function() {
 /**
  * @return {undefined}
  */
-_ol_render_Feature_.prototype.getStyleFunction = nullFunction;
+RenderFeature.prototype.getStyleFunction = nullFunction;
 
 
 /**
@@ -252,7 +252,7 @@ _ol_render_Feature_.prototype.getStyleFunction = nullFunction;
  * @return {ol.geom.GeometryType} Geometry type.
  * @api
  */
-_ol_render_Feature_.prototype.getType = function() {
+RenderFeature.prototype.getType = function() {
   return this.type_;
 };
 
@@ -263,7 +263,7 @@ _ol_render_Feature_.prototype.getType = function() {
  * @param {ol.ProjectionLike} source The current projection
  * @param {ol.ProjectionLike} destination The desired projection.
  */
-_ol_render_Feature_.prototype.transform = function(source, destination) {
+RenderFeature.prototype.transform = function(source, destination) {
   var pixelExtent = source.getExtent();
   var projectedExtent = source.getWorldExtent();
   var scale = getHeight(projectedExtent) / getHeight(pixelExtent);
@@ -275,4 +275,4 @@ _ol_render_Feature_.prototype.transform = function(source, destination) {
   _ol_geom_flat_transform_.transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
       transform, this.flatCoordinates_);
 };
-export default _ol_render_Feature_;
+export default RenderFeature;

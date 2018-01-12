@@ -4,14 +4,14 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_AtlasManager_ from '../src/ol/style/AtlasManager.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import AtlasManager from '../src/ol/style/AtlasManager.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
-var atlasManager = new _ol_style_AtlasManager_({
+var atlasManager = new AtlasManager({
   // we increase the initial size so that all symbols fit into
   // a single atlas image
   initialSize: 512
@@ -47,14 +47,14 @@ for (i = 0; i < symbolInfo.length; ++i) {
   var info = symbolInfo[i];
   for (j = 0; j < radiuses.length; ++j) {
     // circle symbol
-    symbols.push(new _ol_style_Circle_({
+    symbols.push(new CircleStyle({
       opacity: info.opacity,
       scale: info.scale,
       radius: radiuses[j],
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: info.fillColor
       }),
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: info.strokeColor,
         width: 1
       }),
@@ -64,17 +64,17 @@ for (i = 0; i < symbolInfo.length; ++i) {
     }));
 
     // star symbol
-    symbols.push(new _ol_style_RegularShape_({
+    symbols.push(new RegularShape({
       points: 8,
       opacity: info.opacity,
       scale: info.scale,
       radius: radiuses[j],
       radius2: radiuses[j] * 0.7,
       angle: 1.4,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: info.fillColor
       }),
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: info.strokeColor,
         width: 1
       }),
@@ -92,7 +92,7 @@ for (i = 0; i < featureCount; ++i) {
       [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
   feature = new Feature(geometry);
   feature.setStyle(
-      new _ol_style_Style_({
+      new Style({
         image: symbols[i % symbolCount]
       })
   );

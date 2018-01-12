@@ -5,8 +5,8 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
-import _ol_reproj_Tile_ from '../../../../src/ol/reproj/Tile.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
+import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -117,16 +117,16 @@ describe('ol.source.TileImage', function() {
       var source3857 = createSource('EPSG:3857');
       var tile3857 = source3857.getTile(0, 0, -1, 1, getProjection('EPSG:3857'));
       expect(tile3857).to.be.a(ImageTile);
-      expect(tile3857).not.to.be.a(_ol_reproj_Tile_);
+      expect(tile3857).not.to.be.a(ReprojTile);
 
-      var projXXX = new _ol_proj_Projection_({
+      var projXXX = new Projection({
         code: 'XXX',
         units: 'degrees'
       });
       var sourceXXX = createSource(projXXX);
       var tileXXX = sourceXXX.getTile(0, 0, -1, 1, projXXX);
       expect(tileXXX).to.be.a(ImageTile);
-      expect(tileXXX).not.to.be.a(_ol_reproj_Tile_);
+      expect(tileXXX).not.to.be.a(ReprojTile);
     });
 
     beforeEach(function() {
@@ -146,7 +146,7 @@ describe('ol.source.TileImage', function() {
         tileSize: [2, 2]
       }));
       var tile = source.getTile(0, 0, -1, 1, getProjection('EPSG:3857'));
-      expect(tile).to.be.a(_ol_reproj_Tile_);
+      expect(tile).to.be.a(ReprojTile);
 
       _ol_events_.listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
@@ -165,7 +165,7 @@ describe('ol.source.TileImage', function() {
             tileSize: [2, 2]
           }));
       var tile = source.getTile(0, 0, -1, 1, proj);
-      expect(tile).to.be.a(_ol_reproj_Tile_);
+      expect(tile).to.be.a(ReprojTile);
 
       _ol_events_.listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED

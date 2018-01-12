@@ -9,15 +9,15 @@ import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import MVT from '../../../../../src/ol/format/MVT.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_layer_VectorTile_ from '../../../../../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection, fromLonLat} from '../../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../../src/ol/proj/Projection.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
-import _ol_render_Feature_ from '../../../../../src/ol/render/Feature.js';
+import RenderFeature from '../../../../../src/ol/render/Feature.js';
 import CanvasVectorTileLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorTileLayer.js';
 import VectorTileSource from '../../../../../src/ol/source/VectorTile.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
+import Style from '../../../../../src/ol/style/Style.js';
+import Text from '../../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../../src/ol/tilegrid.js';
 
 
@@ -45,19 +45,19 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         }),
         target: target
       });
-      layerStyle = [new _ol_style_Style_({
-        text: new _ol_style_Text_({
+      layerStyle = [new Style({
+        text: new Text({
           text: 'layer'
         })
       })];
-      var featureStyle = [new _ol_style_Style_({
-        text: new _ol_style_Text_({
+      var featureStyle = [new Style({
+        text: new Text({
           text: 'feature'
         })
       })];
       feature1 = new Feature(new Point([1, -1]));
       feature2 = new Feature(new Point([0, 0]));
-      feature3 = new _ol_render_Feature_('Point', [1, -1], []);
+      feature3 = new RenderFeature('Point', [1, -1], []);
       feature2.setStyle(featureStyle);
       var TileClass = function() {
         VectorTile.apply(this, arguments);
@@ -77,7 +77,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tile.setState(TileState.LOADED);
         return tile;
       };
-      layer = new _ol_layer_VectorTile_({
+      layer = new VectorTileLayer({
         source: source,
         style: layerStyle
       });
@@ -133,7 +133,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('renders replays with custom renderers as direct replays', function() {
       layer.renderMode_ = 'image';
-      layer.setStyle(new _ol_style_Style_({
+      layer.setStyle(new Style({
         renderer: function() {}
       }));
       var spy = sinon.spy(CanvasVectorTileLayerRenderer.prototype,
@@ -201,7 +201,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('Geometries are transformed from tile-pixels', function() {
-      var proj = new _ol_proj_Projection_({code: 'EPSG:3857', units: 'tile-pixels'});
+      var proj = new Projection({code: 'EPSG:3857', units: 'tile-pixels'});
       var tile;
       tileCallback = function(t) {
         t.setProjection(proj);
@@ -214,10 +214,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('works for multiple layers that use the same source', function() {
-      var layer2 = new _ol_layer_VectorTile_({
+      var layer2 = new VectorTileLayer({
         source: source,
-        style: new _ol_style_Style_({
-          text: new _ol_style_Text_({
+        style: new Style({
+          text: new Text({
             text: 'layer2'
           })
         })
@@ -239,7 +239,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('#prepareFrame', function() {
     it('re-renders when layer changed', function() {
-      var layer = new _ol_layer_VectorTile_({
+      var layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileGrid: _ol_tilegrid_.createXYZ(),
           transition: 0
@@ -308,7 +308,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     beforeEach(function() {
       replayGroup = {};
-      layer = new _ol_layer_VectorTile_({
+      layer = new VectorTileLayer({
         source: new VectorTileSource({
           tileClass: TileClass,
           tileGrid: _ol_tilegrid_.createXYZ()
@@ -358,7 +358,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var map = new Map({
         target: target,
         layers: [
-          new _ol_layer_VectorTile_({
+          new VectorTileLayer({
             extent: extent,
             source: source
           })

@@ -14,7 +14,7 @@ import _ol_transform_ from '../../transform.js';
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.layer.Layer} layer Layer.
  */
-var _ol_renderer_canvas_IntermediateCanvas_ = function(layer) {
+var IntermediateCanvasRenderer = function(layer) {
 
   CanvasLayerRenderer.call(this, layer);
 
@@ -32,13 +32,13 @@ var _ol_renderer_canvas_IntermediateCanvas_ = function(layer) {
 
 };
 
-inherits(_ol_renderer_canvas_IntermediateCanvas_, CanvasLayerRenderer);
+inherits(IntermediateCanvasRenderer, CanvasLayerRenderer);
 
 
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_IntermediateCanvas_.prototype.composeFrame = function(frameState, layerState, context) {
+IntermediateCanvasRenderer.prototype.composeFrame = function(frameState, layerState, context) {
 
   this.preCompose(context, frameState);
 
@@ -84,20 +84,20 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.composeFrame = function(frameS
  * @abstract
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
  */
-_ol_renderer_canvas_IntermediateCanvas_.prototype.getImage = function() {};
+IntermediateCanvasRenderer.prototype.getImage = function() {};
 
 
 /**
  * @abstract
  * @return {!ol.Transform} Image transform.
  */
-_ol_renderer_canvas_IntermediateCanvas_.prototype.getImageTransform = function() {};
+IntermediateCanvasRenderer.prototype.getImageTransform = function() {};
 
 
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_IntermediateCanvas_.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+IntermediateCanvasRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -118,7 +118,7 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachFeatureAtCoordinate = f
 /**
  * @inheritDoc
  */
-_ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
@@ -146,4 +146,4 @@ _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = fun
     }
   }
 };
-export default _ol_renderer_canvas_IntermediateCanvas_;
+export default IntermediateCanvasRenderer;

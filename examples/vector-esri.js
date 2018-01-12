@@ -7,9 +7,9 @@ import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import XYZ from '../src/ol/source/XYZ.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
 
@@ -20,38 +20,38 @@ var layer = '0';
 var esrijsonFormat = new EsriJSON();
 
 var styleCache = {
-  'ABANDONED': new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  'ABANDONED': new Style({
+    fill: new Fill({
       color: 'rgba(225, 225, 225, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(0, 0, 0, 255)',
       width: 0.4
     })
   }),
-  'GAS': new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  'GAS': new Style({
+    fill: new Fill({
       color: 'rgba(255, 0, 0, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(110, 110, 110, 255)',
       width: 0.4
     })
   }),
-  'OIL': new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  'OIL': new Style({
+    fill: new Fill({
       color: 'rgba(56, 168, 0, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(110, 110, 110, 255)',
       width: 0
     })
   }),
-  'OILGAS': new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  'OILGAS': new Style({
+    fill: new Fill({
       color: 'rgba(168, 112, 0, 255)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: 'rgba(110, 110, 110, 255)',
       width: 0.4
     })

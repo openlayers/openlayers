@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import MVT from '../src/ol/format/MVT.js';
-import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 
 var map = new Map({
@@ -10,7 +10,7 @@ var map = new Map({
     center: [0, 0],
     zoom: 2
   }),
-  layers: [new _ol_layer_VectorTile_({
+  layers: [new VectorTileLayer({
     source: new VectorTileSource({
       format: new MVT(),
       url: 'https://basemaps.arcgis.com/v1/arcgis/rest/services/World_Basemap/VectorTileServer/tile/{z}/{y}/{x}.pbf'

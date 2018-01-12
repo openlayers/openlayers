@@ -9,7 +9,7 @@ import TileState from '../TileState.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
-import _ol_reproj_Tile_ from '../reproj/Tile.js';
+import ReprojTile from '../reproj/Tile.js';
 import UrlTile from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
@@ -254,7 +254,7 @@ TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
       var targetTileGrid = this.getTileGridForProjection(projection);
       var wrappedTileCoord =
           this.getTileCoordForTileUrlFunction(tileCoord, projection);
-      var newTile = new _ol_reproj_Tile_(
+      var newTile = new ReprojTile(
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
           tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),

@@ -41,7 +41,7 @@ var MAX_TRIANGLE_WIDTH = 0.25;
  * @param {number} errorThreshold Acceptable error (in source units).
  * @constructor
  */
-var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
+var Triangulation = function(sourceProj, targetProj, targetExtent,
     maxSourceExtent, errorThreshold) {
 
   /**
@@ -189,7 +189,7 @@ var _ol_reproj_Triangulation_ = function(sourceProj, targetProj, targetExtent,
  * @param {ol.Coordinate} cSrc The source c coordinate.
  * @private
  */
-_ol_reproj_Triangulation_.prototype.addTriangle_ = function(a, b, c,
+Triangulation.prototype.addTriangle_ = function(a, b, c,
     aSrc, bSrc, cSrc) {
   this.triangles_.push({
     source: [aSrc, bSrc, cSrc],
@@ -214,7 +214,7 @@ _ol_reproj_Triangulation_.prototype.addTriangle_ = function(a, b, c,
  * @param {number} maxSubdivision Maximal allowed subdivision of the quad.
  * @private
  */
-_ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
+Triangulation.prototype.addQuad_ = function(a, b, c, d,
     aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
 
   var sourceQuadExtent = boundingExtent([aSrc, bSrc, cSrc, dSrc]);
@@ -326,7 +326,7 @@ _ol_reproj_Triangulation_.prototype.addQuad_ = function(a, b, c, d,
  *
  * @return {ol.Extent} Calculated extent.
  */
-_ol_reproj_Triangulation_.prototype.calculateSourceExtent = function() {
+Triangulation.prototype.calculateSourceExtent = function() {
   var extent = createEmpty();
 
   this.triangles_.forEach(function(triangle, i, arr) {
@@ -343,7 +343,7 @@ _ol_reproj_Triangulation_.prototype.calculateSourceExtent = function() {
 /**
  * @return {Array.<ol.ReprojTriangle>} Array of the calculated triangles.
  */
-_ol_reproj_Triangulation_.prototype.getTriangles = function() {
+Triangulation.prototype.getTriangles = function() {
   return this.triangles_;
 };
-export default _ol_reproj_Triangulation_;
+export default Triangulation;

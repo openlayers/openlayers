@@ -8,7 +8,7 @@ import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
-import _ol_layer_Layer_ from '../layer/Layer.js';
+import Layer from '../layer/Layer.js';
 
 /**
  * @classdesc
@@ -146,7 +146,7 @@ Attribution.prototype.getSourceAttributions_ = function(frameState) {
   var resolution = frameState.viewState.resolution;
   for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     var layerState = layerStatesArray[i];
-    if (!_ol_layer_Layer_.visibleAtResolution(layerState, resolution)) {
+    if (!Layer.visibleAtResolution(layerState, resolution)) {
       continue;
     }
 

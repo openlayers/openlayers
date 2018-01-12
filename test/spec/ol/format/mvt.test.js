@@ -4,7 +4,7 @@ import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_render_Feature_ from '../../../../src/ol/render/Feature.js';
+import RenderFeature from '../../../../src/ol/render/Feature.js';
 
 where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
@@ -25,7 +25,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
     it('uses ol.render.Feature as feature class by default', function() {
       var format = new MVT({layers: ['water']});
       var features = format.readFeatures(data);
-      expect(features[0]).to.be.a(_ol_render_Feature_);
+      expect(features[0]).to.be.a(RenderFeature);
     });
 
     it('parses only specified layers', function() {
@@ -185,7 +185,7 @@ describe('ol.format.MVT', function() {
       };
       var feature = format.createFeature_({}, rawFeature);
       MVT.readRawGeometry_ = readRawGeometry_;
-      expect(feature).to.be.a(_ol_render_Feature_);
+      expect(feature).to.be.a(RenderFeature);
       expect(feature.getType()).to.be('Polygon');
       expect(feature.getFlatCoordinates()).to.equal(createdFlatCoordinates);
       expect(feature.getEnds()).to.equal(createdEnds);

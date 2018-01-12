@@ -2,54 +2,54 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Select from '../src/ol/interaction/Select.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var styleFunction = (function() {
   var styles = {};
-  var image = new _ol_style_Circle_({
+  var image = new CircleStyle({
     radius: 5,
     fill: null,
-    stroke: new _ol_style_Stroke_({color: 'orange', width: 2})
+    stroke: new Stroke({color: 'orange', width: 2})
   });
-  styles['Point'] = new _ol_style_Style_({image: image});
-  styles['Polygon'] = new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  styles['Point'] = new Style({image: image});
+  styles['Polygon'] = new Style({
+    stroke: new Stroke({
       color: 'blue',
       width: 3
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   });
-  styles['MultiLineString'] = new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  styles['MultiLineString'] = new Style({
+    stroke: new Stroke({
       color: 'green',
       width: 3
     })
   });
-  styles['MultiPolygon'] = new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  styles['MultiPolygon'] = new Style({
+    stroke: new Stroke({
       color: 'yellow',
       width: 1
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(255, 255, 0, 0.1)'
     })
   });
-  styles['default'] = new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  styles['default'] = new Style({
+    stroke: new Stroke({
       color: 'red',
       width: 3
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(255, 0, 0, 0.1)'
     }),
     image: image
@@ -156,19 +156,19 @@ var layer = new VectorLayer({
 var overlayStyle = (function() {
   var styles = {};
   styles['Polygon'] = [
-    new _ol_style_Style_({
-      fill: new _ol_style_Fill_({
+    new Style({
+      fill: new Fill({
         color: [255, 255, 255, 0.5]
       })
     }),
-    new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    new Style({
+      stroke: new Stroke({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
-    new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    new Style({
+      stroke: new Stroke({
         color: [0, 153, 255, 1],
         width: 3
       })
@@ -177,14 +177,14 @@ var overlayStyle = (function() {
   styles['MultiPolygon'] = styles['Polygon'];
 
   styles['LineString'] = [
-    new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    new Style({
+      stroke: new Stroke({
         color: [255, 255, 255, 1],
         width: 5
       })
     }),
-    new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    new Style({
+      stroke: new Stroke({
         color: [0, 153, 255, 1],
         width: 3
       })
@@ -193,13 +193,13 @@ var overlayStyle = (function() {
   styles['MultiLineString'] = styles['LineString'];
 
   styles['Point'] = [
-    new _ol_style_Style_({
-      image: new _ol_style_Circle_({
+    new Style({
+      image: new CircleStyle({
         radius: 7,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [0, 153, 255, 1]
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: [255, 255, 255, 0.75],
           width: 1.5
         })
@@ -216,11 +216,11 @@ var overlayStyle = (function() {
   };
 })();
 
-var select = new _ol_interaction_Select_({
+var select = new Select({
   style: overlayStyle
 });
 
-var modify = new _ol_interaction_Modify_({
+var modify = new Modify({
   features: select.getFeatures(),
   style: overlayStyle,
   insertVertexCondition: function() {

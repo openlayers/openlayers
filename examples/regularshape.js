@@ -4,18 +4,18 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
-var stroke = new _ol_style_Stroke_({color: 'black', width: 2});
-var fill = new _ol_style_Fill_({color: 'red'});
+var stroke = new Stroke({color: 'black', width: 2});
+var fill = new Fill({color: 'red'});
 
 var styles = {
-  'square': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
+  'square': new Style({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,
@@ -23,8 +23,8 @@ var styles = {
       angle: Math.PI / 4
     })
   }),
-  'triangle': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
+  'triangle': new Style({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 3,
@@ -33,8 +33,8 @@ var styles = {
       angle: 0
     })
   }),
-  'star': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
+  'star': new Style({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 5,
@@ -43,8 +43,8 @@ var styles = {
       angle: 0
     })
   }),
-  'cross': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
+  'cross': new Style({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,
@@ -53,8 +53,8 @@ var styles = {
       angle: 0
     })
   }),
-  'x': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
+  'x': new Style({
+    image: new RegularShape({
       fill: fill,
       stroke: stroke,
       points: 4,

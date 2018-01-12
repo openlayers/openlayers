@@ -3,8 +3,8 @@ import View from '../src/ol/View.js';
 import EsriJSON from '../src/ol/format/EsriJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import Draw from '../src/ol/interaction/Draw.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
@@ -67,11 +67,11 @@ var draw = new Draw({
   type: 'Polygon'
 });
 
-var select = new _ol_interaction_Select_();
+var select = new Select();
 select.setActive(false);
 var selected = select.getFeatures();
 
-var modify = new _ol_interaction_Modify_({
+var modify = new Modify({
   features: selected
 });
 modify.setActive(false);

@@ -4,10 +4,10 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import MultiPoint from '../src/ol/geom/MultiPoint.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var styles = [
   /* We are using two different styles for the polygons:
@@ -17,19 +17,19 @@ var styles = [
    *    returned as `MultiPoint` geometry, which will be used to render
    *    the style.
    */
-  new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  new Style({
+    stroke: new Stroke({
       color: 'blue',
       width: 3
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     })
   }),
-  new _ol_style_Style_({
-    image: new _ol_style_Circle_({
+  new Style({
+    image: new CircleStyle({
       radius: 5,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'orange'
       })
     }),

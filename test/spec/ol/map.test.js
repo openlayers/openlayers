@@ -12,7 +12,7 @@ import MouseWheelZoom from '../../../src/ol/interaction/MouseWheelZoom.js';
 import PinchZoom from '../../../src/ol/interaction/PinchZoom.js';
 import TileLayer from '../../../src/ol/layer/Tile.js';
 import VectorLayer from '../../../src/ol/layer/Vector.js';
-import _ol_renderer_canvas_IntermediateCanvas_ from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
+import IntermediateCanvasRenderer from '../../../src/ol/renderer/canvas/IntermediateCanvas.js';
 import VectorSource from '../../../src/ol/source/Vector.js';
 import XYZ from '../../../src/ol/source/XYZ.js';
 
@@ -257,8 +257,8 @@ describe('ol.Map', function() {
 
     beforeEach(function(done) {
       log = [];
-      original = _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate;
-      _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = function(coordinate) {
+      original = IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate;
+      IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordinate) {
         log.push(coordinate.slice());
       };
 
@@ -296,7 +296,7 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      _ol_renderer_canvas_IntermediateCanvas_.prototype.forEachLayerAtCoordinate = original;
+      IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = original;
       map.dispose();
       document.body.removeChild(target);
       log = null;

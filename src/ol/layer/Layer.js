@@ -5,7 +5,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
 import BaseObject from '../Object.js';
-import _ol_layer_Base_ from '../layer/Base.js';
+import BaseLayer from '../layer/Base.js';
 import LayerProperty from '../layer/Property.js';
 import _ol_obj_ from '../obj.js';
 import RenderEventType from '../render/EventType.js';
@@ -33,12 +33,12 @@ import SourceState from '../source/State.js';
  * @param {olx.layer.LayerOptions} options Layer options.
  * @api
  */
-var _ol_layer_Layer_ = function(options) {
+var Layer = function(options) {
 
   var baseOptions = _ol_obj_.assign({}, options);
   delete baseOptions.source;
 
-  _ol_layer_Base_.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
+  BaseLayer.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
 
   /**
    * @private
@@ -70,7 +70,7 @@ var _ol_layer_Layer_ = function(options) {
   this.setSource(source);
 };
 
-inherits(_ol_layer_Layer_, _ol_layer_Base_);
+inherits(Layer, BaseLayer);
 
 
 /**
@@ -81,7 +81,7 @@ inherits(_ol_layer_Layer_, _ol_layer_Base_);
  * @param {number} resolution Resolution.
  * @return {boolean} The layer is visible at the given resolution.
  */
-_ol_layer_Layer_.visibleAtResolution = function(layerState, resolution) {
+Layer.visibleAtResolution = function(layerState, resolution) {
   return layerState.visible && resolution >= layerState.minResolution &&
       resolution < layerState.maxResolution;
 };
@@ -90,7 +90,7 @@ _ol_layer_Layer_.visibleAtResolution = function(layerState, resolution) {
 /**
  * @inheritDoc
  */
-_ol_layer_Layer_.prototype.getLayersArray = function(opt_array) {
+Layer.prototype.getLayersArray = function(opt_array) {
   var array = opt_array ? opt_array : [];
   array.push(this);
   return array;
@@ -100,7 +100,7 @@ _ol_layer_Layer_.prototype.getLayersArray = function(opt_array) {
 /**
  * @inheritDoc
  */
-_ol_layer_Layer_.prototype.getLayerStatesArray = function(opt_states) {
+Layer.prototype.getLayerStatesArray = function(opt_states) {
   var states = opt_states ? opt_states : [];
   states.push(this.getLayerState());
   return states;
@@ -113,7 +113,7 @@ _ol_layer_Layer_.prototype.getLayerStatesArray = function(opt_states) {
  * @observable
  * @api
  */
-_ol_layer_Layer_.prototype.getSource = function() {
+Layer.prototype.getSource = function() {
   var source = this.get(LayerProperty.SOURCE);
   return /** @type {ol.source.Source} */ (source) || null;
 };
@@ -122,7 +122,7 @@ _ol_layer_Layer_.prototype.getSource = function() {
 /**
   * @inheritDoc
   */
-_ol_layer_Layer_.prototype.getSourceState = function() {
+Layer.prototype.getSourceState = function() {
   var source = this.getSource();
   return !source ? SourceState.UNDEFINED : source.getState();
 };
@@ -131,7 +131,7 @@ _ol_layer_Layer_.prototype.getSourceState = function() {
 /**
  * @private
  */
-_ol_layer_Layer_.prototype.handleSourceChange_ = function() {
+Layer.prototype.handleSourceChange_ = function() {
   this.changed();
 };
 
@@ -139,7 +139,7 @@ _ol_layer_Layer_.prototype.handleSourceChange_ = function() {
 /**
  * @private
  */
-_ol_layer_Layer_.prototype.handleSourcePropertyChange_ = function() {
+Layer.prototype.handleSourcePropertyChange_ = function() {
   if (this.sourceChangeKey_) {
     _ol_events_.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
@@ -165,7 +165,7 @@ _ol_layer_Layer_.prototype.handleSourcePropertyChange_ = function() {
  * @param {ol.PluggableMap} map Map.
  * @api
  */
-_ol_layer_Layer_.prototype.setMap = function(map) {
+Layer.prototype.setMap = function(map) {
   if (this.mapPrecomposeKey_) {
     _ol_events_.unlistenByKey(this.mapPrecomposeKey_);
     this.mapPrecomposeKey_ = null;
@@ -199,7 +199,7 @@ _ol_layer_Layer_.prototype.setMap = function(map) {
  * @observable
  * @api
  */
-_ol_layer_Layer_.prototype.setSource = function(source) {
+Layer.prototype.setSource = function(source) {
   this.set(LayerProperty.SOURCE, source);
 };
-export default _ol_layer_Layer_;
+export default Layer;

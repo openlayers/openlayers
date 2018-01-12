@@ -8,10 +8,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var view = new View({
   center: [0, 0],
@@ -67,13 +67,13 @@ geolocation.on('change:accuracyGeometry', function() {
 });
 
 var positionFeature = new Feature();
-positionFeature.setStyle(new _ol_style_Style_({
-  image: new _ol_style_Circle_({
+positionFeature.setStyle(new Style({
+  image: new CircleStyle({
     radius: 6,
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: '#3399CC'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#fff',
       width: 2
     })

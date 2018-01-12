@@ -2,7 +2,7 @@
  * @module ol/control/OverviewMap
  */
 import {inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import PluggableMap from '../PluggableMap.js';
 import MapEventType from '../MapEventType.js';
 import MapProperty from '../MapProperty.js';
@@ -116,8 +116,8 @@ var OverviewMap = function(opt_options) {
    * @private
    */
   this.ovmap_ = new PluggableMap({
-    controls: new _ol_Collection_(),
-    interactions: new _ol_Collection_(),
+    controls: new Collection(),
+    interactions: new Collection(),
     view: options.view
   });
   var ovmap = this.ovmap_;

@@ -1,7 +1,7 @@
 import _ol_transform_ from '../../../../../src/ol/transform.js';
 import ImageLayer from '../../../../../src/ol/layer/Image.js';
 import MapRenderer from '../../../../../src/ol/renderer/Map.js';
-import _ol_renderer_canvas_IntermediateCanvas_ from '../../../../../src/ol/renderer/canvas/IntermediateCanvas.js';
+import IntermediateCanvasRenderer from '../../../../../src/ol/renderer/canvas/IntermediateCanvas.js';
 
 
 describe('ol.renderer.canvas.IntermediateCanvas', function() {
@@ -12,7 +12,7 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       var layer = new ImageLayer({
         extent: [1, 2, 3, 4]
       });
-      renderer = new _ol_renderer_canvas_IntermediateCanvas_(layer);
+      renderer = new IntermediateCanvasRenderer(layer);
       var image = new Image();
       image.width = 3;
       image.height = 3;

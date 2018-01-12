@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import _ol_events_condition_ from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -31,19 +31,19 @@ var map = new Map({
 var select = null;  // ref to currently selected interaction
 
 // select interaction working on "singleclick"
-var selectSingleClick = new _ol_interaction_Select_();
+var selectSingleClick = new Select();
 
 // select interaction working on "click"
-var selectClick = new _ol_interaction_Select_({
+var selectClick = new Select({
   condition: _ol_events_condition_.click
 });
 
 // select interaction working on "pointermove"
-var selectPointerMove = new _ol_interaction_Select_({
+var selectPointerMove = new Select({
   condition: _ol_events_condition_.pointerMove
 });
 
-var selectAltClick = new _ol_interaction_Select_({
+var selectAltClick = new Select({
   condition: function(mapBrowserEvent) {
     return _ol_events_condition_.click(mapBrowserEvent) &&
         _ol_events_condition_.altKeyOnly(mapBrowserEvent);

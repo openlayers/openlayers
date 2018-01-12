@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 
 /**
  * @classdesc
@@ -19,7 +19,7 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
  */
 var PinchZoom = function(opt_options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: PinchZoom.handleDownEvent_,
     handleDragEvent: PinchZoom.handleDragEvent_,
     handleUpEvent: PinchZoom.handleUpEvent_
@@ -59,7 +59,7 @@ var PinchZoom = function(opt_options) {
 
 };
 
-inherits(PinchZoom, _ol_interaction_Pointer_);
+inherits(PinchZoom, PointerInteraction);
 
 
 /**
@@ -104,7 +104,7 @@ PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   // scale anchor point.
   var viewportPosition = map.getViewport().getBoundingClientRect();
-  var centroid = _ol_interaction_Pointer_.centroid(this.targetPointers);
+  var centroid = PointerInteraction.centroid(this.targetPointers);
   centroid[0] -= viewportPosition.left;
   centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);

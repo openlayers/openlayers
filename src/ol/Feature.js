@@ -7,7 +7,7 @@ import EventType from './events/EventType.js';
 import {inherits} from './index.js';
 import BaseObject from './Object.js';
 import Geometry from './geom/Geometry.js';
-import _ol_style_Style_ from './style/Style.js';
+import Style from './style/Style.js';
 
 /**
  * @classdesc
@@ -307,7 +307,7 @@ Feature.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      assert(obj instanceof _ol_style_Style_,
+      assert(obj instanceof Style,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }

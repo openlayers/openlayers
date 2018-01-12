@@ -1,4 +1,4 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
@@ -9,9 +9,9 @@ import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_interaction_Modify_ from '../../../../src/ol/interaction/Modify.js';
+import Modify from '../../../../src/ol/interaction/Modify.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
@@ -81,7 +81,7 @@ describe('ol.interaction.Modify', function() {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
-    var pointerEvent = new _ol_pointer_PointerEvent_(type, {
+    var pointerEvent = new PointerEvent(type, {
       type: type,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
@@ -130,11 +130,11 @@ describe('ol.interaction.Modify', function() {
     var endevent = events[events.length - 1];
 
     // first event should be modifystary
-    expect(startevent).to.be.an(_ol_interaction_Modify_.Event);
+    expect(startevent).to.be.an(Modify.Event);
     expect(startevent.type).to.eql('modifystart');
 
     // last event should be modifyend
-    expect(endevent).to.be.an(_ol_interaction_Modify_.Event);
+    expect(endevent).to.be.an(Modify.Event);
     expect(endevent.type).to.eql('modifyend');
 
     // make sure we get change events to events array
@@ -153,8 +153,8 @@ describe('ol.interaction.Modify', function() {
     it('adds features to the RTree', function() {
       var feature = new Feature(
           new Point([0, 0]));
-      var features = new _ol_Collection_([feature]);
-      var modify = new _ol_interaction_Modify_({
+      var features = new Collection([feature]);
+      var modify = new Modify({
         features: features
       });
       var rbushEntries = modify.rBush_.getAll();
@@ -164,8 +164,8 @@ describe('ol.interaction.Modify', function() {
 
     it('accepts feature without geometry', function() {
       var feature = new Feature();
-      var features = new _ol_Collection_([feature]);
-      var modify = new _ol_interaction_Modify_({
+      var features = new Collection([feature]);
+      var modify = new Modify({
         features: features
       });
       var rbushEntries = modify.rBush_.getAll();
@@ -181,7 +181,7 @@ describe('ol.interaction.Modify', function() {
       var feature = new Feature(
           new Point([0, 0]));
       var source = new VectorSource({features: [feature]});
-      var modify = new _ol_interaction_Modify_({source: source});
+      var modify = new Modify({source: source});
       var rbushEntries = modify.rBush_.getAll();
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
@@ -199,8 +199,8 @@ describe('ol.interaction.Modify', function() {
       var second = features[1];
       var secondRevision = second.getGeometry().getRevision();
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -237,8 +237,8 @@ describe('ol.interaction.Modify', function() {
       var first = features[0];
       var firstRevision = first.getGeometry().getRevision();
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -273,8 +273,8 @@ describe('ol.interaction.Modify', function() {
       var first = features[0];
       var firstRevision = first.getGeometry().getRevision();
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -309,8 +309,8 @@ describe('ol.interaction.Modify', function() {
       var first = features[0];
       var firstRevision = first.getGeometry().getRevision();
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -347,8 +347,8 @@ describe('ol.interaction.Modify', function() {
       features.length = 0;
       features.push(lineFeature);
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -386,8 +386,8 @@ describe('ol.interaction.Modify', function() {
       features.length = 0;
       features.push(circleFeature);
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -417,8 +417,8 @@ describe('ol.interaction.Modify', function() {
     var modify, feature, events;
 
     beforeEach(function() {
-      modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -522,8 +522,8 @@ describe('ol.interaction.Modify', function() {
     var modify, feature, events;
 
     beforeEach(function() {
-      modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features),
+      modify = new Modify({
+        features: new Collection(features),
         deleteCondition: _ol_events_condition_.doubleClick
       });
       map.addInteraction(modify);
@@ -575,8 +575,8 @@ describe('ol.interaction.Modify', function() {
         return false;
       });
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features),
+      var modify = new Modify({
+        features: new Collection(features),
         insertVertexCondition: listenerSpy
       });
       map.addInteraction(modify);
@@ -621,8 +621,8 @@ describe('ol.interaction.Modify', function() {
       features.length = 0;
       features.push(feature);
 
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -657,8 +657,8 @@ describe('ol.interaction.Modify', function() {
     });
 
     it('updates polygon segment data', function() {
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
 
@@ -697,8 +697,8 @@ describe('ol.interaction.Modify', function() {
 
   describe('#setActive', function() {
     it('removes the vertexFeature of deactivation', function() {
-      var modify = new _ol_interaction_Modify_({
-        features: new _ol_Collection_(features)
+      var modify = new Modify({
+        features: new Collection(features)
       });
       map.addInteraction(modify);
       expect(modify.vertexFeature_).to.be(null);

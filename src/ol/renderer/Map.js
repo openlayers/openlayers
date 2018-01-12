@@ -7,7 +7,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
-import _ol_layer_Layer_ from '../layer/Layer.js';
+import Layer from '../layer/Layer.js';
 import {getLayerRendererPlugins} from '../plugins.js';
 import {iconImageCache} from '../style.js';
 import _ol_transform_ from '../transform.js';
@@ -141,7 +141,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) &&
+    if (Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       if (layer.getSource()) {

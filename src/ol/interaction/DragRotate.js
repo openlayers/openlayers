@@ -7,7 +7,7 @@ import ViewHint from '../ViewHint.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 
 /**
  * @classdesc
@@ -26,7 +26,7 @@ var DragRotate = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: DragRotate.handleDownEvent_,
     handleDragEvent: DragRotate.handleDragEvent_,
     handleUpEvent: DragRotate.handleUpEvent_
@@ -52,7 +52,7 @@ var DragRotate = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 };
 
-inherits(DragRotate, _ol_interaction_Pointer_);
+inherits(DragRotate, PointerInteraction);
 
 
 /**

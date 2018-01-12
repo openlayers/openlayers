@@ -5,11 +5,11 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
 var openSansAdded = false;
 
@@ -109,13 +109,13 @@ var createTextStyle = function(feature, resolution, dom) {
   var outlineColor = dom.outline.value;
   var outlineWidth = parseInt(dom.outlineWidth.value, 10);
 
-  return new _ol_style_Text_({
+  return new Text({
     textAlign: align == '' ? undefined : align,
     textBaseline: baseline,
     font: font,
     text: getText(feature, resolution, dom),
-    fill: new _ol_style_Fill_({color: fillColor}),
-    stroke: new _ol_style_Stroke_({color: outlineColor, width: outlineWidth}),
+    fill: new Fill({color: fillColor}),
+    stroke: new Stroke({color: outlineColor, width: outlineWidth}),
     offsetX: offsetX,
     offsetY: offsetY,
     placement: placement,
@@ -128,12 +128,12 @@ var createTextStyle = function(feature, resolution, dom) {
 
 // Polygons
 function polygonStyleFunction(feature, resolution) {
-  return new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  return new Style({
+    stroke: new Stroke({
       color: 'blue',
       width: 1
     }),
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'rgba(0, 0, 255, 0.1)'
     }),
     text: createTextStyle(feature, resolution, myDom.polygons)
@@ -151,8 +151,8 @@ var vectorPolygons = new VectorLayer({
 
 // Lines
 function lineStyleFunction(feature, resolution) {
-  return new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  return new Style({
+    stroke: new Stroke({
       color: 'green',
       width: 2
     }),
@@ -171,11 +171,11 @@ var vectorLines = new VectorLayer({
 
 // Points
 function pointStyleFunction(feature, resolution) {
-  return new _ol_style_Style_({
-    image: new _ol_style_Circle_({
+  return new Style({
+    image: new CircleStyle({
       radius: 10,
-      fill: new _ol_style_Fill_({color: 'rgba(255, 0, 0, 0.1)'}),
-      stroke: new _ol_style_Stroke_({color: 'red', width: 1})
+      fill: new Fill({color: 'rgba(255, 0, 0, 0.1)'}),
+      stroke: new Stroke({color: 'red', width: 1})
     }),
     text: createTextStyle(feature, resolution, myDom.points)
   });

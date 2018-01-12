@@ -7,11 +7,11 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Icon from '../src/ol/style/Icon.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 // This long string is placed here due to jsFiddle limitations.
 // It is usually loaded with AJAX.
@@ -85,23 +85,23 @@ var endMarker = new Feature({
 });
 
 var styles = {
-  'route': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'route': new Style({
+    stroke: new Stroke({
       width: 6, color: [237, 212, 0, 0.8]
     })
   }),
-  'icon': new _ol_style_Style_({
-    image: new _ol_style_Icon_({
+  'icon': new Style({
+    image: new Icon({
       anchor: [0.5, 1],
       src: 'data/icon.png'
     })
   }),
-  'geoMarker': new _ol_style_Style_({
-    image: new _ol_style_Circle_({
+  'geoMarker': new Style({
+    image: new CircleStyle({
       radius: 7,
       snapToPixel: false,
-      fill: new _ol_style_Fill_({color: 'black'}),
-      stroke: new _ol_style_Stroke_({
+      fill: new Fill({color: 'black'}),
+      stroke: new Stroke({
         color: 'white', width: 2
       })
     })

@@ -1,7 +1,7 @@
 /**
  * @module ol/style/Text
  */
-import _ol_style_Fill_ from '../style/Fill.js';
+import Fill from '../style/Fill.js';
 import TextPlacement from '../style/TextPlacement.js';
 
 /**
@@ -12,7 +12,7 @@ import TextPlacement from '../style/TextPlacement.js';
  * @param {olx.style.TextOptions=} opt_options Options.
  * @api
  */
-var _ol_style_Text_ = function(opt_options) {
+var Text = function(opt_options) {
 
   var options = opt_options || {};
 
@@ -63,7 +63,7 @@ var _ol_style_Text_ = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
-    new _ol_style_Fill_({color: _ol_style_Text_.DEFAULT_FILL_COLOR_});
+    new Fill({color: Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
@@ -128,7 +128,7 @@ var _ol_style_Text_ = function(opt_options) {
  * @const {string}
  * @private
  */
-_ol_style_Text_.DEFAULT_FILL_COLOR_ = '#333';
+Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
@@ -136,8 +136,8 @@ _ol_style_Text_.DEFAULT_FILL_COLOR_ = '#333';
  * @return {ol.style.Text} The cloned style.
  * @api
  */
-_ol_style_Text_.prototype.clone = function() {
-  return new _ol_style_Text_({
+Text.prototype.clone = function() {
+  return new Text({
     font: this.getFont(),
     placement: this.getPlacement(),
     maxAngle: this.getMaxAngle(),
@@ -163,7 +163,7 @@ _ol_style_Text_.prototype.clone = function() {
  * @return {boolean} Let text overflow the length of the path they follow.
  * @api
  */
-_ol_style_Text_.prototype.getOverflow = function() {
+Text.prototype.getOverflow = function() {
   return this.overflow_;
 };
 
@@ -173,7 +173,7 @@ _ol_style_Text_.prototype.getOverflow = function() {
  * @return {string|undefined} Font.
  * @api
  */
-_ol_style_Text_.prototype.getFont = function() {
+Text.prototype.getFont = function() {
   return this.font_;
 };
 
@@ -183,7 +183,7 @@ _ol_style_Text_.prototype.getFont = function() {
  * @return {number} Angle in radians.
  * @api
  */
-_ol_style_Text_.prototype.getMaxAngle = function() {
+Text.prototype.getMaxAngle = function() {
   return this.maxAngle_;
 };
 
@@ -193,7 +193,7 @@ _ol_style_Text_.prototype.getMaxAngle = function() {
  * @return {ol.style.TextPlacement|string} Text placement.
  * @api
  */
-_ol_style_Text_.prototype.getPlacement = function() {
+Text.prototype.getPlacement = function() {
   return this.placement_;
 };
 
@@ -203,7 +203,7 @@ _ol_style_Text_.prototype.getPlacement = function() {
  * @return {number} Horizontal text offset.
  * @api
  */
-_ol_style_Text_.prototype.getOffsetX = function() {
+Text.prototype.getOffsetX = function() {
   return this.offsetX_;
 };
 
@@ -213,7 +213,7 @@ _ol_style_Text_.prototype.getOffsetX = function() {
  * @return {number} Vertical text offset.
  * @api
  */
-_ol_style_Text_.prototype.getOffsetY = function() {
+Text.prototype.getOffsetY = function() {
   return this.offsetY_;
 };
 
@@ -223,7 +223,7 @@ _ol_style_Text_.prototype.getOffsetY = function() {
  * @return {ol.style.Fill} Fill style.
  * @api
  */
-_ol_style_Text_.prototype.getFill = function() {
+Text.prototype.getFill = function() {
   return this.fill_;
 };
 
@@ -233,7 +233,7 @@ _ol_style_Text_.prototype.getFill = function() {
  * @return {boolean|undefined} Rotate with map.
  * @api
  */
-_ol_style_Text_.prototype.getRotateWithView = function() {
+Text.prototype.getRotateWithView = function() {
   return this.rotateWithView_;
 };
 
@@ -243,7 +243,7 @@ _ol_style_Text_.prototype.getRotateWithView = function() {
  * @return {number|undefined} Rotation.
  * @api
  */
-_ol_style_Text_.prototype.getRotation = function() {
+Text.prototype.getRotation = function() {
   return this.rotation_;
 };
 
@@ -253,7 +253,7 @@ _ol_style_Text_.prototype.getRotation = function() {
  * @return {number|undefined} Scale.
  * @api
  */
-_ol_style_Text_.prototype.getScale = function() {
+Text.prototype.getScale = function() {
   return this.scale_;
 };
 
@@ -263,7 +263,7 @@ _ol_style_Text_.prototype.getScale = function() {
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
-_ol_style_Text_.prototype.getStroke = function() {
+Text.prototype.getStroke = function() {
   return this.stroke_;
 };
 
@@ -273,7 +273,7 @@ _ol_style_Text_.prototype.getStroke = function() {
  * @return {string|undefined} Text.
  * @api
  */
-_ol_style_Text_.prototype.getText = function() {
+Text.prototype.getText = function() {
   return this.text_;
 };
 
@@ -283,7 +283,7 @@ _ol_style_Text_.prototype.getText = function() {
  * @return {string|undefined} Text align.
  * @api
  */
-_ol_style_Text_.prototype.getTextAlign = function() {
+Text.prototype.getTextAlign = function() {
   return this.textAlign_;
 };
 
@@ -293,7 +293,7 @@ _ol_style_Text_.prototype.getTextAlign = function() {
  * @return {string|undefined} Text baseline.
  * @api
  */
-_ol_style_Text_.prototype.getTextBaseline = function() {
+Text.prototype.getTextBaseline = function() {
   return this.textBaseline_;
 };
 
@@ -303,7 +303,7 @@ _ol_style_Text_.prototype.getTextBaseline = function() {
  * @return {ol.style.Fill} Fill style.
  * @api
  */
-_ol_style_Text_.prototype.getBackgroundFill = function() {
+Text.prototype.getBackgroundFill = function() {
   return this.backgroundFill_;
 };
 
@@ -313,7 +313,7 @@ _ol_style_Text_.prototype.getBackgroundFill = function() {
  * @return {ol.style.Stroke} Stroke style.
  * @api
  */
-_ol_style_Text_.prototype.getBackgroundStroke = function() {
+Text.prototype.getBackgroundStroke = function() {
   return this.backgroundStroke_;
 };
 
@@ -323,7 +323,7 @@ _ol_style_Text_.prototype.getBackgroundStroke = function() {
  * @return {Array.<number>} Padding.
  * @api
  */
-_ol_style_Text_.prototype.getPadding = function() {
+Text.prototype.getPadding = function() {
   return this.padding_;
 };
 
@@ -334,7 +334,7 @@ _ol_style_Text_.prototype.getPadding = function() {
  * @param {boolean} overflow Let text overflow the path that it follows.
  * @api
  */
-_ol_style_Text_.prototype.setOverflow = function(overflow) {
+Text.prototype.setOverflow = function(overflow) {
   this.overflow_ = overflow;
 };
 
@@ -345,7 +345,7 @@ _ol_style_Text_.prototype.setOverflow = function(overflow) {
  * @param {string|undefined} font Font.
  * @api
  */
-_ol_style_Text_.prototype.setFont = function(font) {
+Text.prototype.setFont = function(font) {
   this.font_ = font;
 };
 
@@ -356,7 +356,7 @@ _ol_style_Text_.prototype.setFont = function(font) {
  * @param {number} maxAngle Angle in radians.
  * @api
  */
-_ol_style_Text_.prototype.setMaxAngle = function(maxAngle) {
+Text.prototype.setMaxAngle = function(maxAngle) {
   this.maxAngle_ = maxAngle;
 };
 
@@ -367,7 +367,7 @@ _ol_style_Text_.prototype.setMaxAngle = function(maxAngle) {
  * @param {number} offsetX Horizontal text offset.
  * @api
  */
-_ol_style_Text_.prototype.setOffsetX = function(offsetX) {
+Text.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
 };
 
@@ -378,7 +378,7 @@ _ol_style_Text_.prototype.setOffsetX = function(offsetX) {
  * @param {number} offsetY Vertical text offset.
  * @api
  */
-_ol_style_Text_.prototype.setOffsetY = function(offsetY) {
+Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
 };
 
@@ -389,7 +389,7 @@ _ol_style_Text_.prototype.setOffsetY = function(offsetY) {
  * @param {ol.style.TextPlacement|string} placement Placement.
  * @api
  */
-_ol_style_Text_.prototype.setPlacement = function(placement) {
+Text.prototype.setPlacement = function(placement) {
   this.placement_ = placement;
 };
 
@@ -400,7 +400,7 @@ _ol_style_Text_.prototype.setPlacement = function(placement) {
  * @param {ol.style.Fill} fill Fill style.
  * @api
  */
-_ol_style_Text_.prototype.setFill = function(fill) {
+Text.prototype.setFill = function(fill) {
   this.fill_ = fill;
 };
 
@@ -411,7 +411,7 @@ _ol_style_Text_.prototype.setFill = function(fill) {
  * @param {number|undefined} rotation Rotation.
  * @api
  */
-_ol_style_Text_.prototype.setRotation = function(rotation) {
+Text.prototype.setRotation = function(rotation) {
   this.rotation_ = rotation;
 };
 
@@ -422,7 +422,7 @@ _ol_style_Text_.prototype.setRotation = function(rotation) {
  * @param {number|undefined} scale Scale.
  * @api
  */
-_ol_style_Text_.prototype.setScale = function(scale) {
+Text.prototype.setScale = function(scale) {
   this.scale_ = scale;
 };
 
@@ -433,7 +433,7 @@ _ol_style_Text_.prototype.setScale = function(scale) {
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
  */
-_ol_style_Text_.prototype.setStroke = function(stroke) {
+Text.prototype.setStroke = function(stroke) {
   this.stroke_ = stroke;
 };
 
@@ -444,7 +444,7 @@ _ol_style_Text_.prototype.setStroke = function(stroke) {
  * @param {string|undefined} text Text.
  * @api
  */
-_ol_style_Text_.prototype.setText = function(text) {
+Text.prototype.setText = function(text) {
   this.text_ = text;
 };
 
@@ -455,7 +455,7 @@ _ol_style_Text_.prototype.setText = function(text) {
  * @param {string|undefined} textAlign Text align.
  * @api
  */
-_ol_style_Text_.prototype.setTextAlign = function(textAlign) {
+Text.prototype.setTextAlign = function(textAlign) {
   this.textAlign_ = textAlign;
 };
 
@@ -466,7 +466,7 @@ _ol_style_Text_.prototype.setTextAlign = function(textAlign) {
  * @param {string|undefined} textBaseline Text baseline.
  * @api
  */
-_ol_style_Text_.prototype.setTextBaseline = function(textBaseline) {
+Text.prototype.setTextBaseline = function(textBaseline) {
   this.textBaseline_ = textBaseline;
 };
 
@@ -477,7 +477,7 @@ _ol_style_Text_.prototype.setTextBaseline = function(textBaseline) {
  * @param {ol.style.Fill} fill Fill style.
  * @api
  */
-_ol_style_Text_.prototype.setBackgroundFill = function(fill) {
+Text.prototype.setBackgroundFill = function(fill) {
   this.backgroundFill_ = fill;
 };
 
@@ -488,7 +488,7 @@ _ol_style_Text_.prototype.setBackgroundFill = function(fill) {
  * @param {ol.style.Stroke} stroke Stroke style.
  * @api
  */
-_ol_style_Text_.prototype.setBackgroundStroke = function(stroke) {
+Text.prototype.setBackgroundStroke = function(stroke) {
   this.backgroundStroke_ = stroke;
 };
 
@@ -499,7 +499,7 @@ _ol_style_Text_.prototype.setBackgroundStroke = function(stroke) {
  * @param {!Array.<number>} padding Padding.
  * @api
  */
-_ol_style_Text_.prototype.setPadding = function(padding) {
+Text.prototype.setPadding = function(padding) {
   this.padding_ = padding;
 };
-export default _ol_style_Text_;
+export default Text;

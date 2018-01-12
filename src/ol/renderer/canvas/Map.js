@@ -8,11 +8,11 @@ import {inherits} from '../../index.js';
 import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
-import _ol_layer_Layer_ from '../../layer/Layer.js';
-import _ol_render_Event_ from '../../render/Event.js';
+import Layer from '../../layer/Layer.js';
+import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
-import _ol_render_canvas_Immediate_ from '../../render/canvas/Immediate.js';
+import CanvasImmediateRenderer from '../../render/canvas/Immediate.js';
 import MapRenderer from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
@@ -100,9 +100,9 @@ CanvasMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
 
     var transform = this.getTransform(frameState);
 
-    var vectorContext = new _ol_render_canvas_Immediate_(context, pixelRatio,
+    var vectorContext = new CanvasImmediateRenderer(context, pixelRatio,
         extent, transform, rotation);
-    var composeEvent = new _ol_render_Event_(type, vectorContext,
+    var composeEvent = new RenderEvent(type, vectorContext,
         frameState, context, null);
     map.dispatchEvent(composeEvent);
   }
@@ -179,7 +179,7 @@ CanvasMapRenderer.prototype.renderFrame = function(frameState) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
-    if (!_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) ||
+    if (!Layer.visibleAtResolution(layerState, viewResolution) ||
         layerState.sourceState != SourceState.READY) {
       continue;
     }
@@ -223,7 +223,7 @@ CanvasMapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (_ol_layer_Layer_.visibleAtResolution(layerState, viewResolution) &&
+    if (Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
       result = layerRenderer.forEachLayerAtCoordinate(

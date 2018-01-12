@@ -12,7 +12,7 @@
  * @param {ol.StyleImageOptions} options Options.
  * @api
  */
-var _ol_style_Image_ = function(options) {
+var ImageStyle = function(options) {
 
   /**
    * @private
@@ -52,7 +52,7 @@ var _ol_style_Image_ = function(options) {
  * @return {number} Opacity.
  * @api
  */
-_ol_style_Image_.prototype.getOpacity = function() {
+ImageStyle.prototype.getOpacity = function() {
   return this.opacity_;
 };
 
@@ -62,7 +62,7 @@ _ol_style_Image_.prototype.getOpacity = function() {
  * @return {boolean} Rotate with map.
  * @api
  */
-_ol_style_Image_.prototype.getRotateWithView = function() {
+ImageStyle.prototype.getRotateWithView = function() {
   return this.rotateWithView_;
 };
 
@@ -72,7 +72,7 @@ _ol_style_Image_.prototype.getRotateWithView = function() {
  * @return {number} Rotation.
  * @api
  */
-_ol_style_Image_.prototype.getRotation = function() {
+ImageStyle.prototype.getRotation = function() {
   return this.rotation_;
 };
 
@@ -82,7 +82,7 @@ _ol_style_Image_.prototype.getRotation = function() {
  * @return {number} Scale.
  * @api
  */
-_ol_style_Image_.prototype.getScale = function() {
+ImageStyle.prototype.getScale = function() {
   return this.scale_;
 };
 
@@ -92,7 +92,7 @@ _ol_style_Image_.prototype.getScale = function() {
  * @return {boolean} The symbolizer should snap to a pixel.
  * @api
  */
-_ol_style_Image_.prototype.getSnapToPixel = function() {
+ImageStyle.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;
 };
 
@@ -103,7 +103,7 @@ _ol_style_Image_.prototype.getSnapToPixel = function() {
  * @abstract
  * @return {Array.<number>} Anchor.
  */
-_ol_style_Image_.prototype.getAnchor = function() {};
+ImageStyle.prototype.getAnchor = function() {};
 
 
 /**
@@ -112,7 +112,7 @@ _ol_style_Image_.prototype.getAnchor = function() {};
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
-_ol_style_Image_.prototype.getImage = function(pixelRatio) {};
+ImageStyle.prototype.getImage = function(pixelRatio) {};
 
 
 /**
@@ -120,28 +120,28 @@ _ol_style_Image_.prototype.getImage = function(pixelRatio) {};
  * @param {number} pixelRatio Pixel ratio.
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Image element.
  */
-_ol_style_Image_.prototype.getHitDetectionImage = function(pixelRatio) {};
+ImageStyle.prototype.getHitDetectionImage = function(pixelRatio) {};
 
 
 /**
  * @abstract
  * @return {ol.ImageState} Image state.
  */
-_ol_style_Image_.prototype.getImageState = function() {};
+ImageStyle.prototype.getImageState = function() {};
 
 
 /**
  * @abstract
  * @return {ol.Size} Image size.
  */
-_ol_style_Image_.prototype.getImageSize = function() {};
+ImageStyle.prototype.getImageSize = function() {};
 
 
 /**
  * @abstract
  * @return {ol.Size} Size of the hit-detection image.
  */
-_ol_style_Image_.prototype.getHitDetectionImageSize = function() {};
+ImageStyle.prototype.getHitDetectionImageSize = function() {};
 
 
 /**
@@ -149,7 +149,7 @@ _ol_style_Image_.prototype.getHitDetectionImageSize = function() {};
  * @abstract
  * @return {Array.<number>} Origin.
  */
-_ol_style_Image_.prototype.getOrigin = function() {};
+ImageStyle.prototype.getOrigin = function() {};
 
 
 /**
@@ -157,7 +157,7 @@ _ol_style_Image_.prototype.getOrigin = function() {};
  * @abstract
  * @return {ol.Size} Size.
  */
-_ol_style_Image_.prototype.getSize = function() {};
+ImageStyle.prototype.getSize = function() {};
 
 
 /**
@@ -166,7 +166,7 @@ _ol_style_Image_.prototype.getSize = function() {};
  * @param {number} opacity Opacity.
  * @api
  */
-_ol_style_Image_.prototype.setOpacity = function(opacity) {
+ImageStyle.prototype.setOpacity = function(opacity) {
   this.opacity_ = opacity;
 };
 
@@ -176,7 +176,7 @@ _ol_style_Image_.prototype.setOpacity = function(opacity) {
  *
  * @param {boolean} rotateWithView Rotate with map.
  */
-_ol_style_Image_.prototype.setRotateWithView = function(rotateWithView) {
+ImageStyle.prototype.setRotateWithView = function(rotateWithView) {
   this.rotateWithView_ = rotateWithView;
 };
 
@@ -187,7 +187,7 @@ _ol_style_Image_.prototype.setRotateWithView = function(rotateWithView) {
  * @param {number} rotation Rotation.
  * @api
  */
-_ol_style_Image_.prototype.setRotation = function(rotation) {
+ImageStyle.prototype.setRotation = function(rotation) {
   this.rotation_ = rotation;
 };
 
@@ -198,7 +198,7 @@ _ol_style_Image_.prototype.setRotation = function(rotation) {
  * @param {number} scale Scale.
  * @api
  */
-_ol_style_Image_.prototype.setScale = function(scale) {
+ImageStyle.prototype.setScale = function(scale) {
   this.scale_ = scale;
 };
 
@@ -208,7 +208,7 @@ _ol_style_Image_.prototype.setScale = function(scale) {
  *
  * @param {boolean} snapToPixel Snap to pixel?
  */
-_ol_style_Image_.prototype.setSnapToPixel = function(snapToPixel) {
+ImageStyle.prototype.setSnapToPixel = function(snapToPixel) {
   this.snapToPixel_ = snapToPixel;
 };
 
@@ -220,14 +220,14 @@ _ol_style_Image_.prototype.setSnapToPixel = function(snapToPixel) {
  * @return {ol.EventsKey|undefined} Listener key.
  * @template T
  */
-_ol_style_Image_.prototype.listenImageChange = function(listener, thisArg) {};
+ImageStyle.prototype.listenImageChange = function(listener, thisArg) {};
 
 
 /**
  * Load not yet loaded URI.
  * @abstract
  */
-_ol_style_Image_.prototype.load = function() {};
+ImageStyle.prototype.load = function() {};
 
 
 /**
@@ -236,5 +236,5 @@ _ol_style_Image_.prototype.load = function() {};
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @template T
  */
-_ol_style_Image_.prototype.unlistenImageChange = function(listener, thisArg) {};
-export default _ol_style_Image_;
+ImageStyle.prototype.unlistenImageChange = function(listener, thisArg) {};
+export default ImageStyle;

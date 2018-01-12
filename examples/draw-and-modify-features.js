@@ -1,16 +1,16 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
   source: new OSM()
@@ -19,17 +19,17 @@ var raster = new TileLayer({
 var source = new VectorSource();
 var vector = new VectorLayer({
   source: source,
-  style: new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  style: new Style({
+    fill: new Fill({
       color: 'rgba(255, 255, 255, 0.2)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#ffcc33',
       width: 2
     }),
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 7,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: '#ffcc33'
       })
     })
@@ -45,7 +45,7 @@ var map = new Map({
   })
 });
 
-var modify = new _ol_interaction_Modify_({source: source});
+var modify = new Modify({source: source});
 map.addInteraction(modify);
 
 var draw, snap; // global so we can remove them later
@@ -57,7 +57,7 @@ function addInteractions() {
     type: typeSelect.value
   });
   map.addInteraction(draw);
-  snap = new _ol_interaction_Snap_({source: source});
+  snap = new Snap({source: source});
   map.addInteraction(snap);
 
 }

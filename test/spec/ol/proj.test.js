@@ -14,7 +14,7 @@ import {
 import {register} from '../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../src/ol/proj/EPSG3857.js';
 import _ol_proj_EPSG4326_ from '../../../src/ol/proj/EPSG4326.js';
-import _ol_proj_Projection_ from '../../../src/ol/proj/Projection.js';
+import Projection from '../../../src/ol/proj/Projection.js';
 
 
 describe('ol.proj', function() {
@@ -71,11 +71,11 @@ describe('ol.proj', function() {
     it('gives that custom 3413 is equivalent to self', function() {
       var code = 'EPSG:3413';
 
-      var source = new _ol_proj_Projection_({
+      var source = new Projection({
         code: code
       });
 
-      var destination = new _ol_proj_Projection_({
+      var destination = new Projection({
         code: code
       });
 
@@ -101,11 +101,11 @@ describe('ol.proj', function() {
 
     it('requires code and units to be equal for projection evquivalence',
         function() {
-          var proj1 = new _ol_proj_Projection_({
+          var proj1 = new Projection({
             code: 'EPSG:3857',
             units: 'm'
           });
-          var proj2 = new _ol_proj_Projection_({
+          var proj2 = new Projection({
             code: 'EPSG:3857',
             units: 'tile-pixels'
           });
@@ -194,14 +194,14 @@ describe('ol.proj', function() {
   describe('canWrapX()', function() {
 
     it('requires an extent for allowing wrapX', function() {
-      var proj = new _ol_proj_Projection_({
+      var proj = new Projection({
         code: 'foo',
         global: true
       });
       expect(proj.canWrapX()).to.be(false);
       proj.setExtent([1, 2, 3, 4]);
       expect(proj.canWrapX()).to.be(true);
-      proj = new _ol_proj_Projection_({
+      proj = new Projection({
         code: 'foo',
         global: true,
         extent: [1, 2, 3, 4]
@@ -212,14 +212,14 @@ describe('ol.proj', function() {
     });
 
     it('requires global to be true for allowing wrapX', function() {
-      var proj = new _ol_proj_Projection_({
+      var proj = new Projection({
         code: 'foo',
         extent: [1, 2, 3, 4]
       });
       expect(proj.canWrapX()).to.be(false);
       proj.setGlobal(true);
       expect(proj.canWrapX()).to.be(true);
-      proj = new _ol_proj_Projection_({
+      proj = new Projection({
         code: 'foo',
         global: true,
         extent: [1, 2, 3, 4]
@@ -395,7 +395,7 @@ describe('ol.proj', function() {
     it('does not overwrite existing projections in the registry', function() {
       register(proj4);
       var epsg4326 = getProjection('EPSG:4326');
-      new _ol_proj_Projection_({
+      new Projection({
         code: 'EPSG:4326',
         units: 'degrees',
         extent: [-45, -45, 45, 45]

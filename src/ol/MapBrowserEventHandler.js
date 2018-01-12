@@ -8,7 +8,7 @@ import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import _ol_events_ from './events.js';
 import EventTarget from './events/EventTarget.js';
 import PointerEventType from './pointer/EventType.js';
-import _ol_pointer_PointerEventHandler_ from './pointer/PointerEventHandler.js';
+import PointerEventHandler from './pointer/PointerEventHandler.js';
 
 /**
  * @param {ol.PluggableMap} map The map with the viewport to listen to events on.
@@ -81,7 +81,7 @@ var MapBrowserEventHandler = function(map, moveTolerance) {
    * @type {ol.pointer.PointerEventHandler}
    * @private
    */
-  this.pointerEventHandler_ = new _ol_pointer_PointerEventHandler_(element);
+  this.pointerEventHandler_ = new PointerEventHandler(element);
 
   /**
    * Event handler which generates pointer events for
@@ -218,7 +218,7 @@ MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
      * the viewport when dragging.
      */
     this.documentPointerEventHandler_ =
-        new _ol_pointer_PointerEventHandler_(document);
+        new PointerEventHandler(document);
 
     this.dragListenerKeys_.push(
         _ol_events_.listen(this.documentPointerEventHandler_,

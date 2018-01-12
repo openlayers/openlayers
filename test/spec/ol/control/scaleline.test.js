@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import ScaleLine from '../../../../src/ol/control/ScaleLine.js';
 import {fromLonLat} from '../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 
 describe('ol.control.ScaleLine', function() {
   var map;
@@ -272,7 +272,7 @@ describe('ol.control.ScaleLine', function() {
         center: [0, 0],
         zoom: 0,
         resolutions: [1],
-        projection: new _ol_proj_Projection_({
+        projection: new Projection({
           code: 'METERS',
           units: 'm',
           getPointResolution: function(r) {
@@ -286,7 +286,7 @@ describe('ol.control.ScaleLine', function() {
         center: [0, 0],
         zoom: 0,
         resolutions: [1],
-        projection: new _ol_proj_Projection_({
+        projection: new Projection({
           code: 'PIXELS',
           units: 'pixels',
           metersPerUnit: 1 / 1000,

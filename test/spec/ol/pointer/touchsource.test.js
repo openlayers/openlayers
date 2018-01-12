@@ -3,7 +3,7 @@ import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
-import _ol_pointer_PointerEventHandler_ from '../../../../src/ol/pointer/PointerEventHandler.js';
+import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
 describe('ol.pointer.TouchSource', function() {
   var handler;
   var target;
@@ -17,7 +17,7 @@ describe('ol.pointer.TouchSource', function() {
     _ol_has_.MSPOINTER = false;
     _ol_has_.TOUCH = true;
 
-    handler = new _ol_pointer_PointerEventHandler_(target);
+    handler = new PointerEventHandler(target);
     eventSpy = sinon.spy();
   });
 

@@ -10,9 +10,9 @@ import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
 import {clamp} from './math.js';
 import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
 import RenderEventType from './render/EventType.js';
-import _ol_style_Fill_ from './style/Fill.js';
-import _ol_style_Stroke_ from './style/Stroke.js';
-import _ol_style_Text_ from './style/Text.js';
+import Fill from './style/Fill.js';
+import Stroke from './style/Stroke.js';
+import Text from './style/Text.js';
 
 
 /**
@@ -20,7 +20,7 @@ import _ol_style_Text_ from './style/Text.js';
  * @private
  * @const
  */
-var DEFAULT_STROKE_STYLE = new _ol_style_Stroke_({
+var DEFAULT_STROKE_STYLE = new Stroke({
   color: 'rgba(0,0,0,0.2)'
 });
 
@@ -283,13 +283,13 @@ var Graticule = function(opt_options) {
      * @private
      */
     this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
-      new _ol_style_Text_({
+      new Text({
         font: '12px Calibri,sans-serif',
         textBaseline: 'bottom',
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(0,0,0,1)'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(255,255,255,1)',
           width: 3
         })
@@ -300,13 +300,13 @@ var Graticule = function(opt_options) {
      * @private
      */
     this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
-      new _ol_style_Text_({
+      new Text({
         font: '12px Calibri,sans-serif',
         textAlign: 'end',
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(0,0,0,1)'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(255,255,255,1)',
           width: 3
         })

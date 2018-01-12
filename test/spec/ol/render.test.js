@@ -1,7 +1,7 @@
 import {equals} from '../../../src/ol/array.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import _ol_render_ from '../../../src/ol/render.js';
-import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/Immediate.js';
+import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_transform_ from '../../../src/ol/transform.js';
 
 
@@ -12,7 +12,7 @@ describe('ol.render', function() {
     it('creates an ol.render.canvas.Immediate and sets defaults', function() {
       var canvas = document.createElement('canvas');
       var render = _ol_render_.toContext(canvas.getContext('2d'));
-      expect(render).to.be.a(_ol_render_canvas_Immediate_);
+      expect(render).to.be.a(CanvasImmediateRenderer);
       expect(render.pixelRatio_).to.be(_ol_has_.DEVICE_PIXEL_RATIO);
     });
 

@@ -4,7 +4,7 @@ import {defaults as defaultControls} from '../src/ol/control.js';
 import ScaleLine from '../src/ol/control/ScaleLine.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import {fromLonLat} from '../src/ol/proj.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import Projection from '../src/ol/proj/Projection.js';
 import ImageWMS from '../src/ol/source/ImageWMS.js';
 import {register} from '../src/ol/proj/proj4.js';
 import proj4 from 'proj4';
@@ -29,7 +29,7 @@ proj4.defs('EPSG:21781',
     '+towgs84=660.077,13.551,369.344,2.484,1.783,2.939,5.66 +units=m +no_defs');
 register(proj4);
 
-var projection = new _ol_proj_Projection_({
+var projection = new Projection({
   code: 'EPSG:21781',
   extent: [485869.5728, 76443.1884, 837076.5648, 299941.7864]
 });

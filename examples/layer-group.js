@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_layer_Group_ from '../src/ol/layer/Group.js';
+import LayerGroup from '../src/ol/layer/Group.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -10,7 +10,7 @@ var map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
-    }), new _ol_layer_Group_({
+    }), new LayerGroup({
       layers: [
         new TileLayer({
           source: new TileJSON({
@@ -49,7 +49,7 @@ function bindInputs(layerid, layer) {
 }
 map.getLayers().forEach(function(layer, i) {
   bindInputs('#layer' + i, layer);
-  if (layer instanceof _ol_layer_Group_) {
+  if (layer instanceof LayerGroup) {
     layer.getLayers().forEach(function(sublayer, j) {
       bindInputs('#layer' + i + j, sublayer);
     });

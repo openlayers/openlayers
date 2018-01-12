@@ -7,12 +7,12 @@ import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import VectorContext from '../../../../../src/ol/render/VectorContext.js';
-import _ol_render_canvas_Immediate_ from '../../../../../src/ol/render/canvas/Immediate.js';
-import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../../src/ol/style/Text.js';
+import CanvasImmediateRenderer from '../../../../../src/ol/render/canvas/Immediate.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
+import Style from '../../../../../src/ol/style/Style.js';
+import Text from '../../../../../src/ol/style/Text.js';
 
 
 describe('ol.render.canvas.Immediate', function() {
@@ -30,23 +30,23 @@ describe('ol.render.canvas.Immediate', function() {
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      var instance = new _ol_render_canvas_Immediate_();
-      expect(instance).to.be.a(_ol_render_canvas_Immediate_);
+      var instance = new CanvasImmediateRenderer();
+      expect(instance).to.be.a(CanvasImmediateRenderer);
       expect(instance).to.be.a(VectorContext);
     });
   });
 
   describe('#setStyle()', function() {
     it('calls the more specific methods with style parts', function() {
-      var context = new _ol_render_canvas_Immediate_();
+      var context = new CanvasImmediateRenderer();
       sinon.spy(context, 'setFillStrokeStyle');
       sinon.spy(context, 'setImageStyle');
       sinon.spy(context, 'setTextStyle');
-      var fill = new _ol_style_Fill_({});
-      var stroke = new _ol_style_Stroke_({});
-      var text = new _ol_style_Text_({});
-      var image = new _ol_style_Circle_({});
-      var style = new _ol_style_Style_({
+      var fill = new Fill({});
+      var stroke = new Stroke({});
+      var text = new Text({});
+      var image = new CircleStyle({});
+      var style = new Style({
         fill: fill,
         stroke: stroke,
         image: image,
@@ -68,7 +68,7 @@ describe('ol.render.canvas.Immediate', function() {
     var extent = [-10, -10, 10, 10];
 
     it('calls drawPoint() with a Point', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPoint');
 
       var geometry = new Point([1, 2]);
@@ -78,7 +78,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawLineString() with a LineString', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawLineString');
 
       var geometry = new LineString([[1, 2], [3, 4]]);
@@ -88,7 +88,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawPolygon() with a Polygon', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawPolygon');
 
       var geometry = new Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
@@ -98,7 +98,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawMultiPoint() with a MultiPoint', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPoint');
 
       var geometry = new MultiPoint([[1, 2], [3, 4]]);
@@ -108,7 +108,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawMultiLineString() with a MultiLineString', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiLineString');
 
       var geometry = new MultiLineString([[[1, 2], [3, 4]]]);
@@ -118,7 +118,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawMultiPolygon() with a MultiPolygon', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawMultiPolygon');
 
       var geometry = new MultiPolygon([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
@@ -128,7 +128,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawGeometryCollection() with a GeometryCollection', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawGeometryCollection');
       sinon.spy(context, 'drawPoint');
       sinon.spy(context, 'drawLineString');
@@ -151,7 +151,7 @@ describe('ol.render.canvas.Immediate', function() {
     });
 
     it('calls drawCircle() with a Circle', function() {
-      var context = new _ol_render_canvas_Immediate_(getMockContext(), 1, extent);
+      var context = new CanvasImmediateRenderer(getMockContext(), 1, extent);
       sinon.spy(context, 'drawCircle');
 
       var geometry = new Circle([0, 0]);
@@ -223,7 +223,7 @@ describe('ol.render.canvas.Immediate', function() {
         -7572748.158493212, 3741317.9895594316
       ];
 
-      var canvas = new _ol_render_canvas_Immediate_(context, 1, extent, transform);
+      var canvas = new CanvasImmediateRenderer(context, 1, extent, transform);
 
       canvas.strokeState_ = {
         lineCap: 'round',

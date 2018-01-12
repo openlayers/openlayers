@@ -5,10 +5,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
 var styleCache = {};
@@ -21,13 +21,13 @@ var styleFunction = function(feature) {
   var radius = 5 + 20 * (magnitude - 5);
   var style = styleCache[radius];
   if (!style) {
-    style = new _ol_style_Style_({
-      image: new _ol_style_Circle_({
+    style = new Style({
+      image: new CircleStyle({
         radius: radius,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(255, 153, 0, 0.4)'
         }),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           color: 'rgba(255, 204, 0, 0.2)',
           width: 1
         })

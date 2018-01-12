@@ -2,7 +2,7 @@
  * @module ol/style/Circle
  */
 import {inherits} from '../index.js';
-import _ol_style_RegularShape_ from '../style/RegularShape.js';
+import RegularShape from '../style/RegularShape.js';
 
 /**
  * @classdesc
@@ -13,11 +13,11 @@ import _ol_style_RegularShape_ from '../style/RegularShape.js';
  * @extends {ol.style.RegularShape}
  * @api
  */
-var _ol_style_Circle_ = function(opt_options) {
+var CircleStyle = function(opt_options) {
 
   var options = opt_options || {};
 
-  _ol_style_RegularShape_.call(this, {
+  RegularShape.call(this, {
     points: Infinity,
     fill: options.fill,
     radius: options.radius,
@@ -28,7 +28,7 @@ var _ol_style_Circle_ = function(opt_options) {
 
 };
 
-inherits(_ol_style_Circle_, _ol_style_RegularShape_);
+inherits(CircleStyle, RegularShape);
 
 
 /**
@@ -37,8 +37,8 @@ inherits(_ol_style_Circle_, _ol_style_RegularShape_);
  * @override
  * @api
  */
-_ol_style_Circle_.prototype.clone = function() {
-  var style = new _ol_style_Circle_({
+CircleStyle.prototype.clone = function() {
+  var style = new CircleStyle({
     fill: this.getFill() ? this.getFill().clone() : undefined,
     stroke: this.getStroke() ? this.getStroke().clone() : undefined,
     radius: this.getRadius(),
@@ -57,8 +57,8 @@ _ol_style_Circle_.prototype.clone = function() {
  * @param {number} radius Circle radius.
  * @api
  */
-_ol_style_Circle_.prototype.setRadius = function(radius) {
+CircleStyle.prototype.setRadius = function(radius) {
   this.radius_ = radius;
   this.render_(this.atlasManager_);
 };
-export default _ol_style_Circle_;
+export default CircleStyle;

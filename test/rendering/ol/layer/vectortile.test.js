@@ -4,14 +4,14 @@ import View from '../../../../src/ol/View.js';
 import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_layer_VectorTile_ from '../../../../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import _ol_obj_ from '../../../../src/ol/obj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import _ol_style_Circle_ from '../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../src/ol/style/Fill.js';
-import _ol_style_Style_ from '../../../../src/ol/style/Style.js';
-import _ol_style_Text_ from '../../../../src/ol/style/Text.js';
+import CircleStyle from '../../../../src/ol/style/Circle.js';
+import Fill from '../../../../src/ol/style/Fill.js';
+import Style from '../../../../src/ol/style/Style.js';
+import Text from '../../../../src/ol/style/Text.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 
@@ -62,7 +62,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       source: source
     };
     _ol_obj_.assign(options, layerOptions);
-    map.addLayer(new _ol_layer_VectorTile_(options));
+    map.addLayer(new VectorTileLayer(options));
   }
 
   describe('vector tile layer', function() {
@@ -104,10 +104,10 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.addLayer(new VectorLayer({
         zIndex: 1,
         source: vectorSource,
-        style: new _ol_style_Style_({
-          image: new _ol_style_Circle_({
+        style: new Style({
+          image: new CircleStyle({
             radius: 10,
-            fill: new _ol_style_Fill_({
+            fill: new Fill({
               color: 'red'
             })
           })
@@ -143,14 +143,14 @@ describe('ol.rendering.layer.VectorTile', function() {
       var style = function(feature, resolution) {
         var geom = feature.getGeometry();
         if (geom.getType() == 'Point') {
-          return new _ol_style_Style_({
-            image: new _ol_style_Circle_({
+          return new Style({
+            image: new CircleStyle({
               radius: 7,
-              fill: new _ol_style_Fill_({
+              fill: new Fill({
                 color: 'red'
               })
             }),
-            text: new _ol_style_Text_({
+            text: new Text({
               text: feature.get('name_en'),
               font: '12px sans-serif',
               textBaseline: 'bottom',

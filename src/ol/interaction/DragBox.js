@@ -5,7 +5,7 @@
 import Event from '../events/Event.js';
 import {inherits, nullFunction} from '../index.js';
 import _ol_events_condition_ from '../events/condition.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import _ol_render_Box_ from '../render/Box.js';
 
 /**
@@ -27,7 +27,7 @@ import _ol_render_Box_ from '../render/Box.js';
  */
 var DragBox = function(opt_options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: DragBox.handleDownEvent_,
     handleDragEvent: DragBox.handleDragEvent_,
     handleUpEvent: DragBox.handleUpEvent_
@@ -68,7 +68,7 @@ var DragBox = function(opt_options) {
     options.boxEndCondition : DragBox.defaultBoxEndCondition;
 };
 
-inherits(DragBox, _ol_interaction_Pointer_);
+inherits(DragBox, PointerInteraction);
 
 
 /**

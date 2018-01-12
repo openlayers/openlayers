@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import _ol_events_condition_ from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import DragBox from '../src/ol/interaction/DragBox.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
+import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -33,7 +33,7 @@ var map = new Map({
 });
 
 // a normal select interaction to handle click
-var select = new _ol_interaction_Select_();
+var select = new Select();
 map.addInteraction(select);
 
 var selectedFeatures = select.getFeatures();

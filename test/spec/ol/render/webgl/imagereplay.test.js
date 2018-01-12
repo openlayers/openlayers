@@ -1,13 +1,13 @@
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/ImageReplay.js';
-import _ol_style_Image_ from '../../../../../src/ol/style/Image.js';
+import ImageStyle from '../../../../../src/ol/style/Image.js';
 
 describe('ol.render.webgl.ImageReplay', function() {
   var replay;
 
   var createImageStyle = function(image) {
-    var imageStyle = new _ol_style_Image_({
+    var imageStyle = new ImageStyle({
       opacity: 0.1,
       rotateWithView: true,
       rotation: 1.5,

@@ -18,7 +18,7 @@ import EventType from './events/EventType.js';
  * @param {ol.TileState} state State.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var _ol_Tile_ = function(tileCoord, state, opt_options) {
+var Tile = function(tileCoord, state, opt_options) {
   EventTarget.call(this);
 
   var options = opt_options ? opt_options : {};
@@ -66,13 +66,13 @@ var _ol_Tile_ = function(tileCoord, state, opt_options) {
 
 };
 
-inherits(_ol_Tile_, EventTarget);
+inherits(Tile, EventTarget);
 
 
 /**
  * @protected
  */
-_ol_Tile_.prototype.changed = function() {
+Tile.prototype.changed = function() {
   this.dispatchEvent(EventType.CHANGE);
 };
 
@@ -80,7 +80,7 @@ _ol_Tile_.prototype.changed = function() {
 /**
  * @return {string} Key.
  */
-_ol_Tile_.prototype.getKey = function() {
+Tile.prototype.getKey = function() {
   return this.key + '/' + this.tileCoord;
 };
 
@@ -90,7 +90,7 @@ _ol_Tile_.prototype.getKey = function() {
  * such tile exists, the original tile is returned.
  * @return {!ol.Tile} Best tile for rendering.
  */
-_ol_Tile_.prototype.getInterimTile = function() {
+Tile.prototype.getInterimTile = function() {
   if (!this.interimTile) {
     //empty chain
     return this;
@@ -116,7 +116,7 @@ _ol_Tile_.prototype.getInterimTile = function() {
  * Goes through the chain of interim tiles and discards sections of the chain
  * that are no longer relevant.
  */
-_ol_Tile_.prototype.refreshInterimChain = function() {
+Tile.prototype.refreshInterimChain = function() {
   if (!this.interimTile) {
     return;
   }
@@ -151,7 +151,7 @@ _ol_Tile_.prototype.refreshInterimChain = function() {
  * @return {ol.TileCoord} The tile coordinate.
  * @api
  */
-_ol_Tile_.prototype.getTileCoord = function() {
+Tile.prototype.getTileCoord = function() {
   return this.tileCoord;
 };
 
@@ -159,14 +159,14 @@ _ol_Tile_.prototype.getTileCoord = function() {
 /**
  * @return {ol.TileState} State.
  */
-_ol_Tile_.prototype.getState = function() {
+Tile.prototype.getState = function() {
   return this.state;
 };
 
 /**
  * @param {ol.TileState} state State.
  */
-_ol_Tile_.prototype.setState = function(state) {
+Tile.prototype.setState = function(state) {
   this.state = state;
   this.changed();
 };
@@ -178,7 +178,7 @@ _ol_Tile_.prototype.setState = function(state) {
  * @abstract
  * @api
  */
-_ol_Tile_.prototype.load = function() {};
+Tile.prototype.load = function() {};
 
 /**
  * Get the alpha value for rendering.
@@ -186,7 +186,7 @@ _ol_Tile_.prototype.load = function() {};
  * @param {number} time The render frame time.
  * @return {number} A number between 0 and 1.
  */
-_ol_Tile_.prototype.getAlpha = function(id, time) {
+Tile.prototype.getAlpha = function(id, time) {
   if (!this.transition_) {
     return 1;
   }
@@ -213,7 +213,7 @@ _ol_Tile_.prototype.getAlpha = function(id, time) {
  * @param {number} id An id for the renderer.
  * @return {boolean} The tile is in transition.
  */
-_ol_Tile_.prototype.inTransition = function(id) {
+Tile.prototype.inTransition = function(id) {
   if (!this.transition_) {
     return false;
   }
@@ -224,9 +224,9 @@ _ol_Tile_.prototype.inTransition = function(id) {
  * Mark a transition as complete.
  * @param {number} id An id for the renderer.
  */
-_ol_Tile_.prototype.endTransition = function(id) {
+Tile.prototype.endTransition = function(id) {
   if (this.transition_) {
     this.transitionStarts_[id] = -1;
   }
 };
-export default _ol_Tile_;
+export default Tile;

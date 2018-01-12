@@ -5,8 +5,8 @@ import GeoJSON from '../src/ol/format/GeoJSON.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
+import Projection from '../src/ol/proj/Projection.js';
 
 
 var replacer = function(key, value) {
@@ -48,7 +48,7 @@ var replacer = function(key, value) {
   }
 };
 
-var tilePixels = new _ol_proj_Projection_({
+var tilePixels = new Projection({
   code: 'TILE_PIXELS',
   units: 'tile-pixels'
 });
@@ -93,7 +93,7 @@ fetch(url).then(function(response) {
     },
     url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
   });
-  var vectorLayer = new _ol_layer_VectorTile_({
+  var vectorLayer = new VectorTileLayer({
     source: vectorSource
   });
   map.addLayer(vectorLayer);

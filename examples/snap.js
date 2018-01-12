@@ -1,17 +1,17 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import Draw from '../src/ol/interaction/Draw.js';
-import _ol_interaction_Modify_ from '../src/ol/interaction/Modify.js';
-import _ol_interaction_Select_ from '../src/ol/interaction/Select.js';
-import _ol_interaction_Snap_ from '../src/ol/interaction/Snap.js';
+import Modify from '../src/ol/interaction/Modify.js';
+import Select from '../src/ol/interaction/Select.js';
+import Snap from '../src/ol/interaction/Snap.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
   source: new OSM()
@@ -19,17 +19,17 @@ var raster = new TileLayer({
 
 var vector = new VectorLayer({
   source: new VectorSource(),
-  style: new _ol_style_Style_({
-    fill: new _ol_style_Fill_({
+  style: new Style({
+    fill: new Fill({
       color: 'rgba(255, 255, 255, 0.2)'
     }),
-    stroke: new _ol_style_Stroke_({
+    stroke: new Stroke({
       color: '#ffcc33',
       width: 2
     }),
-    image: new _ol_style_Circle_({
+    image: new CircleStyle({
       radius: 7,
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: '#ffcc33'
       })
     })
@@ -45,12 +45,12 @@ var map = new Map({
   })
 });
 
-var Modify = {
+var ExampleModify = {
   init: function() {
-    this.select = new _ol_interaction_Select_();
+    this.select = new Select();
     map.addInteraction(this.select);
 
-    this.modify = new _ol_interaction_Modify_({
+    this.modify = new Modify({
       features: this.select.getFeatures()
     });
     map.addInteraction(this.modify);
@@ -69,7 +69,7 @@ var Modify = {
     this.modify.setActive(active);
   }
 };
-Modify.init();
+ExampleModify.init();
 
 var optionsForm = document.getElementById('options-form');
 
@@ -126,25 +126,25 @@ optionsForm.onchange = function(e) {
   var type = e.target.getAttribute('name');
   var value = e.target.value;
   if (type == 'draw-type') {
-    Draw.getActive() && Draw.setActive(true);
+    ExampleDraw.getActive() && ExampleDraw.setActive(true);
   } else if (type == 'interaction') {
     if (value == 'modify') {
-      Draw.setActive(false);
-      Modify.setActive(true);
+      ExampleDraw.setActive(false);
+      ExampleModify.setActive(true);
     } else if (value == 'draw') {
-      Draw.setActive(true);
-      Modify.setActive(false);
+      ExampleDraw.setActive(true);
+      ExampleModify.setActive(false);
     }
   }
 };
 
-Draw.setActive(true);
-Modify.setActive(false);
+ExampleDraw.setActive(true);
+ExampleModify.setActive(false);
 
 // The snap interaction must be added after the Modify and Draw interactions
 // in order for its map browser event handlers to be fired first. Its handlers
 // are responsible of doing the snapping.
-var snap = new _ol_interaction_Snap_({
+var snap = new Snap({
   source: vector.getSource()
 });
 map.addInteraction(snap);

@@ -2,15 +2,15 @@
  * @module ol/interaction/Translate
  */
 import {inherits} from '../index.js';
-import _ol_Collection_ from '../Collection.js';
+import Collection from '../Collection.js';
 import BaseObject from '../Object.js';
 import _ol_events_ from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 import InteractionProperty from '../interaction/Property.js';
-import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventType.js';
+import TranslateEventType from '../interaction/TranslateEventType.js';
 
 /**
  * @classdesc
@@ -23,7 +23,7 @@ import _ol_interaction_TranslateEventType_ from '../interaction/TranslateEventTy
  * @api
  */
 var _ol_interaction_Translate_ = function(opt_options) {
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: _ol_interaction_Translate_.handleDownEvent_,
     handleDragEvent: _ol_interaction_Translate_.handleDragEvent_,
     handleMoveEvent: _ol_interaction_Translate_.handleMoveEvent_,
@@ -85,7 +85,7 @@ var _ol_interaction_Translate_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Translate_, _ol_interaction_Pointer_);
+inherits(_ol_interaction_Translate_, PointerInteraction);
 
 
 /**
@@ -100,11 +100,11 @@ _ol_interaction_Translate_.handleDownEvent_ = function(event) {
     this.lastCoordinate_ = event.coordinate;
     _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
 
-    var features = this.features_ || new _ol_Collection_([this.lastFeature_]);
+    var features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATESTART, features,
+            TranslateEventType.TRANSLATESTART, features,
             event.coordinate));
     return true;
   }
@@ -123,11 +123,11 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
     this.lastCoordinate_ = null;
     _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
 
-    var features = this.features_ || new _ol_Collection_([this.lastFeature_]);
+    var features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATEEND, features,
+            TranslateEventType.TRANSLATEEND, features,
             event.coordinate));
     return true;
   }
@@ -146,7 +146,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    var features = this.features_ || new _ol_Collection_([this.lastFeature_]);
+    var features = this.features_ || new Collection([this.lastFeature_]);
 
     features.forEach(function(feature) {
       var geom = feature.getGeometry();
@@ -157,7 +157,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new _ol_interaction_Translate_.Event(
-            _ol_interaction_TranslateEventType_.TRANSLATING, features,
+            TranslateEventType.TRANSLATING, features,
             newCoordinate));
   }
 };
@@ -231,7 +231,7 @@ _ol_interaction_Translate_.prototype.setHitTolerance = function(hitTolerance) {
  */
 _ol_interaction_Translate_.prototype.setMap = function(map) {
   var oldMap = this.getMap();
-  _ol_interaction_Pointer_.prototype.setMap.call(this, map);
+  PointerInteraction.prototype.setMap.call(this, map);
   this.updateState_(oldMap);
 };
 

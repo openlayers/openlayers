@@ -8,67 +8,67 @@ import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
 import {transformExtent} from '../src/ol/proj.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var map;
 
 var styles = {
   'amenity': {
-    'parking': new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    'parking': new Style({
+      stroke: new Stroke({
         color: 'rgba(170, 170, 170, 1.0)',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(170, 170, 170, 0.3)'
       })
     })
   },
   'building': {
-    '.*': new _ol_style_Style_({
+    '.*': new Style({
       zIndex: 100,
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: 'rgba(246, 99, 79, 1.0)',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(246, 99, 79, 0.3)'
       })
     })
   },
   'highway': {
-    'service': new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    'service': new Style({
+      stroke: new Stroke({
         color: 'rgba(255, 255, 255, 1.0)',
         width: 2
       })
     }),
-    '.*': new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    '.*': new Style({
+      stroke: new Stroke({
         color: 'rgba(255, 255, 255, 1.0)',
         width: 3
       })
     })
   },
   'landuse': {
-    'forest|grass|allotments': new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    'forest|grass|allotments': new Style({
+      stroke: new Stroke({
         color: 'rgba(140, 208, 95, 1.0)',
         width: 1
       }),
-      fill: new _ol_style_Fill_({
+      fill: new Fill({
         color: 'rgba(140, 208, 95, 0.3)'
       })
     })
   },
   'natural': {
-    'tree': new _ol_style_Style_({
-      image: new _ol_style_Circle_({
+    'tree': new Style({
+      image: new CircleStyle({
         radius: 2,
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(140, 208, 95, 1.0)'
         }),
         stroke: null

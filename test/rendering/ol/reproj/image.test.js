@@ -1,7 +1,7 @@
 import _ol_events_ from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
-import _ol_reproj_Image_ from '../../../../src/ol/reproj/Image.js';
+import ReprojImage from '../../../../src/ol/reproj/Image.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
@@ -14,7 +14,7 @@ describe('ol.rendering.reproj.Image', function() {
 
     var imagesRequested = 0;
 
-    var image = new _ol_reproj_Image_(sourceProj, getProjection(targetProj),
+    var image = new ReprojImage(sourceProj, getProjection(targetProj),
         targetExtent, targetResolution, pixelRatio,
         function(extent, resolution, pixelRatio) {
           imagesRequested++;

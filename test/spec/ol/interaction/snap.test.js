@@ -1,11 +1,11 @@
-import _ol_Collection_ from '../../../../src/ol/Collection.js';
+import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
-import _ol_interaction_Snap_ from '../../../../src/ol/interaction/Snap.js';
+import Snap from '../../../../src/ol/interaction/Snap.js';
 
 
 describe('ol.interaction.Snap', function() {
@@ -13,8 +13,8 @@ describe('ol.interaction.Snap', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new _ol_interaction_Snap_();
-      expect(instance).to.be.an(_ol_interaction_Snap_);
+      var instance = new Snap();
+      expect(instance).to.be.an(Snap);
     });
 
   });
@@ -57,8 +57,8 @@ describe('ol.interaction.Snap', function() {
 
     it('can handle XYZ coordinates', function() {
       var point = new Feature(new Point([0, 0, 123]));
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([point])
+      var snapInteraction = new Snap({
+        features: new Collection([point])
       });
       snapInteraction.setMap(map);
 
@@ -67,15 +67,15 @@ describe('ol.interaction.Snap', function() {
         coordinate: [0, 0],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
       // check that the coordinate is in XY and not XYZ
       expect(event.coordinate).to.eql([0, 0]);
     });
 
     it('snaps to edges only', function() {
       var point = new Feature(new LineString([[-10, 0], [10, 0]]));
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([point]),
+      var snapInteraction = new Snap({
+        features: new Collection([point]),
         pixelTolerance: 5,
         vertex: false
       });
@@ -86,14 +86,14 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([7, 0]);
     });
 
     it('snaps to vertices only', function() {
       var point = new Feature(new LineString([[-10, 0], [10, 0]]));
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([point]),
+      var snapInteraction = new Snap({
+        features: new Collection([point]),
         pixelTolerance: 5,
         edge: false
       });
@@ -104,14 +104,14 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 
     it('snaps to circle', function() {
       var circle = new Feature(new Circle([0, 0], 10));
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([circle]),
+      var snapInteraction = new Snap({
+        features: new Collection([circle]),
         pixelTolerance: 5
       });
       snapInteraction.setMap(map);
@@ -121,7 +121,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [5, 5],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
 
       expect(event.coordinate[0]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
       expect(event.coordinate[1]).to.roughlyEqual(Math.sin(Math.PI / 4) * 10, 1e-10);
@@ -129,8 +129,8 @@ describe('ol.interaction.Snap', function() {
 
     it('handle feature without geometry', function() {
       var feature = new Feature();
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([feature]),
+      var snapInteraction = new Snap({
+        features: new Collection([feature]),
         pixelTolerance: 5,
         edge: false
       });
@@ -143,14 +143,14 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 
     it('handle geometry changes', function() {
       var line = new Feature(new LineString([[-10, 0], [0, 0]]));
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([line]),
+      var snapInteraction = new Snap({
+        features: new Collection([line]),
         pixelTolerance: 5,
         edge: false
       });
@@ -163,7 +163,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 
@@ -172,8 +172,8 @@ describe('ol.interaction.Snap', function() {
         geometry: new LineString([[-10, 0], [0, 0]]),
         alt_geometry: new LineString([[-10, 0], [10, 0]])
       });
-      var snapInteraction = new _ol_interaction_Snap_({
-        features: new _ol_Collection_([line]),
+      var snapInteraction = new Snap({
+        features: new Collection([line]),
         pixelTolerance: 5,
         edge: false
       });
@@ -186,7 +186,7 @@ describe('ol.interaction.Snap', function() {
         coordinate: [7, 4],
         map: map
       };
-      _ol_interaction_Snap_.handleEvent_.call(snapInteraction, event);
+      Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
     });
 

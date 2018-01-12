@@ -7,7 +7,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import {easeOut} from '../easing.js';
 import _ol_events_condition_ from '../events/condition.js';
 import {FALSE} from '../functions.js';
-import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
+import PointerInteraction from '../interaction/Pointer.js';
 
 /**
  * @classdesc
@@ -20,7 +20,7 @@ import _ol_interaction_Pointer_ from '../interaction/Pointer.js';
  */
 var DragPan = function(opt_options) {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: DragPan.handleDownEvent_,
     handleDragEvent: DragPan.handleDragEvent_,
     handleUpEvent: DragPan.handleUpEvent_
@@ -59,7 +59,7 @@ var DragPan = function(opt_options) {
 
 };
 
-inherits(DragPan, _ol_interaction_Pointer_);
+inherits(DragPan, PointerInteraction);
 
 
 /**
@@ -70,7 +70,7 @@ inherits(DragPan, _ol_interaction_Pointer_);
 DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   var targetPointers = this.targetPointers;
   var centroid =
-      _ol_interaction_Pointer_.centroid(targetPointers);
+      PointerInteraction.centroid(targetPointers);
   if (targetPointers.length == this.lastPointersCount_) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);

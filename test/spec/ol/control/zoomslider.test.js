@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import ZoomSlider from '../../../../src/ol/control/ZoomSlider.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 
 describe('ol.control.ZoomSlider', function() {
   var map, target, zoomslider;
@@ -111,7 +111,7 @@ describe('ol.control.ZoomSlider', function() {
       control.element.firstChild.style.height = '10px';
       map.renderSync();
       var dragger = control.dragger_;
-      var event = new _ol_pointer_PointerEvent_('pointerdown', {
+      var event = new PointerEvent('pointerdown', {
         target: control.element.firstElementChild
       });
       event.clientX = control.widthLimit_;
@@ -143,7 +143,7 @@ describe('ol.control.ZoomSlider', function() {
       map.getView().setZoom(8);
       map.renderSync();
       var dragger = control.dragger_;
-      var event = new _ol_pointer_PointerEvent_('pointerdown', {
+      var event = new PointerEvent('pointerdown', {
         target: control.element.firstElementChild
       });
       event.clientX = 0;

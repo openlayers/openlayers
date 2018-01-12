@@ -6,15 +6,15 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
-import _ol_style_Text_ from '../src/ol/style/Text.js';
+import Fill from '../src/ol/style/Fill.js';
+import Style from '../src/ol/style/Style.js';
+import Text from '../src/ol/style/Text.js';
 
-var style = new _ol_style_Style_({
-  text: new _ol_style_Text_({
+var style = new Style({
+  text: new Text({
     font: 'bold 11px "Open Sans", "Arial Unicode MS", "sans-serif"',
     placement: 'line',
-    fill: new _ol_style_Fill_({
+    fill: new Fill({
       color: 'white'
     })
   })

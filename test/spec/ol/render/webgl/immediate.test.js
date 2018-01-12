@@ -12,19 +12,19 @@ import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/Im
 import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
-import _ol_style_Circle_ from '../../../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
+import CircleStyle from '../../../../../src/ol/style/Circle.js';
+import Fill from '../../../../../src/ol/style/Fill.js';
+import Stroke from '../../../../../src/ol/style/Stroke.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.render.webgl.Immediate', function() {
   var context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
   beforeEach(function() {
     context = new _ol_render_webgl_Immediate_({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
-    style = new _ol_style_Style_({
-      image: new _ol_style_Circle_(),
-      fill: new _ol_style_Fill_(),
-      stroke: new _ol_style_Stroke_()
+    style = new Style({
+      image: new CircleStyle(),
+      fill: new Fill(),
+      stroke: new Stroke()
     });
     circle = new Circle([0, 0], 5);
     line = new LineString([[0, 0], [5, 5]]);

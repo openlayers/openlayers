@@ -1,12 +1,12 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import TopoJSON from '../src/ol/format/TopoJSON.js';
-import _ol_layer_VectorTile_ from '../src/ol/layer/VectorTile.js';
+import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var key = 'vector-tiles-5eJz6JX';
 
@@ -16,18 +16,18 @@ var roadColor = {
   'minor_road': '#ccb',
   'highway': '#f39'
 };
-var buildingStyle = new _ol_style_Style_({
-  fill: new _ol_style_Fill_({
+var buildingStyle = new Style({
+  fill: new Fill({
     color: '#666',
     opacity: 0.4
   }),
-  stroke: new _ol_style_Stroke_({
+  stroke: new Stroke({
     color: '#444',
     width: 1
   })
 });
-var waterStyle = new _ol_style_Style_({
-  fill: new _ol_style_Fill_({
+var waterStyle = new Style({
+  fill: new Fill({
     color: '#9db9e8'
   })
 });
@@ -46,8 +46,8 @@ var roadStyle = function(feature) {
       color = roadColor[kind];
       width = kind == 'highway' ? 1.5 : 1;
     }
-    style = new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    style = new Style({
+      stroke: new Stroke({
         color: color,
         width: width
       }),
@@ -60,7 +60,7 @@ var roadStyle = function(feature) {
 
 var map = new Map({
   layers: [
-    new _ol_layer_VectorTile_({
+    new VectorTileLayer({
       source: new VectorTileSource({
         attributions: '&copy; OpenStreetMap contributors, Who’s On First, ' +
             'Natural Earth, and openstreetmapdata.com',

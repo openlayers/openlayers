@@ -2,8 +2,8 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import _ol_pointer_MouseSource_ from '../../../../src/ol/pointer/MouseSource.js';
-import _ol_pointer_PointerEvent_ from '../../../../src/ol/pointer/PointerEvent.js';
-import _ol_pointer_PointerEventHandler_ from '../../../../src/ol/pointer/PointerEventHandler.js';
+import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
+import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
 
 
 describe('ol.pointer.PointerEventHandler', function() {
@@ -18,7 +18,7 @@ describe('ol.pointer.PointerEventHandler', function() {
     _ol_has_.POINTER = false;
     _ol_has_.MSPOINTER = false;
 
-    handler = new _ol_pointer_PointerEventHandler_(target);
+    handler = new PointerEventHandler(target);
     eventSpy = sinon.spy();
   });
 
@@ -51,7 +51,7 @@ describe('ol.pointer.PointerEventHandler', function() {
       expect(eventSpy.calledOnce).to.be.ok();
 
       var pointerEvent = eventSpy.firstCall.args[0];
-      expect(pointerEvent).to.be.a(_ol_pointer_PointerEvent_);
+      expect(pointerEvent).to.be.a(PointerEvent);
       expect(pointerEvent.type).to.be('pointerdown');
       expect(pointerEvent.pointerId).to.be(1);
       expect(pointerEvent.pointerType).to.be('mouse');
@@ -160,7 +160,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
       expect(pointerEvent.preventDefault).to.be.ok();
 
-      expect(pointerEvent).to.be.a(_ol_pointer_PointerEvent_);
+      expect(pointerEvent).to.be.a(PointerEvent);
     });
   });
 

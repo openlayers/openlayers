@@ -14,7 +14,7 @@ import Event from '../events/Event.js';
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
-var _ol_render_Event_ = function(
+var RenderEvent = function(
     type, opt_vectorContext, opt_frameState, opt_context,
     opt_glContext) {
 
@@ -52,5 +52,5 @@ var _ol_render_Event_ = function(
 
 };
 
-inherits(_ol_render_Event_, Event);
-export default _ol_render_Event_;
+inherits(RenderEvent, Event);
+export default RenderEvent;

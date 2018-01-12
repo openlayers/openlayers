@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import ImageLayer from '../src/ol/layer/Image.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import Projection from '../src/ol/proj/Projection.js';
 import Static from '../src/ol/source/ImageStatic.js';
 
 
@@ -10,7 +10,7 @@ import Static from '../src/ol/source/ImageStatic.js';
 // coordinates directly to map coordinates, so we create a projection that uses
 // the image extent in pixels.
 var extent = [0, 0, 1024, 968];
-var projection = new _ol_proj_Projection_({
+var projection = new Projection({
   code: 'xkcd-image',
   units: 'pixels',
   extent: extent

@@ -20,13 +20,13 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {toRadians} from '../math.js';
 import {get as getProjection} from '../proj.js';
-import _ol_style_Fill_ from '../style/Fill.js';
-import _ol_style_Icon_ from '../style/Icon.js';
+import Fill from '../style/Fill.js';
+import Icon from '../style/Icon.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconOrigin from '../style/IconOrigin.js';
-import _ol_style_Stroke_ from '../style/Stroke.js';
-import _ol_style_Style_ from '../style/Style.js';
-import _ol_style_Text_ from '../style/Text.js';
+import Stroke from '../style/Stroke.js';
+import Style from '../style/Style.js';
+import Text from '../style/Text.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -145,7 +145,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Fill}
    * @private
    */
-  KML.DEFAULT_FILL_STYLE_ = new _ol_style_Fill_({
+  KML.DEFAULT_FILL_STYLE_ = new Fill({
     color: KML.DEFAULT_COLOR_
   });
 
@@ -197,7 +197,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Image}
    * @private
    */
-  KML.DEFAULT_IMAGE_STYLE_ = new _ol_style_Icon_({
+  KML.DEFAULT_IMAGE_STYLE_ = new Icon({
     anchor: KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
     anchorOrigin: IconOrigin.BOTTOM_LEFT,
     anchorXUnits: KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
@@ -221,7 +221,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Stroke}
    * @private
    */
-  KML.DEFAULT_STROKE_STYLE_ = new _ol_style_Stroke_({
+  KML.DEFAULT_STROKE_STYLE_ = new Stroke({
     color: KML.DEFAULT_COLOR_,
     width: 1
   });
@@ -231,7 +231,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Stroke}
    * @private
    */
-  KML.DEFAULT_TEXT_STROKE_STYLE_ = new _ol_style_Stroke_({
+  KML.DEFAULT_TEXT_STROKE_STYLE_ = new Stroke({
     color: [51, 51, 51, 1],
     width: 2
   });
@@ -241,7 +241,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Text}
    * @private
    */
-  KML.DEFAULT_TEXT_STYLE_ = new _ol_style_Text_({
+  KML.DEFAULT_TEXT_STYLE_ = new Text({
     font: 'bold 16px Helvetica',
     fill: KML.DEFAULT_FILL_STYLE_,
     stroke: KML.DEFAULT_TEXT_STROKE_STYLE_,
@@ -253,7 +253,7 @@ KML.createStyleDefaults_ = function() {
    * @type {ol.style.Style}
    * @private
    */
-  KML.DEFAULT_STYLE_ = new _ol_style_Style_({
+  KML.DEFAULT_STYLE_ = new Style({
     fill: KML.DEFAULT_FILL_STYLE_,
     image: KML.DEFAULT_IMAGE_STYLE_,
     text: KML.DEFAULT_TEXT_STYLE_,
@@ -325,7 +325,7 @@ KML.createNameStyleFunction_ = function(foundStyle, name) {
   textStyle.setOffsetY(textOffset[1]);
   textStyle.setTextAlign(textAlign);
 
-  var nameStyle = new _ol_style_Style_({
+  var nameStyle = new Style({
     text: textStyle
   });
   return nameStyle;
@@ -631,7 +631,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
       }
     }
 
-    var imageStyle = new _ol_style_Icon_({
+    var imageStyle = new Icon({
       anchor: anchor,
       anchorOrigin: anchorOrigin,
       anchorXUnits: anchorXUnits,
@@ -665,8 +665,8 @@ KML.LabelStyleParser_ = function(node, objectStack) {
     return;
   }
   var styleObject = objectStack[objectStack.length - 1];
-  var textStyle = new _ol_style_Text_({
-    fill: new _ol_style_Fill_({
+  var textStyle = new Text({
+    fill: new Fill({
       color: /** @type {ol.Color} */
           ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)
     }),
@@ -694,7 +694,7 @@ KML.LineStyleParser_ = function(node, objectStack) {
     return;
   }
   var styleObject = objectStack[objectStack.length - 1];
-  var strokeStyle = new _ol_style_Stroke_({
+  var strokeStyle = new Stroke({
     color: /** @type {ol.Color} */
         ('color' in object ? object['color'] : KML.DEFAULT_COLOR_),
     width: /** @type {number} */ ('width' in object ? object['width'] : 1)
@@ -716,7 +716,7 @@ KML.PolyStyleParser_ = function(node, objectStack) {
     return;
   }
   var styleObject = objectStack[objectStack.length - 1];
-  var fillStyle = new _ol_style_Fill_({
+  var fillStyle = new Fill({
     color: /** @type {ol.Color} */
         ('color' in object ? object['color'] : KML.DEFAULT_COLOR_)
   });
@@ -1042,7 +1042,7 @@ KML.readStyle_ = function(node, objectStack) {
   if (outline !== undefined && !outline) {
     strokeStyle = null;
   }
-  return [new _ol_style_Style_({
+  return [new Style({
     fill: fillStyle,
     image: imageStyle,
     stroke: strokeStyle,
@@ -2555,7 +2555,7 @@ KML.writeStyle_ = function(node, style, objectStack) {
   var strokeStyle = style.getStroke();
   var imageStyle = style.getImage();
   var textStyle = style.getText();
-  if (imageStyle instanceof _ol_style_Icon_) {
+  if (imageStyle instanceof Icon) {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {

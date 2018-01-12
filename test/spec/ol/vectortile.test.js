@@ -4,7 +4,7 @@ import VectorTile from '../../../src/ol/VectorTile.js';
 import _ol_events_ from '../../../src/ol/events.js';
 import TextFeature from '../../../src/ol/format/TextFeature.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../src/ol/proj/Projection.js';
+import Projection from '../../../src/ol/proj/Projection.js';
 
 
 describe('ol.VectorTile', function() {
@@ -13,7 +13,7 @@ describe('ol.VectorTile', function() {
     // mock format that return a tile-pixels feature
     var format = new TextFeature();
     format.readProjection = function(source) {
-      return new _ol_proj_Projection_({
+      return new Projection({
         code: '',
         units: 'tile-pixels'
       });

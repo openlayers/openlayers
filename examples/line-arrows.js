@@ -6,9 +6,9 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Icon from '../src/ol/style/Icon.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
   source: new OSM()
@@ -20,8 +20,8 @@ var styleFunction = function(feature) {
   var geometry = feature.getGeometry();
   var styles = [
     // linestring
-    new _ol_style_Style_({
-      stroke: new _ol_style_Stroke_({
+    new Style({
+      stroke: new Stroke({
         color: '#ffcc33',
         width: 2
       })
@@ -33,9 +33,9 @@ var styleFunction = function(feature) {
     var dy = end[1] - start[1];
     var rotation = Math.atan2(dy, dx);
     // arrows
-    styles.push(new _ol_style_Style_({
+    styles.push(new Style({
       geometry: new Point(end),
-      image: new _ol_style_Icon_({
+      image: new Icon({
         src: 'data/arrow.png',
         anchor: [0.75, 0.5],
         rotateWithView: true,

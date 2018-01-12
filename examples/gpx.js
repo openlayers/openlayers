@@ -5,10 +5,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Circle_ from '../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import CircleStyle from '../src/ol/style/Circle.js';
+import Fill from '../src/ol/style/Fill.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 var raster = new TileLayer({
   source: new BingMaps({
@@ -18,26 +18,26 @@ var raster = new TileLayer({
 });
 
 var style = {
-  'Point': new _ol_style_Style_({
-    image: new _ol_style_Circle_({
-      fill: new _ol_style_Fill_({
+  'Point': new Style({
+    image: new CircleStyle({
+      fill: new Fill({
         color: 'rgba(255,255,0,0.4)'
       }),
       radius: 5,
-      stroke: new _ol_style_Stroke_({
+      stroke: new Stroke({
         color: '#ff0',
         width: 1
       })
     })
   }),
-  'LineString': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'LineString': new Style({
+    stroke: new Stroke({
       color: '#f00',
       width: 3
     })
   }),
-  'MultiLineString': new _ol_style_Style_({
-    stroke: new _ol_style_Stroke_({
+  'MultiLineString': new Style({
+    stroke: new Stroke({
       color: '#0f0',
       width: 3
     })

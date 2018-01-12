@@ -21,7 +21,7 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.layer.VectorTileOptions=} opt_options Options.
  * @api
  */
-var _ol_layer_VectorTile_ = function(opt_options) {
+var VectorTileLayer = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var renderMode = options.renderMode || _ol_layer_VectorTileRenderType_.HYBRID;
@@ -54,7 +54,7 @@ var _ol_layer_VectorTile_ = function(opt_options) {
 
 };
 
-inherits(_ol_layer_VectorTile_, VectorLayer);
+inherits(VectorTileLayer, VectorLayer);
 
 
 /**
@@ -63,7 +63,7 @@ inherits(_ol_layer_VectorTile_, VectorLayer);
  * @observable
  * @api
  */
-_ol_layer_VectorTile_.prototype.getPreload = function() {
+VectorTileLayer.prototype.getPreload = function() {
   return (
   /** @type {number} */ this.get(_ol_layer_TileProperty_.PRELOAD)
   );
@@ -76,7 +76,7 @@ _ol_layer_VectorTile_.prototype.getPreload = function() {
  * @observable
  * @api
  */
-_ol_layer_VectorTile_.prototype.getUseInterimTilesOnError = function() {
+VectorTileLayer.prototype.getUseInterimTilesOnError = function() {
   return (
   /** @type {boolean} */ this.get(_ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR)
   );
@@ -89,7 +89,7 @@ _ol_layer_VectorTile_.prototype.getUseInterimTilesOnError = function() {
  * @observable
  * @api
  */
-_ol_layer_VectorTile_.prototype.setPreload = function(preload) {
+VectorTileLayer.prototype.setPreload = function(preload) {
   this.set(_ol_layer_TileProperty_.PRELOAD, preload);
 };
 
@@ -100,7 +100,7 @@ _ol_layer_VectorTile_.prototype.setPreload = function(preload) {
  * @observable
  * @api
  */
-_ol_layer_VectorTile_.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
+VectorTileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
       _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
@@ -112,5 +112,5 @@ _ol_layer_VectorTile_.prototype.setUseInterimTilesOnError = function(useInterimT
  * @return {ol.source.VectorTile} Source.
  * @api
  */
-_ol_layer_VectorTile_.prototype.getSource;
-export default _ol_layer_VectorTile_;
+VectorTileLayer.prototype.getSource;
+export default VectorTileLayer;

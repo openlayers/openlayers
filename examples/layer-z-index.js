@@ -4,27 +4,27 @@ import View from '../src/ol/View.js';
 import Point from '../src/ol/geom/Point.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_RegularShape_ from '../src/ol/style/RegularShape.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Fill from '../src/ol/style/Fill.js';
+import RegularShape from '../src/ol/style/RegularShape.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
-var stroke = new _ol_style_Stroke_({color: 'black', width: 1});
+var stroke = new Stroke({color: 'black', width: 1});
 
 var styles = {
-  'square': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
-      fill: new _ol_style_Fill_({color: 'blue'}),
+  'square': new Style({
+    image: new RegularShape({
+      fill: new Fill({color: 'blue'}),
       stroke: stroke,
       points: 4,
       radius: 80,
       angle: Math.PI / 4
     })
   }),
-  'triangle': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
-      fill: new _ol_style_Fill_({color: 'red'}),
+  'triangle': new Style({
+    image: new RegularShape({
+      fill: new Fill({color: 'red'}),
       stroke: stroke,
       points: 3,
       radius: 80,
@@ -32,9 +32,9 @@ var styles = {
       angle: 0
     })
   }),
-  'star': new _ol_style_Style_({
-    image: new _ol_style_RegularShape_({
-      fill: new _ol_style_Fill_({color: 'green'}),
+  'star': new Style({
+    image: new RegularShape({
+      fill: new Fill({color: 'green'}),
       stroke: stroke,
       points: 5,
       radius: 80,

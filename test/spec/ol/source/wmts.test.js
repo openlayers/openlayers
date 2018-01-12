@@ -1,6 +1,6 @@
 import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_proj_Projection_ from '../../../../src/ol/proj/Projection.js';
+import Projection from '../../../../src/ol/proj/Projection.js';
 import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
 import WMTS from '../../../../src/ol/source/WMTS.js';
 
@@ -57,7 +57,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.format).to.be.eql('image/jpeg');
 
-          expect(options.projection).to.be.a(_ol_proj_Projection_);
+          expect(options.projection).to.be.a(Projection);
           expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
 
           expect(options.requestEncoding).to.be.eql('KVP');
@@ -91,7 +91,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.format).to.be.eql('image/png');
 
-          expect(options.projection).to.be.a(_ol_proj_Projection_);
+          expect(options.projection).to.be.a(Projection);
           expect(options.projection).to.be.eql(getProjection('EPSG:3857'));
 
           expect(options.requestEncoding).to.be.eql('REST');
@@ -139,7 +139,7 @@ describe('ol.source.WMTS', function() {
     it('uses the projection of the default MatrixSet if the config\'s projection is not supported', function() {
       var options = WMTS.optionsFromCapabilities(capabilities, {
         layer: 'BlueMarbleNextGeneration',
-        projection: new _ol_proj_Projection_({
+        projection: new Projection({
           code: 'EPSG:2056',
           units: 'm'
         })

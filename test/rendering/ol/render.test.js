@@ -3,11 +3,11 @@ import Point from '../../../src/ol/geom/Point.js';
 import Polygon from '../../../src/ol/geom/Polygon.js';
 import _ol_render_ from '../../../src/ol/render.js';
 import VectorContext from '../../../src/ol/render/VectorContext.js';
-import _ol_render_canvas_Immediate_ from '../../../src/ol/render/canvas/Immediate.js';
-import _ol_style_Circle_ from '../../../src/ol/style/Circle.js';
-import _ol_style_Fill_ from '../../../src/ol/style/Fill.js';
-import _ol_style_Stroke_ from '../../../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../../../src/ol/style/Style.js';
+import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
+import CircleStyle from '../../../src/ol/style/Circle.js';
+import Fill from '../../../src/ol/style/Fill.js';
+import Stroke from '../../../src/ol/style/Stroke.js';
+import Style from '../../../src/ol/style/Style.js';
 
 function getContext() {
   return document.createElement('canvas').getContext('2d');
@@ -23,7 +23,7 @@ describe('ol.render', function() {
         size: [100, 100]
       });
       expect(vectorContext).to.be.a(VectorContext);
-      expect(vectorContext).to.be.a(_ol_render_canvas_Immediate_);
+      expect(vectorContext).to.be.a(CanvasImmediateRenderer);
     });
 
     it('can be used to render a point geometry', function(done) {
@@ -33,9 +33,9 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        image: new _ol_style_Circle_({
-          fill: new _ol_style_Fill_({
+      var style = new Style({
+        image: new CircleStyle({
+          fill: new Fill({
             color: 'green'
           }),
           radius: 10
@@ -57,8 +57,8 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        stroke: new _ol_style_Stroke_({
+      var style = new Style({
+        stroke: new Stroke({
           color: 'red',
           width: 14
         })
@@ -81,8 +81,8 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        stroke: new _ol_style_Stroke_({
+      var style = new Style({
+        stroke: new Stroke({
           lineCap: 'butt',
           color: 'red',
           width: 14
@@ -106,8 +106,8 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        stroke: new _ol_style_Stroke_({
+      var style = new Style({
+        stroke: new Stroke({
           lineJoin: 'bevel',
           color: 'red',
           width: 14
@@ -131,12 +131,12 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        stroke: new _ol_style_Stroke_({
+      var style = new Style({
+        stroke: new Stroke({
           color: 'blue',
           width: 8
         }),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: 'rgba(0,0,255,0.5)'
         })
       });
@@ -160,8 +160,8 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        stroke: new _ol_style_Stroke_({
+      var style = new Style({
+        stroke: new Stroke({
           lineDash: [10, 5]
         })
       });
@@ -185,8 +185,8 @@ describe('ol.render', function() {
         size: [100, 100]
       });
 
-      var style = new _ol_style_Style_({
-        stroke: new _ol_style_Stroke_({
+      var style = new Style({
+        stroke: new Stroke({
           lineDash: [10, 5],
           lineDashOffset: 5
         })

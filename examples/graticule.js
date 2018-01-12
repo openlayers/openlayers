@@ -4,7 +4,7 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
+import Stroke from '../src/ol/style/Stroke.js';
 
 
 var map = new Map({
@@ -25,7 +25,7 @@ var map = new Map({
 // Create the graticule component
 var graticule = new Graticule({
   // the style to use for the lines, optional.
-  strokeStyle: new _ol_style_Stroke_({
+  strokeStyle: new Stroke({
     color: 'rgba(255,120,0,0.9)',
     width: 2,
     lineDash: [0.5, 4]

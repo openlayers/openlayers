@@ -8,8 +8,8 @@ import VectorLayer from '../../../../../src/ol/layer/Vector.js';
 import CanvasLayerRenderer from '../../../../../src/ol/renderer/canvas/Layer.js';
 import CanvasMapRenderer from '../../../../../src/ol/renderer/canvas/Map.js';
 import VectorSource from '../../../../../src/ol/source/Vector.js';
-import _ol_style_Icon_ from '../../../../../src/ol/style/Icon.js';
-import _ol_style_Style_ from '../../../../../src/ol/style/Style.js';
+import Icon from '../../../../../src/ol/style/Icon.js';
+import Style from '../../../../../src/ol/style/Style.js';
 
 describe('ol.renderer.canvas.Map', function() {
 
@@ -58,8 +58,8 @@ describe('ol.renderer.canvas.Map', function() {
             })
           ]
         }),
-        style: new _ol_style_Style_({
-          image: new _ol_style_Icon_({
+        style: new Style({
+          image: new Icon({
             img: img,
             imgSize: [1, 1]
           })

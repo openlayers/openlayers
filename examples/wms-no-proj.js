@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import TileLayer from '../src/ol/layer/Tile.js';
-import _ol_proj_Projection_ from '../src/ol/proj/Projection.js';
+import Projection from '../src/ol/proj/Projection.js';
 import ImageWMS from '../src/ol/source/ImageWMS.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 
@@ -37,7 +37,7 @@ var layers = [
 // projection object. Requesting tiles only needs the code together with a
 // tile grid of Cartesian coordinates; it does not matter how those
 // coordinates relate to latitude or longitude.
-var projection = new _ol_proj_Projection_({
+var projection = new Projection({
   code: 'EPSG:21781',
   units: 'm'
 });

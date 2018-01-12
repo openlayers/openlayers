@@ -9,7 +9,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import _ol_reproj_ from '../reproj.js';
-import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
+import Triangulation from '../reproj/Triangulation.js';
 
 /**
  * @classdesc
@@ -26,7 +26,7 @@ import _ol_reproj_Triangulation_ from '../reproj/Triangulation.js';
  * @param {ol.ReprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
-var _ol_reproj_Image_ = function(sourceProj, targetProj,
+var ReprojImage = function(sourceProj, targetProj,
     targetExtent, targetResolution, pixelRatio, getImageFunction) {
 
   /**
@@ -55,7 +55,7 @@ var _ol_reproj_Image_ = function(sourceProj, targetProj,
    * @private
    * @type {!ol.reproj.Triangulation}
    */
-  this.triangulation_ = new _ol_reproj_Triangulation_(
+  this.triangulation_ = new Triangulation(
       sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
       sourceResolution * errorThresholdInPixels);
 
@@ -109,13 +109,13 @@ var _ol_reproj_Image_ = function(sourceProj, targetProj,
   _ol_ImageBase_.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
 };
 
-inherits(_ol_reproj_Image_, _ol_ImageBase_);
+inherits(ReprojImage, _ol_ImageBase_);
 
 
 /**
  * @inheritDoc
  */
-_ol_reproj_Image_.prototype.disposeInternal = function() {
+ReprojImage.prototype.disposeInternal = function() {
   if (this.state == ImageState.LOADING) {
     this.unlistenSource_();
   }
@@ -126,7 +126,7 @@ _ol_reproj_Image_.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-_ol_reproj_Image_.prototype.getImage = function() {
+ReprojImage.prototype.getImage = function() {
   return this.canvas_;
 };
 
@@ -134,7 +134,7 @@ _ol_reproj_Image_.prototype.getImage = function() {
 /**
  * @return {ol.proj.Projection} Projection.
  */
-_ol_reproj_Image_.prototype.getProjection = function() {
+ReprojImage.prototype.getProjection = function() {
   return this.targetProj_;
 };
 
@@ -142,7 +142,7 @@ _ol_reproj_Image_.prototype.getProjection = function() {
 /**
  * @private
  */
-_ol_reproj_Image_.prototype.reproject_ = function() {
+ReprojImage.prototype.reproject_ = function() {
   var sourceState = this.sourceImage_.getState();
   if (sourceState == ImageState.LOADED) {
     var width = getWidth(this.targetExtent_) / this.targetResolution_;
@@ -163,7 +163,7 @@ _ol_reproj_Image_.prototype.reproject_ = function() {
 /**
  * @inheritDoc
  */
-_ol_reproj_Image_.prototype.load = function() {
+ReprojImage.prototype.load = function() {
   if (this.state == ImageState.IDLE) {
     this.state = ImageState.LOADING;
     this.changed();
@@ -189,8 +189,8 @@ _ol_reproj_Image_.prototype.load = function() {
 /**
  * @private
  */
-_ol_reproj_Image_.prototype.unlistenSource_ = function() {
+ReprojImage.prototype.unlistenSource_ = function() {
   _ol_events_.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;
 };
-export default _ol_reproj_Image_;
+export default ReprojImage;

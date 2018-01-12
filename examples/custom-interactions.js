@@ -6,15 +6,15 @@ import LineString from '../src/ol/geom/LineString.js';
 import Point from '../src/ol/geom/Point.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
-import _ol_interaction_Pointer_ from '../src/ol/interaction/Pointer.js';
+import PointerInteraction from '../src/ol/interaction/Pointer.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 import VectorSource from '../src/ol/source/Vector.js';
-import _ol_style_Fill_ from '../src/ol/style/Fill.js';
-import _ol_style_Icon_ from '../src/ol/style/Icon.js';
-import _ol_style_Stroke_ from '../src/ol/style/Stroke.js';
-import _ol_style_Style_ from '../src/ol/style/Style.js';
+import Fill from '../src/ol/style/Fill.js';
+import Icon from '../src/ol/style/Icon.js';
+import Stroke from '../src/ol/style/Stroke.js';
+import Style from '../src/ol/style/Style.js';
 
 
 /**
@@ -29,7 +29,7 @@ var app = {};
  */
 app.Drag = function() {
 
-  _ol_interaction_Pointer_.call(this, {
+  PointerInteraction.call(this, {
     handleDownEvent: app.Drag.prototype.handleDownEvent,
     handleDragEvent: app.Drag.prototype.handleDragEvent,
     handleMoveEvent: app.Drag.prototype.handleMoveEvent,
@@ -61,7 +61,7 @@ app.Drag = function() {
   this.previousCursor_ = undefined;
 
 };
-inherits(app.Drag, _ol_interaction_Pointer_);
+inherits(app.Drag, PointerInteraction);
 
 
 /**
@@ -156,19 +156,19 @@ var map = new Map({
       source: new VectorSource({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
-      style: new _ol_style_Style_({
-        image: new _ol_style_Icon_(/** @type {olx.style.IconOptions} */ ({
+      style: new Style({
+        image: new Icon(/** @type {olx.style.IconOptions} */ ({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
           src: 'data/icon.png'
         })),
-        stroke: new _ol_style_Stroke_({
+        stroke: new Stroke({
           width: 3,
           color: [255, 0, 0, 1]
         }),
-        fill: new _ol_style_Fill_({
+        fill: new Fill({
           color: [0, 0, 255, 0.6]
         })
       })
