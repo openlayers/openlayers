@@ -3,7 +3,7 @@
  */
 import {squaredSegmentDistance, toRadians, toDegrees} from '../../math.js';
 import {get as getProjection, getTransform} from '../../proj.js';
-var _ol_geom_flat_geodesic_ = {};
+const _ol_geom_flat_geodesic_ = {};
 
 
 /**
@@ -19,26 +19,26 @@ _ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredToleranc
   // FIXME optimize stack operations
 
   /** @type {Array.<number>} */
-  var flatCoordinates = [];
+  const flatCoordinates = [];
 
-  var geoA = interpolate(0);
-  var geoB = interpolate(1);
+  let geoA = interpolate(0);
+  let geoB = interpolate(1);
 
-  var a = transform(geoA);
-  var b = transform(geoB);
+  let a = transform(geoA);
+  let b = transform(geoB);
 
   /** @type {Array.<ol.Coordinate>} */
-  var geoStack = [geoB, geoA];
+  const geoStack = [geoB, geoA];
   /** @type {Array.<ol.Coordinate>} */
-  var stack = [b, a];
+  const stack = [b, a];
   /** @type {Array.<number>} */
-  var fractionStack = [1, 0];
+  const fractionStack = [1, 0];
 
   /** @type {Object.<string, boolean>} */
-  var fractions = {};
+  const fractions = {};
 
-  var maxIterations = 1e5;
-  var geoM, m, fracA, fracB, fracM, key;
+  let maxIterations = 1e5;
+  let geoM, m, fracA, fracB, fracM, key;
 
   while (--maxIterations > 0 && fractionStack.length > 0) {
     // Pop the a coordinate off the stack
@@ -60,7 +60,7 @@ _ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredToleranc
     geoM = interpolate(fracM);
     m = transform(geoM);
     if (squaredSegmentDistance(m[0], m[1], a[0], a[1],
-        b[0], b[1]) < squaredTolerance) {
+      b[0], b[1]) < squaredTolerance) {
       // If the m point is sufficiently close to the straight line, then we
       // discard it.  Just use the b coordinate and move on to the next line
       // segment.
@@ -91,39 +91,39 @@ _ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredToleranc
 * @return {Array.<number>} Flat coordinates.
 */
 _ol_geom_flat_geodesic_.greatCircleArc = function(
-    lon1, lat1, lon2, lat2, projection, squaredTolerance) {
+  lon1, lat1, lon2, lat2, projection, squaredTolerance) {
 
-  var geoProjection = getProjection('EPSG:4326');
+  const geoProjection = getProjection('EPSG:4326');
 
-  var cosLat1 = Math.cos(toRadians(lat1));
-  var sinLat1 = Math.sin(toRadians(lat1));
-  var cosLat2 = Math.cos(toRadians(lat2));
-  var sinLat2 = Math.sin(toRadians(lat2));
-  var cosDeltaLon = Math.cos(toRadians(lon2 - lon1));
-  var sinDeltaLon = Math.sin(toRadians(lon2 - lon1));
-  var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
+  const cosLat1 = Math.cos(toRadians(lat1));
+  const sinLat1 = Math.sin(toRadians(lat1));
+  const cosLat2 = Math.cos(toRadians(lat2));
+  const sinLat2 = Math.sin(toRadians(lat2));
+  const cosDeltaLon = Math.cos(toRadians(lon2 - lon1));
+  const sinDeltaLon = Math.sin(toRadians(lon2 - lon1));
+  const d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
 
   return _ol_geom_flat_geodesic_.line_(
-      /**
+    /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
        */
-      function(frac) {
-        if (1 <= d) {
-          return [lon2, lat2];
-        }
-        var D = frac * Math.acos(d);
-        var cosD = Math.cos(D);
-        var sinD = Math.sin(D);
-        var y = sinDeltaLon * cosLat2;
-        var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
-        var theta = Math.atan2(y, x);
-        var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-        var lon = toRadians(lon1) +
+    function(frac) {
+      if (1 <= d) {
+        return [lon2, lat2];
+      }
+      const D = frac * Math.acos(d);
+      const cosD = Math.cos(D);
+      const sinD = Math.sin(D);
+      const y = sinDeltaLon * cosLat2;
+      const x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
+      const theta = Math.atan2(y, x);
+      const lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
+      const lon = toRadians(lon1) +
             Math.atan2(Math.sin(theta) * sinD * cosLat1,
-                cosD - sinLat1 * Math.sin(lat));
-        return [toDegrees(lon), toDegrees(lat)];
-      }, getTransform(geoProjection, projection), squaredTolerance);
+              cosD - sinLat1 * Math.sin(lat));
+      return [toDegrees(lon), toDegrees(lat)];
+    }, getTransform(geoProjection, projection), squaredTolerance);
 };
 
 
@@ -137,16 +137,16 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
  * @return {Array.<number>} Flat coordinates.
  */
 _ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squaredTolerance) {
-  var epsg4326Projection = getProjection('EPSG:4326');
+  const epsg4326Projection = getProjection('EPSG:4326');
   return _ol_geom_flat_geodesic_.line_(
-      /**
+    /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
        */
-      function(frac) {
-        return [lon, lat1 + ((lat2 - lat1) * frac)];
-      },
-      getTransform(epsg4326Projection, projection), squaredTolerance);
+    function(frac) {
+      return [lon, lat1 + ((lat2 - lat1) * frac)];
+    },
+    getTransform(epsg4326Projection, projection), squaredTolerance);
 };
 
 
@@ -160,15 +160,15 @@ _ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squared
  * @return {Array.<number>} Flat coordinates.
  */
 _ol_geom_flat_geodesic_.parallel = function(lat, lon1, lon2, projection, squaredTolerance) {
-  var epsg4326Projection = getProjection('EPSG:4326');
+  const epsg4326Projection = getProjection('EPSG:4326');
   return _ol_geom_flat_geodesic_.line_(
-      /**
+    /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
        */
-      function(frac) {
-        return [lon1 + ((lon2 - lon1) * frac), lat];
-      },
-      getTransform(epsg4326Projection, projection), squaredTolerance);
+    function(frac) {
+      return [lon1 + ((lon2 - lon1) * frac), lat];
+    },
+    getTransform(epsg4326Projection, projection), squaredTolerance);
 };
 export default _ol_geom_flat_geodesic_;

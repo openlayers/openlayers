@@ -36,7 +36,7 @@ describe('ol.string', function() {
   });
 
   describe('ol.string.compareVersions', function() {
-    var f = _ol_string_.compareVersions;
+    const f = _ol_string_.compareVersions;
     it('should return the correct value for number input', function() {
       expect(f(1, 1)).to.be(0);
       expect(f(1.0, 1.1)).to.be.below(0);

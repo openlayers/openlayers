@@ -6,7 +6,7 @@ describe('ol.layer.Heatmap', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new HeatmapLayer();
+      const instance = new HeatmapLayer();
       expect(instance).to.be.an(HeatmapLayer);
     });
 

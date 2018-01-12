@@ -24,7 +24,7 @@ import Event from '../events/Event.js';
  * @constructor
  * @extends {ol.Disposable}
  */
-var EventTarget = function() {
+const EventTarget = function() {
 
   Disposable.call(this);
 
@@ -56,7 +56,7 @@ inherits(EventTarget, Disposable);
  * @param {ol.EventsListenerFunctionType} listener Listener.
  */
 EventTarget.prototype.addEventListener = function(type, listener) {
-  var listeners = this.listeners_[type];
+  let listeners = this.listeners_[type];
   if (!listeners) {
     listeners = this.listeners_[type] = [];
   }
@@ -74,18 +74,18 @@ EventTarget.prototype.addEventListener = function(type, listener) {
  *     event object or if any of the listeners returned false.
  */
 EventTarget.prototype.dispatchEvent = function(event) {
-  var evt = typeof event === 'string' ? new Event(event) : event;
-  var type = evt.type;
+  const evt = typeof event === 'string' ? new Event(event) : event;
+  const type = evt.type;
   evt.target = this;
-  var listeners = this.listeners_[type];
-  var propagate;
+  const listeners = this.listeners_[type];
+  let propagate;
   if (listeners) {
     if (!(type in this.dispatching_)) {
       this.dispatching_[type] = 0;
       this.pendingRemovals_[type] = 0;
     }
     ++this.dispatching_[type];
-    for (var i = 0, ii = listeners.length; i < ii; ++i) {
+    for (let i = 0, ii = listeners.length; i < ii; ++i) {
       if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
         propagate = false;
         break;
@@ -93,7 +93,7 @@ EventTarget.prototype.dispatchEvent = function(event) {
     }
     --this.dispatching_[type];
     if (this.dispatching_[type] === 0) {
-      var pendingRemovals = this.pendingRemovals_[type];
+      let pendingRemovals = this.pendingRemovals_[type];
       delete this.pendingRemovals_[type];
       while (pendingRemovals--) {
         this.removeEventListener(type, nullFunction);
@@ -142,9 +142,9 @@ EventTarget.prototype.hasListener = function(opt_type) {
  * @param {ol.EventsListenerFunctionType} listener Listener.
  */
 EventTarget.prototype.removeEventListener = function(type, listener) {
-  var listeners = this.listeners_[type];
+  const listeners = this.listeners_[type];
   if (listeners) {
-    var index = listeners.indexOf(listener);
+    const index = listeners.indexOf(listener);
     if (type in this.pendingRemovals_) {
       // make listener a no-op, and remove later in #dispatchEvent()
       listeners[index] = nullFunction;

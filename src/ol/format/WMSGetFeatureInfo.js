@@ -18,9 +18,9 @@ import _ol_xml_ from '../xml.js';
  * @param {olx.format.WMSGetFeatureInfoOptions=} opt_options Options.
  * @api
  */
-var WMSGetFeatureInfo = function(opt_options) {
+const WMSGetFeatureInfo = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -88,50 +88,50 @@ WMSGetFeatureInfo.prototype.setLayers = function(layers) {
  */
 WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
   node.setAttribute('namespaceURI', this.featureNS_);
-  var localName = node.localName;
+  const localName = node.localName;
   /** @type {Array.<ol.Feature>} */
-  var features = [];
+  let features = [];
   if (node.childNodes.length === 0) {
     return features;
   }
   if (localName == 'msGMLOutput') {
-    for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
-      var layer = node.childNodes[i];
+    for (let i = 0, ii = node.childNodes.length; i < ii; i++) {
+      const layer = node.childNodes[i];
       if (layer.nodeType !== Node.ELEMENT_NODE) {
         continue;
       }
-      var context = objectStack[0];
+      const context = objectStack[0];
 
-      var toRemove = WMSGetFeatureInfo.layerIdentifier_;
-      var layerName = layer.localName.replace(toRemove, '');
+      const toRemove = WMSGetFeatureInfo.layerIdentifier_;
+      const layerName = layer.localName.replace(toRemove, '');
 
       if (this.layers_ && !includes(this.layers_, layerName)) {
         continue;
       }
 
-      var featureType = layerName +
+      const featureType = layerName +
           WMSGetFeatureInfo.featureIdentifier_;
 
       context['featureType'] = featureType;
       context['featureNS'] = this.featureNS_;
 
-      var parsers = {};
+      const parsers = {};
       parsers[featureType] = _ol_xml_.makeArrayPusher(
-          this.gmlFormat_.readFeatureElement, this.gmlFormat_);
-      var parsersNS = _ol_xml_.makeStructureNS(
-          [context['featureNS'], null], parsers);
+        this.gmlFormat_.readFeatureElement, this.gmlFormat_);
+      const parsersNS = _ol_xml_.makeStructureNS(
+        [context['featureNS'], null], parsers);
       layer.setAttribute('namespaceURI', this.featureNS_);
-      var layerFeatures = _ol_xml_.pushParseAndPop(
-          [], parsersNS, layer, objectStack, this.gmlFormat_);
+      const layerFeatures = _ol_xml_.pushParseAndPop(
+        [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (layerFeatures) {
         extend(features, layerFeatures);
       }
     }
   }
   if (localName == 'FeatureCollection') {
-    var gmlFeatures = _ol_xml_.pushParseAndPop([],
-        this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
-        [{}], this.gmlFormat_);
+    const gmlFeatures = _ol_xml_.pushParseAndPop([],
+      this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
+      [{}], this.gmlFormat_);
     if (gmlFeatures) {
       features = gmlFeatures;
     }
@@ -156,7 +156,7 @@ WMSGetFeatureInfo.prototype.readFeatures;
  * @inheritDoc
  */
 WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
-  var options = {};
+  const options = {};
   if (opt_options) {
     _ol_obj_.assign(options, this.getReadOptions(node, opt_options));
   }

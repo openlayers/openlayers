@@ -12,9 +12,9 @@ import {asString} from '../color.js';
  * @param {olx.style.FillOptions=} opt_options Options.
  * @api
  */
-var Fill = function(opt_options) {
+const Fill = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -36,7 +36,7 @@ var Fill = function(opt_options) {
  * @api
  */
 Fill.prototype.clone = function() {
-  var color = this.getColor();
+  const color = this.getColor();
   return new Fill({
     color: (color && color.slice) ? color.slice() : color || undefined
   });

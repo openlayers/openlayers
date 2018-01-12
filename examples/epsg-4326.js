@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 
 
-var layers = [
+const layers = [
   new TileLayer({
     source: new TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
@@ -18,7 +18,7 @@ var layers = [
   })
 ];
 
-var map = new Map({
+const map = new Map({
   controls: defaultControls().extend([
     new ScaleLine({
       units: 'degrees'

@@ -3,9 +3,9 @@ import View from '../src/ol/View.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
-var appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
-var appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';
-var hereLayers = [
+const appId = 'kDm0Jq1K4Ak7Bwtn8uvk';
+const appCode = 'xnmvc4dKZrDfGlvQHXSvwQ';
+const hereLayers = [
   {
     base: 'base',
     type: 'maptile',
@@ -49,13 +49,13 @@ var hereLayers = [
     app_code: appCode
   }
 ];
-var urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
+const urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
   '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
   '?app_id={app_id}&app_code={app_code}';
-var layers = [];
-var i, ii;
+const layers = [];
+let i, ii;
 for (i = 0, ii = hereLayers.length; i < ii; ++i) {
-  var layerDesc = hereLayers[i];
+  const layerDesc = hereLayers[i];
   layers.push(new TileLayer({
     visible: false,
     preload: Infinity,
@@ -67,7 +67,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   }));
 }
 
-var map = new Map({
+const map = new Map({
   layers: layers,
   // Improve user experience by loading tiles while dragging/zooming. Will make
   // zooming choppy on mobile or slow devices.
@@ -81,17 +81,17 @@ var map = new Map({
 
 function createUrl(tpl, layerDesc) {
   return tpl
-      .replace('{base}', layerDesc.base)
-      .replace('{type}', layerDesc.type)
-      .replace('{scheme}', layerDesc.scheme)
-      .replace('{app_id}', layerDesc.app_id)
-      .replace('{app_code}', layerDesc.app_code);
+    .replace('{base}', layerDesc.base)
+    .replace('{type}', layerDesc.type)
+    .replace('{scheme}', layerDesc.scheme)
+    .replace('{app_id}', layerDesc.app_id)
+    .replace('{app_code}', layerDesc.app_code);
 }
 
-var select = document.getElementById('layer-select');
+const select = document.getElementById('layer-select');
 function onChange() {
-  var scheme = select.value;
-  for (var i = 0, ii = layers.length; i < ii; ++i) {
+  const scheme = select.value;
+  for (let i = 0, ii = layers.length; i < ii; ++i) {
     layers[i].setVisible(hereLayers[i].scheme === scheme);
   }
 }

@@ -3,7 +3,7 @@ import RBush from '../../../../src/ol/structs/RBush.js';
 
 describe('ol.structs.RBush', function() {
 
-  var rBush;
+  let rBush;
   beforeEach(function() {
     rBush = new RBush();
   });
@@ -30,7 +30,7 @@ describe('ol.structs.RBush', function() {
 
   describe('with a single object', function() {
 
-    var obj;
+    let obj;
     beforeEach(function() {
       obj = {};
       rBush.insert([0, 0, 1, 1], obj);
@@ -56,7 +56,7 @@ describe('ol.structs.RBush', function() {
 
   describe('with a few objects', function() {
 
-    var objs;
+    let objs;
     beforeEach(function() {
       objs = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
       rBush.insert([0, 0, 1, 1], objs[0]);
@@ -75,7 +75,7 @@ describe('ol.structs.RBush', function() {
     describe('#forEach', function() {
 
       it('called for all the objects', function() {
-        var i = 0;
+        let i = 0;
         rBush.forEach(function() {
           ++i;
         });
@@ -83,8 +83,8 @@ describe('ol.structs.RBush', function() {
       });
 
       it('stops when the function returns true', function() {
-        var i = 0;
-        var result = rBush.forEach(function() {
+        let i = 0;
+        const result = rBush.forEach(function() {
           return ++i >= 4;
         });
         expect(i).to.be(4);
@@ -96,7 +96,7 @@ describe('ol.structs.RBush', function() {
     describe('#getInExtent', function() {
 
       it('returns the expected objects', function() {
-        var result;
+        let result;
         result = rBush.getInExtent([2, 2, 3, 3]);
         expect(result).to.contain(objs[1]);
         expect(result).to.contain(objs[2]);
@@ -126,7 +126,7 @@ describe('ol.structs.RBush', function() {
     describe('#remove', function() {
 
       it('can remove each object', function() {
-        var i, ii;
+        let i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
           expect(rBush.getAll()).to.contain(objs[i]);
           rBush.remove(objs[i]);
@@ -140,11 +140,11 @@ describe('ol.structs.RBush', function() {
 
   describe('with 100 objects', function() {
 
-    var extents, objs;
+    let extents, objs;
     beforeEach(function() {
       extents = [];
       objs = [];
-      var i;
+      let i;
       for (i = 0; i < 100; ++i) {
         extents[i] = [i - 0.1, i - 0.1, i + 0.1, i + 0.1];
         objs[i] = {id: i};
@@ -155,7 +155,7 @@ describe('ol.structs.RBush', function() {
     describe('#getInExtent', function() {
 
       it('returns the expected objects', function() {
-        var i, ii;
+        let i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
           expect(rBush.getInExtent(extents[i])).to.eql([objs[i]]);
         }
@@ -174,7 +174,7 @@ describe('ol.structs.RBush', function() {
     describe('#remove', function() {
 
       it('can remove each object in turn', function() {
-        var i, ii;
+        let i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
           expect(rBush.getInExtent(extents[i])).to.eql([objs[i]]);
           rBush.remove(objs[i]);
@@ -185,16 +185,16 @@ describe('ol.structs.RBush', function() {
       });
 
       it('can remove objects in random order', function() {
-        var i, ii, j;
+        let i, ii, j;
         // http://en.wikipedia.org/wiki/Random_permutation
-        var indexes = [];
+        const indexes = [];
         for (i = 0, ii = objs.length; i < ii; ++i) {
           j = Math.floor(Math.random() * (i + 1));
           indexes[i] = indexes[j];
           indexes[j] = i;
         }
         for (i = 0, ii = objs.length; i < ii; ++i) {
-          var index = indexes[i];
+          const index = indexes[i];
           expect(rBush.getInExtent(extents[index])).to.eql([objs[index]]);
           rBush.remove(objs[index]);
           expect(rBush.getInExtent(extents[index])).to.be.empty();
@@ -210,11 +210,11 @@ describe('ol.structs.RBush', function() {
   describe('with 1000 objects', function() {
 
     beforeEach(function() {
-      var i;
+      let i;
       for (i = 0; i < 1000; ++i) {
-        var min = [Math.random() * 10000, Math.random() * 10000];
-        var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
-        var extent = [min[0], min[1], max[0], max[1]];
+        const min = [Math.random() * 10000, Math.random() * 10000];
+        const max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+        const extent = [min[0], min[1], max[0], max[1]];
         rBush.insert(extent, {id: i});
       }
     });
@@ -234,27 +234,27 @@ describe('ol.structs.RBush', function() {
       });
 
       it('can perform 1000 in-extent searches', function() {
-        var n = 0;
-        var i;
+        let n = 0;
+        let i;
         for (i = 0; i < 1000; ++i) {
-          var min = [Math.random() * 10000, Math.random() * 10000];
-          var max = [
+          const min = [Math.random() * 10000, Math.random() * 10000];
+          const max = [
             min[0] + Math.random() * 500,
             min[1] + Math.random() * 500
           ];
-          var extent = [min[0], min[1], max[0], max[1]];
+          const extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
         expect(n).not.to.be(0);
       });
 
       it('can perform 1000 out-of-extent searches', function() {
-        var n = 0;
-        var i;
+        let n = 0;
+        let i;
         for (i = 0; i < 1000; ++i) {
-          var min = [-(Math.random() * 10000 + 501), -(Math.random() * 10000 + 501)];
-          var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
-          var extent = [min[0], min[1], max[0], max[1]];
+          const min = [-(Math.random() * 10000 + 501), -(Math.random() * 10000 + 501)];
+          const max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+          const extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
         expect(n).to.be(0);
@@ -265,11 +265,11 @@ describe('ol.structs.RBush', function() {
     describe('#insert', function() {
 
       it('can insert another 1000 objects', function() {
-        var i;
+        let i;
         for (i = 1000; i < 2000; ++i) {
-          var min = [Math.random() * 10000, Math.random() * 10000];
-          var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
-          var extent = [min[0], min[1], max[0], max[1]];
+          const min = [Math.random() * 10000, Math.random() * 10000];
+          const max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+          const extent = [min[0], min[1], max[0], max[1]];
           rBush.insert(extent, {id: i});
         }
         expect(rBush.getInExtent([0, 0, 10600, 10600]).length).to.be(2000);
@@ -288,8 +288,8 @@ describe('ol.structs.RBush', function() {
     describe('#remove', function() {
 
       it('can remove all 1000 objects', function() {
-        var objs = rBush.getAll();
-        var i, value;
+        const objs = rBush.getAll();
+        let i, value;
         for (i = objs.length - 1; i >= 0; --i) {
           value = objs[i];
           rBush.remove(value);
@@ -304,7 +304,7 @@ describe('ol.structs.RBush', function() {
   describe('#getExtent', function() {
 
     it('gets the extent', function() {
-      var obj = {};
+      const obj = {};
       rBush.insert([0, 0, 1, 1], obj);
       expect(rBush.getExtent()).to.eql([0, 0, 1, 1]);
     });
@@ -314,9 +314,9 @@ describe('ol.structs.RBush', function() {
   describe('#concat', function() {
 
     it('concatenates two RBush objects', function() {
-      var obj1 = {};
-      var obj2 = {};
-      var rBush2 = new RBush();
+      const obj1 = {};
+      const obj2 = {};
+      const rBush2 = new RBush();
       rBush.insert([0, 0, 1, 1], obj1);
       rBush2.insert([0, 0, 2, 2], obj2);
       rBush.concat(rBush2);
@@ -325,9 +325,9 @@ describe('ol.structs.RBush', function() {
     });
 
     it('preserves the concatenated object\'s references', function() {
-      var obj1 = {};
-      var obj2 = {};
-      var rBush2 = new RBush();
+      const obj1 = {};
+      const obj2 = {};
+      const rBush2 = new RBush();
       rBush.insert([0, 0, 1, 1], obj1);
       rBush2.insert([0, 0, 2, 2], obj2);
       rBush.concat(rBush2);

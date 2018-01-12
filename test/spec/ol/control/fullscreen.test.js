@@ -5,7 +5,7 @@ describe('ol.control.FullScreen', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new FullScreen();
+      const instance = new FullScreen();
       expect(instance).to.be.an(FullScreen);
     });
 

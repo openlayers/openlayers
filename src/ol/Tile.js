@@ -18,10 +18,10 @@ import EventType from './events/EventType.js';
  * @param {ol.TileState} state State.
  * @param {olx.TileOptions=} opt_options Tile options.
  */
-var Tile = function(tileCoord, state, opt_options) {
+const Tile = function(tileCoord, state, opt_options) {
   EventTarget.call(this);
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.TileCoord}
@@ -95,7 +95,7 @@ Tile.prototype.getInterimTile = function() {
     //empty chain
     return this;
   }
-  var tile = this.interimTile;
+  let tile = this.interimTile;
 
   // find the first loaded tile and return it. Since the chain is sorted in
   // decreasing order of creation time, there is no need to search the remainder
@@ -121,8 +121,8 @@ Tile.prototype.refreshInterimChain = function() {
     return;
   }
 
-  var tile = this.interimTile;
-  var prev = this;
+  let tile = this.interimTile;
+  let prev = this;
 
   do {
     if (tile.getState() == TileState.LOADED) {
@@ -191,7 +191,7 @@ Tile.prototype.getAlpha = function(id, time) {
     return 1;
   }
 
-  var start = this.transitionStarts_[id];
+  let start = this.transitionStarts_[id];
   if (!start) {
     start = time;
     this.transitionStarts_[id] = start;
@@ -199,7 +199,7 @@ Tile.prototype.getAlpha = function(id, time) {
     return 1;
   }
 
-  var delta = time - start + (1000 / 60); // avoid rendering at 0
+  const delta = time - start + (1000 / 60); // avoid rendering at 0
   if (delta >= this.transition_) {
     return 1;
   }

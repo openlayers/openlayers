@@ -21,14 +21,14 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.layer.BaseOptions} options Layer options.
  * @api
  */
-var BaseLayer = function(options) {
+const BaseLayer = function(options) {
 
   BaseObject.call(this);
 
   /**
    * @type {Object.<string, *>}
    */
-  var properties = _ol_obj_.assign({}, options);
+  const properties = _ol_obj_.assign({}, options);
   properties[LayerProperty.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;
   properties[LayerProperty.VISIBLE] =

@@ -4,7 +4,7 @@ import MVT from '../src/ol/format/MVT.js';
 import VectorTileLayer from '../src/ol/layer/VectorTile.js';
 import VectorTileSource from '../src/ol/source/VectorTile.js';
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -20,15 +20,15 @@ var map = new Map({
 
 map.on('pointermove', showInfo);
 
-var info = document.getElementById('info');
+const info = document.getElementById('info');
 function showInfo(event) {
-  var features = map.getFeaturesAtPixel(event.pixel);
+  const features = map.getFeaturesAtPixel(event.pixel);
   if (!features) {
     info.innerText = '';
     info.style.opacity = 0;
     return;
   }
-  var properties = features[0].getProperties();
+  const properties = features[0].getProperties();
   info.innerText = JSON.stringify(properties, null, 2);
   info.style.opacity = 1;
 }

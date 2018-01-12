@@ -18,8 +18,8 @@ import MapEvent from './MapEvent.js';
  * @param {boolean=} opt_dragging Is the map currently being dragged?
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
-var MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
-    opt_frameState) {
+const MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
+  opt_frameState) {
 
   MapEvent.call(this, type, map, opt_frameState);
 

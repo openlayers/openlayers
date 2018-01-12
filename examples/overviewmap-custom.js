@@ -8,7 +8,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var overviewMapControl = new OverviewMap({
+const overviewMapControl = new OverviewMap({
   // see in overviewmap-custom.html to see the custom CSS used
   className: 'ol-overviewmap ol-custom-overviewmap',
   layers: [
@@ -24,7 +24,7 @@ var overviewMapControl = new OverviewMap({
   collapsed: false
 });
 
-var map = new Map({
+const map = new Map({
   controls: defaultControls().extend([
     overviewMapControl
   ]),

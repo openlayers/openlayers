@@ -7,7 +7,7 @@ describe('ol.webgl.Buffer', function() {
 
     describe('without an argument', function() {
 
-      var b;
+      let b;
       beforeEach(function() {
         b = new _ol_webgl_Buffer_();
       });
@@ -20,7 +20,7 @@ describe('ol.webgl.Buffer', function() {
 
     describe('with a single array argument', function() {
 
-      var b;
+      let b;
       beforeEach(function() {
         b = new _ol_webgl_Buffer_([0, 1, 2, 3]);
       });
@@ -35,7 +35,7 @@ describe('ol.webgl.Buffer', function() {
 
   describe('with an empty instance', function() {
 
-    var b;
+    let b;
     beforeEach(function() {
       b = new _ol_webgl_Buffer_();
     });

@@ -9,7 +9,7 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   view: new View({
     center: [0, 0],
@@ -17,16 +17,16 @@ var map = new Map({
   })
 });
 
-var labelStyle = new Style({
+const labelStyle = new Style({
   geometry: function(feature) {
-    var geometry = feature.getGeometry();
+    let geometry = feature.getGeometry();
     if (geometry.getType() == 'MultiPolygon') {
       // Only render label for the widest polygon of a multipolygon
-      var polygons = geometry.getPolygons();
-      var widest = 0;
-      for (var i = 0, ii = polygons.length; i < ii; ++i) {
-        var polygon = polygons[i];
-        var width = _ol_extent_.getWidth(polygon.getExtent());
+      const polygons = geometry.getPolygons();
+      let widest = 0;
+      for (let i = 0, ii = polygons.length; i < ii; ++i) {
+        const polygon = polygons[i];
+        const width = _ol_extent_.getWidth(polygon.getExtent());
         if (width > widest) {
           widest = width;
           geometry = polygon;
@@ -47,7 +47,7 @@ var labelStyle = new Style({
     })
   })
 });
-var countryStyle = new Style({
+const countryStyle = new Style({
   fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -56,9 +56,9 @@ var countryStyle = new Style({
     width: 1
   })
 });
-var style = [countryStyle, labelStyle];
+const style = [countryStyle, labelStyle];
 
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/countries.geojson',
     format: new GeoJSON()

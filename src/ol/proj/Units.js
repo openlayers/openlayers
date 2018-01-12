@@ -6,7 +6,7 @@
  * `'us-ft'`.
  * @enum {string}
  */
-var Units = {
+const Units = {
   DEGREES: 'degrees',
   FEET: 'ft',
   METERS: 'm',

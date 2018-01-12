@@ -2,12 +2,14 @@ import {getUid} from '../../../src/ol/index.js';
 
 describe('getUid()', function() {
   it('is constant once generated', function() {
-    var a = {};
+    const a = {};
     expect(getUid(a)).to.be(getUid(a));
   });
 
   it('generates a strictly increasing sequence', function() {
-    var a = {}, b = {}, c = {};
+    const a = {};
+    const b = {};
+    const c = {};
     getUid(a);
     getUid(c);
     getUid(b);

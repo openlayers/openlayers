@@ -21,7 +21,7 @@ import Comparison from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var IsLike = function(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
+const IsLike = function(propertyName, pattern, opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
   Comparison.call(this, 'PropertyIsLike', propertyName);
 
   /**

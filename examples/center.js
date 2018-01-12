@@ -11,11 +11,11 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var source = new VectorSource({
+const source = new VectorSource({
   url: 'data/geojson/switzerland.geojson',
   format: new GeoJSON()
 });
-var style = new Style({
+const style = new Style({
   fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -34,15 +34,15 @@ var style = new Style({
     })
   })
 });
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: source,
   style: style
 });
-var view = new View({
+const view = new View({
   center: [0, 0],
   zoom: 1
 });
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -58,40 +58,40 @@ var map = new Map({
   view: view
 });
 
-var zoomtoswitzerlandbest = document.getElementById('zoomtoswitzerlandbest');
+const zoomtoswitzerlandbest = document.getElementById('zoomtoswitzerlandbest');
 zoomtoswitzerlandbest.addEventListener('click', function() {
-  var feature = source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const feature = source.getFeatures()[0];
+  const polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   view.fit(polygon, {padding: [170, 50, 30, 150], constrainResolution: false});
 }, false);
 
-var zoomtoswitzerlandconstrained =
+const zoomtoswitzerlandconstrained =
     document.getElementById('zoomtoswitzerlandconstrained');
 zoomtoswitzerlandconstrained.addEventListener('click', function() {
-  var feature = source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const feature = source.getFeatures()[0];
+  const polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   view.fit(polygon, {padding: [170, 50, 30, 150]});
 }, false);
 
-var zoomtoswitzerlandnearest =
+const zoomtoswitzerlandnearest =
     document.getElementById('zoomtoswitzerlandnearest');
 zoomtoswitzerlandnearest.addEventListener('click', function() {
-  var feature = source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const feature = source.getFeatures()[0];
+  const polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   view.fit(polygon, {padding: [170, 50, 30, 150], nearest: true});
 }, false);
 
-var zoomtolausanne = document.getElementById('zoomtolausanne');
+const zoomtolausanne = document.getElementById('zoomtolausanne');
 zoomtolausanne.addEventListener('click', function() {
-  var feature = source.getFeatures()[1];
-  var point = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
+  const feature = source.getFeatures()[1];
+  const point = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   view.fit(point, {padding: [170, 50, 30, 150], minResolution: 50});
 }, false);
 
-var centerlausanne = document.getElementById('centerlausanne');
+const centerlausanne = document.getElementById('centerlausanne');
 centerlausanne.addEventListener('click', function() {
-  var feature = source.getFeatures()[1];
-  var point = /** @type {ol.geom.Point} */ (feature.getGeometry());
-  var size = /** @type {ol.Size} */ (map.getSize());
+  const feature = source.getFeatures()[1];
+  const point = /** @type {ol.geom.Point} */ (feature.getGeometry());
+  const size = /** @type {ol.Size} */ (map.getSize());
   view.centerOn(point.getCoordinates(), size, [570, 500]);
 }, false);

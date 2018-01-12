@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var openCycleMapLayer = new TileLayer({
+const openCycleMapLayer = new TileLayer({
   source: new OSM({
     attributions: [
       'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
@@ -16,7 +16,7 @@ var openCycleMapLayer = new TileLayer({
   })
 });
 
-var openSeaMapLayer = new TileLayer({
+const openSeaMapLayer = new TileLayer({
   source: new OSM({
     attributions: [
       'All maps © <a href="http://www.openseamap.org/">OpenSeaMap</a>',
@@ -28,7 +28,7 @@ var openSeaMapLayer = new TileLayer({
 });
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     openCycleMapLayer,
     openSeaMapLayer

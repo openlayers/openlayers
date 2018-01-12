@@ -6,7 +6,7 @@ describe('ol.layer.VectorTile', function() {
 
   describe('constructor (defaults)', function() {
 
-    var layer;
+    let layer;
 
     beforeEach(function() {
       layer = new VectorTileLayer({
@@ -38,7 +38,7 @@ describe('ol.layer.VectorTile', function() {
 
   describe('constructor (options)', function() {
     it('works with options', function() {
-      var layer = new VectorTileLayer({
+      let layer = new VectorTileLayer({
         renderMode: 'vector',
         source: new VectorTileSource({})
       });

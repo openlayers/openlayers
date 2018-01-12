@@ -36,7 +36,7 @@ import {modulo} from '../math.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var Polygon = function(coordinates, opt_layout) {
+const Polygon = function(coordinates, opt_layout) {
 
   SimpleGeometry.call(this);
 
@@ -112,9 +112,9 @@ Polygon.prototype.appendLinearRing = function(linearRing) {
  * @api
  */
 Polygon.prototype.clone = function() {
-  var polygon = new Polygon(null);
+  const polygon = new Polygon(null);
   polygon.setFlatCoordinates(
-      this.layout, this.flatCoordinates.slice(), this.ends_.slice());
+    this.layout, this.flatCoordinates.slice(), this.ends_.slice());
   return polygon;
 };
 
@@ -128,12 +128,12 @@ Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistan
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getsMaxSquaredDelta(
-        this.flatCoordinates, 0, this.ends_, this.stride, 0));
+      this.flatCoordinates, 0, this.ends_, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
   return _ol_geom_flat_closest_.getsClosestPoint(
-      this.flatCoordinates, 0, this.ends_, this.stride,
-      this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
+    this.flatCoordinates, 0, this.ends_, this.stride,
+    this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
 
 
@@ -142,7 +142,7 @@ Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistan
  */
 Polygon.prototype.containsXY = function(x, y) {
   return _ol_geom_flat_contains_.linearRingsContainsXY(
-      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
+    this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
 };
 
 
@@ -153,7 +153,7 @@ Polygon.prototype.containsXY = function(x, y) {
  */
 Polygon.prototype.getArea = function() {
   return _ol_geom_flat_area_.linearRings(
-      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
+    this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
 };
 
 
@@ -172,17 +172,17 @@ Polygon.prototype.getArea = function() {
  * @api
  */
 Polygon.prototype.getCoordinates = function(opt_right) {
-  var flatCoordinates;
+  let flatCoordinates;
   if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     _ol_geom_flat_orient_.orientLinearRings(
-        flatCoordinates, 0, this.ends_, this.stride, opt_right);
+      flatCoordinates, 0, this.ends_, this.stride, opt_right);
   } else {
     flatCoordinates = this.flatCoordinates;
   }
 
   return _ol_geom_flat_inflate_.coordinatess(
-      flatCoordinates, 0, this.ends_, this.stride);
+    flatCoordinates, 0, this.ends_, this.stride);
 };
 
 
@@ -199,10 +199,10 @@ Polygon.prototype.getEnds = function() {
  */
 Polygon.prototype.getFlatInteriorPoint = function() {
   if (this.flatInteriorPointRevision_ != this.getRevision()) {
-    var flatCenter = getCenter(this.getExtent());
+    const flatCenter = getCenter(this.getExtent());
     this.flatInteriorPoint_ = _ol_geom_flat_interiorpoint_.linearRings(
-        this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
-        flatCenter, 0);
+      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride,
+      flatCenter, 0);
     this.flatInteriorPointRevision_ = this.getRevision();
   }
   return this.flatInteriorPoint_;
@@ -246,9 +246,9 @@ Polygon.prototype.getLinearRing = function(index) {
   if (index < 0 || this.ends_.length <= index) {
     return null;
   }
-  var linearRing = new LinearRing(null);
+  const linearRing = new LinearRing(null);
   linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
-      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
+    index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
   return linearRing;
 };
 
@@ -259,15 +259,15 @@ Polygon.prototype.getLinearRing = function(index) {
  * @api
  */
 Polygon.prototype.getLinearRings = function() {
-  var layout = this.layout;
-  var flatCoordinates = this.flatCoordinates;
-  var ends = this.ends_;
-  var linearRings = [];
-  var offset = 0;
-  var i, ii;
+  const layout = this.layout;
+  const flatCoordinates = this.flatCoordinates;
+  const ends = this.ends_;
+  const linearRings = [];
+  let offset = 0;
+  let i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    var end = ends[i];
-    var linearRing = new LinearRing(null);
+    const end = ends[i];
+    const linearRing = new LinearRing(null);
     linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
     linearRings.push(linearRing);
     offset = end;
@@ -281,15 +281,15 @@ Polygon.prototype.getLinearRings = function() {
  */
 Polygon.prototype.getOrientedFlatCoordinates = function() {
   if (this.orientedRevision_ != this.getRevision()) {
-    var flatCoordinates = this.flatCoordinates;
+    const flatCoordinates = this.flatCoordinates;
     if (_ol_geom_flat_orient_.linearRingsAreOriented(
-        flatCoordinates, 0, this.ends_, this.stride)) {
+      flatCoordinates, 0, this.ends_, this.stride)) {
       this.orientedFlatCoordinates_ = flatCoordinates;
     } else {
       this.orientedFlatCoordinates_ = flatCoordinates.slice();
       this.orientedFlatCoordinates_.length =
           _ol_geom_flat_orient_.orientLinearRings(
-              this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
+            this.orientedFlatCoordinates_, 0, this.ends_, this.stride);
     }
     this.orientedRevision_ = this.getRevision();
   }
@@ -301,15 +301,15 @@ Polygon.prototype.getOrientedFlatCoordinates = function() {
  * @inheritDoc
  */
 Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
-  var simplifiedFlatCoordinates = [];
-  var simplifiedEnds = [];
+  const simplifiedFlatCoordinates = [];
+  const simplifiedEnds = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.quantizes(
-      this.flatCoordinates, 0, this.ends_, this.stride,
-      Math.sqrt(squaredTolerance),
-      simplifiedFlatCoordinates, 0, simplifiedEnds);
-  var simplifiedPolygon = new Polygon(null);
+    this.flatCoordinates, 0, this.ends_, this.stride,
+    Math.sqrt(squaredTolerance),
+    simplifiedFlatCoordinates, 0, simplifiedEnds);
+  const simplifiedPolygon = new Polygon(null);
   simplifiedPolygon.setFlatCoordinates(
-      GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
+    GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
   return simplifiedPolygon;
 };
 
@@ -329,7 +329,7 @@ Polygon.prototype.getType = function() {
  */
 Polygon.prototype.intersectsExtent = function(extent) {
   return _ol_geom_flat_intersectsextent_.linearRings(
-      this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, extent);
+    this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, extent);
 };
 
 
@@ -348,8 +348,8 @@ Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
     if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
-    var ends = _ol_geom_flat_deflate_.coordinatess(
-        this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+    const ends = _ol_geom_flat_deflate_.coordinatess(
+      this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();
   }
@@ -383,17 +383,17 @@ export default Polygon;
  * @api
  */
 export function circular(center, radius, opt_n, opt_sphereRadius) {
-  var n = opt_n ? opt_n : 32;
+  const n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
-  var flatCoordinates = [];
-  var i;
+  const flatCoordinates = [];
+  let i;
   for (i = 0; i < n; ++i) {
     extend(flatCoordinates, sphereOffset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
-  var polygon = new Polygon(null);
+  const polygon = new Polygon(null);
   polygon.setFlatCoordinates(
-      GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+    GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 }
 
@@ -405,15 +405,15 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
  * @api
  */
 export function fromExtent(extent) {
-  var minX = extent[0];
-  var minY = extent[1];
-  var maxX = extent[2];
-  var maxY = extent[3];
-  var flatCoordinates =
+  const minX = extent[0];
+  const minY = extent[1];
+  const maxX = extent[2];
+  const maxY = extent[3];
+  const flatCoordinates =
       [minX, minY, minX, maxY, maxX, maxY, maxX, minY, minX, minY];
-  var polygon = new Polygon(null);
+  const polygon = new Polygon(null);
   polygon.setFlatCoordinates(
-      GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+    GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 }
 
@@ -428,16 +428,16 @@ export function fromExtent(extent) {
  * @api
  */
 export function fromCircle(circle, opt_sides, opt_angle) {
-  var sides = opt_sides ? opt_sides : 32;
-  var stride = circle.getStride();
-  var layout = circle.getLayout();
-  var polygon = new Polygon(null, layout);
-  var arrayLength = stride * (sides + 1);
-  var flatCoordinates = new Array(arrayLength);
-  for (var i = 0; i < arrayLength; i++) {
+  const sides = opt_sides ? opt_sides : 32;
+  const stride = circle.getStride();
+  const layout = circle.getLayout();
+  const polygon = new Polygon(null, layout);
+  const arrayLength = stride * (sides + 1);
+  const flatCoordinates = new Array(arrayLength);
+  for (let i = 0; i < arrayLength; i++) {
     flatCoordinates[i] = 0;
   }
-  var ends = [flatCoordinates.length];
+  const ends = [flatCoordinates.length];
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
   makeRegular(polygon, circle.getCenter(), circle.getRadius(), opt_angle);
   return polygon;
@@ -453,14 +453,14 @@ export function fromCircle(circle, opt_sides, opt_angle) {
  *     radians. Default is 0.
  */
 export function makeRegular(polygon, center, radius, opt_angle) {
-  var flatCoordinates = polygon.getFlatCoordinates();
-  var layout = polygon.getLayout();
-  var stride = polygon.getStride();
-  var ends = polygon.getEnds();
-  var sides = flatCoordinates.length / stride - 1;
-  var startAngle = opt_angle ? opt_angle : 0;
-  var angle, offset;
-  for (var i = 0; i <= sides; ++i) {
+  const flatCoordinates = polygon.getFlatCoordinates();
+  const layout = polygon.getLayout();
+  const stride = polygon.getStride();
+  const ends = polygon.getEnds();
+  const sides = flatCoordinates.length / stride - 1;
+  const startAngle = opt_angle ? opt_angle : 0;
+  let angle, offset;
+  for (let i = 0; i <= sides; ++i) {
     offset = i * stride;
     angle = startAngle + (modulo(i, sides) * 2 * Math.PI / sides);
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));

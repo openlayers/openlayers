@@ -14,13 +14,13 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var image = new CircleStyle({
+const image = new CircleStyle({
   radius: 5,
   fill: null,
   stroke: new Stroke({color: 'red', width: 1})
 });
 
-var styles = {
+const styles = {
   'Point': new Style({
     image: image
   }),
@@ -85,11 +85,11 @@ var styles = {
   })
 };
 
-var styleFunction = function(feature) {
+const styleFunction = function(feature) {
   return styles[feature.getGeometry().getType()];
 };
 
-var geojsonObject = {
+const geojsonObject = {
   'type': 'FeatureCollection',
   'crs': {
     'type': 'name',
@@ -160,18 +160,18 @@ var geojsonObject = {
   }]
 };
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
 vectorSource.addFeature(new Feature(new Circle([5e6, 7e6], 1e6)));
 
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: vectorSource,
   style: styleFunction
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()

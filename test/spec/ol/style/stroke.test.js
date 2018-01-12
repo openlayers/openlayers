@@ -5,14 +5,14 @@ describe('ol.style.Stroke', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Stroke', function() {
-      var original = new Stroke();
-      var clone = original.clone();
+      const original = new Stroke();
+      const clone = original.clone();
       expect(clone).to.be.an(Stroke);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new Stroke({
+      const original = new Stroke({
         color: '#319FD3',
         lineCap: 'square',
         lineJoin: 'miter',
@@ -21,7 +21,7 @@ describe('ol.style.Stroke', function() {
         miterLimit: 20,
         width: 5
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getColor()).to.eql(clone.getColor());
       expect(original.getLineCap()).to.eql(clone.getLineCap());
       expect(original.getLineJoin()).to.eql(clone.getLineJoin());
@@ -32,11 +32,11 @@ describe('ol.style.Stroke', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new Stroke({
+      const original = new Stroke({
         color: [1, 2, 3, 0.4],
         lineDash: [1, 2, 3]
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getColor()).to.not.be(clone.getColor());
       expect(original.getLineDash()).to.not.be(clone.getLineDash());
 

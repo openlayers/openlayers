@@ -12,7 +12,7 @@ import {clamp} from '../math.js';
  * Object literal with config options for interactions.
  * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
  */
-export var InteractionOptions;
+export let InteractionOptions;
 
 
 /**
@@ -38,7 +38,7 @@ export var InteractionOptions;
  * @extends {ol.Object}
  * @api
  */
-var Interaction = function(options) {
+const Interaction = function(options) {
 
   BaseObject.call(this);
 
@@ -109,10 +109,10 @@ Interaction.prototype.setMap = function(map) {
  * @param {number=} opt_duration Duration.
  */
 Interaction.pan = function(view, delta, opt_duration) {
-  var currentCenter = view.getCenter();
+  const currentCenter = view.getCenter();
   if (currentCenter) {
-    var center = view.constrainCenter(
-        [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
+    const center = view.constrainCenter(
+      [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
     if (opt_duration) {
       view.animate({
         duration: opt_duration,
@@ -135,7 +135,7 @@ Interaction.pan = function(view, delta, opt_duration) {
 Interaction.rotate = function(view, rotation, opt_anchor, opt_duration) {
   rotation = view.constrainRotation(rotation, 0);
   Interaction.rotateWithoutConstraints(
-      view, rotation, opt_anchor, opt_duration);
+    view, rotation, opt_anchor, opt_duration);
 };
 
 
@@ -147,8 +147,8 @@ Interaction.rotate = function(view, rotation, opt_anchor, opt_duration) {
  */
 Interaction.rotateWithoutConstraints = function(view, rotation, opt_anchor, opt_duration) {
   if (rotation !== undefined) {
-    var currentRotation = view.getRotation();
-    var currentCenter = view.getCenter();
+    const currentRotation = view.getRotation();
+    const currentCenter = view.getCenter();
     if (currentRotation !== undefined && currentCenter && opt_duration > 0) {
       view.animate({
         rotation: rotation,
@@ -180,7 +180,7 @@ Interaction.rotateWithoutConstraints = function(view, rotation, opt_anchor, opt_
 Interaction.zoom = function(view, resolution, opt_anchor, opt_duration, opt_direction) {
   resolution = view.constrainResolution(resolution, 0, opt_direction);
   Interaction.zoomWithoutConstraints(
-      view, resolution, opt_anchor, opt_duration);
+    view, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -191,23 +191,23 @@ Interaction.zoom = function(view, resolution, opt_anchor, opt_duration, opt_dire
  * @param {number=} opt_duration Duration.
  */
 Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
-  var currentResolution = view.getResolution();
-  var resolution = view.constrainResolution(currentResolution, delta, 0);
+  const currentResolution = view.getResolution();
+  let resolution = view.constrainResolution(currentResolution, delta, 0);
 
   if (resolution !== undefined) {
-    var resolutions = view.getResolutions();
+    const resolutions = view.getResolutions();
     resolution = clamp(
-        resolution,
-        view.getMinResolution() || resolutions[resolutions.length - 1],
-        view.getMaxResolution() || resolutions[0]);
+      resolution,
+      view.getMinResolution() || resolutions[resolutions.length - 1],
+      view.getMaxResolution() || resolutions[0]);
   }
 
   // If we have a constraint on center, we need to change the anchor so that the
   // new center is within the extent. We first calculate the new center, apply
   // the constraint to it, and then calculate back the anchor
   if (opt_anchor && resolution !== undefined && resolution !== currentResolution) {
-    var currentCenter = view.getCenter();
-    var center = view.calculateCenterZoom(resolution, opt_anchor);
+    const currentCenter = view.getCenter();
+    let center = view.calculateCenterZoom(resolution, opt_anchor);
     center = view.constrainCenter(center);
 
     opt_anchor = [
@@ -219,7 +219,7 @@ Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
   }
 
   Interaction.zoomWithoutConstraints(
-      view, resolution, opt_anchor, opt_duration);
+    view, resolution, opt_anchor, opt_duration);
 };
 
 
@@ -231,8 +231,8 @@ Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
  */
 Interaction.zoomWithoutConstraints = function(view, resolution, opt_anchor, opt_duration) {
   if (resolution) {
-    var currentResolution = view.getResolution();
-    var currentCenter = view.getCenter();
+    const currentResolution = view.getResolution();
+    const currentCenter = view.getCenter();
     if (currentResolution !== undefined && currentCenter &&
         resolution !== currentResolution && opt_duration) {
       view.animate({
@@ -243,7 +243,7 @@ Interaction.zoomWithoutConstraints = function(view, resolution, opt_anchor, opt_
       });
     } else {
       if (opt_anchor) {
-        var center = view.calculateCenterZoom(resolution, opt_anchor);
+        const center = view.calculateCenterZoom(resolution, opt_anchor);
         view.setCenter(center);
       }
       view.setResolution(resolution);

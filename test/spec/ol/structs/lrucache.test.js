@@ -3,7 +3,7 @@ import LRUCache from '../../../../src/ol/structs/LRUCache.js';
 
 describe('ol.structs.LRUCache', function() {
 
-  var lruCache;
+  let lruCache;
 
   function fillLRUCache(lruCache) {
     lruCache.set('a', 0);
@@ -164,7 +164,7 @@ describe('ol.structs.LRUCache', function() {
 
   describe('#peekFirstKey()', function() {
     it('returns the newest key in the cache', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
       cache.set('newish', 'newish');
@@ -173,13 +173,13 @@ describe('ol.structs.LRUCache', function() {
     });
 
     it('works if the cache has one item', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       cache.set('key', 'value');
       expect(cache.peekFirstKey()).to.eql('key');
     });
 
     it('throws if the cache is empty', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       expect(function() {
         cache.peekFirstKey();
       }).to.throwException();
@@ -212,7 +212,7 @@ describe('ol.structs.LRUCache', function() {
 
   describe('#remove()', function() {
     it('removes an item from the cache', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
       cache.set('newish', 'newish');
@@ -224,7 +224,7 @@ describe('ol.structs.LRUCache', function() {
     });
 
     it('works when removing the oldest item', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
       cache.set('newish', 'newish');
@@ -237,7 +237,7 @@ describe('ol.structs.LRUCache', function() {
     });
 
     it('works when removing the newest item', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       cache.set('oldest', 'oldest');
       cache.set('oldish', 'oldish');
       cache.set('newish', 'newish');
@@ -250,20 +250,20 @@ describe('ol.structs.LRUCache', function() {
     });
 
     it('returns the removed item', function() {
-      var cache = new LRUCache();
-      var item = {};
+      const cache = new LRUCache();
+      const item = {};
       cache.set('key', item);
 
-      var returned = cache.remove('key');
+      const returned = cache.remove('key');
       expect(returned).to.be(item);
     });
 
     it('throws if the key does not exist', function() {
-      var cache = new LRUCache();
+      const cache = new LRUCache();
       cache.set('foo', 'foo');
       cache.set('bar', 'bar');
 
-      var call = function() {
+      const call = function() {
         cache.remove('bam');
       };
       expect(call).to.throwException();

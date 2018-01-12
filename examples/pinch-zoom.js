@@ -6,7 +6,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var map = new Map({
+const map = new Map({
   interactions: defaultInteractions({pinchZoom: false}).extend([
     new PinchZoom({
       constrainResolution: true // force zooming to a integer zoom

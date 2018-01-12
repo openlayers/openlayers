@@ -11,15 +11,15 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var styleCache = {};
-var styleFunction = function(feature) {
+const styleCache = {};
+const styleFunction = function(feature) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
   // standards-violating <magnitude> tag in each Placemark.  We extract it from
   // the Placemark's name instead.
-  var name = feature.get('name');
-  var magnitude = parseFloat(name.substr(2));
-  var radius = 5 + 20 * (magnitude - 5);
-  var style = styleCache[radius];
+  const name = feature.get('name');
+  const magnitude = parseFloat(name.substr(2));
+  const radius = 5 + 20 * (magnitude - 5);
+  let style = styleCache[radius];
   if (!style) {
     style = new Style({
       image: new CircleStyle({
@@ -38,7 +38,7 @@ var styleFunction = function(feature) {
   return style;
 };
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
@@ -48,13 +48,13 @@ var vector = new VectorLayer({
   style: styleFunction
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new Stamen({
     layer: 'toner'
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -63,25 +63,25 @@ var map = new Map({
   })
 });
 
-var info = $('#info');
+const info = $('#info');
 info.tooltip({
   animation: false,
   trigger: 'manual'
 });
 
-var displayFeatureInfo = function(pixel) {
+const displayFeatureInfo = function(pixel) {
   info.css({
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'
   });
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+  const feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
   if (feature) {
     info.tooltip('hide')
-        .attr('data-original-title', feature.get('name'))
-        .tooltip('fixTitle')
-        .tooltip('show');
+      .attr('data-original-title', feature.get('name'))
+      .tooltip('fixTitle')
+      .tooltip('show');
   } else {
     info.tooltip('hide');
   }

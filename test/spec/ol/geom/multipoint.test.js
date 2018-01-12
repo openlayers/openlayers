@@ -13,7 +13,7 @@ describe('ol.geom.MultiPoint', function() {
 
   describe('construct empty', function() {
 
-    var multiPoint;
+    let multiPoint;
     beforeEach(function() {
       multiPoint = new MultiPoint([]);
     });
@@ -49,7 +49,7 @@ describe('ol.geom.MultiPoint', function() {
 
   describe('construct with 2D coordinates', function() {
 
-    var multiPoint;
+    let multiPoint;
     beforeEach(function() {
       multiPoint = new MultiPoint([[1, 2], [3, 4]]);
     });
@@ -90,7 +90,7 @@ describe('ol.geom.MultiPoint', function() {
 
   describe('construct with 3D coordinates', function() {
 
-    var multiPoint;
+    let multiPoint;
     beforeEach(function() {
       multiPoint = new MultiPoint([[1, 2, 3], [4, 5, 6]]);
     });
@@ -119,10 +119,10 @@ describe('ol.geom.MultiPoint', function() {
 
   describe('construct with 3D coordinates and layout XYM', function() {
 
-    var multiPoint;
+    let multiPoint;
     beforeEach(function() {
       multiPoint = new MultiPoint(
-          [[1, 2, 3], [4, 5, 6]], 'XYM');
+        [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     it('has the expected layout', function() {
@@ -146,16 +146,16 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('can return individual points', function() {
-      var point0 = multiPoint.getPoint(0);
+      const point0 = multiPoint.getPoint(0);
       expect(point0.getLayout()).to.be('XYM');
       expect(point0.getCoordinates()).to.eql([1, 2, 3]);
-      var point1 = multiPoint.getPoint(1);
+      const point1 = multiPoint.getPoint(1);
       expect(point1.getLayout()).to.be('XYM');
       expect(point1.getCoordinates()).to.eql([4, 5, 6]);
     });
 
     it('can return all points', function() {
-      var points = multiPoint.getPoints();
+      const points = multiPoint.getPoints();
       expect(points).to.have.length(2);
       expect(points[0]).to.be.an(Point);
       expect(points[0].getLayout()).to.be('XYM');
@@ -169,7 +169,7 @@ describe('ol.geom.MultiPoint', function() {
 
   describe('construct with 4D coordinates', function() {
 
-    var multiPoint;
+    let multiPoint;
     beforeEach(function() {
       multiPoint = new MultiPoint([[1, 2, 3, 4], [5, 6, 7, 8]]);
     });
@@ -197,7 +197,7 @@ describe('ol.geom.MultiPoint', function() {
     describe('#getClosestPoint', function() {
 
       it('preserves extra dimensions', function() {
-        var closestPoint = multiPoint.getClosestPoint([6, 6]);
+        const closestPoint = multiPoint.getClosestPoint([6, 6]);
         expect(closestPoint).to.eql([5, 6, 7, 8]);
       });
 
@@ -208,23 +208,23 @@ describe('ol.geom.MultiPoint', function() {
   describe('#scale()', function() {
 
     it('scales a multi-point', function() {
-      var geom = new MultiPoint([[-10, -20], [10, 20]]);
+      const geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(10);
-      var coordinates = geom.getCoordinates();
+      const coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-100, -200], [100, 200]]);
     });
 
     it('accepts sx and sy', function() {
-      var geom = new MultiPoint([[-10, -20], [10, 20]]);
+      const geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(2, 3);
-      var coordinates = geom.getCoordinates();
+      const coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-20, -60], [20, 60]]);
     });
 
     it('accepts an anchor', function() {
-      var geom = new MultiPoint([[-10, -20], [10, 20]]);
+      const geom = new MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(3, 2, [-10, -20]);
-      var coordinates = geom.getCoordinates();
+      const coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-10, -20], [50, 60]]);
     });
 
@@ -232,7 +232,7 @@ describe('ol.geom.MultiPoint', function() {
 
   describe('#applyTransform()', function() {
 
-    var multi, transform;
+    let multi, transform;
     beforeEach(function() {
       multi = new MultiPoint([[1, 2], [3, 4]]);
       transform = sinon.spy();
@@ -241,7 +241,7 @@ describe('ol.geom.MultiPoint', function() {
     it('calls a transform function', function() {
       multi.applyTransform(transform);
       expect(transform.calledOnce).to.be(true);
-      var args = transform.firstCall.args;
+      const args = transform.firstCall.args;
       expect(args).to.have.length(3);
 
       expect(args[0]).to.be(multi.getFlatCoordinates()); // input coords
@@ -250,9 +250,9 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('allows for modification of coordinates', function() {
-      var mod = function(input, output, dimension) {
-        var copy = input.slice();
-        for (var i = 0, ii = copy.length; i < ii; i += dimension) {
+      const mod = function(input, output, dimension) {
+        const copy = input.slice();
+        for (let i = 0, ii = copy.length; i < ii; i += dimension) {
           output[i] = copy[i + 1];
           output[i + 1] = copy[i];
         }
@@ -262,7 +262,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('returns undefined', function() {
-      var got = multi.applyTransform(transform);
+      const got = multi.applyTransform(transform);
       expect(got).to.be(undefined);
     });
 
@@ -271,12 +271,12 @@ describe('ol.geom.MultiPoint', function() {
   describe('#transform()', function() {
 
     it('transforms a geometry given CRS identifiers', function() {
-      var multi = new MultiPoint([[-111, 45], [111, -45]]).transform(
-          'EPSG:4326', 'EPSG:3857');
+      const multi = new MultiPoint([[-111, 45], [111, -45]]).transform(
+        'EPSG:4326', 'EPSG:3857');
 
       expect(multi).to.be.a(MultiPoint);
 
-      var coords = multi.getCoordinates();
+      const coords = multi.getCoordinates();
 
       expect(coords[0][0]).to.roughlyEqual(-12356463.47, 1e-2);
       expect(coords[0][1]).to.roughlyEqual(5621521.48, 1e-2);

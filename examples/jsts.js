@@ -10,22 +10,22 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 
-var source = new VectorSource();
+const source = new VectorSource();
 fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   return response.json();
 }).then(function(json) {
-  var format = new GeoJSON();
-  var features = format.readFeatures(json, {featureProjection: 'EPSG:3857'});
+  const format = new GeoJSON();
+  const features = format.readFeatures(json, {featureProjection: 'EPSG:3857'});
 
-  var parser = new jsts.io.OL3Parser();
+  const parser = new jsts.io.OL3Parser();
 
-  for (var i = 0; i < features.length; i++) {
-    var feature = features[i];
+  for (let i = 0; i < features.length; i++) {
+    const feature = features[i];
     // convert the OpenLayers geometry to a JSTS geometry
-    var jstsGeom = parser.read(feature.getGeometry());
+    const jstsGeom = parser.read(feature.getGeometry());
 
     // create a buffer of 40 meters around each line
-    var buffered = jstsGeom.buffer(40);
+    const buffered = jstsGeom.buffer(40);
 
     // convert back from JSTS and replace the geometry on the feature
     feature.setGeometry(parser.write(buffered));
@@ -33,15 +33,15 @@ fetch('data/geojson/roads-seoul.geojson').then(function(response) {
 
   source.addFeatures(features);
 });
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: source
 });
 
-var rasterLayer = new TileLayer({
+const rasterLayer = new TileLayer({
   source: new OSM()
 });
 
-var map = new Map({
+const map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new View({

@@ -42,8 +42,8 @@ import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
  * @param {ol.pointer.MouseSource} mouseSource Mouse source.
  * @extends {ol.pointer.EventSource}
  */
-var _ol_pointer_TouchSource_ = function(dispatcher, mouseSource) {
-  var mapping = {
+const _ol_pointer_TouchSource_ = function(dispatcher, mouseSource) {
+  const mapping = {
     'touchstart': this.touchstart,
     'touchmove': this.touchmove,
     'touchend': this.touchend,
@@ -124,7 +124,7 @@ _ol_pointer_TouchSource_.prototype.isPrimaryTouch_ = function(inTouch) {
  * @private
  */
 _ol_pointer_TouchSource_.prototype.setPrimaryTouch_ = function(inTouch) {
-  var count = Object.keys(this.pointerMap).length;
+  const count = Object.keys(this.pointerMap).length;
   if (count === 0 || (count === 1 &&
       _ol_pointer_MouseSource_.POINTER_ID.toString() in this.pointerMap)) {
     this.firstTouchId_ = inTouch.identifier;
@@ -150,8 +150,8 @@ _ol_pointer_TouchSource_.prototype.removePrimaryPointer_ = function(inPointer) {
  */
 _ol_pointer_TouchSource_.prototype.resetClickCount_ = function() {
   this.resetId_ = setTimeout(
-      this.resetClickCountHandler_.bind(this),
-      _ol_pointer_TouchSource_.CLICK_COUNT_TIMEOUT);
+    this.resetClickCountHandler_.bind(this),
+    _ol_pointer_TouchSource_.CLICK_COUNT_TIMEOUT);
 };
 
 
@@ -181,7 +181,7 @@ _ol_pointer_TouchSource_.prototype.cancelResetClickCount_ = function() {
  * @return {Object} A pointer object.
  */
 _ol_pointer_TouchSource_.prototype.touchToPointer_ = function(browserEvent, inTouch) {
-  var e = this.dispatcher.cloneEvent(browserEvent, inTouch);
+  const e = this.dispatcher.cloneEvent(browserEvent, inTouch);
   // Spec specifies that pointerId 1 is reserved for Mouse.
   // Touch identifiers can start at 0.
   // Add 2 to the touch identifier for compatibility.
@@ -216,13 +216,13 @@ _ol_pointer_TouchSource_.prototype.touchToPointer_ = function(browserEvent, inTo
  * @param {function(Event, Object)} inFunction In function.
  */
 _ol_pointer_TouchSource_.prototype.processTouches_ = function(inEvent, inFunction) {
-  var touches = Array.prototype.slice.call(
-      inEvent.changedTouches);
-  var count = touches.length;
+  const touches = Array.prototype.slice.call(
+    inEvent.changedTouches);
+  const count = touches.length;
   function preventDefault() {
     inEvent.preventDefault();
   }
-  var i, pointer;
+  let i, pointer;
   for (i = 0; i < count; ++i) {
     pointer = this.touchToPointer_(inEvent, touches[i]);
     // forward touch preventDefaults
@@ -239,9 +239,9 @@ _ol_pointer_TouchSource_.prototype.processTouches_ = function(inEvent, inFunctio
  * @return {boolean} True, if the `Touch` with the given id is in the list.
  */
 _ol_pointer_TouchSource_.prototype.findTouch_ = function(touchList, searchId) {
-  var l = touchList.length;
-  var touch;
-  for (var i = 0; i < l; i++) {
+  const l = touchList.length;
+  let touch;
+  for (let i = 0; i < l; i++) {
     touch = touchList[i];
     if (touch.identifier === searchId) {
       return true;
@@ -263,14 +263,14 @@ _ol_pointer_TouchSource_.prototype.findTouch_ = function(touchList, searchId) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_TouchSource_.prototype.vacuumTouches_ = function(inEvent) {
-  var touchList = inEvent.touches;
+  const touchList = inEvent.touches;
   // pointerMap.getCount() should be < touchList.length here,
   // as the touchstart has not been processed yet.
-  var keys = Object.keys(this.pointerMap);
-  var count = keys.length;
+  const keys = Object.keys(this.pointerMap);
+  const count = keys.length;
   if (count >= touchList.length) {
-    var d = [];
-    var i, key, value;
+    const d = [];
+    let i, key, value;
     for (i = 0; i < count; ++i) {
       key = keys[i];
       value = this.pointerMap[key];
@@ -338,14 +338,14 @@ _ol_pointer_TouchSource_.prototype.touchmove = function(inEvent) {
  * @param {Object} inPointer The in pointer.
  */
 _ol_pointer_TouchSource_.prototype.moveOverOut_ = function(browserEvent, inPointer) {
-  var event = inPointer;
-  var pointer = this.pointerMap[event.pointerId];
+  const event = inPointer;
+  const pointer = this.pointerMap[event.pointerId];
   // a finger drifted off the screen, ignore it
   if (!pointer) {
     return;
   }
-  var outEvent = pointer.out;
-  var outTarget = pointer.outTarget;
+  const outEvent = pointer.out;
+  const outTarget = pointer.outTarget;
   this.dispatcher.move(event, browserEvent);
   if (outEvent && outTarget !== event.target) {
     outEvent.relatedTarget = event.target;
@@ -433,12 +433,12 @@ _ol_pointer_TouchSource_.prototype.cleanUpPointer_ = function(inPointer) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_TouchSource_.prototype.dedupSynthMouse_ = function(inEvent) {
-  var lts = this.mouseSource.lastTouches;
-  var t = inEvent.changedTouches[0];
+  const lts = this.mouseSource.lastTouches;
+  const t = inEvent.changedTouches[0];
   // only the primary finger will synth mouse events
   if (this.isPrimaryTouch_(t)) {
     // remember x/y of last touch
-    var lt = [t.clientX, t.clientY];
+    const lt = [t.clientX, t.clientY];
     lts.push(lt);
 
     setTimeout(function() {

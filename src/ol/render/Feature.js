@@ -24,7 +24,7 @@ import _ol_transform_ from '../transform.js';
  * @param {Object.<string, *>} properties Properties.
  * @param {number|string|undefined} id Feature id.
  */
-var RenderFeature = function(type, flatCoordinates, ends, properties, id) {
+const RenderFeature = function(type, flatCoordinates, ends, properties, id) {
   /**
    * @private
    * @type {ol.Extent|undefined}
@@ -112,7 +112,7 @@ RenderFeature.prototype.getExtent = function() {
     this.extent_ = this.type_ === GeometryType.POINT ?
       createOrUpdateFromCoordinate(this.flatCoordinates_) :
       createOrUpdateFromFlatCoordinates(
-          this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
+        this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
 
   }
   return this.extent_;
@@ -124,9 +124,9 @@ RenderFeature.prototype.getExtent = function() {
  */
 RenderFeature.prototype.getFlatInteriorPoint = function() {
   if (!this.flatInteriorPoints_) {
-    var flatCenter = getCenter(this.getExtent());
+    const flatCenter = getCenter(this.getExtent());
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRings(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
+      this.flatCoordinates_, 0, this.ends_, 2, flatCenter, 0);
   }
   return this.flatInteriorPoints_;
 };
@@ -137,10 +137,10 @@ RenderFeature.prototype.getFlatInteriorPoint = function() {
  */
 RenderFeature.prototype.getFlatInteriorPoints = function() {
   if (!this.flatInteriorPoints_) {
-    var flatCenters = _ol_geom_flat_center_.linearRingss(
-        this.flatCoordinates_, 0, this.ends_, 2);
+    const flatCenters = _ol_geom_flat_center_.linearRingss(
+      this.flatCoordinates_, 0, this.ends_, 2);
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
-        this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
+      this.flatCoordinates_, 0, this.ends_, 2, flatCenters);
   }
   return this.flatInteriorPoints_;
 };
@@ -152,7 +152,7 @@ RenderFeature.prototype.getFlatInteriorPoints = function() {
 RenderFeature.prototype.getFlatMidpoint = function() {
   if (!this.flatMidpoints_) {
     this.flatMidpoints_ = _ol_geom_flat_interpolate_.lineString(
-        this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
+      this.flatCoordinates_, 0, this.flatCoordinates_.length, 2, 0.5);
   }
   return this.flatMidpoints_;
 };
@@ -164,13 +164,13 @@ RenderFeature.prototype.getFlatMidpoint = function() {
 RenderFeature.prototype.getFlatMidpoints = function() {
   if (!this.flatMidpoints_) {
     this.flatMidpoints_ = [];
-    var flatCoordinates = this.flatCoordinates_;
-    var offset = 0;
-    var ends = this.ends_;
-    for (var i = 0, ii = ends.length; i < ii; ++i) {
-      var end = ends[i];
-      var midpoint = _ol_geom_flat_interpolate_.lineString(
-          flatCoordinates, offset, end, 2, 0.5);
+    const flatCoordinates = this.flatCoordinates_;
+    let offset = 0;
+    const ends = this.ends_;
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
+      const end = ends[i];
+      const midpoint = _ol_geom_flat_interpolate_.lineString(
+        flatCoordinates, offset, end, 2, 0.5);
       extend(this.flatMidpoints_, midpoint);
       offset = end;
     }
@@ -264,15 +264,15 @@ RenderFeature.prototype.getType = function() {
  * @param {ol.ProjectionLike} destination The desired projection.
  */
 RenderFeature.prototype.transform = function(source, destination) {
-  var pixelExtent = source.getExtent();
-  var projectedExtent = source.getWorldExtent();
-  var scale = getHeight(projectedExtent) / getHeight(pixelExtent);
-  var transform = this.tmpTransform_;
+  const pixelExtent = source.getExtent();
+  const projectedExtent = source.getWorldExtent();
+  const scale = getHeight(projectedExtent) / getHeight(pixelExtent);
+  const transform = this.tmpTransform_;
   _ol_transform_.compose(transform,
-      projectedExtent[0], projectedExtent[3],
-      scale, -scale, 0,
-      0, 0);
+    projectedExtent[0], projectedExtent[3],
+    scale, -scale, 0,
+    0, 0);
   _ol_geom_flat_transform_.transform2D(this.flatCoordinates_, 0, this.flatCoordinates_.length, 2,
-      transform, this.flatCoordinates_);
+    transform, this.flatCoordinates_);
 };
 export default RenderFeature;

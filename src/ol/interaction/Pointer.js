@@ -23,11 +23,11 @@ import _ol_obj_ from '../obj.js';
  * @extends {ol.interaction.Interaction}
  * @api
  */
-var PointerInteraction = function(opt_options) {
+const PointerInteraction = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
-  var handleEvent = options.handleEvent ?
+  const handleEvent = options.handleEvent ?
     options.handleEvent : PointerInteraction.handleEvent;
 
   Interaction.call(this, {
@@ -90,10 +90,10 @@ inherits(PointerInteraction, Interaction);
  * @return {ol.Pixel} Centroid pixel.
  */
 PointerInteraction.centroid = function(pointerEvents) {
-  var length = pointerEvents.length;
-  var clientX = 0;
-  var clientY = 0;
-  for (var i = 0; i < length; i++) {
+  const length = pointerEvents.length;
+  let clientX = 0;
+  let clientY = 0;
+  for (let i = 0; i < length; i++) {
     clientX += pointerEvents[i].clientX;
     clientY += pointerEvents[i].clientY;
   }
@@ -108,7 +108,7 @@ PointerInteraction.centroid = function(pointerEvents) {
  * @private
  */
 PointerInteraction.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
-  var type = mapBrowserEvent.type;
+  const type = mapBrowserEvent.type;
   return type === MapBrowserEventType.POINTERDOWN ||
     type === MapBrowserEventType.POINTERDRAG ||
     type === MapBrowserEventType.POINTERUP;
@@ -121,9 +121,9 @@ PointerInteraction.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent)
  */
 PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
-    var event = mapBrowserEvent.pointerEvent;
+    const event = mapBrowserEvent.pointerEvent;
 
-    var id = event.pointerId.toString();
+    const id = event.pointerId.toString();
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
       delete this.trackedPointers_[id];
     } else if (mapBrowserEvent.type ==
@@ -182,18 +182,18 @@ PointerInteraction.handleEvent = function(mapBrowserEvent) {
     return true;
   }
 
-  var stopEvent = false;
+  let stopEvent = false;
   this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
     } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERUP) {
-      var handledUp = this.handleUpEvent_(mapBrowserEvent);
+      const handledUp = this.handleUpEvent_(mapBrowserEvent);
       this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
     }
   } else {
     if (mapBrowserEvent.type == MapBrowserEventType.POINTERDOWN) {
-      var handled = this.handleDownEvent_(mapBrowserEvent);
+      const handled = this.handleDownEvent_(mapBrowserEvent);
       this.handlingDownUpSequence = handled;
       stopEvent = this.shouldStopEvent(handled);
     } else if (mapBrowserEvent.type == MapBrowserEventType.POINTERMOVE) {

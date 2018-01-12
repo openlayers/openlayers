@@ -13,21 +13,21 @@ import XYZ from '../source/XYZ.js';
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
  * @api
  */
-var OSM = function(opt_options) {
+const OSM = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
-  var attributions;
+  let attributions;
   if (options.attributions !== undefined) {
     attributions = options.attributions;
   } else {
     attributions = [OSM.ATTRIBUTION];
   }
 
-  var crossOrigin = options.crossOrigin !== undefined ?
+  const crossOrigin = options.crossOrigin !== undefined ?
     options.crossOrigin : 'anonymous';
 
-  var url = options.url !== undefined ?
+  const url = options.url !== undefined ?
     options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   XYZ.call(this, {

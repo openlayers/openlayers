@@ -11,7 +11,7 @@ import _ol_xml_ from '../xml.js';
  * @constructor
  * @extends {ol.format.XML}
  */
-var OWS = function() {
+const OWS = function() {
   XML.call(this);
 };
 
@@ -22,7 +22,7 @@ inherits(OWS, XML);
  * @inheritDoc
  */
 OWS.prototype.readFromDocument = function(doc) {
-  for (var n = doc.firstChild; n; n = n.nextSibling) {
+  for (let n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
       return this.readFromNode(n);
     }
@@ -35,8 +35,8 @@ OWS.prototype.readFromDocument = function(doc) {
  * @inheritDoc
  */
 OWS.prototype.readFromNode = function(node) {
-  var owsObject = _ol_xml_.pushParseAndPop({},
-      OWS.PARSERS_, node, []);
+  const owsObject = _ol_xml_.pushParseAndPop({},
+    OWS.PARSERS_, node, []);
   return owsObject ? owsObject : null;
 };
 
@@ -49,7 +49,7 @@ OWS.prototype.readFromNode = function(node) {
  */
 OWS.readAddress_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop({},
-      OWS.ADDRESS_PARSERS_, node, objectStack);
+    OWS.ADDRESS_PARSERS_, node, objectStack);
 };
 
 
@@ -61,7 +61,7 @@ OWS.readAddress_ = function(node, objectStack) {
  */
 OWS.readAllowedValues_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop({},
-      OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
+    OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
 };
 
 
@@ -72,13 +72,13 @@ OWS.readAllowedValues_ = function(node, objectStack) {
  * @return {Object|undefined} The constraint.
  */
 OWS.readConstraint_ = function(node, objectStack) {
-  var name = node.getAttribute('name');
+  const name = node.getAttribute('name');
   if (!name) {
     return undefined;
   }
   return _ol_xml_.pushParseAndPop({'name': name},
-      OWS.CONSTRAINT_PARSERS_, node,
-      objectStack);
+    OWS.CONSTRAINT_PARSERS_, node,
+    objectStack);
 };
 
 
@@ -90,7 +90,7 @@ OWS.readConstraint_ = function(node, objectStack) {
  */
 OWS.readContactInfo_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop({},
-      OWS.CONTACT_INFO_PARSERS_, node, objectStack);
+    OWS.CONTACT_INFO_PARSERS_, node, objectStack);
 };
 
 
@@ -102,7 +102,7 @@ OWS.readContactInfo_ = function(node, objectStack) {
  */
 OWS.readDcp_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop({},
-      OWS.DCP_PARSERS_, node, objectStack);
+    OWS.DCP_PARSERS_, node, objectStack);
 };
 
 
@@ -113,12 +113,12 @@ OWS.readDcp_ = function(node, objectStack) {
  * @return {Object|undefined} The GET object.
  */
 OWS.readGet_ = function(node, objectStack) {
-  var href = XLink.readHref(node);
+  const href = XLink.readHref(node);
   if (!href) {
     return undefined;
   }
   return _ol_xml_.pushParseAndPop({'href': href},
-      OWS.REQUEST_METHOD_PARSERS_, node, objectStack);
+    OWS.REQUEST_METHOD_PARSERS_, node, objectStack);
 };
 
 
@@ -130,7 +130,7 @@ OWS.readGet_ = function(node, objectStack) {
  */
 OWS.readHttp_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop({}, OWS.HTTP_PARSERS_,
-      node, objectStack);
+    node, objectStack);
 };
 
 
@@ -141,13 +141,13 @@ OWS.readHttp_ = function(node, objectStack) {
  * @return {Object|undefined} The operation.
  */
 OWS.readOperation_ = function(node, objectStack) {
-  var name = node.getAttribute('name');
-  var value = _ol_xml_.pushParseAndPop({},
-      OWS.OPERATION_PARSERS_, node, objectStack);
+  const name = node.getAttribute('name');
+  const value = _ol_xml_.pushParseAndPop({},
+    OWS.OPERATION_PARSERS_, node, objectStack);
   if (!value) {
     return undefined;
   }
-  var object = /** @type {Object} */
+  const object = /** @type {Object} */
       (objectStack[objectStack.length - 1]);
   object[name] = value;
 };
@@ -160,10 +160,10 @@ OWS.readOperation_ = function(node, objectStack) {
  * @return {Object|undefined} The operations metadata.
  */
 OWS.readOperationsMetadata_ = function(node,
-    objectStack) {
+  objectStack) {
   return _ol_xml_.pushParseAndPop({},
-      OWS.OPERATIONS_METADATA_PARSERS_, node,
-      objectStack);
+    OWS.OPERATIONS_METADATA_PARSERS_, node,
+    objectStack);
 };
 
 
@@ -175,7 +175,7 @@ OWS.readOperationsMetadata_ = function(node,
  */
 OWS.readPhone_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop({},
-      OWS.PHONE_PARSERS_, node, objectStack);
+    OWS.PHONE_PARSERS_, node, objectStack);
 };
 
 
@@ -186,10 +186,10 @@ OWS.readPhone_ = function(node, objectStack) {
  * @return {Object|undefined} The service identification.
  */
 OWS.readServiceIdentification_ = function(node,
-    objectStack) {
+  objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
-      objectStack);
+    {}, OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
+    objectStack);
 };
 
 
@@ -201,8 +201,8 @@ OWS.readServiceIdentification_ = function(node,
  */
 OWS.readServiceContact_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, OWS.SERVICE_CONTACT_PARSERS_, node,
-      objectStack);
+    {}, OWS.SERVICE_CONTACT_PARSERS_, node,
+    objectStack);
 };
 
 
@@ -214,8 +214,8 @@ OWS.readServiceContact_ = function(node, objectStack) {
  */
 OWS.readServiceProvider_ = function(node, objectStack) {
   return _ol_xml_.pushParseAndPop(
-      {}, OWS.SERVICE_PROVIDER_PARSERS_, node,
-      objectStack);
+    {}, OWS.SERVICE_PROVIDER_PARSERS_, node,
+    objectStack);
 };
 
 
@@ -247,14 +247,14 @@ OWS.NAMESPACE_URIS_ = [
  * @private
  */
 OWS.PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'ServiceIdentification': _ol_xml_.makeObjectPropertySetter(
-          OWS.readServiceIdentification_),
-      'ServiceProvider': _ol_xml_.makeObjectPropertySetter(
-          OWS.readServiceProvider_),
-      'OperationsMetadata': _ol_xml_.makeObjectPropertySetter(
-          OWS.readOperationsMetadata_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'ServiceIdentification': _ol_xml_.makeObjectPropertySetter(
+      OWS.readServiceIdentification_),
+    'ServiceProvider': _ol_xml_.makeObjectPropertySetter(
+      OWS.readServiceProvider_),
+    'OperationsMetadata': _ol_xml_.makeObjectPropertySetter(
+      OWS.readOperationsMetadata_)
+  });
 
 
 /**
@@ -263,17 +263,17 @@ OWS.PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'DeliveryPoint': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'AdministrativeArea': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString),
-      'PostalCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'ElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
-          XSD.readString)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'DeliveryPoint': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'AdministrativeArea': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString),
+    'PostalCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'ElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
+      XSD.readString)
+  });
 
 
 /**
@@ -282,9 +282,9 @@ OWS.ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.ALLOWED_VALUES_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'Value': _ol_xml_.makeObjectPropertyPusher(OWS.readValue_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'Value': _ol_xml_.makeObjectPropertyPusher(OWS.readValue_)
+  });
 
 
 /**
@@ -293,10 +293,10 @@ OWS.ALLOWED_VALUES_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.CONSTRAINT_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'AllowedValues': _ol_xml_.makeObjectPropertySetter(
-          OWS.readAllowedValues_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'AllowedValues': _ol_xml_.makeObjectPropertySetter(
+      OWS.readAllowedValues_)
+  });
 
 
 /**
@@ -305,10 +305,10 @@ OWS.CONSTRAINT_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.CONTACT_INFO_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'Phone': _ol_xml_.makeObjectPropertySetter(OWS.readPhone_),
-      'Address': _ol_xml_.makeObjectPropertySetter(OWS.readAddress_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'Phone': _ol_xml_.makeObjectPropertySetter(OWS.readPhone_),
+    'Address': _ol_xml_.makeObjectPropertySetter(OWS.readAddress_)
+  });
 
 
 /**
@@ -317,9 +317,9 @@ OWS.CONTACT_INFO_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.DCP_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'HTTP': _ol_xml_.makeObjectPropertySetter(OWS.readHttp_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'HTTP': _ol_xml_.makeObjectPropertySetter(OWS.readHttp_)
+  });
 
 
 /**
@@ -328,10 +328,10 @@ OWS.DCP_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'Get': _ol_xml_.makeObjectPropertyPusher(OWS.readGet_),
-      'Post': undefined // TODO
-    });
+  OWS.NAMESPACE_URIS_, {
+    'Get': _ol_xml_.makeObjectPropertyPusher(OWS.readGet_),
+    'Post': undefined // TODO
+  });
 
 
 /**
@@ -340,9 +340,9 @@ OWS.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.OPERATION_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'DCP': _ol_xml_.makeObjectPropertySetter(OWS.readDcp_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'DCP': _ol_xml_.makeObjectPropertySetter(OWS.readDcp_)
+  });
 
 
 /**
@@ -351,9 +351,9 @@ OWS.OPERATION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.OPERATIONS_METADATA_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'Operation': OWS.readOperation_
-    });
+  OWS.NAMESPACE_URIS_, {
+    'Operation': OWS.readOperation_
+  });
 
 
 /**
@@ -362,10 +362,10 @@ OWS.OPERATIONS_METADATA_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.PHONE_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'Voice': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'Facsimile': _ol_xml_.makeObjectPropertySetter(XSD.readString)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'Voice': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'Facsimile': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+  });
 
 
 /**
@@ -374,10 +374,10 @@ OWS.PHONE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.REQUEST_METHOD_PARSERS_ = _ol_xml_.makeStructureNS(
-    OWS.NAMESPACE_URIS_, {
-      'Constraint': _ol_xml_.makeObjectPropertyPusher(
-          OWS.readConstraint_)
-    });
+  OWS.NAMESPACE_URIS_, {
+    'Constraint': _ol_xml_.makeObjectPropertyPusher(
+      OWS.readConstraint_)
+  });
 
 
 /**
@@ -387,13 +387,13 @@ OWS.REQUEST_METHOD_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 OWS.SERVICE_CONTACT_PARSERS_ =
     _ol_xml_.makeStructureNS(
-        OWS.NAMESPACE_URIS_, {
-          'IndividualName': _ol_xml_.makeObjectPropertySetter(
-              XSD.readString),
-          'PositionName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-          'ContactInfo': _ol_xml_.makeObjectPropertySetter(
-              OWS.readContactInfo_)
-        });
+      OWS.NAMESPACE_URIS_, {
+        'IndividualName': _ol_xml_.makeObjectPropertySetter(
+          XSD.readString),
+        'PositionName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+        'ContactInfo': _ol_xml_.makeObjectPropertySetter(
+          OWS.readContactInfo_)
+      });
 
 
 /**
@@ -403,15 +403,15 @@ OWS.SERVICE_CONTACT_PARSERS_ =
  */
 OWS.SERVICE_IDENTIFICATION_PARSERS_ =
     _ol_xml_.makeStructureNS(
-        OWS.NAMESPACE_URIS_, {
-          'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-          'AccessConstraints': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-          'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-          'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-          'ServiceTypeVersion': _ol_xml_.makeObjectPropertySetter(
-              XSD.readString),
-          'ServiceType': _ol_xml_.makeObjectPropertySetter(XSD.readString)
-        });
+      OWS.NAMESPACE_URIS_, {
+        'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+        'AccessConstraints': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+        'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+        'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+        'ServiceTypeVersion': _ol_xml_.makeObjectPropertySetter(
+          XSD.readString),
+        'ServiceType': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+      });
 
 
 /**
@@ -421,10 +421,10 @@ OWS.SERVICE_IDENTIFICATION_PARSERS_ =
  */
 OWS.SERVICE_PROVIDER_PARSERS_ =
     _ol_xml_.makeStructureNS(
-        OWS.NAMESPACE_URIS_, {
-          'ProviderName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-          'ProviderSite': _ol_xml_.makeObjectPropertySetter(XLink.readHref),
-          'ServiceContact': _ol_xml_.makeObjectPropertySetter(
-              OWS.readServiceContact_)
-        });
+      OWS.NAMESPACE_URIS_, {
+        'ProviderName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+        'ProviderSite': _ol_xml_.makeObjectPropertySetter(XLink.readHref),
+        'ServiceContact': _ol_xml_.makeObjectPropertySetter(
+          OWS.readServiceContact_)
+      });
 export default OWS;

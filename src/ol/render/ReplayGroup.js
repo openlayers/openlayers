@@ -6,7 +6,7 @@
  * @constructor
  * @abstract
  */
-var _ol_render_ReplayGroup_ = function() {};
+const _ol_render_ReplayGroup_ = function() {};
 
 
 /**

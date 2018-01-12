@@ -18,7 +18,7 @@ import {getHeight} from './extent.js';
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-var _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
+const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
   _ol_ImageBase_.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
@@ -109,9 +109,9 @@ _ol_Image_.prototype.load = function() {
     this.changed();
     this.imageListenerKeys_ = [
       _ol_events_.listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
+        this.handleImageError_, this),
       _ol_events_.listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
+        this.handleImageLoad_, this)
     ];
     this.imageLoadFunction_(this, this.src_);
   }

@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {cosh} from '../math.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
-var _ol_proj_EPSG3857_ = {};
+const _ol_proj_EPSG3857_ = {};
 
 
 /**
@@ -91,9 +91,9 @@ _ol_proj_EPSG3857_.PROJECTIONS = [
  * @return {Array.<number>} Output array of coordinate values.
  */
 _ol_proj_EPSG3857_.fromEPSG4326 = function(input, opt_output, opt_dimension) {
-  var length = input.length,
-      dimension = opt_dimension > 1 ? opt_dimension : 2,
-      output = opt_output;
+  const length = input.length;
+  const dimension = opt_dimension > 1 ? opt_dimension : 2;
+  let output = opt_output;
   if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
@@ -102,10 +102,10 @@ _ol_proj_EPSG3857_.fromEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  var halfSize = _ol_proj_EPSG3857_.HALF_SIZE;
-  for (var i = 0; i < length; i += dimension) {
+  const halfSize = _ol_proj_EPSG3857_.HALF_SIZE;
+  for (let i = 0; i < length; i += dimension) {
     output[i] = halfSize * input[i] / 180;
-    var y = _ol_proj_EPSG3857_.RADIUS *
+    let y = _ol_proj_EPSG3857_.RADIUS *
         Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
     if (y > halfSize) {
       y = halfSize;
@@ -127,9 +127,9 @@ _ol_proj_EPSG3857_.fromEPSG4326 = function(input, opt_output, opt_dimension) {
  * @return {Array.<number>} Output array of coordinate values.
  */
 _ol_proj_EPSG3857_.toEPSG4326 = function(input, opt_output, opt_dimension) {
-  var length = input.length,
-      dimension = opt_dimension > 1 ? opt_dimension : 2,
-      output = opt_output;
+  const length = input.length;
+  const dimension = opt_dimension > 1 ? opt_dimension : 2;
+  let output = opt_output;
   if (output === undefined) {
     if (dimension > 2) {
       // preserve values beyond second dimension
@@ -138,10 +138,10 @@ _ol_proj_EPSG3857_.toEPSG4326 = function(input, opt_output, opt_dimension) {
       output = new Array(length);
     }
   }
-  for (var i = 0; i < length; i += dimension) {
+  for (let i = 0; i < length; i += dimension) {
     output[i] = 180 * input[i] / _ol_proj_EPSG3857_.HALF_SIZE;
     output[i + 1] = 360 * Math.atan(
-        Math.exp(input[i + 1] / _ol_proj_EPSG3857_.RADIUS)) / Math.PI - 90;
+      Math.exp(input[i + 1] / _ol_proj_EPSG3857_.RADIUS)) / Math.PI - 90;
   }
   return output;
 };

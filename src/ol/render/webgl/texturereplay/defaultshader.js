@@ -4,7 +4,7 @@
 import {DEBUG_WEBGL} from '../../../index.js';
 import _ol_webgl_Fragment_ from '../../../webgl/Fragment.js';
 import _ol_webgl_Vertex_ from '../../../webgl/Vertex.js';
-var _ol_render_webgl_texturereplay_defaultshader_ = {};
+const _ol_render_webgl_texturereplay_defaultshader_ = {};
 
 _ol_render_webgl_texturereplay_defaultshader_.fragment = new _ol_webgl_Fragment_(DEBUG_WEBGL ?
   'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :

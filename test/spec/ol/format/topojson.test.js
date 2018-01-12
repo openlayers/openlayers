@@ -5,7 +5,7 @@ import FeatureFormat from '../../../../src/ol/format/Feature.js';
 import {transform} from '../../../../src/ol/proj.js';
 import TopoJSON from '../../../../src/ol/format/TopoJSON.js';
 
-var aruba = {
+const aruba = {
   type: 'Topology',
   transform: {
     scale: [0.036003600360036005, 0.017361589674592462],
@@ -27,7 +27,7 @@ var aruba = {
   ]
 };
 
-var zeroId = {
+const zeroId = {
   type: 'Topology',
   objects: {
     foobar: {
@@ -40,7 +40,7 @@ var zeroId = {
 
 describe('ol.format.TopoJSON', function() {
 
-  var format;
+  let format;
   before(function() {
     format = new TopoJSON();
   });
@@ -55,13 +55,13 @@ describe('ol.format.TopoJSON', function() {
   describe('#readFeaturesFromTopology_()', function() {
 
     it('creates an array of features from a topology', function() {
-      var features = format.readFeaturesFromObject(aruba);
+      const features = format.readFeaturesFromObject(aruba);
       expect(features).to.have.length(1);
 
-      var feature = features[0];
+      const feature = features[0];
       expect(feature).to.be.a(Feature);
 
-      var geometry = feature.getGeometry();
+      const geometry = feature.getGeometry();
       expect(geometry).to.be.a(Polygon);
 
       // Parses identifier
@@ -76,10 +76,10 @@ describe('ol.format.TopoJSON', function() {
     });
 
     it('can read a feature with id equal to 0', function() {
-      var features = format.readFeaturesFromObject(zeroId);
+      const features = format.readFeaturesFromObject(zeroId);
       expect(features).to.have.length(1);
 
-      var feature = features[0];
+      const feature = features[0];
       expect(feature).to.be.a(Feature);
       expect(feature.getId()).to.be(0);
     });
@@ -90,20 +90,20 @@ describe('ol.format.TopoJSON', function() {
 
     it('parses simple.json', function(done) {
       afterLoadText('spec/ol/format/topojson/simple.json', function(text) {
-        var features = format.readFeatures(text);
+        const features = format.readFeatures(text);
         expect(features.length).to.be(3);
 
-        var point = features[0].getGeometry();
+        const point = features[0].getGeometry();
         expect(point.getType()).to.be('Point');
         expect(point.getFlatCoordinates()).to.eql([102, 0.5]);
 
-        var line = features[1].getGeometry();
+        const line = features[1].getGeometry();
         expect(line.getType()).to.be('LineString');
         expect(line.getFlatCoordinates()).to.eql([
           102, 0, 103, 1, 104, 0, 105, 1
         ]);
 
-        var polygon = features[2].getGeometry();
+        const polygon = features[2].getGeometry();
         expect(polygon.getType()).to.be('Polygon');
         expect(polygon.getFlatCoordinates()).to.eql([
           100, 0, 100, 1, 101, 1, 101, 0, 100, 0
@@ -115,17 +115,17 @@ describe('ol.format.TopoJSON', function() {
 
     it('parses simple.json and transforms', function(done) {
       afterLoadText('spec/ol/format/topojson/simple.json', function(text) {
-        var features = format.readFeatures(text, {
+        const features = format.readFeatures(text, {
           featureProjection: 'EPSG:3857'
         });
         expect(features.length).to.be(3);
 
-        var point = features[0].getGeometry();
+        const point = features[0].getGeometry();
         expect(point.getType()).to.be('Point');
         expect(features[0].getGeometry().getCoordinates()).to.eql(
-            transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+          transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
 
-        var line = features[1].getGeometry();
+        const line = features[1].getGeometry();
         expect(line.getType()).to.be('LineString');
         expect(line.getCoordinates()).to.eql([
           transform([102.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
@@ -134,7 +134,7 @@ describe('ol.format.TopoJSON', function() {
           transform([105.0, 1.0], 'EPSG:4326', 'EPSG:3857')
         ]);
 
-        var polygon = features[2].getGeometry();
+        const polygon = features[2].getGeometry();
         expect(polygon.getType()).to.be('Polygon');
         expect(polygon.getCoordinates()).to.eql([[
           transform([100.0, 0.0], 'EPSG:4326', 'EPSG:3857'),
@@ -151,19 +151,19 @@ describe('ol.format.TopoJSON', function() {
     it('parses world-110m.json', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
 
-        var features = format.readFeatures(text);
+        const features = format.readFeatures(text);
         expect(features.length).to.be(178);
 
-        var first = features[0];
+        const first = features[0];
         expect(first).to.be.a(Feature);
-        var firstGeom = first.getGeometry();
+        const firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(MultiPolygon);
         expect(firstGeom.getExtent()).to.eql(
-            [-180, -85.60903777459777, 180, 83.64513000000002]);
+          [-180, -85.60903777459777, 180, 83.64513000000002]);
 
-        var last = features[177];
+        const last = features[177];
         expect(last).to.be.a(Feature);
-        var lastGeom = last.getGeometry();
+        const lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(Polygon);
         expect(lastGeom.getExtent()).to.eql([
           25.26325263252633, -22.271802279310577,
@@ -176,10 +176,10 @@ describe('ol.format.TopoJSON', function() {
 
     it('sets the topology\'s child names as feature property', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
-        var format = new TopoJSON({
+        const format = new TopoJSON({
           layerName: 'layer'
         });
-        var features = format.readFeatures(text);
+        const features = format.readFeatures(text);
         expect(features[0].get('layer')).to.be('land');
         expect(features[177].get('layer')).to.be('countries');
         done();
@@ -188,10 +188,10 @@ describe('ol.format.TopoJSON', function() {
 
     it('only parses features from specified topology\'s children', function(done) {
       afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
-        var format = new TopoJSON({
+        const format = new TopoJSON({
           layers: ['land']
         });
-        var features = format.readFeatures(text);
+        const features = format.readFeatures(text);
         expect(features.length).to.be(1);
         done();
       });

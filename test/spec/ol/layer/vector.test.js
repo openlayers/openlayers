@@ -7,44 +7,44 @@ import Style from '../../../../src/ol/style/Style.js';
 describe('ol.layer.Vector', function() {
 
   describe('constructor', function() {
-    var source = new VectorSource();
-    var style = new Style();
+    const source = new VectorSource();
+    const style = new Style();
 
     it('creates a new layer', function() {
-      var layer = new VectorLayer({source: source});
+      const layer = new VectorLayer({source: source});
       expect(layer).to.be.a(VectorLayer);
       expect(layer).to.be.a(Layer);
     });
 
     it('accepts a style option with a single style', function() {
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source,
         style: style
       });
 
-      var styleFunction = layer.getStyleFunction();
+      const styleFunction = layer.getStyleFunction();
       expect(styleFunction()).to.eql([style]);
     });
 
     it('accepts a style option with an array of styles', function() {
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source,
         style: [style]
       });
 
-      var styleFunction = layer.getStyleFunction();
+      const styleFunction = layer.getStyleFunction();
       expect(styleFunction()).to.eql([style]);
     });
 
     it('accepts a style option with a style function', function() {
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source,
         style: function(feature, resolution) {
           return [style];
         }
       });
 
-      var styleFunction = layer.getStyleFunction();
+      const styleFunction = layer.getStyleFunction();
       expect(styleFunction()).to.eql([style]);
     });
 
@@ -52,7 +52,7 @@ describe('ol.layer.Vector', function() {
 
   describe('#setStyle()', function() {
 
-    var layer, style;
+    let layer, style;
 
     beforeEach(function() {
       layer = new VectorLayer({
@@ -77,7 +77,7 @@ describe('ol.layer.Vector', function() {
       expect(layer.getStyleFunction()).to.be(Style.defaultFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          Style.defaultFunction);
+        Style.defaultFunction);
     });
 
     it('allows setting an null style', function() {
@@ -97,11 +97,11 @@ describe('ol.layer.Vector', function() {
 
   describe('#getStyle()', function() {
 
-    var source = new VectorSource();
-    var style = new Style();
+    const source = new VectorSource();
+    const style = new Style();
 
     it('returns what is provided to setStyle', function() {
-      var layer = new VectorLayer({
+      const layer = new VectorLayer({
         source: source
       });
 
@@ -113,7 +113,7 @@ describe('ol.layer.Vector', function() {
       layer.setStyle([style]);
       expect(layer.getStyle()).to.eql([style]);
 
-      var styleFunction = function(feature, resolution) {
+      const styleFunction = function(feature, resolution) {
         return [style];
       };
       layer.setStyle(styleFunction);

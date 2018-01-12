@@ -8,19 +8,19 @@ describe('ol.style.Text', function() {
   describe('#constructor', function() {
 
     it('uses a default fill style if none passed', function() {
-      var style = new Text();
+      const style = new Text();
       expect(style.getFill().getColor()).to.be('#333');
     });
 
     it('uses a provided fill style if one passed', function() {
-      var style = new Text({
+      const style = new Text({
         fill: new Fill({color: '#123456'})
       });
       expect(style.getFill().getColor()).to.be('#123456');
     });
 
     it('can always be resetted to no color', function() {
-      var style = new Text();
+      const style = new Text();
       style.getFill().setColor();
       expect(style.getFill().getColor()).to.be(undefined);
     });
@@ -30,14 +30,14 @@ describe('ol.style.Text', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.Text', function() {
-      var original = new Text();
-      var clone = original.clone();
+      const original = new Text();
+      const clone = original.clone();
       expect(clone).to.be.an(Text);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new Text({
+      const original = new Text({
         font: '12px serif',
         offsetX: 4,
         offsetY: 10,
@@ -60,7 +60,7 @@ describe('ol.style.Text', function() {
           color: 'black'
         })
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getFont()).to.eql(clone.getFont());
       expect(original.getOffsetX()).to.eql(clone.getOffsetX());
       expect(original.getOffsetY()).to.eql(clone.getOffsetY());
@@ -77,7 +77,7 @@ describe('ol.style.Text', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new Text({
+      const original = new Text({
         fill: new Fill({
           color: '#319FD3'
         }),
@@ -85,7 +85,7 @@ describe('ol.style.Text', function() {
           color: '#319FD3'
         })
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getFill()).to.not.be(clone.getFill());
       expect(original.getStroke()).to.not.be(clone.getStroke());
 

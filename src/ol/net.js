@@ -2,7 +2,7 @@
  * @module ol/net
  */
 import {getUid} from './index.js';
-var _ol_net_ = {};
+const _ol_net_ = {};
 
 
 /**
@@ -17,8 +17,8 @@ var _ol_net_ = {};
  *     callback. Default is 'callback'.
  */
 _ol_net_.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
-  var script = document.createElement('script');
-  var key = 'olc_' + getUid(callback);
+  const script = document.createElement('script');
+  const key = 'olc_' + getUid(callback);
   function cleanup() {
     delete window[key];
     script.parentNode.removeChild(script);
@@ -26,7 +26,7 @@ _ol_net_.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
   script.async = true;
   script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
       (opt_callbackParam || 'callback') + '=' + key;
-  var timer = setTimeout(function() {
+  const timer = setTimeout(function() {
     cleanup();
     if (opt_errback) {
       opt_errback();

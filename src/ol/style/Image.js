@@ -12,7 +12,7 @@
  * @param {ol.StyleImageOptions} options Options.
  * @api
  */
-var ImageStyle = function(options) {
+const ImageStyle = function(options) {
 
   /**
    * @private

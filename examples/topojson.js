@@ -10,13 +10,13 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure'
   })
 });
 
-var style = new Style({
+const style = new Style({
   fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -26,7 +26,7 @@ var style = new Style({
   })
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/topojson/world-110m.json',
     format: new TopoJSON({
@@ -39,7 +39,7 @@ var vector = new VectorLayer({
   style: style
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({

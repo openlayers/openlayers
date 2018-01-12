@@ -11,14 +11,14 @@ import Icon from '../src/ol/style/Icon.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var iconFeature = new Feature({
+const iconFeature = new Feature({
   geometry: new Point([0, 0]),
   name: 'Null Island',
   population: 4000,
   rainfall: 500
 });
 
-var iconStyle = new Style({
+const iconStyle = new Style({
   image: new Icon(/** @type {olx.style.IconOptions} */ ({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
@@ -29,22 +29,22 @@ var iconStyle = new Style({
 
 iconFeature.setStyle(iconStyle);
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   features: [iconFeature]
 });
 
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: vectorSource
 });
 
-var rasterLayer = new TileLayer({
+const rasterLayer = new TileLayer({
   source: new TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
     crossOrigin: ''
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new View({
@@ -53,9 +53,9 @@ var map = new Map({
   })
 });
 
-var element = document.getElementById('popup');
+const element = document.getElementById('popup');
 
-var popup = new Overlay({
+const popup = new Overlay({
   element: element,
   positioning: 'bottom-center',
   stopEvent: false,
@@ -65,12 +65,12 @@ map.addOverlay(popup);
 
 // display popup on click
 map.on('click', function(evt) {
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature) {
-        return feature;
-      });
+  const feature = map.forEachFeatureAtPixel(evt.pixel,
+    function(feature) {
+      return feature;
+    });
   if (feature) {
-    var coordinates = feature.getGeometry().getCoordinates();
+    const coordinates = feature.getGeometry().getCoordinates();
     popup.setPosition(coordinates);
     $(element).popover({
       'placement': 'top',
@@ -89,7 +89,7 @@ map.on('pointermove', function(e) {
     $(element).popover('destroy');
     return;
   }
-  var pixel = map.getEventPixel(e.originalEvent);
-  var hit = map.hasFeatureAtPixel(pixel);
+  const pixel = map.getEventPixel(e.originalEvent);
+  const hit = map.hasFeatureAtPixel(pixel);
   map.getTarget().style.cursor = hit ? 'pointer' : '';
 });

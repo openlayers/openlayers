@@ -18,7 +18,7 @@ import _ol_transform_ from '../../transform.js';
  * @param {ol.layer.Tile|ol.layer.VectorTile} tileLayer Tile layer.
  * @api
  */
-var CanvasTileLayerRenderer = function(tileLayer) {
+const CanvasTileLayerRenderer = function(tileLayer) {
 
   IntermediateCanvasRenderer.call(this, tileLayer);
 
@@ -109,8 +109,8 @@ CanvasTileLayerRenderer['create'] = function(mapRenderer, layer) {
  * @return {boolean} Tile is drawable.
  */
 CanvasTileLayerRenderer.prototype.isDrawableTile_ = function(tile) {
-  var tileState = tile.getState();
-  var useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
+  const tileState = tile.getState();
+  const useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
   return tileState == TileState.LOADED ||
       tileState == TileState.EMPTY ||
       tileState == TileState.ERROR && !useInterimTilesOnError;
@@ -121,21 +121,21 @@ CanvasTileLayerRenderer.prototype.isDrawableTile_ = function(tile) {
  */
 CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState) {
 
-  var pixelRatio = frameState.pixelRatio;
-  var size = frameState.size;
-  var viewState = frameState.viewState;
-  var projection = viewState.projection;
-  var viewResolution = viewState.resolution;
-  var viewCenter = viewState.center;
+  const pixelRatio = frameState.pixelRatio;
+  const size = frameState.size;
+  const viewState = frameState.viewState;
+  const projection = viewState.projection;
+  const viewResolution = viewState.resolution;
+  const viewCenter = viewState.center;
 
-  var tileLayer = this.getLayer();
-  var tileSource = /** @type {ol.source.Tile} */ (tileLayer.getSource());
-  var sourceRevision = tileSource.getRevision();
-  var tileGrid = tileSource.getTileGridForProjection(projection);
-  var z = tileGrid.getZForResolution(viewResolution, this.zDirection);
-  var tileResolution = tileGrid.getResolution(z);
-  var oversampling = Math.round(viewResolution / tileResolution) || 1;
-  var extent = frameState.extent;
+  const tileLayer = this.getLayer();
+  const tileSource = /** @type {ol.source.Tile} */ (tileLayer.getSource());
+  const sourceRevision = tileSource.getRevision();
+  const tileGrid = tileSource.getTileGridForProjection(projection);
+  const z = tileGrid.getZForResolution(viewResolution, this.zDirection);
+  const tileResolution = tileGrid.getResolution(z);
+  let oversampling = Math.round(viewResolution / tileResolution) || 1;
+  let extent = frameState.extent;
 
   if (layerState.extent !== undefined) {
     extent = getIntersection(extent, layerState.extent);
@@ -145,24 +145,24 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
     return false;
   }
 
-  var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-  var imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
+  const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+  const imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
 
-  var tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
+  const tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
 
   /**
    * @type {Object.<number, Object.<string, ol.Tile>>}
    */
-  var tilesToDrawByZ = {};
+  const tilesToDrawByZ = {};
   tilesToDrawByZ[z] = {};
 
-  var findLoadedTiles = this.createLoadedTileFinder(
-      tileSource, projection, tilesToDrawByZ);
+  const findLoadedTiles = this.createLoadedTileFinder(
+    tileSource, projection, tilesToDrawByZ);
 
-  var tmpExtent = this.tmpExtent;
-  var tmpTileRange = this.tmpTileRange_;
-  var newTiles = false;
-  var tile, x, y;
+  const tmpExtent = this.tmpExtent;
+  const tmpTileRange = this.tmpTileRange_;
+  let newTiles = false;
+  let tile, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
@@ -179,10 +179,10 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
         tile = tile.getInterimTile();
       }
       if (this.isDrawableTile_(tile)) {
-        var uid = getUid(this);
+        const uid = getUid(this);
         if (tile.getState() == TileState.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
-          var inTransition = tile.inTransition(uid);
+          const inTransition = tile.inTransition(uid);
           if (!newTiles && (inTransition || this.renderedTiles.indexOf(tile) === -1)) {
             newTiles = true;
           }
@@ -193,23 +193,23 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
         }
       }
 
-      var childTileRange = tileGrid.getTileCoordChildTileRange(
-          tile.tileCoord, tmpTileRange, tmpExtent);
-      var covered = false;
+      const childTileRange = tileGrid.getTileCoordChildTileRange(
+        tile.tileCoord, tmpTileRange, tmpExtent);
+      let covered = false;
       if (childTileRange) {
         covered = findLoadedTiles(z + 1, childTileRange);
       }
       if (!covered) {
         tileGrid.forEachTileCoordParentTileRange(
-            tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
+          tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       }
 
     }
   }
 
-  var renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
-  var hints = frameState.viewHints;
-  var animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
+  const renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
+  const hints = frameState.viewHints;
+  const animatingOrInteracting = hints[ViewHint.ANIMATING] || hints[ViewHint.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
     newTiles ||
         !(this.renderedExtent_ && containsExtent(this.renderedExtent_, extent)) ||
@@ -218,12 +218,12 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
         !animatingOrInteracting && renderedResolution != this.renderedResolution
   )) {
 
-    var context = this.context;
+    const context = this.context;
     if (context) {
-      var tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
-      var width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
-      var height = Math.round(tileRange.getHeight() * tilePixelSize[1] / oversampling);
-      var canvas = context.canvas;
+      const tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
+      const width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
+      const height = Math.round(tileRange.getHeight() * tilePixelSize[1] / oversampling);
+      const canvas = context.canvas;
       if (canvas.width != width || canvas.height != height) {
         this.oversampling_ = oversampling;
         canvas.width = width;
@@ -238,7 +238,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
 
     this.renderedTiles.length = 0;
     /** @type {Array.<number>} */
-    var zs = Object.keys(tilesToDrawByZ).map(Number);
+    const zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(function(a, b) {
       if (a === z) {
         return 1;
@@ -248,8 +248,8 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
         return a > b ? 1 : a < b ? -1 : 0;
       }
     });
-    var currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
-    var tileExtent, tileGutter, tilesToDraw, w, h;
+    let currentResolution, currentScale, currentTilePixelSize, currentZ, i, ii;
+    let tileExtent, tileGutter, tilesToDraw, w, h;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       currentZ = zs[i];
       currentTilePixelSize = tileSource.getTilePixelSize(currentZ, pixelRatio, projection);
@@ -257,7 +257,7 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
       currentScale = currentResolution / tileResolution;
       tileGutter = tilePixelRatio * tileSource.getGutter(projection);
       tilesToDraw = tilesToDrawByZ[currentZ];
-      for (var tileCoordKey in tilesToDraw) {
+      for (const tileCoordKey in tilesToDraw) {
         tile = tilesToDraw[tileCoordKey];
         tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
         x = (tileExtent[0] - imageExtent[0]) / tileResolution * tilePixelRatio / oversampling;
@@ -274,23 +274,23 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
     this.renderedExtent_ = imageExtent;
   }
 
-  var scale = this.renderedResolution / viewResolution;
-  var transform = _ol_transform_.compose(this.imageTransform_,
-      pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
-      scale, scale,
-      0,
-      (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio,
-      (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
+  const scale = this.renderedResolution / viewResolution;
+  const transform = _ol_transform_.compose(this.imageTransform_,
+    pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
+    scale, scale,
+    0,
+    (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio,
+    (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
   _ol_transform_.compose(this.coordinateToCanvasPixelTransform,
-      pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
-      pixelRatio / viewResolution, -pixelRatio / viewResolution,
-      0,
-      -viewCenter[0], -viewCenter[1]);
+    pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
+    pixelRatio / viewResolution, -pixelRatio / viewResolution,
+    0,
+    -viewCenter[0], -viewCenter[1]);
 
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
-      projection, extent, z, tileLayer.getPreload());
+    projection, extent, z, tileLayer.getPreload());
   this.scheduleExpireCache(frameState, tileSource);
 
   return this.renderedTiles.length > 0;
@@ -309,22 +309,22 @@ CanvasTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState
  * @param {boolean} transition Apply an alpha transition.
  */
 CanvasTileLayerRenderer.prototype.drawTileImage = function(tile, frameState, layerState, x, y, w, h, gutter, transition) {
-  var image = tile.getImage(this.getLayer());
+  const image = tile.getImage(this.getLayer());
   if (!image) {
     return;
   }
-  var uid = getUid(this);
-  var alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
+  const uid = getUid(this);
+  const alpha = transition ? tile.getAlpha(uid, frameState.time) : 1;
   if (alpha === 1 && !this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
   }
-  var alphaChanged = alpha !== this.context.globalAlpha;
+  const alphaChanged = alpha !== this.context.globalAlpha;
   if (alphaChanged) {
     this.context.save();
     this.context.globalAlpha = alpha;
   }
   this.context.drawImage(image, gutter, gutter,
-      image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
+    image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
 
   if (alphaChanged) {
     this.context.restore();
@@ -341,7 +341,7 @@ CanvasTileLayerRenderer.prototype.drawTileImage = function(tile, frameState, lay
  * @inheritDoc
  */
 CanvasTileLayerRenderer.prototype.getImage = function() {
-  var context = this.context;
+  const context = this.context;
   return context ? context.canvas : null;
 };
 

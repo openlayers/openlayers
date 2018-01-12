@@ -17,7 +17,7 @@ import EventType from '../events/EventType.js';
  * @template T
  * @param {number=} opt_highWaterMark High water mark.
  */
-var LRUCache = function(opt_highWaterMark) {
+const LRUCache = function(opt_highWaterMark) {
 
   EventTarget.call(this);
 
@@ -93,7 +93,7 @@ LRUCache.prototype.containsKey = function(key) {
  * @template S
  */
 LRUCache.prototype.forEach = function(f, opt_this) {
-  var entry = this.oldest_;
+  let entry = this.oldest_;
   while (entry) {
     f.call(opt_this, entry.value_, entry.key_, this);
     entry = entry.newer;
@@ -106,9 +106,9 @@ LRUCache.prototype.forEach = function(f, opt_this) {
  * @return {T} Value.
  */
 LRUCache.prototype.get = function(key) {
-  var entry = this.entries_[key];
+  const entry = this.entries_[key];
   assert(entry !== undefined,
-      15); // Tried to get a value for a key that does not exist in the cache
+    15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     return entry.value_;
   } else if (entry === this.oldest_) {
@@ -132,7 +132,7 @@ LRUCache.prototype.get = function(key) {
  * @return {T} The removed entry.
  */
 LRUCache.prototype.remove = function(key) {
-  var entry = this.entries_[key];
+  const entry = this.entries_[key];
   assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     this.newest_ = /** @type {ol.LRUCacheEntry} */ (entry.older);
@@ -166,9 +166,9 @@ LRUCache.prototype.getCount = function() {
  * @return {Array.<string>} Keys.
  */
 LRUCache.prototype.getKeys = function() {
-  var keys = new Array(this.count_);
-  var i = 0;
-  var entry;
+  const keys = new Array(this.count_);
+  let i = 0;
+  let entry;
   for (entry = this.newest_; entry; entry = entry.older) {
     keys[i++] = entry.key_;
   }
@@ -180,9 +180,9 @@ LRUCache.prototype.getKeys = function() {
  * @return {Array.<T>} Values.
  */
 LRUCache.prototype.getValues = function() {
-  var values = new Array(this.count_);
-  var i = 0;
-  var entry;
+  const values = new Array(this.count_);
+  let i = 0;
+  let entry;
   for (entry = this.newest_; entry; entry = entry.older) {
     values[i++] = entry.value_;
   }
@@ -219,7 +219,7 @@ LRUCache.prototype.peekFirstKey = function() {
  * @return {T} value Value.
  */
 LRUCache.prototype.pop = function() {
-  var entry = this.oldest_;
+  const entry = this.oldest_;
   delete this.entries_[entry.key_];
   if (entry.newer) {
     entry.newer.older = null;
@@ -249,8 +249,8 @@ LRUCache.prototype.replace = function(key, value) {
  */
 LRUCache.prototype.set = function(key, value) {
   assert(!(key in this.entries_),
-      16); // Tried to set a value for a key that is used already
-  var entry = /** @type {ol.LRUCacheEntry} */ ({
+    16); // Tried to set a value for a key that is used already
+  const entry = /** @type {ol.LRUCacheEntry} */ ({
     key_: key,
     newer: null,
     older: this.newest_,

@@ -1,7 +1,7 @@
 /**
  * @module ol/obj
  */
-var _ol_obj_ = {};
+const _ol_obj_ = {};
 
 
 /**
@@ -18,11 +18,11 @@ _ol_obj_.assign = (typeof Object.assign === 'function') ? Object.assign : functi
     throw new TypeError('Cannot convert undefined or null to object');
   }
 
-  var output = Object(target);
-  for (var i = 1, ii = arguments.length; i < ii; ++i) {
-    var source = arguments[i];
+  const output = Object(target);
+  for (let i = 1, ii = arguments.length; i < ii; ++i) {
+    const source = arguments[i];
     if (source !== undefined && source !== null) {
-      for (var key in source) {
+      for (const key in source) {
         if (source.hasOwnProperty(key)) {
           output[key] = source[key];
         }
@@ -38,7 +38,7 @@ _ol_obj_.assign = (typeof Object.assign === 'function') ? Object.assign : functi
  * @param {Object} object The object to clear.
  */
 _ol_obj_.clear = function(object) {
-  for (var property in object) {
+  for (const property in object) {
     delete object[property];
   }
 };
@@ -51,8 +51,8 @@ _ol_obj_.clear = function(object) {
  * @template K,V
  */
 _ol_obj_.getValues = function(object) {
-  var values = [];
-  for (var property in object) {
+  const values = [];
+  for (const property in object) {
     values.push(object[property]);
   }
   return values;
@@ -65,7 +65,7 @@ _ol_obj_.getValues = function(object) {
  * @return {boolean} The object is empty.
  */
 _ol_obj_.isEmpty = function(object) {
-  var property;
+  let property;
   for (property in object) {
     return false;
   }

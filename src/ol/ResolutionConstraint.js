@@ -3,7 +3,7 @@
  */
 import {linearFindNearest} from './array.js';
 import {clamp} from './math.js';
-var ResolutionConstraint = {};
+const ResolutionConstraint = {};
 
 
 /**
@@ -20,11 +20,11 @@ ResolutionConstraint.createSnapToResolutions = function(resolutions) {
      */
     function(resolution, delta, direction) {
       if (resolution !== undefined) {
-        var z = linearFindNearest(resolutions, resolution, direction);
+        let z = linearFindNearest(resolutions, resolution, direction);
         z = clamp(z + delta, 0, resolutions.length - 1);
-        var index = Math.floor(z);
+        const index = Math.floor(z);
         if (z != index && index < resolutions.length - 1) {
-          var power = resolutions[index] / resolutions[index + 1];
+          const power = resolutions[index] / resolutions[index + 1];
           return resolutions[index] / Math.pow(power, z - index);
         } else {
           return resolutions[index];
@@ -53,10 +53,10 @@ ResolutionConstraint.createSnapToPower = function(power, maxResolution, opt_maxL
      */
     function(resolution, delta, direction) {
       if (resolution !== undefined) {
-        var offset = -direction / 2 + 0.5;
-        var oldLevel = Math.floor(
-            Math.log(maxResolution / resolution) / Math.log(power) + offset);
-        var newLevel = Math.max(oldLevel + delta, 0);
+        const offset = -direction / 2 + 0.5;
+        const oldLevel = Math.floor(
+          Math.log(maxResolution / resolution) / Math.log(power) + offset);
+        let newLevel = Math.max(oldLevel + delta, 0);
         if (opt_maxLevel !== undefined) {
           newLevel = Math.min(newLevel, opt_maxLevel);
         }

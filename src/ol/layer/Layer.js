@@ -33,9 +33,9 @@ import SourceState from '../source/State.js';
  * @param {olx.layer.LayerOptions} options Layer options.
  * @api
  */
-var Layer = function(options) {
+const Layer = function(options) {
 
-  var baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = _ol_obj_.assign({}, options);
   delete baseOptions.source;
 
   BaseLayer.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
@@ -63,10 +63,10 @@ var Layer = function(options) {
   }
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(LayerProperty.SOURCE),
-      this.handleSourcePropertyChange_, this);
+    BaseObject.getChangeEventType(LayerProperty.SOURCE),
+    this.handleSourcePropertyChange_, this);
 
-  var source = options.source ? options.source : null;
+  const source = options.source ? options.source : null;
   this.setSource(source);
 };
 
@@ -91,7 +91,7 @@ Layer.visibleAtResolution = function(layerState, resolution) {
  * @inheritDoc
  */
 Layer.prototype.getLayersArray = function(opt_array) {
-  var array = opt_array ? opt_array : [];
+  const array = opt_array ? opt_array : [];
   array.push(this);
   return array;
 };
@@ -101,7 +101,7 @@ Layer.prototype.getLayersArray = function(opt_array) {
  * @inheritDoc
  */
 Layer.prototype.getLayerStatesArray = function(opt_states) {
-  var states = opt_states ? opt_states : [];
+  const states = opt_states ? opt_states : [];
   states.push(this.getLayerState());
   return states;
 };
@@ -114,7 +114,7 @@ Layer.prototype.getLayerStatesArray = function(opt_states) {
  * @api
  */
 Layer.prototype.getSource = function() {
-  var source = this.get(LayerProperty.SOURCE);
+  const source = this.get(LayerProperty.SOURCE);
   return /** @type {ol.source.Source} */ (source) || null;
 };
 
@@ -123,7 +123,7 @@ Layer.prototype.getSource = function() {
   * @inheritDoc
   */
 Layer.prototype.getSourceState = function() {
-  var source = this.getSource();
+  const source = this.getSource();
   return !source ? SourceState.UNDEFINED : source.getState();
 };
 
@@ -144,10 +144,10 @@ Layer.prototype.handleSourcePropertyChange_ = function() {
     _ol_events_.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
-  var source = this.getSource();
+  const source = this.getSource();
   if (source) {
     this.sourceChangeKey_ = _ol_events_.listen(source,
-        EventType.CHANGE, this.handleSourceChange_, this);
+      EventType.CHANGE, this.handleSourceChange_, this);
   }
   this.changed();
 };
@@ -179,15 +179,15 @@ Layer.prototype.setMap = function(map) {
   }
   if (map) {
     this.mapPrecomposeKey_ = _ol_events_.listen(
-        map, RenderEventType.PRECOMPOSE, function(evt) {
-          var layerState = this.getLayerState();
-          layerState.managed = false;
-          layerState.zIndex = Infinity;
-          evt.frameState.layerStatesArray.push(layerState);
-          evt.frameState.layerStates[getUid(this)] = layerState;
-        }, this);
+      map, RenderEventType.PRECOMPOSE, function(evt) {
+        const layerState = this.getLayerState();
+        layerState.managed = false;
+        layerState.zIndex = Infinity;
+        evt.frameState.layerStatesArray.push(layerState);
+        evt.frameState.layerStates[getUid(this)] = layerState;
+      }, this);
     this.mapRenderKey_ = _ol_events_.listen(
-        this, EventType.CHANGE, map.render, map);
+      this, EventType.CHANGE, map.render, map);
     this.changed();
   }
 };

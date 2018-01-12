@@ -17,7 +17,7 @@ import {get as getProjection, getTransformFromProjections, identityTransform} fr
  *     trackingOptions: (GeolocationPositionOptions|undefined),
  *     projection: ol.ProjectionLike}}
  */
-export var GeolocationOptions;
+export let GeolocationOptions;
 
 
 /**
@@ -53,11 +53,11 @@ export var GeolocationOptions;
  *     is reported in.
  * @api
  */
-var Geolocation = function(opt_options) {
+const Geolocation = function(opt_options) {
 
   BaseObject.call(this);
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * The unprojected (EPSG:4326) device position.
@@ -79,11 +79,11 @@ var Geolocation = function(opt_options) {
   this.watchId_ = undefined;
 
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(GeolocationProperty.PROJECTION),
-      this.handleProjectionChanged_, this);
+    this, BaseObject.getChangeEventType(GeolocationProperty.PROJECTION),
+    this.handleProjectionChanged_, this);
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(GeolocationProperty.TRACKING),
-      this.handleTrackingChanged_, this);
+    this, BaseObject.getChangeEventType(GeolocationProperty.TRACKING),
+    this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {
     this.setProjection(options.projection);
@@ -112,10 +112,10 @@ Geolocation.prototype.disposeInternal = function() {
  * @private
  */
 Geolocation.prototype.handleProjectionChanged_ = function() {
-  var projection = this.getProjection();
+  const projection = this.getProjection();
   if (projection) {
     this.transform_ = getTransformFromProjections(
-        getProjection('EPSG:4326'), projection);
+      getProjection('EPSG:4326'), projection);
     if (this.position_) {
       this.set(GeolocationProperty.POSITION, this.transform_(this.position_));
     }
@@ -128,12 +128,12 @@ Geolocation.prototype.handleProjectionChanged_ = function() {
  */
 Geolocation.prototype.handleTrackingChanged_ = function() {
   if (_ol_has_.GEOLOCATION) {
-    var tracking = this.getTracking();
+    const tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
       this.watchId_ = navigator.geolocation.watchPosition(
-          this.positionChange_.bind(this),
-          this.positionError_.bind(this),
-          this.getTrackingOptions());
+        this.positionChange_.bind(this),
+        this.positionError_.bind(this),
+        this.getTrackingOptions());
     } else if (!tracking && this.watchId_ !== undefined) {
       navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
@@ -147,13 +147,13 @@ Geolocation.prototype.handleTrackingChanged_ = function() {
  * @param {GeolocationPosition} position position event.
  */
 Geolocation.prototype.positionChange_ = function(position) {
-  var coords = position.coords;
+  const coords = position.coords;
   this.set(GeolocationProperty.ACCURACY, coords.accuracy);
   this.set(GeolocationProperty.ALTITUDE,
-      coords.altitude === null ? undefined : coords.altitude);
+    coords.altitude === null ? undefined : coords.altitude);
   this.set(GeolocationProperty.ALTITUDE_ACCURACY,
-      coords.altitudeAccuracy === null ?
-        undefined : coords.altitudeAccuracy);
+    coords.altitudeAccuracy === null ?
+      undefined : coords.altitudeAccuracy);
   this.set(GeolocationProperty.HEADING, coords.heading === null ?
     undefined : toRadians(coords.heading));
   if (!this.position_) {
@@ -162,11 +162,11 @@ Geolocation.prototype.positionChange_ = function(position) {
     this.position_[0] = coords.longitude;
     this.position_[1] = coords.latitude;
   }
-  var projectedPosition = this.transform_(this.position_);
+  const projectedPosition = this.transform_(this.position_);
   this.set(GeolocationProperty.POSITION, projectedPosition);
   this.set(GeolocationProperty.SPEED,
-      coords.speed === null ? undefined : coords.speed);
-  var geometry = circularPolygon(this.position_, coords.accuracy);
+    coords.speed === null ? undefined : coords.speed);
+  const geometry = circularPolygon(this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
   this.set(GeolocationProperty.ACCURACY_GEOMETRY, geometry);
   this.changed();

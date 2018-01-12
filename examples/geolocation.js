@@ -13,12 +13,12 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var view = new View({
+const view = new View({
   center: [0, 0],
   zoom: 2
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -33,7 +33,7 @@ var map = new Map({
   view: view
 });
 
-var geolocation = new Geolocation({
+const geolocation = new Geolocation({
   projection: view.getProjection()
 });
 
@@ -56,17 +56,17 @@ geolocation.on('change', function() {
 
 // handle geolocation error.
 geolocation.on('error', function(error) {
-  var info = document.getElementById('info');
+  const info = document.getElementById('info');
   info.innerHTML = error.message;
   info.style.display = '';
 });
 
-var accuracyFeature = new Feature();
+const accuracyFeature = new Feature();
 geolocation.on('change:accuracyGeometry', function() {
   accuracyFeature.setGeometry(geolocation.getAccuracyGeometry());
 });
 
-var positionFeature = new Feature();
+const positionFeature = new Feature();
 positionFeature.setStyle(new Style({
   image: new CircleStyle({
     radius: 6,
@@ -81,7 +81,7 @@ positionFeature.setStyle(new Style({
 }));
 
 geolocation.on('change:position', function() {
-  var coordinates = geolocation.getPosition();
+  const coordinates = geolocation.getPosition();
   positionFeature.setGeometry(coordinates ?
     new Point(coordinates) : null);
 });

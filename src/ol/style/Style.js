@@ -18,9 +18,9 @@ import Stroke from '../style/Stroke.js';
  * @param {olx.style.StyleOptions=} opt_options Style options.
  * @api
  */
-var Style = function(opt_options) {
+const Style = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -83,7 +83,7 @@ var Style = function(opt_options) {
  * @api
  */
 Style.prototype.clone = function() {
-  var geometry = this.getGeometry();
+  let geometry = this.getGeometry();
   if (geometry && geometry.clone) {
     geometry = geometry.clone();
   }
@@ -279,7 +279,7 @@ Style.prototype.setZIndex = function(zIndex) {
  * @return {ol.StyleFunction} A style function.
  */
 Style.createFunction = function(obj) {
-  var styleFunction;
+  let styleFunction;
 
   if (typeof obj === 'function') {
     styleFunction = obj;
@@ -287,12 +287,12 @@ Style.createFunction = function(obj) {
     /**
      * @type {Array.<ol.style.Style>}
      */
-    var styles;
+    let styles;
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
       assert(obj instanceof Style,
-          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+        41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
     styleFunction = function() {
@@ -322,10 +322,10 @@ Style.defaultFunction = function(feature, resolution) {
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
   if (!Style.default_) {
-    var fill = new Fill({
+    const fill = new Fill({
       color: 'rgba(255,255,255,0.4)'
     });
-    var stroke = new Stroke({
+    const stroke = new Stroke({
       color: '#3399CC',
       width: 1.25
     });
@@ -351,10 +351,10 @@ Style.defaultFunction = function(feature, resolution) {
  */
 Style.createDefaultEditing = function() {
   /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
-  var styles = {};
-  var white = [255, 255, 255, 1];
-  var blue = [0, 153, 255, 1];
-  var width = 3;
+  const styles = {};
+  const white = [255, 255, 255, 1];
+  const blue = [0, 153, 255, 1];
+  const width = 3;
   styles[GeometryType.POLYGON] = [
     new Style({
       fill: new Fill({
@@ -384,7 +384,7 @@ Style.createDefaultEditing = function() {
 
   styles[GeometryType.CIRCLE] =
       styles[GeometryType.POLYGON].concat(
-          styles[GeometryType.LINE_STRING]
+        styles[GeometryType.LINE_STRING]
       );
 
 
@@ -408,8 +408,8 @@ Style.createDefaultEditing = function() {
 
   styles[GeometryType.GEOMETRY_COLLECTION] =
       styles[GeometryType.POLYGON].concat(
-          styles[GeometryType.LINE_STRING],
-          styles[GeometryType.POINT]
+        styles[GeometryType.LINE_STRING],
+        styles[GeometryType.POINT]
       );
 
   return styles;

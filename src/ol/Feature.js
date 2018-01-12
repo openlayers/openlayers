@@ -54,7 +54,7 @@ import Style from './style/Style.js';
  *     include a Geometry associated with a `geometry` key.
  * @api
  */
-var Feature = function(opt_geometryOrProperties) {
+const Feature = function(opt_geometryOrProperties) {
 
   BaseObject.call(this);
 
@@ -91,17 +91,17 @@ var Feature = function(opt_geometryOrProperties) {
   this.geometryChangeKey_ = null;
 
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this, BaseObject.getChangeEventType(this.geometryName_),
+    this.handleGeometryChanged_, this);
 
   if (opt_geometryOrProperties !== undefined) {
     if (opt_geometryOrProperties instanceof Geometry ||
         !opt_geometryOrProperties) {
-      var geometry = opt_geometryOrProperties;
+      const geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);
     } else {
       /** @type {Object.<string, *>} */
-      var properties = opt_geometryOrProperties;
+      const properties = opt_geometryOrProperties;
       this.setProperties(properties);
     }
   }
@@ -117,13 +117,13 @@ inherits(Feature, BaseObject);
  * @api
  */
 Feature.prototype.clone = function() {
-  var clone = new Feature(this.getProperties());
+  const clone = new Feature(this.getProperties());
   clone.setGeometryName(this.getGeometryName());
-  var geometry = this.getGeometry();
+  const geometry = this.getGeometry();
   if (geometry) {
     clone.setGeometry(geometry.clone());
   }
-  var style = this.getStyle();
+  const style = this.getStyle();
   if (style) {
     clone.setStyle(style);
   }
@@ -208,10 +208,10 @@ Feature.prototype.handleGeometryChanged_ = function() {
     _ol_events_.unlistenByKey(this.geometryChangeKey_);
     this.geometryChangeKey_ = null;
   }
-  var geometry = this.getGeometry();
+  const geometry = this.getGeometry();
   if (geometry) {
     this.geometryChangeKey_ = _ol_events_.listen(geometry,
-        EventType.CHANGE, this.handleGeometryChange_, this);
+      EventType.CHANGE, this.handleGeometryChange_, this);
   }
   this.changed();
 };
@@ -270,12 +270,12 @@ Feature.prototype.setId = function(id) {
  */
 Feature.prototype.setGeometryName = function(name) {
   _ol_events_.unlisten(
-      this, BaseObject.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this, BaseObject.getChangeEventType(this.geometryName_),
+    this.handleGeometryChanged_, this);
   this.geometryName_ = name;
   _ol_events_.listen(
-      this, BaseObject.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this, BaseObject.getChangeEventType(this.geometryName_),
+    this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };
 
@@ -289,7 +289,7 @@ Feature.prototype.setGeometryName = function(name) {
  * @return {ol.FeatureStyleFunction} A style function.
  */
 Feature.createStyleFunction = function(obj) {
-  var styleFunction;
+  let styleFunction;
 
   if (typeof obj === 'function') {
     if (obj.length == 2) {
@@ -303,12 +303,12 @@ Feature.createStyleFunction = function(obj) {
     /**
      * @type {Array.<ol.style.Style>}
      */
-    var styles;
+    let styles;
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
       assert(obj instanceof Style,
-          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+        41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
     styleFunction = function() {

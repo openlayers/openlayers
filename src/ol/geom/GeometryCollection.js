@@ -18,7 +18,7 @@ import _ol_obj_ from '../obj.js';
  * @param {Array.<ol.geom.Geometry>=} opt_geometries Geometries.
  * @api
  */
-var GeometryCollection = function(opt_geometries) {
+const GeometryCollection = function(opt_geometries) {
 
   Geometry.call(this);
 
@@ -40,8 +40,8 @@ inherits(GeometryCollection, Geometry);
  * @return {Array.<ol.geom.Geometry>} Cloned geometries.
  */
 GeometryCollection.cloneGeometries_ = function(geometries) {
-  var clonedGeometries = [];
-  var i, ii;
+  const clonedGeometries = [];
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     clonedGeometries.push(geometries[i].clone());
   }
@@ -53,14 +53,14 @@ GeometryCollection.cloneGeometries_ = function(geometries) {
  * @private
  */
 GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
-  var i, ii;
+  let i, ii;
   if (!this.geometries_) {
     return;
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     _ol_events_.unlisten(
-        this.geometries_[i], EventType.CHANGE,
-        this.changed, this);
+      this.geometries_[i], EventType.CHANGE,
+      this.changed, this);
   }
 };
 
@@ -69,14 +69,14 @@ GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
  * @private
  */
 GeometryCollection.prototype.listenGeometriesChange_ = function() {
-  var i, ii;
+  let i, ii;
   if (!this.geometries_) {
     return;
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     _ol_events_.listen(
-        this.geometries_[i], EventType.CHANGE,
-        this.changed, this);
+      this.geometries_[i], EventType.CHANGE,
+      this.changed, this);
   }
 };
 
@@ -88,7 +88,7 @@ GeometryCollection.prototype.listenGeometriesChange_ = function() {
  * @api
  */
 GeometryCollection.prototype.clone = function() {
-  var geometryCollection = new GeometryCollection(null);
+  const geometryCollection = new GeometryCollection(null);
   geometryCollection.setGeometries(this.geometries_);
   return geometryCollection;
 };
@@ -101,11 +101,11 @@ GeometryCollection.prototype.closestPointXY = function(x, y, closestPoint, minSq
   if (minSquaredDistance < closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
   }
-  var geometries = this.geometries_;
-  var i, ii;
+  const geometries = this.geometries_;
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     minSquaredDistance = geometries[i].closestPointXY(
-        x, y, closestPoint, minSquaredDistance);
+      x, y, closestPoint, minSquaredDistance);
   }
   return minSquaredDistance;
 };
@@ -115,8 +115,8 @@ GeometryCollection.prototype.closestPointXY = function(x, y, closestPoint, minSq
  * @inheritDoc
  */
 GeometryCollection.prototype.containsXY = function(x, y) {
-  var geometries = this.geometries_;
-  var i, ii;
+  const geometries = this.geometries_;
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     if (geometries[i].containsXY(x, y)) {
       return true;
@@ -131,8 +131,8 @@ GeometryCollection.prototype.containsXY = function(x, y) {
  */
 GeometryCollection.prototype.computeExtent = function(extent) {
   createOrUpdateEmpty(extent);
-  var geometries = this.geometries_;
-  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+  const geometries = this.geometries_;
+  for (let i = 0, ii = geometries.length; i < ii; ++i) {
     extend(extent, geometries[i].getExtent());
   }
   return extent;
@@ -171,24 +171,24 @@ GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) 
        squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)) {
     return this;
   }
-  var key = squaredTolerance.toString();
+  const key = squaredTolerance.toString();
   if (this.simplifiedGeometryCache.hasOwnProperty(key)) {
     return this.simplifiedGeometryCache[key];
   } else {
-    var simplifiedGeometries = [];
-    var geometries = this.geometries_;
-    var simplified = false;
-    var i, ii;
+    const simplifiedGeometries = [];
+    const geometries = this.geometries_;
+    let simplified = false;
+    let i, ii;
     for (i = 0, ii = geometries.length; i < ii; ++i) {
-      var geometry = geometries[i];
-      var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
+      const geometry = geometries[i];
+      const simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
       simplifiedGeometries.push(simplifiedGeometry);
       if (simplifiedGeometry !== geometry) {
         simplified = true;
       }
     }
     if (simplified) {
-      var simplifiedGeometryCollection = new GeometryCollection(null);
+      const simplifiedGeometryCollection = new GeometryCollection(null);
       simplifiedGeometryCollection.setGeometriesArray(simplifiedGeometries);
       this.simplifiedGeometryCache[key] = simplifiedGeometryCollection;
       return simplifiedGeometryCollection;
@@ -214,8 +214,8 @@ GeometryCollection.prototype.getType = function() {
  * @api
  */
 GeometryCollection.prototype.intersectsExtent = function(extent) {
-  var geometries = this.geometries_;
-  var i, ii;
+  const geometries = this.geometries_;
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     if (geometries[i].intersectsExtent(extent)) {
       return true;
@@ -238,8 +238,8 @@ GeometryCollection.prototype.isEmpty = function() {
  * @api
  */
 GeometryCollection.prototype.rotate = function(angle, anchor) {
-  var geometries = this.geometries_;
-  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+  const geometries = this.geometries_;
+  for (let i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].rotate(angle, anchor);
   }
   this.changed();
@@ -251,12 +251,12 @@ GeometryCollection.prototype.rotate = function(angle, anchor) {
  * @api
  */
 GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
-  var anchor = opt_anchor;
+  let anchor = opt_anchor;
   if (!anchor) {
     anchor = getCenter(this.getExtent());
   }
-  var geometries = this.geometries_;
-  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+  const geometries = this.geometries_;
+  for (let i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].scale(sx, opt_sy, anchor);
   }
   this.changed();
@@ -270,7 +270,7 @@ GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
  */
 GeometryCollection.prototype.setGeometries = function(geometries) {
   this.setGeometriesArray(
-      GeometryCollection.cloneGeometries_(geometries));
+    GeometryCollection.cloneGeometries_(geometries));
 };
 
 
@@ -290,8 +290,8 @@ GeometryCollection.prototype.setGeometriesArray = function(geometries) {
  * @api
  */
 GeometryCollection.prototype.applyTransform = function(transformFn) {
-  var geometries = this.geometries_;
-  var i, ii;
+  const geometries = this.geometries_;
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].applyTransform(transformFn);
   }
@@ -307,8 +307,8 @@ GeometryCollection.prototype.applyTransform = function(transformFn) {
  * @api
  */
 GeometryCollection.prototype.translate = function(deltaX, deltaY) {
-  var geometries = this.geometries_;
-  var i, ii;
+  const geometries = this.geometries_;
+  let i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].translate(deltaX, deltaY);
   }

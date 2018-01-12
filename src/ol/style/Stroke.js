@@ -14,9 +14,9 @@ import {getUid} from '../index.js';
  * @param {olx.style.StrokeOptions=} opt_options Options.
  * @api
  */
-var Stroke = function(opt_options) {
+const Stroke = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -74,7 +74,7 @@ var Stroke = function(opt_options) {
  * @api
  */
 Stroke.prototype.clone = function() {
-  var color = this.getColor();
+  const color = this.getColor();
   return new Stroke({
     color: (color && color.slice) ? color.slice() : color || undefined,
     lineCap: this.getLineCap(),

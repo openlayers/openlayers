@@ -16,7 +16,7 @@ import _ol_webgl_ from '../../webgl.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-var _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
+const _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
   VectorContext.call(this);
 
   /**
@@ -200,15 +200,15 @@ _ol_render_webgl_Replay_.prototype.drawHitDetectionReplayOneByOne = function(gl,
  * @template T
  */
 _ol_render_webgl_Replay_.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash,
-    featureCallback, oneByOne, opt_hitExtent) {
+  featureCallback, oneByOne, opt_hitExtent) {
   if (!oneByOne) {
     // draw all hit-detection features in "once" (by texture group)
     return this.drawHitDetectionReplayAll(gl, context,
-        skippedFeaturesHash, featureCallback);
+      skippedFeaturesHash, featureCallback);
   } else {
     // draw hit-detection features one by one
     return this.drawHitDetectionReplayOneByOne(gl, context,
-        skippedFeaturesHash, featureCallback, opt_hitExtent);
+      skippedFeaturesHash, featureCallback, opt_hitExtent);
   }
 };
 
@@ -224,11 +224,11 @@ _ol_render_webgl_Replay_.prototype.drawHitDetectionReplay = function(gl, context
  * @template T
  */
 _ol_render_webgl_Replay_.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash,
-    featureCallback) {
+  featureCallback) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   this.drawReplay(gl, context, skippedFeaturesHash, true);
 
-  var result = featureCallback(null);
+  const result = featureCallback(null);
   if (result) {
     return result;
   } else {
@@ -255,11 +255,11 @@ _ol_render_webgl_Replay_.prototype.drawHitDetectionReplayAll = function(gl, cont
  * @template T
  */
 _ol_render_webgl_Replay_.prototype.replay = function(context,
-    center, resolution, rotation, size, pixelRatio,
-    opacity, skippedFeaturesHash,
-    featureCallback, oneByOne, opt_hitExtent) {
-  var gl = context.getGL();
-  var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
+  center, resolution, rotation, size, pixelRatio,
+  opacity, skippedFeaturesHash,
+  featureCallback, oneByOne, opt_hitExtent) {
+  const gl = context.getGL();
+  let tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
       tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
 
   if (this.lineStringReplay) {
@@ -279,9 +279,9 @@ _ol_render_webgl_Replay_.prototype.replay = function(context,
     gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
 
     this.lineStringReplay.replay(context,
-        center, resolution, rotation, size, pixelRatio,
-        opacity, skippedFeaturesHash,
-        featureCallback, oneByOne, opt_hitExtent);
+      center, resolution, rotation, size, pixelRatio,
+      opacity, skippedFeaturesHash,
+      featureCallback, oneByOne, opt_hitExtent);
 
     gl.stencilMask(0);
     gl.stencilFunc(gl.NOTEQUAL, 1, 255);
@@ -291,38 +291,38 @@ _ol_render_webgl_Replay_.prototype.replay = function(context,
 
   context.bindBuffer(_ol_webgl_.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
-  var locations = this.setUpProgram(gl, context, size, pixelRatio);
+  const locations = this.setUpProgram(gl, context, size, pixelRatio);
 
   // set the "uniform" values
-  var projectionMatrix = _ol_transform_.reset(this.projectionMatrix_);
+  const projectionMatrix = _ol_transform_.reset(this.projectionMatrix_);
   _ol_transform_.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
   _ol_transform_.rotate(projectionMatrix, -rotation);
   _ol_transform_.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
 
-  var offsetScaleMatrix = _ol_transform_.reset(this.offsetScaleMatrix_);
+  const offsetScaleMatrix = _ol_transform_.reset(this.offsetScaleMatrix_);
   _ol_transform_.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
 
-  var offsetRotateMatrix = _ol_transform_.reset(this.offsetRotateMatrix_);
+  const offsetRotateMatrix = _ol_transform_.reset(this.offsetRotateMatrix_);
   if (rotation !== 0) {
     _ol_transform_.rotate(offsetRotateMatrix, -rotation);
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-      fromTransform(this.tmpMat4_, projectionMatrix));
+    fromTransform(this.tmpMat4_, projectionMatrix));
   gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-      fromTransform(this.tmpMat4_, offsetScaleMatrix));
+    fromTransform(this.tmpMat4_, offsetScaleMatrix));
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      fromTransform(this.tmpMat4_, offsetRotateMatrix));
+    fromTransform(this.tmpMat4_, offsetRotateMatrix));
   gl.uniform1f(locations.u_opacity, opacity);
 
   // draw!
-  var result;
+  let result;
   if (featureCallback === undefined) {
     this.drawReplay(gl, context, skippedFeaturesHash, false);
   } else {
     // draw feature by feature for the hit-detection
     result = this.drawHitDetectionReplay(gl, context, skippedFeaturesHash,
-        featureCallback, oneByOne, opt_hitExtent);
+      featureCallback, oneByOne, opt_hitExtent);
   }
 
   // disable the vertex attrib arrays
@@ -334,10 +334,10 @@ _ol_render_webgl_Replay_.prototype.replay = function(context,
     }
     gl.clear(gl.STENCIL_BUFFER_BIT);
     gl.stencilFunc(/** @type {number} */ (tmpStencilFunc),
-        /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
+      /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
     gl.stencilMask(/** @type {number} */ (tmpStencilMask));
     gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
-        /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
+      /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
   }
 
   return result;
@@ -351,13 +351,13 @@ _ol_render_webgl_Replay_.prototype.replay = function(context,
  * @param {number} end End index.
  */
 _ol_render_webgl_Replay_.prototype.drawElements = function(
-    gl, context, start, end) {
-  var elementType = context.hasOESElementIndexUint ?
+  gl, context, start, end) {
+  const elementType = context.hasOESElementIndexUint ?
     _ol_webgl_.UNSIGNED_INT : _ol_webgl_.UNSIGNED_SHORT;
-  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
+  const elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  var numItems = end - start;
-  var offsetInBytes = start * elementSize;
+  const numItems = end - start;
+  const offsetInBytes = start * elementSize;
   gl.drawElements(_ol_webgl_.TRIANGLES, numItems, elementType, offsetInBytes);
 };
 export default _ol_render_webgl_Replay_;

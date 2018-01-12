@@ -15,7 +15,7 @@ import ImageState from './ImageState.js';
  * @param {ol.ImageCanvasLoader=} opt_loader Optional loader function to
  *     support asynchronous canvas drawing.
  */
-var ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader) {
+const ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader) {
 
   /**
    * Optional canvas loader function.
@@ -24,7 +24,7 @@ var ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader) {
    */
   this.loader_ = opt_loader !== undefined ? opt_loader : null;
 
-  var state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
+  const state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
   _ol_ImageBase_.call(this, extent, resolution, pixelRatio, state);
 

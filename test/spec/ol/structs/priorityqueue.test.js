@@ -3,13 +3,13 @@ import PriorityQueue from '../../../../src/ol/structs/PriorityQueue.js';
 
 describe('ol.structs.PriorityQueue', function() {
 
-  var identity = function(a) {
+  const identity = function(a) {
     return a;
   };
 
   describe('when empty', function() {
 
-    var pq;
+    let pq;
     beforeEach(function() {
       pq = new PriorityQueue(identity, identity);
     });
@@ -19,14 +19,14 @@ describe('ol.structs.PriorityQueue', function() {
     });
 
     it('enqueue adds an element', function() {
-      var added = pq.enqueue(0);
+      const added = pq.enqueue(0);
       expect(added).to.be(true);
       expect(pq.elements_).to.eql([0]);
       expect(pq.priorities_).to.eql([0]);
     });
 
     it('do not enqueue element with DROP priority', function() {
-      var added = pq.enqueue(Infinity);
+      const added = pq.enqueue(Infinity);
       expect(added).to.be(false);
       expect(pq.elements_).to.eql([]);
       expect(pq.priorities_).to.eql([]);
@@ -36,11 +36,11 @@ describe('ol.structs.PriorityQueue', function() {
 
   describe('when populated', function() {
 
-    var elements, pq;
+    let elements, pq;
     beforeEach(function() {
       elements = [];
       pq = new PriorityQueue(identity, identity);
-      var element, i;
+      let element, i;
       for (i = 0; i < 32; ++i) {
         element = Math.random();
         pq.enqueue(element);
@@ -50,7 +50,7 @@ describe('ol.structs.PriorityQueue', function() {
 
     it('dequeues elements in the correct order', function() {
       elements.sort();
-      var i;
+      let i;
       for (i = 0; i < elements.length; ++i) {
         expect(pq.dequeue()).to.be(elements[i]);
       }
@@ -61,21 +61,21 @@ describe('ol.structs.PriorityQueue', function() {
 
   describe('with an impure priority function', function() {
 
-    var pq, target;
+    let pq, target;
     beforeEach(function() {
       target = 0.5;
       pq = new PriorityQueue(function(element) {
         return Math.abs(element - target);
       }, identity);
-      var i;
+      let i;
       for (i = 0; i < 32; ++i) {
         pq.enqueue(Math.random());
       }
     });
 
     it('dequeue elements in the correct order', function() {
-      var lastDelta = 0;
-      var delta;
+      let lastDelta = 0;
+      let delta;
       while (!pq.isEmpty()) {
         delta = Math.abs(pq.dequeue() - target);
         expect(lastDelta <= delta).to.be(true);
@@ -84,10 +84,10 @@ describe('ol.structs.PriorityQueue', function() {
     });
 
     it('allows reprioritization', function() {
-      var target = 0.5;
+      const target = 0.5;
       pq.reprioritize();
-      var lastDelta = 0;
-      var delta;
+      let lastDelta = 0;
+      let delta;
       while (!pq.isEmpty()) {
         delta = Math.abs(pq.dequeue() - target);
         expect(lastDelta <= delta).to.be(true);
@@ -96,8 +96,8 @@ describe('ol.structs.PriorityQueue', function() {
     });
 
     it('allows dropping during reprioritization', function() {
-      var target = 0.5;
-      var i = 0;
+      const target = 0.5;
+      let i = 0;
       pq.priorityFunction_ = function(element) {
         if (i++ % 2 === 0) {
           return Math.abs(element - target);
@@ -107,8 +107,8 @@ describe('ol.structs.PriorityQueue', function() {
       };
       pq.reprioritize();
       expect(pq.getCount()).to.be(16);
-      var lastDelta = 0;
-      var delta;
+      let lastDelta = 0;
+      let delta;
       while (!pq.isEmpty()) {
         delta = Math.abs(pq.dequeue() - target);
         expect(lastDelta <= delta).to.be(true);
@@ -120,7 +120,7 @@ describe('ol.structs.PriorityQueue', function() {
 
   describe('tracks elements in the queue', function() {
 
-    var pq;
+    let pq;
     beforeEach(function() {
       pq = new PriorityQueue(identity, identity);
       pq.enqueue('a');

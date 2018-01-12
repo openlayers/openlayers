@@ -12,7 +12,7 @@ describe('ol.interaction.DragRotateAndZoom', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new DragRotateAndZoom();
+      const instance = new DragRotateAndZoom();
       expect(instance).to.be.an(DragRotateAndZoom);
     });
 
@@ -20,22 +20,22 @@ describe('ol.interaction.DragRotateAndZoom', function() {
 
   describe('#handleDragEvent_()', function() {
 
-    var target, map, interaction;
+    let target, map, interaction;
 
-    var width = 360;
-    var height = 180;
+    const width = 360;
+    const height = 180;
 
     beforeEach(function(done) {
       target = document.createElement('div');
-      var style = target.style;
+      const style = target.style;
       style.position = 'absolute';
       style.left = '-1000px';
       style.top = '-1000px';
       style.width = width + 'px';
       style.height = height + 'px';
       document.body.appendChild(target);
-      var source = new VectorSource();
-      var layer = new VectorLayer({source: source});
+      const source = new VectorSource();
+      const layer = new VectorLayer({source: source});
       interaction = new DragRotateAndZoom();
       map = new Map({
         target: target,
@@ -58,11 +58,11 @@ describe('ol.interaction.DragRotateAndZoom', function() {
     });
 
     it('does not rotate when rotation is disabled on the view', function() {
-      var event = new MapBrowserPointerEvent('pointermove', map,
-          new PointerEvent('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
-          true);
+      let event = new MapBrowserPointerEvent('pointermove', map,
+        new PointerEvent('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
+        true);
       interaction.lastAngle_ = Math.PI;
-      var spy = sinon.spy(Interaction, 'rotateWithoutConstraints');
+      const spy = sinon.spy(Interaction, 'rotateWithoutConstraints');
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       expect(interaction.lastAngle_).to.be(-0.8308214428190254);
@@ -73,8 +73,8 @@ describe('ol.interaction.DragRotateAndZoom', function() {
         enableRotation: false
       }));
       event = new MapBrowserPointerEvent('pointermove', map,
-          new PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
-          true);
+        new PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
+        true);
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       Interaction.rotateWithoutConstraints.restore();

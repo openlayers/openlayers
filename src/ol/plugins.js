@@ -8,7 +8,7 @@ import PluginType from './PluginType.js';
  * @type {Array<olx.MapRendererPlugin>}
  * @private
  */
-var mapRendererPlugins = [];
+const mapRendererPlugins = [];
 
 
 /**
@@ -25,7 +25,7 @@ export function getMapRendererPlugins() {
  * @type {Array<olx.LayerRendererPlugin>}
  * @private
  */
-var layerRendererPlugins = [];
+const layerRendererPlugins = [];
 
 
 /**
@@ -43,7 +43,7 @@ export function getLayerRendererPlugins() {
  * @param {*} plugin The plugin.
  */
 export function register(type, plugin) {
-  var plugins;
+  let plugins;
   switch (type) {
     case PluginType.MAP_RENDERER: {
       plugins = mapRendererPlugins;
@@ -68,7 +68,7 @@ export function register(type, plugin) {
  * @param {Array} plugins The plugins.
  */
 export function registerMultiple(type, plugins) {
-  for (var i = 0, ii = plugins.length; i < ii; ++i) {
+  for (let i = 0, ii = plugins.length; i < ii; ++i) {
     register(type, plugins[i]);
   }
 }

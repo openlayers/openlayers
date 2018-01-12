@@ -27,12 +27,12 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.XYZOptions=} opt_options XYZ options.
  * @api
  */
-var XYZ = function(opt_options) {
-  var options = opt_options || {};
-  var projection = options.projection !== undefined ?
+const XYZ = function(opt_options) {
+  const options = opt_options || {};
+  const projection = options.projection !== undefined ?
     options.projection : 'EPSG:3857';
 
-  var tileGrid = options.tileGrid !== undefined ? options.tileGrid :
+  const tileGrid = options.tileGrid !== undefined ? options.tileGrid :
     _ol_tilegrid_.createXYZ({
       extent: _ol_tilegrid_.extentFromProjection(projection),
       maxZoom: options.maxZoom,

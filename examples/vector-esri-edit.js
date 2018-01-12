@@ -14,15 +14,15 @@ import XYZ from '../src/ol/source/XYZ.js';
 import _ol_tilegrid_ from '../src/ol/tilegrid.js';
 
 
-var serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
+const serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
     'services/PDX_Pedestrian_Districts/FeatureServer/';
-var layer = '0';
+const layer = '0';
 
-var esrijsonFormat = new EsriJSON();
+const esrijsonFormat = new EsriJSON();
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   loader: function(extent, resolution, projection) {
-    var url = serviceUrl + layer + '/query/?f=json&' +
+    const url = serviceUrl + layer + '/query/?f=json&' +
         'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
         encodeURIComponent('{"xmin":' + extent[0] + ',"ymin":' +
             extent[1] + ',"xmax":' + extent[2] + ',"ymax":' + extent[3] +
@@ -35,7 +35,7 @@ var vectorSource = new VectorSource({
             response.error.details.join('\n'));
       } else {
         // dataProjection will be read from document
-        var features = esrijsonFormat.readFeatures(response, {
+        const features = esrijsonFormat.readFeatures(response, {
           featureProjection: projection
         });
         if (features.length > 0) {
@@ -49,11 +49,11 @@ var vectorSource = new VectorSource({
   }))
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: vectorSource
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new XYZ({
     attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
@@ -62,21 +62,21 @@ var raster = new TileLayer({
   })
 });
 
-var draw = new Draw({
+const draw = new Draw({
   source: vectorSource,
   type: 'Polygon'
 });
 
-var select = new Select();
+const select = new Select();
 select.setActive(false);
-var selected = select.getFeatures();
+const selected = select.getFeatures();
 
-var modify = new Modify({
+const modify = new Modify({
   features: selected
 });
 modify.setActive(false);
 
-var map = new Map({
+const map = new Map({
   interactions: defaultInteractions().extend([draw, select, modify]),
   layers: [raster, vector],
   target: document.getElementById('map'),
@@ -86,7 +86,7 @@ var map = new Map({
   })
 });
 
-var typeSelect = document.getElementById('type');
+const typeSelect = document.getElementById('type');
 
 
 /**
@@ -98,28 +98,28 @@ typeSelect.onchange = function() {
   modify.setActive(typeSelect.value === 'MODIFY');
 };
 
-var dirty = {};
+const dirty = {};
 
 selected.on('add', function(evt) {
-  var feature = evt.element;
+  const feature = evt.element;
   feature.on('change', function(evt) {
     dirty[evt.target.getId()] = true;
   });
 });
 
 selected.on('remove', function(evt) {
-  var feature = evt.element;
-  var fid = feature.getId();
+  const feature = evt.element;
+  const fid = feature.getId();
   if (dirty[fid] === true) {
-    var payload = '[' + esrijsonFormat.writeFeature(feature, {
+    const payload = '[' + esrijsonFormat.writeFeature(feature, {
       featureProjection: map.getView().getProjection()
     }) + ']';
-    var url = serviceUrl + layer + '/updateFeatures';
+    const url = serviceUrl + layer + '/updateFeatures';
     $.post(url, {f: 'json', features: payload}).done(function(data) {
-      var result = JSON.parse(data);
+      const result = JSON.parse(data);
       if (result.updateResults && result.updateResults.length > 0) {
         if (result.updateResults[0].success !== true) {
-          var error = result.updateResults[0].error;
+          const error = result.updateResults[0].error;
           alert(error.description + ' (' + error.code + ')');
         } else {
           delete dirty[fid];
@@ -130,19 +130,19 @@ selected.on('remove', function(evt) {
 });
 
 draw.on('drawend', function(evt) {
-  var feature = evt.feature;
-  var payload = '[' + esrijsonFormat.writeFeature(feature, {
+  const feature = evt.feature;
+  const payload = '[' + esrijsonFormat.writeFeature(feature, {
     featureProjection: map.getView().getProjection()
   }) + ']';
-  var url = serviceUrl + layer + '/addFeatures';
+  const url = serviceUrl + layer + '/addFeatures';
   $.post(url, {f: 'json', features: payload}).done(function(data) {
-    var result = JSON.parse(data);
+    const result = JSON.parse(data);
     if (result.addResults && result.addResults.length > 0) {
       if (result.addResults[0].success === true) {
         feature.setId(result.addResults[0]['objectId']);
         vectorSource.clear();
       } else {
-        var error = result.addResults[0].error;
+        const error = result.addResults[0].error;
         alert(error.description + ' (' + error.code + ')');
       }
     }

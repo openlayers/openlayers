@@ -5,13 +5,13 @@ import ExtentInteraction from '../../../../src/ol/interaction/Extent.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 
 describe('ol.interaction.Extent', function() {
-  var map, interaction;
+  let map, interaction;
 
-  var width = 360;
-  var height = 180;
+  const width = 360;
+  const height = 180;
 
   beforeEach(function() {
-    var target = createMapDiv(width, height);
+    const target = createMapDiv(width, height);
 
     map = new Map({
       target: target,
@@ -46,18 +46,18 @@ describe('ol.interaction.Extent', function() {
    * @param {number} button The mouse button.
    */
   function simulateEvent(type, x, y, opt_shiftKey, button) {
-    var viewport = map.getViewport();
+    const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
-    var position = viewport.getBoundingClientRect();
-    var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var pointerEvent = new PointerEvent(type, {
+    const position = viewport.getBoundingClientRect();
+    const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
+    const pointerEvent = new PointerEvent(type, {
       type: type,
       button: button,
       clientX: position.left + x + width / 2,
       clientY: position.top - y + height / 2,
       shiftKey: shiftKey
     });
-    var event = new MapBrowserPointerEvent(type, map, pointerEvent);
+    const event = new MapBrowserPointerEvent(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }

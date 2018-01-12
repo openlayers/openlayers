@@ -7,7 +7,7 @@ describe('ol.Observable', function() {
   describe('constructor', function() {
 
     it('creates a new observable', function() {
-      var observable = new Observable();
+      const observable = new Observable();
       expect(observable).to.be.a(Observable);
       expect(observable).to.be.a(EventTarget);
     });
@@ -15,7 +15,7 @@ describe('ol.Observable', function() {
   });
 
   describe('#on()', function() {
-    var observable, listener;
+    let observable, listener;
     beforeEach(function() {
       observable = new Observable();
       listener = sinon.spy();
@@ -42,7 +42,7 @@ describe('ol.Observable', function() {
     });
 
     it('returns a listener key', function() {
-      var key = observable.on('foo', listener);
+      const key = observable.on('foo', listener);
 
       expect(typeof key).to.be('object');
     });
@@ -50,7 +50,7 @@ describe('ol.Observable', function() {
   });
 
   describe('#once()', function() {
-    var observable, listener;
+    let observable, listener;
     beforeEach(function() {
       observable = new Observable();
       listener = sinon.spy();
@@ -67,7 +67,7 @@ describe('ol.Observable', function() {
     });
 
     it('is safe to dispatch events of same type in a once listener', function() {
-      var callCount = 0;
+      let callCount = 0;
       observable.once('change', function() {
         observable.changed();
         observable.changed();
@@ -98,7 +98,7 @@ describe('ol.Observable', function() {
     });
 
     it('returns a listener key', function() {
-      var key = observable.once('foo', listener);
+      const key = observable.once('foo', listener);
 
       expect(typeof key).to.be('object');
     });
@@ -106,7 +106,7 @@ describe('ol.Observable', function() {
   });
 
   describe('#un()', function() {
-    var observable, listener;
+    let observable, listener;
     beforeEach(function() {
       observable = new Observable();
       listener = sinon.spy();
@@ -126,14 +126,14 @@ describe('ol.Observable', function() {
   });
 
   describe('ol.Observable.unByKey()', function() {
-    var observable, listener;
+    let observable, listener;
     beforeEach(function() {
       observable = new Observable();
       listener = sinon.spy();
     });
 
     it('unregisters a listener given the key returned by `on`', function() {
-      var key = observable.on('foo', listener);
+      const key = observable.on('foo', listener);
 
       observable.dispatchEvent('foo');
       expect(listener.calledOnce).to.be(true);

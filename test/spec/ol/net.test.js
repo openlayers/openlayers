@@ -4,15 +4,15 @@ import _ol_net_ from '../../../src/ol/net.js';
 describe('ol.net', function() {
 
   describe('jsonp()', function() {
-    var head = document.getElementsByTagName('head')[0];
-    var origAppendChild = head.appendChild;
-    var origCreateElement = document.createElement;
-    var origSetTimeout = setTimeout;
-    var key, removeChild;
+    const head = document.getElementsByTagName('head')[0];
+    const origAppendChild = head.appendChild;
+    const origCreateElement = document.createElement;
+    const origSetTimeout = setTimeout;
+    let key, removeChild;
 
     function createCallback(url, done) {
       removeChild = sinon.spy();
-      var callback = function(data) {
+      const callback = function(data) {
         expect(data).to.be(url + key);
         expect(removeChild.called).to.be(true);
         done();
@@ -22,7 +22,7 @@ describe('ol.net', function() {
     }
 
     beforeEach(function() {
-      var element = {};
+      const element = {};
       document.createElement = function(arg) {
         if (arg == 'script') {
           return element;
@@ -57,7 +57,7 @@ describe('ol.net', function() {
       _ol_net_.jsonp('foo', createCallback('foo?callback=', done));
     });
     it('appends correct callback param to a url with query', function(done) {
-      var callback = createCallback('http://foo/bar?baz&callback=', done);
+      const callback = createCallback('http://foo/bar?baz&callback=', done);
       _ol_net_.jsonp('http://foo/bar?baz', callback);
     });
     it('calls errback when jsonp is not executed, cleans up', function(done) {
@@ -77,7 +77,7 @@ describe('ol.net', function() {
       _ol_net_.jsonp('foo', callback, errback);
     });
     it('accepts a custom callback param', function(done) {
-      var callback = createCallback('foo?mycallback=', done);
+      const callback = createCallback('foo?mycallback=', done);
       _ol_net_.jsonp('foo', callback, undefined, 'mycallback');
     });
 

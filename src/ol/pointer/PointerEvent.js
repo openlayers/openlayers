@@ -47,7 +47,7 @@ import Event from '../events/Event.js';
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
-var PointerEvent = function(type, originalEvent, opt_eventDict) {
+const PointerEvent = function(type, originalEvent, opt_eventDict) {
   Event.call(this, type);
 
   /**
@@ -56,7 +56,7 @@ var PointerEvent = function(type, originalEvent, opt_eventDict) {
    */
   this.originalEvent = originalEvent;
 
-  var eventDict = opt_eventDict ? opt_eventDict : {};
+  const eventDict = opt_eventDict ? opt_eventDict : {};
 
   /**
    * @type {number}
@@ -222,7 +222,7 @@ PointerEvent.prototype.getButtons_ = function(eventDict) {
   // is to call initMouseEvent with a buttonArg value of -1.
   //
   // This is fixed with DOM Level 4's use of buttons
-  var buttons;
+  let buttons;
   if (eventDict.buttons || PointerEvent.HAS_BUTTONS) {
     buttons = eventDict.buttons;
   } else {
@@ -246,7 +246,7 @@ PointerEvent.prototype.getButtons_ = function(eventDict) {
 PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
   // Spec requires that pointers without pressure specified use 0.5 for down
   // state and 0 for up state.
-  var pressure = 0;
+  let pressure = 0;
   if (eventDict.pressure) {
     pressure = eventDict.pressure;
   } else {
@@ -268,7 +268,7 @@ PointerEvent.HAS_BUTTONS = false;
  */
 (function() {
   try {
-    var ev = new MouseEvent('click', {buttons: 1});
+    const ev = new MouseEvent('click', {buttons: 1});
     PointerEvent.HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
     // pass

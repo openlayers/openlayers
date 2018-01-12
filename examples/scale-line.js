@@ -6,9 +6,9 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var scaleLineControl = new ScaleLine();
+const scaleLineControl = new ScaleLine();
 
-var map = new Map({
+const map = new Map({
   controls: defaultControls({
     attributionOptions: {
       collapsible: false
@@ -29,7 +29,7 @@ var map = new Map({
 });
 
 
-var unitsSelect = document.getElementById('units');
+const unitsSelect = document.getElementById('units');
 function onChange() {
   scaleLineControl.setUnits(unitsSelect.value);
 }

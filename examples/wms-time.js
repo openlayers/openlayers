@@ -10,12 +10,12 @@ function threeHoursAgo() {
   return new Date(Math.round(Date.now() / 3600000) * 3600000 - 3600000 * 3);
 }
 
-var extent = transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
-var startDate = threeHoursAgo();
-var frameRate = 0.5; // frames per second
-var animationId = null;
+const extent = transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
+let startDate = threeHoursAgo();
+const frameRate = 0.5; // frames per second
+let animationId = null;
 
-var layers = [
+const layers = [
   new TileLayer({
     source: new Stamen({
       layer: 'terrain'
@@ -30,7 +30,7 @@ var layers = [
     })
   })
 ];
-var map = new Map({
+const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({
@@ -40,7 +40,7 @@ var map = new Map({
 });
 
 function updateInfo() {
-  var el = document.getElementById('info');
+  const el = document.getElementById('info');
   el.innerHTML = startDate.toISOString();
 }
 
@@ -54,22 +54,22 @@ function setTime() {
 }
 setTime();
 
-var stop = function() {
+const stop = function() {
   if (animationId !== null) {
     window.clearInterval(animationId);
     animationId = null;
   }
 };
 
-var play = function() {
+const play = function() {
   stop();
   animationId = window.setInterval(setTime, 1000 / frameRate);
 };
 
-var startButton = document.getElementById('play');
+const startButton = document.getElementById('play');
 startButton.addEventListener('click', play, false);
 
-var stopButton = document.getElementById('pause');
+const stopButton = document.getElementById('pause');
 stopButton.addEventListener('click', stop, false);
 
 updateInfo();

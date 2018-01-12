@@ -20,7 +20,7 @@ import _ol_transform_ from '../transform.js';
  * @param {ol.PluggableMap} map Map.
  * @struct
  */
-var MapRenderer = function(container, map) {
+const MapRenderer = function(container, map) {
 
   Disposable.call(this);
 
@@ -53,18 +53,18 @@ inherits(MapRenderer, Disposable);
  * @protected
  */
 MapRenderer.prototype.calculateMatrices2D = function(frameState) {
-  var viewState = frameState.viewState;
-  var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
-  var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
+  const viewState = frameState.viewState;
+  const coordinateToPixelTransform = frameState.coordinateToPixelTransform;
+  const pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
 
   _ol_transform_.compose(coordinateToPixelTransform,
-      frameState.size[0] / 2, frameState.size[1] / 2,
-      1 / viewState.resolution, -1 / viewState.resolution,
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+    frameState.size[0] / 2, frameState.size[1] / 2,
+    1 / viewState.resolution, -1 / viewState.resolution,
+    -viewState.rotation,
+    -viewState.center[0], -viewState.center[1]);
 
   _ol_transform_.invert(
-      _ol_transform_.setFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
+    _ol_transform_.setFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
 };
 
 
@@ -72,7 +72,7 @@ MapRenderer.prototype.calculateMatrices2D = function(frameState) {
  * Removes all layer renderers.
  */
 MapRenderer.prototype.removeLayerRenderers = function() {
-  for (var key in this.layerRenderers_) {
+  for (const key in this.layerRenderers_) {
     this.removeLayerRendererByKey_(key).dispose();
   }
 };
@@ -104,10 +104,10 @@ MapRenderer.expireIconCache_ = function(map, frameState) {
  * @template S,T,U
  */
 MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
-    layerFilter, thisArg2) {
-  var result;
-  var viewState = frameState.viewState;
-  var viewResolution = viewState.resolution;
+  layerFilter, thisArg2) {
+  let result;
+  const viewState = frameState.viewState;
+  const viewResolution = viewState.resolution;
 
   /**
    * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -115,39 +115,39 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature, layer) {
-    var key = getUid(feature).toString();
-    var managed = frameState.layerStates[getUid(layer)].managed;
+    const key = getUid(feature).toString();
+    const managed = frameState.layerStates[getUid(layer)].managed;
     if (!(key in frameState.skippedFeatureUids && !managed)) {
       return callback.call(thisArg, feature, managed ? layer : null);
     }
   }
 
-  var projection = viewState.projection;
+  const projection = viewState.projection;
 
-  var translatedCoordinate = coordinate;
+  let translatedCoordinate = coordinate;
   if (projection.canWrapX()) {
-    var projectionExtent = projection.getExtent();
-    var worldWidth = getWidth(projectionExtent);
-    var x = coordinate[0];
+    const projectionExtent = projection.getExtent();
+    const worldWidth = getWidth(projectionExtent);
+    const x = coordinate[0];
     if (x < projectionExtent[0] || x > projectionExtent[2]) {
-      var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
+      const worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
       translatedCoordinate = [x + worldWidth * worldsAway, coordinate[1]];
     }
   }
 
-  var layerStates = frameState.layerStatesArray;
-  var numLayers = layerStates.length;
-  var i;
+  const layerStates = frameState.layerStatesArray;
+  const numLayers = layerStates.length;
+  let i;
   for (i = numLayers - 1; i >= 0; --i) {
-    var layerState = layerStates[i];
-    var layer = layerState.layer;
+    const layerState = layerStates[i];
+    const layer = layerState.layer;
     if (Layer.visibleAtResolution(layerState, viewResolution) &&
         layerFilter.call(thisArg2, layer)) {
-      var layerRenderer = this.getLayerRenderer(layer);
+      const layerRenderer = this.getLayerRenderer(layer);
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
-            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+          layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+          frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
       }
       if (result) {
         return result;
@@ -174,7 +174,7 @@ MapRenderer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameSta
  * @template S,T,U
  */
 MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-    layerFilter, thisArg2) {};
+  layerFilter, thisArg2) {};
 
 
 /**
@@ -190,8 +190,8 @@ MapRenderer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback
  * @template U
  */
 MapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
-  var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, hitTolerance, TRUE, this, layerFilter, thisArg);
+  const hasFeature = this.forEachFeatureAtCoordinate(
+    coordinate, frameState, hitTolerance, TRUE, this, layerFilter, thisArg);
 
   return hasFeature !== undefined;
 };
@@ -203,15 +203,15 @@ MapRenderer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, 
  * @return {ol.renderer.Layer} Layer renderer.
  */
 MapRenderer.prototype.getLayerRenderer = function(layer) {
-  var layerKey = getUid(layer).toString();
+  const layerKey = getUid(layer).toString();
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {
-    var layerRendererPlugins = getLayerRendererPlugins();
-    var renderer;
-    var type = this.getType();
-    for (var i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {
-      var plugin = layerRendererPlugins[i];
+    const layerRendererPlugins = getLayerRendererPlugins();
+    let renderer;
+    const type = this.getType();
+    for (let i = 0, ii = layerRendererPlugins.length; i < ii; ++i) {
+      const plugin = layerRendererPlugins[i];
       if (plugin['handles'](type, layer)) {
         renderer = plugin['create'](this, layer);
         break;
@@ -220,7 +220,7 @@ MapRenderer.prototype.getLayerRenderer = function(layer) {
     if (renderer) {
       this.layerRenderers_[layerKey] = renderer;
       this.layerRendererListeners_[layerKey] = _ol_events_.listen(renderer,
-          EventType.CHANGE, this.handleLayerRendererChange_, this);
+        EventType.CHANGE, this.handleLayerRendererChange_, this);
     } else {
       throw new Error('Unable to create renderer for layer: ' + layer.getType());
     }
@@ -278,7 +278,7 @@ MapRenderer.prototype.handleLayerRendererChange_ = function() {
  * @private
  */
 MapRenderer.prototype.removeLayerRendererByKey_ = function(layerKey) {
-  var layerRenderer = this.layerRenderers_[layerKey];
+  const layerRenderer = this.layerRenderers_[layerKey];
   delete this.layerRenderers_[layerKey];
 
   _ol_events_.unlistenByKey(this.layerRendererListeners_[layerKey]);
@@ -301,7 +301,7 @@ MapRenderer.prototype.renderFrame = nullFunction;
  * @private
  */
 MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
-  var layerKey;
+  let layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
       this.removeLayerRendererByKey_(layerKey).dispose();
@@ -316,7 +316,7 @@ MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
  */
 MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
-      /** @type {ol.PostRenderFunction} */ (MapRenderer.expireIconCache_)
+    /** @type {ol.PostRenderFunction} */ (MapRenderer.expireIconCache_)
   );
 };
 
@@ -326,11 +326,11 @@ MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
  * @protected
  */
 MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
-  var layerKey;
+  let layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-          /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
+        /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
       );
       return;
     }

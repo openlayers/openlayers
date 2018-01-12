@@ -11,17 +11,17 @@ describe('ol.obj.assign()', function() {
 
   it('assigns properties from a source object to a target object', function() {
 
-    var source = {
+    const source = {
       sourceProp1: 'sourceValue1',
       sourceProp2: 'sourceValue2'
     };
 
-    var target = {
+    const target = {
       sourceProp1: 'overridden',
       targetProp1: 'targetValue1'
     };
 
-    var assigned = _ol_obj_.assign(target, source);
+    const assigned = _ol_obj_.assign(target, source);
     expect(assigned).to.be(target);
     expect(assigned.sourceProp1).to.be('sourceValue1');
     expect(assigned.sourceProp2).to.be('sourceValue2');
@@ -46,8 +46,8 @@ describe('ol.obj.assign()', function() {
 describe('ol.obj.clear()', function() {
 
   it('removes all properties from an object', function() {
-    var clear = _ol_obj_.clear;
-    var isEmpty = _ol_obj_.isEmpty;
+    const clear = _ol_obj_.clear;
+    const isEmpty = _ol_obj_.isEmpty;
     expect(isEmpty(clear({foo: 'bar'}))).to.be(true);
     expect(isEmpty(clear({foo: 'bar', num: 42}))).to.be(true);
     expect(isEmpty(clear({}))).to.be(true);

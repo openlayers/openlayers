@@ -8,12 +8,12 @@ describe('ol.format.WMSGetFeatureInfo', function() {
   describe('#getLayers', function() {
 
     it('returns null if layers is undefined', function() {
-      var format = new WMSGetFeatureInfo();
+      const format = new WMSGetFeatureInfo();
       expect(format.getLayers()).to.be(null);
     });
 
     it('returns the value provided in the layers option', function() {
-      var format = new WMSGetFeatureInfo({
+      const format = new WMSGetFeatureInfo({
         layers: ['a', 'z']
       });
       expect(format.getLayers()).to.eql(['a', 'z']);
@@ -25,7 +25,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
 
     describe('read Features', function() {
 
-      var features;
+      let features;
 
       before(function(done) {
         proj4.defs('urn:x-ogc:def:crs:EPSG:4326', proj4.defs('EPSG:4326'));
@@ -51,34 +51,34 @@ describe('ol.format.WMSGetFeatureInfo', function() {
       });
 
       it('creates a feature for 1071', function() {
-        var feature = features[0];
+        const feature = features[0];
         expect(feature.getId()).to.be(undefined);
         expect(feature.get('FID')).to.equal('1071');
         expect(feature.get('NO_CAMPAGNE')).to.equal('1020050');
       });
 
       it('read boundedBy but no geometry', function() {
-        var feature = features[0];
+        const feature = features[0];
         expect(feature.getGeometry()).to.be(undefined);
         expect(feature.get('boundedBy')).to.eql(
-            [-531138.686422, 5386348.414671, -117252.819653, 6144475.186022]);
+          [-531138.686422, 5386348.414671, -117252.819653, 6144475.186022]);
       });
 
       it('read empty response', function() {
         // read empty response
-        var text = '<?xml version="1.0" encoding="ISO-8859-1"?>' +
+        const text = '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput xmlns:gml="http://www.opengis.net/gml"' +
             '  xmlns:xlink="http://www.w3.org/1999/xlink"' +
             '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
             '  <AAA64_layer>' +
             '  </AAA64_layer>' +
             '</msGMLOutput>';
-        var features = new WMSGetFeatureInfo().readFeatures(text);
+        const features = new WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(0);
       });
 
       it('read empty attributes', function() {
-        var text =
+        const text =
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput ' +
             '   xmlns:gml="http://www.opengis.net/gml"' +
@@ -98,7 +98,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '    </AAA64_feature>' +
             '  </AAA64_layer>' +
             '</msGMLOutput>';
-        var features = new WMSGetFeatureInfo().readFeatures(text);
+        const features = new WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(1);
         expect(features[0].get('FOO')).to.be('bar');
         // FIXME is that really wanted ?
@@ -106,7 +106,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
       });
 
       it('read features from multiple layers', function() {
-        var text =
+        const text =
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput ' +
             '  xmlns:gml="http://www.opengis.net/gml"' +
@@ -158,24 +158,24 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '   </AAA62_feature>' +
             '  </AAA62_layer>' +
             '</msGMLOutput>';
-        var format = new WMSGetFeatureInfo();
-        var features = format.readFeatures(text);
+        const format = new WMSGetFeatureInfo();
+        const features = format.readFeatures(text);
         expect(features.length).to.be(2);
         expect(features[0].get('OBJECTID')).to.be('287');
         expect(features[1].get('OBJECTID')).to.be('1251');
         format.setLayers(['AAA64']);
-        var aaa64Features = format.readFeatures(text);
+        const aaa64Features = format.readFeatures(text);
         expect(aaa64Features.length).to.be(1);
         format.setLayers(['AAA64', 'AAA62']);
-        var allFeatures = format.readFeatures(text);
+        const allFeatures = format.readFeatures(text);
         expect(allFeatures.length).to.be(2);
         format.setLayers(['foo', 'bar']);
-        var dummyFeatures = format.readFeatures(text);
+        const dummyFeatures = format.readFeatures(text);
         expect(dummyFeatures.length).to.be(0);
       });
 
       it('read geoserver’s response', function() {
-        var text =
+        const text =
             '<?xml version="1.0" encoding="UTF-8"?>' +
             '<wfs:FeatureCollection xmlns="http://www.opengis.net/wfs"' +
             '  xmlns:wfs="http://www.opengis.net/wfs"' +
@@ -224,7 +224,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
             '    </opengeo:roads>' +
             '  </gml:featureMember>' +
             '</wfs:FeatureCollection>';
-        var features = new WMSGetFeatureInfo().readFeatures(text);
+        const features = new WMSGetFeatureInfo().readFeatures(text);
         expect(features.length).to.be(1);
         expect(features[0].get('cat')).to.be('3');
         expect(features[0].getGeometry().getType()).to.be('MultiLineString');

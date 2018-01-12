@@ -17,7 +17,7 @@ import Spatial from '../filter/Spatial.js';
  * @extends {ol.format.filter.Spatial}
  * @api
  */
-var Contains = function(geometryName, geometry, opt_srsName) {
+const Contains = function(geometryName, geometry, opt_srsName) {
 
   Spatial.call(this, 'Contains', geometryName, geometry, opt_srsName);
 

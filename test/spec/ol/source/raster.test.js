@@ -9,23 +9,23 @@ import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
 
-var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
+const red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
     'BAAEAAAICRAEAOw==';
 
-var green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
+const green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
     'AABAAEAAAICRAEAOw==';
 
-var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
+const blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
     'ABAAEAAAICRAEAOw==';
 
 where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
-  var map, target, redSource, greenSource, blueSource, raster;
+  let map, target, redSource, greenSource, blueSource, raster;
 
   beforeEach(function() {
     target = document.createElement('div');
 
-    var style = target.style;
+    const style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
     style.top = '-1000px';
@@ -33,7 +33,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     style.height = '2px';
     document.body.appendChild(target);
 
-    var extent = [-1, -1, 1, 1];
+    const extent = [-1, -1, 1, 1];
 
     redSource = new Static({
       url: red,
@@ -90,7 +90,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   describe('constructor', function() {
 
     it('returns a tile source', function() {
-      var source = new RasterSource({
+      const source = new RasterSource({
         threads: 0,
         sources: [new TileSource({})]
       });
@@ -100,9 +100,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('defaults to "pixel" operation', function(done) {
 
-      var log = [];
+      const log = [];
 
-      var source = new RasterSource({
+      const source = new RasterSource({
         threads: 0,
         sources: [redSource, greenSource, blueSource],
         operation: function(inputs) {
@@ -113,23 +113,23 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
       source.once('afteroperations', function() {
         expect(log.length).to.equal(4);
-        var inputs = log[0];
-        var pixel = inputs[0];
+        const inputs = log[0];
+        const pixel = inputs[0];
         expect(pixel).to.be.an('array');
         done();
       });
 
       map.getLayers().item(0).setSource(source);
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
     });
 
     it('allows operation type to be set to "image"', function(done) {
-      var log = [];
+      const log = [];
 
-      var source = new RasterSource({
+      const source = new RasterSource({
         operationType: 'image',
         threads: 0,
         sources: [redSource, greenSource, blueSource],
@@ -141,8 +141,8 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
       source.once('afteroperations', function() {
         expect(log.length).to.equal(1);
-        var inputs = log[0];
-        var imageData = inputs[0];
+        const inputs = log[0];
+        const imageData = inputs[0];
         expect(imageData.data).to.be.a(Uint8ClampedArray);
         expect(imageData.width).to.be(2);
         expect(imageData.height).to.be(2);
@@ -150,7 +150,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       });
 
       map.getLayers().item(0).setSource(source);
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
@@ -162,19 +162,19 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('allows operation to be set', function(done) {
 
-      var count = 0;
+      let count = 0;
       raster.setOperation(function(pixels) {
         ++count;
-        var redPixel = pixels[0];
-        var greenPixel = pixels[1];
-        var bluePixel = pixels[2];
+        const redPixel = pixels[0];
+        const greenPixel = pixels[1];
+        const bluePixel = pixels[2];
         expect(redPixel).to.eql([255, 0, 0, 255]);
         expect(greenPixel).to.eql([0, 255, 0, 255]);
         expect(bluePixel).to.eql([0, 0, 255, 255]);
         return pixels[0];
       });
 
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
@@ -187,11 +187,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('updates and re-runs the operation', function(done) {
 
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
-      var count = 0;
+      let count = 0;
       raster.on('afteroperations', function(event) {
         ++count;
         if (count === 1) {
@@ -211,7 +211,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('gets called before operations are run', function(done) {
 
-      var count = 0;
+      let count = 0;
       raster.setOperation(function(inputs) {
         ++count;
         return inputs[0];
@@ -226,7 +226,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         done();
       });
 
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
@@ -249,7 +249,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         done();
       });
 
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
@@ -261,7 +261,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('gets called after operations are run', function(done) {
 
-      var count = 0;
+      let count = 0;
       raster.setOperation(function(inputs) {
         ++count;
         return inputs[0];
@@ -276,7 +276,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         done();
       });
 
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
@@ -294,7 +294,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         done();
       });
 
-      var view = map.getView();
+      const view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
 
@@ -303,7 +303,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   });
 
   describe('tile loading', function() {
-    var map2;
+    let map2;
     afterEach(function() {
       disposeMap(map2);
       map2 = null;
@@ -311,7 +311,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
     it('is initiated on the underlying source', function(done) {
 
-      var source = new XYZ({
+      const source = new XYZ({
         url: 'spec/ol/data/osm-{z}-{x}-{y}.png'
       });
 
@@ -336,13 +336,13 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         ]
       });
 
-      var tileCache = source.tileCache;
+      const tileCache = source.tileCache;
 
       expect(tileCache.getCount()).to.equal(0);
 
       map2.once('moveend', function() {
         expect(tileCache.getCount()).to.equal(1);
-        var state = tileCache.peekLast().getState();
+        const state = tileCache.peekLast().getState();
         expect(state === TileState.LOADED || state === TileState.LOADED).to.be(true);
         done();
       });

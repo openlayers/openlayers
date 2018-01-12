@@ -3,7 +3,7 @@
  */
 import _ol_xml_ from '../xml.js';
 import _ol_string_ from '../string.js';
-var XSD = {};
+const XSD = {};
 
 
 /**
@@ -11,7 +11,7 @@ var XSD = {};
  * @return {boolean|undefined} Boolean.
  */
 XSD.readBoolean = function(node) {
-  var s = _ol_xml_.getAllTextContent(node, false);
+  const s = _ol_xml_.getAllTextContent(node, false);
   return XSD.readBooleanString(s);
 };
 
@@ -21,7 +21,7 @@ XSD.readBoolean = function(node) {
  * @return {boolean|undefined} Boolean.
  */
 XSD.readBooleanString = function(string) {
-  var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
+  const m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if (m) {
     return m[1] !== undefined || false;
   } else {
@@ -35,8 +35,8 @@ XSD.readBooleanString = function(string) {
  * @return {number|undefined} DateTime in seconds.
  */
 XSD.readDateTime = function(node) {
-  var s = _ol_xml_.getAllTextContent(node, false);
-  var dateTime = Date.parse(s);
+  const s = _ol_xml_.getAllTextContent(node, false);
+  const dateTime = Date.parse(s);
   return isNaN(dateTime) ? undefined : dateTime / 1000;
 };
 
@@ -46,7 +46,7 @@ XSD.readDateTime = function(node) {
  * @return {number|undefined} Decimal.
  */
 XSD.readDecimal = function(node) {
-  var s = _ol_xml_.getAllTextContent(node, false);
+  const s = _ol_xml_.getAllTextContent(node, false);
   return XSD.readDecimalString(s);
 };
 
@@ -57,7 +57,7 @@ XSD.readDecimal = function(node) {
  */
 XSD.readDecimalString = function(string) {
   // FIXME check spec
-  var m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(string);
+  const m = /^\s*([+\-]?\d*\.?\d+(?:e[+\-]?\d+)?)\s*$/i.exec(string);
   if (m) {
     return parseFloat(m[1]);
   } else {
@@ -71,7 +71,7 @@ XSD.readDecimalString = function(string) {
  * @return {number|undefined} Non negative integer.
  */
 XSD.readNonNegativeInteger = function(node) {
-  var s = _ol_xml_.getAllTextContent(node, false);
+  const s = _ol_xml_.getAllTextContent(node, false);
   return XSD.readNonNegativeIntegerString(s);
 };
 
@@ -81,7 +81,7 @@ XSD.readNonNegativeInteger = function(node) {
  * @return {number|undefined} Non negative integer.
  */
 XSD.readNonNegativeIntegerString = function(string) {
-  var m = /^\s*(\d+)\s*$/.exec(string);
+  const m = /^\s*(\d+)\s*$/.exec(string);
   if (m) {
     return parseInt(m[1], 10);
   } else {
@@ -122,8 +122,8 @@ XSD.writeCDATASection = function(node, string) {
  * @param {number} dateTime DateTime in seconds.
  */
 XSD.writeDateTimeTextNode = function(node, dateTime) {
-  var date = new Date(dateTime * 1000);
-  var string = date.getUTCFullYear() + '-' +
+  const date = new Date(dateTime * 1000);
+  const string = date.getUTCFullYear() + '-' +
       _ol_string_.padNumber(date.getUTCMonth() + 1, 2) + '-' +
       _ol_string_.padNumber(date.getUTCDate(), 2) + 'T' +
       _ol_string_.padNumber(date.getUTCHours(), 2) + ':' +
@@ -138,7 +138,7 @@ XSD.writeDateTimeTextNode = function(node, dateTime) {
  * @param {number} decimal Decimal.
  */
 XSD.writeDecimalTextNode = function(node, decimal) {
-  var string = decimal.toPrecision();
+  const string = decimal.toPrecision();
   node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
 
@@ -148,7 +148,7 @@ XSD.writeDecimalTextNode = function(node, decimal) {
  * @param {number} nonNegativeInteger Non negative integer.
  */
 XSD.writeNonNegativeIntegerTextNode = function(node, nonNegativeInteger) {
-  var string = nonNegativeInteger.toString();
+  const string = nonNegativeInteger.toString();
   node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
 

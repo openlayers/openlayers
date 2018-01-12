@@ -17,7 +17,7 @@ import Filter from '../filter/Filter.js';
  * @extends {ol.format.filter.Filter}
  * @api
  */
-var Bbox = function(geometryName, extent, opt_srsName) {
+const Bbox = function(geometryName, extent, opt_srsName) {
 
   Filter.call(this, 'BBOX');
 

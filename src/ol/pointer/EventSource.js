@@ -7,7 +7,7 @@
  *     mapping.
  * @constructor
  */
-var _ol_pointer_EventSource_ = function(dispatcher, mapping) {
+const _ol_pointer_EventSource_ = function(dispatcher, mapping) {
   /**
    * @type {ol.pointer.PointerEventHandler}
    */

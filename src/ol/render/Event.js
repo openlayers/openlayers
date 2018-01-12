@@ -14,9 +14,9 @@ import Event from '../events/Event.js';
  * @param {?CanvasRenderingContext2D=} opt_context Context.
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
-var RenderEvent = function(
-    type, opt_vectorContext, opt_frameState, opt_context,
-    opt_glContext) {
+const RenderEvent = function(
+  type, opt_vectorContext, opt_frameState, opt_context,
+  opt_glContext) {
 
   Event.call(this, type);
 

@@ -15,7 +15,7 @@ import Comparison from '../filter/Comparison.js';
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-var IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
+const IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
   Comparison.call(this, 'PropertyIsBetween', propertyName);
 
   /**

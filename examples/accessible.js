@@ -5,7 +5,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -24,13 +24,13 @@ var map = new Map({
 });
 
 document.getElementById('zoom-out').onclick = function() {
-  var view = map.getView();
-  var zoom = view.getZoom();
+  const view = map.getView();
+  const zoom = view.getZoom();
   view.setZoom(zoom - 1);
 };
 
 document.getElementById('zoom-in').onclick = function() {
-  var view = map.getView();
-  var zoom = view.getZoom();
+  const view = map.getView();
+  const zoom = view.getZoom();
   view.setZoom(zoom + 1);
 };

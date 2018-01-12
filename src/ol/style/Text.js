@@ -12,9 +12,9 @@ import TextPlacement from '../style/TextPlacement.js';
  * @param {olx.style.TextOptions=} opt_options Options.
  * @api
  */
-var Text = function(opt_options) {
+const Text = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private

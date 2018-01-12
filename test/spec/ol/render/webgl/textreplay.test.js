@@ -6,10 +6,10 @@ import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Text from '../../../../../src/ol/style/Text.js';
 
 describe('ol.render.webgl.TextReplay', function() {
-  var replay;
+  let replay;
 
-  var createTextStyle = function(fillStyle, strokeStyle, text) {
-    var textStyle = new Text({
+  const createTextStyle = function(fillStyle, strokeStyle, text) {
+    const textStyle = new Text({
       rotateWithView: true,
       rotation: 1.5,
       scale: 2,
@@ -26,50 +26,50 @@ describe('ol.render.webgl.TextReplay', function() {
   };
 
   beforeEach(function() {
-    var tolerance = 0.1;
-    var maxExtent = [-10000, -20000, 10000, 20000];
+    const tolerance = 0.1;
+    const maxExtent = [-10000, -20000, 10000, 20000];
     replay = new _ol_render_webgl_TextReplay_(tolerance, maxExtent);
   });
 
   describe('#setTextStyle', function() {
 
-    var textStyle1, textStyle2, textStyle3, textStyle4;
+    let textStyle1, textStyle2, textStyle3, textStyle4;
 
     beforeEach(function() {
       textStyle1 = createTextStyle(
-          new Fill({
-            color: [0, 0, 0, 1]
-          }),
-          new Stroke({
-            width: 1,
-            color: [0, 0, 0, 1],
-            lineCap: 'butt',
-            lineJoin: 'bevel',
-            lineDash: [5, 5],
-            lineDashOffset: 15,
-            miterLimit: 2
-          }),
-          'someText');
+        new Fill({
+          color: [0, 0, 0, 1]
+        }),
+        new Stroke({
+          width: 1,
+          color: [0, 0, 0, 1],
+          lineCap: 'butt',
+          lineJoin: 'bevel',
+          lineDash: [5, 5],
+          lineDashOffset: 15,
+          miterLimit: 2
+        }),
+        'someText');
       textStyle2 = createTextStyle(
-          new Fill({
-            color: [255, 255, 255, 1]
-          }),
-          new Stroke({
-            width: 1,
-            color: [255, 255, 255, 1]
-          }),
-          'someText'
+        new Fill({
+          color: [255, 255, 255, 1]
+        }),
+        new Stroke({
+          width: 1,
+          color: [255, 255, 255, 1]
+        }),
+        'someText'
       );
       textStyle3 = createTextStyle(null, null, 'someText');
       textStyle4 = createTextStyle(
-          new Fill({
-            color: [0, 0, 0, 1]
-          }),
-          new Stroke({
-            width: 1,
-            color: [0, 0, 0, 1]
-          }),
-          ''
+        new Fill({
+          color: [0, 0, 0, 1]
+        }),
+        new Stroke({
+          width: 1,
+          color: [0, 0, 0, 1]
+        }),
+        ''
       );
     });
 
@@ -114,16 +114,16 @@ describe('ol.render.webgl.TextReplay', function() {
 
   describe('#drawText', function() {
     beforeEach(function() {
-      var textStyle = createTextStyle(
-          new Fill({
-            color: [0, 0, 0, 1]
-          }),
-          null, 'someText');
+      const textStyle = createTextStyle(
+        new Fill({
+          color: [0, 0, 0, 1]
+        }),
+        null, 'someText');
       replay.setTextStyle(textStyle);
     });
 
     it('sets the buffer data', function() {
-      var point;
+      let point;
 
       point = [1000, 2000];
       replay.drawText(new Point(point), null);
@@ -137,15 +137,15 @@ describe('ol.render.webgl.TextReplay', function() {
     });
 
     it('sets part of its state during drawing', function() {
-      var point = [1000, 2000];
+      const point = [1000, 2000];
       replay.drawText(new Point(point), null);
 
-      var height = replay.currAtlas_.height;
-      var widths = replay.currAtlas_.width;
-      var width = widths.t;
-      var widthX = widths.s + widths.o + widths.m + widths.e + widths.T +
+      const height = replay.currAtlas_.height;
+      const widths = replay.currAtlas_.width;
+      const width = widths.t;
+      const widthX = widths.s + widths.o + widths.m + widths.e + widths.T +
           widths.e + widths.x;
-      var charInfo = replay.currAtlas_.atlas.getInfo('t');
+      const charInfo = replay.currAtlas_.atlas.getInfo('t');
 
       expect(replay.height).to.be(height);
       expect(replay.width).to.be(width);
@@ -159,9 +159,8 @@ describe('ol.render.webgl.TextReplay', function() {
 
     it('does not draw if text is empty', function() {
       replay.text_ = '';
-      var point;
 
-      point = [1000, 2000];
+      const point = [1000, 2000];
       replay.drawText(new Point(point), null);
       expect(replay.vertices).to.have.length(0);
       expect(replay.indices).to.have.length(0);
@@ -170,17 +169,17 @@ describe('ol.render.webgl.TextReplay', function() {
 
   describe('#addCharToAtlas_', function() {
     beforeEach(function() {
-      var textStyle = createTextStyle(
-          new Fill({
-            color: [0, 0, 0, 1]
-          }),
-          null, 'someText');
+      const textStyle = createTextStyle(
+        new Fill({
+          color: [0, 0, 0, 1]
+        }),
+        null, 'someText');
       replay.setTextStyle(textStyle);
     });
 
     it('adds a single character to the current atlas', function() {
-      var glyphAtlas = replay.currAtlas_.atlas;
-      var info;
+      const glyphAtlas = replay.currAtlas_.atlas;
+      let info;
 
       replay.addCharToAtlas_('someText');
       info = glyphAtlas.getInfo('someText');
@@ -195,7 +194,7 @@ describe('ol.render.webgl.TextReplay', function() {
     });
 
     it('keeps the atlas and the width dictionary synced', function() {
-      var glyphAtlas = replay.currAtlas_;
+      const glyphAtlas = replay.currAtlas_;
 
       replay.addCharToAtlas_('e');
       replay.addCharToAtlas_('x');
@@ -208,18 +207,18 @@ describe('ol.render.webgl.TextReplay', function() {
 
   describe('#getTextSize_', function() {
     beforeEach(function() {
-      var textStyle = createTextStyle(
-          new Fill({
-            color: [0, 0, 0, 1]
-          }),
-          null, 'someText');
+      const textStyle = createTextStyle(
+        new Fill({
+          color: [0, 0, 0, 1]
+        }),
+        null, 'someText');
       textStyle.setScale(1);
       replay.setTextStyle(textStyle);
     });
 
     it('adds missing characters to the current atlas', function() {
-      var glyphAtlas = replay.currAtlas_;
-      var info;
+      const glyphAtlas = replay.currAtlas_;
+      let info;
 
       expect(Object.keys(glyphAtlas.width)).to.have.length(0);
       replay.getTextSize_(['someText']);
@@ -241,12 +240,12 @@ describe('ol.render.webgl.TextReplay', function() {
     });
 
     it('returns the size of the label\'s bounding box in pixels', function() {
-      var size;
-      var mCtx = createCanvasContext2D(0, 0);
+      let size;
+      const mCtx = createCanvasContext2D(0, 0);
       mCtx.font = '12px Arial';
-      var width = mCtx.measureText('someText').width;
-      var width2 = mCtx.measureText('anEvenLongerLine').width;
-      var height = Math.ceil(mCtx.measureText('M').width * 1.5);
+      const width = mCtx.measureText('someText').width;
+      const width2 = mCtx.measureText('anEvenLongerLine').width;
+      const height = Math.ceil(mCtx.measureText('M').width * 1.5);
 
       size = replay.getTextSize_(['someText']);
       expect(size[0]).to.be.within(width, width + 8);
@@ -260,17 +259,17 @@ describe('ol.render.webgl.TextReplay', function() {
 
   describe('#getAtlas_', function() {
     beforeEach(function() {
-      var textStyle = createTextStyle(
-          new Fill({
-            color: [0, 0, 0, 1]
-          }),
-          null, 'someText');
+      const textStyle = createTextStyle(
+        new Fill({
+          color: [0, 0, 0, 1]
+        }),
+        null, 'someText');
       replay.setTextStyle(textStyle);
     });
 
     it('returns the appropriate atlas for the current state', function() {
-      var atlas = replay.currAtlas_;
-      var state = replay.state_;
+      const atlas = replay.currAtlas_;
+      const state = replay.state_;
 
       expect(Object.keys(replay.atlases_)).to.have.length(1);
       expect(replay.getAtlas_(state)).to.be(atlas);
@@ -278,8 +277,8 @@ describe('ol.render.webgl.TextReplay', function() {
     });
 
     it('creates a new atlas if it cannot find the one for the current state', function() {
-      var atlas = replay.currAtlas_;
-      var state = replay.state_;
+      const atlas = replay.currAtlas_;
+      const state = replay.state_;
       state.lineWidth = 50;
 
       expect(Object.keys(replay.atlases_)).to.have.length(1);
@@ -294,7 +293,7 @@ describe('ol.render.webgl.TextReplay', function() {
     });
 
     it('returns the textures', function() {
-      var textures = replay.getTextures();
+      const textures = replay.getTextures();
 
       expect(textures).to.have.length(2);
       expect(textures[0]).to.be(1);
@@ -309,7 +308,7 @@ describe('ol.render.webgl.TextReplay', function() {
     });
 
     it('returns the textures', function() {
-      var textures = replay.getHitDetectionTextures();
+      const textures = replay.getHitDetectionTextures();
 
       expect(textures).to.have.length(2);
       expect(textures[0]).to.be(1);

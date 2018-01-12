@@ -7,11 +7,11 @@ import {fromLonLat, toLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var layer = new TileLayer({
+const layer = new TileLayer({
   source: new OSM()
 });
 
-var map = new Map({
+const map = new Map({
   layers: [layer],
   target: 'map',
   view: new View({
@@ -20,10 +20,10 @@ var map = new Map({
   })
 });
 
-var pos = fromLonLat([16.3725, 48.208889]);
+const pos = fromLonLat([16.3725, 48.208889]);
 
 // Vienna marker
-var marker = new Overlay({
+const marker = new Overlay({
   position: pos,
   positioning: 'center-center',
   element: document.getElementById('marker'),
@@ -32,22 +32,22 @@ var marker = new Overlay({
 map.addOverlay(marker);
 
 // Vienna label
-var vienna = new Overlay({
+const vienna = new Overlay({
   position: pos,
   element: document.getElementById('vienna')
 });
 map.addOverlay(vienna);
 
 // Popup showing the position the user clicked
-var popup = new Overlay({
+const popup = new Overlay({
   element: document.getElementById('popup')
 });
 map.addOverlay(popup);
 
 map.on('click', function(evt) {
-  var element = popup.getElement();
-  var coordinate = evt.coordinate;
-  var hdms = _ol_coordinate_.toStringHDMS(toLonLat(coordinate));
+  const element = popup.getElement();
+  const coordinate = evt.coordinate;
+  const hdms = _ol_coordinate_.toStringHDMS(toLonLat(coordinate));
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);

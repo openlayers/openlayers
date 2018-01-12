@@ -20,13 +20,13 @@ import ImageSource from '../source/Image.js';
  * @param {olx.source.ImageStaticOptions} options Options.
  * @api
  */
-var Static = function(options) {
-  var imageExtent = options.imageExtent;
+const Static = function(options) {
+  const imageExtent = options.imageExtent;
 
-  var crossOrigin = options.crossOrigin !== undefined ?
+  const crossOrigin = options.crossOrigin !== undefined ?
     options.crossOrigin : null;
 
-  var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
+  const /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
       options.imageLoadFunction !== undefined ?
         options.imageLoadFunction : ImageSource.defaultImageLoadFunction;
 
@@ -48,7 +48,7 @@ var Static = function(options) {
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 
   _ol_events_.listen(this.image_, EventType.CHANGE,
-      this.handleImageChange, this);
+    this.handleImageChange, this);
 
 };
 
@@ -71,9 +71,9 @@ Static.prototype.getImageInternal = function(extent, resolution, pixelRatio, pro
  */
 Static.prototype.handleImageChange = function(evt) {
   if (this.image_.getState() == ImageState.LOADED) {
-    var imageExtent = this.image_.getExtent();
-    var image = this.image_.getImage();
-    var imageWidth, imageHeight;
+    const imageExtent = this.image_.getExtent();
+    const image = this.image_.getImage();
+    let imageWidth, imageHeight;
     if (this.imageSize_) {
       imageWidth = this.imageSize_[0];
       imageHeight = this.imageSize_[1];
@@ -81,13 +81,13 @@ Static.prototype.handleImageChange = function(evt) {
       imageWidth = image.width;
       imageHeight = image.height;
     }
-    var resolution = getHeight(imageExtent) / imageHeight;
-    var targetWidth = Math.ceil(getWidth(imageExtent) / resolution);
+    const resolution = getHeight(imageExtent) / imageHeight;
+    const targetWidth = Math.ceil(getWidth(imageExtent) / resolution);
     if (targetWidth != imageWidth) {
-      var context = createCanvasContext2D(targetWidth, imageHeight);
-      var canvas = context.canvas;
+      const context = createCanvasContext2D(targetWidth, imageHeight);
+      const canvas = context.canvas;
       context.drawImage(image, 0, 0, imageWidth, imageHeight,
-          0, 0, canvas.width, canvas.height);
+        0, 0, canvas.width, canvas.height);
       this.image_.setImage(canvas);
     }
   }

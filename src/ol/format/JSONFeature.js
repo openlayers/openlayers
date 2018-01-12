@@ -15,7 +15,7 @@ import FormatType from '../format/FormatType.js';
  * @abstract
  * @extends {ol.format.Feature}
  */
-var JSONFeature = function() {
+const JSONFeature = function() {
   FeatureFormat.call(this);
 };
 
@@ -28,7 +28,7 @@ inherits(JSONFeature, FeatureFormat);
  */
 function getObject(source) {
   if (typeof source === 'string') {
-    var object = JSON.parse(source);
+    const object = JSON.parse(source);
     return object ? /** @type {Object} */ (object) : null;
   } else if (source !== null) {
     return source;
@@ -51,7 +51,7 @@ JSONFeature.prototype.getType = function() {
  */
 JSONFeature.prototype.readFeature = function(source, opt_options) {
   return this.readFeatureFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+    getObject(source), this.getReadOptions(source, opt_options));
 };
 
 
@@ -60,7 +60,7 @@ JSONFeature.prototype.readFeature = function(source, opt_options) {
  */
 JSONFeature.prototype.readFeatures = function(source, opt_options) {
   return this.readFeaturesFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+    getObject(source), this.getReadOptions(source, opt_options));
 };
 
 
@@ -89,7 +89,7 @@ JSONFeature.prototype.readFeaturesFromObject = function(object, opt_options) {};
  */
 JSONFeature.prototype.readGeometry = function(source, opt_options) {
   return this.readGeometryFromObject(
-      getObject(source), this.getReadOptions(source, opt_options));
+    getObject(source), this.getReadOptions(source, opt_options));
 };
 
 

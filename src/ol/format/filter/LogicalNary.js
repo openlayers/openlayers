@@ -16,7 +16,7 @@ import Filter from '../filter/Filter.js';
  * @param {...ol.format.filter.Filter} conditions Conditions.
  * @extends {ol.format.filter.Filter}
  */
-var LogicalNary = function(tagName, conditions) {
+const LogicalNary = function(tagName, conditions) {
 
   Filter.call(this, tagName);
 

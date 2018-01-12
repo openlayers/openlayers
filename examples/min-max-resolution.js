@@ -9,7 +9,7 @@ import TileJSON from '../src/ol/source/TileJSON.js';
 /**
  * Create the map.
  */
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM(),

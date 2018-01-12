@@ -7,9 +7,9 @@ import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.
 
 
 describe('ol.pointer.PointerEventHandler', function() {
-  var handler;
-  var target;
-  var eventSpy;
+  let handler;
+  let target;
+  let eventSpy;
 
   beforeEach(function() {
     target = new EventTarget();
@@ -35,7 +35,7 @@ describe('ol.pointer.PointerEventHandler', function() {
   });
 
   function simulateEvent(type, x, y) {
-    var event = {
+    const event = {
       type: type,
       clientX: x,
       clientY: y,
@@ -50,7 +50,7 @@ describe('ol.pointer.PointerEventHandler', function() {
       simulateEvent('mousedown', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
 
-      var pointerEvent = eventSpy.firstCall.args[0];
+      const pointerEvent = eventSpy.firstCall.args[0];
       expect(pointerEvent).to.be.a(PointerEvent);
       expect(pointerEvent.type).to.be('pointerdown');
       expect(pointerEvent.pointerId).to.be(1);
@@ -77,8 +77,8 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer enter and over', function() {
     it('fires pointerenter and pointerover events', function() {
-      var enterEventSpy = sinon.spy();
-      var overEventSpy = sinon.spy();
+      const enterEventSpy = sinon.spy();
+      const overEventSpy = sinon.spy();
 
       _ol_events_.listen(handler, 'pointerenter', enterEventSpy);
       _ol_events_.listen(handler, 'pointerover', overEventSpy);
@@ -92,8 +92,8 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer leave and out', function() {
     it('fires pointerleave and pointerout events', function() {
-      var leaveEventSpy = sinon.spy();
-      var outEventSpy = sinon.spy();
+      const leaveEventSpy = sinon.spy();
+      const outEventSpy = sinon.spy();
 
       _ol_events_.listen(handler, 'pointerleave', leaveEventSpy);
       _ol_events_.listen(handler, 'pointerout', outEventSpy);
@@ -107,15 +107,15 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('#cloneEvent', function() {
     it('copies the properties of an event', function() {
-      var event = {
+      const event = {
         type: 'mousedown',
         target: target,
         clientX: 1,
         clientY: 2
       };
-      var browserEvent = event;
+      const browserEvent = event;
 
-      var eventClone = handler.cloneEvent(browserEvent, event);
+      const eventClone = handler.cloneEvent(browserEvent, event);
 
       // properties are copied from `event`
       expect(eventClone.type).to.be('mousedown');
@@ -136,17 +136,17 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('#makeEvent', function() {
     it('makes a new pointer event', function() {
-      var event = {
+      const event = {
         type: 'mousedown',
         target: target,
         clientX: 1,
         clientY: 2
       };
-      var browserEvent = event;
+      const browserEvent = event;
 
-      var eventClone = handler.cloneEvent(browserEvent, event);
-      var pointerEvent = handler.makeEvent('pointerdown',
-          eventClone, browserEvent);
+      const eventClone = handler.cloneEvent(browserEvent, event);
+      const pointerEvent = handler.makeEvent('pointerdown',
+        eventClone, browserEvent);
 
       expect(pointerEvent.type).to.be('pointerdown');
       expect(pointerEvent.clientX).to.be(1);

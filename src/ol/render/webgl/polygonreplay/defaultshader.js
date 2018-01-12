@@ -4,7 +4,7 @@
 import {DEBUG_WEBGL} from '../../../index.js';
 import _ol_webgl_Fragment_ from '../../../webgl/Fragment.js';
 import _ol_webgl_Vertex_ from '../../../webgl/Vertex.js';
-var _ol_render_webgl_polygonreplay_defaultshader_ = {};
+const _ol_render_webgl_polygonreplay_defaultshader_ = {};
 
 _ol_render_webgl_polygonreplay_defaultshader_.fragment = new _ol_webgl_Fragment_(DEBUG_WEBGL ?
   'precision mediump float;\n\n\n\nuniform vec4 u_color;\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :

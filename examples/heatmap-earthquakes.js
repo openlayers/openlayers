@@ -6,10 +6,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var blur = document.getElementById('blur');
-var radius = document.getElementById('radius');
+const blur = document.getElementById('blur');
+const radius = document.getElementById('radius');
 
-var vector = new HeatmapLayer({
+const vector = new HeatmapLayer({
   source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
@@ -24,18 +24,18 @@ vector.getSource().on('addfeature', function(event) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
   // standards-violating <magnitude> tag in each Placemark.  We extract it from
   // the Placemark's name instead.
-  var name = event.feature.get('name');
-  var magnitude = parseFloat(name.substr(2));
+  const name = event.feature.get('name');
+  const magnitude = parseFloat(name.substr(2));
   event.feature.set('weight', magnitude - 5);
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new Stamen({
     layer: 'toner'
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({

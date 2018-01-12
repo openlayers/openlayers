@@ -6,7 +6,7 @@ import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -35,13 +35,13 @@ var map = new Map({
 });
 
 function bindInputs(layerid, layer) {
-  var visibilityInput = $(layerid + ' input.visible');
+  const visibilityInput = $(layerid + ' input.visible');
   visibilityInput.on('change', function() {
     layer.setVisible(this.checked);
   });
   visibilityInput.prop('checked', layer.getVisible());
 
-  var opacityInput = $(layerid + ' input.opacity');
+  const opacityInput = $(layerid + ' input.opacity');
   opacityInput.on('input change', function() {
     layer.setOpacity(parseFloat(this.value));
   });

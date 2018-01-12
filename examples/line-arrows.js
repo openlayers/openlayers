@@ -10,15 +10,15 @@ import Icon from '../src/ol/style/Icon.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var source = new VectorSource();
+const source = new VectorSource();
 
-var styleFunction = function(feature) {
-  var geometry = feature.getGeometry();
-  var styles = [
+const styleFunction = function(feature) {
+  const geometry = feature.getGeometry();
+  const styles = [
     // linestring
     new Style({
       stroke: new Stroke({
@@ -29,9 +29,9 @@ var styleFunction = function(feature) {
   ];
 
   geometry.forEachSegment(function(start, end) {
-    var dx = end[0] - start[0];
-    var dy = end[1] - start[1];
-    var rotation = Math.atan2(dy, dx);
+    const dx = end[0] - start[0];
+    const dy = end[1] - start[1];
+    const rotation = Math.atan2(dy, dx);
     // arrows
     styles.push(new Style({
       geometry: new Point(end),
@@ -46,12 +46,12 @@ var styleFunction = function(feature) {
 
   return styles;
 };
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: source,
   style: styleFunction
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({

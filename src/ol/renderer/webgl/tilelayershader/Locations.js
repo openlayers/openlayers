@@ -10,31 +10,31 @@ import {DEBUG_WEBGL} from '../../../index.js';
  * @param {WebGLProgram} program Program.
  * @struct
  */
-var _ol_renderer_webgl_tilelayershader_Locations_ = function(gl, program) {
+const _ol_renderer_webgl_tilelayershader_Locations_ = function(gl, program) {
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_tileOffset = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_tileOffset' : 'd');
+    program, DEBUG_WEBGL ? 'u_tileOffset' : 'd');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_texture = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_texture' : 'e');
+    program, DEBUG_WEBGL ? 'u_texture' : 'e');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? 'a_position' : 'b');
+    program, DEBUG_WEBGL ? 'a_position' : 'b');
 
   /**
    * @type {number}
    */
   this.a_texCoord = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
+    program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
 };
 
 export default _ol_renderer_webgl_tilelayershader_Locations_;

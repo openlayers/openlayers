@@ -39,7 +39,7 @@ import RBush from '../structs/RBush.js';
  * @param {olx.interaction.SnapOptions=} opt_options Options.
  * @api
  */
-var Snap = function(opt_options) {
+const Snap = function(opt_options) {
 
   PointerInteraction.call(this, {
     handleEvent: Snap.handleEvent_,
@@ -47,7 +47,7 @@ var Snap = function(opt_options) {
     handleUpEvent: Snap.handleUpEvent_
   });
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.source.Vector}
@@ -160,11 +160,11 @@ inherits(Snap, PointerInteraction);
  * @api
  */
 Snap.prototype.addFeature = function(feature, opt_listen) {
-  var listen = opt_listen !== undefined ? opt_listen : true;
-  var feature_uid = getUid(feature);
-  var geometry = feature.getGeometry();
+  const listen = opt_listen !== undefined ? opt_listen : true;
+  const feature_uid = getUid(feature);
+  const geometry = feature.getGeometry();
   if (geometry) {
-    var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
+    const segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
     if (segmentWriter) {
       this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(createEmpty());
       segmentWriter.call(this, feature, geometry);
@@ -173,9 +173,9 @@ Snap.prototype.addFeature = function(feature, opt_listen) {
 
   if (listen) {
     this.featureChangeListenerKeys_[feature_uid] = _ol_events_.listen(
-        feature,
-        EventType.CHANGE,
-        this.handleFeatureChange_, this);
+      feature,
+      EventType.CHANGE,
+      this.handleFeatureChange_, this);
   }
 };
 
@@ -203,7 +203,7 @@ Snap.prototype.forEachFeatureRemove_ = function(feature) {
  * @private
  */
 Snap.prototype.getFeatures_ = function() {
-  var features;
+  let features;
   if (this.features_) {
     features = this.features_;
   } else if (this.source_) {
@@ -218,7 +218,7 @@ Snap.prototype.getFeatures_ = function() {
  * @private
  */
 Snap.prototype.handleFeatureAdd_ = function(evt) {
-  var feature;
+  let feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
   } else if (evt instanceof Collection.Event) {
@@ -233,7 +233,7 @@ Snap.prototype.handleFeatureAdd_ = function(evt) {
  * @private
  */
 Snap.prototype.handleFeatureRemove_ = function(evt) {
-  var feature;
+  let feature;
   if (evt instanceof VectorSource.Event) {
     feature = evt.feature;
   } else if (evt instanceof Collection.Event) {
@@ -248,9 +248,9 @@ Snap.prototype.handleFeatureRemove_ = function(evt) {
  * @private
  */
 Snap.prototype.handleFeatureChange_ = function(evt) {
-  var feature = /** @type {ol.Feature} */ (evt.target);
+  const feature = /** @type {ol.Feature} */ (evt.target);
   if (this.handlingDownUpSequence) {
-    var uid = getUid(feature);
+    const uid = getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
       this.pendingFeatures_[uid] = feature;
     }
@@ -268,18 +268,18 @@ Snap.prototype.handleFeatureChange_ = function(evt) {
  * @api
  */
 Snap.prototype.removeFeature = function(feature, opt_unlisten) {
-  var unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
-  var feature_uid = getUid(feature);
-  var extent = this.indexedFeaturesExtents_[feature_uid];
+  const unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
+  const feature_uid = getUid(feature);
+  const extent = this.indexedFeaturesExtents_[feature_uid];
   if (extent) {
-    var rBush = this.rBush_;
-    var i, nodesToRemove = [];
+    const rBush = this.rBush_;
+    const nodesToRemove = [];
     rBush.forEachInExtent(extent, function(node) {
       if (feature === node.feature) {
         nodesToRemove.push(node);
       }
     });
-    for (i = nodesToRemove.length - 1; i >= 0; --i) {
+    for (let i = nodesToRemove.length - 1; i >= 0; --i) {
       rBush.remove(nodesToRemove[i]);
     }
   }
@@ -295,9 +295,9 @@ Snap.prototype.removeFeature = function(feature, opt_unlisten) {
  * @inheritDoc
  */
 Snap.prototype.setMap = function(map) {
-  var currentMap = this.getMap();
-  var keys = this.featuresListenerKeys_;
-  var features = this.getFeatures_();
+  const currentMap = this.getMap();
+  const keys = this.featuresListenerKeys_;
+  const features = this.getFeatures_();
 
   if (currentMap) {
     keys.forEach(_ol_events_.unlistenByKey);
@@ -309,17 +309,17 @@ Snap.prototype.setMap = function(map) {
   if (map) {
     if (this.features_) {
       keys.push(
-          _ol_events_.listen(this.features_, CollectionEventType.ADD,
-              this.handleFeatureAdd_, this),
-          _ol_events_.listen(this.features_, CollectionEventType.REMOVE,
-              this.handleFeatureRemove_, this)
+        _ol_events_.listen(this.features_, CollectionEventType.ADD,
+          this.handleFeatureAdd_, this),
+        _ol_events_.listen(this.features_, CollectionEventType.REMOVE,
+          this.handleFeatureRemove_, this)
       );
     } else if (this.source_) {
       keys.push(
-          _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
-              this.handleFeatureAdd_, this),
-          _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,
-              this.handleFeatureRemove_, this)
+        _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
+          this.handleFeatureAdd_, this),
+        _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,
+          this.handleFeatureRemove_, this)
       );
     }
     features.forEach(this.forEachFeatureAdd_.bind(this));
@@ -341,13 +341,13 @@ Snap.prototype.shouldStopEvent = FALSE;
  */
 Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
 
-  var lowerLeft = map.getCoordinateFromPixel(
-      [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
-  var upperRight = map.getCoordinateFromPixel(
-      [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
-  var box = boundingExtent([lowerLeft, upperRight]);
+  const lowerLeft = map.getCoordinateFromPixel(
+    [pixel[0] - this.pixelTolerance_, pixel[1] + this.pixelTolerance_]);
+  const upperRight = map.getCoordinateFromPixel(
+    [pixel[0] + this.pixelTolerance_, pixel[1] - this.pixelTolerance_]);
+  const box = boundingExtent([lowerLeft, upperRight]);
 
-  var segments = this.rBush_.getInExtent(box);
+  let segments = this.rBush_.getInExtent(box);
 
   // If snapping on vertices only, don't consider circles
   if (this.vertex_ && !this.edge_) {
@@ -357,16 +357,16 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     });
   }
 
-  var snappedToVertex = false;
-  var snapped = false;
-  var vertex = null;
-  var vertexPixel = null;
-  var dist, pixel1, pixel2, squaredDist1, squaredDist2;
+  let snappedToVertex = false;
+  let snapped = false;
+  let vertex = null;
+  let vertexPixel = null;
+  let dist, pixel1, pixel2, squaredDist1, squaredDist2;
   if (segments.length > 0) {
     this.pixelCoordinate_ = pixelCoordinate;
     segments.sort(this.sortByDistance_);
-    var closestSegment = segments[0].segment;
-    var isCircle = segments[0].feature.getGeometry().getType() ===
+    const closestSegment = segments[0].segment;
+    const isCircle = segments[0].feature.getGeometry().getType() ===
         GeometryType.CIRCLE;
     if (this.vertex_ && !this.edge_) {
       pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
@@ -384,10 +384,10 @@ Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     } else if (this.edge_) {
       if (isCircle) {
         vertex = _ol_coordinate_.closestOnCircle(pixelCoordinate,
-            /** @type {ol.geom.Circle} */ (segments[0].feature.getGeometry()));
+          /** @type {ol.geom.Circle} */ (segments[0].feature.getGeometry()));
       } else {
         vertex = (_ol_coordinate_.closestOnSegment(pixelCoordinate,
-            closestSegment));
+          closestSegment));
       }
       vertexPixel = map.getPixelFromCoordinate(vertex);
       if (_ol_coordinate_.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
@@ -435,9 +435,9 @@ Snap.prototype.updateFeature_ = function(feature) {
  * @private
  */
 Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
-  var polygon = fromCircle(geometry);
-  var coordinates = polygon.getCoordinates()[0];
-  var i, ii, segment, segmentData;
+  const polygon = fromCircle(geometry);
+  const coordinates = polygon.getCoordinates()[0];
+  let i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     segment = coordinates.slice(i, i + 2);
     segmentData = /** @type {ol.SnapSegmentDataType} */ ({
@@ -455,9 +455,9 @@ Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
-  var i, geometries = geometry.getGeometriesArray();
-  for (i = 0; i < geometries.length; ++i) {
-    var segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
+  const geometries = geometry.getGeometriesArray();
+  for (let i = 0; i < geometries.length; ++i) {
+    const segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
     if (segmentWriter) {
       segmentWriter.call(this, feature, geometries[i]);
     }
@@ -471,8 +471,8 @@ Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
-  var coordinates = geometry.getCoordinates();
-  var i, ii, segment, segmentData;
+  const coordinates = geometry.getCoordinates();
+  let i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     segment = coordinates.slice(i, i + 2);
     segmentData = /** @type {ol.SnapSegmentDataType} */ ({
@@ -490,8 +490,8 @@ Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
-  var lines = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, segment, segmentData;
+  const lines = geometry.getCoordinates();
+  let coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = lines.length; j < jj; ++j) {
     coordinates = lines[j];
     for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -512,8 +512,8 @@ Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
-  var points = geometry.getCoordinates();
-  var coordinates, i, ii, segmentData;
+  const points = geometry.getCoordinates();
+  let coordinates, i, ii, segmentData;
   for (i = 0, ii = points.length; i < ii; ++i) {
     coordinates = points[i];
     segmentData = /** @type {ol.SnapSegmentDataType} */ ({
@@ -531,8 +531,8 @@ Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
-  var polygons = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
+  const polygons = geometry.getCoordinates();
+  let coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
   for (k = 0, kk = polygons.length; k < kk; ++k) {
     rings = polygons[k];
     for (j = 0, jj = rings.length; j < jj; ++j) {
@@ -556,8 +556,8 @@ Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writePointGeometry_ = function(feature, geometry) {
-  var coordinates = geometry.getCoordinates();
-  var segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  const coordinates = geometry.getCoordinates();
+  const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
     feature: feature,
     segment: [coordinates, coordinates]
   });
@@ -571,8 +571,8 @@ Snap.prototype.writePointGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
-  var rings = geometry.getCoordinates();
-  var coordinates, i, ii, j, jj, segment, segmentData;
+  const rings = geometry.getCoordinates();
+  let coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = rings.length; j < jj; ++j) {
     coordinates = rings[j];
     for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -595,7 +595,7 @@ Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
  * @private
  */
 Snap.handleEvent_ = function(evt) {
-  var result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
+  const result = this.snapTo(evt.pixel, evt.coordinate, evt.map);
   if (result.snapped) {
     evt.coordinate = result.vertex.slice(0, 2);
     evt.pixel = result.vertexPixel;
@@ -611,7 +611,7 @@ Snap.handleEvent_ = function(evt) {
  * @private
  */
 Snap.handleUpEvent_ = function(evt) {
-  var featuresToUpdate = _ol_obj_.getValues(this.pendingFeatures_);
+  const featuresToUpdate = _ol_obj_.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
     featuresToUpdate.forEach(this.updateFeature_.bind(this));
     this.pendingFeatures_ = {};
@@ -629,8 +629,8 @@ Snap.handleUpEvent_ = function(evt) {
  */
 Snap.sortByDistance = function(a, b) {
   return _ol_coordinate_.squaredDistanceToSegment(
-      this.pixelCoordinate_, a.segment) -
+    this.pixelCoordinate_, a.segment) -
       _ol_coordinate_.squaredDistanceToSegment(
-          this.pixelCoordinate_, b.segment);
+        this.pixelCoordinate_, b.segment);
 };
 export default Snap;

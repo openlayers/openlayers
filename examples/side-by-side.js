@@ -4,30 +4,30 @@ import _ol_has_ from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
-var layer = new TileLayer({
+const layer = new TileLayer({
   source: new OSM()
 });
 
-var view = new View({
+const view = new View({
   center: [0, 0],
   zoom: 1
 });
 
-var map1 = new Map({
+const map1 = new Map({
   target: 'canvasMap',
   layers: [layer],
   view: view
 });
 
 if (_ol_has_.WEBGL) {
-  var map2 = new Map({
+  const map2 = new Map({
     target: 'webglMap',
     renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
     layers: [layer],
     view: view
   });
 } else {
-  var info = document.getElementById('no-webgl');
+  const info = document.getElementById('no-webgl');
   /**
    * display error message
    */

@@ -8,12 +8,12 @@ import Atlas from '../style/Atlas.js';
 /**
  * @type {number} The size in pixels of the first atlas image.
  */
-var INITIAL_ATLAS_SIZE = 256;
+const INITIAL_ATLAS_SIZE = 256;
 
 /**
  * @type {number} The maximum size in pixels of atlas images.
  */
-var MAX_ATLAS_SIZE = -1;
+const MAX_ATLAS_SIZE = -1;
 
 
 /**
@@ -33,9 +33,9 @@ var MAX_ATLAS_SIZE = -1;
  * @api
  * @param {olx.style.AtlasManagerOptions=} opt_options Options.
  */
-var AtlasManager = function(opt_options) {
+const AtlasManager = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * The size in pixels of the latest atlas image.
@@ -90,12 +90,12 @@ var AtlasManager = function(opt_options) {
  */
 AtlasManager.prototype.getInfo = function(id) {
   /** @type {?ol.AtlasInfo} */
-  var info = this.getInfo_(this.atlases_, id);
+  const info = this.getInfo_(this.atlases_, id);
 
   if (!info) {
     return null;
   }
-  var hitInfo = /** @type {ol.AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
+  const hitInfo = /** @type {ol.AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -109,7 +109,7 @@ AtlasManager.prototype.getInfo = function(id) {
  *    or `null` if the entry is not part of the atlases.
  */
 AtlasManager.prototype.getInfo_ = function(atlases, id) {
-  var atlas, info, i, ii;
+  let atlas, info, i, ii;
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.get(id);
@@ -162,15 +162,15 @@ AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  *    entry, or `null` if the image is too big.
  */
 AtlasManager.prototype.add = function(id, width, height,
-    renderCallback, opt_renderHitCallback, opt_this) {
+  renderCallback, opt_renderHitCallback, opt_this) {
   if (width + this.space_ > this.maxSize_ ||
       height + this.space_ > this.maxSize_) {
     return null;
   }
 
   /** @type {?ol.AtlasInfo} */
-  var info = this.add_(false,
-      id, width, height, renderCallback, opt_this);
+  const info = this.add_(false,
+    id, width, height, renderCallback, opt_this);
   if (!info) {
     return null;
   }
@@ -178,11 +178,11 @@ AtlasManager.prototype.add = function(id, width, height,
   // even if no hit-detection entry is requested, we insert a fake entry into
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
-  var renderHitCallback = opt_renderHitCallback !== undefined ?
+  const renderHitCallback = opt_renderHitCallback !== undefined ?
     opt_renderHitCallback : nullFunction;
 
-  var hitInfo = /** @type {ol.AtlasInfo} */ (this.add_(true,
-      id, width, height, renderHitCallback, opt_this));
+  const hitInfo = /** @type {ol.AtlasInfo} */ (this.add_(true,
+    id, width, height, renderHitCallback, opt_this));
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -202,9 +202,9 @@ AtlasManager.prototype.add = function(id, width, height,
  *    or `null` if the image is too big.
  */
 AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
-    renderCallback, opt_this) {
-  var atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
-  var atlas, info, i, ii;
+  renderCallback, opt_this) {
+  const atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
+  let atlas, info, i, ii;
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.add(id, width, height, renderCallback, opt_this);
@@ -213,7 +213,7 @@ AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
     } else if (!info && i === ii - 1) {
       // the entry could not be added to one of the existing atlases,
       // create a new atlas that is twice as big and try to add to this one.
-      var size;
+      let size;
       if (isHitAtlas) {
         size = Math.min(this.currentHitSize_ * 2, this.maxSize_);
         this.currentHitSize_ = size;

@@ -26,7 +26,7 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.TileJSONOptions} options TileJSON options.
  * @api
  */
-var TileJSON = function(options) {
+const TileJSON = function(options) {
 
   /**
    * @type {TileJSON}
@@ -49,9 +49,9 @@ var TileJSON = function(options) {
   if (options.url) {
     if (options.jsonp) {
       _ol_net_.jsonp(options.url, this.handleTileJSONResponse.bind(this),
-          this.handleTileJSONError.bind(this));
+        this.handleTileJSONError.bind(this));
     } else {
-      var client = new XMLHttpRequest();
+      const client = new XMLHttpRequest();
       client.addEventListener('load', this.onXHRLoad_.bind(this));
       client.addEventListener('error', this.onXHRError_.bind(this));
       client.open('GET', options.url);
@@ -73,10 +73,10 @@ inherits(TileJSON, TileImage);
  * @param {Event} event The load event.
  */
 TileJSON.prototype.onXHRLoad_ = function(event) {
-  var client = /** @type {XMLHttpRequest} */ (event.target);
+  const client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
-    var response;
+    let response;
     try {
       response = /** @type {TileJSON} */(JSON.parse(client.responseText));
     } catch (err) {
@@ -114,19 +114,19 @@ TileJSON.prototype.getTileJSON = function() {
  */
 TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
-  var epsg4326Projection = getProjection('EPSG:4326');
+  const epsg4326Projection = getProjection('EPSG:4326');
 
-  var sourceProjection = this.getProjection();
-  var extent;
+  const sourceProjection = this.getProjection();
+  let extent;
   if (tileJSON.bounds !== undefined) {
-    var transform = getTransformFromProjections(
-        epsg4326Projection, sourceProjection);
+    const transform = getTransformFromProjections(
+      epsg4326Projection, sourceProjection);
     extent = applyTransform(tileJSON.bounds, transform);
   }
 
-  var minZoom = tileJSON.minzoom || 0;
-  var maxZoom = tileJSON.maxzoom || 22;
-  var tileGrid = _ol_tilegrid_.createXYZ({
+  const minZoom = tileJSON.minzoom || 0;
+  const maxZoom = tileJSON.maxzoom || 22;
+  const tileGrid = _ol_tilegrid_.createXYZ({
     extent: _ol_tilegrid_.extentFromProjection(sourceProjection),
     maxZoom: maxZoom,
     minZoom: minZoom
@@ -136,7 +136,7 @@ TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   this.tileUrlFunction = createFromTemplates(tileJSON.tiles, tileGrid);
 
   if (tileJSON.attribution !== undefined && !this.getAttributions()) {
-    var attributionExtent = extent !== undefined ?
+    const attributionExtent = extent !== undefined ?
       extent : epsg4326Projection.getExtent();
 
     this.setAttributions(function(frameState) {

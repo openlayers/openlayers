@@ -21,9 +21,9 @@ import {get as getProjection} from '../proj.js';
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
  * @api
  */
-var DragAndDrop = function(opt_options) {
+const DragAndDrop = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   Interaction.call(this, {
     handleEvent: DragAndDrop.handleEvent
@@ -72,13 +72,13 @@ inherits(DragAndDrop, Interaction);
  * @private
  */
 DragAndDrop.handleDrop_ = function(event) {
-  var files = event.dataTransfer.files;
-  var i, ii, file;
+  const files = event.dataTransfer.files;
+  let i, ii, file;
   for (i = 0, ii = files.length; i < ii; ++i) {
     file = files.item(i);
-    var reader = new FileReader();
+    const reader = new FileReader();
     reader.addEventListener(EventType.LOAD,
-        this.handleResult_.bind(this, file));
+      this.handleResult_.bind(this, file));
     reader.readAsText(file);
   }
 };
@@ -101,27 +101,27 @@ DragAndDrop.handleStop_ = function(event) {
  * @private
  */
 DragAndDrop.prototype.handleResult_ = function(file, event) {
-  var result = event.target.result;
-  var map = this.getMap();
-  var projection = this.projection_;
+  const result = event.target.result;
+  const map = this.getMap();
+  let projection = this.projection_;
   if (!projection) {
-    var view = map.getView();
+    const view = map.getView();
     projection = view.getProjection();
   }
 
-  var formatConstructors = this.formatConstructors_;
-  var features = [];
-  var i, ii;
+  const formatConstructors = this.formatConstructors_;
+  let features = [];
+  let i, ii;
   for (i = 0, ii = formatConstructors.length; i < ii; ++i) {
     /**
      * Avoid "cannot instantiate abstract class" error.
      * @type {Function}
      */
-    var formatConstructor = formatConstructors[i];
+    const formatConstructor = formatConstructors[i];
     /**
      * @type {ol.format.Feature}
      */
-    var format = new formatConstructor();
+    const format = new formatConstructor();
     features = this.tryReadFeatures_(format, result, {
       featureProjection: projection
     });
@@ -134,9 +134,9 @@ DragAndDrop.prototype.handleResult_ = function(file, event) {
     this.source_.addFeatures(features);
   }
   this.dispatchEvent(
-      new DragAndDrop.Event(
-          DragAndDrop.EventType_.ADD_FEATURES, file,
-          features, projection));
+    new DragAndDrop.Event(
+      DragAndDrop.EventType_.ADD_FEATURES, file,
+      features, projection));
 };
 
 
@@ -155,18 +155,18 @@ DragAndDrop.handleEvent = TRUE;
  * @private
  */
 DragAndDrop.prototype.registerListeners_ = function() {
-  var map = this.getMap();
+  const map = this.getMap();
   if (map) {
-    var dropArea = this.target ? this.target : map.getViewport();
+    const dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
       _ol_events_.listen(dropArea, EventType.DROP,
-          DragAndDrop.handleDrop_, this),
+        DragAndDrop.handleDrop_, this),
       _ol_events_.listen(dropArea, EventType.DRAGENTER,
-          DragAndDrop.handleStop_, this),
+        DragAndDrop.handleStop_, this),
       _ol_events_.listen(dropArea, EventType.DRAGOVER,
-          DragAndDrop.handleStop_, this),
+        DragAndDrop.handleStop_, this),
       _ol_events_.listen(dropArea, EventType.DROP,
-          DragAndDrop.handleStop_, this)
+        DragAndDrop.handleStop_, this)
     ];
   }
 };

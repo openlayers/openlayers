@@ -5,7 +5,7 @@ describe('ol.source.CartoDB', function() {
 
   describe('constructor', function() {
     it('returns a CartoDB source', function() {
-      var source = new CartoDB({
+      const source = new CartoDB({
         account: 'documentation',
         config: {}
       });

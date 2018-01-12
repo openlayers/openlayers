@@ -8,9 +8,9 @@ import RasterSource from '../src/ol/source/Raster.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 function flood(pixels, data) {
-  var pixel = pixels[0];
+  const pixel = pixels[0];
   if (pixel[3]) {
-    var height = -10000 + ((pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1);
+    const height = -10000 + ((pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1);
     if (height <= data.level) {
       pixel[0] = 145;
       pixel[1] = 175;
@@ -23,19 +23,19 @@ function flood(pixels, data) {
   return pixel;
 }
 
-var key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
-var elevation = new XYZ({
+const key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
+const elevation = new XYZ({
   url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
   crossOrigin: 'anonymous',
   transition: 0
 });
 
-var raster = new RasterSource({
+const raster = new RasterSource({
   sources: [elevation],
   operation: flood
 });
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
@@ -54,8 +54,8 @@ var map = new Map({
   })
 });
 
-var control = document.getElementById('level');
-var output = document.getElementById('output');
+const control = document.getElementById('level');
+const output = document.getElementById('output');
 control.addEventListener('input', function() {
   output.innerText = control.value;
   raster.changed();
@@ -66,14 +66,14 @@ raster.on('beforeoperations', function(event) {
   event.data.level = control.value;
 });
 
-var locations = document.getElementsByClassName('location');
-for (var i = 0, ii = locations.length; i < ii; ++i) {
+const locations = document.getElementsByClassName('location');
+for (let i = 0, ii = locations.length; i < ii; ++i) {
   locations[i].addEventListener('click', relocate);
 }
 
 function relocate(event) {
-  var data = event.target.dataset;
-  var view = map.getView();
+  const data = event.target.dataset;
+  const view = map.getView();
   view.setCenter(fromLonLat(data.center.split(',').map(Number)));
   view.setZoom(Number(data.zoom));
 }

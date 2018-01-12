@@ -4,7 +4,7 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({

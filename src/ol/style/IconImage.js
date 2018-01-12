@@ -19,8 +19,8 @@ import {iconImageCache} from '../style.js';
  * @param {ol.Color} color Color.
  * @extends {ol.events.EventTarget}
  */
-var IconImage = function(image, src, size, crossOrigin, imageState,
-    color) {
+const IconImage = function(image, src, size, crossOrigin, imageState,
+  color) {
 
   EventTarget.call(this);
 
@@ -102,11 +102,11 @@ inherits(IconImage, EventTarget);
  * @return {ol.style.IconImage} Icon image.
  */
 IconImage.get = function(image, src, size, crossOrigin, imageState,
-    color) {
-  var iconImage = iconImageCache.get(src, crossOrigin, color);
+  color) {
+  let iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
     iconImage = new IconImage(
-        image, src, size, crossOrigin, imageState, color);
+      image, src, size, crossOrigin, imageState, color);
     iconImageCache.set(src, crossOrigin, color, iconImage);
   }
   return iconImage;
@@ -117,7 +117,7 @@ IconImage.get = function(image, src, size, crossOrigin, imageState,
  * @private
  */
 IconImage.prototype.determineTainting_ = function() {
-  var context = createCanvasContext2D(1, 1);
+  const context = createCanvasContext2D(1, 1);
   try {
     context.drawImage(this.image_, 0, 0);
     context.getImageData(0, 0, 1, 1);
@@ -186,9 +186,9 @@ IconImage.prototype.getImageState = function() {
 IconImage.prototype.getHitDetectionImage = function(pixelRatio) {
   if (!this.hitDetectionImage_) {
     if (this.tainting_) {
-      var width = this.size_[0];
-      var height = this.size_[1];
-      var context = createCanvasContext2D(width, height);
+      const width = this.size_[0];
+      const height = this.size_[1];
+      const context = createCanvasContext2D(width, height);
       context.fillRect(0, 0, width, height);
       this.hitDetectionImage_ = context.canvas;
     } else {
@@ -223,9 +223,9 @@ IconImage.prototype.load = function() {
     this.imageState_ = ImageState.LOADING;
     this.imageListenerKeys_ = [
       _ol_events_.listenOnce(this.image_, EventType.ERROR,
-          this.handleImageError_, this),
+        this.handleImageError_, this),
       _ol_events_.listenOnce(this.image_, EventType.LOAD,
-          this.handleImageLoad_, this)
+        this.handleImageLoad_, this)
     ];
     try {
       this.image_.src = this.src_;
@@ -247,16 +247,16 @@ IconImage.prototype.replaceColor_ = function() {
   this.canvas_.width = this.image_.width;
   this.canvas_.height = this.image_.height;
 
-  var ctx = this.canvas_.getContext('2d');
+  const ctx = this.canvas_.getContext('2d');
   ctx.drawImage(this.image_, 0, 0);
 
-  var imgData = ctx.getImageData(0, 0, this.image_.width, this.image_.height);
-  var data = imgData.data;
-  var r = this.color_[0] / 255.0;
-  var g = this.color_[1] / 255.0;
-  var b = this.color_[2] / 255.0;
+  const imgData = ctx.getImageData(0, 0, this.image_.width, this.image_.height);
+  const data = imgData.data;
+  const r = this.color_[0] / 255.0;
+  const g = this.color_[1] / 255.0;
+  const b = this.color_[2] / 255.0;
 
-  for (var i = 0, ii = data.length; i < ii; i += 4) {
+  for (let i = 0, ii = data.length; i < ii; i += 4) {
     data[i] *= r;
     data[i + 1] *= g;
     data[i + 2] *= b;

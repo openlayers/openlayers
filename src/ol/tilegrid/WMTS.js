@@ -16,7 +16,7 @@ import TileGrid from '../tilegrid/TileGrid.js';
  * @struct
  * @api
  */
-var WMTSTileGrid = function(options) {
+const WMTSTileGrid = function(options) {
   /**
    * @private
    * @type {!Array.<string>}
@@ -73,32 +73,32 @@ export default WMTSTileGrid;
 export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matrixLimits) {
 
   /** @type {!Array.<number>} */
-  var resolutions = [];
+  const resolutions = [];
   /** @type {!Array.<string>} */
-  var matrixIds = [];
+  const matrixIds = [];
   /** @type {!Array.<ol.Coordinate>} */
-  var origins = [];
+  const origins = [];
   /** @type {!Array.<ol.Size>} */
-  var tileSizes = [];
+  const tileSizes = [];
   /** @type {!Array.<ol.Size>} */
-  var sizes = [];
+  const sizes = [];
 
-  var matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];
+  const matrixLimits = opt_matrixLimits !== undefined ? opt_matrixLimits : [];
 
-  var supportedCRSPropName = 'SupportedCRS';
-  var matrixIdsPropName = 'TileMatrix';
-  var identifierPropName = 'Identifier';
-  var scaleDenominatorPropName = 'ScaleDenominator';
-  var topLeftCornerPropName = 'TopLeftCorner';
-  var tileWidthPropName = 'TileWidth';
-  var tileHeightPropName = 'TileHeight';
+  const supportedCRSPropName = 'SupportedCRS';
+  const matrixIdsPropName = 'TileMatrix';
+  const identifierPropName = 'Identifier';
+  const scaleDenominatorPropName = 'ScaleDenominator';
+  const topLeftCornerPropName = 'TopLeftCorner';
+  const tileWidthPropName = 'TileWidth';
+  const tileHeightPropName = 'TileHeight';
 
-  var code = matrixSet[supportedCRSPropName];
-  var projection = getProjection(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
+  const code = matrixSet[supportedCRSPropName];
+  const projection = getProjection(code.replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3')) ||
       getProjection(code);
-  var metersPerUnit = projection.getMetersPerUnit();
+  const metersPerUnit = projection.getMetersPerUnit();
   // swap origin x and y coordinates if axis orientation is lat/long
-  var switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
+  const switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
   matrixSet[matrixIdsPropName].sort(function(a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
@@ -106,23 +106,23 @@ export function createFromCapabilitiesMatrixSet(matrixSet, opt_extent, opt_matri
 
   matrixSet[matrixIdsPropName].forEach(function(elt, index, array) {
 
-    var matrixAvailable;
+    let matrixAvailable;
     // use of matrixLimits to filter TileMatrices from GetCapabilities
     // TileMatrixSet from unavailable matrix levels.
     if (matrixLimits.length > 0) {
       matrixAvailable = find(matrixLimits,
-          function(elt_ml, index_ml, array_ml) {
-            return elt[identifierPropName] == elt_ml[matrixIdsPropName];
-          });
+        function(elt_ml, index_ml, array_ml) {
+          return elt[identifierPropName] == elt_ml[matrixIdsPropName];
+        });
     } else {
       matrixAvailable = true;
     }
 
     if (matrixAvailable) {
       matrixIds.push(elt[identifierPropName]);
-      var resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
-      var tileWidth = elt[tileWidthPropName];
-      var tileHeight = elt[tileHeightPropName];
+      const resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
+      const tileWidth = elt[tileWidthPropName];
+      const tileHeight = elt[tileHeightPropName];
       if (switchOriginXY) {
         origins.push([elt[topLeftCornerPropName][1],
           elt[topLeftCornerPropName][0]]);

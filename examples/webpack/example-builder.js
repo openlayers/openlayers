@@ -37,7 +37,7 @@ function createWordIndex(exampleData) {
       if (Array.isArray(text)) {
         text = text.join(' ');
       }
-      let words = text ? text.split(/\W+/) : [];
+      const words = text ? text.split(/\W+/) : [];
       words.forEach(word => {
         if (word) {
           word = word.toLowerCase();
@@ -79,7 +79,7 @@ function ExampleBuilder(config) {
 ExampleBuilder.prototype.apply = function(compiler) {
   compiler.plugin('emit', async (compilation, callback) => {
     const chunks = compilation.getStats().toJson().chunks
-        .filter(chunk => chunk.names[0] !== this.common);
+      .filter(chunk => chunk.names[0] !== this.common);
 
     const exampleData = [];
     const promises = chunks.map(async chunk => {

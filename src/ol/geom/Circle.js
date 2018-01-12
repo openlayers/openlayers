@@ -19,9 +19,9 @@ import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var Circle = function(center, opt_radius, opt_layout) {
+const Circle = function(center, opt_radius, opt_layout) {
   SimpleGeometry.call(this);
-  var radius = opt_radius ? opt_radius : 0;
+  const radius = opt_radius ? opt_radius : 0;
   this.setCenterAndRadius(center, radius, opt_layout);
 };
 
@@ -35,7 +35,7 @@ inherits(Circle, SimpleGeometry);
  * @api
  */
 Circle.prototype.clone = function() {
-  var circle = new Circle(null);
+  const circle = new Circle(null);
   circle.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return circle;
 };
@@ -45,18 +45,18 @@ Circle.prototype.clone = function() {
  * @inheritDoc
  */
 Circle.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  var flatCoordinates = this.flatCoordinates;
-  var dx = x - flatCoordinates[0];
-  var dy = y - flatCoordinates[1];
-  var squaredDistance = dx * dx + dy * dy;
+  const flatCoordinates = this.flatCoordinates;
+  const dx = x - flatCoordinates[0];
+  const dy = y - flatCoordinates[1];
+  const squaredDistance = dx * dx + dy * dy;
   if (squaredDistance < minSquaredDistance) {
-    var i;
+    let i;
     if (squaredDistance === 0) {
       for (i = 0; i < this.stride; ++i) {
         closestPoint[i] = flatCoordinates[i];
       }
     } else {
-      var delta = this.getRadius() / Math.sqrt(squaredDistance);
+      const delta = this.getRadius() / Math.sqrt(squaredDistance);
       closestPoint[0] = flatCoordinates[0] + delta * dx;
       closestPoint[1] = flatCoordinates[1] + delta * dy;
       for (i = 2; i < this.stride; ++i) {
@@ -75,9 +75,9 @@ Circle.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistanc
  * @inheritDoc
  */
 Circle.prototype.containsXY = function(x, y) {
-  var flatCoordinates = this.flatCoordinates;
-  var dx = x - flatCoordinates[0];
-  var dy = y - flatCoordinates[1];
+  const flatCoordinates = this.flatCoordinates;
+  const dx = x - flatCoordinates[0];
+  const dy = y - flatCoordinates[1];
   return dx * dx + dy * dy <= this.getRadiusSquared_();
 };
 
@@ -96,12 +96,12 @@ Circle.prototype.getCenter = function() {
  * @inheritDoc
  */
 Circle.prototype.computeExtent = function(extent) {
-  var flatCoordinates = this.flatCoordinates;
-  var radius = flatCoordinates[this.stride] - flatCoordinates[0];
+  const flatCoordinates = this.flatCoordinates;
+  const radius = flatCoordinates[this.stride] - flatCoordinates[0];
   return createOrUpdate(
-      flatCoordinates[0] - radius, flatCoordinates[1] - radius,
-      flatCoordinates[0] + radius, flatCoordinates[1] + radius,
-      extent);
+    flatCoordinates[0] - radius, flatCoordinates[1] - radius,
+    flatCoordinates[0] + radius, flatCoordinates[1] + radius,
+    extent);
 };
 
 
@@ -120,8 +120,8 @@ Circle.prototype.getRadius = function() {
  * @return {number} Radius squared.
  */
 Circle.prototype.getRadiusSquared_ = function() {
-  var dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
-  var dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
+  const dx = this.flatCoordinates[this.stride] - this.flatCoordinates[0];
+  const dy = this.flatCoordinates[this.stride + 1] - this.flatCoordinates[1];
   return dx * dx + dy * dy;
 };
 
@@ -140,9 +140,9 @@ Circle.prototype.getType = function() {
  * @api
  */
 Circle.prototype.intersectsExtent = function(extent) {
-  var circleExtent = this.getExtent();
+  const circleExtent = this.getExtent();
   if (intersects(extent, circleExtent)) {
-    var center = this.getCenter();
+    const center = this.getCenter();
 
     if (extent[0] <= center[0] && extent[2] >= center[0]) {
       return true;
@@ -164,11 +164,11 @@ Circle.prototype.intersectsExtent = function(extent) {
  * @api
  */
 Circle.prototype.setCenter = function(center) {
-  var stride = this.stride;
-  var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
-  var flatCoordinates = center.slice();
+  const stride = this.stride;
+  const radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
+  const flatCoordinates = center.slice();
   flatCoordinates[stride] = flatCoordinates[0] + radius;
-  var i;
+  let i;
   for (i = 1; i < stride; ++i) {
     flatCoordinates[stride + i] = center[i];
   }
@@ -193,11 +193,11 @@ Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
       this.flatCoordinates = [];
     }
     /** @type {Array.<number>} */
-    var flatCoordinates = this.flatCoordinates;
-    var offset = _ol_geom_flat_deflate_.coordinate(
-        flatCoordinates, 0, center, this.stride);
+    const flatCoordinates = this.flatCoordinates;
+    let offset = _ol_geom_flat_deflate_.coordinate(
+      flatCoordinates, 0, center, this.stride);
     flatCoordinates[offset++] = flatCoordinates[0] + radius;
-    var i, ii;
+    let i, ii;
     for (i = 1, ii = this.stride; i < ii; ++i) {
       flatCoordinates[offset++] = flatCoordinates[i];
     }

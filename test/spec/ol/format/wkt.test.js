@@ -6,11 +6,11 @@ import {transform} from '../../../../src/ol/proj.js';
 
 describe('ol.format.WKT', function() {
 
-  var format = new WKT();
+  let format = new WKT();
 
   describe('#readProjectionFromText', function() {
     it('returns the default projection', function() {
-      var projection = format.readProjectionFromText('POINT(1 2)');
+      const projection = format.readProjectionFromText('POINT(1 2)');
       expect(projection).to.be(null);
     });
   });
@@ -18,13 +18,13 @@ describe('ol.format.WKT', function() {
   describe('#readGeometry()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var wkt = 'POINT(1 2)';
-      var geom = format.readGeometry(wkt, {
+      const wkt = 'POINT(1 2)';
+      const geom = format.readGeometry(wkt, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       expect(geom.getCoordinates()).to.eql(
-          transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });
@@ -32,12 +32,12 @@ describe('ol.format.WKT', function() {
   describe('#writeGeometry()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var geom = new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857');
-      var wkt = format.writeGeometry(geom, {
+      const geom = new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857');
+      const wkt = format.writeGeometry(geom, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
-      var got = format.readGeometry(wkt).getCoordinates();
+      const got = format.readGeometry(wkt).getCoordinates();
       expect(got[0]).to.roughlyEqual(1, 1e-6);
       expect(got[1]).to.roughlyEqual(2, 1e-6);
     });
@@ -47,14 +47,14 @@ describe('ol.format.WKT', function() {
   describe('#readFeature()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var wkt = 'POINT(1 2)';
-      var feature = format.readFeature(wkt, {
+      const wkt = 'POINT(1 2)';
+      const feature = format.readFeature(wkt, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       expect(geom.getCoordinates()).to.eql(
-          transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
     });
 
   });
@@ -62,15 +62,15 @@ describe('ol.format.WKT', function() {
   describe('#writeFeature()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var feature = new Feature(
-          new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'));
-      var wkt = format.writeFeature(feature, {
+      const feature = new Feature(
+        new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857'));
+      const wkt = format.writeFeature(feature, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
-      var gotFeature = format.readFeature(wkt);
+      const gotFeature = format.readFeature(wkt);
       expect(gotFeature).to.be.a(Feature);
-      var got = gotFeature.getGeometry().getCoordinates();
+      const got = gotFeature.getGeometry().getCoordinates();
       expect(got[0]).to.roughlyEqual(1, 1e-6);
       expect(got[1]).to.roughlyEqual(2, 1e-6);
     });
@@ -80,54 +80,54 @@ describe('ol.format.WKT', function() {
   describe('#readFeatures()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(4 5))';
-      var features = format.readFeatures(wkt, {
+      const wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(4 5))';
+      const features = format.readFeatures(wkt, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
       expect(features.length).to.eql(2);
-      var point1 = features[0].getGeometry();
-      var point2 = features[1].getGeometry();
+      const point1 = features[0].getGeometry();
+      const point2 = features[1].getGeometry();
       expect(point1.getType()).to.eql('Point');
       expect(point2.getType()).to.eql('Point');
       expect(point1.getCoordinates()).to.eql(
-          transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
+        transform([1, 2], 'EPSG:4326', 'EPSG:3857'));
       expect(point2.getCoordinates()).to.eql(
-          transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
+        transform([4, 5], 'EPSG:4326', 'EPSG:3857'));
     });
   });
 
   describe('#writeFeatures()', function() {
 
     it('transforms with dataProjection and featureProjection', function() {
-      var features = [
+      const features = [
         new Feature(
-            new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
+          new Point([1, 2]).transform('EPSG:4326', 'EPSG:3857')),
         new Feature(
-            new Point([4, 5]).transform('EPSG:4326', 'EPSG:3857'))
+          new Point([4, 5]).transform('EPSG:4326', 'EPSG:3857'))
       ];
-      var wkt = format.writeFeatures(features, {
+      const wkt = format.writeFeatures(features, {
         dataProjection: 'EPSG:4326',
         featureProjection: 'EPSG:3857'
       });
-      var gotFeatures = format.readFeatures(wkt);
+      const gotFeatures = format.readFeatures(wkt);
       expect(gotFeatures).to.have.length(2);
       expect(gotFeatures[0].getGeometry().getCoordinates()[0])
-          .to.roughlyEqual(1, 1e-6);
+        .to.roughlyEqual(1, 1e-6);
       expect(gotFeatures[0].getGeometry().getCoordinates()[1])
-          .to.roughlyEqual(2, 1e-6);
+        .to.roughlyEqual(2, 1e-6);
       expect(gotFeatures[1].getGeometry().getCoordinates()[0])
-          .to.roughlyEqual(4, 1e-6);
+        .to.roughlyEqual(4, 1e-6);
       expect(gotFeatures[1].getGeometry().getCoordinates()[1])
-          .to.roughlyEqual(5, 1e-6);
+        .to.roughlyEqual(5, 1e-6);
     });
 
   });
 
 
   it('Point read / written correctly', function() {
-    var wkt = 'POINT(30 10)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POINT(30 10)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getCoordinates()).to.eql([30, 10]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
@@ -137,8 +137,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('Point Z read / written correctly', function() {
-    var wkt = 'POINT Z(30 10 5)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POINT Z(30 10 5)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getCoordinates()).to.eql([30, 10, 5]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
@@ -148,8 +148,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('Point M read / written correctly', function() {
-    var wkt = 'POINT M(30 10 5)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POINT M(30 10 5)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getCoordinates()).to.eql([30, 10, 5]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
@@ -159,8 +159,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('Point ZM read / written correctly', function() {
-    var wkt = 'POINT ZM(30 10 5 0.1)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POINT ZM(30 10 5 0.1)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getCoordinates()).to.eql([30, 10, 5, 0.1]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
@@ -171,9 +171,9 @@ describe('ol.format.WKT', function() {
 
   it('MultiPoint read / written correctly', function() {
     // there are two forms to test
-    var wkt = 'MULTIPOINT((10 40),(40 30),(20 20),(30 10))';
-    var geom = format.readGeometry(wkt);
-    var points = geom.getPoints();
+    let wkt = 'MULTIPOINT((10 40),(40 30),(20 20),(30 10))';
+    let geom = format.readGeometry(wkt);
+    let points = geom.getPoints();
     expect(points.length).to.eql(4);
     expect(points[0].getCoordinates()).to.eql([10, 40]);
     expect(points[1].getCoordinates()).to.eql([40, 30]);
@@ -193,9 +193,9 @@ describe('ol.format.WKT', function() {
 
   it('MultiPoint Z read / written correctly', function() {
     // there are two forms to test
-    var wkt = 'MULTIPOINT Z((10 40 1),(40 30 2),(20 20 3),(30 10 4))';
-    var geom = format.readGeometry(wkt);
-    var points = geom.getPoints();
+    let wkt = 'MULTIPOINT Z((10 40 1),(40 30 2),(20 20 3),(30 10 4))';
+    let geom = format.readGeometry(wkt);
+    let points = geom.getPoints();
     expect(points.length).to.eql(4);
     expect(points[0].getCoordinates()).to.eql([10, 40, 1]);
     expect(points[1].getCoordinates()).to.eql([40, 30, 2]);
@@ -215,9 +215,9 @@ describe('ol.format.WKT', function() {
 
   it('MultiPoint M read / written correctly', function() {
     // there are two forms to test
-    var wkt = 'MULTIPOINT M((10 40 1),(40 30 2),(20 20 3),(30 10 4))';
-    var geom = format.readGeometry(wkt);
-    var points = geom.getPoints();
+    let wkt = 'MULTIPOINT M((10 40 1),(40 30 2),(20 20 3),(30 10 4))';
+    let geom = format.readGeometry(wkt);
+    let points = geom.getPoints();
     expect(points.length).to.eql(4);
     expect(points[0].getCoordinates()).to.eql([10, 40, 1]);
     expect(points[1].getCoordinates()).to.eql([40, 30, 2]);
@@ -237,9 +237,9 @@ describe('ol.format.WKT', function() {
 
   it('MultiPoint ZM read / written correctly', function() {
     // there are two forms to test
-    var wkt = 'MULTIPOINT ZM((10 40 1 0.1),(40 30 2 0.1),(20 20 3 0.1),(30 10 4 0.1))';
-    var geom = format.readGeometry(wkt);
-    var points = geom.getPoints();
+    let wkt = 'MULTIPOINT ZM((10 40 1 0.1),(40 30 2 0.1),(20 20 3 0.1),(30 10 4 0.1))';
+    let geom = format.readGeometry(wkt);
+    let points = geom.getPoints();
     expect(points.length).to.eql(4);
     expect(points[0].getCoordinates()).to.eql([10, 40, 1, 0.1]);
     expect(points[1].getCoordinates()).to.eql([40, 30, 2, 0.1]);
@@ -258,8 +258,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('LineString read / written correctly', function() {
-    var wkt = 'LINESTRING(30 10,10 30,40 40)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'LINESTRING(30 10,10 30,40 40)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('LineString');
     expect(geom.getCoordinates()).to.eql([[30, 10], [10, 30], [40, 40]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
@@ -271,8 +271,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('LineString Z read / written correctly', function() {
-    var wkt = 'LINESTRING Z(30 10 1,10 30 2,40 40 3)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'LINESTRING Z(30 10 1,10 30 2,40 40 3)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('LineString');
     expect(geom.getCoordinates()).to.eql([[30, 10, 1], [10, 30, 2], [40, 40, 3]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
@@ -284,8 +284,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('LineString M read / written correctly', function() {
-    var wkt = 'LINESTRING M(30 10 1,10 30 2,40 40 3)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'LINESTRING M(30 10 1,10 30 2,40 40 3)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('LineString');
     expect(geom.getCoordinates()).to.eql([[30, 10, 1], [10, 30, 2], [40, 40, 3]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
@@ -297,8 +297,8 @@ describe('ol.format.WKT', function() {
   });
 
   it('LineString ZM read / written correctly', function() {
-    var wkt = 'LINESTRING ZM(30 10 1 0.1,10 30 2 0.1,40 40 3 0.1)';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'LINESTRING ZM(30 10 1 0.1,10 30 2 0.1,40 40 3 0.1)';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('LineString');
     expect(geom.getCoordinates()).to.eql([[30, 10, 1, 0.1], [10, 30, 2, 0.1], [40, 40, 3, 0.1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
@@ -310,15 +310,15 @@ describe('ol.format.WKT', function() {
   });
 
   it('MultiLineString read / written correctly', function() {
-    var wkt = 'MULTILINESTRING((10 10,20 20,10 40),' +
+    let wkt = 'MULTILINESTRING((10 10,20 20,10 40),' +
         '(40 40,30 30,40 20,30 10))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiLineString');
-    var linestrings = geom.getLineStrings();
+    let linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql('LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10], [20, 20], [10, 40]]);
+      [[10, 10], [20, 20], [10, 40]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
     wkt = 'MULTILINESTRING ( (10 10, 20 20, 10 40), ' +
@@ -328,21 +328,21 @@ describe('ol.format.WKT', function() {
     linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql(
-        'LineString');
+      'LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10], [20, 20], [10, 40]]);
+      [[10, 10], [20, 20], [10, 40]]);
   });
 
   it('MultiLineString Z read / written correctly', function() {
-    var wkt = 'MULTILINESTRING Z((10 10 1,20 20 2,10 40 3),' +
+    let wkt = 'MULTILINESTRING Z((10 10 1,20 20 2,10 40 3),' +
         '(40 40 1,30 30 2,40 20 3,30 10 4))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiLineString');
-    var linestrings = geom.getLineStrings();
+    let linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql('LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
+      [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
     wkt = 'MULTILINESTRING Z ( (10 10 1, 20 20 2, 10 40 3), ' +
@@ -352,21 +352,21 @@ describe('ol.format.WKT', function() {
     linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql(
-        'LineString');
+      'LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
+      [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
   });
 
   it('MultiLineString M read / written correctly', function() {
-    var wkt = 'MULTILINESTRING M((10 10 1,20 20 2,10 40 3),' +
+    let wkt = 'MULTILINESTRING M((10 10 1,20 20 2,10 40 3),' +
         '(40 40 1,30 30 2,40 20 3,30 10 4))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiLineString');
-    var linestrings = geom.getLineStrings();
+    let linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql('LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
+      [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
     wkt = 'MULTILINESTRING M ( (10 10 1, 20 20 2, 10 40 3), ' +
@@ -376,21 +376,21 @@ describe('ol.format.WKT', function() {
     linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql(
-        'LineString');
+      'LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
+      [[10, 10, 1], [20, 20, 2], [10, 40, 3]]);
   });
 
   it('MultiLineString ZM read / written correctly', function() {
-    var wkt = 'MULTILINESTRING ZM((10 10 1 0.1,20 20 2 0.1,10 40 3 0.1),' +
+    let wkt = 'MULTILINESTRING ZM((10 10 1 0.1,20 20 2 0.1,10 40 3 0.1),' +
         '(40 40 1 0.1,30 30 2 0.1,40 20 3 0.1,30 10 4 0.1))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiLineString');
-    var linestrings = geom.getLineStrings();
+    let linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql('LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10, 1, 0.1], [20, 20, 2, 0.1], [10, 40, 3, 0.1]]);
+      [[10, 10, 1, 0.1], [20, 20, 2, 0.1], [10, 40, 3, 0.1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
     // test whitespace when reading
     wkt = 'MULTILINESTRING ZM ( (10 10 1 0.1, 20 20 2 0.1, 10 40 3 0.1), ' +
@@ -400,20 +400,20 @@ describe('ol.format.WKT', function() {
     linestrings = geom.getLineStrings();
     expect(linestrings.length).to.eql(2);
     expect(linestrings[0].getType()).to.eql(
-        'LineString');
+      'LineString');
     expect(linestrings[0].getCoordinates()).to.eql(
-        [[10, 10, 1, 0.1], [20, 20, 2, 0.1], [10, 40, 3, 0.1]]);
+      [[10, 10, 1, 0.1], [20, 20, 2, 0.1], [10, 40, 3, 0.1]]);
   });
 
   it('Polygon read / written correctly', function() {
-    var wkt = 'POLYGON((30 10,10 20,20 40,40 40,30 10))';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POLYGON((30 10,10 20,20 40,40 40,30 10))';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('Polygon');
-    var rings = geom.getLinearRings();
+    let rings = geom.getLinearRings();
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
+      [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // note that WKT doesn't care about winding order, we do
@@ -425,9 +425,9 @@ describe('ol.format.WKT', function() {
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[1].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[35, 10], [10, 20], [15, 40], [45, 45], [35, 10]]);
+      [[35, 10], [10, 20], [15, 40], [45, 45], [35, 10]]);
     expect(rings[1].getCoordinates()).to.eql(
-        [[20, 30], [30, 20], [35, 35], [20, 30]]);
+      [[20, 30], [30, 20], [35, 35], [20, 30]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -438,18 +438,18 @@ describe('ol.format.WKT', function() {
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
+      [[30, 10], [10, 20], [20, 40], [40, 40], [30, 10]]);
   });
 
   it('Polygon Z read / written correctly', function() {
-    var wkt = 'POLYGON Z((30 10 1,10 20 2,20 40 3,40 40 4,30 10 1))';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POLYGON Z((30 10 1,10 20 2,20 40 3,40 40 4,30 10 1))';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('Polygon');
-    var rings = geom.getLinearRings();
+    let rings = geom.getLinearRings();
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
+      [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // note that WKT doesn't care about winding order, we do
@@ -461,9 +461,9 @@ describe('ol.format.WKT', function() {
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[1].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[35, 10, 1], [10, 20, 2], [15, 40, 3], [45, 45, 4], [35, 10, 1]]);
+      [[35, 10, 1], [10, 20, 2], [15, 40, 3], [45, 45, 4], [35, 10, 1]]);
     expect(rings[1].getCoordinates()).to.eql(
-        [[20, 30, 1], [30, 20, 2], [35, 35, 3], [20, 30, 1]]);
+      [[20, 30, 1], [30, 20, 2], [35, 35, 3], [20, 30, 1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -474,18 +474,18 @@ describe('ol.format.WKT', function() {
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
+      [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
   });
 
   it('Polygon M read / written correctly', function() {
-    var wkt = 'POLYGON M((30 10 1,10 20 2,20 40 3,40 40 4,30 10 1))';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POLYGON M((30 10 1,10 20 2,20 40 3,40 40 4,30 10 1))';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('Polygon');
-    var rings = geom.getLinearRings();
+    let rings = geom.getLinearRings();
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
+      [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // note that WKT doesn't care about winding order, we do
@@ -497,9 +497,9 @@ describe('ol.format.WKT', function() {
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[1].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[35, 10, 1], [10, 20, 2], [15, 40, 3], [45, 45, 4], [35, 10, 1]]);
+      [[35, 10, 1], [10, 20, 2], [15, 40, 3], [45, 45, 4], [35, 10, 1]]);
     expect(rings[1].getCoordinates()).to.eql(
-        [[20, 30, 1], [30, 20, 2], [35, 35, 3], [20, 30, 1]]);
+      [[20, 30, 1], [30, 20, 2], [35, 35, 3], [20, 30, 1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -510,18 +510,18 @@ describe('ol.format.WKT', function() {
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
+      [[30, 10, 1], [10, 20, 2], [20, 40, 3], [40, 40, 4], [30, 10, 1]]);
   });
 
   it('Polygon ZM read / written correctly', function() {
-    var wkt = 'POLYGON ZM((30 10 1 0.1,10 20 2 0.1,20 40 3 0.1,40 40 4 0.1,30 10 1 0.1))';
-    var geom = format.readGeometry(wkt);
+    let wkt = 'POLYGON ZM((30 10 1 0.1,10 20 2 0.1,20 40 3 0.1,40 40 4 0.1,30 10 1 0.1))';
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('Polygon');
-    var rings = geom.getLinearRings();
+    let rings = geom.getLinearRings();
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10, 1, 0.1], [10, 20, 2, 0.1], [20, 40, 3, 0.1], [40, 40, 4, 0.1], [30, 10, 1, 0.1]]);
+      [[30, 10, 1, 0.1], [10, 20, 2, 0.1], [20, 40, 3, 0.1], [40, 40, 4, 0.1], [30, 10, 1, 0.1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // note that WKT doesn't care about winding order, we do
@@ -533,9 +533,9 @@ describe('ol.format.WKT', function() {
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[1].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[35, 10, 1, 0.1], [10, 20, 2, 0.1], [15, 40, 3, 0.1], [45, 45, 4, 0.1], [35, 10, 1, 0.1]]);
+      [[35, 10, 1, 0.1], [10, 20, 2, 0.1], [15, 40, 3, 0.1], [45, 45, 4, 0.1], [35, 10, 1, 0.1]]);
     expect(rings[1].getCoordinates()).to.eql(
-        [[20, 30, 1, 0.1], [30, 20, 2, 0.1], [35, 35, 3, 0.1], [20, 30, 1, 0.1]]);
+      [[20, 30, 1, 0.1], [30, 20, 2, 0.1], [35, 35, 3, 0.1], [20, 30, 1, 0.1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -546,27 +546,27 @@ describe('ol.format.WKT', function() {
     expect(rings.length).to.eql(1);
     expect(rings[0].getType()).to.eql('LinearRing');
     expect(rings[0].getCoordinates()).to.eql(
-        [[30, 10, 1, 0.1], [10, 20, 2, 0.1], [20, 40, 3, 0.1], [40, 40, 4, 0.1], [30, 10, 1, 0.1]]);
+      [[30, 10, 1, 0.1], [10, 20, 2, 0.1], [20, 40, 3, 0.1], [40, 40, 4, 0.1], [30, 10, 1, 0.1]]);
   });
 
   it('MultiPolygon read / written correctly', function() {
     // note that WKT doesn't care about winding order, we do
-    var wkt = 'MULTIPOLYGON(((40 40,45 30,20 45,40 40)),' +
+    let wkt = 'MULTIPOLYGON(((40 40,45 30,20 45,40 40)),' +
         '((20 35,45 20,30 5,10 10,10 30,20 35),(30 20,20 25,20 15,30 20)))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiPolygon');
-    var polygons = geom.getPolygons();
+    let polygons = geom.getPolygons();
     expect(polygons.length).to.eql(2);
     expect(polygons[0].getType()).to.eql('Polygon');
     expect(polygons[1].getType()).to.eql('Polygon');
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40], [45, 30], [20, 45], [40, 40]]);
+      [[40, 40], [45, 30], [20, 45], [40, 40]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
+      [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20], [20, 25], [20, 15], [30, 20]]);
+      [[30, 20], [20, 25], [20, 15], [30, 20]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -582,31 +582,31 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40], [45, 30], [20, 45], [40, 40]]);
+      [[40, 40], [45, 30], [20, 45], [40, 40]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
+      [[20, 35], [45, 20], [30, 5], [10, 10], [10, 30], [20, 35]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20], [20, 25], [20, 15], [30, 20]]);
+      [[30, 20], [20, 25], [20, 15], [30, 20]]);
   });
 
   it('MultiPolygon Z read / written correctly', function() {
     // note that WKT doesn't care about winding order, we do
-    var wkt = 'MULTIPOLYGON Z(((40 40 1,45 30 2,20 45 3,40 40 1)),' +
+    let wkt = 'MULTIPOLYGON Z(((40 40 1,45 30 2,20 45 3,40 40 1)),' +
         '((20 35 1,45 20 2,30 5 3,10 10 4,10 30 5,20 35 1),(30 20 1,20 25 2,20 15 3,30 20 1)))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiPolygon');
-    var polygons = geom.getPolygons();
+    let polygons = geom.getPolygons();
     expect(polygons.length).to.eql(2);
     expect(polygons[0].getType()).to.eql('Polygon');
     expect(polygons[1].getType()).to.eql('Polygon');
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
+      [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
+      [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
+      [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -622,31 +622,31 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
+      [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
+      [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
+      [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
   });
 
   it('MultiPolygon M read / written correctly', function() {
     // note that WKT doesn't care about winding order, we do
-    var wkt = 'MULTIPOLYGON M(((40 40 1,45 30 2,20 45 3,40 40 1)),' +
+    let wkt = 'MULTIPOLYGON M(((40 40 1,45 30 2,20 45 3,40 40 1)),' +
         '((20 35 1,45 20 2,30 5 3,10 10 4,10 30 5,20 35 1),(30 20 1,20 25 2,20 15 3,30 20 1)))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiPolygon');
-    var polygons = geom.getPolygons();
+    let polygons = geom.getPolygons();
     expect(polygons.length).to.eql(2);
     expect(polygons[0].getType()).to.eql('Polygon');
     expect(polygons[1].getType()).to.eql('Polygon');
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
+      [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
+      [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
+      [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -662,31 +662,31 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
+      [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
+      [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
+      [[30, 20, 1], [20, 25, 2], [20, 15, 3], [30, 20, 1]]);
   });
 
   it('MultiPolygon ZM read / written correctly', function() {
     // note that WKT doesn't care about winding order, we do
-    var wkt = 'MULTIPOLYGON ZM(((40 40 1 0.1,45 30 2 0.1,20 45 3 0.1,40 40 1 0.1)),' +
+    let wkt = 'MULTIPOLYGON ZM(((40 40 1 0.1,45 30 2 0.1,20 45 3 0.1,40 40 1 0.1)),' +
         '((20 35 1 0.1,45 20 2 0.1,30 5 3 0.1,10 10 4 0.1,10 30 5 0.1,20 35 1 0.1),(30 20 1 0.1,20 25 2 0.1,20 15 3 0.1,30 20 1 0.1)))';
-    var geom = format.readGeometry(wkt);
+    let geom = format.readGeometry(wkt);
     expect(geom.getType()).to.eql('MultiPolygon');
-    var polygons = geom.getPolygons();
+    let polygons = geom.getPolygons();
     expect(polygons.length).to.eql(2);
     expect(polygons[0].getType()).to.eql('Polygon');
     expect(polygons[1].getType()).to.eql('Polygon');
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40, 1, 0.1], [45, 30, 2, 0.1], [20, 45, 3, 0.1], [40, 40, 1, 0.1]]);
+      [[40, 40, 1, 0.1], [45, 30, 2, 0.1], [20, 45, 3, 0.1], [40, 40, 1, 0.1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35, 1, 0.1], [45, 20, 2, 0.1], [30, 5, 3, 0.1], [10, 10, 4, 0.1], [10, 30, 5, 0.1], [20, 35, 1, 0.1]]);
+      [[20, 35, 1, 0.1], [45, 20, 2, 0.1], [30, 5, 3, 0.1], [10, 10, 4, 0.1], [10, 30, 5, 0.1], [20, 35, 1, 0.1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20, 1, 0.1], [20, 25, 2, 0.1], [20, 15, 3, 0.1], [30, 20, 1, 0.1]]);
+      [[30, 20, 1, 0.1], [20, 25, 2, 0.1], [20, 15, 3, 0.1], [30, 20, 1, 0.1]]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
 
     // test whitespace when reading
@@ -702,20 +702,20 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40, 1, 0.1], [45, 30, 2, 0.1], [20, 45, 3, 0.1], [40, 40, 1, 0.1]]);
+      [[40, 40, 1, 0.1], [45, 30, 2, 0.1], [20, 45, 3, 0.1], [40, 40, 1, 0.1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
-        [[20, 35, 1, 0.1], [45, 20, 2, 0.1], [30, 5, 3, 0.1], [10, 10, 4, 0.1], [10, 30, 5, 0.1], [20, 35, 1, 0.1]]);
+      [[20, 35, 1, 0.1], [45, 20, 2, 0.1], [30, 5, 3, 0.1], [10, 10, 4, 0.1], [10, 30, 5, 0.1], [20, 35, 1, 0.1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
-        [[30, 20, 1, 0.1], [20, 25, 2, 0.1], [20, 15, 3, 0.1], [30, 20, 1, 0.1]]);
+      [[30, 20, 1, 0.1], [20, 25, 2, 0.1], [20, 15, 3, 0.1], [30, 20, 1, 0.1]]);
   });
 
   it('Empty geometries read / written correctly', function() {
-    var wkts = [
+    const wkts = [
       'POINT', 'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'
     ];
-    for (var i = 0, ii = wkts.length; i < ii; ++i) {
-      var wkt = wkts[i] + ' EMPTY';
-      var geom = format.readGeometry(wkt);
+    for (let i = 0, ii = wkts.length; i < ii; ++i) {
+      const wkt = wkts[i] + ' EMPTY';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([]);
       expect(format.writeGeometry(geom)).to.eql(wkt);
     }
@@ -749,9 +749,9 @@ describe('ol.format.WKT', function() {
   });
 
   it('GeometryCollection read / written correctly', function() {
-    var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
-    var geom = format.readGeometry(wkt);
-    var geoms = geom.getGeometries();
+    let wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
+    let geom = format.readGeometry(wkt);
+    let geoms = geom.getGeometries();
     expect(geoms.length).to.eql(2);
     expect(geom.getType()).to.eql('GeometryCollection');
     expect(geoms[0].getType()).to.eql('Point');
@@ -772,18 +772,18 @@ describe('ol.format.WKT', function() {
   });
 
   it('Empty GeometryCollection read / written correctly', function() {
-    var wkt = 'GEOMETRYCOLLECTION EMPTY';
-    var geom = format.readGeometry(wkt);
+    const wkt = 'GEOMETRYCOLLECTION EMPTY';
+    const geom = format.readGeometry(wkt);
     expect(geom.getGeometries()).to.eql([]);
     expect(format.writeGeometry(geom)).to.eql(wkt);
   });
 
   it('GeometryCollection split / merged correctly', function() {
     format = new WKT({splitCollection: true});
-    var wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
-    var features = format.readFeatures(wkt);
+    const wkt = 'GEOMETRYCOLLECTION(POINT(4 6),LINESTRING(4 6,7 10))';
+    const features = format.readFeatures(wkt);
     expect(features.length).to.eql(2);
-    var geoms = [features[0].getGeometry(), features[1].getGeometry()];
+    const geoms = [features[0].getGeometry(), features[1].getGeometry()];
     expect(geoms[0].getType()).to.eql('Point');
     expect(geoms[1].getType()).to.eql('LineString');
     expect(geoms[0].getCoordinates()).to.eql([4, 6]);
@@ -792,19 +792,19 @@ describe('ol.format.WKT', function() {
   });
 
   it('Point feature read / written correctly', function() {
-    var wkt = 'POINT(30 10)';
-    var feature = format.readFeature(wkt);
-    var geom = feature.getGeometry();
+    const wkt = 'POINT(30 10)';
+    const feature = format.readFeature(wkt);
+    const geom = feature.getGeometry();
     expect(geom.getCoordinates()).to.eql([30, 10]);
     expect(format.writeFeature(feature)).to.eql(wkt);
   });
 
   it('Features read / written correctly', function() {
-    var wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(3 4))';
-    var features = format.readFeatures(wkt);
+    const wkt = 'GEOMETRYCOLLECTION(POINT(1 2),POINT(3 4))';
+    const features = format.readFeatures(wkt);
     expect(features.length).to.eql(2);
-    var point1 = features[0].getGeometry();
-    var point2 = features[1].getGeometry();
+    const point1 = features[0].getGeometry();
+    const point2 = features[1].getGeometry();
     expect(point1.getType()).to.eql('Point');
     expect(point2.getType()).to.eql('Point');
     expect(point1.getCoordinates()).to.eql([1, 2]);
@@ -815,22 +815,22 @@ describe('ol.format.WKT', function() {
   describe('scientific notation supported', function() {
 
     it('handles scientific notation correctly', function() {
-      var wkt = 'POINT(3e1 1e1)';
-      var geom = format.readGeometry(wkt);
+      const wkt = 'POINT(3e1 1e1)';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([30, 10]);
       expect(format.writeGeometry(geom)).to.eql('POINT(30 10)');
     });
 
     it('works with with negative exponent', function() {
-      var wkt = 'POINT(3e-1 1e-1)';
-      var geom = format.readGeometry(wkt);
+      const wkt = 'POINT(3e-1 1e-1)';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([0.3, 0.1]);
       expect(format.writeGeometry(geom)).to.eql('POINT(0.3 0.1)');
     });
 
     it('works with with explicitly positive exponent', function() {
-      var wkt = 'POINT(3e+1 1e+1)';
-      var geom = format.readGeometry(wkt);
+      const wkt = 'POINT(3e+1 1e+1)';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([30, 10]);
       expect(format.writeGeometry(geom)).to.eql('POINT(30 10)');
     });
@@ -838,8 +838,8 @@ describe('ol.format.WKT', function() {
     it('handles very small numbers in scientific notation', function() {
       // very small numbers keep the scientific notation, both when reading and
       // writing
-      var wkt = 'POINT(3e-9 1e-9)';
-      var geom = format.readGeometry(wkt);
+      const wkt = 'POINT(3e-9 1e-9)';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([3e-9, 1e-9]);
       expect(format.writeGeometry(geom)).to.eql('POINT(3e-9 1e-9)');
     });
@@ -847,15 +847,15 @@ describe('ol.format.WKT', function() {
     it('handles very big numbers in scientific notation', function() {
       // very big numbers keep the scientific notation, both when reading and
       // writing
-      var wkt = 'POINT(3e25 1e25)';
-      var geom = format.readGeometry(wkt);
+      const wkt = 'POINT(3e25 1e25)';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([3e25, 1e25]);
       expect(format.writeGeometry(geom)).to.eql('POINT(3e+25 1e+25)');
     });
 
     it('works case insensitively (e / E)', function() {
-      var wkt = 'POINT(3E1 1E1)';
-      var geom = format.readGeometry(wkt);
+      const wkt = 'POINT(3E1 1E1)';
+      const geom = format.readGeometry(wkt);
       expect(geom.getCoordinates()).to.eql([30, 10]);
       expect(format.writeGeometry(geom)).to.eql('POINT(30 10)');
     });

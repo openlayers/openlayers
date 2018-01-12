@@ -15,9 +15,9 @@ proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+units=m +no_defs');
 register(proj4);
 
-var imageExtent = [0, 0, 700000, 1300000];
+const imageExtent = [0, 0, 700000, 1300000];
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()

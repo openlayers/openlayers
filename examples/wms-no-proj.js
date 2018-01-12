@@ -7,7 +7,7 @@ import ImageWMS from '../src/ol/source/ImageWMS.js';
 import TileWMS from '../src/ol/source/TileWMS.js';
 
 
-var layers = [
+const layers = [
   new TileLayer({
     source: new TileWMS({
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
@@ -37,12 +37,12 @@ var layers = [
 // projection object. Requesting tiles only needs the code together with a
 // tile grid of Cartesian coordinates; it does not matter how those
 // coordinates relate to latitude or longitude.
-var projection = new Projection({
+const projection = new Projection({
   code: 'EPSG:21781',
   units: 'm'
 });
 
-var map = new Map({
+const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({

@@ -9,7 +9,7 @@ import _ol_obj_ from './obj.js';
 import {get as getProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
 import TileGrid from './tilegrid/TileGrid.js';
-var _ol_tilegrid_ = {};
+const _ol_tilegrid_ = {};
 
 
 /**
@@ -17,7 +17,7 @@ var _ol_tilegrid_ = {};
  * @return {!ol.tilegrid.TileGrid} Default tile grid for the passed projection.
  */
 _ol_tilegrid_.getForProjection = function(projection) {
-  var tileGrid = projection.getDefaultTileGrid();
+  let tileGrid = projection.getDefaultTileGrid();
   if (!tileGrid) {
     tileGrid = _ol_tilegrid_.createForProjection(projection);
     projection.setDefaultTileGrid(tileGrid);
@@ -33,12 +33,12 @@ _ol_tilegrid_.getForProjection = function(projection) {
  * @return {ol.TileCoord} Tile coordinate.
  */
 _ol_tilegrid_.wrapX = function(tileGrid, tileCoord, projection) {
-  var z = tileCoord[0];
-  var center = tileGrid.getTileCoordCenter(tileCoord);
-  var projectionExtent = _ol_tilegrid_.extentFromProjection(projection);
+  const z = tileCoord[0];
+  const center = tileGrid.getTileCoordCenter(tileCoord);
+  const projectionExtent = _ol_tilegrid_.extentFromProjection(projection);
   if (!containsCoordinate(projectionExtent, center)) {
-    var worldWidth = getWidth(projectionExtent);
-    var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
+    const worldWidth = getWidth(projectionExtent);
+    const worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
     center[0] += worldWidth * worldsAway;
     return tileGrid.getTileCoordForCoordAndZ(center, z);
   } else {
@@ -58,10 +58,10 @@ _ol_tilegrid_.wrapX = function(tileGrid, tileCoord, projection) {
  * @return {!ol.tilegrid.TileGrid} TileGrid instance.
  */
 _ol_tilegrid_.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
-  var corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
+  const corner = opt_corner !== undefined ? opt_corner : Corner.TOP_LEFT;
 
-  var resolutions = _ol_tilegrid_.resolutionsFromExtent(
-      extent, opt_maxZoom, opt_tileSize);
+  const resolutions = _ol_tilegrid_.resolutionsFromExtent(
+    extent, opt_maxZoom, opt_tileSize);
 
   return new TileGrid({
     extent: extent,
@@ -79,14 +79,14 @@ _ol_tilegrid_.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_
  * @api
  */
 _ol_tilegrid_.createXYZ = function(opt_options) {
-  var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
+  const options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
   _ol_obj_.assign(options, opt_options !== undefined ?
     opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
   if (options.extent === undefined) {
     options.extent = getProjection('EPSG:3857').getExtent();
   }
   options.resolutions = _ol_tilegrid_.resolutionsFromExtent(
-      options.extent, options.maxZoom, options.tileSize);
+    options.extent, options.maxZoom, options.tileSize);
   delete options.maxZoom;
 
   return new TileGrid(options);
@@ -103,20 +103,20 @@ _ol_tilegrid_.createXYZ = function(opt_options) {
  * @return {!Array.<number>} Resolutions array.
  */
 _ol_tilegrid_.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize) {
-  var maxZoom = opt_maxZoom !== undefined ?
+  const maxZoom = opt_maxZoom !== undefined ?
     opt_maxZoom : DEFAULT_MAX_ZOOM;
 
-  var height = getHeight(extent);
-  var width = getWidth(extent);
+  const height = getHeight(extent);
+  const width = getWidth(extent);
 
-  var tileSize = _ol_size_.toSize(opt_tileSize !== undefined ?
+  const tileSize = _ol_size_.toSize(opt_tileSize !== undefined ?
     opt_tileSize : DEFAULT_TILE_SIZE);
-  var maxResolution = Math.max(
-      width / tileSize[0], height / tileSize[1]);
+  const maxResolution = Math.max(
+    width / tileSize[0], height / tileSize[1]);
 
-  var length = maxZoom + 1;
-  var resolutions = new Array(length);
-  for (var z = 0; z < length; ++z) {
+  const length = maxZoom + 1;
+  const resolutions = new Array(length);
+  for (let z = 0; z < length; ++z) {
     resolutions[z] = maxResolution / Math.pow(2, z);
   }
   return resolutions;
@@ -134,9 +134,9 @@ _ol_tilegrid_.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize
  * @return {!ol.tilegrid.TileGrid} TileGrid instance.
  */
 _ol_tilegrid_.createForProjection = function(projection, opt_maxZoom, opt_tileSize, opt_corner) {
-  var extent = _ol_tilegrid_.extentFromProjection(projection);
+  const extent = _ol_tilegrid_.extentFromProjection(projection);
   return _ol_tilegrid_.createForExtent(
-      extent, opt_maxZoom, opt_tileSize, opt_corner);
+    extent, opt_maxZoom, opt_tileSize, opt_corner);
 };
 
 
@@ -148,9 +148,9 @@ _ol_tilegrid_.createForProjection = function(projection, opt_maxZoom, opt_tileSi
  */
 _ol_tilegrid_.extentFromProjection = function(projection) {
   projection = getProjection(projection);
-  var extent = projection.getExtent();
+  let extent = projection.getExtent();
   if (!extent) {
-    var half = 180 * METERS_PER_UNIT[Units.DEGREES] /
+    const half = 180 * METERS_PER_UNIT[Units.DEGREES] /
         projection.getMetersPerUnit();
     extent = createOrUpdate(-half, -half, half, half);
   }

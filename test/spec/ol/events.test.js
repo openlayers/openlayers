@@ -2,7 +2,7 @@ import _ol_events_ from '../../../src/ol/events.js';
 import EventTarget from '../../../src/ol/events/EventTarget.js';
 
 describe('ol.events', function() {
-  var add, remove, target;
+  let add, remove, target;
 
   beforeEach(function() {
     add = sinon.spy();
@@ -15,39 +15,39 @@ describe('ol.events', function() {
 
   describe('bindListener_()', function() {
     it('binds a listener and returns a bound listener function', function() {
-      var listenerObj = {
+      const listenerObj = {
         listener: sinon.spy(),
         bindTo: {id: 1}
       };
-      var boundListener = _ol_events_.bindListener_(listenerObj);
+      const boundListener = _ol_events_.bindListener_(listenerObj);
       expect(listenerObj.boundListener).to.equal(boundListener);
       boundListener();
       expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.bindTo);
     });
     it('binds to the target when bindTo is not provided', function() {
-      var listenerObj = {
+      const listenerObj = {
         listener: sinon.spy(),
         target: {id: 1}
       };
-      var boundListener = _ol_events_.bindListener_(listenerObj);
+      const boundListener = _ol_events_.bindListener_(listenerObj);
       expect(listenerObj.boundListener).to.equal(boundListener);
       boundListener();
       expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.target);
     });
     it('binds a self-unregistering listener when callOnce is true', function() {
-      var bindTo = {id: 1};
-      var listenerObj = {
+      const bindTo = {id: 1};
+      const listenerObj = {
         type: 'foo',
         target: target,
         bindTo: bindTo,
         callOnce: true
       };
-      var unlistenSpy = sinon.spy(_ol_events_, 'unlistenByKey'); // eslint-disable-line openlayers-internal/no-missing-requires
+      const unlistenSpy = sinon.spy(_ol_events_, 'unlistenByKey'); // eslint-disable-line openlayers-internal/no-missing-requires
       listenerObj.listener = function() {
         expect(this).to.equal(bindTo);
         expect(unlistenSpy.firstCall.args[0]).to.eql(listenerObj);
       };
-      var boundListener = _ol_events_.bindListener_(listenerObj);
+      const boundListener = _ol_events_.bindListener_(listenerObj);
       expect(listenerObj.boundListener).to.equal(boundListener);
       boundListener();
       unlistenSpy.restore();
@@ -55,7 +55,7 @@ describe('ol.events', function() {
   });
 
   describe('findListener_()', function() {
-    var listener, listenerObj, listeners;
+    let listener, listenerObj, listeners;
 
     beforeEach(function() {
       listener = function() {};
@@ -68,8 +68,8 @@ describe('ol.events', function() {
     });
 
     it('searches a listener array for a specific listener', function() {
-      var bindTo = {id: 1};
-      var result = _ol_events_.findListener_(listeners, listener);
+      const bindTo = {id: 1};
+      let result = _ol_events_.findListener_(listeners, listener);
       expect(result).to.be(listenerObj);
       result = _ol_events_.findListener_(listeners, listener, bindTo);
       expect(result).to.be(undefined);
@@ -80,7 +80,7 @@ describe('ol.events', function() {
       expect(result).to.be(listenerObj);
     });
     it('marks the delete index on a listener object', function() {
-      var result = _ol_events_.findListener_(listeners, listener, undefined, true);
+      const result = _ol_events_.findListener_(listeners, listener, undefined, true);
       expect(result).to.be(listenerObj);
       expect(listenerObj.deleteIndex).to.be(0);
     });
@@ -88,8 +88,8 @@ describe('ol.events', function() {
 
   describe('getListeners()', function() {
     it('returns listeners for a target and type', function() {
-      var foo = _ol_events_.listen(target, 'foo', function() {});
-      var bar = _ol_events_.listen(target, 'bar', function() {});
+      const foo = _ol_events_.listen(target, 'foo', function() {});
+      const bar = _ol_events_.listen(target, 'bar', function() {});
       expect (_ol_events_.getListeners(target, 'foo')).to.eql([foo]);
       expect (_ol_events_.getListeners(target, 'bar')).to.eql([bar]);
     });
@@ -104,18 +104,18 @@ describe('ol.events', function() {
       expect(add.callCount).to.be(1);
     });
     it('returns a key', function() {
-      var key = _ol_events_.listen(target, 'foo', function() {});
+      const key = _ol_events_.listen(target, 'foo', function() {});
       expect(key).to.be.a(Object);
     });
     it('does not add the same listener twice', function() {
-      var listener = function() {};
-      var key1 = _ol_events_.listen(target, 'foo', listener);
-      var key2 = _ol_events_.listen(target, 'foo', listener);
+      const listener = function() {};
+      const key1 = _ol_events_.listen(target, 'foo', listener);
+      const key2 = _ol_events_.listen(target, 'foo', listener);
       expect(key1).to.equal(key2);
       expect(add.callCount).to.be(1);
     });
     it('only treats listeners as same when all args are equal', function() {
-      var listener = function() {};
+      const listener = function() {};
       _ol_events_.listen(target, 'foo', listener, {});
       _ol_events_.listen(target, 'foo', listener, {});
       _ol_events_.listen(target, 'foo', listener, undefined);
@@ -125,8 +125,8 @@ describe('ol.events', function() {
 
   describe('listenOnce()', function() {
     it('creates a one-off listener', function() {
-      var listener = sinon.spy();
-      var key = _ol_events_.listenOnce(target, 'foo', listener);
+      const listener = sinon.spy();
+      const key = _ol_events_.listenOnce(target, 'foo', listener);
       expect(add.callCount).to.be(1);
       expect(key.callOnce).to.be(true);
       key.boundListener();
@@ -134,16 +134,16 @@ describe('ol.events', function() {
       expect(remove.callCount).to.be(1);
     });
     it('does not add the same listener twice', function() {
-      var listener = function() {};
-      var key1 = _ol_events_.listenOnce(target, 'foo', listener);
-      var key2 = _ol_events_.listenOnce(target, 'foo', listener);
+      const listener = function() {};
+      const key1 = _ol_events_.listenOnce(target, 'foo', listener);
+      const key2 = _ol_events_.listenOnce(target, 'foo', listener);
       expect(key1).to.equal(key2);
       expect(add.callCount).to.be(1);
       expect(key1.callOnce).to.be(true);
     });
     it('listen() can turn a one-off listener into a permanent one', function() {
-      var listener = sinon.spy();
-      var key = _ol_events_.listenOnce(target, 'foo', listener);
+      const listener = sinon.spy();
+      let key = _ol_events_.listenOnce(target, 'foo', listener);
       expect(key.callOnce).to.be(true);
       key = _ol_events_.listen(target, 'foo', listener);
       expect(add.callCount).to.be(1);
@@ -155,13 +155,13 @@ describe('ol.events', function() {
 
   describe('unlisten()', function() {
     it('unregisters previously registered listeners', function() {
-      var listener = function() {};
+      const listener = function() {};
       _ol_events_.listen(target, 'foo', listener);
       _ol_events_.unlisten(target, 'foo', listener);
       expect(_ol_events_.getListeners(target, 'foo')).to.be(undefined);
     });
     it('works with multiple types', function() {
-      var listener = function() {};
+      const listener = function() {};
       _ol_events_.listen(target, ['foo', 'bar'], listener);
       _ol_events_.unlisten(target, ['bar', 'foo'], listener);
       expect(_ol_events_.getListeners(target, 'foo')).to.be(undefined);
@@ -171,12 +171,12 @@ describe('ol.events', function() {
 
   describe('unlistenByKey()', function() {
     it('unregisters previously registered listeners', function() {
-      var key = _ol_events_.listen(target, 'foo', function() {});
+      const key = _ol_events_.listen(target, 'foo', function() {});
       _ol_events_.unlistenByKey(key);
       expect(_ol_events_.getListeners(target, 'foo')).to.be(undefined);
     });
     it('works with multiple types', function() {
-      var key = _ol_events_.listen(target, ['foo', 'bar'], function() {});
+      const key = _ol_events_.listen(target, ['foo', 'bar'], function() {});
       _ol_events_.unlistenByKey(key);
       expect(_ol_events_.getListeners(target, 'foo')).to.be(undefined);
       expect(_ol_events_.getListeners(target, 'bar')).to.be(undefined);
@@ -185,7 +185,7 @@ describe('ol.events', function() {
 
   describe('unlistenAll()', function() {
     it('unregisters all listeners registered for a target', function() {
-      var keys = [
+      const keys = [
         _ol_events_.listen(target, 'foo', function() {}),
         _ol_events_.listen(target, 'bar', function() {})
       ];
@@ -199,22 +199,22 @@ describe('ol.events', function() {
 
   describe('Compatibility with ol.events.EventTarget', function() {
     it('does not register duplicated listeners', function() {
-      var target = new EventTarget();
-      var listener = function() {};
-      var key1 = _ol_events_.listen(target, 'foo', listener);
+      const target = new EventTarget();
+      const listener = function() {};
+      const key1 = _ol_events_.listen(target, 'foo', listener);
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
-      var key2 = _ol_events_.listen(target, 'foo', listener);
+      const key2 = _ol_events_.listen(target, 'foo', listener);
       expect(key2.boundListener).to.equal(key1.boundListener);
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
     });
     it('registers multiple listeners if this object is different', function() {
-      var target = new EventTarget();
-      var listener = function() {};
-      var key1 = _ol_events_.listen(target, 'foo', listener, {});
-      var key2 = _ol_events_.listen(target, 'foo', listener, {});
+      const target = new EventTarget();
+      const listener = function() {};
+      const key1 = _ol_events_.listen(target, 'foo', listener, {});
+      const key2 = _ol_events_.listen(target, 'foo', listener, {});
       expect(key1.boundListener).to.not.equal(key2.boundListener);
       expect(target.getListeners('foo')).to.eql(
-          [key1.boundListener, key2.boundListener]);
+        [key1.boundListener, key2.boundListener]);
     });
   });
 

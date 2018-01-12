@@ -13,7 +13,7 @@ import Style from '../style/Style.js';
  * @enum {string}
  * @private
  */
-var Property = {
+const Property = {
   RENDER_ORDER: 'renderOrder'
 };
 
@@ -31,11 +31,11 @@ var Property = {
  * @param {olx.layer.VectorOptions=} opt_options Options.
  * @api
  */
-var VectorLayer = function(opt_options) {
-  var options = opt_options ?
+const VectorLayer = function(opt_options) {
+  const options = opt_options ?
     opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
-  var baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.style;
   delete baseOptions.renderBuffer;

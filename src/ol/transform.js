@@ -2,7 +2,7 @@
  * @module ol/transform
  */
 import {assert} from './asserts.js';
-var _ol_transform_ = {};
+const _ol_transform_ = {};
 
 
 /**
@@ -52,18 +52,18 @@ _ol_transform_.reset = function(transform) {
  * @return {!ol.Transform} transform1 multiplied with transform2.
  */
 _ol_transform_.multiply = function(transform1, transform2) {
-  var a1 = transform1[0];
-  var b1 = transform1[1];
-  var c1 = transform1[2];
-  var d1 = transform1[3];
-  var e1 = transform1[4];
-  var f1 = transform1[5];
-  var a2 = transform2[0];
-  var b2 = transform2[1];
-  var c2 = transform2[2];
-  var d2 = transform2[3];
-  var e2 = transform2[4];
-  var f2 = transform2[5];
+  const a1 = transform1[0];
+  const b1 = transform1[1];
+  const c1 = transform1[2];
+  const d1 = transform1[3];
+  const e1 = transform1[4];
+  const f1 = transform1[5];
+  const a2 = transform2[0];
+  const b2 = transform2[1];
+  const c2 = transform2[2];
+  const d2 = transform2[3];
+  const e2 = transform2[4];
+  const f2 = transform2[5];
 
   transform1[0] = a1 * a2 + c1 * b2;
   transform1[1] = b1 * a2 + d1 * b2;
@@ -124,7 +124,8 @@ _ol_transform_.setFromArray = function(transform1, transform2) {
  *     chained together.
  */
 _ol_transform_.apply = function(transform, coordinate) {
-  var x = coordinate[0], y = coordinate[1];
+  const x = coordinate[0];
+  const y = coordinate[1];
   coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
   coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
   return coordinate;
@@ -138,10 +139,10 @@ _ol_transform_.apply = function(transform, coordinate) {
  * @return {!ol.Transform} The rotated transform.
  */
 _ol_transform_.rotate = function(transform, angle) {
-  var cos = Math.cos(angle);
-  var sin = Math.sin(angle);
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
   return _ol_transform_.multiply(transform,
-      _ol_transform_.set(_ol_transform_.tmp_, cos, sin, -sin, cos, 0, 0));
+    _ol_transform_.set(_ol_transform_.tmp_, cos, sin, -sin, cos, 0, 0));
 };
 
 
@@ -154,7 +155,7 @@ _ol_transform_.rotate = function(transform, angle) {
  */
 _ol_transform_.scale = function(transform, x, y) {
   return _ol_transform_.multiply(transform,
-      _ol_transform_.set(_ol_transform_.tmp_, x, 0, 0, y, 0, 0));
+    _ol_transform_.set(_ol_transform_.tmp_, x, 0, 0, y, 0, 0));
 };
 
 
@@ -167,7 +168,7 @@ _ol_transform_.scale = function(transform, x, y) {
  */
 _ol_transform_.translate = function(transform, dx, dy) {
   return _ol_transform_.multiply(transform,
-      _ol_transform_.set(_ol_transform_.tmp_, 1, 0, 0, 1, dx, dy));
+    _ol_transform_.set(_ol_transform_.tmp_, 1, 0, 0, 1, dx, dy));
 };
 
 
@@ -185,8 +186,8 @@ _ol_transform_.translate = function(transform, dx, dy) {
  * @return {!ol.Transform} The composite transform.
  */
 _ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
-  var sin = Math.sin(angle);
-  var cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  const cos = Math.cos(angle);
   transform[0] = sx * cos;
   transform[1] = sy * sin;
   transform[2] = -sx * sin;
@@ -203,15 +204,15 @@ _ol_transform_.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) 
  * @return {!ol.Transform} Inverse of the transform.
  */
 _ol_transform_.invert = function(transform) {
-  var det = _ol_transform_.determinant(transform);
+  const det = _ol_transform_.determinant(transform);
   assert(det !== 0, 32); // Transformation matrix cannot be inverted
 
-  var a = transform[0];
-  var b = transform[1];
-  var c = transform[2];
-  var d = transform[3];
-  var e = transform[4];
-  var f = transform[5];
+  const a = transform[0];
+  const b = transform[1];
+  const c = transform[2];
+  const d = transform[3];
+  const e = transform[4];
+  const f = transform[5];
 
   transform[0] = d / det;
   transform[1] = -b / det;

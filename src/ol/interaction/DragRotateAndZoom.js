@@ -23,9 +23,9 @@ import PointerInteraction from '../interaction/Pointer.js';
  * @param {olx.interaction.DragRotateAndZoomOptions=} opt_options Options.
  * @api
  */
-var DragRotateAndZoom = function(opt_options) {
+const DragRotateAndZoom = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   PointerInteraction.call(this, {
     handleDownEvent: DragRotateAndZoom.handleDownEvent_,
@@ -79,22 +79,22 @@ DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
     return;
   }
 
-  var map = mapBrowserEvent.map;
-  var size = map.getSize();
-  var offset = mapBrowserEvent.pixel;
-  var deltaX = offset[0] - size[0] / 2;
-  var deltaY = size[1] / 2 - offset[1];
-  var theta = Math.atan2(deltaY, deltaX);
-  var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-  var view = map.getView();
+  const map = mapBrowserEvent.map;
+  const size = map.getSize();
+  const offset = mapBrowserEvent.pixel;
+  const deltaX = offset[0] - size[0] / 2;
+  const deltaY = size[1] / 2 - offset[1];
+  const theta = Math.atan2(deltaY, deltaX);
+  const magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+  const view = map.getView();
   if (view.getConstraints().rotation !== RotationConstraint.disable && this.lastAngle_ !== undefined) {
-    var angleDelta = theta - this.lastAngle_;
+    const angleDelta = theta - this.lastAngle_;
     Interaction.rotateWithoutConstraints(
-        view, view.getRotation() - angleDelta);
+      view, view.getRotation() - angleDelta);
   }
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
-    var resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
+    const resolution = this.lastMagnitude_ * (view.getResolution() / magnitude);
     Interaction.zoomWithoutConstraints(view, resolution);
   }
   if (this.lastMagnitude_ !== undefined) {
@@ -115,13 +115,13 @@ DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
     return true;
   }
 
-  var map = mapBrowserEvent.map;
-  var view = map.getView();
+  const map = mapBrowserEvent.map;
+  const view = map.getView();
   view.setHint(ViewHint.INTERACTING, -1);
-  var direction = this.lastScaleDelta_ - 1;
+  const direction = this.lastScaleDelta_ - 1;
   Interaction.rotate(view, view.getRotation());
   Interaction.zoom(view, view.getResolution(),
-      undefined, this.duration_, direction);
+    undefined, this.duration_, direction);
   this.lastScaleDelta_ = 0;
   return false;
 };

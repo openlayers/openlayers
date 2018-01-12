@@ -7,7 +7,7 @@ import {asString} from '../color.js';
  * Singleton class. Available through {@link ol.style.iconImageCache}.
  * @constructor
  */
-var IconImageCache = function() {
+const IconImageCache = function() {
 
   /**
    * @type {Object.<string, ol.style.IconImage>}
@@ -36,7 +36,7 @@ var IconImageCache = function() {
  * @return {string} Cache key.
  */
 function getKey(src, crossOrigin, color) {
-  var colorString = color ? asString(color) : 'null';
+  const colorString = color ? asString(color) : 'null';
   return crossOrigin + ':' + src + ':' + colorString;
 }
 
@@ -55,8 +55,8 @@ IconImageCache.prototype.clear = function() {
  */
 IconImageCache.prototype.expire = function() {
   if (this.cacheSize_ > this.maxCacheSize_) {
-    var i = 0;
-    var key, iconImage;
+    let i = 0;
+    let key, iconImage;
     for (key in this.cache_) {
       iconImage = this.cache_[key];
       if ((i++ & 3) === 0 && !iconImage.hasListener()) {
@@ -75,7 +75,7 @@ IconImageCache.prototype.expire = function() {
  * @return {ol.style.IconImage} Icon image.
  */
 IconImageCache.prototype.get = function(src, crossOrigin, color) {
-  var key = getKey(src, crossOrigin, color);
+  const key = getKey(src, crossOrigin, color);
   return key in this.cache_ ? this.cache_[key] : null;
 };
 
@@ -87,7 +87,7 @@ IconImageCache.prototype.get = function(src, crossOrigin, color) {
  * @param {ol.style.IconImage} iconImage Icon image.
  */
 IconImageCache.prototype.set = function(src, crossOrigin, color, iconImage) {
-  var key = getKey(src, crossOrigin, color);
+  const key = getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;
 };

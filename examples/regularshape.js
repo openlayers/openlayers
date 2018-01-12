@@ -10,10 +10,10 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var stroke = new Stroke({color: 'black', width: 2});
-var fill = new Fill({color: 'red'});
+const stroke = new Stroke({color: 'black', width: 2});
+const fill = new Fill({color: 'red'});
 
-var styles = {
+const styles = {
   'square': new Style({
     image: new RegularShape({
       fill: fill,
@@ -66,25 +66,25 @@ var styles = {
 };
 
 
-var styleKeys = ['x', 'cross', 'star', 'triangle', 'square'];
-var count = 250;
-var features = new Array(count);
-var e = 4500000;
-for (var i = 0; i < count; ++i) {
-  var coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
+const styleKeys = ['x', 'cross', 'star', 'triangle', 'square'];
+const count = 250;
+const features = new Array(count);
+const e = 4500000;
+for (let i = 0; i < count; ++i) {
+  const coordinates = [2 * e * Math.random() - e, 2 * e * Math.random() - e];
   features[i] = new Feature(new Point(coordinates));
   features[i].setStyle(styles[styleKeys[Math.floor(Math.random() * 5)]]);
 }
 
-var source = new VectorSource({
+const source = new VectorSource({
   features: features
 });
 
-var vectorLayer = new VectorLayer({
+const vectorLayer = new VectorLayer({
   source: source
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     vectorLayer
   ],

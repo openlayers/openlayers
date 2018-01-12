@@ -18,7 +18,7 @@ import _ol_tilecoord_ from '../tilecoord.js';
  * @extends {ol.source.Tile}
  * @param {ol.SourceUrlTileOptions} options Image tile options.
  */
-var UrlTile = function(options) {
+const UrlTile = function(options) {
 
   TileSource.call(this, {
     attributions: options.attributions,
@@ -116,10 +116,10 @@ UrlTile.prototype.getUrls = function() {
  * @protected
  */
 UrlTile.prototype.handleTileChange = function(event) {
-  var tile = /** @type {ol.Tile} */ (event.target);
-  var uid = getUid(tile);
-  var tileState = tile.getState();
-  var type;
+  const tile = /** @type {ol.Tile} */ (event.target);
+  const uid = getUid(tile);
+  const tileState = tile.getState();
+  let type;
   if (tileState == TileState.LOADING) {
     this.tileLoadingKeys_[uid] = true;
     type = TileEventType.TILELOADSTART;
@@ -170,7 +170,7 @@ UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
  * @api
  */
 UrlTile.prototype.setUrl = function(url) {
-  var urls = this.urls = expandUrl(url);
+  const urls = this.urls = expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
     createFromTemplates(urls, this.tileGrid), url);
@@ -184,7 +184,7 @@ UrlTile.prototype.setUrl = function(url) {
  */
 UrlTile.prototype.setUrls = function(urls) {
   this.urls = urls;
-  var key = urls.join('\n');
+  const key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
     this.fixedTileUrlFunction.bind(this) :
     createFromTemplates(urls, this.tileGrid), key);
@@ -195,7 +195,7 @@ UrlTile.prototype.setUrls = function(urls) {
  * @inheritDoc
  */
 UrlTile.prototype.useTile = function(z, x, y) {
-  var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
   }

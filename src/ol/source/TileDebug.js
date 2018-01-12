@@ -22,7 +22,7 @@ import _ol_tilecoord_ from '../tilecoord.js';
  * @param {olx.source.TileDebugOptions} options Debug tile options.
  * @api
  */
-var TileDebug = function(options) {
+const TileDebug = function(options) {
 
   TileSource.call(this, {
     opaque: false,
@@ -40,16 +40,16 @@ inherits(TileDebug, TileSource);
  * @inheritDoc
  */
 TileDebug.prototype.getTile = function(z, x, y) {
-  var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.source.TileDebug.Tile_} */ (this.tileCache.get(tileCoordKey));
   } else {
-    var tileSize = _ol_size_.toSize(this.tileGrid.getTileSize(z));
-    var tileCoord = [z, x, y];
-    var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-    var text = !textTileCoord ? '' :
+    const tileSize = _ol_size_.toSize(this.tileGrid.getTileSize(z));
+    const tileCoord = [z, x, y];
+    const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
+    const text = !textTileCoord ? '' :
       this.getTileCoordForTileUrlFunction(textTileCoord).toString();
-    var tile = new TileDebug.Tile_(tileCoord, tileSize, text);
+    const tile = new TileDebug.Tile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
@@ -98,8 +98,8 @@ TileDebug.Tile_.prototype.getImage = function() {
   if (this.canvas_) {
     return this.canvas_;
   } else {
-    var tileSize = this.tileSize_;
-    var context = createCanvasContext2D(tileSize[0], tileSize[1]);
+    const tileSize = this.tileSize_;
+    const context = createCanvasContext2D(tileSize[0], tileSize[1]);
 
     context.strokeStyle = 'black';
     context.strokeRect(0.5, 0.5, tileSize[0] + 0.5, tileSize[1] + 0.5);

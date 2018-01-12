@@ -15,7 +15,7 @@
  * @implements {oli.events.Event}
  * @param {string} type Type.
  */
-var Event = function(type) {
+const Event = function(type) {
 
   /**
    * @type {boolean}

@@ -52,7 +52,7 @@ import _ol_obj_ from './obj.js';
  * @fires ol.Object.Event
  * @api
  */
-var BaseObject = function(opt_values) {
+const BaseObject = function(opt_values) {
   Observable.call(this);
 
   // Call ol.getUid to ensure that the order of objects' ids is the same as
@@ -100,7 +100,7 @@ BaseObject.getChangeEventType = function(key) {
  * @api
  */
 BaseObject.prototype.get = function(key) {
-  var value;
+  let value;
   if (this.values_.hasOwnProperty(key)) {
     value = this.values_[key];
   }
@@ -133,7 +133,7 @@ BaseObject.prototype.getProperties = function() {
  * @param {*} oldValue Old value.
  */
 BaseObject.prototype.notify = function(key, oldValue) {
-  var eventType;
+  let eventType;
   eventType = BaseObject.getChangeEventType(key);
   this.dispatchEvent(new BaseObject.Event(eventType, key, oldValue));
   eventType = ObjectEventType.PROPERTYCHANGE;
@@ -152,7 +152,7 @@ BaseObject.prototype.set = function(key, value, opt_silent) {
   if (opt_silent) {
     this.values_[key] = value;
   } else {
-    var oldValue = this.values_[key];
+    const oldValue = this.values_[key];
     this.values_[key] = value;
     if (oldValue !== value) {
       this.notify(key, oldValue);
@@ -169,7 +169,7 @@ BaseObject.prototype.set = function(key, value, opt_silent) {
  * @api
  */
 BaseObject.prototype.setProperties = function(values, opt_silent) {
-  var key;
+  let key;
   for (key in values) {
     this.set(key, values[key], opt_silent);
   }
@@ -184,7 +184,7 @@ BaseObject.prototype.setProperties = function(values, opt_silent) {
  */
 BaseObject.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
-    var oldValue = this.values_[key];
+    const oldValue = this.values_[key];
     delete this.values_[key];
     if (!opt_silent) {
       this.notify(key, oldValue);

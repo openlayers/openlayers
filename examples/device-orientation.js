@@ -6,11 +6,11 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import {toRadians} from '../src/ol/math.js';
 import OSM from '../src/ol/source/OSM.js';
 
-var view = new View({
+const view = new View({
   center: [0, 0],
   zoom: 2
 });
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -30,15 +30,15 @@ function el(id) {
 }
 
 
-var gn = new GyroNorm();
+const gn = new GyroNorm();
 
 gn.init().then(function() {
   gn.start(function(event) {
-    var center = view.getCenter();
-    var resolution = view.getResolution();
-    var alpha = toRadians(event.do.beta);
-    var beta = toRadians(event.do.beta);
-    var gamma = toRadians(event.do.gamma);
+    const center = view.getCenter();
+    const resolution = view.getResolution();
+    const alpha = toRadians(event.do.beta);
+    const beta = toRadians(event.do.beta);
+    const gamma = toRadians(event.do.gamma);
 
     el('alpha').innerText = alpha + ' [rad]';
     el('beta').innerText = beta + ' [rad]';

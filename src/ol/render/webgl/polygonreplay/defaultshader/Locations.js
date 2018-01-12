@@ -10,43 +10,43 @@ import {DEBUG_WEBGL} from '../../../../index.js';
  * @param {WebGLProgram} program Program.
  * @struct
  */
-var _ol_render_webgl_polygonreplay_defaultshader_Locations_ = function(gl, program) {
+const _ol_render_webgl_polygonreplay_defaultshader_Locations_ = function(gl, program) {
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_projectionMatrix' : 'b');
+    program, DEBUG_WEBGL ? 'u_projectionMatrix' : 'b');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetScaleMatrix = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'c');
+    program, DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'c');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetRotateMatrix = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'd');
+    program, DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'd');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_color = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_color' : 'e');
+    program, DEBUG_WEBGL ? 'u_color' : 'e');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_opacity = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? 'u_opacity' : 'f');
+    program, DEBUG_WEBGL ? 'u_opacity' : 'f');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? 'a_position' : 'a');
+    program, DEBUG_WEBGL ? 'a_position' : 'a');
 };
 
 export default _ol_render_webgl_polygonreplay_defaultshader_Locations_;

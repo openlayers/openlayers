@@ -29,9 +29,9 @@ import Style from '../style/Style.js';
  * @param {olx.interaction.ExtentOptions=} opt_options Options.
  * @api
  */
-var ExtentInteraction = function(opt_options) {
+const ExtentInteraction = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * Extent of the drawn box
@@ -152,16 +152,16 @@ ExtentInteraction.handleEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
-  var pixel = mapBrowserEvent.pixel;
-  var map = mapBrowserEvent.map;
+  const pixel = mapBrowserEvent.pixel;
+  const map = mapBrowserEvent.map;
 
-  var extent = this.getExtent();
-  var vertex = this.snapToVertex_(pixel, map);
+  const extent = this.getExtent();
+  let vertex = this.snapToVertex_(pixel, map);
 
   //find the extent corner opposite the passed corner
-  var getOpposingPoint = function(point) {
-    var x_ = null;
-    var y_ = null;
+  const getOpposingPoint = function(point) {
+    let x_ = null;
+    let y_ = null;
     if (point[0] == extent[0]) {
       x_ = extent[2];
     } else if (point[0] == extent[2]) {
@@ -178,8 +178,8 @@ ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
     return null;
   };
   if (vertex && extent) {
-    var x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
-    var y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
+    const x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
+    const y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
 
     //snap to point
     if (x !== null && y !== null) {
@@ -187,13 +187,13 @@ ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
     //snap to edge
     } else if (x !== null) {
       this.pointerHandler_ = ExtentInteraction.getEdgeHandler_(
-          getOpposingPoint([x, extent[1]]),
-          getOpposingPoint([x, extent[3]])
+        getOpposingPoint([x, extent[1]]),
+        getOpposingPoint([x, extent[3]])
       );
     } else if (y !== null) {
       this.pointerHandler_ = ExtentInteraction.getEdgeHandler_(
-          getOpposingPoint([extent[0], y]),
-          getOpposingPoint([extent[2], y])
+        getOpposingPoint([extent[0], y]),
+        getOpposingPoint([extent[2], y])
       );
     }
   //no snap - new bbox
@@ -213,7 +213,7 @@ ExtentInteraction.handleDownEvent_ = function(mapBrowserEvent) {
  */
 ExtentInteraction.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.pointerHandler_) {
-    var pixelCoordinate = mapBrowserEvent.coordinate;
+    const pixelCoordinate = mapBrowserEvent.coordinate;
     this.setExtent(this.pointerHandler_(pixelCoordinate));
     this.createOrUpdatePointerFeature_(pixelCoordinate);
   }
@@ -229,7 +229,7 @@ ExtentInteraction.handleDragEvent_ = function(mapBrowserEvent) {
 ExtentInteraction.handleUpEvent_ = function(mapBrowserEvent) {
   this.pointerHandler_ = null;
   //If bbox is zero area, set to null;
-  var extent = this.getExtent();
+  const extent = this.getExtent();
   if (!extent || getArea(extent) === 0) {
     this.setExtent(null);
   }
@@ -243,7 +243,7 @@ ExtentInteraction.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ExtentInteraction.getDefaultExtentStyleFunction_ = function() {
-  var style = Style.createDefaultEditing();
+  const style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POLYGON];
   };
@@ -256,7 +256,7 @@ ExtentInteraction.getDefaultExtentStyleFunction_ = function() {
  * @private
  */
 ExtentInteraction.getDefaultPointerStyleFunction_ = function() {
-  var style = Style.createDefaultEditing();
+  const style = Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[GeometryType.POINT];
   };
@@ -314,30 +314,30 @@ ExtentInteraction.getSegments_ = function(extent) {
  * @private
  */
 ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
-  var pixelCoordinate = map.getCoordinateFromPixel(pixel);
-  var sortByDistance = function(a, b) {
+  const pixelCoordinate = map.getCoordinateFromPixel(pixel);
+  const sortByDistance = function(a, b) {
     return _ol_coordinate_.squaredDistanceToSegment(pixelCoordinate, a) -
         _ol_coordinate_.squaredDistanceToSegment(pixelCoordinate, b);
   };
-  var extent = this.getExtent();
+  const extent = this.getExtent();
   if (extent) {
     //convert extents to line segments and find the segment closest to pixelCoordinate
-    var segments = ExtentInteraction.getSegments_(extent);
+    const segments = ExtentInteraction.getSegments_(extent);
     segments.sort(sortByDistance);
-    var closestSegment = segments[0];
+    const closestSegment = segments[0];
 
-    var vertex = (_ol_coordinate_.closestOnSegment(pixelCoordinate,
-        closestSegment));
-    var vertexPixel = map.getPixelFromCoordinate(vertex);
+    let vertex = (_ol_coordinate_.closestOnSegment(pixelCoordinate,
+      closestSegment));
+    const vertexPixel = map.getPixelFromCoordinate(vertex);
 
     //if the distance is within tolerance, snap to the segment
     if (_ol_coordinate_.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
       //test if we should further snap to a vertex
-      var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-      var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      var squaredDist1 = _ol_coordinate_.squaredDistance(vertexPixel, pixel1);
-      var squaredDist2 = _ol_coordinate_.squaredDistance(vertexPixel, pixel2);
-      var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+      const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+      const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+      const squaredDist1 = _ol_coordinate_.squaredDistance(vertexPixel, pixel1);
+      const squaredDist2 = _ol_coordinate_.squaredDistance(vertexPixel, pixel2);
+      const dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {
         vertex = squaredDist1 > squaredDist2 ?
@@ -354,10 +354,10 @@ ExtentInteraction.prototype.snapToVertex_ = function(pixel, map) {
  * @private
  */
 ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
-  var pixel = mapBrowserEvent.pixel;
-  var map = mapBrowserEvent.map;
+  const pixel = mapBrowserEvent.pixel;
+  const map = mapBrowserEvent.map;
 
-  var vertex = this.snapToVertex_(pixel, map);
+  let vertex = this.snapToVertex_(pixel, map);
   if (!vertex) {
     vertex = map.getCoordinateFromPixel(pixel);
   }
@@ -370,7 +370,7 @@ ExtentInteraction.prototype.handlePointerMove_ = function(mapBrowserEvent) {
  * @private
  */
 ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
-  var extentFeature = this.extentFeature_;
+  let extentFeature = this.extentFeature_;
 
   if (!extentFeature) {
     if (!extent) {
@@ -397,13 +397,13 @@ ExtentInteraction.prototype.createOrUpdateExtentFeature_ = function(extent) {
  * @private
  */
 ExtentInteraction.prototype.createOrUpdatePointerFeature_ = function(vertex) {
-  var vertexFeature = this.vertexFeature_;
+  let vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
     vertexFeature = new Feature(new Point(vertex));
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {
-    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    const geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
     geometry.setCoordinates(vertex);
   }
   return vertexFeature;

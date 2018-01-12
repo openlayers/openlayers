@@ -5,7 +5,7 @@ import {fromLonLat} from '../src/ol/proj.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({

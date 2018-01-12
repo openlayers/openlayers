@@ -30,8 +30,8 @@ import _ol_transform_ from '../../transform.js';
  * @param {number=} opt_renderBuffer Optional rendering buffer.
  * @struct
  */
-var _ol_render_canvas_ReplayGroup_ = function(
-    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer) {
+const _ol_render_canvas_ReplayGroup_ = function(
+  tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer) {
   _ol_render_ReplayGroup_.call(this);
 
   /**
@@ -125,8 +125,8 @@ _ol_render_canvas_ReplayGroup_.circleArrayCache_ = {
  * @private
  */
 _ol_render_canvas_ReplayGroup_.fillCircleArrayRowToMiddle_ = function(array, x, y) {
-  var i;
-  var radius = Math.floor(array.length / 2);
+  let i;
+  const radius = Math.floor(array.length / 2);
   if (x >= radius) {
     for (i = radius; i < x; i++) {
       array[i][y] = true;
@@ -153,15 +153,15 @@ _ol_render_canvas_ReplayGroup_.getCircleArray_ = function(radius) {
     return _ol_render_canvas_ReplayGroup_.circleArrayCache_[radius];
   }
 
-  var arraySize = radius * 2 + 1;
-  var arr = new Array(arraySize);
-  for (var i = 0; i < arraySize; i++) {
+  const arraySize = radius * 2 + 1;
+  const arr = new Array(arraySize);
+  for (let i = 0; i < arraySize; i++) {
     arr[i] = new Array(arraySize);
   }
 
-  var x = radius;
-  var y = 0;
-  var error = 0;
+  let x = radius;
+  let y = 0;
+  let error = 0;
 
   while (x >= y) {
     _ol_render_canvas_ReplayGroup_.fillCircleArrayRowToMiddle_(arr, radius + x, radius + y);
@@ -192,13 +192,13 @@ _ol_render_canvas_ReplayGroup_.getCircleArray_ = function(radius) {
  * @param {number} rotation Rotation.
  */
 _ol_render_canvas_ReplayGroup_.replayDeclutter = function(declutterReplays, context, rotation) {
-  var zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
-  var skippedFeatureUids = {};
-  for (var z = 0, zz = zs.length; z < zz; ++z) {
-    var replayData = declutterReplays[zs[z].toString()];
-    for (var i = 0, ii = replayData.length; i < ii;) {
-      var replay = replayData[i++];
-      var transform = replayData[i++];
+  const zs = Object.keys(declutterReplays).map(Number).sort(numberSafeCompareFunction);
+  const skippedFeatureUids = {};
+  for (let z = 0, zz = zs.length; z < zz; ++z) {
+    const replayData = declutterReplays[zs[z].toString()];
+    for (let i = 0, ii = replayData.length; i < ii;) {
+      const replay = replayData[i++];
+      const transform = replayData[i++];
       replay.replay(context, transform, rotation, skippedFeatureUids);
     }
   }
@@ -210,7 +210,7 @@ _ol_render_canvas_ReplayGroup_.replayDeclutter = function(declutterReplays, cont
  * @return {ol.DeclutterGroup} Declutter instruction group.
  */
 _ol_render_canvas_ReplayGroup_.prototype.addDeclutter = function(group) {
-  var declutter = null;
+  let declutter = null;
   if (this.declutterTree_) {
     if (group) {
       declutter = this.declutterGroup_;
@@ -229,7 +229,7 @@ _ol_render_canvas_ReplayGroup_.prototype.addDeclutter = function(group) {
  * @param {ol.Transform} transform Transform.
  */
 _ol_render_canvas_ReplayGroup_.prototype.clip = function(context, transform) {
-  var flatClipCoords = this.getClipCoords(transform);
+  const flatClipCoords = this.getClipCoords(transform);
   context.beginPath();
   context.moveTo(flatClipCoords[0], flatClipCoords[1]);
   context.lineTo(flatClipCoords[2], flatClipCoords[3]);
@@ -244,9 +244,9 @@ _ol_render_canvas_ReplayGroup_.prototype.clip = function(context, transform) {
  * @return {boolean} Has replays of the provided types.
  */
 _ol_render_canvas_ReplayGroup_.prototype.hasReplays = function(replays) {
-  for (var zIndex in this.replaysByZIndex_) {
-    var candidates = this.replaysByZIndex_[zIndex];
-    for (var i = 0, ii = replays.length; i < ii; ++i) {
+  for (const zIndex in this.replaysByZIndex_) {
+    const candidates = this.replaysByZIndex_[zIndex];
+    for (let i = 0, ii = replays.length; i < ii; ++i) {
       if (replays[i] in candidates) {
         return true;
       }
@@ -260,11 +260,10 @@ _ol_render_canvas_ReplayGroup_.prototype.hasReplays = function(replays) {
  * FIXME empty description for jsdoc
  */
 _ol_render_canvas_ReplayGroup_.prototype.finish = function() {
-  var zKey;
+  let zKey;
   for (zKey in this.replaysByZIndex_) {
-    var replays = this.replaysByZIndex_[zKey];
-    var replayKey;
-    for (replayKey in replays) {
+    const replays = this.replaysByZIndex_[zKey];
+    for (const replayKey in replays) {
       replays[replayKey].finish();
     }
   }
@@ -286,16 +285,16 @@ _ol_render_canvas_ReplayGroup_.prototype.finish = function() {
  * @template T
  */
 _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
-    coordinate, resolution, rotation, hitTolerance, skippedFeaturesHash, callback, declutterReplays) {
+  coordinate, resolution, rotation, hitTolerance, skippedFeaturesHash, callback, declutterReplays) {
 
   hitTolerance = Math.round(hitTolerance);
-  var contextSize = hitTolerance * 2 + 1;
-  var transform = _ol_transform_.compose(this.hitDetectionTransform_,
-      hitTolerance + 0.5, hitTolerance + 0.5,
-      1 / resolution, -1 / resolution,
-      -rotation,
-      -coordinate[0], -coordinate[1]);
-  var context = this.hitDetectionContext_;
+  const contextSize = hitTolerance * 2 + 1;
+  const transform = _ol_transform_.compose(this.hitDetectionTransform_,
+    hitTolerance + 0.5, hitTolerance + 0.5,
+    1 / resolution, -1 / resolution,
+    -rotation,
+    -coordinate[0], -coordinate[1]);
+  const context = this.hitDetectionContext_;
 
   if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
     context.canvas.width = contextSize;
@@ -307,34 +306,34 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
   /**
    * @type {ol.Extent}
    */
-  var hitExtent;
+  let hitExtent;
   if (this.renderBuffer_ !== undefined) {
     hitExtent = createEmpty();
     extendCoordinate(hitExtent, coordinate);
     buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
   }
 
-  var mask = _ol_render_canvas_ReplayGroup_.getCircleArray_(hitTolerance);
-  var declutteredFeatures;
+  const mask = _ol_render_canvas_ReplayGroup_.getCircleArray_(hitTolerance);
+  let declutteredFeatures;
   if (this.declutterTree_) {
     declutteredFeatures = this.declutterTree_.all().map(function(entry) {
       return entry.value;
     });
   }
 
-  var replayType;
+  let replayType;
 
   /**
    * @param {ol.Feature|ol.render.Feature} feature Feature.
    * @return {?} Callback result.
    */
   function featureCallback(feature) {
-    var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
-    for (var i = 0; i < contextSize; i++) {
-      for (var j = 0; j < contextSize; j++) {
+    const imageData = context.getImageData(0, 0, contextSize, contextSize).data;
+    for (let i = 0; i < contextSize; i++) {
+      for (let j = 0; j < contextSize; j++) {
         if (mask[i][j]) {
           if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-            var result;
+            let result;
             if (!(declutteredFeatures && (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) ||
                 declutteredFeatures.indexOf(feature) !== -1) {
               result = callback(feature);
@@ -352,12 +351,12 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
   }
 
   /** @type {Array.<number>} */
-  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  const zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(numberSafeCompareFunction);
 
-  var i, j, replays, replay, result;
+  let i, j, replays, replay, result;
   for (i = zs.length - 1; i >= 0; --i) {
-    var zIndexKey = zs[i].toString();
+    const zIndexKey = zs[i].toString();
     replays = this.replaysByZIndex_[zIndexKey];
     for (j = _ol_render_replay_.ORDER.length - 1; j >= 0; --j) {
       replayType = _ol_render_replay_.ORDER[j];
@@ -365,7 +364,7 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
       if (replay !== undefined) {
         if (declutterReplays &&
             (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
-          var declutter = declutterReplays[zIndexKey];
+          const declutter = declutterReplays[zIndexKey];
           if (!declutter) {
             declutterReplays[zIndexKey] = [replay, transform.slice(0)];
           } else {
@@ -373,7 +372,7 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
           }
         } else {
           result = replay.replayHitDetection(context, transform, rotation,
-              skippedFeaturesHash, featureCallback, hitExtent);
+            skippedFeaturesHash, featureCallback, hitExtent);
           if (result) {
             return result;
           }
@@ -390,14 +389,14 @@ _ol_render_canvas_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
  * @return {Array.<number>} Clip coordinates.
  */
 _ol_render_canvas_ReplayGroup_.prototype.getClipCoords = function(transform) {
-  var maxExtent = this.maxExtent_;
-  var minX = maxExtent[0];
-  var minY = maxExtent[1];
-  var maxX = maxExtent[2];
-  var maxY = maxExtent[3];
-  var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
+  const maxExtent = this.maxExtent_;
+  const minX = maxExtent[0];
+  const minY = maxExtent[1];
+  const maxX = maxExtent[2];
+  const maxY = maxExtent[3];
+  const flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
   _ol_geom_flat_transform_.transform2D(
-      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
+    flatClipCoords, 0, 8, 2, transform, flatClipCoords);
   return flatClipCoords;
 };
 
@@ -406,17 +405,17 @@ _ol_render_canvas_ReplayGroup_.prototype.getClipCoords = function(transform) {
  * @inheritDoc
  */
 _ol_render_canvas_ReplayGroup_.prototype.getReplay = function(zIndex, replayType) {
-  var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
-  var replays = this.replaysByZIndex_[zIndexKey];
+  const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
+  let replays = this.replaysByZIndex_[zIndexKey];
   if (replays === undefined) {
     replays = {};
     this.replaysByZIndex_[zIndexKey] = replays;
   }
-  var replay = replays[replayType];
+  let replay = replays[replayType];
   if (replay === undefined) {
-    var Constructor = _ol_render_canvas_ReplayGroup_.BATCH_CONSTRUCTORS_[replayType];
+    const Constructor = _ol_render_canvas_ReplayGroup_.BATCH_CONSTRUCTORS_[replayType];
     replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
+      this.resolution_, this.pixelRatio_, this.overlaps_, this.declutterTree_);
     replays[replayType] = replay;
   }
   return replay;
@@ -451,10 +450,10 @@ _ol_render_canvas_ReplayGroup_.prototype.isEmpty = function() {
  *     replays.
  */
 _ol_render_canvas_ReplayGroup_.prototype.replay = function(context,
-    transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {
+  transform, viewRotation, skippedFeaturesHash, opt_replayTypes, opt_declutterReplays) {
 
   /** @type {Array.<number>} */
-  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  const zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(numberSafeCompareFunction);
 
   // setup clipping so that the parts of over-simplified geometries are not
@@ -462,18 +461,18 @@ _ol_render_canvas_ReplayGroup_.prototype.replay = function(context,
   context.save();
   this.clip(context, transform);
 
-  var replayTypes = opt_replayTypes ? opt_replayTypes : _ol_render_replay_.ORDER;
-  var i, ii, j, jj, replays, replay;
+  const replayTypes = opt_replayTypes ? opt_replayTypes : _ol_render_replay_.ORDER;
+  let i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
-    var zIndexKey = zs[i].toString();
+    const zIndexKey = zs[i].toString();
     replays = this.replaysByZIndex_[zIndexKey];
     for (j = 0, jj = replayTypes.length; j < jj; ++j) {
-      var replayType = replayTypes[j];
+      const replayType = replayTypes[j];
       replay = replays[replayType];
       if (replay !== undefined) {
         if (opt_declutterReplays &&
             (replayType == ReplayType.IMAGE || replayType == ReplayType.TEXT)) {
-          var declutter = opt_declutterReplays[zIndexKey];
+          const declutter = opt_declutterReplays[zIndexKey];
           if (!declutter) {
             opt_declutterReplays[zIndexKey] = [replay, transform.slice(0)];
           } else {

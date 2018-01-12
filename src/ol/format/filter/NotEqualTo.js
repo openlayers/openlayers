@@ -15,7 +15,7 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-var NotEqualTo = function(propertyName, expression, opt_matchCase) {
+const NotEqualTo = function(propertyName, expression, opt_matchCase) {
   ComparisonBinary.call(this, 'PropertyIsNotEqualTo', propertyName, expression, opt_matchCase);
 };
 

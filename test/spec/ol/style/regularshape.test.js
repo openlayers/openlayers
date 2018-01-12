@@ -9,7 +9,7 @@ describe('ol.style.RegularShape', function() {
   describe('#constructor', function() {
 
     it('can use rotateWithView', function() {
-      var style = new RegularShape({
+      const style = new RegularShape({
         rotateWithView: true,
         radius: 0
       });
@@ -17,7 +17,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('can use radius', function() {
-      var style = new RegularShape({
+      const style = new RegularShape({
         radius: 5,
         radius2: 10
       });
@@ -26,7 +26,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('can use radius1 as an alias for radius', function() {
-      var style = new RegularShape({
+      const style = new RegularShape({
         radius1: 5,
         radius2: 10
       });
@@ -35,7 +35,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('creates a canvas if no atlas is used (no fill-style)', function() {
-      var style = new RegularShape({radius: 10});
+      const style = new RegularShape({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([21, 21]);
@@ -48,7 +48,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('creates a canvas if no atlas is used (fill-style)', function() {
-      var style = new RegularShape({
+      const style = new RegularShape({
         radius: 10,
         fill: new Fill({
           color: '#FFFF00'
@@ -66,9 +66,9 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
-      var atlasManager = new AtlasManager({initialSize: 512});
-      var style = new RegularShape(
-          {radius: 10, atlasManager: atlasManager});
+      const atlasManager = new AtlasManager({initialSize: 512});
+      const style = new RegularShape(
+        {radius: 10, atlasManager: atlasManager});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([512, 512]);
@@ -81,8 +81,8 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
-      var atlasManager = new AtlasManager({initialSize: 512});
-      var style = new RegularShape({
+      const atlasManager = new AtlasManager({initialSize: 512});
+      const style = new RegularShape({
         radius: 10,
         atlasManager: atlasManager,
         fill: new Fill({
@@ -104,16 +104,16 @@ describe('ol.style.RegularShape', function() {
   describe('#clone', function() {
 
     it('creates a new ol.style.RegularShape', function() {
-      var original = new RegularShape({
+      const original = new RegularShape({
         points: 5
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(clone).to.be.an(RegularShape);
       expect(clone).to.not.be(original);
     });
 
     it('copies all values', function() {
-      var original = new RegularShape({
+      const original = new RegularShape({
         fill: new Fill({
           color: '#319FD3'
         }),
@@ -130,7 +130,7 @@ describe('ol.style.RegularShape', function() {
       });
       original.setOpacity(0.5);
       original.setScale(1.5);
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getAngle()).to.eql(clone.getAngle());
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
       expect(original.getOpacity()).to.eql(clone.getOpacity());
@@ -145,7 +145,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('the clone does not reference the same objects as the original', function() {
-      var original = new RegularShape({
+      const original = new RegularShape({
         fill: new Fill({
           color: '#319FD3'
         }),
@@ -153,7 +153,7 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         })
       });
-      var clone = original.clone();
+      const clone = original.clone();
       expect(original.getFill()).to.not.be(clone.getFill());
       expect(original.getStroke()).to.not.be(clone.getStroke());
 
@@ -168,11 +168,11 @@ describe('ol.style.RegularShape', function() {
   describe('#getChecksum', function() {
 
     it('calculates not the same hash code (radius)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 4,
         radius2: 5
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 3,
         radius2: 5
       });
@@ -180,11 +180,11 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('calculates not the same hash code (radius2)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 4,
         radius2: 5
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 4,
         radius2: 6
       });
@@ -192,23 +192,23 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('calculates the same hash code (radius)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 5
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 5
       });
       expect(style1.getChecksum()).to.eql(style2.getChecksum());
     });
 
     it('calculates not the same hash code (color)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
         })
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 5,
         stroke: new Stroke({
           color: '#319FD3'
@@ -218,7 +218,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('calculates the same hash code (everything set)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 5,
         radius2: 3,
         angle: 1.41,
@@ -235,7 +235,7 @@ describe('ol.style.RegularShape', function() {
           width: 2
         })
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 5,
         radius2: 3,
         angle: 1.41,
@@ -256,7 +256,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('calculates not the same hash code (stroke width differs)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 5,
         radius2: 3,
         angle: 1.41,
@@ -273,7 +273,7 @@ describe('ol.style.RegularShape', function() {
           width: 3
         })
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 5,
         radius2: 3,
         angle: 1.41,
@@ -294,7 +294,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('invalidates a cached checksum if values change (fill)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -303,7 +303,7 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         })
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -319,7 +319,7 @@ describe('ol.style.RegularShape', function() {
     });
 
     it('invalidates a cached checksum if values change (stroke)', function() {
-      var style1 = new RegularShape({
+      const style1 = new RegularShape({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'
@@ -328,7 +328,7 @@ describe('ol.style.RegularShape', function() {
           color: '#319FD3'
         })
       });
-      var style2 = new RegularShape({
+      const style2 = new RegularShape({
         radius: 5,
         fill: new Fill({
           color: '#319FD3'

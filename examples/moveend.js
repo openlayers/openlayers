@@ -7,7 +7,7 @@ import {toLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -30,15 +30,15 @@ function display(id, value) {
 }
 
 function wrapLon(value) {
-  var worlds = Math.floor((value + 180) / 360);
+  const worlds = Math.floor((value + 180) / 360);
   return value - (worlds * 360);
 }
 
 function onMoveEnd(evt) {
-  var map = evt.map;
-  var extent = map.getView().calculateExtent(map.getSize());
-  var bottomLeft = toLonLat(_ol_extent_.getBottomLeft(extent));
-  var topRight = toLonLat(_ol_extent_.getTopRight(extent));
+  const map = evt.map;
+  const extent = map.getView().calculateExtent(map.getSize());
+  const bottomLeft = toLonLat(_ol_extent_.getBottomLeft(extent));
+  const topRight = toLonLat(_ol_extent_.getTopRight(extent));
   display('left', wrapLon(bottomLeft[0]));
   display('bottom', bottomLeft[1]);
   display('right', wrapLon(topRight[0]));

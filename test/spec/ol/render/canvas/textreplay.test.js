@@ -7,9 +7,9 @@ import Text from '../../../../../src/ol/style/Text.js';
 describe('ol.render.canvas.TextReplay', function() {
 
   it('renders polygon labels only when they fit', function() {
-    var replay = new _ol_render_canvas_TextReplay_(1, [-180, -90, 180, 90], 0.02, 1, true);
-    var geometry = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
-    var feature = new Feature(geometry);
+    const replay = new _ol_render_canvas_TextReplay_(1, [-180, -90, 180, 90], 0.02, 1, true);
+    const geometry = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
+    const feature = new Feature(geometry);
 
     replay.setTextStyle(new Text({
       text: 'This is a long text'
@@ -25,12 +25,12 @@ describe('ol.render.canvas.TextReplay', function() {
   });
 
   it('renders multipolygon labels only when they fit', function() {
-    var replay = new _ol_render_canvas_TextReplay_(1, [-180, -90, 180, 90], 0.02, 1, true);
-    var geometry = new MultiPolygon([
+    const replay = new _ol_render_canvas_TextReplay_(1, [-180, -90, 180, 90], 0.02, 1, true);
+    const geometry = new MultiPolygon([
       [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
       [[[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]]
     ]);
-    var feature = new Feature(geometry);
+    const feature = new Feature(geometry);
 
     replay.setTextStyle(new Text({
       text: 'This is a long text'

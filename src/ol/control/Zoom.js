@@ -19,46 +19,46 @@ import {easeOut} from '../easing.js';
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
  * @api
  */
-var Zoom = function(opt_options) {
+const Zoom = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
-  var className = options.className !== undefined ? options.className : 'ol-zoom';
+  const className = options.className !== undefined ? options.className : 'ol-zoom';
 
-  var delta = options.delta !== undefined ? options.delta : 1;
+  const delta = options.delta !== undefined ? options.delta : 1;
 
-  var zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
-  var zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
+  const zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
+  const zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
 
-  var zoomInTipLabel = options.zoomInTipLabel !== undefined ?
+  const zoomInTipLabel = options.zoomInTipLabel !== undefined ?
     options.zoomInTipLabel : 'Zoom in';
-  var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
+  const zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
     options.zoomOutTipLabel : 'Zoom out';
 
-  var inElement = document.createElement('button');
+  const inElement = document.createElement('button');
   inElement.className = className + '-in';
   inElement.setAttribute('type', 'button');
   inElement.title = zoomInTipLabel;
   inElement.appendChild(
-      typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
+    typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
   );
 
   _ol_events_.listen(inElement, EventType.CLICK,
-      Zoom.prototype.handleClick_.bind(this, delta));
+    Zoom.prototype.handleClick_.bind(this, delta));
 
-  var outElement = document.createElement('button');
+  const outElement = document.createElement('button');
   outElement.className = className + '-out';
   outElement.setAttribute('type', 'button');
   outElement.title = zoomOutTipLabel;
   outElement.appendChild(
-      typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
+    typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
   );
 
   _ol_events_.listen(outElement, EventType.CLICK,
-      Zoom.prototype.handleClick_.bind(this, -delta));
+    Zoom.prototype.handleClick_.bind(this, -delta));
 
-  var cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
-  var element = document.createElement('div');
+  const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;
+  const element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(inElement);
   element.appendChild(outElement);
@@ -95,16 +95,16 @@ Zoom.prototype.handleClick_ = function(delta, event) {
  * @private
  */
 Zoom.prototype.zoomByDelta_ = function(delta) {
-  var map = this.getMap();
-  var view = map.getView();
+  const map = this.getMap();
+  const view = map.getView();
   if (!view) {
     // the map does not have a view, so we can't act
     // upon it
     return;
   }
-  var currentResolution = view.getResolution();
+  const currentResolution = view.getResolution();
   if (currentResolution) {
-    var newResolution = view.constrainResolution(currentResolution, delta);
+    const newResolution = view.constrainResolution(currentResolution, delta);
     if (this.duration_ > 0) {
       if (view.getAnimating()) {
         view.cancelAnimations();

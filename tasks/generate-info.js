@@ -1,18 +1,18 @@
-var fs = require('fs-extra');
-var path = require('path');
-var spawn = require('child_process').spawn;
+const fs = require('fs-extra');
+const path = require('path');
+const spawn = require('child_process').spawn;
 
-var async = require('async');
-var walk = require('walk').walk;
-var isWindows = process.platform.indexOf('win') === 0;
+const async = require('async');
+const walk = require('walk').walk;
+const isWindows = process.platform.indexOf('win') === 0;
 
-var sourceDir = path.join(__dirname, '..', 'src');
-var externsDir = path.join(__dirname, '..', 'externs');
-var externsPaths = [
+const sourceDir = path.join(__dirname, '..', 'src');
+const externsDir = path.join(__dirname, '..', 'externs');
+const externsPaths = [
   path.join(externsDir, 'olx.js'),
   path.join(externsDir, 'geojson.js')
 ];
-var infoPath = path.join(__dirname, '..', 'build', 'info.json');
+const infoPath = path.join(__dirname, '..', 'build', 'info.json');
 
 /**
  * Get checked path of a binary.
@@ -24,14 +24,14 @@ function getBinaryPath(binaryName) {
     binaryName += '.cmd';
   }
 
-  var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
-  var expectedPaths = [
+  const jsdocResolved = require.resolve('jsdoc/jsdoc.js');
+  const expectedPaths = [
     path.join(__dirname, '..', 'node_modules', '.bin', binaryName),
     path.resolve(path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName))
   ];
 
-  for (var i = 0; i < expectedPaths.length; i++) {
-    var expectedPath = expectedPaths[i];
+  for (let i = 0; i < expectedPaths.length; i++) {
+    const expectedPath = expectedPaths[i];
     if (fs.existsSync(expectedPath)) {
       return expectedPath;
     }
@@ -40,10 +40,10 @@ function getBinaryPath(binaryName) {
   throw Error('JsDoc binary was not found in any of the expected paths: ' + expectedPaths);
 }
 
-var jsdoc = getBinaryPath('jsdoc');
+const jsdoc = getBinaryPath('jsdoc');
 
-var jsdocConfig = path.join(
-    __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
+const jsdocConfig = path.join(
+  __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
 
 
 /**
@@ -74,10 +74,10 @@ function getInfoTime(callback) {
  *     whether any externs are newer than that date.
  */
 function getNewerExterns(date, callback) {
-  var newer = false;
-  var walker = walk(externsDir);
+  let newer = false;
+  const walker = walk(externsDir);
   walker.on('file', function(root, stats, next) {
-    var sourcePath = path.join(root, stats.name);
+    const sourcePath = path.join(root, stats.name);
     externsPaths.forEach(function(path) {
       if (sourcePath === path && stats.mtime > date) {
         newer = true;
@@ -103,11 +103,11 @@ function getNewerExterns(date, callback) {
  *     error and the array of source paths (empty if none newer).
  */
 function getNewer(date, newer, callback) {
-  var paths = [].concat(externsPaths);
+  let paths = [].concat(externsPaths);
 
-  var walker = walk(sourceDir);
+  const walker = walk(sourceDir);
   walker.on('file', function(root, stats, next) {
-    var sourcePath = path.join(root, stats.name);
+    const sourcePath = path.join(root, stats.name);
     if (/\.js$/.test(sourcePath)) {
       paths.push(sourcePath);
       if (stats.mtime > date) {
@@ -146,7 +146,7 @@ function parseOutput(output) {
     throw new Error('Expected JSON output');
   }
 
-  var info;
+  let info;
   try {
     info = JSON.parse(String(output));
   } catch (err) {
@@ -178,10 +178,10 @@ function spawnJSDoc(paths, callback) {
     return;
   }
 
-  var output = '';
-  var errors = '';
-  var cwd = path.join(__dirname, '..');
-  var child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
+  let output = '';
+  let errors = '';
+  const cwd = path.join(__dirname, '..');
+  const child = spawn(jsdoc, ['-c', jsdocConfig].concat(paths), {cwd: cwd});
 
   child.stdout.on('data', function(data) {
     output += String(data);
@@ -195,7 +195,7 @@ function spawnJSDoc(paths, callback) {
     if (code) {
       callback(new Error(errors || 'JSDoc failed with no output'));
     } else {
-      var info;
+      let info;
       try {
         info = parseOutput(output);
       } catch (err) {
@@ -214,16 +214,16 @@ function spawnJSDoc(paths, callback) {
  * @param {function(Error, Array.<string>)} callback Called with a list of
  *     provides or any error.
  */
-var getProvides = async.memoize(function(srcPath, callback) {
+const getProvides = async.memoize(function(srcPath, callback) {
   fs.readFile(srcPath, function(err, data) {
     if (err) {
       callback(err);
       return;
     }
-    var provides = [];
-    var matcher = /goog\.provide\('(.*)'\)/;
+    const provides = [];
+    const matcher = /goog\.provide\('(.*)'\)/;
     String(data).split('\n').forEach(function(line) {
-      var match = line.match(matcher);
+      const match = line.match(matcher);
       if (match) {
         provides.push(match[1]);
       }
@@ -271,7 +271,7 @@ function addSymbolProvides(info, callback) {
  */
 function writeInfo(info, callback) {
   if (info) {
-    var str = JSON.stringify(info, null, '  ');
+    const str = JSON.stringify(info, null, '  ');
     fs.outputFile(infoPath, str, callback);
   } else {
     process.nextTick(function() {

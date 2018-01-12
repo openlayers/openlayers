@@ -11,7 +11,7 @@ import _ol_tilecoord_ from './tilecoord.js';
  * @param {number=} opt_highWaterMark High water mark.
  * @struct
  */
-var TileCache = function(opt_highWaterMark) {
+const TileCache = function(opt_highWaterMark) {
 
   LRUCache.call(this, opt_highWaterMark);
 
@@ -24,7 +24,7 @@ inherits(TileCache, LRUCache);
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
 TileCache.prototype.expireCache = function(usedTiles) {
-  var tile, zKey;
+  let tile, zKey;
   while (this.canExpireCache()) {
     tile = this.peekLast();
     zKey = tile.tileCoord[0].toString();
@@ -44,9 +44,9 @@ TileCache.prototype.pruneExceptNewestZ = function() {
   if (this.getCount() === 0) {
     return;
   }
-  var key = this.peekFirstKey();
-  var tileCoord = _ol_tilecoord_.fromKey(key);
-  var z = tileCoord[0];
+  const key = this.peekFirstKey();
+  const tileCoord = _ol_tilecoord_.fromKey(key);
+  const z = tileCoord[0];
   this.forEach(function(tile) {
     if (tile.tileCoord[0] !== z) {
       this.remove(_ol_tilecoord_.getKey(tile.tileCoord));

@@ -22,14 +22,14 @@ import {getTransformFromProjections, identityTransform, get as getProjection} fr
  *     options.
  * @api
  */
-var MousePosition = function(opt_options) {
+const MousePosition = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
-  var element = document.createElement('DIV');
+  const element = document.createElement('DIV');
   element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
-  var render = options.render ?
+  const render = options.render ?
     options.render : MousePosition.render;
 
   Control.call(this, {
@@ -39,8 +39,8 @@ var MousePosition = function(opt_options) {
   });
 
   _ol_events_.listen(this,
-      BaseObject.getChangeEventType(MousePosition.Property_.PROJECTION),
-      this.handleProjectionChanged_, this);
+    BaseObject.getChangeEventType(MousePosition.Property_.PROJECTION),
+    this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
@@ -91,7 +91,7 @@ inherits(MousePosition, Control);
  * @api
  */
 MousePosition.render = function(mapEvent) {
-  var frameState = mapEvent.frameState;
+  const frameState = mapEvent.frameState;
   if (!frameState) {
     this.mapProjection_ = null;
   } else {
@@ -146,7 +146,7 @@ MousePosition.prototype.getProjection = function() {
  * @protected
  */
 MousePosition.prototype.handleMouseMove = function(event) {
-  var map = this.getMap();
+  const map = this.getMap();
   this.lastMouseMovePixel_ = map.getEventPixel(event);
   this.updateHTML_(this.lastMouseMovePixel_);
 };
@@ -169,12 +169,12 @@ MousePosition.prototype.handleMouseOut = function(event) {
 MousePosition.prototype.setMap = function(map) {
   Control.prototype.setMap.call(this, map);
   if (map) {
-    var viewport = map.getViewport();
+    const viewport = map.getViewport();
     this.listenerKeys.push(
-        _ol_events_.listen(viewport, EventType.MOUSEMOVE,
-            this.handleMouseMove, this),
-        _ol_events_.listen(viewport, EventType.MOUSEOUT,
-            this.handleMouseOut, this)
+      _ol_events_.listen(viewport, EventType.MOUSEMOVE,
+        this.handleMouseMove, this),
+      _ol_events_.listen(viewport, EventType.MOUSEOUT,
+        this.handleMouseOut, this)
     );
   }
 };
@@ -209,22 +209,22 @@ MousePosition.prototype.setProjection = function(projection) {
  * @private
  */
 MousePosition.prototype.updateHTML_ = function(pixel) {
-  var html = this.undefinedHTML_;
+  let html = this.undefinedHTML_;
   if (pixel && this.mapProjection_) {
     if (!this.transform_) {
-      var projection = this.getProjection();
+      const projection = this.getProjection();
       if (projection) {
         this.transform_ = getTransformFromProjections(
-            this.mapProjection_, projection);
+          this.mapProjection_, projection);
       } else {
         this.transform_ = identityTransform;
       }
     }
-    var map = this.getMap();
-    var coordinate = map.getCoordinateFromPixel(pixel);
+    const map = this.getMap();
+    const coordinate = map.getCoordinateFromPixel(pixel);
     if (coordinate) {
       this.transform_(coordinate, coordinate);
-      var coordinateFormat = this.getCoordinateFormat();
+      const coordinateFormat = this.getCoordinateFormat();
       if (coordinateFormat) {
         html = coordinateFormat(coordinate);
       } else {

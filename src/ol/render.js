@@ -4,7 +4,7 @@
 import _ol_has_ from './has.js';
 import _ol_transform_ from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
-var _ol_render_ = {};
+const _ol_render_ = {};
 
 
 /**
@@ -28,19 +28,19 @@ var _ol_render_ = {};
  * @api
  */
 _ol_render_.toContext = function(context, opt_options) {
-  var canvas = context.canvas;
-  var options = opt_options ? opt_options : {};
-  var pixelRatio = options.pixelRatio || _ol_has_.DEVICE_PIXEL_RATIO;
-  var size = options.size;
+  const canvas = context.canvas;
+  const options = opt_options ? opt_options : {};
+  const pixelRatio = options.pixelRatio || _ol_has_.DEVICE_PIXEL_RATIO;
+  const size = options.size;
   if (size) {
     canvas.width = size[0] * pixelRatio;
     canvas.height = size[1] * pixelRatio;
     canvas.style.width = size[0] + 'px';
     canvas.style.height = size[1] + 'px';
   }
-  var extent = [0, 0, canvas.width, canvas.height];
-  var transform = _ol_transform_.scale(_ol_transform_.create(), pixelRatio, pixelRatio);
+  const extent = [0, 0, canvas.width, canvas.height];
+  const transform = _ol_transform_.scale(_ol_transform_.create(), pixelRatio, pixelRatio);
   return new CanvasImmediateRenderer(context, pixelRatio, extent, transform,
-      0);
+    0);
 };
 export default _ol_render_;

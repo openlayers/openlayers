@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import Projection from '../proj/Projection.js';
 import Units from '../proj/Units.js';
-var _ol_proj_EPSG4326_ = {};
+const _ol_proj_EPSG4326_ = {};
 
 
 /**

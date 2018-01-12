@@ -16,10 +16,10 @@ describe('ol.renderer.canvas.Map', function() {
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var map = new Map({
+      const map = new Map({
         target: document.createElement('div')
       });
-      var renderer = new CanvasMapRenderer(map.viewport_, map);
+      const renderer = new CanvasMapRenderer(map.viewport_, map);
       expect(renderer).to.be.a(CanvasMapRenderer);
     });
 
@@ -27,7 +27,7 @@ describe('ol.renderer.canvas.Map', function() {
 
   describe('#forEachFeatureAtCoordinate', function() {
 
-    var layer, map, target;
+    let layer, map, target;
 
     beforeEach(function(done) {
       target = document.createElement('div');
@@ -44,7 +44,7 @@ describe('ol.renderer.canvas.Map', function() {
       });
 
       // 1 x 1 pixel black icon
-      var img = document.createElement('img');
+      const img = document.createElement('img');
       img.onload = function() {
         done();
       };
@@ -75,7 +75,7 @@ describe('ol.renderer.canvas.Map', function() {
     it('calls callback with layer for managed layers', function() {
       map.addLayer(layer);
       map.renderSync();
-      var cb = sinon.spy();
+      const cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
       expect(cb).to.be.called();
       expect(cb.firstCall.args[1]).to.be(layer);
@@ -84,15 +84,15 @@ describe('ol.renderer.canvas.Map', function() {
     it('calls callback with null for unmanaged layers', function() {
       layer.setMap(map);
       map.renderSync();
-      var cb = sinon.spy();
+      const cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
       expect(cb).to.be.called();
       expect(cb.firstCall.args[1]).to.be(null);
     });
 
     it('calls callback with main layer when skipped feature on unmanaged layer', function() {
-      var feature = layer.getSource().getFeatures()[0];
-      var managedLayer = new VectorLayer({
+      const feature = layer.getSource().getFeatures()[0];
+      const managedLayer = new VectorLayer({
         source: new VectorSource({
           features: [feature]
         })
@@ -101,7 +101,7 @@ describe('ol.renderer.canvas.Map', function() {
       map.skipFeature(feature);
       layer.setMap(map);
       map.renderSync();
-      var cb = sinon.spy();
+      const cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
       expect(cb.callCount).to.be(1);
       expect(cb.firstCall.args[1]).to.be(managedLayer);
@@ -110,7 +110,7 @@ describe('ol.renderer.canvas.Map', function() {
     it('filters managed layers', function() {
       map.addLayer(layer);
       map.renderSync();
-      var cb = sinon.spy();
+      const cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, {
         layerFilter: function() {
           return false;
@@ -124,39 +124,39 @@ describe('ol.renderer.canvas.Map', function() {
       map.renderSync();
       expect(function() {
         map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]),
-            function() {});
+          function() {});
       }).to.not.throwException();
     });
 
     it('calls callback for clicks inside of the hitTolerance', function() {
       map.addLayer(layer);
       map.renderSync();
-      var cb1 = sinon.spy();
-      var cb2 = sinon.spy();
+      const cb1 = sinon.spy();
+      const cb2 = sinon.spy();
 
-      var pixel = map.getPixelFromCoordinate([0, 0]);
+      const pixel = map.getPixelFromCoordinate([0, 0]);
 
-      var pixelsInside = [
+      const pixelsInside = [
         [pixel[0] + 9, pixel[1]],
         [pixel[0] - 9, pixel[1]],
         [pixel[0], pixel[1] + 9],
         [pixel[0], pixel[1] - 9]
       ];
 
-      var pixelsOutside = [
+      const pixelsOutside = [
         [pixel[0] + 9, pixel[1] + 9],
         [pixel[0] - 9, pixel[1] + 9],
         [pixel[0] + 9, pixel[1] - 9],
         [pixel[0] - 9, pixel[1] - 9]
       ];
 
-      for (var i = 0; i < 4; i++) {
+      for (let i = 0; i < 4; i++) {
         map.forEachFeatureAtPixel(pixelsInside[i], cb1, {hitTolerance: 10});
       }
       expect(cb1.callCount).to.be(4);
       expect(cb1.firstCall.args[1]).to.be(layer);
 
-      for (var j = 0; j < 4; j++) {
+      for (let j = 0; j < 4; j++) {
         map.forEachFeatureAtPixel(pixelsOutside[j], cb2, {hitTolerance: 10});
       }
       expect(cb2).not.to.be.called();
@@ -164,7 +164,7 @@ describe('ol.renderer.canvas.Map', function() {
   });
 
   describe('#renderFrame()', function() {
-    var layer, map, renderer;
+    let layer, map, renderer;
 
     beforeEach(function() {
       map = new Map({});
@@ -174,7 +174,7 @@ describe('ol.renderer.canvas.Map', function() {
       });
       renderer = map.getRenderer();
       renderer.layerRenderers_ = {};
-      var layerRenderer = new CanvasLayerRenderer(layer);
+      const layerRenderer = new CanvasLayerRenderer(layer);
       layerRenderer.prepareFrame = function() {
         return true;
       };

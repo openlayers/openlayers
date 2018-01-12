@@ -18,7 +18,7 @@ import PointerInteraction from '../interaction/Pointer.js';
  * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @api
  */
-var DragPan = function(opt_options) {
+const DragPan = function(opt_options) {
 
   PointerInteraction.call(this, {
     handleDownEvent: DragPan.handleDownEvent_,
@@ -26,7 +26,7 @@ var DragPan = function(opt_options) {
     handleUpEvent: DragPan.handleUpEvent_
   });
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -68,20 +68,20 @@ inherits(DragPan, PointerInteraction);
  * @private
  */
 DragPan.handleDragEvent_ = function(mapBrowserEvent) {
-  var targetPointers = this.targetPointers;
-  var centroid =
+  const targetPointers = this.targetPointers;
+  const centroid =
       PointerInteraction.centroid(targetPointers);
   if (targetPointers.length == this.lastPointersCount_) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);
     }
     if (this.lastCentroid) {
-      var deltaX = this.lastCentroid[0] - centroid[0];
-      var deltaY = centroid[1] - this.lastCentroid[1];
-      var map = mapBrowserEvent.map;
-      var view = map.getView();
-      var viewState = view.getState();
-      var center = [deltaX, deltaY];
+      const deltaX = this.lastCentroid[0] - centroid[0];
+      const deltaY = centroid[1] - this.lastCentroid[1];
+      const map = mapBrowserEvent.map;
+      const view = map.getView();
+      const viewState = view.getState();
+      let center = [deltaX, deltaY];
       _ol_coordinate_.scale(center, viewState.resolution);
       _ol_coordinate_.rotate(center, viewState.rotation);
       _ol_coordinate_.add(center, viewState.center);
@@ -105,15 +105,15 @@ DragPan.handleDragEvent_ = function(mapBrowserEvent) {
  * @private
  */
 DragPan.handleUpEvent_ = function(mapBrowserEvent) {
-  var map = mapBrowserEvent.map;
-  var view = map.getView();
+  const map = mapBrowserEvent.map;
+  const view = map.getView();
   if (this.targetPointers.length === 0) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
-      var distance = this.kinetic_.getDistance();
-      var angle = this.kinetic_.getAngle();
-      var center = /** @type {!ol.Coordinate} */ (view.getCenter());
-      var centerpx = map.getPixelFromCoordinate(center);
-      var dest = map.getCoordinateFromPixel([
+      const distance = this.kinetic_.getDistance();
+      const angle = this.kinetic_.getAngle();
+      const center = /** @type {!ol.Coordinate} */ (view.getCenter());
+      const centerpx = map.getPixelFromCoordinate(center);
+      const dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
@@ -145,8 +145,8 @@ DragPan.handleUpEvent_ = function(mapBrowserEvent) {
  */
 DragPan.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
+    const map = mapBrowserEvent.map;
+    const view = map.getView();
     this.lastCentroid = null;
     if (!this.handlingDownUpSequence) {
       view.setHint(ViewHint.INTERACTING, 1);

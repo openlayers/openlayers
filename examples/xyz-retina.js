@@ -5,11 +5,11 @@ import {transform, transformExtent} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 import XYZ from '../src/ol/source/XYZ.js';
 
-var mapMinZoom = 1;
-var mapMaxZoom = 15;
-var mapExtent = [-112.261791, 35.983744, -112.113981, 36.132062];
+const mapMinZoom = 1;
+const mapMaxZoom = 15;
+const mapExtent = [-112.261791, 35.983744, -112.113981, 36.132062];
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
@@ -30,7 +30,7 @@ var map = new Map({
   view: new View({
     projection: 'EPSG:3857',
     center: transform([-112.18688965, 36.057944835],
-        'EPSG:4326', 'EPSG:3857'),
+      'EPSG:4326', 'EPSG:3857'),
     zoom: 12
   })
 });

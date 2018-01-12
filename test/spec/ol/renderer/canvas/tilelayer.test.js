@@ -13,7 +13,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
 
   describe('#prepareFrame', function() {
 
-    var map, target, source, tile;
+    let map, target, source, tile;
     beforeEach(function(done) {
       target = document.createElement('div');
       target.style.width = '100px';
@@ -45,10 +45,10 @@ describe('ol.renderer.canvas.TileLayer', function() {
     });
 
     it('properly handles interim tiles', function() {
-      var layer = map.getLayers().item(0);
+      const layer = map.getLayers().item(0);
       source.updateParams({TIME: '1'});
       map.renderSync();
-      var tiles = map.getRenderer().getLayerRenderer(layer).renderedTiles;
+      const tiles = map.getRenderer().getLayerRenderer(layer).renderedTiles;
       expect(tiles.length).to.be(1);
       expect(tiles[0]).to.equal(tile);
     });
@@ -56,7 +56,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
 
   describe('#composeFrame()', function() {
 
-    var img = null;
+    let img = null;
     beforeEach(function(done) {
       img = new Image(1, 1);
       img.onload = function() {
@@ -70,14 +70,14 @@ describe('ol.renderer.canvas.TileLayer', function() {
     });
 
     it('uses correct draw scale when rotating (HiDPI)', function() {
-      var layer = new TileLayer({
+      const layer = new TileLayer({
         source: new XYZ({
           tileSize: 1
         })
       });
-      var renderer = new CanvasTileLayerRenderer(layer);
+      const renderer = new CanvasTileLayerRenderer(layer);
       renderer.renderedTiles = [];
-      var frameState = {
+      const frameState = {
         viewHints: [],
         time: Date.now(),
         viewState: {
@@ -98,11 +98,11 @@ describe('ol.renderer.canvas.TileLayer', function() {
         return _ol_transform_.create();
       };
       MapRenderer.prototype.calculateMatrices2D(frameState);
-      var layerState = layer.getLayerState();
-      var canvas = document.createElement('canvas');
+      const layerState = layer.getLayerState();
+      const canvas = document.createElement('canvas');
       canvas.width = 200;
       canvas.height = 100;
-      var context = {
+      const context = {
         canvas: canvas,
         drawImage: sinon.spy()
       };

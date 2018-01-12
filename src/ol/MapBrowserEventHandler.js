@@ -16,7 +16,7 @@ import PointerEventHandler from './pointer/PointerEventHandler.js';
  * @constructor
  * @extends {ol.events.EventTarget}
  */
-var MapBrowserEventHandler = function(map, moveTolerance) {
+const MapBrowserEventHandler = function(map, moveTolerance) {
 
   EventTarget.call(this);
 
@@ -60,7 +60,7 @@ var MapBrowserEventHandler = function(map, moveTolerance) {
    */
   this.down_ = null;
 
-  var element = this.map_.getViewport();
+  const element = this.map_.getViewport();
 
   /**
    * @type {number}
@@ -97,16 +97,16 @@ var MapBrowserEventHandler = function(map, moveTolerance) {
    * @private
    */
   this.pointerdownListenerKey_ = _ol_events_.listen(this.pointerEventHandler_,
-      PointerEventType.POINTERDOWN,
-      this.handlePointerDown_, this);
+    PointerEventType.POINTERDOWN,
+    this.handlePointerDown_, this);
 
   /**
    * @type {?ol.EventsKey}
    * @private
    */
   this.relayedListenerKey_ = _ol_events_.listen(this.pointerEventHandler_,
-      PointerEventType.POINTERMOVE,
-      this.relayEvent_, this);
+    PointerEventType.POINTERMOVE,
+    this.relayEvent_, this);
 
 };
 
@@ -118,22 +118,22 @@ inherits(MapBrowserEventHandler, EventTarget);
  * @private
  */
 MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
-  var newEvent = new MapBrowserPointerEvent(
-      MapBrowserEventType.CLICK, this.map_, pointerEvent);
+  let newEvent = new MapBrowserPointerEvent(
+    MapBrowserEventType.CLICK, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
   if (this.clickTimeoutId_ !== 0) {
     // double-click
     clearTimeout(this.clickTimeoutId_);
     this.clickTimeoutId_ = 0;
     newEvent = new MapBrowserPointerEvent(
-        MapBrowserEventType.DBLCLICK, this.map_, pointerEvent);
+      MapBrowserEventType.DBLCLICK, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   } else {
     // click
     this.clickTimeoutId_ = setTimeout(function() {
       this.clickTimeoutId_ = 0;
-      var newEvent = new MapBrowserPointerEvent(
-          MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
+      const newEvent = new MapBrowserPointerEvent(
+        MapBrowserEventType.SINGLECLICK, this.map_, pointerEvent);
       this.dispatchEvent(newEvent);
     }.bind(this), 250);
   }
@@ -147,7 +147,7 @@ MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
  * @private
  */
 MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) {
-  var event = pointerEvent;
+  const event = pointerEvent;
 
   if (event.type == MapBrowserEventType.POINTERUP ||
       event.type == MapBrowserEventType.POINTERCANCEL) {
@@ -165,8 +165,8 @@ MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) 
  */
 MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
-  var newEvent = new MapBrowserPointerEvent(
-      MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
+  const newEvent = new MapBrowserPointerEvent(
+    MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
   // We emulate click events on left mouse button click, touch contact, and pen
@@ -206,8 +206,8 @@ MapBrowserEventHandler.prototype.isMouseActionButton_ = function(pointerEvent) {
  */
 MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
-  var newEvent = new MapBrowserPointerEvent(
-      MapBrowserEventType.POINTERDOWN, this.map_, pointerEvent);
+  const newEvent = new MapBrowserPointerEvent(
+    MapBrowserEventType.POINTERDOWN, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
   this.down_ = pointerEvent;
@@ -221,13 +221,13 @@ MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
         new PointerEventHandler(document);
 
     this.dragListenerKeys_.push(
-        _ol_events_.listen(this.documentPointerEventHandler_,
-            MapBrowserEventType.POINTERMOVE,
-            this.handlePointerMove_, this),
-        _ol_events_.listen(this.documentPointerEventHandler_,
-            MapBrowserEventType.POINTERUP,
-            this.handlePointerUp_, this),
-        /* Note that the listener for `pointercancel is set up on
+      _ol_events_.listen(this.documentPointerEventHandler_,
+        MapBrowserEventType.POINTERMOVE,
+        this.handlePointerMove_, this),
+      _ol_events_.listen(this.documentPointerEventHandler_,
+        MapBrowserEventType.POINTERUP,
+        this.handlePointerUp_, this),
+      /* Note that the listener for `pointercancel is set up on
        * `pointerEventHandler_` and not `documentPointerEventHandler_` like
        * the `pointerup` and `pointermove` listeners.
        *
@@ -240,9 +240,9 @@ MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
        * only receive a `touchcancel` from `pointerEventHandler_`, because it is
        * only registered there.
        */
-        _ol_events_.listen(this.pointerEventHandler_,
-            MapBrowserEventType.POINTERCANCEL,
-            this.handlePointerUp_, this)
+      _ol_events_.listen(this.pointerEventHandler_,
+        MapBrowserEventType.POINTERCANCEL,
+        this.handlePointerUp_, this)
     );
   }
 };
@@ -258,9 +258,9 @@ MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
   // moved a significant distance.
   if (this.isMoving_(pointerEvent)) {
     this.dragging_ = true;
-    var newEvent = new MapBrowserPointerEvent(
-        MapBrowserEventType.POINTERDRAG, this.map_, pointerEvent,
-        this.dragging_);
+    const newEvent = new MapBrowserPointerEvent(
+      MapBrowserEventType.POINTERDRAG, this.map_, pointerEvent,
+      this.dragging_);
     this.dispatchEvent(newEvent);
   }
 
@@ -279,9 +279,9 @@ MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
  * @private
  */
 MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
-  var dragging = !!(this.down_ && this.isMoving_(pointerEvent));
+  const dragging = !!(this.down_ && this.isMoving_(pointerEvent));
   this.dispatchEvent(new MapBrowserPointerEvent(
-      pointerEvent.type, this.map_, pointerEvent, dragging));
+    pointerEvent.type, this.map_, pointerEvent, dragging));
 };
 
 

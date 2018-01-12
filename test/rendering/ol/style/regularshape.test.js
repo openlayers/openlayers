@@ -12,11 +12,11 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.RegularShape', function() {
 
-  var map, vectorSource;
+  let map, vectorSource;
 
   function createMap(renderer) {
     vectorSource = new VectorSource();
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -41,7 +41,7 @@ describe('ol.rendering.style.RegularShape', function() {
   });
 
   function createFeatures(stroke, fill) {
-    var feature;
+    let feature;
     feature = new Feature({
       geometry: new Point([-15, 15])
     });
@@ -108,8 +108,8 @@ describe('ol.rendering.style.RegularShape', function() {
 
 
   describe('#render', function() {
-    var stroke = new Stroke({width: 2});
-    var fill = new Fill({color: 'red'});
+    const stroke = new Stroke({width: 2});
+    const fill = new Fill({color: 'red'});
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');
@@ -143,8 +143,8 @@ describe('ol.rendering.style.RegularShape', function() {
   });
 
   describe('uses the default fill and stroke color', function() {
-    var stroke = new Stroke();
-    var fill = new Fill();
+    const stroke = new Stroke();
+    const fill = new Fill();
 
     it('tests the canvas renderer', function(done) {
       createMap('canvas');

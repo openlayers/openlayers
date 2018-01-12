@@ -7,7 +7,7 @@ import XYZ from '../../../../src/ol/source/XYZ.js';
 where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
 
   function afterRender(source, raster, callback) {
-    var loading = 0;
+    let loading = 0;
 
     source.on('tileloadstart', function(event) {
       loading++;
@@ -26,7 +26,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
 
   }
 
-  var map;
+  let map;
   function createMap(renderer, pixelRatio) {
     map = new Map({
       target: createMapDiv(200, 200),
@@ -50,17 +50,17 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
     it('renders the result of an operation', function(done) {
       createMap('canvas', 1);
 
-      var source = new XYZ({
+      const source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });
 
-      var raster = new RasterSource({
+      const raster = new RasterSource({
         sources: [source],
         operation: function(pixels) {
-          var pixel = pixels[0];
+          const pixel = pixels[0];
           // swap blue and red
-          var red = pixel[0];
+          const red = pixel[0];
           pixel[0] = pixel[2];
           pixel[2] = red;
           return pixel;
@@ -75,7 +75,7 @@ where('Uint8ClampedArray').describe('ol.rendering.source.Raster', function() {
         expectResemble(map, 'rendering/ol/source/expected/raster-1.png', IMAGE_TOLERANCE, done);
       });
 
-      var layer = new ImageLayer({source: raster});
+      const layer = new ImageLayer({source: raster});
 
       map.addLayer(layer);
     });

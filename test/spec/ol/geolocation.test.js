@@ -6,7 +6,7 @@ describe('ol.Geolocation', function() {
   describe('constructor', function() {
 
     it('can be constructed without arguments', function() {
-      var instance = new Geolocation();
+      const instance = new Geolocation();
       expect(instance).to.be.an(Geolocation);
     });
 

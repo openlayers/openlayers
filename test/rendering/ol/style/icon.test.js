@@ -10,9 +10,9 @@ import Style from '../../../../src/ol/style/Style.js';
 
 describe('ol.rendering.style.Icon', function() {
 
-  var map, vectorSource;
+  let map, vectorSource;
 
-  var imgInfo = {
+  const imgInfo = {
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
@@ -23,7 +23,7 @@ describe('ol.rendering.style.Icon', function() {
 
   function createMap(renderer, width, height) {
     vectorSource = new VectorSource();
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -50,12 +50,11 @@ describe('ol.rendering.style.Icon', function() {
   describe('#render', function() {
 
     function createFeatures(src, imgInfo, callback) {
-      var feature;
-      feature = new Feature({
+      const feature = new Feature({
         geometry: new Point([0, 0])
       });
 
-      var img = new Image();
+      const img = new Image();
       img.onload = function() {
         imgInfo.img = img;
         feature.setStyle(new Style({
@@ -71,7 +70,7 @@ describe('ol.rendering.style.Icon', function() {
       createMap('canvas');
       createFeatures('rendering/ol/data/icon.png', imgInfo, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-canvas.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -82,7 +81,7 @@ describe('ol.rendering.style.Icon', function() {
         imgSize: [512, 512]
       }, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-canvas-svg-scale.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -94,7 +93,7 @@ describe('ol.rendering.style.Icon', function() {
         imgSize: [512, 512]
       }, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-canvas-svg-offset.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -106,7 +105,7 @@ describe('ol.rendering.style.Icon', function() {
         imgSize: [512, 512]
       }, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-canvas-svg-offset2.png',
-            IMAGE_TOLERANCE, done);
+          IMAGE_TOLERANCE, done);
       });
     });
 
@@ -115,7 +114,7 @@ describe('ol.rendering.style.Icon', function() {
       createMap('webgl');
       createFeatures('rendering/ol/data/icon.png', imgInfo, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-webgl.png',
-            2.0, done);
+          2.0, done);
       });
     });
   });

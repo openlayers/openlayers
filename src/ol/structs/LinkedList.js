@@ -10,7 +10,7 @@
  * @param {boolean=} opt_circular The last item is connected to the first one,
  * and the first item to the last one. Default is true.
  */
-var LinkedList = function(opt_circular) {
+const LinkedList = function(opt_circular) {
 
   /**
    * @private
@@ -51,13 +51,13 @@ var LinkedList = function(opt_circular) {
 LinkedList.prototype.insertItem = function(data) {
 
   /** @type {ol.LinkedListItem} */
-  var item = {
+  const item = {
     prev: undefined,
     next: undefined,
     data: data
   };
 
-  var head = this.head_;
+  const head = this.head_;
 
   //Initialize the list.
   if (!head) {
@@ -69,7 +69,7 @@ LinkedList.prototype.insertItem = function(data) {
     }
   } else {
     //Link the new item to the adjacent ones.
-    var next = head.next;
+    const next = head.next;
     item.prev = head;
     item.next = next;
     head.next = item;
@@ -90,10 +90,10 @@ LinkedList.prototype.insertItem = function(data) {
  * if possible.
  */
 LinkedList.prototype.removeItem = function() {
-  var head = this.head_;
+  const head = this.head_;
   if (head) {
-    var next = head.next;
-    var prev = head.prev;
+    const next = head.next;
+    const prev = head.prev;
     if (next) {
       next.prev = prev;
     }
@@ -221,7 +221,7 @@ LinkedList.prototype.setFirstItem = function() {
 LinkedList.prototype.concat = function(list) {
   if (list.head_) {
     if (this.head_) {
-      var end = this.head_.next;
+      const end = this.head_.next;
       this.head_.next = list.first_;
       list.first_.prev = this.head_;
       end.prev = list.last_;

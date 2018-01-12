@@ -14,7 +14,7 @@ import {getTransform} from '../proj.js';
  *     At most `2*(2^this)` triangles are created for each triangulated
  *     extent (tile/image).
  */
-var MAX_SUBDIVISION = 10;
+const MAX_SUBDIVISION = 10;
 
 
 /**
@@ -26,7 +26,7 @@ var MAX_SUBDIVISION = 10;
  *     subdivison is forced (up to `MAX_SUBDIVISION`).
  *     Default is `0.25`.
  */
-var MAX_TRIANGLE_WIDTH = 0.25;
+const MAX_TRIANGLE_WIDTH = 0.25;
 
 
 /**
@@ -41,8 +41,8 @@ var MAX_TRIANGLE_WIDTH = 0.25;
  * @param {number} errorThreshold Acceptable error (in source units).
  * @constructor
  */
-var Triangulation = function(sourceProj, targetProj, targetExtent,
-    maxSourceExtent, errorThreshold) {
+const Triangulation = function(sourceProj, targetProj, targetExtent,
+  maxSourceExtent, errorThreshold) {
 
   /**
    * @type {ol.proj.Projection}
@@ -57,8 +57,8 @@ var Triangulation = function(sourceProj, targetProj, targetExtent,
   this.targetProj_ = targetProj;
 
   /** @type {!Object.<string, ol.Coordinate>} */
-  var transformInvCache = {};
-  var transformInv = getTransform(this.targetProj_, this.sourceProj_);
+  let transformInvCache = {};
+  const transformInv = getTransform(this.targetProj_, this.sourceProj_);
 
   /**
    * @param {ol.Coordinate} c A coordinate.
@@ -66,7 +66,7 @@ var Triangulation = function(sourceProj, targetProj, targetExtent,
    * @private
    */
   this.transformInv_ = function(c) {
-    var key = c[0] + '/' + c[1];
+    const key = c[0] + '/' + c[1];
     if (!transformInvCache[key]) {
       transformInvCache[key] = transformInv(c);
     }
@@ -121,34 +121,34 @@ var Triangulation = function(sourceProj, targetProj, targetExtent,
   this.targetWorldWidth_ = this.targetProj_.getExtent() ?
     getWidth(this.targetProj_.getExtent()) : null;
 
-  var destinationTopLeft = getTopLeft(targetExtent);
-  var destinationTopRight = getTopRight(targetExtent);
-  var destinationBottomRight = getBottomRight(targetExtent);
-  var destinationBottomLeft = getBottomLeft(targetExtent);
-  var sourceTopLeft = this.transformInv_(destinationTopLeft);
-  var sourceTopRight = this.transformInv_(destinationTopRight);
-  var sourceBottomRight = this.transformInv_(destinationBottomRight);
-  var sourceBottomLeft = this.transformInv_(destinationBottomLeft);
+  const destinationTopLeft = getTopLeft(targetExtent);
+  const destinationTopRight = getTopRight(targetExtent);
+  const destinationBottomRight = getBottomRight(targetExtent);
+  const destinationBottomLeft = getBottomLeft(targetExtent);
+  const sourceTopLeft = this.transformInv_(destinationTopLeft);
+  const sourceTopRight = this.transformInv_(destinationTopRight);
+  const sourceBottomRight = this.transformInv_(destinationBottomRight);
+  const sourceBottomLeft = this.transformInv_(destinationBottomLeft);
 
   this.addQuad_(
-      destinationTopLeft, destinationTopRight,
-      destinationBottomRight, destinationBottomLeft,
-      sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
-      MAX_SUBDIVISION);
+    destinationTopLeft, destinationTopRight,
+    destinationBottomRight, destinationBottomLeft,
+    sourceTopLeft, sourceTopRight, sourceBottomRight, sourceBottomLeft,
+    MAX_SUBDIVISION);
 
   if (this.wrapsXInSource_) {
-    var leftBound = Infinity;
+    let leftBound = Infinity;
     this.triangles_.forEach(function(triangle, i, arr) {
       leftBound = Math.min(leftBound,
-          triangle.source[0][0], triangle.source[1][0], triangle.source[2][0]);
+        triangle.source[0][0], triangle.source[1][0], triangle.source[2][0]);
     });
 
     // Shift triangles to be as close to `leftBound` as possible
     // (if the distance is more than `worldWidth / 2` it can be closer.
     this.triangles_.forEach(function(triangle) {
       if (Math.max(triangle.source[0][0], triangle.source[1][0],
-          triangle.source[2][0]) - leftBound > this.sourceWorldWidth_ / 2) {
-        var newTriangle = [[triangle.source[0][0], triangle.source[0][1]],
+        triangle.source[2][0]) - leftBound > this.sourceWorldWidth_ / 2) {
+        const newTriangle = [[triangle.source[0][0], triangle.source[0][1]],
           [triangle.source[1][0], triangle.source[1][1]],
           [triangle.source[2][0], triangle.source[2][1]]];
         if ((newTriangle[0][0] - leftBound) > this.sourceWorldWidth_ / 2) {
@@ -164,10 +164,10 @@ var Triangulation = function(sourceProj, targetProj, targetExtent,
         // Rarely (if the extent contains both the dateline and prime meridian)
         // the shift can in turn break some triangles.
         // Detect this here and don't shift in such cases.
-        var minX = Math.min(
-            newTriangle[0][0], newTriangle[1][0], newTriangle[2][0]);
-        var maxX = Math.max(
-            newTriangle[0][0], newTriangle[1][0], newTriangle[2][0]);
+        const minX = Math.min(
+          newTriangle[0][0], newTriangle[1][0], newTriangle[2][0]);
+        const maxX = Math.max(
+          newTriangle[0][0], newTriangle[1][0], newTriangle[2][0]);
         if ((maxX - minX) < this.sourceWorldWidth_ / 2) {
           triangle.source = newTriangle;
         }
@@ -190,7 +190,7 @@ var Triangulation = function(sourceProj, targetProj, targetExtent,
  * @private
  */
 Triangulation.prototype.addTriangle_ = function(a, b, c,
-    aSrc, bSrc, cSrc) {
+  aSrc, bSrc, cSrc) {
   this.triangles_.push({
     source: [aSrc, bSrc, cSrc],
     target: [a, b, c]
@@ -215,24 +215,24 @@ Triangulation.prototype.addTriangle_ = function(a, b, c,
  * @private
  */
 Triangulation.prototype.addQuad_ = function(a, b, c, d,
-    aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
+  aSrc, bSrc, cSrc, dSrc, maxSubdivision) {
 
-  var sourceQuadExtent = boundingExtent([aSrc, bSrc, cSrc, dSrc]);
-  var sourceCoverageX = this.sourceWorldWidth_ ?
+  const sourceQuadExtent = boundingExtent([aSrc, bSrc, cSrc, dSrc]);
+  const sourceCoverageX = this.sourceWorldWidth_ ?
     getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
-  var sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
+  const sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
 
   // when the quad is wrapped in the source projection
   // it covers most of the projection extent, but not fully
-  var wrapsX = this.sourceProj_.canWrapX() &&
+  const wrapsX = this.sourceProj_.canWrapX() &&
                sourceCoverageX > 0.5 && sourceCoverageX < 1;
 
-  var needsSubdivision = false;
+  let needsSubdivision = false;
 
   if (maxSubdivision > 0) {
     if (this.targetProj_.isGlobal() && this.targetWorldWidth_) {
-      var targetQuadExtent = boundingExtent([a, b, c, d]);
-      var targetCoverageX = getWidth(targetQuadExtent) / this.targetWorldWidth_;
+      const targetQuadExtent = boundingExtent([a, b, c, d]);
+      const targetCoverageX = getWidth(targetQuadExtent) / this.targetWorldWidth_;
       needsSubdivision |=
           targetCoverageX > MAX_TRIANGLE_WIDTH;
     }
@@ -264,12 +264,12 @@ Triangulation.prototype.addQuad_ = function(a, b, c, d,
 
   if (maxSubdivision > 0) {
     if (!needsSubdivision) {
-      var center = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2];
-      var centerSrc = this.transformInv_(center);
+      const center = [(a[0] + c[0]) / 2, (a[1] + c[1]) / 2];
+      const centerSrc = this.transformInv_(center);
 
-      var dx;
+      let dx;
       if (wrapsX) {
-        var centerSrcEstimX =
+        const centerSrcEstimX =
             (modulo(aSrc[0], sourceWorldWidth) +
              modulo(cSrc[0], sourceWorldWidth)) / 2;
         dx = centerSrcEstimX -
@@ -277,33 +277,33 @@ Triangulation.prototype.addQuad_ = function(a, b, c, d,
       } else {
         dx = (aSrc[0] + cSrc[0]) / 2 - centerSrc[0];
       }
-      var dy = (aSrc[1] + cSrc[1]) / 2 - centerSrc[1];
-      var centerSrcErrorSquared = dx * dx + dy * dy;
+      const dy = (aSrc[1] + cSrc[1]) / 2 - centerSrc[1];
+      const centerSrcErrorSquared = dx * dx + dy * dy;
       needsSubdivision = centerSrcErrorSquared > this.errorThresholdSquared_;
     }
     if (needsSubdivision) {
       if (Math.abs(a[0] - c[0]) <= Math.abs(a[1] - c[1])) {
         // split horizontally (top & bottom)
-        var bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2];
-        var bcSrc = this.transformInv_(bc);
-        var da = [(d[0] + a[0]) / 2, (d[1] + a[1]) / 2];
-        var daSrc = this.transformInv_(da);
+        const bc = [(b[0] + c[0]) / 2, (b[1] + c[1]) / 2];
+        const bcSrc = this.transformInv_(bc);
+        const da = [(d[0] + a[0]) / 2, (d[1] + a[1]) / 2];
+        const daSrc = this.transformInv_(da);
 
         this.addQuad_(
-            a, b, bc, da, aSrc, bSrc, bcSrc, daSrc, maxSubdivision - 1);
+          a, b, bc, da, aSrc, bSrc, bcSrc, daSrc, maxSubdivision - 1);
         this.addQuad_(
-            da, bc, c, d, daSrc, bcSrc, cSrc, dSrc, maxSubdivision - 1);
+          da, bc, c, d, daSrc, bcSrc, cSrc, dSrc, maxSubdivision - 1);
       } else {
         // split vertically (left & right)
-        var ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
-        var abSrc = this.transformInv_(ab);
-        var cd = [(c[0] + d[0]) / 2, (c[1] + d[1]) / 2];
-        var cdSrc = this.transformInv_(cd);
+        const ab = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+        const abSrc = this.transformInv_(ab);
+        const cd = [(c[0] + d[0]) / 2, (c[1] + d[1]) / 2];
+        const cdSrc = this.transformInv_(cd);
 
         this.addQuad_(
-            a, ab, cd, d, aSrc, abSrc, cdSrc, dSrc, maxSubdivision - 1);
+          a, ab, cd, d, aSrc, abSrc, cdSrc, dSrc, maxSubdivision - 1);
         this.addQuad_(
-            ab, b, c, cd, abSrc, bSrc, cSrc, cdSrc, maxSubdivision - 1);
+          ab, b, c, cd, abSrc, bSrc, cSrc, cdSrc, maxSubdivision - 1);
       }
       return;
     }
@@ -327,10 +327,10 @@ Triangulation.prototype.addQuad_ = function(a, b, c, d,
  * @return {ol.Extent} Calculated extent.
  */
 Triangulation.prototype.calculateSourceExtent = function() {
-  var extent = createEmpty();
+  const extent = createEmpty();
 
   this.triangles_.forEach(function(triangle, i, arr) {
-    var src = triangle.source;
+    const src = triangle.source;
     extendCoordinate(extent, src[0]);
     extendCoordinate(extent, src[1]);
     extendCoordinate(extent, src[2]);

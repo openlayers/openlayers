@@ -12,14 +12,14 @@ import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
 describe('ol.interaction.Translate', function() {
-  var target, map, source, features;
+  let target, map, source, features;
 
-  var width = 360;
-  var height = 180;
+  const width = 360;
+  const height = 180;
 
   beforeEach(function(done) {
     target = document.createElement('div');
-    var style = target.style;
+    const style = target.style;
     style.position = 'absolute';
     style.left = '-1000px';
     style.top = '-1000px';
@@ -33,7 +33,7 @@ describe('ol.interaction.Translate', function() {
       geometry: new Point([20, -30])
     })];
     source.addFeatures(features);
-    var layer = new VectorLayer({source: source});
+    const layer = new VectorLayer({source: source});
     map = new Map({
       target: target,
       layers: [layer],
@@ -62,16 +62,16 @@ describe('ol.interaction.Translate', function() {
    * @param {boolean=} opt_shiftKey Shift key is pressed.
    */
   function simulateEvent(type, x, y, opt_shiftKey) {
-    var viewport = map.getViewport();
+    const viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
-    var position = viewport.getBoundingClientRect();
-    var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new MapBrowserPointerEvent(type, map,
-        new PointerEvent(type, {
-          clientX: position.left + x + width / 2,
-          clientY: position.top + y + height / 2,
-          shiftKey: shiftKey
-        }));
+    const position = viewport.getBoundingClientRect();
+    const shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
+    const event = new MapBrowserPointerEvent(type, map,
+      new PointerEvent(type, {
+        clientX: position.left + x + width / 2,
+        clientY: position.top + y + height / 2,
+        shiftKey: shiftKey
+      }));
     map.handleMapBrowserEvent(event);
   }
 
@@ -83,7 +83,7 @@ describe('ol.interaction.Translate', function() {
    * @return {Array<ol.interaction.Translate.Event|string>} events
    */
   function trackEvents(feature, interaction) {
-    var events = [];
+    const events = [];
     feature.on('change', function(event) {
       events.push('change');
     });
@@ -105,8 +105,8 @@ describe('ol.interaction.Translate', function() {
    */
   function validateEvents(events, features) {
 
-    var startevent = events[0];
-    var endevent = events[events.length - 1];
+    const startevent = events[0];
+    const endevent = events[events.length - 1];
 
     // first event should be translatestart
     expect(startevent).to.be.an(_ol_interaction_Translate_.Event);
@@ -119,7 +119,7 @@ describe('ol.interaction.Translate', function() {
     // make sure we get change events to events array
     expect(events.length > 2).to.be(true);
     // middle events should be feature modification events
-    for (var i = 1; i < events.length - 1; i++) {
+    for (let i = 1; i < events.length - 1; i++) {
       expect(events[i]).to.equal('change');
     }
 
@@ -132,7 +132,7 @@ describe('ol.interaction.Translate', function() {
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      var translate = new _ol_interaction_Translate_({
+      const translate = new _ol_interaction_Translate_({
         features: features
       });
       expect(translate).to.be.a(_ol_interaction_Translate_);
@@ -144,7 +144,7 @@ describe('ol.interaction.Translate', function() {
   describe('setActive', function() {
 
     it('works when the map is not set', function() {
-      var translate = new _ol_interaction_Translate_({
+      const translate = new _ol_interaction_Translate_({
         features: features
       });
       expect(translate.getActive()).to.be(true);
@@ -155,7 +155,7 @@ describe('ol.interaction.Translate', function() {
   });
 
   describe('moving features, with features option', function() {
-    var translate;
+    let translate;
 
     beforeEach(function() {
       translate = new _ol_interaction_Translate_({
@@ -165,13 +165,13 @@ describe('ol.interaction.Translate', function() {
     });
 
     it('moves a selected feature', function() {
-      var events = trackEvents(features[0], translate);
+      const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
-      var geometry = features[0].getGeometry();
+      const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(Point);
       expect(geometry.getCoordinates()).to.eql([50, 40]);
 
@@ -179,13 +179,13 @@ describe('ol.interaction.Translate', function() {
     });
 
     it('does not move an unselected feature', function() {
-      var events = trackEvents(features[0], translate);
+      const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 20, 30);
       simulateEvent('pointerdown', 20, 30);
       simulateEvent('pointerdrag', 50, -40);
       simulateEvent('pointerup', 50, -40);
-      var geometry = features[1].getGeometry();
+      const geometry = features[1].getGeometry();
       expect(geometry).to.be.a(Point);
       expect(geometry.getCoordinates()).to.eql([20, -30]);
 
@@ -194,7 +194,7 @@ describe('ol.interaction.Translate', function() {
   });
 
   describe('moving features, without features option', function() {
-    var translate;
+    let translate;
 
     beforeEach(function() {
       translate = new _ol_interaction_Translate_();
@@ -202,7 +202,7 @@ describe('ol.interaction.Translate', function() {
     });
 
     it('moves only targeted feature', function() {
-      var events = trackEvents(features[0], translate);
+      const events = trackEvents(features[0], translate);
 
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
@@ -216,7 +216,7 @@ describe('ol.interaction.Translate', function() {
   });
 
   describe('changes css cursor', function() {
-    var element, translate;
+    let element, translate;
 
     beforeEach(function() {
       translate = new _ol_interaction_Translate_();

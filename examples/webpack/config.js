@@ -9,8 +9,8 @@ const webpack = require('webpack');
 const src = path.join(__dirname, '..');
 
 const examples = fs.readdirSync(src)
-    .filter(name => /^(?!index).*\.html$/.test(name))
-    .map(name => name.replace(/\.html$/, ''));
+  .filter(name => /^(?!index).*\.html$/.test(name))
+  .map(name => name.replace(/\.html$/, ''));
 
 const entry = {};
 examples.forEach(example => {
@@ -49,7 +49,7 @@ const main = {
 const dev = {
   plugins: [
     new webpack.EnvironmentPlugin(
-        Object.assign({NODE_ENV: 'development'}, process.env)
+      Object.assign({NODE_ENV: 'development'}, process.env)
     )
   ]
 };
@@ -58,7 +58,7 @@ const dev = {
 const prod = {
   plugins: [
     new webpack.EnvironmentPlugin(
-        Object.assign({NODE_ENV: 'production'}, process.env)
+      Object.assign({NODE_ENV: 'production'}, process.env)
     ),
     new MinifyPlugin()
   ]

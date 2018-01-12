@@ -25,13 +25,13 @@ import Interaction from '../interaction/Interaction.js';
  * @param {olx.interaction.KeyboardPanOptions=} opt_options Options.
  * @api
  */
-var KeyboardPan = function(opt_options) {
+const KeyboardPan = function(opt_options) {
 
   Interaction.call(this, {
     handleEvent: KeyboardPan.handleEvent
   });
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   /**
    * @private
@@ -77,19 +77,19 @@ inherits(KeyboardPan, Interaction);
  * @api
  */
 KeyboardPan.handleEvent = function(mapBrowserEvent) {
-  var stopEvent = false;
+  let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN) {
-    var keyEvent = mapBrowserEvent.originalEvent;
-    var keyCode = keyEvent.keyCode;
+    const keyEvent = mapBrowserEvent.originalEvent;
+    const keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&
         (keyCode == _ol_events_KeyCode_.DOWN ||
         keyCode == _ol_events_KeyCode_.LEFT ||
         keyCode == _ol_events_KeyCode_.RIGHT ||
         keyCode == _ol_events_KeyCode_.UP)) {
-      var map = mapBrowserEvent.map;
-      var view = map.getView();
-      var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
-      var deltaX = 0, deltaY = 0;
+      const map = mapBrowserEvent.map;
+      const view = map.getView();
+      const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
+      let deltaX = 0, deltaY = 0;
       if (keyCode == _ol_events_KeyCode_.DOWN) {
         deltaY = -mapUnitsDelta;
       } else if (keyCode == _ol_events_KeyCode_.LEFT) {
@@ -99,7 +99,7 @@ KeyboardPan.handleEvent = function(mapBrowserEvent) {
       } else {
         deltaY = mapUnitsDelta;
       }
-      var delta = [deltaX, deltaY];
+      const delta = [deltaX, deltaY];
       _ol_coordinate_.rotate(delta, view.getRotation());
       Interaction.pan(view, delta, this.duration_);
       mapBrowserEvent.preventDefault();

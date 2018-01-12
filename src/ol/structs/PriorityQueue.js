@@ -19,7 +19,7 @@ import _ol_obj_ from '../obj.js';
  * @struct
  * @template T
  */
-var PriorityQueue = function(priorityFunction, keyFunction) {
+const PriorityQueue = function(priorityFunction, keyFunction) {
 
   /**
    * @type {function(T): number}
@@ -76,9 +76,9 @@ PriorityQueue.prototype.clear = function() {
  * @return {T} Element.
  */
 PriorityQueue.prototype.dequeue = function() {
-  var elements = this.elements_;
-  var priorities = this.priorities_;
-  var element = elements[0];
+  const elements = this.elements_;
+  const priorities = this.priorities_;
+  const element = elements[0];
   if (elements.length == 1) {
     elements.length = 0;
     priorities.length = 0;
@@ -87,7 +87,7 @@ PriorityQueue.prototype.dequeue = function() {
     priorities[0] = priorities.pop();
     this.siftUp_(0);
   }
-  var elementKey = this.keyFunction_(element);
+  const elementKey = this.keyFunction_(element);
   delete this.queuedElements_[elementKey];
   return element;
 };
@@ -100,8 +100,8 @@ PriorityQueue.prototype.dequeue = function() {
  */
 PriorityQueue.prototype.enqueue = function(element) {
   assert(!(this.keyFunction_(element) in this.queuedElements_),
-      31); // Tried to enqueue an `element` that was already added to the queue
-  var priority = this.priorityFunction_(element);
+    31); // Tried to enqueue an `element` that was already added to the queue
+  const priority = this.priorityFunction_(element);
   if (priority != PriorityQueue.DROP) {
     this.elements_.push(element);
     this.priorities_.push(priority);
@@ -159,7 +159,7 @@ PriorityQueue.prototype.getParentIndex_ = function(index) {
  * @private
  */
 PriorityQueue.prototype.heapify_ = function() {
-  var i;
+  let i;
   for (i = (this.elements_.length >> 1) - 1; i >= 0; i--) {
     this.siftUp_(i);
   }
@@ -197,18 +197,18 @@ PriorityQueue.prototype.isQueued = function(element) {
  * @private
  */
 PriorityQueue.prototype.siftUp_ = function(index) {
-  var elements = this.elements_;
-  var priorities = this.priorities_;
-  var count = elements.length;
-  var element = elements[index];
-  var priority = priorities[index];
-  var startIndex = index;
+  const elements = this.elements_;
+  const priorities = this.priorities_;
+  const count = elements.length;
+  const element = elements[index];
+  const priority = priorities[index];
+  const startIndex = index;
 
   while (index < (count >> 1)) {
-    var lIndex = this.getLeftChildIndex_(index);
-    var rIndex = this.getRightChildIndex_(index);
+    const lIndex = this.getLeftChildIndex_(index);
+    const rIndex = this.getRightChildIndex_(index);
 
-    var smallerChildIndex = rIndex < count &&
+    const smallerChildIndex = rIndex < count &&
         priorities[rIndex] < priorities[lIndex] ?
       rIndex : lIndex;
 
@@ -229,13 +229,13 @@ PriorityQueue.prototype.siftUp_ = function(index) {
  * @private
  */
 PriorityQueue.prototype.siftDown_ = function(startIndex, index) {
-  var elements = this.elements_;
-  var priorities = this.priorities_;
-  var element = elements[index];
-  var priority = priorities[index];
+  const elements = this.elements_;
+  const priorities = this.priorities_;
+  const element = elements[index];
+  const priority = priorities[index];
 
   while (index > startIndex) {
-    var parentIndex = this.getParentIndex_(index);
+    const parentIndex = this.getParentIndex_(index);
     if (priorities[parentIndex] > priority) {
       elements[index] = elements[parentIndex];
       priorities[index] = priorities[parentIndex];
@@ -253,12 +253,12 @@ PriorityQueue.prototype.siftDown_ = function(startIndex, index) {
  * FIXME empty description for jsdoc
  */
 PriorityQueue.prototype.reprioritize = function() {
-  var priorityFunction = this.priorityFunction_;
-  var elements = this.elements_;
-  var priorities = this.priorities_;
-  var index = 0;
-  var n = elements.length;
-  var element, i, priority;
+  const priorityFunction = this.priorityFunction_;
+  const elements = this.elements_;
+  const priorities = this.priorities_;
+  let index = 0;
+  const n = elements.length;
+  let element, i, priority;
   for (i = 0; i < n; ++i) {
     element = elements[i];
     priority = priorityFunction(element);

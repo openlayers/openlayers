@@ -9,7 +9,7 @@ import Style from '../src/ol/style/Style.js';
 import Text from '../src/ol/style/Text.js';
 
 
-var style = new Style({
+const style = new Style({
   fill: new Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -20,7 +20,7 @@ var style = new Style({
   text: new Text()
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new VectorLayer({
       renderMode: 'image',
@@ -41,7 +41,7 @@ var map = new Map({
   })
 });
 
-var featureOverlay = new VectorLayer({
+const featureOverlay = new VectorLayer({
   source: new VectorSource(),
   map: map,
   style: new Style({
@@ -55,14 +55,14 @@ var featureOverlay = new VectorLayer({
   })
 });
 
-var highlight;
-var displayFeatureInfo = function(pixel) {
+let highlight;
+const displayFeatureInfo = function(pixel) {
 
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
+  const feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
 
-  var info = document.getElementById('info');
+  const info = document.getElementById('info');
   if (feature) {
     info.innerHTML = feature.getId() + ': ' + feature.get('name');
   } else {
@@ -85,7 +85,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  var pixel = map.getEventPixel(evt.originalEvent);
+  const pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
 });
 

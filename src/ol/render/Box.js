@@ -12,7 +12,7 @@ import Polygon from '../geom/Polygon.js';
  * @extends {ol.Disposable}
  * @param {string} className CSS class name.
  */
-var _ol_render_Box_ = function(className) {
+const _ol_render_Box_ = function(className) {
 
   /**
    * @type {ol.geom.Polygon}
@@ -63,10 +63,10 @@ _ol_render_Box_.prototype.disposeInternal = function() {
  * @private
  */
 _ol_render_Box_.prototype.render_ = function() {
-  var startPixel = this.startPixel_;
-  var endPixel = this.endPixel_;
-  var px = 'px';
-  var style = this.element_.style;
+  const startPixel = this.startPixel_;
+  const endPixel = this.endPixel_;
+  const px = 'px';
+  const style = this.element_.style;
   style.left = Math.min(startPixel[0], endPixel[0]) + px;
   style.top = Math.min(startPixel[1], endPixel[1]) + px;
   style.width = Math.abs(endPixel[0] - startPixel[0]) + px;
@@ -80,7 +80,7 @@ _ol_render_Box_.prototype.render_ = function() {
 _ol_render_Box_.prototype.setMap = function(map) {
   if (this.map_) {
     this.map_.getOverlayContainer().removeChild(this.element_);
-    var style = this.element_.style;
+    const style = this.element_.style;
     style.left = style.top = style.width = style.height = 'inherit';
   }
   this.map_ = map;
@@ -106,15 +106,15 @@ _ol_render_Box_.prototype.setPixels = function(startPixel, endPixel) {
  * Creates or updates the cached geometry.
  */
 _ol_render_Box_.prototype.createOrUpdateGeometry = function() {
-  var startPixel = this.startPixel_;
-  var endPixel = this.endPixel_;
-  var pixels = [
+  const startPixel = this.startPixel_;
+  const endPixel = this.endPixel_;
+  const pixels = [
     startPixel,
     [startPixel[0], endPixel[1]],
     endPixel,
     [endPixel[0], startPixel[1]]
   ];
-  var coordinates = pixels.map(this.map_.getCoordinateFromPixel, this.map_);
+  const coordinates = pixels.map(this.map_.getCoordinateFromPixel, this.map_);
   // close the polygon
   coordinates[4] = coordinates[0].slice();
   if (!this.geometry_) {

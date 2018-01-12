@@ -9,9 +9,9 @@ describe('ol.renderer.canvas.ImageLayer', function() {
 
   describe('#forEachLayerAtCoordinate', function() {
 
-    var map, target, source;
+    let map, target, source;
     beforeEach(function(done) {
-      var projection = new Projection({
+      const projection = new Projection({
         code: 'custom-image',
         units: 'pixels',
         extent: [0, 0, 200, 200]
@@ -50,7 +50,7 @@ describe('ol.renderer.canvas.ImageLayer', function() {
 
     it('properly detects pixels', function() {
       map.renderSync();
-      var has = false;
+      let has = false;
       function hasLayer() {
         has = true;
       }

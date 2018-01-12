@@ -17,7 +17,7 @@ import Spatial from '../filter/Spatial.js';
  * @extends {ol.format.filter.Spatial}
  * @api
  */
-var Within = function(geometryName, geometry, opt_srsName) {
+const Within = function(geometryName, geometry, opt_srsName) {
 
   Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
 

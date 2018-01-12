@@ -27,9 +27,9 @@ import _ol_uri_ from '../uri.js';
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
  * @api
  */
-var ImageWMS = function(opt_options) {
+const ImageWMS = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   ImageSource.call(this, {
     attributions: options.attributions,
@@ -137,18 +137,18 @@ ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, proje
   if (this.url_ === undefined) {
     return undefined;
   }
-  var projectionObj = getProjection(projection);
-  var sourceProjectionObj = this.getProjection();
+  const projectionObj = getProjection(projection);
+  const sourceProjectionObj = this.getProjection();
 
   if (sourceProjectionObj && sourceProjectionObj !== projectionObj) {
     resolution = _ol_reproj_.calculateSourceResolution(sourceProjectionObj, projectionObj, coordinate, resolution);
     coordinate = transform(coordinate, projectionObj, sourceProjectionObj);
   }
 
-  var extent = getForViewAndSize(coordinate, resolution, 0,
-      ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
+  const extent = getForViewAndSize(coordinate, resolution, 0,
+    ImageWMS.GETFEATUREINFO_IMAGE_SIZE_);
 
-  var baseParams = {
+  const baseParams = {
     'SERVICE': 'WMS',
     'VERSION': DEFAULT_WMS_VERSION,
     'REQUEST': 'GetFeatureInfo',
@@ -158,14 +158,14 @@ ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, proje
   };
   _ol_obj_.assign(baseParams, this.params_, params);
 
-  var x = Math.floor((coordinate[0] - extent[0]) / resolution);
-  var y = Math.floor((extent[3] - coordinate[1]) / resolution);
+  const x = Math.floor((coordinate[0] - extent[0]) / resolution);
+  const y = Math.floor((extent[3] - coordinate[1]) / resolution);
   baseParams[this.v13_ ? 'I' : 'X'] = x;
   baseParams[this.v13_ ? 'J' : 'Y'] = y;
 
   return this.getRequestUrl_(
-      extent, ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
-      1, sourceProjectionObj || projectionObj, baseParams);
+    extent, ImageWMS.GETFEATUREINFO_IMAGE_SIZE_,
+    1, sourceProjectionObj || projectionObj, baseParams);
 };
 
 
@@ -195,19 +195,19 @@ ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, p
     pixelRatio = 1;
   }
 
-  var imageResolution = resolution / pixelRatio;
+  const imageResolution = resolution / pixelRatio;
 
-  var center = getCenter(extent);
-  var viewWidth = Math.ceil(getWidth(extent) / imageResolution);
-  var viewHeight = Math.ceil(getHeight(extent) / imageResolution);
-  var viewExtent = getForViewAndSize(center, imageResolution, 0,
-      [viewWidth, viewHeight]);
-  var requestWidth = Math.ceil(this.ratio_ * getWidth(extent) / imageResolution);
-  var requestHeight = Math.ceil(this.ratio_ * getHeight(extent) / imageResolution);
-  var requestExtent = getForViewAndSize(center, imageResolution, 0,
-      [requestWidth, requestHeight]);
+  const center = getCenter(extent);
+  const viewWidth = Math.ceil(getWidth(extent) / imageResolution);
+  const viewHeight = Math.ceil(getHeight(extent) / imageResolution);
+  const viewExtent = getForViewAndSize(center, imageResolution, 0,
+    [viewWidth, viewHeight]);
+  const requestWidth = Math.ceil(this.ratio_ * getWidth(extent) / imageResolution);
+  const requestHeight = Math.ceil(this.ratio_ * getHeight(extent) / imageResolution);
+  const requestExtent = getForViewAndSize(center, imageResolution, 0,
+    [requestWidth, requestHeight]);
 
-  var image = this.image_;
+  const image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
@@ -216,7 +216,7 @@ ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, p
     return image;
   }
 
-  var params = {
+  const params = {
     'SERVICE': 'WMS',
     'VERSION': DEFAULT_WMS_VERSION,
     'REQUEST': 'GetMap',
@@ -228,16 +228,16 @@ ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, p
   this.imageSize_[0] = Math.round(getWidth(requestExtent) / imageResolution);
   this.imageSize_[1] = Math.round(getHeight(requestExtent) / imageResolution);
 
-  var url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio,
-      projection, params);
+  const url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio,
+    projection, params);
 
   this.image_ = new _ol_Image_(requestExtent, resolution, pixelRatio,
-      url, this.crossOrigin_, this.imageLoadFunction_);
+    url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
 
   _ol_events_.listen(this.image_, EventType.CHANGE,
-      this.handleImageChange, this);
+    this.handleImageChange, this);
 
   return this.image_;
 
@@ -276,7 +276,7 @@ ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projectio
   if (pixelRatio != 1) {
     switch (this.serverType_) {
       case WMSServerType.GEOSERVER:
-        var dpi = (90 * pixelRatio + 0.5) | 0;
+        const dpi = (90 * pixelRatio + 0.5) | 0;
         if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
         } else {
@@ -299,8 +299,8 @@ ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projectio
   params['WIDTH'] = size[0];
   params['HEIGHT'] = size[1];
 
-  var axisOrientation = projection.getAxisOrientation();
-  var bbox;
+  const axisOrientation = projection.getAxisOrientation();
+  let bbox;
   if (this.v13_ && axisOrientation.substr(0, 2) == 'ne') {
     bbox = [extent[1], extent[0], extent[3], extent[2]];
   } else {
@@ -328,7 +328,7 @@ ImageWMS.prototype.getUrl = function() {
  * @api
  */
 ImageWMS.prototype.setImageLoadFunction = function(
-    imageLoadFunction) {
+  imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();
@@ -366,7 +366,7 @@ ImageWMS.prototype.updateParams = function(params) {
  * @private
  */
 ImageWMS.prototype.updateV13_ = function() {
-  var version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
+  const version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
   this.v13_ = _ol_string_.compareVersions(version, '1.3') >= 0;
 };
 export default ImageWMS;

@@ -9,24 +9,24 @@ import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 
 
 describe('ol.renderer.Layer', function() {
-  var renderer;
-  var eventType = 'change';
+  let renderer;
+  const eventType = 'change';
 
   beforeEach(function() {
-    var layer = new Layer({});
+    const layer = new Layer({});
     renderer = new LayerRenderer(layer);
   });
 
   describe('#loadImage', function() {
-    var image;
-    var imageLoadFunction;
+    let image;
+    let imageLoadFunction;
 
     beforeEach(function() {
-      var extent = [];
-      var resolution = 1;
-      var pixelRatio = 1;
-      var src = '';
-      var crossOrigin = '';
+      const extent = [];
+      const resolution = 1;
+      const pixelRatio = 1;
+      const src = '';
+      const crossOrigin = '';
       imageLoadFunction = sinon.spy();
       image = new _ol_Image_(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction);
     });
@@ -34,13 +34,13 @@ describe('ol.renderer.Layer', function() {
     describe('load IDLE image', function() {
 
       it('returns false', function() {
-        var loaded = renderer.loadImage(image);
+        const loaded = renderer.loadImage(image);
         expect(loaded).to.be(false);
       });
 
       it('registers a listener', function() {
         renderer.loadImage(image);
-        var listeners = image.getListeners(eventType, false);
+        const listeners = image.getListeners(eventType, false);
         expect(listeners).to.have.length(1);
       });
 
@@ -50,13 +50,13 @@ describe('ol.renderer.Layer', function() {
 
       it('returns true', function() {
         image.state = 2; // LOADED
-        var loaded = renderer.loadImage(image);
+        const loaded = renderer.loadImage(image);
         expect(loaded).to.be(true);
       });
 
       it('does not register a listener', function() {
         image.state = 2; // LOADED
-        var loaded = renderer.loadImage(image);
+        const loaded = renderer.loadImage(image);
         expect(loaded).to.be(true);
       });
 
@@ -70,13 +70,13 @@ describe('ol.renderer.Layer', function() {
       });
 
       it('returns false', function() {
-        var loaded = renderer.loadImage(image);
+        const loaded = renderer.loadImage(image);
         expect(loaded).to.be(false);
       });
 
       it('does not register a new listener', function() {
         renderer.loadImage(image);
-        var listeners = image.getListeners(eventType, false);
+        const listeners = image.getListeners(eventType, false);
         expect(listeners).to.have.length(1);
       });
 
@@ -85,7 +85,7 @@ describe('ol.renderer.Layer', function() {
   });
 
   describe('manageTilePyramid behavior', function() {
-    var target, map, view, source;
+    let target, map, view, source;
 
     beforeEach(function(done) {
       target = document.createElement('div');
@@ -128,14 +128,14 @@ describe('ol.renderer.Layer', function() {
 
     it('accesses tiles from current zoom level last', function(done) {
       // expect most recent tile in the cache to be from zoom level 0
-      var key = source.tileCache.peekFirstKey();
-      var tileCoord = _ol_tilecoord_.fromKey(key);
+      const key = source.tileCache.peekFirstKey();
+      const tileCoord = _ol_tilecoord_.fromKey(key);
       expect(tileCoord[0]).to.be(0);
 
       map.once('moveend', function() {
         // expect most recent tile in the cache to be from zoom level 4
-        var key = source.tileCache.peekFirstKey();
-        var tileCoord = _ol_tilecoord_.fromKey(key);
+        const key = source.tileCache.peekFirstKey();
+        const tileCoord = _ol_tilecoord_.fromKey(key);
         expect(tileCoord[0]).to.be(4);
         done();
       });

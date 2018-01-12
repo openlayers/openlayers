@@ -6,10 +6,10 @@ import _ol_pointer_TouchSource_ from '../../../../src/ol/pointer/TouchSource.js'
 
 
 describe('ol.pointer.MouseSource', function() {
-  var handler;
-  var target;
-  var eventSpy;
-  var clock;
+  let handler;
+  let target;
+  let eventSpy;
+  let clock;
 
   beforeEach(function() {
     clock = sinon.useFakeTimers();
@@ -68,14 +68,14 @@ describe('ol.pointer.MouseSource', function() {
   });
 
   function simulateTouchEvent(type, x, y) {
-    var touches = [{
+    const touches = [{
       identifier: 4,
       clientX: x,
       clientY: y,
       target: target
     }];
 
-    var event = {
+    const event = {
       type: type,
       touches: touches,
       changedTouches: touches
@@ -84,7 +84,7 @@ describe('ol.pointer.MouseSource', function() {
   }
 
   function simulateEvent(type, x, y) {
-    var event = {
+    const event = {
       type: type,
       clientX: x,
       clientY: y,

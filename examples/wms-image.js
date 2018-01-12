@@ -6,7 +6,7 @@ import ImageWMS from '../src/ol/source/ImageWMS.js';
 import OSM from '../src/ol/source/OSM.js';
 
 
-var layers = [
+const layers = [
   new TileLayer({
     source: new OSM()
   }),
@@ -20,7 +20,7 @@ var layers = [
     })
   })
 ];
-var map = new Map({
+const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({

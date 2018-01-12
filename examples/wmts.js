@@ -9,18 +9,18 @@ import WMTS from '../src/ol/source/WMTS.js';
 import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
-var projection = getProjection('EPSG:3857');
-var projectionExtent = projection.getExtent();
-var size = _ol_extent_.getWidth(projectionExtent) / 256;
-var resolutions = new Array(14);
-var matrixIds = new Array(14);
-for (var z = 0; z < 14; ++z) {
+const projection = getProjection('EPSG:3857');
+const projectionExtent = projection.getExtent();
+const size = _ol_extent_.getWidth(projectionExtent) / 256;
+const resolutions = new Array(14);
+const matrixIds = new Array(14);
+for (let z = 0; z < 14; ++z) {
   // generate resolutions and matrixIds arrays for this WMTS
   resolutions[z] = size / Math.pow(2, z);
   matrixIds[z] = z;
 }
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM(),

@@ -16,22 +16,22 @@ import XYZ from '../src/ol/source/XYZ.js';
  * @return {ImageData} Output image.
  */
 function shade(inputs, data) {
-  var elevationImage = inputs[0];
-  var width = elevationImage.width;
-  var height = elevationImage.height;
-  var elevationData = elevationImage.data;
-  var shadeData = new Uint8ClampedArray(elevationData.length);
-  var dp = data.resolution * 2;
-  var maxX = width - 1;
-  var maxY = height - 1;
-  var pixel = [0, 0, 0, 0];
-  var twoPi = 2 * Math.PI;
-  var halfPi = Math.PI / 2;
-  var sunEl = Math.PI * data.sunEl / 180;
-  var sunAz = Math.PI * data.sunAz / 180;
-  var cosSunEl = Math.cos(sunEl);
-  var sinSunEl = Math.sin(sunEl);
-  var pixelX, pixelY, x0, x1, y0, y1, offset,
+  const elevationImage = inputs[0];
+  const width = elevationImage.width;
+  const height = elevationImage.height;
+  const elevationData = elevationImage.data;
+  const shadeData = new Uint8ClampedArray(elevationData.length);
+  const dp = data.resolution * 2;
+  const maxX = width - 1;
+  const maxY = height - 1;
+  const pixel = [0, 0, 0, 0];
+  const twoPi = 2 * Math.PI;
+  const halfPi = Math.PI / 2;
+  const sunEl = Math.PI * data.sunEl / 180;
+  const sunAz = Math.PI * data.sunAz / 180;
+  const cosSunEl = Math.cos(sunEl);
+  const sinSunEl = Math.sin(sunEl);
+  let pixelX, pixelY, x0, x1, y0, y1, offset,
       z0, z1, dzdx, dzdy, slope, aspect, cosIncidence, scaled;
   for (pixelY = 0; pixelY <= maxY; ++pixelY) {
     y0 = pixelY === 0 ? 0 : pixelY - 1;
@@ -102,19 +102,19 @@ function shade(inputs, data) {
   return {data: shadeData, width: width, height: height};
 }
 
-var elevation = new XYZ({
+const elevation = new XYZ({
   url: 'https://{a-d}.tiles.mapbox.com/v3/aj.sf-dem/{z}/{x}/{y}.png',
   crossOrigin: 'anonymous',
   transition: 0
 });
 
-var raster = new RasterSource({
+const raster = new RasterSource({
   sources: [elevation],
   operationType: 'image',
   operation: shade
 });
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
@@ -134,11 +134,11 @@ var map = new Map({
   })
 });
 
-var controlIds = ['vert', 'sunEl', 'sunAz'];
-var controls = {};
+const controlIds = ['vert', 'sunEl', 'sunAz'];
+const controls = {};
 controlIds.forEach(function(id) {
-  var control = document.getElementById(id);
-  var output = document.getElementById(id + 'Out');
+  const control = document.getElementById(id);
+  const output = document.getElementById(id + 'Out');
   control.addEventListener('input', function() {
     output.innerText = control.value;
     raster.changed();
@@ -149,9 +149,9 @@ controlIds.forEach(function(id) {
 
 raster.on('beforeoperations', function(event) {
   // the event.data object will be passed to operations
-  var data = event.data;
+  const data = event.data;
   data.resolution = event.resolution;
-  for (var id in controls) {
+  for (const id in controls) {
     data[id] = Number(controls[id].value);
   }
 });

@@ -22,9 +22,9 @@ import PointerInteraction from '../interaction/Pointer.js';
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
  * @api
  */
-var DragRotate = function(opt_options) {
+const DragRotate = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   PointerInteraction.call(this, {
     handleDownEvent: DragRotate.handleDownEvent_,
@@ -65,20 +65,20 @@ DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
     return;
   }
 
-  var map = mapBrowserEvent.map;
-  var view = map.getView();
+  const map = mapBrowserEvent.map;
+  const view = map.getView();
   if (view.getConstraints().rotation === RotationConstraint.disable) {
     return;
   }
-  var size = map.getSize();
-  var offset = mapBrowserEvent.pixel;
-  var theta =
+  const size = map.getSize();
+  const offset = mapBrowserEvent.pixel;
+  const theta =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (this.lastAngle_ !== undefined) {
-    var delta = theta - this.lastAngle_;
-    var rotation = view.getRotation();
+    const delta = theta - this.lastAngle_;
+    const rotation = view.getRotation();
     Interaction.rotateWithoutConstraints(
-        view, rotation - delta);
+      view, rotation - delta);
   }
   this.lastAngle_ = theta;
 };
@@ -95,12 +95,12 @@ DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
     return true;
   }
 
-  var map = mapBrowserEvent.map;
-  var view = map.getView();
+  const map = mapBrowserEvent.map;
+  const view = map.getView();
   view.setHint(ViewHint.INTERACTING, -1);
-  var rotation = view.getRotation();
+  const rotation = view.getRotation();
   Interaction.rotate(view, rotation,
-      undefined, this.duration_);
+    undefined, this.duration_);
   return false;
 };
 
@@ -118,7 +118,7 @@ DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
 
   if (_ol_events_condition_.mouseActionButton(mapBrowserEvent) &&
       this.condition_(mapBrowserEvent)) {
-    var map = mapBrowserEvent.map;
+    const map = mapBrowserEvent.map;
     map.getView().setHint(ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;
     return true;

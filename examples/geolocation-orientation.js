@@ -9,13 +9,13 @@ import {fromLonLat} from '../src/ol/proj.js';
 import OSM from '../src/ol/source/OSM.js';
 
 // creating the view
-var view = new View({
+const view = new View({
   center: fromLonLat([5.8713, 45.6452]),
   zoom: 19
 });
 
 // creating the map
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM()
@@ -31,8 +31,8 @@ var map = new Map({
 });
 
 // Geolocation marker
-var markerEl = document.getElementById('geolocation_marker');
-var marker = new Overlay({
+const markerEl = document.getElementById('geolocation_marker');
+const marker = new Overlay({
   positioning: 'center-center',
   element: markerEl,
   stopEvent: false
@@ -42,11 +42,11 @@ map.addOverlay(marker);
 // LineString to store the different geolocation positions. This LineString
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
-var positions = new LineString([],
-    /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
+const positions = new LineString([],
+  /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
 
 // Geolocation Control
-var geolocation = new Geolocation({
+const geolocation = new Geolocation({
   projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
@@ -55,25 +55,25 @@ var geolocation = new Geolocation({
   }
 });
 
-var deltaMean = 500; // the geolocation sampling period mean in ms
+let deltaMean = 500; // the geolocation sampling period mean in ms
 
 // Listen to position changes
 geolocation.on('change', function() {
-  var position = geolocation.getPosition();
-  var accuracy = geolocation.getAccuracy();
-  var heading = geolocation.getHeading() || 0;
-  var speed = geolocation.getSpeed() || 0;
-  var m = Date.now();
+  const position = geolocation.getPosition();
+  const accuracy = geolocation.getAccuracy();
+  const heading = geolocation.getHeading() || 0;
+  const speed = geolocation.getSpeed() || 0;
+  const m = Date.now();
 
   addPosition(position, heading, m, speed);
 
-  var coords = positions.getCoordinates();
-  var len = coords.length;
+  const coords = positions.getCoordinates();
+  const len = coords.length;
   if (len >= 2) {
     deltaMean = (coords[len - 1][3] - coords[0][3]) / (len - 1);
   }
 
-  var html = [
+  const html = [
     'Position: ' + position[0].toFixed(2) + ', ' + position[1].toFixed(2),
     'Accuracy: ' + accuracy,
     'Heading: ' + Math.round(radToDeg(heading)) + '&deg;',
@@ -102,17 +102,17 @@ function mod(n) {
 }
 
 function addPosition(position, heading, m, speed) {
-  var x = position[0];
-  var y = position[1];
-  var fCoords = positions.getCoordinates();
-  var previous = fCoords[fCoords.length - 1];
-  var prevHeading = previous && previous[2];
+  const x = position[0];
+  const y = position[1];
+  const fCoords = positions.getCoordinates();
+  const previous = fCoords[fCoords.length - 1];
+  const prevHeading = previous && previous[2];
   if (prevHeading) {
-    var headingDiff = heading - mod(prevHeading);
+    let headingDiff = heading - mod(prevHeading);
 
     // force the rotation change to be less than 180°
     if (Math.abs(headingDiff) > Math.PI) {
-      var sign = (headingDiff >= 0) ? 1 : -1;
+      const sign = (headingDiff >= 0) ? 1 : -1;
       headingDiff = -sign * (2 * Math.PI - Math.abs(headingDiff));
     }
     heading = prevHeading + headingDiff;
@@ -133,8 +133,8 @@ function addPosition(position, heading, m, speed) {
 // recenters the view by putting the given coordinates at 3/4 from the top or
 // the screen
 function getCenterWithHeading(position, rotation, resolution) {
-  var size = map.getSize();
-  var height = size[1];
+  const size = map.getSize();
+  const height = size[1];
 
   return [
     position[0] - Math.sin(rotation) * height * resolution * 1 / 4,
@@ -142,14 +142,14 @@ function getCenterWithHeading(position, rotation, resolution) {
   ];
 }
 
-var previousM = 0;
+let previousM = 0;
 function updateView() {
   // use sampling period to get a smooth transition
-  var m = Date.now() - deltaMean * 1.5;
+  let m = Date.now() - deltaMean * 1.5;
   m = Math.max(m, previousM);
   previousM = m;
   // interpolate position along positions LineString
-  var c = positions.getCoordinateAtM(m, true);
+  const c = positions.getCoordinateAtM(m, true);
   if (c) {
     view.setCenter(getCenterWithHeading(c, -c[2], view.getResolution()));
     view.setRotation(-c[2]);
@@ -158,7 +158,7 @@ function updateView() {
 }
 
 // geolocate device
-var geolocateBtn = document.getElementById('geolocate');
+const geolocateBtn = document.getElementById('geolocate');
 geolocateBtn.addEventListener('click', function() {
   geolocation.setTracking(true); // Start position tracking
 
@@ -169,8 +169,8 @@ geolocateBtn.addEventListener('click', function() {
 }, false);
 
 // simulate device move
-var simulationData;
-var client = new XMLHttpRequest();
+let simulationData;
+const client = new XMLHttpRequest();
 client.open('GET', 'data/geolocation-orientation.json');
 
 
@@ -182,20 +182,20 @@ client.onload = function() {
 };
 client.send();
 
-var simulateBtn = document.getElementById('simulate');
+const simulateBtn = document.getElementById('simulate');
 simulateBtn.addEventListener('click', function() {
-  var coordinates = simulationData;
+  const coordinates = simulationData;
 
-  var first = coordinates.shift();
+  const first = coordinates.shift();
   simulatePositionChange(first);
 
-  var prevDate = first.timestamp;
+  let prevDate = first.timestamp;
   function geolocate() {
-    var position = coordinates.shift();
+    const position = coordinates.shift();
     if (!position) {
       return;
     }
-    var newDate = position.timestamp;
+    const newDate = position.timestamp;
     simulatePositionChange(position);
     window.setTimeout(function() {
       prevDate = newDate;
@@ -211,10 +211,10 @@ simulateBtn.addEventListener('click', function() {
 }, false);
 
 function simulatePositionChange(position) {
-  var coords = position.coords;
+  const coords = position.coords;
   geolocation.set('accuracy', coords.accuracy);
   geolocation.set('heading', degToRad(coords.heading));
-  var projectedPosition = fromLonLat([coords.longitude, coords.latitude]);
+  const projectedPosition = fromLonLat([coords.longitude, coords.latitude]);
   geolocation.set('position', projectedPosition);
   geolocation.set('speed', coords.speed);
   geolocation.changed();

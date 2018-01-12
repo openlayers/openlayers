@@ -9,7 +9,7 @@ import _ol_webgl_ from '../webgl.js';
  * @param {number=} opt_usage Usage.
  * @struct
  */
-var _ol_webgl_Buffer_ = function(opt_arr, opt_usage) {
+const _ol_webgl_Buffer_ = function(opt_arr, opt_usage) {
 
   /**
    * @private

@@ -39,8 +39,8 @@ import _ol_pointer_EventSource_ from '../pointer/EventSource.js';
  * @constructor
  * @extends {ol.pointer.EventSource}
  */
-var _ol_pointer_MsSource_ = function(dispatcher) {
-  var mapping = {
+const _ol_pointer_MsSource_ = function(dispatcher) {
+  const mapping = {
     'MSPointerDown': this.msPointerDown,
     'MSPointerMove': this.msPointerMove,
     'MSPointerUp': this.msPointerUp,
@@ -83,7 +83,7 @@ inherits(_ol_pointer_MsSource_, _ol_pointer_EventSource_);
  * @return {Object} The copied event.
  */
 _ol_pointer_MsSource_.prototype.prepareEvent_ = function(inEvent) {
-  var e = inEvent;
+  let e = inEvent;
   if (typeof inEvent.pointerType === 'number') {
     e = this.dispatcher.cloneEvent(inEvent, inEvent);
     e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
@@ -109,7 +109,7 @@ _ol_pointer_MsSource_.prototype.cleanup = function(pointerId) {
  */
 _ol_pointer_MsSource_.prototype.msPointerDown = function(inEvent) {
   this.pointerMap[inEvent.pointerId.toString()] = inEvent;
-  var e = this.prepareEvent_(inEvent);
+  const e = this.prepareEvent_(inEvent);
   this.dispatcher.down(e, inEvent);
 };
 
@@ -120,7 +120,7 @@ _ol_pointer_MsSource_.prototype.msPointerDown = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msPointerMove = function(inEvent) {
-  var e = this.prepareEvent_(inEvent);
+  const e = this.prepareEvent_(inEvent);
   this.dispatcher.move(e, inEvent);
 };
 
@@ -131,7 +131,7 @@ _ol_pointer_MsSource_.prototype.msPointerMove = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msPointerUp = function(inEvent) {
-  var e = this.prepareEvent_(inEvent);
+  const e = this.prepareEvent_(inEvent);
   this.dispatcher.up(e, inEvent);
   this.cleanup(inEvent.pointerId);
 };
@@ -143,7 +143,7 @@ _ol_pointer_MsSource_.prototype.msPointerUp = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msPointerOut = function(inEvent) {
-  var e = this.prepareEvent_(inEvent);
+  const e = this.prepareEvent_(inEvent);
   this.dispatcher.leaveOut(e, inEvent);
 };
 
@@ -154,7 +154,7 @@ _ol_pointer_MsSource_.prototype.msPointerOut = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msPointerOver = function(inEvent) {
-  var e = this.prepareEvent_(inEvent);
+  const e = this.prepareEvent_(inEvent);
   this.dispatcher.enterOver(e, inEvent);
 };
 
@@ -165,7 +165,7 @@ _ol_pointer_MsSource_.prototype.msPointerOver = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msPointerCancel = function(inEvent) {
-  var e = this.prepareEvent_(inEvent);
+  const e = this.prepareEvent_(inEvent);
   this.dispatcher.cancel(e, inEvent);
   this.cleanup(inEvent.pointerId);
 };
@@ -177,8 +177,8 @@ _ol_pointer_MsSource_.prototype.msPointerCancel = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msLostPointerCapture = function(inEvent) {
-  var e = this.dispatcher.makeEvent('lostpointercapture',
-      inEvent, inEvent);
+  const e = this.dispatcher.makeEvent('lostpointercapture',
+    inEvent, inEvent);
   this.dispatcher.dispatchEvent(e);
 };
 
@@ -189,8 +189,8 @@ _ol_pointer_MsSource_.prototype.msLostPointerCapture = function(inEvent) {
  * @param {Event} inEvent The in event.
  */
 _ol_pointer_MsSource_.prototype.msGotPointerCapture = function(inEvent) {
-  var e = this.dispatcher.makeEvent('gotpointercapture',
-      inEvent, inEvent);
+  const e = this.dispatcher.makeEvent('gotpointercapture',
+    inEvent, inEvent);
   this.dispatcher.dispatchEvent(e);
 };
 export default _ol_pointer_MsSource_;

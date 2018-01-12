@@ -2,7 +2,7 @@
  * @module ol/geom/flat/orient
  */
 import _ol_geom_flat_reverse_ from '../flat/reverse.js';
-var _ol_geom_flat_orient_ = {};
+const _ol_geom_flat_orient_ = {};
 
 
 /**
@@ -15,12 +15,12 @@ var _ol_geom_flat_orient_ = {};
 _ol_geom_flat_orient_.linearRingIsClockwise = function(flatCoordinates, offset, end, stride) {
   // http://tinyurl.com/clockwise-method
   // https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
-  var edge = 0;
-  var x1 = flatCoordinates[end - stride];
-  var y1 = flatCoordinates[end - stride + 1];
+  let edge = 0;
+  let x1 = flatCoordinates[end - stride];
+  let y1 = flatCoordinates[end - stride + 1];
   for (; offset < end; offset += stride) {
-    var x2 = flatCoordinates[offset];
-    var y2 = flatCoordinates[offset + 1];
+    const x2 = flatCoordinates[offset];
+    const y2 = flatCoordinates[offset + 1];
     edge += (x2 - x1) * (y2 + y1);
     x1 = x2;
     y1 = y2;
@@ -43,12 +43,12 @@ _ol_geom_flat_orient_.linearRingIsClockwise = function(flatCoordinates, offset, 
  * @return {boolean} Rings are correctly oriented.
  */
 _ol_geom_flat_orient_.linearRingsAreOriented = function(flatCoordinates, offset, ends, stride, opt_right) {
-  var right = opt_right !== undefined ? opt_right : false;
-  var i, ii;
+  const right = opt_right !== undefined ? opt_right : false;
+  let i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    var end = ends[i];
-    var isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
-        flatCoordinates, offset, end, stride);
+    const end = ends[i];
+    const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
+      flatCoordinates, offset, end, stride);
     if (i === 0) {
       if ((right && isClockwise) || (!right && !isClockwise)) {
         return false;
@@ -78,10 +78,10 @@ _ol_geom_flat_orient_.linearRingsAreOriented = function(flatCoordinates, offset,
  * @return {boolean} Rings are correctly oriented.
  */
 _ol_geom_flat_orient_.linearRingssAreOriented = function(flatCoordinates, offset, endss, stride, opt_right) {
-  var i, ii;
+  let i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     if (!_ol_geom_flat_orient_.linearRingsAreOriented(
-        flatCoordinates, offset, endss[i], stride, opt_right)) {
+      flatCoordinates, offset, endss[i], stride, opt_right)) {
       return false;
     }
   }
@@ -103,13 +103,13 @@ _ol_geom_flat_orient_.linearRingssAreOriented = function(flatCoordinates, offset
  * @return {number} End.
  */
 _ol_geom_flat_orient_.orientLinearRings = function(flatCoordinates, offset, ends, stride, opt_right) {
-  var right = opt_right !== undefined ? opt_right : false;
-  var i, ii;
+  const right = opt_right !== undefined ? opt_right : false;
+  let i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    var end = ends[i];
-    var isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
-        flatCoordinates, offset, end, stride);
-    var reverse = i === 0 ?
+    const end = ends[i];
+    const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
+      flatCoordinates, offset, end, stride);
+    const reverse = i === 0 ?
       (right && isClockwise) || (!right && !isClockwise) :
       (right && !isClockwise) || (!right && isClockwise);
     if (reverse) {
@@ -135,10 +135,10 @@ _ol_geom_flat_orient_.orientLinearRings = function(flatCoordinates, offset, ends
  * @return {number} End.
  */
 _ol_geom_flat_orient_.orientLinearRingss = function(flatCoordinates, offset, endss, stride, opt_right) {
-  var i, ii;
+  let i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     offset = _ol_geom_flat_orient_.orientLinearRings(
-        flatCoordinates, offset, endss[i], stride, opt_right);
+      flatCoordinates, offset, endss[i], stride, opt_right);
   }
   return offset;
 };

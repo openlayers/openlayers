@@ -23,13 +23,13 @@ import Interaction from '../interaction/Interaction.js';
  * @extends {ol.interaction.Interaction}
  * @api
  */
-var KeyboardZoom = function(opt_options) {
+const KeyboardZoom = function(opt_options) {
 
   Interaction.call(this, {
     handleEvent: KeyboardZoom.handleEvent
   });
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -65,18 +65,18 @@ inherits(KeyboardZoom, Interaction);
  * @api
  */
 KeyboardZoom.handleEvent = function(mapBrowserEvent) {
-  var stopEvent = false;
+  let stopEvent = false;
   if (mapBrowserEvent.type == EventType.KEYDOWN ||
       mapBrowserEvent.type == EventType.KEYPRESS) {
-    var keyEvent = mapBrowserEvent.originalEvent;
-    var charCode = keyEvent.charCode;
+    const keyEvent = mapBrowserEvent.originalEvent;
+    const charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
-      var map = mapBrowserEvent.map;
-      var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
-      var view = map.getView();
+      const map = mapBrowserEvent.map;
+      const delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
+      const view = map.getView();
       Interaction.zoomByDelta(
-          view, delta, undefined, this.duration_);
+        view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

@@ -13,8 +13,8 @@ import LogicalNary from '../filter/LogicalNary.js';
  * @param {...ol.format.filter.Filter} conditions Conditions.
  * @extends {ol.format.filter.LogicalNary}
  */
-var And = function(conditions) {
-  var params = ['And'].concat(Array.prototype.slice.call(arguments));
+const And = function(conditions) {
+  const params = ['And'].concat(Array.prototype.slice.call(arguments));
   LogicalNary.apply(this, params);
 };
 

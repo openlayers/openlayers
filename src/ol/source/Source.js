@@ -21,7 +21,7 @@ import SourceState from '../source/State.js';
  * @param {ol.SourceSourceOptions} options Source options.
  * @api
  */
-var Source = function(options) {
+const Source = function(options) {
 
   BaseObject.call(this);
 

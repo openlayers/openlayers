@@ -9,14 +9,14 @@ import Static from '../src/ol/source/ImageStatic.js';
 // Map views always need a projection.  Here we just want to map image
 // coordinates directly to map coordinates, so we create a projection that uses
 // the image extent in pixels.
-var extent = [0, 0, 1024, 968];
-var projection = new Projection({
+const extent = [0, 0, 1024, 968];
+const projection = new Projection({
   code: 'xkcd-image',
   units: 'pixels',
   extent: extent
 });
 
-var map = new Map({
+const map = new Map({
   layers: [
     new ImageLayer({
       source: new Static({

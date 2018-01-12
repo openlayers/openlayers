@@ -18,7 +18,7 @@ describe('ol.render', function() {
   describe('ol.render.toContext()', function() {
 
     it('creates a vector context from a Canvas 2d context', function() {
-      var vectorContext = _ol_render_.toContext(getContext(), {
+      const vectorContext = _ol_render_.toContext(getContext(), {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -27,13 +27,13 @@ describe('ol.render', function() {
     });
 
     it('can be used to render a point geometry', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         image: new CircleStyle({
           fill: new Fill({
             color: 'green'
@@ -46,18 +46,18 @@ describe('ol.render', function() {
       vectorContext.drawGeometry(new Point([50, 50]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('can be used to render a linestring geometry', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           color: 'red',
           width: 14
@@ -70,18 +70,18 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('respects lineCap for linestring', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           lineCap: 'butt',
           color: 'red',
@@ -95,18 +95,18 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('respects lineJoin for linestring', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           lineJoin: 'bevel',
           color: 'red',
@@ -120,18 +120,18 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('can be used to render a polygon geometry', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           color: 'blue',
           width: 8
@@ -149,18 +149,18 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('supports lineDash styles', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           lineDash: [10, 5]
         })
@@ -174,18 +174,18 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('supports lineDashOffset', function(done) {
-      var context = getContext();
-      var vectorContext = _ol_render_.toContext(context, {
+      const context = getContext();
+      const vectorContext = _ol_render_.toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           lineDash: [10, 5],
           lineDashOffset: 5
@@ -200,7 +200,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'rendering/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
+        'rendering/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
 
     });
 

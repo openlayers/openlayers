@@ -6,15 +6,15 @@ describe('ol.size', function() {
   describe('buffer()', function() {
 
     it('buffers a size', function() {
-      var size = [50, 75];
-      var bufferedSize = _ol_size_.buffer(size, 20);
+      const size = [50, 75];
+      const bufferedSize = _ol_size_.buffer(size, 20);
       expect(bufferedSize).to.eql([90, 115]);
     });
 
     it('reuses an existing array', function() {
-      var reuse = [0, 0];
-      var size = [50, 50];
-      var bufferedSize = _ol_size_.buffer(size, 20, reuse);
+      const reuse = [0, 0];
+      const size = [50, 50];
+      const bufferedSize = _ol_size_.buffer(size, 20, reuse);
       expect(bufferedSize).to.equal(reuse);
     });
 
@@ -37,15 +37,15 @@ describe('ol.size', function() {
   describe('scale()', function() {
 
     it('scales a size and rounds the result', function() {
-      var size = [50, 75];
-      var scaledSize = _ol_size_.scale(size, 1.75);
+      const size = [50, 75];
+      const scaledSize = _ol_size_.scale(size, 1.75);
       expect(scaledSize).to.eql([88, 131]);
     });
 
     it('reuses an existing array', function() {
-      var reuse = [0, 0];
-      var size = [50, 50];
-      var scaledSize = _ol_size_.scale(size, 1.75, reuse);
+      const reuse = [0, 0];
+      const size = [50, 50];
+      const scaledSize = _ol_size_.scale(size, 1.75, reuse);
       expect(scaledSize).to.equal(reuse);
     });
 
@@ -54,19 +54,19 @@ describe('ol.size', function() {
   describe('toSize()', function() {
 
     it('creates a size array from a number', function() {
-      var size = _ol_size_.toSize(512);
+      const size = _ol_size_.toSize(512);
       expect(size).to.eql([512, 512]);
     });
 
     it('reuses an existing array', function() {
-      var sizeArray = [0, 0];
-      var size = _ol_size_.toSize(512, sizeArray);
+      const sizeArray = [0, 0];
+      const size = _ol_size_.toSize(512, sizeArray);
       expect(size).to.equal(sizeArray);
     });
 
     it('returns a size array unaltered', function() {
-      var sizeArray = [512, 256];
-      var size = _ol_size_.toSize(sizeArray);
+      const sizeArray = [512, 256];
+      let size = _ol_size_.toSize(sizeArray);
       expect(size).to.equal(sizeArray);
       size = _ol_size_.toSize(sizeArray, [0, 0]);
       expect(size).to.equal(sizeArray);

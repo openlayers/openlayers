@@ -5,8 +5,8 @@ import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 describe('ol.format.IGC', function() {
 
-  var format;
-  var igc =
+  let format;
+  const igc =
       'AFLY05094\n' +
       'HFDTE190411\n' +
       'HFFXA100\n' +
@@ -34,7 +34,7 @@ describe('ol.format.IGC', function() {
 
   describe('#readProjectionFromText', function() {
     it('returns the default projection', function() {
-      var projection = format.readProjectionFromText(igc);
+      const projection = format.readProjectionFromText(igc);
       expect(projection).to.eql(getProjection('EPSG:4326'));
     });
   });
@@ -45,9 +45,9 @@ describe('ol.format.IGC', function() {
     });
 
     it('does read a feature', function() {
-      var feature = format.readFeature(igc);
+      const feature = format.readFeature(igc);
       expect(feature).to.be.an(Feature);
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
       expect(geom.getCoordinates()).to.eql([
         [6.851583333333333, 45.9376, 1303202928],
@@ -57,28 +57,28 @@ describe('ol.format.IGC', function() {
     });
 
     it('does transform and read a feature', function() {
-      var feature = format.readFeature(igc, {
+      const feature = format.readFeature(igc, {
         featureProjection: 'EPSG:3857'
       });
       expect(feature).to.be.an(Feature);
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
 
-      var expectedPoint1 = transform(
-          [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint1 = transform(
+        [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
       expectedPoint1.push(1303202928);
-      var expectedPoint2 = transform(
-          [6.850183333333334, 45.93395], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint2 = transform(
+        [6.850183333333334, 45.93395], 'EPSG:4326', 'EPSG:3857');
       expectedPoint2.push(1303203353);
-      var expectedPoint3 = transform(
-          [6.800816666666667, 45.916066666666666], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint3 = transform(
+        [6.800816666666667, 45.916066666666666], 'EPSG:4326', 'EPSG:3857');
       expectedPoint3.push(1303203815);
-      var expectedPoint4 = transform(
-          [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint4 = transform(
+        [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
       expectedPoint4.push(1303289328);
 
       expect(geom.getCoordinates()).to.eql(
-          [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
+        [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
     });
 
   });
@@ -90,11 +90,11 @@ describe('ol.format.IGC', function() {
     });
 
     it('does read features', function() {
-      var features = format.readFeatures(igc);
+      const features = format.readFeatures(igc);
       expect(features.length).to.eql(1);
-      var feature = features[0];
+      const feature = features[0];
       expect(feature).to.be.an(Feature);
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
       expect(geom.getCoordinates()).to.eql([
         [6.851583333333333, 45.9376, 1303202928],
@@ -104,30 +104,30 @@ describe('ol.format.IGC', function() {
     });
 
     it('does transform and read features', function() {
-      var features = format.readFeatures(igc, {
+      const features = format.readFeatures(igc, {
         featureProjection: 'EPSG:3857'
       });
       expect(features.length).to.eql(1);
-      var feature = features[0];
+      const feature = features[0];
       expect(feature).to.be.an(Feature);
-      var geom = feature.getGeometry();
+      const geom = feature.getGeometry();
       expect(geom.getType()).to.eql('LineString');
 
-      var expectedPoint1 = transform(
-          [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint1 = transform(
+        [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
       expectedPoint1.push(1303202928);
-      var expectedPoint2 = transform(
-          [6.850183333333334, 45.93395], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint2 = transform(
+        [6.850183333333334, 45.93395], 'EPSG:4326', 'EPSG:3857');
       expectedPoint2.push(1303203353);
-      var expectedPoint3 = transform(
-          [6.800816666666667, 45.916066666666666], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint3 = transform(
+        [6.800816666666667, 45.916066666666666], 'EPSG:4326', 'EPSG:3857');
       expectedPoint3.push(1303203815);
-      var expectedPoint4 = transform(
-          [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
+      const expectedPoint4 = transform(
+        [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
       expectedPoint4.push(1303289328);
 
       expect(geom.getCoordinates()).to.eql(
-          [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
+        [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
     });
   });
 

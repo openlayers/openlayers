@@ -33,9 +33,9 @@ import RBush from '../structs/RBush.js';
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
  * @api
  */
-var VectorSource = function(opt_options) {
+const VectorSource = function(opt_options) {
 
-  var options = opt_options || {};
+  const options = opt_options || {};
 
   Source.call(this, {
     attributions: options.attributions,
@@ -83,7 +83,7 @@ var VectorSource = function(opt_options) {
   this.strategy_ = options.strategy !== undefined ? options.strategy :
     _ol_loadingstrategy_.all;
 
-  var useSpatialIndex =
+  const useSpatialIndex =
       options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
 
   /**
@@ -130,7 +130,7 @@ var VectorSource = function(opt_options) {
    */
   this.featuresCollection_ = null;
 
-  var collection, features;
+  let collection, features;
   if (options.features instanceof Collection) {
     collection = options.features;
     features = collection.getArray();
@@ -173,7 +173,7 @@ VectorSource.prototype.addFeature = function(feature) {
  * @protected
  */
 VectorSource.prototype.addFeatureInternal = function(feature) {
-  var featureKey = getUid(feature).toString();
+  const featureKey = getUid(feature).toString();
 
   if (!this.addToIndex_(featureKey, feature)) {
     return;
@@ -181,9 +181,9 @@ VectorSource.prototype.addFeatureInternal = function(feature) {
 
   this.setupChangeEvents_(featureKey, feature);
 
-  var geometry = feature.getGeometry();
+  const geometry = feature.getGeometry();
   if (geometry) {
-    var extent = geometry.getExtent();
+    const extent = geometry.getExtent();
     if (this.featuresRtree_) {
       this.featuresRtree_.insert(extent, feature);
     }
@@ -192,7 +192,7 @@ VectorSource.prototype.addFeatureInternal = function(feature) {
   }
 
   this.dispatchEvent(
-      new VectorSource.Event(VectorEventType.ADDFEATURE, feature));
+    new VectorSource.Event(VectorEventType.ADDFEATURE, feature));
 };
 
 
@@ -204,9 +204,9 @@ VectorSource.prototype.addFeatureInternal = function(feature) {
 VectorSource.prototype.setupChangeEvents_ = function(featureKey, feature) {
   this.featureChangeKeys_[featureKey] = [
     _ol_events_.listen(feature, EventType.CHANGE,
-        this.handleFeatureChange_, this),
+      this.handleFeatureChange_, this),
     _ol_events_.listen(feature, ObjectEventType.PROPERTYCHANGE,
-        this.handleFeatureChange_, this)
+      this.handleFeatureChange_, this)
   ];
 };
 
@@ -219,8 +219,8 @@ VectorSource.prototype.setupChangeEvents_ = function(featureKey, feature) {
  * @private
  */
 VectorSource.prototype.addToIndex_ = function(featureKey, feature) {
-  var valid = true;
-  var id = feature.getId();
+  let valid = true;
+  const id = feature.getId();
   if (id !== undefined) {
     if (!(id.toString() in this.idIndex_)) {
       this.idIndex_[id.toString()] = feature;
@@ -229,7 +229,7 @@ VectorSource.prototype.addToIndex_ = function(featureKey, feature) {
     }
   } else {
     assert(!(featureKey in this.undefIdIndex_),
-        30); // The passed `feature` was already added to the source
+      30); // The passed `feature` was already added to the source
     this.undefIdIndex_[featureKey] = feature;
   }
   return valid;
@@ -253,11 +253,11 @@ VectorSource.prototype.addFeatures = function(features) {
  * @protected
  */
 VectorSource.prototype.addFeaturesInternal = function(features) {
-  var featureKey, i, length, feature;
+  let featureKey, i, length, feature;
 
-  var extents = [];
-  var newFeatures = [];
-  var geometryFeatures = [];
+  const extents = [];
+  const newFeatures = [];
+  const geometryFeatures = [];
 
   for (i = 0, length = features.length; i < length; i++) {
     feature = features[i];
@@ -272,9 +272,9 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
     featureKey = getUid(feature).toString();
     this.setupChangeEvents_(featureKey, feature);
 
-    var geometry = feature.getGeometry();
+    const geometry = feature.getGeometry();
     if (geometry) {
-      var extent = geometry.getExtent();
+      const extent = geometry.getExtent();
       extents.push(extent);
       geometryFeatures.push(feature);
     } else {
@@ -287,7 +287,7 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
     this.dispatchEvent(new VectorSource.Event(
-        VectorEventType.ADDFEATURE, newFeatures[i]));
+      VectorEventType.ADDFEATURE, newFeatures[i]));
   }
 };
 
@@ -297,39 +297,39 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
  * @private
  */
 VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
-  var modifyingCollection = false;
+  let modifyingCollection = false;
   _ol_events_.listen(this, VectorEventType.ADDFEATURE,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          collection.push(evt.feature);
-          modifyingCollection = false;
-        }
-      });
+    function(evt) {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        collection.push(evt.feature);
+        modifyingCollection = false;
+      }
+    });
   _ol_events_.listen(this, VectorEventType.REMOVEFEATURE,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          collection.remove(evt.feature);
-          modifyingCollection = false;
-        }
-      });
+    function(evt) {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        collection.remove(evt.feature);
+        modifyingCollection = false;
+      }
+    });
   _ol_events_.listen(collection, CollectionEventType.ADD,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.addFeature(/** @type {ol.Feature} */ (evt.element));
-          modifyingCollection = false;
-        }
-      }, this);
+    function(evt) {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        this.addFeature(/** @type {ol.Feature} */ (evt.element));
+        modifyingCollection = false;
+      }
+    }, this);
   _ol_events_.listen(collection, CollectionEventType.REMOVE,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.removeFeature(/** @type {ol.Feature} */ (evt.element));
-          modifyingCollection = false;
-        }
-      }, this);
+    function(evt) {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        this.removeFeature(/** @type {ol.Feature} */ (evt.element));
+        modifyingCollection = false;
+      }
+    }, this);
   this.featuresCollection_ = collection;
 };
 
@@ -341,8 +341,8 @@ VectorSource.prototype.bindFeaturesCollection_ = function(collection) {
  */
 VectorSource.prototype.clear = function(opt_fast) {
   if (opt_fast) {
-    for (var featureId in this.featureChangeKeys_) {
-      var keys = this.featureChangeKeys_[featureId];
+    for (const featureId in this.featureChangeKeys_) {
+      const keys = this.featureChangeKeys_[featureId];
       keys.forEach(_ol_events_.unlistenByKey);
     }
     if (!this.featuresCollection_) {
@@ -353,7 +353,7 @@ VectorSource.prototype.clear = function(opt_fast) {
   } else {
     if (this.featuresRtree_) {
       this.featuresRtree_.forEach(this.removeFeatureInternal, this);
-      for (var id in this.nullGeometryFeatures_) {
+      for (const id in this.nullGeometryFeatures_) {
         this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
       }
     }
@@ -368,7 +368,7 @@ VectorSource.prototype.clear = function(opt_fast) {
   this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
-  var clearEvent = new VectorSource.Event(VectorEventType.CLEAR);
+  const clearEvent = new VectorSource.Event(VectorEventType.CLEAR);
   this.dispatchEvent(clearEvent);
   this.changed();
 };
@@ -407,9 +407,9 @@ VectorSource.prototype.forEachFeature = function(callback) {
  * @template T
  */
 VectorSource.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, callback) {
-  var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
+  const extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
-    var geometry = feature.getGeometry();
+    const geometry = feature.getGeometry();
     if (geometry.intersectsCoordinate(coordinate)) {
       return callback(feature);
     } else {
@@ -466,20 +466,20 @@ VectorSource.prototype.forEachFeatureInExtent = function(extent, callback) {
  */
 VectorSource.prototype.forEachFeatureIntersectingExtent = function(extent, callback) {
   return this.forEachFeatureInExtent(extent,
-      /**
+    /**
        * @param {ol.Feature} feature Feature.
        * @return {T|undefined} The return value from the last call to the callback.
        * @template T
        */
-      function(feature) {
-        var geometry = feature.getGeometry();
-        if (geometry.intersectsExtent(extent)) {
-          var result = callback(feature);
-          if (result) {
-            return result;
-          }
+    function(feature) {
+      const geometry = feature.getGeometry();
+      if (geometry.intersectsExtent(extent)) {
+        const result = callback(feature);
+        if (result) {
+          return result;
         }
-      });
+      }
+    });
 };
 
 
@@ -501,7 +501,7 @@ VectorSource.prototype.getFeaturesCollection = function() {
  * @api
  */
 VectorSource.prototype.getFeatures = function() {
-  var features;
+  let features;
   if (this.featuresCollection_) {
     features = this.featuresCollection_.getArray();
   } else if (this.featuresRtree_) {
@@ -521,7 +521,7 @@ VectorSource.prototype.getFeatures = function() {
  * @api
  */
 VectorSource.prototype.getFeaturesAtCoordinate = function(coordinate) {
-  var features = [];
+  const features = [];
   this.forEachFeatureAtCoordinateDirect(coordinate, function(feature) {
     features.push(feature);
   });
@@ -565,37 +565,37 @@ VectorSource.prototype.getClosestFeatureToCoordinate = function(coordinate, opt_
   // extent, trying to find a closer feature.  Every time we find a closer
   // feature, we update the extent being searched so that any even closer
   // feature must intersect it.  We continue until we run out of features.
-  var x = coordinate[0];
-  var y = coordinate[1];
-  var closestFeature = null;
-  var closestPoint = [NaN, NaN];
-  var minSquaredDistance = Infinity;
-  var extent = [-Infinity, -Infinity, Infinity, Infinity];
-  var filter = opt_filter ? opt_filter : TRUE;
+  const x = coordinate[0];
+  const y = coordinate[1];
+  let closestFeature = null;
+  const closestPoint = [NaN, NaN];
+  let minSquaredDistance = Infinity;
+  const extent = [-Infinity, -Infinity, Infinity, Infinity];
+  const filter = opt_filter ? opt_filter : TRUE;
   this.featuresRtree_.forEachInExtent(extent,
-      /**
+    /**
        * @param {ol.Feature} feature Feature.
        */
-      function(feature) {
-        if (filter(feature)) {
-          var geometry = feature.getGeometry();
-          var previousMinSquaredDistance = minSquaredDistance;
-          minSquaredDistance = geometry.closestPointXY(
-              x, y, closestPoint, minSquaredDistance);
-          if (minSquaredDistance < previousMinSquaredDistance) {
-            closestFeature = feature;
-            // This is sneaky.  Reduce the extent that it is currently being
-            // searched while the R-Tree traversal using this same extent object
-            // is still in progress.  This is safe because the new extent is
-            // strictly contained by the old extent.
-            var minDistance = Math.sqrt(minSquaredDistance);
-            extent[0] = x - minDistance;
-            extent[1] = y - minDistance;
-            extent[2] = x + minDistance;
-            extent[3] = y + minDistance;
-          }
+    function(feature) {
+      if (filter(feature)) {
+        const geometry = feature.getGeometry();
+        const previousMinSquaredDistance = minSquaredDistance;
+        minSquaredDistance = geometry.closestPointXY(
+          x, y, closestPoint, minSquaredDistance);
+        if (minSquaredDistance < previousMinSquaredDistance) {
+          closestFeature = feature;
+          // This is sneaky.  Reduce the extent that it is currently being
+          // searched while the R-Tree traversal using this same extent object
+          // is still in progress.  This is safe because the new extent is
+          // strictly contained by the old extent.
+          const minDistance = Math.sqrt(minSquaredDistance);
+          extent[0] = x - minDistance;
+          extent[1] = y - minDistance;
+          extent[2] = x + minDistance;
+          extent[3] = y + minDistance;
         }
-      });
+      }
+    });
   return closestFeature;
 };
 
@@ -625,7 +625,7 @@ VectorSource.prototype.getExtent = function(opt_extent) {
  * @api
  */
 VectorSource.prototype.getFeatureById = function(id) {
-  var feature = this.idIndex_[id.toString()];
+  const feature = this.idIndex_[id.toString()];
   return feature !== undefined ? feature : null;
 };
 
@@ -671,9 +671,9 @@ VectorSource.prototype.getUrl = function() {
  * @private
  */
 VectorSource.prototype.handleFeatureChange_ = function(event) {
-  var feature = /** @type {ol.Feature} */ (event.target);
-  var featureKey = getUid(feature).toString();
-  var geometry = feature.getGeometry();
+  const feature = /** @type {ol.Feature} */ (event.target);
+  const featureKey = getUid(feature).toString();
+  const geometry = feature.getGeometry();
   if (!geometry) {
     if (!(featureKey in this.nullGeometryFeatures_)) {
       if (this.featuresRtree_) {
@@ -682,7 +682,7 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
       this.nullGeometryFeatures_[featureKey] = feature;
     }
   } else {
-    var extent = geometry.getExtent();
+    const extent = geometry.getExtent();
     if (featureKey in this.nullGeometryFeatures_) {
       delete this.nullGeometryFeatures_[featureKey];
       if (this.featuresRtree_) {
@@ -694,9 +694,9 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
       }
     }
   }
-  var id = feature.getId();
+  const id = feature.getId();
   if (id !== undefined) {
-    var sid = id.toString();
+    const sid = id.toString();
     if (featureKey in this.undefIdIndex_) {
       delete this.undefIdIndex_[featureKey];
       this.idIndex_[sid] = feature;
@@ -714,7 +714,7 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
   }
   this.changed();
   this.dispatchEvent(new VectorSource.Event(
-      VectorEventType.CHANGEFEATURE, feature));
+    VectorEventType.CHANGEFEATURE, feature));
 };
 
 
@@ -733,20 +733,20 @@ VectorSource.prototype.isEmpty = function() {
  * @param {ol.proj.Projection} projection Projection.
  */
 VectorSource.prototype.loadFeatures = function(
-    extent, resolution, projection) {
-  var loadedExtentsRtree = this.loadedExtentsRtree_;
-  var extentsToLoad = this.strategy_(extent, resolution);
-  var i, ii;
+  extent, resolution, projection) {
+  const loadedExtentsRtree = this.loadedExtentsRtree_;
+  const extentsToLoad = this.strategy_(extent, resolution);
+  let i, ii;
   for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
-    var extentToLoad = extentsToLoad[i];
-    var alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
-        /**
+    const extentToLoad = extentsToLoad[i];
+    const alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
+      /**
          * @param {{extent: ol.Extent}} object Object.
          * @return {boolean} Contains.
          */
-        function(object) {
-          return containsExtent(object.extent, extentToLoad);
-        });
+      function(object) {
+        return containsExtent(object.extent, extentToLoad);
+      });
     if (!alreadyLoaded) {
       this.loader_.call(this, extentToLoad, resolution, projection);
       loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
@@ -761,8 +761,8 @@ VectorSource.prototype.loadFeatures = function(
  * @api
  */
 VectorSource.prototype.removeLoadedExtent = function(extent) {
-  var loadedExtentsRtree = this.loadedExtentsRtree_;
-  var obj;
+  const loadedExtentsRtree = this.loadedExtentsRtree_;
+  let obj;
   loadedExtentsRtree.forEachInExtent(extent, function(object) {
     if (equals(object.extent, extent)) {
       obj = object;
@@ -783,7 +783,7 @@ VectorSource.prototype.removeLoadedExtent = function(extent) {
  * @api
  */
 VectorSource.prototype.removeFeature = function(feature) {
-  var featureKey = getUid(feature).toString();
+  const featureKey = getUid(feature).toString();
   if (featureKey in this.nullGeometryFeatures_) {
     delete this.nullGeometryFeatures_[featureKey];
   } else {
@@ -802,17 +802,17 @@ VectorSource.prototype.removeFeature = function(feature) {
  * @protected
  */
 VectorSource.prototype.removeFeatureInternal = function(feature) {
-  var featureKey = getUid(feature).toString();
+  const featureKey = getUid(feature).toString();
   this.featureChangeKeys_[featureKey].forEach(_ol_events_.unlistenByKey);
   delete this.featureChangeKeys_[featureKey];
-  var id = feature.getId();
+  const id = feature.getId();
   if (id !== undefined) {
     delete this.idIndex_[id.toString()];
   } else {
     delete this.undefIdIndex_[featureKey];
   }
   this.dispatchEvent(new VectorSource.Event(
-      VectorEventType.REMOVEFEATURE, feature));
+    VectorEventType.REMOVEFEATURE, feature));
 };
 
 
@@ -824,8 +824,8 @@ VectorSource.prototype.removeFeatureInternal = function(feature) {
  * @private
  */
 VectorSource.prototype.removeFromIdIndex_ = function(feature) {
-  var removed = false;
-  for (var id in this.idIndex_) {
+  let removed = false;
+  for (const id in this.idIndex_) {
     if (this.idIndex_[id] === feature) {
       delete this.idIndex_[id];
       removed = true;

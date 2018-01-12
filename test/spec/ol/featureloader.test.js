@@ -6,10 +6,10 @@ import VectorSource from '../../../src/ol/source/Vector.js';
 describe('ol.featureloader', function() {
 
   describe('ol.featureloader.xhr', function() {
-    var loader;
-    var source;
-    var url;
-    var format;
+    let loader;
+    let source;
+    let url;
+    let format;
 
     beforeEach(function() {
       url = 'spec/ol/data/point.json';
@@ -42,9 +42,9 @@ describe('ol.featureloader', function() {
       });
 
       it('sends the correct arguments to the urlFunction', function(done) {
-        var extent = [];
-        var resolution = 1;
-        var projection = 'EPSG:3857';
+        const extent = [];
+        const resolution = 1;
+        const projection = 'EPSG:3857';
         url = function(extent_, resolution_, projection_) {
           expect(extent_).to.eql(extent);
           expect(resolution_).to.eql(resolution);

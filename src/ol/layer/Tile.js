@@ -21,10 +21,10 @@ import _ol_obj_ from '../obj.js';
  * @param {olx.layer.TileOptions=} opt_options Tile layer options.
  * @api
  */
-var TileLayer = function(opt_options) {
-  var options = opt_options ? opt_options : {};
+const TileLayer = function(opt_options) {
+  const options = opt_options ? opt_options : {};
 
-  var baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = _ol_obj_.assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
@@ -100,6 +100,6 @@ TileLayer.prototype.getUseInterimTilesOnError = function() {
  */
 TileLayer.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
-      _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+    _ol_layer_TileProperty_.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
 export default TileLayer;

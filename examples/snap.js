@@ -13,11 +13,11 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource(),
   style: new Style({
     fill: new Fill({
@@ -36,7 +36,7 @@ var vector = new VectorLayer({
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({
@@ -45,7 +45,7 @@ var map = new Map({
   })
 });
 
-var ExampleModify = {
+const ExampleModify = {
   init: function() {
     this.select = new Select();
     map.addInteraction(this.select);
@@ -58,7 +58,7 @@ var ExampleModify = {
     this.setEvents();
   },
   setEvents: function() {
-    var selectedFeatures = this.select.getFeatures();
+    const selectedFeatures = this.select.getFeatures();
 
     this.select.on('change:active', function() {
       selectedFeatures.forEach(selectedFeatures.remove, selectedFeatures);
@@ -71,9 +71,9 @@ var ExampleModify = {
 };
 ExampleModify.init();
 
-var optionsForm = document.getElementById('options-form');
+const optionsForm = document.getElementById('options-form');
 
-var ExampleDraw = {
+const ExampleDraw = {
   init: function() {
     map.addInteraction(this.Point);
     this.Point.setActive(false);
@@ -104,7 +104,7 @@ var ExampleDraw = {
     return this.activeType ? this[this.activeType].getActive() : false;
   },
   setActive: function(active) {
-    var type = optionsForm.elements['draw-type'].value;
+    const type = optionsForm.elements['draw-type'].value;
     if (active) {
       this.activeType && this[this.activeType].setActive(false);
       this[type].setActive(true);
@@ -123,8 +123,8 @@ ExampleDraw.init();
  * @param {Event} e Change event.
  */
 optionsForm.onchange = function(e) {
-  var type = e.target.getAttribute('name');
-  var value = e.target.value;
+  const type = e.target.getAttribute('name');
+  const value = e.target.value;
   if (type == 'draw-type') {
     ExampleDraw.getActive() && ExampleDraw.setActive(true);
   } else if (type == 'interaction') {
@@ -144,7 +144,7 @@ ExampleModify.setActive(false);
 // The snap interaction must be added after the Modify and Draw interactions
 // in order for its map browser event handlers to be fired first. Its handlers
 // are responsible of doing the snapping.
-var snap = new Snap({
+const snap = new Snap({
   source: vector.getSource()
 });
 map.addInteraction(snap);

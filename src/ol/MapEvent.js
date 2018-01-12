@@ -16,7 +16,7 @@ import Event from './events/Event.js';
  * @param {ol.PluggableMap} map Map.
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
-var MapEvent = function(type, map, opt_frameState) {
+const MapEvent = function(type, map, opt_frameState) {
 
   Event.call(this, type);
 

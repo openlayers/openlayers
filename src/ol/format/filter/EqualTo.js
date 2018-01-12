@@ -15,7 +15,7 @@ import ComparisonBinary from '../filter/ComparisonBinary.js';
  * @extends {ol.format.filter.ComparisonBinary}
  * @api
  */
-var EqualTo = function(propertyName, expression, opt_matchCase) {
+const EqualTo = function(propertyName, expression, opt_matchCase) {
   ComparisonBinary.call(this, 'PropertyIsEqualTo', propertyName, expression, opt_matchCase);
 };
 

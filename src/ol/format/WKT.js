@@ -26,9 +26,9 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
  * @param {olx.format.WKTOptions=} opt_options Options.
  * @api
  */
-var WKT = function(opt_options) {
+const WKT = function(opt_options) {
 
-  var options = opt_options ? opt_options : {};
+  const options = opt_options ? opt_options : {};
 
   TextFeature.call(this);
 
@@ -79,7 +79,7 @@ WKT.ZM = 'ZM';
  * @private
  */
 WKT.encodePointGeometry_ = function(geom) {
-  var coordinates = geom.getCoordinates();
+  const coordinates = geom.getCoordinates();
   if (coordinates.length === 0) {
     return '';
   }
@@ -93,9 +93,9 @@ WKT.encodePointGeometry_ = function(geom) {
  * @private
  */
 WKT.encodeMultiPointGeometry_ = function(geom) {
-  var array = [];
-  var components = geom.getPoints();
-  for (var i = 0, ii = components.length; i < ii; ++i) {
+  const array = [];
+  const components = geom.getPoints();
+  for (let i = 0, ii = components.length; i < ii; ++i) {
     array.push('(' + WKT.encodePointGeometry_(components[i]) + ')');
   }
   return array.join(',');
@@ -108,9 +108,9 @@ WKT.encodeMultiPointGeometry_ = function(geom) {
  * @private
  */
 WKT.encodeGeometryCollectionGeometry_ = function(geom) {
-  var array = [];
-  var geoms = geom.getGeometries();
-  for (var i = 0, ii = geoms.length; i < ii; ++i) {
+  const array = [];
+  const geoms = geom.getGeometries();
+  for (let i = 0, ii = geoms.length; i < ii; ++i) {
     array.push(WKT.encode_(geoms[i]));
   }
   return array.join(',');
@@ -123,9 +123,9 @@ WKT.encodeGeometryCollectionGeometry_ = function(geom) {
  * @private
  */
 WKT.encodeLineStringGeometry_ = function(geom) {
-  var coordinates = geom.getCoordinates();
-  var array = [];
-  for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+  const coordinates = geom.getCoordinates();
+  const array = [];
+  for (let i = 0, ii = coordinates.length; i < ii; ++i) {
     array.push(coordinates[i].join(' '));
   }
   return array.join(',');
@@ -138,11 +138,11 @@ WKT.encodeLineStringGeometry_ = function(geom) {
  * @private
  */
 WKT.encodeMultiLineStringGeometry_ = function(geom) {
-  var array = [];
-  var components = geom.getLineStrings();
-  for (var i = 0, ii = components.length; i < ii; ++i) {
+  const array = [];
+  const components = geom.getLineStrings();
+  for (let i = 0, ii = components.length; i < ii; ++i) {
     array.push('(' + WKT.encodeLineStringGeometry_(
-        components[i]) + ')');
+      components[i]) + ')');
   }
   return array.join(',');
 };
@@ -154,11 +154,11 @@ WKT.encodeMultiLineStringGeometry_ = function(geom) {
  * @private
  */
 WKT.encodePolygonGeometry_ = function(geom) {
-  var array = [];
-  var rings = geom.getLinearRings();
-  for (var i = 0, ii = rings.length; i < ii; ++i) {
+  const array = [];
+  const rings = geom.getLinearRings();
+  for (let i = 0, ii = rings.length; i < ii; ++i) {
     array.push('(' + WKT.encodeLineStringGeometry_(
-        rings[i]) + ')');
+      rings[i]) + ')');
   }
   return array.join(',');
 };
@@ -170,11 +170,11 @@ WKT.encodePolygonGeometry_ = function(geom) {
  * @private
  */
 WKT.encodeMultiPolygonGeometry_ = function(geom) {
-  var array = [];
-  var components = geom.getPolygons();
-  for (var i = 0, ii = components.length; i < ii; ++i) {
+  const array = [];
+  const components = geom.getPolygons();
+  for (let i = 0, ii = components.length; i < ii; ++i) {
     array.push('(' + WKT.encodePolygonGeometry_(
-        components[i]) + ')');
+      components[i]) + ')');
   }
   return array.join(',');
 };
@@ -185,8 +185,8 @@ WKT.encodeMultiPolygonGeometry_ = function(geom) {
  * @private
  */
 WKT.encodeGeometryLayout_ = function(geom) {
-  var layout = geom.getLayout();
-  var dimInfo = '';
+  const layout = geom.getLayout();
+  let dimInfo = '';
   if (layout === GeometryLayout.XYZ || layout === GeometryLayout.XYZM) {
     dimInfo += WKT.Z;
   }
@@ -204,12 +204,12 @@ WKT.encodeGeometryLayout_ = function(geom) {
  * @private
  */
 WKT.encode_ = function(geom) {
-  var type = geom.getType();
-  var geometryEncoder = WKT.GeometryEncoder_[type];
-  var enc = geometryEncoder(geom);
+  let type = geom.getType();
+  const geometryEncoder = WKT.GeometryEncoder_[type];
+  const enc = geometryEncoder(geom);
   type = type.toUpperCase();
   if (geom instanceof SimpleGeometry) {
-    var dimInfo = WKT.encodeGeometryLayout_(geom);
+    const dimInfo = WKT.encodeGeometryLayout_(geom);
     if (dimInfo.length > 0) {
       type += ' ' + dimInfo;
     }
@@ -245,8 +245,8 @@ WKT.GeometryEncoder_ = {
  * @private
  */
 WKT.prototype.parse_ = function(wkt) {
-  var lexer = new WKT.Lexer(wkt);
-  var parser = new WKT.Parser(lexer);
+  const lexer = new WKT.Lexer(wkt);
+  const parser = new WKT.Parser(lexer);
   return parser.parse();
 };
 
@@ -267,9 +267,9 @@ WKT.prototype.readFeature;
  * @inheritDoc
  */
 WKT.prototype.readFeatureFromText = function(text, opt_options) {
-  var geom = this.readGeometryFromText(text, opt_options);
+  const geom = this.readGeometryFromText(text, opt_options);
   if (geom) {
-    var feature = new Feature();
+    const feature = new Feature();
     feature.setGeometry(geom);
     return feature;
   }
@@ -293,17 +293,18 @@ WKT.prototype.readFeatures;
  * @inheritDoc
  */
 WKT.prototype.readFeaturesFromText = function(text, opt_options) {
-  var geometries = [];
-  var geometry = this.readGeometryFromText(text, opt_options);
+  let geometries = [];
+  const geometry = this.readGeometryFromText(text, opt_options);
   if (this.splitCollection_ &&
       geometry.getType() == GeometryType.GEOMETRY_COLLECTION) {
     geometries = (/** @type {ol.geom.GeometryCollection} */ (geometry))
-        .getGeometriesArray();
+      .getGeometriesArray();
   } else {
     geometries = [geometry];
   }
-  var feature, features = [];
-  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+  const features = [];
+  let feature;
+  for (let i = 0, ii = geometries.length; i < ii; ++i) {
     feature = new Feature();
     feature.setGeometry(geometries[i]);
     features.push(feature);
@@ -328,7 +329,7 @@ WKT.prototype.readGeometry;
  * @inheritDoc
  */
 WKT.prototype.readGeometryFromText = function(text, opt_options) {
-  var geometry = this.parse_(text);
+  const geometry = this.parse_(text);
   if (geometry) {
     return (
       /** @type {ol.geom.Geometry} */ transformWithOptions(geometry, false, opt_options)
@@ -355,7 +356,7 @@ WKT.prototype.writeFeature;
  * @inheritDoc
  */
 WKT.prototype.writeFeatureText = function(feature, opt_options) {
-  var geometry = feature.getGeometry();
+  const geometry = feature.getGeometry();
   if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
   }
@@ -382,11 +383,11 @@ WKT.prototype.writeFeaturesText = function(features, opt_options) {
   if (features.length == 1) {
     return this.writeFeatureText(features[0], opt_options);
   }
-  var geometries = [];
-  for (var i = 0, ii = features.length; i < ii; ++i) {
+  const geometries = [];
+  for (let i = 0, ii = features.length; i < ii; ++i) {
     geometries.push(features[i].getGeometry());
   }
-  var collection = new GeometryCollection(geometries);
+  const collection = new GeometryCollection(geometries);
   return this.writeGeometryText(collection, opt_options);
 };
 
@@ -466,7 +467,7 @@ WKT.Lexer.prototype.isAlpha_ = function(c) {
  * @private
  */
 WKT.Lexer.prototype.isNumeric_ = function(c, opt_decimal) {
-  var decimal = opt_decimal !== undefined ? opt_decimal : false;
+  const decimal = opt_decimal !== undefined ? opt_decimal : false;
   return c >= '0' && c <= '9' || c == '.' && !decimal;
 };
 
@@ -495,8 +496,8 @@ WKT.Lexer.prototype.nextChar_ = function() {
  * @return {!ol.WKTToken} Next string token.
  */
 WKT.Lexer.prototype.nextToken = function() {
-  var c = this.nextChar_();
-  var token = {position: this.index_, value: c};
+  const c = this.nextChar_();
+  const token = {position: this.index_, value: c};
 
   if (c == '(') {
     token.type = WKT.TokenType_.LEFT_PAREN;
@@ -527,9 +528,10 @@ WKT.Lexer.prototype.nextToken = function() {
  * @private
  */
 WKT.Lexer.prototype.readNumber_ = function() {
-  var c, index = this.index_;
-  var decimal = false;
-  var scientificNotation = false;
+  let c;
+  const index = this.index_;
+  let decimal = false;
+  let scientificNotation = false;
   do {
     if (c == '.') {
       decimal = true;
@@ -555,7 +557,8 @@ WKT.Lexer.prototype.readNumber_ = function() {
  * @private
  */
 WKT.Lexer.prototype.readText_ = function() {
-  var c, index = this.index_;
+  let c;
+  const index = this.index_;
   do {
     c = this.nextChar_();
   } while (this.isAlpha_(c));
@@ -605,7 +608,7 @@ WKT.Parser.prototype.consume_ = function() {
  * @return {boolean} Whether the token matches the given type.
  */
 WKT.Parser.prototype.isTokenType = function(type) {
-  var isMatch = this.token_.type == type;
+  const isMatch = this.token_.type == type;
   return isMatch;
 };
 
@@ -616,7 +619,7 @@ WKT.Parser.prototype.isTokenType = function(type) {
  * @return {boolean} Whether the token matches the given type.
  */
 WKT.Parser.prototype.match = function(type) {
-  var isMatch = this.isTokenType(type);
+  const isMatch = this.isTokenType(type);
   if (isMatch) {
     this.consume_();
   }
@@ -630,7 +633,7 @@ WKT.Parser.prototype.match = function(type) {
  */
 WKT.Parser.prototype.parse = function() {
   this.consume_();
-  var geometry = this.parseGeometry_();
+  const geometry = this.parseGeometry_();
   return geometry;
 };
 
@@ -641,10 +644,10 @@ WKT.Parser.prototype.parse = function() {
  * @private
  */
 WKT.Parser.prototype.parseGeometryLayout_ = function() {
-  var layout = GeometryLayout.XY;
-  var dimToken = this.token_;
+  let layout = GeometryLayout.XY;
+  const dimToken = this.token_;
   if (this.isTokenType(WKT.TokenType_.TEXT)) {
-    var dimInfo = dimToken.value;
+    const dimInfo = dimToken.value;
     if (dimInfo === WKT.Z) {
       layout = GeometryLayout.XYZ;
     } else if (dimInfo === WKT.M) {
@@ -665,20 +668,20 @@ WKT.Parser.prototype.parseGeometryLayout_ = function() {
  * @private
  */
 WKT.Parser.prototype.parseGeometry_ = function() {
-  var token = this.token_;
+  const token = this.token_;
   if (this.match(WKT.TokenType_.TEXT)) {
-    var geomType = token.value;
+    const geomType = token.value;
     this.layout_ = this.parseGeometryLayout_();
     if (geomType == GeometryType.GEOMETRY_COLLECTION.toUpperCase()) {
-      var geometries = this.parseGeometryCollectionText_();
+      const geometries = this.parseGeometryCollectionText_();
       return new GeometryCollection(geometries);
     } else {
-      var parser = WKT.Parser.GeometryParser_[geomType];
-      var ctor = WKT.Parser.GeometryConstructor_[geomType];
+      const parser = WKT.Parser.GeometryParser_[geomType];
+      const ctor = WKT.Parser.GeometryConstructor_[geomType];
       if (!parser || !ctor) {
         throw new Error('Invalid geometry type: ' + geomType);
       }
-      var coordinates = parser.call(this);
+      const coordinates = parser.call(this);
       return new ctor(coordinates, this.layout_);
     }
   }
@@ -692,7 +695,7 @@ WKT.Parser.prototype.parseGeometry_ = function() {
  */
 WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var geometries = [];
+    const geometries = [];
     do {
       geometries.push(this.parseGeometry_());
     } while (this.match(WKT.TokenType_.COMMA));
@@ -712,7 +715,7 @@ WKT.Parser.prototype.parseGeometryCollectionText_ = function() {
  */
 WKT.Parser.prototype.parsePointText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var coordinates = this.parsePoint_();
+    const coordinates = this.parsePoint_();
     if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
@@ -729,7 +732,7 @@ WKT.Parser.prototype.parsePointText_ = function() {
  */
 WKT.Parser.prototype.parseLineStringText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var coordinates = this.parsePointList_();
+    const coordinates = this.parsePointList_();
     if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
@@ -746,7 +749,7 @@ WKT.Parser.prototype.parseLineStringText_ = function() {
  */
 WKT.Parser.prototype.parsePolygonText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var coordinates = this.parseLineStringTextList_();
+    const coordinates = this.parseLineStringTextList_();
     if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
@@ -763,7 +766,7 @@ WKT.Parser.prototype.parsePolygonText_ = function() {
  */
 WKT.Parser.prototype.parseMultiPointText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var coordinates;
+    let coordinates;
     if (this.token_.type == WKT.TokenType_.LEFT_PAREN) {
       coordinates = this.parsePointTextList_();
     } else {
@@ -786,7 +789,7 @@ WKT.Parser.prototype.parseMultiPointText_ = function() {
  */
 WKT.Parser.prototype.parseMultiLineStringText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var coordinates = this.parseLineStringTextList_();
+    const coordinates = this.parseLineStringTextList_();
     if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
@@ -803,7 +806,7 @@ WKT.Parser.prototype.parseMultiLineStringText_ = function() {
  */
 WKT.Parser.prototype.parseMultiPolygonText_ = function() {
   if (this.match(WKT.TokenType_.LEFT_PAREN)) {
-    var coordinates = this.parsePolygonTextList_();
+    const coordinates = this.parsePolygonTextList_();
     if (this.match(WKT.TokenType_.RIGHT_PAREN)) {
       return coordinates;
     }
@@ -819,10 +822,10 @@ WKT.Parser.prototype.parseMultiPolygonText_ = function() {
  * @private
  */
 WKT.Parser.prototype.parsePoint_ = function() {
-  var coordinates = [];
-  var dimensions = this.layout_.length;
-  for (var i = 0; i < dimensions; ++i) {
-    var token = this.token_;
+  const coordinates = [];
+  const dimensions = this.layout_.length;
+  for (let i = 0; i < dimensions; ++i) {
+    const token = this.token_;
     if (this.match(WKT.TokenType_.NUMBER)) {
       coordinates.push(token.value);
     } else {
@@ -841,7 +844,7 @@ WKT.Parser.prototype.parsePoint_ = function() {
  * @private
  */
 WKT.Parser.prototype.parsePointList_ = function() {
-  var coordinates = [this.parsePoint_()];
+  const coordinates = [this.parsePoint_()];
   while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parsePoint_());
   }
@@ -854,7 +857,7 @@ WKT.Parser.prototype.parsePointList_ = function() {
  * @private
  */
 WKT.Parser.prototype.parsePointTextList_ = function() {
-  var coordinates = [this.parsePointText_()];
+  const coordinates = [this.parsePointText_()];
   while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parsePointText_());
   }
@@ -867,7 +870,7 @@ WKT.Parser.prototype.parsePointTextList_ = function() {
  * @private
  */
 WKT.Parser.prototype.parseLineStringTextList_ = function() {
-  var coordinates = [this.parseLineStringText_()];
+  const coordinates = [this.parseLineStringText_()];
   while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parseLineStringText_());
   }
@@ -880,7 +883,7 @@ WKT.Parser.prototype.parseLineStringTextList_ = function() {
  * @private
  */
 WKT.Parser.prototype.parsePolygonTextList_ = function() {
-  var coordinates = [this.parsePolygonText_()];
+  const coordinates = [this.parsePolygonText_()];
   while (this.match(WKT.TokenType_.COMMA)) {
     coordinates.push(this.parsePolygonText_());
   }
@@ -893,7 +896,7 @@ WKT.Parser.prototype.parsePolygonTextList_ = function() {
  * @private
  */
 WKT.Parser.prototype.isEmptyGeometry_ = function() {
-  var isEmpty = this.isTokenType(WKT.TokenType_.TEXT) &&
+  const isEmpty = this.isTokenType(WKT.TokenType_.TEXT) &&
       this.token_.value == WKT.EMPTY;
   if (isEmpty) {
     this.consume_();

@@ -8,7 +8,7 @@ import WMTS from '../src/ol/source/WMTS.js';
 import WMTSTileGrid from '../src/ol/tilegrid/WMTS.js';
 
 
-var map = new Map({
+const map = new Map({
   target: 'map',
   controls: defaultControls({
     attributionOptions: {
@@ -21,17 +21,17 @@ var map = new Map({
   })
 });
 
-var resolutions = [];
-var matrixIds = [];
-var proj3857 = getProjection('EPSG:3857');
-var maxResolution = _ol_extent_.getWidth(proj3857.getExtent()) / 256;
+const resolutions = [];
+const matrixIds = [];
+const proj3857 = getProjection('EPSG:3857');
+const maxResolution = _ol_extent_.getWidth(proj3857.getExtent()) / 256;
 
-for (var i = 0; i < 18; i++) {
+for (let i = 0; i < 18; i++) {
   matrixIds[i] = i.toString();
   resolutions[i] = maxResolution / Math.pow(2, i);
 }
 
-var tileGrid = new WMTSTileGrid({
+const tileGrid = new WMTSTileGrid({
   origin: [-20037508, 20037508],
   resolutions: resolutions,
   matrixIds: matrixIds
@@ -39,9 +39,9 @@ var tileGrid = new WMTSTileGrid({
 
 // API key valid for 'openlayers.org' and 'localhost'.
 // Expiration date is 06/29/2018.
-var key = '2mqbg0z6cx7ube8gsou10nrt';
+const key = '2mqbg0z6cx7ube8gsou10nrt';
 
-var ign_source = new WMTS({
+const ign_source = new WMTS({
   url: 'https://wxs.ign.fr/' + key + '/wmts',
   layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
   matrixSet: 'PM',
@@ -54,7 +54,7 @@ var ign_source = new WMTS({
         'theme/geoportal/img/logo_gp.gif"></a>'
 });
 
-var ign = new TileLayer({
+const ign = new TileLayer({
   source: ign_source
 });
 

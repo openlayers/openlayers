@@ -23,7 +23,7 @@ import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-var LinearRing = function(coordinates, opt_layout) {
+const LinearRing = function(coordinates, opt_layout) {
 
   SimpleGeometry.call(this);
 
@@ -53,7 +53,7 @@ inherits(LinearRing, SimpleGeometry);
  * @api
  */
 LinearRing.prototype.clone = function() {
-  var linearRing = new LinearRing(null);
+  const linearRing = new LinearRing(null);
   linearRing.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
   return linearRing;
 };
@@ -68,12 +68,12 @@ LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
     this.maxDelta_ = Math.sqrt(_ol_geom_flat_closest_.getMaxSquaredDelta(
-        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, 0));
     this.maxDeltaRevision_ = this.getRevision();
   }
   return _ol_geom_flat_closest_.getClosestPoint(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+    this.maxDelta_, true, x, y, closestPoint, minSquaredDistance);
 };
 
 
@@ -84,7 +84,7 @@ LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  */
 LinearRing.prototype.getArea = function() {
   return _ol_geom_flat_area_.linearRing(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
@@ -96,7 +96,7 @@ LinearRing.prototype.getArea = function() {
  */
 LinearRing.prototype.getCoordinates = function() {
   return _ol_geom_flat_inflate_.coordinates(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 
@@ -104,13 +104,13 @@ LinearRing.prototype.getCoordinates = function() {
  * @inheritDoc
  */
 LinearRing.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
-  var simplifiedFlatCoordinates = [];
+  const simplifiedFlatCoordinates = [];
   simplifiedFlatCoordinates.length = _ol_geom_flat_simplify_.douglasPeucker(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      squaredTolerance, simplifiedFlatCoordinates, 0);
-  var simplifiedLinearRing = new LinearRing(null);
+    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+    squaredTolerance, simplifiedFlatCoordinates, 0);
+  const simplifiedLinearRing = new LinearRing(null);
   simplifiedLinearRing.setFlatCoordinates(
-      GeometryLayout.XY, simplifiedFlatCoordinates);
+    GeometryLayout.XY, simplifiedFlatCoordinates);
   return simplifiedLinearRing;
 };
 
@@ -146,7 +146,7 @@ LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = _ol_geom_flat_deflate_.coordinates(
-        this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates, 0, coordinates, this.stride);
     this.changed();
   }
 };

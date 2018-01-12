@@ -15,14 +15,14 @@ register(proj4);
 
 // Configure the Sphere Mollweide projection object with an extent,
 // and a world extent. These are required for the Graticule.
-var sphereMollweideProjection = new Projection({
+const sphereMollweideProjection = new Projection({
   code: 'ESRI:53009',
   extent: [-9009954.605703328, -9009954.605703328,
     9009954.605703328, 9009954.605703328],
   worldExtent: [-179, -89.99, 179, 89.99]
 });
 
-var map = new Map({
+const map = new Map({
   keyboardEventTarget: document,
   layers: [
     new VectorLayer({

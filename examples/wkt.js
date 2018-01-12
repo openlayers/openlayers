@@ -6,28 +6,28 @@ import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var wkt = 'POLYGON((10.689 -25.092, 34.595 ' +
+const wkt = 'POLYGON((10.689 -25.092, 34.595 ' +
     '-20.170, 38.814 -35.639, 13.502 ' +
     '-39.155, 10.689 -25.092))';
 
-var format = new WKT();
+const format = new WKT();
 
-var feature = format.readFeature(wkt, {
+const feature = format.readFeature(wkt, {
   dataProjection: 'EPSG:4326',
   featureProjection: 'EPSG:3857'
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     features: [feature]
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({

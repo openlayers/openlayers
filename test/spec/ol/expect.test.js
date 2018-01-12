@@ -34,17 +34,17 @@ describe('expect.js', function() {
     });
 
     it('knows that, like, 1 and 2 would, like, totally dig each other',
-        function() {
-          expect(function() {
-            expect(1).to.roughlyEqual(2, 1);
-          }).not.to.throwException();
-        });
+      function() {
+        expect(function() {
+          expect(1).to.roughlyEqual(2, 1);
+        }).not.to.throwException();
+      });
 
   });
 
   describe('called', function() {
 
-    var telephone;
+    let telephone;
     beforeEach(function() {
       telephone = sinon.spy();
     });
@@ -77,46 +77,46 @@ describe('expect.js', function() {
   describe('Test equality of XML documents - xmleql', function() {
 
     it('Test XML document with single root, different prefix', function() {
-      var doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
-      var doc2 = '<foo xmlns="http://foo"></foo>';
+      const doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
+      const doc2 = '<foo xmlns="http://foo"></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.xmleql(
-          new DOMParser().parseFromString(doc2, 'application/xml'));
+        new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test XML document with single root, different prefix, prefix true',
-        function() {
-          var doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
-          var doc2 = '<foo xmlns="http://foo"></foo>';
-          expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
-              new DOMParser().parseFromString(doc2, 'application/xml'), {prefix: true});
-        });
+      function() {
+        const doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
+        const doc2 = '<foo xmlns="http://foo"></foo>';
+        expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
+          new DOMParser().parseFromString(doc2, 'application/xml'), {prefix: true});
+      });
 
     it('Test XML document with different root', function() {
-      var doc1 = '<foo></foo>';
-      var doc2 = '<bar></bar>';
+      const doc1 = '<foo></foo>';
+      const doc2 = '<bar></bar>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
-          new DOMParser().parseFromString(doc2, 'application/xml'));
+        new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test different number of attributes', function() {
-      var doc1 = '<foo attr="bla"></foo>';
-      var doc2 = '<foo></foo>';
+      const doc1 = '<foo attr="bla"></foo>';
+      const doc2 = '<foo></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
-          new DOMParser().parseFromString(doc2, 'application/xml'));
+        new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test different attribute value', function() {
-      var doc1 = '<foo attr="bla"></foo>';
-      var doc2 = '<foo attr="foo"></foo>';
+      const doc1 = '<foo attr="bla"></foo>';
+      const doc2 = '<foo attr="foo"></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
-          new DOMParser().parseFromString(doc2, 'application/xml'));
+        new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test different number of children', function() {
-      var doc1 = '<foo><mynode></mynode></foo>';
-      var doc2 = '<foo></foo>';
+      const doc1 = '<foo><mynode></mynode></foo>';
+      const doc2 = '<foo></foo>';
       expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
-          new DOMParser().parseFromString(doc2, 'application/xml'));
+        new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
   });

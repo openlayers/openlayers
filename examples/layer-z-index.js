@@ -10,9 +10,9 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var stroke = new Stroke({color: 'black', width: 1});
+const stroke = new Stroke({color: 'black', width: 1});
 
-var styles = {
+const styles = {
   'square': new Style({
     image: new RegularShape({
       fill: new Fill({color: 'blue'}),
@@ -46,14 +46,14 @@ var styles = {
 
 
 function createLayer(coordinates, style, zIndex) {
-  var feature = new Feature(new Point(coordinates));
+  const feature = new Feature(new Point(coordinates));
   feature.setStyle(style);
 
-  var source = new VectorSource({
+  const source = new VectorSource({
     features: [feature]
   });
 
-  var vectorLayer = new VectorLayer({
+  const vectorLayer = new VectorLayer({
     source: source
   });
   vectorLayer.setZIndex(zIndex);
@@ -61,15 +61,15 @@ function createLayer(coordinates, style, zIndex) {
   return vectorLayer;
 }
 
-var layer0 = createLayer([40, 40], styles['star'], 0);
-var layer1 = createLayer([0, 0], styles['square'], 1);
-var layer2 = createLayer([0, 40], styles['triangle'], 0);
+const layer0 = createLayer([40, 40], styles['star'], 0);
+const layer1 = createLayer([0, 0], styles['square'], 1);
+const layer2 = createLayer([0, 40], styles['triangle'], 0);
 
-var layers = [];
+const layers = [];
 layers.push(layer1);
 layers.push(layer2);
 
-var map = new Map({
+const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({
@@ -82,7 +82,7 @@ layer0.setMap(map);
 
 
 function bindInputs(id, layer) {
-  var idxInput = document.getElementById('idx' + id);
+  const idxInput = document.getElementById('idx' + id);
   idxInput.onchange = function() {
     layer.setZIndex(parseInt(this.value, 10) || 0);
   };

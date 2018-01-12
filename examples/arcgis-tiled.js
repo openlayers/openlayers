@@ -4,10 +4,10 @@ import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import TileArcGISRest from '../src/ol/source/TileArcGISRest.js';
 
-var url = 'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
+const url = 'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
     'Specialty/ESRI_StateCityHighway_USA/MapServer';
 
-var layers = [
+const layers = [
   new TileLayer({
     source: new OSM()
   }),
@@ -18,7 +18,7 @@ var layers = [
     })
   })
 ];
-var map = new Map({
+const map = new Map({
   layers: layers,
   target: 'map',
   view: new View({

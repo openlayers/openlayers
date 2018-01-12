@@ -33,7 +33,7 @@ import Units from '../proj/Units.js';
  * @struct
  * @api
  */
-var Projection = function(options) {
+const Projection = function(options) {
   /**
    * @private
    * @type {string}

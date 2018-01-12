@@ -26,12 +26,12 @@ import _ol_tilegrid_ from '../tilegrid.js';
  * @param {olx.source.VectorTileOptions} options Vector tile options.
  * @api
  */
-var VectorTileSource = function(options) {
-  var projection = options.projection || 'EPSG:3857';
+const VectorTileSource = function(options) {
+  const projection = options.projection || 'EPSG:3857';
 
-  var extent = options.extent || _ol_tilegrid_.extentFromProjection(projection);
+  const extent = options.extent || _ol_tilegrid_.extentFromProjection(projection);
 
-  var tileGrid = options.tileGrid || _ol_tilegrid_.createXYZ({
+  const tileGrid = options.tileGrid || _ol_tilegrid_.createXYZ({
     extent: extent,
     maxZoom: options.maxZoom || 22,
     minZoom: options.minZoom,
@@ -110,22 +110,22 @@ VectorTileSource.prototype.clear = function() {
  * @inheritDoc
  */
 VectorTileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  var tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    var tileCoord = [z, x, y];
-    var urlTileCoord = this.getTileCoordForTileUrlFunction(
-        tileCoord, projection);
-    var tile = new VectorImageTile(
-        tileCoord,
-        urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
-        this.getRevision(),
-        this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
-        this.tileGrid, this.getTileGridForProjection(projection),
-        this.sourceTiles_, pixelRatio, projection, this.tileClass,
-        this.handleTileChange.bind(this),
-        this.tileOptions);
+    const tileCoord = [z, x, y];
+    const urlTileCoord = this.getTileCoordForTileUrlFunction(
+      tileCoord, projection);
+    const tile = new VectorImageTile(
+      tileCoord,
+      urlTileCoord !== null ? TileState.IDLE : TileState.EMPTY,
+      this.getRevision(),
+      this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
+      this.tileGrid, this.getTileGridForProjection(projection),
+      this.sourceTiles_, pixelRatio, projection, this.tileClass,
+      this.handleTileChange.bind(this),
+      this.tileOptions);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;
@@ -137,14 +137,14 @@ VectorTileSource.prototype.getTile = function(z, x, y, pixelRatio, projection) {
  * @inheritDoc
  */
 VectorTileSource.prototype.getTileGridForProjection = function(projection) {
-  var code = projection.getCode();
-  var tileGrid = this.tileGrids_[code];
+  const code = projection.getCode();
+  let tileGrid = this.tileGrids_[code];
   if (!tileGrid) {
     // A tile grid that matches the tile size of the source tile grid is more
     // likely to have 1:1 relationships between source tiles and rendered tiles.
-    var sourceTileGrid = this.tileGrid;
+    const sourceTileGrid = this.tileGrid;
     tileGrid = this.tileGrids_[code] = _ol_tilegrid_.createForProjection(projection, undefined,
-        sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
+      sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
   }
   return tileGrid;
 };
@@ -162,7 +162,7 @@ VectorTileSource.prototype.getTilePixelRatio = function(pixelRatio) {
  * @inheritDoc
  */
 VectorTileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
-  var tileSize = _ol_size_.toSize(this.getTileGridForProjection(projection).getTileSize(z));
+  const tileSize = _ol_size_.toSize(this.getTileGridForProjection(projection).getTileSize(z));
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
 export default VectorTileSource;

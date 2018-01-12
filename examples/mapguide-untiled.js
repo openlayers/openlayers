@@ -3,16 +3,16 @@ import View from '../src/ol/View.js';
 import ImageLayer from '../src/ol/layer/Image.js';
 import ImageMapGuide from '../src/ol/source/ImageMapGuide.js';
 
-var mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
-var agentUrl =
+const mdf = 'Library://Public/Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
+const agentUrl =
     'http://www.buoyshark.com/mapguide/mapagent/mapagent.fcgi?';
-var bounds = [
+const bounds = [
   -87.865114442365922,
   43.665065564837931,
   -87.595394059497067,
   43.823852564430069
 ];
-var map = new Map({
+const map = new Map({
   layers: [
     new ImageLayer({
       extent: bounds,

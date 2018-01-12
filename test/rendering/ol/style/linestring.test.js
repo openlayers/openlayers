@@ -10,11 +10,11 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.LineString', function() {
 
-  var map, vectorSource;
+  let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
     vectorSource = new VectorSource();
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -41,11 +41,11 @@ describe('ol.rendering.style.LineString', function() {
   describe('different strokes', function() {
 
     function createFeatures() {
-      var feature;
+      let feature;
 
       feature = new Feature({
         geometry: new LineString(
-            [[-20, 20], [15, 20]]
+          [[-20, 20], [15, 20]]
         )
       });
       feature.setStyle(new Style({
@@ -55,7 +55,7 @@ describe('ol.rendering.style.LineString', function() {
 
       feature = new Feature({
         geometry: new LineString(
-            [[-20, 15], [15, 15]]
+          [[-20, 15], [15, 15]]
         )
       });
       feature.setStyle(new Style({
@@ -65,7 +65,7 @@ describe('ol.rendering.style.LineString', function() {
 
       feature = new Feature({
         geometry: new LineString(
-            [[-20, 10], [15, 10]]
+          [[-20, 10], [15, 10]]
         )
       });
       feature.setStyle([new Style({
@@ -77,7 +77,7 @@ describe('ol.rendering.style.LineString', function() {
 
       feature = new Feature({
         geometry: new LineString(
-            [[-20, -20], [-2, 0], [15, -20]]
+          [[-20, -20], [-2, 0], [15, -20]]
         )
       });
       feature.setStyle(new Style({
@@ -93,7 +93,7 @@ describe('ol.rendering.style.LineString', function() {
 
       feature = new Feature({
         geometry: new LineString(
-            [[-20, -15], [-2, 5], [15, -15]]
+          [[-20, -15], [-2, 5], [15, -15]]
         )
       });
       feature.setStyle(new Style({
@@ -113,23 +113,23 @@ describe('ol.rendering.style.LineString', function() {
       createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'rendering/ol/style/expected/linestring-strokes-canvas.png',
-          3.0, done);
+        map, 'rendering/ol/style/expected/linestring-strokes-canvas.png',
+        3.0, done);
     });
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/linestring-strokes-webgl.png',
-          14.6, done);
+        14.6, done);
     });
 
     it('tests the canvas renderer (HiDPI)', function(done) {
       createMap('canvas', 2);
       createFeatures();
       expectResemble(
-          map, 'rendering/ol/style/expected/linestring-strokes-canvas-hidpi.png',
-          3.0, done);
+        map, 'rendering/ol/style/expected/linestring-strokes-canvas-hidpi.png',
+        3.0, done);
     });
   });
 });

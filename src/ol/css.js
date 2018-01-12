@@ -9,7 +9,7 @@
  * @const
  * @type {string}
  */
-export var CLASS_HIDDEN = 'ol-hidden';
+export const CLASS_HIDDEN = 'ol-hidden';
 
 
 /**
@@ -18,7 +18,7 @@ export var CLASS_HIDDEN = 'ol-hidden';
  * @const
  * @type {string}
  */
-export var CLASS_SELECTABLE = 'ol-selectable';
+export const CLASS_SELECTABLE = 'ol-selectable';
 
 
 /**
@@ -27,7 +27,7 @@ export var CLASS_SELECTABLE = 'ol-selectable';
  * @const
  * @type {string}
  */
-export var CLASS_UNSELECTABLE = 'ol-unselectable';
+export const CLASS_UNSELECTABLE = 'ol-unselectable';
 
 
 /**
@@ -36,7 +36,7 @@ export var CLASS_UNSELECTABLE = 'ol-unselectable';
  * @const
  * @type {string}
  */
-export var CLASS_UNSUPPORTED = 'ol-unsupported';
+export const CLASS_UNSUPPORTED = 'ol-unsupported';
 
 
 /**
@@ -45,7 +45,7 @@ export var CLASS_UNSUPPORTED = 'ol-unsupported';
  * @const
  * @type {string}
  */
-export var CLASS_CONTROL = 'ol-control';
+export const CLASS_CONTROL = 'ol-control';
 
 
 /**
@@ -54,16 +54,16 @@ export var CLASS_CONTROL = 'ol-control';
  * @param {string} The CSS font property.
  * @return {Object.<string>} The font families (or null if the input spec is invalid).
  */
-export var getFontFamilies = (function() {
-  var style;
-  var cache = {};
+export const getFontFamilies = (function() {
+  let style;
+  const cache = {};
   return function(font) {
     if (!style) {
       style = document.createElement('div').style;
     }
     if (!(font in cache)) {
       style.font = font;
-      var family = style.fontFamily;
+      const family = style.fontFamily;
       style.font = '';
       if (!family) {
         return null;

@@ -8,8 +8,8 @@ describe('ol.TileUrlFunction', function() {
   describe('expandUrl', function() {
     describe('with number range', function() {
       it('creates expected URLs', function() {
-        var template = 'http://tile-{1-3}/{z}/{x}/{y}';
-        var urls = expandUrl(template);
+        const template = 'http://tile-{1-3}/{z}/{x}/{y}';
+        const urls = expandUrl(template);
         expect(urls).to.eql([
           'http://tile-1/{z}/{x}/{y}',
           'http://tile-2/{z}/{x}/{y}',
@@ -17,8 +17,8 @@ describe('ol.TileUrlFunction', function() {
         ]);
       });
       it('creates expected URLs', function() {
-        var template = 'http://tile-{9-11}/{z}/{x}/{y}';
-        var urls = expandUrl(template);
+        const template = 'http://tile-{9-11}/{z}/{x}/{y}';
+        const urls = expandUrl(template);
         expect(urls).to.eql([
           'http://tile-9/{z}/{x}/{y}',
           'http://tile-10/{z}/{x}/{y}',
@@ -28,8 +28,8 @@ describe('ol.TileUrlFunction', function() {
     });
     describe('with character range', function() {
       it('creates expected URLs', function() {
-        var template = 'http://tile-{c-e}/{z}/{x}/{y}';
-        var urls = expandUrl(template);
+        const template = 'http://tile-{c-e}/{z}/{x}/{y}';
+        const urls = expandUrl(template);
         expect(urls).to.eql([
           'http://tile-c/{z}/{x}/{y}',
           'http://tile-d/{z}/{x}/{y}',
@@ -39,8 +39,8 @@ describe('ol.TileUrlFunction', function() {
     });
     describe('without range', function() {
       it('creates expected URLs', function() {
-        var template = 'http://tiles.example.com/{z}/{x}/{y}';
-        var urls = expandUrl(template);
+        const template = 'http://tiles.example.com/{z}/{x}/{y}';
+        const urls = expandUrl(template);
         expect(urls).to.eql([
           'http://tiles.example.com/{z}/{x}/{y}'
         ]);
@@ -49,41 +49,41 @@ describe('ol.TileUrlFunction', function() {
   });
 
   describe('createFromTemplate', function() {
-    var tileGrid = _ol_tilegrid_.createXYZ();
+    const tileGrid = _ol_tilegrid_.createXYZ();
     it('creates expected URL', function() {
-      var tileUrl = createFromTemplate('{z}/{x}/{y}', tileGrid);
+      const tileUrl = createFromTemplate('{z}/{x}/{y}', tileGrid);
       expect(tileUrl([3, 2, -2])).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
     it('accepts {-y} placeholder', function() {
-      var tileUrl = createFromTemplate('{z}/{x}/{-y}', tileGrid);
+      const tileUrl = createFromTemplate('{z}/{x}/{-y}', tileGrid);
       expect(tileUrl([3, 2, -3])).to.eql('3/2/5');
     });
     it('returns correct value for {-y} with custom tile grids', function() {
-      var customTileGrid = new TileGrid({
+      const customTileGrid = new TileGrid({
         extent: [-180, -90, 180, 90],
         origin: [-180, -90],
         resolutions: [360 / 256, 360 / 512, 360 / 1024, 360 / 2048]
       });
-      var tileUrl = createFromTemplate('{z}/{x}/{-y}', customTileGrid);
+      const tileUrl = createFromTemplate('{z}/{x}/{-y}', customTileGrid);
       expect(tileUrl([3, 2, -3])).to.eql('3/2/1');
     });
     it('replaces multiple placeholder occurrences', function() {
-      var tileUrl = createFromTemplate('{z}/{z}{x}{y}', tileGrid);
+      const tileUrl = createFromTemplate('{z}/{z}{x}{y}', tileGrid);
       expect(tileUrl([3, 2, -2])).to.eql('3/321');
     });
   });
 
   describe('createFromTemplates', function() {
-    var tileGrid = _ol_tilegrid_.createXYZ();
+    const tileGrid = _ol_tilegrid_.createXYZ();
     it('creates expected URL', function() {
-      var templates = [
+      const templates = [
         'http://tile-1/{z}/{x}/{y}',
         'http://tile-2/{z}/{x}/{y}',
         'http://tile-3/{z}/{x}/{y}'
       ];
-      var tileUrlFunction = createFromTemplates(templates, tileGrid);
-      var tileCoord = [3, 2, -2];
+      const tileUrlFunction = createFromTemplates(templates, tileGrid);
+      const tileCoord = [3, 2, -2];
 
       /* eslint-disable openlayers-internal/no-missing-requires */
       sinon.stub(_ol_tilecoord_, 'hash').callsFake(function() {
@@ -108,14 +108,14 @@ describe('ol.TileUrlFunction', function() {
   });
 
   describe('createFromTileUrlFunctions', function() {
-    var tileGrid = _ol_tilegrid_.createXYZ();
+    const tileGrid = _ol_tilegrid_.createXYZ();
     it('creates expected URL', function() {
-      var tileUrl = createFromTileUrlFunctions([
+      const tileUrl = createFromTileUrlFunctions([
         createFromTemplate('a', tileGrid),
         createFromTemplate('b', tileGrid)
       ]);
-      var tileUrl1 = tileUrl([1, 0, 0]);
-      var tileUrl2 = tileUrl([1, 0, 1]);
+      const tileUrl1 = tileUrl([1, 0, 0]);
+      const tileUrl2 = tileUrl([1, 0, 1]);
       expect(tileUrl1).not.to.be(tileUrl2);
       expect(tileUrl(null)).to.be(undefined);
     });

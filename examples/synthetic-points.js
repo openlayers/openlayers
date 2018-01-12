@@ -11,19 +11,19 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var count = 20000;
-var features = new Array(count);
-var e = 18000000;
-for (var i = 0; i < count; ++i) {
+const count = 20000;
+const features = new Array(count);
+const e = 18000000;
+for (let i = 0; i < count; ++i) {
   features[i] = new Feature({
     'geometry': new Point(
-        [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
+      [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
     'i': i,
     'size': i % 2 ? 10 : 20
   });
 }
 
-var styles = {
+const styles = {
   '10': new Style({
     image: new CircleStyle({
       radius: 5,
@@ -40,18 +40,18 @@ var styles = {
   })
 };
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   features: features,
   wrapX: false
 });
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: vectorSource,
   style: function(feature) {
     return styles[feature.get('size')];
   }
 });
 
-var map = new Map({
+const map = new Map({
   layers: [vector],
   target: document.getElementById('map'),
   view: new View({
@@ -60,16 +60,16 @@ var map = new Map({
   })
 });
 
-var point = null;
-var line = null;
-var displaySnap = function(coordinate) {
-  var closestFeature = vectorSource.getClosestFeatureToCoordinate(coordinate);
+let point = null;
+let line = null;
+const displaySnap = function(coordinate) {
+  const closestFeature = vectorSource.getClosestFeatureToCoordinate(coordinate);
   if (closestFeature === null) {
     point = null;
     line = null;
   } else {
-    var geometry = closestFeature.getGeometry();
-    var closestPoint = geometry.getClosestPoint(coordinate);
+    const geometry = closestFeature.getGeometry();
+    const closestPoint = geometry.getClosestPoint(coordinate);
     if (point === null) {
       point = new Point(closestPoint);
     } else {
@@ -88,7 +88,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  var coordinate = map.getEventCoordinate(evt.originalEvent);
+  const coordinate = map.getEventCoordinate(evt.originalEvent);
   displaySnap(coordinate);
 });
 
@@ -96,11 +96,11 @@ map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
-var stroke = new Stroke({
+const stroke = new Stroke({
   color: 'rgba(255,255,0,0.9)',
   width: 3
 });
-var style = new Style({
+const style = new Style({
   stroke: stroke,
   image: new CircleStyle({
     radius: 10,
@@ -109,7 +109,7 @@ var style = new Style({
 });
 
 map.on('postcompose', function(evt) {
-  var vectorContext = evt.vectorContext;
+  const vectorContext = evt.vectorContext;
   vectorContext.setStyle(style);
   if (point !== null) {
     vectorContext.drawGeometry(point);
@@ -123,8 +123,8 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  var pixel = map.getEventPixel(evt.originalEvent);
-  var hit = map.hasFeatureAtPixel(pixel);
+  const pixel = map.getEventPixel(evt.originalEvent);
+  const hit = map.hasFeatureAtPixel(pixel);
   if (hit) {
     map.getTarget().style.cursor = 'pointer';
   } else {

@@ -17,7 +17,7 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var defaultStyle = {
+const defaultStyle = {
   'Point': new Style({
     image: new CircleStyle({
       fill: new Fill({
@@ -74,8 +74,8 @@ var defaultStyle = {
   })
 };
 
-var styleFunction = function(feature, resolution) {
-  var featureStyleFunction = feature.getStyleFunction();
+const styleFunction = function(feature, resolution) {
+  const featureStyleFunction = feature.getStyleFunction();
   if (featureStyleFunction) {
     return featureStyleFunction.call(feature, resolution);
   } else {
@@ -83,7 +83,7 @@ var styleFunction = function(feature, resolution) {
   }
 };
 
-var dragAndDropInteraction = new DragAndDrop({
+const dragAndDropInteraction = new DragAndDrop({
   formatConstructors: [
     GPX,
     GeoJSON,
@@ -93,7 +93,7 @@ var dragAndDropInteraction = new DragAndDrop({
   ]
 });
 
-var map = new Map({
+const map = new Map({
   interactions: defaultInteractions().extend([dragAndDropInteraction]),
   layers: [
     new TileLayer({
@@ -111,7 +111,7 @@ var map = new Map({
 });
 
 dragAndDropInteraction.on('addfeatures', function(event) {
-  var vectorSource = new VectorSource({
+  const vectorSource = new VectorSource({
     features: event.features
   });
   map.addLayer(new VectorLayer({
@@ -121,14 +121,14 @@ dragAndDropInteraction.on('addfeatures', function(event) {
   map.getView().fit(vectorSource.getExtent());
 });
 
-var displayFeatureInfo = function(pixel) {
-  var features = [];
+const displayFeatureInfo = function(pixel) {
+  const features = [];
   map.forEachFeatureAtPixel(pixel, function(feature) {
     features.push(feature);
   });
   if (features.length > 0) {
-    var info = [];
-    var i, ii;
+    const info = [];
+    let i, ii;
     for (i = 0, ii = features.length; i < ii; ++i) {
       info.push(features[i].get('name'));
     }
@@ -142,7 +142,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  var pixel = map.getEventPixel(evt.originalEvent);
+  const pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
 });
 

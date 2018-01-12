@@ -10,14 +10,14 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new BingMaps({
     imagerySet: 'Aerial',
     key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
   })
 });
 
-var style = {
+const style = {
   'Point': new Style({
     image: new CircleStyle({
       fill: new Fill({
@@ -44,7 +44,7 @@ var style = {
   })
 };
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/gpx/fells_loop.gpx',
     format: new GPX()
@@ -54,7 +54,7 @@ var vector = new VectorLayer({
   }
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   view: new View({
@@ -63,14 +63,14 @@ var map = new Map({
   })
 });
 
-var displayFeatureInfo = function(pixel) {
-  var features = [];
+const displayFeatureInfo = function(pixel) {
+  const features = [];
   map.forEachFeatureAtPixel(pixel, function(feature) {
     features.push(feature);
   });
   if (features.length > 0) {
-    var info = [];
-    var i, ii;
+    const info = [];
+    let i, ii;
     for (i = 0, ii = features.length; i < ii; ++i) {
       info.push(features[i].get('desc'));
     }
@@ -86,7 +86,7 @@ map.on('pointermove', function(evt) {
   if (evt.dragging) {
     return;
   }
-  var pixel = map.getEventPixel(evt.originalEvent);
+  const pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
 });
 

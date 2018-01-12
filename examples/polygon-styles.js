@@ -9,7 +9,7 @@ import Fill from '../src/ol/style/Fill.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var styles = [
+const styles = [
   /* We are using two different styles for the polygons:
    *  - The first style is for the polygons themselves.
    *  - The second style is to draw the vertices of the polygons.
@@ -35,13 +35,13 @@ var styles = [
     }),
     geometry: function(feature) {
       // return the coordinates of the first ring of the polygon
-      var coordinates = feature.getGeometry().getCoordinates()[0];
+      const coordinates = feature.getGeometry().getCoordinates()[0];
       return new MultiPoint(coordinates);
     }
   })
 ];
 
-var geojsonObject = {
+const geojsonObject = {
   'type': 'FeatureCollection',
   'crs': {
     'type': 'name',
@@ -80,16 +80,16 @@ var geojsonObject = {
   }]
 };
 
-var source = new VectorSource({
+const source = new VectorSource({
   features: (new GeoJSON()).readFeatures(geojsonObject)
 });
 
-var layer = new VectorLayer({
+const layer = new VectorLayer({
   source: source,
   style: styles
 });
 
-var map = new Map({
+const map = new Map({
   layers: [layer],
   target: 'map',
   view: new View({

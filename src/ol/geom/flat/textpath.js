@@ -2,7 +2,7 @@
  * @module ol/geom/flat/textpath
  */
 import {lerp} from '../../math.js';
-var _ol_geom_flat_textpath_ = {};
+const _ol_geom_flat_textpath_ = {};
 
 
 /**
@@ -19,32 +19,32 @@ var _ol_geom_flat_textpath_ = {};
  * exceeded. Entries of the array are x, y, anchorX, angle, chunk.
  */
 _ol_geom_flat_textpath_.lineString = function(
-    flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
-  var result = [];
+  flatCoordinates, offset, end, stride, text, measure, startM, maxAngle) {
+  const result = [];
 
   // Keep text upright
-  var reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
+  const reverse = flatCoordinates[offset] > flatCoordinates[end - stride];
 
-  var numChars = text.length;
+  const numChars = text.length;
 
-  var x1 = flatCoordinates[offset];
-  var y1 = flatCoordinates[offset + 1];
+  let x1 = flatCoordinates[offset];
+  let y1 = flatCoordinates[offset + 1];
   offset += stride;
-  var x2 = flatCoordinates[offset];
-  var y2 = flatCoordinates[offset + 1];
-  var segmentM = 0;
-  var segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  let x2 = flatCoordinates[offset];
+  let y2 = flatCoordinates[offset + 1];
+  let segmentM = 0;
+  let segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
-  var chunk = '';
-  var chunkLength = 0;
-  var data, index, previousAngle;
-  for (var i = 0; i < numChars; ++i) {
+  let chunk = '';
+  let chunkLength = 0;
+  let data, index, previousAngle;
+  for (let i = 0; i < numChars; ++i) {
     index = reverse ? numChars - i - 1 : i;
-    var char = text.charAt(index);
+    const char = text.charAt(index);
     chunk = reverse ? char + chunk : chunk + char;
-    var charLength = measure(chunk) - chunkLength;
+    const charLength = measure(chunk) - chunkLength;
     chunkLength += charLength;
-    var charM = startM + charLength / 2;
+    const charM = startM + charLength / 2;
     while (offset < end - stride && segmentM + segmentLength < charM) {
       x1 = x2;
       y1 = y2;
@@ -54,21 +54,21 @@ _ol_geom_flat_textpath_.lineString = function(
       segmentM += segmentLength;
       segmentLength = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
     }
-    var segmentPos = charM - segmentM;
-    var angle = Math.atan2(y2 - y1, x2 - x1);
+    const segmentPos = charM - segmentM;
+    let angle = Math.atan2(y2 - y1, x2 - x1);
     if (reverse) {
       angle += angle > 0 ? -Math.PI : Math.PI;
     }
     if (previousAngle !== undefined) {
-      var delta = angle - previousAngle;
+      let delta = angle - previousAngle;
       delta += (delta > Math.PI) ? -2 * Math.PI : (delta < -Math.PI) ? 2 * Math.PI : 0;
       if (Math.abs(delta) > maxAngle) {
         return null;
       }
     }
-    var interpolate = segmentPos / segmentLength;
-    var x = lerp(x1, x2, interpolate);
-    var y = lerp(y1, y2, interpolate);
+    const interpolate = segmentPos / segmentLength;
+    const x = lerp(x1, x2, interpolate);
+    const y = lerp(y1, y2, interpolate);
     if (previousAngle == angle) {
       if (reverse) {
         data[0] = x;

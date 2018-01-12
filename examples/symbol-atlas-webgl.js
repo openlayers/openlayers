@@ -11,13 +11,13 @@ import RegularShape from '../src/ol/style/RegularShape.js';
 import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
-var atlasManager = new AtlasManager({
+const atlasManager = new AtlasManager({
   // we increase the initial size so that all symbols fit into
   // a single atlas image
   initialSize: 512
 });
 
-var symbolInfo = [{
+const symbolInfo = [{
   opacity: 1.0,
   scale: 1.0,
   fillColor: 'rgba(255, 153, 0, 0.4)',
@@ -39,12 +39,12 @@ var symbolInfo = [{
   strokeColor: 'rgba(145, 43, 20, 0.2)'
 }];
 
-var radiuses = [3, 6, 9, 15, 19, 25];
-var symbolCount = symbolInfo.length * radiuses.length * 2;
-var symbols = [];
-var i, j;
+const radiuses = [3, 6, 9, 15, 19, 25];
+const symbolCount = symbolInfo.length * radiuses.length * 2;
+const symbols = [];
+let i, j;
 for (i = 0; i < symbolInfo.length; ++i) {
-  var info = symbolInfo[i];
+  const info = symbolInfo[i];
   for (j = 0; j < radiuses.length; ++j) {
     // circle symbol
     symbols.push(new CircleStyle({
@@ -83,30 +83,30 @@ for (i = 0; i < symbolInfo.length; ++i) {
   }
 }
 
-var featureCount = 50000;
-var features = new Array(featureCount);
-var feature, geometry;
-var e = 25000000;
+const featureCount = 50000;
+const features = new Array(featureCount);
+let feature, geometry;
+const e = 25000000;
 for (i = 0; i < featureCount; ++i) {
   geometry = new Point(
-      [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
+    [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
   feature = new Feature(geometry);
   feature.setStyle(
-      new Style({
-        image: symbols[i % symbolCount]
-      })
+    new Style({
+      image: symbols[i % symbolCount]
+    })
   );
   features[i] = feature;
 }
 
-var vectorSource = new VectorSource({
+const vectorSource = new VectorSource({
   features: features
 });
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: vectorSource
 });
 
-var map = new Map({
+const map = new Map({
   renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
   layers: [vector],
   target: document.getElementById('map'),

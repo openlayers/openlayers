@@ -7,7 +7,7 @@ import OSM from '../src/ol/source/OSM.js';
 import Stroke from '../src/ol/style/Stroke.js';
 
 
-var map = new Map({
+const map = new Map({
   layers: [
     new TileLayer({
       source: new OSM({
@@ -23,7 +23,7 @@ var map = new Map({
 });
 
 // Create the graticule component
-var graticule = new Graticule({
+const graticule = new Graticule({
   // the style to use for the lines, optional.
   strokeStyle: new Stroke({
     color: 'rgba(255,120,0,0.9)',

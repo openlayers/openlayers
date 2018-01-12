@@ -2,7 +2,7 @@
  * @module ol/geom/flat/center
  */
 import {createEmpty, createOrUpdateFromFlatCoordinates} from '../../extent.js';
-var _ol_geom_flat_center_ = {};
+const _ol_geom_flat_center_ = {};
 
 
 /**
@@ -13,11 +13,11 @@ var _ol_geom_flat_center_ = {};
  * @return {Array.<number>} Flat centers.
  */
 _ol_geom_flat_center_.linearRingss = function(flatCoordinates, offset, endss, stride) {
-  var flatCenters = [];
-  var i, ii;
-  var extent = createEmpty();
+  const flatCenters = [];
+  let i, ii;
+  let extent = createEmpty();
   for (i = 0, ii = endss.length; i < ii; ++i) {
-    var ends = endss[i];
+    const ends = endss[i];
     extent = createOrUpdateFromFlatCoordinates(flatCoordinates, offset, ends[0], stride);
     flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);
     offset = ends[ends.length - 1];

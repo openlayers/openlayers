@@ -6,7 +6,7 @@ import {createCanvasContext2D} from '../dom.js';
 import _ol_obj_ from '../obj.js';
 import LRUCache from '../structs/LRUCache.js';
 import _ol_transform_ from '../transform.js';
-var _ol_render_canvas_ = {};
+const _ol_render_canvas_ = {};
 
 
 /**
@@ -122,25 +122,25 @@ _ol_render_canvas_.textHeights_ = {};
  * @param {string} fontSpec CSS font spec.
  */
 _ol_render_canvas_.checkFont = (function() {
-  var retries = 60;
-  var checked = _ol_render_canvas_.checkedFonts_;
-  var labelCache = _ol_render_canvas_.labelCache;
-  var size = '32px ';
-  var referenceFonts = ['monospace', 'serif'];
-  var len = referenceFonts.length;
-  var text = 'wmytzilWMYTZIL@#/&?$%10';
-  var interval, referenceWidth;
+  const retries = 60;
+  const checked = _ol_render_canvas_.checkedFonts_;
+  const labelCache = _ol_render_canvas_.labelCache;
+  const size = '32px ';
+  const referenceFonts = ['monospace', 'serif'];
+  const len = referenceFonts.length;
+  const text = 'wmytzilWMYTZIL@#/&?$%10';
+  let interval, referenceWidth;
 
   function isAvailable(font) {
-    var context = _ol_render_canvas_.getMeasureContext();
-    var available = true;
-    for (var i = 0; i < len; ++i) {
-      var referenceFont = referenceFonts[i];
+    const context = _ol_render_canvas_.getMeasureContext();
+    let available = true;
+    for (let i = 0; i < len; ++i) {
+      const referenceFont = referenceFonts[i];
       context.font = size + referenceFont;
       referenceWidth = context.measureText(text).width;
       if (font != referenceFont) {
         context.font = size + font + ',' + referenceFont;
-        var width = context.measureText(text).width;
+        const width = context.measureText(text).width;
         // If width and referenceWidth are the same, then the fallback was used
         // instead of the font we wanted, so the font is not available.
         available = available && width != referenceWidth;
@@ -150,8 +150,8 @@ _ol_render_canvas_.checkFont = (function() {
   }
 
   function check() {
-    var done = true;
-    for (var font in checked) {
+    let done = true;
+    for (const font in checked) {
       if (checked[font] < retries) {
         if (isAvailable(font)) {
           checked[font] = retries;
@@ -172,12 +172,12 @@ _ol_render_canvas_.checkFont = (function() {
   }
 
   return function(fontSpec) {
-    var fontFamilies = getFontFamilies(fontSpec);
+    const fontFamilies = getFontFamilies(fontSpec);
     if (!fontFamilies) {
       return;
     }
-    for (var i = 0, ii = fontFamilies.length; i < ii; ++i) {
-      var fontFamily = fontFamilies[i];
+    for (let i = 0, ii = fontFamilies.length; i < ii; ++i) {
+      const fontFamily = fontFamilies[i];
       if (!(fontFamily in checked)) {
         checked[fontFamily] = retries;
         if (!isAvailable(fontFamily)) {
@@ -196,7 +196,7 @@ _ol_render_canvas_.checkFont = (function() {
  * @return {CanvasRenderingContext2D} Measure context.
  */
 _ol_render_canvas_.getMeasureContext = function() {
-  var context = _ol_render_canvas_.measureContext_;
+  let context = _ol_render_canvas_.measureContext_;
   if (!context) {
     context = _ol_render_canvas_.measureContext_ = createCanvasContext2D(1, 1);
   }
@@ -209,10 +209,10 @@ _ol_render_canvas_.getMeasureContext = function() {
  * @return {ol.Size} Measurement.
  */
 _ol_render_canvas_.measureTextHeight = (function() {
-  var span;
-  var heights = _ol_render_canvas_.textHeights_;
+  let span;
+  const heights = _ol_render_canvas_.textHeights_;
   return function(font) {
-    var height = heights[font];
+    let height = heights[font];
     if (height == undefined) {
       if (!span) {
         span = document.createElement('span');
@@ -237,7 +237,7 @@ _ol_render_canvas_.measureTextHeight = (function() {
  * @return {number} Width.
  */
 _ol_render_canvas_.measureTextWidth = function(font, text) {
-  var measureContext = _ol_render_canvas_.getMeasureContext();
+  const measureContext = _ol_render_canvas_.getMeasureContext();
   if (font != measureContext.font) {
     measureContext.font = font;
   }
@@ -277,8 +277,8 @@ _ol_render_canvas_.resetTransform_ = _ol_transform_.create();
  * @param {number} scale Scale.
  */
 _ol_render_canvas_.drawImage = function(context,
-    transform, opacity, image, originX, originY, w, h, x, y, scale) {
-  var alpha;
+  transform, opacity, image, originX, originY, w, h, x, y, scale) {
+  let alpha;
   if (opacity != 1) {
     alpha = context.globalAlpha;
     context.globalAlpha = alpha * opacity;

@@ -6,7 +6,7 @@ describe('ol.source.Stamen', function() {
   describe('constructor', function() {
 
     it('can be constructed with a custom minZoom', function() {
-      var source = new Stamen({
+      const source = new Stamen({
         layer: 'watercolor',
         minZoom: 10
       });
@@ -14,7 +14,7 @@ describe('ol.source.Stamen', function() {
     });
 
     it('can be constructed with a custom maxZoom', function() {
-      var source = new Stamen({
+      const source = new Stamen({
         layer: 'watercolor',
         maxZoom: 8
       });

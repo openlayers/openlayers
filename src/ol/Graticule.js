@@ -20,7 +20,7 @@ import Text from './style/Text.js';
  * @private
  * @const
  */
-var DEFAULT_STROKE_STYLE = new Stroke({
+const DEFAULT_STROKE_STYLE = new Stroke({
   color: 'rgba(0,0,0,0.2)'
 });
 
@@ -29,7 +29,7 @@ var DEFAULT_STROKE_STYLE = new Stroke({
  * @type {Array.<number>}
  * @private
  */
-var INTERVALS = [
+const INTERVALS = [
   90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05, 0.01, 0.005, 0.002, 0.001
 ];
 
@@ -47,7 +47,7 @@ var INTERVALS = [
  *     lonLabelStyle: (ol.style.Text|undefined),
  *     latLabelStyle: (ol.style.Text|undefined)}}
  */
-export var GraticuleOptions;
+export let GraticuleOptions;
 
 
 /**
@@ -119,8 +119,8 @@ export var GraticuleOptions;
  *     of the viewport.
  * @api
  */
-var Graticule = function(opt_options) {
-  var options = opt_options || {};
+const Graticule = function(opt_options) {
+  const options = opt_options || {};
 
   /**
    * @type {ol.PluggableMap}
@@ -244,7 +244,7 @@ var Graticule = function(opt_options) {
   this.parallelsLabels_ = null;
 
   if (options.showLabels == true) {
-    var degreesToString = _ol_coordinate_.degreesToStringHDMS;
+    const degreesToString = _ol_coordinate_.degreesToStringHDMS;
 
     /**
      * @type {null|function(number):string}
@@ -331,11 +331,11 @@ var Graticule = function(opt_options) {
  * @private
  */
 Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredTolerance, extent, index) {
-  var lineString = this.getMeridian_(lon, minLat, maxLat,
-      squaredTolerance, index);
+  const lineString = this.getMeridian_(lon, minLat, maxLat,
+    squaredTolerance, index);
   if (intersects(lineString.getExtent(), extent)) {
     if (this.meridiansLabels_) {
-      var textPoint = this.getMeridianPoint_(lineString, extent, index);
+      const textPoint = this.getMeridianPoint_(lineString, extent, index);
       this.meridiansLabels_[index] = {
         geom: textPoint,
         text: this.lonLabelFormatter_(lon)
@@ -354,14 +354,14 @@ Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredToleranc
  * @private
  */
 Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
-  var flatCoordinates = lineString.getFlatCoordinates();
-  var clampedBottom = Math.max(extent[1], flatCoordinates[1]);
-  var clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
-  var lat = clamp(
-      extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
-      clampedBottom, clampedTop);
-  var coordinate = [flatCoordinates[0], lat];
-  var point = this.meridiansLabels_[index] !== undefined ?
+  const flatCoordinates = lineString.getFlatCoordinates();
+  const clampedBottom = Math.max(extent[1], flatCoordinates[1]);
+  const clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
+  const lat = clamp(
+    extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
+    clampedBottom, clampedTop);
+  const coordinate = [flatCoordinates[0], lat];
+  const point = this.meridiansLabels_[index] !== undefined ?
     this.meridiansLabels_[index].geom : new Point(null);
   point.setCoordinates(coordinate);
   return point;
@@ -379,11 +379,11 @@ Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
  * @private
  */
 Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredTolerance, extent, index) {
-  var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
-      index);
+  const lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
+    index);
   if (intersects(lineString.getExtent(), extent)) {
     if (this.parallelsLabels_) {
-      var textPoint = this.getParallelPoint_(lineString, extent, index);
+      const textPoint = this.getParallelPoint_(lineString, extent, index);
       this.parallelsLabels_[index] = {
         geom: textPoint,
         text: this.latLabelFormatter_(lat)
@@ -403,14 +403,14 @@ Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredToleranc
  * @private
  */
 Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
-  var flatCoordinates = lineString.getFlatCoordinates();
-  var clampedLeft = Math.max(extent[0], flatCoordinates[0]);
-  var clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
-  var lon = clamp(
-      extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
-      clampedLeft, clampedRight);
-  var coordinate = [lon, flatCoordinates[1]];
-  var point = this.parallelsLabels_[index] !== undefined ?
+  const flatCoordinates = lineString.getFlatCoordinates();
+  const clampedLeft = Math.max(extent[0], flatCoordinates[0]);
+  const clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
+  const lon = clamp(
+    extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
+    clampedLeft, clampedRight);
+  const coordinate = [lon, flatCoordinates[1]];
+  const point = this.parallelsLabels_[index] !== undefined ?
     this.parallelsLabels_[index].geom : new Point(null);
   point.setCoordinates(coordinate);
   return point;
@@ -426,7 +426,7 @@ Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
  */
 Graticule.prototype.createGraticule_ = function(extent, center, resolution, squaredTolerance) {
 
-  var interval = this.getInterval_(resolution);
+  const interval = this.getInterval_(resolution);
   if (interval == -1) {
     this.meridians_.length = this.parallels_.length = 0;
     if (this.meridiansLabels_) {
@@ -438,13 +438,13 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
     return;
   }
 
-  var centerLonLat = this.toLonLatTransform_(center);
-  var centerLon = centerLonLat[0];
-  var centerLat = centerLonLat[1];
-  var maxLines = this.maxLines_;
-  var cnt, idx, lat, lon;
+  const centerLonLat = this.toLonLatTransform_(center);
+  let centerLon = centerLonLat[0];
+  let centerLat = centerLonLat[1];
+  const maxLines = this.maxLines_;
+  let cnt, idx, lat, lon;
 
-  var validExtent = [
+  let validExtent = [
     Math.max(extent[0], this.minLonP_),
     Math.max(extent[1], this.minLatP_),
     Math.min(extent[2], this.maxLonP_),
@@ -452,11 +452,11 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
   ];
 
   validExtent = transformExtent(validExtent, this.projection_,
-      'EPSG:4326');
-  var maxLat = validExtent[3];
-  var maxLon = validExtent[2];
-  var minLat = validExtent[1];
-  var minLon = validExtent[0];
+    'EPSG:4326');
+  const maxLat = validExtent[3];
+  const maxLon = validExtent[2];
+  const minLat = validExtent[1];
+  const minLon = validExtent[0];
 
   // Create meridians
 
@@ -519,15 +519,15 @@ Graticule.prototype.createGraticule_ = function(extent, center, resolution, squa
  * @private
  */
 Graticule.prototype.getInterval_ = function(resolution) {
-  var centerLon = this.projectionCenterLonLat_[0];
-  var centerLat = this.projectionCenterLonLat_[1];
-  var interval = -1;
-  var i, ii, delta, dist;
-  var target = Math.pow(this.targetSize_ * resolution, 2);
+  const centerLon = this.projectionCenterLonLat_[0];
+  const centerLat = this.projectionCenterLonLat_[1];
+  let interval = -1;
+  let i, ii, delta, dist;
+  const target = Math.pow(this.targetSize_ * resolution, 2);
   /** @type {Array.<number>} **/
-  var p1 = [];
+  const p1 = [];
   /** @type {Array.<number>} **/
-  var p2 = [];
+  const p2 = [];
   for (i = 0, ii = INTERVALS.length; i < ii; ++i) {
     delta = INTERVALS[i] / 2;
     p1[0] = centerLon - delta;
@@ -566,10 +566,10 @@ Graticule.prototype.getMap = function() {
  * @private
  */
 Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
-    squaredTolerance, index) {
-  var flatCoordinates = _ol_geom_flat_geodesic_.meridian(lon,
-      minLat, maxLat, this.projection_, squaredTolerance);
-  var lineString = this.meridians_[index] !== undefined ?
+  squaredTolerance, index) {
+  const flatCoordinates = _ol_geom_flat_geodesic_.meridian(lon,
+    minLat, maxLat, this.projection_, squaredTolerance);
+  const lineString = this.meridians_[index] !== undefined ?
     this.meridians_[index] : new LineString(null);
   lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
   return lineString;
@@ -596,10 +596,10 @@ Graticule.prototype.getMeridians = function() {
  * @private
  */
 Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
-    squaredTolerance, index) {
-  var flatCoordinates = _ol_geom_flat_geodesic_.parallel(lat,
-      minLon, maxLon, this.projection_, squaredTolerance);
-  var lineString = this.parallels_[index] !== undefined ?
+  squaredTolerance, index) {
+  const flatCoordinates = _ol_geom_flat_geodesic_.parallel(lat,
+    minLon, maxLon, this.projection_, squaredTolerance);
+  const lineString = this.parallels_[index] !== undefined ?
     this.parallels_[index] : new LineString(null);
   lineString.setFlatCoordinates(GeometryLayout.XY, flatCoordinates);
   return lineString;
@@ -621,18 +621,18 @@ Graticule.prototype.getParallels = function() {
  * @private
  */
 Graticule.prototype.handlePostCompose_ = function(e) {
-  var vectorContext = e.vectorContext;
-  var frameState = e.frameState;
-  var extent = frameState.extent;
-  var viewState = frameState.viewState;
-  var center = viewState.center;
-  var projection = viewState.projection;
-  var resolution = viewState.resolution;
-  var pixelRatio = frameState.pixelRatio;
-  var squaredTolerance =
+  const vectorContext = e.vectorContext;
+  const frameState = e.frameState;
+  const extent = frameState.extent;
+  const viewState = frameState.viewState;
+  const center = viewState.center;
+  const projection = viewState.projection;
+  const resolution = viewState.resolution;
+  const pixelRatio = frameState.pixelRatio;
+  const squaredTolerance =
       resolution * resolution / (4 * pixelRatio * pixelRatio);
 
-  var updateProjectionInfo = !this.projection_ ||
+  const updateProjectionInfo = !this.projection_ ||
       !equivalentProjection(this.projection_, projection);
 
   if (updateProjectionInfo) {
@@ -643,7 +643,7 @@ Graticule.prototype.handlePostCompose_ = function(e) {
 
   // Draw the lines
   vectorContext.setFillStrokeStyle(null, this.strokeStyle_);
-  var i, l, line;
+  let i, l, line;
   for (i = 0, l = this.meridians_.length; i < l; ++i) {
     line = this.meridians_[i];
     vectorContext.drawGeometry(line);
@@ -652,7 +652,7 @@ Graticule.prototype.handlePostCompose_ = function(e) {
     line = this.parallels_[i];
     vectorContext.drawGeometry(line);
   }
-  var labelData;
+  let labelData;
   if (this.meridiansLabels_) {
     for (i = 0, l = this.meridiansLabels_.length; i < l; ++i) {
       labelData = this.meridiansLabels_[i];
@@ -677,22 +677,22 @@ Graticule.prototype.handlePostCompose_ = function(e) {
  * @private
  */
 Graticule.prototype.updateProjectionInfo_ = function(projection) {
-  var epsg4326Projection = getProjection('EPSG:4326');
+  const epsg4326Projection = getProjection('EPSG:4326');
 
-  var extent = projection.getExtent();
-  var worldExtent = projection.getWorldExtent();
-  var worldExtentP = transformExtent(worldExtent,
-      epsg4326Projection, projection);
+  const extent = projection.getExtent();
+  const worldExtent = projection.getWorldExtent();
+  const worldExtentP = transformExtent(worldExtent,
+    epsg4326Projection, projection);
 
-  var maxLat = worldExtent[3];
-  var maxLon = worldExtent[2];
-  var minLat = worldExtent[1];
-  var minLon = worldExtent[0];
+  const maxLat = worldExtent[3];
+  const maxLon = worldExtent[2];
+  const minLat = worldExtent[1];
+  const minLon = worldExtent[0];
 
-  var maxLatP = worldExtentP[3];
-  var maxLonP = worldExtentP[2];
-  var minLatP = worldExtentP[1];
-  var minLonP = worldExtentP[0];
+  const maxLatP = worldExtentP[3];
+  const maxLonP = worldExtentP[2];
+  const minLatP = worldExtentP[1];
+  const minLonP = worldExtentP[0];
 
   this.maxLat_ = maxLat;
   this.maxLon_ = maxLon;

@@ -11,7 +11,7 @@ import _ol_xml_ from '../xml.js';
  * @abstract
  * @struct
  */
-var XML = function() {
+const XML = function() {
 };
 
 
@@ -25,7 +25,7 @@ XML.prototype.read = function(source) {
   } else if (_ol_xml_.isNode(source)) {
     return this.readFromNode(/** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    var doc = _ol_xml_.parse(source);
+    const doc = _ol_xml_.parse(source);
     return this.readFromDocument(doc);
   } else {
     return null;

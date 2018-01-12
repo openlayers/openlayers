@@ -16,10 +16,10 @@ import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
  * @param {?} declutterTree Declutter tree.
  * @struct
  */
-var _ol_render_canvas_ImageReplay_ = function(
-    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
+const _ol_render_canvas_ImageReplay_ = function(
+  tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   _ol_render_canvas_Replay_.call(this,
-      tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
+    tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
   /**
    * @private
@@ -120,7 +120,7 @@ inherits(_ol_render_canvas_ImageReplay_, _ol_render_canvas_Replay_);
  */
 _ol_render_canvas_ImageReplay_.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   return this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false, false);
+    flatCoordinates, offset, end, stride, false, false);
 };
 
 
@@ -132,11 +132,11 @@ _ol_render_canvas_ImageReplay_.prototype.drawPoint = function(pointGeometry, fea
     return;
   }
   this.beginGeometry(pointGeometry, feature);
-  var flatCoordinates = pointGeometry.getFlatCoordinates();
-  var stride = pointGeometry.getStride();
-  var myBegin = this.coordinates.length;
-  var myEnd = this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+  const flatCoordinates = pointGeometry.getFlatCoordinates();
+  const stride = pointGeometry.getStride();
+  const myBegin = this.coordinates.length;
+  const myEnd = this.drawCoordinates_(
+    flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     _ol_render_canvas_Instruction_.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
@@ -164,11 +164,11 @@ _ol_render_canvas_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeo
     return;
   }
   this.beginGeometry(multiPointGeometry, feature);
-  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
-  var stride = multiPointGeometry.getStride();
-  var myBegin = this.coordinates.length;
-  var myEnd = this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+  const flatCoordinates = multiPointGeometry.getFlatCoordinates();
+  const stride = multiPointGeometry.getStride();
+  const myBegin = this.coordinates.length;
+  const myEnd = this.drawCoordinates_(
+    flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     _ol_render_canvas_Instruction_.DRAW_IMAGE, myBegin, myEnd, this.image_,
     // Remaining arguments to DRAW_IMAGE are in alphabetical order
@@ -214,11 +214,11 @@ _ol_render_canvas_ImageReplay_.prototype.finish = function() {
  * @inheritDoc
  */
 _ol_render_canvas_ImageReplay_.prototype.setImageStyle = function(imageStyle, declutterGroup) {
-  var anchor = imageStyle.getAnchor();
-  var size = imageStyle.getSize();
-  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-  var image = imageStyle.getImage(1);
-  var origin = imageStyle.getOrigin();
+  const anchor = imageStyle.getAnchor();
+  const size = imageStyle.getSize();
+  const hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  const image = imageStyle.getImage(1);
+  const origin = imageStyle.getOrigin();
   this.anchorX_ = anchor[0];
   this.anchorY_ = anchor[1];
   this.declutterGroup_ = /** @type {ol.DeclutterGroup} */ (declutterGroup);

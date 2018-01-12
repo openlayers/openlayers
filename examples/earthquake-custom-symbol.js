@@ -13,28 +13,28 @@ import Stroke from '../src/ol/style/Stroke.js';
 import Style from '../src/ol/style/Style.js';
 
 
-var symbol = [[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]];
-var scale;
-var scaleFunction = function(coordinate) {
+const symbol = [[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]];
+let scale;
+const scaleFunction = function(coordinate) {
   return [coordinate[0] * scale, coordinate[1] * scale];
 };
 
-var styleCache = {};
-var styleFunction = function(feature) {
+const styleCache = {};
+const styleFunction = function(feature) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
   // standards-violating <magnitude> tag in each Placemark.  We extract it from
   // the Placemark's name instead.
-  var name = feature.get('name');
-  var magnitude = parseFloat(name.substr(2));
-  var size = parseInt(10 + 40 * (magnitude - 5), 10);
+  const name = feature.get('name');
+  const magnitude = parseFloat(name.substr(2));
+  const size = parseInt(10 + 40 * (magnitude - 5), 10);
   scale = size / 10;
-  var style = styleCache[size];
+  let style = styleCache[size];
   if (!style) {
-    var canvas =
+    const canvas =
         /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    var vectorContext = _ol_render_.toContext(
-        /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
-        {size: [size, size], pixelRatio: 1});
+    const vectorContext = _ol_render_.toContext(
+      /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
+      {size: [size, size], pixelRatio: 1});
     vectorContext.setStyle(new Style({
       fill: new Fill({color: 'rgba(255, 153, 0, 0.4)'}),
       stroke: new Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 2})
@@ -52,7 +52,7 @@ var styleFunction = function(feature) {
   return style;
 };
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/kml/2012_Earthquakes_Mag5.kml',
     format: new KML({
@@ -62,13 +62,13 @@ var vector = new VectorLayer({
   style: styleFunction
 });
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new Stamen({
     layer: 'toner'
   })
 });
 
-var map = new Map({
+const map = new Map({
   layers: [raster, vector],
   target: 'map',
   view: new View({

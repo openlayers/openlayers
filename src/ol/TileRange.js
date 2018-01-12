@@ -12,7 +12,7 @@
  * @param {number} maxY Maximum Y.
  * @struct
  */
-var TileRange = function(minX, maxX, minY, maxY) {
+const TileRange = function(minX, maxX, minY, maxY) {
 
   /**
    * @type {number}

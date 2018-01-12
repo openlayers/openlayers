@@ -8,9 +8,9 @@ import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
 
 describe('ol.control.Attribution', function() {
 
-  var map;
+  let map;
   beforeEach(function() {
-    var target = document.createElement('div');
+    const target = document.createElement('div');
     target.style.width = target.style.height = '100px';
     document.body.appendChild(target);
     map = new Map({
@@ -48,11 +48,11 @@ describe('ol.control.Attribution', function() {
       })
     });
     map.getLayers().forEach(function(layer) {
-      var source = layer.getSource();
+      const source = layer.getSource();
       source.getTile = function() {
-        var tile = new Tile([0, 0, -1], 2 /* LOADED */);
+        const tile = new Tile([0, 0, -1], 2 /* LOADED */);
         tile.getImage = function() {
-          var image = new Image();
+          const image = new Image();
           image.width = 256;
           image.height = 256;
           return image;
@@ -69,7 +69,7 @@ describe('ol.control.Attribution', function() {
 
   it('does not add duplicate attributions', function() {
     map.renderSync();
-    var attribution = map.getTarget().querySelectorAll('.ol-attribution li');
+    const attribution = map.getTarget().querySelectorAll('.ol-attribution li');
     expect(attribution.length).to.be(2);
   });
 

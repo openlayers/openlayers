@@ -10,9 +10,9 @@ import Style from '../../../../src/ol/style/Style.js';
 describe('layer clipping', function() {
 
   function onLoad(source, callback) {
-    var loading = 0;
-    var loaded = 0;
-    var called = false;
+    let loading = 0;
+    let loaded = 0;
+    let called = false;
 
     function check() {
       if (!called && loading > 0 && loaded === loading) {
@@ -36,7 +36,7 @@ describe('layer clipping', function() {
 
   describe('MultiPolygon clipping', function() {
 
-    var map = null;
+    let map = null;
     beforeEach(function() {
       map = new Map({
         pixelRatio: 1,
@@ -55,21 +55,21 @@ describe('layer clipping', function() {
 
     it('clips to all parts of the MultiPolygon', function(done) {
 
-      var source = new XYZ({
+      const source = new XYZ({
         url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png',
         transition: 0
       });
 
-      var layer = new TileLayer({
+      const layer = new TileLayer({
         source: source
       });
 
-      var geometry = new MultiPolygon([
+      const geometry = new MultiPolygon([
         [[[-80, -40], [-40, 0], [-80, 40], [-120, 0], [-80, -40]]],
         [[[80, -40], [120, 0], [80, 40], [40, 0], [80, -40]]]
       ]).transform('EPSG:4326', 'EPSG:3857');
 
-      var style = new Style({
+      const style = new Style({
         stroke: new Stroke({
           width: 2,
           color: 'blue'
@@ -77,10 +77,10 @@ describe('layer clipping', function() {
       });
 
       layer.on('precompose', function(event) {
-        var context = event.context;
+        const context = event.context;
         context.save();
 
-        var vectorContext = event.vectorContext;
+        const vectorContext = event.vectorContext;
         vectorContext.setStyle(style);
         vectorContext.drawGeometry(geometry);
 
@@ -88,10 +88,10 @@ describe('layer clipping', function() {
       });
 
       layer.on('postcompose', function(event) {
-        var context = event.context;
+        const context = event.context;
         context.restore();
 
-        var vectorContext = event.vectorContext;
+        const vectorContext = event.vectorContext;
         vectorContext.setStyle(style);
         vectorContext.drawGeometry(geometry);
       });

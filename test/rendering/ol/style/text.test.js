@@ -15,12 +15,12 @@ import Stroke from '../../../../src/ol/style/Stroke.js';
 
 describe('ol.rendering.style.Text', function() {
 
-  var map, vectorSource;
+  let map, vectorSource;
 
   function createMap(renderer, opt_pixelRatio) {
-    var pixelRatio = opt_pixelRatio || 1;
+    const pixelRatio = opt_pixelRatio || 1;
     vectorSource = new VectorSource();
-    var vectorLayer = new VectorLayer({
+    const vectorLayer = new VectorLayer({
       source: vectorSource
     });
 
@@ -47,8 +47,8 @@ describe('ol.rendering.style.Text', function() {
   describe('#render', function() {
 
     function createFeatures(opt_scale) {
-      var scale = opt_scale || 1;
-      var feature;
+      const scale = opt_scale || 1;
+      let feature;
       feature = new Feature({
         geometry: new Point([-20, 18])
       });
@@ -97,17 +97,17 @@ describe('ol.rendering.style.Text', function() {
       vectorSource.addFeature(feature);
     }
 
-    var nicePath = [
+    const nicePath = [
       20, 33, 40, 31, 60, 30, 80, 31, 100, 33, 120, 37, 140, 39, 160, 40,
       180, 39, 200, 37, 220, 33, 240, 31, 260, 30, 280, 31, 300, 33
     ];
-    var uglyPath = [163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
-    var polygon = [151, 17, 163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
+    const uglyPath = [163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
+    const polygon = [151, 17, 163, 22, 159, 30, 150, 30, 143, 24, 151, 17];
 
     function createLineString(coords, textAlign, maxAngle, strokeColor, strokeWidth, scale) {
-      var geom = new LineString();
+      let geom = new LineString();
       geom.setFlatCoordinates('XY', coords);
-      var style = new Style({
+      let style = new Style({
         stroke: new Stroke({
           color: 'red'
         }),
@@ -124,7 +124,7 @@ describe('ol.rendering.style.Text', function() {
           })
         })
       });
-      var feature = new Feature(geom);
+      let feature = new Feature(geom);
       feature.setStyle(style);
       vectorSource.addFeature(feature);
 
@@ -174,7 +174,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders multiline text with alignment options', function(done) {
       createMap('canvas');
-      var feature;
+      let feature;
       feature = new Feature(new Point([25, 0]));
       feature.setStyle(new Style({
         text: new Text({
@@ -216,7 +216,7 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders multiline text with positioning options', function(done) {
       createMap('canvas');
-      var feature;
+      let feature;
       feature = new Feature(new Point([0, 0]));
       feature.setStyle(new Style({
         text: new Text({
@@ -262,9 +262,9 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiLineString', function(done) {
       createMap('canvas');
-      var line = new LineString();
+      let line = new LineString();
       line.setFlatCoordinates('XY', nicePath);
-      var geom = new MultiLineString(null);
+      const geom = new MultiLineString(null);
       geom.appendLineString(line);
       line = line.clone();
       line.translate(0, 50);
@@ -272,7 +272,7 @@ describe('ol.rendering.style.Text', function() {
       line = line.clone();
       line.translate(0, -100);
       geom.appendLineString(line);
-      var feature = new Feature(geom);
+      const feature = new Feature(geom);
       feature.setStyle(new Style({
         text: new Text({
           text: 'Hello world',
@@ -287,9 +287,9 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a Polygon', function(done) {
       createMap('canvas');
-      var geom = new Polygon(null);
+      const geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      var feature = new Feature(geom);
+      const feature = new Feature(geom);
       feature.setStyle(new Style({
         text: new Text({
           text: 'Hello world',
@@ -305,9 +305,9 @@ describe('ol.rendering.style.Text', function() {
 
     it('renders text along a MultiPolygon', function(done) {
       createMap('canvas');
-      var geom = new Polygon(null);
+      let geom = new Polygon(null);
       geom.setFlatCoordinates('XY', polygon, [polygon.length]);
-      var multiPolygon = new MultiPolygon(null);
+      const multiPolygon = new MultiPolygon(null);
       multiPolygon.appendPolygon(geom);
       geom = geom.clone();
       geom.translate(0, 30);
@@ -315,7 +315,7 @@ describe('ol.rendering.style.Text', function() {
       geom = geom.clone();
       geom.translate(0, -60);
       multiPolygon.appendPolygon(geom);
-      var feature = new Feature(multiPolygon);
+      const feature = new Feature(multiPolygon);
       feature.setStyle(new Style({
         text: new Text({
           text: 'Hello world',
@@ -332,7 +332,7 @@ describe('ol.rendering.style.Text', function() {
     it('renders text background', function(done) {
       createMap('canvas');
       createFeatures();
-      var features = vectorSource.getFeatures();
+      const features = vectorSource.getFeatures();
       features[0].getStyle().getText().setBackgroundFill(new Fill({
         color: 'red'
       }));

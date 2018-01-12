@@ -10,24 +10,24 @@ import OSM from '../src/ol/source/OSM.js';
 import VectorSource from '../src/ol/source/Vector.js';
 
 
-var raster = new TileLayer({
+const raster = new TileLayer({
   source: new OSM()
 });
 
-var vector = new VectorLayer({
+const vector = new VectorLayer({
   source: new VectorSource({
     url: 'data/geojson/countries.geojson',
     format: new GeoJSON()
   })
 });
 
-var select = new Select();
+const select = new Select();
 
-var translate = new _ol_interaction_Translate_({
+const translate = new _ol_interaction_Translate_({
   features: select.getFeatures()
 });
 
-var map = new Map({
+const map = new Map({
   interactions: defaultInteractions().extend([select, translate]),
   layers: [raster, vector],
   target: 'map',

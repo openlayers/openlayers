@@ -20,7 +20,7 @@ import ImageStyle from '../style/Image.js';
  * @extends {ol.style.Image}
  * @api
  */
-var RegularShape = function(options) {
+const RegularShape = function(options) {
   /**
    * @private
    * @type {Array.<string>}
@@ -117,13 +117,13 @@ var RegularShape = function(options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = options.snapToPixel !== undefined ?
+  const snapToPixel = options.snapToPixel !== undefined ?
     options.snapToPixel : true;
 
   /**
    * @type {boolean}
    */
-  var rotateWithView = options.rotateWithView !== undefined ?
+  const rotateWithView = options.rotateWithView !== undefined ?
     options.rotateWithView : false;
 
   ImageStyle.call(this, {
@@ -144,7 +144,7 @@ inherits(RegularShape, ImageStyle);
  * @api
  */
 RegularShape.prototype.clone = function() {
-  var style = new RegularShape({
+  const style = new RegularShape({
     fill: this.getFill() ? this.getFill().clone() : undefined,
     points: this.getPoints(),
     radius: this.getRadius(),
@@ -313,14 +313,14 @@ RegularShape.prototype.unlistenImageChange = function(listener, thisArg) {};
  * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
 RegularShape.prototype.render_ = function(atlasManager) {
-  var imageSize;
-  var lineCap = '';
-  var lineJoin = '';
-  var miterLimit = 0;
-  var lineDash = null;
-  var lineDashOffset = 0;
-  var strokeStyle;
-  var strokeWidth = 0;
+  let imageSize;
+  let lineCap = '';
+  let lineJoin = '';
+  let miterLimit = 0;
+  let lineDash = null;
+  let lineDashOffset = 0;
+  let strokeStyle;
+  let strokeWidth = 0;
 
   if (this.stroke_) {
     strokeStyle = this.stroke_.getColor();
@@ -352,10 +352,10 @@ RegularShape.prototype.render_ = function(atlasManager) {
     }
   }
 
-  var size = 2 * (this.radius_ + strokeWidth) + 1;
+  let size = 2 * (this.radius_ + strokeWidth) + 1;
 
   /** @type {ol.RegularShapeRenderOptions} */
-  var renderOptions = {
+  const renderOptions = {
     strokeStyle: strokeStyle,
     strokeWidth: strokeWidth,
     size: size,
@@ -368,7 +368,7 @@ RegularShape.prototype.render_ = function(atlasManager) {
 
   if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
-    var context = createCanvasContext2D(size, size);
+    const context = createCanvasContext2D(size, size);
     this.canvas_ = context.canvas;
 
     // canvas.width and height are rounded to the closest integer
@@ -382,18 +382,18 @@ RegularShape.prototype.render_ = function(atlasManager) {
     // an atlas manager is used, add the symbol to an atlas
     size = Math.round(size);
 
-    var hasCustomHitDetectionImage = !this.fill_;
-    var renderHitDetectionCallback;
+    const hasCustomHitDetectionImage = !this.fill_;
+    let renderHitDetectionCallback;
     if (hasCustomHitDetectionImage) {
       // render the hit-detection image into a separate atlas image
       renderHitDetectionCallback =
           this.drawHitDetectionCanvas_.bind(this, renderOptions);
     }
 
-    var id = this.getChecksum();
-    var info = atlasManager.add(
-        id, size, size, this.draw_.bind(this, renderOptions),
-        renderHitDetectionCallback);
+    const id = this.getChecksum();
+    const info = atlasManager.add(
+      id, size, size, this.draw_.bind(this, renderOptions),
+      renderHitDetectionCallback);
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];
@@ -423,7 +423,7 @@ RegularShape.prototype.render_ = function(atlasManager) {
  * @param {number} y The origin for the symbol (y).
  */
 RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
-  var i, angle0, radiusC;
+  let i, angle0, radiusC;
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -432,13 +432,13 @@ RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
 
   context.beginPath();
 
-  var points = this.points_;
+  let points = this.points_;
   if (points === Infinity) {
     context.arc(
-        renderOptions.size / 2, renderOptions.size / 2,
-        this.radius_, 0, 2 * Math.PI, true);
+      renderOptions.size / 2, renderOptions.size / 2,
+      this.radius_, 0, 2 * Math.PI, true);
   } else {
-    var radius2 = (this.radius2_ !== undefined) ? this.radius2_
+    const radius2 = (this.radius2_ !== undefined) ? this.radius2_
       : this.radius_;
     if (radius2 !== this.radius_) {
       points = 2 * points;
@@ -447,13 +447,13 @@ RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
       angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
       radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0));
+        renderOptions.size / 2 + radiusC * Math.sin(angle0));
     }
   }
 
 
   if (this.fill_) {
-    var color = this.fill_.getColor();
+    let color = this.fill_.getColor();
     if (color === null) {
       color = _ol_render_canvas_.defaultFillStyle;
     }
@@ -489,7 +489,7 @@ RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
 
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
-  var context = createCanvasContext2D(renderOptions.size, renderOptions.size);
+  const context = createCanvasContext2D(renderOptions.size, renderOptions.size);
   this.hitDetectionCanvas_ = context.canvas;
 
   this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
@@ -512,23 +512,23 @@ RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions, context
 
   context.beginPath();
 
-  var points = this.points_;
+  let points = this.points_;
   if (points === Infinity) {
     context.arc(
-        renderOptions.size / 2, renderOptions.size / 2,
-        this.radius_, 0, 2 * Math.PI, true);
+      renderOptions.size / 2, renderOptions.size / 2,
+      this.radius_, 0, 2 * Math.PI, true);
   } else {
-    var radius2 = (this.radius2_ !== undefined) ? this.radius2_
+    const radius2 = (this.radius2_ !== undefined) ? this.radius2_
       : this.radius_;
     if (radius2 !== this.radius_) {
       points = 2 * points;
     }
-    var i, radiusC, angle0;
+    let i, radiusC, angle0;
     for (i = 0; i <= points; i++) {
       angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
       radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-          renderOptions.size / 2 + radiusC * Math.sin(angle0));
+        renderOptions.size / 2 + radiusC * Math.sin(angle0));
     }
   }
 
@@ -551,12 +551,12 @@ RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions, context
  * @return {string} The checksum.
  */
 RegularShape.prototype.getChecksum = function() {
-  var strokeChecksum = this.stroke_ ?
+  const strokeChecksum = this.stroke_ ?
     this.stroke_.getChecksum() : '-';
-  var fillChecksum = this.fill_ ?
+  const fillChecksum = this.fill_ ?
     this.fill_.getChecksum() : '-';
 
-  var recalculate = !this.checksums_ ||
+  const recalculate = !this.checksums_ ||
       (strokeChecksum != this.checksums_[1] ||
       fillChecksum != this.checksums_[2] ||
       this.radius_ != this.checksums_[3] ||
@@ -565,7 +565,7 @@ RegularShape.prototype.getChecksum = function() {
       this.points_ != this.checksums_[6]);
 
   if (recalculate) {
-    var checksum = 'r' + strokeChecksum + fillChecksum +
+    const checksum = 'r' + strokeChecksum + fillChecksum +
         (this.radius_ !== undefined ? this.radius_.toString() : '-') +
         (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
         (this.angle_ !== undefined ? this.angle_.toString() : '-') +
