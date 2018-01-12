@@ -300,7 +300,7 @@ describe('ol.control.ScaleLine', function() {
     });
 
     it('Metric display works with Geographic (EPSG:4326) projection', function() {
-      var ctrl = new ScaleLine();
+      const ctrl = new ScaleLine();
       ctrl.setMap(map);
       map.setView(new View({
         center: [0, 0],
