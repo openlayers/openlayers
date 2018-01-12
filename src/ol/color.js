@@ -134,7 +134,7 @@ export function asArray(color) {
  * @return {ol.Color} Color.
  */
 function fromStringInternal_(s) {
-  let r, g, b, a, color, parts;
+  let r, g, b, a, color;
 
   if (NAMED_COLOR_RE_.exec(s)) {
     s = fromNamed(s);
@@ -167,12 +167,12 @@ function fromStringInternal_(s) {
     }
     color = [r, g, b, a / 255];
   } else if (s.indexOf('rgba(') == 0) { // rgba()
-    parts = s.slice(5, -1).split(',').map(Number);
-    color = normalize(parts);
+    color = s.slice(5, -1).split(',').map(Number);
+    normalize(color);
   } else if (s.indexOf('rgb(') == 0) { // rgb()
-    parts = s.slice(4, -1).split(',').map(Number);
-    parts.push(1);
-    color = normalize(parts);
+    color = s.slice(4, -1).split(',').map(Number);
+    color.push(1);
+    normalize(color);
   } else {
     assert(false, 14); // Invalid color
   }
@@ -183,16 +183,14 @@ function fromStringInternal_(s) {
 /**
  * TODO this function is only used in the test, we probably shouldn't export it
  * @param {ol.Color} color Color.
- * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Clamped color.
  */
-export function normalize(color, opt_color) {
-  const result = opt_color || [];
-  result[0] = clamp((color[0] + 0.5) | 0, 0, 255);
-  result[1] = clamp((color[1] + 0.5) | 0, 0, 255);
-  result[2] = clamp((color[2] + 0.5) | 0, 0, 255);
-  result[3] = clamp(color[3], 0, 1);
-  return result;
+export function normalize(color) {
+  color[0] = clamp((color[0] + 0.5) | 0, 0, 255);
+  color[1] = clamp((color[1] + 0.5) | 0, 0, 255);
+  color[2] = clamp((color[2] + 0.5) | 0, 0, 255);
+  color[3] = clamp(color[3], 0, 1);
+  return color;
 }
 
 
