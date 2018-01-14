@@ -15,6 +15,7 @@ export default {
   CHANGE: 'change',
 
   CLEAR: 'clear',
+  CONTEXTMENU: 'contextmenu',
   CLICK: 'click',
   DBLCLICK: 'dblclick',
   DRAGENTER: 'dragenter',

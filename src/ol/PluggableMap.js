@@ -267,6 +267,8 @@ const PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
+  _ol_events_.listen(this.viewport_, EventType.CONTEXTMENU,
+    this.handleBrowserEvent, this);
   _ol_events_.listen(this.viewport_, EventType.WHEEL,
     this.handleBrowserEvent, this);
   _ol_events_.listen(this.viewport_, EventType.MOUSEWHEEL,
@@ -491,6 +493,8 @@ PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
  */
 PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
+  _ol_events_.unlisten(this.viewport_, EventType.CONTEXTMENU,
+    this.handleBrowserEvent, this);
   _ol_events_.unlisten(this.viewport_, EventType.WHEEL,
     this.handleBrowserEvent, this);
   _ol_events_.unlisten(this.viewport_, EventType.MOUSEWHEEL,

@@ -2,6 +2,7 @@
  * @module ol/interaction/Draw
  */
 import {inherits} from '../index.js';
+import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
@@ -336,6 +337,10 @@ Draw.prototype.setMap = function(map) {
  * @api
  */
 Draw.handleEvent = function(event) {
+  if (event.originalEvent.type === EventType.CONTEXTMENU) {
+    // Avoid context menu for long taps when drawing on mobile
+    event.preventDefault();
+  }
   this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
   let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;

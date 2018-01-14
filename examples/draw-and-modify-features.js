@@ -71,9 +71,4 @@ typeSelect.onchange = function() {
   addInteractions();
 };
 
-// Avoid context menu for long taps when editing on mobile
-map.getTargetElement().oncontextmenu = function(e) {
-  e.preventDefault();
-};
-
 addInteractions();
