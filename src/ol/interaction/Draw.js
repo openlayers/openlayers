@@ -57,6 +57,12 @@ const Draw = function(options) {
   this.downPx_ = null;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.lastDragTime_;
+
+  /**
    * @type {boolean}
    * @private
    */
@@ -255,7 +261,8 @@ const Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-      Draw.getDefaultStyleFunction()
+      Draw.getDefaultStyleFunction(),
+    updateWhileInteracting: true
   });
 
   /**
@@ -323,7 +330,18 @@ Draw.prototype.setMap = function(map) {
  */
 Draw.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
+  let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;
+  if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+    const now = Date.now();
+    if (now - this.lastDragTime_ >= 500) {
+      this.downPx_ = event.pixel;
+      this.shouldHandle_ = !this.freehand_;
+      move = true;
+    } else {
+      this.lastDragTime_ = undefined;
+    }
+  }
   if (this.freehand_ &&
       event.type === MapBrowserEventType.POINTERDRAG &&
       this.sketchFeature_ !== null) {
@@ -332,11 +350,12 @@ Draw.handleEvent = function(event) {
   } else if (this.freehand_ &&
       event.type === MapBrowserEventType.POINTERDOWN) {
     pass = false;
-  } else if (event.type === MapBrowserEventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(event);
+  } else if (move) {
+    pass = event.type === MapBrowserEventType.POINTERMOVE && this.handlePointerMove_(event);
   } else if (event.type === MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
+
   return PointerInteraction.handleEvent.call(this, event) && pass;
 };
 
@@ -349,6 +368,7 @@ Draw.handleEvent = function(event) {
  */
 Draw.handleDownEvent_ = function(event) {
   this.shouldHandle_ = !this.freehand_;
+  this.lastDragTime_ = Date.now();
 
   if (this.freehand_) {
     this.downPx_ = event.pixel;
