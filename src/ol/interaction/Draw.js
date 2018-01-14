@@ -4,6 +4,7 @@
 import {inherits} from '../index.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import BaseObject from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
@@ -332,7 +333,7 @@ Draw.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
   let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;
-  if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+  if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
     const now = Date.now();
     if (now - this.lastDragTime_ >= 500) {
       this.downPx_ = event.pixel;
@@ -340,6 +341,10 @@ Draw.handleEvent = function(event) {
       move = true;
     } else {
       this.lastDragTime_ = undefined;
+    }
+    if (this.shouldHandle_ && this.downTimeout_) {
+      clearTimeout(this.downTimeout_);
+      this.downTimeout_ = undefined;
     }
   }
   if (this.freehand_ &&
@@ -351,7 +356,12 @@ Draw.handleEvent = function(event) {
       event.type === MapBrowserEventType.POINTERDOWN) {
     pass = false;
   } else if (move) {
-    pass = event.type === MapBrowserEventType.POINTERMOVE && this.handlePointerMove_(event);
+    pass = event.type === MapBrowserEventType.POINTERMOVE;
+    if (pass && this.freehand_) {
+      pass = this.handlePointerMove_(event);
+    } else if (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_) {
+      this.handlePointerMove_(event);
+    }
   } else if (event.type === MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
@@ -368,7 +378,6 @@ Draw.handleEvent = function(event) {
  */
 Draw.handleDownEvent_ = function(event) {
   this.shouldHandle_ = !this.freehand_;
-  this.lastDragTime_ = Date.now();
 
   if (this.freehand_) {
     this.downPx_ = event.pixel;
@@ -377,6 +386,11 @@ Draw.handleDownEvent_ = function(event) {
     }
     return true;
   } else if (this.condition_(event)) {
+    this.lastDragTime_ = Date.now();
+    this.downTimeout_ = setTimeout(function() {
+      this.handlePointerMove_(new MapBrowserPointerEvent(
+        MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, event.frameState));
+    }.bind(this), 500);
     this.downPx_ = event.pixel;
     return true;
   } else {
@@ -393,6 +407,11 @@ Draw.handleDownEvent_ = function(event) {
  */
 Draw.handleUpEvent_ = function(event) {
   let pass = true;
+
+  if (this.downTimeout_) {
+    clearTimeout(this.downTimeout_);
+    this.downTimeout_ = undefined;
+  }
 
   this.handlePointerMove_(event);
 
