@@ -61,6 +61,12 @@ const Draw = function(options) {
    * @type {number}
    * @private
    */
+  this.downTimeout_;
+
+  /**
+   * @type {number}
+   * @private
+   */
   this.lastDragTime_;
 
   /**
@@ -333,7 +339,7 @@ Draw.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
   let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;
-  if (!this.freehand_ && this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+  if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
     const now = Date.now();
     if (now - this.lastDragTime_ >= 500) {
       this.downPx_ = event.pixel;
@@ -547,9 +553,6 @@ Draw.prototype.startDrawing_ = function(event) {
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
-    if (this.mode_ === Draw.Mode_.CIRCLE) {
-      this.sketchLineCoords_ = this.sketchCoords_;
-    }
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new Feature(
