@@ -14,7 +14,7 @@ import {equivalent as equivalentProjection} from '../../proj.js';
 import Units from '../../proj/Units.js';
 import ReplayType from '../../render/ReplayType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
-import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
+import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import _ol_render_replay_ from '../../render/replay.js';
 import RendererType from '../Type.js';
 import CanvasTileLayerRenderer from '../canvas/TileLayer.js';
@@ -190,7 +190,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
       sourceTile.setProjection(projection);
     }
     replayState.dirty = false;
-    const replayGroup = new _ol_render_canvas_ReplayGroup_(0, sharedExtent, resolution,
+    const replayGroup = new CanvasReplayGroup(0, sharedExtent, resolution,
       pixelRatio, source.getOverlaps(), this.declutterTree_, layer.getRenderBuffer());
     const squaredTolerance = _ol_renderer_vector_.getSquaredTolerance(
       resolution, pixelRatio);
@@ -441,7 +441,7 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
     }
   }
   if (declutterReplays) {
-    _ol_render_canvas_ReplayGroup_.replayDeclutter(declutterReplays, context, rotation);
+    CanvasReplayGroup.replayDeclutter(declutterReplays, context, rotation);
   }
   if (rotation) {
     _ol_render_canvas_.rotateAtOffset(context, rotation,

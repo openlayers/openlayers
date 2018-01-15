@@ -10,7 +10,7 @@ import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
 import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canvas/PolygonReplay.js';
 import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Replay.js';
-import _ol_render_canvas_ReplayGroup_ from '../../../../../src/ol/render/canvas/ReplayGroup.js';
+import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -28,7 +28,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     beforeEach(function() {
       transform = _ol_transform_.create();
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, false);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
         [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new Feature(new Polygon(
@@ -172,7 +172,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not batch when overlaps is set to true', function() {
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
       _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
       _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
       _ol_renderer_vector_.renderFeature(replay, feature3, style1, 1);
@@ -184,7 +184,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('applies the pixelRatio to the linedash array and offset', function() {
       // replay with a pixelRatio of 2
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 2, true);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 2, true);
 
       let lineDash, lineDashCount = 0,
           lineDashOffset, lineDashOffsetCount = 0;
@@ -241,7 +241,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
         [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
       const geometrycollection = new Feature(new GeometryCollection(
         [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
       _ol_renderer_vector_.renderFeature(replay, point, style, 1);
       _ol_renderer_vector_.renderFeature(replay, multipoint, style, 1);
       _ol_renderer_vector_.renderFeature(replay, linestring, style, 1);
