@@ -9,6 +9,8 @@ For better drawing experience, especially on mobile devices, two changes were ma
  1. On long press, the current vertex can be moved to its desired position.
  2. When moving the mouse or panning the map, no draw cursor is shown, and the geometry being drawn is not updated. But because of 1., the draw cursor will appear on long press.
 
+To get the old behavior, configure the `Drag` interaction with `dragVertexDelay: 0`.
+
 #### Changes in proj4 integration
 
 Because relying on a globally available proj4 is not practical with ES modules, we have made a change to the way we integrate proj4:

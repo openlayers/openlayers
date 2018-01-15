@@ -206,6 +206,12 @@ const Draw = function(options) {
   this.geometryFunction_ = geometryFunction;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.dragVertexDelay_ = options.dragVertexDelay !== undefined ? options.dragVertexDelay : 500;
+
+  /**
    * Finish coordinate for the feature (first point for polygons, last point for
    * linestrings).
    * @type {ol.Coordinate}
@@ -346,7 +352,7 @@ Draw.handleEvent = function(event) {
   let pass = true;
   if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
     const now = Date.now();
-    if (now - this.lastDragTime_ >= 500) {
+    if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
       this.downPx_ = event.pixel;
       this.shouldHandle_ = !this.freehand_;
       move = true;
@@ -368,7 +374,7 @@ Draw.handleEvent = function(event) {
     pass = false;
   } else if (move) {
     pass = event.type === MapBrowserEventType.POINTERMOVE;
-    if (pass && this.freehand_) {
+    if (pass && this.freehand_ || this.dragVertexDelay_ === 0) {
       pass = this.handlePointerMove_(event);
     } else if (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_) {
       this.handlePointerMove_(event);
@@ -401,7 +407,7 @@ Draw.handleDownEvent_ = function(event) {
     this.downTimeout_ = setTimeout(function() {
       this.handlePointerMove_(new MapBrowserPointerEvent(
         MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, event.frameState));
-    }.bind(this), 500);
+    }.bind(this), this.dragVertexDelay_);
     this.downPx_ = event.pixel;
     return true;
   } else {
