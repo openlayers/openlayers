@@ -7,7 +7,7 @@ import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_replay_ from '../replay.js';
 import ReplayGroup from '../ReplayGroup.js';
-import _ol_render_webgl_CircleReplay_ from '../webgl/CircleReplay.js';
+import WebGLCircleReplay from '../webgl/CircleReplay.js';
 import _ol_render_webgl_ImageReplay_ from '../webgl/ImageReplay.js';
 import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
 import _ol_render_webgl_PolygonReplay_ from '../webgl/PolygonReplay.js';
@@ -317,7 +317,7 @@ WebGLReplayGroup.HIT_DETECTION_SIZE_ = [1, 1];
  *                ol.Extent)>}
  */
 WebGLReplayGroup.BATCH_CONSTRUCTORS_ = {
-  'Circle': _ol_render_webgl_CircleReplay_,
+  'Circle': WebGLCircleReplay,
   'Image': _ol_render_webgl_ImageReplay_,
   'LineString': _ol_render_webgl_LineStringReplay_,
   'Polygon': _ol_render_webgl_PolygonReplay_,

@@ -7,7 +7,7 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
+import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
 import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
@@ -252,20 +252,20 @@ describe('ol.render.webgl.Immediate', function() {
     describe('#drawCircle', function() {
       let tmpObj;
       beforeEach(function() {
-        tmpObj = mock(_ol_render_webgl_CircleReplay_, 'drawCircle');
+        tmpObj = mock(WebGLCircleReplay, 'drawCircle');
       });
 
       it('draws a circle', function() {
         context.drawGeometry(circle);
-        expect(_ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(_ol_render_webgl_CircleReplay_.prototype.drawCircle.calledOnce).to.be(true);
-        expect(_ol_render_webgl_CircleReplay_.prototype.finish.calledOnce).to.be(true);
-        expect(_ol_render_webgl_CircleReplay_.prototype.replay.calledOnce).to.be(true);
-        expect(_ol_render_webgl_CircleReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(WebGLCircleReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(WebGLCircleReplay.prototype.drawCircle.calledOnce).to.be(true);
+        expect(WebGLCircleReplay.prototype.finish.calledOnce).to.be(true);
+        expect(WebGLCircleReplay.prototype.replay.calledOnce).to.be(true);
+        expect(WebGLCircleReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(_ol_render_webgl_CircleReplay_, tmpObj);
+        restore(WebGLCircleReplay, tmpObj);
       });
     });
   });
