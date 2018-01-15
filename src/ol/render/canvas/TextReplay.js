@@ -10,7 +10,7 @@ import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
-import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
+import CanvasReplay from '../canvas/Replay.js';
 import _ol_render_replay_ from '../replay.js';
 import TextPlacement from '../../style/TextPlacement.js';
 
@@ -27,7 +27,7 @@ import TextPlacement from '../../style/TextPlacement.js';
  */
 const _ol_render_canvas_TextReplay_ = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-  _ol_render_canvas_Replay_.call(this,
+  CanvasReplay.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
   /**
@@ -134,7 +134,7 @@ const _ol_render_canvas_TextReplay_ = function(
 
 };
 
-inherits(_ol_render_canvas_TextReplay_, _ol_render_canvas_Replay_);
+inherits(_ol_render_canvas_TextReplay_, CanvasReplay);
 
 
 /**

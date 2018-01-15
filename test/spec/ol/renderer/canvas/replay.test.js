@@ -9,7 +9,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
 import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canvas/PolygonReplay.js';
-import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Replay.js';
+import CanvasReplay from '../../../../../src/ol/render/canvas/Replay.js';
 import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
@@ -285,8 +285,8 @@ describe('ol.render.canvas.Replay', function() {
     it('creates a new replay batch', function() {
       const tolerance = 10;
       const extent = [-180, -90, 180, 90];
-      const replay = new _ol_render_canvas_Replay_(tolerance, extent, 1, 1, true);
-      expect(replay).to.be.a(_ol_render_canvas_Replay_);
+      const replay = new CanvasReplay(tolerance, extent, 1, 1, true);
+      expect(replay).to.be.a(CanvasReplay);
     });
 
   });
@@ -295,7 +295,7 @@ describe('ol.render.canvas.Replay', function() {
 
     let replay;
     beforeEach(function() {
-      replay = new _ol_render_canvas_Replay_(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasReplay(1, [-180, -90, 180, 90], 1, 1, true);
     });
 
     it('appends coordinates that are within the max extent', function() {

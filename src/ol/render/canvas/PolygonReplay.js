@@ -6,7 +6,7 @@ import {asString} from '../../color.js';
 import _ol_geom_flat_simplify_ from '../../geom/flat/simplify.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
-import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
+import CanvasReplay from '../canvas/Replay.js';
 
 /**
  * @constructor
@@ -21,11 +21,11 @@ import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
  */
 const _ol_render_canvas_PolygonReplay_ = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-  _ol_render_canvas_Replay_.call(this,
+  CanvasReplay.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 };
 
-inherits(_ol_render_canvas_PolygonReplay_, _ol_render_canvas_Replay_);
+inherits(_ol_render_canvas_PolygonReplay_, CanvasReplay);
 
 
 /**

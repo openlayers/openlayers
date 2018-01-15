@@ -9,7 +9,7 @@ import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_obj_ from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
-import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
+import CanvasReplay from '../canvas/Replay.js';
 import CanvasImageReplay from '../canvas/ImageReplay.js';
 import _ol_render_canvas_LineStringReplay_ from '../canvas/LineStringReplay.js';
 import _ol_render_canvas_PolygonReplay_ from '../canvas/PolygonReplay.js';
@@ -498,7 +498,7 @@ CanvasReplayGroup.prototype.replay = function(context,
  */
 CanvasReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': _ol_render_canvas_PolygonReplay_,
-  'Default': _ol_render_canvas_Replay_,
+  'Default': CanvasReplay,
   'Image': CanvasImageReplay,
   'LineString': _ol_render_canvas_LineStringReplay_,
   'Polygon': _ol_render_canvas_PolygonReplay_,

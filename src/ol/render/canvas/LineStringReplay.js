@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
-import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
+import CanvasReplay from '../canvas/Replay.js';
 
 /**
  * @constructor
@@ -18,11 +18,11 @@ import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
  */
 const _ol_render_canvas_LineStringReplay_ = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-  _ol_render_canvas_Replay_.call(this,
+  CanvasReplay.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 };
 
-inherits(_ol_render_canvas_LineStringReplay_, _ol_render_canvas_Replay_);
+inherits(_ol_render_canvas_LineStringReplay_, CanvasReplay);
 
 
 /**
@@ -127,7 +127,7 @@ _ol_render_canvas_LineStringReplay_.prototype.applyStroke = function(state) {
     state.lastStroke = this.coordinates.length;
   }
   state.lastStroke = 0;
-  _ol_render_canvas_Replay_.prototype.applyStroke.call(this, state);
+  CanvasReplay.prototype.applyStroke.call(this, state);
   this.instructions.push([_ol_render_canvas_Instruction_.BEGIN_PATH]);
 };
 export default _ol_render_canvas_LineStringReplay_;

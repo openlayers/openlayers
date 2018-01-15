@@ -3,7 +3,7 @@
  */
 import {inherits} from '../../index.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
-import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
+import CanvasReplay from '../canvas/Replay.js';
 
 /**
  * @constructor
@@ -18,7 +18,7 @@ import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
  */
 const CanvasImageReplay = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
-  _ol_render_canvas_Replay_.call(this,
+  CanvasReplay.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 
   /**
@@ -107,7 +107,7 @@ const CanvasImageReplay = function(
 
 };
 
-inherits(CanvasImageReplay, _ol_render_canvas_Replay_);
+inherits(CanvasImageReplay, CanvasReplay);
 
 
 /**
