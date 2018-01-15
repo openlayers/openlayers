@@ -16,7 +16,7 @@ import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
  * @param {?} declutterTree Declutter tree.
  * @struct
  */
-const _ol_render_canvas_ImageReplay_ = function(
+const CanvasImageReplay = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   _ol_render_canvas_Replay_.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
@@ -107,7 +107,7 @@ const _ol_render_canvas_ImageReplay_ = function(
 
 };
 
-inherits(_ol_render_canvas_ImageReplay_, _ol_render_canvas_Replay_);
+inherits(CanvasImageReplay, _ol_render_canvas_Replay_);
 
 
 /**
@@ -118,7 +118,7 @@ inherits(_ol_render_canvas_ImageReplay_, _ol_render_canvas_Replay_);
  * @private
  * @return {number} My end.
  */
-_ol_render_canvas_ImageReplay_.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+CanvasImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   return this.appendFlatCoordinates(
     flatCoordinates, offset, end, stride, false, false);
 };
@@ -127,7 +127,7 @@ _ol_render_canvas_ImageReplay_.prototype.drawCoordinates_ = function(flatCoordin
 /**
  * @inheritDoc
  */
-_ol_render_canvas_ImageReplay_.prototype.drawPoint = function(pointGeometry, feature) {
+CanvasImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
   if (!this.image_) {
     return;
   }
@@ -159,7 +159,7 @@ _ol_render_canvas_ImageReplay_.prototype.drawPoint = function(pointGeometry, fea
 /**
  * @inheritDoc
  */
-_ol_render_canvas_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
+CanvasImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
   if (!this.image_) {
     return;
   }
@@ -191,7 +191,7 @@ _ol_render_canvas_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeo
 /**
  * @inheritDoc
  */
-_ol_render_canvas_ImageReplay_.prototype.finish = function() {
+CanvasImageReplay.prototype.finish = function() {
   this.reverseHitDetectionInstructions();
   // FIXME this doesn't really protect us against further calls to draw*Geometry
   this.anchorX_ = undefined;
@@ -213,7 +213,7 @@ _ol_render_canvas_ImageReplay_.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-_ol_render_canvas_ImageReplay_.prototype.setImageStyle = function(imageStyle, declutterGroup) {
+CanvasImageReplay.prototype.setImageStyle = function(imageStyle, declutterGroup) {
   const anchor = imageStyle.getAnchor();
   const size = imageStyle.getSize();
   const hitDetectionImage = imageStyle.getHitDetectionImage(1);
@@ -234,4 +234,4 @@ _ol_render_canvas_ImageReplay_.prototype.setImageStyle = function(imageStyle, de
   this.snapToPixel_ = imageStyle.getSnapToPixel();
   this.width_ = size[0];
 };
-export default _ol_render_canvas_ImageReplay_;
+export default CanvasImageReplay;
