@@ -8,7 +8,7 @@ import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
-import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canvas/PolygonReplay.js';
+import CanvasPolygonReplay from '../../../../../src/ol/render/canvas/PolygonReplay.js';
 import CanvasReplay from '../../../../../src/ol/render/canvas/Replay.js';
 import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
@@ -468,7 +468,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
     const tolerance = 1;
     const extent = [-180, -90, 180, 90];
     const resolution = 10;
-    replay = new _ol_render_canvas_PolygonReplay_(tolerance, extent,
+    replay = new CanvasPolygonReplay(tolerance, extent,
       resolution);
   });
 

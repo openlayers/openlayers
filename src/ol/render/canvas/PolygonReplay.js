@@ -19,13 +19,13 @@ import CanvasReplay from '../canvas/Replay.js';
  * @param {?} declutterTree Declutter tree.
  * @struct
  */
-const _ol_render_canvas_PolygonReplay_ = function(
+const CanvasPolygonReplay = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   CanvasReplay.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
 };
 
-inherits(_ol_render_canvas_PolygonReplay_, CanvasReplay);
+inherits(CanvasPolygonReplay, CanvasReplay);
 
 
 /**
@@ -36,7 +36,7 @@ inherits(_ol_render_canvas_PolygonReplay_, CanvasReplay);
  * @private
  * @return {number} End.
  */
-_ol_render_canvas_PolygonReplay_.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
+CanvasPolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
   const state = this.state;
   const fill = state.fillStyle !== undefined;
   const stroke = state.strokeStyle != undefined;
@@ -79,7 +79,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawFlatCoordinatess_ = function(flat
 /**
  * @inheritDoc
  */
-_ol_render_canvas_PolygonReplay_.prototype.drawCircle = function(circleGeometry, feature) {
+CanvasPolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
   const state = this.state;
   const fillStyle = state.fillStyle;
   const strokeStyle = state.strokeStyle;
@@ -126,7 +126,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawCircle = function(circleGeometry,
 /**
  * @inheritDoc
  */
-_ol_render_canvas_PolygonReplay_.prototype.drawPolygon = function(polygonGeometry, feature) {
+CanvasPolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   const state = this.state;
   this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
@@ -153,7 +153,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawPolygon = function(polygonGeometr
 /**
  * @inheritDoc
  */
-_ol_render_canvas_PolygonReplay_.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
+CanvasPolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
   const state = this.state;
   const fillStyle = state.fillStyle;
   const strokeStyle = state.strokeStyle;
@@ -190,7 +190,7 @@ _ol_render_canvas_PolygonReplay_.prototype.drawMultiPolygon = function(multiPoly
 /**
  * @inheritDoc
  */
-_ol_render_canvas_PolygonReplay_.prototype.finish = function() {
+CanvasPolygonReplay.prototype.finish = function() {
   this.reverseHitDetectionInstructions();
   this.state = null;
   // We want to preserve topology when drawing polygons.  Polygons are
@@ -212,7 +212,7 @@ _ol_render_canvas_PolygonReplay_.prototype.finish = function() {
  * @private
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-_ol_render_canvas_PolygonReplay_.prototype.setFillStrokeStyles_ = function(geometry) {
+CanvasPolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
   const state = this.state;
   const fillStyle = state.fillStyle;
   if (fillStyle !== undefined) {
@@ -222,4 +222,4 @@ _ol_render_canvas_PolygonReplay_.prototype.setFillStrokeStyles_ = function(geome
     this.updateStrokeStyle(state, this.applyStroke);
   }
 };
-export default _ol_render_canvas_PolygonReplay_;
+export default CanvasPolygonReplay;

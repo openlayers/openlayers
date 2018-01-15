@@ -12,7 +12,7 @@ import ReplayType from '../ReplayType.js';
 import CanvasReplay from '../canvas/Replay.js';
 import CanvasImageReplay from '../canvas/ImageReplay.js';
 import _ol_render_canvas_LineStringReplay_ from '../canvas/LineStringReplay.js';
-import _ol_render_canvas_PolygonReplay_ from '../canvas/PolygonReplay.js';
+import CanvasPolygonReplay from '../canvas/PolygonReplay.js';
 import CanvasTextReplay from '../canvas/TextReplay.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_transform_ from '../../transform.js';
@@ -497,11 +497,11 @@ CanvasReplayGroup.prototype.replay = function(context,
  *                number, number, boolean, Array.<ol.DeclutterGroup>)>}
  */
 CanvasReplayGroup.BATCH_CONSTRUCTORS_ = {
-  'Circle': _ol_render_canvas_PolygonReplay_,
+  'Circle': CanvasPolygonReplay,
   'Default': CanvasReplay,
   'Image': CanvasImageReplay,
   'LineString': _ol_render_canvas_LineStringReplay_,
-  'Polygon': _ol_render_canvas_PolygonReplay_,
+  'Polygon': CanvasPolygonReplay,
   'Text': CanvasTextReplay
 };
 export default CanvasReplayGroup;
