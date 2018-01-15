@@ -8,7 +8,7 @@ import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_render_webgl_ from '../webgl.js';
-import _ol_render_webgl_TextureReplay_ from '../webgl/TextureReplay.js';
+import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import AtlasManager from '../../style/AtlasManager.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
@@ -20,7 +20,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @struct
  */
 const _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
-  _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
+  WebGLTextureReplay.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -114,7 +114,7 @@ const _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_TextReplay_, _ol_render_webgl_TextureReplay_);
+inherits(_ol_render_webgl_TextReplay_, WebGLTextureReplay);
 
 
 /**
@@ -340,7 +340,7 @@ _ol_render_webgl_TextReplay_.prototype.finish = function(context) {
   this.images_ = null;
   this.atlases_ = {};
   this.currAtlas_ = undefined;
-  _ol_render_webgl_TextureReplay_.prototype.finish.call(this, context);
+  WebGLTextureReplay.prototype.finish.call(this, context);
 };
 
 

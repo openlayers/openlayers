@@ -2,7 +2,7 @@
  * @module ol/render/webgl/ImageReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_render_webgl_TextureReplay_ from '../webgl/TextureReplay.js';
+import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
 /**
@@ -13,7 +13,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @struct
  */
 const WebGLImageReplay = function(tolerance, maxExtent) {
-  _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
+  WebGLTextureReplay.call(this, tolerance, maxExtent);
 
   /**
    * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
@@ -41,7 +41,7 @@ const WebGLImageReplay = function(tolerance, maxExtent) {
 
 };
 
-inherits(WebGLImageReplay, _ol_render_webgl_TextureReplay_);
+inherits(WebGLImageReplay, WebGLTextureReplay);
 
 
 /**
@@ -98,7 +98,7 @@ WebGLImageReplay.prototype.finish = function(context) {
 
   this.images_ = null;
   this.hitDetectionImages_ = null;
-  _ol_render_webgl_TextureReplay_.prototype.finish.call(this, context);
+  WebGLTextureReplay.prototype.finish.call(this, context);
 };
 
 
