@@ -10,7 +10,7 @@ import ReplayGroup from '../ReplayGroup.js';
 import WebGLCircleReplay from '../webgl/CircleReplay.js';
 import WebGLImageReplay from '../webgl/ImageReplay.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
-import _ol_render_webgl_PolygonReplay_ from '../webgl/PolygonReplay.js';
+import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
 import _ol_render_webgl_TextReplay_ from '../webgl/TextReplay.js';
 
 /**
@@ -320,7 +320,7 @@ WebGLReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': WebGLCircleReplay,
   'Image': WebGLImageReplay,
   'LineString': WebGLLineStringReplay,
-  'Polygon': _ol_render_webgl_PolygonReplay_,
+  'Polygon': WebGLPolygonReplay,
   'Text': _ol_render_webgl_TextReplay_
 };
 export default WebGLReplayGroup;

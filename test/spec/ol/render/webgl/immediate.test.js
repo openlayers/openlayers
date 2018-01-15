@@ -11,7 +11,7 @@ import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.j
 import WebGLImageReplay from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
 import WebGLLineStringReplay from '../../../../../src/ol/render/webgl/LineStringReplay.js';
-import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
+import WebGLPolygonReplay from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -212,40 +212,40 @@ describe('ol.render.webgl.Immediate', function() {
     describe('#drawPolygon', function() {
       let tmpObj;
       beforeEach(function() {
-        tmpObj = mock(_ol_render_webgl_PolygonReplay_, 'drawPolygon');
+        tmpObj = mock(WebGLPolygonReplay, 'drawPolygon');
       });
 
       it('draws a polygon', function() {
         context.drawGeometry(polygon);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.drawPolygon.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.finish.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.replay.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.drawPolygon.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.finish.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.replay.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(_ol_render_webgl_PolygonReplay_, tmpObj);
+        restore(WebGLPolygonReplay, tmpObj);
       });
     });
 
     describe('#drawMultiPolygon', function() {
       let tmpObj;
       beforeEach(function() {
-        tmpObj = mock(_ol_render_webgl_PolygonReplay_, 'drawMultiPolygon');
+        tmpObj = mock(WebGLPolygonReplay, 'drawMultiPolygon');
       });
 
       it('draws a multi polygon', function() {
         context.drawGeometry(multiPolygon);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.drawMultiPolygon.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.finish.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.replay.calledOnce).to.be(true);
-        expect(_ol_render_webgl_PolygonReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.drawMultiPolygon.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.finish.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.replay.calledOnce).to.be(true);
+        expect(WebGLPolygonReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(_ol_render_webgl_PolygonReplay_, tmpObj);
+        restore(WebGLPolygonReplay, tmpObj);
       });
     });
 
