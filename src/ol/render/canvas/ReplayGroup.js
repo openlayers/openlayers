@@ -11,7 +11,7 @@ import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
 import CanvasReplay from '../canvas/Replay.js';
 import CanvasImageReplay from '../canvas/ImageReplay.js';
-import _ol_render_canvas_LineStringReplay_ from '../canvas/LineStringReplay.js';
+import CanvasLineStringReplay from '../canvas/LineStringReplay.js';
 import CanvasPolygonReplay from '../canvas/PolygonReplay.js';
 import CanvasTextReplay from '../canvas/TextReplay.js';
 import _ol_render_replay_ from '../replay.js';
@@ -500,7 +500,7 @@ CanvasReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': CanvasPolygonReplay,
   'Default': CanvasReplay,
   'Image': CanvasImageReplay,
-  'LineString': _ol_render_canvas_LineStringReplay_,
+  'LineString': CanvasLineStringReplay,
   'Polygon': CanvasPolygonReplay,
   'Text': CanvasTextReplay
 };

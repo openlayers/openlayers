@@ -7,7 +7,7 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
+import CanvasLineStringReplay from '../../../../../src/ol/render/canvas/LineStringReplay.js';
 import CanvasPolygonReplay from '../../../../../src/ol/render/canvas/PolygonReplay.js';
 import CanvasReplay from '../../../../../src/ol/render/canvas/Replay.js';
 import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
@@ -446,7 +446,7 @@ describe('ol.render.canvas.LineStringReplay', function() {
       const tolerance = 1;
       const extent = [-180, -90, 180, 90];
       const resolution = 10;
-      const replay = new _ol_render_canvas_LineStringReplay_(tolerance, extent,
+      const replay = new CanvasLineStringReplay(tolerance, extent,
         resolution);
       const stroke = new Stroke({
         width: 2
