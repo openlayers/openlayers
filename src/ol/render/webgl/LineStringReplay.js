@@ -23,7 +23,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-const _ol_render_webgl_LineStringReplay_ = function(tolerance, maxExtent) {
+const WebGLLineStringReplay = function(tolerance, maxExtent) {
   WebGLReplay.call(this, tolerance, maxExtent);
 
   /**
@@ -68,7 +68,7 @@ const _ol_render_webgl_LineStringReplay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_LineStringReplay_, WebGLReplay);
+inherits(WebGLLineStringReplay, WebGLReplay);
 
 
 /**
@@ -79,7 +79,7 @@ inherits(_ol_render_webgl_LineStringReplay_, WebGLReplay);
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
 
   let i, ii;
   let numVertices = this.vertices.length;
@@ -121,10 +121,10 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
 
         if (lineCap) {
           numVertices = this.addVertices_([0, 0], p1, p2,
-            lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+            lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_([0, 0], p1, p2,
-            -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
+            -lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -137,10 +137,10 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
         }
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-          lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+          lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-          -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
+          -lastSign * WebGLLineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
 
         lastIndex = numVertices / 7 - 1;
 
@@ -156,10 +156,10 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-          lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE * (lineCap || 1), numVertices);
+          lastSign * WebGLLineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-          -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE * (lineCap || 1), numVertices);
+          -lastSign * WebGLLineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
 
         this.indices[numIndices++] = n;
         this.indices[numIndices++] = lastIndex - 1;
@@ -171,10 +171,10 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
 
         if (lineCap) {
           numVertices = this.addVertices_(p0, p1, [0, 0],
-            lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE_CAP * lineCap, numVertices);
+            lastSign * WebGLLineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_(p0, p1, [0, 0],
-            -lastSign * _ol_render_webgl_LineStringReplay_.Instruction_.END_LINE_CAP * lineCap, numVertices);
+            -lastSign * WebGLLineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -197,13 +197,13 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
       ? -1 : 1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-      sign * _ol_render_webgl_LineStringReplay_.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+      sign * WebGLLineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-      sign * _ol_render_webgl_LineStringReplay_.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
+      sign * WebGLLineStringReplay.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-      -sign * _ol_render_webgl_LineStringReplay_.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+      -sign * WebGLLineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     if (i > offset) {
       this.indices[numIndices++] = n;
@@ -225,7 +225,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
     //Add miter
     if (lineJoin) {
       numVertices = this.addVertices_(p0, p1, p2,
-        sign * _ol_render_webgl_LineStringReplay_.Instruction_.MITER_TOP * lineJoin, numVertices);
+        sign * WebGLLineStringReplay.Instruction_.MITER_TOP * lineJoin, numVertices);
 
       this.indices[numIndices++] = n + 1;
       this.indices[numIndices++] = n + 3;
@@ -239,10 +239,10 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
       ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-      sign * _ol_render_webgl_LineStringReplay_.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
+      sign * WebGLLineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-      -sign * _ol_render_webgl_LineStringReplay_.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
+      -sign * WebGLLineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     this.indices[numIndices++] = n;
     this.indices[numIndices++] = lastIndex - 1;
@@ -263,7 +263,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawCoordinates_ = function(flatCoo
  * @return {number} Vertex counter.
  * @private
  */
-_ol_render_webgl_LineStringReplay_.prototype.addVertices_ = function(p0, p1, p2, product, numVertices) {
+WebGLLineStringReplay.prototype.addVertices_ = function(p0, p1, p2, product, numVertices) {
   this.vertices[numVertices++] = p0[0];
   this.vertices[numVertices++] = p0[1];
   this.vertices[numVertices++] = p1[0];
@@ -284,7 +284,7 @@ _ol_render_webgl_LineStringReplay_.prototype.addVertices_ = function(p0, p1, p2,
  * @return {boolean} The linestring can be drawn.
  * @private
  */
-_ol_render_webgl_LineStringReplay_.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
+WebGLLineStringReplay.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
   const range = end - offset;
   if (range < stride * 2) {
     return false;
@@ -301,7 +301,7 @@ _ol_render_webgl_LineStringReplay_.prototype.isValid_ = function(flatCoordinates
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawLineString = function(lineStringGeometry, feature) {
+WebGLLineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
   let flatCoordinates = lineStringGeometry.getFlatCoordinates();
   const stride = lineStringGeometry.getStride();
   if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
@@ -322,7 +322,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawLineString = function(lineStrin
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
+WebGLLineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
   const indexCount = this.indices.length;
   const ends = multiLineStringGeometry.getEnds();
   ends.unshift(0);
@@ -355,7 +355,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawMultiLineString = function(mult
  * @param {Array.<Array.<number>>} holeFlatCoordinates Hole flat coordinates.
  * @param {number} stride Stride.
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawPolygonCoordinates = function(
+WebGLLineStringReplay.prototype.drawPolygonCoordinates = function(
   flatCoordinates, holeFlatCoordinates, stride) {
   if (!_ol_geom_flat_topology_.lineStringIsClosed(flatCoordinates, 0,
     flatCoordinates.length, stride)) {
@@ -382,7 +382,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawPolygonCoordinates = function(
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number=} opt_index Index count.
  */
-_ol_render_webgl_LineStringReplay_.prototype.setPolygonStyle = function(feature, opt_index) {
+WebGLLineStringReplay.prototype.setPolygonStyle = function(feature, opt_index) {
   const index = opt_index === undefined ? this.indices.length : opt_index;
   this.startIndices.push(index);
   this.startIndicesFeature.push(feature);
@@ -396,7 +396,7 @@ _ol_render_webgl_LineStringReplay_.prototype.setPolygonStyle = function(feature,
 /**
  * @return {number} Current index.
  */
-_ol_render_webgl_LineStringReplay_.prototype.getCurrentIndex = function() {
+WebGLLineStringReplay.prototype.getCurrentIndex = function() {
   return this.indices.length;
 };
 
@@ -404,7 +404,7 @@ _ol_render_webgl_LineStringReplay_.prototype.getCurrentIndex = function() {
 /**
  * @inheritDoc
  **/
-_ol_render_webgl_LineStringReplay_.prototype.finish = function(context) {
+WebGLLineStringReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
   this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
@@ -426,7 +426,7 @@ _ol_render_webgl_LineStringReplay_.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction = function(context) {
+WebGLLineStringReplay.prototype.getDeleteResourcesFunction = function(context) {
   const verticesBuffer = this.verticesBuffer;
   const indicesBuffer = this.indicesBuffer;
   return function() {
@@ -439,7 +439,7 @@ _ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction = functi
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+WebGLLineStringReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
   const fragmentShader = _ol_render_webgl_linestringreplay_defaultshader_.fragment;
   const vertexShader = _ol_render_webgl_linestringreplay_defaultshader_.vertex;
@@ -484,7 +484,7 @@ _ol_render_webgl_LineStringReplay_.prototype.setUpProgram = function(gl, context
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.shutDownProgram = function(gl, locations) {
+WebGLLineStringReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_lastPos);
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_nextPos);
@@ -495,7 +495,7 @@ _ol_render_webgl_LineStringReplay_.prototype.shutDownProgram = function(gl, loca
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+WebGLLineStringReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
   const tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
   const tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
@@ -537,7 +537,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawReplay = function(gl, context, 
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+WebGLLineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
   let i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -574,7 +574,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawReplaySkipping_ = function(gl, 
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
+WebGLLineStringReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
   featureCallback, opt_hitExtent) {
   let i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
@@ -620,7 +620,7 @@ _ol_render_webgl_LineStringReplay_.prototype.drawHitDetectionReplayOneByOne = fu
  * @param {number} lineWidth Line width.
  * @param {number} miterLimit Miter limit.
  */
-_ol_render_webgl_LineStringReplay_.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
+WebGLLineStringReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
   gl.uniform4fv(this.defaultLocations_.u_color, color);
   gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
   gl.uniform1f(this.defaultLocations_.u_miterLimit, miterLimit);
@@ -630,7 +630,7 @@ _ol_render_webgl_LineStringReplay_.prototype.setStrokeStyle_ = function(gl, colo
 /**
  * @inheritDoc
  */
-_ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+WebGLLineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   const strokeStyleLineCap = strokeStyle.getLineCap();
   this.state_.lineCap = strokeStyleLineCap !== undefined ?
     strokeStyleLineCap : _ol_render_webgl_.defaultLineCap;
@@ -672,7 +672,7 @@ _ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle = function(fillS
  * @enum {number}
  * @private
  */
-_ol_render_webgl_LineStringReplay_.Instruction_ = {
+WebGLLineStringReplay.Instruction_ = {
   ROUND: 2,
   BEGIN_LINE: 3,
   END_LINE: 5,
@@ -683,4 +683,4 @@ _ol_render_webgl_LineStringReplay_.Instruction_ = {
   MITER_BOTTOM: 19,
   MITER_TOP: 23
 };
-export default _ol_render_webgl_LineStringReplay_;
+export default WebGLLineStringReplay;

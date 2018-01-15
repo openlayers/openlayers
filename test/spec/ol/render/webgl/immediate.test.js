@@ -10,7 +10,7 @@ import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import WebGLImageReplay from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
-import _ol_render_webgl_LineStringReplay_ from '../../../../../src/ol/render/webgl/LineStringReplay.js';
+import WebGLLineStringReplay from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
@@ -172,40 +172,40 @@ describe('ol.render.webgl.Immediate', function() {
     describe('#drawLineString', function() {
       let tmpObj;
       beforeEach(function() {
-        tmpObj = mock(_ol_render_webgl_LineStringReplay_, 'drawLineString');
+        tmpObj = mock(WebGLLineStringReplay, 'drawLineString');
       });
 
       it('draws a line string', function() {
         context.drawGeometry(line);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.drawLineString.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.finish.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.replay.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.drawLineString.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.finish.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.replay.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(_ol_render_webgl_LineStringReplay_, tmpObj);
+        restore(WebGLLineStringReplay, tmpObj);
       });
     });
 
     describe('#drawMultiLineString', function() {
       let tmpObj;
       beforeEach(function() {
-        tmpObj = mock(_ol_render_webgl_LineStringReplay_, 'drawMultiLineString');
+        tmpObj = mock(WebGLLineStringReplay, 'drawMultiLineString');
       });
 
       it('draws a multi line string', function() {
         context.drawGeometry(multiLine);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.drawMultiLineString.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.finish.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.replay.calledOnce).to.be(true);
-        expect(_ol_render_webgl_LineStringReplay_.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.drawMultiLineString.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.finish.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.replay.calledOnce).to.be(true);
+        expect(WebGLLineStringReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
       });
 
       after(function() {
-        restore(_ol_render_webgl_LineStringReplay_, tmpObj);
+        restore(WebGLLineStringReplay, tmpObj);
       });
     });
 
