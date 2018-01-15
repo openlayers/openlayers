@@ -12,7 +12,7 @@ import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_polygonreplay_defaultshader_ from '../webgl/polygonreplay/defaultshader.js';
 import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../webgl/polygonreplay/defaultshader/Locations.js';
 import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
-import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
+import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import Stroke from '../../style/Stroke.js';
 import LinkedList from '../../structs/LinkedList.js';
@@ -28,7 +28,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @struct
  */
 const _ol_render_webgl_PolygonReplay_ = function(tolerance, maxExtent) {
-  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
+  WebGLReplay.call(this, tolerance, maxExtent);
 
   this.lineStringReplay = new _ol_render_webgl_LineStringReplay_(
     tolerance, maxExtent);
@@ -63,7 +63,7 @@ const _ol_render_webgl_PolygonReplay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_PolygonReplay_, _ol_render_webgl_Replay_);
+inherits(_ol_render_webgl_PolygonReplay_, WebGLReplay);
 
 
 /**

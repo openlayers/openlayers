@@ -6,7 +6,7 @@ import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturereplay/defaultshader.js';
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
-import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
+import WebGLReplay from '../webgl/Replay.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
 
@@ -19,7 +19,7 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  * @struct
  */
 const WebGLTextureReplay = function(tolerance, maxExtent) {
-  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
+  WebGLReplay.call(this, tolerance, maxExtent);
 
   /**
    * @type {number|undefined}
@@ -112,7 +112,7 @@ const WebGLTextureReplay = function(tolerance, maxExtent) {
   this.width = undefined;
 };
 
-inherits(WebGLTextureReplay, _ol_render_webgl_Replay_);
+inherits(WebGLTextureReplay, WebGLReplay);
 
 
 /**

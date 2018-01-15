@@ -9,7 +9,7 @@ import _ol_obj_ from '../../obj.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../webgl/circlereplay/defaultshader/Locations.js';
-import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
+import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
@@ -22,7 +22,7 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @struct
  */
 const WebGLCircleReplay = function(tolerance, maxExtent) {
-  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
+  WebGLReplay.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -68,7 +68,7 @@ const WebGLCircleReplay = function(tolerance, maxExtent) {
 
 };
 
-inherits(WebGLCircleReplay, _ol_render_webgl_Replay_);
+inherits(WebGLCircleReplay, WebGLReplay);
 
 
 /**
