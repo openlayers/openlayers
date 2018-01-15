@@ -22,12 +22,12 @@ import TranslateEventType from '../interaction/TranslateEventType.js';
  * @param {olx.interaction.TranslateOptions=} opt_options Options.
  * @api
  */
-const _ol_interaction_Translate_ = function(opt_options) {
+const Translate = function(opt_options) {
   PointerInteraction.call(this, {
-    handleDownEvent: _ol_interaction_Translate_.handleDownEvent_,
-    handleDragEvent: _ol_interaction_Translate_.handleDragEvent_,
-    handleMoveEvent: _ol_interaction_Translate_.handleMoveEvent_,
-    handleUpEvent: _ol_interaction_Translate_.handleUpEvent_
+    handleDownEvent: Translate.handleDownEvent_,
+    handleDragEvent: Translate.handleDragEvent_,
+    handleMoveEvent: Translate.handleMoveEvent_,
+    handleUpEvent: Translate.handleUpEvent_
   });
 
   const options = opt_options ? opt_options : {};
@@ -85,7 +85,7 @@ const _ol_interaction_Translate_ = function(opt_options) {
 
 };
 
-inherits(_ol_interaction_Translate_, PointerInteraction);
+inherits(Translate, PointerInteraction);
 
 
 /**
@@ -94,16 +94,16 @@ inherits(_ol_interaction_Translate_, PointerInteraction);
  * @this {ol.interaction.Translate}
  * @private
  */
-_ol_interaction_Translate_.handleDownEvent_ = function(event) {
+Translate.handleDownEvent_ = function(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
   if (!this.lastCoordinate_ && this.lastFeature_) {
     this.lastCoordinate_ = event.coordinate;
-    _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
+    Translate.handleMoveEvent_.call(this, event);
 
     const features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
-      new _ol_interaction_Translate_.Event(
+      new Translate.Event(
         TranslateEventType.TRANSLATESTART, features,
         event.coordinate));
     return true;
@@ -118,15 +118,15 @@ _ol_interaction_Translate_.handleDownEvent_ = function(event) {
  * @this {ol.interaction.Translate}
  * @private
  */
-_ol_interaction_Translate_.handleUpEvent_ = function(event) {
+Translate.handleUpEvent_ = function(event) {
   if (this.lastCoordinate_) {
     this.lastCoordinate_ = null;
-    _ol_interaction_Translate_.handleMoveEvent_.call(this, event);
+    Translate.handleMoveEvent_.call(this, event);
 
     const features = this.features_ || new Collection([this.lastFeature_]);
 
     this.dispatchEvent(
-      new _ol_interaction_Translate_.Event(
+      new Translate.Event(
         TranslateEventType.TRANSLATEEND, features,
         event.coordinate));
     return true;
@@ -140,7 +140,7 @@ _ol_interaction_Translate_.handleUpEvent_ = function(event) {
  * @this {ol.interaction.Translate}
  * @private
  */
-_ol_interaction_Translate_.handleDragEvent_ = function(event) {
+Translate.handleDragEvent_ = function(event) {
   if (this.lastCoordinate_) {
     const newCoordinate = event.coordinate;
     const deltaX = newCoordinate[0] - this.lastCoordinate_[0];
@@ -156,7 +156,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
-      new _ol_interaction_Translate_.Event(
+      new Translate.Event(
         TranslateEventType.TRANSLATING, features,
         newCoordinate));
   }
@@ -168,7 +168,7 @@ _ol_interaction_Translate_.handleDragEvent_ = function(event) {
  * @this {ol.interaction.Translate}
  * @private
  */
-_ol_interaction_Translate_.handleMoveEvent_ = function(event) {
+Translate.handleMoveEvent_ = function(event) {
   const elem = event.map.getViewport();
 
   // Change the cursor to grab/grabbing if hovering any of the features managed
@@ -191,7 +191,7 @@ _ol_interaction_Translate_.handleMoveEvent_ = function(event) {
  * coordinates.
  * @private
  */
-_ol_interaction_Translate_.prototype.featuresAtPixel_ = function(pixel, map) {
+Translate.prototype.featuresAtPixel_ = function(pixel, map) {
   return map.forEachFeatureAtPixel(pixel,
     function(feature) {
       if (!this.features_ || includes(this.features_.getArray(), feature)) {
@@ -209,7 +209,7 @@ _ol_interaction_Translate_.prototype.featuresAtPixel_ = function(pixel, map) {
  * @returns {number} Hit tolerance in pixels.
  * @api
  */
-_ol_interaction_Translate_.prototype.getHitTolerance = function() {
+Translate.prototype.getHitTolerance = function() {
   return this.hitTolerance_;
 };
 
@@ -221,7 +221,7 @@ _ol_interaction_Translate_.prototype.getHitTolerance = function() {
  * @param {number} hitTolerance Hit tolerance in pixels.
  * @api
  */
-_ol_interaction_Translate_.prototype.setHitTolerance = function(hitTolerance) {
+Translate.prototype.setHitTolerance = function(hitTolerance) {
   this.hitTolerance_ = hitTolerance;
 };
 
@@ -229,7 +229,7 @@ _ol_interaction_Translate_.prototype.setHitTolerance = function(hitTolerance) {
 /**
  * @inheritDoc
  */
-_ol_interaction_Translate_.prototype.setMap = function(map) {
+Translate.prototype.setMap = function(map) {
   const oldMap = this.getMap();
   PointerInteraction.prototype.setMap.call(this, map);
   this.updateState_(oldMap);
@@ -239,7 +239,7 @@ _ol_interaction_Translate_.prototype.setMap = function(map) {
 /**
  * @private
  */
-_ol_interaction_Translate_.prototype.handleActiveChanged_ = function() {
+Translate.prototype.handleActiveChanged_ = function() {
   this.updateState_(null);
 };
 
@@ -248,7 +248,7 @@ _ol_interaction_Translate_.prototype.handleActiveChanged_ = function() {
  * @param {ol.PluggableMap} oldMap Old map.
  * @private
  */
-_ol_interaction_Translate_.prototype.updateState_ = function(oldMap) {
+Translate.prototype.updateState_ = function(oldMap) {
   let map = this.getMap();
   const active = this.getActive();
   if (!map || !active) {
@@ -273,7 +273,7 @@ _ol_interaction_Translate_.prototype.updateState_ = function(oldMap) {
  * @param {ol.Collection.<ol.Feature>} features The features translated.
  * @param {ol.Coordinate} coordinate The event coordinate.
  */
-_ol_interaction_Translate_.Event = function(type, features, coordinate) {
+Translate.Event = function(type, features, coordinate) {
 
   Event.call(this, type);
 
@@ -292,5 +292,5 @@ _ol_interaction_Translate_.Event = function(type, features, coordinate) {
    */
   this.coordinate = coordinate;
 };
-inherits(_ol_interaction_Translate_.Event, Event);
-export default _ol_interaction_Translate_;
+inherits(Translate.Event, Event);
+export default Translate;
