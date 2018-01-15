@@ -11,7 +11,7 @@ import {boundingExtent, getArea} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
 import {fromExtent as polygonFromExtent} from '../geom/Polygon.js';
-import _ol_interaction_ExtentEventType_ from '../interaction/ExtentEventType.js';
+import ExtentEventType from '../interaction/ExtentEventType.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import VectorLayer from '../layer/Vector.js';
 import VectorSource from '../source/Vector.js';
@@ -454,7 +454,7 @@ ExtentInteraction.prototype.setExtent = function(extent) {
  * @extends {ol.events.Event}
  */
 ExtentInteraction.Event = function(extent) {
-  Event.call(this, _ol_interaction_ExtentEventType_.EXTENTCHANGED);
+  Event.call(this, ExtentEventType.EXTENTCHANGED);
 
   /**
    * The current extent.
