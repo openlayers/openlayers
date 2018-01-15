@@ -13,7 +13,7 @@ import CanvasReplay from '../canvas/Replay.js';
 import CanvasImageReplay from '../canvas/ImageReplay.js';
 import _ol_render_canvas_LineStringReplay_ from '../canvas/LineStringReplay.js';
 import _ol_render_canvas_PolygonReplay_ from '../canvas/PolygonReplay.js';
-import _ol_render_canvas_TextReplay_ from '../canvas/TextReplay.js';
+import CanvasTextReplay from '../canvas/TextReplay.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_transform_ from '../../transform.js';
 
@@ -502,6 +502,6 @@ CanvasReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Image': CanvasImageReplay,
   'LineString': _ol_render_canvas_LineStringReplay_,
   'Polygon': _ol_render_canvas_PolygonReplay_,
-  'Text': _ol_render_canvas_TextReplay_
+  'Text': CanvasTextReplay
 };
 export default CanvasReplayGroup;

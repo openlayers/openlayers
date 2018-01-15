@@ -25,7 +25,7 @@ import TextPlacement from '../../style/TextPlacement.js';
  * @param {?} declutterTree Declutter tree.
  * @struct
  */
-const _ol_render_canvas_TextReplay_ = function(
+const CanvasTextReplay = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree) {
   CanvasReplay.call(this,
     tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree);
@@ -134,7 +134,7 @@ const _ol_render_canvas_TextReplay_ = function(
 
 };
 
-inherits(_ol_render_canvas_TextReplay_, CanvasReplay);
+inherits(CanvasTextReplay, CanvasReplay);
 
 
 /**
@@ -144,7 +144,7 @@ inherits(_ol_render_canvas_TextReplay_, CanvasReplay);
  * each line.
  * @return {number} Width of the whole text.
  */
-_ol_render_canvas_TextReplay_.measureTextWidths = function(font, lines, widths) {
+CanvasTextReplay.measureTextWidths = function(font, lines, widths) {
   const numLines = lines.length;
   let width = 0;
   let currentWidth, i;
@@ -160,7 +160,7 @@ _ol_render_canvas_TextReplay_.measureTextWidths = function(font, lines, widths) 
 /**
  * @inheritDoc
  */
-_ol_render_canvas_TextReplay_.prototype.drawText = function(geometry, feature) {
+CanvasTextReplay.prototype.drawText = function(geometry, feature) {
   const fillState = this.textFillState_;
   const strokeState = this.textStrokeState_;
   const textState = this.textState_;
@@ -282,7 +282,7 @@ _ol_render_canvas_TextReplay_.prototype.drawText = function(geometry, feature) {
  * @param {string} strokeKey Stroke style key.
  * @return {HTMLCanvasElement} Image.
  */
-_ol_render_canvas_TextReplay_.prototype.getImage = function(text, textKey, fillKey, strokeKey) {
+CanvasTextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey) {
   let label;
   const key = strokeKey + textKey + text + fillKey + this.pixelRatio;
 
@@ -299,7 +299,7 @@ _ol_render_canvas_TextReplay_.prototype.getImage = function(text, textKey, fillK
     const lines = text.split('\n');
     const numLines = lines.length;
     const widths = [];
-    const width = _ol_render_canvas_TextReplay_.measureTextWidths(textState.font, lines, widths);
+    const width = CanvasTextReplay.measureTextWidths(textState.font, lines, widths);
     const lineHeight = _ol_render_canvas_.measureTextHeight(textState.font);
     const height = lineHeight * numLines;
     const renderWidth = (width + strokeWidth);
@@ -352,7 +352,7 @@ _ol_render_canvas_TextReplay_.prototype.getImage = function(text, textKey, fillK
  * @param {number} begin Begin.
  * @param {number} end End.
  */
-_ol_render_canvas_TextReplay_.prototype.drawTextImage_ = function(label, begin, end) {
+CanvasTextReplay.prototype.drawTextImage_ = function(label, begin, end) {
   const textState = this.textState_;
   const strokeState = this.textStrokeState_;
   const pixelRatio = this.pixelRatio;
@@ -387,7 +387,7 @@ _ol_render_canvas_TextReplay_.prototype.drawTextImage_ = function(label, begin, 
  * @param {number} end End.
  * @param {ol.DeclutterGroup} declutterGroup Declutter group.
  */
-_ol_render_canvas_TextReplay_.prototype.drawChars_ = function(begin, end, declutterGroup) {
+CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   const strokeState = this.textStrokeState_;
   const textState = this.textState_;
   const fillState = this.textFillState_;
@@ -465,7 +465,7 @@ _ol_render_canvas_TextReplay_.prototype.drawChars_ = function(begin, end, declut
 /**
  * @inheritDoc
  */
-_ol_render_canvas_TextReplay_.prototype.setTextStyle = function(textStyle, declutterGroup) {
+CanvasTextReplay.prototype.setTextStyle = function(textStyle, declutterGroup) {
   let textState, fillState, strokeState;
   if (!textStyle) {
     this.text_ = '';
@@ -545,4 +545,4 @@ _ol_render_canvas_TextReplay_.prototype.setTextStyle = function(textStyle, declu
       '';
   }
 };
-export default _ol_render_canvas_TextReplay_;
+export default CanvasTextReplay;

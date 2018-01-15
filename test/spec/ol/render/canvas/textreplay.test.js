@@ -1,13 +1,13 @@
 import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import _ol_render_canvas_TextReplay_ from '../../../../../src/ol/render/canvas/TextReplay.js';
+import CanvasTextReplay from '../../../../../src/ol/render/canvas/TextReplay.js';
 import Text from '../../../../../src/ol/style/Text.js';
 
 describe('ol.render.canvas.TextReplay', function() {
 
   it('renders polygon labels only when they fit', function() {
-    const replay = new _ol_render_canvas_TextReplay_(1, [-180, -90, 180, 90], 0.02, 1, true);
+    const replay = new CanvasTextReplay(1, [-180, -90, 180, 90], 0.02, 1, true);
     const geometry = new Polygon([[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]]);
     const feature = new Feature(geometry);
 
@@ -25,7 +25,7 @@ describe('ol.render.canvas.TextReplay', function() {
   });
 
   it('renders multipolygon labels only when they fit', function() {
-    const replay = new _ol_render_canvas_TextReplay_(1, [-180, -90, 180, 90], 0.02, 1, true);
+    const replay = new CanvasTextReplay(1, [-180, -90, 180, 90], 0.02, 1, true);
     const geometry = new MultiPolygon([
       [[[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]],
       [[[1, 1], [1, 2], [2, 2], [2, 1], [1, 1]]]
