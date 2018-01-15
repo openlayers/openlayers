@@ -15,7 +15,7 @@ import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_string_ from '../string.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -250,7 +250,7 @@ TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
     const index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
     url = urls[index];
   }
-  return _ol_uri_.appendParams(url, params);
+  return appendParams(url, params);
 };
 
 

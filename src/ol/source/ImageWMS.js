@@ -15,7 +15,7 @@ import _ol_reproj_ from '../reproj.js';
 import ImageSource from '../source/Image.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_string_ from '../string.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -308,7 +308,7 @@ ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projectio
   }
   params['BBOX'] = bbox.join(',');
 
-  return _ol_uri_.appendParams(/** @type {string} */ (this.url_), params);
+  return appendParams(/** @type {string} */ (this.url_), params);
 };
 
 

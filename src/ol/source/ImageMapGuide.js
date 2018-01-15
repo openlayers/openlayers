@@ -8,7 +8,7 @@ import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import ImageSource from '../source/Image.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -224,7 +224,7 @@ ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, project
     'SETVIEWCENTERY': center[1]
   };
   _ol_obj_.assign(baseParams, params);
-  return _ol_uri_.appendParams(baseUrl, baseParams);
+  return appendParams(baseUrl, baseParams);
 };
 
 

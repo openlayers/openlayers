@@ -9,7 +9,7 @@ import EventType from '../events/EventType.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
 import _ol_obj_ from '../obj.js';
 import ImageSource from '../source/Image.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -218,7 +218,7 @@ ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, pr
   if (modifiedUrl == url) {
     assert(false, 50); // `options.featureTypes` should be an Array
   }
-  return _ol_uri_.appendParams(modifiedUrl, params);
+  return appendParams(modifiedUrl, params);
 };
 
 

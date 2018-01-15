@@ -8,7 +8,7 @@ import _ol_obj_ from '../obj.js';
 import _ol_size_ from '../size.js';
 import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -125,7 +125,7 @@ TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExte
   const modifiedUrl = url
     .replace(/MapServer\/?$/, 'MapServer/export')
     .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
-  return _ol_uri_.appendParams(modifiedUrl, params);
+  return appendParams(modifiedUrl, params);
 };
 
 

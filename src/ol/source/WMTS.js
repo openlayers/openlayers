@@ -10,7 +10,7 @@ import {get as getProjection, equivalent, transformExtent} from '../proj.js';
 import TileImage from '../source/TileImage.js';
 import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
 import {createFromCapabilitiesMatrixSet} from '../tilegrid/WMTS.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -114,7 +114,7 @@ const WMTS = function(options) {
     // special template params
 
     template = (requestEncoding == WMTSRequestEncoding.KVP) ?
-      _ol_uri_.appendParams(template, context) :
+      appendParams(template, context) :
       template.replace(/\{(\w+?)\}/g, function(m, p) {
         return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
       });
@@ -138,7 +138,7 @@ const WMTS = function(options) {
           _ol_obj_.assign(localContext, dimensions);
           let url = template;
           if (requestEncoding == WMTSRequestEncoding.KVP) {
-            url = _ol_uri_.appendParams(url, localContext);
+            url = appendParams(url, localContext);
           } else {
             url = url.replace(/\{(\w+?)\}/g, function(m, p) {
               return localContext[p];
