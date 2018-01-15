@@ -1,6 +1,6 @@
-import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 
-const parser = new _ol_format_WMTSCapabilities_();
+const parser = new WMTSCapabilities();
 
 fetch('data/WMTSCapabilities.xml').then(function(response) {
   return response.text();

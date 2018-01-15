@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
-import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {get as getProjection} from '../src/ol/proj.js';
 import {register} from '../src/ol/proj/proj4.js';
@@ -97,7 +97,7 @@ layers['wms21781'] = new TileLayer({
   })
 });
 
-const parser = new _ol_format_WMTSCapabilities_();
+const parser = new WMTSCapabilities();
 const url = 'https://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
     'wmts.cgi?SERVICE=WMTS&request=GetCapabilities';
 fetch(url).then(function(response) {

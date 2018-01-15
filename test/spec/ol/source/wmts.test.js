@@ -1,4 +1,4 @@
-import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
+import WMTSCapabilities from '../../../../src/ol/format/WMTSCapabilities.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import WMTSTileGrid from '../../../../src/ol/tilegrid/WMTS.js';
@@ -8,7 +8,7 @@ import WMTS from '../../../../src/ol/source/WMTS.js';
 describe('ol.source.WMTS', function() {
 
   describe('when creating options from capabilities', function() {
-    const parser = new _ol_format_WMTSCapabilities_();
+    const parser = new WMTSCapabilities();
     let capabilities, content;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ogcsample.xml', function(xml) {
@@ -232,7 +232,7 @@ describe('ol.source.WMTS', function() {
   });
 
   describe('when creating options from Esri capabilities', function() {
-    const parser = new _ol_format_WMTSCapabilities_();
+    const parser = new WMTSCapabilities();
     let capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/arcgis.xml', function(xml) {

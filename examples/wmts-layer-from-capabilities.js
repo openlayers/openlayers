@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 import WMTS from '../src/ol/source/WMTS.js';
 
-const parser = new _ol_format_WMTSCapabilities_();
+const parser = new WMTSCapabilities();
 let map;
 
 fetch('data/WMTSCapabilities.xml').then(function(response) {

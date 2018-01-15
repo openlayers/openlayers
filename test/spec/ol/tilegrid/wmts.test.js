@@ -1,11 +1,11 @@
-import _ol_format_WMTSCapabilities_ from '../../../../src/ol/format/WMTSCapabilities.js';
+import WMTSCapabilities from '../../../../src/ol/format/WMTSCapabilities.js';
 import {createFromCapabilitiesMatrixSet} from '../../../../src/ol/tilegrid/WMTS.js';
 
 
 describe('ol.tilegrid.WMTS', function() {
 
   describe('when creating tileGrid from capabilities', function() {
-    const parser = new _ol_format_WMTSCapabilities_();
+    const parser = new WMTSCapabilities();
     let capabilities;
     before(function(done) {
       afterLoadText('spec/ol/format/wmts/ogcsample.xml', function(xml) {
@@ -58,7 +58,7 @@ describe('ol.tilegrid.WMTS', function() {
 
   describe('when creating tileGrid from capabilities with and without TileMatrixSetLimits',
     function() {
-      const parser = new _ol_format_WMTSCapabilities_();
+      const parser = new WMTSCapabilities();
       let capabilities;
       before(function(done) {
         afterLoadText('spec/ol/format/wmts/ign.xml', function(xml) {
