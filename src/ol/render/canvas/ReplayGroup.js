@@ -7,7 +7,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_obj_ from '../../obj.js';
-import _ol_render_ReplayGroup_ from '../ReplayGroup.js';
+import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
 import _ol_render_canvas_Replay_ from '../canvas/Replay.js';
 import _ol_render_canvas_ImageReplay_ from '../canvas/ImageReplay.js';
@@ -32,7 +32,7 @@ import _ol_transform_ from '../../transform.js';
  */
 const _ol_render_canvas_ReplayGroup_ = function(
   tolerance, maxExtent, resolution, pixelRatio, overlaps, declutterTree, opt_renderBuffer) {
-  _ol_render_ReplayGroup_.call(this);
+  ReplayGroup.call(this);
 
   /**
    * Declutter tree.
@@ -102,7 +102,7 @@ const _ol_render_canvas_ReplayGroup_ = function(
   this.hitDetectionTransform_ = _ol_transform_.create();
 };
 
-inherits(_ol_render_canvas_ReplayGroup_, _ol_render_ReplayGroup_);
+inherits(_ol_render_canvas_ReplayGroup_, ReplayGroup);
 
 
 /**

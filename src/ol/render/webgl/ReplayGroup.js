@@ -6,7 +6,7 @@ import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_replay_ from '../replay.js';
-import _ol_render_ReplayGroup_ from '../ReplayGroup.js';
+import ReplayGroup from '../ReplayGroup.js';
 import _ol_render_webgl_CircleReplay_ from '../webgl/CircleReplay.js';
 import _ol_render_webgl_ImageReplay_ from '../webgl/ImageReplay.js';
 import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
@@ -22,7 +22,7 @@ import _ol_render_webgl_TextReplay_ from '../webgl/TextReplay.js';
  * @struct
  */
 const _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderBuffer) {
-  _ol_render_ReplayGroup_.call(this);
+  ReplayGroup.call(this);
 
   /**
    * @type {ol.Extent}
@@ -51,7 +51,7 @@ const _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderB
 
 };
 
-inherits(_ol_render_webgl_ReplayGroup_, _ol_render_ReplayGroup_);
+inherits(_ol_render_webgl_ReplayGroup_, ReplayGroup);
 
 
 /**
