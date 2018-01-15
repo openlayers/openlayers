@@ -7,10 +7,10 @@ import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import _ol_render_canvas_LineStringReplay_ from '../../../../../src/ol/render/canvas/LineStringReplay.js';
-import _ol_render_canvas_PolygonReplay_ from '../../../../../src/ol/render/canvas/PolygonReplay.js';
-import _ol_render_canvas_Replay_ from '../../../../../src/ol/render/canvas/Replay.js';
-import _ol_render_canvas_ReplayGroup_ from '../../../../../src/ol/render/canvas/ReplayGroup.js';
+import CanvasLineStringReplay from '../../../../../src/ol/render/canvas/LineStringReplay.js';
+import CanvasPolygonReplay from '../../../../../src/ol/render/canvas/PolygonReplay.js';
+import CanvasReplay from '../../../../../src/ol/render/canvas/Replay.js';
+import CanvasReplayGroup from '../../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
@@ -28,7 +28,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     beforeEach(function() {
       transform = _ol_transform_.create();
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, false);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, false);
       feature0 = new Feature(new Polygon(
         [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new Feature(new Polygon(
@@ -172,7 +172,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not batch when overlaps is set to true', function() {
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
       _ol_renderer_vector_.renderFeature(replay, feature1, style1, 1);
       _ol_renderer_vector_.renderFeature(replay, feature2, style1, 1);
       _ol_renderer_vector_.renderFeature(replay, feature3, style1, 1);
@@ -184,7 +184,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     it('applies the pixelRatio to the linedash array and offset', function() {
       // replay with a pixelRatio of 2
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 2, true);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 2, true);
 
       let lineDash, lineDashCount = 0,
           lineDashOffset, lineDashOffsetCount = 0;
@@ -241,7 +241,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
         [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
       const geometrycollection = new Feature(new GeometryCollection(
         [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
-      replay = new _ol_render_canvas_ReplayGroup_(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasReplayGroup(1, [-180, -90, 180, 90], 1, 1, true);
       _ol_renderer_vector_.renderFeature(replay, point, style, 1);
       _ol_renderer_vector_.renderFeature(replay, multipoint, style, 1);
       _ol_renderer_vector_.renderFeature(replay, linestring, style, 1);
@@ -285,8 +285,8 @@ describe('ol.render.canvas.Replay', function() {
     it('creates a new replay batch', function() {
       const tolerance = 10;
       const extent = [-180, -90, 180, 90];
-      const replay = new _ol_render_canvas_Replay_(tolerance, extent, 1, 1, true);
-      expect(replay).to.be.a(_ol_render_canvas_Replay_);
+      const replay = new CanvasReplay(tolerance, extent, 1, 1, true);
+      expect(replay).to.be.a(CanvasReplay);
     });
 
   });
@@ -295,7 +295,7 @@ describe('ol.render.canvas.Replay', function() {
 
     let replay;
     beforeEach(function() {
-      replay = new _ol_render_canvas_Replay_(1, [-180, -90, 180, 90], 1, 1, true);
+      replay = new CanvasReplay(1, [-180, -90, 180, 90], 1, 1, true);
     });
 
     it('appends coordinates that are within the max extent', function() {
@@ -446,7 +446,7 @@ describe('ol.render.canvas.LineStringReplay', function() {
       const tolerance = 1;
       const extent = [-180, -90, 180, 90];
       const resolution = 10;
-      const replay = new _ol_render_canvas_LineStringReplay_(tolerance, extent,
+      const replay = new CanvasLineStringReplay(tolerance, extent,
         resolution);
       const stroke = new Stroke({
         width: 2
@@ -468,7 +468,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
     const tolerance = 1;
     const extent = [-180, -90, 180, 90];
     const resolution = 10;
-    replay = new _ol_render_canvas_PolygonReplay_(tolerance, extent,
+    replay = new CanvasPolygonReplay(tolerance, extent,
       resolution);
   });
 

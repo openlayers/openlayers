@@ -1,7 +1,7 @@
 import {getUid} from '../../../../../src/ol/index.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
-import _ol_render_webgl_CircleReplay_ from '../../../../../src/ol/render/webgl/CircleReplay.js';
+import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/Locations.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
@@ -21,7 +21,7 @@ describe('ol.render.webgl.CircleReplay', function() {
   beforeEach(function() {
     const tolerance = 0.1;
     const maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new _ol_render_webgl_CircleReplay_(tolerance, maxExtent);
+    replay = new WebGLCircleReplay(tolerance, maxExtent);
   });
 
   describe('#setFillStrokeStyle', function() {

@@ -9,7 +9,7 @@ import _ol_obj_ from '../../obj.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../webgl/circlereplay/defaultshader/Locations.js';
-import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
+import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
@@ -21,8 +21,8 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-const _ol_render_webgl_CircleReplay_ = function(tolerance, maxExtent) {
-  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
+const WebGLCircleReplay = function(tolerance, maxExtent) {
+  WebGLReplay.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -68,7 +68,7 @@ const _ol_render_webgl_CircleReplay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_CircleReplay_, _ol_render_webgl_Replay_);
+inherits(WebGLCircleReplay, WebGLReplay);
 
 
 /**
@@ -78,7 +78,7 @@ inherits(_ol_render_webgl_CircleReplay_, _ol_render_webgl_Replay_);
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-_ol_render_webgl_CircleReplay_.prototype.drawCoordinates_ = function(
+WebGLCircleReplay.prototype.drawCoordinates_ = function(
   flatCoordinates, offset, end, stride) {
   let numVertices = this.vertices.length;
   let numIndices = this.indices.length;
@@ -121,7 +121,7 @@ _ol_render_webgl_CircleReplay_.prototype.drawCoordinates_ = function(
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.drawCircle = function(circleGeometry, feature) {
+WebGLCircleReplay.prototype.drawCircle = function(circleGeometry, feature) {
   const radius = circleGeometry.getRadius();
   const stride = circleGeometry.getStride();
   if (radius) {
@@ -155,7 +155,7 @@ _ol_render_webgl_CircleReplay_.prototype.drawCircle = function(circleGeometry, f
 /**
  * @inheritDoc
  **/
-_ol_render_webgl_CircleReplay_.prototype.finish = function(context) {
+WebGLCircleReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
   this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
 
@@ -177,7 +177,7 @@ _ol_render_webgl_CircleReplay_.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.getDeleteResourcesFunction = function(context) {
+WebGLCircleReplay.prototype.getDeleteResourcesFunction = function(context) {
   // We only delete our stuff here. The shaders and the program may
   // be used by other CircleReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
@@ -194,7 +194,7 @@ _ol_render_webgl_CircleReplay_.prototype.getDeleteResourcesFunction = function(c
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+WebGLCircleReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
   const fragmentShader = _ol_render_webgl_circlereplay_defaultshader_.fragment;
   const vertexShader = _ol_render_webgl_circlereplay_defaultshader_.vertex;
@@ -235,7 +235,7 @@ _ol_render_webgl_CircleReplay_.prototype.setUpProgram = function(gl, context, si
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.shutDownProgram = function(gl, locations) {
+WebGLCircleReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_instruction);
   gl.disableVertexAttribArray(locations.a_radius);
@@ -245,7 +245,7 @@ _ol_render_webgl_CircleReplay_.prototype.shutDownProgram = function(gl, location
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+WebGLCircleReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
@@ -268,7 +268,7 @@ _ol_render_webgl_CircleReplay_.prototype.drawReplay = function(gl, context, skip
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
+WebGLCircleReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
   featureCallback, opt_hitExtent) {
   let i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
@@ -315,7 +315,7 @@ _ol_render_webgl_CircleReplay_.prototype.drawHitDetectionReplayOneByOne = functi
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
-_ol_render_webgl_CircleReplay_.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+WebGLCircleReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
   let i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -354,7 +354,7 @@ _ol_render_webgl_CircleReplay_.prototype.drawReplaySkipping_ = function(gl, cont
  * @param {WebGLRenderingContext} gl gl.
  * @param {Array.<number>} color Color.
  */
-_ol_render_webgl_CircleReplay_.prototype.setFillStyle_ = function(gl, color) {
+WebGLCircleReplay.prototype.setFillStyle_ = function(gl, color) {
   gl.uniform4fv(this.defaultLocations_.u_fillColor, color);
 };
 
@@ -365,7 +365,7 @@ _ol_render_webgl_CircleReplay_.prototype.setFillStyle_ = function(gl, color) {
  * @param {Array.<number>} color Color.
  * @param {number} lineWidth Line width.
  */
-_ol_render_webgl_CircleReplay_.prototype.setStrokeStyle_ = function(gl, color, lineWidth) {
+WebGLCircleReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth) {
   gl.uniform4fv(this.defaultLocations_.u_strokeColor, color);
   gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
 };
@@ -374,7 +374,7 @@ _ol_render_webgl_CircleReplay_.prototype.setStrokeStyle_ = function(gl, color, l
 /**
  * @inheritDoc
  */
-_ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+WebGLCircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   let strokeStyleColor, strokeStyleWidth;
   if (strokeStyle) {
     const strokeStyleLineDash = strokeStyle.getLineDash();
@@ -418,4 +418,4 @@ _ol_render_webgl_CircleReplay_.prototype.setFillStrokeStyle = function(fillStyle
     this.styles_.push([fillStyleColor, strokeStyleColor, strokeStyleWidth]);
   }
 };
-export default _ol_render_webgl_CircleReplay_;
+export default WebGLCircleReplay;

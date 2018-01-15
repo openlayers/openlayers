@@ -4,7 +4,7 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import Point from '../../../../src/ol/geom/Point.js';
-import _ol_interaction_Translate_ from '../../../../src/ol/interaction/Translate.js';
+import Translate from '../../../../src/ol/interaction/Translate.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
@@ -109,11 +109,11 @@ describe('ol.interaction.Translate', function() {
     const endevent = events[events.length - 1];
 
     // first event should be translatestart
-    expect(startevent).to.be.an(_ol_interaction_Translate_.Event);
+    expect(startevent).to.be.an(Translate.Event);
     expect(startevent.type).to.eql('translatestart');
 
     // last event should be translateend
-    expect(endevent).to.be.an(_ol_interaction_Translate_.Event);
+    expect(endevent).to.be.an(Translate.Event);
     expect(endevent.type).to.eql('translateend');
 
     // make sure we get change events to events array
@@ -132,10 +132,10 @@ describe('ol.interaction.Translate', function() {
   describe('constructor', function() {
 
     it('creates a new interaction', function() {
-      const translate = new _ol_interaction_Translate_({
+      const translate = new Translate({
         features: features
       });
-      expect(translate).to.be.a(_ol_interaction_Translate_);
+      expect(translate).to.be.a(Translate);
       expect(translate).to.be.a(Interaction);
     });
 
@@ -144,7 +144,7 @@ describe('ol.interaction.Translate', function() {
   describe('setActive', function() {
 
     it('works when the map is not set', function() {
-      const translate = new _ol_interaction_Translate_({
+      const translate = new Translate({
         features: features
       });
       expect(translate.getActive()).to.be(true);
@@ -158,7 +158,7 @@ describe('ol.interaction.Translate', function() {
     let translate;
 
     beforeEach(function() {
-      translate = new _ol_interaction_Translate_({
+      translate = new Translate({
         features: new Collection([features[0]])
       });
       map.addInteraction(translate);
@@ -197,7 +197,7 @@ describe('ol.interaction.Translate', function() {
     let translate;
 
     beforeEach(function() {
-      translate = new _ol_interaction_Translate_();
+      translate = new Translate();
       map.addInteraction(translate);
     });
 
@@ -219,7 +219,7 @@ describe('ol.interaction.Translate', function() {
     let element, translate;
 
     beforeEach(function() {
-      translate = new _ol_interaction_Translate_();
+      translate = new Translate();
       map.addInteraction(translate);
       element = map.getViewport();
     });

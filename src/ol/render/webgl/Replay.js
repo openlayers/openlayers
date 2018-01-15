@@ -16,7 +16,7 @@ import _ol_webgl_ from '../../webgl.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-const _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
+const WebGLReplay = function(tolerance, maxExtent) {
   VectorContext.call(this);
 
   /**
@@ -113,7 +113,7 @@ const _ol_render_webgl_Replay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_Replay_, VectorContext);
+inherits(WebGLReplay, VectorContext);
 
 
 /**
@@ -121,14 +121,14 @@ inherits(_ol_render_webgl_Replay_, VectorContext);
  * @param {ol.webgl.Context} context WebGL context.
  * @return {function()} Delete resources function.
  */
-_ol_render_webgl_Replay_.prototype.getDeleteResourcesFunction = function(context) {};
+WebGLReplay.prototype.getDeleteResourcesFunction = function(context) {};
 
 
 /**
  * @abstract
  * @param {ol.webgl.Context} context Context.
  */
-_ol_render_webgl_Replay_.prototype.finish = function(context) {};
+WebGLReplay.prototype.finish = function(context) {};
 
 
 /**
@@ -143,7 +143,7 @@ _ol_render_webgl_Replay_.prototype.finish = function(context) {};
             ol.render.webgl.polygonreplay.defaultshader.Locations|
             ol.render.webgl.texturereplay.defaultshader.Locations} Locations.
  */
-_ol_render_webgl_Replay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
+WebGLReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
 
 /**
@@ -155,7 +155,7 @@ _ol_render_webgl_Replay_.prototype.setUpProgram = function(gl, context, size, pi
            ol.render.webgl.polygonreplay.defaultshader.Locations|
            ol.render.webgl.texturereplay.defaultshader.Locations} locations Locations.
  */
-_ol_render_webgl_Replay_.prototype.shutDownProgram = function(gl, locations) {};
+WebGLReplay.prototype.shutDownProgram = function(gl, locations) {};
 
 
 /**
@@ -167,7 +167,7 @@ _ol_render_webgl_Replay_.prototype.shutDownProgram = function(gl, locations) {};
  *  to skip.
  * @param {boolean} hitDetection Hit detection mode.
  */
-_ol_render_webgl_Replay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {};
+WebGLReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {};
 
 
 /**
@@ -183,7 +183,7 @@ _ol_render_webgl_Replay_.prototype.drawReplay = function(gl, context, skippedFea
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_render_webgl_Replay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {};
+WebGLReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {};
 
 
 /**
@@ -199,7 +199,7 @@ _ol_render_webgl_Replay_.prototype.drawHitDetectionReplayOneByOne = function(gl,
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_render_webgl_Replay_.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash,
+WebGLReplay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash,
   featureCallback, oneByOne, opt_hitExtent) {
   if (!oneByOne) {
     // draw all hit-detection features in "once" (by texture group)
@@ -223,7 +223,7 @@ _ol_render_webgl_Replay_.prototype.drawHitDetectionReplay = function(gl, context
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_render_webgl_Replay_.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash,
+WebGLReplay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash,
   featureCallback) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   this.drawReplay(gl, context, skippedFeaturesHash, true);
@@ -254,7 +254,7 @@ _ol_render_webgl_Replay_.prototype.drawHitDetectionReplayAll = function(gl, cont
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_render_webgl_Replay_.prototype.replay = function(context,
+WebGLReplay.prototype.replay = function(context,
   center, resolution, rotation, size, pixelRatio,
   opacity, skippedFeaturesHash,
   featureCallback, oneByOne, opt_hitExtent) {
@@ -350,7 +350,7 @@ _ol_render_webgl_Replay_.prototype.replay = function(context,
  * @param {number} start Start index.
  * @param {number} end End index.
  */
-_ol_render_webgl_Replay_.prototype.drawElements = function(
+WebGLReplay.prototype.drawElements = function(
   gl, context, start, end) {
   const elementType = context.hasOESElementIndexUint ?
     _ol_webgl_.UNSIGNED_INT : _ol_webgl_.UNSIGNED_SHORT;
@@ -360,4 +360,4 @@ _ol_render_webgl_Replay_.prototype.drawElements = function(
   const offsetInBytes = start * elementSize;
   gl.drawElements(_ol_webgl_.TRIANGLES, numItems, elementType, offsetInBytes);
 };
-export default _ol_render_webgl_Replay_;
+export default WebGLReplay;

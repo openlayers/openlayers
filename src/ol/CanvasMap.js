@@ -72,7 +72,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * @fires ol.render.Event#precompose
  * @api
  */
-const _ol_CanvasMap_ = function(options) {
+const CanvasMap = function(options) {
   options = _ol_obj_.assign({}, options);
   delete options.renderer;
   if (!options.controls) {
@@ -85,6 +85,6 @@ const _ol_CanvasMap_ = function(options) {
   PluggableMap.call(this, options);
 };
 
-inherits(_ol_CanvasMap_, PluggableMap);
+inherits(CanvasMap, PluggableMap);
 
-export default _ol_CanvasMap_;
+export default CanvasMap;

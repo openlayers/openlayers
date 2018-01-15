@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {buffer, containsExtent, createEmpty} from '../../extent.js';
-import _ol_render_webgl_ReplayGroup_ from '../../render/webgl/ReplayGroup.js';
+import WebGLReplayGroup from '../../render/webgl/ReplayGroup.js';
 import RendererType from '../Type.js';
 import _ol_renderer_vector_ from '../vector.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
@@ -256,7 +256,7 @@ WebGLVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
 
   this.dirty_ = false;
 
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(
+  const replayGroup = new WebGLReplayGroup(
     _ol_renderer_vector_.getTolerance(resolution, pixelRatio),
     extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);

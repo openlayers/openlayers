@@ -1,9 +1,9 @@
-import _ol_render_webgl_Replay_ from '../../../../../src/ol/render/webgl/Replay.js';
+import WebGLReplay from '../../../../../src/ol/render/webgl/Replay.js';
 
 describe('ol.render.Replay', function() {
   let replay;
   beforeEach(function() {
-    replay = new _ol_render_webgl_Replay_(5, [-180, -90, 180, 90]);
+    replay = new WebGLReplay(5, [-180, -90, 180, 90]);
   });
 
 

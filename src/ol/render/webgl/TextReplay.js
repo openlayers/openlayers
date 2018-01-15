@@ -8,7 +8,7 @@ import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_render_webgl_ from '../webgl.js';
-import _ol_render_webgl_TextureReplay_ from '../webgl/TextureReplay.js';
+import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import AtlasManager from '../../style/AtlasManager.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
@@ -19,8 +19,8 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-const _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
-  _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
+const WebGLTextReplay = function(tolerance, maxExtent) {
+  WebGLTextureReplay.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -114,13 +114,13 @@ const _ol_render_webgl_TextReplay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_TextReplay_, _ol_render_webgl_TextureReplay_);
+inherits(WebGLTextReplay, WebGLTextureReplay);
 
 
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextReplay_.prototype.drawText = function(geometry, feature) {
+WebGLTextReplay.prototype.drawText = function(geometry, feature) {
   if (this.text_) {
     let flatCoordinates = null;
     const offset = 0;
@@ -208,7 +208,7 @@ _ol_render_webgl_TextReplay_.prototype.drawText = function(geometry, feature) {
  * @param {Array.<string>} lines Label to draw split to lines.
  * @return {Array.<number>} Size of the label in pixels.
  */
-_ol_render_webgl_TextReplay_.prototype.getTextSize_ = function(lines) {
+WebGLTextReplay.prototype.getTextSize_ = function(lines) {
   const self = this;
   const glyphAtlas = this.currAtlas_;
   const textHeight = lines.length * glyphAtlas.height;
@@ -239,7 +239,7 @@ _ol_render_webgl_TextReplay_.prototype.getTextSize_ = function(lines) {
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-_ol_render_webgl_TextReplay_.prototype.drawText_ = function(flatCoordinates, offset,
+WebGLTextReplay.prototype.drawText_ = function(flatCoordinates, offset,
   end, stride) {
   let i, ii;
   for (i = offset, ii = end; i < ii; i += stride) {
@@ -252,7 +252,7 @@ _ol_render_webgl_TextReplay_.prototype.drawText_ = function(flatCoordinates, off
  * @private
  * @param {string} char Character.
  */
-_ol_render_webgl_TextReplay_.prototype.addCharToAtlas_ = function(char) {
+WebGLTextReplay.prototype.addCharToAtlas_ = function(char) {
   if (char.length === 1) {
     const glyphAtlas = this.currAtlas_;
     const state = this.state_;
@@ -302,7 +302,7 @@ _ol_render_webgl_TextReplay_.prototype.addCharToAtlas_ = function(char) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextReplay_.prototype.finish = function(context) {
+WebGLTextReplay.prototype.finish = function(context) {
   const gl = context.getGL();
 
   this.groupIndices.push(this.indices.length);
@@ -340,14 +340,14 @@ _ol_render_webgl_TextReplay_.prototype.finish = function(context) {
   this.images_ = null;
   this.atlases_ = {};
   this.currAtlas_ = undefined;
-  _ol_render_webgl_TextureReplay_.prototype.finish.call(this, context);
+  WebGLTextureReplay.prototype.finish.call(this, context);
 };
 
 
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextReplay_.prototype.setTextStyle = function(textStyle) {
+WebGLTextReplay.prototype.setTextStyle = function(textStyle) {
   const state = this.state_;
   const textFillStyle = textStyle.getFill();
   const textStrokeStyle = textStyle.getStroke();
@@ -400,7 +400,7 @@ _ol_render_webgl_TextReplay_.prototype.setTextStyle = function(textStyle) {
  * @param {Object} state Font attributes.
  * @return {ol.WebglGlyphAtlas} Glyph atlas.
  */
-_ol_render_webgl_TextReplay_.prototype.getAtlas_ = function(state) {
+WebGLTextReplay.prototype.getAtlas_ = function(state) {
   let params = [];
   let i;
   for (i in state) {
@@ -436,7 +436,7 @@ _ol_render_webgl_TextReplay_.prototype.getAtlas_ = function(state) {
  * @param {Array.<string|number>} params Array of parameters.
  * @return {string} Hash string.
  */
-_ol_render_webgl_TextReplay_.prototype.calculateHash_ = function(params) {
+WebGLTextReplay.prototype.calculateHash_ = function(params) {
   //TODO: Create a more performant, reliable, general hash function.
   let i, ii;
   let hash = '';
@@ -450,7 +450,7 @@ _ol_render_webgl_TextReplay_.prototype.calculateHash_ = function(params) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextReplay_.prototype.getTextures = function(opt_all) {
+WebGLTextReplay.prototype.getTextures = function(opt_all) {
   return this.textures_;
 };
 
@@ -458,7 +458,7 @@ _ol_render_webgl_TextReplay_.prototype.getTextures = function(opt_all) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextReplay_.prototype.getHitDetectionTextures = function() {
+WebGLTextReplay.prototype.getHitDetectionTextures = function() {
   return this.textures_;
 };
-export default _ol_render_webgl_TextReplay_;
+export default WebGLTextReplay;

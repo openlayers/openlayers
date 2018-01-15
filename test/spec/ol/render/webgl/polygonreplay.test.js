@@ -2,7 +2,7 @@ import {getUid} from '../../../../../src/ol/index.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
-import _ol_render_webgl_PolygonReplay_ from '../../../../../src/ol/render/webgl/PolygonReplay.js';
+import WebGLPolygonReplay from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import _ol_render_webgl_polygonreplay_defaultshader_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader.js';
 import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader/Locations.js';
 import LinkedList from '../../../../../src/ol/structs/LinkedList.js';
@@ -23,7 +23,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
   beforeEach(function() {
     const tolerance = 0.1;
     const maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new _ol_render_webgl_PolygonReplay_(tolerance, maxExtent);
+    replay = new WebGLPolygonReplay(tolerance, maxExtent);
   });
 
   describe('#drawPolygon', function() {

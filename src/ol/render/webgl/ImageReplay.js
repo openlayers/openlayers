@@ -2,7 +2,7 @@
  * @module ol/render/webgl/ImageReplay
  */
 import {getUid, inherits} from '../../index.js';
-import _ol_render_webgl_TextureReplay_ from '../webgl/TextureReplay.js';
+import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
 
 /**
@@ -12,8 +12,8 @@ import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-const _ol_render_webgl_ImageReplay_ = function(tolerance, maxExtent) {
-  _ol_render_webgl_TextureReplay_.call(this, tolerance, maxExtent);
+const WebGLImageReplay = function(tolerance, maxExtent) {
+  WebGLTextureReplay.call(this, tolerance, maxExtent);
 
   /**
    * @type {Array.<HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
@@ -41,13 +41,13 @@ const _ol_render_webgl_ImageReplay_ = function(tolerance, maxExtent) {
 
 };
 
-inherits(_ol_render_webgl_ImageReplay_, _ol_render_webgl_TextureReplay_);
+inherits(WebGLImageReplay, WebGLTextureReplay);
 
 
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
+WebGLImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
   this.startIndices.push(this.indices.length);
   this.startIndicesFeature.push(feature);
   const flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -60,7 +60,7 @@ _ol_render_webgl_ImageReplay_.prototype.drawMultiPoint = function(multiPointGeom
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ImageReplay_.prototype.drawPoint = function(pointGeometry, feature) {
+WebGLImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
   this.startIndices.push(this.indices.length);
   this.startIndicesFeature.push(feature);
   const flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -73,7 +73,7 @@ _ol_render_webgl_ImageReplay_.prototype.drawPoint = function(pointGeometry, feat
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ImageReplay_.prototype.finish = function(context) {
+WebGLImageReplay.prototype.finish = function(context) {
   const gl = context.getGL();
 
   this.groupIndices.push(this.indices.length);
@@ -98,14 +98,14 @@ _ol_render_webgl_ImageReplay_.prototype.finish = function(context) {
 
   this.images_ = null;
   this.hitDetectionImages_ = null;
-  _ol_render_webgl_TextureReplay_.prototype.finish.call(this, context);
+  WebGLTextureReplay.prototype.finish.call(this, context);
 };
 
 
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
+WebGLImageReplay.prototype.setImageStyle = function(imageStyle) {
   const anchor = imageStyle.getAnchor();
   const image = imageStyle.getImage(1);
   const imageSize = imageStyle.getImageSize();
@@ -157,7 +157,7 @@ _ol_render_webgl_ImageReplay_.prototype.setImageStyle = function(imageStyle) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ImageReplay_.prototype.getTextures = function(opt_all) {
+WebGLImageReplay.prototype.getTextures = function(opt_all) {
   return opt_all ? this.textures_.concat(this.hitDetectionTextures_) : this.textures_;
 };
 
@@ -165,7 +165,7 @@ _ol_render_webgl_ImageReplay_.prototype.getTextures = function(opt_all) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ImageReplay_.prototype.getHitDetectionTextures = function() {
+WebGLImageReplay.prototype.getHitDetectionTextures = function() {
   return this.hitDetectionTextures_;
 };
-export default _ol_render_webgl_ImageReplay_;
+export default WebGLImageReplay;

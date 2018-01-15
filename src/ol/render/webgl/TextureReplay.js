@@ -6,7 +6,7 @@ import {intersects} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturereplay/defaultshader.js';
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
-import _ol_render_webgl_Replay_ from '../webgl/Replay.js';
+import WebGLReplay from '../webgl/Replay.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Context_ from '../../webgl/Context.js';
 
@@ -18,8 +18,8 @@ import _ol_webgl_Context_ from '../../webgl/Context.js';
  * @param {ol.Extent} maxExtent Max extent.
  * @struct
  */
-const _ol_render_webgl_TextureReplay_ = function(tolerance, maxExtent) {
-  _ol_render_webgl_Replay_.call(this, tolerance, maxExtent);
+const WebGLTextureReplay = function(tolerance, maxExtent) {
+  WebGLReplay.call(this, tolerance, maxExtent);
 
   /**
    * @type {number|undefined}
@@ -112,13 +112,13 @@ const _ol_render_webgl_TextureReplay_ = function(tolerance, maxExtent) {
   this.width = undefined;
 };
 
-inherits(_ol_render_webgl_TextureReplay_, _ol_render_webgl_Replay_);
+inherits(WebGLTextureReplay, WebGLReplay);
 
 
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextureReplay_.prototype.getDeleteResourcesFunction = function(context) {
+WebGLTextureReplay.prototype.getDeleteResourcesFunction = function(context) {
   const verticesBuffer = this.verticesBuffer;
   const indicesBuffer = this.indicesBuffer;
   const textures = this.getTextures(true);
@@ -144,7 +144,7 @@ _ol_render_webgl_TextureReplay_.prototype.getDeleteResourcesFunction = function(
  * @return {number} My end.
  * @protected
  */
-_ol_render_webgl_TextureReplay_.prototype.drawCoordinates = function(flatCoordinates, offset, end, stride) {
+WebGLTextureReplay.prototype.drawCoordinates = function(flatCoordinates, offset, end, stride) {
   const anchorX = /** @type {number} */ (this.anchorX);
   const anchorY = /** @type {number} */ (this.anchorY);
   const height = /** @type {number} */ (this.height);
@@ -247,7 +247,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawCoordinates = function(flatCoordin
  * @param {Object.<string, WebGLTexture>} texturePerImage Texture cache.
  * @param {WebGLRenderingContext} gl Gl.
  */
-_ol_render_webgl_TextureReplay_.prototype.createTextures = function(textures, images, texturePerImage, gl) {
+WebGLTextureReplay.prototype.createTextures = function(textures, images, texturePerImage, gl) {
   let texture, image, uid, i;
   const ii = images.length;
   for (i = 0; i < ii; ++i) {
@@ -269,7 +269,7 @@ _ol_render_webgl_TextureReplay_.prototype.createTextures = function(textures, im
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextureReplay_.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+WebGLTextureReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
   const fragmentShader = _ol_render_webgl_texturereplay_defaultshader_.fragment;
   const vertexShader = _ol_render_webgl_texturereplay_defaultshader_.vertex;
@@ -315,7 +315,7 @@ _ol_render_webgl_TextureReplay_.prototype.setUpProgram = function(gl, context, s
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextureReplay_.prototype.shutDownProgram = function(gl, locations) {
+WebGLTextureReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_offsets);
   gl.disableVertexAttribArray(locations.a_texCoord);
@@ -327,7 +327,7 @@ _ol_render_webgl_TextureReplay_.prototype.shutDownProgram = function(gl, locatio
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextureReplay_.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+WebGLTextureReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   const textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
   const groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
 
@@ -372,7 +372,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawReplay = function(gl, context, ski
  * @param {Array.<WebGLTexture>} textures Textures.
  * @param {Array.<number>} groupIndices Texture group indices.
  */
-_ol_render_webgl_TextureReplay_.prototype.drawReplaySkipping = function(gl, context, skippedFeaturesHash, textures,
+WebGLTextureReplay.prototype.drawReplaySkipping = function(gl, context, skippedFeaturesHash, textures,
   groupIndices) {
   let featureIndex = 0;
 
@@ -419,7 +419,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawReplaySkipping = function(gl, cont
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextureReplay_.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
+WebGLTextureReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
   featureCallback, opt_hitExtent) {
   let i, groupStart, start, end, feature, featureUid;
   let featureIndex = this.startIndices.length - 1;
@@ -461,7 +461,7 @@ _ol_render_webgl_TextureReplay_.prototype.drawHitDetectionReplayOneByOne = funct
 /**
  * @inheritDoc
  */
-_ol_render_webgl_TextureReplay_.prototype.finish = function(context) {
+WebGLTextureReplay.prototype.finish = function(context) {
   this.anchorX = undefined;
   this.anchorY = undefined;
   this.height = undefined;
@@ -485,7 +485,7 @@ _ol_render_webgl_TextureReplay_.prototype.finish = function(context) {
  * @param {boolean=} opt_all Return hit detection textures with regular ones.
  * @returns {Array.<WebGLTexture>} Textures.
  */
-_ol_render_webgl_TextureReplay_.prototype.getTextures = function(opt_all) {};
+WebGLTextureReplay.prototype.getTextures = function(opt_all) {};
 
 
 /**
@@ -493,5 +493,5 @@ _ol_render_webgl_TextureReplay_.prototype.getTextures = function(opt_all) {};
  * @protected
  * @returns {Array.<WebGLTexture>} Textures.
  */
-_ol_render_webgl_TextureReplay_.prototype.getHitDetectionTextures = function() {};
-export default _ol_render_webgl_TextureReplay_;
+WebGLTextureReplay.prototype.getHitDetectionTextures = function() {};
+export default WebGLTextureReplay;

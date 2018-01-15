@@ -6,7 +6,7 @@ import Polygon from '../../../../src/ol/geom/Polygon.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
 import MultiPoint from '../../../../src/ol/geom/MultiPoint.js';
 import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
-import _ol_render_canvas_ReplayGroup_ from '../../../../src/ol/render/canvas/ReplayGroup.js';
+import CanvasReplayGroup from '../../../../src/ol/render/canvas/ReplayGroup.js';
 import _ol_renderer_vector_ from '../../../../src/ol/renderer/vector.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Icon from '../../../../src/ol/style/Icon.js';
@@ -22,7 +22,7 @@ describe('ol.renderer.vector', function() {
     let iconStyleLoadSpy;
 
     beforeEach(function() {
-      replayGroup = new _ol_render_canvas_ReplayGroup_(1);
+      replayGroup = new CanvasReplayGroup(1);
       feature = new Feature();
       iconStyle = new Icon({
         src: 'http://example.com/icon.png'

@@ -6,12 +6,12 @@ import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
 import _ol_obj_ from '../../obj.js';
 import _ol_render_replay_ from '../replay.js';
-import _ol_render_ReplayGroup_ from '../ReplayGroup.js';
-import _ol_render_webgl_CircleReplay_ from '../webgl/CircleReplay.js';
-import _ol_render_webgl_ImageReplay_ from '../webgl/ImageReplay.js';
-import _ol_render_webgl_LineStringReplay_ from '../webgl/LineStringReplay.js';
-import _ol_render_webgl_PolygonReplay_ from '../webgl/PolygonReplay.js';
-import _ol_render_webgl_TextReplay_ from '../webgl/TextReplay.js';
+import ReplayGroup from '../ReplayGroup.js';
+import WebGLCircleReplay from '../webgl/CircleReplay.js';
+import WebGLImageReplay from '../webgl/ImageReplay.js';
+import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
+import WebGLPolygonReplay from '../webgl/PolygonReplay.js';
+import WebGLTextReplay from '../webgl/TextReplay.js';
 
 /**
  * @constructor
@@ -21,8 +21,8 @@ import _ol_render_webgl_TextReplay_ from '../webgl/TextReplay.js';
  * @param {number=} opt_renderBuffer Render buffer.
  * @struct
  */
-const _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderBuffer) {
-  _ol_render_ReplayGroup_.call(this);
+const WebGLReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
+  ReplayGroup.call(this);
 
   /**
    * @type {ol.Extent}
@@ -51,21 +51,21 @@ const _ol_render_webgl_ReplayGroup_ = function(tolerance, maxExtent, opt_renderB
 
 };
 
-inherits(_ol_render_webgl_ReplayGroup_, _ol_render_ReplayGroup_);
+inherits(WebGLReplayGroup, ReplayGroup);
 
 
 /**
  * @param {ol.style.Style} style Style.
  * @param {boolean} group Group with previous replay.
  */
-_ol_render_webgl_ReplayGroup_.prototype.addDeclutter = function(style, group) {};
+WebGLReplayGroup.prototype.addDeclutter = function(style, group) {};
 
 
 /**
  * @param {ol.webgl.Context} context WebGL context.
  * @return {function()} Delete resources function.
  */
-_ol_render_webgl_ReplayGroup_.prototype.getDeleteResourcesFunction = function(context) {
+WebGLReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
   const functions = [];
   let zKey;
   for (zKey in this.replaysByZIndex_) {
@@ -89,7 +89,7 @@ _ol_render_webgl_ReplayGroup_.prototype.getDeleteResourcesFunction = function(co
 /**
  * @param {ol.webgl.Context} context Context.
  */
-_ol_render_webgl_ReplayGroup_.prototype.finish = function(context) {
+WebGLReplayGroup.prototype.finish = function(context) {
   let zKey;
   for (zKey in this.replaysByZIndex_) {
     const replays = this.replaysByZIndex_[zKey];
@@ -103,7 +103,7 @@ _ol_render_webgl_ReplayGroup_.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ReplayGroup_.prototype.getReplay = function(zIndex, replayType) {
+WebGLReplayGroup.prototype.getReplay = function(zIndex, replayType) {
   const zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
   let replays = this.replaysByZIndex_[zIndexKey];
   if (replays === undefined) {
@@ -115,7 +115,7 @@ _ol_render_webgl_ReplayGroup_.prototype.getReplay = function(zIndex, replayType)
     /**
      * @type {Function}
      */
-    const Constructor = _ol_render_webgl_ReplayGroup_.BATCH_CONSTRUCTORS_[replayType];
+    const Constructor = WebGLReplayGroup.BATCH_CONSTRUCTORS_[replayType];
     replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }
@@ -126,7 +126,7 @@ _ol_render_webgl_ReplayGroup_.prototype.getReplay = function(zIndex, replayType)
 /**
  * @inheritDoc
  */
-_ol_render_webgl_ReplayGroup_.prototype.isEmpty = function() {
+WebGLReplayGroup.prototype.isEmpty = function() {
   return _ol_obj_.isEmpty(this.replaysByZIndex_);
 };
 
@@ -142,7 +142,7 @@ _ol_render_webgl_ReplayGroup_.prototype.isEmpty = function() {
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  */
-_ol_render_webgl_ReplayGroup_.prototype.replay = function(context,
+WebGLReplayGroup.prototype.replay = function(context,
   center, resolution, rotation, size, pixelRatio,
   opacity, skippedFeaturesHash) {
   /** @type {Array.<number>} */
@@ -183,7 +183,7 @@ _ol_render_webgl_ReplayGroup_.prototype.replay = function(context,
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_render_webgl_ReplayGroup_.prototype.replayHitDetection_ = function(context,
+WebGLReplayGroup.prototype.replayHitDetection_ = function(context,
   center, resolution, rotation, size, pixelRatio, opacity,
   skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
   /** @type {Array.<number>} */
@@ -226,7 +226,7 @@ _ol_render_webgl_ReplayGroup_.prototype.replayHitDetection_ = function(context,
  * @return {T|undefined} Callback result.
  * @template T
  */
-_ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
+WebGLReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   coordinate, context, center, resolution, rotation, size, pixelRatio,
   opacity, skippedFeaturesHash,
   callback) {
@@ -246,7 +246,7 @@ _ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
   }
 
   return this.replayHitDetection_(context,
-    coordinate, resolution, rotation, _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_,
+    coordinate, resolution, rotation, WebGLReplayGroup.HIT_DETECTION_SIZE_,
     pixelRatio, opacity, skippedFeaturesHash,
     /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -279,7 +279,7 @@ _ol_render_webgl_ReplayGroup_.prototype.forEachFeatureAtCoordinate = function(
  *  to skip.
  * @return {boolean} Is there a feature at the given coordinate?
  */
-_ol_render_webgl_ReplayGroup_.prototype.hasFeatureAtCoordinate = function(
+WebGLReplayGroup.prototype.hasFeatureAtCoordinate = function(
   coordinate, context, center, resolution, rotation, size, pixelRatio,
   opacity, skippedFeaturesHash) {
   const gl = context.getGL();
@@ -287,7 +287,7 @@ _ol_render_webgl_ReplayGroup_.prototype.hasFeatureAtCoordinate = function(
     gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
   const hasFeature = this.replayHitDetection_(context,
-    coordinate, resolution, rotation, _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_,
+    coordinate, resolution, rotation, WebGLReplayGroup.HIT_DETECTION_SIZE_,
     pixelRatio, opacity, skippedFeaturesHash,
     /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -307,7 +307,7 @@ _ol_render_webgl_ReplayGroup_.prototype.hasFeatureAtCoordinate = function(
  * @private
  * @type {Array.<number>}
  */
-_ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_ = [1, 1];
+WebGLReplayGroup.HIT_DETECTION_SIZE_ = [1, 1];
 
 /**
  * @const
@@ -316,11 +316,11 @@ _ol_render_webgl_ReplayGroup_.HIT_DETECTION_SIZE_ = [1, 1];
  *                function(new: ol.render.webgl.Replay, number,
  *                ol.Extent)>}
  */
-_ol_render_webgl_ReplayGroup_.BATCH_CONSTRUCTORS_ = {
-  'Circle': _ol_render_webgl_CircleReplay_,
-  'Image': _ol_render_webgl_ImageReplay_,
-  'LineString': _ol_render_webgl_LineStringReplay_,
-  'Polygon': _ol_render_webgl_PolygonReplay_,
-  'Text': _ol_render_webgl_TextReplay_
+WebGLReplayGroup.BATCH_CONSTRUCTORS_ = {
+  'Circle': WebGLCircleReplay,
+  'Image': WebGLImageReplay,
+  'LineString': WebGLLineStringReplay,
+  'Polygon': WebGLPolygonReplay,
+  'Text': WebGLTextReplay
 };
-export default _ol_render_webgl_ReplayGroup_;
+export default WebGLReplayGroup;

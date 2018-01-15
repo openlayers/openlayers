@@ -1,6 +1,6 @@
 import MultiPoint from '../../../../../src/ol/geom/MultiPoint.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_render_webgl_ImageReplay_ from '../../../../../src/ol/render/webgl/ImageReplay.js';
+import WebGLImageReplay from '../../../../../src/ol/render/webgl/ImageReplay.js';
 import ImageStyle from '../../../../../src/ol/style/Image.js';
 
 describe('ol.render.webgl.ImageReplay', function() {
@@ -40,7 +40,7 @@ describe('ol.render.webgl.ImageReplay', function() {
   beforeEach(function() {
     const tolerance = 0.1;
     const maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new _ol_render_webgl_ImageReplay_(tolerance, maxExtent);
+    replay = new WebGLImageReplay(tolerance, maxExtent);
   });
 
   describe('#setImageStyle', function() {

@@ -1,6 +1,6 @@
 import {createCanvasContext2D} from '../../../../../src/ol/dom.js';
 import Point from '../../../../../src/ol/geom/Point.js';
-import _ol_render_webgl_TextReplay_ from '../../../../../src/ol/render/webgl/TextReplay.js';
+import WebGLTextReplay from '../../../../../src/ol/render/webgl/TextReplay.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 import Text from '../../../../../src/ol/style/Text.js';
@@ -28,7 +28,7 @@ describe('ol.render.webgl.TextReplay', function() {
   beforeEach(function() {
     const tolerance = 0.1;
     const maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new _ol_render_webgl_TextReplay_(tolerance, maxExtent);
+    replay = new WebGLTextReplay(tolerance, maxExtent);
   });
 
   describe('#setTextStyle', function() {

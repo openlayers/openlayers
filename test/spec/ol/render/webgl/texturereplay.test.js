@@ -1,4 +1,4 @@
-import _ol_render_webgl_TextureReplay_ from '../../../../../src/ol/render/webgl/TextureReplay.js';
+import WebGLTextureReplay from '../../../../../src/ol/render/webgl/TextureReplay.js';
 import _ol_render_webgl_texturereplay_defaultshader_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader.js';
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader/Locations.js';
 
@@ -8,7 +8,7 @@ describe('ol.render.webgl.TextureReplay', function() {
   beforeEach(function() {
     const tolerance = 0.1;
     const maxExtent = [-10000, -20000, 10000, 20000];
-    replay = new _ol_render_webgl_TextureReplay_(tolerance, maxExtent);
+    replay = new WebGLTextureReplay(tolerance, maxExtent);
   });
 
   describe('#setUpProgram', function() {

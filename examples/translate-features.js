@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import {defaults as defaultInteractions} from '../src/ol/interaction.js';
 import Select from '../src/ol/interaction/Select.js';
-import _ol_interaction_Translate_ from '../src/ol/interaction/Translate.js';
+import Translate from '../src/ol/interaction/Translate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import OSM from '../src/ol/source/OSM.js';
@@ -23,7 +23,7 @@ const vector = new VectorLayer({
 
 const select = new Select();
 
-const translate = new _ol_interaction_Translate_({
+const translate = new Translate({
   features: select.getFeatures()
 });
 

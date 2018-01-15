@@ -11,7 +11,7 @@ import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_canvas_ from '../../render/canvas.js';
-import _ol_render_canvas_ReplayGroup_ from '../../render/canvas/ReplayGroup.js';
+import CanvasReplayGroup from '../../render/canvas/ReplayGroup.js';
 import RendererType from '../Type.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
 import _ol_renderer_vector_ from '../vector.js';
@@ -354,7 +354,7 @@ CanvasVectorLayerRenderer.prototype.prepareFrame = function(frameState, layerSta
 
   this.dirty_ = false;
 
-  const replayGroup = new _ol_render_canvas_ReplayGroup_(
+  const replayGroup = new CanvasReplayGroup(
     _ol_renderer_vector_.getTolerance(resolution, pixelRatio), extent, resolution,
     pixelRatio, vectorSource.getOverlaps(), this.declutterTree_, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);

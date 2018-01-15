@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_format_WMTSCapabilities_ from '../src/ol/format/WMTSCapabilities.js';
+import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
 import _ol_has_ from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import WMTS from '../src/ol/source/WMTS.js';
@@ -26,7 +26,7 @@ const map = new Map({
 fetch(capabilitiesUrl).then(function(response) {
   return response.text();
 }).then(function(text) {
-  const result = new _ol_format_WMTSCapabilities_().read(text);
+  const result = new WMTSCapabilities().read(text);
   const options = WMTS.optionsFromCapabilities(result, {
     layer: layer,
     matrixSet: 'google3857',
