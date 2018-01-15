@@ -1,7 +1,7 @@
 import LineString from '../../../src/ol/geom/LineString.js';
 import Point from '../../../src/ol/geom/Point.js';
 import Polygon from '../../../src/ol/geom/Polygon.js';
-import _ol_render_ from '../../../src/ol/render.js';
+import {toContext} from '../../../src/ol/render.js';
 import VectorContext from '../../../src/ol/render/VectorContext.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import CircleStyle from '../../../src/ol/style/Circle.js';
@@ -18,7 +18,7 @@ describe('ol.render', function() {
   describe('ol.render.toContext()', function() {
 
     it('creates a vector context from a Canvas 2d context', function() {
-      const vectorContext = _ol_render_.toContext(getContext(), {
+      const vectorContext = toContext(getContext(), {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -28,7 +28,7 @@ describe('ol.render', function() {
 
     it('can be used to render a point geometry', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -52,7 +52,7 @@ describe('ol.render', function() {
 
     it('can be used to render a linestring geometry', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -76,7 +76,7 @@ describe('ol.render', function() {
 
     it('respects lineCap for linestring', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -101,7 +101,7 @@ describe('ol.render', function() {
 
     it('respects lineJoin for linestring', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -126,7 +126,7 @@ describe('ol.render', function() {
 
     it('can be used to render a polygon geometry', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -155,7 +155,7 @@ describe('ol.render', function() {
 
     it('supports lineDash styles', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });
@@ -180,7 +180,7 @@ describe('ol.render', function() {
 
     it('supports lineDashOffset', function(done) {
       const context = getContext();
-      const vectorContext = _ol_render_.toContext(context, {
+      const vectorContext = toContext(context, {
         pixelRatio: 1,
         size: [100, 100]
       });

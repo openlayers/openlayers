@@ -4,7 +4,7 @@ import KML from '../src/ol/format/KML.js';
 import Polygon from '../src/ol/geom/Polygon.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_render_ from '../src/ol/render.js';
+import {toContext} from '../src/ol/render.js';
 import Stamen from '../src/ol/source/Stamen.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Fill from '../src/ol/style/Fill.js';
@@ -32,7 +32,7 @@ const styleFunction = function(feature) {
   if (!style) {
     const canvas =
         /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    const vectorContext = _ol_render_.toContext(
+    const vectorContext = toContext(
       /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
       {size: [size, size], pixelRatio: 1});
     vectorContext.setStyle(new Style({
