@@ -6,7 +6,7 @@ import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import ReplayType from '../ReplayType.js';
 import VectorContext from '../VectorContext.js';
-import _ol_render_webgl_ReplayGroup_ from '../webgl/ReplayGroup.js';
+import WebGLReplayGroup from '../webgl/ReplayGroup.js';
 
 /**
  * @constructor
@@ -198,7 +198,7 @@ _ol_render_webgl_Immediate_.prototype.drawGeometryCollection = function(geometry
  */
 _ol_render_webgl_Immediate_.prototype.drawPoint = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.ImageReplay} */ (
     replayGroup.getReplay(0, ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
@@ -225,7 +225,7 @@ _ol_render_webgl_Immediate_.prototype.drawPoint = function(geometry, data) {
  */
 _ol_render_webgl_Immediate_.prototype.drawMultiPoint = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.ImageReplay} */ (
     replayGroup.getReplay(0, ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
@@ -251,7 +251,7 @@ _ol_render_webgl_Immediate_.prototype.drawMultiPoint = function(geometry, data) 
  */
 _ol_render_webgl_Immediate_.prototype.drawLineString = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.LineStringReplay} */ (
     replayGroup.getReplay(0, ReplayType.LINE_STRING));
   replay.setFillStrokeStyle(null, this.strokeStyle_);
@@ -277,7 +277,7 @@ _ol_render_webgl_Immediate_.prototype.drawLineString = function(geometry, data) 
  */
 _ol_render_webgl_Immediate_.prototype.drawMultiLineString = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.LineStringReplay} */ (
     replayGroup.getReplay(0, ReplayType.LINE_STRING));
   replay.setFillStrokeStyle(null, this.strokeStyle_);
@@ -303,7 +303,7 @@ _ol_render_webgl_Immediate_.prototype.drawMultiLineString = function(geometry, d
  */
 _ol_render_webgl_Immediate_.prototype.drawPolygon = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.PolygonReplay} */ (
     replayGroup.getReplay(0, ReplayType.POLYGON));
   replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
@@ -329,7 +329,7 @@ _ol_render_webgl_Immediate_.prototype.drawPolygon = function(geometry, data) {
  */
 _ol_render_webgl_Immediate_.prototype.drawMultiPolygon = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.PolygonReplay} */ (
     replayGroup.getReplay(0, ReplayType.POLYGON));
   replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
@@ -355,7 +355,7 @@ _ol_render_webgl_Immediate_.prototype.drawMultiPolygon = function(geometry, data
  */
 _ol_render_webgl_Immediate_.prototype.drawCircle = function(geometry, data) {
   const context = this.context_;
-  const replayGroup = new _ol_render_webgl_ReplayGroup_(1, this.extent_);
+  const replayGroup = new WebGLReplayGroup(1, this.extent_);
   const replay = /** @type {ol.render.webgl.CircleReplay} */ (
     replayGroup.getReplay(0, ReplayType.CIRCLE));
   replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
