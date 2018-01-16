@@ -5,7 +5,7 @@ import {WEBGL_EXTENSIONS, getUid, inherits} from '../index.js';
 import Disposable from '../Disposable.js';
 import {includes} from '../array.js';
 import _ol_events_ from '../events.js';
-import _ol_obj_ from '../obj.js';
+import {clear} from '../obj.js';
 import _ol_webgl_ from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
 
@@ -247,9 +247,9 @@ _ol_webgl_Context_.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 _ol_webgl_Context_.prototype.handleWebGLContextLost = function() {
-  _ol_obj_.clear(this.bufferCache_);
-  _ol_obj_.clear(this.shaderCache_);
-  _ol_obj_.clear(this.programCache_);
+  clear(this.bufferCache_);
+  clear(this.shaderCache_);
+  clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;

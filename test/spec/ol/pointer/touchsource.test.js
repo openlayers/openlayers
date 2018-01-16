@@ -2,8 +2,9 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
-import _ol_obj_ from '../../../../src/ol/obj.js';
+import {assign} from '../../../../src/ol/obj.js';
 import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
+
 describe('ol.pointer.TouchSource', function() {
   let handler;
   let target;
@@ -123,7 +124,7 @@ describe('ol.pointer.TouchSource', function() {
     touches = touches !== undefined ? touches : changedTouches;
 
     const event = new Event(type);
-    _ol_obj_.assign(event, {
+    assign(event, {
       touches: touches,
       changedTouches: changedTouches
     });

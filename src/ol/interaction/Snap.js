@@ -12,7 +12,7 @@ import {TRUE, FALSE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import {fromCircle} from '../geom/Polygon.js';
 import PointerInteraction from '../interaction/Pointer.js';
-import _ol_obj_ from '../obj.js';
+import {getValues} from '../obj.js';
 import VectorSource from '../source/Vector.js';
 import VectorEventType from '../source/VectorEventType.js';
 import RBush from '../structs/RBush.js';
@@ -611,7 +611,7 @@ Snap.handleEvent_ = function(evt) {
  * @private
  */
 Snap.handleUpEvent_ = function(evt) {
-  const featuresToUpdate = _ol_obj_.getValues(this.pendingFeatures_);
+  const featuresToUpdate = getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
     featuresToUpdate.forEach(this.updateFeature_.bind(this));
     this.pendingFeatures_ = {};

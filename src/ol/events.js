@@ -1,7 +1,7 @@
 /**
  * @module ol/events
  */
-import _ol_obj_ from './obj.js';
+import {clear} from './obj.js';
 const _ol_events_ = {};
 
 
@@ -93,7 +93,7 @@ _ol_events_.removeListeners_ = function(target, type) {
   if (listeners) {
     for (let i = 0, ii = listeners.length; i < ii; ++i) {
       target.removeEventListener(type, listeners[i].boundListener);
-      _ol_obj_.clear(listeners[i]);
+      clear(listeners[i]);
     }
     listeners.length = 0;
     const listenerMap = target.ol_lm;
@@ -223,7 +223,7 @@ _ol_events_.unlistenByKey = function(key) {
         _ol_events_.removeListeners_(key.target, key.type);
       }
     }
-    _ol_obj_.clear(key);
+    clear(key);
   }
 };
 

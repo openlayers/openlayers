@@ -17,7 +17,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
@@ -584,7 +584,7 @@ GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
     featureNS: this.featureNS
   };
   if (opt_options) {
-    _ol_obj_.assign(options, this.getReadOptions(node, opt_options));
+    assign(options, this.getReadOptions(node, opt_options));
   }
   const features = this.readFeaturesInternal(node, [options]);
   return features || [];

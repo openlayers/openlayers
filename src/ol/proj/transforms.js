@@ -1,7 +1,7 @@
 /**
  * @module ol/proj/transforms
  */
-import _ol_obj_ from '../obj.js';
+import {isEmpty} from '../obj.js';
 
 
 /**
@@ -51,7 +51,7 @@ export function remove(source, destination) {
   const destinationCode = destination.getCode();
   const transform = transforms[sourceCode][destinationCode];
   delete transforms[sourceCode][destinationCode];
-  if (_ol_obj_.isEmpty(transforms[sourceCode])) {
+  if (isEmpty(transforms[sourceCode])) {
     delete transforms[sourceCode];
   }
   return transform;

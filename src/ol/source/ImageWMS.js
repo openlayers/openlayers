@@ -9,7 +9,7 @@ import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getForViewAndSize, getHeight, getWidth} from '../extent.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {get as getProjection, transform} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import ImageSource from '../source/Image.js';
@@ -156,7 +156,7 @@ ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, proje
     'TRANSPARENT': true,
     'QUERY_LAYERS': this.params_['LAYERS']
   };
-  _ol_obj_.assign(baseParams, this.params_, params);
+  assign(baseParams, this.params_, params);
 
   const x = Math.floor((coordinate[0] - extent[0]) / resolution);
   const y = Math.floor((extent[3] - coordinate[1]) / resolution);
@@ -223,7 +223,7 @@ ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, p
     'FORMAT': 'image/png',
     'TRANSPARENT': true
   };
-  _ol_obj_.assign(params, this.params_);
+  assign(params, this.params_);
 
   this.imageSize_[0] = Math.round(getWidth(requestExtent) / imageResolution);
   this.imageSize_[1] = Math.round(getHeight(requestExtent) / imageResolution);
@@ -355,7 +355,7 @@ ImageWMS.prototype.setUrl = function(url) {
  * @api
  */
 ImageWMS.prototype.updateParams = function(params) {
-  _ol_obj_.assign(this.params_, params);
+  assign(this.params_, params);
   this.updateV13_();
   this.image_ = null;
   this.changed();

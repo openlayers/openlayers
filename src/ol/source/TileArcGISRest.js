@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import _ol_size_ from '../size.js';
 import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -166,7 +166,7 @@ TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, 
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  _ol_obj_.assign(baseParams, this.params_);
+  assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
     pixelRatio, projection, baseParams);
@@ -179,7 +179,7 @@ TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, 
  * @api
  */
 TileArcGISRest.prototype.updateParams = function(params) {
-  _ol_obj_.assign(this.params_, params);
+  assign(this.params_, params);
   this.setKey(this.getKeyForParams_());
 };
 export default TileArcGISRest;

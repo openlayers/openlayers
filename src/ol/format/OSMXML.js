@@ -11,7 +11,7 @@ import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_obj_ from '../obj.js';
+import {isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
@@ -55,7 +55,7 @@ OSMXML.readNode_ = function(node, objectStack) {
   const values = _ol_xml_.pushParseAndPop({
     tags: {}
   }, OSMXML.NODE_PARSERS_, node, objectStack);
-  if (!_ol_obj_.isEmpty(values.tags)) {
+  if (!isEmpty(values.tags)) {
     const geometry = new Point(coordinates);
     transformWithOptions(geometry, false, options);
     const feature = new Feature(geometry);

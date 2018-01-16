@@ -5,7 +5,7 @@ import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
 import _ol_size_ from './size.js';
 import {containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth} from './extent.js';
 import Corner from './extent/Corner.js';
-import _ol_obj_ from './obj.js';
+import {assign} from './obj.js';
 import {get as getProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
 import TileGrid from './tilegrid/TileGrid.js';
@@ -80,7 +80,7 @@ _ol_tilegrid_.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_
  */
 _ol_tilegrid_.createXYZ = function(opt_options) {
   const options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
-  _ol_obj_.assign(options, opt_options !== undefined ?
+  assign(options, opt_options !== undefined ?
     opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
   if (options.extent === undefined) {
     options.extent = getProjection('EPSG:3857').getExtent();

@@ -7,7 +7,7 @@ import {assert} from '../asserts.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
 import VectorLayer from '../layer/Vector.js';
 import _ol_layer_VectorTileRenderType_ from '../layer/VectorTileRenderType.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 
 /**
  * @classdesc
@@ -35,7 +35,7 @@ const VectorTileLayer = function(opt_options) {
   }
   options.renderMode = renderMode;
 
-  const baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;

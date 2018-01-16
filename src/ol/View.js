@@ -18,7 +18,7 @@ import GeometryType from './geom/GeometryType.js';
 import {fromExtent as polygonFromExtent} from './geom/Polygon.js';
 import SimpleGeometry from './geom/SimpleGeometry.js';
 import {clamp, modulo} from './math.js';
-import _ol_obj_ from './obj.js';
+import {assign} from './obj.js';
 import {createProjection, METERS_PER_UNIT} from './proj.js';
 import Units from './proj/Units.js';
 
@@ -89,7 +89,7 @@ const DEFAULT_MIN_ZOOM = 0;
 const View = function(opt_options) {
   BaseObject.call(this);
 
-  const options = _ol_obj_.assign({}, opt_options);
+  const options = assign({}, opt_options);
 
   /**
    * @private
@@ -217,7 +217,7 @@ View.prototype.applyOptions_ = function(options) {
  * @return {olx.ViewOptions} New options updated with the current view state.
  */
 View.prototype.getUpdatedOptions_ = function(newOptions) {
-  const options = _ol_obj_.assign({}, this.options_);
+  const options = assign({}, this.options_);
 
   // preserve resolution (or zoom)
   if (options.resolution !== undefined) {
@@ -232,7 +232,7 @@ View.prototype.getUpdatedOptions_ = function(newOptions) {
   // preserve rotation
   options.rotation = this.getRotation();
 
-  return _ol_obj_.assign({}, options, newOptions);
+  return assign({}, options, newOptions);
 };
 
 

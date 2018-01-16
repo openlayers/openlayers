@@ -13,7 +13,7 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
@@ -951,7 +951,7 @@ GML3.prototype.writeCurveSegments_ = function(node, line, objectStack) {
  */
 GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
   const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
-  const item = _ol_obj_.assign({}, context);
+  const item = assign({}, context);
   item.node = node;
   let value;
   if (Array.isArray(geometry)) {
@@ -1009,7 +1009,7 @@ GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
       }
     }
   }
-  const item = _ol_obj_.assign({}, context);
+  const item = assign({}, context);
   item.node = node;
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
     (item), context.serializers,
@@ -1033,7 +1033,7 @@ GML3.prototype.writeFeatureMembers_ = function(node, features, objectStack) {
   serializers[featureNS] = {};
   serializers[featureNS][featureType] = _ol_xml_.makeChildAppender(
     this.writeFeatureElement, this);
-  const item = _ol_obj_.assign({}, context);
+  const item = assign({}, context);
   item.node = node;
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
     (item),
@@ -1206,7 +1206,7 @@ GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
     curve: this.curve_, surface: this.surface_,
     multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
   if (opt_options) {
-    _ol_obj_.assign(context, opt_options);
+    assign(context, opt_options);
   }
   this.writeGeometryElement(geom, geometry, [context]);
   return geom;
@@ -1251,7 +1251,7 @@ GML3.prototype.writeFeaturesNode = function(features, opt_options) {
     featureType: this.featureType
   };
   if (opt_options) {
-    _ol_obj_.assign(context, opt_options);
+    assign(context, opt_options);
   }
   this.writeFeatureMembers_(node, features, [context]);
   return node;

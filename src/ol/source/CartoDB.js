@@ -2,7 +2,7 @@
  * @module ol/source/CartoDB
  */
 import {inherits} from '../index.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import SourceState from '../source/State.js';
 import XYZ from '../source/XYZ.js';
 
@@ -74,7 +74,7 @@ CartoDB.prototype.getConfig = function() {
  * @api
  */
 CartoDB.prototype.updateConfig = function(config) {
-  _ol_obj_.assign(this.config_, config);
+  assign(this.config_, config);
   this.initializeMap_();
 };
 

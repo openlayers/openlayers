@@ -16,7 +16,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
 import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
-import _ol_obj_ from '../obj.js';
+import {assign, isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -216,7 +216,7 @@ function writeEmptyGeometryCollectionGeometry(geometry) {
  */
 function writeGeometryCollectionGeometry(geometry, opt_options) {
   const geometries = geometry.getGeometriesArray().map(function(geometry) {
-    const options = _ol_obj_.assign({}, opt_options);
+    const options = assign({}, opt_options);
     delete options.featureProjection;
     return writeGeometry(geometry, options);
   });
@@ -492,7 +492,7 @@ GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
   }
   const properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!_ol_obj_.isEmpty(properties)) {
+  if (!isEmpty(properties)) {
     object.properties = properties;
   } else {
     object.properties = null;

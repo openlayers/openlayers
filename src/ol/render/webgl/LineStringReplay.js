@@ -8,7 +8,7 @@ import {intersects} from '../../extent.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_geom_flat_topology_ from '../../geom/flat/topology.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import _ol_render_webgl_ from '../webgl.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_linestringreplay_defaultshader_ from '../webgl/linestringreplay/defaultshader.js';
@@ -506,7 +506,7 @@ WebGLLineStringReplay.prototype.drawReplay = function(gl, context, skippedFeatur
     gl.depthFunc(gl.NOTEQUAL);
   }
 
-  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
+  if (!isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     //Draw by style groups to minimize drawElements() calls.

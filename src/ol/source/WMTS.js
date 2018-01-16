@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {expandUrl, createFromTileUrlFunctions, nullTileUrlFunction} from '../tileurlfunction.js';
 import {find, findIndex, includes} from '../array.js';
 import {containsExtent} from '../extent.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {get as getProjection, equivalent, transformExtent} from '../proj.js';
 import TileImage from '../source/TileImage.js';
 import WMTSRequestEncoding from '../source/WMTSRequestEncoding.js';
@@ -92,7 +92,7 @@ const WMTS = function(options) {
   };
 
   if (requestEncoding == WMTSRequestEncoding.KVP) {
-    _ol_obj_.assign(context, {
+    assign(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
       'Version': this.version_,
@@ -135,7 +135,7 @@ const WMTS = function(options) {
             'TileCol': tileCoord[1],
             'TileRow': -tileCoord[2] - 1
           };
-          _ol_obj_.assign(localContext, dimensions);
+          assign(localContext, dimensions);
           let url = template;
           if (requestEncoding == WMTSRequestEncoding.KVP) {
             url = appendParams(url, localContext);
@@ -280,7 +280,7 @@ WMTS.prototype.getKeyForDimensions_ = function() {
  * @api
  */
 WMTS.prototype.updateDimensions = function(dimensions) {
-  _ol_obj_.assign(this.dimensions_, dimensions);
+  assign(this.dimensions_, dimensions);
   this.setKey(this.getKeyForDimensions_());
 };
 

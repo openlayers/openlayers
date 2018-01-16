@@ -7,7 +7,7 @@ import {createOrUpdateFromFlatCoordinates, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
-import _ol_obj_ from '../obj.js';
+import {clear} from '../obj.js';
 
 /**
  * @classdesc
@@ -145,7 +145,7 @@ SimpleGeometry.prototype.getLayout = function() {
  */
 SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    _ol_obj_.clear(this.simplifiedGeometryCache);
+    clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }

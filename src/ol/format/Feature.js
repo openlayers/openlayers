@@ -2,7 +2,7 @@
  * @module ol/format/Feature
  */
 import Geometry from '../geom/Geometry.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {get as getProjection, equivalent as equivalentProjection, transformExtent} from '../proj.js';
 
 /**
@@ -65,7 +65,7 @@ FeatureFormat.prototype.getReadOptions = function(source, opt_options) {
  *     Updated options.
  */
 FeatureFormat.prototype.adaptOptions = function(options) {
-  return _ol_obj_.assign({
+  return assign({
     dataProjection: this.defaultDataProjection,
     featureProjection: this.defaultFeatureProjection
   }, options);

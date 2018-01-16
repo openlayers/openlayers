@@ -7,7 +7,7 @@ import {assert} from '../asserts.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import ImageSource from '../source/Image.js';
 import {appendParams} from '../uri.js';
 
@@ -136,7 +136,7 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  _ol_obj_.assign(params, this.params_);
+  assign(params, this.params_);
 
   extent = extent.slice();
   const centerX = (extent[0] + extent[2]) / 2;
@@ -264,7 +264,7 @@ ImageArcGISRest.prototype.setUrl = function(url) {
  * @api
  */
 ImageArcGISRest.prototype.updateParams = function(params) {
-  _ol_obj_.assign(this.params_, params);
+  assign(this.params_, params);
   this.image_ = null;
   this.changed();
 };

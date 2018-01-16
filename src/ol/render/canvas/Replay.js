@@ -13,7 +13,7 @@ import _ol_geom_flat_length_ from '../../geom/flat/length.js';
 import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_has_ from '../../has.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
@@ -556,7 +556,7 @@ CanvasReplay.prototype.replay_ = function(
       transform, this.pixelCoordinates_);
     _ol_transform_.setFromArray(this.renderedTransform_, transform);
   }
-  const skipFeatures = !_ol_obj_.isEmpty(skippedFeaturesHash);
+  const skipFeatures = !isEmpty(skippedFeaturesHash);
   let i = 0; // instruction index
   const ii = instructions.length; // end of instructions
   let d = 0; // data index
