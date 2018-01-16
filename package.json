@@ -66,7 +66,7 @@
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
     "serve": "^6.0.6",
-    "sinon": "4.1.5",
+    "sinon": "4.1.6",
     "url-polyfill": "^1.0.7",
     "walk": "^2.3.9",
     "webpack": "3.10.0",
