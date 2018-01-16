@@ -1,22 +1,20 @@
 /**
  * @module ol/proj/projections
  */
-const _ol_proj_projections_ = {};
 
 
 /**
- * @private
  * @type {Object.<string, ol.proj.Projection>}
  */
-_ol_proj_projections_.cache_ = {};
+let cache = {};
 
 
 /**
  * Clear the projections cache.
  */
-_ol_proj_projections_.clear = function() {
-  _ol_proj_projections_.cache_ = {};
-};
+export function clear() {
+  cache = {};
+}
 
 
 /**
@@ -24,10 +22,9 @@ _ol_proj_projections_.clear = function() {
  * @param {string} code The code for the projection.
  * @return {ol.proj.Projection} The projection (if cached).
  */
-_ol_proj_projections_.get = function(code) {
-  const projections = _ol_proj_projections_.cache_;
-  return projections[code] || null;
-};
+export function get(code) {
+  return cache[code] || null;
+}
 
 
 /**
@@ -35,8 +32,6 @@ _ol_proj_projections_.get = function(code) {
  * @param {string} code The projection code.
  * @param {ol.proj.Projection} projection The projection to cache.
  */
-_ol_proj_projections_.add = function(code, projection) {
-  const projections = _ol_proj_projections_.cache_;
-  projections[code] = projection;
-};
-export default _ol_proj_projections_;
+export function add(code, projection) {
+  cache[code] = projection;
+}
