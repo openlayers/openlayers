@@ -6,4 +6,3 @@ In order to get your proposed changes merged into the master branch, we ask you 
 - [ ] It contains one or more small, incremental, logically separate commits, with no merge commits.
 - [ ] I have used clear commit messages.
 - [ ] Existing tests pass for me locally & I have added or updated tests for new or changed functionality.
-- [ ] The work herein is covered by a valid [Contributor License Agreement (CLA)](https://github.com/openlayers/cla).

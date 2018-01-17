@@ -31,12 +31,7 @@ This page describes what you need to know to contribute code to OpenLayers as a 
 
 ## Contributor License Agreement
 
-Before accepting a contribution, we ask that you provide us a Contributor
-License Agreement.  If you are making your contribution as part of work for
-your employer, please follow the guidelines on submitting a [Corporate
-Contributor License Agreement](https://raw.github.com/openlayers/cla/master/ccla.txt). If you are
-making your contribution as an individual, you can submit a digital [Individual
-Contributor License Agreement](https://docs.google.com/spreadsheet/viewform?formkey=dGNNVUJEMXF2dERTU0FXM3JjNVBQblE6MQ).
+Your contribution will be under our [license](https://raw.githubusercontent.com/openlayers/openlayers/master/LICENSE.md) as per [GitHub's terms of service](https://help.github.com/articles/github-terms-of-service/#6-contributions-under-repository-license).
 
 
 ## Pull request guidelines
