@@ -35,8 +35,7 @@ _ol_geom_flat_area_.linearRing = function(flatCoordinates, offset, end, stride) 
  */
 _ol_geom_flat_area_.linearRings = function(flatCoordinates, offset, ends, stride) {
   let area = 0;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     area += _ol_geom_flat_area_.linearRing(flatCoordinates, offset, end, stride);
     offset = end;
@@ -54,11 +53,9 @@ _ol_geom_flat_area_.linearRings = function(flatCoordinates, offset, ends, stride
  */
 _ol_geom_flat_area_.linearRingss = function(flatCoordinates, offset, endss, stride) {
   let area = 0;
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
-    area +=
-        _ol_geom_flat_area_.linearRings(flatCoordinates, offset, ends, stride);
+    area += _ol_geom_flat_area_.linearRings(flatCoordinates, offset, ends, stride);
     offset = ends[ends.length - 1];
   }
   return area;

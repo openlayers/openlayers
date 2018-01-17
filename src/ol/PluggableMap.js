@@ -916,9 +916,8 @@ PluggableMap.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
   const interactionsArray = this.getInteractions().getArray();
-  let i;
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
-    for (i = interactionsArray.length - 1; i >= 0; i--) {
+    for (let i = interactionsArray.length - 1; i >= 0; i--) {
       const interaction = interactionsArray[i];
       if (!interaction.getActive()) {
         continue;
@@ -970,8 +969,7 @@ PluggableMap.prototype.handlePostRender = function() {
   }
 
   const postRenderFunctions = this.postRenderFunctions_;
-  let i, ii;
-  for (i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
+  for (let i = 0, ii = postRenderFunctions.length; i < ii; ++i) {
     postRenderFunctions[i](this, frameState);
   }
   postRenderFunctions.length = 0;
@@ -1191,7 +1189,7 @@ PluggableMap.prototype.removeOverlay = function(overlay) {
  * @private
  */
 PluggableMap.prototype.renderFrame_ = function(time) {
-  let i, ii, viewState;
+  let viewState;
 
   const size = this.getSize();
   const view = this.getView();
@@ -1203,7 +1201,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
     const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
     const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     const layerStates = {};
-    for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
+    for (let i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();

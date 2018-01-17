@@ -45,12 +45,10 @@ Point.prototype.clone = function() {
  */
 Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   const flatCoordinates = this.flatCoordinates;
-  const squaredDistance = squaredDx(
-    x, y, flatCoordinates[0], flatCoordinates[1]);
+  const squaredDistance = squaredDx(x, y, flatCoordinates[0], flatCoordinates[1]);
   if (squaredDistance < minSquaredDistance) {
     const stride = this.stride;
-    let i;
-    for (i = 0; i < stride; ++i) {
+    for (let i = 0; i < stride; ++i) {
       closestPoint[i] = flatCoordinates[i];
     }
     closestPoint.length = stride;

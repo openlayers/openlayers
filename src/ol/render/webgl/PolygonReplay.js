@@ -652,16 +652,14 @@ WebGLPolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
  * @param {boolean=} opt_reflex Only include reflex points.
  * @return {Array.<ol.WebglPolygonVertex>} Points in the triangle.
  */
-WebGLPolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
-  p2, rtree, opt_reflex) {
-  let i, ii, j, p;
+WebGLPolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, opt_reflex) {
   const result = [];
   const segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x),
     Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y,
       p1.y, p2.y)]);
-  for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
-    for (j in segmentsInExtent[i]) {
-      p = segmentsInExtent[i][j];
+  for (let i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
+    for (const j in segmentsInExtent[i]) {
+      const p = segmentsInExtent[i][j];
       if (typeof p === 'object' && (!opt_reflex || p.reflex)) {
         if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) &&
             (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 &&
@@ -689,8 +687,7 @@ WebGLPolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_to
   const segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x),
     Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
   const result = [];
-  let i, ii;
-  for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
+  for (let i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
     const currSeg = segmentsInExtent[i];
     if (segment !== currSeg && (opt_touch || currSeg.p0 !== p1 || currSeg.p1 !== p0) &&
         this.calculateIntersection_(p0, p1, currSeg.p0, currSeg.p1, opt_touch)) {
@@ -713,8 +710,7 @@ WebGLPolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_to
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
  * @return {Array.<number>|undefined} Intersection coordinates.
  */
-WebGLPolygonReplay.prototype.calculateIntersection_ = function(p0,
-  p1, p2, p3, opt_touch) {
+WebGLPolygonReplay.prototype.calculateIntersection_ = function(p0, p1, p2, p3, opt_touch) {
   const denom = (p3.y - p2.y) * (p1.x - p0.x) - (p3.x - p2.x) * (p1.y - p0.y);
   if (denom !== 0) {
     const ua = ((p3.x - p2.x) * (p0.y - p2.y) - (p3.y - p2.y) * (p0.x - p2.x)) / denom;

@@ -169,8 +169,7 @@ BaseObject.prototype.set = function(key, value, opt_silent) {
  * @api
  */
 BaseObject.prototype.setProperties = function(values, opt_silent) {
-  let key;
-  for (key in values) {
+  for (const key in values) {
     this.set(key, values[key], opt_silent);
   }
 };

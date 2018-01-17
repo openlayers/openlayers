@@ -16,8 +16,7 @@ const _ol_geom_flat_transform_ = {};
 _ol_geom_flat_transform_.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
-  let j;
-  for (j = offset; j < end; j += stride) {
+  for (let j = offset; j < end; j += stride) {
     const x = flatCoordinates[j];
     const y = flatCoordinates[j + 1];
     dest[i++] = transform[0] * x + transform[2] * y + transform[4];
@@ -109,11 +108,10 @@ _ol_geom_flat_transform_.scale = function(flatCoordinates, offset, end, stride, 
 _ol_geom_flat_transform_.translate = function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
   const dest = opt_dest ? opt_dest : [];
   let i = 0;
-  let j, k;
-  for (j = offset; j < end; j += stride) {
+  for (let j = offset; j < end; j += stride) {
     dest[i++] = flatCoordinates[j] + deltaX;
     dest[i++] = flatCoordinates[j + 1] + deltaY;
-    for (k = j + 2; k < j + stride; ++k) {
+    for (let k = j + 2; k < j + stride; ++k) {
       dest[i++] = flatCoordinates[k];
     }
   }
