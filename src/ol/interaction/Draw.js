@@ -2,8 +2,10 @@
  * @module ol/interaction/Draw
  */
 import {inherits} from '../index.js';
+import EventType from '../events/EventType.js';
 import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
+import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import BaseObject from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
 import _ol_events_ from '../events.js';
@@ -17,6 +19,7 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
+import MouseSource from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import DrawEventType from '../interaction/DrawEventType.js';
@@ -55,6 +58,18 @@ const Draw = function(options) {
    * @private
    */
   this.downPx_ = null;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.downTimeout_;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.lastDragTime_;
 
   /**
    * @type {boolean}
@@ -192,6 +207,12 @@ const Draw = function(options) {
   this.geometryFunction_ = geometryFunction;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.dragVertexDelay_ = options.dragVertexDelay !== undefined ? options.dragVertexDelay : 500;
+
+  /**
    * Finish coordinate for the feature (first point for polygons, last point for
    * linestrings).
    * @type {ol.Coordinate}
@@ -255,7 +276,8 @@ const Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-      Draw.getDefaultStyleFunction()
+      Draw.getDefaultStyleFunction(),
+    updateWhileInteracting: true
   });
 
   /**
@@ -322,8 +344,27 @@ Draw.prototype.setMap = function(map) {
  * @api
  */
 Draw.handleEvent = function(event) {
+  if (event.originalEvent.type === EventType.CONTEXTMENU) {
+    // Avoid context menu for long taps when drawing on mobile
+    event.preventDefault();
+  }
   this.freehand_ = this.mode_ !== Draw.Mode_.POINT && this.freehandCondition_(event);
+  let move = event.type === MapBrowserEventType.POINTERMOVE;
   let pass = true;
+  if (this.lastDragTime_ && event.type === MapBrowserEventType.POINTERDRAG) {
+    const now = Date.now();
+    if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
+      this.downPx_ = event.pixel;
+      this.shouldHandle_ = !this.freehand_;
+      move = true;
+    } else {
+      this.lastDragTime_ = undefined;
+    }
+    if (this.shouldHandle_ && this.downTimeout_) {
+      clearTimeout(this.downTimeout_);
+      this.downTimeout_ = undefined;
+    }
+  }
   if (this.freehand_ &&
       event.type === MapBrowserEventType.POINTERDRAG &&
       this.sketchFeature_ !== null) {
@@ -332,11 +373,18 @@ Draw.handleEvent = function(event) {
   } else if (this.freehand_ &&
       event.type === MapBrowserEventType.POINTERDOWN) {
     pass = false;
-  } else if (event.type === MapBrowserEventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(event);
+  } else if (move) {
+    pass = event.type === MapBrowserEventType.POINTERMOVE;
+    if (pass && this.freehand_) {
+      pass = this.handlePointerMove_(event);
+    } else if (event.pointerEvent.pointerType == MouseSource.POINTER_TYPE ||
+        (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_)) {
+      this.handlePointerMove_(event);
+    }
   } else if (event.type === MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
+
   return PointerInteraction.handleEvent.call(this, event) && pass;
 };
 
@@ -357,6 +405,11 @@ Draw.handleDownEvent_ = function(event) {
     }
     return true;
   } else if (this.condition_(event)) {
+    this.lastDragTime_ = Date.now();
+    this.downTimeout_ = setTimeout(function() {
+      this.handlePointerMove_(new MapBrowserPointerEvent(
+        MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, event.frameState));
+    }.bind(this), this.dragVertexDelay_);
     this.downPx_ = event.pixel;
     return true;
   } else {
@@ -373,6 +426,11 @@ Draw.handleDownEvent_ = function(event) {
  */
 Draw.handleUpEvent_ = function(event) {
   let pass = true;
+
+  if (this.downTimeout_) {
+    clearTimeout(this.downTimeout_);
+    this.downTimeout_ = undefined;
+  }
 
   this.handlePointerMove_(event);
 
@@ -423,6 +481,9 @@ Draw.prototype.handlePointerMove_ = function(event) {
     this.shouldHandle_ = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
+    if (!this.shouldHandle_) {
+      return true;
+    }
   }
 
   if (this.finishCoordinate_) {
@@ -505,9 +566,6 @@ Draw.prototype.startDrawing_ = function(event) {
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
-    if (this.mode_ === Draw.Mode_.CIRCLE) {
-      this.sketchLineCoords_ = this.sketchCoords_;
-    }
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new Feature(

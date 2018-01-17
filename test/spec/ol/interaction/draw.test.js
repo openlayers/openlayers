@@ -103,6 +103,15 @@ describe('ol.interaction.Draw', function() {
       expect(draw.freehandCondition_(event)).to.be(true);
     });
 
+    it('accepts a dragVertexDelay option', function() {
+      const draw = new Draw({
+        source: source,
+        type: 'LineString',
+        dragVertexDelay: 42
+      });
+      expect(draw.dragVertexDelay_).to.be(42);
+    });
+
   });
 
   describe('specifying a geometryName', function() {
@@ -339,7 +348,6 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointermove', 20, 30);
 
       // freehand
-      simulateEvent('pointerdown', 20, 30, true);
       simulateEvent('pointermove', 20, 30, true);
       simulateEvent('pointerdrag', 20, 30, true);
       simulateEvent('pointermove', 30, 40, true);
@@ -394,6 +402,38 @@ describe('ol.interaction.Draw', function() {
       const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(LineString);
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
+    });
+
+    it('allows dragging of the vertex after dragVertexDelay', function(done) {
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point, drag vertex
+      simulateEvent('pointermove', 15, 20);
+      simulateEvent('pointerdown', 15, 20);
+      setTimeout(function() {
+        simulateEvent('pointermove', 20, 10);
+        simulateEvent('pointerdrag', 20, 10);
+        simulateEvent('pointerup', 20, 10);
+        // third point
+        simulateEvent('pointermove', 30, 20);
+        simulateEvent('pointerdown', 30, 20);
+        simulateEvent('pointerup', 30, 20);
+
+        // finish on third point
+        simulateEvent('pointerdown', 30, 20);
+        simulateEvent('pointerup', 30, 20);
+
+        const features = source.getFeatures();
+        expect(features).to.have.length(1);
+        const geometry = features[0].getGeometry();
+        expect(geometry).to.be.a(LineString);
+        expect(geometry.getCoordinates()).to.eql([[10, -20], [20, -10], [30, -20]]);
+
+        done();
+      }, 600);
     });
 
     it('triggers draw events', function() {
