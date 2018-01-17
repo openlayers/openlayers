@@ -32,7 +32,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {inherits} from '../index.js';
-import _ol_pointer_EventSource_ from '../pointer/EventSource.js';
+import EventSource from '../pointer/EventSource.js';
 
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
@@ -50,10 +50,10 @@ const _ol_pointer_NativeSource_ = function(dispatcher) {
     'gotpointercapture': this.gotPointerCapture,
     'lostpointercapture': this.lostPointerCapture
   };
-  _ol_pointer_EventSource_.call(this, dispatcher, mapping);
+  EventSource.call(this, dispatcher, mapping);
 };
 
-inherits(_ol_pointer_NativeSource_, _ol_pointer_EventSource_);
+inherits(_ol_pointer_NativeSource_, EventSource);
 
 
 /**

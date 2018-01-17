@@ -33,7 +33,7 @@
 
 import {inherits} from '../index.js';
 import {remove} from '../array.js';
-import _ol_pointer_EventSource_ from '../pointer/EventSource.js';
+import EventSource from '../pointer/EventSource.js';
 import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
 
 /**
@@ -49,7 +49,7 @@ const _ol_pointer_TouchSource_ = function(dispatcher, mouseSource) {
     'touchend': this.touchend,
     'touchcancel': this.touchcancel
   };
-  _ol_pointer_EventSource_.call(this, dispatcher, mapping);
+  EventSource.call(this, dispatcher, mapping);
 
   /**
    * @const
@@ -82,7 +82,7 @@ const _ol_pointer_TouchSource_ = function(dispatcher, mouseSource) {
   this.resetId_ = undefined;
 };
 
-inherits(_ol_pointer_TouchSource_, _ol_pointer_EventSource_);
+inherits(_ol_pointer_TouchSource_, EventSource);
 
 
 /**
