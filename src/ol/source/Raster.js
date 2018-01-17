@@ -12,7 +12,7 @@ import {Processor} from 'pixelworks';
 import {equals, getCenter, getHeight, getWidth} from '../extent.js';
 import ImageLayer from '../layer/Image.js';
 import TileLayer from '../layer/Tile.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import CanvasImageLayerRenderer from '../renderer/canvas/ImageLayer.js';
 import CanvasTileLayerRenderer from '../renderer/canvas/TileLayer.js';
 import ImageSource from '../source/Image.js';
@@ -189,11 +189,9 @@ RasterSource.prototype.setOperation = function(operation, opt_lib) {
  */
 RasterSource.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
-  const frameState = /** @type {olx.FrameState} */ (
-    _ol_obj_.assign({}, this.frameState_));
+  const frameState = /** @type {olx.FrameState} */ (assign({}, this.frameState_));
 
-  frameState.viewState = /** @type {olx.ViewState} */ (
-    _ol_obj_.assign({}, frameState.viewState));
+  frameState.viewState = /** @type {olx.ViewState} */ (assign({}, frameState.viewState));
 
   const center = getCenter(extent);
 

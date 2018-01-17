@@ -6,7 +6,7 @@ import PluggableMap from './PluggableMap.js';
 import PluginType from './PluginType.js';
 import {defaults as defaultControls} from './control.js';
 import {defaults as defaultInteractions} from './interaction.js';
-import _ol_obj_ from './obj.js';
+import {assign} from './obj.js';
 import {register, registerMultiple} from './plugins.js';
 import CanvasImageLayerRenderer from './renderer/canvas/ImageLayer.js';
 import CanvasMapRenderer from './renderer/canvas/Map.js';
@@ -85,7 +85,7 @@ registerMultiple(PluginType.LAYER_RENDERER, [
  * @api
  */
 const Map = function(options) {
-  options = _ol_obj_.assign({}, options);
+  options = assign({}, options);
   if (!options.controls) {
     options.controls = defaultControls();
   }

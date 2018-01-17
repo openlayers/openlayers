@@ -11,7 +11,7 @@ import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
 import BaseLayer from '../layer/Base.js';
-import _ol_obj_ from '../obj.js';
+import {assign, clear} from '../obj.js';
 import SourceState from '../source/State.js';
 
 
@@ -38,8 +38,7 @@ const Property = {
 const LayerGroup = function(opt_options) {
 
   const options = opt_options || {};
-  const baseOptions = /** @type {olx.layer.GroupOptions} */
-      (_ol_obj_.assign({}, options));
+  const baseOptions = /** @type {olx.layer.GroupOptions} */ (assign({}, options));
   delete baseOptions.layers;
 
   let layers = options.layers;
@@ -107,7 +106,7 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
   for (const id in this.listenerKeys_) {
     this.listenerKeys_[id].forEach(_ol_events_.unlistenByKey);
   }
-  _ol_obj_.clear(this.listenerKeys_);
+  clear(this.listenerKeys_);
 
   const layersArray = layers.getArray();
   let i, ii, layer;

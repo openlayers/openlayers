@@ -15,7 +15,7 @@ import {containsExtent, equals} from '../extent.js';
 import {xhr} from '../featureloader.js';
 import {TRUE} from '../functions.js';
 import _ol_loadingstrategy_ from '../loadingstrategy.js';
-import _ol_obj_ from '../obj.js';
+import {isEmpty, getValues} from '../obj.js';
 import Source from '../source/Source.js';
 import SourceState from '../source/State.js';
 import VectorEventType from '../source/VectorEventType.js';
@@ -506,8 +506,8 @@ VectorSource.prototype.getFeatures = function() {
     features = this.featuresCollection_.getArray();
   } else if (this.featuresRtree_) {
     features = this.featuresRtree_.getAll();
-    if (!_ol_obj_.isEmpty(this.nullGeometryFeatures_)) {
-      extend(features, _ol_obj_.getValues(this.nullGeometryFeatures_));
+    if (!isEmpty(this.nullGeometryFeatures_)) {
+      extend(features, getValues(this.nullGeometryFeatures_));
     }
   }
   return /** @type {Array.<ol.Feature>} */ (features);
@@ -722,8 +722,7 @@ VectorSource.prototype.handleFeatureChange_ = function(event) {
  * @return {boolean} Is empty.
  */
 VectorSource.prototype.isEmpty = function() {
-  return this.featuresRtree_.isEmpty() &&
-      _ol_obj_.isEmpty(this.nullGeometryFeatures_);
+  return this.featuresRtree_.isEmpty() && isEmpty(this.nullGeometryFeatures_);
 };
 
 

@@ -1,5 +1,5 @@
 import _ol_events_ from '../../../../../src/ol/events.js';
-import _ol_obj_ from '../../../../../src/ol/obj.js';
+import {clear} from '../../../../../src/ol/obj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 
 
@@ -13,7 +13,7 @@ describe('ol.render.canvas', function() {
   describe('ol.render.canvas.checkFont()', function() {
 
     beforeEach(function() {
-      _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
+      clear(_ol_render_canvas_.checkedFonts_);
       _ol_render_canvas_.getMeasureContext();
       _ol_render_canvas_.measureTextHeight('12px sans-serif');
     });

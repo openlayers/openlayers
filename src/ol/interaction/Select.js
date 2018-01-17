@@ -11,7 +11,7 @@ import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import Interaction from '../interaction/Interaction.js';
 import VectorLayer from '../layer/Vector.js';
-import _ol_obj_ from '../obj.js';
+import {clear} from '../obj.js';
 import VectorSource from '../source/Vector.js';
 import Style from '../style/Style.js';
 
@@ -215,7 +215,7 @@ Select.handleEvent = function(mapBrowserEvent) {
     // Replace the currently selected feature(s) with the feature(s) at the
     // pixel, or clear the selected feature(s) if there is no feature at
     // the pixel.
-    _ol_obj_.clear(this.featureLayerAssociation_);
+    clear(this.featureLayerAssociation_);
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
       (
       /**

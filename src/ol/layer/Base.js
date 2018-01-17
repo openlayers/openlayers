@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import LayerProperty from '../layer/Property.js';
 import {clamp} from '../math.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 
 /**
  * @classdesc
@@ -28,7 +28,7 @@ const BaseLayer = function(options) {
   /**
    * @type {Object.<string, *>}
    */
-  const properties = _ol_obj_.assign({}, options);
+  const properties = assign({}, options);
   properties[LayerProperty.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;
   properties[LayerProperty.VISIBLE] =

@@ -1,7 +1,6 @@
 /**
  * @module ol/uri
  */
-const _ol_uri_ = {};
 
 
 /**
@@ -12,7 +11,7 @@ const _ol_uri_ = {};
  *     and the values are arbitrary types or arrays.
  * @return {string} The new URI.
  */
-_ol_uri_.appendParams = function(uri, params) {
+export function appendParams(uri, params) {
   const keyParams = [];
   // Skip any null or undefined parameter values
   Object.keys(params).forEach(function(k) {
@@ -26,5 +25,4 @@ _ol_uri_.appendParams = function(uri, params) {
   // append ? or & depending on whether uri has existing parameters
   uri = uri.indexOf('?') === -1 ? uri + '?' : uri + '&';
   return uri + qs;
-};
-export default _ol_uri_;
+}

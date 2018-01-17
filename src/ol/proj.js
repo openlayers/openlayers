@@ -8,7 +8,7 @@ import EPSG3857 from './proj/EPSG3857.js';
 import EPSG4326 from './proj/EPSG4326.js';
 import Projection from './proj/Projection.js';
 import Units from './proj/Units.js';
-import _ol_proj_projections_ from './proj/projections.js';
+import * as projections from './proj/projections.js';
 import {add as addTransformFunc, clear as clearTransformFuncs, get as getTransformFunc} from './proj/transforms.js';
 
 
@@ -67,7 +67,7 @@ export function identityTransform(input, opt_output, opt_dimension) {
  * @api
  */
 export function addProjection(projection) {
-  _ol_proj_projections_.add(projection.getCode(), projection);
+  projections.add(projection.getCode(), projection);
   addTransformFunc(projection, projection, cloneTransform);
 }
 
@@ -95,7 +95,7 @@ export function get(projectionLike) {
     projection = projectionLike;
   } else if (typeof projectionLike === 'string') {
     const code = projectionLike;
-    projection = _ol_proj_projections_.get(code);
+    projection = projections.get(code);
   }
   return projection;
 }
@@ -204,7 +204,7 @@ export function addEquivalentTransforms(projections1, projections2, forwardTrans
  * Clear all cached projections and transforms.
  */
 export function clearAllProjections() {
-  _ol_proj_projections_.clear();
+  projections.clear();
   clearTransformFuncs();
 }
 
@@ -377,8 +377,7 @@ export function getTransformFromProjections(sourceProjection, destinationProject
 export function getTransform(source, destination) {
   const sourceProjection = get(source);
   const destinationProjection = get(destination);
-  return getTransformFromProjections(
-    sourceProjection, destinationProjection);
+  return getTransformFromProjections(sourceProjection, destinationProjection);
 }
 
 
@@ -427,8 +426,7 @@ export function transformExtent(extent, source, destination) {
  * @return {ol.Coordinate} Point.
  */
 export function transformWithProjections(point, sourceProjection, destinationProjection) {
-  const transformFunc = getTransformFromProjections(
-    sourceProjection, destinationProjection);
+  const transformFunc = getTransformFromProjections(sourceProjection, destinationProjection);
   return transformFunc(point);
 }
 

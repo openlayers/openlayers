@@ -4,7 +4,7 @@
 import {getUid} from '../index.js';
 import rbush from 'rbush';
 import {createOrUpdate, equals} from '../extent.js';
-import _ol_obj_ from '../obj.js';
+import {isEmpty} from '../obj.js';
 
 /**
  * Wrapper around the RBush by Vladimir Agafonkin.
@@ -193,7 +193,7 @@ RBush.prototype.forEach_ = function(values, callback, opt_this) {
  * @return {boolean} Is empty.
  */
 RBush.prototype.isEmpty = function() {
-  return _ol_obj_.isEmpty(this.items_);
+  return isEmpty(this.items_);
 };
 
 

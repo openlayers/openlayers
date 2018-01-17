@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_circlereplay_defaultshader_ from '../webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../webgl/circlereplay/defaultshader/Locations.js';
@@ -246,7 +246,7 @@ WebGLCircleReplay.prototype.shutDownProgram = function(gl, locations) {
  * @inheritDoc
  */
 WebGLCircleReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
+  if (!isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     //Draw by style groups to minimize drawElements() calls.

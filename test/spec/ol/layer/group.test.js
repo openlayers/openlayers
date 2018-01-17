@@ -4,7 +4,7 @@ import Collection from '../../../../src/ol/Collection.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import LayerGroup from '../../../../src/ol/layer/Group.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
-import _ol_obj_ from '../../../../src/ol/obj.js';
+import {assign} from '../../../../src/ol/obj.js';
 import MapRenderer from '../../../../src/ol/renderer/Map.js';
 import Source from '../../../../src/ol/source/Source.js';
 
@@ -373,9 +373,9 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
 
       // layer state should match except for layer reference
-      const layerState = _ol_obj_.assign({}, layerStatesArray[0]);
+      const layerState = assign({}, layerStatesArray[0]);
       delete layerState.layer;
-      const groupState = _ol_obj_.assign({}, layerGroup.getLayerState());
+      const groupState = assign({}, layerGroup.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
@@ -421,14 +421,14 @@ describe('ol.layer.Group', function() {
       // compare layer state to group state
 
       // layer state should match except for layer reference
-      let layerState = _ol_obj_.assign({}, layerStatesArray[0]);
+      let layerState = assign({}, layerStatesArray[0]);
       delete layerState.layer;
-      const groupState = _ol_obj_.assign({}, layerGroup.getLayerState());
+      const groupState = assign({}, layerGroup.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
       // layer state should be transformed (and we ignore layer reference)
-      layerState = _ol_obj_.assign({}, layerStatesArray[1]);
+      layerState = assign({}, layerStatesArray[1]);
       delete layerState.layer;
       expect(layerState).to.eql({
         opacity: 0.25,

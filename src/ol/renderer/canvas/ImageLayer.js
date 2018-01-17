@@ -9,7 +9,7 @@ import ViewHint from '../../ViewHint.js';
 import {equals} from '../../array.js';
 import {getHeight, getIntersection, getWidth, isEmpty} from '../../extent.js';
 import _ol_layer_VectorRenderType_ from '../../layer/VectorRenderType.js';
-import _ol_obj_ from '../../obj.js';
+import {assign} from '../../obj.js';
 import {getLayerRendererPlugins} from '../../plugins.js';
 import RendererType from '../Type.js';
 import IntermediateCanvasRenderer from '../canvas/IntermediateCanvas.js';
@@ -137,12 +137,12 @@ CanvasImageLayerRenderer.prototype.prepareFrame = function(frameState, layerStat
     const vectorRenderer = this.vectorRenderer_;
     if (vectorRenderer) {
       const context = vectorRenderer.context;
-      const imageFrameState = /** @type {olx.FrameState} */ (_ol_obj_.assign({}, frameState, {
+      const imageFrameState = /** @type {olx.FrameState} */ (assign({}, frameState, {
         size: [
           getWidth(renderedExtent) / viewResolution,
           getHeight(renderedExtent) / viewResolution
         ],
-        viewState: /** @type {olx.ViewState} */ (_ol_obj_.assign({}, frameState.viewState, {
+        viewState: /** @type {olx.ViewState} */ (assign({}, frameState.viewState, {
           rotation: 0
         }))
       }));

@@ -7,7 +7,7 @@ import {getUid, inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import BaseLayer from '../layer/Base.js';
 import LayerProperty from '../layer/Property.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import SourceState from '../source/State.js';
 
@@ -35,7 +35,7 @@ import SourceState from '../source/State.js';
  */
 const Layer = function(options) {
 
-  const baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = assign({}, options);
   delete baseOptions.source;
 
   BaseLayer.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));

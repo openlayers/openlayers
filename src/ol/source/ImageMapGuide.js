@@ -6,9 +6,9 @@ import _ol_Image_ from '../Image.js';
 import _ol_events_ from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import ImageSource from '../source/Image.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -193,7 +193,7 @@ ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @api
  */
 ImageMapGuide.prototype.updateParams = function(params) {
-  _ol_obj_.assign(this.params_, params);
+  assign(this.params_, params);
   this.changed();
 };
 
@@ -223,8 +223,8 @@ ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, project
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  _ol_obj_.assign(baseParams, params);
-  return _ol_uri_.appendParams(baseUrl, baseParams);
+  assign(baseParams, params);
+  return appendParams(baseUrl, baseParams);
 };
 
 

@@ -18,7 +18,7 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_orient_ from '../geom/flat/orient.js';
-import _ol_obj_ from '../obj.js';
+import {assign, isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
 
 /**
@@ -73,7 +73,7 @@ EsriJSON.readGeometry_ = function(object, opt_options) {
   } else if (object.rings) {
     const layout = EsriJSON.getGeometryLayout_(object);
     const rings = EsriJSON.convertRings_(object.rings, layout);
-    object = /** @type {EsriJSONGeometry} */(_ol_obj_.assign({}, object));
+    object = /** @type {EsriJSONGeometry} */(assign({}, object));
     if (rings.length === 1) {
       type = GeometryType.POLYGON;
       object.rings = rings[0];
@@ -632,7 +632,7 @@ EsriJSON.prototype.writeFeatureObject = function(
   }
   const properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!_ol_obj_.isEmpty(properties)) {
+  if (!isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
     object['attributes'] = {};

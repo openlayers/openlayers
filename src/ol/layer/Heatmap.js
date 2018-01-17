@@ -7,7 +7,7 @@ import BaseObject from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
 import VectorLayer from '../layer/Vector.js';
 import {clamp} from '../math.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import RenderEventType from '../render/EventType.js';
 import Icon from '../style/Icon.js';
 import Style from '../style/Style.js';
@@ -47,7 +47,7 @@ const DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 const Heatmap = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
-  const baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = assign({}, options);
 
   delete baseOptions.gradient;
   delete baseOptions.radius;

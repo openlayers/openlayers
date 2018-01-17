@@ -6,7 +6,7 @@ import {FALSE} from '../functions.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import Interaction from '../interaction/Interaction.js';
-import _ol_obj_ from '../obj.js';
+import {getValues} from '../obj.js';
 
 /**
  * @classdesc
@@ -133,7 +133,7 @@ PointerInteraction.prototype.updateTrackedPointers_ = function(mapBrowserEvent) 
       // update only when there was a pointerdown event for this pointer
       this.trackedPointers_[id] = event;
     }
-    this.targetPointers = _ol_obj_.getValues(this.trackedPointers_);
+    this.targetPointers = getValues(this.trackedPointers_);
   }
 };
 

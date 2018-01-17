@@ -7,7 +7,7 @@ import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_obj_ from '../obj.js';
+import {clear} from '../obj.js';
 
 /**
  * @classdesc
@@ -162,7 +162,7 @@ GeometryCollection.prototype.getGeometriesArray = function() {
  */
 GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    _ol_obj_.clear(this.simplifiedGeometryCache);
+    clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }

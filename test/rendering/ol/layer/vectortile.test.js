@@ -5,7 +5,7 @@ import MVT from '../../../../src/ol/format/MVT.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
-import _ol_obj_ from '../../../../src/ol/obj.js';
+import {assign} from '../../../../src/ol/obj.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
@@ -61,7 +61,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     const options = {
       source: source
     };
-    _ol_obj_.assign(options, layerOptions);
+    assign(options, layerOptions);
     map.addLayer(new VectorTileLayer(options));
   }
 

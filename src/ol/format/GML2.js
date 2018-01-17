@@ -7,7 +7,7 @@ import {transformWithOptions} from '../format/Feature.js';
 import GMLBase from '../format/GMLBase.js';
 import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {get as getProjection, transformExtent} from '../proj.js';
 import _ol_xml_ from '../xml.js';
 
@@ -268,7 +268,7 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
       }
     }
   }
-  const item = _ol_obj_.assign({}, context);
+  const item = assign({}, context);
   item.node = node;
   _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
     (item), context.serializers,
@@ -285,7 +285,7 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
  */
 GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
   const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
-  const item = _ol_obj_.assign({}, context);
+  const item = assign({}, context);
   item.node = node;
   let value;
   if (Array.isArray(geometry)) {

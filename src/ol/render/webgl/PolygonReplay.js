@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import _ol_geom_flat_contains_ from '../../geom/flat/contains.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
@@ -924,7 +924,7 @@ WebGLPolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesH
     gl.depthFunc(gl.NOTEQUAL);
   }
 
-  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
+  if (!isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     //Draw by style groups to minimize drawElements() calls.

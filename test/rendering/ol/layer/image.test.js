@@ -1,7 +1,7 @@
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import ImageLayer from '../../../../src/ol/layer/Image.js';
-import _ol_obj_ from '../../../../src/ol/obj.js';
+import {assign} from '../../../../src/ol/obj.js';
 import {get as getProjection, transform, transformExtent} from '../../../../src/ol/proj.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -56,7 +56,7 @@ describe('ol.rendering.layer.Image', function() {
       const options = {
         source: source
       };
-      _ol_obj_.assign(options, layerOptions);
+      assign(options, layerOptions);
       map.addLayer(new ImageLayer(options));
     });
   }

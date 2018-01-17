@@ -6,7 +6,7 @@ import {numberSafeCompareFunction} from '../../array.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {buffer, createEmpty, extendCoordinate} from '../../extent.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import ReplayGroup from '../ReplayGroup.js';
 import ReplayType from '../ReplayType.js';
 import CanvasReplay from '../canvas/Replay.js';
@@ -434,7 +434,7 @@ CanvasReplayGroup.prototype.getReplays = function() {
  * @inheritDoc
  */
 CanvasReplayGroup.prototype.isEmpty = function() {
-  return _ol_obj_.isEmpty(this.replaysByZIndex_);
+  return isEmpty(this.replaysByZIndex_);
 };
 
 

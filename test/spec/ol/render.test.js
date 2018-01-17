@@ -1,6 +1,6 @@
 import {equals} from '../../../src/ol/array.js';
 import _ol_has_ from '../../../src/ol/has.js';
-import _ol_render_ from '../../../src/ol/render.js';
+import {toContext} from '../../../src/ol/render.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_transform_ from '../../../src/ol/transform.js';
 
@@ -11,7 +11,7 @@ describe('ol.render', function() {
 
     it('creates an ol.render.canvas.Immediate and sets defaults', function() {
       const canvas = document.createElement('canvas');
-      const render = _ol_render_.toContext(canvas.getContext('2d'));
+      const render = toContext(canvas.getContext('2d'));
       expect(render).to.be.a(CanvasImmediateRenderer);
       expect(render.pixelRatio_).to.be(_ol_has_.DEVICE_PIXEL_RATIO);
     });
@@ -20,7 +20,7 @@ describe('ol.render', function() {
       const canvas = document.createElement('canvas');
       const pixelRatio = 1.5;
       const size = [100, 50];
-      const render = _ol_render_.toContext(canvas.getContext('2d'),
+      const render = toContext(canvas.getContext('2d'),
         {pixelRatio: pixelRatio, size: size});
       expect(render.pixelRatio_).to.be(pixelRatio);
       expect(render.extent_).to.eql(

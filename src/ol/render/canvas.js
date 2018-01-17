@@ -3,7 +3,7 @@
  */
 import {getFontFamilies} from '../css.js';
 import {createCanvasContext2D} from '../dom.js';
-import _ol_obj_ from '../obj.js';
+import {clear} from '../obj.js';
 import LRUCache from '../structs/LRUCache.js';
 import _ol_transform_ from '../transform.js';
 const _ol_render_canvas_ = {};
@@ -155,7 +155,7 @@ _ol_render_canvas_.checkFont = (function() {
       if (checked[font] < retries) {
         if (isAvailable(font)) {
           checked[font] = retries;
-          _ol_obj_.clear(_ol_render_canvas_.textHeights_);
+          clear(_ol_render_canvas_.textHeights_);
           // Make sure that loaded fonts are picked up by Safari
           _ol_render_canvas_.measureContext_ = null;
           labelCache.clear();

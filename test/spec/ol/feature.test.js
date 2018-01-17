@@ -1,6 +1,6 @@
 import Feature from '../../../src/ol/Feature.js';
 import Point from '../../../src/ol/geom/Point.js';
-import _ol_obj_ from '../../../src/ol/obj.js';
+import {isEmpty} from '../../../src/ol/obj.js';
 import Style from '../../../src/ol/style/Style.js';
 
 
@@ -85,7 +85,7 @@ describe('ol.Feature', function() {
     it('is empty by default', function() {
       const feature = new Feature();
       const properties = feature.getProperties();
-      expect(_ol_obj_.isEmpty(properties)).to.be(true);
+      expect(isEmpty(properties)).to.be(true);
     });
 
   });

@@ -2,7 +2,7 @@
  * @module ol/structs/PriorityQueue
  */
 import {assert} from '../asserts.js';
-import _ol_obj_ from '../obj.js';
+import {clear} from '../obj.js';
 
 /**
  * Priority queue.
@@ -67,7 +67,7 @@ PriorityQueue.DROP = Infinity;
 PriorityQueue.prototype.clear = function() {
   this.elements_.length = 0;
   this.priorities_.length = 0;
-  _ol_obj_.clear(this.queuedElements_);
+  clear(this.queuedElements_);
 };
 
 

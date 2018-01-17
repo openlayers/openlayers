@@ -4,7 +4,7 @@
 import {inherits} from '../../index.js';
 import {numberSafeCompareFunction} from '../../array.js';
 import {buffer, createOrUpdateFromCoordinate} from '../../extent.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import _ol_render_replay_ from '../replay.js';
 import ReplayGroup from '../ReplayGroup.js';
 import WebGLCircleReplay from '../webgl/CircleReplay.js';
@@ -127,7 +127,7 @@ WebGLReplayGroup.prototype.getReplay = function(zIndex, replayType) {
  * @inheritDoc
  */
 WebGLReplayGroup.prototype.isEmpty = function() {
-  return _ol_obj_.isEmpty(this.replaysByZIndex_);
+  return isEmpty(this.replaysByZIndex_);
 };
 
 

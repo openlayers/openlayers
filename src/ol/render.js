@@ -4,7 +4,6 @@
 import _ol_has_ from './has.js';
 import _ol_transform_ from './transform.js';
 import CanvasImmediateRenderer from './render/canvas/Immediate.js';
-const _ol_render_ = {};
 
 
 /**
@@ -27,7 +26,7 @@ const _ol_render_ = {};
  * @return {ol.render.canvas.Immediate} Canvas Immediate.
  * @api
  */
-_ol_render_.toContext = function(context, opt_options) {
+export function toContext(context, opt_options) {
   const canvas = context.canvas;
   const options = opt_options ? opt_options : {};
   const pixelRatio = options.pixelRatio || _ol_has_.DEVICE_PIXEL_RATIO;
@@ -40,7 +39,5 @@ _ol_render_.toContext = function(context, opt_options) {
   }
   const extent = [0, 0, canvas.width, canvas.height];
   const transform = _ol_transform_.scale(_ol_transform_.create(), pixelRatio, pixelRatio);
-  return new CanvasImmediateRenderer(context, pixelRatio, extent, transform,
-    0);
-};
-export default _ol_render_;
+  return new CanvasImmediateRenderer(context, pixelRatio, extent, transform, 0);
+}

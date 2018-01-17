@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import {intersects} from '../../extent.js';
-import _ol_obj_ from '../../obj.js';
+import {isEmpty} from '../../obj.js';
 import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturereplay/defaultshader.js';
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
@@ -331,9 +331,8 @@ WebGLTextureReplay.prototype.drawReplay = function(gl, context, skippedFeaturesH
   const textures = hitDetection ? this.getHitDetectionTextures() : this.getTextures();
   const groupIndices = hitDetection ? this.hitDetectionGroupIndices : this.groupIndices;
 
-  if (!_ol_obj_.isEmpty(skippedFeaturesHash)) {
-    this.drawReplaySkipping(
-      gl, context, skippedFeaturesHash, textures, groupIndices);
+  if (!isEmpty(skippedFeaturesHash)) {
+    this.drawReplaySkipping(gl, context, skippedFeaturesHash, textures, groupIndices);
   } else {
     let i, ii, start;
     for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {

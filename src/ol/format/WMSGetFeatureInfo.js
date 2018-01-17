@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {extend, includes} from '../array.js';
 import GML2 from '../format/GML2.js';
 import XMLFeature from '../format/XMLFeature.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import _ol_xml_ from '../xml.js';
 
 /**
@@ -158,7 +158,7 @@ WMSGetFeatureInfo.prototype.readFeatures;
 WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
   const options = {};
   if (opt_options) {
-    _ol_obj_.assign(options, this.getReadOptions(node, opt_options));
+    assign(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);
 };

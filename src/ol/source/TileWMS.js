@@ -6,7 +6,7 @@ import {DEFAULT_WMS_VERSION} from './common.js';
 import {inherits} from '../index.js';
 import {assert} from '../asserts.js';
 import {buffer, createEmpty} from '../extent.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
@@ -15,7 +15,7 @@ import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_string_ from '../string.js';
-import _ol_uri_ from '../uri.js';
+import {appendParams} from '../uri.js';
 
 /**
  * @classdesc
@@ -148,7 +148,7 @@ TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projec
     'TRANSPARENT': true,
     'QUERY_LAYERS': this.params_['LAYERS']
   };
-  _ol_obj_.assign(baseParams, this.params_, params);
+  assign(baseParams, this.params_, params);
 
   const x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
   const y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
@@ -250,7 +250,7 @@ TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
     const index = modulo(_ol_tilecoord_.hash(tileCoord), urls.length);
     url = urls[index];
   }
-  return _ol_uri_.appendParams(url, params);
+  return appendParams(url, params);
 };
 
 
@@ -317,7 +317,7 @@ TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, project
     'FORMAT': 'image/png',
     'TRANSPARENT': true
   };
-  _ol_obj_.assign(baseParams, this.params_);
+  assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
     pixelRatio, projection, baseParams);
@@ -329,7 +329,7 @@ TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, project
  * @api
  */
 TileWMS.prototype.updateParams = function(params) {
-  _ol_obj_.assign(this.params_, params);
+  assign(this.params_, params);
   this.updateV13_();
   this.setKey(this.getKeyForParams_());
 };

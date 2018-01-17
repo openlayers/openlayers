@@ -5,7 +5,7 @@ import View from '../../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../../src/ol/extent.js';
 import Point from '../../../../../src/ol/geom/Point.js';
 import VectorLayer from '../../../../../src/ol/layer/Vector.js';
-import _ol_obj_ from '../../../../../src/ol/obj.js';
+import {clear} from '../../../../../src/ol/obj.js';
 import {get as getProjection} from '../../../../../src/ol/proj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 import CanvasVectorLayerRenderer from '../../../../../src/ol/renderer/canvas/VectorLayer.js';
@@ -85,7 +85,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('does not re-render for unavailable fonts', function(done) {
-      _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
+      clear(_ol_render_canvas_.checkedFonts_);
       const map = new Map({
         view: new View({
           center: [0, 0],
@@ -116,7 +116,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('does not re-render for available fonts', function(done) {
-      _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
+      clear(_ol_render_canvas_.checkedFonts_);
       const map = new Map({
         view: new View({
           center: [0, 0],
@@ -147,7 +147,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('re-renders for fonts that become available', function(done) {
-      _ol_obj_.clear(_ol_render_canvas_.checkedFonts_);
+      clear(_ol_render_canvas_.checkedFonts_);
       head.appendChild(font);
       const map = new Map({
         view: new View({

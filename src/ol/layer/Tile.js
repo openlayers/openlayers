@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import LayerType from '../LayerType.js';
 import Layer from '../layer/Layer.js';
 import _ol_layer_TileProperty_ from '../layer/TileProperty.js';
-import _ol_obj_ from '../obj.js';
+import {assign} from '../obj.js';
 
 /**
  * @classdesc
@@ -24,7 +24,7 @@ import _ol_obj_ from '../obj.js';
 const TileLayer = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
-  const baseOptions = _ol_obj_.assign({}, options);
+  const baseOptions = assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;

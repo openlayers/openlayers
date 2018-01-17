@@ -3,7 +3,7 @@ import View from '../../../../src/ol/View.js';
 import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import TileLayer from '../../../../src/ol/layer/Tile.js';
-import _ol_obj_ from '../../../../src/ol/obj.js';
+import {assign} from '../../../../src/ol/obj.js';
 import {transform} from '../../../../src/ol/proj.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
@@ -65,7 +65,7 @@ describe('ol.rendering.layer.Tile', function() {
       const options = {
         source: source
       };
-      _ol_obj_.assign(options, layerOptions[i] || layerOptions);
+      assign(options, layerOptions[i] || layerOptions);
       map.addLayer(new TileLayer(options));
     });
   }

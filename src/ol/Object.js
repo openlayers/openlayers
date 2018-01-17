@@ -5,7 +5,7 @@ import {getUid, inherits} from './index.js';
 import ObjectEventType from './ObjectEventType.js';
 import Observable from './Observable.js';
 import Event from './events/Event.js';
-import _ol_obj_ from './obj.js';
+import {assign} from './obj.js';
 
 /**
  * @classdesc
@@ -124,7 +124,7 @@ BaseObject.prototype.getKeys = function() {
  * @api
  */
 BaseObject.prototype.getProperties = function() {
-  return _ol_obj_.assign({}, this.values_);
+  return assign({}, this.values_);
 };
 
 
