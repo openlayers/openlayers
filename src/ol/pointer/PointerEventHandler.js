@@ -40,7 +40,7 @@ import MouseSource from '../pointer/MouseSource.js';
 import _ol_pointer_MsSource_ from '../pointer/MsSource.js';
 import _ol_pointer_NativeSource_ from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
-import _ol_pointer_TouchSource_ from '../pointer/TouchSource.js';
+import TouchSource from '../pointer/TouchSource.js';
 
 /**
  * @constructor
@@ -95,8 +95,7 @@ PointerEventHandler.prototype.registerSources = function() {
     this.registerSource('mouse', mouseSource);
 
     if (_ol_has_.TOUCH) {
-      this.registerSource('touch',
-        new _ol_pointer_TouchSource_(this, mouseSource));
+      this.registerSource('touch', new TouchSource(this, mouseSource));
     }
   }
 

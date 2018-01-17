@@ -2,7 +2,7 @@ import _ol_events_ from '../../../../src/ol/events.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
-import _ol_pointer_TouchSource_ from '../../../../src/ol/pointer/TouchSource.js';
+import TouchSource from '../../../../src/ol/pointer/TouchSource.js';
 
 
 describe('ol.pointer.MouseSource', function() {
@@ -53,7 +53,7 @@ describe('ol.pointer.MouseSource', function() {
 
     it('dispatches real mouse events after timeout', function() {
       // set the timeout to a lower value, to speed up the tests
-      _ol_pointer_TouchSource_.DEDUP_TIMEOUT = 100;
+      TouchSource.DEDUP_TIMEOUT = 100;
 
       _ol_events_.listen(handler, 'pointerdown', eventSpy);
 
