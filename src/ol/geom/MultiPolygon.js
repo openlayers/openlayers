@@ -99,8 +99,7 @@ MultiPolygon.prototype.appendPolygon = function(polygon) {
     const offset = this.flatCoordinates.length;
     extend(this.flatCoordinates, polygon.getFlatCoordinates());
     ends = polygon.getEnds().slice();
-    let i, ii;
-    for (i = 0, ii = ends.length; i < ii; ++i) {
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
       ends[i] += offset;
     }
   }
@@ -293,8 +292,7 @@ MultiPolygon.prototype.getPolygon = function(index) {
   const ends = this.endss_[index].slice();
   const end = ends[ends.length - 1];
   if (offset !== 0) {
-    let i, ii;
-    for (i = 0, ii = ends.length; i < ii; ++i) {
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
       ends[i] -= offset;
     }
   }
@@ -316,12 +314,11 @@ MultiPolygon.prototype.getPolygons = function() {
   const endss = this.endss_;
   const polygons = [];
   let offset = 0;
-  let i, ii, j, jj;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i].slice();
     const end = ends[ends.length - 1];
     if (offset !== 0) {
-      for (j = 0, jj = ends.length; j < jj; ++j) {
+      for (let j = 0, jj = ends.length; j < jj; ++j) {
         ends[j] -= offset;
       }
     }

@@ -15,8 +15,7 @@ const _ol_geom_flat_inflate_ = {};
 _ol_geom_flat_inflate_.coordinates = function(flatCoordinates, offset, end, stride, opt_coordinates) {
   const coordinates = opt_coordinates !== undefined ? opt_coordinates : [];
   let i = 0;
-  let j;
-  for (j = offset; j < end; j += stride) {
+  for (let j = offset; j < end; j += stride) {
     coordinates[i++] = flatCoordinates.slice(j, j + stride);
   }
   coordinates.length = i;
@@ -35,8 +34,7 @@ _ol_geom_flat_inflate_.coordinates = function(flatCoordinates, offset, end, stri
 _ol_geom_flat_inflate_.coordinatess = function(flatCoordinates, offset, ends, stride, opt_coordinatess) {
   const coordinatess = opt_coordinatess !== undefined ? opt_coordinatess : [];
   let i = 0;
-  let j, jj;
-  for (j = 0, jj = ends.length; j < jj; ++j) {
+  for (let j = 0, jj = ends.length; j < jj; ++j) {
     const end = ends[j];
     coordinatess[i++] = _ol_geom_flat_inflate_.coordinates(
       flatCoordinates, offset, end, stride, coordinatess[i]);
@@ -59,8 +57,7 @@ _ol_geom_flat_inflate_.coordinatess = function(flatCoordinates, offset, ends, st
 _ol_geom_flat_inflate_.coordinatesss = function(flatCoordinates, offset, endss, stride, opt_coordinatesss) {
   const coordinatesss = opt_coordinatesss !== undefined ? opt_coordinatesss : [];
   let i = 0;
-  let j, jj;
-  for (j = 0, jj = endss.length; j < jj; ++j) {
+  for (let j = 0, jj = endss.length; j < jj; ++j) {
     const ends = endss[j];
     coordinatesss[i++] = _ol_geom_flat_inflate_.coordinatess(
       flatCoordinates, offset, ends, stride, coordinatesss[i]);

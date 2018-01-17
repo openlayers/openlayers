@@ -243,9 +243,8 @@ Heatmap.prototype.handleRender_ = function(event) {
   const canvas = context.canvas;
   const image = context.getImageData(0, 0, canvas.width, canvas.height);
   const view8 = image.data;
-  let i, ii, alpha;
-  for (i = 0, ii = view8.length; i < ii; i += 4) {
-    alpha = view8[i + 3] * 4;
+  for (let i = 0, ii = view8.length; i < ii; i += 4) {
+    const alpha = view8[i + 3] * 4;
     if (alpha) {
       view8[i] = this.gradient_[alpha];
       view8[i + 1] = this.gradient_[alpha + 1];

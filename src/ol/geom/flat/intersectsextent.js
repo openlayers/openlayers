@@ -54,8 +54,7 @@ _ol_geom_flat_intersectsextent_.lineString = function(flatCoordinates, offset, e
  * @return {boolean} True if the geometry and the extent intersect.
  */
 _ol_geom_flat_intersectsextent_.lineStrings = function(flatCoordinates, offset, ends, stride, extent) {
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     if (_ol_geom_flat_intersectsextent_.lineString(
       flatCoordinates, offset, ends[i], stride, extent)) {
       return true;
@@ -115,8 +114,7 @@ _ol_geom_flat_intersectsextent_.linearRings = function(flatCoordinates, offset, 
   if (ends.length === 1) {
     return true;
   }
-  let i, ii;
-  for (i = 1, ii = ends.length; i < ii; ++i) {
+  for (let i = 1, ii = ends.length; i < ii; ++i) {
     if (_ol_geom_flat_contains_.linearRingContainsExtent(
       flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
       return false;
@@ -135,8 +133,7 @@ _ol_geom_flat_intersectsextent_.linearRings = function(flatCoordinates, offset, 
  * @return {boolean} True if the geometry and the extent intersect.
  */
 _ol_geom_flat_intersectsextent_.linearRingss = function(flatCoordinates, offset, endss, stride, extent) {
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     if (_ol_geom_flat_intersectsextent_.linearRings(
       flatCoordinates, offset, ends, stride, extent)) {

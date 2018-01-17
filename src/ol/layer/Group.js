@@ -109,9 +109,8 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
   clear(this.listenerKeys_);
 
   const layersArray = layers.getArray();
-  let i, ii, layer;
-  for (i = 0, ii = layersArray.length; i < ii; i++) {
-    layer = layersArray[i];
+  for (let i = 0, ii = layersArray.length; i < ii; i++) {
+    const layer = layersArray[i];
     this.listenerKeys_[getUid(layer).toString()] = [
       _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
@@ -205,9 +204,8 @@ LayerGroup.prototype.getLayerStatesArray = function(opt_states) {
   });
 
   const ownLayerState = this.getLayerState();
-  let i, ii, layerState;
-  for (i = pos, ii = states.length; i < ii; i++) {
-    layerState = states[i];
+  for (let i = pos, ii = states.length; i < ii; i++) {
+    const layerState = states[i];
     layerState.opacity *= ownLayerState.opacity;
     layerState.visible = layerState.visible && ownLayerState.visible;
     layerState.maxResolution = Math.min(

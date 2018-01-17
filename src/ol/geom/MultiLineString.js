@@ -186,8 +186,7 @@ MultiLineString.prototype.getLineStrings = function() {
   /** @type {Array.<ol.geom.LineString>} */
   const lineStrings = [];
   let offset = 0;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const lineString = new LineString(null);
     lineString.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
@@ -207,8 +206,7 @@ MultiLineString.prototype.getFlatMidpoints = function() {
   let offset = 0;
   const ends = this.ends_;
   const stride = this.stride;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const midpoint = _ol_geom_flat_interpolate_.lineString(
       flatCoordinates, offset, end, stride, 0.5);
@@ -296,8 +294,7 @@ MultiLineString.prototype.setLineStrings = function(lineStrings) {
   let layout = this.getLayout();
   const flatCoordinates = [];
   const ends = [];
-  let i, ii;
-  for (i = 0, ii = lineStrings.length; i < ii; ++i) {
+  for (let i = 0, ii = lineStrings.length; i < ii; ++i) {
     const lineString = lineStrings[i];
     if (i === 0) {
       layout = lineString.getLayout();

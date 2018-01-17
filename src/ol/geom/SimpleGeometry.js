@@ -230,8 +230,7 @@ SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
   if (layout) {
     stride = getStrideForLayout(layout);
   } else {
-    let i;
-    for (i = 0; i < nesting; ++i) {
+    for (let i = 0; i < nesting; ++i) {
       if (coordinates.length === 0) {
         this.layout = GeometryLayout.XY;
         this.stride = 2;

@@ -15,8 +15,7 @@ _ol_geom_flat_length_.lineString = function(flatCoordinates, offset, end, stride
   let x1 = flatCoordinates[offset];
   let y1 = flatCoordinates[offset + 1];
   let length = 0;
-  let i;
-  for (i = offset + stride; i < end; i += stride) {
+  for (let i = offset + stride; i < end; i += stride) {
     const x2 = flatCoordinates[i];
     const y2 = flatCoordinates[i + 1];
     length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -35,8 +34,7 @@ _ol_geom_flat_length_.lineString = function(flatCoordinates, offset, end, stride
  * @return {number} Perimeter.
  */
 _ol_geom_flat_length_.linearRing = function(flatCoordinates, offset, end, stride) {
-  let perimeter =
-      _ol_geom_flat_length_.lineString(flatCoordinates, offset, end, stride);
+  let perimeter = _ol_geom_flat_length_.lineString(flatCoordinates, offset, end, stride);
   const dx = flatCoordinates[end - stride] - flatCoordinates[offset];
   const dy = flatCoordinates[end - stride + 1] - flatCoordinates[offset + 1];
   perimeter += Math.sqrt(dx * dx + dy * dy);

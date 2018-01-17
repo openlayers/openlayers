@@ -265,8 +265,7 @@ CanvasImmediateRenderer.prototype.drawImages_ = function(flatCoordinates, offset
   if (this.imageRotateWithView_) {
     rotation += this.viewRotation_;
   }
-  let i, ii;
-  for (i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
+  for (let i = 0, ii = pixelCoordinates.length; i < ii; i += 2) {
     let x = pixelCoordinates[i] - this.imageAnchorX_;
     let y = pixelCoordinates[i + 1] - this.imageAnchorY_;
     if (this.imageSnapToPixel_) {
@@ -384,8 +383,7 @@ CanvasImmediateRenderer.prototype.moveToLineTo_ = function(flatCoordinates, offs
  * @return {number} End.
  */
 CanvasImmediateRenderer.prototype.drawRings_ = function(flatCoordinates, offset, ends, stride) {
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     offset = this.moveToLineTo_(
       flatCoordinates, offset, ends[i], stride, true);
   }
@@ -519,8 +517,7 @@ CanvasImmediateRenderer.prototype.drawFeature = function(feature, style) {
  */
 CanvasImmediateRenderer.prototype.drawGeometryCollection = function(geometry) {
   const geometries = geometry.getGeometriesArray();
-  let i, ii;
-  for (i = 0, ii = geometries.length; i < ii; ++i) {
+  for (let i = 0, ii = geometries.length; i < ii; ++i) {
     this.drawGeometry(geometries[i]);
   }
 };
@@ -612,8 +609,7 @@ CanvasImmediateRenderer.prototype.drawMultiLineString = function(geometry) {
     const ends = geometry.getEnds();
     const stride = geometry.getStride();
     context.beginPath();
-    let i, ii;
-    for (i = 0, ii = ends.length; i < ii; ++i) {
+    for (let i = 0, ii = ends.length; i < ii; ++i) {
       offset = this.moveToLineTo_(
         flatCoordinates, offset, ends[i], stride, false);
     }
@@ -684,9 +680,8 @@ CanvasImmediateRenderer.prototype.drawMultiPolygon = function(geometry) {
     let offset = 0;
     const endss = geometry.getEndss();
     const stride = geometry.getStride();
-    let i, ii;
     context.beginPath();
-    for (i = 0, ii = endss.length; i < ii; ++i) {
+    for (let i = 0, ii = endss.length; i < ii; ++i) {
       const ends = endss[i];
       offset = this.drawRings_(flatCoordinates, offset, ends, stride);
     }

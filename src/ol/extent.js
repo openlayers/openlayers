@@ -340,8 +340,7 @@ export function extendCoordinate(extent, coordinate) {
  * @return {ol.Extent} Extent.
  */
 export function extendCoordinates(extent, coordinates) {
-  let i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+  for (let i = 0, ii = coordinates.length; i < ii; ++i) {
     extendCoordinate(extent, coordinates[i]);
   }
   return extent;
@@ -370,8 +369,7 @@ export function extendFlatCoordinates(extent, flatCoordinates, offset, end, stri
  * @return {ol.Extent} Extent.
  */
 export function extendRings(extent, rings) {
-  let i, ii;
-  for (i = 0, ii = rings.length; i < ii; ++i) {
+  for (let i = 0, ii = rings.length; i < ii; ++i) {
     extendCoordinates(extent, rings[i]);
   }
   return extent;
