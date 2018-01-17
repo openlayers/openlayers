@@ -36,7 +36,7 @@ import _ol_events_ from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import _ol_has_ from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
-import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
+import MouseSource from '../pointer/MouseSource.js';
 import _ol_pointer_MsSource_ from '../pointer/MsSource.js';
 import _ol_pointer_NativeSource_ from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
@@ -91,7 +91,7 @@ PointerEventHandler.prototype.registerSources = function() {
   } else if (_ol_has_.MSPOINTER) {
     this.registerSource('ms', new _ol_pointer_MsSource_(this));
   } else {
-    const mouseSource = new _ol_pointer_MouseSource_(this);
+    const mouseSource = new MouseSource(this);
     this.registerSource('mouse', mouseSource);
 
     if (_ol_has_.TOUCH) {
@@ -389,7 +389,7 @@ PointerEventHandler.prototype.fireNativeEvent = function(event) {
  */
 PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
   const pointerEvent = this.makeEvent(
-    eventType, _ol_pointer_MouseSource_.prepareEvent(event, this), event);
+    eventType, MouseSource.prepareEvent(event, this), event);
   return pointerEvent;
 };
 

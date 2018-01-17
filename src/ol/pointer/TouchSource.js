@@ -34,7 +34,7 @@
 import {inherits} from '../index.js';
 import {remove} from '../array.js';
 import EventSource from '../pointer/EventSource.js';
-import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
+import MouseSource from '../pointer/MouseSource.js';
 
 /**
  * @constructor
@@ -126,7 +126,7 @@ _ol_pointer_TouchSource_.prototype.isPrimaryTouch_ = function(inTouch) {
 _ol_pointer_TouchSource_.prototype.setPrimaryTouch_ = function(inTouch) {
   const count = Object.keys(this.pointerMap).length;
   if (count === 0 || (count === 1 &&
-      _ol_pointer_MouseSource_.POINTER_ID.toString() in this.pointerMap)) {
+      MouseSource.POINTER_ID.toString() in this.pointerMap)) {
     this.firstTouchId_ = inTouch.identifier;
     this.cancelResetClickCount_();
   }
@@ -277,7 +277,7 @@ _ol_pointer_TouchSource_.prototype.vacuumTouches_ = function(inEvent) {
       // Never remove pointerId == 1, which is mouse.
       // Touch identifiers are 2 smaller than their pointerId, which is the
       // index in pointermap.
-      if (key != _ol_pointer_MouseSource_.POINTER_ID &&
+      if (key != MouseSource.POINTER_ID &&
           !this.findTouch_(touchList, key - 2)) {
         d.push(value.out);
       }
