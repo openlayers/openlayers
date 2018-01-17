@@ -437,10 +437,9 @@ Snap.prototype.updateFeature_ = function(feature) {
 Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
   const polygon = fromCircle(geometry);
   const coordinates = polygon.getCoordinates()[0];
-  let i, ii, segment, segmentData;
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    const segment = coordinates.slice(i, i + 2);
+    const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
       feature: feature,
       segment: segment
     });
@@ -472,10 +471,9 @@ Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
  */
 Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   const coordinates = geometry.getCoordinates();
-  let i, ii, segment, segmentData;
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    const segment = coordinates.slice(i, i + 2);
+    const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
       feature: feature,
       segment: segment
     });
@@ -491,12 +489,11 @@ Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
  */
 Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
   const lines = geometry.getCoordinates();
-  let coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = lines.length; j < jj; ++j) {
-    coordinates = lines[j];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  for (let j = 0, jj = lines.length; j < jj; ++j) {
+    const coordinates = lines[j];
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const segment = coordinates.slice(i, i + 2);
+      const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
         feature: feature,
         segment: segment
       });
@@ -513,10 +510,9 @@ Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
  */
 Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   const points = geometry.getCoordinates();
-  let coordinates, i, ii, segmentData;
-  for (i = 0, ii = points.length; i < ii; ++i) {
-    coordinates = points[i];
-    segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  for (let i = 0, ii = points.length; i < ii; ++i) {
+    const coordinates = points[i];
+    const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
       feature: feature,
       segment: [coordinates, coordinates]
     });
@@ -532,14 +528,13 @@ Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
  */
 Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
   const polygons = geometry.getCoordinates();
-  let coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
-  for (k = 0, kk = polygons.length; k < kk; ++k) {
-    rings = polygons[k];
-    for (j = 0, jj = rings.length; j < jj; ++j) {
-      coordinates = rings[j];
-      for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-        segment = coordinates.slice(i, i + 2);
-        segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  for (let k = 0, kk = polygons.length; k < kk; ++k) {
+    const rings = polygons[k];
+    for (let j = 0, jj = rings.length; j < jj; ++j) {
+      const coordinates = rings[j];
+      for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+        const segment = coordinates.slice(i, i + 2);
+        const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
           feature: feature,
           segment: segment
         });
@@ -572,12 +567,11 @@ Snap.prototype.writePointGeometry_ = function(feature, geometry) {
  */
 Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
   const rings = geometry.getCoordinates();
-  let coordinates, i, ii, j, jj, segment, segmentData;
-  for (j = 0, jj = rings.length; j < jj; ++j) {
-    coordinates = rings[j];
-    for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-      segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+  for (let j = 0, jj = rings.length; j < jj; ++j) {
+    const coordinates = rings[j];
+    for (let i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+      const segment = coordinates.slice(i, i + 2);
+      const segmentData = /** @type {ol.SnapSegmentDataType} */ ({
         feature: feature,
         segment: segment
       });

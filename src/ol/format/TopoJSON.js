@@ -312,8 +312,8 @@ TopoJSON.prototype.readFeaturesFromObject = function(
     const features = [];
     const topoJSONFeatures = topoJSONTopology.objects;
     const property = this.layerName_;
-    let objectName, feature;
-    for (objectName in topoJSONFeatures) {
+    let feature;
+    for (const objectName in topoJSONFeatures) {
       if (this.layers_ && this.layers_.indexOf(objectName) == -1) {
         continue;
       }
@@ -343,8 +343,7 @@ TopoJSON.prototype.readFeaturesFromObject = function(
  * @param {Array.<number>} translate Translation for each dimension.
  */
 function transformArcs(arcs, scale, translate) {
-  let i, ii;
-  for (i = 0, ii = arcs.length; i < ii; ++i) {
+  for (let i = 0, ii = arcs.length; i < ii; ++i) {
     transformArc(arcs[i], scale, translate);
   }
 }
@@ -360,10 +359,8 @@ function transformArcs(arcs, scale, translate) {
 function transformArc(arc, scale, translate) {
   let x = 0;
   let y = 0;
-  let vertex;
-  let i, ii;
-  for (i = 0, ii = arc.length; i < ii; ++i) {
-    vertex = arc[i];
+  for (let i = 0, ii = arc.length; i < ii; ++i) {
+    const vertex = arc[i];
     x += vertex[0];
     y += vertex[1];
     vertex[0] = x;

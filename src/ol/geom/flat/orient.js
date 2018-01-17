@@ -44,8 +44,7 @@ _ol_geom_flat_orient_.linearRingIsClockwise = function(flatCoordinates, offset, 
  */
 _ol_geom_flat_orient_.linearRingsAreOriented = function(flatCoordinates, offset, ends, stride, opt_right) {
   const right = opt_right !== undefined ? opt_right : false;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
       flatCoordinates, offset, end, stride);
@@ -78,8 +77,7 @@ _ol_geom_flat_orient_.linearRingsAreOriented = function(flatCoordinates, offset,
  * @return {boolean} Rings are correctly oriented.
  */
 _ol_geom_flat_orient_.linearRingssAreOriented = function(flatCoordinates, offset, endss, stride, opt_right) {
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     if (!_ol_geom_flat_orient_.linearRingsAreOriented(
       flatCoordinates, offset, endss[i], stride, opt_right)) {
       return false;
@@ -104,8 +102,7 @@ _ol_geom_flat_orient_.linearRingssAreOriented = function(flatCoordinates, offset
  */
 _ol_geom_flat_orient_.orientLinearRings = function(flatCoordinates, offset, ends, stride, opt_right) {
   const right = opt_right !== undefined ? opt_right : false;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const isClockwise = _ol_geom_flat_orient_.linearRingIsClockwise(
       flatCoordinates, offset, end, stride);
@@ -135,8 +132,7 @@ _ol_geom_flat_orient_.orientLinearRings = function(flatCoordinates, offset, ends
  * @return {number} End.
  */
 _ol_geom_flat_orient_.orientLinearRingss = function(flatCoordinates, offset, endss, stride, opt_right) {
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     offset = _ol_geom_flat_orient_.orientLinearRings(
       flatCoordinates, offset, endss[i], stride, opt_right);
   }

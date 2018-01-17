@@ -264,8 +264,7 @@ Polygon.prototype.getLinearRings = function() {
   const ends = this.ends_;
   const linearRings = [];
   let offset = 0;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     const linearRing = new LinearRing(null);
     linearRing.setFlatCoordinates(layout, flatCoordinates.slice(offset, end));
@@ -386,14 +385,12 @@ export function circular(center, radius, opt_n, opt_sphereRadius) {
   const n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
   const flatCoordinates = [];
-  let i;
-  for (i = 0; i < n; ++i) {
+  for (let i = 0; i < n; ++i) {
     extend(flatCoordinates, sphereOffset(center, radius, 2 * Math.PI * i / n, opt_sphereRadius));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
   const polygon = new Polygon(null);
-  polygon.setFlatCoordinates(
-    GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
+  polygon.setFlatCoordinates(GeometryLayout.XY, flatCoordinates, [flatCoordinates.length]);
   return polygon;
 }
 
@@ -459,10 +456,9 @@ export function makeRegular(polygon, center, radius, opt_angle) {
   const ends = polygon.getEnds();
   const sides = flatCoordinates.length / stride - 1;
   const startAngle = opt_angle ? opt_angle : 0;
-  let angle, offset;
   for (let i = 0; i <= sides; ++i) {
-    offset = i * stride;
-    angle = startAngle + (modulo(i, sides) * 2 * Math.PI / sides);
+    const offset = i * stride;
+    const angle = startAngle + (modulo(i, sides) * 2 * Math.PI / sides);
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
   }

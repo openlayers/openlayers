@@ -91,8 +91,7 @@ export const fromString = (
         } else {
           if (cacheSize >= MAX_CACHE_SIZE) {
             let i = 0;
-            let key;
-            for (key in cache) {
+            for (const key in cache) {
               if ((i++ & 3) === 0) {
                 delete cache[key];
                 --cacheSize;

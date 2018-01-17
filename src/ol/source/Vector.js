@@ -253,23 +253,21 @@ VectorSource.prototype.addFeatures = function(features) {
  * @protected
  */
 VectorSource.prototype.addFeaturesInternal = function(features) {
-  let featureKey, i, length, feature;
-
   const extents = [];
   const newFeatures = [];
   const geometryFeatures = [];
 
-  for (i = 0, length = features.length; i < length; i++) {
-    feature = features[i];
-    featureKey = getUid(feature).toString();
+  for (let i = 0, length = features.length; i < length; i++) {
+    const feature = features[i];
+    const featureKey = getUid(feature).toString();
     if (this.addToIndex_(featureKey, feature)) {
       newFeatures.push(feature);
     }
   }
 
-  for (i = 0, length = newFeatures.length; i < length; i++) {
-    feature = newFeatures[i];
-    featureKey = getUid(feature).toString();
+  for (let i = 0, length = newFeatures.length; i < length; i++) {
+    const feature = newFeatures[i];
+    const featureKey = getUid(feature).toString();
     this.setupChangeEvents_(featureKey, feature);
 
     const geometry = feature.getGeometry();
@@ -285,9 +283,8 @@ VectorSource.prototype.addFeaturesInternal = function(features) {
     this.featuresRtree_.load(extents, geometryFeatures);
   }
 
-  for (i = 0, length = newFeatures.length; i < length; i++) {
-    this.dispatchEvent(new VectorSource.Event(
-      VectorEventType.ADDFEATURE, newFeatures[i]));
+  for (let i = 0, length = newFeatures.length; i < length; i++) {
+    this.dispatchEvent(new VectorSource.Event(VectorEventType.ADDFEATURE, newFeatures[i]));
   }
 };
 
@@ -735,8 +732,7 @@ VectorSource.prototype.loadFeatures = function(
   extent, resolution, projection) {
   const loadedExtentsRtree = this.loadedExtentsRtree_;
   const extentsToLoad = this.strategy_(extent, resolution);
-  let i, ii;
-  for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
+  for (let i = 0, ii = extentsToLoad.length; i < ii; ++i) {
     const extentToLoad = extentsToLoad[i];
     const alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
       /**

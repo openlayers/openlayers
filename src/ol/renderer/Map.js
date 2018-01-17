@@ -301,8 +301,7 @@ MapRenderer.prototype.renderFrame = nullFunction;
  * @private
  */
 MapRenderer.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
-  let layerKey;
-  for (layerKey in this.layerRenderers_) {
+  for (const layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
       this.removeLayerRendererByKey_(layerKey).dispose();
     }
@@ -326,8 +325,7 @@ MapRenderer.prototype.scheduleExpireIconCache = function(frameState) {
  * @protected
  */
 MapRenderer.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
-  let layerKey;
-  for (layerKey in this.layerRenderers_) {
+  for (const layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
         /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))

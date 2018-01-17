@@ -56,9 +56,8 @@ IconImageCache.prototype.clear = function() {
 IconImageCache.prototype.expire = function() {
   if (this.cacheSize_ > this.maxCacheSize_) {
     let i = 0;
-    let key, iconImage;
-    for (key in this.cache_) {
-      iconImage = this.cache_[key];
+    for (const key in this.cache_) {
+      const iconImage = this.cache_[key];
       if ((i++ & 3) === 0 && !iconImage.hasListener()) {
         delete this.cache_[key];
         --this.cacheSize_;

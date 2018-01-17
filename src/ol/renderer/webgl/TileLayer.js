@@ -299,10 +299,9 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     const zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(numberSafeCompareFunction);
     const u_tileOffset = new Float32Array(4);
-    let i, ii, tileKey, tilesToDraw;
-    for (i = 0, ii = zs.length; i < ii; ++i) {
-      tilesToDraw = tilesToDrawByZ[zs[i]];
-      for (tileKey in tilesToDraw) {
+    for (let i = 0, ii = zs.length; i < ii; ++i) {
+      const tilesToDraw = tilesToDrawByZ[zs[i]];
+      for (const tileKey in tilesToDraw) {
         tile = tilesToDraw[tileKey];
         tileExtent = tileGrid.getTileCoordExtent(tile.tileCoord, tmpExtent);
         u_tileOffset[0] = 2 * (tileExtent[2] - tileExtent[0]) /

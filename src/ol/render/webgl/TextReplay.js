@@ -215,8 +215,7 @@ WebGLTextReplay.prototype.getTextSize_ = function(lines) {
   //Split every line to an array of chars, sum up their width, and select the longest.
   const textWidth = lines.map(function(str) {
     let sum = 0;
-    let i, ii;
-    for (i = 0, ii = str.length; i < ii; ++i) {
+    for (let i = 0, ii = str.length; i < ii; ++i) {
       const curr = str[i];
       if (!glyphAtlas.width[curr]) {
         self.addCharToAtlas_(curr);
@@ -239,10 +238,8 @@ WebGLTextReplay.prototype.getTextSize_ = function(lines) {
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-WebGLTextReplay.prototype.drawText_ = function(flatCoordinates, offset,
-  end, stride) {
-  let i, ii;
-  for (i = offset, ii = end; i < ii; i += stride) {
+WebGLTextReplay.prototype.drawText_ = function(flatCoordinates, offset, end, stride) {
+  for (let i = offset, ii = end; i < ii; i += stride) {
     this.drawCoordinates(flatCoordinates, offset, end, stride);
   }
 };
@@ -402,8 +399,7 @@ WebGLTextReplay.prototype.setTextStyle = function(textStyle) {
  */
 WebGLTextReplay.prototype.getAtlas_ = function(state) {
   let params = [];
-  let i;
-  for (i in state) {
+  for (const i in state) {
     if (state[i] || state[i] === 0) {
       if (Array.isArray(state[i])) {
         params = params.concat(state[i]);
@@ -438,9 +434,8 @@ WebGLTextReplay.prototype.getAtlas_ = function(state) {
  */
 WebGLTextReplay.prototype.calculateHash_ = function(params) {
   //TODO: Create a more performant, reliable, general hash function.
-  let i, ii;
   let hash = '';
-  for (i = 0, ii = params.length; i < ii; ++i) {
+  for (let i = 0, ii = params.length; i < ii; ++i) {
     hash += params[i];
   }
   return hash;

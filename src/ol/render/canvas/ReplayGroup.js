@@ -260,8 +260,7 @@ CanvasReplayGroup.prototype.hasReplays = function(replays) {
  * FIXME empty description for jsdoc
  */
 CanvasReplayGroup.prototype.finish = function() {
-  let zKey;
-  for (zKey in this.replaysByZIndex_) {
+  for (const zKey in this.replaysByZIndex_) {
     const replays = this.replaysByZIndex_[zKey];
     for (const replayKey in replays) {
       replays[replayKey].finish();

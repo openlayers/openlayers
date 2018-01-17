@@ -71,8 +71,7 @@ const Zoomify = function(opt_options) {
 
   const resolutions = [1];
   const tileCountUpToTier = [0];
-  let i, ii;
-  for (i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
+  for (let i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
     resolutions.push(1 << i);
     tileCountUpToTier.push(
       tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +

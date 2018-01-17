@@ -148,14 +148,13 @@ _ol_webgl_Context_.prototype.disposeInternal = function() {
   _ol_events_.unlistenAll(this.canvas_);
   const gl = this.getGL();
   if (!gl.isContextLost()) {
-    let key;
-    for (key in this.bufferCache_) {
+    for (const key in this.bufferCache_) {
       gl.deleteBuffer(this.bufferCache_[key].buffer);
     }
-    for (key in this.programCache_) {
+    for (const key in this.programCache_) {
       gl.deleteProgram(this.programCache_[key]);
     }
-    for (key in this.shaderCache_) {
+    for (const key in this.shaderCache_) {
       gl.deleteShader(this.shaderCache_[key]);
     }
     // delete objects for hit-detection

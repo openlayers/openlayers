@@ -32,8 +32,7 @@ _ol_geom_flat_interpolate_.lineString = function(flatCoordinates, offset, end, s
     let y1 = flatCoordinates[offset + 1];
     let length = 0;
     const cumulativeLengths = [0];
-    let i;
-    for (i = offset + stride; i < end; i += stride) {
+    for (let i = offset + stride; i < end; i += stride) {
       const x2 = flatCoordinates[i];
       const y2 = flatCoordinates[i + 1];
       length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
@@ -118,8 +117,7 @@ _ol_geom_flat_interpolate_.lineStringCoordinateAtM = function(flatCoordinates, o
   const m1 = flatCoordinates[(lo + 1) * stride - 1];
   const t = (m - m0) / (m1 - m0);
   coordinate = [];
-  let i;
-  for (i = 0; i < stride - 1; ++i) {
+  for (let i = 0; i < stride - 1; ++i) {
     coordinate.push(lerp(flatCoordinates[(lo - 1) * stride + i],
       flatCoordinates[lo * stride + i], t));
   }
@@ -163,8 +161,7 @@ _ol_geom_flat_interpolate_.lineStringsCoordinateAtM = function(
       return null;
     }
   }
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     if (offset == end) {
       continue;
