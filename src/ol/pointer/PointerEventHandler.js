@@ -38,7 +38,7 @@ import _ol_has_ from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
 import MouseSource from '../pointer/MouseSource.js';
 import _ol_pointer_MsSource_ from '../pointer/MsSource.js';
-import _ol_pointer_NativeSource_ from '../pointer/NativeSource.js';
+import NativeSource from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
 import TouchSource from '../pointer/TouchSource.js';
 
@@ -87,7 +87,7 @@ inherits(PointerEventHandler, EventTarget);
  */
 PointerEventHandler.prototype.registerSources = function() {
   if (_ol_has_.POINTER) {
-    this.registerSource('native', new _ol_pointer_NativeSource_(this));
+    this.registerSource('native', new NativeSource(this));
   } else if (_ol_has_.MSPOINTER) {
     this.registerSource('ms', new _ol_pointer_MsSource_(this));
   } else {
