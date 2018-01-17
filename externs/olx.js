@@ -3003,6 +3003,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  * @typedef {{clickTolerance: (number|undefined),
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     source: (ol.source.Vector|undefined),
+ *     dragVertexDelay: (number|undefined),
  *     snapTolerance: (number|undefined),
  *     type: (ol.geom.GeometryType|string),
  *     stopClick: (boolean|undefined),
@@ -3046,6 +3047,14 @@ olx.interaction.DrawOptions.prototype.features;
  * @api
  */
 olx.interaction.DrawOptions.prototype.source;
+
+
+/**
+ * Delay in milliseconds after pointerdown before the current vertex can be
+ * dragged to its exact position. Default is 500 ms.
+ * @type {number|undefined}
+ */
+olx.interaction.DrawOptions.prototype.dragVertexDelay;
 
 
 /**

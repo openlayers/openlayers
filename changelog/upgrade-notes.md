@@ -1,5 +1,103 @@
 ## Upgrade notes
 
+### Next release
+
+#### Changed behavior of the `Draw` interaction
+
+For better drawing experience, two changes were made to the behavior of the Draw interaction:
+
+ 1. On long press, the current vertex can be dragged to its desired position.
+ 2. On touch move (e.g. when panning the map on a mobile device), no draw cursor is shown, and the geometry being drawn is not updated. But because of 1., the draw cursor will appear on long press. Mouse moves are not affected by this change.
+
+#### Changes in proj4 integration
+
+Because relying on a globally available proj4 is not practical with ES modules, we have made a change to the way we integrate proj4:
+
+ * The `setProj4()` function from the `ol/proj` module was removed.
+ * A new `ol/proj/proj4` module with a `register()` function was added. Regardless of whether the application imports `proj4` or uses a global `proj4`, this function needs to be called with the proj4 instance as argument whenever projection definitions were added to proj4's registry with (`proj4.defs`).
+
+It is also recommended to no longer use a global `proj4`. Instead,
+
+    npm install proj4
+
+and import it:
+
+```js
+import proj4 from 'proj4';
+```
+
+Applications can be updated by importing the `register` function from the `ol/proj/proj4` module
+
+```js
+import {register} from 'ol/proj/proj4'
+```
+
+and calling it before using projections, and any time the proj4 registry was changed by `proj4.defs()` calls:
+
+```js
+register(proj4);
+```
+
+#### Removal of logos
+
+The map and sources no longer accept a `logo` option.  Instead, if you wish to append a logo to your map, add the desired markup directly in your HTML.  In addition, you can use the `attributions` property of a source to display arbitrary markup per-source with the attribution control.
+
+#### Replacement of `ol/Sphere` constructor with `ol/sphere` functions
+
+The `ol/Sphere` constructor has been removed.  If you were using the `getGeodesicArea` method, use the `getArea` function instead.  If you were using the `haversineDistance` method, use the `getDistance` function instead.
+
+Examples before:
+```js
+// using ol@4
+import Sphere from 'ol/sphere';
+
+var sphere = new Sphere(Sphere.DEFAULT_RADIUS);
+var area = sphere.getGeodesicArea(polygon);
+var distance = sphere.haversineDistance(g1, g2);
+```
+
+Examples after:
+```js
+// using ol@5
+import {circular as circularPolygon} from 'ol/geom/Polygon';
+import {getArea, getDistance} from 'ol/sphere';
+
+var area = getArea(polygon);
+var distance = getDistance(g1, g2);
+var circle = circularPolygon(center, radius);
+```
+
+#### New signature for the `circular` function for creating polygons
+
+The `circular` function exported from `ol/geom/Polygon` no longer requires a `Sphere` as the first argument.
+
+Example before:
+```js
+// using ol@4
+import Polygon from 'ol/geom/polygon';
+import Sphere from 'ol/sphere';
+
+var poly = Polygon.circular(new Sphere(Sphere.DEFAULT_RADIUS), center, radius);
+```
+
+Example after:
+```js
+// using ol@5
+import {circular as circularPolygon} from 'ol/geom/Polygon';
+
+var poly = circularPolygon(center, radius);
+```
+
+#### Removal of optional this arguments.
+
+The following methods did get the optional this (i.e. opt_this) arguments removed. Please use closures, the es6 arrow function or the bind method to achieve this effect (Bind is explained here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+* Collection#forEach
+* geom/LineString#forEachSegment
+* Observable#on, #once, #un
+* source/TileUTFGrid#forDataAtCoordinateAndResolution
+* source/Vector#forEachFeature, #forEachFeatureInExtent, #forEachFeatureIntersectingExtent
+
 ### v4.6.0
 
 #### Renamed `exceedLength` option of `ol.style.Text` to `overflow`

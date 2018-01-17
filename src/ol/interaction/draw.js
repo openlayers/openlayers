@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.Draw');
 
 goog.require('ol');
+goog.require('ol.events.EventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');
 goog.require('ol.Object');
@@ -22,6 +23,7 @@ goog.require('ol.interaction.DrawEventType');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.interaction.Property');
 goog.require('ol.layer.Vector');
+goog.require('ol.pointer.MouseSource');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
@@ -55,6 +57,18 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.downPx_ = null;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.downTimeout_;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.lastDragTime_;
 
   /**
    * @type {boolean}
@@ -192,6 +206,12 @@ ol.interaction.Draw = function(options) {
   this.geometryFunction_ = geometryFunction;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.dragVertexDelay_ = options.dragVertexDelay !== undefined ? options.dragVertexDelay : 500;
+
+  /**
    * Finish coordinate for the feature (first point for polygons, last point for
    * linestrings).
    * @type {ol.Coordinate}
@@ -255,7 +275,8 @@ ol.interaction.Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-      ol.interaction.Draw.getDefaultStyleFunction()
+      ol.interaction.Draw.getDefaultStyleFunction(),
+    updateWhileAnimating: true
   });
 
   /**
@@ -321,8 +342,27 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(event) {
+  if (event.originalEvent.type === ol.events.EventType.CONTEXTMENU) {
+    // Avoid context menu for long taps when drawing on mobile
+    event.preventDefault();
+  }
   this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode_.POINT && this.freehandCondition_(event);
-  var pass = true;
+  let move = event.type === ol.MapBrowserEventType.POINTERMOVE;
+  let pass = true;
+  if (this.lastDragTime_ && event.type === ol.MapBrowserEventType.POINTERDRAG) {
+    const now = Date.now();
+    if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
+      this.downPx_ = event.pixel;
+      this.shouldHandle_ = !this.freehand_;
+      move = true;
+    } else {
+      this.lastDragTime_ = undefined;
+    }
+    if (this.shouldHandle_ && this.downTimeout_) {
+      clearTimeout(this.downTimeout_);
+      this.downTimeout_ = undefined;
+    }
+  }
   if (this.freehand_ &&
       event.type === ol.MapBrowserEventType.POINTERDRAG &&
       this.sketchFeature_ !== null) {
@@ -331,11 +371,18 @@ ol.interaction.Draw.handleEvent = function(event) {
   } else if (this.freehand_ &&
       event.type === ol.MapBrowserEventType.POINTERDOWN) {
     pass = false;
-  } else if (event.type === ol.MapBrowserEventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(event);
+  } else if (move) {
+    pass = event.type === ol.MapBrowserEventType.POINTERMOVE;
+    if (pass && this.freehand_) {
+      pass = this.handlePointerMove_(event);
+    } else if (event.pointerEvent.pointerType == ol.pointer.MouseSource.POINTER_TYPE ||
+        (event.type === ol.MapBrowserEventType.POINTERDRAG && !this.downTimeout_)) {
+      this.handlePointerMove_(event);
+    }
   } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
+
   return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
 };
 
@@ -356,6 +403,11 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
     }
     return true;
   } else if (this.condition_(event)) {
+    this.lastDragTime_ = Date.now();
+    this.downTimeout_ = setTimeout(function() {
+      this.handlePointerMove_(new MapBrowserPointerEvent(
+        MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, event.frameState));
+    }.bind(this), this.dragVertexDelay_);
     this.downPx_ = event.pixel;
     return true;
   } else {
@@ -372,6 +424,11 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
   var pass = true;
+
+  if (this.downTimeout_) {
+    clearTimeout(this.downTimeout_);
+    this.downTimeout_ = undefined;
+  }
 
   this.handlePointerMove_(event);
 
@@ -422,6 +479,9 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
     this.shouldHandle_ = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
+    if (!this.shouldHandle_) {
+      return true;
+    }
   }
 
   if (this.finishCoordinate_) {
@@ -504,9 +564,6 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
-    if (this.mode_ === ol.interaction.Draw.Mode_.CIRCLE) {
-      this.sketchLineCoords_ = this.sketchCoords_;
-    }
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new ol.Feature(
