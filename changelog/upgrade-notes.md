@@ -4,12 +4,10 @@
 
 #### Changed behavior of the `Draw` interaction
 
-For better drawing experience, especially on mobile devices, two changes were made to the behavior of the Draw interaction:
+For better drawing experience, two changes were made to the behavior of the Draw interaction:
 
- 1. On long press, the current vertex can be moved to its desired position.
- 2. When moving the mouse or panning the map, no draw cursor is shown, and the geometry being drawn is not updated. But because of 1., the draw cursor will appear on long press.
-
-To get the old behavior, configure the `Drag` interaction with `dragVertexDelay: 0`.
+ 1. On long press, the current vertex can be dragged to its desired position.
+ 2. On touch move (e.g. when panning the map on a mobile device), no draw cursor is shown, and the geometry being drawn is not updated. But because of 1., the draw cursor will appear on long press. Mouse moves are not affected by this change.
 
 #### Changes in proj4 integration
 

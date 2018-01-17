@@ -19,6 +19,7 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import MultiPolygon from '../geom/MultiPolygon.js';
+import MouseSource from '../pointer/MouseSource.js';
 import Point from '../geom/Point.js';
 import Polygon, {fromCircle, makeRegular} from '../geom/Polygon.js';
 import DrawEventType from '../interaction/DrawEventType.js';
@@ -374,9 +375,10 @@ Draw.handleEvent = function(event) {
     pass = false;
   } else if (move) {
     pass = event.type === MapBrowserEventType.POINTERMOVE;
-    if (pass && this.freehand_ || this.dragVertexDelay_ === 0) {
+    if (pass && this.freehand_) {
       pass = this.handlePointerMove_(event);
-    } else if (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_) {
+    } else if (event.pointerEvent.pointerType == MouseSource.POINTER_TYPE ||
+        (event.type === MapBrowserEventType.POINTERDRAG && !this.downTimeout_)) {
       this.handlePointerMove_(event);
     }
   } else if (event.type === MapBrowserEventType.DBLCLICK) {
