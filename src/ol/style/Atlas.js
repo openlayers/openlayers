@@ -74,9 +74,8 @@ Atlas.prototype.get = function(id) {
  * @return {?ol.AtlasInfo} The position and atlas image for the entry.
  */
 Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
-  let block, i, ii;
-  for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
-    block = this.emptyBlocks_[i];
+  for (let i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
+    const block = this.emptyBlocks_[i];
     if (block.width >= width + this.space_ &&
         block.height >= height + this.space_) {
       // we found a block that is big enough for our entry

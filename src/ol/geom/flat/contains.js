@@ -81,8 +81,7 @@ _ol_geom_flat_contains_.linearRingsContainsXY = function(flatCoordinates, offset
     flatCoordinates, offset, ends[0], stride, x, y)) {
     return false;
   }
-  let i, ii;
-  for (i = 1, ii = ends.length; i < ii; ++i) {
+  for (let i = 1, ii = ends.length; i < ii; ++i) {
     if (_ol_geom_flat_contains_.linearRingContainsXY(
       flatCoordinates, ends[i - 1], ends[i], stride, x, y)) {
       return false;
@@ -105,8 +104,7 @@ _ol_geom_flat_contains_.linearRingssContainsXY = function(flatCoordinates, offse
   if (endss.length === 0) {
     return false;
   }
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     if (_ol_geom_flat_contains_.linearRingsContainsXY(
       flatCoordinates, offset, ends, stride, x, y)) {

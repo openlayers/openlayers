@@ -109,10 +109,9 @@ AtlasManager.prototype.getInfo = function(id) {
  *    or `null` if the entry is not part of the atlases.
  */
 AtlasManager.prototype.getInfo_ = function(atlases, id) {
-  let atlas, info, i, ii;
-  for (i = 0, ii = atlases.length; i < ii; ++i) {
-    atlas = atlases[i];
-    info = atlas.get(id);
+  for (let i = 0, ii = atlases.length; i < ii; ++i) {
+    const atlas = atlases[i];
+    const info = atlas.get(id);
     if (info) {
       return info;
     }

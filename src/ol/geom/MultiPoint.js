@@ -67,13 +67,12 @@ MultiPoint.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
   }
   const flatCoordinates = this.flatCoordinates;
   const stride = this.stride;
-  let i, ii, j;
-  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+  for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
     const squaredDistance = squaredDx(
       x, y, flatCoordinates[i], flatCoordinates[i + 1]);
     if (squaredDistance < minSquaredDistance) {
       minSquaredDistance = squaredDistance;
-      for (j = 0; j < stride; ++j) {
+      for (let j = 0; j < stride; ++j) {
         closestPoint[j] = flatCoordinates[i + j];
       }
       closestPoint.length = stride;
@@ -102,8 +101,7 @@ MultiPoint.prototype.getCoordinates = function() {
  * @api
  */
 MultiPoint.prototype.getPoint = function(index) {
-  const n = !this.flatCoordinates ?
-    0 : this.flatCoordinates.length / this.stride;
+  const n = !this.flatCoordinates ? 0 : this.flatCoordinates.length / this.stride;
   if (index < 0 || n <= index) {
     return null;
   }
@@ -125,8 +123,7 @@ MultiPoint.prototype.getPoints = function() {
   const stride = this.stride;
   /** @type {Array.<ol.geom.Point>} */
   const points = [];
-  let i, ii;
-  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+  for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
     const point = new Point(null);
     point.setFlatCoordinates(layout, flatCoordinates.slice(i, i + stride));
     points.push(point);
@@ -151,10 +148,9 @@ MultiPoint.prototype.getType = function() {
 MultiPoint.prototype.intersectsExtent = function(extent) {
   const flatCoordinates = this.flatCoordinates;
   const stride = this.stride;
-  let i, ii, x, y;
-  for (i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
-    x = flatCoordinates[i];
-    y = flatCoordinates[i + 1];
+  for (let i = 0, ii = flatCoordinates.length; i < ii; i += stride) {
+    const x = flatCoordinates[i];
+    const y = flatCoordinates[i + 1];
     if (containsXY(extent, x, y)) {
       return true;
     }

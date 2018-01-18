@@ -22,7 +22,7 @@ _ol_geom_flat_closest_.point = function(flatCoordinates, offset1, offset2, strid
   const y1 = flatCoordinates[offset1 + 1];
   const dx = flatCoordinates[offset2] - x1;
   const dy = flatCoordinates[offset2 + 1] - y1;
-  let i, offset;
+  let offset;
   if (dx === 0 && dy === 0) {
     offset = offset1;
   } else {
@@ -30,7 +30,7 @@ _ol_geom_flat_closest_.point = function(flatCoordinates, offset1, offset2, strid
     if (t > 1) {
       offset = offset2;
     } else if (t > 0) {
-      for (i = 0; i < stride; ++i) {
+      for (let i = 0; i < stride; ++i) {
         closestPoint[i] = lerp(flatCoordinates[offset1 + i],
           flatCoordinates[offset2 + i], t);
       }
@@ -40,7 +40,7 @@ _ol_geom_flat_closest_.point = function(flatCoordinates, offset1, offset2, strid
       offset = offset1;
     }
   }
-  for (i = 0; i < stride; ++i) {
+  for (let i = 0; i < stride; ++i) {
     closestPoint[i] = flatCoordinates[offset + i];
   }
   closestPoint.length = stride;
@@ -83,8 +83,7 @@ _ol_geom_flat_closest_.getMaxSquaredDelta = function(flatCoordinates, offset, en
  * @return {number} Max squared delta.
  */
 _ol_geom_flat_closest_.getsMaxSquaredDelta = function(flatCoordinates, offset, ends, stride, maxSquaredDelta) {
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     maxSquaredDelta = _ol_geom_flat_closest_.getMaxSquaredDelta(
       flatCoordinates, offset, end, stride, maxSquaredDelta);
@@ -103,8 +102,7 @@ _ol_geom_flat_closest_.getsMaxSquaredDelta = function(flatCoordinates, offset, e
  * @return {number} Max squared delta.
  */
 _ol_geom_flat_closest_.getssMaxSquaredDelta = function(flatCoordinates, offset, endss, stride, maxSquaredDelta) {
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     maxSquaredDelta = _ol_geom_flat_closest_.getsMaxSquaredDelta(
       flatCoordinates, offset, ends, stride, maxSquaredDelta);
@@ -213,8 +211,7 @@ _ol_geom_flat_closest_.getsClosestPoint = function(flatCoordinates, offset, ends
   stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
   opt_tmpPoint) {
   const tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     const end = ends[i];
     minSquaredDistance = _ol_geom_flat_closest_.getClosestPoint(
       flatCoordinates, offset, end, stride,
@@ -243,8 +240,7 @@ _ol_geom_flat_closest_.getssClosestPoint = function(flatCoordinates, offset,
   endss, stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
   opt_tmpPoint) {
   const tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     minSquaredDistance = _ol_geom_flat_closest_.getsClosestPoint(
       flatCoordinates, offset, ends, stride,

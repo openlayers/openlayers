@@ -14,9 +14,8 @@ const _ol_geom_flat_center_ = {};
  */
 _ol_geom_flat_center_.linearRingss = function(flatCoordinates, offset, endss, stride) {
   const flatCenters = [];
-  let i, ii;
   let extent = createEmpty();
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     extent = createOrUpdateFromFlatCoordinates(flatCoordinates, offset, ends[0], stride);
     flatCenters.push((extent[0] + extent[2]) / 2, (extent[1] + extent[3]) / 2);

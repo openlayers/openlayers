@@ -12,8 +12,7 @@ const _ol_geom_flat_deflate_ = {};
  * @return {number} offset Offset.
  */
 _ol_geom_flat_deflate_.coordinate = function(flatCoordinates, offset, coordinate, stride) {
-  let i, ii;
-  for (i = 0, ii = coordinate.length; i < ii; ++i) {
+  for (let i = 0, ii = coordinate.length; i < ii; ++i) {
     flatCoordinates[offset++] = coordinate[i];
   }
   return offset;
@@ -28,8 +27,7 @@ _ol_geom_flat_deflate_.coordinate = function(flatCoordinates, offset, coordinate
  * @return {number} offset Offset.
  */
 _ol_geom_flat_deflate_.coordinates = function(flatCoordinates, offset, coordinates, stride) {
-  let i, ii;
-  for (i = 0, ii = coordinates.length; i < ii; ++i) {
+  for (let i = 0, ii = coordinates.length; i < ii; ++i) {
     const coordinate = coordinates[i];
     for (let j = 0; j < stride; ++j) {
       flatCoordinates[offset++] = coordinate[j];
@@ -50,8 +48,7 @@ _ol_geom_flat_deflate_.coordinates = function(flatCoordinates, offset, coordinat
 _ol_geom_flat_deflate_.coordinatess = function(flatCoordinates, offset, coordinatess, stride, opt_ends) {
   const ends = opt_ends ? opt_ends : [];
   let i = 0;
-  let j, jj;
-  for (j = 0, jj = coordinatess.length; j < jj; ++j) {
+  for (let j = 0, jj = coordinatess.length; j < jj; ++j) {
     const end = _ol_geom_flat_deflate_.coordinates(
       flatCoordinates, offset, coordinatess[j], stride);
     ends[i++] = end;
@@ -73,8 +70,7 @@ _ol_geom_flat_deflate_.coordinatess = function(flatCoordinates, offset, coordina
 _ol_geom_flat_deflate_.coordinatesss = function(flatCoordinates, offset, coordinatesss, stride, opt_endss) {
   const endss = opt_endss ? opt_endss : [];
   let i = 0;
-  let j, jj;
-  for (j = 0, jj = coordinatesss.length; j < jj; ++j) {
+  for (let j = 0, jj = coordinatesss.length; j < jj; ++j) {
     const ends = _ol_geom_flat_deflate_.coordinatess(
       flatCoordinates, offset, coordinatesss[j], stride, endss[i]);
     endss[i++] = ends;

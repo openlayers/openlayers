@@ -95,8 +95,7 @@ CanvasLineStringReplay.prototype.drawMultiLineString = function(multiLineStringG
   const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
   const stride = multiLineStringGeometry.getStride();
   let offset = 0;
-  let i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (let i = 0, ii = ends.length; i < ii; ++i) {
     offset = this.drawFlatCoordinates_(
       flatCoordinates, offset, ends[i], stride);
   }

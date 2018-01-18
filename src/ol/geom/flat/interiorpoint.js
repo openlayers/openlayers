@@ -85,8 +85,7 @@ _ol_geom_flat_interiorpoint_.linearRings = function(flatCoordinates, offset,
  */
 _ol_geom_flat_interiorpoint_.linearRingss = function(flatCoordinates, offset, endss, stride, flatCenters) {
   let interiorPoints = [];
-  let i, ii;
-  for (i = 0, ii = endss.length; i < ii; ++i) {
+  for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
     interiorPoints = _ol_geom_flat_interiorpoint_.linearRings(flatCoordinates,
       offset, ends, stride, flatCenters, 2 * i, interiorPoints);
