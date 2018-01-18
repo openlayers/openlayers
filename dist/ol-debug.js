@@ -1,6 +1,6 @@
 // OpenLayers. See https://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/openlayers/master/LICENSE.md
-// Version: v4.6.4-2-ged29dde55
+// Version: backport-7661-4-g9b0cd2a7c
 ;(function (root, factory) {
   if (typeof exports === "object") {
     module.exports = factory();
@@ -7781,6 +7781,7 @@ ol.events.EventType = {
   CHANGE: 'change',
 
   CLEAR: 'clear',
+  CONTEXTMENU: 'contextmenu',
   CLICK: 'click',
   DBLCLICK: 'dblclick',
   DRAGENTER: 'dragenter',
@@ -17739,6 +17740,8 @@ ol.PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
+  ol.events.listen(this.viewport_, ol.events.EventType.CONTEXTMENU,
+      this.handleBrowserEvent, this);
   ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
   ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
@@ -17962,6 +17965,8 @@ ol.PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
  */
 ol.PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
+  ol.events.unlisten(this.viewport_, ol.events.EventType.CONTEXTMENU,
+      this.handleBrowserEvent, this);
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
@@ -26897,11 +26902,12 @@ ol.ext.rbush = function() {};
 (function() {(function (exports) {
 'use strict';
 
-var quickselect = partialSort;
-function partialSort(arr, k, left, right, compare) {
-    left = left || 0;
-    right = right || (arr.length - 1);
-    compare = compare || defaultCompare;
+var quickselect_1 = quickselect;
+var default_1 = quickselect;
+function quickselect(arr, k, left, right, compare) {
+    quickselectStep(arr, k, left || 0, right || (arr.length - 1), compare || defaultCompare);
+}
+function quickselectStep(arr, k, left, right, compare) {
     while (right > left) {
         if (right - left > 600) {
             var n = right - left + 1;
@@ -26911,7 +26917,7 @@ function partialSort(arr, k, left, right, compare) {
             var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
             var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
             var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-            partialSort(arr, k, newLeft, newRight, compare);
+            quickselectStep(arr, k, newLeft, newRight, compare);
         }
         var t = arr[k];
         var i = left;
@@ -26942,6 +26948,7 @@ function swap(arr, i, j) {
 function defaultCompare(a, b) {
     return a < b ? -1 : a > b ? 1 : 0;
 }
+quickselect_1.default = default_1;
 
 var rbush_1 = rbush;
 function rbush(maxEntries, format) {
@@ -27322,7 +27329,7 @@ function multiSelect(arr, left, right, n, compare) {
         left = stack.pop();
         if (right - left <= n) continue;
         mid = left + Math.ceil((right - left) / n / 2) * n;
-        quickselect(arr, mid, left, right, compare);
+        quickselect_1(arr, mid, left, right, compare);
         stack.push(left, mid, mid, right);
     }
 }
@@ -27835,7 +27842,16 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
     ol.extent.createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
   }
   var canvas = context.canvas;
-  var intersects = box[0] <= canvas.width && box[2] >= 0 && box[1] <= canvas.height && box[3] >= 0;
+  var strokePadding = strokeInstruction ? (/** @type {number} */ (strokeInstruction[2]) * scale / 2) : 0;
+  var intersects =
+      box[0] - strokePadding <= canvas.width && box[2] + strokePadding >= 0 &&
+      box[1] - strokePadding <= canvas.height && box[3] + strokePadding >= 0;
+
+  if (snapToPixel) {
+    x = Math.round(x);
+    y = Math.round(y);
+  }
+
   if (declutterGroup) {
     if (!intersects && declutterGroup[4] == 1) {
       return;
@@ -28521,15 +28537,16 @@ ol.render.canvas.Replay.prototype.setFillStrokeStyle = function(fillStyle, strok
 /**
  * @param {ol.CanvasFillStrokeState} state State.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
+ * @return {Array.<*>} Fill instruction.
  */
-ol.render.canvas.Replay.prototype.applyFill = function(state, geometry) {
+ol.render.canvas.Replay.prototype.createFill = function(state, geometry) {
   var fillStyle = state.fillStyle;
   var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
   if (typeof fillStyle !== 'string') {
     var fillExtent = geometry.getExtent();
     fillInstruction.push([fillExtent[0], fillExtent[3]]);
   }
-  this.instructions.push(fillInstruction);
+  return fillInstruction;
 };
 
 
@@ -28537,25 +28554,34 @@ ol.render.canvas.Replay.prototype.applyFill = function(state, geometry) {
  * @param {ol.CanvasFillStrokeState} state State.
  */
 ol.render.canvas.Replay.prototype.applyStroke = function(state) {
-  this.instructions.push([
-    ol.render.canvas.Instruction.SET_STROKE_STYLE,
-    state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
-    state.lineJoin, state.miterLimit,
-    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
-  ]);
+  this.instructions.push(this.createStroke(state));
 };
 
 
 /**
  * @param {ol.CanvasFillStrokeState} state State.
- * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature))} applyFill Apply fill.
+ * @return {Array.<*>} Stroke instruction.
+ */
+ol.render.canvas.Replay.prototype.createStroke = function(state) {
+  return [
+    ol.render.canvas.Instruction.SET_STROKE_STYLE,
+    state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
+    state.lineJoin, state.miterLimit,
+    this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
+  ];
+};
+
+
+/**
+ * @param {ol.CanvasFillStrokeState} state State.
+ * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.Replay.prototype.updateFillStyle = function(state, applyFill, geometry) {
+ol.render.canvas.Replay.prototype.updateFillStyle = function(state, createFill, geometry) {
   var fillStyle = state.fillStyle;
   if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
     if (fillStyle !== undefined) {
-      applyFill.call(this, state, geometry);
+      this.instructions.push(createFill.call(this, state, geometry));
     }
     state.currentFillStyle = fillStyle;
   }
@@ -29220,7 +29246,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   var state = this.state;
   var fillStyle = state.fillStyle;
   if (fillStyle !== undefined) {
-    this.updateFillStyle(state, this.applyFill, geometry);
+    this.updateFillStyle(state, this.createFill, geometry);
   }
   if (state.strokeStyle !== undefined) {
     this.updateStrokeStyle(state, this.applyStroke);
@@ -29557,8 +29583,10 @@ ol.render.canvas.TextReplay.prototype.drawText = function(geometry, feature) {
     this.beginGeometry(geometry, feature);
     if (textState.backgroundFill || textState.backgroundStroke) {
       this.setFillStrokeStyle(textState.backgroundFill, textState.backgroundStroke);
-      this.updateFillStyle(this.state, this.applyFill, geometry);
+      this.updateFillStyle(this.state, this.createFill, geometry);
+      this.hitDetectionInstructions.push(this.createFill(this.state, geometry));
       this.updateStrokeStyle(this.state, this.applyStroke);
+      this.hitDetectionInstructions.push(this.createStroke(this.state));
     }
     this.drawTextImage_(label, begin, end);
     this.endGeometry(geometry, feature);
@@ -60666,8 +60694,10 @@ ol.inherits(ol.source.Vector.Event, ol.events.Event);
 goog.provide('ol.interaction.Draw');
 
 goog.require('ol');
+goog.require('ol.events.EventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');
+goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
 goog.require('ol.events');
@@ -60687,6 +60717,7 @@ goog.require('ol.interaction.DrawEventType');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.interaction.Property');
 goog.require('ol.layer.Vector');
+goog.require('ol.pointer.MouseSource');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
@@ -60720,6 +60751,18 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.downPx_ = null;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.downTimeout_;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.lastDragTime_;
 
   /**
    * @type {boolean}
@@ -60857,6 +60900,12 @@ ol.interaction.Draw = function(options) {
   this.geometryFunction_ = geometryFunction;
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.dragVertexDelay_ = options.dragVertexDelay !== undefined ? options.dragVertexDelay : 500;
+
+  /**
    * Finish coordinate for the feature (first point for polygons, last point for
    * linestrings).
    * @type {ol.Coordinate}
@@ -60920,7 +60969,8 @@ ol.interaction.Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-      ol.interaction.Draw.getDefaultStyleFunction()
+      ol.interaction.Draw.getDefaultStyleFunction(),
+    updateWhileInteracting: true
   });
 
   /**
@@ -60986,8 +61036,27 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(event) {
+  if (event.originalEvent.type === ol.events.EventType.CONTEXTMENU) {
+    // Avoid context menu for long taps when drawing on mobile
+    event.preventDefault();
+  }
   this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode_.POINT && this.freehandCondition_(event);
-  var pass = true;
+  let move = event.type === ol.MapBrowserEventType.POINTERMOVE;
+  let pass = true;
+  if (this.lastDragTime_ && event.type === ol.MapBrowserEventType.POINTERDRAG) {
+    const now = Date.now();
+    if (now - this.lastDragTime_ >= this.dragVertexDelay_) {
+      this.downPx_ = event.pixel;
+      this.shouldHandle_ = !this.freehand_;
+      move = true;
+    } else {
+      this.lastDragTime_ = undefined;
+    }
+    if (this.shouldHandle_ && this.downTimeout_) {
+      clearTimeout(this.downTimeout_);
+      this.downTimeout_ = undefined;
+    }
+  }
   if (this.freehand_ &&
       event.type === ol.MapBrowserEventType.POINTERDRAG &&
       this.sketchFeature_ !== null) {
@@ -60996,11 +61065,18 @@ ol.interaction.Draw.handleEvent = function(event) {
   } else if (this.freehand_ &&
       event.type === ol.MapBrowserEventType.POINTERDOWN) {
     pass = false;
-  } else if (event.type === ol.MapBrowserEventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(event);
+  } else if (move) {
+    pass = event.type === ol.MapBrowserEventType.POINTERMOVE;
+    if (pass && this.freehand_) {
+      pass = this.handlePointerMove_(event);
+    } else if (event.pointerEvent.pointerType == ol.pointer.MouseSource.POINTER_TYPE ||
+        (event.type === ol.MapBrowserEventType.POINTERDRAG && !this.downTimeout_)) {
+      this.handlePointerMove_(event);
+    }
   } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
+
   return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
 };
 
@@ -61021,6 +61097,11 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
     }
     return true;
   } else if (this.condition_(event)) {
+    this.lastDragTime_ = Date.now();
+    this.downTimeout_ = setTimeout(function() {
+      this.handlePointerMove_(new ol.MapBrowserPointerEvent(
+          ol.MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, true, event.frameState));
+    }.bind(this), this.dragVertexDelay_);
     this.downPx_ = event.pixel;
     return true;
   } else {
@@ -61037,6 +61118,11 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
   var pass = true;
+
+  if (this.downTimeout_) {
+    clearTimeout(this.downTimeout_);
+    this.downTimeout_ = undefined;
+  }
 
   this.handlePointerMove_(event);
 
@@ -61087,6 +61173,9 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
     this.shouldHandle_ = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
+    if (!this.shouldHandle_) {
+      return true;
+    }
   }
 
   if (this.finishCoordinate_) {
@@ -61169,9 +61258,6 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
-    if (this.mode_ === ol.interaction.Draw.Mode_.CIRCLE) {
-      this.sketchLineCoords_ = this.sketchCoords_;
-    }
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new ol.Feature(
@@ -96455,7 +96541,7 @@ goog.exportProperty(
     ol.control.ZoomToExtent.prototype,
     'un',
     ol.control.ZoomToExtent.prototype.un);
-ol.VERSION = 'v4.6.4-2-ged29dde55';
+ol.VERSION = 'backport-7661-4-g9b0cd2a7c';
 OPENLAYERS.ol = ol;
 
   return OPENLAYERS.ol;
