@@ -992,7 +992,7 @@ ol.render.canvas.Replay.prototype.applyStroke = function(state) {
  */
 ol.render.canvas.Replay.prototype.createStroke = function(state) {
   return [
-    _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
+    ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth * this.pixelRatio, state.lineCap,
     state.lineJoin, state.miterLimit,
     this.applyPixelRatio(state.lineDash), state.lineDashOffset * this.pixelRatio
@@ -1005,7 +1005,7 @@ ol.render.canvas.Replay.prototype.createStroke = function(state) {
  * @param {function(this:ol.render.canvas.Replay, ol.CanvasFillStrokeState, (ol.geom.Geometry|ol.render.Feature)):Array.<*>} createFill Create fill.
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-_ol_render_canvas_Replay_.prototype.updateFillStyle = function(state, createFill, geometry) {
+ol.render.canvas.Replay.prototype.updateFillStyle = function(state, createFill, geometry) {
   var fillStyle = state.fillStyle;
   if (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle) {
     if (fillStyle !== undefined) {
