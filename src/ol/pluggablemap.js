@@ -205,11 +205,11 @@ ol.PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  ol.events.listen(this.viewport_, EventType.CONTEXTMENU,
+  ol.events.listen(this.viewport_, ol.events.EventType.CONTEXTMENU,
       this.handleBrowserEvent, this);
-  ol.events.listen(this.viewport_, EventType.WHEEL,
+  ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
-  ol.events.listen(this.viewport_, EventType.MOUSEWHEEL,
+  ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
 
   /**
@@ -430,11 +430,11 @@ ol.PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
  */
 ol.PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
-  ol.events.unlisten(this.viewport_, EventType.CONTEXTMENU,
+  ol.events.unlisten(this.viewport_, ol.events.EventType.CONTEXTMENU,
       this.handleBrowserEvent, this);
-  ol.events.unlisten(this.viewport_, EventType.WHEEL,
+  ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
-  ol.events.unlisten(this.viewport_, EventType.MOUSEWHEEL,
+  ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
     window.removeEventListener(ol.events.EventType.RESIZE,

@@ -106,7 +106,7 @@ describe('ol.interaction.Draw', function() {
     });
 
     it('accepts a dragVertexDelay option', function() {
-      const draw = new Draw({
+      const draw = new ol.interaction.Draw({
         source: source,
         type: 'LineString',
         dragVertexDelay: 42
@@ -431,7 +431,7 @@ describe('ol.interaction.Draw', function() {
         const features = source.getFeatures();
         expect(features).to.have.length(1);
         const geometry = features[0].getGeometry();
-        expect(geometry).to.be.a(LineString);
+        expect(geometry).to.be.a(ol.geom.LineString);
         expect(geometry.getCoordinates()).to.eql([[10, -20], [20, -10], [30, -20]]);
 
         done();

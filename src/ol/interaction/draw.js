@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.events.EventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEventType');
+goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
 goog.require('ol.events');
@@ -59,13 +60,13 @@ ol.interaction.Draw = function(options) {
   this.downPx_ = null;
 
   /**
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
   this.downTimeout_;
 
   /**
-   * @type {number}
+   * @type {number|undefined}
    * @private
    */
   this.lastDragTime_;
@@ -276,7 +277,7 @@ ol.interaction.Draw = function(options) {
     }),
     style: options.style ? options.style :
       ol.interaction.Draw.getDefaultStyleFunction(),
-    updateWhileAnimating: true
+    updateWhileInteracting: true
   });
 
   /**
@@ -405,8 +406,8 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
   } else if (this.condition_(event)) {
     this.lastDragTime_ = Date.now();
     this.downTimeout_ = setTimeout(function() {
-      this.handlePointerMove_(new MapBrowserPointerEvent(
-        MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, event.frameState));
+      this.handlePointerMove_(new ol.MapBrowserPointerEvent(
+          ol.MapBrowserEventType.POINTERMOVE, event.map, event.pointerEvent, true, event.frameState));
     }.bind(this), this.dragVertexDelay_);
     this.downPx_ = event.pixel;
     return true;

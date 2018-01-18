@@ -270,7 +270,7 @@ ol.render.canvas.Replay.prototype.replayImage_ = function(context, x, y, image,
     ol.extent.createOrUpdate(boxX, boxY, boxX + boxW, boxY + boxH, box);
   }
   var canvas = context.canvas;
-  var strokePadding = strokeInstruction ? (strokeInstruction[2] * scale / 2) : 0;
+  var strokePadding = strokeInstruction ? (/** @type {number} */ (strokeInstruction[2]) * scale / 2) : 0;
   var intersects =
       box[0] - strokePadding <= canvas.width && box[2] + strokePadding >= 0 &&
       box[1] - strokePadding <= canvas.height && box[3] + strokePadding >= 0;
