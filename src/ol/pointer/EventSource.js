@@ -7,7 +7,7 @@
  *     mapping.
  * @constructor
  */
-const _ol_pointer_EventSource_ = function(dispatcher, mapping) {
+const EventSource = function(dispatcher, mapping) {
   /**
    * @type {ol.pointer.PointerEventHandler}
    */
@@ -26,7 +26,7 @@ const _ol_pointer_EventSource_ = function(dispatcher, mapping) {
  * List of events supported by this source.
  * @return {Array.<string>} Event names
  */
-_ol_pointer_EventSource_.prototype.getEvents = function() {
+EventSource.prototype.getEvents = function() {
   return Object.keys(this.mapping_);
 };
 
@@ -36,7 +36,7 @@ _ol_pointer_EventSource_.prototype.getEvents = function() {
  * @param {string} eventType The event type.
  * @return {function(Event)} Handler
  */
-_ol_pointer_EventSource_.prototype.getHandlerForEvent = function(eventType) {
+EventSource.prototype.getHandlerForEvent = function(eventType) {
   return this.mapping_[eventType];
 };
-export default _ol_pointer_EventSource_;
+export default EventSource;

@@ -36,11 +36,11 @@ import _ol_events_ from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import _ol_has_ from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
-import _ol_pointer_MouseSource_ from '../pointer/MouseSource.js';
-import _ol_pointer_MsSource_ from '../pointer/MsSource.js';
-import _ol_pointer_NativeSource_ from '../pointer/NativeSource.js';
+import MouseSource from '../pointer/MouseSource.js';
+import MsSource from '../pointer/MsSource.js';
+import NativeSource from '../pointer/NativeSource.js';
 import PointerEvent from '../pointer/PointerEvent.js';
-import _ol_pointer_TouchSource_ from '../pointer/TouchSource.js';
+import TouchSource from '../pointer/TouchSource.js';
 
 /**
  * @constructor
@@ -87,16 +87,15 @@ inherits(PointerEventHandler, EventTarget);
  */
 PointerEventHandler.prototype.registerSources = function() {
   if (_ol_has_.POINTER) {
-    this.registerSource('native', new _ol_pointer_NativeSource_(this));
+    this.registerSource('native', new NativeSource(this));
   } else if (_ol_has_.MSPOINTER) {
-    this.registerSource('ms', new _ol_pointer_MsSource_(this));
+    this.registerSource('ms', new MsSource(this));
   } else {
-    const mouseSource = new _ol_pointer_MouseSource_(this);
+    const mouseSource = new MouseSource(this);
     this.registerSource('mouse', mouseSource);
 
     if (_ol_has_.TOUCH) {
-      this.registerSource('touch',
-        new _ol_pointer_TouchSource_(this, mouseSource));
+      this.registerSource('touch', new TouchSource(this, mouseSource));
     }
   }
 
@@ -389,7 +388,7 @@ PointerEventHandler.prototype.fireNativeEvent = function(event) {
  */
 PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
   const pointerEvent = this.makeEvent(
-    eventType, _ol_pointer_MouseSource_.prepareEvent(event, this), event);
+    eventType, MouseSource.prepareEvent(event, this), event);
   return pointerEvent;
 };
 
