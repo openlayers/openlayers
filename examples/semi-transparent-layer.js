@@ -14,7 +14,9 @@ const map = new Map({
     new TileLayer({
       source: new TileJSON({
         url: 'https://api.tiles.mapbox.com/v3/mapbox.va-quake-aug.json?secure',
-        crossOrigin: 'anonymous'
+        crossOrigin: 'anonymous',
+        // this layer has transparency, so do not fade tiles:
+        transition: 0
       })
     })
   ],
