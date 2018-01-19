@@ -2,7 +2,7 @@
  * @module ol/coordinate
  */
 import {modulo} from './math.js';
-import _ol_string_ from './string.js';
+import {padNumber} from './string.js';
 const _ol_coordinate_ = {};
 
 
@@ -160,8 +160,8 @@ _ol_coordinate_.degreesToStringHDMS = function(hemispheres, degrees, opt_fractio
     deg += 1;
   }
 
-  return deg + '\u00b0 ' + _ol_string_.padNumber(min, 2) + '\u2032 ' +
-    _ol_string_.padNumber(sec, 2, dflPrecision) + '\u2033' +
+  return deg + '\u00b0 ' + padNumber(min, 2) + '\u2032 ' +
+    padNumber(sec, 2, dflPrecision) + '\u2033' +
     (normalizedDegrees == 0 ? '' : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0));
 };
 

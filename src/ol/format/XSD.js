@@ -2,7 +2,7 @@
  * @module ol/format/XSD
  */
 import _ol_xml_ from '../xml.js';
-import _ol_string_ from '../string.js';
+import {padNumber} from '../string.js';
 const XSD = {};
 
 
@@ -124,11 +124,11 @@ XSD.writeCDATASection = function(node, string) {
 XSD.writeDateTimeTextNode = function(node, dateTime) {
   const date = new Date(dateTime * 1000);
   const string = date.getUTCFullYear() + '-' +
-      _ol_string_.padNumber(date.getUTCMonth() + 1, 2) + '-' +
-      _ol_string_.padNumber(date.getUTCDate(), 2) + 'T' +
-      _ol_string_.padNumber(date.getUTCHours(), 2) + ':' +
-      _ol_string_.padNumber(date.getUTCMinutes(), 2) + ':' +
-      _ol_string_.padNumber(date.getUTCSeconds(), 2) + 'Z';
+      padNumber(date.getUTCMonth() + 1, 2) + '-' +
+      padNumber(date.getUTCDate(), 2) + 'T' +
+      padNumber(date.getUTCHours(), 2) + ':' +
+      padNumber(date.getUTCMinutes(), 2) + ':' +
+      padNumber(date.getUTCSeconds(), 2) + 'Z';
   node.appendChild(_ol_xml_.DOCUMENT.createTextNode(string));
 };
 

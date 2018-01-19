@@ -14,7 +14,7 @@ import {get as getProjection, transform} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
 import ImageSource from '../source/Image.js';
 import WMSServerType from '../source/WMSServerType.js';
-import _ol_string_ from '../string.js';
+import {compareVersions} from '../string.js';
 import {appendParams} from '../uri.js';
 
 /**
@@ -367,6 +367,6 @@ ImageWMS.prototype.updateParams = function(params) {
  */
 ImageWMS.prototype.updateV13_ = function() {
   const version = this.params_['VERSION'] || DEFAULT_WMS_VERSION;
-  this.v13_ = _ol_string_.compareVersions(version, '1.3') >= 0;
+  this.v13_ = compareVersions(version, '1.3') >= 0;
 };
 export default ImageWMS;

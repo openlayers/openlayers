@@ -1,20 +1,20 @@
 /**
  * @module ol/string
  */
-const _ol_string_ = {};
 
 /**
  * @param {number} number Number to be formatted
  * @param {number} width The desired width
  * @param {number=} opt_precision Precision of the output string (i.e. number of decimal places)
  * @returns {string} Formatted string
-*/
-_ol_string_.padNumber = function(number, width, opt_precision) {
+ */
+export function padNumber(number, width, opt_precision) {
   const numberString = opt_precision !== undefined ? number.toFixed(opt_precision) : '' + number;
   let decimal = numberString.indexOf('.');
   decimal = decimal === -1 ? numberString.length : decimal;
   return decimal > width ? numberString : new Array(1 + width - decimal).join('0') + numberString;
-};
+}
+
 
 /**
  * Adapted from https://github.com/omichelsen/compare-versions/blob/master/index.js
@@ -22,7 +22,7 @@ _ol_string_.padNumber = function(number, width, opt_precision) {
  * @param {string|number} v2 Second version
  * @returns {number} Value
  */
-_ol_string_.compareVersions = function(v1, v2) {
+export function compareVersions(v1, v2) {
   const s1 = ('' + v1).split('.');
   const s2 = ('' + v2).split('.');
 
@@ -39,5 +39,4 @@ _ol_string_.compareVersions = function(v1, v2) {
   }
 
   return 0;
-};
-export default _ol_string_;
+}
