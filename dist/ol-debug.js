@@ -1,6 +1,6 @@
 // OpenLayers. See https://openlayers.org/
 // License: https://raw.githubusercontent.com/openlayers/openlayers/master/LICENSE.md
-// Version: backport-7661-4-g9b0cd2a7c
+// Version: v4.6.4-backports.1-1-g369623789
 ;(function (root, factory) {
   if (typeof exports === "object") {
     module.exports = factory();
@@ -96541,7 +96541,7 @@ goog.exportProperty(
     ol.control.ZoomToExtent.prototype,
     'un',
     ol.control.ZoomToExtent.prototype.un);
-ol.VERSION = 'backport-7661-4-g9b0cd2a7c';
+ol.VERSION = 'v4.6.4-backports.1-1-g369623789';
 OPENLAYERS.ol = ol;
 
   return OPENLAYERS.ol;
