@@ -4,7 +4,7 @@
 import {WEBGL_EXTENSIONS, getUid, inherits} from '../index.js';
 import Disposable from '../Disposable.js';
 import {includes} from '../array.js';
-import _ol_events_ from '../events.js';
+import {listen, unlistenAll} from '../events.js';
 import {clear} from '../obj.js';
 import _ol_webgl_ from '../webgl.js';
 import ContextEventType from '../webgl/ContextEventType.js';
@@ -84,9 +84,9 @@ const _ol_webgl_Context_ = function(canvas, gl) {
     gl.getExtension('OES_element_index_uint');
   }
 
-  _ol_events_.listen(this.canvas_, ContextEventType.LOST,
+  listen(this.canvas_, ContextEventType.LOST,
     this.handleWebGLContextLost, this);
-  _ol_events_.listen(this.canvas_, ContextEventType.RESTORED,
+  listen(this.canvas_, ContextEventType.RESTORED,
     this.handleWebGLContextRestored, this);
 
 };
@@ -145,7 +145,7 @@ _ol_webgl_Context_.prototype.deleteBuffer = function(buf) {
  * @inheritDoc
  */
 _ol_webgl_Context_.prototype.disposeInternal = function() {
-  _ol_events_.unlistenAll(this.canvas_);
+  unlistenAll(this.canvas_);
   const gl = this.getGL();
   if (!gl.isContextLost()) {
     for (const key in this.bufferCache_) {

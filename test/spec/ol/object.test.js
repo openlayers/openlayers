@@ -1,5 +1,5 @@
 import BaseObject from '../../../src/ol/Object.js';
-import _ol_events_ from '../../../src/ol/events.js';
+import {listen} from '../../../src/ol/events.js';
 
 
 describe('ol.Object', function() {
@@ -115,10 +115,10 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      _ol_events_.listen(o, 'change:k', listener1);
+      listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      _ol_events_.listen(o, 'propertychange', listener2);
+      listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events', function() {
@@ -148,10 +148,10 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      _ol_events_.listen(o, 'change:k', listener1);
+      listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      _ol_events_.listen(o, 'propertychange', listener2);
+      listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events to object', function() {
@@ -224,9 +224,9 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      _ol_events_.listen(o, 'change:k', listener1);
+      listen(o, 'change:k', listener1);
       listener2 = sinon.spy();
-      _ol_events_.listen(o, 'change:K', listener2);
+      listen(o, 'change:K', listener2);
     });
 
     it('dispatches the expected event', function() {

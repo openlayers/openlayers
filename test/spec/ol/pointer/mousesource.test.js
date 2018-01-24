@@ -1,4 +1,4 @@
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
@@ -31,7 +31,7 @@ describe('ol.pointer.MouseSource', function() {
 
   describe('simulated mouse events', function() {
     it('prevents simulated mouse events', function() {
-      _ol_events_.listen(handler, 'pointerdown', eventSpy);
+      listen(handler, 'pointerdown', eventSpy);
 
       // simulates that a mouse event is triggered from a touch
       simulateTouchEvent('touchstart', 10, 20);
@@ -42,7 +42,7 @@ describe('ol.pointer.MouseSource', function() {
     });
 
     it('dispatches real mouse events', function() {
-      _ol_events_.listen(handler, 'pointerdown', eventSpy);
+      listen(handler, 'pointerdown', eventSpy);
 
       // the two events are at different positions
       simulateTouchEvent('touchstart', 10, 20);
@@ -55,7 +55,7 @@ describe('ol.pointer.MouseSource', function() {
       // set the timeout to a lower value, to speed up the tests
       TouchSource.DEDUP_TIMEOUT = 100;
 
-      _ol_events_.listen(handler, 'pointerdown', eventSpy);
+      listen(handler, 'pointerdown', eventSpy);
 
       // first simulate a touch event, then a mouse event
       // at the same position after a timeout

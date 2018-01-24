@@ -15,7 +15,7 @@ import Control from '../control/Control.js';
 import _ol_coordinate_ from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {replaceNode} from '../dom.js';
-import _ol_events_ from '../events.js';
+import {listen, listenOnce, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, scaleFromCenter} from '../extent.js';
 
@@ -101,7 +101,7 @@ const OverviewMap = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  _ol_events_.listen(button, EventType.CLICK,
+  listen(button, EventType.CLICK,
     this.handleClick_, this);
 
   /**
@@ -225,7 +225,7 @@ OverviewMap.prototype.setMap = function(map) {
 
   if (map) {
     this.ovmap_.setTarget(this.ovmapDiv_);
-    this.listenerKeys.push(_ol_events_.listen(
+    this.listenerKeys.push(listen(
       map, ObjectEventType.PROPERTYCHANGE,
       this.handleMapPropertyChange_, this));
 
@@ -269,7 +269,7 @@ OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  * @private
  */
 OverviewMap.prototype.bindView_ = function(view) {
-  _ol_events_.listen(view,
+  listen(view,
     BaseObject.getChangeEventType(ViewProperty.ROTATION),
     this.handleRotationChanged_, this);
 };
@@ -281,7 +281,7 @@ OverviewMap.prototype.bindView_ = function(view) {
  * @private
  */
 OverviewMap.prototype.unbindView_ = function(view) {
-  _ol_events_.unlisten(view,
+  unlisten(view,
     BaseObject.getChangeEventType(ViewProperty.ROTATION),
     this.handleRotationChanged_, this);
 };
@@ -503,7 +503,7 @@ OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    _ol_events_.listenOnce(ovmap, MapEventType.POSTRENDER,
+    listenOnce(ovmap, MapEventType.POSTRENDER,
       function(event) {
         this.updateBox_();
       },

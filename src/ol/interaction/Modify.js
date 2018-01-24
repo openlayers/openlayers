@@ -9,7 +9,7 @@ import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {equals} from '../array.js';
 import _ol_coordinate_ from '../coordinate.js';
-import _ol_events_ from '../events.js';
+import {listen, unlisten} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import _ol_events_condition_ from '../events/condition.js';
@@ -196,9 +196,9 @@ const Modify = function(options) {
   if (options.source) {
     this.source_ = options.source;
     features = new Collection(this.source_.getFeatures());
-    _ol_events_.listen(this.source_, VectorEventType.ADDFEATURE,
+    listen(this.source_, VectorEventType.ADDFEATURE,
       this.handleSourceAdd_, this);
-    _ol_events_.listen(this.source_, VectorEventType.REMOVEFEATURE,
+    listen(this.source_, VectorEventType.REMOVEFEATURE,
       this.handleSourceRemove_, this);
   } else {
     features = options.features;
@@ -214,9 +214,9 @@ const Modify = function(options) {
   this.features_ = features;
 
   this.features_.forEach(this.addFeature_.bind(this));
-  _ol_events_.listen(this.features_, CollectionEventType.ADD,
+  listen(this.features_, CollectionEventType.ADD,
     this.handleFeatureAdd_, this);
-  _ol_events_.listen(this.features_, CollectionEventType.REMOVE,
+  listen(this.features_, CollectionEventType.REMOVE,
     this.handleFeatureRemove_, this);
 
   /**
@@ -256,7 +256,7 @@ Modify.prototype.addFeature_ = function(feature) {
   if (map && map.isRendered() && this.getActive()) {
     this.handlePointerAtPixel_(this.lastPixel_, map);
   }
-  _ol_events_.listen(feature, EventType.CHANGE,
+  listen(feature, EventType.CHANGE,
     this.handleFeatureChange_, this);
 };
 
@@ -286,7 +286,7 @@ Modify.prototype.removeFeature_ = function(feature) {
     this.overlay_.getSource().removeFeature(this.vertexFeature_);
     this.vertexFeature_ = null;
   }
-  _ol_events_.unlisten(feature, EventType.CHANGE,
+  unlisten(feature, EventType.CHANGE,
     this.handleFeatureChange_, this);
 };
 

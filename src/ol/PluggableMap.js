@@ -17,7 +17,7 @@ import View from './View.js';
 import ViewHint from './ViewHint.js';
 import {assert} from './asserts.js';
 import {removeNode} from './dom.js';
-import _ol_events_ from './events.js';
+import {listen, unlistenByKey, unlisten} from './events.js';
 import Event from './events/Event.js';
 import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
@@ -240,7 +240,7 @@ const PluggableMap = function(options) {
     EventType.WHEEL
   ];
   for (let i = 0, ii = overlayEvents.length; i < ii; ++i) {
-    _ol_events_.listen(this.overlayContainerStopEvent_, overlayEvents[i],
+    listen(this.overlayContainerStopEvent_, overlayEvents[i],
       Event.stopPropagation);
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
@@ -251,7 +251,7 @@ const PluggableMap = function(options) {
    */
   this.mapBrowserEventHandler_ = new MapBrowserEventHandler(this, options.moveTolerance);
   for (const key in MapBrowserEventType) {
-    _ol_events_.listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
+    listen(this.mapBrowserEventHandler_, MapBrowserEventType[key],
       this.handleMapBrowserEvent, this);
   }
 
@@ -267,11 +267,11 @@ const PluggableMap = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  _ol_events_.listen(this.viewport_, EventType.CONTEXTMENU,
+  listen(this.viewport_, EventType.CONTEXTMENU,
     this.handleBrowserEvent, this);
-  _ol_events_.listen(this.viewport_, EventType.WHEEL,
+  listen(this.viewport_, EventType.WHEEL,
     this.handleBrowserEvent, this);
-  _ol_events_.listen(this.viewport_, EventType.MOUSEWHEEL,
+  listen(this.viewport_, EventType.MOUSEWHEEL,
     this.handleBrowserEvent, this);
 
   /**
@@ -338,14 +338,14 @@ const PluggableMap = function(options) {
    */
   this.skippedFeatureUids_ = {};
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(MapProperty.LAYERGROUP),
     this.handleLayerGroupChanged_, this);
-  _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.VIEW),
+  listen(this, BaseObject.getChangeEventType(MapProperty.VIEW),
     this.handleViewChanged_, this);
-  _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.SIZE),
+  listen(this, BaseObject.getChangeEventType(MapProperty.SIZE),
     this.handleSizeChanged_, this);
-  _ol_events_.listen(this, BaseObject.getChangeEventType(MapProperty.TARGET),
+  listen(this, BaseObject.getChangeEventType(MapProperty.TARGET),
     this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
@@ -361,7 +361,7 @@ const PluggableMap = function(options) {
       control.setMap(this);
     }.bind(this));
 
-  _ol_events_.listen(this.controls, CollectionEventType.ADD,
+  listen(this.controls, CollectionEventType.ADD,
     /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -369,7 +369,7 @@ const PluggableMap = function(options) {
       event.element.setMap(this);
     }, this);
 
-  _ol_events_.listen(this.controls, CollectionEventType.REMOVE,
+  listen(this.controls, CollectionEventType.REMOVE,
     /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -386,7 +386,7 @@ const PluggableMap = function(options) {
       interaction.setMap(this);
     }.bind(this));
 
-  _ol_events_.listen(this.interactions, CollectionEventType.ADD,
+  listen(this.interactions, CollectionEventType.ADD,
     /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -394,7 +394,7 @@ const PluggableMap = function(options) {
       event.element.setMap(this);
     }, this);
 
-  _ol_events_.listen(this.interactions, CollectionEventType.REMOVE,
+  listen(this.interactions, CollectionEventType.REMOVE,
     /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -404,7 +404,7 @@ const PluggableMap = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_.bind(this));
 
-  _ol_events_.listen(this.overlays_, CollectionEventType.ADD,
+  listen(this.overlays_, CollectionEventType.ADD,
     /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -412,7 +412,7 @@ const PluggableMap = function(options) {
       this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
     }, this);
 
-  _ol_events_.listen(this.overlays_, CollectionEventType.REMOVE,
+  listen(this.overlays_, CollectionEventType.REMOVE,
     /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -493,11 +493,11 @@ PluggableMap.prototype.addOverlayInternal_ = function(overlay) {
  */
 PluggableMap.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
-  _ol_events_.unlisten(this.viewport_, EventType.CONTEXTMENU,
+  unlisten(this.viewport_, EventType.CONTEXTMENU,
     this.handleBrowserEvent, this);
-  _ol_events_.unlisten(this.viewport_, EventType.WHEEL,
+  unlisten(this.viewport_, EventType.WHEEL,
     this.handleBrowserEvent, this);
-  _ol_events_.unlisten(this.viewport_, EventType.MOUSEWHEEL,
+  unlisten(this.viewport_, EventType.MOUSEWHEEL,
     this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
     window.removeEventListener(EventType.RESIZE,
@@ -1004,7 +1004,7 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
 
   if (this.keyHandlerKeys_) {
     for (let i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
-      _ol_events_.unlistenByKey(this.keyHandlerKeys_[i]);
+      unlistenByKey(this.keyHandlerKeys_[i]);
     }
     this.keyHandlerKeys_ = null;
   }
@@ -1023,9 +1023,9 @@ PluggableMap.prototype.handleTargetChanged_ = function() {
     const keyboardEventTarget = !this.keyboardEventTarget_ ?
       targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
-      _ol_events_.listen(keyboardEventTarget, EventType.KEYDOWN,
+      listen(keyboardEventTarget, EventType.KEYDOWN,
         this.handleBrowserEvent, this),
-      _ol_events_.listen(keyboardEventTarget, EventType.KEYPRESS,
+      listen(keyboardEventTarget, EventType.KEYPRESS,
         this.handleBrowserEvent, this)
     ];
 
@@ -1063,20 +1063,20 @@ PluggableMap.prototype.handleViewPropertyChanged_ = function() {
  */
 PluggableMap.prototype.handleViewChanged_ = function() {
   if (this.viewPropertyListenerKey_) {
-    _ol_events_.unlistenByKey(this.viewPropertyListenerKey_);
+    unlistenByKey(this.viewPropertyListenerKey_);
     this.viewPropertyListenerKey_ = null;
   }
   if (this.viewChangeListenerKey_) {
-    _ol_events_.unlistenByKey(this.viewChangeListenerKey_);
+    unlistenByKey(this.viewChangeListenerKey_);
     this.viewChangeListenerKey_ = null;
   }
   const view = this.getView();
   if (view) {
     this.viewport_.setAttribute('data-view', getUid(view));
-    this.viewPropertyListenerKey_ = _ol_events_.listen(
+    this.viewPropertyListenerKey_ = listen(
       view, ObjectEventType.PROPERTYCHANGE,
       this.handleViewPropertyChanged_, this);
-    this.viewChangeListenerKey_ = _ol_events_.listen(
+    this.viewChangeListenerKey_ = listen(
       view, EventType.CHANGE,
       this.handleViewPropertyChanged_, this);
   }
@@ -1089,16 +1089,16 @@ PluggableMap.prototype.handleViewChanged_ = function() {
  */
 PluggableMap.prototype.handleLayerGroupChanged_ = function() {
   if (this.layerGroupPropertyListenerKeys_) {
-    this.layerGroupPropertyListenerKeys_.forEach(_ol_events_.unlistenByKey);
+    this.layerGroupPropertyListenerKeys_.forEach(unlistenByKey);
     this.layerGroupPropertyListenerKeys_ = null;
   }
   const layerGroup = this.getLayerGroup();
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
-      _ol_events_.listen(
+      listen(
         layerGroup, ObjectEventType.PROPERTYCHANGE,
         this.render, this),
-      _ol_events_.listen(
+      listen(
         layerGroup, EventType.CHANGE,
         this.render, this)
     ];

@@ -5,7 +5,7 @@ import {inherits} from './index.js';
 import _ol_has_ from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
-import _ol_events_ from './events.js';
+import {listen, unlistenByKey} from './events.js';
 import EventTarget from './events/EventTarget.js';
 import PointerEventType from './pointer/EventType.js';
 import PointerEventHandler from './pointer/PointerEventHandler.js';
@@ -96,7 +96,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
    * @type {?ol.EventsKey}
    * @private
    */
-  this.pointerdownListenerKey_ = _ol_events_.listen(this.pointerEventHandler_,
+  this.pointerdownListenerKey_ = listen(this.pointerEventHandler_,
     PointerEventType.POINTERDOWN,
     this.handlePointerDown_, this);
 
@@ -104,7 +104,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
    * @type {?ol.EventsKey}
    * @private
    */
-  this.relayedListenerKey_ = _ol_events_.listen(this.pointerEventHandler_,
+  this.relayedListenerKey_ = listen(this.pointerEventHandler_,
     PointerEventType.POINTERMOVE,
     this.relayEvent_, this);
 
@@ -180,7 +180,7 @@ MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   }
 
   if (this.activePointers_ === 0) {
-    this.dragListenerKeys_.forEach(_ol_events_.unlistenByKey);
+    this.dragListenerKeys_.forEach(unlistenByKey);
     this.dragListenerKeys_.length = 0;
     this.dragging_ = false;
     this.down_ = null;
@@ -221,10 +221,10 @@ MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
         new PointerEventHandler(document);
 
     this.dragListenerKeys_.push(
-      _ol_events_.listen(this.documentPointerEventHandler_,
+      listen(this.documentPointerEventHandler_,
         MapBrowserEventType.POINTERMOVE,
         this.handlePointerMove_, this),
-      _ol_events_.listen(this.documentPointerEventHandler_,
+      listen(this.documentPointerEventHandler_,
         MapBrowserEventType.POINTERUP,
         this.handlePointerUp_, this),
       /* Note that the listener for `pointercancel is set up on
@@ -240,7 +240,7 @@ MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
        * only receive a `touchcancel` from `pointerEventHandler_`, because it is
        * only registered there.
        */
-      _ol_events_.listen(this.pointerEventHandler_,
+      listen(this.pointerEventHandler_,
         MapBrowserEventType.POINTERCANCEL,
         this.handlePointerUp_, this)
     );
@@ -301,15 +301,15 @@ MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
  */
 MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (this.relayedListenerKey_) {
-    _ol_events_.unlistenByKey(this.relayedListenerKey_);
+    unlistenByKey(this.relayedListenerKey_);
     this.relayedListenerKey_ = null;
   }
   if (this.pointerdownListenerKey_) {
-    _ol_events_.unlistenByKey(this.pointerdownListenerKey_);
+    unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
   }
 
-  this.dragListenerKeys_.forEach(_ol_events_.unlistenByKey);
+  this.dragListenerKeys_.forEach(unlistenByKey);
   this.dragListenerKeys_.length = 0;
 
   if (this.documentPointerEventHandler_) {

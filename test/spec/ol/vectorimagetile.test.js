@@ -1,7 +1,7 @@
 import TileState from '../../../src/ol/TileState.js';
 import VectorImageTile, {defaultLoadFunction} from '../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../src/ol/VectorTile.js';
-import _ol_events_ from '../../../src/ol/events.js';
+import {listen, listenOnce} from '../../../src/ol/events.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
@@ -24,7 +24,7 @@ describe('ol.VectorImageTile', function() {
     const loader = sourceTile.loader_;
     expect(typeof loader).to.be('function');
 
-    _ol_events_.listen(sourceTile, 'change', function(e) {
+    listen(sourceTile, 'change', function(e) {
       expect(sourceTile.getFeatures().length).to.be.greaterThan(0);
       done();
     });
@@ -45,7 +45,7 @@ describe('ol.VectorImageTile', function() {
 
     tile.load();
     let calls = 0;
-    _ol_events_.listen(tile, 'change', function(e) {
+    listen(tile, 'change', function(e) {
       ++calls;
       expect(tile.getState()).to.be(calls == 2 ? TileState.LOADED : TileState.ERROR);
       if (calls == 2) {
@@ -69,7 +69,7 @@ describe('ol.VectorImageTile', function() {
 
     tile.load();
 
-    _ol_events_.listen(tile, 'change', function(e) {
+    listen(tile, 'change', function(e) {
       expect(tile.getState()).to.be(TileState.ERROR);
       done();
     });
@@ -85,7 +85,7 @@ describe('ol.VectorImageTile', function() {
 
     tile.load();
 
-    _ol_events_.listen(tile, 'change', function() {
+    listen(tile, 'change', function() {
       expect(tile.getState()).to.be(TileState.EMPTY);
       done();
     });
@@ -141,7 +141,7 @@ describe('ol.VectorImageTile', function() {
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
-    _ol_events_.listenOnce(tile, 'change', function() {
+    listenOnce(tile, 'change', function() {
       expect(tile.getState()).to.be(TileState.LOADED);
       expect(tile.loadListenerKeys_.length).to.be(0);
       expect(tile.tileKeys.length).to.be(4);

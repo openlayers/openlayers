@@ -1,4 +1,4 @@
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
 import ReprojImage from '../../../../src/ol/reproj/Image.js';
@@ -21,7 +21,7 @@ describe('ol.rendering.reproj.Image', function() {
         return source.getImage(extent, resolution, pixelRatio, sourceProj);
       });
     if (image.getState() == 0) { // IDLE
-      _ol_events_.listen(image, 'change', function(e) {
+      listen(image, 'change', function(e) {
         if (image.getState() == 2) { // LOADED
           expect(imagesRequested).to.be(1);
           resembleCanvas(image.getImage(), expectedUrl, IMAGE_TOLERANCE, done);

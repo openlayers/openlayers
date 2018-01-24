@@ -7,7 +7,7 @@ import CollectionEventType from '../CollectionEventType.js';
 import BaseObject from '../Object.js';
 import ObjectEventType from '../ObjectEventType.js';
 import {assert} from '../asserts.js';
-import _ol_events_ from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getIntersection} from '../extent.js';
 import BaseLayer from '../layer/Base.js';
@@ -57,7 +57,7 @@ const LayerGroup = function(opt_options) {
    */
   this.listenerKeys_ = {};
 
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(Property.LAYERS),
     this.handleLayersChanged_, this);
 
@@ -93,18 +93,18 @@ LayerGroup.prototype.handleLayerChange_ = function() {
  * @private
  */
 LayerGroup.prototype.handleLayersChanged_ = function(event) {
-  this.layersListenerKeys_.forEach(_ol_events_.unlistenByKey);
+  this.layersListenerKeys_.forEach(unlistenByKey);
   this.layersListenerKeys_.length = 0;
 
   const layers = this.getLayers();
   this.layersListenerKeys_.push(
-    _ol_events_.listen(layers, CollectionEventType.ADD,
+    listen(layers, CollectionEventType.ADD,
       this.handleLayersAdd_, this),
-    _ol_events_.listen(layers, CollectionEventType.REMOVE,
+    listen(layers, CollectionEventType.REMOVE,
       this.handleLayersRemove_, this));
 
   for (const id in this.listenerKeys_) {
-    this.listenerKeys_[id].forEach(_ol_events_.unlistenByKey);
+    this.listenerKeys_[id].forEach(unlistenByKey);
   }
   clear(this.listenerKeys_);
 
@@ -112,9 +112,9 @@ LayerGroup.prototype.handleLayersChanged_ = function(event) {
   for (let i = 0, ii = layersArray.length; i < ii; i++) {
     const layer = layersArray[i];
     this.listenerKeys_[getUid(layer).toString()] = [
-      _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
+      listen(layer, ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
-      _ol_events_.listen(layer, EventType.CHANGE,
+      listen(layer, EventType.CHANGE,
         this.handleLayerChange_, this)
     ];
   }
@@ -131,9 +131,9 @@ LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
   const layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   const key = getUid(layer).toString();
   this.listenerKeys_[key] = [
-    _ol_events_.listen(layer, ObjectEventType.PROPERTYCHANGE,
+    listen(layer, ObjectEventType.PROPERTYCHANGE,
       this.handleLayerChange_, this),
-    _ol_events_.listen(layer, EventType.CHANGE,
+    listen(layer, EventType.CHANGE,
       this.handleLayerChange_, this)
   ];
   this.changed();
@@ -147,7 +147,7 @@ LayerGroup.prototype.handleLayersAdd_ = function(collectionEvent) {
 LayerGroup.prototype.handleLayersRemove_ = function(collectionEvent) {
   const layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   const key = getUid(layer).toString();
-  this.listenerKeys_[key].forEach(_ol_events_.unlistenByKey);
+  this.listenerKeys_[key].forEach(unlistenByKey);
   delete this.listenerKeys_[key];
   this.changed();
 };

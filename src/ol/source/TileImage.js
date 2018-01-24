@@ -6,7 +6,7 @@ import {getUid, inherits} from '../index.js';
 import ImageTile from '../ImageTile.js';
 import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
@@ -224,7 +224,7 @@ TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key)
     this.tileLoadFunction,
     this.tileOptions);
   tile.key = key;
-  _ol_events_.listen(tile, EventType.CHANGE,
+  listen(tile, EventType.CHANGE,
     this.handleTileChange, this);
   return tile;
 };

@@ -7,7 +7,7 @@ import BaseObject from './Object.js';
 import OverlayPositioning from './OverlayPositioning.js';
 import {CLASS_SELECTABLE} from './css.js';
 import {removeNode, removeChildren, outerWidth, outerHeight} from './dom.js';
-import _ol_events_ from './events.js';
+import {listen, unlistenByKey} from './events.js';
 import {containsExtent} from './extent.js';
 
 
@@ -125,23 +125,23 @@ const Overlay = function(options) {
    */
   this.mapPostrenderListenerKey = null;
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(Property.ELEMENT),
     this.handleElementChanged, this);
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(Property.MAP),
     this.handleMapChanged, this);
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(Property.OFFSET),
     this.handleOffsetChanged, this);
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(Property.POSITION),
     this.handlePositionChanged, this);
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(Property.POSITIONING),
     this.handlePositioningChanged, this);
 
@@ -249,12 +249,12 @@ Overlay.prototype.handleElementChanged = function() {
 Overlay.prototype.handleMapChanged = function() {
   if (this.mapPostrenderListenerKey) {
     removeNode(this.element);
-    _ol_events_.unlistenByKey(this.mapPostrenderListenerKey);
+    unlistenByKey(this.mapPostrenderListenerKey);
     this.mapPostrenderListenerKey = null;
   }
   const map = this.getMap();
   if (map) {
-    this.mapPostrenderListenerKey = _ol_events_.listen(map,
+    this.mapPostrenderListenerKey = listen(map,
       MapEventType.POSTRENDER, this.render, this);
     this.updatePixelPosition();
     const container = this.stopEvent ?

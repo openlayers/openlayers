@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
 import {assign} from '../obj.js';
@@ -144,7 +144,7 @@ ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRat
     image = new _ol_Image_(extent, resolution, pixelRatio,
       imageUrl, this.crossOrigin_,
       this.imageLoadFunction_);
-    _ol_events_.listen(image, EventType.CHANGE,
+    listen(image, EventType.CHANGE,
       this.handleImageChange, this);
   } else {
     image = null;

@@ -3,7 +3,7 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import {equals} from '../../../../src/ol/array.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -205,8 +205,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
-      _ol_events_.listen(draw, 'drawstart', ds);
-      _ol_events_.listen(draw, 'drawend', de);
+      listen(draw, 'drawstart', ds);
+      listen(draw, 'drawend', de);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
@@ -222,7 +222,7 @@ describe('ol.interaction.Draw', function() {
         end: 0,
         addfeature: 0
       };
-      _ol_events_.listen(draw, 'drawend',
+      listen(draw, 'drawend',
         function() {
           expect(receivedEvents.end).to.be(0);
           expect(receivedEvents.addfeature).to.be(0);
@@ -439,8 +439,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
-      _ol_events_.listen(draw, 'drawstart', ds);
-      _ol_events_.listen(draw, 'drawend', de);
+      listen(draw, 'drawstart', ds);
+      listen(draw, 'drawend', de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -703,8 +703,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
-      _ol_events_.listen(draw, 'drawstart', ds);
-      _ol_events_.listen(draw, 'drawend', de);
+      listen(draw, 'drawstart', ds);
+      listen(draw, 'drawend', de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -861,8 +861,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       const ds = sinon.spy();
       const de = sinon.spy();
-      _ol_events_.listen(draw, 'drawstart', ds);
-      _ol_events_.listen(draw, 'drawend', de);
+      listen(draw, 'drawstart', ds);
+      listen(draw, 'drawend', de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -1088,7 +1088,7 @@ describe('ol.interaction.Draw', function() {
 
     it('dispatches a drawstart event', function() {
       const spy = sinon.spy();
-      _ol_events_.listen(draw, 'drawstart', spy);
+      listen(draw, 'drawstart', spy);
       draw.extend(feature);
       expect(spy.callCount).to.be(1);
     });

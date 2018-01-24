@@ -1,7 +1,7 @@
 import Feature from '../../../src/ol/Feature.js';
 import {defaultLoadFunction} from '../../../src/ol/VectorImageTile.js';
 import VectorTile from '../../../src/ol/VectorTile.js';
-import _ol_events_ from '../../../src/ol/events.js';
+import {listen} from '../../../src/ol/events.js';
 import TextFeature from '../../../src/ol/format/TextFeature.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
 import Projection from '../../../src/ol/proj/Projection.js';
@@ -27,7 +27,7 @@ describe('ol.VectorTile', function() {
 
     defaultLoadFunction(tile, url);
     const loader = tile.loader_;
-    _ol_events_.listen(tile, 'change', function(e) {
+    listen(tile, 'change', function(e) {
       expect(tile.getFeatures().length).to.be.greaterThan(0);
       expect(tile.getProjection().getUnits()).to.be('tile-pixels');
       done();

@@ -1,5 +1,5 @@
 import {nullFunction} from '../../../../src/ol/index.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {getListeners} from '../../../../src/ol/events.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
@@ -54,7 +54,7 @@ describe('ol.renderer.vector', function() {
           style, squaredTolerance, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
-        listeners = _ol_events_.getListeners(
+        listeners = getListeners(
           iconStyle.iconImage_, 'change');
         expect(listeners.length).to.eql(1);
 
@@ -63,7 +63,7 @@ describe('ol.renderer.vector', function() {
           style, squaredTolerance, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
-        listeners = _ol_events_.getListeners(
+        listeners = getListeners(
           iconStyle.iconImage_, 'change');
         expect(listeners.length).to.eql(1);
       });

@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import {assert} from '../asserts.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getHeight, getWidth} from '../extent.js';
 import {assign} from '../obj.js';
@@ -173,7 +173,7 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
 
   this.renderedRevision_ = this.getRevision();
 
-  _ol_events_.listen(this.image_, EventType.CHANGE,
+  listen(this.image_, EventType.CHANGE,
     this.handleImageChange, this);
 
   return this.image_;

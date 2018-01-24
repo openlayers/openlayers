@@ -1,7 +1,7 @@
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import TileState from '../../../../src/ol/TileState.js';
 import {createFromTemplate} from '../../../../src/ol/tileurlfunction.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
@@ -148,7 +148,7 @@ describe('ol.source.TileImage', function() {
       const tile = source.getTile(0, 0, -1, 1, getProjection('EPSG:3857'));
       expect(tile).to.be.a(ReprojTile);
 
-      _ol_events_.listen(tile, 'change', function() {
+      listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
           done();
         }
@@ -167,7 +167,7 @@ describe('ol.source.TileImage', function() {
       const tile = source.getTile(0, 0, -1, 1, proj);
       expect(tile).to.be.a(ReprojTile);
 
-      _ol_events_.listen(tile, 'change', function() {
+      listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
           done();
         }

@@ -5,7 +5,7 @@ import {getUid, inherits} from '../index.js';
 import ImageCanvas from '../ImageCanvas.js';
 import TileQueue from '../TileQueue.js';
 import {createCanvasContext2D} from '../dom.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {Processor} from 'pixelworks';
@@ -82,7 +82,7 @@ const RasterSource = function(options) {
   this.renderers_ = createRenderers(options.sources);
 
   for (let r = 0, rr = this.renderers_.length; r < rr; ++r) {
-    _ol_events_.listen(this.renderers_[r], EventType.CHANGE,
+    listen(this.renderers_[r], EventType.CHANGE,
       this.changed, this);
   }
 

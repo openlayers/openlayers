@@ -5,7 +5,7 @@ import {getUid, inherits, nullFunction} from '../index.js';
 import ImageState from '../ImageState.js';
 import Observable from '../Observable.js';
 import TileState from '../TileState.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {FALSE} from '../functions.js';
 import SourceState from '../source/State.js';
@@ -115,7 +115,7 @@ LayerRenderer.prototype.handleImageChange_ = function(event) {
 LayerRenderer.prototype.loadImage = function(image) {
   let imageState = image.getState();
   if (imageState != ImageState.LOADED && imageState != ImageState.ERROR) {
-    _ol_events_.listen(image, EventType.CHANGE, this.handleImageChange_, this);
+    listen(image, EventType.CHANGE, this.handleImageChange_, this);
   }
   if (imageState == ImageState.IDLE) {
     image.load();

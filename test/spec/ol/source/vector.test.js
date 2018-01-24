@@ -1,4 +1,4 @@
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import Collection from '../../../../src/ol/Collection.js';
 import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
@@ -67,7 +67,7 @@ describe('ol.source.Vector', function() {
 
       it('fires a change event', function() {
         const listener = sinon.spy();
-        _ol_events_.listen(vectorSource, 'change', listener);
+        listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
         expect(listener).to.be.called();
       });
@@ -139,11 +139,11 @@ describe('ol.source.Vector', function() {
 
       it('removes all features using fast path', function() {
         const changeSpy = sinon.spy();
-        _ol_events_.listen(vectorSource, 'change', changeSpy);
+        listen(vectorSource, 'change', changeSpy);
         const removeFeatureSpy = sinon.spy();
-        _ol_events_.listen(vectorSource, 'removefeature', removeFeatureSpy);
+        listen(vectorSource, 'removefeature', removeFeatureSpy);
         const clearSourceSpy = sinon.spy();
-        _ol_events_.listen(vectorSource, 'clear', clearSourceSpy);
+        listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear(true);
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
@@ -157,11 +157,11 @@ describe('ol.source.Vector', function() {
 
       it('removes all features using slow path', function() {
         const changeSpy = sinon.spy();
-        _ol_events_.listen(vectorSource, 'change', changeSpy);
+        listen(vectorSource, 'change', changeSpy);
         const removeFeatureSpy = sinon.spy();
-        _ol_events_.listen(vectorSource, 'removefeature', removeFeatureSpy);
+        listen(vectorSource, 'removefeature', removeFeatureSpy);
         const clearSourceSpy = sinon.spy();
-        _ol_events_.listen(vectorSource, 'clear', clearSourceSpy);
+        listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear();
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
@@ -225,7 +225,7 @@ describe('ol.source.Vector', function() {
 
       it('fires a change event', function() {
         const listener = sinon.spy();
-        _ol_events_.listen(vectorSource, 'change', listener);
+        listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
         expect(listener).to.be.called();
       });
@@ -311,7 +311,7 @@ describe('ol.source.Vector', function() {
       const feature = new Feature(new Point([1, 1]));
       vectorSource.addFeature(feature);
       const listener = sinon.spy();
-      _ol_events_.listen(vectorSource, 'change', listener);
+      listen(vectorSource, 'change', listener);
       feature.set('foo', 'bar');
       expect(listener).to.be.called();
     });

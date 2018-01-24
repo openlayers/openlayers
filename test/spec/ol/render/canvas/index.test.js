@@ -1,4 +1,4 @@
-import _ol_events_ from '../../../../../src/ol/events.js';
+import {listen, unlisten} from '../../../../../src/ol/events.js';
 import {clear} from '../../../../../src/ol/obj.js';
 import _ol_render_canvas_ from '../../../../../src/ol/render/canvas.js';
 
@@ -24,11 +24,11 @@ describe('ol.render.canvas', function() {
     it('does not clear label cache and measurements for unavailable fonts', function(done) {
       this.timeout(3000);
       const spy = sinon.spy();
-      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
+      listen(_ol_render_canvas_.labelCache, 'clear', spy);
       const interval = setInterval(function() {
         if (_ol_render_canvas_.checkedFonts_['foo'] == retries && _ol_render_canvas_.checkedFonts_['sans-serif'] == retries) {
           clearInterval(interval);
-          _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
+          unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
           expect(_ol_render_canvas_.measureContext_).to.not.be(null);
           expect(_ol_render_canvas_.textHeights_).to.not.eql({});
@@ -40,11 +40,11 @@ describe('ol.render.canvas', function() {
 
     it('does not clear label cache and measurements for available fonts', function(done) {
       const spy = sinon.spy();
-      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
+      listen(_ol_render_canvas_.labelCache, 'clear', spy);
       const interval = setInterval(function() {
         if (_ol_render_canvas_.checkedFonts_['sans-serif'] == retries) {
           clearInterval(interval);
-          _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
+          unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
           expect(_ol_render_canvas_.measureContext_).to.not.be(null);
           expect(_ol_render_canvas_.textHeights_).to.not.eql({});
@@ -56,11 +56,11 @@ describe('ol.render.canvas', function() {
 
     it('does not clear label cache and measurements for the \'monospace\' font', function(done) {
       const spy = sinon.spy();
-      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', spy);
+      listen(_ol_render_canvas_.labelCache, 'clear', spy);
       const interval = setInterval(function() {
         if (_ol_render_canvas_.checkedFonts_['monospace'] == retries) {
           clearInterval(interval);
-          _ol_events_.unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
+          unlisten(_ol_render_canvas_.labelCache, 'clear', spy);
           expect(spy.callCount).to.be(0);
           expect(_ol_render_canvas_.measureContext_).to.not.be(null);
           expect(_ol_render_canvas_.textHeights_).to.not.eql({});
@@ -72,7 +72,7 @@ describe('ol.render.canvas', function() {
 
     it('clears label cache and measurements for fonts that become available', function(done) {
       head.appendChild(font);
-      _ol_events_.listen(_ol_render_canvas_.labelCache, 'clear', function() {
+      listen(_ol_render_canvas_.labelCache, 'clear', function() {
         expect(_ol_render_canvas_.measureContext_).to.be(null);
         expect(_ol_render_canvas_.textHeights_).to.eql({});
         done();

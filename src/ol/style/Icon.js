@@ -5,7 +5,7 @@ import {getUid, inherits} from '../index.js';
 import ImageState from '../ImageState.js';
 import {assert} from '../asserts.js';
 import {asArray} from '../color.js';
-import _ol_events_ from '../events.js';
+import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import IconAnchorUnits from '../style/IconAnchorUnits.js';
 import IconImage from '../style/IconImage.js';
@@ -354,7 +354,7 @@ Icon.prototype.getSize = function() {
  * @override
  */
 Icon.prototype.listenImageChange = function(listener, thisArg) {
-  return _ol_events_.listen(this.iconImage_, EventType.CHANGE,
+  return listen(this.iconImage_, EventType.CHANGE,
     listener, thisArg);
 };
 
@@ -376,7 +376,7 @@ Icon.prototype.load = function() {
  * @override
  */
 Icon.prototype.unlistenImageChange = function(listener, thisArg) {
-  _ol_events_.unlisten(this.iconImage_, EventType.CHANGE,
+  unlisten(this.iconImage_, EventType.CHANGE,
     listener, thisArg);
 };
 export default Icon;

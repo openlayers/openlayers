@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import ViewHint from '../../ViewHint.js';
 import {createCanvasContext2D} from '../../dom.js';
-import _ol_events_ from '../../events.js';
+import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, createEmpty, containsExtent, getWidth} from '../../extent.js';
@@ -79,7 +79,7 @@ const CanvasVectorLayerRenderer = function(vectorLayer) {
    */
   this.context = createCanvasContext2D();
 
-  _ol_events_.listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
 };
 
@@ -112,7 +112,7 @@ CanvasVectorLayerRenderer['create'] = function(mapRenderer, layer) {
  * @inheritDoc
  */
 CanvasVectorLayerRenderer.prototype.disposeInternal = function() {
-  _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   CanvasLayerRenderer.prototype.disposeInternal.call(this);
 };
 
