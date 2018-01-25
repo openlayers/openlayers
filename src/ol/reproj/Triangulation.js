@@ -8,23 +8,22 @@ import {getTransform} from '../proj.js';
 
 
 /**
- * @type {number} Maximum number of subdivision steps during raster
- *     reprojection triangulation. Prevents high memory usage and large
- *     number of proj4 calls (for certain transformations and areas).
- *     At most `2*(2^this)` triangles are created for each triangulated
- *     extent (tile/image).
+ * Maximum number of subdivision steps during raster reprojection triangulation.
+ * Prevents high memory usage and large number of proj4 calls (for certain
+ * transformations and areas). At most `2*(2^this)` triangles are created for
+ * each triangulated extent (tile/image).
+ * @type {number}
  */
 const MAX_SUBDIVISION = 10;
 
 
 /**
- * @type {number} Maximum allowed size of triangle relative to world width.
- *     When transforming corners of world extent between certain projections,
- *     the resulting triangulation seems to have zero error and no subdivision
- *     is performed.
- *     If the triangle width is more than this (relative to world width; 0-1),
- *     subdivison is forced (up to `MAX_SUBDIVISION`).
- *     Default is `0.25`.
+ * Maximum allowed size of triangle relative to world width. When transforming
+ * corners of world extent between certain projections, the resulting
+ * triangulation seems to have zero error and no subdivision is performed. If
+ * the triangle width is more than this (relative to world width; 0-1),
+ * subdivison is forced (up to `MAX_SUBDIVISION`). Default is `0.25`.
+ * @type {number}
  */
 const MAX_TRIANGLE_WIDTH = 0.25;
 

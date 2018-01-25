@@ -1,9 +1,11 @@
 /**
- * @type {number} Default maximum zoom for default tile grids.
+ * Default maximum zoom for default tile grids.
+ * @type {number}
  */
 export const DEFAULT_MAX_ZOOM = 42;
 
 /**
- * @type {number} Default tile size.
+ * Default tile size.
+ * @type {number}
  */
 export const DEFAULT_TILE_SIZE = 256;

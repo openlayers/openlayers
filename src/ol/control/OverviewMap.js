@@ -21,15 +21,17 @@ import {containsExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight, 
 
 
 /**
- * @type {number} Maximum width and/or height extent ratio that determines
- * when the overview map should be zoomed out.
+ * Maximum width and/or height extent ratio that determines when the overview
+ * map should be zoomed out.
+ * @type {number}
  */
 const MAX_RATIO = 0.75;
 
 
 /**
- * @type {number} Minimum width and/or height extent ratio that determines
- * when the overview map should be zoomed in.
+ * Minimum width and/or height extent ratio that determines when the overview
+ * map should be zoomed in.
+ * @type {number}
  */
 const MIN_RATIO = 0.1;
 

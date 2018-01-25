@@ -6,12 +6,14 @@ import Atlas from '../style/Atlas.js';
 
 
 /**
- * @type {number} The size in pixels of the first atlas image.
+ * The size in pixels of the first atlas image.
+ * @type {number}
  */
 const INITIAL_ATLAS_SIZE = 256;
 
 /**
- * @type {number} The maximum size in pixels of atlas images.
+ * The maximum size in pixels of atlas images.
+ * @type {number}
  */
 const MAX_ATLAS_SIZE = -1;
 

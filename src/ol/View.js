@@ -24,7 +24,8 @@ import Units from './proj/Units.js';
 
 
 /**
- * @type {number} Default min zoom level for the map view.
+ * Default min zoom level for the map view.
+ * @type {number}
  */
 const DEFAULT_MIN_ZOOM = 0;
 
