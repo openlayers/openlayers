@@ -1,5 +1,5 @@
 /**
- * @module ol/index
+ * @module ol
  */
 
 import webgl from './webgl.js';
