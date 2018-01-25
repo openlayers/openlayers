@@ -53,7 +53,7 @@ exports.publish = function(data, opts) {
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
-    if (constructor && constructor.substr(-1) === '_') {
+    if (constructor && constructor.substr(-1) === '_' && constructor.indexOf('module:') === -1) {
       assert.strictEqual(doc.inherited, true,
           'Unexpected export on private class: ' + doc.longname);
       include = false;

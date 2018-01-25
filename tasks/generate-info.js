@@ -209,62 +209,6 @@ function spawnJSDoc(paths, callback) {
 
 
 /**
- * Given the path to a source file, get the list of provides.
- * @param {string} srcPath Path to source file.
- * @param {function(Error, Array.<string>)} callback Called with a list of
- *     provides or any error.
- */
-const getProvides = async.memoize(function(srcPath, callback) {
-  fs.readFile(srcPath, function(err, data) {
-    if (err) {
-      callback(err);
-      return;
-    }
-    const provides = [];
-    const matcher = /goog\.provide\('(.*)'\)/;
-    String(data).split('\n').forEach(function(line) {
-      const match = line.match(matcher);
-      if (match) {
-        provides.push(match[1]);
-      }
-    });
-    callback(null, provides);
-  });
-});
-
-
-/**
- * Add provides data to new symbols.
- * @param {Object} info Symbols and defines metadata.
- * @param {function(Error, Object)} callback Updated metadata.
- */
-function addSymbolProvides(info, callback) {
-  if (!info) {
-    process.nextTick(function() {
-      callback(null, null);
-    });
-    return;
-  }
-
-  function addProvides(symbol, callback) {
-    getProvides(symbol.path, function(err, provides) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      symbol.provides = provides;
-      callback(null, symbol);
-    });
-  }
-
-  async.map(info.symbols, addProvides, function(err, newSymbols) {
-    info.symbols = newSymbols;
-    callback(err, info);
-  });
-}
-
-
-/**
  * Write symbol and define metadata to the info file.
  * @param {Object} info Symbol and define metadata.
  * @param {function(Error)} callback Callback.
@@ -294,7 +238,6 @@ function main(callback) {
     getNewerExterns,
     getNewer,
     spawnJSDoc,
-    addSymbolProvides,
     writeInfo
   ], callback);
 }
