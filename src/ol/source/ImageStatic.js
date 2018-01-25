@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_Image_ from '../Image.js';
 import ImageState from '../ImageState.js';
 import {createCanvasContext2D} from '../dom.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {intersects, getHeight, getWidth} from '../extent.js';
 import {get as getProjection} from '../proj.js';
@@ -47,7 +47,7 @@ const Static = function(options) {
    */
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-  _ol_events_.listen(this.image_, EventType.CHANGE,
+  listen(this.image_, EventType.CHANGE,
     this.handleImageChange, this);
 
 };

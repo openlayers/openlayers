@@ -1,6 +1,6 @@
 import Map from '../../../src/ol/Map.js';
 import MapBrowserEventHandler from '../../../src/ol/MapBrowserEventHandler.js';
-import _ol_events_ from '../../../src/ol/events.js';
+import {listen} from '../../../src/ol/events.js';
 import _ol_has_ from '../../../src/ol/has.js';
 import PointerEvent from '../../../src/ol/pointer/PointerEvent.js';
 
@@ -21,13 +21,13 @@ describe('ol.MapBrowserEventHandler', function() {
       }));
 
       clickSpy = sinon.spy();
-      _ol_events_.listen(handler, 'click', clickSpy);
+      listen(handler, 'click', clickSpy);
 
       singleclickSpy = sinon.spy();
-      _ol_events_.listen(handler, 'singleclick', singleclickSpy);
+      listen(handler, 'singleclick', singleclickSpy);
 
       dblclickSpy = sinon.spy();
-      _ol_events_.listen(handler, 'dblclick', dblclickSpy);
+      listen(handler, 'dblclick', dblclickSpy);
 
     });
 

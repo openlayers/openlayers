@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Layer
  */
-import _ol_events_ from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getUid, inherits} from '../index.js';
 import BaseObject from '../Object.js';
@@ -62,7 +62,7 @@ const Layer = function(options) {
     this.setMap(options.map);
   }
 
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(LayerProperty.SOURCE),
     this.handleSourcePropertyChange_, this);
 
@@ -141,12 +141,12 @@ Layer.prototype.handleSourceChange_ = function() {
  */
 Layer.prototype.handleSourcePropertyChange_ = function() {
   if (this.sourceChangeKey_) {
-    _ol_events_.unlistenByKey(this.sourceChangeKey_);
+    unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
   const source = this.getSource();
   if (source) {
-    this.sourceChangeKey_ = _ol_events_.listen(source,
+    this.sourceChangeKey_ = listen(source,
       EventType.CHANGE, this.handleSourceChange_, this);
   }
   this.changed();
@@ -167,18 +167,18 @@ Layer.prototype.handleSourcePropertyChange_ = function() {
  */
 Layer.prototype.setMap = function(map) {
   if (this.mapPrecomposeKey_) {
-    _ol_events_.unlistenByKey(this.mapPrecomposeKey_);
+    unlistenByKey(this.mapPrecomposeKey_);
     this.mapPrecomposeKey_ = null;
   }
   if (!map) {
     this.changed();
   }
   if (this.mapRenderKey_) {
-    _ol_events_.unlistenByKey(this.mapRenderKey_);
+    unlistenByKey(this.mapRenderKey_);
     this.mapRenderKey_ = null;
   }
   if (map) {
-    this.mapPrecomposeKey_ = _ol_events_.listen(
+    this.mapPrecomposeKey_ = listen(
       map, RenderEventType.PRECOMPOSE, function(evt) {
         const layerState = this.getLayerState();
         layerState.managed = false;
@@ -186,7 +186,7 @@ Layer.prototype.setMap = function(map) {
         evt.frameState.layerStatesArray.push(layerState);
         evt.frameState.layerStates[getUid(this)] = layerState;
       }, this);
-    this.mapRenderKey_ = _ol_events_.listen(
+    this.mapRenderKey_ = listen(
       this, EventType.CHANGE, map.render, map);
     this.changed();
   }

@@ -3,7 +3,7 @@ import Feature from '../../../../src/ol/Feature.js';
 import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {getListeners} from '../../../../src/ol/events.js';
 import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
@@ -604,11 +604,11 @@ describe('ol.interaction.Modify', function() {
   });
 
   describe('handle feature change', function() {
-    let getListeners;
+    let getModifyListeners;
 
     beforeEach(function() {
-      getListeners = function(feature, modify) {
-        const listeners = _ol_events_.getListeners(
+      getModifyListeners = function(feature, modify) {
+        const listeners = getListeners(
           feature, 'change');
         return listeners.filter(function(listener) {
           return listener.bindTo === modify;
@@ -628,7 +628,7 @@ describe('ol.interaction.Modify', function() {
 
       let listeners;
 
-      listeners = getListeners(feature, modify);
+      listeners = getModifyListeners(feature, modify);
       expect(listeners).to.have.length(1);
 
       let firstSegmentData;
@@ -652,7 +652,7 @@ describe('ol.interaction.Modify', function() {
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([1, 1]);
 
-      listeners = getListeners(feature, modify);
+      listeners = getModifyListeners(feature, modify);
       expect(listeners).to.have.length(1);
     });
 
@@ -665,7 +665,7 @@ describe('ol.interaction.Modify', function() {
       const feature = features[0];
       let listeners;
 
-      listeners = getListeners(feature, modify);
+      listeners = getModifyListeners(feature, modify);
       expect(listeners).to.have.length(1);
 
       let firstSegmentData;
@@ -690,7 +690,7 @@ describe('ol.interaction.Modify', function() {
       expect(firstSegmentData.segment[0]).to.eql([1, 1]);
       expect(firstSegmentData.segment[1]).to.eql([10, 20]);
 
-      listeners = getListeners(feature, modify);
+      listeners = getModifyListeners(feature, modify);
       expect(listeners).to.have.length(1);
     });
   });

@@ -2,7 +2,7 @@
  * @module ol/control/ZoomToExtent
  */
 import {inherits} from '../index.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
@@ -39,7 +39,7 @@ const ZoomToExtent = function(opt_options) {
     typeof label === 'string' ? document.createTextNode(label) : label
   );
 
-  _ol_events_.listen(button, EventType.CLICK,
+  listen(button, EventType.CLICK,
     this.handleClick_, this);
 
   const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;

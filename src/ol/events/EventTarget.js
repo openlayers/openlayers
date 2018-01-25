@@ -3,7 +3,7 @@
  */
 import {inherits, nullFunction} from '../index.js';
 import Disposable from '../Disposable.js';
-import _ol_events_ from '../events.js';
+import {unlistenAll} from '../events.js';
 import Event from '../events/Event.js';
 
 /**
@@ -109,7 +109,7 @@ EventTarget.prototype.dispatchEvent = function(event) {
  * @inheritDoc
  */
 EventTarget.prototype.disposeInternal = function() {
-  _ol_events_.unlistenAll(this);
+  unlistenAll(this);
 };
 
 

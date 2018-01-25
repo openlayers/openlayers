@@ -1,6 +1,6 @@
 import ImageTile from '../../../src/ol/ImageTile.js';
 import TileState from '../../../src/ol/TileState.js';
-import _ol_events_ from '../../../src/ol/events.js';
+import {listen, unlistenByKey} from '../../../src/ol/events.js';
 import EventType from '../../../src/ol/events/EventType.js';
 import ImageSource from '../../../src/ol/source/Image.js';
 
@@ -18,7 +18,7 @@ describe('ol.ImageTile', function() {
 
       let previousState = tile.getState();
 
-      _ol_events_.listen(tile, EventType.CHANGE, function(event) {
+      listen(tile, EventType.CHANGE, function(event) {
         const state = tile.getState();
         if (previousState == TileState.IDLE) {
           expect(state).to.be(TileState.LOADING);
@@ -43,7 +43,7 @@ describe('ol.ImageTile', function() {
 
       let previousState = tile.getState();
 
-      _ol_events_.listen(tile, EventType.CHANGE, function(event) {
+      listen(tile, EventType.CHANGE, function(event) {
         const state = tile.getState();
         if (previousState == TileState.ERROR) {
           expect(state).to.be(TileState.LOADING);
@@ -66,12 +66,12 @@ describe('ol.ImageTile', function() {
       const tileLoadFunction = ImageSource.defaultImageLoadFunction;
       const tile = new ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      const key = _ol_events_.listen(tile, EventType.CHANGE, function(event) {
+      const key = listen(tile, EventType.CHANGE, function(event) {
         const state = tile.getState();
         if (state == TileState.ERROR) {
           expect(state).to.be(TileState.ERROR);
           expect(tile.image_).to.be.a(HTMLCanvasElement);
-          _ol_events_.unlistenByKey(key);
+          unlistenByKey(key);
           tile.load();
           expect(tile.image_).to.be.a(HTMLImageElement);
           done();

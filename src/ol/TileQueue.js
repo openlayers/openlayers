@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import TileState from './TileState.js';
-import _ol_events_ from './events.js';
+import {listen, unlisten} from './events.js';
 import EventType from './events/EventType.js';
 import PriorityQueue from './structs/PriorityQueue.js';
 
@@ -65,7 +65,7 @@ TileQueue.prototype.enqueue = function(element) {
   const added = PriorityQueue.prototype.enqueue.call(this, element);
   if (added) {
     const tile = element[0];
-    _ol_events_.listen(tile, EventType.CHANGE,
+    listen(tile, EventType.CHANGE,
       this.handleTileChange, this);
   }
   return added;
@@ -89,7 +89,7 @@ TileQueue.prototype.handleTileChange = function(event) {
   const state = tile.getState();
   if (state === TileState.LOADED || state === TileState.ERROR ||
       state === TileState.EMPTY || state === TileState.ABORT) {
-    _ol_events_.unlisten(tile, EventType.CHANGE,
+    unlisten(tile, EventType.CHANGE,
       this.handleTileChange, this);
     const tileKey = tile.getKey();
     if (tileKey in this.tilesLoadingKeys_) {

@@ -7,7 +7,7 @@ import {assert} from '../asserts.js';
 import Control from '../control/Control.js';
 import ScaleLineUnits from '../control/ScaleLineUnits.js';
 import {CLASS_UNSELECTABLE} from '../css.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import {getPointResolution, METERS_PER_UNIT} from '../proj.js';
 import Units from '../proj/Units.js';
 
@@ -85,7 +85,7 @@ const ScaleLine = function(opt_options) {
     target: options.target
   });
 
-  _ol_events_.listen(
+  listen(
     this, BaseObject.getChangeEventType(ScaleLine.Property_.UNITS),
     this.handleUnitsChanged_, this);
 

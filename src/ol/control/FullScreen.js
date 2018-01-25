@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE, CLASS_UNSUPPORTED} from '../css.js';
 import {replaceNode} from '../dom.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 
 /**
@@ -61,7 +61,7 @@ const FullScreen = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(this.labelNode_);
 
-  _ol_events_.listen(button, EventType.CLICK,
+  listen(button, EventType.CLICK,
     this.handleClick_, this);
 
   const cssClasses = this.cssClassName_ + ' ' + CLASS_UNSELECTABLE +
@@ -161,7 +161,7 @@ FullScreen.prototype.handleFullScreenChange_ = function() {
 FullScreen.prototype.setMap = function(map) {
   Control.prototype.setMap.call(this, map);
   if (map) {
-    this.listenerKeys.push(_ol_events_.listen(document,
+    this.listenerKeys.push(listen(document,
       FullScreen.getChangeType_(),
       this.handleFullScreenChange_, this)
     );

@@ -6,7 +6,7 @@ import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
-import _ol_events_ from '../events.js';
+import {listenOnce} from '../events.js';
 import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
 import _ol_net_ from '../net.js';
@@ -371,7 +371,7 @@ UTFGrid.Tile_.prototype.getData = function(coordinate) {
  */
 UTFGrid.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == TileState.IDLE && opt_request === true) {
-    _ol_events_.listenOnce(this, EventType.CHANGE, function(e) {
+    listenOnce(this, EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, this);
     this.loadInternal_();

@@ -8,7 +8,7 @@ import ViewHint from '../ViewHint.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
 import {clamp} from '../math.js';
@@ -113,16 +113,16 @@ const ZoomSlider = function(opt_options) {
    */
   this.dragger_ = new PointerEventHandler(containerElement);
 
-  _ol_events_.listen(this.dragger_, PointerEventType.POINTERDOWN,
+  listen(this.dragger_, PointerEventType.POINTERDOWN,
     this.handleDraggerStart_, this);
-  _ol_events_.listen(this.dragger_, PointerEventType.POINTERMOVE,
+  listen(this.dragger_, PointerEventType.POINTERMOVE,
     this.handleDraggerDrag_, this);
-  _ol_events_.listen(this.dragger_, PointerEventType.POINTERUP,
+  listen(this.dragger_, PointerEventType.POINTERUP,
     this.handleDraggerEnd_, this);
 
-  _ol_events_.listen(containerElement, EventType.CLICK,
+  listen(containerElement, EventType.CLICK,
     this.handleContainerClick_, this);
-  _ol_events_.listen(thumbElement, EventType.CLICK,
+  listen(thumbElement, EventType.CLICK,
     Event.stopPropagation);
 
   const render = options.render ? options.render : ZoomSlider.render;

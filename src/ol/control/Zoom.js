@@ -2,7 +2,7 @@
  * @module ol/control/Zoom
  */
 import {inherits} from '../index.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
@@ -43,7 +43,7 @@ const Zoom = function(opt_options) {
     typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
   );
 
-  _ol_events_.listen(inElement, EventType.CLICK,
+  listen(inElement, EventType.CLICK,
     Zoom.prototype.handleClick_.bind(this, delta));
 
   const outElement = document.createElement('button');
@@ -54,7 +54,7 @@ const Zoom = function(opt_options) {
     typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
   );
 
-  _ol_events_.listen(outElement, EventType.CLICK,
+  listen(outElement, EventType.CLICK,
     Zoom.prototype.handleClick_.bind(this, -delta));
 
   const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;

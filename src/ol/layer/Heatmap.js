@@ -1,7 +1,7 @@
 /**
  * @module ol/layer/Heatmap
  */
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import {inherits} from '../index.js';
 import BaseObject from '../Object.js';
 import {createCanvasContext2D} from '../dom.js';
@@ -80,7 +80,7 @@ const Heatmap = function(opt_options) {
    */
   this.styleCache_ = null;
 
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(Property.GRADIENT),
     this.handleGradientChanged_, this);
 
@@ -90,10 +90,10 @@ const Heatmap = function(opt_options) {
 
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(Property.BLUR),
     this.handleStyleChanged_, this);
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(Property.RADIUS),
     this.handleStyleChanged_, this);
 
@@ -133,7 +133,7 @@ const Heatmap = function(opt_options) {
   // The render order is not relevant for a heatmap representation.
   this.setRenderOrder(null);
 
-  _ol_events_.listen(this, RenderEventType.RENDER, this.handleRender_, this);
+  listen(this, RenderEventType.RENDER, this.handleRender_, this);
 };
 
 inherits(Heatmap, VectorLayer);

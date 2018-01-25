@@ -5,7 +5,7 @@ import {inherits, nullFunction} from '../index.js';
 import MapEventType from '../MapEventType.js';
 import BaseObject from '../Object.js';
 import {removeNode} from '../dom.js';
-import _ol_events_ from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 
 /**
  * @classdesc
@@ -110,7 +110,7 @@ Control.prototype.setMap = function(map) {
     removeNode(this.element);
   }
   for (let i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
-    _ol_events_.unlistenByKey(this.listenerKeys[i]);
+    unlistenByKey(this.listenerKeys[i]);
   }
   this.listenerKeys.length = 0;
   this.map_ = map;
@@ -119,7 +119,7 @@ Control.prototype.setMap = function(map) {
       this.target_ : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
     if (this.render !== nullFunction) {
-      this.listenerKeys.push(_ol_events_.listen(map,
+      this.listenerKeys.push(listen(map,
         MapEventType.POSTRENDER, this.render, this));
     }
     map.render();

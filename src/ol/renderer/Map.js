@@ -3,7 +3,7 @@
  */
 import {getUid, inherits, nullFunction} from '../index.js';
 import Disposable from '../Disposable.js';
-import _ol_events_ from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getWidth} from '../extent.js';
 import {TRUE} from '../functions.js';
@@ -219,7 +219,7 @@ MapRenderer.prototype.getLayerRenderer = function(layer) {
     }
     if (renderer) {
       this.layerRenderers_[layerKey] = renderer;
-      this.layerRendererListeners_[layerKey] = _ol_events_.listen(renderer,
+      this.layerRendererListeners_[layerKey] = listen(renderer,
         EventType.CHANGE, this.handleLayerRendererChange_, this);
     } else {
       throw new Error('Unable to create renderer for layer: ' + layer.getType());
@@ -281,7 +281,7 @@ MapRenderer.prototype.removeLayerRendererByKey_ = function(layerKey) {
   const layerRenderer = this.layerRenderers_[layerKey];
   delete this.layerRenderers_[layerKey];
 
-  _ol_events_.unlistenByKey(this.layerRendererListeners_[layerKey]);
+  unlistenByKey(this.layerRendererListeners_[layerKey]);
   delete this.layerRendererListeners_[layerKey];
 
   return layerRenderer;

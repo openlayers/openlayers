@@ -3,7 +3,7 @@
  */
 
 import {inherits} from '../index.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import BaseObject from '../Object.js';
 import Control from '../control/Control.js';
@@ -38,7 +38,7 @@ const MousePosition = function(opt_options) {
     target: options.target
   });
 
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(MousePosition.Property_.PROJECTION),
     this.handleProjectionChanged_, this);
 
@@ -171,9 +171,9 @@ MousePosition.prototype.setMap = function(map) {
   if (map) {
     const viewport = map.getViewport();
     this.listenerKeys.push(
-      _ol_events_.listen(viewport, EventType.MOUSEMOVE,
+      listen(viewport, EventType.MOUSEMOVE,
         this.handleMouseMove, this),
-      _ol_events_.listen(viewport, EventType.MOUSEOUT,
+      listen(viewport, EventType.MOUSEOUT,
         this.handleMouseOut, this)
     );
   }

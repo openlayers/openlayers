@@ -1,5 +1,5 @@
 import {DEFAULT_TILE_SIZE} from '../../../../src/ol/tilegrid/common.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import Zoomify from '../../../../src/ol/source/Zoomify.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
@@ -301,7 +301,7 @@ describe('ol.source.Zoomify', function() {
 
       const tile = source.getTile(0, 0, -1, 1, proj);
 
-      _ol_events_.listen(tile, 'change', function() {
+      listen(tile, 'change', function() {
         if (tile.getState() == 2) { // LOADED
           const img = tile.getImage();
           expect(img).to.be.a(HTMLCanvasElement);

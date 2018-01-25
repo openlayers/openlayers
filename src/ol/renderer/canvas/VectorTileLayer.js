@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import LayerType from '../../LayerType.js';
 import TileState from '../../TileState.js';
 import {createCanvasContext2D} from '../../dom.js';
-import _ol_events_ from '../../events.js';
+import {listen, unlisten} from '../../events.js';
 import EventType from '../../events/EventType.js';
 import rbush from 'rbush';
 import {buffer, containsCoordinate, equals, getIntersection, getTopLeft, intersects} from '../../extent.js';
@@ -64,7 +64,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
   this.zDirection =
       layer.getRenderMode() == _ol_layer_VectorTileRenderType_.VECTOR ? 1 : 0;
 
-  _ol_events_.listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  listen(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
 
 };
 
@@ -119,7 +119,7 @@ CanvasVectorTileLayerRenderer.VECTOR_REPLAYS = {
  * @inheritDoc
  */
 CanvasVectorTileLayerRenderer.prototype.disposeInternal = function() {
-  _ol_events_.unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
+  unlisten(_ol_render_canvas_.labelCache, EventType.CLEAR, this.handleFontsChanged_, this);
   CanvasTileLayerRenderer.prototype.disposeInternal.call(this);
 };
 

@@ -1,4 +1,4 @@
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 import _ol_has_ from '../../../../src/ol/has.js';
 import MouseSource from '../../../../src/ol/pointer/MouseSource.js';
@@ -46,7 +46,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer down', function() {
     it('fires pointerdown events', function() {
-      _ol_events_.listen(handler, 'pointerdown', eventSpy);
+      listen(handler, 'pointerdown', eventSpy);
       simulateEvent('mousedown', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
 
@@ -60,7 +60,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer up', function() {
     it('fires pointerup events', function() {
-      _ol_events_.listen(handler, 'pointerup', eventSpy);
+      listen(handler, 'pointerup', eventSpy);
       simulateEvent('mousedown', 0, 0);
       simulateEvent('mouseup', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
@@ -69,7 +69,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer move', function() {
     it('fires pointermove events', function() {
-      _ol_events_.listen(handler, 'pointermove', eventSpy);
+      listen(handler, 'pointermove', eventSpy);
       simulateEvent('mousemove', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
     });
@@ -80,8 +80,8 @@ describe('ol.pointer.PointerEventHandler', function() {
       const enterEventSpy = sinon.spy();
       const overEventSpy = sinon.spy();
 
-      _ol_events_.listen(handler, 'pointerenter', enterEventSpy);
-      _ol_events_.listen(handler, 'pointerover', overEventSpy);
+      listen(handler, 'pointerenter', enterEventSpy);
+      listen(handler, 'pointerover', overEventSpy);
 
       simulateEvent('mouseover', 0, 0);
 
@@ -95,8 +95,8 @@ describe('ol.pointer.PointerEventHandler', function() {
       const leaveEventSpy = sinon.spy();
       const outEventSpy = sinon.spy();
 
-      _ol_events_.listen(handler, 'pointerleave', leaveEventSpy);
-      _ol_events_.listen(handler, 'pointerout', outEventSpy);
+      listen(handler, 'pointerleave', leaveEventSpy);
+      listen(handler, 'pointerout', outEventSpy);
 
       simulateEvent('mouseout', 0, 0);
 

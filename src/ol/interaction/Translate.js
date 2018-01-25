@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import Collection from '../Collection.js';
 import BaseObject from '../Object.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {TRUE} from '../functions.js';
 import {includes} from '../array.js';
@@ -79,7 +79,7 @@ const Translate = function(opt_options) {
    */
   this.lastFeature_ = null;
 
-  _ol_events_.listen(this,
+  listen(this,
     BaseObject.getChangeEventType(InteractionProperty.ACTIVE),
     this.handleActiveChanged_, this);
 

@@ -1,5 +1,5 @@
 import ImageTile from '../../../../src/ol/ImageTile.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
@@ -43,7 +43,7 @@ describe('ol.reproj.Tile', function() {
   it('changes state as expected', function(done) {
     const tile = createTile(1);
     expect(tile.getState()).to.be(0); // IDLE
-    _ol_events_.listen(tile, 'change', function() {
+    listen(tile, 'change', function() {
       if (tile.getState() == 2) { // LOADED
         done();
       }
@@ -77,7 +77,7 @@ describe('ol.reproj.Tile', function() {
 
   it('respects tile size of target tile grid', function(done) {
     const tile = createTile(1, [100, 40]);
-    _ol_events_.listen(tile, 'change', function() {
+    listen(tile, 'change', function() {
       if (tile.getState() == 2) { // LOADED
         const canvas = tile.getImage();
         expect(canvas.width).to.be(100);
@@ -90,7 +90,7 @@ describe('ol.reproj.Tile', function() {
 
   it('respects pixelRatio', function(done) {
     const tile = createTile(3, [60, 20]);
-    _ol_events_.listen(tile, 'change', function() {
+    listen(tile, 'change', function() {
       if (tile.getState() == 2) { // LOADED
         const canvas = tile.getImage();
         expect(canvas.width).to.be(180);

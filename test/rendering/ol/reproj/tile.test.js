@@ -1,5 +1,5 @@
 import TileState from '../../../../src/ol/TileState.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
@@ -24,7 +24,7 @@ describe('ol.rendering.reproj.Tile', function() {
         return source.getTile(z, x, y, pixelRatio, sourceProjection);
       });
     if (tile.getState() == TileState.IDLE) {
-      _ol_events_.listen(tile, 'change', function(e) {
+      listen(tile, 'change', function(e) {
         if (tile.getState() == TileState.LOADED) {
           expect(tilesRequested).to.be(expectedRequests);
           resembleCanvas(tile.getImage(), expectedUrl, 7.5, done);

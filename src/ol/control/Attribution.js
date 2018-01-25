@@ -6,7 +6,7 @@ import {equals} from '../array.js';
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {removeChildren, replaceNode} from '../dom.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import Layer from '../layer/Layer.js';
 
@@ -87,7 +87,7 @@ const Attribution = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  _ol_events_.listen(button, EventType.CLICK, this.handleClick_, this);
+  listen(button, EventType.CLICK, this.handleClick_, this);
 
   const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +

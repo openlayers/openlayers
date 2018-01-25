@@ -2,7 +2,7 @@
  * @module ol/Observable
  */
 import {inherits} from './index.js';
-import _ol_events_ from './events.js';
+import {listen, unlistenByKey, unlisten, listenOnce} from './events.js';
 import EventTarget from './events/EventTarget.js';
 import EventType from './events/EventType.js';
 
@@ -44,10 +44,10 @@ inherits(Observable, EventTarget);
 Observable.unByKey = function(key) {
   if (Array.isArray(key)) {
     for (let i = 0, ii = key.length; i < ii; ++i) {
-      _ol_events_.unlistenByKey(key[i]);
+      unlistenByKey(key[i]);
     }
   } else {
-    _ol_events_.unlistenByKey(/** @type {ol.EventsKey} */ (key));
+    unlistenByKey(/** @type {ol.EventsKey} */ (key));
   }
 };
 
@@ -101,11 +101,11 @@ Observable.prototype.on = function(type, listener) {
     const len = type.length;
     const keys = new Array(len);
     for (let i = 0; i < len; ++i) {
-      keys[i] = _ol_events_.listen(this, type[i], listener);
+      keys[i] = listen(this, type[i], listener);
     }
     return keys;
   } else {
-    return _ol_events_.listen(
+    return listen(
       this, /** @type {string} */ (type), listener);
   }
 };
@@ -125,11 +125,11 @@ Observable.prototype.once = function(type, listener) {
     const len = type.length;
     const keys = new Array(len);
     for (let i = 0; i < len; ++i) {
-      keys[i] = _ol_events_.listenOnce(this, type[i], listener);
+      keys[i] = listenOnce(this, type[i], listener);
     }
     return keys;
   } else {
-    return _ol_events_.listenOnce(
+    return listenOnce(
       this, /** @type {string} */ (type), listener);
   }
 };
@@ -144,11 +144,11 @@ Observable.prototype.once = function(type, listener) {
 Observable.prototype.un = function(type, listener) {
   if (Array.isArray(type)) {
     for (let i = 0, ii = type.length; i < ii; ++i) {
-      _ol_events_.unlisten(this, type[i], listener);
+      unlisten(this, type[i], listener);
     }
     return;
   } else {
-    _ol_events_.unlisten(this, /** @type {string} */ (type), listener);
+    unlisten(this, /** @type {string} */ (type), listener);
   }
 };
 export default Observable;

@@ -32,7 +32,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import {inherits} from '../index.js';
-import _ol_events_ from '../events.js';
+import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/EventTarget.js';
 import _ol_has_ from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
@@ -176,7 +176,7 @@ PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
  */
 PointerEventHandler.prototype.addEvents_ = function(events) {
   events.forEach(function(eventName) {
-    _ol_events_.listen(this.element_, eventName, this.eventHandler_, this);
+    listen(this.element_, eventName, this.eventHandler_, this);
   }.bind(this));
 };
 
@@ -188,7 +188,7 @@ PointerEventHandler.prototype.addEvents_ = function(events) {
  */
 PointerEventHandler.prototype.removeEvents_ = function(events) {
   events.forEach(function(e) {
-    _ol_events_.unlisten(this.element_, e, this.eventHandler_, this);
+    unlisten(this.element_, e, this.eventHandler_, this);
   }.bind(this));
 };
 

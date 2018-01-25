@@ -1,4 +1,4 @@
-import _ol_events_ from '../../../src/ol/events.js';
+import {listen} from '../../../src/ol/events.js';
 import Collection from '../../../src/ol/Collection.js';
 import CollectionEventType from '../../../src/ol/CollectionEventType.js';
 
@@ -37,7 +37,7 @@ describe('ol.collection', function() {
     });
     it('returns the correct new length of the collection', function() {
       let length;
-      _ol_events_.listen(collection, 'add', function(event) {
+      listen(collection, 'add', function(event) {
         if (event.element === 'remove_me') {
           collection.remove(event.element);
         }
@@ -118,7 +118,7 @@ describe('ol.collection', function() {
     it('fires a remove event', function() {
       const collection = new Collection([0, 1, 2]);
       const cb = sinon.spy();
-      _ol_events_.listen(collection, CollectionEventType.REMOVE, cb);
+      listen(collection, CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb).to.be.called();
       expect(cb.lastCall.args[0].element).to.eql(1);
@@ -141,10 +141,10 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       const collection = new Collection(['a', 'b']);
       let added, removed;
-      _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
+      listen(collection, CollectionEventType.ADD, function(e) {
         added = e.element;
       });
-      _ol_events_.listen(
+      listen(
         collection, CollectionEventType.REMOVE, function(e) {
           removed = e.element;
         });
@@ -158,7 +158,7 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       const collection = new Collection(['a']);
       let removed;
-      _ol_events_.listen(
+      listen(
         collection, CollectionEventType.REMOVE, function(e) {
           removed = e.element;
         });
@@ -171,7 +171,7 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       const collection = new Collection([0, 2]);
       let added;
-      _ol_events_.listen(
+      listen(
         collection, CollectionEventType.ADD, function(e) {
           added = e.element;
         });
@@ -183,7 +183,7 @@ describe('ol.collection', function() {
   describe('setAt beyond end', function() {
     it('triggers events properly', function() {
       const added = [];
-      _ol_events_.listen(
+      listen(
         collection, CollectionEventType.ADD, function(e) {
           added.push(e.element);
         });
@@ -204,7 +204,7 @@ describe('ol.collection', function() {
     beforeEach(function() {
       collection = new Collection([0, 1, 2]);
       cb = sinon.spy();
-      _ol_events_.listen(collection, 'change:length', cb);
+      listen(collection, 'change:length', cb);
     });
 
     describe('insertAt', function() {
@@ -233,7 +233,7 @@ describe('ol.collection', function() {
     it('triggers add when pushing', function() {
       const collection = new Collection();
       let elem;
-      _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
+      listen(collection, CollectionEventType.ADD, function(e) {
         elem = e.element;
       });
       const length = collection.push(1);
@@ -250,8 +250,8 @@ describe('ol.collection', function() {
     });
     describe('setAt', function() {
       it('triggers remove', function() {
-        _ol_events_.listen(collection, CollectionEventType.ADD, cb1);
-        _ol_events_.listen(collection, CollectionEventType.REMOVE, cb2);
+        listen(collection, CollectionEventType.ADD, cb1);
+        listen(collection, CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
         expect(cb2.lastCall.args[0].element).to.eql(1);
         expect(cb1.lastCall.args[0].element).to.eql(2);
@@ -259,7 +259,7 @@ describe('ol.collection', function() {
     });
     describe('pop', function() {
       it('triggers remove', function() {
-        _ol_events_.listen(collection, CollectionEventType.REMOVE, cb1);
+        listen(collection, CollectionEventType.REMOVE, cb1);
         collection.pop();
         expect(cb1.lastCall.args[0].element).to.eql(1);
       });
@@ -277,7 +277,7 @@ describe('ol.collection', function() {
     it('fires events', function() {
       const collection = new Collection();
       const elems = [];
-      _ol_events_.listen(collection, CollectionEventType.ADD, function(e) {
+      listen(collection, CollectionEventType.ADD, function(e) {
         elems.push(e.element);
       });
       collection.extend([1, 2]);

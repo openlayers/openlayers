@@ -5,7 +5,7 @@ import {inherits} from './index.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
-import _ol_events_ from './events.js';
+import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
 
 /**
@@ -142,9 +142,9 @@ ImageTile.prototype.load = function() {
     this.state = TileState.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      _ol_events_.listenOnce(this.image_, EventType.ERROR,
+      listenOnce(this.image_, EventType.ERROR,
         this.handleImageError_, this),
-      _ol_events_.listenOnce(this.image_, EventType.LOAD,
+      listenOnce(this.image_, EventType.LOAD,
         this.handleImageLoad_, this)
     ];
     this.tileLoadFunction_(this, this.src_);
@@ -158,7 +158,7 @@ ImageTile.prototype.load = function() {
  * @private
  */
 ImageTile.prototype.unlistenImage_ = function() {
-  this.imageListenerKeys_.forEach(_ol_events_.unlistenByKey);
+  this.imageListenerKeys_.forEach(unlistenByKey);
   this.imageListenerKeys_ = null;
 };
 

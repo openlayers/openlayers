@@ -5,7 +5,7 @@ import {ERROR_THRESHOLD} from './common.js';
 import {inherits} from '../index.js';
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
-import _ol_events_ from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
@@ -264,13 +264,13 @@ ReprojTile.prototype.load = function() {
       if (state == TileState.IDLE || state == TileState.LOADING) {
         leftToLoad++;
 
-        const sourceListenKey = _ol_events_.listen(tile, EventType.CHANGE,
+        const sourceListenKey = listen(tile, EventType.CHANGE,
           function(e) {
             const state = tile.getState();
             if (state == TileState.LOADED ||
                   state == TileState.ERROR ||
                   state == TileState.EMPTY) {
-              _ol_events_.unlistenByKey(sourceListenKey);
+              unlistenByKey(sourceListenKey);
               leftToLoad--;
               if (leftToLoad === 0) {
                 this.unlistenSources_();
@@ -300,7 +300,7 @@ ReprojTile.prototype.load = function() {
  * @private
  */
 ReprojTile.prototype.unlistenSources_ = function() {
-  this.sourcesListenerKeys_.forEach(_ol_events_.unlistenByKey);
+  this.sourcesListenerKeys_.forEach(unlistenByKey);
   this.sourcesListenerKeys_ = null;
 };
 export default ReprojTile;

@@ -5,7 +5,7 @@ import {getUid, inherits} from './index.js';
 import Tile from './Tile.js';
 import TileState from './TileState.js';
 import {createCanvasContext2D} from './dom.js';
-import _ol_events_ from './events.js';
+import {listen, unlistenByKey} from './events.js';
 import {getHeight, getIntersection, getWidth} from './extent.js';
 import EventType from './events/EventType.js';
 import {loadFeaturesXhr} from './featureloader.js';
@@ -111,7 +111,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
             tileUrl == undefined ? '' : tileUrl,
             format, tileLoadFunction);
           this.sourceTileListenerKeys_.push(
-            _ol_events_.listen(sourceTile, EventType.CHANGE, handleTileChange));
+            listen(sourceTile, EventType.CHANGE, handleTileChange));
         }
         sourceTile.consumers++;
         this.tileKeys.push(sourceTileKey);
@@ -145,9 +145,9 @@ VectorImageTile.prototype.disposeInternal = function() {
   }
   this.tileKeys.length = 0;
   this.sourceTiles_ = null;
-  this.loadListenerKeys_.forEach(_ol_events_.unlistenByKey);
+  this.loadListenerKeys_.forEach(unlistenByKey);
   this.loadListenerKeys_.length = 0;
-  this.sourceTileListenerKeys_.forEach(_ol_events_.unlistenByKey);
+  this.sourceTileListenerKeys_.forEach(unlistenByKey);
   this.sourceTileListenerKeys_.length = 0;
   Tile.prototype.disposeInternal.call(this);
 };
@@ -234,7 +234,7 @@ VectorImageTile.prototype.load = function() {
         sourceTile.load();
       }
       if (sourceTile.state == TileState.LOADING) {
-        const key = _ol_events_.listen(sourceTile, EventType.CHANGE, function(e) {
+        const key = listen(sourceTile, EventType.CHANGE, function(e) {
           const state = sourceTile.getState();
           if (state == TileState.LOADED ||
               state == TileState.ERROR) {
@@ -277,7 +277,7 @@ VectorImageTile.prototype.finishLoading_ = function() {
     }
   }
   if (loaded == this.tileKeys.length) {
-    this.loadListenerKeys_.forEach(_ol_events_.unlistenByKey);
+    this.loadListenerKeys_.forEach(unlistenByKey);
     this.loadListenerKeys_.length = 0;
     this.setState(TileState.LOADED);
   } else {

@@ -5,7 +5,7 @@
 import Control from '../control/Control.js';
 import {CLASS_CONTROL, CLASS_HIDDEN, CLASS_UNSELECTABLE} from '../css.js';
 import {easeOut} from '../easing.js';
-import _ol_events_ from '../events.js';
+import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {inherits} from '../index.js';
 
@@ -51,7 +51,7 @@ const Rotate = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(this.label_);
 
-  _ol_events_.listen(button, EventType.CLICK,
+  listen(button, EventType.CLICK,
     Rotate.prototype.handleClick_, this);
 
   const cssClasses = className + ' ' + CLASS_UNSELECTABLE + ' ' + CLASS_CONTROL;

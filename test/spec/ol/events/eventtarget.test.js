@@ -1,5 +1,5 @@
 import Disposable from '../../../../src/ol/Disposable.js';
-import _ol_events_ from '../../../../src/ol/events.js';
+import {listen} from '../../../../src/ol/events.js';
 import Event from '../../../../src/ol/events/Event.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
 
@@ -154,7 +154,7 @@ describe('ol.events.EventTarget', function() {
 
   describe('#dispose()', function() {
     it('cleans up foreign references', function() {
-      _ol_events_.listen(eventTarget, 'foo', spy1, document);
+      listen(eventTarget, 'foo', spy1, document);
       expect(eventTarget.hasListener('foo')).to.be(true);
       eventTarget.dispose();
       expect(eventTarget.hasListener('foo')).to.be(false);

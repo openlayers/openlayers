@@ -5,7 +5,7 @@ import {ERROR_THRESHOLD} from './common.js';
 import {inherits} from '../index.js';
 import _ol_ImageBase_ from '../ImageBase.js';
 import ImageState from '../ImageState.js';
-import _ol_events_ from '../events.js';
+import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
 import _ol_reproj_ from '../reproj.js';
@@ -172,7 +172,7 @@ ReprojImage.prototype.load = function() {
     if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
       this.reproject_();
     } else {
-      this.sourceListenerKey_ = _ol_events_.listen(this.sourceImage_,
+      this.sourceListenerKey_ = listen(this.sourceImage_,
         EventType.CHANGE, function(e) {
           const sourceState = this.sourceImage_.getState();
           if (sourceState == ImageState.LOADED || sourceState == ImageState.ERROR) {
@@ -190,7 +190,7 @@ ReprojImage.prototype.load = function() {
  * @private
  */
 ReprojImage.prototype.unlistenSource_ = function() {
-  _ol_events_.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
+  unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;
 };
 export default ReprojImage;

@@ -2,7 +2,7 @@
  * @module ol/geom/GeometryCollection
  */
 import {inherits} from '../index.js';
-import _ol_events_ from '../events.js';
+import {listen, unlisten} from '../events.js';
 import EventType from '../events/EventType.js';
 import {createOrUpdateEmpty, closestSquaredDistanceXY, extend, getCenter} from '../extent.js';
 import Geometry from '../geom/Geometry.js';
@@ -56,7 +56,7 @@ GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
     return;
   }
   for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
-    _ol_events_.unlisten(
+    unlisten(
       this.geometries_[i], EventType.CHANGE,
       this.changed, this);
   }
@@ -71,7 +71,7 @@ GeometryCollection.prototype.listenGeometriesChange_ = function() {
     return;
   }
   for (let i = 0, ii = this.geometries_.length; i < ii; ++i) {
-    _ol_events_.listen(
+    listen(
       this.geometries_[i], EventType.CHANGE,
       this.changed, this);
   }
