@@ -5,6 +5,7 @@ const marked = require('marked');
 const path = require('path');
 const pkg = require('../../package.json');
 const promisify = require('util').promisify;
+const RawSource = require('webpack-sources').RawSource;
 
 const readFile = promisify(fs.readFile);
 const isCssRegEx = /\.css$/;
@@ -77,7 +78,7 @@ function ExampleBuilder(config) {
  * @param {Object} compiler The webpack compiler.
  */
 ExampleBuilder.prototype.apply = function(compiler) {
-  compiler.plugin('emit', async (compilation, callback) => {
+  compiler.hooks.emit.tapPromise('ExampleBuilder', async (compilation) => {
     const chunks = compilation.getStats().toJson().chunks
       .filter(chunk => chunk.names[0] !== this.common);
 
@@ -94,19 +95,11 @@ ExampleBuilder.prototype.apply = function(compiler) {
       });
 
       for (const file in assets) {
-        compilation.assets[file] = {
-          source: () => assets[file],
-          size: () => assets[file].length
-        };
+        compilation.assets[file] = new RawSource(assets[file]);
       }
     });
 
-    try {
-      await Promise.all(promises);
-    } catch (err) {
-      callback(err);
-      return;
-    }
+    await Promise.all(promises);
 
     const info = {
       examples: exampleData,
@@ -114,12 +107,7 @@ ExampleBuilder.prototype.apply = function(compiler) {
     };
 
     const indexSource = `var info = ${JSON.stringify(info)}`;
-    compilation.assets['index.js'] = {
-      source: () => indexSource,
-      size: () => indexSource.length
-    };
-
-    callback();
+    compilation.assets['index.js'] = new RawSource(indexSource);
   });
 };
 
