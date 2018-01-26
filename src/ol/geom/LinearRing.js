@@ -6,7 +6,7 @@ import {closestSquaredDistanceXY} from '../extent.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import GeometryType from '../geom/GeometryType.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import _ol_geom_flat_area_ from '../geom/flat/area.js';
+import {linearRing as linearRingArea} from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
@@ -83,8 +83,7 @@ LinearRing.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  * @api
  */
 LinearRing.prototype.getArea = function() {
-  return _ol_geom_flat_area_.linearRing(
-    this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
+  return linearRingArea(this.flatCoordinates, 0, this.flatCoordinates.length, this.stride);
 };
 
 

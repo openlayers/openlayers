@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/topology
  */
-import _ol_geom_flat_area_ from '../flat/area.js';
+import {linearRing as linearRingArea} from '../flat/area.js';
 const _ol_geom_flat_topology_ = {};
 
 /**
@@ -16,7 +16,7 @@ _ol_geom_flat_topology_.lineStringIsClosed = function(flatCoordinates, offset, e
   const lastCoord = end - stride;
   if (flatCoordinates[offset] === flatCoordinates[lastCoord] &&
       flatCoordinates[offset + 1] === flatCoordinates[lastCoord + 1] && (end - offset) / stride > 3) {
-    return !!_ol_geom_flat_area_.linearRing(flatCoordinates, offset, end, stride);
+    return !!linearRingArea(flatCoordinates, offset, end, stride);
   }
   return false;
 };

@@ -9,7 +9,7 @@ import GeometryType from '../geom/GeometryType.js';
 import MultiPoint from '../geom/MultiPoint.js';
 import Polygon from '../geom/Polygon.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
-import _ol_geom_flat_area_ from '../geom/flat/area.js';
+import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import _ol_geom_flat_contains_ from '../geom/flat/contains.js';
@@ -162,8 +162,7 @@ MultiPolygon.prototype.containsXY = function(x, y) {
  * @api
  */
 MultiPolygon.prototype.getArea = function() {
-  return _ol_geom_flat_area_.linearRingss(
-    this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
+  return linearRingssArea(this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride);
 };
 
 
