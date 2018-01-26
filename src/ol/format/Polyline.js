@@ -9,7 +9,7 @@ import TextFeature from '../format/TextFeature.js';
 import GeometryLayout from '../geom/GeometryLayout.js';
 import LineString from '../geom/LineString.js';
 import {getStrideForLayout} from '../geom/SimpleGeometry.js';
-import _ol_geom_flat_flip_ from '../geom/flat/flip.js';
+import {flipXY} from '../geom/flat/flip.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import {get as getProjection} from '../proj.js';
 
@@ -326,8 +326,7 @@ Polyline.prototype.readGeometry;
 Polyline.prototype.readGeometryFromText = function(text, opt_options) {
   const stride = getStrideForLayout(this.geometryLayout_);
   const flatCoordinates = decodeDeltas(text, stride, this.factor_);
-  _ol_geom_flat_flip_.flipXY(
-    flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+  flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   const coordinates = _ol_geom_flat_inflate_.coordinates(
     flatCoordinates, 0, flatCoordinates.length, stride);
 
@@ -392,8 +391,7 @@ Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
     (transformWithOptions(geometry, true, this.adaptOptions(opt_options)));
   const flatCoordinates = geometry.getFlatCoordinates();
   const stride = geometry.getStride();
-  _ol_geom_flat_flip_.flipXY(
-    flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+  flipXY(flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
   return encodeDeltas(flatCoordinates, stride, this.factor_);
 };
 export default Polyline;
