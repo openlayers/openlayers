@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
-import _ol_events_KeyCode_ from '../events/KeyCode.js';
+import KeyCode from '../events/KeyCode.js';
 import _ol_events_condition_ from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
 
@@ -82,19 +82,19 @@ KeyboardPan.handleEvent = function(mapBrowserEvent) {
     const keyEvent = mapBrowserEvent.originalEvent;
     const keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&
-        (keyCode == _ol_events_KeyCode_.DOWN ||
-        keyCode == _ol_events_KeyCode_.LEFT ||
-        keyCode == _ol_events_KeyCode_.RIGHT ||
-        keyCode == _ol_events_KeyCode_.UP)) {
+        (keyCode == KeyCode.DOWN ||
+        keyCode == KeyCode.LEFT ||
+        keyCode == KeyCode.RIGHT ||
+        keyCode == KeyCode.UP)) {
       const map = mapBrowserEvent.map;
       const view = map.getView();
       const mapUnitsDelta = view.getResolution() * this.pixelDelta_;
       let deltaX = 0, deltaY = 0;
-      if (keyCode == _ol_events_KeyCode_.DOWN) {
+      if (keyCode == KeyCode.DOWN) {
         deltaY = -mapUnitsDelta;
-      } else if (keyCode == _ol_events_KeyCode_.LEFT) {
+      } else if (keyCode == KeyCode.LEFT) {
         deltaX = -mapUnitsDelta;
-      } else if (keyCode == _ol_events_KeyCode_.RIGHT) {
+      } else if (keyCode == KeyCode.RIGHT) {
         deltaX = mapUnitsDelta;
       } else {
         deltaY = mapUnitsDelta;
