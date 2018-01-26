@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/flat/segments
  */
-const _ol_geom_flat_segments_ = {};
 
 
 /**
@@ -19,7 +18,7 @@ const _ol_geom_flat_segments_ = {};
  * @return {T|boolean} Value.
  * @template T,S
  */
-_ol_geom_flat_segments_.forEach = function(flatCoordinates, offset, end, stride, callback, opt_this) {
+export function forEach(flatCoordinates, offset, end, stride, callback, opt_this) {
   const point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   const point2 = [];
   let ret;
@@ -34,5 +33,4 @@ _ol_geom_flat_segments_.forEach = function(flatCoordinates, offset, end, stride,
     point1[1] = point2[1];
   }
   return false;
-};
-export default _ol_geom_flat_segments_;
+}

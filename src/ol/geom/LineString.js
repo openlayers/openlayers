@@ -13,7 +13,7 @@ import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_intersectsextent_ from '../geom/flat/intersectsextent.js';
 import _ol_geom_flat_length_ from '../geom/flat/length.js';
-import _ol_geom_flat_segments_ from '../geom/flat/segments.js';
+import {forEach as forEachSegment} from '../geom/flat/segments.js';
 import _ol_geom_flat_simplify_ from '../geom/flat/simplify.js';
 
 /**
@@ -119,8 +119,7 @@ LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDis
  * @api
  */
 LineString.prototype.forEachSegment = function(callback) {
-  return _ol_geom_flat_segments_.forEach(this.flatCoordinates, 0,
-    this.flatCoordinates.length, this.stride, callback);
+  return forEachSegment(this.flatCoordinates, 0, this.flatCoordinates.length, this.stride, callback);
 };
 
 

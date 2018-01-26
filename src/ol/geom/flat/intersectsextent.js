@@ -3,7 +3,7 @@
  */
 import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
 import {linearRingContainsXY, linearRingContainsExtent} from '../flat/contains.js';
-import _ol_geom_flat_segments_ from '../flat/segments.js';
+import {forEach as forEachSegment} from '../flat/segments.js';
 const _ol_geom_flat_intersectsextent_ = {};
 
 
@@ -32,13 +32,13 @@ _ol_geom_flat_intersectsextent_.lineString = function(flatCoordinates, offset, e
       coordinatesExtent[3] <= extent[3]) {
     return true;
   }
-  return _ol_geom_flat_segments_.forEach(flatCoordinates, offset, end, stride,
+  return forEachSegment(flatCoordinates, offset, end, stride,
     /**
-       * @param {ol.Coordinate} point1 Start point.
-       * @param {ol.Coordinate} point2 End point.
-       * @return {boolean} `true` if the segment and the extent intersect,
-       *     `false` otherwise.
-       */
+     * @param {ol.Coordinate} point1 Start point.
+     * @param {ol.Coordinate} point2 End point.
+     * @return {boolean} `true` if the segment and the extent intersect,
+     *     `false` otherwise.
+     */
     function(point1, point2) {
       return intersectsSegment(extent, point1, point2);
     });
