@@ -6,7 +6,7 @@ import {equals} from '../../array.js';
 import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
-import _ol_geom_flat_contains_ from '../../geom/flat/contains.js';
+import {linearRingContainsXY} from '../../geom/flat/contains.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import _ol_render_webgl_polygonreplay_defaultshader_ from '../webgl/polygonreplay/defaultshader.js';
@@ -663,8 +663,7 @@ WebGLPolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1, p2, rtree, 
       if (typeof p === 'object' && (!opt_reflex || p.reflex)) {
         if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) &&
             (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 &&
-            _ol_geom_flat_contains_.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y,
-              p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
+            linearRingContainsXY([p0.x, p0.y, p1.x, p1.y, p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
           result.push(p);
         }
       }

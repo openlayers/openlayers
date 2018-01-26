@@ -12,7 +12,7 @@ import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
 import _ol_geom_flat_center_ from '../geom/flat/center.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
-import _ol_geom_flat_contains_ from '../geom/flat/contains.js';
+import {linearRingssContainsXY} from '../geom/flat/contains.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
@@ -151,8 +151,7 @@ MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredD
  * @inheritDoc
  */
 MultiPolygon.prototype.containsXY = function(x, y) {
-  return _ol_geom_flat_contains_.linearRingssContainsXY(
-    this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
+  return linearRingssContainsXY(this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride, x, y);
 };
 
 

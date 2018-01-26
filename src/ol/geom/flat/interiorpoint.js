@@ -2,7 +2,7 @@
  * @module ol/geom/flat/interiorpoint
  */
 import {numberSafeCompareFunction} from '../../array.js';
-import _ol_geom_flat_contains_ from '../flat/contains.js';
+import {linearRingsContainsXY} from '../flat/contains.js';
 const _ol_geom_flat_interiorpoint_ = {};
 
 
@@ -52,8 +52,7 @@ _ol_geom_flat_interiorpoint_.linearRings = function(flatCoordinates, offset,
     const segmentLength = Math.abs(x2 - x1);
     if (segmentLength > maxSegmentLength) {
       x = (x1 + x2) / 2;
-      if (_ol_geom_flat_contains_.linearRingsContainsXY(
-        flatCoordinates, offset, ends, stride, x, y)) {
+      if (linearRingsContainsXY(flatCoordinates, offset, ends, stride, x, y)) {
         pointX = x;
         maxSegmentLength = segmentLength;
       }
