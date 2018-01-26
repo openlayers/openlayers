@@ -1,7 +1,7 @@
 /**
  * @module ol/geom/flat/orient
  */
-import _ol_geom_flat_reverse_ from '../flat/reverse.js';
+import {coordinates as reverseCoordinates} from '../flat/reverse.js';
 const _ol_geom_flat_orient_ = {};
 
 
@@ -110,7 +110,7 @@ _ol_geom_flat_orient_.orientLinearRings = function(flatCoordinates, offset, ends
       (right && isClockwise) || (!right && !isClockwise) :
       (right && !isClockwise) || (!right && isClockwise);
     if (reverse) {
-      _ol_geom_flat_reverse_.coordinates(flatCoordinates, offset, end, stride);
+      reverseCoordinates(flatCoordinates, offset, end, stride);
     }
     offset = end;
   }
