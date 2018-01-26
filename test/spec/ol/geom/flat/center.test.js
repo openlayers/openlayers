@@ -1,4 +1,4 @@
-import _ol_geom_flat_center_ from '../../../../../src/ol/geom/flat/center.js';
+import {linearRingss as linearRingssCenter} from '../../../../../src/ol/geom/flat/center.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 
 
@@ -10,7 +10,7 @@ describe('ol.geom.flat.center', function() {
       const squareMultiPoly = new MultiPolygon([[
         [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
       ]]);
-      const got = _ol_geom_flat_center_.linearRingss(
+      const got = linearRingssCenter(
         squareMultiPoly.flatCoordinates,
         0,
         squareMultiPoly.endss_,
@@ -28,7 +28,7 @@ describe('ol.geom.flat.center', function() {
           [[3, 0], [3, 1], [4, 1], [4, 0], [3, 0]]
         ]
       ]);
-      const got = _ol_geom_flat_center_.linearRingss(
+      const got = linearRingssCenter(
         squareMultiPoly.flatCoordinates,
         0,
         squareMultiPoly.endss_,
@@ -42,7 +42,7 @@ describe('ol.geom.flat.center', function() {
         [[0, 0], [0, 5], [5, 5], [5, 0], [0, 0]],
         [[1, 1], [1, 4], [4, 4], [4, 1], [1, 1]]
       ]]);
-      const got = _ol_geom_flat_center_.linearRingss(
+      const got = linearRingssCenter(
         polywithHole.flatCoordinates,
         0,
         polywithHole.endss_,

@@ -5,7 +5,7 @@ import {nullFunction} from '../index.js';
 import {extend} from '../array.js';
 import {createOrUpdateFromCoordinate, createOrUpdateFromFlatCoordinates, getCenter, getHeight} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
-import _ol_geom_flat_center_ from '../geom/flat/center.js';
+import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
 import _ol_geom_flat_interpolate_ from '../geom/flat/interpolate.js';
 import _ol_geom_flat_transform_ from '../geom/flat/transform.js';
@@ -137,7 +137,7 @@ RenderFeature.prototype.getFlatInteriorPoint = function() {
  */
 RenderFeature.prototype.getFlatInteriorPoints = function() {
   if (!this.flatInteriorPoints_) {
-    const flatCenters = _ol_geom_flat_center_.linearRingss(
+    const flatCenters = linearRingssCenter(
       this.flatCoordinates_, 0, this.ends_, 2);
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
       this.flatCoordinates_, 0, this.ends_, 2, flatCenters);

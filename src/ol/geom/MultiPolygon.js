@@ -10,7 +10,7 @@ import MultiPoint from '../geom/MultiPoint.js';
 import Polygon from '../geom/Polygon.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {linearRingss as linearRingssArea} from '../geom/flat/area.js';
-import _ol_geom_flat_center_ from '../geom/flat/center.js';
+import {linearRingss as linearRingssCenter} from '../geom/flat/center.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
 import {linearRingssContainsXY} from '../geom/flat/contains.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
@@ -207,7 +207,7 @@ MultiPolygon.prototype.getEndss = function() {
  */
 MultiPolygon.prototype.getFlatInteriorPoints = function() {
   if (this.flatInteriorPointsRevision_ != this.getRevision()) {
-    const flatCenters = _ol_geom_flat_center_.linearRingss(
+    const flatCenters = linearRingssCenter(
       this.flatCoordinates, 0, this.endss_, this.stride);
     this.flatInteriorPoints_ = _ol_geom_flat_interiorpoint_.linearRingss(
       this.getOrientedFlatCoordinates(), 0, this.endss_, this.stride,
