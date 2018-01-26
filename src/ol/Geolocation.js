@@ -246,6 +246,8 @@ Geolocation.prototype.getAltitudeAccuracy = function() {
 
 /**
  * Get the heading as radians clockwise from North.
+ * Note: depending on the browser, the heading is only defined if the `enableHighAccuracy`
+ * is set to `true` in the tracking options.
  * @return {number|undefined} The heading of the device in radians from north.
  * @observable
  * @api

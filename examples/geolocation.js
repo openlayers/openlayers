@@ -34,6 +34,10 @@ const map = new Map({
 });
 
 const geolocation = new Geolocation({
+  // enableHighAccuracy must be set to true to have the heading value.
+  trackingOptions: {
+    enableHighAccuracy: true
+  },
   projection: view.getProjection()
 });
 
