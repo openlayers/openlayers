@@ -6,7 +6,7 @@ import {intersects, getCenter} from './extent.js';
 import GeometryLayout from './geom/GeometryLayout.js';
 import LineString from './geom/LineString.js';
 import Point from './geom/Point.js';
-import _ol_geom_flat_geodesic_ from './geom/flat/geodesic.js';
+import {meridian, parallel} from './geom/flat/geodesic.js';
 import {clamp} from './math.js';
 import {get as getProjection, equivalent as equivalentProjection, getTransform, transformExtent} from './proj.js';
 import RenderEventType from './render/EventType.js';
@@ -565,9 +565,8 @@ Graticule.prototype.getMap = function() {
  * @param {number} index Index.
  * @private
  */
-Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
-  squaredTolerance, index) {
-  const flatCoordinates = _ol_geom_flat_geodesic_.meridian(lon,
+Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat, squaredTolerance, index) {
+  const flatCoordinates = meridian(lon,
     minLat, maxLat, this.projection_, squaredTolerance);
   const lineString = this.meridians_[index] !== undefined ?
     this.meridians_[index] : new LineString(null);
@@ -595,9 +594,8 @@ Graticule.prototype.getMeridians = function() {
  * @param {number} index Index.
  * @private
  */
-Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
-  squaredTolerance, index) {
-  const flatCoordinates = _ol_geom_flat_geodesic_.parallel(lat,
+Graticule.prototype.getParallel_ = function(lat, minLon, maxLon, squaredTolerance, index) {
+  const flatCoordinates = parallel(lat,
     minLon, maxLon, this.projection_, squaredTolerance);
   const lineString = this.parallels_[index] !== undefined ?
     this.parallels_[index] : new LineString(null);

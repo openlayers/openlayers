@@ -1,4 +1,4 @@
-import _ol_geom_flat_segments_ from '../../../../../src/ol/geom/flat/segments.js';
+import {forEach as forEachSegment} from '../../../../../src/ol/geom/flat/segments.js';
 
 
 describe('ol.geom.flat.segments', function() {
@@ -17,8 +17,7 @@ describe('ol.geom.flat.segments', function() {
         const spy = sinon.spy(function(point1, point2) {
           args.push([point1[0], point1[1], point2[0], point2[1]]);
         });
-        const ret = _ol_geom_flat_segments_.forEach(
-          flatCoordinates, offset, end, stride, spy);
+        const ret = forEachSegment(flatCoordinates, offset, end, stride, spy);
         expect(spy.callCount).to.be(3);
         expect(args[0][0]).to.be(0);
         expect(args[0][1]).to.be(0);
@@ -42,8 +41,7 @@ describe('ol.geom.flat.segments', function() {
           args.push([point1[0], point1[1], point2[0], point2[1]]);
           return true;
         });
-        const ret = _ol_geom_flat_segments_.forEach(
-          flatCoordinates, offset, end, stride, spy);
+        const ret = forEachSegment(flatCoordinates, offset, end, stride, spy);
         expect(spy.callCount).to.be(1);
         expect(args[0][0]).to.be(0);
         expect(args[0][1]).to.be(0);

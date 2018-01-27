@@ -1,7 +1,6 @@
 /**
  * @module ol/geom/flat/reverse
  */
-const _ol_geom_flat_reverse_ = {};
 
 
 /**
@@ -10,7 +9,7 @@ const _ol_geom_flat_reverse_ = {};
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-_ol_geom_flat_reverse_.coordinates = function(flatCoordinates, offset, end, stride) {
+export function coordinates(flatCoordinates, offset, end, stride) {
   while (offset < end - stride) {
     for (let i = 0; i < stride; ++i) {
       const tmp = flatCoordinates[offset + i];
@@ -20,5 +19,4 @@ _ol_geom_flat_reverse_.coordinates = function(flatCoordinates, offset, end, stri
     offset += stride;
     end -= stride;
   }
-};
-export default _ol_geom_flat_reverse_;
+}

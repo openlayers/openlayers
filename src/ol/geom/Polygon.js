@@ -10,9 +10,9 @@ import LinearRing from '../geom/LinearRing.js';
 import Point from '../geom/Point.js';
 import SimpleGeometry from '../geom/SimpleGeometry.js';
 import {offset as sphereOffset} from '../sphere.js';
-import _ol_geom_flat_area_ from '../geom/flat/area.js';
+import {linearRings as linearRingsArea} from '../geom/flat/area.js';
 import _ol_geom_flat_closest_ from '../geom/flat/closest.js';
-import _ol_geom_flat_contains_ from '../geom/flat/contains.js';
+import {linearRingsContainsXY} from '../geom/flat/contains.js';
 import _ol_geom_flat_deflate_ from '../geom/flat/deflate.js';
 import _ol_geom_flat_inflate_ from '../geom/flat/inflate.js';
 import _ol_geom_flat_interiorpoint_ from '../geom/flat/interiorpoint.js';
@@ -141,8 +141,7 @@ Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistan
  * @inheritDoc
  */
 Polygon.prototype.containsXY = function(x, y) {
-  return _ol_geom_flat_contains_.linearRingsContainsXY(
-    this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
+  return linearRingsContainsXY(this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride, x, y);
 };
 
 
@@ -152,8 +151,7 @@ Polygon.prototype.containsXY = function(x, y) {
  * @api
  */
 Polygon.prototype.getArea = function() {
-  return _ol_geom_flat_area_.linearRings(
-    this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
+  return linearRingsArea(this.getOrientedFlatCoordinates(), 0, this.ends_, this.stride);
 };
 
 

@@ -2,7 +2,6 @@
  * @module ol/geom/flat/contains
  */
 import {forEachCorner} from '../../extent.js';
-const _ol_geom_flat_contains_ = {};
 
 
 /**
@@ -13,18 +12,17 @@ const _ol_geom_flat_contains_ = {};
  * @param {ol.Extent} extent Extent.
  * @return {boolean} Contains extent.
  */
-_ol_geom_flat_contains_.linearRingContainsExtent = function(flatCoordinates, offset, end, stride, extent) {
+export function linearRingContainsExtent(flatCoordinates, offset, end, stride, extent) {
   const outside = forEachCorner(extent,
     /**
-       * @param {ol.Coordinate} coordinate Coordinate.
-       * @return {boolean} Contains (x, y).
-       */
+     * @param {ol.Coordinate} coordinate Coordinate.
+     * @return {boolean} Contains (x, y).
+     */
     function(coordinate) {
-      return !_ol_geom_flat_contains_.linearRingContainsXY(flatCoordinates,
-        offset, end, stride, coordinate[0], coordinate[1]);
+      return !linearRingContainsXY(flatCoordinates, offset, end, stride, coordinate[0], coordinate[1]);
     });
   return !outside;
-};
+}
 
 
 /**
@@ -36,7 +34,7 @@ _ol_geom_flat_contains_.linearRingContainsExtent = function(flatCoordinates, off
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-_ol_geom_flat_contains_.linearRingContainsXY = function(flatCoordinates, offset, end, stride, x, y) {
+export function linearRingContainsXY(flatCoordinates, offset, end, stride, x, y) {
   // http://geomalgorithms.com/a03-_inclusion.html
   // Copyright 2000 softSurfer, 2012 Dan Sunday
   // This code may be freely used and modified for any purpose
@@ -61,7 +59,7 @@ _ol_geom_flat_contains_.linearRingContainsXY = function(flatCoordinates, offset,
     y1 = y2;
   }
   return wn !== 0;
-};
+}
 
 
 /**
@@ -73,22 +71,20 @@ _ol_geom_flat_contains_.linearRingContainsXY = function(flatCoordinates, offset,
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-_ol_geom_flat_contains_.linearRingsContainsXY = function(flatCoordinates, offset, ends, stride, x, y) {
+export function linearRingsContainsXY(flatCoordinates, offset, ends, stride, x, y) {
   if (ends.length === 0) {
     return false;
   }
-  if (!_ol_geom_flat_contains_.linearRingContainsXY(
-    flatCoordinates, offset, ends[0], stride, x, y)) {
+  if (!linearRingContainsXY(flatCoordinates, offset, ends[0], stride, x, y)) {
     return false;
   }
   for (let i = 1, ii = ends.length; i < ii; ++i) {
-    if (_ol_geom_flat_contains_.linearRingContainsXY(
-      flatCoordinates, ends[i - 1], ends[i], stride, x, y)) {
+    if (linearRingContainsXY(flatCoordinates, ends[i - 1], ends[i], stride, x, y)) {
       return false;
     }
   }
   return true;
-};
+}
 
 
 /**
@@ -100,18 +96,16 @@ _ol_geom_flat_contains_.linearRingsContainsXY = function(flatCoordinates, offset
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-_ol_geom_flat_contains_.linearRingssContainsXY = function(flatCoordinates, offset, endss, stride, x, y) {
+export function linearRingssContainsXY(flatCoordinates, offset, endss, stride, x, y) {
   if (endss.length === 0) {
     return false;
   }
   for (let i = 0, ii = endss.length; i < ii; ++i) {
     const ends = endss[i];
-    if (_ol_geom_flat_contains_.linearRingsContainsXY(
-      flatCoordinates, offset, ends, stride, x, y)) {
+    if (linearRingsContainsXY(flatCoordinates, offset, ends, stride, x, y)) {
       return true;
     }
     offset = ends[ends.length - 1];
   }
   return false;
-};
-export default _ol_geom_flat_contains_;
+}

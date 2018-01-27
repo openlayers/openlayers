@@ -7,7 +7,7 @@ import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_geom_flat_topology_ from '../../geom/flat/topology.js';
+import {lineStringIsClosed} from '../../geom/flat/topology.js';
 import {isEmpty} from '../../obj.js';
 import _ol_render_webgl_ from '../webgl.js';
 import WebGLReplay from '../webgl/Replay.js';
@@ -91,7 +91,7 @@ WebGLLineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, off
     this.state_.lineJoin === 'miter' ? 1 : 2;
   const lineCap = this.state_.lineCap === 'butt' ? 0 :
     this.state_.lineCap === 'square' ? 1 : 2;
-  const closed = _ol_geom_flat_topology_.lineStringIsClosed(flatCoordinates, offset, end, stride);
+  const closed = lineStringIsClosed(flatCoordinates, offset, end, stride);
   let startCoords, sign, n;
   let lastIndex = numIndices;
   let lastSign = 1;
@@ -357,8 +357,7 @@ WebGLLineStringReplay.prototype.drawMultiLineString = function(multiLineStringGe
  */
 WebGLLineStringReplay.prototype.drawPolygonCoordinates = function(
   flatCoordinates, holeFlatCoordinates, stride) {
-  if (!_ol_geom_flat_topology_.lineStringIsClosed(flatCoordinates, 0,
-    flatCoordinates.length, stride)) {
+  if (!lineStringIsClosed(flatCoordinates, 0, flatCoordinates.length, stride)) {
     flatCoordinates.push(flatCoordinates[0]);
     flatCoordinates.push(flatCoordinates[1]);
   }
@@ -366,8 +365,7 @@ WebGLLineStringReplay.prototype.drawPolygonCoordinates = function(
   if (holeFlatCoordinates.length) {
     let i, ii;
     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
-      if (!_ol_geom_flat_topology_.lineStringIsClosed(holeFlatCoordinates[i], 0,
-        holeFlatCoordinates[i].length, stride)) {
+      if (!lineStringIsClosed(holeFlatCoordinates[i], 0, holeFlatCoordinates[i].length, stride)) {
         holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
         holeFlatCoordinates[i].push(holeFlatCoordinates[i][1]);
       }

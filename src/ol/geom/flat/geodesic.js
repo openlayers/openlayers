@@ -3,18 +3,16 @@
  */
 import {squaredSegmentDistance, toRadians, toDegrees} from '../../math.js';
 import {get as getProjection, getTransform} from '../../proj.js';
-const _ol_geom_flat_geodesic_ = {};
 
 
 /**
- * @private
  * @param {function(number): ol.Coordinate} interpolate Interpolate function.
  * @param {ol.TransformFunction} transform Transform from longitude/latitude to
  *     projected coordinates.
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-_ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredTolerance) {
+function line(interpolate, transform, squaredTolerance) {
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
 
@@ -77,22 +75,20 @@ _ol_geom_flat_geodesic_.line_ = function(interpolate, transform, squaredToleranc
   }
 
   return flatCoordinates;
-};
+}
 
 
 /**
-* Generate a great-circle arcs between two lat/lon points.
-* @param {number} lon1 Longitude 1 in degrees.
-* @param {number} lat1 Latitude 1 in degrees.
-* @param {number} lon2 Longitude 2 in degrees.
-* @param {number} lat2 Latitude 2 in degrees.
+ * Generate a great-circle arcs between two lat/lon points.
+ * @param {number} lon1 Longitude 1 in degrees.
+ * @param {number} lat1 Latitude 1 in degrees.
+ * @param {number} lon2 Longitude 2 in degrees.
+ * @param {number} lat2 Latitude 2 in degrees.
  * @param {ol.proj.Projection} projection Projection.
-* @param {number} squaredTolerance Squared tolerance.
-* @return {Array.<number>} Flat coordinates.
-*/
-_ol_geom_flat_geodesic_.greatCircleArc = function(
-  lon1, lat1, lon2, lat2, projection, squaredTolerance) {
-
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {Array.<number>} Flat coordinates.
+ */
+export function greatCircleArc(lon1, lat1, lon2, lat2, projection, squaredTolerance) {
   const geoProjection = getProjection('EPSG:4326');
 
   const cosLat1 = Math.cos(toRadians(lat1));
@@ -103,11 +99,11 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
   const sinDeltaLon = Math.sin(toRadians(lon2 - lon1));
   const d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
 
-  return _ol_geom_flat_geodesic_.line_(
+  return line(
     /**
-       * @param {number} frac Fraction.
-       * @return {ol.Coordinate} Coordinate.
-       */
+     * @param {number} frac Fraction.
+     * @return {ol.Coordinate} Coordinate.
+     */
     function(frac) {
       if (1 <= d) {
         return [lon2, lat2];
@@ -124,7 +120,7 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
               cosD - sinLat1 * Math.sin(lat));
       return [toDegrees(lon), toDegrees(lat)];
     }, getTransform(geoProjection, projection), squaredTolerance);
-};
+}
 
 
 /**
@@ -136,18 +132,18 @@ _ol_geom_flat_geodesic_.greatCircleArc = function(
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-_ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squaredTolerance) {
+export function meridian(lon, lat1, lat2, projection, squaredTolerance) {
   const epsg4326Projection = getProjection('EPSG:4326');
-  return _ol_geom_flat_geodesic_.line_(
+  return line(
     /**
-       * @param {number} frac Fraction.
-       * @return {ol.Coordinate} Coordinate.
-       */
+     * @param {number} frac Fraction.
+     * @return {ol.Coordinate} Coordinate.
+     */
     function(frac) {
       return [lon, lat1 + ((lat2 - lat1) * frac)];
     },
     getTransform(epsg4326Projection, projection), squaredTolerance);
-};
+}
 
 
 /**
@@ -159,16 +155,15 @@ _ol_geom_flat_geodesic_.meridian = function(lon, lat1, lat2, projection, squared
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-_ol_geom_flat_geodesic_.parallel = function(lat, lon1, lon2, projection, squaredTolerance) {
+export function parallel(lat, lon1, lon2, projection, squaredTolerance) {
   const epsg4326Projection = getProjection('EPSG:4326');
-  return _ol_geom_flat_geodesic_.line_(
+  return line(
     /**
-       * @param {number} frac Fraction.
-       * @return {ol.Coordinate} Coordinate.
-       */
+     * @param {number} frac Fraction.
+     * @return {ol.Coordinate} Coordinate.
+     */
     function(frac) {
       return [lon1 + ((lon2 - lon1) * frac), lat];
     },
     getTransform(epsg4326Projection, projection), squaredTolerance);
-};
-export default _ol_geom_flat_geodesic_;
+}

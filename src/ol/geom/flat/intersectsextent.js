@@ -2,8 +2,8 @@
  * @module ol/geom/flat/intersectsextent
  */
 import {containsExtent, createEmpty, extendFlatCoordinates, intersects, intersectsSegment} from '../../extent.js';
-import _ol_geom_flat_contains_ from '../flat/contains.js';
-import _ol_geom_flat_segments_ from '../flat/segments.js';
+import {linearRingContainsXY, linearRingContainsExtent} from '../flat/contains.js';
+import {forEach as forEachSegment} from '../flat/segments.js';
 const _ol_geom_flat_intersectsextent_ = {};
 
 
@@ -32,13 +32,13 @@ _ol_geom_flat_intersectsextent_.lineString = function(flatCoordinates, offset, e
       coordinatesExtent[3] <= extent[3]) {
     return true;
   }
-  return _ol_geom_flat_segments_.forEach(flatCoordinates, offset, end, stride,
+  return forEachSegment(flatCoordinates, offset, end, stride,
     /**
-       * @param {ol.Coordinate} point1 Start point.
-       * @param {ol.Coordinate} point2 End point.
-       * @return {boolean} `true` if the segment and the extent intersect,
-       *     `false` otherwise.
-       */
+     * @param {ol.Coordinate} point1 Start point.
+     * @param {ol.Coordinate} point2 End point.
+     * @return {boolean} `true` if the segment and the extent intersect,
+     *     `false` otherwise.
+     */
     function(point1, point2) {
       return intersectsSegment(extent, point1, point2);
     });
@@ -78,20 +78,16 @@ _ol_geom_flat_intersectsextent_.linearRing = function(flatCoordinates, offset, e
     flatCoordinates, offset, end, stride, extent)) {
     return true;
   }
-  if (_ol_geom_flat_contains_.linearRingContainsXY(
-    flatCoordinates, offset, end, stride, extent[0], extent[1])) {
+  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[0], extent[1])) {
     return true;
   }
-  if (_ol_geom_flat_contains_.linearRingContainsXY(
-    flatCoordinates, offset, end, stride, extent[0], extent[3])) {
+  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[0], extent[3])) {
     return true;
   }
-  if (_ol_geom_flat_contains_.linearRingContainsXY(
-    flatCoordinates, offset, end, stride, extent[2], extent[1])) {
+  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[2], extent[1])) {
     return true;
   }
-  if (_ol_geom_flat_contains_.linearRingContainsXY(
-    flatCoordinates, offset, end, stride, extent[2], extent[3])) {
+  if (linearRingContainsXY(flatCoordinates, offset, end, stride, extent[2], extent[3])) {
     return true;
   }
   return false;
@@ -115,8 +111,7 @@ _ol_geom_flat_intersectsextent_.linearRings = function(flatCoordinates, offset, 
     return true;
   }
   for (let i = 1, ii = ends.length; i < ii; ++i) {
-    if (_ol_geom_flat_contains_.linearRingContainsExtent(
-      flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
+    if (linearRingContainsExtent(flatCoordinates, ends[i - 1], ends[i], stride, extent)) {
       return false;
     }
   }
