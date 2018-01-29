@@ -51,7 +51,7 @@ function addImports(symbols, callback) {
 
 
 /**
- * Generate goog code to export a named symbol.
+ * Generate code to export a named symbol.
  * @param {string} name Symbol name.
  * @param {Object.<string, string>} namespaces Already defined namespaces.
  * @return {string} Export code.
@@ -61,34 +61,16 @@ function formatSymbolExport(name, namespaces) {
   const isNamed = parts[0].indexOf('.') !== -1;
   const nsParts = parts[0].replace(/^module\:/, '').split(/[\/\.]/);
   const last = nsParts.length - 1;
-  let importName = isNamed ?
+  const importName = isNamed ?
     '_' + nsParts.slice(0, last).join('_') + '.' + nsParts[last] :
     '$' + nsParts.join('$');
-  if (parts.length > 1 && parts[1].indexOf('.') !== -1) {
-    const property = parts[1].split('.').pop();
-    importName += '.' + property;
-    nsParts.push(property);
-  }
   let line = nsParts[0];
   for (let i = 1, ii = nsParts.length; i < ii; ++i) {
-    line += `['${nsParts[i]}']`;
+    line += `.${nsParts[i]}`;
     namespaces[line] = (line in namespaces ? namespaces[line] : true) && i < ii - 1;
   }
   line += ` = ${importName};`;
   return line;
-}
-
-
-/**
- * Generate goog code to export a property.
- * @param {string} name Property long name (e.g. foo.Bar#baz).
- * @return {string} Export code.
- */
-function formatPropertyExport(name) {
-  const parts = name.split('#');
-  const prototype = parts[0].split('~')[0].replace(/^module\:/, './').replace(/[.\/]+/g, '$') + '.prototype';
-  const property = parts[1];
-  return `${prototype}['${property}'] = ${prototype}.${property};`;
 }
 
 
@@ -103,10 +85,11 @@ function generateExports(symbols, namespaces, imports) {
   let blocks = [];
   symbols.forEach(function(symbol) {
     const name = symbol.name;
-    if (name.indexOf('#') > 0) {
-      blocks.push(formatPropertyExport(name));
-    } else {
-      blocks.push(formatSymbolExport(name, namespaces));
+    if (name.indexOf('#') == -1) {
+      const block = formatSymbolExport(name, namespaces);
+      if (block !== blocks[blocks.length - 1]) {
+        blocks.push(block);
+      }
     }
   });
   const nsdefs = ['const ol = window[\'ol\'] = {};'];

@@ -11,11 +11,11 @@
   "scripts": {
     "lint": "eslint tasks test src examples transforms",
     "pretest": "npm run lint",
-    "test": "npm run karma -- --single-run && npm run build-typecheck",
+    "test": "npm run karma -- --single-run",
     "karma": "karma start test/karma.config.js",
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --watch & serve build/examples",
     "build-examples": "webpack --config examples/webpack/config.js --env=prod",
-    "build-typecheck": "node tasks/generate-index.js && node tasks/build-typecheck.js"
+    "build": "webpack --config config/webpack.js"
   },
   "main": "src/ol/index.js",
   "repository": {
