@@ -152,7 +152,7 @@ function main(callback) {
 if (require.main === module) {
   async.waterfall([
     main,
-    fs.outputFile.bind(fs, path.join('src', 'ol.js'))
+    fs.outputFile.bind(fs, path.join('src', 'index.js'))
   ], function(err) {
     if (err) {
       process.stderr.write(err.message + '\n');
