@@ -714,6 +714,9 @@ Draw.prototype.removeLastPoint = function() {
  */
 Draw.prototype.finishDrawing = function() {
   const sketchFeature = this.abortDrawing_();
+  if (!sketchFeature) {
+    return;
+  }
   let coordinates = this.sketchCoords_;
   const geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
   if (this.mode_ === Draw.Mode_.LINE_STRING) {
