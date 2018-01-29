@@ -11,10 +11,11 @@
   "scripts": {
     "lint": "eslint tasks test src examples transforms",
     "pretest": "npm run lint",
-    "test": "npm run karma -- --single-run",
+    "test": "npm run karma -- --single-run && npm run build-typecheck",
     "karma": "karma start test/karma.config.js",
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --watch & serve build/examples",
-    "build-examples": "webpack --config examples/webpack/config.js --env=prod"
+    "build-examples": "webpack --config examples/webpack/config.js --env=prod",
+    "build-typecheck": "node tasks/generate-index.js && node tasks/build-typecheck.js"
   },
   "main": "src/ol/index.js",
   "repository": {
@@ -46,6 +47,7 @@
     "front-matter": "^2.1.2",
     "fs-extra": "5.0.0",
     "glob": "7.1.1",
+    "google-closure-compiler": "^20180101.0.0",
     "handlebars": "4.0.11",
     "html-webpack-plugin": "^2.30.1",
     "istanbul": "0.4.5",
