@@ -2,7 +2,8 @@
  * @module ol/typedefs
  */
 
-/* global ol:false */
+//FIXME Remove when reworking typedefs, export typedefs as variables instead
+const ol = {};
 
 /**
  * File for all typedefs used by the compiler, and referenced by JSDoc.
