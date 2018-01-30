@@ -240,15 +240,24 @@ describe('ol.interaction.Draw', function() {
       expect(receivedEvents.end).to.be(1);
       expect(receivedEvents.addfeature).to.be(1);
     });
+
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
+    });
+
   });
 
   describe('drawing multipoints', function() {
+    let draw;
 
     beforeEach(function() {
-      map.addInteraction(new Draw({
+      draw = new Draw({
         source: source,
         type: 'MultiPoint'
-      }));
+      });
+      map.addInteraction(draw);
     });
 
     it('draws multipoint on click', function() {
@@ -260,6 +269,12 @@ describe('ol.interaction.Draw', function() {
       const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(MultiPoint);
       expect(geometry.getCoordinates()).to.eql([[30, -15]]);
+    });
+
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
     });
 
   });
@@ -463,6 +478,12 @@ describe('ol.interaction.Draw', function() {
       expect(de.callCount).to.be(1);
     });
 
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
+    });
+
   });
 
   describe('drawing with a finishCondition', function() {
@@ -515,12 +536,14 @@ describe('ol.interaction.Draw', function() {
   });
 
   describe('drawing multi-linestrings', function() {
+    let draw;
 
     beforeEach(function() {
-      map.addInteraction(new Draw({
+      draw = new Draw({
         source: source,
         type: 'MultiLineString'
-      }));
+      });
+      map.addInteraction(draw);
     });
 
     it('draws multi with clicks, finishing on last point', function() {
@@ -543,6 +566,12 @@ describe('ol.interaction.Draw', function() {
       const geometry = features[0].getGeometry();
       expect(geometry).to.be.a(MultiLineString);
       expect(geometry.getCoordinates()).to.eql([[[10, -20], [30, -20]]]);
+    });
+
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
     });
 
   });
@@ -645,7 +674,6 @@ describe('ol.interaction.Draw', function() {
 
     });
 
-
     it('draws polygon with clicks, finishing on last point', function() {
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -732,15 +760,23 @@ describe('ol.interaction.Draw', function() {
       expect(de.callCount).to.be(1);
     });
 
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
+    });
+
   });
 
   describe('drawing multi-polygons', function() {
+    let draw;
 
     beforeEach(function() {
-      map.addInteraction(new Draw({
+      draw = new Draw({
         source: source,
         type: 'MultiPolygon'
-      }));
+      });
+      map.addInteraction(draw);
     });
 
     it('draws multi with clicks, finishing on first point', function() {
@@ -806,6 +842,12 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0]).to.eql([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
+    });
+
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
     });
 
   });
@@ -878,6 +920,12 @@ describe('ol.interaction.Draw', function() {
       expect(ds.callCount).to.be(1);
       expect(de).to.be.called();
       expect(de.callCount).to.be(1);
+    });
+
+    it('works if finishDrawing is called when the sketch feature is not defined', function() {
+      expect(function() {
+        draw.finishDrawing();
+      }).to.not.throwException();
     });
 
   });
