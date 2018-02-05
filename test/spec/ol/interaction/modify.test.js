@@ -4,7 +4,7 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js';
 import View from '../../../../src/ol/View.js';
 import {getListeners} from '../../../../src/ol/events.js';
-import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
+import {doubleClick} from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import Point from '../../../../src/ol/geom/Point.js';
@@ -524,7 +524,7 @@ describe('ol.interaction.Modify', function() {
     beforeEach(function() {
       modify = new Modify({
         features: new Collection(features),
-        deleteCondition: _ol_events_condition_.doubleClick
+        deleteCondition: doubleClick
       });
       map.addInteraction(modify);
 

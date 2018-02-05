@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_events_condition_ from '../src/ol/events/condition.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import ExtentInteraction from '../src/ol/interaction/Extent.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -30,7 +30,7 @@ const map = new Map({
 });
 
 const extent = new ExtentInteraction({
-  condition: _ol_events_condition_.platformModifierKeyOnly
+  condition: platformModifierKeyOnly
 });
 map.addInteraction(extent);
 extent.setActive(false);

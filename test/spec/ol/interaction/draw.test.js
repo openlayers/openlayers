@@ -4,7 +4,7 @@ import MapBrowserPointerEvent from '../../../../src/ol/MapBrowserPointerEvent.js
 import View from '../../../../src/ol/View.js';
 import {equals} from '../../../../src/ol/array.js';
 import {listen} from '../../../../src/ol/events.js';
-import _ol_events_condition_ from '../../../../src/ol/events/condition.js';
+import {always} from '../../../../src/ol/events/condition.js';
 import Circle from '../../../../src/ol/geom/Circle.js';
 import LineString from '../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../src/ol/geom/MultiLineString.js';
@@ -884,7 +884,7 @@ describe('ol.interaction.Draw', function() {
 
     it('supports freehand drawing for circles', function() {
       draw.freehand_ = true;
-      draw.freehandCondition_ = _ol_events_condition_.always;
+      draw.freehandCondition_ = always;
 
       // no feture created when not moved
       simulateEvent('pointermove', 10, 20);

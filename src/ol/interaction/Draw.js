@@ -10,7 +10,7 @@ import BaseObject from '../Object.js';
 import _ol_coordinate_ from '../coordinate.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {noModifierKeys, always, shiftKeyOnly} from '../events/condition.js';
 import {boundingExtent, getBottomLeft, getBottomRight, getTopLeft, getTopRight} from '../extent.js';
 import {TRUE, FALSE} from '../functions.js';
 import Circle from '../geom/Circle.js';
@@ -291,8 +291,7 @@ const Draw = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.noModifierKeys;
+  this.condition_ = options.condition ? options.condition : noModifierKeys;
 
   /**
    * @private
@@ -300,10 +299,10 @@ const Draw = function(options) {
    */
   this.freehandCondition_;
   if (options.freehand) {
-    this.freehandCondition_ = _ol_events_condition_.always;
+    this.freehandCondition_ = always;
   } else {
     this.freehandCondition_ = options.freehandCondition ?
-      options.freehandCondition : _ol_events_condition_.shiftKeyOnly;
+      options.freehandCondition : shiftKeyOnly;
   }
 
   listen(this,

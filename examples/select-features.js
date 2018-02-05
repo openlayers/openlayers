@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_events_condition_ from '../src/ol/events/condition.js';
+import {click, pointerMove, altKeyOnly} from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -35,18 +35,17 @@ const selectSingleClick = new Select();
 
 // select interaction working on "click"
 const selectClick = new Select({
-  condition: _ol_events_condition_.click
+  condition: click
 });
 
 // select interaction working on "pointermove"
 const selectPointerMove = new Select({
-  condition: _ol_events_condition_.pointerMove
+  condition: pointerMove
 });
 
 const selectAltClick = new Select({
   condition: function(mapBrowserEvent) {
-    return _ol_events_condition_.click(mapBrowserEvent) &&
-        _ol_events_condition_.altKeyOnly(mapBrowserEvent);
+    return click(mapBrowserEvent) && altKeyOnly(mapBrowserEvent);
   }
 });
 

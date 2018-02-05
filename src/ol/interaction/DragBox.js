@@ -4,7 +4,7 @@
 // FIXME draw drag box
 import Event from '../events/Event.js';
 import {inherits, nullFunction} from '../index.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
 import PointerInteraction from '../interaction/Pointer.js';
 import _ol_render_Box_ from '../render/Box.js';
 
@@ -57,8 +57,7 @@ const DragBox = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.always;
+  this.condition_ = options.condition ? options.condition : always;
 
   /**
    * @private
@@ -94,7 +93,7 @@ DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel)
  * @private
  */
 DragBox.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return;
   }
 
@@ -131,7 +130,7 @@ DragBox.prototype.onBoxEnd = nullFunction;
  * @private
  */
 DragBox.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return true;
   }
 
@@ -154,11 +153,11 @@ DragBox.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 DragBox.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return false;
   }
 
-  if (_ol_events_condition_.mouseActionButton(mapBrowserEvent) &&
+  if (mouseActionButton(mapBrowserEvent) &&
       this.condition_(mapBrowserEvent)) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);

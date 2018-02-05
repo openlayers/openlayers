@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import RotationConstraint from '../RotationConstraint.js';
 import ViewHint from '../ViewHint.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {altShiftKeysOnly, mouseOnly, mouseActionButton} from '../events/condition.js';
 import {FALSE} from '../functions.js';
 import Interaction from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
@@ -36,8 +36,7 @@ const DragRotate = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.altShiftKeysOnly;
+  this.condition_ = options.condition ? options.condition : altShiftKeysOnly;
 
   /**
    * @private
@@ -61,7 +60,7 @@ inherits(DragRotate, PointerInteraction);
  * @private
  */
 DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return;
   }
 
@@ -91,7 +90,7 @@ DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
  * @private
  */
 DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return true;
   }
 
@@ -112,12 +111,11 @@ DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return false;
   }
 
-  if (_ol_events_condition_.mouseActionButton(mapBrowserEvent) &&
-      this.condition_(mapBrowserEvent)) {
+  if (mouseActionButton(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
     const map = mapBrowserEvent.map;
     map.getView().setHint(ViewHint.INTERACTING, 1);
     this.lastAngle_ = undefined;

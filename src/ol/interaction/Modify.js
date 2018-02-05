@@ -12,7 +12,7 @@ import _ol_coordinate_ from '../coordinate.js';
 import {listen, unlisten} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {always, primaryAction, altKeyOnly, singleClick} from '../events/condition.js';
 import {boundingExtent, buffer, createOrUpdateFromCoordinate} from '../extent.js';
 import GeometryType from '../geom/GeometryType.js';
 import Point from '../geom/Point.js';
@@ -56,8 +56,7 @@ const Modify = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.primaryAction;
+  this.condition_ = options.condition ? options.condition : primaryAction;
 
 
   /**
@@ -66,8 +65,7 @@ const Modify = function(options) {
    * @return {boolean} Combined condition result.
    */
   this.defaultDeleteCondition_ = function(mapBrowserEvent) {
-    return _ol_events_condition_.altKeyOnly(mapBrowserEvent) &&
-      _ol_events_condition_.singleClick(mapBrowserEvent);
+    return altKeyOnly(mapBrowserEvent) && singleClick(mapBrowserEvent);
   };
 
   /**
@@ -82,7 +80,7 @@ const Modify = function(options) {
    * @private
    */
   this.insertVertexCondition_ = options.insertVertexCondition ?
-    options.insertVertexCondition : _ol_events_condition_.always;
+    options.insertVertexCondition : always;
 
   /**
    * Editing vertex.

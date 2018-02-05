@@ -6,7 +6,7 @@ import CollectionEventType from '../CollectionEventType.js';
 import {extend, includes} from '../array.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {singleClick, never, shiftKeyOnly, pointerMove} from '../events/condition.js';
 import {TRUE} from '../functions.js';
 import GeometryType from '../geom/GeometryType.js';
 import Interaction from '../interaction/Interaction.js';
@@ -45,29 +45,25 @@ const Select = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.singleClick;
+  this.condition_ = options.condition ? options.condition : singleClick;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.addCondition_ = options.addCondition ?
-    options.addCondition : _ol_events_condition_.never;
+  this.addCondition_ = options.addCondition ? options.addCondition : never;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.removeCondition_ = options.removeCondition ?
-    options.removeCondition : _ol_events_condition_.never;
+  this.removeCondition_ = options.removeCondition ? options.removeCondition : never;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.toggleCondition_ = options.toggleCondition ?
-    options.toggleCondition : _ol_events_condition_.shiftKeyOnly;
+  this.toggleCondition_ = options.toggleCondition ? options.toggleCondition : shiftKeyOnly;
 
   /**
    * @private
@@ -283,7 +279,7 @@ Select.handleEvent = function(mapBrowserEvent) {
       new Select.Event(Select.EventType_.SELECT,
         selected, deselected, mapBrowserEvent));
   }
-  return _ol_events_condition_.pointerMove(mapBrowserEvent);
+  return pointerMove(mapBrowserEvent);
 };
 
 
