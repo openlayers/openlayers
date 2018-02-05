@@ -39,7 +39,7 @@ const CanvasVectorTileLayerRenderer = function(layer) {
   /**
    * Declutter tree.
    * @private
-     */
+   */
   this.declutterTree_ = layer.getDeclutter() ? rbush(9) : null;
 
   /**
@@ -298,9 +298,9 @@ CanvasVectorTileLayerRenderer.prototype.forEachFeatureAtCoordinate = function(co
       found = found || replayGroup.forEachFeatureAtCoordinate(
         coordinate, resolution, rotation, hitTolerance, {},
         /**
-           * @param {ol.Feature|ol.render.Feature} feature Feature.
-           * @return {?} Callback result.
-           */
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
+         * @return {?} Callback result.
+         */
         function(feature) {
           const key = getUid(feature).toString();
           if (!(key in features)) {
