@@ -9,7 +9,7 @@ import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
 import _ol_has_ from '../../has.js';
 import _ol_render_canvas_ from '../canvas.js';
-import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
+import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
 import _ol_render_replay_ from '../replay.js';
 import TextPlacement from '../../style/TextPlacement.js';
@@ -362,7 +362,7 @@ CanvasTextReplay.prototype.drawTextImage_ = function(label, begin, end) {
 
   const anchorX = align * label.width / pixelRatio + 2 * (0.5 - align) * strokeWidth;
   const anchorY = baseline * label.height / pixelRatio + 2 * (0.5 - baseline) * strokeWidth;
-  this.instructions.push([_ol_render_canvas_Instruction_.DRAW_IMAGE, begin, end,
+  this.instructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
     1, true, label.width,
@@ -372,7 +372,7 @@ CanvasTextReplay.prototype.drawTextImage_ = function(label, begin, end) {
       }),
     !!textState.backgroundFill, !!textState.backgroundStroke
   ]);
-  this.hitDetectionInstructions.push([_ol_render_canvas_Instruction_.DRAW_IMAGE, begin, end,
+  this.hitDetectionInstructions.push([CanvasInstruction.DRAW_IMAGE, begin, end,
     label, (anchorX - this.textOffsetX_) * pixelRatio, (anchorY - this.textOffsetY_) * pixelRatio,
     this.declutterGroup_, label.height, 1, 0, 0, this.textRotateWithView_, this.textRotation_,
     1 / pixelRatio, true, label.width, textState.padding,
@@ -435,7 +435,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
   if (!widths) {
     this.widths_[font] = widths = {};
   }
-  this.instructions.push([_ol_render_canvas_Instruction_.DRAW_CHARS,
+  this.instructions.push([CanvasInstruction.DRAW_CHARS,
     begin, end, baseline, declutterGroup,
     textState.overflow, fillKey, textState.maxAngle,
     function(text) {
@@ -447,7 +447,7 @@ CanvasTextReplay.prototype.drawChars_ = function(begin, end, declutterGroup) {
     },
     offsetY, strokeKey, strokeWidth * pixelRatio, text, textKey, 1
   ]);
-  this.hitDetectionInstructions.push([_ol_render_canvas_Instruction_.DRAW_CHARS,
+  this.hitDetectionInstructions.push([CanvasInstruction.DRAW_CHARS,
     begin, end, baseline, declutterGroup,
     textState.overflow, fillKey, textState.maxAngle,
     function(text) {
