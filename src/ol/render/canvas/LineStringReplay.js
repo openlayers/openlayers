@@ -2,7 +2,7 @@
  * @module ol/render/canvas/LineStringReplay
  */
 import {inherits} from '../../index.js';
-import _ol_render_canvas_Instruction_ from '../canvas/Instruction.js';
+import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
 
 /**
@@ -37,8 +37,7 @@ CanvasLineStringReplay.prototype.drawFlatCoordinates_ = function(flatCoordinates
   const myBegin = this.coordinates.length;
   const myEnd = this.appendFlatCoordinates(
     flatCoordinates, offset, end, stride, false, false);
-  const moveToLineToInstruction =
-      [_ol_render_canvas_Instruction_.MOVE_TO_LINE_TO, myBegin, myEnd];
+  const moveToLineToInstruction = [CanvasInstruction.MOVE_TO_LINE_TO, myBegin, myEnd];
   this.instructions.push(moveToLineToInstruction);
   this.hitDetectionInstructions.push(moveToLineToInstruction);
   return end;
@@ -58,16 +57,16 @@ CanvasLineStringReplay.prototype.drawLineString = function(lineStringGeometry, f
   this.updateStrokeStyle(state, this.applyStroke);
   this.beginGeometry(lineStringGeometry, feature);
   this.hitDetectionInstructions.push([
-    _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
+    CanvasInstruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
     state.miterLimit, state.lineDash, state.lineDashOffset
   ], [
-    _ol_render_canvas_Instruction_.BEGIN_PATH
+    CanvasInstruction.BEGIN_PATH
   ]);
   const flatCoordinates = lineStringGeometry.getFlatCoordinates();
   const stride = lineStringGeometry.getStride();
   this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
-  this.hitDetectionInstructions.push([_ol_render_canvas_Instruction_.STROKE]);
+  this.hitDetectionInstructions.push([CanvasInstruction.STROKE]);
   this.endGeometry(lineStringGeometry, feature);
 };
 
@@ -85,11 +84,11 @@ CanvasLineStringReplay.prototype.drawMultiLineString = function(multiLineStringG
   this.updateStrokeStyle(state, this.applyStroke);
   this.beginGeometry(multiLineStringGeometry, feature);
   this.hitDetectionInstructions.push([
-    _ol_render_canvas_Instruction_.SET_STROKE_STYLE,
+    CanvasInstruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
     state.miterLimit, state.lineDash, state.lineDashOffset
   ], [
-    _ol_render_canvas_Instruction_.BEGIN_PATH
+    CanvasInstruction.BEGIN_PATH
   ]);
   const ends = multiLineStringGeometry.getEnds();
   const flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -99,7 +98,7 @@ CanvasLineStringReplay.prototype.drawMultiLineString = function(multiLineStringG
     offset = this.drawFlatCoordinates_(
       flatCoordinates, offset, ends[i], stride);
   }
-  this.hitDetectionInstructions.push([_ol_render_canvas_Instruction_.STROKE]);
+  this.hitDetectionInstructions.push([CanvasInstruction.STROKE]);
   this.endGeometry(multiLineStringGeometry, feature);
 };
 
@@ -110,7 +109,7 @@ CanvasLineStringReplay.prototype.drawMultiLineString = function(multiLineStringG
 CanvasLineStringReplay.prototype.finish = function() {
   const state = this.state;
   if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
-    this.instructions.push([_ol_render_canvas_Instruction_.STROKE]);
+    this.instructions.push([CanvasInstruction.STROKE]);
   }
   this.reverseHitDetectionInstructions();
   this.state = null;
@@ -122,11 +121,11 @@ CanvasLineStringReplay.prototype.finish = function() {
  */
 CanvasLineStringReplay.prototype.applyStroke = function(state) {
   if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
-    this.instructions.push([_ol_render_canvas_Instruction_.STROKE]);
+    this.instructions.push([CanvasInstruction.STROKE]);
     state.lastStroke = this.coordinates.length;
   }
   state.lastStroke = 0;
   CanvasReplay.prototype.applyStroke.call(this, state);
-  this.instructions.push([_ol_render_canvas_Instruction_.BEGIN_PATH]);
+  this.instructions.push([CanvasInstruction.BEGIN_PATH]);
 };
 export default CanvasLineStringReplay;
