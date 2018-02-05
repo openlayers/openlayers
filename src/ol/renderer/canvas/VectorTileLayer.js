@@ -182,7 +182,7 @@ CanvasVectorTileLayerRenderer.prototype.createReplayGroup_ = function(
     const sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord);
     const sharedExtent = getIntersection(tileExtent, sourceTileExtent);
     const bufferedExtent = equals(sourceTileExtent, sharedExtent) ? null :
-      buffer(sharedExtent, layer.getRenderBuffer() * resolution);
+      buffer(sharedExtent, layer.getRenderBuffer() * resolution, this.tmpExtent);
     const tileProjection = sourceTile.getProjection();
     let reproject = false;
     if (!equivalentProjection(projection, tileProjection)) {
@@ -396,8 +396,8 @@ CanvasVectorTileLayerRenderer.prototype.postCompose = function(context, frameSta
       continue;
     }
     const tileCoord = tile.tileCoord;
-    const worldOffset = tileGrid.getTileCoordExtent(tileCoord)[0] -
-        tileGrid.getTileCoordExtent(tile.wrappedTileCoord)[0];
+    const worldOffset = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent)[0] -
+        tileGrid.getTileCoordExtent(tile.wrappedTileCoord, this.tmpExtent)[0];
     let transform = undefined;
     for (let t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       const sourceTile = tile.getTile(tile.tileKeys[t]);
@@ -503,7 +503,7 @@ CanvasVectorTileLayerRenderer.prototype.renderTileImage_ = function(
     const size = source.getTilePixelSize(z, pixelRatio, frameState.viewState.projection);
     context.canvas.width = size[0];
     context.canvas.height = size[1];
-    const tileExtent = tileGrid.getTileCoordExtent(tileCoord);
+    const tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     for (let i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
       const sourceTile = tile.getTile(tile.tileKeys[i]);
       if (sourceTile.getState() == TileState.ERROR) {
