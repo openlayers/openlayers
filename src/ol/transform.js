@@ -9,7 +9,7 @@ const _ol_transform_ = {};
  * Collection of affine 2d transformation functions. The functions work on an
  * array of 6 elements. The element order is compatible with the [SVGMatrix
  * interface](https://developer.mozilla.org/en-US/docs/Web/API/SVGMatrix) and is
- * a subset (elements a to f) of a 3x3 martrix:
+ * a subset (elements a to f) of a 3×3 matrix:
  * ```
  * [ a c e ]
  * [ b d f ]
