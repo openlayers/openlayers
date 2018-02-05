@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
-import condition from '../events/condition.js';
+import {always} from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
 import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
@@ -68,7 +68,7 @@ const MouseWheelZoom = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ? options.condition : condition.always;
+  this.condition_ = options.condition ? options.condition : always;
 
   /**
    * @private

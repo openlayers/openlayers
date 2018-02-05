@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import ViewHint from '../ViewHint.js';
 import _ol_coordinate_ from '../coordinate.js';
 import {easeOut} from '../easing.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {noModifierKeys} from '../events/condition.js';
 import {FALSE} from '../functions.js';
 import PointerInteraction from '../interaction/Pointer.js';
 
@@ -48,8 +48,7 @@ const DragPan = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.noModifierKeys;
+  this.condition_ = options.condition ? options.condition : noModifierKeys;
 
   /**
    * @private

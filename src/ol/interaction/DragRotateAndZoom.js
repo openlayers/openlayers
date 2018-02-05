@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import RotationConstraint from '../RotationConstraint.js';
 import ViewHint from '../ViewHint.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {shiftKeyOnly, mouseOnly} from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
 import PointerInteraction from '../interaction/Pointer.js';
 
@@ -37,8 +37,7 @@ const DragRotateAndZoom = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-    options.condition : _ol_events_condition_.shiftKeyOnly;
+  this.condition_ = options.condition ? options.condition : shiftKeyOnly;
 
   /**
    * @private
@@ -75,7 +74,7 @@ inherits(DragRotateAndZoom, PointerInteraction);
  * @private
  */
 DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return;
   }
 
@@ -111,7 +110,7 @@ DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
  * @private
  */
 DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return true;
   }
 
@@ -134,7 +133,7 @@ DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
  * @private
  */
 DragRotateAndZoom.handleDownEvent_ = function(mapBrowserEvent) {
-  if (!_ol_events_condition_.mouseOnly(mapBrowserEvent)) {
+  if (!mouseOnly(mapBrowserEvent)) {
     return false;
   }
 

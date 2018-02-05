@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import _ol_coordinate_ from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {noModifierKeys, targetNotEditable} from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
 
 /**
@@ -39,8 +39,8 @@ const KeyboardPan = function(opt_options) {
    * @return {boolean} Combined condition result.
    */
   this.defaultCondition_ = function(mapBrowserEvent) {
-    return _ol_events_condition_.noModifierKeys(mapBrowserEvent) &&
-      _ol_events_condition_.targetNotEditable(mapBrowserEvent);
+    return noModifierKeys(mapBrowserEvent) &&
+      targetNotEditable(mapBrowserEvent);
   };
 
   /**

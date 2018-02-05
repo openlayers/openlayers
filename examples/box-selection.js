@@ -1,6 +1,6 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_events_condition_ from '../src/ol/events/condition.js';
+import {platformModifierKeyOnly} from '../src/ol/events/condition.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import DragBox from '../src/ol/interaction/DragBox.js';
 import Select from '../src/ol/interaction/Select.js';
@@ -40,7 +40,7 @@ const selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
 const dragBox = new DragBox({
-  condition: _ol_events_condition_.platformModifierKeyOnly
+  condition: platformModifierKeyOnly
 });
 
 map.addInteraction(dragBox);

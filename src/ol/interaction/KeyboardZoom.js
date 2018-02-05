@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import EventType from '../events/EventType.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {targetNotEditable} from '../events/condition.js';
 import Interaction from '../interaction/Interaction.js';
 
 /**
@@ -35,8 +35,7 @@ const KeyboardZoom = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ? options.condition :
-    _ol_events_condition_.targetNotEditable;
+  this.condition_ = options.condition ? options.condition : targetNotEditable;
 
   /**
    * @private

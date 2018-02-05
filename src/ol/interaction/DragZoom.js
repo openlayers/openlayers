@@ -3,7 +3,7 @@
  */
 import {inherits} from '../index.js';
 import {easeOut} from '../easing.js';
-import _ol_events_condition_ from '../events/condition.js';
+import {shiftKeyOnly} from '../events/condition.js';
 import {createOrUpdateFromCoordinates, getBottomLeft, getCenter, getTopRight, scaleFromCenter} from '../extent.js';
 import DragBox from '../interaction/DragBox.js';
 
@@ -24,8 +24,7 @@ import DragBox from '../interaction/DragBox.js';
 const DragZoom = function(opt_options) {
   const options = opt_options ? opt_options : {};
 
-  const condition = options.condition ?
-    options.condition : _ol_events_condition_.shiftKeyOnly;
+  const condition = options.condition ? options.condition : shiftKeyOnly;
 
   /**
    * @private
