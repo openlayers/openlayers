@@ -2,7 +2,7 @@ import Map from '../../../../src/ol/Map.js';
 import MapBrowserEvent from '../../../../src/ol/MapBrowserEvent.js';
 import View from '../../../../src/ol/View.js';
 import Event from '../../../../src/ol/events/Event.js';
-import _ol_has_ from '../../../../src/ol/has.js';
+import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../../../../src/ol/has.js';
 import Interaction from '../../../../src/ol/interaction/Interaction.js';
 import MouseWheelZoom from '../../../../src/ol/interaction/MouseWheelZoom.js';
 
@@ -62,43 +62,41 @@ describe('ol.interaction.MouseWheelZoom', function() {
 
   describe('handleEvent()', function() {
 
-    it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
-      const origHasFirefox = _ol_has_.FIREFOX;
-      _ol_has_.FIREFOX = true;
-      map.once('postrender', function() {
-        expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
-        _ol_has_.FIREFOX = origHasFirefox;
-        done();
+    if (FIREFOX) {
+      it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
+        map.once('postrender', function() {
+          expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
+          done();
+        });
+        const event = new MapBrowserEvent('wheel', map, {
+          type: 'wheel',
+          deltaMode: WheelEvent.DOM_DELTA_PIXEL,
+          deltaY: DEVICE_PIXEL_RATIO,
+          target: map.getViewport(),
+          preventDefault: Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+        map.handleMapBrowserEvent(event);
       });
-      const event = new MapBrowserEvent('wheel', map, {
-        type: 'wheel',
-        deltaMode: WheelEvent.DOM_DELTA_PIXEL,
-        deltaY: _ol_has_.DEVICE_PIXEL_RATIO,
-        target: map.getViewport(),
-        preventDefault: Event.prototype.preventDefault
-      });
-      event.coordinate = [0, 0];
-      map.handleMapBrowserEvent(event);
-    });
+    }
 
-    it('works in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
-      const origHasFirefox = _ol_has_.FIREFOX;
-      _ol_has_.FIREFOX = false;
-      map.once('postrender', function() {
-        expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
-        _ol_has_.FIREFOX = origHasFirefox;
-        done();
+    if (!FIREFOX) {
+      it('works in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
+        map.once('postrender', function() {
+          expect(interaction.mode_).to.be(MouseWheelZoom.Mode_.TRACKPAD);
+          done();
+        });
+        const event = new MapBrowserEvent('wheel', map, {
+          type: 'wheel',
+          deltaMode: WheelEvent.DOM_DELTA_PIXEL,
+          deltaY: 1,
+          target: map.getViewport(),
+          preventDefault: Event.prototype.preventDefault
+        });
+        event.coordinate = [0, 0];
+        map.handleMapBrowserEvent(event);
       });
-      const event = new MapBrowserEvent('wheel', map, {
-        type: 'wheel',
-        deltaMode: WheelEvent.DOM_DELTA_PIXEL,
-        deltaY: 1,
-        target: map.getViewport(),
-        preventDefault: Event.prototype.preventDefault
-      });
-      event.coordinate = [0, 0];
-      map.handleMapBrowserEvent(event);
-    });
+    }
 
     describe('spying on ol.interaction.Interaction.zoomByDelta', function() {
       beforeEach(function() {
@@ -126,45 +124,43 @@ describe('ol.interaction.MouseWheelZoom', function() {
         map.handleMapBrowserEvent(event);
       });
 
-      it('works on Safari (wheel)', function(done) {
-        const origHasSafari = _ol_has_.SAFARI;
-        _ol_has_.SAFARI = true;
-        map.once('postrender', function() {
-          const call = Interaction.zoomByDelta.getCall(0);
-          expect(call.args[1]).to.be(-1);
-          expect(call.args[2]).to.eql([0, 0]);
-          _ol_has_.SAFARI = origHasSafari;
-          done();
+      if (SAFARI) {
+        it('works on Safari (wheel)', function(done) {
+          map.once('postrender', function() {
+            const call = Interaction.zoomByDelta.getCall(0);
+            expect(call.args[1]).to.be(-1);
+            expect(call.args[2]).to.eql([0, 0]);
+            done();
+          });
+          const event = new MapBrowserEvent('mousewheel', map, {
+            type: 'mousewheel',
+            wheelDeltaY: -50,
+            target: map.getViewport(),
+            preventDefault: Event.prototype.preventDefault
+          });
+          event.coordinate = [0, 0];
+          map.handleMapBrowserEvent(event);
         });
-        const event = new MapBrowserEvent('mousewheel', map, {
-          type: 'mousewheel',
-          wheelDeltaY: -50,
-          target: map.getViewport(),
-          preventDefault: Event.prototype.preventDefault
-        });
-        event.coordinate = [0, 0];
-        map.handleMapBrowserEvent(event);
-      });
+      }
 
-      it('works on other browsers (wheel)', function(done) {
-        const origHasSafari = _ol_has_.SAFARI;
-        _ol_has_.SAFARI = false;
-        map.once('postrender', function() {
-          const call = Interaction.zoomByDelta.getCall(0);
-          expect(call.args[1]).to.be(-1);
-          expect(call.args[2]).to.eql([0, 0]);
-          _ol_has_.SAFARI = origHasSafari;
-          done();
+      if (!SAFARI) {
+        it('works on other browsers (wheel)', function(done) {
+          map.once('postrender', function() {
+            const call = Interaction.zoomByDelta.getCall(0);
+            expect(call.args[1]).to.be(-1);
+            expect(call.args[2]).to.eql([0, 0]);
+            done();
+          });
+          const event = new MapBrowserEvent('mousewheel', map, {
+            type: 'mousewheel',
+            wheelDeltaY: -120,
+            target: map.getViewport(),
+            preventDefault: Event.prototype.preventDefault
+          });
+          event.coordinate = [0, 0];
+          map.handleMapBrowserEvent(event);
         });
-        const event = new MapBrowserEvent('mousewheel', map, {
-          type: 'mousewheel',
-          wheelDeltaY: -120,
-          target: map.getViewport(),
-          preventDefault: Event.prototype.preventDefault
-        });
-        event.coordinate = [0, 0];
-        map.handleMapBrowserEvent(event);
-      });
+      }
 
     });
 

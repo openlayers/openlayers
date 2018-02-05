@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import {asColorLike} from '../../colorlike.js';
 import {createCanvasContext2D} from '../../dom.js';
 import GeometryType from '../../geom/GeometryType.js';
-import _ol_has_ from '../../has.js';
+import {CANVAS_LINE_DASH} from '../../has.js';
 import _ol_render_replay_ from '../replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import WebGLTextureReplay from '../webgl/TextureReplay.js';
@@ -269,7 +269,7 @@ WebGLTextReplay.prototype.addCharToAtlas_ = function(char) {
         ctx.miterLimit = /** @type {number} */ (state.miterLimit);
         ctx.textAlign = 'left';
         ctx.textBaseline = 'top';
-        if (_ol_has_.CANVAS_LINE_DASH && state.lineDash) {
+        if (CANVAS_LINE_DASH && state.lineDash) {
           //FIXME: use pixelRatio
           ctx.setLineDash(state.lineDash);
           ctx.lineDashOffset = /** @type {number} */ (state.lineDashOffset);

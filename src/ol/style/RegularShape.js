@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {asColorLike} from '../colorlike.js';
 import {createCanvasContext2D} from '../dom.js';
-import _ol_has_ from '../has.js';
+import {CANVAS_LINE_DASH} from '../has.js';
 import ImageState from '../ImageState.js';
 import _ol_render_canvas_ from '../render/canvas.js';
 import ImageStyle from '../style/Image.js';
@@ -334,7 +334,7 @@ RegularShape.prototype.render_ = function(atlasManager) {
     }
     lineDash = this.stroke_.getLineDash();
     lineDashOffset = this.stroke_.getLineDashOffset();
-    if (!_ol_has_.CANVAS_LINE_DASH) {
+    if (!CANVAS_LINE_DASH) {
       lineDash = null;
       lineDashOffset = 0;
     }

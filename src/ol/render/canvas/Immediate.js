@@ -12,7 +12,7 @@ import {intersects} from '../../extent.js';
 import GeometryType from '../../geom/GeometryType.js';
 import SimpleGeometry from '../../geom/SimpleGeometry.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_has_ from '../../has.js';
+import {CANVAS_LINE_DASH} from '../../has.js';
 import VectorContext from '../VectorContext.js';
 import _ol_render_canvas_ from '../canvas.js';
 import _ol_transform_ from '../../transform.js';
@@ -728,7 +728,7 @@ CanvasImmediateRenderer.prototype.setContextStrokeState_ = function(strokeState)
   const contextStrokeState = this.contextStrokeState_;
   if (!contextStrokeState) {
     context.lineCap = strokeState.lineCap;
-    if (_ol_has_.CANVAS_LINE_DASH) {
+    if (CANVAS_LINE_DASH) {
       context.setLineDash(strokeState.lineDash);
       context.lineDashOffset = strokeState.lineDashOffset;
     }
@@ -749,7 +749,7 @@ CanvasImmediateRenderer.prototype.setContextStrokeState_ = function(strokeState)
     if (contextStrokeState.lineCap != strokeState.lineCap) {
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
-    if (_ol_has_.CANVAS_LINE_DASH) {
+    if (CANVAS_LINE_DASH) {
       if (!equals(contextStrokeState.lineDash, strokeState.lineDash)) {
         context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
       }

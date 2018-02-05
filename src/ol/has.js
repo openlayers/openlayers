@@ -3,8 +3,6 @@
  */
 import {HAS_WEBGL} from './index.js';
 
-const _ol_has_ = {};
-
 const ua = typeof navigator !== 'undefined' ?
   navigator.userAgent.toLowerCase() : '';
 
@@ -12,25 +10,25 @@ const ua = typeof navigator !== 'undefined' ?
  * User agent string says we are dealing with Firefox as browser.
  * @type {boolean}
  */
-_ol_has_.FIREFOX = ua.indexOf('firefox') !== -1;
+export const FIREFOX = ua.indexOf('firefox') !== -1;
 
 /**
  * User agent string says we are dealing with Safari as browser.
  * @type {boolean}
  */
-_ol_has_.SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
+export const SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
 
 /**
  * User agent string says we are dealing with a WebKit engine.
  * @type {boolean}
  */
-_ol_has_.WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
+export const WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
 
 /**
  * User agent string says we are dealing with a Mac as platform.
  * @type {boolean}
  */
-_ol_has_.MAC = ua.indexOf('macintosh') !== -1;
+export const MAC = ua.indexOf('macintosh') !== -1;
 
 
 /**
@@ -40,44 +38,22 @@ _ol_has_.MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api
  */
-_ol_has_.DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
+export const DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 
 
 /**
  * True if the browser's Canvas implementation implements {get,set}LineDash.
  * @type {boolean}
  */
-_ol_has_.CANVAS_LINE_DASH = false;
-
-
-/**
- * True if the and browsers support Canvas.
- * @const
- * @type {boolean}
- * @api
- */
-_ol_has_.CANVAS = (
-  /**
-   * @return {boolean} Canvas supported.
-   */
-  function() {
-    if (!('HTMLCanvasElement' in window)) {
-      return false;
-    }
-    try {
-      const context = document.createElement('CANVAS').getContext('2d');
-      if (!context) {
-        return false;
-      } else {
-        if (context.setLineDash !== undefined) {
-          _ol_has_.CANVAS_LINE_DASH = true;
-        }
-        return true;
-      }
-    } catch (e) {
-      return false;
-    }
-  })();
+export const CANVAS_LINE_DASH = function() {
+  let has = false;
+  try {
+    has = !!document.createElement('CANVAS').getContext('2d').setLineDash;
+  } catch (e) {
+    // pass
+  }
+  return has;
+}();
 
 
 /**
@@ -86,7 +62,7 @@ _ol_has_.CANVAS = (
  * @type {boolean}
  * @api
  */
-_ol_has_.GEOLOCATION = 'geolocation' in navigator;
+export const GEOLOCATION = 'geolocation' in navigator;
 
 
 /**
@@ -95,7 +71,7 @@ _ol_has_.GEOLOCATION = 'geolocation' in navigator;
  * @type {boolean}
  * @api
  */
-_ol_has_.TOUCH = 'ontouchstart' in window;
+export const TOUCH = 'ontouchstart' in window;
 
 
 /**
@@ -103,7 +79,7 @@ _ol_has_.TOUCH = 'ontouchstart' in window;
  * @const
  * @type {boolean}
  */
-_ol_has_.POINTER = 'PointerEvent' in window;
+export const POINTER = 'PointerEvent' in window;
 
 
 /**
@@ -111,7 +87,7 @@ _ol_has_.POINTER = 'PointerEvent' in window;
  * @const
  * @type {boolean}
  */
-_ol_has_.MSPOINTER = !!(navigator.msPointerEnabled);
+export const MSPOINTER = !!(navigator.msPointerEnabled);
 
 
 /**
@@ -120,7 +96,4 @@ _ol_has_.MSPOINTER = !!(navigator.msPointerEnabled);
  * @type {boolean}
  * @api
  */
-_ol_has_.WEBGL = HAS_WEBGL;
-
-
-export default _ol_has_;
+export const WEBGL = HAS_WEBGL;

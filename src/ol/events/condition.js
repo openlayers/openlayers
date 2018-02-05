@@ -4,7 +4,7 @@
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import {assert} from '../asserts.js';
 import {TRUE, FALSE} from '../functions.js';
-import _ol_has_ from '../has.js';
+import {WEBKIT, MAC} from '../has.js';
 const _ol_events_condition_ = {};
 
 
@@ -77,7 +77,7 @@ _ol_events_condition_.click = function(mapBrowserEvent) {
 _ol_events_condition_.mouseActionButton = function(mapBrowserEvent) {
   const originalEvent = mapBrowserEvent.originalEvent;
   return originalEvent.button == 0 &&
-      !(_ol_has_.WEBKIT && _ol_has_.MAC && originalEvent.ctrlKey);
+      !(WEBKIT && MAC && originalEvent.ctrlKey);
 };
 
 
@@ -158,7 +158,7 @@ _ol_events_condition_.noModifierKeys = function(mapBrowserEvent) {
 _ol_events_condition_.platformModifierKeyOnly = function(mapBrowserEvent) {
   const originalEvent = mapBrowserEvent.originalEvent;
   return !originalEvent.altKey &&
-    (_ol_has_.MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
+    (MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
     !originalEvent.shiftKey;
 };
 

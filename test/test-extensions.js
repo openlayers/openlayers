@@ -1,5 +1,5 @@
 import {equals} from '../src/ol/array.js';
-import _ol_has_ from '../src/ol/has.js';
+import {WEBGL} from '../src/ol/has.js';
 // avoid importing anything that results in an instanceof check
 // since these extensions are global, instanceof checks fail with modules
 
@@ -377,7 +377,7 @@ import _ol_has_ from '../src/ol/has.js';
   };
 
   global.assertWebGL = function(map) {
-    if (!_ol_has_.WEBGL) {
+    if (!WEBGL) {
       expect().fail('No WebGL support!');
     }
   };

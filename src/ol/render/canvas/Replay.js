@@ -12,7 +12,7 @@ import _ol_geom_flat_inflate_ from '../../geom/flat/inflate.js';
 import _ol_geom_flat_length_ from '../../geom/flat/length.js';
 import _ol_geom_flat_textpath_ from '../../geom/flat/textpath.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_has_ from '../../has.js';
+import {CANVAS_LINE_DASH} from '../../has.js';
 import {isEmpty} from '../../obj.js';
 import VectorContext from '../VectorContext.js';
 import _ol_render_canvas_ from '../canvas.js';
@@ -479,7 +479,7 @@ CanvasReplay.prototype.setStrokeStyle_ = function(context, instruction) {
   context.lineCap = /** @type {string} */ (instruction[3]);
   context.lineJoin = /** @type {string} */ (instruction[4]);
   context.miterLimit = /** @type {number} */ (instruction[5]);
-  if (_ol_has_.CANVAS_LINE_DASH) {
+  if (CANVAS_LINE_DASH) {
     context.lineDashOffset = /** @type {number} */ (instruction[7]);
     context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
   }

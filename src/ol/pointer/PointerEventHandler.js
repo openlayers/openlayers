@@ -34,7 +34,7 @@
 import {inherits} from '../index.js';
 import {listen, unlisten} from '../events.js';
 import EventTarget from '../events/EventTarget.js';
-import _ol_has_ from '../has.js';
+import {POINTER, MSPOINTER, TOUCH} from '../has.js';
 import PointerEventType from '../pointer/EventType.js';
 import MouseSource from '../pointer/MouseSource.js';
 import MsSource from '../pointer/MsSource.js';
@@ -86,15 +86,15 @@ inherits(PointerEventHandler, EventTarget);
  * that generate pointer events.
  */
 PointerEventHandler.prototype.registerSources = function() {
-  if (_ol_has_.POINTER) {
+  if (POINTER) {
     this.registerSource('native', new NativeSource(this));
-  } else if (_ol_has_.MSPOINTER) {
+  } else if (MSPOINTER) {
     this.registerSource('ms', new MsSource(this));
   } else {
     const mouseSource = new MouseSource(this);
     this.registerSource('mouse', mouseSource);
 
-    if (_ol_has_.TOUCH) {
+    if (TOUCH) {
       this.registerSource('touch', new TouchSource(this, mouseSource));
     }
   }

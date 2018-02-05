@@ -22,7 +22,7 @@ import Event from './events/Event.js';
 import EventType from './events/EventType.js';
 import {createEmpty, clone, createOrUpdateEmpty, equals, getForViewAndSize, isEmpty} from './extent.js';
 import {TRUE} from './functions.js';
-import _ol_has_ from './has.js';
+import {DEVICE_PIXEL_RATIO, TOUCH} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {getMapRendererPlugins} from './plugins.js';
 import RendererType from './renderer/Type.js';
@@ -136,7 +136,7 @@ const PluggableMap = function(options) {
    * @type {number}
    */
   this.pixelRatio_ = options.pixelRatio !== undefined ?
-    options.pixelRatio : _ol_has_.DEVICE_PIXEL_RATIO;
+    options.pixelRatio : DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -206,7 +206,7 @@ const PluggableMap = function(options) {
    * @type {Element}
    */
   this.viewport_ = document.createElement('DIV');
-  this.viewport_.className = 'ol-viewport' + (_ol_has_.TOUCH ? ' ol-touch' : '');
+  this.viewport_.className = 'ol-viewport' + (TOUCH ? ' ol-touch' : '');
   this.viewport_.style.position = 'relative';
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';

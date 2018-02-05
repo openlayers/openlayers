@@ -6,7 +6,7 @@ import ViewHint from '../ViewHint.js';
 import condition from '../events/condition.js';
 import {easeOut} from '../easing.js';
 import EventType from '../events/EventType.js';
-import _ol_has_ from '../has.js';
+import {DEVICE_PIXEL_RATIO, FIREFOX, SAFARI} from '../has.js';
 import Interaction from '../interaction/Interaction.js';
 import {clamp} from '../math.js';
 
@@ -156,16 +156,16 @@ MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   let delta;
   if (mapBrowserEvent.type == EventType.WHEEL) {
     delta = wheelEvent.deltaY;
-    if (_ol_has_.FIREFOX &&
+    if (FIREFOX &&
         wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-      delta /= _ol_has_.DEVICE_PIXEL_RATIO;
+      delta /= DEVICE_PIXEL_RATIO;
     }
     if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
       delta *= 40;
     }
   } else if (mapBrowserEvent.type == EventType.MOUSEWHEEL) {
     delta = -wheelEvent.wheelDeltaY;
-    if (_ol_has_.SAFARI) {
+    if (SAFARI) {
       delta /= 3;
     }
   }

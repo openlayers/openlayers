@@ -1,11 +1,11 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import {defaults as defaultControls} from '../src/ol/control.js';
-import _ol_has_ from '../src/ol/has.js';
+import {WEBGL} from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import OSM from '../src/ol/source/OSM.js';
 
-if (!_ol_has_.WEBGL) {
+if (!WEBGL) {
   const info = document.getElementById('no-webgl');
   /**
    * display error message
