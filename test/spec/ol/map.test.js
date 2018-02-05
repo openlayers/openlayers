@@ -4,7 +4,7 @@ import MapEvent from '../../../src/ol/MapEvent.js';
 import Overlay from '../../../src/ol/Overlay.js';
 import View from '../../../src/ol/View.js';
 import LineString from '../../../src/ol/geom/LineString.js';
-import _ol_has_ from '../../../src/ol/has.js';
+import {TOUCH} from '../../../src/ol/has.js';
 import {defaults as defaultInteractions} from '../../../src/ol/interaction.js';
 import DoubleClickZoom from '../../../src/ol/interaction/DoubleClickZoom.js';
 import Interaction from '../../../src/ol/interaction/Interaction.js';
@@ -38,7 +38,7 @@ describe('ol.Map', function() {
     it('creates the viewport', function() {
       const map = new Map({});
       const viewport = map.getViewport();
-      const className = 'ol-viewport' + (_ol_has_.TOUCH ? ' ol-touch' : '');
+      const className = 'ol-viewport' + (TOUCH ? ' ol-touch' : '');
       expect(viewport.className).to.be(className);
     });
 

@@ -1,7 +1,7 @@
 import Map from '../../../src/ol/Map.js';
 import MapBrowserEventHandler from '../../../src/ol/MapBrowserEventHandler.js';
 import {listen} from '../../../src/ol/events.js';
-import _ol_has_ from '../../../src/ol/has.js';
+import {DEVICE_PIXEL_RATIO} from '../../../src/ol/has.js';
 import PointerEvent from '../../../src/ol/pointer/PointerEvent.js';
 
 describe('ol.MapBrowserEventHandler', function() {
@@ -139,32 +139,32 @@ describe('ol.MapBrowserEventHandler', function() {
 
     it('is moving if distance is 2', function() {
       const pointerdownAt2 = new PointerEvent('pointerdown', {}, {
-        clientX: _ol_has_.DEVICE_PIXEL_RATIO + 1,
-        clientY: _ol_has_.DEVICE_PIXEL_RATIO + 1
+        clientX: DEVICE_PIXEL_RATIO + 1,
+        clientY: DEVICE_PIXEL_RATIO + 1
       });
       expect(defaultHandler.isMoving_(pointerdownAt2)).to.be(true);
     });
 
     it('is moving with negative distance', function() {
       const pointerdownAt2 = new PointerEvent('pointerdown', {}, {
-        clientX: -(_ol_has_.DEVICE_PIXEL_RATIO + 1),
-        clientY: -(_ol_has_.DEVICE_PIXEL_RATIO + 1)
+        clientX: -(DEVICE_PIXEL_RATIO + 1),
+        clientY: -(DEVICE_PIXEL_RATIO + 1)
       });
       expect(defaultHandler.isMoving_(pointerdownAt2)).to.be(true);
     });
 
     it('is not moving if distance is less than move tolerance', function() {
       const pointerdownAt2 = new PointerEvent('pointerdown', {}, {
-        clientX: _ol_has_.DEVICE_PIXEL_RATIO + 1,
-        clientY: _ol_has_.DEVICE_PIXEL_RATIO + 1
+        clientX: DEVICE_PIXEL_RATIO + 1,
+        clientY: DEVICE_PIXEL_RATIO + 1
       });
       expect(moveToleranceHandler.isMoving_(pointerdownAt2)).to.be(false);
     });
 
     it('is moving if distance is greater than move tolerance', function() {
       const pointerdownAt9 = new PointerEvent('pointerdown', {}, {
-        clientX: (_ol_has_.DEVICE_PIXEL_RATIO * 8) + 1,
-        clientY: (_ol_has_.DEVICE_PIXEL_RATIO * 8) + 1
+        clientX: (DEVICE_PIXEL_RATIO * 8) + 1,
+        clientY: (DEVICE_PIXEL_RATIO * 8) + 1
       });
       expect(moveToleranceHandler.isMoving_(pointerdownAt9)).to.be(true);
     });

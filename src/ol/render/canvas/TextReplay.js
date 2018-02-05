@@ -7,7 +7,7 @@ import {createCanvasContext2D} from '../../dom.js';
 import {intersects} from '../../extent.js';
 import _ol_geom_flat_straightchunk_ from '../../geom/flat/straightchunk.js';
 import GeometryType from '../../geom/GeometryType.js';
-import _ol_has_ from '../../has.js';
+import {CANVAS_LINE_DASH, SAFARI} from '../../has.js';
 import _ol_render_canvas_ from '../canvas.js';
 import CanvasInstruction from '../canvas/Instruction.js';
 import CanvasReplay from '../canvas/Replay.js';
@@ -314,11 +314,11 @@ CanvasTextReplay.prototype.getImage = function(text, textKey, fillKey, strokeKey
     context.font = textState.font;
     if (strokeKey) {
       context.strokeStyle = strokeState.strokeStyle;
-      context.lineWidth = strokeWidth * (_ol_has_.SAFARI ? scale : 1);
+      context.lineWidth = strokeWidth * (SAFARI ? scale : 1);
       context.lineCap = strokeState.lineCap;
       context.lineJoin = strokeState.lineJoin;
       context.miterLimit = strokeState.miterLimit;
-      if (_ol_has_.CANVAS_LINE_DASH && strokeState.lineDash.length) {
+      if (CANVAS_LINE_DASH && strokeState.lineDash.length) {
         context.setLineDash(strokeState.lineDash);
         context.lineDashOffset = strokeState.lineDashOffset;
       }

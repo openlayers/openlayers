@@ -2,7 +2,7 @@ import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import * as _ol_extent_ from '../src/ol/extent.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
-import _ol_has_ from '../src/ol/has.js';
+import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
@@ -15,7 +15,7 @@ const context = canvas.getContext('2d');
 
 // Gradient and pattern are in canvas pixel space, so we adjust for the
 // renderer's pixel ratio
-const pixelRatio = _ol_has_.DEVICE_PIXEL_RATIO;
+const pixelRatio = DEVICE_PIXEL_RATIO;
 
 // Generate a rainbow gradient
 function gradient(feature, resolution) {

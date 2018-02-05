@@ -1,5 +1,5 @@
 import {equals} from '../../../src/ol/array.js';
-import _ol_has_ from '../../../src/ol/has.js';
+import {DEVICE_PIXEL_RATIO} from '../../../src/ol/has.js';
 import {toContext} from '../../../src/ol/render.js';
 import CanvasImmediateRenderer from '../../../src/ol/render/canvas/Immediate.js';
 import _ol_transform_ from '../../../src/ol/transform.js';
@@ -13,7 +13,7 @@ describe('ol.render', function() {
       const canvas = document.createElement('canvas');
       const render = toContext(canvas.getContext('2d'));
       expect(render).to.be.a(CanvasImmediateRenderer);
-      expect(render.pixelRatio_).to.be(_ol_has_.DEVICE_PIXEL_RATIO);
+      expect(render.pixelRatio_).to.be(DEVICE_PIXEL_RATIO);
     });
 
     it('sets size and pixel ratio from options', function() {

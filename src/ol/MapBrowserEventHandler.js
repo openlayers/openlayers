@@ -2,7 +2,7 @@
  * @module ol/MapBrowserEventHandler
  */
 import {inherits} from './index.js';
-import _ol_has_ from './has.js';
+import {DEVICE_PIXEL_RATIO} from './has.js';
 import MapBrowserEventType from './MapBrowserEventType.js';
 import MapBrowserPointerEvent from './MapBrowserPointerEvent.js';
 import {listen, unlistenByKey} from './events.js';
@@ -50,7 +50,7 @@ const MapBrowserEventHandler = function(map, moveTolerance) {
    * @private
    */
   this.moveTolerance_ = moveTolerance ?
-    moveTolerance * _ol_has_.DEVICE_PIXEL_RATIO : _ol_has_.DEVICE_PIXEL_RATIO;
+    moveTolerance * DEVICE_PIXEL_RATIO : DEVICE_PIXEL_RATIO;
 
   /**
    * The most recent "down" type event (or null if none have occurred).

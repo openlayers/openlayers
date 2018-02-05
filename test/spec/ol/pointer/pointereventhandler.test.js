@@ -1,9 +1,11 @@
 import {listen} from '../../../../src/ol/events.js';
 import EventTarget from '../../../../src/ol/events/EventTarget.js';
-import _ol_has_ from '../../../../src/ol/has.js';
 import MouseSource from '../../../../src/ol/pointer/MouseSource.js';
 import PointerEvent from '../../../../src/ol/pointer/PointerEvent.js';
 import PointerEventHandler from '../../../../src/ol/pointer/PointerEventHandler.js';
+import TouchSource from '../../../../src/ol/pointer/TouchSource.js';
+import MsSource from '../../../../src/ol/pointer/MsSource.js';
+import NativeSource from '../../../../src/ol/pointer/NativeSource.js';
 
 
 describe('ol.pointer.PointerEventHandler', function() {
@@ -15,10 +17,31 @@ describe('ol.pointer.PointerEventHandler', function() {
     target = new EventTarget();
 
     // make sure that a mouse event source is used
-    _ol_has_.POINTER = false;
-    _ol_has_.MSPOINTER = false;
+    const POINTER = false;
+    const MSPOINTER = false;
+    const TOUCH = false;
+    const originalRegisterSources = PointerEventHandler.prototype.registerSources;
+    PointerEventHandler.prototype.registerSources = function() {
+      if (POINTER) {
+        this.registerSource('native', new NativeSource(this));
+      } else if (MSPOINTER) {
+        this.registerSource('ms', new MsSource(this));
+      } else {
+        const mouseSource = new MouseSource(this);
+        this.registerSource('mouse', mouseSource);
+
+        if (TOUCH) {
+          this.registerSource('touch', new TouchSource(this, mouseSource));
+        }
+      }
+
+      // register events on the viewport element
+      this.register_();
+    };
 
     handler = new PointerEventHandler(target);
+    PointerEventHandler.prototype.registerSources = originalRegisterSources;
+
     eventSpy = sinon.spy();
   });
 

@@ -7,7 +7,7 @@ import BaseObject from './Object.js';
 import {listen} from './events.js';
 import EventType from './events/EventType.js';
 import {circular as circularPolygon} from './geom/Polygon.js';
-import _ol_has_ from './has.js';
+import {GEOLOCATION} from './has.js';
 import {toRadians} from './math.js';
 import {get as getProjection, getTransformFromProjections, identityTransform} from './proj.js';
 
@@ -127,7 +127,7 @@ Geolocation.prototype.handleProjectionChanged_ = function() {
  * @private
  */
 Geolocation.prototype.handleTrackingChanged_ = function() {
-  if (_ol_has_.GEOLOCATION) {
+  if (GEOLOCATION) {
     const tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
       this.watchId_ = navigator.geolocation.watchPosition(

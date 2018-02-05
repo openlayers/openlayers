@@ -7,7 +7,7 @@ import {stableSort} from '../../array.js';
 import {CLASS_UNSELECTABLE} from '../../css.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {listen} from '../../events.js';
-import _ol_has_ from '../../has.js';
+import {WEBGL} from '../../has.js';
 import Layer from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
@@ -175,7 +175,7 @@ inherits(WebGLMapRenderer, MapRenderer);
  * @return {boolean} The renderer can render the layer.
  */
 WebGLMapRenderer['handles'] = function(type) {
-  return _ol_has_.WEBGL && type === RendererType.WEBGL;
+  return WEBGL && type === RendererType.WEBGL;
 };
 
 

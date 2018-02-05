@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
 import WMTSCapabilities from '../src/ol/format/WMTSCapabilities.js';
-import _ol_has_ from '../src/ol/has.js';
+import {DEVICE_PIXEL_RATIO} from '../src/ol/has.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import WMTS from '../src/ol/source/WMTS.js';
 
@@ -11,7 +11,7 @@ const capabilitiesUrl = 'https://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml'
 // HiDPI support:
 // * Use 'bmaphidpi' layer (pixel ratio 2) for device pixel ratio > 1
 // * Use 'geolandbasemap' layer (pixel ratio 1) for device pixel ratio == 1
-const hiDPI = _ol_has_.DEVICE_PIXEL_RATIO > 1;
+const hiDPI = DEVICE_PIXEL_RATIO > 1;
 const layer = hiDPI ? 'bmaphidpi' : 'geolandbasemap';
 const tilePixelRatio = hiDPI ? 2 : 1;
 
