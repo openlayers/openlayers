@@ -1,7 +1,6 @@
 /**
  * @module ol/loadingstrategy
  */
-const _ol_loadingstrategy_ = {};
 
 
 /**
@@ -11,7 +10,7 @@ const _ol_loadingstrategy_ = {};
  * @return {Array.<ol.Extent>} Extents.
  * @api
  */
-_ol_loadingstrategy_.all = function(extent, resolution) {
+export const all = function(extent, resolution) {
   return [[-Infinity, -Infinity, Infinity, Infinity]];
 };
 
@@ -24,7 +23,7 @@ _ol_loadingstrategy_.all = function(extent, resolution) {
  * @return {Array.<ol.Extent>} Extents.
  * @api
  */
-_ol_loadingstrategy_.bbox = function(extent, resolution) {
+export const bbox = function(extent, resolution) {
   return [extent];
 };
 
@@ -35,13 +34,13 @@ _ol_loadingstrategy_.bbox = function(extent, resolution) {
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
  * @api
  */
-_ol_loadingstrategy_.tile = function(tileGrid) {
+export const tile = function(tileGrid) {
   return (
-  /**
-       * @param {ol.Extent} extent Extent.
-       * @param {number} resolution Resolution.
-       * @return {Array.<ol.Extent>} Extents.
-       */
+    /**
+     * @param {ol.Extent} extent Extent.
+     * @param {number} resolution Resolution.
+     * @return {Array.<ol.Extent>} Extents.
+     */
     function(extent, resolution) {
       const z = tileGrid.getZForResolution(resolution);
       const tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
@@ -59,4 +58,3 @@ _ol_loadingstrategy_.tile = function(tileGrid) {
       return extents;
     });
 };
-export default _ol_loadingstrategy_;

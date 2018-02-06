@@ -14,7 +14,7 @@ import EventType from '../events/EventType.js';
 import {containsExtent, equals} from '../extent.js';
 import {xhr} from '../featureloader.js';
 import {TRUE} from '../functions.js';
-import _ol_loadingstrategy_ from '../loadingstrategy.js';
+import {all as allStrategy} from '../loadingstrategy.js';
 import {isEmpty, getValues} from '../obj.js';
 import Source from '../source/Source.js';
 import SourceState from '../source/State.js';
@@ -80,8 +80,7 @@ const VectorSource = function(opt_options) {
    * @private
    * @type {ol.LoadingStrategy}
    */
-  this.strategy_ = options.strategy !== undefined ? options.strategy :
-    _ol_loadingstrategy_.all;
+  this.strategy_ = options.strategy !== undefined ? options.strategy : allStrategy;
 
   const useSpatialIndex =
       options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
