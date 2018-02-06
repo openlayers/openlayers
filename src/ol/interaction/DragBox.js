@@ -6,7 +6,7 @@ import Event from '../events/Event.js';
 import {inherits, nullFunction} from '../index.js';
 import {always, mouseOnly, mouseActionButton} from '../events/condition.js';
 import PointerInteraction from '../interaction/Pointer.js';
-import _ol_render_Box_ from '../render/Box.js';
+import RenderBox from '../render/Box.js';
 
 /**
  * @classdesc
@@ -39,7 +39,7 @@ const DragBox = function(opt_options) {
    * @type {ol.render.Box}
    * @private
    */
-  this.box_ = new _ol_render_Box_(options.className || 'ol-dragbox');
+  this.box_ = new RenderBox(options.className || 'ol-dragbox');
 
   /**
    * @type {number}

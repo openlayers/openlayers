@@ -12,7 +12,7 @@ import Polygon from '../geom/Polygon.js';
  * @extends {ol.Disposable}
  * @param {string} className CSS class name.
  */
-const _ol_render_Box_ = function(className) {
+const RenderBox = function(className) {
 
   /**
    * @type {ol.geom.Polygon}
@@ -48,13 +48,13 @@ const _ol_render_Box_ = function(className) {
 
 };
 
-inherits(_ol_render_Box_, Disposable);
+inherits(RenderBox, Disposable);
 
 
 /**
  * @inheritDoc
  */
-_ol_render_Box_.prototype.disposeInternal = function() {
+RenderBox.prototype.disposeInternal = function() {
   this.setMap(null);
 };
 
@@ -62,7 +62,7 @@ _ol_render_Box_.prototype.disposeInternal = function() {
 /**
  * @private
  */
-_ol_render_Box_.prototype.render_ = function() {
+RenderBox.prototype.render_ = function() {
   const startPixel = this.startPixel_;
   const endPixel = this.endPixel_;
   const px = 'px';
@@ -77,7 +77,7 @@ _ol_render_Box_.prototype.render_ = function() {
 /**
  * @param {ol.PluggableMap} map Map.
  */
-_ol_render_Box_.prototype.setMap = function(map) {
+RenderBox.prototype.setMap = function(map) {
   if (this.map_) {
     this.map_.getOverlayContainer().removeChild(this.element_);
     const style = this.element_.style;
@@ -94,7 +94,7 @@ _ol_render_Box_.prototype.setMap = function(map) {
  * @param {ol.Pixel} startPixel Start pixel.
  * @param {ol.Pixel} endPixel End pixel.
  */
-_ol_render_Box_.prototype.setPixels = function(startPixel, endPixel) {
+RenderBox.prototype.setPixels = function(startPixel, endPixel) {
   this.startPixel_ = startPixel;
   this.endPixel_ = endPixel;
   this.createOrUpdateGeometry();
@@ -105,7 +105,7 @@ _ol_render_Box_.prototype.setPixels = function(startPixel, endPixel) {
 /**
  * Creates or updates the cached geometry.
  */
-_ol_render_Box_.prototype.createOrUpdateGeometry = function() {
+RenderBox.prototype.createOrUpdateGeometry = function() {
   const startPixel = this.startPixel_;
   const endPixel = this.endPixel_;
   const pixels = [
@@ -128,7 +128,7 @@ _ol_render_Box_.prototype.createOrUpdateGeometry = function() {
 /**
  * @return {ol.geom.Polygon} Geometry.
  */
-_ol_render_Box_.prototype.getGeometry = function() {
+RenderBox.prototype.getGeometry = function() {
   return this.geometry_;
 };
-export default _ol_render_Box_;
+export default RenderBox;

@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import {fromExtent as polygonFromExtent} from '../../../../src/ol/geom/Polygon.js';
 import DragZoom from '../../../../src/ol/interaction/DragZoom.js';
 import VectorLayer from '../../../../src/ol/layer/Vector.js';
-import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
+import RenderBox from '../../../../src/ol/render/Box.js';
 import VectorSource from '../../../../src/ol/source/Vector.js';
 
 
@@ -70,7 +70,7 @@ describe('ol.interaction.DragZoom', function() {
       });
       map.addInteraction(interaction);
 
-      const box = new _ol_render_Box_();
+      const box = new RenderBox();
       const extent = [-110, 40, -90, 60];
       box.geometry_ = polygonFromExtent(extent);
       interaction.box_ = box;
@@ -92,7 +92,7 @@ describe('ol.interaction.DragZoom', function() {
       });
       map.addInteraction(interaction);
 
-      const box = new _ol_render_Box_();
+      const box = new RenderBox();
       const extent = [-11.25, -11.25, 11.25, 11.25];
       box.geometry_ = polygonFromExtent(extent);
       interaction.box_ = box;
