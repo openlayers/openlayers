@@ -2,7 +2,7 @@ import Disposable from '../../../../src/ol/Disposable.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
-import _ol_render_Box_ from '../../../../src/ol/render/Box.js';
+import RenderBox from '../../../../src/ol/render/Box.js';
 
 
 describe('ol.render.Box', function() {
@@ -10,7 +10,7 @@ describe('ol.render.Box', function() {
   let box, map, target;
 
   beforeEach(function() {
-    box = new _ol_render_Box_('test-box');
+    box = new RenderBox('test-box');
 
     target = document.createElement('div');
     document.body.appendChild(target);
@@ -33,8 +33,8 @@ describe('ol.render.Box', function() {
 
   describe('constructor', function() {
     it('creates an instance', function() {
-      const obj = new _ol_render_Box_('test-box');
-      expect(obj).to.be.a(_ol_render_Box_);
+      const obj = new RenderBox('test-box');
+      expect(obj).to.be.a(RenderBox);
       expect(obj).to.be.a(Disposable);
       obj.dispose();
     });
