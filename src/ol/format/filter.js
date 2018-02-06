@@ -1,24 +1,23 @@
 /**
  * @module ol/format/filter
  */
-import _ol_format_filter_And_ from '../format/filter/And.js';
-import _ol_format_filter_Bbox_ from '../format/filter/Bbox.js';
-import _ol_format_filter_Contains_ from '../format/filter/Contains.js';
-import _ol_format_filter_During_ from '../format/filter/During.js';
-import _ol_format_filter_EqualTo_ from '../format/filter/EqualTo.js';
-import _ol_format_filter_GreaterThan_ from '../format/filter/GreaterThan.js';
-import _ol_format_filter_GreaterThanOrEqualTo_ from '../format/filter/GreaterThanOrEqualTo.js';
-import _ol_format_filter_Intersects_ from '../format/filter/Intersects.js';
-import _ol_format_filter_IsBetween_ from '../format/filter/IsBetween.js';
-import _ol_format_filter_IsLike_ from '../format/filter/IsLike.js';
-import _ol_format_filter_IsNull_ from '../format/filter/IsNull.js';
-import _ol_format_filter_LessThan_ from '../format/filter/LessThan.js';
-import _ol_format_filter_LessThanOrEqualTo_ from '../format/filter/LessThanOrEqualTo.js';
-import _ol_format_filter_Not_ from '../format/filter/Not.js';
-import _ol_format_filter_NotEqualTo_ from '../format/filter/NotEqualTo.js';
-import _ol_format_filter_Or_ from '../format/filter/Or.js';
-import _ol_format_filter_Within_ from '../format/filter/Within.js';
-const _ol_format_filter_ = {};
+import And from '../format/filter/And.js';
+import Bbox from '../format/filter/Bbox.js';
+import Contains from '../format/filter/Contains.js';
+import During from '../format/filter/During.js';
+import EqualTo from '../format/filter/EqualTo.js';
+import GreaterThan from '../format/filter/GreaterThan.js';
+import GreaterThanOrEqualTo from '../format/filter/GreaterThanOrEqualTo.js';
+import Intersects from '../format/filter/Intersects.js';
+import IsBetween from '../format/filter/IsBetween.js';
+import IsLike from '../format/filter/IsLike.js';
+import IsNull from '../format/filter/IsNull.js';
+import LessThan from '../format/filter/LessThan.js';
+import LessThanOrEqualTo from '../format/filter/LessThanOrEqualTo.js';
+import Not from '../format/filter/Not.js';
+import NotEqualTo from '../format/filter/NotEqualTo.js';
+import Or from '../format/filter/Or.js';
+import Within from '../format/filter/Within.js';
 
 
 /**
@@ -28,9 +27,9 @@ const _ol_format_filter_ = {};
  * @returns {!ol.format.filter.And} `<And>` operator.
  * @api
  */
-_ol_format_filter_.and = function(conditions) {
+export const and = function(conditions) {
   const params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(_ol_format_filter_And_, params));
+  return new (Function.prototype.bind.apply(And, params));
 };
 
 
@@ -41,9 +40,9 @@ _ol_format_filter_.and = function(conditions) {
  * @returns {!ol.format.filter.Or} `<Or>` operator.
  * @api
  */
-_ol_format_filter_.or = function(conditions) {
+export const or = function(conditions) {
   const params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(_ol_format_filter_Or_, params));
+  return new (Function.prototype.bind.apply(Or, params));
 };
 
 
@@ -54,8 +53,8 @@ _ol_format_filter_.or = function(conditions) {
  * @returns {!ol.format.filter.Not} `<Not>` operator.
  * @api
  */
-_ol_format_filter_.not = function(condition) {
-  return new _ol_format_filter_Not_(condition);
+export const not = function(condition) {
+  return new Not(condition);
 };
 
 
@@ -70,8 +69,8 @@ _ol_format_filter_.not = function(condition) {
  * @returns {!ol.format.filter.Bbox} `<BBOX>` operator.
  * @api
  */
-_ol_format_filter_.bbox = function(geometryName, extent, opt_srsName) {
-  return new _ol_format_filter_Bbox_(geometryName, extent, opt_srsName);
+export const bbox = function(geometryName, extent, opt_srsName) {
+  return new Bbox(geometryName, extent, opt_srsName);
 };
 
 /**
@@ -85,8 +84,8 @@ _ol_format_filter_.bbox = function(geometryName, extent, opt_srsName) {
  * @returns {!ol.format.filter.Contains} `<Contains>` operator.
  * @api
  */
-_ol_format_filter_.contains = function(geometryName, geometry, opt_srsName) {
-  return new _ol_format_filter_Contains_(geometryName, geometry, opt_srsName);
+export const contains = function(geometryName, geometry, opt_srsName) {
+  return new Contains(geometryName, geometry, opt_srsName);
 };
 
 /**
@@ -100,8 +99,8 @@ _ol_format_filter_.contains = function(geometryName, geometry, opt_srsName) {
  * @returns {!ol.format.filter.Intersects} `<Intersects>` operator.
  * @api
  */
-_ol_format_filter_.intersects = function(geometryName, geometry, opt_srsName) {
-  return new _ol_format_filter_Intersects_(geometryName, geometry, opt_srsName);
+export const intersects = function(geometryName, geometry, opt_srsName) {
+  return new Intersects(geometryName, geometry, opt_srsName);
 };
 
 /**
@@ -115,8 +114,8 @@ _ol_format_filter_.intersects = function(geometryName, geometry, opt_srsName) {
  * @returns {!ol.format.filter.Within} `<Within>` operator.
  * @api
  */
-_ol_format_filter_.within = function(geometryName, geometry, opt_srsName) {
-  return new _ol_format_filter_Within_(geometryName, geometry, opt_srsName);
+export const within = function(geometryName, geometry, opt_srsName) {
+  return new Within(geometryName, geometry, opt_srsName);
 };
 
 
@@ -129,8 +128,8 @@ _ol_format_filter_.within = function(geometryName, geometry, opt_srsName) {
  * @returns {!ol.format.filter.EqualTo} `<PropertyIsEqualTo>` operator.
  * @api
  */
-_ol_format_filter_.equalTo = function(propertyName, expression, opt_matchCase) {
-  return new _ol_format_filter_EqualTo_(propertyName, expression, opt_matchCase);
+export const equalTo = function(propertyName, expression, opt_matchCase) {
+  return new EqualTo(propertyName, expression, opt_matchCase);
 };
 
 
@@ -143,8 +142,8 @@ _ol_format_filter_.equalTo = function(propertyName, expression, opt_matchCase) {
  * @returns {!ol.format.filter.NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
-_ol_format_filter_.notEqualTo = function(propertyName, expression, opt_matchCase) {
-  return new _ol_format_filter_NotEqualTo_(propertyName, expression, opt_matchCase);
+export const notEqualTo = function(propertyName, expression, opt_matchCase) {
+  return new NotEqualTo(propertyName, expression, opt_matchCase);
 };
 
 
@@ -156,8 +155,8 @@ _ol_format_filter_.notEqualTo = function(propertyName, expression, opt_matchCase
  * @returns {!ol.format.filter.LessThan} `<PropertyIsLessThan>` operator.
  * @api
  */
-_ol_format_filter_.lessThan = function(propertyName, expression) {
-  return new _ol_format_filter_LessThan_(propertyName, expression);
+export const lessThan = function(propertyName, expression) {
+  return new LessThan(propertyName, expression);
 };
 
 
@@ -169,8 +168,8 @@ _ol_format_filter_.lessThan = function(propertyName, expression) {
  * @returns {!ol.format.filter.LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
  * @api
  */
-_ol_format_filter_.lessThanOrEqualTo = function(propertyName, expression) {
-  return new _ol_format_filter_LessThanOrEqualTo_(propertyName, expression);
+export const lessThanOrEqualTo = function(propertyName, expression) {
+  return new LessThanOrEqualTo(propertyName, expression);
 };
 
 
@@ -182,8 +181,8 @@ _ol_format_filter_.lessThanOrEqualTo = function(propertyName, expression) {
  * @returns {!ol.format.filter.GreaterThan} `<PropertyIsGreaterThan>` operator.
  * @api
  */
-_ol_format_filter_.greaterThan = function(propertyName, expression) {
-  return new _ol_format_filter_GreaterThan_(propertyName, expression);
+export const greaterThan = function(propertyName, expression) {
+  return new GreaterThan(propertyName, expression);
 };
 
 
@@ -195,8 +194,8 @@ _ol_format_filter_.greaterThan = function(propertyName, expression) {
  * @returns {!ol.format.filter.GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
  * @api
  */
-_ol_format_filter_.greaterThanOrEqualTo = function(propertyName, expression) {
-  return new _ol_format_filter_GreaterThanOrEqualTo_(propertyName, expression);
+export const greaterThanOrEqualTo = function(propertyName, expression) {
+  return new GreaterThanOrEqualTo(propertyName, expression);
 };
 
 
@@ -208,8 +207,8 @@ _ol_format_filter_.greaterThanOrEqualTo = function(propertyName, expression) {
  * @returns {!ol.format.filter.IsNull} `<PropertyIsNull>` operator.
  * @api
  */
-_ol_format_filter_.isNull = function(propertyName) {
-  return new _ol_format_filter_IsNull_(propertyName);
+export const isNull = function(propertyName) {
+  return new IsNull(propertyName);
 };
 
 
@@ -223,8 +222,8 @@ _ol_format_filter_.isNull = function(propertyName) {
  * @returns {!ol.format.filter.IsBetween} `<PropertyIsBetween>` operator.
  * @api
  */
-_ol_format_filter_.between = function(propertyName, lowerBoundary, upperBoundary) {
-  return new _ol_format_filter_IsBetween_(propertyName, lowerBoundary, upperBoundary);
+export const between = function(propertyName, lowerBoundary, upperBoundary) {
+  return new IsBetween(propertyName, lowerBoundary, upperBoundary);
 };
 
 
@@ -244,9 +243,9 @@ _ol_format_filter_.between = function(propertyName, lowerBoundary, upperBoundary
  * @returns {!ol.format.filter.IsLike} `<PropertyIsLike>` operator.
  * @api
  */
-_ol_format_filter_.like = function(propertyName, pattern,
+export const like = function(propertyName, pattern,
   opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  return new _ol_format_filter_IsLike_(propertyName, pattern,
+  return new IsLike(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
 };
 
@@ -260,7 +259,6 @@ _ol_format_filter_.like = function(propertyName, pattern,
  * @returns {!ol.format.filter.During} `<During>` operator.
  * @api
  */
-_ol_format_filter_.during = function(propertyName, begin, end) {
-  return new _ol_format_filter_During_(propertyName, begin, end);
+export const during = function(propertyName, begin, end) {
+  return new During(propertyName, begin, end);
 };
-export default _ol_format_filter_;
