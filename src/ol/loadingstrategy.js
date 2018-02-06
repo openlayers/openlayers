@@ -10,9 +10,9 @@
  * @return {Array.<ol.Extent>} Extents.
  * @api
  */
-export const all = function(extent, resolution) {
+export function all(extent, resolution) {
   return [[-Infinity, -Infinity, Infinity, Infinity]];
-};
+}
 
 
 /**
@@ -23,9 +23,9 @@ export const all = function(extent, resolution) {
  * @return {Array.<ol.Extent>} Extents.
  * @api
  */
-export const bbox = function(extent, resolution) {
+export function bbox(extent, resolution) {
   return [extent];
-};
+}
 
 
 /**
@@ -34,7 +34,7 @@ export const bbox = function(extent, resolution) {
  * @return {function(ol.Extent, number): Array.<ol.Extent>} Loading strategy.
  * @api
  */
-export const tile = function(tileGrid) {
+export function tile(tileGrid) {
   return (
     /**
      * @param {ol.Extent} extent Extent.
@@ -57,4 +57,4 @@ export const tile = function(tileGrid) {
       }
       return extents;
     });
-};
+}
