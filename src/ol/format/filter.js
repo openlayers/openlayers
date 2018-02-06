@@ -27,10 +27,10 @@ import Within from '../format/filter/Within.js';
  * @returns {!ol.format.filter.And} `<And>` operator.
  * @api
  */
-export const and = function(conditions) {
+export function and(conditions) {
   const params = [null].concat(Array.prototype.slice.call(arguments));
   return new (Function.prototype.bind.apply(And, params));
-};
+}
 
 
 /**
@@ -40,10 +40,10 @@ export const and = function(conditions) {
  * @returns {!ol.format.filter.Or} `<Or>` operator.
  * @api
  */
-export const or = function(conditions) {
+export function or(conditions) {
   const params = [null].concat(Array.prototype.slice.call(arguments));
   return new (Function.prototype.bind.apply(Or, params));
-};
+}
 
 
 /**
@@ -53,9 +53,9 @@ export const or = function(conditions) {
  * @returns {!ol.format.filter.Not} `<Not>` operator.
  * @api
  */
-export const not = function(condition) {
+export function not(condition) {
   return new Not(condition);
-};
+}
 
 
 /**
@@ -69,9 +69,9 @@ export const not = function(condition) {
  * @returns {!ol.format.filter.Bbox} `<BBOX>` operator.
  * @api
  */
-export const bbox = function(geometryName, extent, opt_srsName) {
+export function bbox(geometryName, extent, opt_srsName) {
   return new Bbox(geometryName, extent, opt_srsName);
-};
+}
 
 /**
  * Create a `<Contains>` operator to test whether a geometry-valued property
@@ -84,9 +84,9 @@ export const bbox = function(geometryName, extent, opt_srsName) {
  * @returns {!ol.format.filter.Contains} `<Contains>` operator.
  * @api
  */
-export const contains = function(geometryName, geometry, opt_srsName) {
+export function contains(geometryName, geometry, opt_srsName) {
   return new Contains(geometryName, geometry, opt_srsName);
-};
+}
 
 /**
  * Create a `<Intersects>` operator to test whether a geometry-valued property
@@ -99,9 +99,9 @@ export const contains = function(geometryName, geometry, opt_srsName) {
  * @returns {!ol.format.filter.Intersects} `<Intersects>` operator.
  * @api
  */
-export const intersects = function(geometryName, geometry, opt_srsName) {
+export function intersects(geometryName, geometry, opt_srsName) {
   return new Intersects(geometryName, geometry, opt_srsName);
-};
+}
 
 /**
  * Create a `<Within>` operator to test whether a geometry-valued property
@@ -114,9 +114,9 @@ export const intersects = function(geometryName, geometry, opt_srsName) {
  * @returns {!ol.format.filter.Within} `<Within>` operator.
  * @api
  */
-export const within = function(geometryName, geometry, opt_srsName) {
+export function within(geometryName, geometry, opt_srsName) {
   return new Within(geometryName, geometry, opt_srsName);
-};
+}
 
 
 /**
@@ -128,9 +128,9 @@ export const within = function(geometryName, geometry, opt_srsName) {
  * @returns {!ol.format.filter.EqualTo} `<PropertyIsEqualTo>` operator.
  * @api
  */
-export const equalTo = function(propertyName, expression, opt_matchCase) {
+export function equalTo(propertyName, expression, opt_matchCase) {
   return new EqualTo(propertyName, expression, opt_matchCase);
-};
+}
 
 
 /**
@@ -142,9 +142,9 @@ export const equalTo = function(propertyName, expression, opt_matchCase) {
  * @returns {!ol.format.filter.NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
-export const notEqualTo = function(propertyName, expression, opt_matchCase) {
+export function notEqualTo(propertyName, expression, opt_matchCase) {
   return new NotEqualTo(propertyName, expression, opt_matchCase);
-};
+}
 
 
 /**
@@ -155,9 +155,9 @@ export const notEqualTo = function(propertyName, expression, opt_matchCase) {
  * @returns {!ol.format.filter.LessThan} `<PropertyIsLessThan>` operator.
  * @api
  */
-export const lessThan = function(propertyName, expression) {
+export function lessThan(propertyName, expression) {
   return new LessThan(propertyName, expression);
-};
+}
 
 
 /**
@@ -168,9 +168,9 @@ export const lessThan = function(propertyName, expression) {
  * @returns {!ol.format.filter.LessThanOrEqualTo} `<PropertyIsLessThanOrEqualTo>` operator.
  * @api
  */
-export const lessThanOrEqualTo = function(propertyName, expression) {
+export function lessThanOrEqualTo(propertyName, expression) {
   return new LessThanOrEqualTo(propertyName, expression);
-};
+}
 
 
 /**
@@ -181,9 +181,9 @@ export const lessThanOrEqualTo = function(propertyName, expression) {
  * @returns {!ol.format.filter.GreaterThan} `<PropertyIsGreaterThan>` operator.
  * @api
  */
-export const greaterThan = function(propertyName, expression) {
+export function greaterThan(propertyName, expression) {
   return new GreaterThan(propertyName, expression);
-};
+}
 
 
 /**
@@ -194,9 +194,9 @@ export const greaterThan = function(propertyName, expression) {
  * @returns {!ol.format.filter.GreaterThanOrEqualTo} `<PropertyIsGreaterThanOrEqualTo>` operator.
  * @api
  */
-export const greaterThanOrEqualTo = function(propertyName, expression) {
+export function greaterThanOrEqualTo(propertyName, expression) {
   return new GreaterThanOrEqualTo(propertyName, expression);
-};
+}
 
 
 /**
@@ -207,9 +207,9 @@ export const greaterThanOrEqualTo = function(propertyName, expression) {
  * @returns {!ol.format.filter.IsNull} `<PropertyIsNull>` operator.
  * @api
  */
-export const isNull = function(propertyName) {
+export function isNull(propertyName) {
   return new IsNull(propertyName);
-};
+}
 
 
 /**
@@ -222,9 +222,9 @@ export const isNull = function(propertyName) {
  * @returns {!ol.format.filter.IsBetween} `<PropertyIsBetween>` operator.
  * @api
  */
-export const between = function(propertyName, lowerBoundary, upperBoundary) {
+export function between(propertyName, lowerBoundary, upperBoundary) {
   return new IsBetween(propertyName, lowerBoundary, upperBoundary);
-};
+}
 
 
 /**
@@ -243,11 +243,11 @@ export const between = function(propertyName, lowerBoundary, upperBoundary) {
  * @returns {!ol.format.filter.IsLike} `<PropertyIsLike>` operator.
  * @api
  */
-export const like = function(propertyName, pattern,
+export function like(propertyName, pattern,
   opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
   return new IsLike(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
-};
+}
 
 
 /**
@@ -259,6 +259,6 @@ export const like = function(propertyName, pattern,
  * @returns {!ol.format.filter.During} `<During>` operator.
  * @api
  */
-export const during = function(propertyName, begin, end) {
+export function during(propertyName, begin, end) {
   return new During(propertyName, begin, end);
-};
+}
