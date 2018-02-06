@@ -252,7 +252,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(feature) {
   }
   var map = this.getMap();
   if (map && map.isRendered() && this.getActive()) {
-    this.handlePointerAtPixel_(this.lastPixel_, map);
+    this.handlePointerAtPixel_(this.lastPixel_, map.getCoordinateFromPixel(this.lastPixel_), map);
   }
   ol.events.listen(feature, ol.events.EventType.CHANGE,
       this.handleFeatureChange_, this);
@@ -609,8 +609,8 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
   if (!this.condition_(evt)) {
     return false;
   }
-  this.handlePointerAtPixel_(evt.pixel, evt.map);
-  var pixelCoordinate = evt.map.getCoordinateFromPixel(evt.pixel);
+  this.handlePointerAtPixel_(evt.pixel, evt.coordinate, evt.map);
+  var pixelCoordinate = evt.coordinate;
   this.dragSegments_.length = 0;
   this.modified_ = false;
   var vertexFeature = this.vertexFeature_;
@@ -832,17 +832,17 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
  */
 ol.interaction.Modify.prototype.handlePointerMove_ = function(evt) {
   this.lastPixel_ = evt.pixel;
-  this.handlePointerAtPixel_(evt.pixel, evt.map);
+  this.handlePointerAtPixel_(evt.pixel, evt.coordinate, evt.map);
 };
 
 
 /**
  * @param {ol.Pixel} pixel Pixel
+ * @param {ol.Coordinate} pixelCoordinate Coordinate corresponding to pixel.
  * @param {ol.PluggableMap} map Map.
  * @private
  */
-ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
-  var pixelCoordinate = map.getCoordinateFromPixel(pixel);
+ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, pixelCoordinate, map) {
   var sortByDistance = function(a, b) {
     return ol.interaction.Modify.pointDistanceToSegmentDataSquared_(pixelCoordinate, a) -
         ol.interaction.Modify.pointDistanceToSegmentDataSquared_(pixelCoordinate, b);
