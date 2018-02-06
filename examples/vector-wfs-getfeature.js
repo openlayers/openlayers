@@ -1,6 +1,10 @@
 import Map from '../src/ol/Map.js';
 import View from '../src/ol/View.js';
-import _ol_format_filter_ from '../src/ol/format/filter.js';
+import {
+  equalTo as equalToFilter,
+  like as likeFilter,
+  and as andFilter
+} from '../src/ol/format/filter.js';
 import WFS from '../src/ol/format/WFS.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
@@ -46,9 +50,9 @@ const featureRequest = new WFS().writeGetFeature({
   featurePrefix: 'osm',
   featureTypes: ['water_areas'],
   outputFormat: 'application/json',
-  filter: _ol_format_filter_.and(
-    _ol_format_filter_.like('name', 'Mississippi*'),
-    _ol_format_filter_.equalTo('waterway', 'riverbank')
+  filter: andFilter(
+    likeFilter('name', 'Mississippi*'),
+    equalToFilter('waterway', 'riverbank')
   )
 });
 
