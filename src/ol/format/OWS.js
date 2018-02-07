@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import XLink from '../format/XLink.js';
 import XML from '../format/XML.js';
 import XSD from '../format/XSD.js';
-import _ol_xml_ from '../xml.js';
+import {makeObjectPropertyPusher, makeObjectPropertySetter, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
  * @constructor
@@ -35,7 +35,7 @@ OWS.prototype.readFromDocument = function(doc) {
  * @inheritDoc
  */
 OWS.prototype.readFromNode = function(node) {
-  const owsObject = _ol_xml_.pushParseAndPop({},
+  const owsObject = pushParseAndPop({},
     OWS.PARSERS_, node, []);
   return owsObject ? owsObject : null;
 };
@@ -48,7 +48,7 @@ OWS.prototype.readFromNode = function(node) {
  * @return {Object|undefined} The address.
  */
 OWS.readAddress_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop({},
+  return pushParseAndPop({},
     OWS.ADDRESS_PARSERS_, node, objectStack);
 };
 
@@ -60,7 +60,7 @@ OWS.readAddress_ = function(node, objectStack) {
  * @return {Object|undefined} The values.
  */
 OWS.readAllowedValues_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop({},
+  return pushParseAndPop({},
     OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
 };
 
@@ -76,7 +76,7 @@ OWS.readConstraint_ = function(node, objectStack) {
   if (!name) {
     return undefined;
   }
-  return _ol_xml_.pushParseAndPop({'name': name},
+  return pushParseAndPop({'name': name},
     OWS.CONSTRAINT_PARSERS_, node,
     objectStack);
 };
@@ -89,7 +89,7 @@ OWS.readConstraint_ = function(node, objectStack) {
  * @return {Object|undefined} The contact info.
  */
 OWS.readContactInfo_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop({},
+  return pushParseAndPop({},
     OWS.CONTACT_INFO_PARSERS_, node, objectStack);
 };
 
@@ -101,7 +101,7 @@ OWS.readContactInfo_ = function(node, objectStack) {
  * @return {Object|undefined} The DCP.
  */
 OWS.readDcp_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop({},
+  return pushParseAndPop({},
     OWS.DCP_PARSERS_, node, objectStack);
 };
 
@@ -117,7 +117,7 @@ OWS.readGet_ = function(node, objectStack) {
   if (!href) {
     return undefined;
   }
-  return _ol_xml_.pushParseAndPop({'href': href},
+  return pushParseAndPop({'href': href},
     OWS.REQUEST_METHOD_PARSERS_, node, objectStack);
 };
 
@@ -129,7 +129,7 @@ OWS.readGet_ = function(node, objectStack) {
  * @return {Object|undefined} The HTTP object.
  */
 OWS.readHttp_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop({}, OWS.HTTP_PARSERS_,
+  return pushParseAndPop({}, OWS.HTTP_PARSERS_,
     node, objectStack);
 };
 
@@ -142,7 +142,7 @@ OWS.readHttp_ = function(node, objectStack) {
  */
 OWS.readOperation_ = function(node, objectStack) {
   const name = node.getAttribute('name');
-  const value = _ol_xml_.pushParseAndPop({},
+  const value = pushParseAndPop({},
     OWS.OPERATION_PARSERS_, node, objectStack);
   if (!value) {
     return undefined;
@@ -161,7 +161,7 @@ OWS.readOperation_ = function(node, objectStack) {
  */
 OWS.readOperationsMetadata_ = function(node,
   objectStack) {
-  return _ol_xml_.pushParseAndPop({},
+  return pushParseAndPop({},
     OWS.OPERATIONS_METADATA_PARSERS_, node,
     objectStack);
 };
@@ -174,7 +174,7 @@ OWS.readOperationsMetadata_ = function(node,
  * @return {Object|undefined} The phone.
  */
 OWS.readPhone_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop({},
+  return pushParseAndPop({},
     OWS.PHONE_PARSERS_, node, objectStack);
 };
 
@@ -187,7 +187,7 @@ OWS.readPhone_ = function(node, objectStack) {
  */
 OWS.readServiceIdentification_ = function(node,
   objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
     objectStack);
 };
@@ -200,7 +200,7 @@ OWS.readServiceIdentification_ = function(node,
  * @return {Object|undefined} The service contact.
  */
 OWS.readServiceContact_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, OWS.SERVICE_CONTACT_PARSERS_, node,
     objectStack);
 };
@@ -213,7 +213,7 @@ OWS.readServiceContact_ = function(node, objectStack) {
  * @return {Object|undefined} The service provider.
  */
 OWS.readServiceProvider_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, OWS.SERVICE_PROVIDER_PARSERS_, node,
     objectStack);
 };
@@ -246,13 +246,13 @@ OWS.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'ServiceIdentification': _ol_xml_.makeObjectPropertySetter(
+    'ServiceIdentification': makeObjectPropertySetter(
       OWS.readServiceIdentification_),
-    'ServiceProvider': _ol_xml_.makeObjectPropertySetter(
+    'ServiceProvider': makeObjectPropertySetter(
       OWS.readServiceProvider_),
-    'OperationsMetadata': _ol_xml_.makeObjectPropertySetter(
+    'OperationsMetadata': makeObjectPropertySetter(
       OWS.readOperationsMetadata_)
   });
 
@@ -262,16 +262,16 @@ OWS.PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.ADDRESS_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'DeliveryPoint': _ol_xml_.makeObjectPropertySetter(
+    'DeliveryPoint': makeObjectPropertySetter(
       XSD.readString),
-    'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'AdministrativeArea': _ol_xml_.makeObjectPropertySetter(
+    'City': makeObjectPropertySetter(XSD.readString),
+    'AdministrativeArea': makeObjectPropertySetter(
       XSD.readString),
-    'PostalCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'ElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
+    'PostalCode': makeObjectPropertySetter(XSD.readString),
+    'Country': makeObjectPropertySetter(XSD.readString),
+    'ElectronicMailAddress': makeObjectPropertySetter(
       XSD.readString)
   });
 
@@ -281,9 +281,9 @@ OWS.ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.ALLOWED_VALUES_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.ALLOWED_VALUES_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'Value': _ol_xml_.makeObjectPropertyPusher(OWS.readValue_)
+    'Value': makeObjectPropertyPusher(OWS.readValue_)
   });
 
 
@@ -292,9 +292,9 @@ OWS.ALLOWED_VALUES_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.CONSTRAINT_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.CONSTRAINT_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'AllowedValues': _ol_xml_.makeObjectPropertySetter(
+    'AllowedValues': makeObjectPropertySetter(
       OWS.readAllowedValues_)
   });
 
@@ -304,10 +304,10 @@ OWS.CONSTRAINT_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.CONTACT_INFO_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.CONTACT_INFO_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'Phone': _ol_xml_.makeObjectPropertySetter(OWS.readPhone_),
-    'Address': _ol_xml_.makeObjectPropertySetter(OWS.readAddress_)
+    'Phone': makeObjectPropertySetter(OWS.readPhone_),
+    'Address': makeObjectPropertySetter(OWS.readAddress_)
   });
 
 
@@ -316,9 +316,9 @@ OWS.CONTACT_INFO_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.DCP_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.DCP_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'HTTP': _ol_xml_.makeObjectPropertySetter(OWS.readHttp_)
+    'HTTP': makeObjectPropertySetter(OWS.readHttp_)
   });
 
 
@@ -327,9 +327,9 @@ OWS.DCP_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.HTTP_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'Get': _ol_xml_.makeObjectPropertyPusher(OWS.readGet_),
+    'Get': makeObjectPropertyPusher(OWS.readGet_),
     'Post': undefined // TODO
   });
 
@@ -339,9 +339,9 @@ OWS.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.OPERATION_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.OPERATION_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'DCP': _ol_xml_.makeObjectPropertySetter(OWS.readDcp_)
+    'DCP': makeObjectPropertySetter(OWS.readDcp_)
   });
 
 
@@ -350,7 +350,7 @@ OWS.OPERATION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.OPERATIONS_METADATA_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.OPERATIONS_METADATA_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
     'Operation': OWS.readOperation_
   });
@@ -361,10 +361,10 @@ OWS.OPERATIONS_METADATA_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.PHONE_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.PHONE_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'Voice': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Facsimile': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+    'Voice': makeObjectPropertySetter(XSD.readString),
+    'Facsimile': makeObjectPropertySetter(XSD.readString)
   });
 
 
@@ -373,9 +373,9 @@ OWS.PHONE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OWS.REQUEST_METHOD_PARSERS_ = _ol_xml_.makeStructureNS(
+OWS.REQUEST_METHOD_PARSERS_ = makeStructureNS(
   OWS.NAMESPACE_URIS_, {
-    'Constraint': _ol_xml_.makeObjectPropertyPusher(
+    'Constraint': makeObjectPropertyPusher(
       OWS.readConstraint_)
   });
 
@@ -386,12 +386,12 @@ OWS.REQUEST_METHOD_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 OWS.SERVICE_CONTACT_PARSERS_ =
-    _ol_xml_.makeStructureNS(
+    makeStructureNS(
       OWS.NAMESPACE_URIS_, {
-        'IndividualName': _ol_xml_.makeObjectPropertySetter(
+        'IndividualName': makeObjectPropertySetter(
           XSD.readString),
-        'PositionName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-        'ContactInfo': _ol_xml_.makeObjectPropertySetter(
+        'PositionName': makeObjectPropertySetter(XSD.readString),
+        'ContactInfo': makeObjectPropertySetter(
           OWS.readContactInfo_)
       });
 
@@ -402,15 +402,15 @@ OWS.SERVICE_CONTACT_PARSERS_ =
  * @private
  */
 OWS.SERVICE_IDENTIFICATION_PARSERS_ =
-    _ol_xml_.makeStructureNS(
+    makeStructureNS(
       OWS.NAMESPACE_URIS_, {
-        'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-        'AccessConstraints': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-        'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-        'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-        'ServiceTypeVersion': _ol_xml_.makeObjectPropertySetter(
+        'Abstract': makeObjectPropertySetter(XSD.readString),
+        'AccessConstraints': makeObjectPropertySetter(XSD.readString),
+        'Fees': makeObjectPropertySetter(XSD.readString),
+        'Title': makeObjectPropertySetter(XSD.readString),
+        'ServiceTypeVersion': makeObjectPropertySetter(
           XSD.readString),
-        'ServiceType': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+        'ServiceType': makeObjectPropertySetter(XSD.readString)
       });
 
 
@@ -420,11 +420,11 @@ OWS.SERVICE_IDENTIFICATION_PARSERS_ =
  * @private
  */
 OWS.SERVICE_PROVIDER_PARSERS_ =
-    _ol_xml_.makeStructureNS(
+    makeStructureNS(
       OWS.NAMESPACE_URIS_, {
-        'ProviderName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-        'ProviderSite': _ol_xml_.makeObjectPropertySetter(XLink.readHref),
-        'ServiceContact': _ol_xml_.makeObjectPropertySetter(
+        'ProviderName': makeObjectPropertySetter(XSD.readString),
+        'ProviderSite': makeObjectPropertySetter(XLink.readHref),
+        'ServiceContact': makeObjectPropertySetter(
           OWS.readServiceContact_)
       });
 export default OWS;

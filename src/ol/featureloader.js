@@ -3,7 +3,7 @@
  */
 import {nullFunction} from './index.js';
 import FormatType from './format/FormatType.js';
-import _ol_xml_ from './xml.js';
+import {parse} from './xml.js';
 
 
 /**
@@ -48,7 +48,7 @@ export function loadFeaturesXhr(url, format, success, failure) {
           } else if (type == FormatType.XML) {
             source = xhr.responseXML;
             if (!source) {
-              source = _ol_xml_.parse(xhr.responseText);
+              source = parse(xhr.responseText);
             }
           } else if (type == FormatType.ARRAY_BUFFER) {
             source = /** @type {ArrayBuffer} */ (xhr.response);

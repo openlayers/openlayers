@@ -6,7 +6,7 @@ import {extend, includes} from '../array.js';
 import GML2 from '../format/GML2.js';
 import XMLFeature from '../format/XMLFeature.js';
 import {assign} from '../obj.js';
-import _ol_xml_ from '../xml.js';
+import {makeArrayPusher, makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
  * @classdesc
@@ -116,12 +116,12 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
       context['featureNS'] = this.featureNS_;
 
       const parsers = {};
-      parsers[featureType] = _ol_xml_.makeArrayPusher(
+      parsers[featureType] = makeArrayPusher(
         this.gmlFormat_.readFeatureElement, this.gmlFormat_);
-      const parsersNS = _ol_xml_.makeStructureNS(
+      const parsersNS = makeStructureNS(
         [context['featureNS'], null], parsers);
       layer.setAttribute('namespaceURI', this.featureNS_);
-      const layerFeatures = _ol_xml_.pushParseAndPop(
+      const layerFeatures = pushParseAndPop(
         [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (layerFeatures) {
         extend(features, layerFeatures);
@@ -129,7 +129,7 @@ WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
     }
   }
   if (localName == 'FeatureCollection') {
-    const gmlFeatures = _ol_xml_.pushParseAndPop([],
+    const gmlFeatures = pushParseAndPop([],
       this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
       [{}], this.gmlFormat_);
     if (gmlFeatures) {

@@ -21,7 +21,7 @@ import IconOrigin from '../../../../src/ol/style/IconOrigin.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
 import Style from '../../../../src/ol/style/Style.js';
 import Text from '../../../../src/ol/style/Text.js';
-import _ol_xml_ from '../../../../src/ol/xml.js';
+import {parse} from '../../../../src/ol/xml.js';
 
 
 describe('ol.format.KML', function() {
@@ -128,7 +128,7 @@ describe('ol.format.KML', function() {
               ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
               '  <Placemark/>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write a Feature as string', function() {
@@ -142,7 +142,7 @@ describe('ol.format.KML', function() {
               ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
               '  <Placemark/>' +
               '</kml>';
-          expect(_ol_xml_.parse(node)).to.xmleql(_ol_xml_.parse(text));
+          expect(parse(node)).to.xmleql(parse(text));
         });
 
         it('can write a Feature\'s id', function() {
@@ -158,7 +158,7 @@ describe('ol.format.KML', function() {
               ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
               '  <Placemark id="foo"/>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
       });
@@ -189,7 +189,7 @@ describe('ol.format.KML', function() {
               ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
               '  <Placemark/>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
 
@@ -216,7 +216,7 @@ describe('ol.format.KML', function() {
               '    </LineString>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read Point geometries', function() {
@@ -332,7 +332,7 @@ describe('ol.format.KML', function() {
               '    </Point>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZ Point geometries', function() {
@@ -352,7 +352,7 @@ describe('ol.format.KML', function() {
               '    </Point>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can transform and write XYZ Point geometries', function() {
@@ -384,7 +384,7 @@ describe('ol.format.KML', function() {
               '    </Point>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
 
           removeTransform(getProjection('EPSG:4326'), getProjection('double'));
           removeTransform(getProjection('double'), getProjection('EPSG:4326'));
@@ -407,7 +407,7 @@ describe('ol.format.KML', function() {
               '    </Point>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZM Point geometries', function() {
@@ -427,7 +427,7 @@ describe('ol.format.KML', function() {
               '    </Point>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read LineString geometries', function() {
@@ -471,7 +471,7 @@ describe('ol.format.KML', function() {
               '    </LineString>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZ LineString geometries', function() {
@@ -492,7 +492,7 @@ describe('ol.format.KML', function() {
               '    </LineString>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYM LineString geometries', function() {
@@ -513,7 +513,7 @@ describe('ol.format.KML', function() {
               '    </LineString>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZM LineString geometries', function() {
@@ -534,7 +534,7 @@ describe('ol.format.KML', function() {
               '    </LineString>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read LinearRing geometries', function() {
@@ -573,7 +573,7 @@ describe('ol.format.KML', function() {
               '    </LinearRing>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZ LinearRing geometries', function() {
@@ -594,7 +594,7 @@ describe('ol.format.KML', function() {
               '    </LinearRing>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYM LinearRing geometries', function() {
@@ -615,7 +615,7 @@ describe('ol.format.KML', function() {
               '    </LinearRing>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZM LinearRing geometries', function() {
@@ -636,7 +636,7 @@ describe('ol.format.KML', function() {
               '    </LinearRing>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read Polygon geometries', function() {
@@ -688,7 +688,7 @@ describe('ol.format.KML', function() {
               '    </Polygon>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZ Polygon geometries', function() {
@@ -715,7 +715,7 @@ describe('ol.format.KML', function() {
               '    </Polygon>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYM Polygon geometries', function() {
@@ -742,7 +742,7 @@ describe('ol.format.KML', function() {
               '    </Polygon>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write XYZM Polygon geometries', function() {
@@ -768,7 +768,7 @@ describe('ol.format.KML', function() {
               '    </Polygon>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read complex Polygon geometries', function() {
@@ -842,7 +842,7 @@ describe('ol.format.KML', function() {
               '    </Polygon>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read MultiPolygon geometries', function() {
@@ -920,7 +920,7 @@ describe('ol.format.KML', function() {
               '    </MultiGeometry>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read MultiPoint geometries', function() {
@@ -981,7 +981,7 @@ describe('ol.format.KML', function() {
               '    </MultiGeometry>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read MultiLineString geometries', function() {
@@ -1046,7 +1046,7 @@ describe('ol.format.KML', function() {
               '    </MultiGeometry>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read MultiPolygon geometries', function() {
@@ -1126,7 +1126,7 @@ describe('ol.format.KML', function() {
               '    </MultiGeometry>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read empty GeometryCollection geometries', function() {
@@ -1237,7 +1237,7 @@ describe('ol.format.KML', function() {
               '    </MultiGeometry>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read gx:Track', function() {
@@ -1428,7 +1428,7 @@ describe('ol.format.KML', function() {
               '    <description>My description</description>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write Feature\'s boolean attributes', function() {
@@ -1448,7 +1448,7 @@ describe('ol.format.KML', function() {
               '    <visibility>0</visibility>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
       });
@@ -1539,7 +1539,7 @@ describe('ol.format.KML', function() {
               '    </ExtendedData>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write ExtendedData with values', function() {
@@ -1565,7 +1565,7 @@ describe('ol.format.KML', function() {
               '    </ExtendedData>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write ExtendedData pair with displayName and value', function() {
@@ -1594,7 +1594,7 @@ describe('ol.format.KML', function() {
               '    </ExtendedData>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can read ExtendedData', function() {
@@ -2308,7 +2308,7 @@ describe('ol.format.KML', function() {
               '    </Style>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('does not write styles when writeStyles option is false', function() {
@@ -2330,7 +2330,7 @@ describe('ol.format.KML', function() {
               '  <Placemark>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('skips image styles that are not icon styles', function() {
@@ -2356,7 +2356,7 @@ describe('ol.format.KML', function() {
               '    </Style>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write an feature\'s text style', function() {
@@ -2388,7 +2388,7 @@ describe('ol.format.KML', function() {
               '    </Style>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write an feature\'s stroke style', function() {
@@ -2416,7 +2416,7 @@ describe('ol.format.KML', function() {
               '    </Style>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write an feature\'s fill style', function() {
@@ -2442,7 +2442,7 @@ describe('ol.format.KML', function() {
               '    </Style>' +
               '  </Placemark>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
         it('can write multiple features with Style', function() {
@@ -2479,7 +2479,7 @@ describe('ol.format.KML', function() {
               '    </Placemark>' +
               '  </Document>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
       });
 
@@ -3008,7 +3008,7 @@ describe('ol.format.KML', function() {
               '    </Placemark>' +
               '  </Document>' +
               '</kml>';
-          expect(node).to.xmleql(_ol_xml_.parse(text));
+          expect(node).to.xmleql(parse(text));
         });
 
       });

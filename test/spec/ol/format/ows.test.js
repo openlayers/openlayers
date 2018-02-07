@@ -1,5 +1,5 @@
 import OWS from '../../../../src/ol/format/OWS.js';
-import _ol_xml_ from '../../../../src/ol/xml.js';
+import {parse} from '../../../../src/ol/xml.js';
 
 
 describe('ol.format.OWS 1.1', function() {
@@ -7,7 +7,7 @@ describe('ol.format.OWS 1.1', function() {
   const parser = new OWS();
 
   it('should read ServiceProvider tag properly', function() {
-    const doc = _ol_xml_.parse(
+    const doc = parse(
       '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceProvider>' +
@@ -56,7 +56,7 @@ describe('ol.format.OWS 1.1', function() {
   });
 
   it('should read ServiceIdentification tag properly', function() {
-    const doc = _ol_xml_.parse(
+    const doc = parse(
       '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:ServiceIdentification>' +
@@ -91,7 +91,7 @@ describe('ol.format.OWS 1.1', function() {
   });
 
   it('should read OperationsMetadata tag properly', function() {
-    const doc = _ol_xml_.parse(
+    const doc = parse(
       '<ows:GetCapabilities xmlns:ows="http://www.opengis.net/ows/1.1" ' +
         'xmlns:xlink="http://www.w3.org/1999/xlink" >' +
         '<ows:OperationsMetadata>' +

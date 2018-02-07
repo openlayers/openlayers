@@ -27,7 +27,11 @@ import IconOrigin from '../style/IconOrigin.js';
 import Stroke from '../style/Stroke.js';
 import Style from '../style/Style.js';
 import Text from '../style/Text.js';
-import _ol_xml_ from '../xml.js';
+import {createElementNS, getAllTextContent, isDocument, isNode, makeArrayExtender,
+  makeArrayPusher, makeChildAppender, makeObjectPropertySetter,
+  makeReplacer, makeSequence, makeSimpleNodeFactory, makeStructureNS,
+  OBJECT_PROPERTY_NODE_FACTORY, parse, parseNode, pushParseAndPop,
+  pushSerializeAndPop, setAttributeNS} from '../xml.js';
 
 /**
  * @classdesc
@@ -430,7 +434,7 @@ KML.findStyle_ = function(styleValue, defaultStyle, sharedStyles) {
  * @return {ol.Color|undefined} Color.
  */
 KML.readColor_ = function(node) {
-  const s = _ol_xml_.getAllTextContent(node, false);
+  const s = getAllTextContent(node, false);
   // The KML specification states that colors should not include a leading `#`
   // but we tolerate them.
   const m = /^\s*#?\s*([0-9A-Fa-f]{8})\s*$/.exec(s);
@@ -455,7 +459,7 @@ KML.readColor_ = function(node) {
  * @return {Array.<number>|undefined} Flat coordinates.
  */
 KML.readFlatCoordinates_ = function(node) {
-  let s = _ol_xml_.getAllTextContent(node, false);
+  let s = getAllTextContent(node, false);
   const flatCoordinates = [];
   // The KML specification states that coordinate tuples should not include
   // spaces, but we tolerate them.
@@ -482,7 +486,7 @@ KML.readFlatCoordinates_ = function(node) {
  * @return {string} URI.
  */
 KML.readURI_ = function(node) {
-  const s = _ol_xml_.getAllTextContent(node, false).trim();
+  const s = getAllTextContent(node, false).trim();
   let baseURI = node.baseURI;
   if (!baseURI || baseURI == 'about:blank') {
     baseURI = window.location.href;
@@ -545,7 +549,7 @@ KML.readScale_ = function(node) {
  * @return {Array.<ol.style.Style>|string|undefined} StyleMap.
  */
 KML.readStyleMapValue_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(undefined,
+  return pushParseAndPop(undefined,
     KML.STYLE_MAP_PARSERS_, node, objectStack);
 };
 /**
@@ -560,7 +564,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
   // FIXME viewBoundScale
   // FIXME viewFormat
   // FIXME httpQuery
-  const object = _ol_xml_.pushParseAndPop(
+  const object = pushParseAndPop(
     {}, KML.ICON_STYLE_PARSERS_, node, objectStack);
   if (!object) {
     return;
@@ -659,7 +663,7 @@ KML.IconStyleParser_ = function(node, objectStack) {
  */
 KML.LabelStyleParser_ = function(node, objectStack) {
   // FIXME colorMode
-  const object = _ol_xml_.pushParseAndPop(
+  const object = pushParseAndPop(
     {}, KML.LABEL_STYLE_PARSERS_, node, objectStack);
   if (!object) {
     return;
@@ -688,7 +692,7 @@ KML.LineStyleParser_ = function(node, objectStack) {
   // FIXME gx:outerWidth
   // FIXME gx:physicalWidth
   // FIXME gx:labelVisibility
-  const object = _ol_xml_.pushParseAndPop(
+  const object = pushParseAndPop(
     {}, KML.LINE_STYLE_PARSERS_, node, objectStack);
   if (!object) {
     return;
@@ -710,7 +714,7 @@ KML.LineStyleParser_ = function(node, objectStack) {
  */
 KML.PolyStyleParser_ = function(node, objectStack) {
   // FIXME colorMode
-  const object = _ol_xml_.pushParseAndPop(
+  const object = pushParseAndPop(
     {}, KML.POLY_STYLE_PARSERS_, node, objectStack);
   if (!object) {
     return;
@@ -740,7 +744,7 @@ KML.PolyStyleParser_ = function(node, objectStack) {
  * @return {Array.<number>} LinearRing flat coordinates.
  */
 KML.readFlatLinearRing_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(null,
+  return pushParseAndPop(null,
     KML.FLAT_LINEAR_RING_PARSERS_, node, objectStack);
 };
 
@@ -754,7 +758,7 @@ KML.gxCoordParser_ = function(node, objectStack) {
   const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
       (objectStack[objectStack.length - 1]);
   const flatCoordinates = gxTrackObject.flatCoordinates;
-  const s = _ol_xml_.getAllTextContent(node, false);
+  const s = getAllTextContent(node, false);
   const re =
       /^\s*([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s+([+\-]?\d+(?:\.\d*)?(?:e[+\-]?\d*)?)\s*$/i;
   const m = re.exec(s);
@@ -776,7 +780,7 @@ KML.gxCoordParser_ = function(node, objectStack) {
  * @return {ol.geom.MultiLineString|undefined} MultiLineString.
  */
 KML.readGxMultiTrack_ = function(node, objectStack) {
-  const lineStrings = _ol_xml_.pushParseAndPop([],
+  const lineStrings = pushParseAndPop([],
     KML.GX_MULTITRACK_GEOMETRY_PARSERS_, node, objectStack);
   if (!lineStrings) {
     return undefined;
@@ -794,7 +798,7 @@ KML.readGxMultiTrack_ = function(node, objectStack) {
  * @return {ol.geom.LineString|undefined} LineString.
  */
 KML.readGxTrack_ = function(node, objectStack) {
-  const gxTrackObject = _ol_xml_.pushParseAndPop(
+  const gxTrackObject = pushParseAndPop(
     /** @type {ol.KMLGxTrackObject_} */ ({
       flatCoordinates: [],
       whens: []
@@ -822,7 +826,7 @@ KML.readGxTrack_ = function(node, objectStack) {
  * @return {Object} Icon object.
  */
 KML.readIcon_ = function(node, objectStack) {
-  const iconObject = _ol_xml_.pushParseAndPop(
+  const iconObject = pushParseAndPop(
     {}, KML.ICON_PARSERS_, node, objectStack);
   if (iconObject) {
     return iconObject;
@@ -839,7 +843,7 @@ KML.readIcon_ = function(node, objectStack) {
  * @return {Array.<number>} Flat coordinates.
  */
 KML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(null,
+  return pushParseAndPop(null,
     KML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
 };
 
@@ -851,7 +855,7 @@ KML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
  * @return {ol.geom.LineString|undefined} LineString.
  */
 KML.readLineString_ = function(node, objectStack) {
-  const properties = _ol_xml_.pushParseAndPop({},
+  const properties = pushParseAndPop({},
     KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
     objectStack);
   const flatCoordinates =
@@ -874,7 +878,7 @@ KML.readLineString_ = function(node, objectStack) {
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
 KML.readLinearRing_ = function(node, objectStack) {
-  const properties = _ol_xml_.pushParseAndPop({},
+  const properties = pushParseAndPop({},
     KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
     objectStack);
   const flatCoordinates =
@@ -898,7 +902,7 @@ KML.readLinearRing_ = function(node, objectStack) {
  * @return {ol.geom.Geometry} Geometry.
  */
 KML.readMultiGeometry_ = function(node, objectStack) {
-  const geometries = _ol_xml_.pushParseAndPop([],
+  const geometries = pushParseAndPop([],
     KML.MULTI_GEOMETRY_PARSERS_, node, objectStack);
   if (!geometries) {
     return null;
@@ -959,7 +963,7 @@ KML.readMultiGeometry_ = function(node, objectStack) {
  * @return {ol.geom.Point|undefined} Point.
  */
 KML.readPoint_ = function(node, objectStack) {
-  const properties = _ol_xml_.pushParseAndPop({},
+  const properties = pushParseAndPop({},
     KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
     objectStack);
   const flatCoordinates =
@@ -982,10 +986,10 @@ KML.readPoint_ = function(node, objectStack) {
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
 KML.readPolygon_ = function(node, objectStack) {
-  const properties = _ol_xml_.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+  const properties = pushParseAndPop(/** @type {Object<string,*>} */ ({}),
     KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
     objectStack);
-  const flatLinearRings = _ol_xml_.pushParseAndPop([null],
+  const flatLinearRings = pushParseAndPop([null],
     KML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
   if (flatLinearRings && flatLinearRings[0]) {
     const polygon = new Polygon(null);
@@ -1013,7 +1017,7 @@ KML.readPolygon_ = function(node, objectStack) {
  * @return {Array.<ol.style.Style>} Style.
  */
 KML.readStyle_ = function(node, objectStack) {
-  const styleObject = _ol_xml_.pushParseAndPop(
+  const styleObject = pushParseAndPop(
     {}, KML.STYLE_PARSERS_, node, objectStack);
   if (!styleObject) {
     return null;
@@ -1096,7 +1100,7 @@ KML.setCommonGeometryProperties_ = function(multiGeometry,
  */
 KML.DataParser_ = function(node, objectStack) {
   const name = node.getAttribute('name');
-  _ol_xml_.parseNode(KML.DATA_PARSERS_, node, objectStack);
+  parseNode(KML.DATA_PARSERS_, node, objectStack);
   const featureObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   if (name !== null) {
     featureObject[name] = featureObject.value;
@@ -1113,7 +1117,7 @@ KML.DataParser_ = function(node, objectStack) {
  * @private
  */
 KML.ExtendedDataParser_ = function(node, objectStack) {
-  _ol_xml_.parseNode(KML.EXTENDED_DATA_PARSERS_, node, objectStack);
+  parseNode(KML.EXTENDED_DATA_PARSERS_, node, objectStack);
 };
 
 /**
@@ -1122,7 +1126,7 @@ KML.ExtendedDataParser_ = function(node, objectStack) {
  * @private
  */
 KML.RegionParser_ = function(node, objectStack) {
-  _ol_xml_.parseNode(KML.REGION_PARSERS_, node, objectStack);
+  parseNode(KML.REGION_PARSERS_, node, objectStack);
 };
 
 /**
@@ -1131,7 +1135,7 @@ KML.RegionParser_ = function(node, objectStack) {
  * @private
  */
 KML.PairDataParser_ = function(node, objectStack) {
-  const pairObject = _ol_xml_.pushParseAndPop(
+  const pairObject = pushParseAndPop(
     {}, KML.PAIR_PARSERS_, node, objectStack);
   if (!pairObject) {
     return;
@@ -1180,7 +1184,7 @@ KML.PlacemarkStyleMapParser_ = function(node, objectStack) {
  * @private
  */
 KML.SchemaDataParser_ = function(node, objectStack) {
-  _ol_xml_.parseNode(KML.SCHEMA_DATA_PARSERS_, node, objectStack);
+  parseNode(KML.SCHEMA_DATA_PARSERS_, node, objectStack);
 };
 
 
@@ -1206,7 +1210,7 @@ KML.SimpleDataParser_ = function(node, objectStack) {
  * @private
  */
 KML.LatLonAltBoxParser_ = function(node, objectStack) {
-  const object = _ol_xml_.pushParseAndPop({}, KML.LAT_LON_ALT_BOX_PARSERS_, node, objectStack);
+  const object = pushParseAndPop({}, KML.LAT_LON_ALT_BOX_PARSERS_, node, objectStack);
   if (!object) {
     return;
   }
@@ -1230,7 +1234,7 @@ KML.LatLonAltBoxParser_ = function(node, objectStack) {
  * @private
  */
 KML.LodParser_ = function(node, objectStack) {
-  const object = _ol_xml_.pushParseAndPop({}, KML.LOD_PARSERS_, node, objectStack);
+  const object = pushParseAndPop({}, KML.LOD_PARSERS_, node, objectStack);
   if (!object) {
     return;
   }
@@ -1249,7 +1253,7 @@ KML.LodParser_ = function(node, objectStack) {
  */
 KML.innerBoundaryIsParser_ = function(node, objectStack) {
   /** @type {Array.<number>|undefined} */
-  const flatLinearRing = _ol_xml_.pushParseAndPop(undefined,
+  const flatLinearRing = pushParseAndPop(undefined,
     KML.INNER_BOUNDARY_IS_PARSERS_, node, objectStack);
   if (flatLinearRing) {
     const flatLinearRings = /** @type {Array.<Array.<number>>} */
@@ -1266,7 +1270,7 @@ KML.innerBoundaryIsParser_ = function(node, objectStack) {
  */
 KML.outerBoundaryIsParser_ = function(node, objectStack) {
   /** @type {Array.<number>|undefined} */
-  const flatLinearRing = _ol_xml_.pushParseAndPop(undefined,
+  const flatLinearRing = pushParseAndPop(undefined,
     KML.OUTER_BOUNDARY_IS_PARSERS_, node, objectStack);
   if (flatLinearRing) {
     const flatLinearRings = /** @type {Array.<Array.<number>>} */
@@ -1282,7 +1286,7 @@ KML.outerBoundaryIsParser_ = function(node, objectStack) {
  * @private
  */
 KML.LinkParser_ = function(node, objectStack) {
-  _ol_xml_.parseNode(KML.LINK_PARSERS_, node, objectStack);
+  parseNode(KML.LINK_PARSERS_, node, objectStack);
 };
 
 
@@ -1295,7 +1299,7 @@ KML.whenParser_ = function(node, objectStack) {
   const gxTrackObject = /** @type {ol.KMLGxTrackObject_} */
       (objectStack[objectStack.length - 1]);
   const whens = gxTrackObject.whens;
-  const s = _ol_xml_.getAllTextContent(node, false);
+  const s = getAllTextContent(node, false);
   const when = Date.parse(s);
   whens.push(isNaN(when) ? 0 : when);
 };
@@ -1306,10 +1310,10 @@ KML.whenParser_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.DATA_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.DATA_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'displayName': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'value': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+    'displayName': makeObjectPropertySetter(XSD.readString),
+    'value': makeObjectPropertySetter(XSD.readString)
   });
 
 
@@ -1318,7 +1322,7 @@ KML.DATA_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.EXTENDED_DATA_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.EXTENDED_DATA_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'Data': KML.DataParser_,
     'SchemaData': KML.SchemaDataParser_
@@ -1330,7 +1334,7 @@ KML.EXTENDED_DATA_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.REGION_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.REGION_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'LatLonAltBox': KML.LatLonAltBoxParser_,
     'Lod': KML.LodParser_
@@ -1342,15 +1346,15 @@ KML.REGION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.LAT_LON_ALT_BOX_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.LAT_LON_ALT_BOX_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'altitudeMode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'minAltitude': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'maxAltitude': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'north': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'south': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'east': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'west': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
+    'altitudeMode': makeObjectPropertySetter(XSD.readString),
+    'minAltitude': makeObjectPropertySetter(XSD.readDecimal),
+    'maxAltitude': makeObjectPropertySetter(XSD.readDecimal),
+    'north': makeObjectPropertySetter(XSD.readDecimal),
+    'south': makeObjectPropertySetter(XSD.readDecimal),
+    'east': makeObjectPropertySetter(XSD.readDecimal),
+    'west': makeObjectPropertySetter(XSD.readDecimal)
   });
 
 
@@ -1359,12 +1363,12 @@ KML.LAT_LON_ALT_BOX_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.LOD_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.LOD_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'minLodPixels': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'maxLodPixels': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'minFadeExtent': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'maxFadeExtent': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
+    'minLodPixels': makeObjectPropertySetter(XSD.readDecimal),
+    'maxLodPixels': makeObjectPropertySetter(XSD.readDecimal),
+    'minFadeExtent': makeObjectPropertySetter(XSD.readDecimal),
+    'maxFadeExtent': makeObjectPropertySetter(XSD.readDecimal)
   });
 
 
@@ -1373,11 +1377,11 @@ KML.LOD_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'extrude': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
-    'tessellate': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
-    'altitudeMode': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+    'extrude': makeObjectPropertySetter(XSD.readBoolean),
+    'tessellate': makeObjectPropertySetter(XSD.readBoolean),
+    'altitudeMode': makeObjectPropertySetter(XSD.readString)
   });
 
 
@@ -1386,9 +1390,9 @@ KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.FLAT_LINEAR_RING_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.FLAT_LINEAR_RING_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'coordinates': _ol_xml_.makeReplacer(KML.readFlatCoordinates_)
+    'coordinates': makeReplacer(KML.readFlatCoordinates_)
   });
 
 
@@ -1397,7 +1401,7 @@ KML.FLAT_LINEAR_RING_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.FLAT_LINEAR_RINGS_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.FLAT_LINEAR_RINGS_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'innerBoundaryIs': KML.innerBoundaryIsParser_,
     'outerBoundaryIs': KML.outerBoundaryIsParser_
@@ -1409,10 +1413,10 @@ KML.FLAT_LINEAR_RINGS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.GX_TRACK_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.GX_TRACK_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'when': KML.whenParser_
-  }, _ol_xml_.makeStructureNS(
+  }, makeStructureNS(
     KML.GX_NAMESPACE_URIS_, {
       'coord': KML.gxCoordParser_
     }));
@@ -1423,9 +1427,9 @@ KML.GX_TRACK_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'coordinates': _ol_xml_.makeReplacer(KML.readFlatCoordinates_)
+    'coordinates': makeReplacer(KML.readFlatCoordinates_)
   });
 
 
@@ -1434,15 +1438,15 @@ KML.GEOMETRY_FLAT_COORDINATES_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.ICON_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.ICON_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'href': _ol_xml_.makeObjectPropertySetter(KML.readURI_)
-  }, _ol_xml_.makeStructureNS(
+    'href': makeObjectPropertySetter(KML.readURI_)
+  }, makeStructureNS(
     KML.GX_NAMESPACE_URIS_, {
-      'x': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'y': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'w': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-      'h': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
+      'x': makeObjectPropertySetter(XSD.readDecimal),
+      'y': makeObjectPropertySetter(XSD.readDecimal),
+      'w': makeObjectPropertySetter(XSD.readDecimal),
+      'h': makeObjectPropertySetter(XSD.readDecimal)
     }));
 
 
@@ -1451,12 +1455,12 @@ KML.ICON_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.ICON_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.ICON_STYLE_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'Icon': _ol_xml_.makeObjectPropertySetter(KML.readIcon_),
-    'heading': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'hotSpot': _ol_xml_.makeObjectPropertySetter(KML.readVec2_),
-    'scale': _ol_xml_.makeObjectPropertySetter(KML.readScale_)
+    'Icon': makeObjectPropertySetter(KML.readIcon_),
+    'heading': makeObjectPropertySetter(XSD.readDecimal),
+    'hotSpot': makeObjectPropertySetter(KML.readVec2_),
+    'scale': makeObjectPropertySetter(KML.readScale_)
   });
 
 
@@ -1465,9 +1469,9 @@ KML.ICON_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.INNER_BOUNDARY_IS_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.INNER_BOUNDARY_IS_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'LinearRing': _ol_xml_.makeReplacer(KML.readFlatLinearRing_)
+    'LinearRing': makeReplacer(KML.readFlatLinearRing_)
   });
 
 
@@ -1476,10 +1480,10 @@ KML.INNER_BOUNDARY_IS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.LABEL_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.LABEL_STYLE_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'color': _ol_xml_.makeObjectPropertySetter(KML.readColor_),
-    'scale': _ol_xml_.makeObjectPropertySetter(KML.readScale_)
+    'color': makeObjectPropertySetter(KML.readColor_),
+    'scale': makeObjectPropertySetter(KML.readScale_)
   });
 
 
@@ -1488,10 +1492,10 @@ KML.LABEL_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.LINE_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.LINE_STYLE_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'color': _ol_xml_.makeObjectPropertySetter(KML.readColor_),
-    'width': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal)
+    'color': makeObjectPropertySetter(KML.readColor_),
+    'width': makeObjectPropertySetter(XSD.readDecimal)
   });
 
 
@@ -1500,13 +1504,13 @@ KML.LINE_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.MULTI_GEOMETRY_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.MULTI_GEOMETRY_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'LineString': _ol_xml_.makeArrayPusher(KML.readLineString_),
-    'LinearRing': _ol_xml_.makeArrayPusher(KML.readLinearRing_),
-    'MultiGeometry': _ol_xml_.makeArrayPusher(KML.readMultiGeometry_),
-    'Point': _ol_xml_.makeArrayPusher(KML.readPoint_),
-    'Polygon': _ol_xml_.makeArrayPusher(KML.readPolygon_)
+    'LineString': makeArrayPusher(KML.readLineString_),
+    'LinearRing': makeArrayPusher(KML.readLinearRing_),
+    'MultiGeometry': makeArrayPusher(KML.readMultiGeometry_),
+    'Point': makeArrayPusher(KML.readPoint_),
+    'Polygon': makeArrayPusher(KML.readPolygon_)
   });
 
 
@@ -1515,9 +1519,9 @@ KML.MULTI_GEOMETRY_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = makeStructureNS(
   KML.GX_NAMESPACE_URIS_, {
-    'Track': _ol_xml_.makeArrayPusher(KML.readGxTrack_)
+    'Track': makeArrayPusher(KML.readGxTrack_)
   });
 
 
@@ -1526,17 +1530,17 @@ KML.GX_MULTITRACK_GEOMETRY_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.NETWORK_LINK_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.NETWORK_LINK_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'ExtendedData': KML.ExtendedDataParser_,
     'Region': KML.RegionParser_,
     'Link': KML.LinkParser_,
-    'address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'description': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'open': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
-    'phoneNumber': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'visibility': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean)
+    'address': makeObjectPropertySetter(XSD.readString),
+    'description': makeObjectPropertySetter(XSD.readString),
+    'name': makeObjectPropertySetter(XSD.readString),
+    'open': makeObjectPropertySetter(XSD.readBoolean),
+    'phoneNumber': makeObjectPropertySetter(XSD.readString),
+    'visibility': makeObjectPropertySetter(XSD.readBoolean)
   });
 
 
@@ -1545,9 +1549,9 @@ KML.NETWORK_LINK_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.LINK_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.LINK_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'href': _ol_xml_.makeObjectPropertySetter(KML.readURI_)
+    'href': makeObjectPropertySetter(KML.readURI_)
   });
 
 
@@ -1556,9 +1560,9 @@ KML.LINK_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.OUTER_BOUNDARY_IS_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.OUTER_BOUNDARY_IS_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'LinearRing': _ol_xml_.makeReplacer(KML.readFlatLinearRing_)
+    'LinearRing': makeReplacer(KML.readFlatLinearRing_)
   });
 
 
@@ -1567,11 +1571,11 @@ KML.OUTER_BOUNDARY_IS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.PAIR_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.PAIR_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'Style': _ol_xml_.makeObjectPropertySetter(KML.readStyle_),
-    'key': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'styleUrl': _ol_xml_.makeObjectPropertySetter(KML.readURI_)
+    'Style': makeObjectPropertySetter(KML.readStyle_),
+    'key': makeObjectPropertySetter(XSD.readString),
+    'styleUrl': makeObjectPropertySetter(KML.readURI_)
   });
 
 
@@ -1580,34 +1584,34 @@ KML.PAIR_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.PLACEMARK_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.PLACEMARK_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'ExtendedData': KML.ExtendedDataParser_,
     'Region': KML.RegionParser_,
-    'MultiGeometry': _ol_xml_.makeObjectPropertySetter(
+    'MultiGeometry': makeObjectPropertySetter(
       KML.readMultiGeometry_, 'geometry'),
-    'LineString': _ol_xml_.makeObjectPropertySetter(
+    'LineString': makeObjectPropertySetter(
       KML.readLineString_, 'geometry'),
-    'LinearRing': _ol_xml_.makeObjectPropertySetter(
+    'LinearRing': makeObjectPropertySetter(
       KML.readLinearRing_, 'geometry'),
-    'Point': _ol_xml_.makeObjectPropertySetter(
+    'Point': makeObjectPropertySetter(
       KML.readPoint_, 'geometry'),
-    'Polygon': _ol_xml_.makeObjectPropertySetter(
+    'Polygon': makeObjectPropertySetter(
       KML.readPolygon_, 'geometry'),
-    'Style': _ol_xml_.makeObjectPropertySetter(KML.readStyle_),
+    'Style': makeObjectPropertySetter(KML.readStyle_),
     'StyleMap': KML.PlacemarkStyleMapParser_,
-    'address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'description': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'open': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
-    'phoneNumber': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'styleUrl': _ol_xml_.makeObjectPropertySetter(KML.readURI_),
-    'visibility': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean)
-  }, _ol_xml_.makeStructureNS(
+    'address': makeObjectPropertySetter(XSD.readString),
+    'description': makeObjectPropertySetter(XSD.readString),
+    'name': makeObjectPropertySetter(XSD.readString),
+    'open': makeObjectPropertySetter(XSD.readBoolean),
+    'phoneNumber': makeObjectPropertySetter(XSD.readString),
+    'styleUrl': makeObjectPropertySetter(KML.readURI_),
+    'visibility': makeObjectPropertySetter(XSD.readBoolean)
+  }, makeStructureNS(
     KML.GX_NAMESPACE_URIS_, {
-      'MultiTrack': _ol_xml_.makeObjectPropertySetter(
+      'MultiTrack': makeObjectPropertySetter(
         KML.readGxMultiTrack_, 'geometry'),
-      'Track': _ol_xml_.makeObjectPropertySetter(
+      'Track': makeObjectPropertySetter(
         KML.readGxTrack_, 'geometry')
     }
   ));
@@ -1618,11 +1622,11 @@ KML.PLACEMARK_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.POLY_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.POLY_STYLE_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'color': _ol_xml_.makeObjectPropertySetter(KML.readColor_),
-    'fill': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean),
-    'outline': _ol_xml_.makeObjectPropertySetter(XSD.readBoolean)
+    'color': makeObjectPropertySetter(KML.readColor_),
+    'fill': makeObjectPropertySetter(XSD.readBoolean),
+    'outline': makeObjectPropertySetter(XSD.readBoolean)
   });
 
 
@@ -1631,7 +1635,7 @@ KML.POLY_STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.SCHEMA_DATA_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.SCHEMA_DATA_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'SimpleData': KML.SimpleDataParser_
   });
@@ -1642,7 +1646,7 @@ KML.SCHEMA_DATA_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.STYLE_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'IconStyle': KML.IconStyleParser_,
     'LabelStyle': KML.LabelStyleParser_,
@@ -1656,7 +1660,7 @@ KML.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-KML.STYLE_MAP_PARSERS_ = _ol_xml_.makeStructureNS(
+KML.STYLE_MAP_PARSERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
     'Pair': KML.PairDataParser_
   });
@@ -1670,16 +1674,16 @@ KML.STYLE_MAP_PARSERS_ = _ol_xml_.makeStructureNS(
  */
 KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   // FIXME use scope somehow
-  const parsersNS = _ol_xml_.makeStructureNS(
+  const parsersNS = makeStructureNS(
     KML.NAMESPACE_URIS_, {
-      'Document': _ol_xml_.makeArrayExtender(this.readDocumentOrFolder_, this),
-      'Folder': _ol_xml_.makeArrayExtender(this.readDocumentOrFolder_, this),
-      'Placemark': _ol_xml_.makeArrayPusher(this.readPlacemark_, this),
+      'Document': makeArrayExtender(this.readDocumentOrFolder_, this),
+      'Folder': makeArrayExtender(this.readDocumentOrFolder_, this),
+      'Placemark': makeArrayPusher(this.readPlacemark_, this),
       'Style': this.readSharedStyle_.bind(this),
       'StyleMap': this.readSharedStyleMap_.bind(this)
     });
   /** @type {Array.<ol.Feature>} */
-  const features = _ol_xml_.pushParseAndPop([], parsersNS, node, objectStack, this);
+  const features = pushParseAndPop([], parsersNS, node, objectStack, this);
   if (features) {
     return features;
   } else {
@@ -1695,7 +1699,7 @@ KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Feature.
  */
 KML.prototype.readPlacemark_ = function(node, objectStack) {
-  const object = _ol_xml_.pushParseAndPop({'geometry': null},
+  const object = pushParseAndPop({'geometry': null},
     KML.PLACEMARK_PARSERS_, node, objectStack);
   if (!object) {
     return undefined;
@@ -1882,12 +1886,12 @@ KML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @api
  */
 KML.prototype.readName = function(source) {
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     return this.readNameFromDocument(/** @type {Document} */ (source));
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     return this.readNameFromNode(/** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     return this.readNameFromDocument(doc);
   } else {
     return undefined;
@@ -1951,14 +1955,14 @@ KML.prototype.readNameFromNode = function(node) {
  */
 KML.prototype.readNetworkLinks = function(source) {
   const networkLinks = [];
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     extend(networkLinks, this.readNetworkLinksFromDocument(
       /** @type {Document} */ (source)));
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     extend(networkLinks, this.readNetworkLinksFromNode(
       /** @type {Node} */ (source)));
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     extend(networkLinks, this.readNetworkLinksFromDocument(doc));
   }
   return networkLinks;
@@ -1989,7 +1993,7 @@ KML.prototype.readNetworkLinksFromNode = function(node) {
   for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
     if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'NetworkLink') {
-      const obj = _ol_xml_.pushParseAndPop({}, KML.NETWORK_LINK_PARSERS_,
+      const obj = pushParseAndPop({}, KML.NETWORK_LINK_PARSERS_,
         n, []);
       networkLinks.push(obj);
     }
@@ -2016,14 +2020,14 @@ KML.prototype.readNetworkLinksFromNode = function(node) {
  */
 KML.prototype.readRegion = function(source) {
   const regions = [];
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     extend(regions, this.readRegionFromDocument(
       /** @type {Document} */ (source)));
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     extend(regions, this.readRegionFromNode(
       /** @type {Node} */ (source)));
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     extend(regions, this.readRegionFromDocument(doc));
   }
   return regions;
@@ -2055,7 +2059,7 @@ KML.prototype.readRegionFromNode = function(node) {
   for (let n = node.firstElementChild; n; n = n.nextElementSibling) {
     if (includes(KML.NAMESPACE_URIS_, n.namespaceURI) &&
         n.localName == 'Region') {
-      const obj = _ol_xml_.pushParseAndPop({}, KML.REGION_PARSERS_,
+      const obj = pushParseAndPop({}, KML.REGION_PARSERS_,
         n, []);
       regions.push(obj);
     }
@@ -2157,17 +2161,17 @@ KML.writeDataNode_ = function(node, pair, objectStack) {
 
   if (typeof value == 'object') {
     if (value !== null && value.displayName) {
-      _ol_xml_.pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-        _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, [value.displayName], objectStack, ['displayName']);
+      pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+        OBJECT_PROPERTY_NODE_FACTORY, [value.displayName], objectStack, ['displayName']);
     }
 
     if (value !== null && value.value) {
-      _ol_xml_.pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-        _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, [value.value], objectStack, ['value']);
+      pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+        OBJECT_PROPERTY_NODE_FACTORY, [value.value], objectStack, ['value']);
     }
   } else {
-    _ol_xml_.pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-      _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, [value], objectStack, ['value']);
+    pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+      OBJECT_PROPERTY_NODE_FACTORY, [value], objectStack, ['value']);
   }
 };
 
@@ -2201,7 +2205,7 @@ KML.writeDataNodeValue_ = function(node, value) {
  */
 KML.writeDocument_ = function(node, features, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
-  _ol_xml_.pushSerializeAndPop(context, KML.DOCUMENT_SERIALIZERS_,
+  pushSerializeAndPop(context, KML.DOCUMENT_SERIALIZERS_,
     KML.DOCUMENT_NODE_FACTORY_, features, objectStack, undefined,
     this);
 };
@@ -2220,7 +2224,7 @@ KML.writeExtendedData_ = function(node, namesAndValues, objectStack) {
   const length = names.length;
 
   for (let i = 0; i < length; i++) {
-    _ol_xml_.pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+    pushSerializeAndPop(context, KML.EXTENDEDDATA_NODE_SERIALIZERS_,
       KML.DATA_NODE_FACTORY_, [{name: names[i], value: values[i]}], objectStack);
   }
 };
@@ -2236,14 +2240,14 @@ KML.writeIcon_ = function(node, icon, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   const parentNode = objectStack[objectStack.length - 1].node;
   let orderedKeys = KML.ICON_SEQUENCE_[parentNode.namespaceURI];
-  let values = _ol_xml_.makeSequence(icon, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context,
-    KML.ICON_SERIALIZERS_, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+  let values = makeSequence(icon, orderedKeys);
+  pushSerializeAndPop(context,
+    KML.ICON_SERIALIZERS_, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
   orderedKeys =
       KML.ICON_SEQUENCE_[KML.GX_NAMESPACE_URIS_[0]];
-  values = _ol_xml_.makeSequence(icon, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.ICON_SERIALIZERS_,
+  values = makeSequence(icon, orderedKeys);
+  pushSerializeAndPop(context, KML.ICON_SERIALIZERS_,
     KML.GX_NODE_FACTORY_, values, objectStack, orderedKeys);
 };
 
@@ -2300,9 +2304,9 @@ KML.writeIconStyle_ = function(node, style, objectStack) {
 
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = KML.ICON_STYLE_SEQUENCE_[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.ICON_STYLE_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.ICON_STYLE_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 };
 
 
@@ -2326,9 +2330,9 @@ KML.writeLabelStyle_ = function(node, style, objectStack) {
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys =
       KML.LABEL_STYLE_SEQUENCE_[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.LABEL_STYLE_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.LABEL_STYLE_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 };
 
 
@@ -2346,9 +2350,9 @@ KML.writeLineStyle_ = function(node, style, objectStack) {
   };
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = KML.LINE_STYLE_SEQUENCE_[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.LINE_STYLE_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.LINE_STYLE_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 };
 
 
@@ -2383,7 +2387,7 @@ KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
   } else {
     assert(false, 39); // Unknown geometry type
   }
-  _ol_xml_.pushSerializeAndPop(context,
+  pushSerializeAndPop(context,
     KML.MULTI_GEOMETRY_SERIALIZERS_, factory,
     geometries, objectStack);
 };
@@ -2397,7 +2401,7 @@ KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
  */
 KML.writeBoundaryIs_ = function(node, linearRing, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
-  _ol_xml_.pushSerializeAndPop(context,
+  pushSerializeAndPop(context,
     KML.BOUNDARY_IS_SERIALIZERS_,
     KML.LINEAR_RING_NODE_FACTORY_, [linearRing], objectStack);
 };
@@ -2432,9 +2436,9 @@ KML.writePlacemark_ = function(node, feature, objectStack) {
   });
 
   if (keys.length > 0) {
-    const sequence = _ol_xml_.makeSequence(properties, keys);
+    const sequence = makeSequence(properties, keys);
     const namesAndValues = {names: keys, values: sequence};
-    _ol_xml_.pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
+    pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
       KML.EXTENDEDDATA_NODE_FACTORY_, [namesAndValues], objectStack);
   }
 
@@ -2456,9 +2460,9 @@ KML.writePlacemark_ = function(node, feature, objectStack) {
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = KML.PLACEMARK_SEQUENCE_[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 
   // serialize geometry
   const options = /** @type {olx.format.WriteOptions} */ (objectStack[0]);
@@ -2466,7 +2470,7 @@ KML.writePlacemark_ = function(node, feature, objectStack) {
   if (geometry) {
     geometry = transformWithOptions(geometry, true, options);
   }
-  _ol_xml_.pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
+  pushSerializeAndPop(context, KML.PLACEMARK_SERIALIZERS_,
     KML.GEOMETRY_NODE_FACTORY_, [geometry], objectStack);
 };
 
@@ -2489,9 +2493,9 @@ KML.writePrimitiveGeometry_ = function(node, geometry, objectStack) {
 
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = KML.PRIMITIVE_GEOMETRY_SEQUENCE_[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.PRIMITIVE_GEOMETRY_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.PRIMITIVE_GEOMETRY_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 };
 
 
@@ -2506,12 +2510,12 @@ KML.writePolygon_ = function(node, polygon, objectStack) {
   const outerRing = linearRings.shift();
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
   // inner rings
-  _ol_xml_.pushSerializeAndPop(context,
+  pushSerializeAndPop(context,
     KML.POLYGON_SERIALIZERS_,
     KML.INNER_BOUNDARY_NODE_FACTORY_,
     linearRings, objectStack);
   // outer ring
-  _ol_xml_.pushSerializeAndPop(context,
+  pushSerializeAndPop(context,
     KML.POLYGON_SERIALIZERS_,
     KML.OUTER_BOUNDARY_NODE_FACTORY_,
     [outerRing], objectStack);
@@ -2526,7 +2530,7 @@ KML.writePolygon_ = function(node, polygon, objectStack) {
  */
 KML.writePolyStyle_ = function(node, style, objectStack) {
   const /** @type {ol.XmlNodeStackItem} */ context = {node: node};
-  _ol_xml_.pushSerializeAndPop(context, KML.POLY_STYLE_SERIALIZERS_,
+  pushSerializeAndPop(context, KML.POLY_STYLE_SERIALIZERS_,
     KML.COLOR_NODE_FACTORY_, [style.getColor()], objectStack);
 };
 
@@ -2570,9 +2574,9 @@ KML.writeStyle_ = function(node, style, objectStack) {
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = KML.STYLE_SEQUENCE_[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.STYLE_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.STYLE_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, objectStack, orderedKeys);
 };
 
 
@@ -2594,7 +2598,7 @@ KML.writeVec2_ = function(node, vec2) {
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.KML_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.KML_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'Document', 'Placemark'
   ]);
@@ -2605,10 +2609,10 @@ KML.KML_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.KML_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.KML_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'Document': _ol_xml_.makeChildAppender(KML.writeDocument_),
-    'Placemark': _ol_xml_.makeChildAppender(KML.writePlacemark_)
+    'Document': makeChildAppender(KML.writeDocument_),
+    'Placemark': makeChildAppender(KML.writePlacemark_)
   });
 
 
@@ -2617,9 +2621,9 @@ KML.KML_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.DOCUMENT_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.DOCUMENT_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'Placemark': _ol_xml_.makeChildAppender(KML.writePlacemark_)
+    'Placemark': makeChildAppender(KML.writePlacemark_)
   });
 
 
@@ -2628,11 +2632,11 @@ KML.DOCUMENT_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.EXTENDEDDATA_NODE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.EXTENDEDDATA_NODE_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'Data': _ol_xml_.makeChildAppender(KML.writeDataNode_),
-    'value': _ol_xml_.makeChildAppender(KML.writeDataNodeValue_),
-    'displayName': _ol_xml_.makeChildAppender(KML.writeDataNodeName_)
+    'Data': makeChildAppender(KML.writeDataNode_),
+    'value': makeChildAppender(KML.writeDataNodeValue_),
+    'displayName': makeChildAppender(KML.writeDataNodeName_)
   });
 
 
@@ -2657,11 +2661,11 @@ KML.GEOMETRY_TYPE_TO_NODENAME_ = {
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.ICON_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.ICON_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'href'
   ],
-  _ol_xml_.makeStructureNS(KML.GX_NAMESPACE_URIS_, [
+  makeStructureNS(KML.GX_NAMESPACE_URIS_, [
     'x', 'y', 'w', 'h'
   ]));
 
@@ -2671,15 +2675,15 @@ KML.ICON_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.ICON_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.ICON_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'href': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
-  }, _ol_xml_.makeStructureNS(
+    'href': makeChildAppender(XSD.writeStringTextNode)
+  }, makeStructureNS(
     KML.GX_NAMESPACE_URIS_, {
-      'x': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'y': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'w': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-      'h': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode)
+      'x': makeChildAppender(XSD.writeDecimalTextNode),
+      'y': makeChildAppender(XSD.writeDecimalTextNode),
+      'w': makeChildAppender(XSD.writeDecimalTextNode),
+      'h': makeChildAppender(XSD.writeDecimalTextNode)
     }));
 
 
@@ -2688,7 +2692,7 @@ KML.ICON_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.ICON_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.ICON_STYLE_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'scale', 'heading', 'Icon', 'hotSpot'
   ]);
@@ -2699,12 +2703,12 @@ KML.ICON_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.ICON_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.ICON_STYLE_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'Icon': _ol_xml_.makeChildAppender(KML.writeIcon_),
-    'heading': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'hotSpot': _ol_xml_.makeChildAppender(KML.writeVec2_),
-    'scale': _ol_xml_.makeChildAppender(KML.writeScaleTextNode_)
+    'Icon': makeChildAppender(KML.writeIcon_),
+    'heading': makeChildAppender(XSD.writeDecimalTextNode),
+    'hotSpot': makeChildAppender(KML.writeVec2_),
+    'scale': makeChildAppender(KML.writeScaleTextNode_)
   });
 
 
@@ -2713,7 +2717,7 @@ KML.ICON_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.LABEL_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.LABEL_STYLE_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'color', 'scale'
   ]);
@@ -2724,10 +2728,10 @@ KML.LABEL_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.LABEL_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.LABEL_STYLE_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'color': _ol_xml_.makeChildAppender(KML.writeColorTextNode_),
-    'scale': _ol_xml_.makeChildAppender(KML.writeScaleTextNode_)
+    'color': makeChildAppender(KML.writeColorTextNode_),
+    'scale': makeChildAppender(KML.writeScaleTextNode_)
   });
 
 
@@ -2736,7 +2740,7 @@ KML.LABEL_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.LINE_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.LINE_STYLE_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'color', 'width'
   ]);
@@ -2747,10 +2751,10 @@ KML.LINE_STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.LINE_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.LINE_STYLE_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'color': _ol_xml_.makeChildAppender(KML.writeColorTextNode_),
-    'width': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode)
+    'color': makeChildAppender(KML.writeColorTextNode_),
+    'width': makeChildAppender(XSD.writeDecimalTextNode)
   });
 
 
@@ -2759,9 +2763,9 @@ KML.LINE_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.BOUNDARY_IS_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.BOUNDARY_IS_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'LinearRing': _ol_xml_.makeChildAppender(
+    'LinearRing': makeChildAppender(
       KML.writePrimitiveGeometry_)
   });
 
@@ -2771,14 +2775,14 @@ KML.BOUNDARY_IS_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.MULTI_GEOMETRY_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.MULTI_GEOMETRY_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'LineString': _ol_xml_.makeChildAppender(
+    'LineString': makeChildAppender(
       KML.writePrimitiveGeometry_),
-    'Point': _ol_xml_.makeChildAppender(
+    'Point': makeChildAppender(
       KML.writePrimitiveGeometry_),
-    'Polygon': _ol_xml_.makeChildAppender(KML.writePolygon_),
-    'GeometryCollection': _ol_xml_.makeChildAppender(
+    'Polygon': makeChildAppender(KML.writePolygon_),
+    'GeometryCollection': makeChildAppender(
       KML.writeMultiGeometry_)
   });
 
@@ -2788,7 +2792,7 @@ KML.MULTI_GEOMETRY_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.PLACEMARK_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.PLACEMARK_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'name', 'open', 'visibility', 'address', 'phoneNumber', 'description',
     'styleUrl', 'Style'
@@ -2800,29 +2804,29 @@ KML.PLACEMARK_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.PLACEMARK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.PLACEMARK_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'ExtendedData': _ol_xml_.makeChildAppender(
+    'ExtendedData': makeChildAppender(
       KML.writeExtendedData_),
-    'MultiGeometry': _ol_xml_.makeChildAppender(
+    'MultiGeometry': makeChildAppender(
       KML.writeMultiGeometry_),
-    'LineString': _ol_xml_.makeChildAppender(
+    'LineString': makeChildAppender(
       KML.writePrimitiveGeometry_),
-    'LinearRing': _ol_xml_.makeChildAppender(
+    'LinearRing': makeChildAppender(
       KML.writePrimitiveGeometry_),
-    'Point': _ol_xml_.makeChildAppender(
+    'Point': makeChildAppender(
       KML.writePrimitiveGeometry_),
-    'Polygon': _ol_xml_.makeChildAppender(KML.writePolygon_),
-    'Style': _ol_xml_.makeChildAppender(KML.writeStyle_),
-    'address': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'description': _ol_xml_.makeChildAppender(
+    'Polygon': makeChildAppender(KML.writePolygon_),
+    'Style': makeChildAppender(KML.writeStyle_),
+    'address': makeChildAppender(XSD.writeStringTextNode),
+    'description': makeChildAppender(
       XSD.writeStringTextNode),
-    'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'open': _ol_xml_.makeChildAppender(XSD.writeBooleanTextNode),
-    'phoneNumber': _ol_xml_.makeChildAppender(
+    'name': makeChildAppender(XSD.writeStringTextNode),
+    'open': makeChildAppender(XSD.writeBooleanTextNode),
+    'phoneNumber': makeChildAppender(
       XSD.writeStringTextNode),
-    'styleUrl': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'visibility': _ol_xml_.makeChildAppender(
+    'styleUrl': makeChildAppender(XSD.writeStringTextNode),
+    'visibility': makeChildAppender(
       XSD.writeBooleanTextNode)
   });
 
@@ -2832,7 +2836,7 @@ KML.PLACEMARK_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'extrude', 'tessellate', 'altitudeMode', 'coordinates'
   ]);
@@ -2843,12 +2847,12 @@ KML.PRIMITIVE_GEOMETRY_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'extrude': _ol_xml_.makeChildAppender(XSD.writeBooleanTextNode),
-    'tessellate': _ol_xml_.makeChildAppender(XSD.writeBooleanTextNode),
-    'altitudeMode': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'coordinates': _ol_xml_.makeChildAppender(
+    'extrude': makeChildAppender(XSD.writeBooleanTextNode),
+    'tessellate': makeChildAppender(XSD.writeBooleanTextNode),
+    'altitudeMode': makeChildAppender(XSD.writeStringTextNode),
+    'coordinates': makeChildAppender(
       KML.writeCoordinatesTextNode_)
   });
 
@@ -2858,11 +2862,11 @@ KML.PRIMITIVE_GEOMETRY_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.POLYGON_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.POLYGON_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'outerBoundaryIs': _ol_xml_.makeChildAppender(
+    'outerBoundaryIs': makeChildAppender(
       KML.writeBoundaryIs_),
-    'innerBoundaryIs': _ol_xml_.makeChildAppender(
+    'innerBoundaryIs': makeChildAppender(
       KML.writeBoundaryIs_)
   });
 
@@ -2872,9 +2876,9 @@ KML.POLYGON_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.POLY_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.POLY_STYLE_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'color': _ol_xml_.makeChildAppender(KML.writeColorTextNode_)
+    'color': makeChildAppender(KML.writeColorTextNode_)
   });
 
 
@@ -2883,7 +2887,7 @@ KML.POLY_STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Array.<string>>}
  * @private
  */
-KML.STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
+KML.STYLE_SEQUENCE_ = makeStructureNS(
   KML.NAMESPACE_URIS_, [
     'IconStyle', 'LabelStyle', 'LineStyle', 'PolyStyle'
   ]);
@@ -2894,12 +2898,12 @@ KML.STYLE_SEQUENCE_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-KML.STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
+KML.STYLE_SERIALIZERS_ = makeStructureNS(
   KML.NAMESPACE_URIS_, {
-    'IconStyle': _ol_xml_.makeChildAppender(KML.writeIconStyle_),
-    'LabelStyle': _ol_xml_.makeChildAppender(KML.writeLabelStyle_),
-    'LineStyle': _ol_xml_.makeChildAppender(KML.writeLineStyle_),
-    'PolyStyle': _ol_xml_.makeChildAppender(KML.writePolyStyle_)
+    'IconStyle': makeChildAppender(KML.writeIconStyle_),
+    'LabelStyle': makeChildAppender(KML.writeLabelStyle_),
+    'LineStyle': makeChildAppender(KML.writeLineStyle_),
+    'PolyStyle': makeChildAppender(KML.writePolyStyle_)
   });
 
 
@@ -2912,7 +2916,7 @@ KML.STYLE_SERIALIZERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 KML.GX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
-  return _ol_xml_.createElementNS(KML.GX_NAMESPACE_URIS_[0],
+  return createElementNS(KML.GX_NAMESPACE_URIS_[0],
     'gx:' + opt_nodeName);
 };
 
@@ -2928,7 +2932,7 @@ KML.GX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
 KML.DOCUMENT_NODE_FACTORY_ = function(value, objectStack,
   opt_nodeName) {
   const parentNode = objectStack[objectStack.length - 1].node;
-  return _ol_xml_.createElementNS(parentNode.namespaceURI, 'Placemark');
+  return createElementNS(parentNode.namespaceURI, 'Placemark');
 };
 
 
@@ -2944,7 +2948,7 @@ KML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
   opt_nodeName) {
   if (value) {
     const parentNode = objectStack[objectStack.length - 1].node;
-    return _ol_xml_.createElementNS(parentNode.namespaceURI,
+    return createElementNS(parentNode.namespaceURI,
       KML.GEOMETRY_TYPE_TO_NODENAME_[/** @type {ol.geom.Geometry} */ (value).getType()]);
   }
 };
@@ -2956,7 +2960,7 @@ KML.GEOMETRY_NODE_FACTORY_ = function(value, objectStack,
  * @type {function(*, Array.<*>, string=): (Node|undefined)}
  * @private
  */
-KML.COLOR_NODE_FACTORY_ = _ol_xml_.makeSimpleNodeFactory('color');
+KML.COLOR_NODE_FACTORY_ = makeSimpleNodeFactory('color');
 
 
 /**
@@ -2966,7 +2970,7 @@ KML.COLOR_NODE_FACTORY_ = _ol_xml_.makeSimpleNodeFactory('color');
  * @private
  */
 KML.DATA_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('Data');
+    makeSimpleNodeFactory('Data');
 
 
 /**
@@ -2976,7 +2980,7 @@ KML.DATA_NODE_FACTORY_ =
  * @private
  */
 KML.EXTENDEDDATA_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('ExtendedData');
+    makeSimpleNodeFactory('ExtendedData');
 
 
 /**
@@ -2986,7 +2990,7 @@ KML.EXTENDEDDATA_NODE_FACTORY_ =
  * @private
  */
 KML.INNER_BOUNDARY_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('innerBoundaryIs');
+    makeSimpleNodeFactory('innerBoundaryIs');
 
 
 /**
@@ -2996,7 +3000,7 @@ KML.INNER_BOUNDARY_NODE_FACTORY_ =
  * @private
  */
 KML.POINT_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('Point');
+    makeSimpleNodeFactory('Point');
 
 
 /**
@@ -3006,7 +3010,7 @@ KML.POINT_NODE_FACTORY_ =
  * @private
  */
 KML.LINE_STRING_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('LineString');
+    makeSimpleNodeFactory('LineString');
 
 
 /**
@@ -3016,7 +3020,7 @@ KML.LINE_STRING_NODE_FACTORY_ =
  * @private
  */
 KML.LINEAR_RING_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('LinearRing');
+    makeSimpleNodeFactory('LinearRing');
 
 
 /**
@@ -3026,7 +3030,7 @@ KML.LINEAR_RING_NODE_FACTORY_ =
  * @private
  */
 KML.POLYGON_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('Polygon');
+    makeSimpleNodeFactory('Polygon');
 
 
 /**
@@ -3036,7 +3040,7 @@ KML.POLYGON_NODE_FACTORY_ =
  * @private
  */
 KML.OUTER_BOUNDARY_NODE_FACTORY_ =
-    _ol_xml_.makeSimpleNodeFactory('outerBoundaryIs');
+    makeSimpleNodeFactory('outerBoundaryIs');
 
 
 /**
@@ -3064,13 +3068,13 @@ KML.prototype.writeFeatures;
  */
 KML.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
-  const kml = _ol_xml_.createElementNS(KML.NAMESPACE_URIS_[4], 'kml');
+  const kml = createElementNS(KML.NAMESPACE_URIS_[4], 'kml');
   const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   const xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
-  _ol_xml_.setAttributeNS(kml, xmlnsUri, 'xmlns:gx',
+  setAttributeNS(kml, xmlnsUri, 'xmlns:gx',
     KML.GX_NAMESPACE_URIS_[0]);
-  _ol_xml_.setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
-  _ol_xml_.setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
+  setAttributeNS(kml, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
+  setAttributeNS(kml, xmlSchemaInstanceUri, 'xsi:schemaLocation',
     KML.SCHEMA_LOCATION_);
 
   const /** @type {ol.XmlNodeStackItem} */ context = {node: kml};
@@ -3081,9 +3085,9 @@ KML.prototype.writeFeaturesNode = function(features, opt_options) {
     properties['Placemark'] = features[0];
   }
   const orderedKeys = KML.KML_SEQUENCE_[kml.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context, KML.KML_SERIALIZERS_,
-    _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context, KML.KML_SERIALIZERS_,
+    OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
     this);
   return kml;
 };
