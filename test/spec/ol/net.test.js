@@ -1,5 +1,5 @@
 import {getUid} from '../../../src/ol/index.js';
-import _ol_net_ from '../../../src/ol/net.js';
+import {jsonp as requestJSONP} from '../../../src/ol/net.js';
 
 describe('ol.net', function() {
 
@@ -54,11 +54,11 @@ describe('ol.net', function() {
     });
 
     it('appends callback param to url, cleans up after call', function(done) {
-      _ol_net_.jsonp('foo', createCallback('foo?callback=', done));
+      requestJSONP('foo', createCallback('foo?callback=', done));
     });
     it('appends correct callback param to a url with query', function(done) {
       const callback = createCallback('http://foo/bar?baz&callback=', done);
-      _ol_net_.jsonp('http://foo/bar?baz', callback);
+      requestJSONP('http://foo/bar?baz', callback);
     });
     it('calls errback when jsonp is not executed, cleans up', function(done) {
       head.appendChild = function(element) {
@@ -74,11 +74,11 @@ describe('ol.net', function() {
         expect(removeChild.called).to.be(true);
         done();
       }
-      _ol_net_.jsonp('foo', callback, errback);
+      requestJSONP('foo', callback, errback);
     });
     it('accepts a custom callback param', function(done) {
       const callback = createCallback('foo?mycallback=', done);
-      _ol_net_.jsonp('foo', callback, undefined, 'mycallback');
+      requestJSONP('foo', callback, undefined, 'mycallback');
     });
 
   });

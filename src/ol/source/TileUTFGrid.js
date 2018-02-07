@@ -9,7 +9,7 @@ import {assert} from '../asserts.js';
 import {listenOnce} from '../events.js';
 import EventType from '../events/EventType.js';
 import {applyTransform, intersects} from '../extent.js';
-import _ol_net_ from '../net.js';
+import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileSource from '../source/Tile.js';
@@ -58,7 +58,7 @@ const UTFGrid = function(options) {
 
   if (options.url) {
     if (this.jsonp_) {
-      _ol_net_.jsonp(options.url, this.handleTileJSONResponse.bind(this),
+      requestJSONP(options.url, this.handleTileJSONResponse.bind(this),
         this.handleTileJSONError.bind(this));
     } else {
       const client = new XMLHttpRequest();
@@ -425,7 +425,7 @@ UTFGrid.Tile_.prototype.loadInternal_ = function() {
   if (this.state == TileState.IDLE) {
     this.state = TileState.LOADING;
     if (this.jsonp_) {
-      _ol_net_.jsonp(this.src_, this.handleLoad_.bind(this),
+      requestJSONP(this.src_, this.handleLoad_.bind(this),
         this.handleError_.bind(this));
     } else {
       const client = new XMLHttpRequest();

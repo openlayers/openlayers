@@ -4,7 +4,7 @@
 import {inherits} from '../index.js';
 import {createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {applyTransform, intersects} from '../extent.js';
-import _ol_net_ from '../net.js';
+import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileImage from '../source/TileImage.js';
@@ -70,7 +70,7 @@ const BingMaps = function(options) {
       '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_ +
       '&c=' + this.culture_;
 
-  _ol_net_.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
+  requestJSONP(url, this.handleImageryMetadataResponse.bind(this), undefined,
     'jsonp');
 
 };
