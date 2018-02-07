@@ -1,7 +1,7 @@
 import {getPointResolution, transform, get as getProjection, clearAllProjections, addCommon} from '../../../../src/ol/proj.js';
-import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
+import {fromEPSG4326, HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
 
-describe('ol.proj.EPSG3857', function() {
+describe('ol/proj/epsg3857', function() {
 
   afterEach(function() {
     clearAllProjections();
@@ -11,9 +11,6 @@ describe('ol.proj.EPSG3857', function() {
   describe('fromEPSG4326()', function() {
 
     it('transforms from geographic to Web Mercator', function() {
-      const forward = _ol_proj_EPSG3857_.fromEPSG4326;
-      const edge = _ol_proj_EPSG3857_.HALF_SIZE;
-
       const tolerance = 1e-5;
 
       const cases = [{
@@ -21,10 +18,10 @@ describe('ol.proj.EPSG3857', function() {
         m: [0, 0]
       }, {
         g: [-180, -90],
-        m: [-edge, -edge]
+        m: [-HALF_SIZE, -HALF_SIZE]
       }, {
         g: [180, 90],
-        m: [edge, edge]
+        m: [HALF_SIZE, HALF_SIZE]
       }, {
         g: [-111.0429, 45.6770],
         m: [-12361239.084208, 5728738.469095]
@@ -32,7 +29,7 @@ describe('ol.proj.EPSG3857', function() {
 
       for (let i = 0, ii = cases.length; i < ii; ++i) {
         const point = cases[i].g;
-        const transformed = forward(point);
+        const transformed = fromEPSG4326(point);
         expect(transformed[0]).to.roughlyEqual(cases[i].m[0], tolerance);
         expect(transformed[1]).to.roughlyEqual(cases[i].m[1], tolerance);
       }
