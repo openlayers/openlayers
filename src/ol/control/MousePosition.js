@@ -72,6 +72,8 @@ const MousePosition = function(opt_options) {
     this.setProjection(options.projection);
   }
 
+  this.clearOnMouseOut_ = options.clearOnMouseOut !== undefined ? options.clearOnMouseOut : true;
+
   /**
    * @private
    * @type {string}
@@ -190,11 +192,13 @@ MousePosition.prototype.setMap = function(map) {
   if (map) {
     const viewport = map.getViewport();
     this.listenerKeys.push(
-      listen(viewport, EventType.MOUSEMOVE,
-        this.handleMouseMove, this),
-      listen(viewport, EventType.MOUSEOUT,
-        this.handleMouseOut, this)
+      listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this)
     );
+    if (this.clearOnMouseOut_) {
+      this.listenerKeys.push(
+        listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this)
+      );
+    }
   }
 };
 
