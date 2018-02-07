@@ -2,7 +2,7 @@
  * @module ol/tilegrid
  */
 import {DEFAULT_MAX_ZOOM, DEFAULT_TILE_SIZE} from './tilegrid/common.js';
-import _ol_size_ from './size.js';
+import {toSize} from './size.js';
 import {containsCoordinate, createOrUpdate, getCorner, getHeight, getWidth} from './extent.js';
 import Corner from './extent/Corner.js';
 import {assign} from './obj.js';
@@ -109,7 +109,7 @@ _ol_tilegrid_.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize
   const height = getHeight(extent);
   const width = getWidth(extent);
 
-  const tileSize = _ol_size_.toSize(opt_tileSize !== undefined ?
+  const tileSize = toSize(opt_tileSize !== undefined ?
     opt_tileSize : DEFAULT_TILE_SIZE);
   const maxResolution = Math.max(
     width / tileSize[0], height / tileSize[1]);

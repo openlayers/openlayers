@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import Tile from '../Tile.js';
 import TileState from '../TileState.js';
 import {createCanvasContext2D} from '../dom.js';
-import _ol_size_ from '../size.js';
+import {toSize} from '../size.js';
 import TileSource from '../source/Tile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 
@@ -44,7 +44,7 @@ TileDebug.prototype.getTile = function(z, x, y) {
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.source.TileDebug.Tile_} */ (this.tileCache.get(tileCoordKey));
   } else {
-    const tileSize = _ol_size_.toSize(this.tileGrid.getTileSize(z));
+    const tileSize = toSize(this.tileGrid.getTileSize(z));
     const tileCoord = [z, x, y];
     const textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
     const text = !textTileCoord ? '' :

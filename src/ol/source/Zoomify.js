@@ -9,7 +9,7 @@ import {expandUrl, createFromTileUrlFunctions} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {createCanvasContext2D} from '../dom.js';
 import {getTopLeft} from '../extent.js';
-import _ol_size_ from '../size.js';
+import {toSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
 import TileGrid from '../tilegrid/TileGrid.js';
 
@@ -179,7 +179,7 @@ Zoomify.Tile_ = function(
    * @private
    * @type {ol.Size}
    */
-  this.tileSize_ = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]));
+  this.tileSize_ = toSize(tileGrid.getTileSize(tileCoord[0]));
 };
 inherits(Zoomify.Tile_, ImageTile);
 

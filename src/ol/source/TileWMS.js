@@ -10,7 +10,7 @@ import {assign} from '../obj.js';
 import {modulo} from '../math.js';
 import {get as getProjection, transform, transformExtent} from '../proj.js';
 import _ol_reproj_ from '../reproj.js';
-import _ol_size_ from '../size.js';
+import {toSize, buffer as bufferSize, scale as scaleSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
 import WMSServerType from '../source/WMSServerType.js';
 import _ol_tilecoord_ from '../tilecoord.js';
@@ -125,12 +125,12 @@ TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projec
 
   let tileResolution = tileGrid.getResolution(tileCoord[0]);
   let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  let tileSize = _ol_size_.toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+  let tileSize = toSize(tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
 
   const gutter = this.gutter_;
   if (gutter !== 0) {
-    tileSize = _ol_size_.buffer(tileSize, gutter, this.tmpSize);
+    tileSize = bufferSize(tileSize, gutter, this.tmpSize);
     tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
   }
 
@@ -297,17 +297,17 @@ TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, project
 
   const tileResolution = tileGrid.getResolution(tileCoord[0]);
   let tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
-  let tileSize = _ol_size_.toSize(
+  let tileSize = toSize(
     tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
   const gutter = this.gutter_;
   if (gutter !== 0) {
-    tileSize = _ol_size_.buffer(tileSize, gutter, this.tmpSize);
+    tileSize = bufferSize(tileSize, gutter, this.tmpSize);
     tileExtent = buffer(tileExtent, tileResolution * gutter, tileExtent);
   }
 
   if (pixelRatio != 1) {
-    tileSize = _ol_size_.scale(tileSize, pixelRatio, this.tmpSize);
+    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
   }
 
   const baseParams = {

@@ -7,7 +7,7 @@ import TileRange from '../TileRange.js';
 import {isSorted, linearFindNearest} from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import {clamp} from '../math.js';
-import _ol_size_ from '../size.js';
+import {toSize} from '../size.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 
 /**
@@ -308,7 +308,7 @@ TileGrid.prototype.getTileCoordChildTileRange = function(tileCoord, opt_tileRang
 TileGrid.prototype.getTileRangeExtent = function(z, tileRange, opt_extent) {
   const origin = this.getOrigin(z);
   const resolution = this.getResolution(z);
-  const tileSize = _ol_size_.toSize(this.getTileSize(z), this.tmpSize_);
+  const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
   const minX = origin[0] + tileRange.minX * tileSize[0] * resolution;
   const maxX = origin[0] + (tileRange.maxX + 1) * tileSize[0] * resolution;
   const minY = origin[1] + tileRange.minY * tileSize[1] * resolution;
@@ -342,7 +342,7 @@ TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange
 TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
   const origin = this.getOrigin(tileCoord[0]);
   const resolution = this.getResolution(tileCoord[0]);
-  const tileSize = _ol_size_.toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
+  const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
   return [
     origin[0] + (tileCoord[1] + 0.5) * tileSize[0] * resolution,
     origin[1] + (tileCoord[2] + 0.5) * tileSize[1] * resolution
@@ -361,7 +361,7 @@ TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
 TileGrid.prototype.getTileCoordExtent = function(tileCoord, opt_extent) {
   const origin = this.getOrigin(tileCoord[0]);
   const resolution = this.getResolution(tileCoord[0]);
-  const tileSize = _ol_size_.toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
+  const tileSize = toSize(this.getTileSize(tileCoord[0]), this.tmpSize_);
   const minX = origin[0] + tileCoord[1] * tileSize[0] * resolution;
   const minY = origin[1] + tileCoord[2] * tileSize[1] * resolution;
   const maxX = minX + tileSize[0] * resolution;
@@ -405,7 +405,7 @@ TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
   const z = this.getZForResolution(resolution);
   const scale = resolution / this.getResolution(z);
   const origin = this.getOrigin(z);
-  const tileSize = _ol_size_.toSize(this.getTileSize(z), this.tmpSize_);
+  const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
   const adjustX = reverseIntersectionPolicy ? 0.5 : 0;
   const adjustY = reverseIntersectionPolicy ? 0 : 0.5;
@@ -444,7 +444,7 @@ TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
 TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectionPolicy, opt_tileCoord) {
   const origin = this.getOrigin(z);
   const resolution = this.getResolution(z);
-  const tileSize = _ol_size_.toSize(this.getTileSize(z), this.tmpSize_);
+  const tileSize = toSize(this.getTileSize(z), this.tmpSize_);
 
   const adjustX = reverseIntersectionPolicy ? 0.5 : 0;
   const adjustY = reverseIntersectionPolicy ? 0 : 0.5;

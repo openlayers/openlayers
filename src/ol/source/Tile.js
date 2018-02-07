@@ -6,7 +6,7 @@ import TileCache from '../TileCache.js';
 import TileState from '../TileState.js';
 import Event from '../events/Event.js';
 import {equivalent} from '../proj.js';
-import _ol_size_ from '../size.js';
+import {toSize, scale as scaleSize} from '../size.js';
 import Source from '../source/Source.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
@@ -258,11 +258,11 @@ TileSource.prototype.getTilePixelRatio = function(pixelRatio) {
 TileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   const tileGrid = this.getTileGridForProjection(projection);
   const tilePixelRatio = this.getTilePixelRatio(pixelRatio);
-  const tileSize = _ol_size_.toSize(tileGrid.getTileSize(z), this.tmpSize);
+  const tileSize = toSize(tileGrid.getTileSize(z), this.tmpSize);
   if (tilePixelRatio == 1) {
     return tileSize;
   } else {
-    return _ol_size_.scale(tileSize, tilePixelRatio, this.tmpSize);
+    return scaleSize(tileSize, tilePixelRatio, this.tmpSize);
   }
 };
 

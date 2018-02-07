@@ -1,24 +1,23 @@
 /**
  * @module ol/size
  */
-const _ol_size_ = {};
 
 
 /**
  * Returns a buffered size.
  * @param {ol.Size} size Size.
- * @param {number} buffer Buffer.
+ * @param {number} num The amount by which to buffer.
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} The buffered size.
  */
-_ol_size_.buffer = function(size, buffer, opt_size) {
+export function buffer(size, num, opt_size) {
   if (opt_size === undefined) {
     opt_size = [0, 0];
   }
-  opt_size[0] = size[0] + 2 * buffer;
-  opt_size[1] = size[1] + 2 * buffer;
+  opt_size[0] = size[0] + 2 * num;
+  opt_size[1] = size[1] + 2 * num;
   return opt_size;
-};
+}
 
 
 /**
@@ -26,9 +25,9 @@ _ol_size_.buffer = function(size, buffer, opt_size) {
  * @param {ol.Size} size The size to test.
  * @return {boolean} The size has a positive area.
  */
-_ol_size_.hasArea = function(size) {
+export function hasArea(size) {
   return size[0] > 0 && size[1] > 0;
-};
+}
 
 
 /**
@@ -38,14 +37,14 @@ _ol_size_.hasArea = function(size) {
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} The scaled size.
  */
-_ol_size_.scale = function(size, ratio, opt_size) {
+export function scale(size, ratio, opt_size) {
   if (opt_size === undefined) {
     opt_size = [0, 0];
   }
   opt_size[0] = (size[0] * ratio + 0.5) | 0;
   opt_size[1] = (size[1] * ratio + 0.5) | 0;
   return opt_size;
-};
+}
 
 
 /**
@@ -57,7 +56,7 @@ _ol_size_.scale = function(size, ratio, opt_size) {
  * @return {ol.Size} Size.
  * @api
  */
-_ol_size_.toSize = function(size, opt_size) {
+export function toSize(size, opt_size) {
   if (Array.isArray(size)) {
     return size;
   } else {
@@ -68,5 +67,5 @@ _ol_size_.toSize = function(size, opt_size) {
     }
     return opt_size;
   }
-};
-export default _ol_size_;
+}
+

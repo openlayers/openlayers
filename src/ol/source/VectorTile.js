@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import TileState from '../TileState.js';
 import VectorImageTile, {defaultLoadFunction} from '../VectorImageTile.js';
 import VectorTile from '../VectorTile.js';
-import _ol_size_ from '../size.js';
+import {toSize} from '../size.js';
 import UrlTile from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import _ol_tilegrid_ from '../tilegrid.js';
@@ -162,7 +162,7 @@ VectorTileSource.prototype.getTilePixelRatio = function(pixelRatio) {
  * @inheritDoc
  */
 VectorTileSource.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
-  const tileSize = _ol_size_.toSize(this.getTileGridForProjection(projection).getTileSize(z));
+  const tileSize = toSize(this.getTileGridForProjection(projection).getTileSize(z));
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
 export default VectorTileSource;
