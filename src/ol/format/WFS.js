@@ -6,7 +6,7 @@ import {assert} from '../asserts.js';
 import GML2 from '../format/GML2.js';
 import GML3 from '../format/GML3.js';
 import GMLBase from '../format/GMLBase.js';
-import _ol_format_filter_ from '../format/filter.js';
+import {and as andFilter, bbox as bboxFilter} from '../format/filter.js';
 import XMLFeature from '../format/XMLFeature.js';
 import XSD from '../format/XSD.js';
 import Geometry from '../geom/Geometry.js';
@@ -959,11 +959,11 @@ WFS.prototype.writeGetFeature = function(options) {
     if (options.bbox) {
       assert(options.geometryName,
         12); // `options.geometryName` must also be provided when `options.bbox` is set
-      const bbox = _ol_format_filter_.bbox(
+      const bbox = bboxFilter(
         /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
       if (filter) {
         // if bbox and filter are both set, combine the two into a single filter
-        filter = _ol_format_filter_.and(filter, bbox);
+        filter = andFilter(filter, bbox);
       } else {
         filter = bbox;
       }
