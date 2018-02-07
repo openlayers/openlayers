@@ -5,7 +5,7 @@ import {getDistance} from './sphere.js';
 import {applyTransform} from './extent.js';
 import {modulo} from './math.js';
 import {toEPSG4326, fromEPSG4326, PROJECTIONS as EPSG3857_PROJECTIONS} from './proj/epsg3857.js';
-import EPSG4326 from './proj/EPSG4326.js';
+import {PROJECTIONS as EPSG4326_PROJECTIONS} from './proj/epsg4326.js';
 import Projection from './proj/Projection.js';
 import Units from './proj/Units.js';
 import * as projections from './proj/projections.js';
@@ -439,14 +439,10 @@ export function addCommon() {
   // Add transformations that don't alter coordinates to convert within set of
   // projections with equal meaning.
   addEquivalentProjections(EPSG3857_PROJECTIONS);
-  addEquivalentProjections(EPSG4326.PROJECTIONS);
+  addEquivalentProjections(EPSG4326_PROJECTIONS);
   // Add transformations to convert EPSG:4326 like coordinates to EPSG:3857 like
   // coordinates and back.
-  addEquivalentTransforms(
-    EPSG4326.PROJECTIONS,
-    EPSG3857_PROJECTIONS,
-    fromEPSG4326,
-    toEPSG4326);
+  addEquivalentTransforms(EPSG4326_PROJECTIONS, EPSG3857_PROJECTIONS, fromEPSG4326, toEPSG4326);
 }
 
 addCommon();
