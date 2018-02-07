@@ -5,7 +5,8 @@ import {inherits} from '../index.js';
 import XLink from '../format/XLink.js';
 import XML from '../format/XML.js';
 import XSD from '../format/XSD.js';
-import _ol_xml_ from '../xml.js';
+import {makeArrayPusher, makeObjectPropertyPusher, makeObjectPropertySetter,
+  makeStructureNS, pushParseAndPop} from '../xml.js';
 
 /**
  * @classdesc
@@ -57,7 +58,7 @@ WMSCapabilities.prototype.readFromDocument = function(doc) {
  */
 WMSCapabilities.prototype.readFromNode = function(node) {
   this.version = node.getAttribute('version').trim();
-  const wmsCapabilityObject = _ol_xml_.pushParseAndPop({
+  const wmsCapabilityObject = pushParseAndPop({
     'version': this.version
   }, WMSCapabilities.PARSERS_, node, []);
   return wmsCapabilityObject ? wmsCapabilityObject : null;
@@ -71,7 +72,7 @@ WMSCapabilities.prototype.readFromNode = function(node) {
  * @return {Object|undefined} Attribution object.
  */
 WMSCapabilities.readAttribution_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
 };
 
@@ -110,7 +111,7 @@ WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
  * @return {ol.Extent|undefined} Bounding box object.
  */
 WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
-  const geographicBoundingBox = _ol_xml_.pushParseAndPop(
+  const geographicBoundingBox = pushParseAndPop(
     {},
     WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
     node, objectStack);
@@ -143,7 +144,7 @@ WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
  * @return {Object|undefined} Capability object.
  */
 WMSCapabilities.readCapability_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
 };
 
@@ -155,7 +156,7 @@ WMSCapabilities.readCapability_ = function(node, objectStack) {
  * @return {Object|undefined} Service object.
  */
 WMSCapabilities.readService_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
 };
 
@@ -167,7 +168,7 @@ WMSCapabilities.readService_ = function(node, objectStack) {
  * @return {Object|undefined} Contact information object.
  */
 WMSCapabilities.readContactInformation_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
     node, objectStack);
 };
@@ -180,7 +181,7 @@ WMSCapabilities.readContactInformation_ = function(node, objectStack) {
  * @return {Object|undefined} Contact person object.
  */
 WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.CONTACT_PERSON_PARSERS_,
     node, objectStack);
 };
@@ -193,7 +194,7 @@ WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
  * @return {Object|undefined} Contact address object.
  */
 WMSCapabilities.readContactAddress_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
     node, objectStack);
 };
@@ -206,7 +207,7 @@ WMSCapabilities.readContactAddress_ = function(node, objectStack) {
  * @return {Array.<string>|undefined} Format array.
  */
 WMSCapabilities.readException_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     [], WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
 };
 
@@ -218,7 +219,7 @@ WMSCapabilities.readException_ = function(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 };
 
@@ -233,7 +234,7 @@ WMSCapabilities.readLayer_ = function(node, objectStack) {
   const parentLayerObject = /**  @type {Object.<string,*>} */
         (objectStack[objectStack.length - 1]);
 
-  const layerObject = _ol_xml_.pushParseAndPop(
+  const layerObject = pushParseAndPop(
     {}, WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 
   if (!layerObject) {
@@ -332,7 +333,7 @@ WMSCapabilities.readDimension_ = function(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
     node, objectStack);
 };
@@ -345,7 +346,7 @@ WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
  * @return {Object|undefined} Request object.
  */
 WMSCapabilities.readRequest_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
 };
 
@@ -357,7 +358,7 @@ WMSCapabilities.readRequest_ = function(node, objectStack) {
  * @return {Object|undefined} DCP type object.
  */
 WMSCapabilities.readDCPType_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
 };
 
@@ -369,7 +370,7 @@ WMSCapabilities.readDCPType_ = function(node, objectStack) {
  * @return {Object|undefined} HTTP object.
  */
 WMSCapabilities.readHTTP_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.HTTP_PARSERS_, node, objectStack);
 };
 
@@ -381,7 +382,7 @@ WMSCapabilities.readHTTP_ = function(node, objectStack) {
  * @return {Object|undefined} Operation type object.
  */
 WMSCapabilities.readOperationType_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
 };
 
@@ -448,7 +449,7 @@ WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
  * @return {Object|undefined} Style object.
  */
 WMSCapabilities.readStyle_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     {}, WMSCapabilities.STYLE_PARSERS_, node, objectStack);
 };
 
@@ -460,7 +461,7 @@ WMSCapabilities.readStyle_ = function(node, objectStack) {
  * @return {Array.<string>|undefined} Keyword list.
  */
 WMSCapabilities.readKeywordList_ = function(node, objectStack) {
-  return _ol_xml_.pushParseAndPop(
+  return pushParseAndPop(
     [], WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
 };
 
@@ -481,11 +482,11 @@ WMSCapabilities.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Service': _ol_xml_.makeObjectPropertySetter(
+    'Service': makeObjectPropertySetter(
       WMSCapabilities.readService_),
-    'Capability': _ol_xml_.makeObjectPropertySetter(
+    'Capability': makeObjectPropertySetter(
       WMSCapabilities.readCapability_)
   });
 
@@ -495,13 +496,13 @@ WMSCapabilities.PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.CAPABILITY_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.CAPABILITY_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Request': _ol_xml_.makeObjectPropertySetter(
+    'Request': makeObjectPropertySetter(
       WMSCapabilities.readRequest_),
-    'Exception': _ol_xml_.makeObjectPropertySetter(
+    'Exception': makeObjectPropertySetter(
       WMSCapabilities.readException_),
-    'Layer': _ol_xml_.makeObjectPropertySetter(
+    'Layer': makeObjectPropertySetter(
       WMSCapabilities.readCapabilityLayer_)
   });
 
@@ -511,25 +512,25 @@ WMSCapabilities.CAPABILITY_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.SERVICE_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.SERVICE_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'KeywordList': _ol_xml_.makeObjectPropertySetter(
+    'Name': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'KeywordList': makeObjectPropertySetter(
       WMSCapabilities.readKeywordList_),
-    'OnlineResource': _ol_xml_.makeObjectPropertySetter(
+    'OnlineResource': makeObjectPropertySetter(
       XLink.readHref),
-    'ContactInformation': _ol_xml_.makeObjectPropertySetter(
+    'ContactInformation': makeObjectPropertySetter(
       WMSCapabilities.readContactInformation_),
-    'Fees': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'AccessConstraints': _ol_xml_.makeObjectPropertySetter(
+    'Fees': makeObjectPropertySetter(XSD.readString),
+    'AccessConstraints': makeObjectPropertySetter(
       XSD.readString),
-    'LayerLimit': _ol_xml_.makeObjectPropertySetter(
+    'LayerLimit': makeObjectPropertySetter(
       XSD.readNonNegativeInteger),
-    'MaxWidth': _ol_xml_.makeObjectPropertySetter(
+    'MaxWidth': makeObjectPropertySetter(
       XSD.readNonNegativeInteger),
-    'MaxHeight': _ol_xml_.makeObjectPropertySetter(
+    'MaxHeight': makeObjectPropertySetter(
       XSD.readNonNegativeInteger)
   });
 
@@ -539,19 +540,19 @@ WMSCapabilities.SERVICE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'ContactPersonPrimary': _ol_xml_.makeObjectPropertySetter(
+    'ContactPersonPrimary': makeObjectPropertySetter(
       WMSCapabilities.readContactPersonPrimary_),
-    'ContactPosition': _ol_xml_.makeObjectPropertySetter(
+    'ContactPosition': makeObjectPropertySetter(
       XSD.readString),
-    'ContactAddress': _ol_xml_.makeObjectPropertySetter(
+    'ContactAddress': makeObjectPropertySetter(
       WMSCapabilities.readContactAddress_),
-    'ContactVoiceTelephone': _ol_xml_.makeObjectPropertySetter(
+    'ContactVoiceTelephone': makeObjectPropertySetter(
       XSD.readString),
-    'ContactFacsimileTelephone': _ol_xml_.makeObjectPropertySetter(
+    'ContactFacsimileTelephone': makeObjectPropertySetter(
       XSD.readString),
-    'ContactElectronicMailAddress': _ol_xml_.makeObjectPropertySetter(
+    'ContactElectronicMailAddress': makeObjectPropertySetter(
       XSD.readString)
   });
 
@@ -561,11 +562,11 @@ WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.CONTACT_PERSON_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.CONTACT_PERSON_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'ContactPerson': _ol_xml_.makeObjectPropertySetter(
+    'ContactPerson': makeObjectPropertySetter(
       XSD.readString),
-    'ContactOrganization': _ol_xml_.makeObjectPropertySetter(
+    'ContactOrganization': makeObjectPropertySetter(
       XSD.readString)
   });
 
@@ -575,15 +576,15 @@ WMSCapabilities.CONTACT_PERSON_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'AddressType': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Address': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'City': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'StateOrProvince': _ol_xml_.makeObjectPropertySetter(
+    'AddressType': makeObjectPropertySetter(XSD.readString),
+    'Address': makeObjectPropertySetter(XSD.readString),
+    'City': makeObjectPropertySetter(XSD.readString),
+    'StateOrProvince': makeObjectPropertySetter(
       XSD.readString),
-    'PostCode': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Country': _ol_xml_.makeObjectPropertySetter(XSD.readString)
+    'PostCode': makeObjectPropertySetter(XSD.readString),
+    'Country': makeObjectPropertySetter(XSD.readString)
   });
 
 
@@ -592,9 +593,9 @@ WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.EXCEPTION_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.EXCEPTION_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Format': _ol_xml_.makeArrayPusher(XSD.readString)
+    'Format': makeArrayPusher(XSD.readString)
   });
 
 
@@ -603,38 +604,38 @@ WMSCapabilities.EXCEPTION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.LAYER_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'KeywordList': _ol_xml_.makeObjectPropertySetter(
+    'Name': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'KeywordList': makeObjectPropertySetter(
       WMSCapabilities.readKeywordList_),
-    'CRS': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
-    'EX_GeographicBoundingBox': _ol_xml_.makeObjectPropertySetter(
+    'CRS': makeObjectPropertyPusher(XSD.readString),
+    'EX_GeographicBoundingBox': makeObjectPropertySetter(
       WMSCapabilities.readEXGeographicBoundingBox_),
-    'BoundingBox': _ol_xml_.makeObjectPropertyPusher(
+    'BoundingBox': makeObjectPropertyPusher(
       WMSCapabilities.readBoundingBox_),
-    'Dimension': _ol_xml_.makeObjectPropertyPusher(
+    'Dimension': makeObjectPropertyPusher(
       WMSCapabilities.readDimension_),
-    'Attribution': _ol_xml_.makeObjectPropertySetter(
+    'Attribution': makeObjectPropertySetter(
       WMSCapabilities.readAttribution_),
-    'AuthorityURL': _ol_xml_.makeObjectPropertyPusher(
+    'AuthorityURL': makeObjectPropertyPusher(
       WMSCapabilities.readAuthorityURL_),
-    'Identifier': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
-    'MetadataURL': _ol_xml_.makeObjectPropertyPusher(
+    'Identifier': makeObjectPropertyPusher(XSD.readString),
+    'MetadataURL': makeObjectPropertyPusher(
       WMSCapabilities.readMetadataURL_),
-    'DataURL': _ol_xml_.makeObjectPropertyPusher(
+    'DataURL': makeObjectPropertyPusher(
       WMSCapabilities.readFormatOnlineresource_),
-    'FeatureListURL': _ol_xml_.makeObjectPropertyPusher(
+    'FeatureListURL': makeObjectPropertyPusher(
       WMSCapabilities.readFormatOnlineresource_),
-    'Style': _ol_xml_.makeObjectPropertyPusher(
+    'Style': makeObjectPropertyPusher(
       WMSCapabilities.readStyle_),
-    'MinScaleDenominator': _ol_xml_.makeObjectPropertySetter(
+    'MinScaleDenominator': makeObjectPropertySetter(
       XSD.readDecimal),
-    'MaxScaleDenominator': _ol_xml_.makeObjectPropertySetter(
+    'MaxScaleDenominator': makeObjectPropertySetter(
       XSD.readDecimal),
-    'Layer': _ol_xml_.makeObjectPropertyPusher(
+    'Layer': makeObjectPropertyPusher(
       WMSCapabilities.readLayer_)
   });
 
@@ -644,12 +645,12 @@ WMSCapabilities.LAYER_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.ATTRIBUTION_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'OnlineResource': _ol_xml_.makeObjectPropertySetter(
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'OnlineResource': makeObjectPropertySetter(
       XLink.readHref),
-    'LogoURL': _ol_xml_.makeObjectPropertySetter(
+    'LogoURL': makeObjectPropertySetter(
       WMSCapabilities.readSizedFormatOnlineresource_)
   });
 
@@ -660,14 +661,14 @@ WMSCapabilities.ATTRIBUTION_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
-    _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
-      'westBoundLongitude': _ol_xml_.makeObjectPropertySetter(
+    makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
+      'westBoundLongitude': makeObjectPropertySetter(
         XSD.readDecimal),
-      'eastBoundLongitude': _ol_xml_.makeObjectPropertySetter(
+      'eastBoundLongitude': makeObjectPropertySetter(
         XSD.readDecimal),
-      'southBoundLatitude': _ol_xml_.makeObjectPropertySetter(
+      'southBoundLatitude': makeObjectPropertySetter(
         XSD.readDecimal),
-      'northBoundLatitude': _ol_xml_.makeObjectPropertySetter(
+      'northBoundLatitude': makeObjectPropertySetter(
         XSD.readDecimal)
     });
 
@@ -677,13 +678,13 @@ WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.REQUEST_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.REQUEST_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'GetCapabilities': _ol_xml_.makeObjectPropertySetter(
+    'GetCapabilities': makeObjectPropertySetter(
       WMSCapabilities.readOperationType_),
-    'GetMap': _ol_xml_.makeObjectPropertySetter(
+    'GetMap': makeObjectPropertySetter(
       WMSCapabilities.readOperationType_),
-    'GetFeatureInfo': _ol_xml_.makeObjectPropertySetter(
+    'GetFeatureInfo': makeObjectPropertySetter(
       WMSCapabilities.readOperationType_)
   });
 
@@ -693,10 +694,10 @@ WMSCapabilities.REQUEST_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.OPERATIONTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.OPERATIONTYPE_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Format': _ol_xml_.makeObjectPropertyPusher(XSD.readString),
-    'DCPType': _ol_xml_.makeObjectPropertyPusher(
+    'Format': makeObjectPropertyPusher(XSD.readString),
+    'DCPType': makeObjectPropertyPusher(
       WMSCapabilities.readDCPType_)
   });
 
@@ -706,9 +707,9 @@ WMSCapabilities.OPERATIONTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.DCPTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.DCPTYPE_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'HTTP': _ol_xml_.makeObjectPropertySetter(
+    'HTTP': makeObjectPropertySetter(
       WMSCapabilities.readHTTP_)
   });
 
@@ -718,11 +719,11 @@ WMSCapabilities.DCPTYPE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.HTTP_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Get': _ol_xml_.makeObjectPropertySetter(
+    'Get': makeObjectPropertySetter(
       WMSCapabilities.readFormatOnlineresource_),
-    'Post': _ol_xml_.makeObjectPropertySetter(
+    'Post': makeObjectPropertySetter(
       WMSCapabilities.readFormatOnlineresource_)
   });
 
@@ -732,16 +733,16 @@ WMSCapabilities.HTTP_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.STYLE_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Title': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'Abstract': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'LegendURL': _ol_xml_.makeObjectPropertyPusher(
+    'Name': makeObjectPropertySetter(XSD.readString),
+    'Title': makeObjectPropertySetter(XSD.readString),
+    'Abstract': makeObjectPropertySetter(XSD.readString),
+    'LegendURL': makeObjectPropertyPusher(
       WMSCapabilities.readSizedFormatOnlineresource_),
-    'StyleSheetURL': _ol_xml_.makeObjectPropertySetter(
+    'StyleSheetURL': makeObjectPropertySetter(
       WMSCapabilities.readFormatOnlineresource_),
-    'StyleURL': _ol_xml_.makeObjectPropertySetter(
+    'StyleURL': makeObjectPropertySetter(
       WMSCapabilities.readFormatOnlineresource_)
   });
 
@@ -752,9 +753,9 @@ WMSCapabilities.STYLE_PARSERS_ = _ol_xml_.makeStructureNS(
  * @private
  */
 WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
-    _ol_xml_.makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-      'OnlineResource': _ol_xml_.makeObjectPropertySetter(
+    makeStructureNS(WMSCapabilities.NAMESPACE_URIS_, {
+      'Format': makeObjectPropertySetter(XSD.readString),
+      'OnlineResource': makeObjectPropertySetter(
         XLink.readHref)
     });
 
@@ -764,8 +765,8 @@ WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-WMSCapabilities.KEYWORDLIST_PARSERS_ = _ol_xml_.makeStructureNS(
+WMSCapabilities.KEYWORDLIST_PARSERS_ = makeStructureNS(
   WMSCapabilities.NAMESPACE_URIS_, {
-    'Keyword': _ol_xml_.makeArrayPusher(XSD.readString)
+    'Keyword': makeArrayPusher(XSD.readString)
   });
 export default WMSCapabilities;

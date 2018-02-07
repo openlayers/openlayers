@@ -1,7 +1,7 @@
 /**
  * @module ol/format/XML
  */
-import _ol_xml_ from '../xml.js';
+import {isDocument, isNode, parse} from '../xml.js';
 
 /**
  * @classdesc
@@ -20,12 +20,12 @@ const XML = function() {
  * @return {Object} The parsed result.
  */
 XML.prototype.read = function(source) {
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     return this.readFromDocument(/** @type {Document} */ (source));
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     return this.readFromNode(/** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     return this.readFromDocument(doc);
   } else {
     return null;

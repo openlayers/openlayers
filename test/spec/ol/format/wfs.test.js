@@ -26,7 +26,7 @@ import MultiPolygon from '../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../src/ol/geom/Polygon.js';
 import {addCommon, clearAllProjections, transform} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
-import _ol_xml_ from '../../../../src/ol/xml.js';
+import {parse} from '../../../../src/ol/xml.js';
 
 describe('ol.format.WFS', function() {
 
@@ -251,7 +251,7 @@ describe('ol.format.WFS', function() {
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         propertyNames: ['STATE_NAME', 'STATE_FIPS', 'STATE_ABBR']
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
 
     it('creates paging headers', function() {
@@ -276,7 +276,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'topp',
         featureTypes: ['states']
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
 
     it('creates a BBOX filter', function() {
@@ -303,7 +303,7 @@ describe('ol.format.WFS', function() {
         geometryName: 'the_geom',
         bbox: [1, 2, 3, 4]
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates a property filter', function() {
@@ -325,7 +325,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: equalToFilter('name', 'New York', false)
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates two property filters', function() {
@@ -355,7 +355,7 @@ describe('ol.format.WFS', function() {
           equalToFilter('name', 'New York'),
           equalToFilter('area', 1234))
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates greater/less than property filters', function() {
@@ -404,7 +404,7 @@ describe('ol.format.WFS', function() {
           )
         )
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates isBetween property filter', function() {
@@ -427,7 +427,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: betweenFilter('area', 100, 1000)
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates isNull property filter', function() {
@@ -448,7 +448,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: isNullFilter('area')
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates isLike property filter', function() {
@@ -470,7 +470,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: likeFilter('name', 'New*')
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates isLike property filter with arguments', function() {
@@ -492,7 +492,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: likeFilter('name', 'New*', '*', '.', '!', false)
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates a Not filter', function() {
@@ -516,7 +516,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: notFilter(equalToFilter('name', 'New York'))
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates an AND filter', function() {
@@ -556,7 +556,7 @@ describe('ol.format.WFS', function() {
           greaterThanFilter('population', 2000000)
         )
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates a contains filter', function() {
@@ -593,7 +593,7 @@ describe('ol.format.WFS', function() {
           ]])
         )
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates a intersects filter', function() {
@@ -630,7 +630,7 @@ describe('ol.format.WFS', function() {
           ]])
         )
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates a within filter', function() {
@@ -667,7 +667,7 @@ describe('ol.format.WFS', function() {
           ]])
         )
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
     it('creates During property filter', function() {
@@ -698,7 +698,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: duringFilter('date_prop', '2010-01-20T00:00:00Z', '2012-12-31T00:00:00Z')
       });
-      expect(serialized.firstElementChild).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized.firstElementChild).to.xmleql(parse(text));
     });
 
   });
@@ -714,7 +714,7 @@ describe('ol.format.WFS', function() {
           'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd"/>';
       const serialized = new WFS().writeTransaction(null, null, null,
         {handle: 'handle_t'});
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
 
   });
@@ -745,7 +745,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'feature',
         gmlOptions: {multiCurve: true, srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -776,7 +776,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
 
     it('creates the correct update if geometry name is alias', function() {
@@ -796,7 +796,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
 
   });
@@ -882,7 +882,7 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'foo',
         gmlOptions: {srsName: 'EPSG:900913'}
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -924,7 +924,7 @@ describe('ol.format.WFS', function() {
         featureType: 'states',
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
 
   });
@@ -951,7 +951,7 @@ describe('ol.format.WFS', function() {
           value: 'Another native line goes here'
         }]
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -996,7 +996,7 @@ describe('ol.format.WFS', function() {
         version: '1.0.0'
       });
 
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -1038,7 +1038,7 @@ describe('ol.format.WFS', function() {
         featureType: 'topp:states',
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -1081,7 +1081,7 @@ describe('ol.format.WFS', function() {
         version: '1.0.0'
       });
 
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -1121,7 +1121,7 @@ describe('ol.format.WFS', function() {
         hasZ: true,
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -1141,7 +1141,7 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states', 'cities'],
         featurePrefix: 'topp'
       });
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 
@@ -1320,7 +1320,7 @@ describe('ol.format.WFS', function() {
           equalToFilter('waterway', 'riverbank')
         )
       );
-      expect(serialized).to.xmleql(_ol_xml_.parse(text));
+      expect(serialized).to.xmleql(parse(text));
     });
   });
 

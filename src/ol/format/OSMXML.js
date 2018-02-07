@@ -13,7 +13,7 @@ import Point from '../geom/Point.js';
 import Polygon from '../geom/Polygon.js';
 import {isEmpty} from '../obj.js';
 import {get as getProjection} from '../proj.js';
-import _ol_xml_ from '../xml.js';
+import {pushParseAndPop, makeStructureNS} from '../xml.js';
 
 /**
  * @classdesc
@@ -52,7 +52,7 @@ OSMXML.readNode_ = function(node, objectStack) {
   ];
   state.nodes[id] = coordinates;
 
-  const values = _ol_xml_.pushParseAndPop({
+  const values = pushParseAndPop({
     tags: {}
   }, OSMXML.NODE_PARSERS_, node, objectStack);
   if (!isEmpty(values.tags)) {
@@ -73,7 +73,7 @@ OSMXML.readNode_ = function(node, objectStack) {
  */
 OSMXML.readWay_ = function(node, objectStack) {
   const id = node.getAttribute('id');
-  const values = _ol_xml_.pushParseAndPop({
+  const values = pushParseAndPop({
     id: id,
     ndrefs: [],
     tags: {}
@@ -120,7 +120,7 @@ OSMXML.NAMESPACE_URIS_ = [
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OSMXML.WAY_PARSERS_ = _ol_xml_.makeStructureNS(
+OSMXML.WAY_PARSERS_ = makeStructureNS(
   OSMXML.NAMESPACE_URIS_, {
     'nd': OSMXML.readNd_,
     'tag': OSMXML.readTag_
@@ -132,7 +132,7 @@ OSMXML.WAY_PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OSMXML.PARSERS_ = _ol_xml_.makeStructureNS(
+OSMXML.PARSERS_ = makeStructureNS(
   OSMXML.NAMESPACE_URIS_, {
     'node': OSMXML.readNode_,
     'way': OSMXML.readWay_
@@ -144,7 +144,7 @@ OSMXML.PARSERS_ = _ol_xml_.makeStructureNS(
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-OSMXML.NODE_PARSERS_ = _ol_xml_.makeStructureNS(
+OSMXML.NODE_PARSERS_ = makeStructureNS(
   OSMXML.NAMESPACE_URIS_, {
     'tag': OSMXML.readTag_
   });
@@ -168,7 +168,7 @@ OSMXML.prototype.readFeatures;
 OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
   const options = this.getReadOptions(node, opt_options);
   if (node.localName == 'osm') {
-    const state = _ol_xml_.pushParseAndPop({
+    const state = pushParseAndPop({
       nodes: {},
       ways: [],
       features: []

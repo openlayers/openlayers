@@ -2,7 +2,6 @@
  * @module ol/xml
  */
 import {extend} from './array.js';
-const _ol_xml_ = {};
 
 
 /**
@@ -12,7 +11,7 @@ const _ol_xml_ = {};
  * @const
  * @type {Document}
  */
-_ol_xml_.DOCUMENT = document.implementation.createDocument('', '', null);
+export const DOCUMENT = document.implementation.createDocument('', '', null);
 
 
 /**
@@ -20,9 +19,9 @@ _ol_xml_.DOCUMENT = document.implementation.createDocument('', '', null);
  * @param {string} qualifiedName Qualified name.
  * @return {Node} Node.
  */
-_ol_xml_.createElementNS = function(namespaceURI, qualifiedName) {
-  return _ol_xml_.DOCUMENT.createElementNS(namespaceURI, qualifiedName);
-};
+export function createElementNS(namespaceURI, qualifiedName) {
+  return DOCUMENT.createElementNS(namespaceURI, qualifiedName);
+}
 
 
 /**
@@ -33,9 +32,9 @@ _ol_xml_.createElementNS = function(namespaceURI, qualifiedName) {
  * @return {string} All text content.
  * @api
  */
-_ol_xml_.getAllTextContent = function(node, normalizeWhitespace) {
-  return _ol_xml_.getAllTextContent_(node, normalizeWhitespace, []).join('');
-};
+export function getAllTextContent(node, normalizeWhitespace) {
+  return getAllTextContent_(node, normalizeWhitespace, []).join('');
+}
 
 
 /**
@@ -47,7 +46,7 @@ _ol_xml_.getAllTextContent = function(node, normalizeWhitespace) {
  * @private
  * @return {Array.<string>} Accumulator.
  */
-_ol_xml_.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
+export function getAllTextContent_(node, normalizeWhitespace, accumulator) {
   if (node.nodeType == Node.CDATA_SECTION_NODE ||
       node.nodeType == Node.TEXT_NODE) {
     if (normalizeWhitespace) {
@@ -58,29 +57,29 @@ _ol_xml_.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   } else {
     let n;
     for (n = node.firstChild; n; n = n.nextSibling) {
-      _ol_xml_.getAllTextContent_(n, normalizeWhitespace, accumulator);
+      getAllTextContent_(n, normalizeWhitespace, accumulator);
     }
   }
   return accumulator;
-};
+}
 
 
 /**
  * @param {?} value Value.
  * @return {boolean} Is document.
  */
-_ol_xml_.isDocument = function(value) {
+export function isDocument(value) {
   return value instanceof Document;
-};
+}
 
 
 /**
  * @param {?} value Value.
  * @return {boolean} Is node.
  */
-_ol_xml_.isNode = function(value) {
+export function isNode(value) {
   return value instanceof Node;
-};
+}
 
 
 /**
@@ -89,9 +88,9 @@ _ol_xml_.isNode = function(value) {
  * @param {string} name Attribute name.
  * @return {string} Value
  */
-_ol_xml_.getAttributeNS = function(node, namespaceURI, name) {
+export function getAttributeNS(node, namespaceURI, name) {
   return node.getAttributeNS(namespaceURI, name) || '';
-};
+}
 
 
 /**
@@ -100,9 +99,9 @@ _ol_xml_.getAttributeNS = function(node, namespaceURI, name) {
  * @param {string} name Attribute name.
  * @param {string|number} value Value.
  */
-_ol_xml_.setAttributeNS = function(node, namespaceURI, name, value) {
+export function setAttributeNS(node, namespaceURI, name, value) {
   node.setAttributeNS(namespaceURI, name, value);
-};
+}
 
 
 /**
@@ -111,9 +110,9 @@ _ol_xml_.setAttributeNS = function(node, namespaceURI, name, value) {
  * @return {Document} Document.
  * @api
  */
-_ol_xml_.parse = function(xml) {
+export function parse(xml) {
   return new DOMParser().parseFromString(xml, 'application/xml');
-};
+}
 
 
 /**
@@ -125,7 +124,7 @@ _ol_xml_.parse = function(xml) {
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-_ol_xml_.makeArrayExtender = function(valueReader, opt_this) {
+export function makeArrayExtender(valueReader, opt_this) {
   return (
     /**
      * @param {Node} node Node.
@@ -140,7 +139,7 @@ _ol_xml_.makeArrayExtender = function(valueReader, opt_this) {
       }
     }
   );
-};
+}
 
 
 /**
@@ -151,7 +150,7 @@ _ol_xml_.makeArrayExtender = function(valueReader, opt_this) {
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-_ol_xml_.makeArrayPusher = function(valueReader, opt_this) {
+export function makeArrayPusher(valueReader, opt_this) {
   return (
     /**
      * @param {Node} node Node.
@@ -165,7 +164,7 @@ _ol_xml_.makeArrayPusher = function(valueReader, opt_this) {
         array.push(value);
       }
     });
-};
+}
 
 
 /**
@@ -176,7 +175,7 @@ _ol_xml_.makeArrayPusher = function(valueReader, opt_this) {
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-_ol_xml_.makeReplacer = function(valueReader, opt_this) {
+export function makeReplacer(valueReader, opt_this) {
   return (
     /**
      * @param {Node} node Node.
@@ -189,7 +188,7 @@ _ol_xml_.makeReplacer = function(valueReader, opt_this) {
         objectStack[objectStack.length - 1] = value;
       }
     });
-};
+}
 
 
 /**
@@ -201,7 +200,7 @@ _ol_xml_.makeReplacer = function(valueReader, opt_this) {
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-_ol_xml_.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
+export function makeObjectPropertyPusher(valueReader, opt_property, opt_this) {
   return (
     /**
      * @param {Node} node Node.
@@ -224,7 +223,7 @@ _ol_xml_.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this
         array.push(value);
       }
     });
-};
+}
 
 
 /**
@@ -235,7 +234,7 @@ _ol_xml_.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-_ol_xml_.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
+export function makeObjectPropertySetter(valueReader, opt_property, opt_this) {
   return (
     /**
      * @param {Node} node Node.
@@ -252,7 +251,7 @@ _ol_xml_.makeObjectPropertySetter = function(valueReader, opt_property, opt_this
         object[property] = value;
       }
     });
-};
+}
 
 
 /**
@@ -265,7 +264,7 @@ _ol_xml_.makeObjectPropertySetter = function(valueReader, opt_property, opt_this
  * @return {ol.XmlSerializer} Serializer.
  * @template T, V
  */
-_ol_xml_.makeChildAppender = function(nodeWriter, opt_this) {
+export function makeChildAppender(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
     nodeWriter.call(opt_this !== undefined ? opt_this : this,
       node, value, objectStack);
@@ -273,7 +272,7 @@ _ol_xml_.makeChildAppender = function(nodeWriter, opt_this) {
     const parentNode = parent.node;
     parentNode.appendChild(node);
   };
-};
+}
 
 
 /**
@@ -289,7 +288,7 @@ _ol_xml_.makeChildAppender = function(nodeWriter, opt_this) {
  * @return {ol.XmlSerializer} Serializer.
  * @template T, V
  */
-_ol_xml_.makeArraySerializer = function(nodeWriter, opt_this) {
+export function makeArraySerializer(nodeWriter, opt_this) {
   let serializersNS, nodeFactory;
   return function(node, value, objectStack) {
     if (serializersNS === undefined) {
@@ -297,11 +296,11 @@ _ol_xml_.makeArraySerializer = function(nodeWriter, opt_this) {
       const serializers = {};
       serializers[node.localName] = nodeWriter;
       serializersNS[node.namespaceURI] = serializers;
-      nodeFactory = _ol_xml_.makeSimpleNodeFactory(node.localName);
+      nodeFactory = makeSimpleNodeFactory(node.localName);
     }
-    _ol_xml_.serialize(serializersNS, nodeFactory, value, objectStack);
+    serialize(serializersNS, nodeFactory, value, objectStack);
   };
-};
+}
 
 
 /**
@@ -317,7 +316,7 @@ _ol_xml_.makeArraySerializer = function(nodeWriter, opt_this) {
  *     be used.
  * @return {function(*, Array.<*>, string=): (Node|undefined)} Node factory.
  */
-_ol_xml_.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
+export function makeSimpleNodeFactory(opt_nodeName, opt_namespaceURI) {
   const fixedNodeName = opt_nodeName;
   return (
     /**
@@ -337,10 +336,10 @@ _ol_xml_.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
       if (opt_namespaceURI === undefined) {
         namespaceURI = node.namespaceURI;
       }
-      return _ol_xml_.createElementNS(namespaceURI, /** @type {string} */ (nodeName));
+      return createElementNS(namespaceURI, /** @type {string} */ (nodeName));
     }
   );
-};
+}
 
 
 /**
@@ -350,7 +349,7 @@ _ol_xml_.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
  * @const
  * @type {function(*, Array.<*>, string=): (Node|undefined)}
  */
-_ol_xml_.OBJECT_PROPERTY_NODE_FACTORY = _ol_xml_.makeSimpleNodeFactory();
+export const OBJECT_PROPERTY_NODE_FACTORY = makeSimpleNodeFactory();
 
 
 /**
@@ -365,14 +364,14 @@ _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY = _ol_xml_.makeSimpleNodeFactory();
  *     present in `object` will be `undefined` in the resulting array.
  * @template V
  */
-_ol_xml_.makeSequence = function(object, orderedKeys) {
+export function makeSequence(object, orderedKeys) {
   const length = orderedKeys.length;
   const sequence = new Array(length);
   for (let i = 0; i < length; ++i) {
     sequence[i] = object[orderedKeys[i]];
   }
   return sequence;
-};
+}
 
 
 /**
@@ -385,7 +384,7 @@ _ol_xml_.makeSequence = function(object, orderedKeys) {
  * @return {Object.<string, T>} Namespaced structure.
  * @template T
  */
-_ol_xml_.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
+export function makeStructureNS(namespaceURIs, structure, opt_structureNS) {
   /**
    * @type {Object.<string, *>}
    */
@@ -395,7 +394,7 @@ _ol_xml_.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
     structureNS[namespaceURIs[i]] = structure;
   }
   return structureNS;
-};
+}
 
 
 /**
@@ -406,7 +405,7 @@ _ol_xml_.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
  * @param {Array.<*>} objectStack Object stack.
  * @param {*=} opt_this The object to use as `this`.
  */
-_ol_xml_.parseNode = function(parsersNS, node, objectStack, opt_this) {
+export function parseNode(parsersNS, node, objectStack, opt_this) {
   let n;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     const parsers = parsersNS[n.namespaceURI];
@@ -417,7 +416,7 @@ _ol_xml_.parseNode = function(parsersNS, node, objectStack, opt_this) {
       }
     }
   }
-};
+}
 
 
 /**
@@ -431,12 +430,12 @@ _ol_xml_.parseNode = function(parsersNS, node, objectStack, opt_this) {
  * @return {T} Object.
  * @template T
  */
-_ol_xml_.pushParseAndPop = function(
+export function pushParseAndPop(
   object, parsersNS, node, objectStack, opt_this) {
   objectStack.push(object);
-  _ol_xml_.parseNode(parsersNS, node, objectStack, opt_this);
+  parseNode(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();
-};
+}
 
 
 /**
@@ -461,7 +460,7 @@ _ol_xml_.pushParseAndPop = function(
  *     serializers.
  * @template T
  */
-_ol_xml_.serialize = function(
+export function serialize(
   serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
   const length = (opt_keys !== undefined ? opt_keys : values).length;
   let value, node;
@@ -476,7 +475,7 @@ _ol_xml_.serialize = function(
       }
     }
   }
-};
+}
 
 
 /**
@@ -502,11 +501,10 @@ _ol_xml_.serialize = function(
  * @return {O|undefined} Object.
  * @template O, T
  */
-_ol_xml_.pushSerializeAndPop = function(object,
+export function pushSerializeAndPop(object,
   serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
   objectStack.push(object);
-  _ol_xml_.serialize(
+  serialize(
     serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
   return objectStack.pop();
-};
-export default _ol_xml_;
+}

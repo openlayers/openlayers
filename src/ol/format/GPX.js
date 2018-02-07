@@ -12,7 +12,10 @@ import LineString from '../geom/LineString.js';
 import MultiLineString from '../geom/MultiLineString.js';
 import Point from '../geom/Point.js';
 import {get as getProjection} from '../proj.js';
-import _ol_xml_ from '../xml.js';
+import {createElementNS, makeArrayPusher, makeArraySerializer, makeChildAppender,
+  makeObjectPropertySetter, makeSequence, makeSimpleNodeFactory, makeStructureNS,
+  OBJECT_PROPERTY_NODE_FACTORY, parseNode, pushParseAndPop, pushSerializeAndPop,
+  setAttributeNS} from '../xml.js';
 
 /**
  * @classdesc
@@ -78,11 +81,11 @@ const FEATURE_READER = {
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const GPX_PARSERS = _ol_xml_.makeStructureNS(
+const GPX_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'rte': _ol_xml_.makeArrayPusher(readRte),
-    'trk': _ol_xml_.makeArrayPusher(readTrk),
-    'wpt': _ol_xml_.makeArrayPusher(readWpt)
+    'rte': makeArrayPusher(readRte),
+    'trk': makeArrayPusher(readTrk),
+    'wpt': makeArrayPusher(readWpt)
   });
 
 
@@ -90,10 +93,10 @@ const GPX_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const LINK_PARSERS = _ol_xml_.makeStructureNS(
+const LINK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'text': _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkText'),
-    'type': _ol_xml_.makeObjectPropertySetter(XSD.readString, 'linkType')
+    'text': makeObjectPropertySetter(XSD.readString, 'linkText'),
+    'type': makeObjectPropertySetter(XSD.readString, 'linkType')
   });
 
 
@@ -101,16 +104,16 @@ const LINK_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const RTE_PARSERS = _ol_xml_.makeStructureNS(
+const RTE_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'name': makeObjectPropertySetter(XSD.readString),
+    'cmt': makeObjectPropertySetter(XSD.readString),
+    'desc': makeObjectPropertySetter(XSD.readString),
+    'src': makeObjectPropertySetter(XSD.readString),
     'link': parseLink,
-    'number': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'number': makeObjectPropertySetter(XSD.readNonNegativeInteger),
     'extensions': parseExtensions,
-    'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'type': makeObjectPropertySetter(XSD.readString),
     'rtept': parseRtePt
   });
 
@@ -119,10 +122,10 @@ const RTE_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const RTEPT_PARSERS = _ol_xml_.makeStructureNS(
+const RTEPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
+    'ele': makeObjectPropertySetter(XSD.readDecimal),
+    'time': makeObjectPropertySetter(XSD.readDateTime)
   });
 
 
@@ -130,15 +133,15 @@ const RTEPT_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const TRK_PARSERS = _ol_xml_.makeStructureNS(
+const TRK_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'name': makeObjectPropertySetter(XSD.readString),
+    'cmt': makeObjectPropertySetter(XSD.readString),
+    'desc': makeObjectPropertySetter(XSD.readString),
+    'src': makeObjectPropertySetter(XSD.readString),
     'link': parseLink,
-    'number': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'number': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'type': makeObjectPropertySetter(XSD.readString),
     'extensions': parseExtensions,
     'trkseg': parseTrkSeg
   });
@@ -148,7 +151,7 @@ const TRK_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const TRKSEG_PARSERS = _ol_xml_.makeStructureNS(
+const TRKSEG_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
     'trkpt': parseTrkPt
   });
@@ -158,10 +161,10 @@ const TRKSEG_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const TRKPT_PARSERS = _ol_xml_.makeStructureNS(
+const TRKPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime)
+    'ele': makeObjectPropertySetter(XSD.readDecimal),
+    'time': makeObjectPropertySetter(XSD.readDateTime)
   });
 
 
@@ -169,26 +172,26 @@ const TRKPT_PARSERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  */
-const WPT_PARSERS = _ol_xml_.makeStructureNS(
+const WPT_PARSERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'time': _ol_xml_.makeObjectPropertySetter(XSD.readDateTime),
-    'magvar': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'geoidheight': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'name': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'cmt': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'desc': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'src': _ol_xml_.makeObjectPropertySetter(XSD.readString),
+    'ele': makeObjectPropertySetter(XSD.readDecimal),
+    'time': makeObjectPropertySetter(XSD.readDateTime),
+    'magvar': makeObjectPropertySetter(XSD.readDecimal),
+    'geoidheight': makeObjectPropertySetter(XSD.readDecimal),
+    'name': makeObjectPropertySetter(XSD.readString),
+    'cmt': makeObjectPropertySetter(XSD.readString),
+    'desc': makeObjectPropertySetter(XSD.readString),
+    'src': makeObjectPropertySetter(XSD.readString),
     'link': parseLink,
-    'sym': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'type': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'fix': _ol_xml_.makeObjectPropertySetter(XSD.readString),
-    'sat': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
-    'hdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'vdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'pdop': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'ageofdgpsdata': _ol_xml_.makeObjectPropertySetter(XSD.readDecimal),
-    'dgpsid': _ol_xml_.makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'sym': makeObjectPropertySetter(XSD.readString),
+    'type': makeObjectPropertySetter(XSD.readString),
+    'fix': makeObjectPropertySetter(XSD.readString),
+    'sat': makeObjectPropertySetter(XSD.readNonNegativeInteger),
+    'hdop': makeObjectPropertySetter(XSD.readDecimal),
+    'vdop': makeObjectPropertySetter(XSD.readDecimal),
+    'pdop': makeObjectPropertySetter(XSD.readDecimal),
+    'ageofdgpsdata': makeObjectPropertySetter(XSD.readDecimal),
+    'dgpsid': makeObjectPropertySetter(XSD.readNonNegativeInteger),
     'extensions': parseExtensions
   });
 
@@ -204,10 +207,10 @@ const LINK_SEQUENCE = ['text', 'type'];
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  */
-const LINK_SERIALIZERS = _ol_xml_.makeStructureNS(
+const LINK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'text': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode)
+    'text': makeChildAppender(XSD.writeStringTextNode),
+    'type': makeChildAppender(XSD.writeStringTextNode)
   });
 
 
@@ -215,7 +218,7 @@ const LINK_SERIALIZERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Array.<string>>}
  */
-const RTE_SEQUENCE = _ol_xml_.makeStructureNS(
+const RTE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'rtept'
   ]);
@@ -225,16 +228,16 @@ const RTE_SEQUENCE = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  */
-const RTE_SERIALIZERS = _ol_xml_.makeStructureNS(
+const RTE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'link': _ol_xml_.makeChildAppender(writeLink),
-    'number': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
-    'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'rtept': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(writeWptType))
+    'name': makeChildAppender(XSD.writeStringTextNode),
+    'cmt': makeChildAppender(XSD.writeStringTextNode),
+    'desc': makeChildAppender(XSD.writeStringTextNode),
+    'src': makeChildAppender(XSD.writeStringTextNode),
+    'link': makeChildAppender(writeLink),
+    'number': makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
+    'type': makeChildAppender(XSD.writeStringTextNode),
+    'rtept': makeArraySerializer(makeChildAppender(writeWptType))
   });
 
 
@@ -242,7 +245,7 @@ const RTE_SERIALIZERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Array.<string>>}
  */
-const RTEPT_TYPE_SEQUENCE = _ol_xml_.makeStructureNS(
+const RTEPT_TYPE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'ele', 'time'
   ]);
@@ -252,7 +255,7 @@ const RTEPT_TYPE_SEQUENCE = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Array.<string>>}
  */
-const TRK_SEQUENCE = _ol_xml_.makeStructureNS(
+const TRK_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'name', 'cmt', 'desc', 'src', 'link', 'number', 'type', 'trkseg'
   ]);
@@ -262,16 +265,16 @@ const TRK_SEQUENCE = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  */
-const TRK_SERIALIZERS = _ol_xml_.makeStructureNS(
+const TRK_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'link': _ol_xml_.makeChildAppender(writeLink),
-    'number': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
-    'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'trkseg': _ol_xml_.makeArraySerializer(_ol_xml_.makeChildAppender(writeTrkSeg))
+    'name': makeChildAppender(XSD.writeStringTextNode),
+    'cmt': makeChildAppender(XSD.writeStringTextNode),
+    'desc': makeChildAppender(XSD.writeStringTextNode),
+    'src': makeChildAppender(XSD.writeStringTextNode),
+    'link': makeChildAppender(writeLink),
+    'number': makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
+    'type': makeChildAppender(XSD.writeStringTextNode),
+    'trkseg': makeArraySerializer(makeChildAppender(writeTrkSeg))
   });
 
 
@@ -279,16 +282,16 @@ const TRK_SERIALIZERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {function(*, Array.<*>, string=): (Node|undefined)}
  */
-const TRKSEG_NODE_FACTORY = _ol_xml_.makeSimpleNodeFactory('trkpt');
+const TRKSEG_NODE_FACTORY = makeSimpleNodeFactory('trkpt');
 
 
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  */
-const TRKSEG_SERIALIZERS = _ol_xml_.makeStructureNS(
+const TRKSEG_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'trkpt': _ol_xml_.makeChildAppender(writeWptType)
+    'trkpt': makeChildAppender(writeWptType)
   });
 
 
@@ -296,7 +299,7 @@ const TRKSEG_SERIALIZERS = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Array.<string>>}
  */
-const WPT_TYPE_SEQUENCE = _ol_xml_.makeStructureNS(
+const WPT_TYPE_SEQUENCE = makeStructureNS(
   NAMESPACE_URIS, [
     'ele', 'time', 'magvar', 'geoidheight', 'name', 'cmt', 'desc', 'src',
     'link', 'sym', 'type', 'fix', 'sat', 'hdop', 'vdop', 'pdop',
@@ -308,26 +311,26 @@ const WPT_TYPE_SEQUENCE = _ol_xml_.makeStructureNS(
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  */
-const WPT_TYPE_SERIALIZERS = _ol_xml_.makeStructureNS(
+const WPT_TYPE_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'ele': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'time': _ol_xml_.makeChildAppender(XSD.writeDateTimeTextNode),
-    'magvar': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'geoidheight': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'name': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'cmt': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'desc': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'src': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'link': _ol_xml_.makeChildAppender(writeLink),
-    'sym': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'type': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'fix': _ol_xml_.makeChildAppender(XSD.writeStringTextNode),
-    'sat': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
-    'hdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'vdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'pdop': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'ageofdgpsdata': _ol_xml_.makeChildAppender(XSD.writeDecimalTextNode),
-    'dgpsid': _ol_xml_.makeChildAppender(XSD.writeNonNegativeIntegerTextNode)
+    'ele': makeChildAppender(XSD.writeDecimalTextNode),
+    'time': makeChildAppender(XSD.writeDateTimeTextNode),
+    'magvar': makeChildAppender(XSD.writeDecimalTextNode),
+    'geoidheight': makeChildAppender(XSD.writeDecimalTextNode),
+    'name': makeChildAppender(XSD.writeStringTextNode),
+    'cmt': makeChildAppender(XSD.writeStringTextNode),
+    'desc': makeChildAppender(XSD.writeStringTextNode),
+    'src': makeChildAppender(XSD.writeStringTextNode),
+    'link': makeChildAppender(writeLink),
+    'sym': makeChildAppender(XSD.writeStringTextNode),
+    'type': makeChildAppender(XSD.writeStringTextNode),
+    'fix': makeChildAppender(XSD.writeStringTextNode),
+    'sat': makeChildAppender(XSD.writeNonNegativeIntegerTextNode),
+    'hdop': makeChildAppender(XSD.writeDecimalTextNode),
+    'vdop': makeChildAppender(XSD.writeDecimalTextNode),
+    'pdop': makeChildAppender(XSD.writeDecimalTextNode),
+    'ageofdgpsdata': makeChildAppender(XSD.writeDecimalTextNode),
+    'dgpsid': makeChildAppender(XSD.writeNonNegativeIntegerTextNode)
   });
 
 
@@ -354,7 +357,7 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
     const nodeName = GEOMETRY_TYPE_TO_NODENAME[geometry.getType()];
     if (nodeName) {
       const parentNode = objectStack[objectStack.length - 1].node;
-      return _ol_xml_.createElementNS(parentNode.namespaceURI, nodeName);
+      return createElementNS(parentNode.namespaceURI, nodeName);
     }
   }
 }
@@ -364,11 +367,11 @@ function GPX_NODE_FACTORY(value, objectStack, opt_nodeName) {
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  */
-const GPX_SERIALIZERS = _ol_xml_.makeStructureNS(
+const GPX_SERIALIZERS = makeStructureNS(
   NAMESPACE_URIS, {
-    'rte': _ol_xml_.makeChildAppender(writeRte),
-    'trk': _ol_xml_.makeChildAppender(writeTrk),
-    'wpt': _ol_xml_.makeChildAppender(writeWpt)
+    'rte': makeChildAppender(writeRte),
+    'trk': makeChildAppender(writeTrk),
+    'wpt': makeChildAppender(writeWpt)
   });
 
 
@@ -456,7 +459,7 @@ function parseLink(node, objectStack) {
   if (href !== null) {
     values['link'] = href;
   }
-  _ol_xml_.parseNode(LINK_PARSERS, node, objectStack);
+  parseNode(LINK_PARSERS, node, objectStack);
 }
 
 
@@ -475,7 +478,7 @@ function parseExtensions(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function parseRtePt(node, objectStack) {
-  const values = _ol_xml_.pushParseAndPop(
+  const values = pushParseAndPop(
     {}, RTEPT_PARSERS, node, objectStack);
   if (values) {
     const rteValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
@@ -493,7 +496,7 @@ function parseRtePt(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  */
 function parseTrkPt(node, objectStack) {
-  const values = _ol_xml_.pushParseAndPop({}, TRKPT_PARSERS, node, objectStack);
+  const values = pushParseAndPop({}, TRKPT_PARSERS, node, objectStack);
   if (values) {
     const trkValues = /** @type {Object} */ (objectStack[objectStack.length - 1]);
     const flatCoordinates = /** @type {Array.<number>} */
@@ -511,7 +514,7 @@ function parseTrkPt(node, objectStack) {
  */
 function parseTrkSeg(node, objectStack) {
   const values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  _ol_xml_.parseNode(TRKSEG_PARSERS, node, objectStack);
+  parseNode(TRKSEG_PARSERS, node, objectStack);
   const flatCoordinates = /** @type {Array.<number>} */
       (values['flatCoordinates']);
   const ends = /** @type {Array.<number>} */ (values['ends']);
@@ -526,7 +529,7 @@ function parseTrkSeg(node, objectStack) {
  */
 function readRte(node, objectStack) {
   const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
-  const values = _ol_xml_.pushParseAndPop({
+  const values = pushParseAndPop({
     'flatCoordinates': [],
     'layoutOptions': {}
   }, RTE_PARSERS, node, objectStack);
@@ -555,7 +558,7 @@ function readRte(node, objectStack) {
  */
 function readTrk(node, objectStack) {
   const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
-  const values = _ol_xml_.pushParseAndPop({
+  const values = pushParseAndPop({
     'flatCoordinates': [],
     'ends': [],
     'layoutOptions': {}
@@ -587,7 +590,7 @@ function readTrk(node, objectStack) {
  */
 function readWpt(node, objectStack) {
   const options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
-  const values = _ol_xml_.pushParseAndPop({}, WPT_PARSERS, node, objectStack);
+  const values = pushParseAndPop({}, WPT_PARSERS, node, objectStack);
   if (!values) {
     return undefined;
   }
@@ -678,7 +681,7 @@ GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
   }
   if (node.localName == 'gpx') {
     /** @type {Array.<ol.Feature>} */
-    const features = _ol_xml_.pushParseAndPop([], GPX_PARSERS,
+    const features = pushParseAndPop([], GPX_PARSERS,
       node, [this.getReadOptions(node, opt_options)]);
     if (features) {
       this.handleReadExtensions_(features);
@@ -715,8 +718,8 @@ function writeLink(node, value, objectStack) {
     properties['linkText'],
     properties['linkType']
   ];
-  _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ ({node: node}),
-    LINK_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ ({node: node}),
+    LINK_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     link, objectStack, LINK_SEQUENCE);
 }
 
@@ -732,8 +735,8 @@ function writeWptType(node, coordinate, objectStack) {
   const namespaceURI = parentNode.namespaceURI;
   const properties = context['properties'];
   //FIXME Projection handling
-  _ol_xml_.setAttributeNS(node, null, 'lat', coordinate[1]);
-  _ol_xml_.setAttributeNS(node, null, 'lon', coordinate[0]);
+  setAttributeNS(node, null, 'lat', coordinate[1]);
+  setAttributeNS(node, null, 'lon', coordinate[0]);
   const geometryLayout = context['geometryLayout'];
   switch (geometryLayout) {
     case GeometryLayout.XYZM:
@@ -757,10 +760,10 @@ function writeWptType(node, coordinate, objectStack) {
   const orderedKeys = (node.nodeName == 'rtept') ?
     RTEPT_TYPE_SEQUENCE[namespaceURI] :
     WPT_TYPE_SEQUENCE[namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
     ({node: node, 'properties': properties}),
-    WPT_TYPE_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+    WPT_TYPE_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
 }
 
@@ -782,9 +785,9 @@ function writeRte(node, feature, objectStack) {
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = RTE_SEQUENCE[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context,
-    RTE_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context,
+    RTE_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
 }
 
@@ -807,9 +810,9 @@ function writeTrk(node, feature, objectStack) {
   }
   const parentNode = objectStack[objectStack.length - 1].node;
   const orderedKeys = TRK_SEQUENCE[parentNode.namespaceURI];
-  const values = _ol_xml_.makeSequence(properties, orderedKeys);
-  _ol_xml_.pushSerializeAndPop(context,
-    TRK_SERIALIZERS, _ol_xml_.OBJECT_PROPERTY_NODE_FACTORY,
+  const values = makeSequence(properties, orderedKeys);
+  pushSerializeAndPop(context,
+    TRK_SERIALIZERS, OBJECT_PROPERTY_NODE_FACTORY,
     values, objectStack, orderedKeys);
 }
 
@@ -823,7 +826,7 @@ function writeTrkSeg(node, lineString, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   const context = {node: node, 'geometryLayout': lineString.getLayout(),
     'properties': {}};
-  _ol_xml_.pushSerializeAndPop(context,
+  pushSerializeAndPop(context,
     TRKSEG_SERIALIZERS, TRKSEG_NODE_FACTORY,
     lineString.getCoordinates(), objectStack);
 }
@@ -876,16 +879,16 @@ GPX.prototype.writeFeatures;
 GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   //FIXME Serialize metadata
-  const gpx = _ol_xml_.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
+  const gpx = createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
   const xmlnsUri = 'http://www.w3.org/2000/xmlns/';
   const xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
-  _ol_xml_.setAttributeNS(gpx, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
-  _ol_xml_.setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation',
+  setAttributeNS(gpx, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
+  setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation',
     SCHEMA_LOCATION);
   gpx.setAttribute('version', '1.1');
   gpx.setAttribute('creator', 'OpenLayers');
 
-  _ol_xml_.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
     ({node: gpx}), GPX_SERIALIZERS, GPX_NODE_FACTORY, features, [opt_options]);
   return gpx;
 };

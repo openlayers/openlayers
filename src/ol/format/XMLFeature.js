@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {extend} from '../array.js';
 import FeatureFormat from '../format/Feature.js';
 import FormatType from '../format/FormatType.js';
-import _ol_xml_ from '../xml.js';
+import {isDocument, isNode, parse} from '../xml.js';
 
 /**
  * @classdesc
@@ -43,13 +43,13 @@ XMLFeature.prototype.getType = function() {
  * @inheritDoc
  */
 XMLFeature.prototype.readFeature = function(source, opt_options) {
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     return this.readFeatureFromDocument(
       /** @type {Document} */ (source), opt_options);
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     return this.readFeatureFromDocument(doc, opt_options);
   } else {
     return null;
@@ -87,13 +87,13 @@ XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
  * @inheritDoc
  */
 XMLFeature.prototype.readFeatures = function(source, opt_options) {
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     return this.readFeaturesFromDocument(
       /** @type {Document} */ (source), opt_options);
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     return this.readFeaturesFromDocument(doc, opt_options);
   } else {
     return [];
@@ -135,13 +135,13 @@ XMLFeature.prototype.readFeaturesFromNode = function(node, opt_options) {};
  * @inheritDoc
  */
 XMLFeature.prototype.readGeometry = function(source, opt_options) {
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     return this.readGeometryFromDocument(
       /** @type {Document} */ (source), opt_options);
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     return this.readGeometryFromDocument(doc, opt_options);
   } else {
     return null;
@@ -175,12 +175,12 @@ XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {
  * @inheritDoc
  */
 XMLFeature.prototype.readProjection = function(source) {
-  if (_ol_xml_.isDocument(source)) {
+  if (isDocument(source)) {
     return this.readProjectionFromDocument(/** @type {Document} */ (source));
-  } else if (_ol_xml_.isNode(source)) {
+  } else if (isNode(source)) {
     return this.readProjectionFromNode(/** @type {Node} */ (source));
   } else if (typeof source === 'string') {
-    const doc = _ol_xml_.parse(source);
+    const doc = parse(source);
     return this.readProjectionFromDocument(doc);
   } else {
     return null;
