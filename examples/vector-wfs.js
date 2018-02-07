@@ -3,7 +3,7 @@ import View from '../src/ol/View.js';
 import GeoJSON from '../src/ol/format/GeoJSON.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
+import {bbox as bboxStrategy} from '../src/ol/loadingstrategy.js';
 import BingMaps from '../src/ol/source/BingMaps.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import Stroke from '../src/ol/style/Stroke.js';
@@ -18,7 +18,7 @@ const vectorSource = new VectorSource({
         'outputFormat=application/json&srsname=EPSG:3857&' +
         'bbox=' + extent.join(',') + ',EPSG:3857';
   },
-  strategy: _ol_loadingstrategy_.bbox
+  strategy: bboxStrategy
 });
 
 

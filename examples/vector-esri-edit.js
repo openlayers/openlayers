@@ -7,7 +7,7 @@ import Modify from '../src/ol/interaction/Modify.js';
 import Select from '../src/ol/interaction/Select.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import VectorLayer from '../src/ol/layer/Vector.js';
-import _ol_loadingstrategy_ from '../src/ol/loadingstrategy.js';
+import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import XYZ from '../src/ol/source/XYZ.js';
@@ -44,7 +44,7 @@ const vectorSource = new VectorSource({
       }
     }});
   },
-  strategy: _ol_loadingstrategy_.tile(_ol_tilegrid_.createXYZ({
+  strategy: tileStrategy(_ol_tilegrid_.createXYZ({
     tileSize: 512
   }))
 });
