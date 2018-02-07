@@ -291,6 +291,20 @@ describe('ol.extent', function() {
       expect(_ol_extent_.getIntersection(north, west)).to.eql([-180, 0, 0, 90]);
       expect(_ol_extent_.getIntersection(east, south)).to.eql([0, -90, 180, 0]);
     });
+
+
+    it('can take an destination extent', function() {
+      const world = [-180, -90, 180, 90];
+      const north = [-180, 0, 180, 90];
+      const none = _ol_extent_.createEmpty();
+      let tmpExtent = [-180, 45, 180, 90];
+      expect(_ol_extent_.getIntersection(world, north, tmpExtent)).to.eql(north);
+      expect(_ol_extent_.getIntersection(world, none, tmpExtent)).to.eql(none);
+
+      tmpExtent = [-180, -90, 180, 90];
+      expect(_ol_extent_.getIntersection(tmpExtent, north, tmpExtent)).to.eql(north);
+    });
+
   });
 
   describe('containsCoordinate', function() {
