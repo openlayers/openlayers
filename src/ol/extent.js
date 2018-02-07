@@ -593,6 +593,8 @@ export function getIntersection(extent1, extent2, opt_extent) {
     } else {
       intersection[3] = extent2[3];
     }
+  } else {
+    createOrUpdateEmpty(intersection);
   }
   return intersection;
 }

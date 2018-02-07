@@ -97,7 +97,7 @@ const VectorImageTile = function(tileCoord, state, sourceRevision, format,
         sourceTileGrid.getTileCoordExtent(sourceTileCoord));
       const sourceExtent = sourceTileGrid.getExtent();
       if (sourceExtent) {
-        sharedExtent = getIntersection(sharedExtent, sourceExtent);
+        sharedExtent = getIntersection(sharedExtent, sourceExtent, sharedExtent);
       }
       if (getWidth(sharedExtent) / resolution >= 0.5 &&
           getHeight(sharedExtent) / resolution >= 0.5) {
