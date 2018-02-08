@@ -20,6 +20,10 @@ function getSymbols(callback) {
   });
 }
 
+function getPath(name) {
+  const fullPath = require.resolve(path.resolve('src', name));
+  return './' + path.posix.relative('src/', fullPath);
+}
 
 /**
  * Generate a list of symbol names.
@@ -36,12 +40,12 @@ function addImports(symbols, callback) {
     if (defaultExport.length > 1) {
       const from = defaultExport[0].replace(/^module\:/, './');
       const importName = from.replace(/[.\/]+/g, '$');
-      const defaultImport = `import ${importName} from '${from}.js';`;
+      const defaultImport = `import ${importName} from '${getPath(from)}';`;
       imports[defaultImport] = true;
     } else if (namedExport.length > 1) {
       const from = namedExport[0].replace(/^module\:/, './');
       const importName = from.replace(/[.\/]+/g, '_');
-      const namedImport = `import * as ${importName} from '${from}.js';`;
+      const namedImport = `import * as ${importName} from '${getPath(from)}';`;
       imports[namedImport] = true;
     }
   });
@@ -135,7 +139,7 @@ function main(callback) {
 if (require.main === module) {
   async.waterfall([
     main,
-    fs.outputFile.bind(fs, path.join('src', 'index.js'))
+    fs.outputFile.bind(fs, path.resolve('src', 'index.js'))
   ], function(err) {
     if (err) {
       process.stderr.write(err.message + '\n');

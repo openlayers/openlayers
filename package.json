@@ -15,7 +15,10 @@
     "karma": "karma start test/karma.config.js",
     "serve-examples": "mkdir -p build/examples && webpack --config examples/webpack/config.js --watch & serve build/examples",
     "build-examples": "webpack --config examples/webpack/config.js --env=prod",
-    "build": "webpack --config config/webpack.js"
+    "build-index": "node tasks/generate-index.js",
+    "build": "npm run build-index && webpack --config config/webpack.js",
+    "src-closure": "babel --out-dir build/src-closure src/",
+    "typecheck": "npm run build-index && npm run src-closure && node tasks/typecheck"
   },
   "main": "src/ol/index.js",
   "repository": {
@@ -37,7 +40,9 @@
   },
   "devDependencies": {
     "async": "2.6.0",
+    "babel-cli": "^6.26.0",
     "babel-minify-webpack-plugin": "^0.3.0",
+    "babel-plugin-jsdoc-closure": "^1.0.2",
     "clean-css-cli": "4.1.10",
     "copy-webpack-plugin": "^4.0.1",
     "coveralls": "3.0.0",
@@ -67,6 +72,7 @@
     "nomnom": "1.8.1",
     "pixelmatch": "^4.0.2",
     "proj4": "2.4.4",
+    "recast": "^0.13.0",
     "serve": "^6.0.6",
     "sinon": "4.2.2",
     "url-polyfill": "^1.0.7",
