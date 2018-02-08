@@ -289,7 +289,9 @@ View.prototype.animate = function(var_args) {
       this.setRotation(state.rotation);
     }
     if (callback) {
-      callback(true);
+      setTimeout(function() {
+        callback(true);
+      }, 0);
     }
     return;
   }
@@ -454,7 +456,9 @@ View.prototype.updateAnimations_ = function() {
       this.setHint(ViewHint.ANIMATING, -1);
       const callback = series[0].callback;
       if (callback) {
-        callback(true);
+        setTimeout(function() {
+          callback(true);
+        }, 0);
       }
     }
   }
