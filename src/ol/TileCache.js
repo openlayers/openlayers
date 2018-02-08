@@ -3,7 +3,7 @@
  */
 import {inherits} from './index.js';
 import LRUCache from './structs/LRUCache.js';
-import _ol_tilecoord_ from './tilecoord.js';
+import {fromKey, getKey} from './tilecoord.js';
 
 /**
  * @constructor
@@ -45,11 +45,11 @@ TileCache.prototype.pruneExceptNewestZ = function() {
     return;
   }
   const key = this.peekFirstKey();
-  const tileCoord = _ol_tilecoord_.fromKey(key);
+  const tileCoord = fromKey(key);
   const z = tileCoord[0];
   this.forEach(function(tile) {
     if (tile.tileCoord[0] !== z) {
-      this.remove(_ol_tilecoord_.getKey(tile.tileCoord));
+      this.remove(getKey(tile.tileCoord));
       tile.dispose();
     }
   }, this);

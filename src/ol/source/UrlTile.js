@@ -6,7 +6,7 @@ import TileState from '../TileState.js';
 import {expandUrl, createFromTemplates, nullTileUrlFunction} from '../tileurlfunction.js';
 import TileSource from '../source/Tile.js';
 import TileEventType from '../source/TileEventType.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {getKeyZXY} from '../tilecoord.js';
 
 /**
  * @classdesc
@@ -195,7 +195,7 @@ UrlTile.prototype.setUrls = function(urls) {
  * @inheritDoc
  */
 UrlTile.prototype.useTile = function(z, x, y) {
-  const tileCoordKey = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const tileCoordKey = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     this.tileCache.get(tileCoordKey);
   }

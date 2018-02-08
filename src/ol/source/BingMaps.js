@@ -8,7 +8,7 @@ import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileImage from '../source/TileImage.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {createOrUpdate, quadKey} from '../tilecoord.js';
 import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
@@ -159,14 +159,12 @@ BingMaps.prototype.handleImageryMetadataResponse = function(response) {
           if (!tileCoord) {
             return undefined;
           } else {
-            _ol_tilecoord_.createOrUpdate(tileCoord[0], tileCoord[1],
-              -tileCoord[2] - 1, quadKeyTileCoord);
+            createOrUpdate(tileCoord[0], tileCoord[1], -tileCoord[2] - 1, quadKeyTileCoord);
             let url = imageUrl;
             if (hidpi) {
               url += '&dpi=d1&device=mobile';
             }
-            return url.replace('{quadkey}', _ol_tilecoord_.quadKey(
-              quadKeyTileCoord));
+            return url.replace('{quadkey}', quadKey(quadKeyTileCoord));
           }
         }
       );

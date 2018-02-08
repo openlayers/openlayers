@@ -3,7 +3,7 @@
  */
 import {assert} from './asserts.js';
 import {modulo} from './math.js';
-import _ol_tilecoord_ from './tilecoord.js';
+import {hash as tileCoordHash} from './tilecoord.js';
 
 
 /**
@@ -80,7 +80,7 @@ export function createFromTileUrlFunctions(tileUrlFunctions) {
       if (!tileCoord) {
         return undefined;
       } else {
-        const h = _ol_tilecoord_.hash(tileCoord);
+        const h = tileCoordHash(tileCoord);
         const index = modulo(h, tileUrlFunctions.length);
         return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
       }

@@ -5,7 +5,7 @@ import {get as getProjection} from '../../../../src/ol/proj.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import Source from '../../../../src/ol/source/Source.js';
 import TileSource from '../../../../src/ol/source/Tile.js';
-import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
+import {getKeyZXY} from '../../../../src/ol/tilecoord.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
@@ -42,7 +42,7 @@ inherits(MockTile, TileSource);
  * @inheritDoc
  */
 MockTile.prototype.getTile = function(z, x, y) {
-  const key = _ol_tilecoord_.getKeyZXY(z, x, y);
+  const key = getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(key)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(key));
   } else {

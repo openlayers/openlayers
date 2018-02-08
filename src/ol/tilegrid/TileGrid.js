@@ -8,7 +8,7 @@ import {isSorted, linearFindNearest} from '../array.js';
 import {createOrUpdate, getTopLeft} from '../extent.js';
 import {clamp} from '../math.js';
 import {toSize} from '../size.js';
-import _ol_tilecoord_ from '../tilecoord.js';
+import {createOrUpdate as tileCoordCreateOrUpdate} from '../tilecoord.js';
 
 /**
  * @classdesc
@@ -422,7 +422,7 @@ TileGrid.prototype.getTileCoordForXYAndResolution_ = function(
     tileCoordY = Math.floor(tileCoordY);
   }
 
-  return _ol_tilecoord_.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+  return tileCoordCreateOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
 };
 
 
@@ -461,7 +461,7 @@ TileGrid.prototype.getTileCoordForXYAndZ_ = function(x, y, z, reverseIntersectio
     tileCoordY = Math.floor(tileCoordY);
   }
 
-  return _ol_tilecoord_.createOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
+  return tileCoordCreateOrUpdate(z, tileCoordX, tileCoordY, opt_tileCoord);
 };
 
 
