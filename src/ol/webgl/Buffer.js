@@ -30,7 +30,7 @@ const WebGLBuffer = function(opt_arr, opt_usage) {
    * @private
    * @type {number}
    */
-  this.usage_ = opt_usage !== undefined ? opt_usage : BufferUsage;
+  this.usage_ = opt_usage !== undefined ? opt_usage : BufferUsage.STATIC_DRAW;
 
 };
 
