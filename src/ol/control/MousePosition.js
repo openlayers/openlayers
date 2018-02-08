@@ -72,13 +72,17 @@ const MousePosition = function(opt_options) {
     this.setProjection(options.projection);
   }
 
-  this.clearOnMouseOut_ = options.clearOnMouseOut !== undefined ? options.clearOnMouseOut : true;
-
   /**
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '';
+  this.undefinedHTML_ = 'undefinedHTML' in options ? options.undefinedHTML : '';
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.renderOnMouseOut_ = this.undefinedHTML_ !== undefined;
 
   /**
    * @private
@@ -194,7 +198,7 @@ MousePosition.prototype.setMap = function(map) {
     this.listenerKeys.push(
       listen(viewport, EventType.MOUSEMOVE, this.handleMouseMove, this)
     );
-    if (this.clearOnMouseOut_) {
+    if (this.renderOnMouseOut_) {
       this.listenerKeys.push(
         listen(viewport, EventType.MOUSEOUT, this.handleMouseOut, this)
       );
@@ -232,7 +236,7 @@ MousePosition.prototype.setProjection = function(projection) {
  * @private
  */
 MousePosition.prototype.updateHTML_ = function(pixel) {
-  let html = this.undefinedHTML_;
+  let html = this.undefinedHTML_ === undefined ? ' ' : this.undefinedHTML_;
   if (pixel && this.mapProjection_) {
     if (!this.transform_) {
       const projection = this.getProjection();

@@ -65,40 +65,38 @@ describe('ol.control.MousePosition', function() {
       document.querySelector('div.ol-viewport').dispatchEvent(evt);
     }
 
-    describe('clearOnMouseOut', function() {
-      it('sets div.ol-mouse-position undefinedHTML when clearOnMouseOut=true', function(done) {
+    describe('undefinedHTML', function() {
+      it('sets div.ol-mouse-position to options.undefinedHTML when mouse moves out', function(done) {
         const ctrl = new MousePosition({
-          undefinedHTML: 'undefined',
-          clearOnMouseOut: true
+          undefinedHTML: 'some text'
         });
         ctrl.setMap(map);
         map.renderSync();
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
-        expect(element.innerText).to.be('undefined');
+        expect(element.innerText).to.be('some text');
 
         simulateEvent(EventType.MOUSEMOVE, 20, 30);
         map.renderSync();
         expect(element.innerText).to.be('20,-30');
 
         map.once('postrender', function() {
-          expect(element.innerText).to.be('undefined');
+          expect(element.innerText).to.be('some text');
           done();
         });
         simulateEvent(EventType.MOUSEOUT, width + 1, height + 1);
         map.renderSync();
       });
 
-      it('keeps div.ol-mouse-position set when clearOnMouseOut=false', function(done) {
+      it('Retain mouse position in div.ol-mouse-position when options.undefinedHTML=undefined and mouse moves outside the viewport', function(done) {
         const ctrl = new MousePosition({
-          undefinedHTML: 'undefined',
-          clearOnMouseOut: false
+          undefinedHTML: undefined
         });
         ctrl.setMap(map);
         map.renderSync();
 
         const element = document.querySelector('.ol-mouse-position', map.getTarget());
-        expect(element.innerText).to.be('undefined');
+        expect(element.innerHTML).to.be(' ');
 
         target.dispatchEvent(new MouseEvent('mousemove'));
         simulateEvent(EventType.MOUSEMOVE, 20, 30);
