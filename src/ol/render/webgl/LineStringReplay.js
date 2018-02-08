@@ -14,7 +14,7 @@ import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_linestringreplay_defaultshader_ from '../webgl/linestringreplay/defaultshader.js';
 import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../webgl/linestringreplay/defaultshader/Locations.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -404,10 +404,10 @@ WebGLLineStringReplay.prototype.getCurrentIndex = function() {
  **/
 WebGLLineStringReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
+  this.verticesBuffer = new WebGLBuffer(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
+  this.indicesBuffer = new WebGLBuffer(this.indices);
 
   this.startIndices.push(this.indices.length);
 

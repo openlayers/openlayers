@@ -18,7 +18,7 @@ import Stroke from '../../style/Stroke.js';
 import LinkedList from '../../structs/LinkedList.js';
 import RBush from '../../structs/RBush.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -834,10 +834,10 @@ WebGLPolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
  **/
 WebGLPolygonReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
+  this.verticesBuffer = new WebGLBuffer(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
+  this.indicesBuffer = new WebGLBuffer(this.indices);
 
   this.startIndices.push(this.indices.length);
 

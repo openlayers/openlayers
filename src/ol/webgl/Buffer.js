@@ -4,12 +4,21 @@
 import _ol_webgl_ from '../webgl.js';
 
 /**
+ * @enum {number}
+ */
+const BufferUsage = {
+  STATIC_DRAW: _ol_webgl_.STATIC_DRAW,
+  STREAM_DRAW: _ol_webgl_.STREAM_DRAW,
+  DYNAMIC_DRAW: _ol_webgl_.DYNAMIC_DRAW
+};
+
+/**
  * @constructor
  * @param {Array.<number>=} opt_arr Array.
  * @param {number=} opt_usage Usage.
  * @struct
  */
-const _ol_webgl_Buffer_ = function(opt_arr, opt_usage) {
+const WebGLBuffer = function(opt_arr, opt_usage) {
 
   /**
    * @private
@@ -21,8 +30,7 @@ const _ol_webgl_Buffer_ = function(opt_arr, opt_usage) {
    * @private
    * @type {number}
    */
-  this.usage_ = opt_usage !== undefined ?
-    opt_usage : _ol_webgl_Buffer_.Usage_.STATIC_DRAW;
+  this.usage_ = opt_usage !== undefined ? opt_usage : BufferUsage;
 
 };
 
@@ -30,7 +38,7 @@ const _ol_webgl_Buffer_ = function(opt_arr, opt_usage) {
 /**
  * @return {Array.<number>} Array.
  */
-_ol_webgl_Buffer_.prototype.getArray = function() {
+WebGLBuffer.prototype.getArray = function() {
   return this.arr_;
 };
 
@@ -38,18 +46,8 @@ _ol_webgl_Buffer_.prototype.getArray = function() {
 /**
  * @return {number} Usage.
  */
-_ol_webgl_Buffer_.prototype.getUsage = function() {
+WebGLBuffer.prototype.getUsage = function() {
   return this.usage_;
 };
 
-
-/**
- * @enum {number}
- * @private
- */
-_ol_webgl_Buffer_.Usage_ = {
-  STATIC_DRAW: _ol_webgl_.STATIC_DRAW,
-  STREAM_DRAW: _ol_webgl_.STREAM_DRAW,
-  DYNAMIC_DRAW: _ol_webgl_.DYNAMIC_DRAW
-};
-export default _ol_webgl_Buffer_;
+export default WebGLBuffer;

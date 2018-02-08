@@ -11,7 +11,7 @@ import _ol_renderer_webgl_defaultmapshader_Locations_ from '../webgl/defaultmaps
 import _ol_transform_ from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 import WebGLContext from '../../webgl/Context.js';
 
 /**
@@ -35,7 +35,7 @@ const WebGLLayerRenderer = function(mapRenderer, layer) {
    * @private
    * @type {ol.webgl.Buffer}
    */
-  this.arrayBuffer_ = new _ol_webgl_Buffer_([
+  this.arrayBuffer_ = new WebGLBuffer([
     -1, -1, 0, 0,
     1, -1, 1, 0,
     -1, 1, 0, 1,
