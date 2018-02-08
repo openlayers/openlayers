@@ -12,8 +12,8 @@ import {
   getTransformFromProjections
 } from '../../../src/ol/proj.js';
 import {register} from '../../../src/ol/proj/proj4.js';
-import _ol_proj_EPSG3857_ from '../../../src/ol/proj/EPSG3857.js';
-import _ol_proj_EPSG4326_ from '../../../src/ol/proj/EPSG4326.js';
+import {HALF_SIZE} from '../../../src/ol/proj/epsg3857.js';
+import {METERS_PER_UNIT} from '../../../src/ol/proj/epsg4326.js';
 import Projection from '../../../src/ol/proj/Projection.js';
 
 
@@ -32,10 +32,10 @@ describe('ol.proj', function() {
       from: [-12356463.478053365, 5700582.732404122],
       to: [-111, 45.5]
     }, {
-      from: [2 * _ol_proj_EPSG3857_.HALF_SIZE - 12356463.478053365, 5700582.732404122],
+      from: [2 * HALF_SIZE - 12356463.478053365, 5700582.732404122],
       to: [-111, 45.5]
     }, {
-      from: [-4 * _ol_proj_EPSG3857_.HALF_SIZE - 12356463.478053365, 5700582.732404122],
+      from: [-4 * HALF_SIZE - 12356463.478053365, 5700582.732404122],
       to: [-111, 45.5]
     }];
 
@@ -600,8 +600,7 @@ describe('ol.proj', function() {
 
     it('returns value in meters', function() {
       const epsg4326 = getProjection('EPSG:4326');
-      expect(epsg4326.getMetersPerUnit()).to.eql(
-        _ol_proj_EPSG4326_.METERS_PER_UNIT);
+      expect(epsg4326.getMetersPerUnit()).to.eql(METERS_PER_UNIT);
     });
 
     it('works for proj4js projections without units', function() {

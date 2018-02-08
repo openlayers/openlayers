@@ -1,6 +1,6 @@
 import {listen} from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
-import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
+import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
 import ReprojImage from '../../../../src/ol/reproj/Image.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
 import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
@@ -45,7 +45,7 @@ describe('ol.rendering.reproj.Image', function() {
     it('works for identity reprojection', function(done) {
       testSingleImage(source, 'EPSG:3857',
         _ol_tilegrid_.createXYZ().getTileCoordExtent([5, 5, -13]),
-        2 * _ol_proj_EPSG3857_.HALF_SIZE / (256 * (1 << 5)), 1,
+        2 * HALF_SIZE / (256 * (1 << 5)), 1,
         'rendering/ol/data/tiles/osm/5/5/12.png', done);
     });
 

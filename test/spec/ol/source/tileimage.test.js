@@ -4,7 +4,7 @@ import {createFromTemplate} from '../../../../src/ol/tileurlfunction.js';
 import {listen} from '../../../../src/ol/events.js';
 import {addCommon, clearAllProjections, get as getProjection} from '../../../../src/ol/proj.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
-import _ol_proj_EPSG3857_ from '../../../../src/ol/proj/EPSG3857.js';
+import {WORLD_EXTENT} from '../../../../src/ol/proj/epsg3857.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
@@ -161,7 +161,7 @@ describe('ol.source.TileImage', function() {
       const source = createSource();
       source.setTileGridForProjection(proj,
         _ol_tilegrid_.createXYZ({
-          extent: _ol_proj_EPSG3857_.WORLD_EXTENT,
+          extent: WORLD_EXTENT,
           tileSize: [2, 2]
         }));
       const tile = source.getTile(0, 0, -1, 1, proj);
