@@ -67,6 +67,11 @@ function main(argv) {
         json.namespace = m[1];
         return;
       }
+      m = line.match(/\/\/!\s+MODULE=(\S+)\s*$/);
+      if (m) {
+        json.module = m[1];
+        return;
+      }
       m = line.match(/\/\/!\s+COMMON\s*$/);
       if (m) {
         block = 'common';
