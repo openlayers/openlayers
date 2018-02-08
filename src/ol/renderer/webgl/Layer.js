@@ -12,7 +12,7 @@ import _ol_transform_ from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
-import _ol_webgl_Context_ from '../../webgl/Context.js';
+import WebGLContext from '../../webgl/Context.js';
 
 /**
  * @constructor
@@ -116,7 +116,7 @@ WebGLLayerRenderer.prototype.bindFramebuffer = function(frameState, framebufferD
       /** @type {ol.PostRenderFunction} */ (postRenderFunction)
     );
 
-    const texture = _ol_webgl_Context_.createEmptyTexture(
+    const texture = WebGLContext.createEmptyTexture(
       gl, framebufferDimension, framebufferDimension);
 
     const framebuffer = gl.createFramebuffer();

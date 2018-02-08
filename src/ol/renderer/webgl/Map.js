@@ -18,7 +18,7 @@ import SourceState from '../../source/State.js';
 import LRUCache from '../../structs/LRUCache.js';
 import PriorityQueue from '../../structs/PriorityQueue.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Context_ from '../../webgl/Context.js';
+import WebGLContext from '../../webgl/Context.js';
 import ContextEventType from '../../webgl/ContextEventType.js';
 
 
@@ -90,7 +90,7 @@ const WebGLMapRenderer = function(container, map) {
    * @private
    * @type {ol.webgl.Context}
    */
-  this.context_ = new _ol_webgl_Context_(this.canvas_, this.gl_);
+  this.context_ = new WebGLContext(this.canvas_, this.gl_);
 
   listen(this.canvas_, ContextEventType.LOST,
     this.handleWebGLContextLost, this);

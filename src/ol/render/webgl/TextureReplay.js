@@ -8,7 +8,7 @@ import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturerepla
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Context_ from '../../webgl/Context.js';
+import WebGLContext from '../../webgl/Context.js';
 
 /**
  * @constructor
@@ -257,7 +257,7 @@ WebGLTextureReplay.prototype.createTextures = function(textures, images, texture
     if (uid in texturePerImage) {
       texture = texturePerImage[uid];
     } else {
-      texture = _ol_webgl_Context_.createTexture(
+      texture = WebGLContext.createTexture(
         gl, image, _ol_webgl_.CLAMP_TO_EDGE, _ol_webgl_.CLAMP_TO_EDGE);
       texturePerImage[uid] = texture;
     }
