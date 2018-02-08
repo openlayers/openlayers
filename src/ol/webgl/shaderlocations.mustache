@@ -16,7 +16,7 @@ import {DEBUG_WEBGL} from '../../../index.js';
    * @type {WebGLUniformLocation}
    */
   this.{{originalName}} = gl.getUniformLocation(
-      program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
+    program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
 {{/uniforms}}
 {{#attributes}}
 
@@ -24,7 +24,7 @@ import {DEBUG_WEBGL} from '../../../index.js';
    * @type {number}
    */
   this.{{originalName}} = gl.getAttribLocation(
-      program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
+    program, DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
 {{/attributes}}
 };
 
