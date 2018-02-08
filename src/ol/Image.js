@@ -2,7 +2,7 @@
  * @module ol/Image
  */
 import {inherits} from './index.js';
-import _ol_ImageBase_ from './ImageBase.js';
+import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
@@ -20,7 +20,7 @@ import {getHeight} from './extent.js';
  */
 const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
-  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
+  ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
   /**
    * @private
@@ -57,7 +57,7 @@ const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, im
 
 };
 
-inherits(_ol_Image_, _ol_ImageBase_);
+inherits(_ol_Image_, ImageBase);
 
 
 /**

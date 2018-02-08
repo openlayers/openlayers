@@ -14,7 +14,7 @@ import EventType from './events/EventType.js';
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.ImageState} state State.
  */
-const _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
+const ImageBase = function(extent, resolution, pixelRatio, state) {
 
   EventTarget.call(this);
 
@@ -44,13 +44,13 @@ const _ol_ImageBase_ = function(extent, resolution, pixelRatio, state) {
 
 };
 
-inherits(_ol_ImageBase_, EventTarget);
+inherits(ImageBase, EventTarget);
 
 
 /**
  * @protected
  */
-_ol_ImageBase_.prototype.changed = function() {
+ImageBase.prototype.changed = function() {
   this.dispatchEvent(EventType.CHANGE);
 };
 
@@ -58,7 +58,7 @@ _ol_ImageBase_.prototype.changed = function() {
 /**
  * @return {ol.Extent} Extent.
  */
-_ol_ImageBase_.prototype.getExtent = function() {
+ImageBase.prototype.getExtent = function() {
   return this.extent;
 };
 
@@ -67,13 +67,13 @@ _ol_ImageBase_.prototype.getExtent = function() {
  * @abstract
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  */
-_ol_ImageBase_.prototype.getImage = function() {};
+ImageBase.prototype.getImage = function() {};
 
 
 /**
  * @return {number} PixelRatio.
  */
-_ol_ImageBase_.prototype.getPixelRatio = function() {
+ImageBase.prototype.getPixelRatio = function() {
   return this.pixelRatio_;
 };
 
@@ -81,7 +81,7 @@ _ol_ImageBase_.prototype.getPixelRatio = function() {
 /**
  * @return {number} Resolution.
  */
-_ol_ImageBase_.prototype.getResolution = function() {
+ImageBase.prototype.getResolution = function() {
   return /** @type {number} */ (this.resolution);
 };
 
@@ -89,7 +89,7 @@ _ol_ImageBase_.prototype.getResolution = function() {
 /**
  * @return {ol.ImageState} State.
  */
-_ol_ImageBase_.prototype.getState = function() {
+ImageBase.prototype.getState = function() {
   return this.state;
 };
 
@@ -98,5 +98,6 @@ _ol_ImageBase_.prototype.getState = function() {
  * Load not yet loaded URI.
  * @abstract
  */
-_ol_ImageBase_.prototype.load = function() {};
-export default _ol_ImageBase_;
+ImageBase.prototype.load = function() {};
+
+export default ImageBase;

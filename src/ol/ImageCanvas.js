@@ -2,7 +2,7 @@
  * @module ol/ImageCanvas
  */
 import {inherits} from './index.js';
-import _ol_ImageBase_ from './ImageBase.js';
+import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 
 /**
@@ -26,7 +26,7 @@ const ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader)
 
   const state = opt_loader !== undefined ? ImageState.IDLE : ImageState.LOADED;
 
-  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, state);
+  ImageBase.call(this, extent, resolution, pixelRatio, state);
 
   /**
    * @private
@@ -42,7 +42,7 @@ const ImageCanvas = function(extent, resolution, pixelRatio, canvas, opt_loader)
 
 };
 
-inherits(ImageCanvas, _ol_ImageBase_);
+inherits(ImageCanvas, ImageBase);
 
 
 /**
