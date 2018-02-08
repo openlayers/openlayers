@@ -2,7 +2,7 @@
  * @module ol/source/ImageMapGuide
  */
 import {inherits} from '../index.js';
-import _ol_Image_ from '../Image.js';
+import ImageWrapper from '../Image.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
 import {containsExtent, getCenter, getHeight, getWidth, scaleFromCenter} from '../extent.js';
@@ -141,7 +141,7 @@ ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRat
   if (this.url_ !== undefined) {
     const imageUrl = this.getUrl(this.url_, this.params_, extent, size,
       projection);
-    image = new _ol_Image_(extent, resolution, pixelRatio,
+    image = new ImageWrapper(extent, resolution, pixelRatio,
       imageUrl, this.crossOrigin_,
       this.imageLoadFunction_);
     listen(image, EventType.CHANGE,

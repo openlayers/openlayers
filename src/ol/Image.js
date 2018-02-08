@@ -18,7 +18,7 @@ import {getHeight} from './extent.js';
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
+const ImageWrapper = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
   ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
@@ -57,14 +57,14 @@ const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, im
 
 };
 
-inherits(_ol_Image_, ImageBase);
+inherits(ImageWrapper, ImageBase);
 
 
 /**
  * @inheritDoc
  * @api
  */
-_ol_Image_.prototype.getImage = function() {
+ImageWrapper.prototype.getImage = function() {
   return this.image_;
 };
 
@@ -74,7 +74,7 @@ _ol_Image_.prototype.getImage = function() {
  *
  * @private
  */
-_ol_Image_.prototype.handleImageError_ = function() {
+ImageWrapper.prototype.handleImageError_ = function() {
   this.state = ImageState.ERROR;
   this.unlistenImage_();
   this.changed();
@@ -86,7 +86,7 @@ _ol_Image_.prototype.handleImageError_ = function() {
  *
  * @private
  */
-_ol_Image_.prototype.handleImageLoad_ = function() {
+ImageWrapper.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
     this.resolution = getHeight(this.extent) / this.image_.height;
   }
@@ -103,7 +103,7 @@ _ol_Image_.prototype.handleImageLoad_ = function() {
  * @override
  * @api
  */
-_ol_Image_.prototype.load = function() {
+ImageWrapper.prototype.load = function() {
   if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
     this.state = ImageState.LOADING;
     this.changed();
@@ -121,7 +121,7 @@ _ol_Image_.prototype.load = function() {
 /**
  * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
  */
-_ol_Image_.prototype.setImage = function(image) {
+ImageWrapper.prototype.setImage = function(image) {
   this.image_ = image;
 };
 
@@ -131,8 +131,9 @@ _ol_Image_.prototype.setImage = function(image) {
  *
  * @private
  */
-_ol_Image_.prototype.unlistenImage_ = function() {
+ImageWrapper.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(unlistenByKey);
   this.imageListenerKeys_ = null;
 };
-export default _ol_Image_;
+
+export default ImageWrapper;

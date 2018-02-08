@@ -2,7 +2,7 @@
  * @module ol/source/ImageStatic
  */
 import {inherits} from '../index.js';
-import _ol_Image_ from '../Image.js';
+import ImageWrapper from '../Image.js';
 import ImageState from '../ImageState.js';
 import {createCanvasContext2D} from '../dom.js';
 import {listen} from '../events.js';
@@ -39,7 +39,7 @@ const Static = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new _ol_Image_(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
+  this.image_ = new ImageWrapper(imageExtent, undefined, 1, options.url, crossOrigin, imageLoadFunction);
 
   /**
    * @private

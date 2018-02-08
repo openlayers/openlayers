@@ -1,4 +1,4 @@
-import _ol_Image_ from '../../../../src/ol/Image.js';
+import ImageWrapper from '../../../../src/ol/Image.js';
 import {listen} from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import ReprojImage from '../../../../src/ol/reproj/Image.js';
@@ -10,7 +10,7 @@ describe('ol.reproj.Image', function() {
       getProjection('EPSG:3857'), getProjection('EPSG:4326'),
       [-180, -85, 180, 85], 10, pixelRatio,
       function(extent, resolution, pixelRatio) {
-        return new _ol_Image_(extent, resolution, pixelRatio,
+        return new ImageWrapper(extent, resolution, pixelRatio,
           'data:image/gif;base64,' +
               'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,
           function(image, src) {
