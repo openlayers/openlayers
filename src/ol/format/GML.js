@@ -15,7 +15,7 @@ import GML3 from '../format/GML3.js';
  * @extends {ol.format.GMLBase}
  * @api
  */
-const _ol_format_GML_ = GML3;
+const GML = GML3;
 
 
 /**
@@ -27,7 +27,7 @@ const _ol_format_GML_ = GML3;
  * @return {string} Result.
  * @api
  */
-_ol_format_GML_.prototype.writeFeatures;
+GML.prototype.writeFeatures;
 
 
 /**
@@ -39,5 +39,6 @@ _ol_format_GML_.prototype.writeFeatures;
  * @return {Node} Node.
  * @api
  */
-_ol_format_GML_.prototype.writeFeaturesNode;
-export default _ol_format_GML_;
+GML.prototype.writeFeaturesNode;
+
+export default GML;
