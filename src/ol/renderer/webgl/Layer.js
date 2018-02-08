@@ -7,7 +7,7 @@ import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import {fragment, vertex} from '../webgl/defaultmapshader.js';
-import _ol_renderer_webgl_defaultmapshader_Locations_ from '../webgl/defaultmapshader/Locations.js';
+import Locations from '../webgl/defaultmapshader/Locations.js';
 import _ol_transform_ from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
 import _ol_webgl_ from '../../webgl.js';
@@ -155,7 +155,7 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 
   let locations;
   if (!this.defaultLocations_) {
-    locations = new _ol_renderer_webgl_defaultmapshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;

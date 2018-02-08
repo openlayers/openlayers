@@ -12,7 +12,7 @@ import {DEBUG_WEBGL} from '../../../index.js';
  * @param {WebGLProgram} program Program.
  * @struct
  */
-const _ol_renderer_webgl_tilelayershader_Locations_ = function(gl, program) {
+const Locations = function(gl, program) {
 
   /**
    * @type {WebGLUniformLocation}
@@ -39,4 +39,4 @@ const _ol_renderer_webgl_tilelayershader_Locations_ = function(gl, program) {
     program, DEBUG_WEBGL ? 'a_texCoord' : 'c');
 };
 
-export default _ol_renderer_webgl_tilelayershader_Locations_;
+export default Locations;

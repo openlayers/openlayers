@@ -1,4 +1,3 @@
-//! NAMESPACE=_ol_render_webgl_texturereplay_defaultshader_
 //! MODULE=ol/render/webgl/texturereplay/defaultshader
 
 

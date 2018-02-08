@@ -10,7 +10,7 @@ import {linearRingContainsXY} from '../../geom/flat/contains.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
 import {fragment, vertex} from '../webgl/polygonreplay/defaultshader.js';
-import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../webgl/polygonreplay/defaultshader/Locations.js';
+import Locations from '../webgl/polygonreplay/defaultshader/Locations.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
@@ -880,7 +880,7 @@ WebGLPolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRat
   // get the locations
   let locations;
   if (!this.defaultLocations_) {
-    locations = new _ol_render_webgl_polygonreplay_defaultshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;

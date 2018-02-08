@@ -5,7 +5,7 @@ import {getUid, inherits} from '../../index.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';
-import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
+import Locations from '../webgl/texturereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_webgl_ from '../../webgl.js';
 import WebGLContext from '../../webgl/Context.js';
@@ -278,7 +278,7 @@ WebGLTextureReplay.prototype.setUpProgram = function(gl, context, size, pixelRat
   // get the locations
   let locations;
   if (!this.defaultLocations) {
-    locations = new _ol_render_webgl_texturereplay_defaultshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations = locations;
   } else {
     locations = this.defaultLocations;

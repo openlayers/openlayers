@@ -12,7 +12,7 @@ import {DEBUG_WEBGL} from '../../../../index.js';
  * @param {WebGLProgram} program Program.
  * @struct
  */
-const _ol_render_webgl_linestringreplay_defaultshader_Locations_ = function(gl, program) {
+const Locations = function(gl, program) {
 
   /**
    * @type {WebGLUniformLocation}
@@ -93,4 +93,4 @@ const _ol_render_webgl_linestringreplay_defaultshader_Locations_ = function(gl, 
     program, DEBUG_WEBGL ? 'a_direction' : 'g');
 };
 
-export default _ol_render_webgl_linestringreplay_defaultshader_Locations_;
+export default Locations;

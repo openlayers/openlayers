@@ -14,7 +14,7 @@ import {roundUpToPowerOfTwo} from '../../math.js';
 import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import {fragment, vertex} from '../webgl/tilelayershader.js';
-import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayershader/Locations.js';
+import Locations from '../webgl/tilelayershader/Locations.js';
 import {toSize} from '../../size.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
@@ -223,7 +223,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
     const program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
     if (!this.locations_) {
-      this.locations_ = new _ol_renderer_webgl_tilelayershader_Locations_(gl, program);
+      this.locations_ = new Locations(gl, program);
     }
 
     context.bindBuffer(_ol_webgl_.ARRAY_BUFFER, this.renderArrayBuffer_);
