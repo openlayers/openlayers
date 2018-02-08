@@ -5,7 +5,7 @@ import {inherits} from '../index.js';
 import {createEmpty} from '../extent.js';
 import {modulo} from '../math.js';
 import {assign} from '../obj.js';
-import _ol_size_ from '../size.js';
+import {toSize, scale as scaleSize} from '../size.js';
 import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
 import {appendParams} from '../uri.js';
@@ -153,11 +153,11 @@ TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, 
 
   const tileExtent = tileGrid.getTileCoordExtent(
     tileCoord, this.tmpExtent_);
-  let tileSize = _ol_size_.toSize(
+  let tileSize = toSize(
     tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
   if (pixelRatio != 1) {
-    tileSize = _ol_size_.scale(tileSize, pixelRatio, this.tmpSize);
+    tileSize = scaleSize(tileSize, pixelRatio, this.tmpSize);
   }
 
   // Apply default params and override with user specified values.

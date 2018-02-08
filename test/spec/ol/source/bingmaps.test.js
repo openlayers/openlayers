@@ -1,4 +1,3 @@
-import _ol_net_ from '../../../../src/ol/net.js';
 import BingMaps from '../../../../src/ol/source/BingMaps.js';
 import _ol_tilecoord_ from '../../../../src/ol/tilecoord.js';
 import Observable from '../../../../src/ol/Observable.js';
@@ -11,21 +10,18 @@ describe('ol.source.BingMaps', function() {
     let source, tileGrid;
 
     beforeEach(function(done) {
-      const olNetJsonp = _ol_net_.jsonp;
-      // mock ol.net.Jsonp (used in the ol.source.TileJSON constructor)
-      _ol_net_.jsonp = function(url, callback) {
-        const client = new XMLHttpRequest();
-        client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
-        client.onload = function() {
-          callback(JSON.parse(client.responseText));
-        };
-        client.send();
-      };
       source = new BingMaps({
         imagerySet: 'AerialWithLabels',
         key: ''
       });
-      _ol_net_.jsonp = olNetJsonp;
+
+      const client = new XMLHttpRequest();
+      client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
+      client.onload = function() {
+        source.handleImageryMetadataResponse(JSON.parse(client.responseText));
+      };
+      client.send();
+
       const key = source.on('change', function() {
         if (source.getState() === 'ready') {
           Observable.unByKey(key);

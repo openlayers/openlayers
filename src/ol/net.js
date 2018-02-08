@@ -2,7 +2,6 @@
  * @module ol/net
  */
 import {getUid} from './index.js';
-const _ol_net_ = {};
 
 
 /**
@@ -16,7 +15,7 @@ const _ol_net_ = {};
  * @param {string=} opt_callbackParam Custom query parameter for the JSONP
  *     callback. Default is 'callback'.
  */
-_ol_net_.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
+export function jsonp(url, callback, opt_errback, opt_callbackParam) {
   const script = document.createElement('script');
   const key = 'olc_' + getUid(callback);
   function cleanup() {
@@ -38,5 +37,4 @@ _ol_net_.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
     callback(data);
   };
   document.getElementsByTagName('head')[0].appendChild(script);
-};
-export default _ol_net_;
+}

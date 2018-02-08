@@ -15,7 +15,7 @@ import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
 import _ol_renderer_webgl_tilelayershader_ from '../webgl/tilelayershader.js';
 import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayershader/Locations.js';
-import _ol_size_ from '../../size.js';
+import {toSize} from '../../size.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
 import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
@@ -181,7 +181,7 @@ WebGLTileLayerRenderer.prototype.prepareFrame = function(frameState, layerState,
   const tilePixelSize =
       tileSource.getTilePixelSize(z, frameState.pixelRatio, projection);
   const pixelRatio = tilePixelSize[0] /
-      _ol_size_.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
+      toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
   const tilePixelResolution = tileResolution / pixelRatio;
   const tileGutter = tileSource.getTilePixelRatio(pixelRatio) * tileSource.getGutter(projection);
 

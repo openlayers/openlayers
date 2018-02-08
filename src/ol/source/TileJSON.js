@@ -11,7 +11,7 @@ import {inherits} from '../index.js';
 import {createFromTemplates} from '../tileurlfunction.js';
 import {assert} from '../asserts.js';
 import {applyTransform, intersects} from '../extent.js';
-import _ol_net_ from '../net.js';
+import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileImage from '../source/TileImage.js';
@@ -48,7 +48,7 @@ const TileJSON = function(options) {
 
   if (options.url) {
     if (options.jsonp) {
-      _ol_net_.jsonp(options.url, this.handleTileJSONResponse.bind(this),
+      requestJSONP(options.url, this.handleTileJSONResponse.bind(this),
         this.handleTileJSONError.bind(this));
     } else {
       const client = new XMLHttpRequest();

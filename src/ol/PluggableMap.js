@@ -26,7 +26,7 @@ import {DEVICE_PIXEL_RATIO, TOUCH} from './has.js';
 import LayerGroup from './layer/Group.js';
 import {getMapRendererPlugins} from './plugins.js';
 import RendererType from './renderer/Type.js';
-import _ol_size_ from './size.js';
+import {hasArea} from './size.js';
 import PriorityQueue from './structs/PriorityQueue.js';
 import _ol_transform_ from './transform.js';
 
@@ -1201,7 +1201,7 @@ PluggableMap.prototype.renderFrame_ = function(time) {
   const previousFrameState = this.frameState_;
   /** @type {?olx.FrameState} */
   let frameState = null;
-  if (size !== undefined && _ol_size_.hasArea(size) && view && view.isDef()) {
+  if (size !== undefined && hasArea(size) && view && view.isDef()) {
     const viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
     const layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     const layerStates = {};
