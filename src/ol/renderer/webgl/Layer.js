@@ -6,7 +6,7 @@ import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
 import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
 import LayerRenderer from '../Layer.js';
-import _ol_renderer_webgl_defaultmapshader_ from '../webgl/defaultmapshader.js';
+import {fragment, vertex} from '../webgl/defaultmapshader.js';
 import _ol_renderer_webgl_defaultmapshader_Locations_ from '../webgl/defaultmapshader/Locations.js';
 import _ol_transform_ from '../../transform.js';
 import {create, fromTransform} from '../../vec/mat4.js';
@@ -148,8 +148,8 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 
   const gl = context.getGL();
 
-  const fragmentShader = _ol_renderer_webgl_defaultmapshader_.fragment;
-  const vertexShader = _ol_renderer_webgl_defaultmapshader_.vertex;
+  const fragmentShader = fragment;
+  const vertexShader = vertex;
 
   const program = context.getProgram(fragmentShader, vertexShader);
 

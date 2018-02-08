@@ -13,7 +13,7 @@ import {createEmpty, intersects} from '../../extent.js';
 import {roundUpToPowerOfTwo} from '../../math.js';
 import RendererType from '../Type.js';
 import WebGLLayerRenderer from '../webgl/Layer.js';
-import _ol_renderer_webgl_tilelayershader_ from '../webgl/tilelayershader.js';
+import {fragment, vertex} from '../webgl/tilelayershader.js';
 import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayershader/Locations.js';
 import {toSize} from '../../size.js';
 import _ol_transform_ from '../../transform.js';
@@ -35,13 +35,13 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
    * @private
    * @type {ol.webgl.Fragment}
    */
-  this.fragmentShader_ = _ol_renderer_webgl_tilelayershader_.fragment;
+  this.fragmentShader_ = fragment;
 
   /**
    * @private
    * @type {ol.webgl.Vertex}
    */
-  this.vertexShader_ = _ol_renderer_webgl_tilelayershader_.vertex;
+  this.vertexShader_ = vertex;
 
   /**
    * @private

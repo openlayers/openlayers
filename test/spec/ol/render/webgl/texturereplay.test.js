@@ -1,5 +1,5 @@
 import WebGLTextureReplay from '../../../../../src/ol/render/webgl/TextureReplay.js';
-import _ol_render_webgl_texturereplay_defaultshader_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader.js';
+import {fragment, vertex} from '../../../../../src/ol/render/webgl/texturereplay/defaultshader.js';
 import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader/Locations.js';
 
 describe('ol.render.webgl.TextureReplay', function() {
@@ -39,9 +39,7 @@ describe('ol.render.webgl.TextureReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-        _ol_render_webgl_texturereplay_defaultshader_.fragment,
-        _ol_render_webgl_texturereplay_defaultshader_.vertex)).to.be(true);
+      expect(context.getProgram.calledWithExactly(fragment, vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

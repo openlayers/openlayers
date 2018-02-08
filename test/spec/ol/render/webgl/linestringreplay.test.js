@@ -3,7 +3,7 @@ import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import WebGLLineStringReplay from '../../../../../src/ol/render/webgl/LineStringReplay.js';
-import _ol_render_webgl_linestringreplay_defaultshader_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
+import {fragment, vertex} from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
 import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader/Locations.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
@@ -225,9 +225,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-        _ol_render_webgl_linestringreplay_defaultshader_.fragment,
-        _ol_render_webgl_linestringreplay_defaultshader_.vertex)).to.be(true);
+      expect(context.getProgram.calledWithExactly(fragment, vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

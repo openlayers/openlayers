@@ -7,7 +7,7 @@ import {asArray} from '../../color.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_render_webgl_circlereplay_defaultshader_ from '../webgl/circlereplay/defaultshader.js';
+import {fragment, vertex} from '../webgl/circlereplay/defaultshader.js';
 import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../webgl/circlereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
@@ -196,8 +196,8 @@ WebGLCircleReplay.prototype.getDeleteResourcesFunction = function(context) {
  */
 WebGLCircleReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  const fragmentShader = _ol_render_webgl_circlereplay_defaultshader_.fragment;
-  const vertexShader = _ol_render_webgl_circlereplay_defaultshader_.vertex;
+  const fragmentShader = fragment;
+  const vertexShader = vertex;
   const program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations

@@ -7,14 +7,11 @@
 import {DEBUG_WEBGL} from '../../../index.js';
 import _ol_webgl_Fragment_ from '../../../webgl/Fragment.js';
 import _ol_webgl_Vertex_ from '../../../webgl/Vertex.js';
-const {{namespace}} = {};
 
-{{namespace}}.fragment = new _ol_webgl_Fragment_(DEBUG_WEBGL ?
+export const fragment = new _ol_webgl_Fragment_(DEBUG_WEBGL ?
   'precision mediump float;\n{{{originalFragmentSource}}}' :
   'precision mediump float;{{{fragmentSource}}}');
 
-{{namespace}}.vertex = new _ol_webgl_Vertex_(DEBUG_WEBGL ?
+export const vertex = new _ol_webgl_Vertex_(DEBUG_WEBGL ?
   '{{{originalVertexSource}}}' :
   '{{{vertexSource}}}');
-
-export default {{namespace}};
