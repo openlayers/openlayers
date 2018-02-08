@@ -3,7 +3,7 @@
  */
 import {getUid, inherits} from '../../index.js';
 import WebGLTextureReplay from '../webgl/TextureReplay.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -80,12 +80,12 @@ WebGLImageReplay.prototype.finish = function(context) {
   this.hitDetectionGroupIndices.push(this.indices.length);
 
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
+  this.verticesBuffer = new WebGLBuffer(this.vertices);
 
   const indices = this.indices;
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new _ol_webgl_Buffer_(indices);
+  this.indicesBuffer = new WebGLBuffer(indices);
 
   // create textures
   /** @type {Object.<string, WebGLTexture>} */

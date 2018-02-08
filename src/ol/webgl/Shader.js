@@ -9,7 +9,7 @@ import {FALSE} from '../functions.js';
  * @param {string} source Source.
  * @struct
  */
-const _ol_webgl_Shader_ = function(source) {
+const WebGLShader = function(source) {
 
   /**
    * @private
@@ -24,13 +24,13 @@ const _ol_webgl_Shader_ = function(source) {
  * @abstract
  * @return {number} Type.
  */
-_ol_webgl_Shader_.prototype.getType = function() {};
+WebGLShader.prototype.getType = function() {};
 
 
 /**
  * @return {string} Source.
  */
-_ol_webgl_Shader_.prototype.getSource = function() {
+WebGLShader.prototype.getSource = function() {
   return this.source_;
 };
 
@@ -38,5 +38,5 @@ _ol_webgl_Shader_.prototype.getSource = function() {
 /**
  * @return {boolean} Is animated?
  */
-_ol_webgl_Shader_.prototype.isAnimated = FALSE;
-export default _ol_webgl_Shader_;
+WebGLShader.prototype.isAnimated = FALSE;
+export default WebGLShader;

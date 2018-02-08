@@ -10,7 +10,7 @@ import _ol_render_replay_ from '../replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import WebGLTextureReplay from '../webgl/TextureReplay.js';
 import AtlasManager from '../../style/AtlasManager.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -306,10 +306,10 @@ WebGLTextReplay.prototype.finish = function(context) {
   this.hitDetectionGroupIndices = this.groupIndices;
 
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
+  this.verticesBuffer = new WebGLBuffer(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
+  this.indicesBuffer = new WebGLBuffer(this.indices);
 
   // create textures
   /** @type {Object.<string, WebGLTexture>} */

@@ -18,7 +18,7 @@ import _ol_renderer_webgl_tilelayershader_Locations_ from '../webgl/tilelayersha
 import {toSize} from '../../size.js';
 import _ol_transform_ from '../../transform.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -53,7 +53,7 @@ const WebGLTileLayerRenderer = function(mapRenderer, tileLayer) {
    * @private
    * @type {ol.webgl.Buffer}
    */
-  this.renderArrayBuffer_ = new _ol_webgl_Buffer_([
+  this.renderArrayBuffer_ = new WebGLBuffer([
     0, 0, 0, 1,
     1, 0, 1, 1,
     0, 1, 0, 0,

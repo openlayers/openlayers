@@ -12,7 +12,7 @@ import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../webgl/cir
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
 import _ol_webgl_ from '../../webgl.js';
-import _ol_webgl_Buffer_ from '../../webgl/Buffer.js';
+import WebGLBuffer from '../../webgl/Buffer.js';
 
 /**
  * @constructor
@@ -157,10 +157,10 @@ WebGLCircleReplay.prototype.drawCircle = function(circleGeometry, feature) {
  **/
 WebGLCircleReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
-  this.verticesBuffer = new _ol_webgl_Buffer_(this.vertices);
+  this.verticesBuffer = new WebGLBuffer(this.vertices);
 
   // create, bind, and populate the indices buffer
-  this.indicesBuffer = new _ol_webgl_Buffer_(this.indices);
+  this.indicesBuffer = new WebGLBuffer(this.indices);
 
   this.startIndices.push(this.indices.length);
 
