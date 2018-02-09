@@ -13,6 +13,13 @@ import {createElementNS, getAllTextContent, makeArrayPusher, makeChildAppender,
   makeReplacer, makeSimpleNodeFactory, OBJECT_PROPERTY_NODE_FACTORY, pushParseAndPop, pushSerializeAndPop} from '../xml.js';
 
 
+  /**
+ * @const
+ * @type {string}
+ */
+const schemaLocation = GMLBase.GMLNS + ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
+
+
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format,
@@ -37,20 +44,11 @@ const GML2 = function(opt_options) {
    * @inheritDoc
    */
   this.schemaLocation = options.schemaLocation ?
-    options.schemaLocation : GML2.schemaLocation_;
+    options.schemaLocation : schemaLocation;
 
 };
 
 inherits(GML2, GMLBase);
-
-
-/**
- * @const
- * @type {string}
- * @private
- */
-GML2.schemaLocation_ = GMLBase.GMLNS +
-    ' http://schemas.opengis.net/gml/2.1.2/feature.xsd';
 
 
 /**
@@ -140,69 +138,6 @@ GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'coordinates': makeReplacer(
-      GML2.prototype.readFlatCoordinates_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
-    'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GML2.prototype.BOX_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'coordinates': makeArrayPusher(
-      GML2.prototype.readFlatCoordinates_)
-  }
-};
-
-
-/**
- * @const
- * @type {Object.<string, Object.<string, ol.XmlParser>>}
- * @private
- */
-GML2.prototype.GEOMETRY_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'Point': makeReplacer(GMLBase.prototype.readPoint),
-    'MultiPoint': makeReplacer(
-      GMLBase.prototype.readMultiPoint),
-    'LineString': makeReplacer(
-      GMLBase.prototype.readLineString),
-    'MultiLineString': makeReplacer(
-      GMLBase.prototype.readMultiLineString),
-    'LinearRing': makeReplacer(
-      GMLBase.prototype.readLinearRing),
-    'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
-    'MultiPolygon': makeReplacer(
-      GMLBase.prototype.readMultiPolygon),
-    'Box': makeReplacer(GML2.prototype.readBox_)
-  }
-};
-
-
-/**
- * @const
  * @param {*} value Value.
  * @param {Array.<*>} objectStack Object stack.
  * @param {string=} opt_nodeName Node name.
@@ -282,33 +217,6 @@ GML2.prototype.writeFeatureElement = function(node, feature, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
- * @param {Array.<*>} objectStack Node stack.
- */
-GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
-  const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
-  const item = assign({}, context);
-  item.node = node;
-  let value;
-  if (Array.isArray(geometry)) {
-    if (context.dataProjection) {
-      value = transformExtent(
-        geometry, context.featureProjection, context.dataProjection);
-    } else {
-      value = geometry;
-    }
-  } else {
-    value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
-  }
-  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-    (item), GML2.GEOMETRY_SERIALIZERS_,
-    this.GEOMETRY_NODE_FACTORY_, [value],
-    objectStack, undefined, this);
-};
-
-
-/**
- * @param {Node} node Node.
  * @param {ol.geom.LineString} geometry LineString geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
@@ -330,6 +238,70 @@ GML2.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
     this.writeCurveSegments_(segments,
       geometry, objectStack);
   }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LineString} line LineString geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+GML2.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
+  const child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
+  if (child) {
+    node.appendChild(child);
+    this.writeCurveOrLineString_(child, line, objectStack);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.MultiLineString} geometry MultiLineString geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectStack) {
+  const context = objectStack[objectStack.length - 1];
+  const hasZ = context['hasZ'];
+  const srsName = context['srsName'];
+  const curve = context['curve'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  const lines = geometry.getLineStrings();
+  pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, curve: curve},
+    this.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
+    this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
+    objectStack, undefined, this);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ */
+GML2.prototype.writeGeometryElement = function(node, geometry, objectStack) {
+  const context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
+  const item = assign({}, context);
+  item.node = node;
+  let value;
+  if (Array.isArray(geometry)) {
+    if (context.dataProjection) {
+      value = transformExtent(
+        geometry, context.featureProjection, context.dataProjection);
+    } else {
+      value = geometry;
+    }
+  } else {
+    value = transformWithOptions(/** @type {ol.geom.Geometry} */ (geometry), true, context);
+  }
+  pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+    (item), this.GEOMETRY_SERIALIZERS_,
+    this.GEOMETRY_NODE_FACTORY_, [value],
+    objectStack, undefined, this);
 };
 
 
@@ -402,7 +374,7 @@ GML2.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
     const rings = geometry.getLinearRings();
     pushSerializeAndPop(
       {node: node, hasZ: hasZ, srsName: srsName},
-      GML2.RING_SERIALIZERS_,
+      this.RING_SERIALIZERS_,
       this.RING_NODE_FACTORY_,
       rings, objectStack, undefined, this);
   } else if (node.nodeName === 'Surface') {
@@ -486,28 +458,6 @@ GML2.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.geom.MultiLineString} geometry MultiLineString geometry.
- * @param {Array.<*>} objectStack Node stack.
- * @private
- */
-GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectStack) {
-  const context = objectStack[objectStack.length - 1];
-  const hasZ = context['hasZ'];
-  const srsName = context['srsName'];
-  const curve = context['curve'];
-  if (srsName) {
-    node.setAttribute('srsName', srsName);
-  }
-  const lines = geometry.getLineStrings();
-  pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, curve: curve},
-    GML2.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
-    this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
-    objectStack, undefined, this);
-};
-
-
-/**
- * @param {Node} node Node.
  * @param {ol.geom.Point} geometry Point geometry.
  * @param {Array.<*>} objectStack Node stack.
  * @private
@@ -543,7 +493,7 @@ GML2.prototype.writeMultiPoint_ = function(node, geometry,
   }
   const points = geometry.getPoints();
   pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName},
-    GML2.POINTMEMBER_SERIALIZERS_,
+    this.POINTMEMBER_SERIALIZERS_,
     makeSimpleNodeFactory('pointMember'), points,
     objectStack, undefined, this);
 };
@@ -559,21 +509,6 @@ GML2.prototype.writePointMember_ = function(node, point, objectStack) {
   const child = createElementNS(node.namespaceURI, 'Point');
   node.appendChild(child);
   this.writePoint_(child, point, objectStack);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {ol.geom.LineString} line LineString geometry.
- * @param {Array.<*>} objectStack Node stack.
- * @private
- */
-GML2.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
-  const child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
-  if (child) {
-    node.appendChild(child);
-    this.writeCurveOrLineString_(child, line, objectStack);
-  }
 };
 
 
@@ -611,7 +546,7 @@ GML2.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStac
   }
   const polygons = geometry.getPolygons();
   pushSerializeAndPop({node: node, hasZ: hasZ, srsName: srsName, surface: surface},
-    GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
+    this.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
     this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
     objectStack, undefined, this);
 };
@@ -648,7 +583,7 @@ GML2.prototype.writeEnvelope = function(node, extent, objectStack) {
   const keys = ['lowerCorner', 'upperCorner'];
   const values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
   pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
-    ({node: node}), GML2.ENVELOPE_SERIALIZERS_,
+    ({node: node}), this.ENVELOPE_SERIALIZERS_,
     OBJECT_PROPERTY_NODE_FACTORY,
     values,
     objectStack, keys, this);
@@ -657,10 +592,99 @@ GML2.prototype.writeEnvelope = function(node, extent, objectStack) {
 
 /**
  * @const
+ * @type {Object.<string, string>}
+ */
+const MULTIGEOMETRY_TO_MEMBER_NODENAME = {
+  'MultiLineString': 'lineStringMember',
+  'MultiCurve': 'curveMember',
+  'MultiPolygon': 'polygonMember',
+  'MultiSurface': 'surfaceMember'
+};
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+GML2.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+  const parentNode = objectStack[objectStack.length - 1].node;
+  return createElementNS('http://www.opengis.net/gml',
+    MULTIGEOMETRY_TO_MEMBER_NODENAME[parentNode.nodeName]);
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'coordinates': makeReplacer(GML2.prototype.readFlatCoordinates_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'innerBoundaryIs': GML2.prototype.innerBoundaryIsParser_,
+    'outerBoundaryIs': GML2.prototype.outerBoundaryIsParser_
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+GML2.prototype.BOX_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'coordinates': makeArrayPusher(
+      GML2.prototype.readFlatCoordinates_)
+  }
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
+ * @private
+ */
+GML2.prototype.GEOMETRY_PARSERS_ = {
+  'http://www.opengis.net/gml': {
+    'Point': makeReplacer(GMLBase.prototype.readPoint),
+    'MultiPoint': makeReplacer(
+      GMLBase.prototype.readMultiPoint),
+    'LineString': makeReplacer(
+      GMLBase.prototype.readLineString),
+    'MultiLineString': makeReplacer(
+      GMLBase.prototype.readMultiLineString),
+    'LinearRing': makeReplacer(
+      GMLBase.prototype.readLinearRing),
+    'Polygon': makeReplacer(GMLBase.prototype.readPolygon),
+    'MultiPolygon': makeReplacer(
+      GMLBase.prototype.readMultiPolygon),
+    'Box': makeReplacer(GML2.prototype.readBox_)
+  }
+};
+
+
+/**
+ * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-GML2.GEOMETRY_SERIALIZERS_ = {
+GML2.prototype.GEOMETRY_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'Curve': makeChildAppender(
       GML2.prototype.writeCurveOrLineString_),
@@ -693,7 +717,21 @@ GML2.GEOMETRY_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-GML2.RING_SERIALIZERS_ = {
+GML2.prototype.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lineStringMember': makeChildAppender(
+      GML2.prototype.writeLineStringOrCurveMember_),
+    'curveMember': makeChildAppender(
+      GML2.prototype.writeLineStringOrCurveMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+GML2.prototype.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'outerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_),
     'innerBoundaryIs': makeChildAppender(GML2.prototype.writeRing_)
@@ -705,7 +743,7 @@ GML2.RING_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-GML2.POINTMEMBER_SERIALIZERS_ = {
+GML2.prototype.POINTMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'pointMember': makeChildAppender(
       GML2.prototype.writePointMember_)
@@ -714,52 +752,11 @@ GML2.POINTMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
- * @private
- */
-GML2.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
-    'lineStringMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_),
-    'curveMember': makeChildAppender(
-      GML2.prototype.writeLineStringOrCurveMember_)
-  }
-};
-
-
-/**
- * @const
- * @param {*} value Value.
- * @param {Array.<*>} objectStack Object stack.
- * @param {string=} opt_nodeName Node name.
- * @return {Node|undefined} Node.
- * @private
- */
-GML2.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
-  const parentNode = objectStack[objectStack.length - 1].node;
-  return createElementNS('http://www.opengis.net/gml',
-    GML2.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
-};
-
-/**
- * @const
- * @type {Object.<string, string>}
- * @private
- */
-GML2.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
-  'MultiLineString': 'lineStringMember',
-  'MultiCurve': 'curveMember',
-  'MultiPolygon': 'polygonMember',
-  'MultiSurface': 'surfaceMember'
-};
-
-
-/**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+GML2.prototype.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'surfaceMember': makeChildAppender(
       GML2.prototype.writeSurfaceOrPolygonMember_),
@@ -773,10 +770,11 @@ GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-GML2.ENVELOPE_SERIALIZERS_ = {
+GML2.prototype.ENVELOPE_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'lowerCorner': makeChildAppender(XSD.writeStringTextNode),
     'upperCorner': makeChildAppender(XSD.writeStringTextNode)
   }
 };
+
 export default GML2;
