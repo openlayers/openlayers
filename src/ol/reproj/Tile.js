@@ -9,7 +9,7 @@ import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getArea, getCenter, getIntersection} from '../extent.js';
 import {clamp} from '../math.js';
-import _ol_reproj_ from '../reproj.js';
+import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
 import Triangulation from '../reproj/Triangulation.js';
 
 /**
@@ -125,7 +125,7 @@ const ReprojTile = function(sourceProj, sourceTileGrid,
     this.wrappedTileCoord_[0]);
 
   const targetCenter = getCenter(limitedTargetExtent);
-  const sourceResolution = _ol_reproj_.calculateSourceResolution(
+  const sourceResolution = calculateSourceResolution(
     sourceProj, targetProj, targetCenter, targetResolution);
 
   if (!isFinite(sourceResolution) || sourceResolution <= 0) {
@@ -237,7 +237,7 @@ ReprojTile.prototype.reproject_ = function() {
 
     const targetExtent = this.targetTileGrid_.getTileCoordExtent(
       this.wrappedTileCoord_);
-    this.canvas_ = _ol_reproj_.render(width, height, this.pixelRatio_,
+    this.canvas_ = renderReprojected(width, height, this.pixelRatio_,
       sourceResolution, this.sourceTileGrid_.getExtent(),
       targetResolution, targetExtent, this.triangulation_, sources,
       this.gutter_, this.renderEdges_);

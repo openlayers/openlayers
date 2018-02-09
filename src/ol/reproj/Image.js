@@ -8,7 +8,7 @@ import ImageState from '../ImageState.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
 import {getCenter, getIntersection, getHeight, getWidth} from '../extent.js';
-import _ol_reproj_ from '../reproj.js';
+import {calculateSourceResolution, render as renderReprojected} from '../reproj.js';
 import Triangulation from '../reproj/Triangulation.js';
 
 /**
@@ -46,7 +46,7 @@ const ReprojImage = function(sourceProj, targetProj,
     getIntersection(targetExtent, maxTargetExtent) : targetExtent;
 
   const targetCenter = getCenter(limitedTargetExtent);
-  const sourceResolution = _ol_reproj_.calculateSourceResolution(
+  const sourceResolution = calculateSourceResolution(
     sourceProj, targetProj, targetCenter, targetResolution);
 
   const errorThresholdInPixels = ERROR_THRESHOLD;
@@ -148,7 +148,7 @@ ReprojImage.prototype.reproject_ = function() {
     const width = getWidth(this.targetExtent_) / this.targetResolution_;
     const height = getHeight(this.targetExtent_) / this.targetResolution_;
 
-    this.canvas_ = _ol_reproj_.render(width, height, this.sourcePixelRatio_,
+    this.canvas_ = renderReprojected(width, height, this.sourcePixelRatio_,
       this.sourceImage_.getResolution(), this.maxSourceExtent_,
       this.targetResolution_, this.targetExtent_, this.triangulation_, [{
         extent: this.sourceImage_.getExtent(),

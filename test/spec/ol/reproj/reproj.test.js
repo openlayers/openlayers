@@ -1,4 +1,4 @@
-import _ol_reproj_ from '../../../../src/ol/reproj.js';
+import {calculateSourceResolution} from '../../../../src/ol/reproj.js';
 import {get as getProjection, transform} from '../../../../src/ol/proj.js';
 
 
@@ -14,15 +14,15 @@ describe('ol.reproj', function() {
     it('is identity for identical projection', function() {
       let result;
       const resolution = 500;
-      result = _ol_reproj_.calculateSourceResolution(
+      result = calculateSourceResolution(
         proj3857, proj3857, origin, resolution);
       expect(result).to.be(resolution);
 
-      result = _ol_reproj_.calculateSourceResolution(
+      result = calculateSourceResolution(
         proj3857, proj3857, point3857, resolution);
       expect(result).to.be(resolution);
 
-      result = _ol_reproj_.calculateSourceResolution(
+      result = calculateSourceResolution(
         proj4326, proj4326, point4326, resolution);
       expect(result).to.be(resolution);
     });
@@ -30,13 +30,13 @@ describe('ol.reproj', function() {
     it('calculates correctly', function() {
       const resolution4326 = 5;
 
-      const resolution3857 = _ol_reproj_.calculateSourceResolution(
+      const resolution3857 = calculateSourceResolution(
         proj3857, proj4326, point4326, resolution4326);
       expect(resolution3857).not.to.be(resolution4326);
       expect(resolution3857).to.roughlyEqual(
         5 * proj4326.getMetersPerUnit(), 1e-4);
 
-      const result = _ol_reproj_.calculateSourceResolution(
+      const result = calculateSourceResolution(
         proj4326, proj3857, point3857, resolution3857);
       expect(result).to.be(resolution4326);
     });
