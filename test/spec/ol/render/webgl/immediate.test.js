@@ -9,7 +9,7 @@ import Point from '../../../../../src/ol/geom/Point.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.js';
 import WebGLImageReplay from '../../../../../src/ol/render/webgl/ImageReplay.js';
-import _ol_render_webgl_Immediate_ from '../../../../../src/ol/render/webgl/Immediate.js';
+import WebGLImmediateRenderer from '../../../../../src/ol/render/webgl/Immediate.js';
 import WebGLLineStringReplay from '../../../../../src/ol/render/webgl/LineStringReplay.js';
 import WebGLPolygonReplay from '../../../../../src/ol/render/webgl/PolygonReplay.js';
 import CircleStyle from '../../../../../src/ol/style/Circle.js';
@@ -20,7 +20,7 @@ import Style from '../../../../../src/ol/style/Style.js';
 describe('ol.render.webgl.Immediate', function() {
   let context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
   beforeEach(function() {
-    context = new _ol_render_webgl_Immediate_({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
+    context = new WebGLImmediateRenderer({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
     style = new Style({
       image: new CircleStyle(),
       fill: new Fill(),
