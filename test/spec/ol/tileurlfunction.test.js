@@ -1,6 +1,6 @@
 import {expandUrl, createFromTemplate, createFromTemplates, createFromTileUrlFunctions} from '../../../src/ol/tileurlfunction.js';
 import _ol_tilecoord_ from '../../../src/ol/tilecoord.js';
-import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../src/ol/tilegrid.js';
 import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.TileUrlFunction', function() {
@@ -49,7 +49,7 @@ describe('ol.TileUrlFunction', function() {
   });
 
   describe('createFromTemplate', function() {
-    const tileGrid = _ol_tilegrid_.createXYZ();
+    const tileGrid = createXYZ();
     it('creates expected URL', function() {
       const tileUrl = createFromTemplate('{z}/{x}/{y}', tileGrid);
       expect(tileUrl([3, 2, -2])).to.eql('3/2/1');
@@ -75,7 +75,7 @@ describe('ol.TileUrlFunction', function() {
   });
 
   describe('createFromTemplates', function() {
-    const tileGrid = _ol_tilegrid_.createXYZ();
+    const tileGrid = createXYZ();
     it('creates expected URL', function() {
       const templates = [
         'http://tile-1/{z}/{x}/{y}',
@@ -108,7 +108,7 @@ describe('ol.TileUrlFunction', function() {
   });
 
   describe('createFromTileUrlFunctions', function() {
-    const tileGrid = _ol_tilegrid_.createXYZ();
+    const tileGrid = createXYZ();
     it('creates expected URL', function() {
       const tileUrl = createFromTileUrlFunctions([
         createFromTemplate('a', tileGrid),

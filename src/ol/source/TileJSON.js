@@ -15,7 +15,7 @@ import {jsonp as requestJSONP} from '../net.js';
 import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileImage from '../source/TileImage.js';
-import _ol_tilegrid_ from '../tilegrid.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -126,8 +126,8 @@ TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   const minZoom = tileJSON.minzoom || 0;
   const maxZoom = tileJSON.maxzoom || 22;
-  const tileGrid = _ol_tilegrid_.createXYZ({
-    extent: _ol_tilegrid_.extentFromProjection(sourceProjection),
+  const tileGrid = createXYZ({
+    extent: extentFromProjection(sourceProjection),
     maxZoom: maxZoom,
     minZoom: minZoom
   });

@@ -12,7 +12,7 @@ import {equivalent, get as getProjection} from '../proj.js';
 import ReprojTile from '../reproj/Tile.js';
 import UrlTile from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
-import _ol_tilegrid_ from '../tilegrid.js';
+import {getForProjection as getTileGridForProjection} from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -174,7 +174,7 @@ TileImage.prototype.getTileGridForProjection = function(projection) {
     const projKey = getUid(projection).toString();
     if (!(projKey in this.tileGridForProjection)) {
       this.tileGridForProjection[projKey] =
-          _ol_tilegrid_.getForProjection(projection);
+          getTileGridForProjection(projection);
     }
     return /** @type {!ol.tilegrid.TileGrid} */ (this.tileGridForProjection[projKey]);
   }

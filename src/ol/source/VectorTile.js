@@ -8,7 +8,7 @@ import VectorTile from '../VectorTile.js';
 import {toSize} from '../size.js';
 import UrlTile from '../source/UrlTile.js';
 import _ol_tilecoord_ from '../tilecoord.js';
-import _ol_tilegrid_ from '../tilegrid.js';
+import {createXYZ, extentFromProjection, createForProjection} from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -29,9 +29,9 @@ import _ol_tilegrid_ from '../tilegrid.js';
 const VectorTileSource = function(options) {
   const projection = options.projection || 'EPSG:3857';
 
-  const extent = options.extent || _ol_tilegrid_.extentFromProjection(projection);
+  const extent = options.extent || extentFromProjection(projection);
 
-  const tileGrid = options.tileGrid || _ol_tilegrid_.createXYZ({
+  const tileGrid = options.tileGrid || createXYZ({
     extent: extent,
     maxZoom: options.maxZoom || 22,
     minZoom: options.minZoom,
@@ -143,7 +143,7 @@ VectorTileSource.prototype.getTileGridForProjection = function(projection) {
     // A tile grid that matches the tile size of the source tile grid is more
     // likely to have 1:1 relationships between source tiles and rendered tiles.
     const sourceTileGrid = this.tileGrid;
-    tileGrid = this.tileGrids_[code] = _ol_tilegrid_.createForProjection(projection, undefined,
+    tileGrid = this.tileGrids_[code] = createForProjection(projection, undefined,
       sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
   }
   return tileGrid;

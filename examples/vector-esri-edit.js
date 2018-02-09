@@ -11,7 +11,7 @@ import {tile as tileStrategy} from '../src/ol/loadingstrategy.js';
 import {fromLonLat} from '../src/ol/proj.js';
 import VectorSource from '../src/ol/source/Vector.js';
 import XYZ from '../src/ol/source/XYZ.js';
-import _ol_tilegrid_ from '../src/ol/tilegrid.js';
+import {createXYZ} from '../src/ol/tilegrid.js';
 
 
 const serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
@@ -44,7 +44,7 @@ const vectorSource = new VectorSource({
       }
     }});
   },
-  strategy: tileStrategy(_ol_tilegrid_.createXYZ({
+  strategy: tileStrategy(createXYZ({
     tileSize: 512
   }))
 });

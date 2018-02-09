@@ -1,7 +1,7 @@
 import ImageTile from '../../../../src/ol/ImageTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import TileWMS from '../../../../src/ol/source/TileWMS.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
@@ -28,7 +28,7 @@ describe('ol.source.TileWMS', function() {
     it('can be constructed without url or urls params', function() {
       const source = new TileWMS({
         projection: 'EPSG:3857',
-        tileGrid: _ol_tilegrid_.createXYZ({maxZoom: 6})
+        tileGrid: createXYZ({maxZoom: 6})
       });
       expect(source).to.be.an(TileWMS);
     });

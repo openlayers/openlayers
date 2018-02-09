@@ -9,7 +9,7 @@ import {get as getProjection, getTransformFromProjections} from '../proj.js';
 import SourceState from '../source/State.js';
 import TileImage from '../source/TileImage.js';
 import _ol_tilecoord_ from '../tilecoord.js';
-import _ol_tilegrid_ from '../tilegrid.js';
+import {createXYZ, extentFromProjection} from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -129,10 +129,10 @@ BingMaps.prototype.handleImageryMetadataResponse = function(response) {
   const maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
   const sourceProjection = this.getProjection();
-  const extent = _ol_tilegrid_.extentFromProjection(sourceProjection);
+  const extent = extentFromProjection(sourceProjection);
   const tileSize = resource.imageWidth == resource.imageHeight ?
     resource.imageWidth : [resource.imageWidth, resource.imageHeight];
-  const tileGrid = _ol_tilegrid_.createXYZ({
+  const tileGrid = createXYZ({
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,

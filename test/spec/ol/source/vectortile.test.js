@@ -6,7 +6,7 @@ import MVT from '../../../../src/ol/format/MVT.js';
 import VectorTileLayer from '../../../../src/ol/layer/VectorTile.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import VectorTileSource from '../../../../src/ol/source/VectorTile.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 describe('ol.source.VectorTile', function() {
@@ -29,7 +29,7 @@ describe('ol.source.VectorTile', function() {
     });
 
     it('creates a 512 XYZ tilegrid by default', function() {
-      const tileGrid = _ol_tilegrid_.createXYZ({tileSize: 512});
+      const tileGrid = createXYZ({tileSize: 512});
       expect(source.tileGrid.tileSize_).to.equal(tileGrid.tileSize_);
       expect(source.tileGrid.extent_).to.equal(tileGrid.extent_);
     });

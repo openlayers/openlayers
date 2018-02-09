@@ -2,7 +2,7 @@ import TileSource from '../../../../src/ol/source/Tile.js';
 import TileImage from '../../../../src/ol/source/TileImage.js';
 import UrlTile from '../../../../src/ol/source/UrlTile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.source.XYZ', function() {
@@ -18,7 +18,7 @@ describe('ol.source.XYZ', function() {
     });
 
     it('can be constructed with a custom tile grid', function() {
-      const tileGrid = _ol_tilegrid_.createXYZ();
+      const tileGrid = createXYZ();
       const tileSource = new XYZ({
         tileGrid: tileGrid
       });

@@ -9,7 +9,7 @@ import {equivalent} from '../proj.js';
 import {toSize, scale as scaleSize} from '../size.js';
 import Source from '../source/Source.js';
 import _ol_tilecoord_ from '../tilecoord.js';
-import _ol_tilegrid_ from '../tilegrid.js';
+import {wrapX, getForProjection as getTileGridForProjection} from '../tilegrid.js';
 
 /**
  * @classdesc
@@ -215,7 +215,7 @@ TileSource.prototype.getTileGrid = function() {
  */
 TileSource.prototype.getTileGridForProjection = function(projection) {
   if (!this.tileGrid) {
-    return _ol_tilegrid_.getForProjection(projection);
+    return getTileGridForProjection(projection);
   } else {
     return this.tileGrid;
   }
@@ -281,7 +281,7 @@ TileSource.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_pr
     opt_projection : this.getProjection();
   const tileGrid = this.getTileGridForProjection(projection);
   if (this.getWrapX() && projection.isGlobal()) {
-    tileCoord = _ol_tilegrid_.wrapX(tileGrid, tileCoord, projection);
+    tileCoord = wrapX(tileGrid, tileCoord, projection);
   }
   return _ol_tilecoord_.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
 };

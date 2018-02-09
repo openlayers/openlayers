@@ -4,7 +4,7 @@ import * as _ol_extent_ from '../../../../src/ol/extent.js';
 import {get as getProjection, METERS_PER_UNIT} from '../../../../src/ol/proj.js';
 import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
 import Projection from '../../../../src/ol/proj/Projection.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createForExtent, createForProjection, createXYZ, getForProjection as getTileGridForProjection} from '../../../../src/ol/tilegrid.js';
 import TileGrid from '../../../../src/ol/tilegrid/TileGrid.js';
 
 
@@ -276,7 +276,7 @@ describe('ol.tilegrid.TileGrid', function() {
   describe('createForExtent', function() {
     it('allows creation of tile grid from extent', function() {
       const extent = _ol_extent_.createOrUpdate(-100, -100, 100, 100);
-      const grid = _ol_tilegrid_.createForExtent(extent);
+      const grid = createForExtent(extent);
       expect(grid).to.be.a(TileGrid);
 
       const resolutions = grid.getResolutions();
@@ -309,7 +309,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('allows easier creation of a tile grid', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(projection);
+      const grid = createForProjection(projection);
       expect(grid).to.be.a(TileGrid);
 
       const resolutions = grid.getResolutions();
@@ -318,7 +318,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('accepts a number of zoom levels', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(projection, 18);
+      const grid = createForProjection(projection, 18);
       expect(grid).to.be.a(TileGrid);
 
       const resolutions = grid.getResolutions();
@@ -327,7 +327,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('accepts a big number of zoom levels', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(projection, 23);
+      const grid = createForProjection(projection, 23);
       expect(grid).to.be.a(TileGrid);
 
       const resolutions = grid.getResolutions();
@@ -337,7 +337,7 @@ describe('ol.tilegrid.TileGrid', function() {
     it('works for projections unknown to the client', function() {
       const projection = new Projection(
         {code: 'EPSG:31287', units: 'm'});
-      const grid = _ol_tilegrid_.createForProjection(projection);
+      const grid = createForProjection(projection);
       const resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
         360 * METERS_PER_UNIT['degrees'] /
@@ -346,7 +346,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('assumes origin is top-left', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(projection);
+      const grid = createForProjection(projection);
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
       expect(origin).to.eql([-half, half]);
@@ -354,7 +354,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('accepts bottom-left as corner', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(
+      const grid = createForProjection(
         projection, undefined, undefined, 'bottom-left');
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -363,7 +363,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('accepts bottom-right as corner', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(
+      const grid = createForProjection(
         projection, undefined, undefined, 'bottom-right');
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -372,7 +372,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('accepts top-left as corner', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(
+      const grid = createForProjection(
         projection, undefined, undefined, 'top-left');
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -381,7 +381,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('accepts top-right as corner', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.createForProjection(
+      const grid = createForProjection(
         projection, undefined, undefined, 'top-right');
       const origin = grid.getOrigin();
       const half = HALF_SIZE;
@@ -393,7 +393,7 @@ describe('ol.tilegrid.TileGrid', function() {
   describe('createXYZ()', function() {
 
     it('uses defaults', function() {
-      const tileGrid = _ol_tilegrid_.createXYZ();
+      const tileGrid = createXYZ();
       expect(tileGrid.getExtent()).to.eql(
         getProjection('EPSG:3857').getExtent());
       expect(tileGrid.getMinZoom()).to.equal(0);
@@ -402,7 +402,7 @@ describe('ol.tilegrid.TileGrid', function() {
     });
 
     it('respects configuration options', function() {
-      const tileGrid = _ol_tilegrid_.createXYZ({
+      const tileGrid = createXYZ({
         extent: [10, 20, 30, 40],
         minZoom: 1,
         maxZoom: 2,
@@ -420,7 +420,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('gets the default tile grid for a projection', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.getForProjection(projection);
+      const grid = getTileGridForProjection(projection);
       expect(grid).to.be.a(TileGrid);
 
       const resolutions = grid.getResolutions();
@@ -430,8 +430,8 @@ describe('ol.tilegrid.TileGrid', function() {
 
     it('stores the default tile grid on a projection', function() {
       const projection = getProjection('EPSG:3857');
-      const grid = _ol_tilegrid_.getForProjection(projection);
-      const gridAgain = _ol_tilegrid_.getForProjection(projection);
+      const grid = getTileGridForProjection(projection);
+      const gridAgain = getTileGridForProjection(projection);
 
       expect(grid).to.be(gridAgain);
     });
@@ -442,7 +442,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     let tileGrid;
     beforeEach(function() {
-      tileGrid = _ol_tilegrid_.createForExtent(
+      tileGrid = createForExtent(
         getProjection('EPSG:3857').getExtent(), 22);
     });
 
@@ -492,7 +492,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     let tileGrid;
     beforeEach(function() {
-      tileGrid = _ol_tilegrid_.createForExtent(
+      tileGrid = createForExtent(
         getProjection('EPSG:3857').getExtent(), 22);
     });
 
@@ -552,7 +552,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
     let tileGrid;
     beforeEach(function() {
-      tileGrid = _ol_tilegrid_.createForExtent(
+      tileGrid = createForExtent(
         getProjection('EPSG:3857').getExtent(), 22);
     });
 
@@ -917,7 +917,7 @@ describe('ol.tilegrid.TileGrid', function() {
 
   describe('forEachTileCoord', function() {
     it('calls the provided function with each tile coordinate', function() {
-      const tileGrid = _ol_tilegrid_.createXYZ({extent: [-180, -90, 180, 90]});
+      const tileGrid = createXYZ({extent: [-180, -90, 180, 90]});
       const tileCoords = [];
       tileGrid.forEachTileCoord([15, 47, 16, 48], 8, function(tileCoord) {
         tileCoords.push(tileCoord);

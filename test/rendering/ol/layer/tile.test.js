@@ -10,7 +10,7 @@ import XYZ from '../../../../src/ol/source/XYZ.js';
 import CircleStyle from '../../../../src/ol/style/Circle.js';
 import Fill from '../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../src/ol/style/Stroke.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.rendering.layer.Tile', function() {
@@ -220,7 +220,7 @@ describe('ol.rendering.layer.Tile', function() {
     function createSource(tileSize) {
       return new TileImage({
         url: 'rendering/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
-        tileGrid: _ol_tilegrid_.createXYZ({
+        tileGrid: createXYZ({
           tileSize: tileSize.split('x')
         }),
         transition: 0

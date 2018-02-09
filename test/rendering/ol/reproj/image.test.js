@@ -3,7 +3,7 @@ import {get as getProjection} from '../../../../src/ol/proj.js';
 import {HALF_SIZE} from '../../../../src/ol/proj/epsg3857.js';
 import ReprojImage from '../../../../src/ol/reproj/Image.js';
 import Static from '../../../../src/ol/source/ImageStatic.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createXYZ, createForProjection} from '../../../../src/ol/tilegrid.js';
 
 
 describe('ol.rendering.reproj.Image', function() {
@@ -37,21 +37,21 @@ describe('ol.rendering.reproj.Image', function() {
     beforeEach(function() {
       source = new Static({
         url: 'rendering/ol/data/tiles/osm/5/5/12.png',
-        imageExtent: _ol_tilegrid_.createXYZ().getTileCoordExtent([5, 5, -13]),
+        imageExtent: createXYZ().getTileCoordExtent([5, 5, -13]),
         projection: getProjection('EPSG:3857')
       });
     });
 
     it('works for identity reprojection', function(done) {
       testSingleImage(source, 'EPSG:3857',
-        _ol_tilegrid_.createXYZ().getTileCoordExtent([5, 5, -13]),
+        createXYZ().getTileCoordExtent([5, 5, -13]),
         2 * HALF_SIZE / (256 * (1 << 5)), 1,
         'rendering/ol/data/tiles/osm/5/5/12.png', done);
     });
 
     it('to EPSG:4326', function(done) {
       testSingleImage(source, 'EPSG:4326',
-        _ol_tilegrid_.createForProjection('EPSG:4326').
+        createForProjection('EPSG:4326').
           getTileCoordExtent([6, 10, -10]),
         360 / (256 * (1 << 4)), 1,
         'rendering/ol/reproj/expected/image-3857-to-4326.png', done);

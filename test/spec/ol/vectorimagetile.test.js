@@ -4,7 +4,7 @@ import VectorTile from '../../../src/ol/VectorTile.js';
 import {listen, listenOnce} from '../../../src/ol/events.js';
 import GeoJSON from '../../../src/ol/format/GeoJSON.js';
 import {get as getProjection} from '../../../src/ol/proj.js';
-import _ol_tilegrid_ from '../../../src/ol/tilegrid.js';
+import {createXYZ} from '../../../src/ol/tilegrid.js';
 import TileGrid from '../../../src/ol/tilegrid/TileGrid.js';
 
 
@@ -16,7 +16,7 @@ describe('ol.VectorImageTile', function() {
     const tile = new VectorImageTile([0, 0, -1], 0, url, format,
       defaultLoadFunction, [0, 0, -1], function() {
         return url;
-      }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
+      }, createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
@@ -40,7 +40,7 @@ describe('ol.VectorImageTile', function() {
         defaultLoadFunction(tile, url);
       }, [0, 0, -1], function() {
         return url;
-      }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
+      }, createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
@@ -64,7 +64,7 @@ describe('ol.VectorImageTile', function() {
     const tile = new VectorImageTile([0, 0, -1], 0, url, format,
       defaultLoadFunction, [0, 0, -1], function() {
         return url;
-      }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
+      }, createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
@@ -80,7 +80,7 @@ describe('ol.VectorImageTile', function() {
     const url = '';
     const tile = new VectorImageTile([0, 0, -1], 0, url, format,
       defaultLoadFunction, [0, 0, -1], function() {},
-      _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ(), {},
+      createXYZ(), createXYZ(), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
@@ -104,7 +104,7 @@ describe('ol.VectorImageTile', function() {
       defaultLoadFunction, [1, 0, -1], function(zxy) {
         return url;
       }, tileGrid,
-      _ol_tilegrid_.createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
+      createXYZ({extent: [-180, -90, 180, 90], tileSize: 512}),
       sourceTiles, 1, getProjection('EPSG:4326'), VectorTile, function() {});
     tile.load();
     expect(tile.tileKeys.length).to.be(1);
@@ -117,7 +117,7 @@ describe('ol.VectorImageTile', function() {
     const tile = new VectorImageTile([0, 0, 0] /* one world away */, 0, url, format,
       defaultLoadFunction, [0, 0, -1], function() {
         return url;
-      }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
+      }, createXYZ(), createXYZ({tileSize: 512}), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();
@@ -137,7 +137,7 @@ describe('ol.VectorImageTile', function() {
     const tile = new VectorImageTile([0, 0, -1], 0, url, format,
       defaultLoadFunction, [0, 0, -1], function() {
         return url;
-      }, _ol_tilegrid_.createXYZ(), _ol_tilegrid_.createXYZ({tileSize: 512}), {},
+      }, createXYZ(), createXYZ({tileSize: 512}), {},
       1, getProjection('EPSG:3857'), VectorTile, function() {});
 
     tile.load();

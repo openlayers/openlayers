@@ -3,7 +3,7 @@ import {listen} from '../../../../src/ol/events.js';
 import {get as getProjection} from '../../../../src/ol/proj.js';
 import ReprojTile from '../../../../src/ol/reproj/Tile.js';
 import XYZ from '../../../../src/ol/source/XYZ.js';
-import _ol_tilegrid_ from '../../../../src/ol/tilegrid.js';
+import {createForProjection} from '../../../../src/ol/tilegrid.js';
 import {register} from '../../../../src/ol/proj/proj4.js';
 
 
@@ -50,7 +50,7 @@ describe('ol.rendering.reproj.Tile', function() {
     });
 
     it('to EPSG:4326', function(done) {
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:4326', 7, [64, 64]);
+      const tileGrid = createForProjection('EPSG:4326', 7, [64, 64]);
       testSingleTile(source, 'EPSG:4326', tileGrid, 7, 21, -20, 1,
         'rendering/ol/reproj/expected/osm4326.png', 1, done);
     });
@@ -63,7 +63,7 @@ describe('ol.rendering.reproj.Tile', function() {
       const proj5070 = getProjection('EPSG:5070');
       proj5070.setExtent([-6e6, 0, 4e6, 6e6]);
 
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:5070', 5, [64, 64]);
+      const tileGrid = createForProjection('EPSG:5070', 5, [64, 64]);
       testSingleTile(source, 'EPSG:5070', tileGrid, 5, 13, -15, 1,
         'rendering/ol/reproj/expected/osm5070.png', 1, done);
     });
@@ -75,7 +75,7 @@ describe('ol.rendering.reproj.Tile', function() {
       const proj54009 = getProjection('ESRI:54009');
       proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
-      const tileGrid = _ol_tilegrid_.createForProjection('ESRI:54009', 7, [64, 64]);
+      const tileGrid = createForProjection('ESRI:54009', 7, [64, 64]);
       testSingleTile(source, 'ESRI:54009', tileGrid, 7, 27, -16, 1,
         'rendering/ol/reproj/expected/osm54009.png', 1, done);
     });
@@ -90,7 +90,7 @@ describe('ol.rendering.reproj.Tile', function() {
     });
 
     it('to EPSG:4326', function(done) {
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:4326', 7, [64, 64]);
+      const tileGrid = createForProjection('EPSG:4326', 7, [64, 64]);
       testSingleTile(source, 'EPSG:4326', tileGrid, 7, 23, -21, 1,
         'rendering/ol/reproj/expected/stitch-osm4326.png', 2, done);
     });
@@ -103,7 +103,7 @@ describe('ol.rendering.reproj.Tile', function() {
       const proj3740 = getProjection('EPSG:3740');
       proj3740.setExtent([318499.05, 2700792.39, 4359164.89, 7149336.98]);
 
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:3740', 4, [64, 64]);
+      const tileGrid = createForProjection('EPSG:3740', 4, [64, 64]);
       testSingleTile(source, 'EPSG:3740', tileGrid, 4, 4, -13, 1,
         'rendering/ol/reproj/expected/stitch-osm3740.png', 4, done);
     });
@@ -124,7 +124,7 @@ describe('ol.rendering.reproj.Tile', function() {
     });
 
     it('to EPSG:3857', function(done) {
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:3857', 0, [64, 64]);
+      const tileGrid = createForProjection('EPSG:3857', 0, [64, 64]);
       testSingleTile(source, 'EPSG:3857', tileGrid, 0, 0, -1, 1,
         'rendering/ol/reproj/expected/4326-to-3857.png', 1, done);
     });
@@ -145,7 +145,7 @@ describe('ol.rendering.reproj.Tile', function() {
     });
 
     it('to 64x128 EPSG:4326', function(done) {
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:4326', 7, [64, 128]);
+      const tileGrid = createForProjection('EPSG:4326', 7, [64, 128]);
       testSingleTile(source, 'EPSG:4326', tileGrid, 7, 27, -10, 1,
         'rendering/ol/reproj/expected/512x256-to-64x128.png', 1, done);
     });
@@ -166,7 +166,7 @@ describe('ol.rendering.reproj.Tile', function() {
       const proj_ = getProjection('merc_180');
       proj_.setExtent([-20026376.39, -20048966.10, 20026376.39, 20048966.10]);
 
-      const tileGrid = _ol_tilegrid_.createForProjection('merc_180', 0, [64, 64]);
+      const tileGrid = createForProjection('merc_180', 0, [64, 64]);
       testSingleTile(source, 'merc_180', tileGrid, 0, 0, -1, 1,
         'rendering/ol/reproj/expected/dateline-merc-180.png', 2, done);
     });
@@ -178,7 +178,7 @@ describe('ol.rendering.reproj.Tile', function() {
       const proj3413 = getProjection('EPSG:3413');
       proj3413.setExtent([-4194304, -4194304, 4194304, 4194304]);
 
-      const tileGrid = _ol_tilegrid_.createForProjection('EPSG:3413', 0, [64, 64]);
+      const tileGrid = createForProjection('EPSG:3413', 0, [64, 64]);
       testSingleTile(source, 'EPSG:3413', tileGrid, 0, 0, -1, 1,
         'rendering/ol/reproj/expected/dateline-pole.png', 2, done);
     });
