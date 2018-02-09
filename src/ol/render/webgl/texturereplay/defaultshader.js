@@ -5,10 +5,10 @@
 // Run `make shaders` to generate, and commit the result.
 
 import {DEBUG_WEBGL} from '../../../index.js';
-import _ol_webgl_Fragment_ from '../../../webgl/Fragment.js';
+import WebGLFragment from '../../../webgl/Fragment.js';
 import _ol_webgl_Vertex_ from '../../../webgl/Vertex.js';
 
-export const fragment = new _ol_webgl_Fragment_(DEBUG_WEBGL ?
+export const fragment = new WebGLFragment(DEBUG_WEBGL ?
   'precision mediump float;\nvarying vec2 v_texCoord;\nvarying float v_opacity;\n\nuniform float u_opacity;\nuniform sampler2D u_image;\n\nvoid main(void) {\n  vec4 texColor = texture2D(u_image, v_texCoord);\n  gl_FragColor.rgb = texColor.rgb;\n  float alpha = texColor.a * v_opacity * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n' :
   'precision mediump float;varying vec2 a;varying float b;uniform float k;uniform sampler2D l;void main(void){vec4 texColor=texture2D(l,a);gl_FragColor.rgb=texColor.rgb;float alpha=texColor.a*b*k;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}');
 
