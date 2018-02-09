@@ -148,10 +148,7 @@ WebGLLayerRenderer.prototype.composeFrame = function(frameState, layerState, con
 
   const gl = context.getGL();
 
-  const fragmentShader = fragment;
-  const vertexShader = vertex;
-
-  const program = context.getProgram(fragmentShader, vertexShader);
+  const program = context.getProgram(fragment, vertex);
 
   let locations;
   if (!this.defaultLocations_) {

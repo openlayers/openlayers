@@ -873,9 +873,7 @@ WebGLPolygonReplay.prototype.getDeleteResourcesFunction = function(context) {
  */
 WebGLPolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  const fragmentShader = fragment;
-  const vertexShader = vertex;
-  const program = context.getProgram(fragmentShader, vertexShader);
+  const program = context.getProgram(fragment, vertex);
 
   // get the locations
   let locations;
