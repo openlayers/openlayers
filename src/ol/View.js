@@ -11,7 +11,7 @@ import ViewHint from './ViewHint.js';
 import ViewProperty from './ViewProperty.js';
 import {linearFindNearest} from './array.js';
 import {assert} from './asserts.js';
-import _ol_coordinate_ from './coordinate.js';
+import {add as addCoordinate, rotate as rotateCoordinate, equals as coordinatesEqual} from './coordinate.js';
 import {inAndOut} from './easing.js';
 import {getForViewAndSize, getCenter, getHeight, getWidth, isEmpty} from './extent.js';
 import GeometryType from './geom/GeometryType.js';
@@ -479,8 +479,8 @@ View.prototype.calculateCenterRotate = function(rotation, anchor) {
   const currentCenter = this.getCenter();
   if (currentCenter !== undefined) {
     center = [currentCenter[0] - anchor[0], currentCenter[1] - anchor[1]];
-    _ol_coordinate_.rotate(center, rotation - this.getRotation());
-    _ol_coordinate_.add(center, anchor);
+    rotateCoordinate(center, rotation - this.getRotation());
+    addCoordinate(center, anchor);
   }
   return center;
 };
@@ -1214,7 +1214,7 @@ View.createRotationConstraint_ = function(options) {
  */
 View.isNoopAnimation = function(animation) {
   if (animation.sourceCenter && animation.targetCenter) {
-    if (!_ol_coordinate_.equals(animation.sourceCenter, animation.targetCenter)) {
+    if (!coordinatesEqual(animation.sourceCenter, animation.targetCenter)) {
       return false;
     }
   }

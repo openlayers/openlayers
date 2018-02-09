@@ -7,7 +7,7 @@ import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import BaseObject from '../Object.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {squaredDistance as squaredCoordinateDistance} from '../coordinate.js';
 import {listen} from '../events.js';
 import Event from '../events/Event.js';
 import {noModifierKeys, always, shiftKeyOnly} from '../events/condition.js';
@@ -158,7 +158,7 @@ const Draw = function(options) {
       geometryFunction = function(coordinates, opt_geometry) {
         const circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
           new Circle([NaN, NaN]);
-        const squaredLength = _ol_coordinate_.squaredDistance(
+        const squaredLength = squaredCoordinateDistance(
           coordinates[0], coordinates[1]);
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
         return circle;
@@ -853,7 +853,7 @@ Draw.createRegularPolygon = function(opt_sides, opt_angle) {
       const center = coordinates[0];
       const end = coordinates[1];
       const radius = Math.sqrt(
-        _ol_coordinate_.squaredDistance(center, end));
+        squaredCoordinateDistance(center, end));
       const geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
         fromCircle(new Circle(center), opt_sides);
       const angle = opt_angle ? opt_angle :

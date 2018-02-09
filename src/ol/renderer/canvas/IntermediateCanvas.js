@@ -2,7 +2,7 @@
  * @module ol/renderer/canvas/IntermediateCanvas
  */
 import {inherits, nullFunction} from '../../index.js';
-import _ol_coordinate_ from '../../coordinate.js';
+import {scale as scaleCoordinate} from '../../coordinate.js';
 import {createCanvasContext2D} from '../../dom.js';
 import {containsExtent, intersects} from '../../extent.js';
 import CanvasLayerRenderer from '../canvas/Layer.js';
@@ -129,7 +129,7 @@ IntermediateCanvasRenderer.prototype.forEachLayerAtCoordinate = function(coordin
     return CanvasLayerRenderer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {
     const pixel = _ol_transform_.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
-    _ol_coordinate_.scale(pixel, frameState.viewState.resolution / this.renderedResolution);
+    scaleCoordinate(pixel, frameState.viewState.resolution / this.renderedResolution);
 
     if (!this.hitCanvasContext_) {
       this.hitCanvasContext_ = createCanvasContext2D(1, 1);

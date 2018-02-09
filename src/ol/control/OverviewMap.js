@@ -12,7 +12,7 @@ import Overlay from '../Overlay.js';
 import OverlayPositioning from '../OverlayPositioning.js';
 import ViewProperty from '../ViewProperty.js';
 import Control from '../control/Control.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {rotateCoordinate, add as addCoordinate} from '../coordinate.js';
 import {CLASS_CONTROL, CLASS_UNSELECTABLE} from '../css.js';
 import {replaceNode} from '../dom.js';
 import {listen, listenOnce, unlisten} from '../events.js';
@@ -468,8 +468,8 @@ OverviewMap.prototype.calculateCoordinateRotate_ = function(
       coordinate[0] - currentCenter[0],
       coordinate[1] - currentCenter[1]
     ];
-    _ol_coordinate_.rotate(coordinateRotate, rotation);
-    _ol_coordinate_.add(coordinateRotate, currentCenter);
+    rotateCoordinate(coordinateRotate, rotation);
+    addCoordinate(coordinateRotate, currentCenter);
   }
   return coordinateRotate;
 };

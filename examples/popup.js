@@ -1,7 +1,7 @@
 import Map from '../src/ol/Map.js';
 import Overlay from '../src/ol/Overlay.js';
 import View from '../src/ol/View.js';
-import _ol_coordinate_ from '../src/ol/coordinate.js';
+import {toStringHDMS} from '../src/ol/coordinate.js';
 import TileLayer from '../src/ol/layer/Tile.js';
 import {toLonLat} from '../src/ol/proj.js';
 import TileJSON from '../src/ol/source/TileJSON.js';
@@ -64,7 +64,7 @@ const map = new Map({
  */
 map.on('singleclick', function(evt) {
   const coordinate = evt.coordinate;
-  const hdms = _ol_coordinate_.toStringHDMS(toLonLat(coordinate));
+  const hdms = toStringHDMS(toLonLat(coordinate));
 
   content.innerHTML = '<p>You clicked here:</p><code>' + hdms +
       '</code>';

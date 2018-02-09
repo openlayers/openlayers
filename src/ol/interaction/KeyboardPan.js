@@ -2,7 +2,7 @@
  * @module ol/interaction/KeyboardPan
  */
 import {inherits} from '../index.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {rotate as rotateCoordinate} from '../coordinate.js';
 import EventType from '../events/EventType.js';
 import KeyCode from '../events/KeyCode.js';
 import {noModifierKeys, targetNotEditable} from '../events/condition.js';
@@ -100,7 +100,7 @@ KeyboardPan.handleEvent = function(mapBrowserEvent) {
         deltaY = mapUnitsDelta;
       }
       const delta = [deltaX, deltaY];
-      _ol_coordinate_.rotate(delta, view.getRotation());
+      rotateCoordinate(delta, view.getRotation());
       Interaction.pan(view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;

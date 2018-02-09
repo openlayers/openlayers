@@ -8,7 +8,7 @@ import Feature from '../Feature.js';
 import MapBrowserEventType from '../MapBrowserEventType.js';
 import MapBrowserPointerEvent from '../MapBrowserPointerEvent.js';
 import {equals} from '../array.js';
-import _ol_coordinate_ from '../coordinate.js';
+import {equals as coordinatesEqual, distance as coordinateDistance, squaredDistance as squaredCoordinateDistance, squaredDistanceToSegment, closestOnSegment} from '../coordinate.js';
 import {listen, unlisten} from '../events.js';
 import Event from '../events/Event.js';
 import EventType from '../events/EventType.js';
@@ -637,15 +637,15 @@ Modify.handleDownEvent_ = function(evt) {
       segmentDataMatch.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
         const closestVertex = Modify.closestOnSegmentData_(pixelCoordinate, segmentDataMatch);
-        if (_ol_coordinate_.equals(closestVertex, vertex) && !componentSegments[uid][0]) {
+        if (coordinatesEqual(closestVertex, vertex) && !componentSegments[uid][0]) {
           this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
         }
-      } else if (_ol_coordinate_.equals(segment[0], vertex) &&
+      } else if (coordinatesEqual(segment[0], vertex) &&
           !componentSegments[uid][0]) {
         this.dragSegments_.push([segmentDataMatch, 0]);
         componentSegments[uid][0] = segmentDataMatch;
-      } else if (_ol_coordinate_.equals(segment[1], vertex) &&
+      } else if (coordinatesEqual(segment[1], vertex) &&
           !componentSegments[uid][1]) {
 
         // prevent dragging closed linestrings by the connecting node
@@ -737,7 +737,7 @@ Modify.handleDragEvent_ = function(evt) {
           this.changingFeature_ = false;
         } else { // We're dragging the circle's circumference:
           this.changingFeature_ = true;
-          geometry.setRadius(_ol_coordinate_.distance(geometry.getCenter(), vertex));
+          geometry.setRadius(coordinateDistance(geometry.getCenter(), vertex));
           this.changingFeature_ = false;
         }
         break;
@@ -859,7 +859,7 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
     const closestSegment = node.segment;
     let vertex = Modify.closestOnSegmentData_(pixelCoordinate, node);
     const vertexPixel = map.getPixelFromCoordinate(vertex);
-    let dist = _ol_coordinate_.distance(pixel, vertexPixel);
+    let dist = coordinateDistance(pixel, vertexPixel);
     if (dist <= this.pixelTolerance_) {
       const vertexSegments = {};
 
@@ -871,8 +871,8 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       } else {
         const pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
         const pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-        const squaredDist1 = _ol_coordinate_.squaredDistance(vertexPixel, pixel1);
-        const squaredDist2 = _ol_coordinate_.squaredDistance(vertexPixel, pixel2);
+        const squaredDist1 = squaredCoordinateDistance(vertexPixel, pixel1);
+        const squaredDist2 = squaredCoordinateDistance(vertexPixel, pixel2);
         dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
         this.snappedToVertex_ = dist <= this.pixelTolerance_;
         if (this.snappedToVertex_) {
@@ -883,10 +883,10 @@ Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
         let segment;
         for (let i = 1, ii = nodes.length; i < ii; ++i) {
           segment = nodes[i].segment;
-          if ((_ol_coordinate_.equals(closestSegment[0], segment[0]) &&
-              _ol_coordinate_.equals(closestSegment[1], segment[1]) ||
-              (_ol_coordinate_.equals(closestSegment[0], segment[1]) &&
-              _ol_coordinate_.equals(closestSegment[1], segment[0])))) {
+          if ((coordinatesEqual(closestSegment[0], segment[0]) &&
+              coordinatesEqual(closestSegment[1], segment[1]) ||
+              (coordinatesEqual(closestSegment[0], segment[1]) &&
+              coordinatesEqual(closestSegment[1], segment[0])))) {
             vertexSegments[getUid(segment)] = true;
           } else {
             break;
@@ -923,13 +923,13 @@ Modify.pointDistanceToSegmentDataSquared_ = function(pointCoordinates, segmentDa
 
     if (segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
       const distanceToCenterSquared =
-            _ol_coordinate_.squaredDistance(circleGeometry.getCenter(), pointCoordinates);
+            squaredCoordinateDistance(circleGeometry.getCenter(), pointCoordinates);
       const distanceToCircumference =
             Math.sqrt(distanceToCenterSquared) - circleGeometry.getRadius();
       return distanceToCircumference * distanceToCircumference;
     }
   }
-  return _ol_coordinate_.squaredDistanceToSegment(pointCoordinates, segmentData.segment);
+  return squaredDistanceToSegment(pointCoordinates, segmentData.segment);
 };
 
 /**
@@ -948,7 +948,7 @@ Modify.closestOnSegmentData_ = function(pointCoordinates, segmentData) {
   segmentData.index === Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
-  return _ol_coordinate_.closestOnSegment(pointCoordinates, segmentData.segment);
+  return closestOnSegment(pointCoordinates, segmentData.segment);
 };
 
 

@@ -1,7 +1,7 @@
 /**
  * @module ol/Graticule
  */
-import _ol_coordinate_ from './coordinate.js';
+import {degreesToStringHDMS} from './coordinate.js';
 import {intersects, getCenter} from './extent.js';
 import GeometryLayout from './geom/GeometryLayout.js';
 import LineString from './geom/LineString.js';
@@ -244,7 +244,7 @@ const Graticule = function(opt_options) {
   this.parallelsLabels_ = null;
 
   if (options.showLabels == true) {
-    const degreesToString = _ol_coordinate_.degreesToStringHDMS;
+    const degreesToString = degreesToStringHDMS;
 
     /**
      * @type {null|function(number):string}
