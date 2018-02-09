@@ -9,8 +9,8 @@ import {isEmpty} from '../../obj.js';
 import {linearRingContainsXY} from '../../geom/flat/contains.js';
 import _ol_geom_flat_orient_ from '../../geom/flat/orient.js';
 import _ol_geom_flat_transform_ from '../../geom/flat/transform.js';
-import _ol_render_webgl_polygonreplay_defaultshader_ from '../webgl/polygonreplay/defaultshader.js';
-import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../webgl/polygonreplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../webgl/polygonreplay/defaultshader.js';
+import Locations from '../webgl/polygonreplay/defaultshader/Locations.js';
 import WebGLLineStringReplay from '../webgl/LineStringReplay.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_render_webgl_ from '../webgl.js';
@@ -873,14 +873,12 @@ WebGLPolygonReplay.prototype.getDeleteResourcesFunction = function(context) {
  */
 WebGLPolygonReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  const fragmentShader = _ol_render_webgl_polygonreplay_defaultshader_.fragment;
-  const vertexShader = _ol_render_webgl_polygonreplay_defaultshader_.vertex;
-  const program = context.getProgram(fragmentShader, vertexShader);
+  const program = context.getProgram(fragment, vertex);
 
   // get the locations
   let locations;
   if (!this.defaultLocations_) {
-    locations = new _ol_render_webgl_polygonreplay_defaultshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;

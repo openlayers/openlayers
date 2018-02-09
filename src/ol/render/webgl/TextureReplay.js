@@ -4,8 +4,8 @@
 import {getUid, inherits} from '../../index.js';
 import {intersects} from '../../extent.js';
 import {isEmpty} from '../../obj.js';
-import _ol_render_webgl_texturereplay_defaultshader_ from '../webgl/texturereplay/defaultshader.js';
-import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../webgl/texturereplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../webgl/texturereplay/defaultshader.js';
+import Locations from '../webgl/texturereplay/defaultshader/Locations.js';
 import WebGLReplay from '../webgl/Replay.js';
 import _ol_webgl_ from '../../webgl.js';
 import WebGLContext from '../../webgl/Context.js';
@@ -271,14 +271,12 @@ WebGLTextureReplay.prototype.createTextures = function(textures, images, texture
  */
 WebGLTextureReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  const fragmentShader = _ol_render_webgl_texturereplay_defaultshader_.fragment;
-  const vertexShader = _ol_render_webgl_texturereplay_defaultshader_.vertex;
-  const program = context.getProgram(fragmentShader, vertexShader);
+  const program = context.getProgram(fragment, vertex);
 
   // get the locations
   let locations;
   if (!this.defaultLocations) {
-    locations = new _ol_render_webgl_texturereplay_defaultshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations = locations;
   } else {
     locations = this.defaultLocations;

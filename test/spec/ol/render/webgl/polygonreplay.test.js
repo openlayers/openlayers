@@ -3,8 +3,8 @@ import Feature from '../../../../../src/ol/Feature.js';
 import MultiPolygon from '../../../../../src/ol/geom/MultiPolygon.js';
 import Polygon from '../../../../../src/ol/geom/Polygon.js';
 import WebGLPolygonReplay from '../../../../../src/ol/render/webgl/PolygonReplay.js';
-import _ol_render_webgl_polygonreplay_defaultshader_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader.js';
-import _ol_render_webgl_polygonreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader.js';
+import Locations from '../../../../../src/ol/render/webgl/polygonreplay/defaultshader/Locations.js';
 import LinkedList from '../../../../../src/ol/structs/LinkedList.js';
 import RBush from '../../../../../src/ol/structs/RBush.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
@@ -337,8 +337,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
 
     it('returns the locations used by the shaders', function() {
       const locations = replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(locations).to.be.a(
-        _ol_render_webgl_polygonreplay_defaultshader_Locations_);
+      expect(locations).to.be.a(Locations);
     });
 
     it('gets and compiles the shaders', function() {
@@ -346,9 +345,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-        _ol_render_webgl_polygonreplay_defaultshader_.fragment,
-        _ol_render_webgl_polygonreplay_defaultshader_.vertex)).to.be(true);
+      expect(context.getProgram.calledWithExactly(fragment, vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

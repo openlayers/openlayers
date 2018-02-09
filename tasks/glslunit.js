@@ -62,9 +62,9 @@ function main(argv) {
   let m, shortName;
   lines.forEach(function(line, i) {
     if (line.indexOf('//!') == 0) {
-      m = line.match(/\/\/!\s+NAMESPACE=(\S+)\s*$/);
+      m = line.match(/\/\/!\s+MODULE=(\S+)\s*$/);
       if (m) {
-        json.namespace = m[1];
+        json.module = m[1];
         return;
       }
       m = line.match(/\/\/!\s+COMMON\s*$/);

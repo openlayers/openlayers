@@ -2,8 +2,8 @@ import {getUid} from '../../../../../src/ol/index.js';
 import Feature from '../../../../../src/ol/Feature.js';
 import Circle from '../../../../../src/ol/geom/Circle.js';
 import WebGLCircleReplay from '../../../../../src/ol/render/webgl/CircleReplay.js';
-import _ol_render_webgl_circlereplay_defaultshader_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
-import _ol_render_webgl_circlereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../../../../../src/ol/render/webgl/circlereplay/defaultshader.js';
+import Locations from '../../../../../src/ol/render/webgl/circlereplay/defaultshader/Locations.js';
 import Fill from '../../../../../src/ol/style/Fill.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
@@ -115,8 +115,7 @@ describe('ol.render.webgl.CircleReplay', function() {
 
     it('returns the locations used by the shaders', function() {
       const locations = replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(locations).to.be.a(
-        _ol_render_webgl_circlereplay_defaultshader_Locations_);
+      expect(locations).to.be.a(Locations);
     });
 
     it('gets and compiles the shaders', function() {
@@ -124,9 +123,7 @@ describe('ol.render.webgl.CircleReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-        _ol_render_webgl_circlereplay_defaultshader_.fragment,
-        _ol_render_webgl_circlereplay_defaultshader_.vertex)).to.be(true);
+      expect(context.getProgram.calledWithExactly(fragment, vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

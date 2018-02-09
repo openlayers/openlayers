@@ -1,6 +1,6 @@
 import WebGLTextureReplay from '../../../../../src/ol/render/webgl/TextureReplay.js';
-import _ol_render_webgl_texturereplay_defaultshader_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader.js';
-import _ol_render_webgl_texturereplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/texturereplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../../../../../src/ol/render/webgl/texturereplay/defaultshader.js';
+import Locations from '../../../../../src/ol/render/webgl/texturereplay/defaultshader/Locations.js';
 
 describe('ol.render.webgl.TextureReplay', function() {
   let replay;
@@ -30,8 +30,7 @@ describe('ol.render.webgl.TextureReplay', function() {
 
     it('returns the locations used by the shaders', function() {
       const locations = replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(locations).to.be.a(
-        _ol_render_webgl_texturereplay_defaultshader_Locations_);
+      expect(locations).to.be.a(Locations);
     });
 
     it('gets and compiles the shaders', function() {
@@ -39,9 +38,7 @@ describe('ol.render.webgl.TextureReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-        _ol_render_webgl_texturereplay_defaultshader_.fragment,
-        _ol_render_webgl_texturereplay_defaultshader_.vertex)).to.be(true);
+      expect(context.getProgram.calledWithExactly(fragment, vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

@@ -11,8 +11,8 @@ import {lineStringIsClosed} from '../../geom/flat/topology.js';
 import {isEmpty} from '../../obj.js';
 import _ol_render_webgl_ from '../webgl.js';
 import WebGLReplay from '../webgl/Replay.js';
-import _ol_render_webgl_linestringreplay_defaultshader_ from '../webgl/linestringreplay/defaultshader.js';
-import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../webgl/linestringreplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../webgl/linestringreplay/defaultshader.js';
+import Locations from '../webgl/linestringreplay/defaultshader/Locations.js';
 import _ol_webgl_ from '../../webgl.js';
 import WebGLBuffer from '../../webgl/Buffer.js';
 
@@ -439,14 +439,12 @@ WebGLLineStringReplay.prototype.getDeleteResourcesFunction = function(context) {
  */
 WebGLLineStringReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
   // get the program
-  const fragmentShader = _ol_render_webgl_linestringreplay_defaultshader_.fragment;
-  const vertexShader = _ol_render_webgl_linestringreplay_defaultshader_.vertex;
-  const program = context.getProgram(fragmentShader, vertexShader);
+  const program = context.getProgram(fragment, vertex);
 
   // get the locations
   let locations;
   if (!this.defaultLocations_) {
-    locations = new _ol_render_webgl_linestringreplay_defaultshader_Locations_(gl, program);
+    locations = new Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;

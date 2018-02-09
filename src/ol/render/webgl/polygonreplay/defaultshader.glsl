@@ -1,4 +1,4 @@
-//! NAMESPACE=_ol_render_webgl_polygonreplay_defaultshader_
+//! MODULE=ol/render/webgl/polygonreplay/defaultshader
 
 
 //! COMMON

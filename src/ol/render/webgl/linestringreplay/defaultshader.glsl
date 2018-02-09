@@ -1,4 +1,4 @@
-//! NAMESPACE=_ol_render_webgl_linestringreplay_defaultshader_
+//! MODULE=ol/render/webgl/linestringreplay/defaultshader
 
 
 //! COMMON

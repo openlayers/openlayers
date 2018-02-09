@@ -3,8 +3,8 @@ import Feature from '../../../../../src/ol/Feature.js';
 import LineString from '../../../../../src/ol/geom/LineString.js';
 import MultiLineString from '../../../../../src/ol/geom/MultiLineString.js';
 import WebGLLineStringReplay from '../../../../../src/ol/render/webgl/LineStringReplay.js';
-import _ol_render_webgl_linestringreplay_defaultshader_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
-import _ol_render_webgl_linestringreplay_defaultshader_Locations_ from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader/Locations.js';
+import {fragment, vertex} from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader.js';
+import Locations from '../../../../../src/ol/render/webgl/linestringreplay/defaultshader/Locations.js';
 import Stroke from '../../../../../src/ol/style/Stroke.js';
 
 describe('ol.render.webgl.LineStringReplay', function() {
@@ -216,8 +216,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
 
     it('returns the locations used by the shaders', function() {
       const locations = replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(locations).to.be.a(
-        _ol_render_webgl_linestringreplay_defaultshader_Locations_);
+      expect(locations).to.be.a(Locations);
     });
 
     it('gets and compiles the shaders', function() {
@@ -225,9 +224,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-        _ol_render_webgl_linestringreplay_defaultshader_.fragment,
-        _ol_render_webgl_linestringreplay_defaultshader_.vertex)).to.be(true);
+      expect(context.getProgram.calledWithExactly(fragment, vertex)).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 

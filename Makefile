@@ -1,6 +1,6 @@
 SRC_GLSL := $(shell find src -type f -name '*.glsl')
 SRC_SHADER_JS := $(patsubst %shader.glsl,%shader.js,$(SRC_GLSL))
-SRC_SHADERLOCATIONS_JS := $(patsubst %shader.glsl,%shader/locations.js,$(SRC_GLSL))
+SRC_SHADERLOCATIONS_JS := $(patsubst %shader.glsl,%shader/Locations.js,$(SRC_GLSL))
 
 .PHONY: shaders
 shaders: $(SRC_SHADER_JS) $(SRC_SHADERLOCATIONS_JS)
