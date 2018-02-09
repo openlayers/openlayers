@@ -98,9 +98,8 @@ GMLBase.GMLNS = 'http://www.opengis.net/gml';
  *
  * @const
  * @type {RegExp}
- * @private
  */
-GMLBase.ONLY_WHITESPACE_RE_ = /^[\s\xa0]*$/;
+const ONLY_WHITESPACE_RE = /^[\s\xa0]*$/;
 
 
 /**
@@ -235,7 +234,7 @@ GMLBase.prototype.readFeatureElement = function(node, objectStack) {
         (n.childNodes.length === 1 &&
         (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
       let value = getAllTextContent(n, false);
-      if (GMLBase.ONLY_WHITESPACE_RE_.test(value)) {
+      if (ONLY_WHITESPACE_RE.test(value)) {
         value = undefined;
       }
       values[localName] = value;
