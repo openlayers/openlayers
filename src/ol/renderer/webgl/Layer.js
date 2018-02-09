@@ -4,7 +4,7 @@
 import {inherits} from '../../index.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
-import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
+import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
 import LayerRenderer from '../Layer.js';
 import {fragment, vertex} from '../webgl/defaultmapshader.js';
 import Locations from '../webgl/defaultmapshader/Locations.js';
@@ -197,7 +197,7 @@ WebGLLayerRenderer.prototype.dispatchComposeEvent_ = function(type, context, fra
     const rotation = viewState.rotation;
     const size = frameState.size;
 
-    const render = new _ol_render_webgl_Immediate_(
+    const render = new WebGLImmediateRenderer(
       context, center, resolution, rotation, size, extent, pixelRatio);
     const composeEvent = new RenderEvent(
       type, render, frameState, null, context);

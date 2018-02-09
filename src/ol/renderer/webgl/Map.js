@@ -11,7 +11,7 @@ import {WEBGL} from '../../has.js';
 import Layer from '../../layer/Layer.js';
 import RenderEvent from '../../render/Event.js';
 import RenderEventType from '../../render/EventType.js';
-import _ol_render_webgl_Immediate_ from '../../render/webgl/Immediate.js';
+import WebGLImmediateRenderer from '../../render/webgl/Immediate.js';
 import MapRenderer from '../Map.js';
 import RendererType from '../Type.js';
 import SourceState from '../../source/State.js';
@@ -274,7 +274,7 @@ WebGLMapRenderer.prototype.dispatchComposeEvent_ = function(type, frameState) {
     const center = viewState.center;
     const rotation = viewState.rotation;
 
-    const vectorContext = new _ol_render_webgl_Immediate_(context,
+    const vectorContext = new WebGLImmediateRenderer(context,
       center, resolution, rotation, size, extent, pixelRatio);
     const composeEvent = new RenderEvent(type, vectorContext,
       frameState, null, context);
