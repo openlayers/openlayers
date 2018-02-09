@@ -2,7 +2,7 @@
  * @module ol/source/ImageArcGISRest
  */
 import {inherits} from '../index.js';
-import _ol_Image_ from '../Image.js';
+import ImageWrapper from '../Image.js';
 import {assert} from '../asserts.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -168,7 +168,7 @@ ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelR
   const url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
     projection, params);
 
-  this.image_ = new _ol_Image_(extent, resolution, pixelRatio,
+  this.image_ = new ImageWrapper(extent, resolution, pixelRatio,
     url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();

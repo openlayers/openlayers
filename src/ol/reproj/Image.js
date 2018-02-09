@@ -3,7 +3,7 @@
  */
 import {ERROR_THRESHOLD} from './common.js';
 import {inherits} from '../index.js';
-import _ol_ImageBase_ from '../ImageBase.js';
+import ImageBase from '../ImageBase.js';
 import ImageState from '../ImageState.js';
 import {listen, unlistenByKey} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -106,10 +106,10 @@ const ReprojImage = function(sourceProj, targetProj,
     state = ImageState.IDLE;
   }
 
-  _ol_ImageBase_.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
+  ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_, state);
 };
 
-inherits(ReprojImage, _ol_ImageBase_);
+inherits(ReprojImage, ImageBase);
 
 
 /**
@@ -119,7 +119,7 @@ ReprojImage.prototype.disposeInternal = function() {
   if (this.state == ImageState.LOADING) {
     this.unlistenSource_();
   }
-  _ol_ImageBase_.prototype.disposeInternal.call(this);
+  ImageBase.prototype.disposeInternal.call(this);
 };
 
 

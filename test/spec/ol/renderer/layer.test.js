@@ -1,4 +1,4 @@
-import _ol_Image_ from '../../../../src/ol/Image.js';
+import ImageWrapper from '../../../../src/ol/Image.js';
 import Map from '../../../../src/ol/Map.js';
 import View from '../../../../src/ol/View.js';
 import Layer from '../../../../src/ol/layer/Layer.js';
@@ -28,7 +28,7 @@ describe('ol.renderer.Layer', function() {
       const src = '';
       const crossOrigin = '';
       imageLoadFunction = sinon.spy();
-      image = new _ol_Image_(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction);
+      image = new ImageWrapper(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction);
     });
 
     describe('load IDLE image', function() {

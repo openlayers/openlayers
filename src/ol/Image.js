@@ -2,7 +2,7 @@
  * @module ol/Image
  */
 import {inherits} from './index.js';
-import _ol_ImageBase_ from './ImageBase.js';
+import ImageBase from './ImageBase.js';
 import ImageState from './ImageState.js';
 import {listenOnce, unlistenByKey} from './events.js';
 import EventType from './events/EventType.js';
@@ -18,9 +18,9 @@ import {getHeight} from './extent.js';
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
+const ImageWrapper = function(extent, resolution, pixelRatio, src, crossOrigin, imageLoadFunction) {
 
-  _ol_ImageBase_.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
+  ImageBase.call(this, extent, resolution, pixelRatio, ImageState.IDLE);
 
   /**
    * @private
@@ -57,14 +57,14 @@ const _ol_Image_ = function(extent, resolution, pixelRatio, src, crossOrigin, im
 
 };
 
-inherits(_ol_Image_, _ol_ImageBase_);
+inherits(ImageWrapper, ImageBase);
 
 
 /**
  * @inheritDoc
  * @api
  */
-_ol_Image_.prototype.getImage = function() {
+ImageWrapper.prototype.getImage = function() {
   return this.image_;
 };
 
@@ -74,7 +74,7 @@ _ol_Image_.prototype.getImage = function() {
  *
  * @private
  */
-_ol_Image_.prototype.handleImageError_ = function() {
+ImageWrapper.prototype.handleImageError_ = function() {
   this.state = ImageState.ERROR;
   this.unlistenImage_();
   this.changed();
@@ -86,7 +86,7 @@ _ol_Image_.prototype.handleImageError_ = function() {
  *
  * @private
  */
-_ol_Image_.prototype.handleImageLoad_ = function() {
+ImageWrapper.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
     this.resolution = getHeight(this.extent) / this.image_.height;
   }
@@ -103,7 +103,7 @@ _ol_Image_.prototype.handleImageLoad_ = function() {
  * @override
  * @api
  */
-_ol_Image_.prototype.load = function() {
+ImageWrapper.prototype.load = function() {
   if (this.state == ImageState.IDLE || this.state == ImageState.ERROR) {
     this.state = ImageState.LOADING;
     this.changed();
@@ -121,7 +121,7 @@ _ol_Image_.prototype.load = function() {
 /**
  * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
  */
-_ol_Image_.prototype.setImage = function(image) {
+ImageWrapper.prototype.setImage = function(image) {
   this.image_ = image;
 };
 
@@ -131,8 +131,9 @@ _ol_Image_.prototype.setImage = function(image) {
  *
  * @private
  */
-_ol_Image_.prototype.unlistenImage_ = function() {
+ImageWrapper.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(unlistenByKey);
   this.imageListenerKeys_ = null;
 };
-export default _ol_Image_;
+
+export default ImageWrapper;

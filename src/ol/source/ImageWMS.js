@@ -4,7 +4,7 @@
 
 import {DEFAULT_WMS_VERSION} from './common.js';
 import {inherits} from '../index.js';
-import _ol_Image_ from '../Image.js';
+import ImageWrapper from '../Image.js';
 import {assert} from '../asserts.js';
 import {listen} from '../events.js';
 import EventType from '../events/EventType.js';
@@ -231,7 +231,7 @@ ImageWMS.prototype.getImageInternal = function(extent, resolution, pixelRatio, p
   const url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio,
     projection, params);
 
-  this.image_ = new _ol_Image_(requestExtent, resolution, pixelRatio,
+  this.image_ = new ImageWrapper(requestExtent, resolution, pixelRatio,
     url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
